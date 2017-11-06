@@ -46,4 +46,10 @@ Network Trash Folder
 Temporary Items
 .apdisk
 .idea
-build
+build/
+gradlew.bat
+toy.constructor.iml
+gradlew
+.gradle
+.gradle/*
+gradle/
