@@ -1,16 +1,25 @@
 group 'com.github'
 version '1.0-SNAPSHOT'
 
-apply plugin: 'java'
 
-sourceCompatibility = 1.9
+subprojects {
+    apply plugin: 'java'
 
+    sourceCompatibility = 1.9
 
-repositories {
-    mavenCentral()
+    apply plugin: "java"
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
+        testCompile group: 'junit', name: 'junit', version: '4.12'
+    }
 }
 
-dependencies {
-    compile group: 'com.google.guava', name: 'guava', version: '21.0'
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+project(":core.api") {
+    dependencies {
+        compile group: 'com.google.guava', name: 'guava', version: '21.0'
+    }
 }

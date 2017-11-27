@@ -1,2 +1,3 @@
 rootProject.name = 'toy.constructor'
+include 'core.api'
 
