@@ -14,12 +14,13 @@ subprojects {
 
     dependencies {
         compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
-        testCompile group: 'junit', name: 'junit', version: '4.12'
+        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.0.2'
     }
 }
 
 project(":core.api") {
     dependencies {
         compile group: 'com.google.guava', name: 'guava', version: '21.0'
+        compile group: 'org.hamcrest', name: 'java-hamcrest', version: '2.0.0.0'
     }
 }
