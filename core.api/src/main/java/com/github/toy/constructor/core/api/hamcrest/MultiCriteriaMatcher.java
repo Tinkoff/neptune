@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import static com.github.toy.constructor.core.api.FunctionalUtil.toReturn;
+import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
@@ -30,12 +30,12 @@ public class  MultiCriteriaMatcher<T> extends TypeSafeDiagnosingMatcher<T> {
     }
 
     public <R> MultiCriteriaMatcher<T> and(Function<T, R> function, Matcher<R> matcher) {
-        matchMap.put(toReturn(format("%s %s", function.toString(), matcher.toString()), function), matcher);
+        matchMap.put(toGet(format("%s %s", function.toString(), matcher.toString()), function), matcher);
         return this;
     }
 
     public MultiCriteriaMatcher<T> and(Matcher<T> matcher) {
-        return and(toReturn(EMPTY, (t) -> t), matcher);
+        return and(toGet(EMPTY, (t) -> t), matcher);
     }
 
     @Override

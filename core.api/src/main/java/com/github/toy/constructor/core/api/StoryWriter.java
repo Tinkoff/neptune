@@ -4,42 +4,50 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
-public final class FunctionalUtil {
+public final class StoryWriter {
+
+    private interface DescribedConsumer<T> extends Consumer<T> {
+        default Consumer<T> andThen(Consumer<? super T> after) {
+            requireNonNull(after);
+            requireNonNull(DescribedConsumer.class.isAssignableFrom(after.getClass()),
+                    "It seems given consumer doesn't describe any action. Use method " +
+                            "StoryWriter.action to describe the after-action.");
+            Consumer<T> before = this;
+
+            return new DescribedConsumer<T>() {
+                @Override
+                public void accept(T t) {
+                    before.accept(t); after.accept(t);
+                }
+
+                public String toString() {
+                    return before.toString() + " \n and then -> \n" + after.toString();
+                }
+            };
+        }
+    }
 
     public static <T> Consumer<T> action(String description, Consumer<T> consumer) {
-        return new Consumer<>() {
+        checkArgument(!isBlank(description), "Description should not be empty");
+        return new DescribedConsumer<T>() {
             @Override
             public void accept(T t) {
                 consumer.accept(t);
             }
 
+            @Override
             public String toString() {
                 return description;
-            }
-
-            @Override
-            public Consumer<T> andThen(Consumer<? super T> after) {
-                Consumer<T> before = this;
-                requireNonNull(after);
-
-                return new Consumer<>() {
-                    @Override
-                    public void accept(T t) {
-                        before.accept(t); after.accept(t);
-                    }
-
-                    public String toString() {
-                        return before.toString() + " and then \n\n" + after.toString();
-                    }
-                };
             }
         };
     }
 
-    public static <T, R> Function<T, R> toReturn(String description, Function<T, R> function) {
+    public static <T, R> Function<T, R> toGet(String description, Function<T, R> function) {
         return new Function<>() {
             @Override
             public R apply(T t) {
