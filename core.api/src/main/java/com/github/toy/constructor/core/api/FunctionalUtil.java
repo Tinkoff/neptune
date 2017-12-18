@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 
-public final class DescriptionUtil {
+public final class FunctionalUtil {
 
     public static <T> Consumer<T> action(String description, Consumer<T> consumer) {
         return new Consumer<>() {

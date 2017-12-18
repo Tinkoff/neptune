@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import static com.github.toy.constructor.core.api.DescriptionUtil.toReturn;
+import static com.github.toy.constructor.core.api.FunctionalUtil.toReturn;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
