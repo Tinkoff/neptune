@@ -6,7 +6,7 @@ import java.util.function.Predicate;
 
 public final class DescriptionUtil {
 
-    public static <T> Consumer<T> c(String description, Consumer<T> consumer) {
+    public static <T> Consumer<T> action(String description, Consumer<T> consumer) {
         return new Consumer<>() {
             @Override
             public void accept(T t) {
@@ -19,7 +19,7 @@ public final class DescriptionUtil {
         };
     }
 
-    public static <T, R> Function<T, R> f(String description, Function<T, R> function) {
+    public static <T, R> Function<T, R> toReturn(String description, Function<T, R> function) {
         return new Function<>() {
             @Override
             public R apply(T t) {
@@ -33,7 +33,7 @@ public final class DescriptionUtil {
         };
     }
 
-    public static <T> Predicate<T> p(String description, Predicate<T> predicate) {
+    public static <T> Predicate<T> condition(String description, Predicate<T> predicate) {
         return new Predicate<>() {
             @Override
             public boolean test(T t) {
