@@ -1,11 +1,10 @@
-package com.github.toy.constructor.core.api;
+package com.github.toy.constructor.core.api.story;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public final class StoryWriter {
@@ -48,7 +47,7 @@ public final class StoryWriter {
 
             @Override
             public String toString() {
-                return format("With condition %s", description);
+                return description;
             }
         };
     }
