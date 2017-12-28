@@ -1,4 +1,4 @@
-package com.github.toy.constructor.core.api.story;
+package com.github.toy.constructor.core.api;
 
 import java.util.function.Predicate;
 

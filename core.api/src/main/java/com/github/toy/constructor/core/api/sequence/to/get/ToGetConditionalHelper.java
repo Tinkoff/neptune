@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.github.toy.constructor.core.api.story.StoryWriter.toGet;
+import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
