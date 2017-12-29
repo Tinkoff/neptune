@@ -1,4 +1,4 @@
-package com.github.toy.constructor.core.api.sequence.to.get;
+package com.github.toy.constructor.core.api;
 
 import com.google.common.collect.Iterables;
 import org.apache.commons.lang3.ArrayUtils;
