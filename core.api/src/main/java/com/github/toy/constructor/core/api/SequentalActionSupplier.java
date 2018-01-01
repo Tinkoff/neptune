@@ -5,6 +5,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.github.toy.constructor.core.api.StoryWriter.action;
+import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
@@ -16,7 +17,8 @@ import static java.util.Optional.ofNullable;
  *
  * @param <T> is the type of an input value.
  * @param <R> is the type of a value which is supposed to be used by some action.
- * @param <THIS> is self-type. It is necessary for the {@link #andThen(String, Function, Object...)} method.
+ * @param <THIS> is self-type. It is necessary for {@link #andThen(String, Function, Object...)} and
+ *              {@link #andThen(String, Object, Object...)} methods.
  */
 public abstract class SequentalActionSupplier<T, R, THIS extends SequentalActionSupplier<T, R, THIS>> implements Supplier<Consumer<T>>{
 
@@ -24,7 +26,7 @@ public abstract class SequentalActionSupplier<T, R, THIS extends SequentalAction
 
     /**
      * This is the helping method which designed to build chains of similar actions on some objects got from
-     * the input value. It is supposed to be overridden or overloaded by custom method.
+     * the input value. It is supposed to be overridden or overloaded/used by custom method.
      *
      * @param description of the action
      * @param function which gets a target object from input value.
@@ -45,7 +47,7 @@ public abstract class SequentalActionSupplier<T, R, THIS extends SequentalAction
 
     /**
      * This is the helping method which designed to build chains of similar actions on some objects got from
-     * the input value. It is supposed to be overridden or overloaded by custom method.
+     * the input value. It is supposed to be overridden or overloaded/used by custom method.
      *
      * @param description of the action
      * @param value which is used to perform the action on.
@@ -53,12 +55,7 @@ public abstract class SequentalActionSupplier<T, R, THIS extends SequentalAction
      * @return self-reference.
      */
     protected THIS andThen(String description, R value, Object...additionalArguments) {
-        Consumer<T> action = action(format("%s on %s", description, value), t -> {
-            performActionOn(value, additionalArguments);
-        });
-
-        wrappedConsumer = ofNullable(wrappedConsumer).map(tConsumer -> tConsumer.andThen(action)).orElse(action);
-        return (THIS) this;
+        return andThen(description, toGet(value.toString(), t -> value), additionalArguments);
     }
 
     /**
