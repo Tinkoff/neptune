@@ -3,11 +3,11 @@ package com.github.toy.constructor.core.api;
 import java.util.function.Consumer;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.Objects.requireNonNull;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 interface DescribedConsumer<T> extends Consumer<T> {
     default Consumer<T> andThen(Consumer<? super T> after) {
-        requireNonNull(after);
+        checkNotNull(after);
         checkArgument(DescribedConsumer.class.isAssignableFrom(after.getClass()),
                 "It seems given consumer doesn't describe any action. Use method " +
                         "StoryWriter.action to describe the after-action.");

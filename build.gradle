@@ -1,5 +1,6 @@
-group 'com.github'
-version '1.0-SNAPSHOT'
+group 'com.github.toy.constructor'
+def versionValue = '1.0-SNAPSHOT'
+version versionValue
 
 
 subprojects {
@@ -11,16 +12,19 @@ subprojects {
     repositories {
         mavenCentral()
     }
-
-    dependencies {
-        compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
-        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.0.2'
-    }
 }
 
 project(":core.api") {
     dependencies {
+        compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
         compile group: 'com.google.guava', name: 'guava', version: '21.0'
+        testCompile group: 'org.testng', name: 'testng', version: '6.13.1'
+    }
+}
+
+project(":check") {
+    dependencies {
+        compile project(':core.api')
         compile group: 'org.hamcrest', name: 'java-hamcrest', version: '2.0.0.0'
     }
 }

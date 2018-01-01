@@ -1,4 +1,4 @@
-package com.github.toy.constructor.core.api.hamcrest;
+package com.github.toy.constructor.check.hamcrest;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;

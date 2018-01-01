@@ -3,13 +3,13 @@ package com.github.toy.constructor.core.api;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.sun.tools.javac.util.Assert.checkNonNull;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 
 interface DescribedPredicate<T> extends Predicate<T> {
 
     default Predicate<T> and(Predicate<? super T> other) {
-        checkNonNull(other);
+        checkNotNull(other);
         checkArgument(DescribedPredicate.class.isAssignableFrom(other.getClass()),
                 "It seems given predicate doesn't describe any condition. Use method " +
                         "StoryWriter.condition to describe the AND-condition.");
@@ -46,7 +46,7 @@ interface DescribedPredicate<T> extends Predicate<T> {
     }
 
     default Predicate<T> or(Predicate<? super T> other) {
-        checkNonNull(other);
+        checkNotNull(other);
         checkArgument(DescribedPredicate.class.isAssignableFrom(other.getClass()),
                 "It seems given predicate doesn't describe any condition. Use method " +
                         "StoryWriter.condition to describe the OR-condition.");
