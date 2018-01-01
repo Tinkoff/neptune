@@ -50,7 +50,7 @@ public abstract class SequentalActionSupplier<T, R, THIS extends SequentalAction
      * the input value. It is supposed to be overridden or overloaded/used by custom method.
      *
      * @param description of the action
-     * @param value which is used to perform the action on.
+     * @param value which is used to perform the action.
      * @param additionalArguments that needed to perform the action
      * @return self-reference.
      */
@@ -63,6 +63,7 @@ public abstract class SequentalActionSupplier<T, R, THIS extends SequentalAction
      * value.
      *
      * @param value is an object for actions.
+     * @param additionalArgument that needed to perform the action
      */
     abstract void performActionOn(R value, Object...additionalArgument);
 

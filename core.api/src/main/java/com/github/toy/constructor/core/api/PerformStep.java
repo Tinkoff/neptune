@@ -6,12 +6,14 @@ import java.util.function.Supplier;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public interface PerformStep<THIS extends PerformStep<THIS>> {
 
     private THIS perform(String description, Consumer<THIS> actionConsumer) {
         checkArgument(DescribedPredicate.class.isAssignableFrom(actionConsumer.getClass()),
                 "Action should be described by the StoryWriter.action method.");
+        checkArgument(isNotBlank(description), "Description should not be empty");
         actionConsumer.accept((THIS) this);
         return (THIS) this;
     }

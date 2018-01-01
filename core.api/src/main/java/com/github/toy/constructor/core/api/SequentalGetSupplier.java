@@ -19,10 +19,12 @@ public abstract class SequentalGetSupplier<T, R, Q, THIS extends SequentalGetSup
         extends GetSupplier<T, R, THIS> {
 
     /**
+     * This method is designed to represent a chain of result calculation and restrict it.
+     * It is supposed to be overridden or overloaded/used by custom method.
      *
-     * @param description
-     * @param mediatorFunction
-     * @return
+     * @param description of a value which is expected to be returned.
+     * @param mediatorFunction a function which returns a mediate value to get expected result.
+     * @return self-reference.
      */
     protected THIS from(String description, Function<T, Q> mediatorFunction) {
         checkArgument(mediatorFunction != null, "Function to get value from was not " +
@@ -35,10 +37,12 @@ public abstract class SequentalGetSupplier<T, R, Q, THIS extends SequentalGetSup
     }
 
     /**
+     * This method is designed to represent a chain of result calculation and restrict it.
+     * It is supposed to be overridden or overloaded/used by custom method.
      *
-     * @param description
-     * @param supplier
-     * @return
+     * @param description of a value which is expected to be returned.
+     * @param supplier of a function which returns a mediate value to get expected result.
+     * @return self-reference.
      */
     protected THIS from(String description, GetSupplier<T, Q, ?> supplier) {
         checkArgument(supplier != null, "The supplier of the function is not defined");
@@ -46,10 +50,12 @@ public abstract class SequentalGetSupplier<T, R, Q, THIS extends SequentalGetSup
     }
 
     /**
-     * 
-     * @param description
-     * @param value
-     * @return
+     * This method is designed to represent a chain of result calculation and restrict it.
+     * It is supposed to be overridden or overloaded/used by custom method.
+     *
+     * @param description of a value which is expected to be returned.
+     * @param value is a mediate value to get expected result.
+     * @return self-reference.
      */
     protected THIS from(String description, Q value) {
         return from(description, toGet(value.toString(), t -> value));
