@@ -45,6 +45,7 @@ public final class StoryWriter {
      * by the {@link #toString()} method.
      */
     public static <T, R> Function<T, R> toGet(String description, Function<T, R> function) {
+        checkArgument(!isBlank(description), "Description should not be empty");
         return new DescribedFunction<>() {
             @Override
             public R apply(T t) {
@@ -69,6 +70,7 @@ public final class StoryWriter {
      * by the {@link #toString()} method.
      */
     public static <T> Predicate<T> condition(String description, Predicate<T> predicate) {
+        checkArgument(!isBlank(description), "Description should not be empty");
         return new DescribedPredicate<>() {
             @Override
             public boolean test(T t) {

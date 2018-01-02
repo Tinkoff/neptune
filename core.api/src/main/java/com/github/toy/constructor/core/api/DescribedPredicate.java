@@ -24,7 +24,7 @@ interface DescribedPredicate<T> extends Predicate<T> {
 
             @Override
             public String toString() {
-                return format("%s AND %s", thisCondition.toString(), other.toString());
+                return format("(%s) AND (%s)", thisCondition.toString(), other.toString());
             }
         };
     }
@@ -61,7 +61,7 @@ interface DescribedPredicate<T> extends Predicate<T> {
 
             @Override
             public String toString() {
-                return format("%s OR %s", thisCondition.toString(), other.toString());
+                return format("(%s) OR (%s)", thisCondition.toString(), other.toString());
             }
         };
     }

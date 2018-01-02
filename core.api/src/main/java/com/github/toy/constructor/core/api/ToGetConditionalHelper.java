@@ -8,6 +8,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
@@ -56,6 +57,9 @@ public final class ToGetConditionalHelper {
                                                                              Predicate<R> condition,
                                                                              boolean checkConditionInParallel,
                                                                              boolean ignoreExceptionOnConditionCheck) {
+        checkArgument(DescribedPredicate.class.isAssignableFrom(condition.getClass()),
+                "Condition is not described. " +
+                        "Use StoryWriter.condition to desribe it.");
         return toGet(format("%s on condition %s", description, condition), t -> {
             V v = function.apply(t);
             return stream(v.spliterator(), checkConditionInParallel).filter(r -> {
@@ -116,6 +120,9 @@ public final class ToGetConditionalHelper {
                                                              Function<T, R> function,
                                                              Predicate<R> condition,
                                                              boolean ignoreExceptionOnConditionCheck) {
+        checkArgument(DescribedPredicate.class.isAssignableFrom(condition.getClass()),
+                "Condition is not described. " +
+                        "Use StoryWriter.condition to desribe it.");
         return toGet(format("%s on condition %s", description, condition), t -> {
             R r = function.apply(t);
             try {
@@ -153,6 +160,9 @@ public final class ToGetConditionalHelper {
                                                                               Predicate<R> condition,
                                                                               boolean checkConditionInParallel,
                                                                               boolean ignoreExceptionOnConditionCheck) {
+        checkArgument(DescribedPredicate.class.isAssignableFrom(condition.getClass()),
+                "Condition is not described. " +
+                        "Use StoryWriter.condition to desribe it.");
         return toGet(format("%s on condition %s", description, condition), t -> {
             V v = function.apply(t);
 
