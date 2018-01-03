@@ -7,7 +7,8 @@ import java.util.function.Function;
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.testng.AssertJUnit.fail;
+import static org.hamcrest.Matchers.nullValue;
+import static org.testng.Assert.fail;
 
 public class ToGetTest {
 
@@ -79,5 +80,29 @@ public class ToGetTest {
                 describedStringLength.compose(describedToString).andThen(describedPositivityFunction).toString(),
                 is("Positivity of the calculated value from " +
                         "(Length of the given string from (String value of the object))"));
+    }
+
+    @Test
+    public void checkNullPointerExceptionSafetyOnCompose() {
+        Function<Object, String> describedToString = toGet("String value of the object",
+                o -> null);
+        Function<String, Integer> describedStringLength = toGet("Length of the given string",
+                GET_STRING_LENGTH);
+
+        assertThat("Check that null is returned", describedStringLength.compose(describedToString)
+                        .apply(new Object()),
+                nullValue());
+    }
+
+    @Test
+    public void checkNullPointerExceptionSafetyOnAndThan() {
+        Function<Object, String> describedToString = toGet("String value of the object",
+                o -> null);
+        Function<String, Integer> describedStringLength = toGet("Length of the given string",
+                GET_STRING_LENGTH);
+
+        assertThat("Check that null is returned", describedToString.andThen(describedStringLength)
+                        .apply(new Object()),
+                nullValue());
     }
 }

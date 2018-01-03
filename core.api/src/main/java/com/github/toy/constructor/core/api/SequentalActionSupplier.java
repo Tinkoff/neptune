@@ -1,5 +1,6 @@
 package com.github.toy.constructor.core.api;
 
+import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -7,6 +8,7 @@ import java.util.function.Supplier;
 import static com.github.toy.constructor.core.api.StoryWriter.action;
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 
@@ -34,9 +36,14 @@ public abstract class SequentalActionSupplier<T, R, THIS extends SequentalAction
      * @return self-reference.
      */
     protected THIS andThen(String description, Function<T, R> function, Object...additionalArguments) {
+        checkNotNull(function);
         checkArgument(DescribedFunction.class.isAssignableFrom(function.getClass()),
                 "Function should be described by the StoryWriter.toGet method.");
-        Consumer<T> action = action(format("%s on %s", description, function), t -> {
+        String fullDescription = format("%s on %s", description, function);
+        if (additionalArguments.length > 0) {
+            fullDescription = format("%s. With parameters: %s", fullDescription, Arrays.toString(additionalArguments));
+        }
+        Consumer<T> action = action(fullDescription, t -> {
             R r = function.apply(t);
             performActionOn(r, additionalArguments);
         });
