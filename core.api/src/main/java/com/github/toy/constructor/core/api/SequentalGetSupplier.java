@@ -50,7 +50,8 @@ public abstract class SequentalGetSupplier<T, R, Q, THIS extends SequentalGetSup
      * This method is designed to represent a chain of result calculation and restrict it.
      * It is supposed to be overridden or overloaded/used by custom method.
      *
-     * @param value is a mediate value to get expected result.
+     * @param value is a mediate value to get expected result. It is supposed that this object is got from the
+     *              input value {@code T} firstly.
      * @return self-reference.
      */
     protected THIS from(Q value) {

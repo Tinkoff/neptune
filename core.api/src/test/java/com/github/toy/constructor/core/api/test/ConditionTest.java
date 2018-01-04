@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 import static com.github.toy.constructor.core.api.StoryWriter.condition;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.testng.AssertJUnit.fail;
+import static org.testng.Assert.fail;
 
 public class ConditionTest {
 

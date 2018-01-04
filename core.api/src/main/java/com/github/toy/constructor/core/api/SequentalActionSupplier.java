@@ -8,7 +8,6 @@ import java.util.function.Supplier;
 import static com.github.toy.constructor.core.api.StoryWriter.action;
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 
@@ -32,11 +31,12 @@ public abstract class SequentalActionSupplier<T, R, THIS extends SequentalAction
      *
      * @param description of the action
      * @param function which gets a target object from input value.
-     * @param additionalArguments that needed to perform the action
+     * @param additionalArguments that needed to perform the action. It may be ignored.
      * @return self-reference.
      */
     protected THIS andThen(String description, Function<T, R> function, Object...additionalArguments) {
-        checkNotNull(function);
+        checkArgument(function != null,
+                "Function which gets value to perform action is not defined");
         checkArgument(DescribedFunction.class.isAssignableFrom(function.getClass()),
                 "Function should be described by the StoryWriter.toGet method.");
         String fullDescription = format("%s on %s", description, function);
@@ -57,11 +57,14 @@ public abstract class SequentalActionSupplier<T, R, THIS extends SequentalAction
      * the input value. It is supposed to be overridden or overloaded/used by custom method.
      *
      * @param description of the action
-     * @param value which is used to perform the action.
-     * @param additionalArguments that needed to perform the action
+     * @param value which is used to perform the action. It is supposed that this object is got from the
+     *              input value {@code T} firstly.
+     * @param additionalArguments that needed to perform the action. It may be ignored.
      * @return self-reference.
      */
     protected THIS andThen(String description, R value, Object...additionalArguments) {
+        checkArgument(value != null,
+                "Object to perform action is not defined");
         return andThen(description, toGet(value.toString(), t -> value), additionalArguments);
     }
 
@@ -70,9 +73,9 @@ public abstract class SequentalActionSupplier<T, R, THIS extends SequentalAction
      * value.
      *
      * @param value is an object for actions.
-     * @param additionalArgument that needed to perform the action
+     * @param additionalArgument that needed to perform the action. It may be ignored.
      */
-    abstract void performActionOn(R value, Object...additionalArgument);
+    protected abstract void performActionOn(R value, Object...additionalArgument);
 
     @Override
     public Consumer<T> get() {

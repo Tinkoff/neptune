@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 import static com.github.toy.constructor.core.api.StoryWriter.action;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.testng.AssertJUnit.fail;
+import static org.testng.Assert.fail;
 
 public class ActionTest {
     private static final Consumer<String> REPLACE_SPACE = s -> s.replace(" ", "");
