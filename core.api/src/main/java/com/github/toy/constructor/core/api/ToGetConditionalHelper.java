@@ -24,7 +24,7 @@ public final class ToGetConditionalHelper {
     }
 
     private static boolean returnFalseOrThrowException(Throwable t, boolean ignoreExceptionOnConditionCheck) {
-        String message = format("%s was caught. Meassage: %s", t.getClass(), t.getMessage());
+        String message = format("%s was caught. Meassage: %s", t.getClass().getName(), t.getMessage());
         if (!ignoreExceptionOnConditionCheck) {
             throw new CheckConditionException(message, t);
         }
@@ -32,6 +32,16 @@ public final class ToGetConditionalHelper {
         System.out.println(message);
         t.printStackTrace();
         return false;
+    }
+
+    private static void checkCondition(Predicate<?> condition) {
+        checkArgument(DescribedPredicate.class.isAssignableFrom(condition.getClass()),
+                "Condition is not described. " +
+                        "Use StoryWriter.condition to describe it.");
+    }
+
+    private static String getDescription(String description, Function<?, ?> function, Predicate<?> condition) {
+        return format("%s from (%s) on condition %s", description, function, condition);
     }
 
     /**
@@ -57,10 +67,15 @@ public final class ToGetConditionalHelper {
                                                                              Predicate<R> condition,
                                                                              boolean checkConditionInParallel,
                                                                              boolean ignoreExceptionOnConditionCheck) {
-        checkArgument(DescribedPredicate.class.isAssignableFrom(condition.getClass()),
-                "Condition is not described. " +
-                        "Use StoryWriter.condition to desribe it.");
-        return toGet(format("%s on condition %s", description, condition), t -> {
+        checkArgument(function != null, "Function which should return iterable is not defined");
+        checkArgument(condition != null, "Predicate which should be used as the condition to check " +
+                "value from iterable is not defined.");
+
+        checkArgument(DescribedFunction.class.isAssignableFrom(function.getClass()),
+                "Function which should return iterable is not described." +
+                        " Use StoryWriter.toGet to describe it.");
+        checkCondition(condition);
+        return toGet(getDescription(description, function, condition), t -> {
             V v = function.apply(t);
             return stream(v.spliterator(), checkConditionInParallel).filter(r -> {
                 try {
@@ -95,7 +110,14 @@ public final class ToGetConditionalHelper {
                                                      Predicate<R> condition,
                                                      boolean checkConditionInParallel,
                                                      boolean ignoreExceptionOnConditionCheck) {
-        return getFromIterable(description, t -> asList(function.apply(t)),
+        checkArgument(function != null, "Function which should return array is not defined");
+        checkArgument(condition != null, "Predicate which should be used as the condition to check " +
+                "value from array is not defined.");
+
+        checkArgument(DescribedFunction.class.isAssignableFrom(function.getClass()),
+                "Function which should return array is not described." +
+                        " Use StoryWriter.toGet to describe it.");
+        return getFromIterable(description, toGet(function.toString(), t -> asList(function.apply(t))),
                 condition, checkConditionInParallel, ignoreExceptionOnConditionCheck);
 
     }
@@ -120,10 +142,15 @@ public final class ToGetConditionalHelper {
                                                              Function<T, R> function,
                                                              Predicate<R> condition,
                                                              boolean ignoreExceptionOnConditionCheck) {
-        checkArgument(DescribedPredicate.class.isAssignableFrom(condition.getClass()),
-                "Condition is not described. " +
-                        "Use StoryWriter.condition to desribe it.");
-        return toGet(format("%s on condition %s", description, condition), t -> {
+        checkArgument(function != null, "Function which should return object is not defined");
+        checkArgument(condition != null, "Predicate which should be used as the condition to " +
+                "check returned object is not defined.");
+
+        checkArgument(DescribedFunction.class.isAssignableFrom(function.getClass()),
+                "Function which should return object is not described." +
+                        " Use StoryWriter.toGet to describe it.");
+        checkCondition(condition);
+        return toGet(getDescription(description, function, condition), t -> {
             R r = function.apply(t);
             try {
                 if (condition.test(r)) {
@@ -160,10 +187,15 @@ public final class ToGetConditionalHelper {
                                                                               Predicate<R> condition,
                                                                               boolean checkConditionInParallel,
                                                                               boolean ignoreExceptionOnConditionCheck) {
-        checkArgument(DescribedPredicate.class.isAssignableFrom(condition.getClass()),
-                "Condition is not described. " +
-                        "Use StoryWriter.condition to desribe it.");
-        return toGet(format("%s on condition %s", description, condition), t -> {
+        checkArgument(function != null, "Function which should return iterable is not defined");
+        checkArgument(condition != null, "Predicate which should be used as the condition to " +
+                "filter values from iterables is not defined.");
+
+        checkArgument(DescribedFunction.class.isAssignableFrom(function.getClass()),
+                "Function which should return iterable is not described." +
+                        " Use StoryWriter.toGet to describe it.");
+        checkCondition(condition);
+        return toGet(getDescription(description, function, condition), t -> {
             V v = function.apply(t);
 
             List<R> result = stream(v.spliterator(), checkConditionInParallel).filter(r -> {
@@ -201,7 +233,15 @@ public final class ToGetConditionalHelper {
                                                      Predicate<R> condition,
                                                      boolean checkConditionInParallel,
                                                      boolean ignoreExceptionOnConditionCheck) {
-        return toGet(format("%s on condition %s", description, condition), t -> {
+        checkArgument(function != null, "Function which should return array is not defined");
+        checkArgument(condition != null, "Predicate which should be used as the condition to " +
+                "filter values from array is not defined.");
+
+        checkArgument(DescribedFunction.class.isAssignableFrom(function.getClass()),
+                "Function which should return array is not described." +
+                        " Use StoryWriter.toGet to describe it.");
+        checkCondition(condition);
+        return toGet(getDescription(description, function, condition), t -> {
             R[] got = function.apply(t);
 
             List<R> subResult = stream(asList(got).spliterator(), checkConditionInParallel).filter(r -> {
