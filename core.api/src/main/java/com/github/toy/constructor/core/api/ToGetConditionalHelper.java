@@ -189,7 +189,7 @@ public final class ToGetConditionalHelper {
                                                                               boolean ignoreExceptionOnConditionCheck) {
         checkArgument(function != null, "Function which should return iterable is not defined");
         checkArgument(condition != null, "Predicate which should be used as the condition to " +
-                "filter values from iterables is not defined.");
+                "filter values from iterable is not defined.");
 
         checkArgument(DescribedFunction.class.isAssignableFrom(function.getClass()),
                 "Function which should return iterable is not described." +
