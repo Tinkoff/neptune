@@ -3,12 +3,14 @@ package com.github.toy.constructor.core.api;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.github.toy.constructor.core.api.ToBeReported.EXPLICIT_PATTERN;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Optional.ofNullable;
 
 public interface GetStep<THIS extends GetStep<THIS>> {
 
+    @ToBeReported(message = EXPLICIT_PATTERN)
     default  <T> T get(Function<THIS, T> function) {
         checkArgument(function != null,
                 "The function which returns the goal value is not defined");
@@ -24,6 +26,7 @@ public interface GetStep<THIS extends GetStep<THIS>> {
         return get(functionSupplier.get());
     }
 
+    @ToBeReported(message = "Returned value: " + EXPLICIT_PATTERN)
     private <T> T log(T value) {
         return value;
     }

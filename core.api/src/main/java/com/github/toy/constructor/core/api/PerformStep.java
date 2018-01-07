@@ -3,11 +3,13 @@ package com.github.toy.constructor.core.api;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static com.github.toy.constructor.core.api.ToBeReported.EXPLICIT_PATTERN;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public interface PerformStep<THIS extends PerformStep<THIS>> {
 
+    @ToBeReported(message = EXPLICIT_PATTERN)
     default THIS perform(Consumer<THIS> actionConsumer) {
         checkArgument(actionConsumer != null, "Action is not defined");
         checkArgument(DescribedConsumer.class.isAssignableFrom(actionConsumer.getClass()),
