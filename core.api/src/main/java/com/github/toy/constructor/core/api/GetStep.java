@@ -6,19 +6,16 @@ import java.util.function.Supplier;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public interface GetStep<THIS extends GetStep<THIS>> {
 
-    private <T> T get(String description, Function<THIS, T> function) {
-        checkArgument(DescribedFunction.class.isAssignableFrom(function.getClass()),
-                "Action should be described by the StoryWriter.toGet method.");
-        checkArgument(isNotBlank(description), "Description should not be empty");
-        return log(function.apply((THIS) this));
-    }
-
     default  <T> T get(Function<THIS, T> function) {
-        return ofNullable(function).map(thistFunction -> get(function.toString(), function))
+        checkArgument(function != null,
+                "The function which returns the goal value is not defined");
+        checkArgument(DescribedFunction.class.isAssignableFrom(function.getClass()),
+                "The function which returns the goal value should be described " +
+                        "by the StoryWriter.toGet method.");
+        return ofNullable(function).map(thistFunction -> log(function.apply((THIS) this)))
                 .orElseThrow(() -> new IllegalArgumentException("Function which returns desired value was not defined"));
     }
 
