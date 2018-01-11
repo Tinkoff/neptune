@@ -18,6 +18,7 @@ project(":core.api") {
     dependencies {
         compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
         compile group: 'com.google.guava', name: 'guava', version: '21.0'
+        compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.7.9'
         testCompile group: 'org.testng', name: 'testng', version: '6.13.1'
         testCompile group: 'org.hamcrest', name: 'java-hamcrest', version: '2.0.0.0'
     }
