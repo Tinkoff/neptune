@@ -8,7 +8,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public interface PerformStep<THIS extends PerformStep<THIS>> {
 
-    @ToBeReported
+    @ToBeReported(constantMessagePart = "Perform:")
     default THIS perform(Consumer<THIS> actionConsumer) {
         checkArgument(actionConsumer != null, "Action is not defined");
         checkArgument(DescribedConsumer.class.isAssignableFrom(actionConsumer.getClass()),

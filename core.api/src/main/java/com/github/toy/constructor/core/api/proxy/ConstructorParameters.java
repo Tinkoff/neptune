@@ -1,4 +1,4 @@
-package com.github.toy.constructor.core.api.substitution;
+package com.github.toy.constructor.core.api.proxy;
 
 
 import static com.google.common.base.Preconditions.checkNotNull;

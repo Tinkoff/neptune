@@ -25,7 +25,7 @@ public interface GetStep<THIS extends GetStep<THIS>> {
         return get(functionSupplier.get());
     }
 
-    @ToBeReported
+    @ToBeReported(constantMessagePart = "Returned value:")
     private <T> T log(T value) {
         return value;
     }
