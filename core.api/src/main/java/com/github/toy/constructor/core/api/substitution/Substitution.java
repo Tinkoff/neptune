@@ -1,5 +1,7 @@
 package com.github.toy.constructor.core.api.substitution;
 
+import com.github.toy.constructor.core.api.GetStep;
+import com.github.toy.constructor.core.api.PerformStep;
 import com.github.toy.constructor.core.api.ToBeReported;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.DynamicType;
@@ -9,6 +11,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Map.entry;
 import static net.bytebuddy.implementation.MethodDelegation.to;
 import static net.bytebuddy.matcher.ElementMatchers.*;
@@ -44,6 +47,11 @@ public final class Substitution {
      */
     public static <T> Class<T> substitute(Class<T> clazz, ConstructorParameters constructorParameters,
                                       Annotation...annotations) {
+        checkArgument(PerformStep.class.isAssignableFrom(clazz.getClass()) ||
+                GetStep.class.isAssignableFrom(clazz.getClass()), "Class to substitute should be " +
+                "assignable from com.github.toy.constructor.core.api.GetStep and/or " +
+                "com.github.toy.constructor.core.api.PerformStep.");
+
         DynamicType.Builder<T> builder = new ByteBuddy().subclass(clazz);
         Constructor<T> c = findSuitableConstructor(clazz, constructorParameters.getParameterValues());
         c.setAccessible(true);
