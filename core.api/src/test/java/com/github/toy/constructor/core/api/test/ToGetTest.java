@@ -23,7 +23,7 @@ public class ToGetTest {
         Function<Object, String> describedToString = toGet("String value of the object",
                 GET_TO_STRING);
         describedToString.andThen(GET_STRING_LENGTH);
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
@@ -33,14 +33,14 @@ public class ToGetTest {
         Function<String, Integer> describedStringLength = toGet("Length of the given string",
                 GET_STRING_LENGTH);
         describedStringLength.compose(GET_TO_STRING);
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Description should not be empty")
     public void negativeTestOfEmptyDescription() {
         toGet("", GET_TO_STRING);
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test

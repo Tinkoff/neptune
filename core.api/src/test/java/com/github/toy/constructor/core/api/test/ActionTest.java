@@ -19,14 +19,14 @@ public class ActionTest {
     public void negativeTestNextActionIsNotDescribed() {
         Consumer<String> describedSpaceReplacing = action("Replace spaces from the string", REPLACE_SPACE);
         describedSpaceReplacing.andThen(REPLACE_A);
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Description should not be empty")
     public void negativeTestOfEmptyDescription() {
         action("", REPLACE_SPACE);
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test

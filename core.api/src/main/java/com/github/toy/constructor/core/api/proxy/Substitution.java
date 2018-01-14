@@ -6,7 +6,6 @@ import com.github.toy.constructor.core.api.ToBeReported;
 import com.google.common.reflect.TypeToken;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.DynamicType;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.util.*;
@@ -37,7 +36,7 @@ public final class Substitution {
     }
 
     /**
-     * This is the service method which generates a subclass with required properties
+     * This is the service method which generates a subclass
      * of the given implementor of {@link com.github.toy.constructor.core.api.GetStep} and/or
      * {@link com.github.toy.constructor.core.api.PerformStep}.
      *
@@ -59,9 +58,10 @@ public final class Substitution {
                 GetStep.class.isAssignableFrom(clazz), "Class to substitute should be " +
                 "assignable from com.github.toy.constructor.core.api.GetStep and/or " +
                 "com.github.toy.constructor.core.api.PerformStep.");
+        Constructor<T> c;
+        checkArgument((c = findSuitableConstructor(clazz, constructorParameters.getParameterValues())) != null);
 
         DynamicType.Builder<? extends T> builder = new ByteBuddy().subclass(clazz);
-        Constructor<T> c = findSuitableConstructor(clazz, constructorParameters.getParameterValues());
         c.setAccessible(true);
         builder.define(c);
 
@@ -77,7 +77,7 @@ public final class Substitution {
     }
 
     /**
-     * This is the service method which generates a subclass with required properties
+     * This is the service method which generates a subclass
      * of the given implementor of {@link com.github.toy.constructor.core.api.GetStep} and/or
      * {@link com.github.toy.constructor.core.api.PerformStep}.
      *
@@ -116,11 +116,11 @@ public final class Substitution {
                                        ConstructorParameters constructorParameters,
                                        List<Logger> loggers,
                                        Annotation...annotations) throws Exception {
+        Object[] parameters = constructorParameters.getParameterValues();
         Constructor<T> c =
-                findSuitableConstructor(
-                        substitute(clazz, constructorParameters, loggers, annotations),
-                        constructorParameters);
-        return c.newInstance(constructorParameters.getParameterValues());
+                findSuitableConstructor(substitute(clazz, constructorParameters, loggers, annotations),
+                        parameters);
+        return c.newInstance(parameters);
     }
 
     /**
@@ -156,7 +156,7 @@ public final class Substitution {
             return constructorTypes.size() == paramTypes.size() && matches(constructorTypes, paramTypes);
         })
                 .findFirst().orElseThrow(() -> new NoSuchMethodException(
-                        format("There is no constructor that match parameter list %s", paramTypes)));
+                        format("There is no constructor that convenient to parameter list %s", paramTypes)));
         foundConstructor.setAccessible(true);
         return (Constructor<T>) foundConstructor;
     }
@@ -179,8 +179,8 @@ public final class Substitution {
             }
 
             Class<?> simple;
-            if ((simple = FOR_USED_SIMPLE_TYPES.get(parameter)) != null &&
-                    simple.isAssignableFrom(currentType)) {
+            if ((simple = FOR_USED_SIMPLE_TYPES.get(currentType)) != null &&
+                    parameter.isAssignableFrom(simple)) {
                 continue;
             }
 

@@ -40,28 +40,28 @@ public class GetSupplierTest {
             expectedExceptionsMessageRegExp = "Function to get value from was not defined")
     public void negativeTestOfNullFunction() {
         sqrt().from((Function<Number, Double>) null);
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function to get value from is not described. Use method StoryWriter.toGet to describe it.")
     public void negativeTestOfNotDescribedFunction() {
         sqrt().from(DOUBLE_CUBE_FUNCTION);
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "The supplier of the function is not defined")
     public void negativeTestOfNullGetSupplier() {
         sqrt().from((GetSupplier<Number, Double, ?>) null);
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "The object to get value from is not defined")
     public void negativeTestOfNullObjectFrom() {
         sqrt().from((Double) null);
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     static class Cube extends GetSupplier<Number, Double, Cube> {

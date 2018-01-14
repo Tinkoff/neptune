@@ -37,14 +37,14 @@ public class GetConditionalTest {
             expectedExceptionsMessageRegExp = "Function which should return iterable is not defined")
     public void negativeTestOfNullFunctionWithIterableInputAndSingleOutput() {
         getFromIterable("Value", null, VALUE_A, true, true);
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function which should return iterable is not described. Use StoryWriter.toGet to describe it.")
     public void negativeTestOfNotDescribedFunctionWithIterableInputAndSingleOutput() {
         getFromIterable("Value", CONVERT_LIST_TO_SET, VALUE_A, true, true);
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
@@ -53,7 +53,7 @@ public class GetConditionalTest {
         getFromIterable("Value",
                 toGet("Set converted from list", CONVERT_LIST_TO_SET), null,
                 true, true);
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
@@ -62,7 +62,7 @@ public class GetConditionalTest {
         getFromIterable("Value",
                 toGet("Set converted from list", CONVERT_LIST_TO_SET), VALUE_A,
                 true, true);
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test
@@ -104,7 +104,7 @@ public class GetConditionalTest {
                 true,
                 false).apply(LITERAL_LIST),
                 nullValue());
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test
@@ -121,14 +121,14 @@ public class GetConditionalTest {
             expectedExceptionsMessageRegExp = "Function which should return array is not defined")
     public void negativeTestOfNullFunctionWithArrayInputAndSingleOutput() {
         getFromArray("Value", null, VALUE_A, true, true);
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function which should return array is not described. Use StoryWriter.toGet to describe it.")
     public void negativeTestOfNotDescribedFunctionWithArrayInputAndSingleOutput() {
         getFromArray("Value", CONVERT_LIST_TO_ARRAY, VALUE_A, true, true);
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
@@ -137,7 +137,7 @@ public class GetConditionalTest {
         getFromArray("Value",
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY), null,
                 true, true);
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
@@ -146,7 +146,7 @@ public class GetConditionalTest {
         getFromArray("Value",
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY), VALUE_A,
                 true, true);
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test
@@ -188,7 +188,7 @@ public class GetConditionalTest {
                 true,
                 false).apply(LITERAL_LIST),
                 nullValue());
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test
@@ -205,14 +205,14 @@ public class GetConditionalTest {
             expectedExceptionsMessageRegExp = "Function which should return object is not defined")
     public void negativeTestOfNullFunctionWithSingleInputAndSingleOutput() {
         getSingleOnCondition("Value", null, VALUE_A, true);
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function which should return object is not described. Use StoryWriter.toGet to describe it.")
     public void negativeTestOfNotDescribedFunctionWithSingleInputAndSingleOutput() {
         getSingleOnCondition("Value", GET_FIRST_OBJECT_FROM_LIST, VALUE_A, true);
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
@@ -221,7 +221,7 @@ public class GetConditionalTest {
         getSingleOnCondition("Value",
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST), null,
                 true);
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
@@ -230,7 +230,7 @@ public class GetConditionalTest {
         getSingleOnCondition("Value",
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST), VALUE_A,
                 true);
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test
@@ -268,7 +268,7 @@ public class GetConditionalTest {
                 condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
                 false).apply(LITERAL_LIST),
                 nullValue());
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test
@@ -284,14 +284,14 @@ public class GetConditionalTest {
             expectedExceptionsMessageRegExp = "Function which should return iterable is not defined")
     public void negativeTestOfNullFunctionWithIterableInputAndIterableOutput() {
         getSubIterable("Set of values", null, VALUE_A, true, true);
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function which should return iterable is not described. Use StoryWriter.toGet to describe it.")
     public void negativeTestOfNotDescribedFunctionWithIterableInputAndIterableOutput() {
         getSubIterable("Set of values", CONVERT_LIST_TO_SET, VALUE_A, true, true);
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
@@ -300,7 +300,7 @@ public class GetConditionalTest {
         getSubIterable("Set of values",
                 toGet("Set converted from list", CONVERT_LIST_TO_SET), null,
                 true, true);
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
@@ -309,7 +309,7 @@ public class GetConditionalTest {
         getSubIterable("Set of values",
                 toGet("Set converted from list", CONVERT_LIST_TO_SET), VALUE_A,
                 true, true);
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test
@@ -351,7 +351,7 @@ public class GetConditionalTest {
                 condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
                 true, false).apply(LITERAL_LIST),
                 nullValue());
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test
@@ -367,14 +367,14 @@ public class GetConditionalTest {
             expectedExceptionsMessageRegExp = "Function which should return array is not defined")
     public void negativeTestOfNullFunctionWithArrayInputAndArrayOutput() {
         getSubArray("Array of values", null, VALUE_A, true, true);
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function which should return array is not described. Use StoryWriter.toGet to describe it.")
     public void negativeTestOfNotDescribedFunctionWithArrayeInputAndArrayOutput() {
         getSubArray("Array of values", CONVERT_LIST_TO_ARRAY, VALUE_A, true, true);
-        fail("The exception thowing was expected");
+        fail("The exception thrwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
@@ -383,7 +383,7 @@ public class GetConditionalTest {
         getSubArray("Array of values",
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY), null,
                 true, true);
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
@@ -392,7 +392,7 @@ public class GetConditionalTest {
         getSubArray("Array of values",
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY), VALUE_A,
                 true, true);
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test
@@ -430,7 +430,7 @@ public class GetConditionalTest {
                 condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
                 true, false).apply(LITERAL_LIST),
                 emptyArray());
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test

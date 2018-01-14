@@ -23,7 +23,7 @@ public class ConditionTest {
     public void negativeTestWhenPredicateANDIsNotDescribed() {
         Predicate<Number> describedIsPositive = condition("Number should be positive", IS_POSITIVE);
         describedIsPositive.and(IS_NOT_FRACTION);
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp =
@@ -32,14 +32,14 @@ public class ConditionTest {
     public void negativeTestWhenPredicateORIsNotDescribed() {
         Predicate<Number> describedIsPositive = condition("Number should be positive", IS_POSITIVE);
         describedIsPositive.or(IS_NOT_FRACTION);
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp =
             "Description should not be empty")
     public void negativeTestOfEmptyDescription() {
         condition("", IS_POSITIVE);
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test
@@ -75,8 +75,8 @@ public class ConditionTest {
         Predicate<Number> describedIsPositive = condition("Number should be positive", IS_POSITIVE);
         Predicate<Number> describedIsNotFraction = condition("Number shoid not have decimal value", IS_NOT_FRACTION);
 
-        Predicate<Number> describedGreaterThan10 = condition("Number should be gereater than 10", GREATER_THAN_TEN);
-        Predicate<Number> describedGreaterThan15 = condition("Number should be gereater than 15", GREATER_THAN_FIFTEEN);
+        Predicate<Number> describedGreaterThan10 = condition("Number should be greater than 10", GREATER_THAN_TEN);
+        Predicate<Number> describedGreaterThan15 = condition("Number should be greater than 15", GREATER_THAN_FIFTEEN);
         Predicate<Number> describedLowerThan20 = condition("Number should be lower than 20", LOWER_THAN_TWENTY);
 
         assertThat("String value of the predicate",
@@ -85,6 +85,6 @@ public class ConditionTest {
                         .or(describedGreaterThan15))
                         .or(describedLowerThan20.negate()).toString(),
                 is("(((Number should be positive) AND (Number shoid not have decimal value)) AND " +
-                        "((Number should be gereater than 10) OR (Number should be gereater than 15))) OR (NOT Number should be lower than 20)"));
+                        "((Number should be greater than 10) OR (Number should be greater than 15))) OR (NOT Number should be lower than 20)"));
     }
 }

@@ -10,7 +10,11 @@ public class ConstructorParameters {
 
     private final Object[] parameterValues;
 
-    public ConstructorParameters(Object[] parameterValues) {
+    public static ConstructorParameters params(Object... parameterValues) {
+        return new ConstructorParameters(parameterValues);
+    }
+
+    private ConstructorParameters(Object[] parameterValues) {
         checkNotNull(parameterValues);
         this.parameterValues = parameterValues;
     }

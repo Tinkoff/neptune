@@ -18,21 +18,21 @@ public class ActionSupplierTest {
             expectedExceptionsMessageRegExp = "Function which gets value to perform action is not defined")
     public void negativeTestOfNullFunction() {
         new CleanStringAction().andThen((Function<Object, String>) null, "A", "B", "D");
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Object to perform action is not defined")
     public void negativeTestOfNullObject() {
         new CleanStringAction().andThen((String) null, "A", "B", "D");
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function should be described by the StoryWriter.toGet method.")
     public void negativeTestOfNotDescribedFunction() {
         new CleanStringAction().andThen(GET_TO_STRING, "A", "B", "D");
-        fail("The exception thowing was expected");
+        fail("The exception throwing was expected");
     }
 
     @Test
