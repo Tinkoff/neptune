@@ -12,7 +12,7 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.testng.Assert.fail;
 
-public class NegativeTests {
+public class NegativeTest {
 
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Class to substitute should be assignable from " +
