@@ -21,7 +21,7 @@ import static java.util.Optional.ofNullable;
  * @param <THIS> is self-type. It is necessary for {@link #andThen(String, Function, Object...)} and
  *              {@link #andThen(String, Object, Object...)} methods.
  */
-public abstract class SequentalActionSupplier<T, R, THIS extends SequentalActionSupplier<T, R, THIS>> implements Supplier<Consumer<T>>{
+public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActionSupplier<T, R, THIS>> implements Supplier<Consumer<T>>{
 
     private Consumer<T> wrappedConsumer;
 

@@ -14,7 +14,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * @param <Q> is a type of a mediator value which is used to get the required result.
  * @param <THIS> is self-type. It is necessary for the {@link #set(String, Function)} method.
  */
-public abstract class SequentalGetSupplier<T, R, Q, THIS extends SequentalGetSupplier<T, R, Q, THIS>>
+public abstract class SequentialGetSupplier<T, R, Q, THIS extends SequentialGetSupplier<T, R, Q, THIS>>
         extends GetSupplier<T, R, THIS> {
 
     /**

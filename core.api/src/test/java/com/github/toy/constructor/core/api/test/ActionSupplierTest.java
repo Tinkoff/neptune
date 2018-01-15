@@ -1,6 +1,6 @@
 package com.github.toy.constructor.core.api.test;
 
-import com.github.toy.constructor.core.api.SequentalActionSupplier;
+import com.github.toy.constructor.core.api.SequentialActionSupplier;
 import org.testng.annotations.Test;
 
 import java.util.function.Function;
@@ -63,7 +63,7 @@ public class ActionSupplierTest {
                         "\nClean string value ABCD of given strings on ABCD"));
     }
 
-    static class CleanStringAction extends SequentalActionSupplier<Object, String, CleanStringAction> {
+    static class CleanStringAction extends SequentialActionSupplier<Object, String, CleanStringAction> {
 
         public CleanStringAction() {
             super();

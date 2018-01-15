@@ -1,7 +1,7 @@
 package com.github.toy.constructor.core.api.test;
 
 import com.github.toy.constructor.core.api.GetSupplier;
-import com.github.toy.constructor.core.api.SequentalGetSupplier;
+import com.github.toy.constructor.core.api.SequentialGetSupplier;
 import org.testng.annotations.Test;
 
 import java.util.function.Function;
@@ -70,7 +70,7 @@ public class GetSupplierTest {
         }
     }
 
-    static class SqrtFromSomeNumericOperation extends SequentalGetSupplier<Number, Double, Double, SqrtFromSomeNumericOperation> {
+    static class SqrtFromSomeNumericOperation extends SequentialGetSupplier<Number, Double, Double, SqrtFromSomeNumericOperation> {
 
         //this method was added for the unit testing
         static SqrtFromSomeNumericOperation sqrt() {
