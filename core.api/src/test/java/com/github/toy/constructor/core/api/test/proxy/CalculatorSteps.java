@@ -1,0 +1,30 @@
+package com.github.toy.constructor.core.api.test.proxy;
+
+import com.github.toy.constructor.core.api.GetStep;
+import com.github.toy.constructor.core.api.PerformStep;
+import com.github.toy.constructor.core.api.ToBeReported;
+
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+import static java.util.Optional.ofNullable;
+
+class CalculatorSteps implements PerformStep<CalculatorSteps>, GetStep<CalculatorSteps>, Supplier<Double> {
+    private Double calculated = 0D;
+
+    @ToBeReported(constantMessagePart = "Reset calculated value to 0")
+    public void reset() {
+        calculated = 0D;
+    }
+
+    @Override
+    public Double get() {
+        return calculated;
+    }
+
+    Double setCalculated(Double number) {
+        calculated = ofNullable(number).orElse(calculated);
+        return calculated;
+    }
+}

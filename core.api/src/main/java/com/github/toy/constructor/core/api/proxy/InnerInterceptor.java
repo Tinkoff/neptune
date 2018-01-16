@@ -1,14 +1,13 @@
 package com.github.toy.constructor.core.api.proxy;
 
 import com.github.toy.constructor.core.api.ToBeReported;
-import net.bytebuddy.implementation.bind.annotation.AllArguments;
-import net.bytebuddy.implementation.bind.annotation.Origin;
-import net.bytebuddy.implementation.bind.annotation.RuntimeType;
+import net.bytebuddy.implementation.bind.annotation.*;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import static com.github.toy.constructor.core.api.proxy.Substitution.findSuitableConstructor;
 import static java.lang.String.format;
@@ -21,7 +20,6 @@ public class InnerInterceptor<T> {
     private final ThreadLocal<T> threadLocal = new ThreadLocal<>();
     private final Class<T> classToInstantiate;
     private final ConstructorParameters constructorParameters;
-    private final List<Logger> loggerList;
     private final Logger defaultLogger;
 
     InnerInterceptor(Class<T> classToInstantiate,
@@ -29,18 +27,17 @@ public class InnerInterceptor<T> {
                      List<Logger> loggers) {
         this.classToInstantiate = classToInstantiate;
         this.constructorParameters = constructorParameters;
-        this.loggerList = loggers;
         defaultLogger = Logger.class.cast(
                 newProxyInstance(Logger.class.getClassLoader(),
-                        new Class[]{Logger.class}, new LoggerInvocationHandler(loggerList)));
+                        new Class[]{Logger.class}, new LoggerInvocationHandler(loggers)));
     }
 
 
     @RuntimeType
-    public Object intercept(@Origin Method method, @AllArguments Object... args) throws Exception {
+    public Object intercept(@SuperCall Callable<?> superMethod, @Origin Method method, @AllArguments Object... args) throws Exception {
         T target = ofNullable(threadLocal.get()).orElseGet(() -> {
             Object[] params = constructorParameters.getParameterValues();
-            Constructor<T> c = null;
+            Constructor<T> c;
             try {
                 c = findSuitableConstructor(classToInstantiate, params);
             } catch (Exception e) {
@@ -67,6 +64,8 @@ public class InnerInterceptor<T> {
             }
             defaultLogger.log(format("%s %s", toBeReported.constantMessagePart(), reportedMessage).trim());
         });
+        superMethod.call();
+        method.setAccessible(true);
         return method.invoke(target, args);
     }
 }

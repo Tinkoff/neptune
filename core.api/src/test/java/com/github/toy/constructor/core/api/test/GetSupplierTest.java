@@ -66,7 +66,7 @@ public class GetSupplierTest {
 
     static class Cube extends GetSupplier<Number, Double, Cube> {
         static Cube cube(Number origin) {
-            return new Cube().set(format("Cube value of %s", origin), DOUBLE_CUBE_FUNCTION);
+            return new Cube().set(toGet(format("Cube value of %s", origin), DOUBLE_CUBE_FUNCTION));
         }
     }
 

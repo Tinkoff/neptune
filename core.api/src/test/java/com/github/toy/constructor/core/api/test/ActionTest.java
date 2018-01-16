@@ -14,7 +14,7 @@ public class ActionTest {
     private static final Consumer<String> REPLACE_A = s -> s.replace("A", "");
 
     @Test(expectedExceptions = IllegalArgumentException.class,
-            expectedExceptionsMessageRegExp = "It seems given consumer doesn't describe any action. " +
+            expectedExceptionsMessageRegExp = "It seems given consumer doesn't describe any after-action. " +
                     "Use method StoryWriter.action to describe the after-action.")
     public void negativeTestNextActionIsNotDescribed() {
         Consumer<String> describedSpaceReplacing = action("Replace spaces from the string", REPLACE_SPACE);
@@ -36,8 +36,8 @@ public class ActionTest {
 
         assertThat("String value of the consumer",
                 describedSpaceReplacing.andThen(describedAReplacing).andThen(describedSpaceReplacing).toString(),
-                is("Replace spaces from the string \n and then -> \nReplace A characters from the string \n and then -> " +
-                        "\nReplace spaces from the string")
+                is("Replace spaces from the string  \n and then -> \n Replace A characters from the string  " +
+                        "\n and then -> \n Replace spaces from the string")
         );
     }
 }

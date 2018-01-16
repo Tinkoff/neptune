@@ -17,8 +17,8 @@ public class ToGetTest {
     private static final Function<Integer, Boolean> GET_POSITIVITY = integer -> integer.compareTo(0) > 0;
 
     @Test(expectedExceptions = IllegalArgumentException.class,
-            expectedExceptionsMessageRegExp = "It seems given function doesn't describe any value to get. " +
-                    "Use method StoryWriter.toGet to describe the value to get after.")
+            expectedExceptionsMessageRegExp = "It seems given after-function doesn't describe any value to get. " +
+                    "Use method StoryWriter.toGet to describe the value to get previously.")
     public void negativeTestWhenTheNextFunctionIsNotDescribed() {
         Function<Object, String> describedToString = toGet("String value of the object",
                 GET_TO_STRING);
@@ -27,7 +27,7 @@ public class ToGetTest {
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
-            expectedExceptionsMessageRegExp = "It seems given function doesn't describe any value to get. " +
+            expectedExceptionsMessageRegExp = "It seems given before-function doesn't describe any value to get. " +
                     "Use method StoryWriter.toGet to describe the value to get previously.")
     public void negativeTestWhenThePreviousFunctionIsNotDescribed() {
         Function<String, Integer> describedStringLength = toGet("Length of the given string",

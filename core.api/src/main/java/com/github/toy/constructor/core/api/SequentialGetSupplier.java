@@ -12,7 +12,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * @param <T> is a type of an input value.
  * @param <R> is a type of a returned value.
  * @param <Q> is a type of a mediator value which is used to get the required result.
- * @param <THIS> is self-type. It is necessary for the {@link #set(String, Function)} method.
+ * @param <THIS> is self-type. It is necessary for the {@link #set(Function)} method.
  */
 public abstract class SequentialGetSupplier<T, R, Q, THIS extends SequentialGetSupplier<T, R, Q, THIS>>
         extends GetSupplier<T, R, THIS> {
@@ -30,8 +30,7 @@ public abstract class SequentialGetSupplier<T, R, Q, THIS extends SequentialGetS
         checkArgument(DescribedFunction.class.isAssignableFrom(mediatorFunction.getClass()),
                 "Function to get value from is not described. " +
                         "Use method StoryWriter.toGet to describe it.");
-        Function<T, R> resultFunction = mediatorFunction.andThen(getEndFunction());
-        return set(resultFunction.toString(), resultFunction);
+        return set(mediatorFunction.andThen(getEndFunction()));
     }
 
     /**
