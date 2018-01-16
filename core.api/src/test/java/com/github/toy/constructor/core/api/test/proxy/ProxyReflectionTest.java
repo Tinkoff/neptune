@@ -1,7 +1,6 @@
 package com.github.toy.constructor.core.api.test.proxy;
 
 import com.github.toy.constructor.core.api.ToBeReported;
-import com.github.toy.constructor.core.api.proxy.Logger;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -13,7 +12,6 @@ import java.util.List;
 
 import static com.github.toy.constructor.core.api.proxy.ConstructorParameters.params;
 import static com.github.toy.constructor.core.api.proxy.Substitution.getSubstituted;
-import static com.github.toy.constructor.core.api.test.proxy.Arithmetical.number;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.deepEquals;
 import static java.util.stream.Collectors.toList;
@@ -50,12 +48,7 @@ public class ProxyReflectionTest {
 
     @BeforeClass
     public void beforeAll() throws Exception {
-        calculator = getSubstituted(CalculatorSteps.class, params(), List.of(new Logger() {
-            @Override
-            public void log(String message) {
-                System.out.println(message);
-            }
-        }), new TestAnnotation() {
+        calculator = getSubstituted(CalculatorSteps.class, params(), new TestAnnotation() {
             @Override
             public Class<? extends Annotation> annotationType() {
                 return TestAnnotation.class;
@@ -126,10 +119,5 @@ public class ProxyReflectionTest {
         assertThat("Methods declared by implemented interfaces which are supposed to be reported and annotated by TestAnnotation",
                 found,
                 containsInAnyOrder(toBeReported.toArray()));
-    }
-
-    @Test
-    public void tezt() {
-        calculator.get(number(5));
     }
 }

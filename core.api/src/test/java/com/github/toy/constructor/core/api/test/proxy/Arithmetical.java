@@ -7,7 +7,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
-class Arithmetical extends GetSupplier<CalculatorSteps, Double, Arithmetical> {
+class Arithmetical extends GetSupplier<CalculatorSteps, Number, Arithmetical> {
 
     public static Arithmetical number(Number number) {
         return new Arithmetical().set(toGet(number.toString(), EMPTY, EMPTY,
