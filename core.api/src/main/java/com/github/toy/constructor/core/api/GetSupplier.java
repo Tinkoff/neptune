@@ -5,6 +5,8 @@ import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 /**
  * This class is designed to typify functions which get required value.
@@ -36,5 +38,10 @@ public abstract class GetSupplier<T, R, THIS extends GetSupplier<T, R, THIS>> im
     @Override
     public Function<T, R> get() {
         return function;
+    }
+
+    @Override
+    public String toString() {
+        return ofNullable(function).map(function -> function.toString()).orElse(EMPTY);
     }
 }

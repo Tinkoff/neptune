@@ -7,7 +7,6 @@ import java.util.function.Function;
 
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static java.lang.String.format;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 abstract class ArithmeticalSequence extends SequentialGetSupplier<CalculatorSteps, Number, Number, ArithmeticalSequence> {
 
@@ -16,49 +15,40 @@ abstract class ArithmeticalSequence extends SequentialGetSupplier<CalculatorStep
         return sequence.from(supplier);
     }
 
-    public static ArithmeticalSequence appendToResultOf(Number toAppend, GetSupplier<CalculatorSteps, Number, ?> result) {
+    static ArithmeticalSequence appendToResultOf(Number toAppend, GetSupplier<CalculatorSteps, Number, ?> result) {
         return getResulted(new ArithmeticalSequence() {
             @Override
             protected Function<Number, Number> getEndFunction() {
-                return toGet(format("+%s", toAppend), EMPTY, EMPTY,
+                return toGet(format("Appending number %s", toAppend),
                         number -> number.doubleValue() + toAppend.doubleValue());
             }
         }, result);
     }
 
-    public static ArithmeticalSequence subtractFromResultOf(Number toSubtract, GetSupplier<CalculatorSteps, Number, ?> result) {
+    static ArithmeticalSequence subtractFromResultOf(Number toSubtract, GetSupplier<CalculatorSteps, Number, ?> result) {
         return getResulted(new ArithmeticalSequence() {
             @Override
             protected Function<Number, Number> getEndFunction() {
-                return toGet(format("-%s", toSubtract), EMPTY, EMPTY,
-                        number -> number.doubleValue() - toSubtract.doubleValue());
+                return toGet(format("Subtract number %s", toSubtract), number -> number.doubleValue() - toSubtract.doubleValue());
             }
         }, result);
     }
 
-    public static ArithmeticalSequence multiplyByResultOf(Number toMultiply, GetSupplier<CalculatorSteps, Number, ?> result) {
+    static ArithmeticalSequence multiplyByResultOf(Number toMultiply, GetSupplier<CalculatorSteps, Number, ?> result) {
         return getResulted(new ArithmeticalSequence() {
             @Override
             protected Function<Number, Number> getEndFunction() {
-                return toGet(format("*%s", toMultiply), EMPTY, EMPTY, number -> number.doubleValue() * toMultiply.doubleValue());
+                return toGet(format("Multiplying by number %s", toMultiply), number -> number.doubleValue() * toMultiply.doubleValue());
             }
         }, result);
     }
 
-    public static ArithmeticalSequence divideByResultOf(Number toDivide, GetSupplier<CalculatorSteps, Number, ?> result) {
+    static ArithmeticalSequence divideByResultOf(Number toDivide, GetSupplier<CalculatorSteps, Number, ?> result) {
         return getResulted(new ArithmeticalSequence() {
             @Override
             protected Function<Number, Number> getEndFunction() {
-                return toGet(format("/%s", toDivide), EMPTY, EMPTY, number -> number.doubleValue() / toDivide.doubleValue());
+                return toGet(format("Divide by number %s", toDivide), number -> number.doubleValue() / toDivide.doubleValue());
             }
         }, result);
-    }
-
-    @Override
-    protected ArithmeticalSequence from(GetSupplier<CalculatorSteps, Number, ?> supplier) {
-        super.from(supplier);
-        Function<CalculatorSteps, Number> wrapped = get();
-        set(toGet(wrapped.toString(), wrapped));
-        return this;
     }
 }

@@ -25,7 +25,7 @@ public class GetSupplierTest {
     public void resultFunctionDescriptionWithSupplier() {
         assertThat("Result description",
                 sqrt(cube(777)).get().toString(),
-                is("Sqrt value from (Cube value of " + 777 +")"));
+                is("Cube value of 777 ->\n Sqrt value"));
     }
 
 
@@ -33,7 +33,7 @@ public class GetSupplierTest {
     public void resultFunctionDescriptionWithValue() {
         assertThat("Result description",
                 sqrt(777D).get().toString(),
-                is("Sqrt value from (" + 777.0 + ")"));
+                is("777.0 ->\n Sqrt value"));
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,

@@ -36,8 +36,9 @@ public class ActionTest {
 
         assertThat("String value of the consumer",
                 describedSpaceReplacing.andThen(describedAReplacing).andThen(describedSpaceReplacing).toString(),
-                is("Replace spaces from the string  \n and then -> \n Replace A characters from the string  " +
-                        "\n and then -> \n Replace spaces from the string")
+                is("Replace spaces from the string ->\n" +
+                        " Replace A characters from the string ->\n" +
+                        "  Replace spaces from the string")
         );
     }
 }
