@@ -15,6 +15,7 @@ import static java.lang.String.valueOf;
 import static java.lang.reflect.Proxy.newProxyInstance;
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class InnerInterceptor<T> {
     private final ThreadLocal<T> threadLocal = new ThreadLocal<>();
@@ -55,11 +56,11 @@ public class InnerInterceptor<T> {
 
         ToBeReported toBeReportedAnnotation = method.getAnnotation(ToBeReported.class);
         ofNullable(toBeReportedAnnotation).ifPresent(toBeReported -> {
-            String reportedMessage;
+            String reportedMessage = EMPTY;
             if (args.length == 1) {
                 reportedMessage = valueOf(args[0]);
             }
-            else {
+            else if (args.length > 1) {
                 reportedMessage = valueOf(asList(args));
             }
             defaultLogger.log(format("%s %s", toBeReported.constantMessagePart(), reportedMessage).trim());
