@@ -64,8 +64,9 @@ public class InnerInterceptor<T> {
             }
             defaultLogger.log(format("%s %s", toBeReported.constantMessagePart(), reportedMessage).trim());
         });
-        superMethod.call();
         method.setAccessible(true);
-        return method.invoke(target, args);
+        Object result =  method.invoke(target, args);
+        superMethod.call();
+        return result;
     }
 }
