@@ -87,9 +87,7 @@ public class FluentMatcher<T> extends TypeSafeDiagnosingMatcher<T> {
         StringBuilder builder = new StringBuilder().append("Detected mismatches: \n");
         mismatches.forEach((key, value) -> {
             builder.append(format("- expected %s.\nMismatches:", key));
-            value.forEach(s -> {
-                builder.append(format("         - %s", s));
-            });
+            value.forEach(s -> builder.append(format("         - %s", s)));
         });
         mismatchDescription.appendText(builder.toString());
         return false;
@@ -102,9 +100,7 @@ public class FluentMatcher<T> extends TypeSafeDiagnosingMatcher<T> {
 
     public String toString() {
         StringBuilder builder = new StringBuilder().append("Expected:\n");
-        matchMap.keySet().forEach(function -> {
-            builder.append(format("- %s\n", function.toString()));
-        });
+        matchMap.keySet().forEach(function -> builder.append(format("- %s\n", function.toString())));
 
         return builder.toString();
     }
