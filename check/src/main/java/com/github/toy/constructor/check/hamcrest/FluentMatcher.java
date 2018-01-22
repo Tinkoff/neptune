@@ -25,14 +25,42 @@ public class FluentMatcher<T> extends TypeSafeDiagnosingMatcher<T> {
         super();
     }
 
-    public static <T> FluentMatcher<T> shouldMatch(Matcher<T> matcher) {
-        return new FluentMatcher<T>().and(matcher);
+    /**
+     * This method creates instance of the {@link FluentMatcher} with startup
+     * parameters.
+     *
+     * @param criteria matchers to set up
+     * @param <T> the type of a value to check
+     * @return instance of the {@link FluentMatcher} with startup
+     * parameters.
+     */
+    public static <T> FluentMatcher<T> shouldMatch(Matcher<T>... criteria) {
+        return new FluentMatcher<T>().and(criteria);
     }
 
-    public static <T, R> FluentMatcher<T> shouldMatch(Function<T, R> function, Matcher<R> matcher) {
-        return new FluentMatcher<T>().and(function, matcher);
+    /**
+     * This method creates instance of the {@link FluentMatcher} with startup
+     * parameters.
+     *
+     * @param function that gets some value from an object which is needed to be matched
+     * @param criteria matchers to set up
+     * @param <T> the type of a value to check
+     * @param <R> the type of a value that should be returned by function and matched by criteria.
+     * @return instance of the {@link FluentMatcher} with startup
+     * parameters.
+     */
+    public static <T, R> FluentMatcher<T> shouldMatch(Function<T, R> function, Matcher<R>... criteria) {
+        return new FluentMatcher<T>().and(function, criteria);
     }
 
+    /**
+     * Adds more criteria to check some value.
+     *
+     * @param function that gets some value from an object which is needed to be matched
+     * @param criteria matchers to be added
+     * @param <R> the type of a value that should be returned by function and matched by criteria.
+     * @return self-reference
+     */
     public <R> FluentMatcher<T> and(Function<T, R> function, Matcher<R>... criteria) {
         checkNotNull(criteria);
         checkArgument(criteria.length > 0, "Should be defined at least one matcher");
@@ -45,6 +73,12 @@ public class FluentMatcher<T> extends TypeSafeDiagnosingMatcher<T> {
         return this;
     }
 
+    /**
+     * Adds more criteria to check some value.
+     *
+     * @param criteria matchers to be added
+     * @return self-reference
+     */
     public FluentMatcher<T> and(Matcher<T>... criteria) {
         return and(new Function<>() {
             @Override
@@ -98,6 +132,7 @@ public class FluentMatcher<T> extends TypeSafeDiagnosingMatcher<T> {
         description.appendText(format(" %s", this.toString()));
     }
 
+    @Override
     public String toString() {
         StringBuilder builder = new StringBuilder().append("Expected:\n");
         matchMap.keySet().forEach(function -> builder.append(format("- %s\n", function.toString())));
