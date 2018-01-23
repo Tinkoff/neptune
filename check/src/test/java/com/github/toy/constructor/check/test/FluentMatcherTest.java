@@ -5,7 +5,6 @@ import org.testng.annotations.Test;
 
 import static com.github.toy.constructor.check.hamcrest.FluentMatcher.shouldMatch;
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
-import static java.lang.StrictMath.sqrt;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
@@ -13,12 +12,12 @@ import static org.hamcrest.Matchers.lessThan;
 
 public class FluentMatcherTest {
 
-    private static final FluentMatcher MATCHER_UNDER_TEST =
+    private static final FluentMatcher<Double> MATCHER_UNDER_TEST =
             shouldMatch(greaterThan(0D))
                     .and(greaterThan(5D), lessThan(100D))
                     .and(toGet("Floating part of the number", doubleValue -> doubleValue - doubleValue.intValue()),
                             is(0D))
-                    .and(toGet("Sqrt value", doubleValue -> sqrt(doubleValue)), greaterThan(2D));
+                    .and(toGet("Sqrt value", StrictMath::sqrt), greaterThan(2D));
 
     @Test
     public void stringDescriptionTest() {
