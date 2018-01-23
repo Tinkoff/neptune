@@ -34,6 +34,7 @@ public class FluentMatcher<T> extends TypeSafeDiagnosingMatcher<T> {
      * @return instance of the {@link FluentMatcher} with startup
      * parameters.
      */
+    @SafeVarargs
     public static <T> FluentMatcher<T> shouldMatch(Matcher<T>... criteria) {
         return new FluentMatcher<T>().and(criteria);
     }
@@ -49,6 +50,7 @@ public class FluentMatcher<T> extends TypeSafeDiagnosingMatcher<T> {
      * @return instance of the {@link FluentMatcher} with startup
      * parameters.
      */
+    @SafeVarargs
     public static <T, R> FluentMatcher<T> shouldMatch(Function<T, R> function, Matcher<R>... criteria) {
         return new FluentMatcher<T>().and(function, criteria);
     }
@@ -61,7 +63,8 @@ public class FluentMatcher<T> extends TypeSafeDiagnosingMatcher<T> {
      * @param <R> the type of a value that should be returned by function and matched by criteria.
      * @return self-reference
      */
-    public <R> FluentMatcher<T> and(Function<T, R> function, Matcher<R>... criteria) {
+    @SafeVarargs
+    public final <R> FluentMatcher<T> and(Function<T, R> function, Matcher<R>... criteria) {
         checkNotNull(criteria);
         checkArgument(criteria.length > 0, "Should be defined at least one matcher");
         List<Matcher<?>> criteriaList = asList(criteria);
@@ -79,7 +82,8 @@ public class FluentMatcher<T> extends TypeSafeDiagnosingMatcher<T> {
      * @param criteria matchers to be added
      * @return self-reference
      */
-    public FluentMatcher<T> and(Matcher<T>... criteria) {
+    @SafeVarargs
+    public final FluentMatcher<T> and(Matcher<T>... criteria) {
         return and(new Function<>() {
             @Override
             public T apply(T t) {
@@ -118,12 +122,12 @@ public class FluentMatcher<T> extends TypeSafeDiagnosingMatcher<T> {
             return true;
         }
 
-        StringBuilder builder = new StringBuilder().append("Detected mismatches: \n");
+        StringBuilder builder = new StringBuilder().append("Detected mismatches \n\n");
         mismatches.forEach((key, value) -> {
-            builder.append(format("- expected %s.\nMismatches:", key));
-            value.forEach(s -> builder.append(format("         - %s", s)));
+            builder.append(format("- expected %s.\n", key));
+            value.forEach(s -> builder.append(format("  %s\n\n", s)));
         });
-        mismatchDescription.appendText(builder.toString());
+        mismatchDescription.appendText(format("\n\n%s", builder.toString().trim()));
         return false;
     }
 
@@ -134,7 +138,7 @@ public class FluentMatcher<T> extends TypeSafeDiagnosingMatcher<T> {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder().append("Expected:\n");
+        StringBuilder builder = new StringBuilder("\n");
         matchMap.keySet().forEach(function -> builder.append(format("- %s\n", function.toString())));
 
         return builder.toString();
