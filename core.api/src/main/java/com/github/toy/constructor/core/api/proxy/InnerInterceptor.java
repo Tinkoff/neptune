@@ -35,7 +35,8 @@ public class InnerInterceptor<T> {
 
 
     @RuntimeType
-    public Object intercept(@SuperCall Callable<?> superMethod, @Origin Method method, @AllArguments Object... args) throws Exception {
+    public Object intercept(@SuperCall Callable<?> superMethod, @Origin Method method, @AllArguments Object... args)
+            throws Throwable {
         T target = ofNullable(threadLocal.get()).orElseGet(() -> {
             Object[] params = constructorParameters.getParameterValues();
             Constructor<T> c;
@@ -66,7 +67,14 @@ public class InnerInterceptor<T> {
             defaultLogger.log(format("%s %s", toBeReported.constantMessagePart(), reportedMessage).trim());
         });
         method.setAccessible(true);
-        Object result =  method.invoke(target, args);
+
+        Object result;
+        try {
+            result = method.invoke(target, args);
+        }
+        catch (InvocationTargetException e) {
+            throw e.getCause();
+        }
         superMethod.call();
         return result;
     }
