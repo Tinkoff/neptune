@@ -26,7 +26,7 @@ public class CheckTest {
 
     @Test
     public void testOfLinearPositiveCase() {
-        check.check("Check number 4",
+        check.assertThat("Check number 4",
                 4,
                 shouldMatch(toGet("Is integer",
                         (Function<Integer, Boolean>) number ->
@@ -36,7 +36,7 @@ public class CheckTest {
                 is(4),
                 allOf(greaterThan(0), lessThanOrEqualTo(100)))
 
-                .check("Check number 5", 5,
+                .assertThat("Check number 5", 5,
                         is(5),
                         shouldMatch(toGet("Sqr values",
                                 (Function<Integer, Double>) integer -> pow(integer, 2)), is(25D)));
@@ -46,7 +46,7 @@ public class CheckTest {
     public void testOfPositivePerformCase() {
         check.perform(action("Check numbers 4 and 5",
                 check -> {
-                    check.check("Check number 4",
+                    check.assertThat("Check number 4",
                             4,
                             shouldMatch(toGet("Is integer",
                                     (Function<Integer, Boolean>) number ->
@@ -56,7 +56,7 @@ public class CheckTest {
                             is(4),
                             allOf(greaterThan(0), lessThanOrEqualTo(100)));
 
-                    check.check("Check number 5",
+                    check.assertThat("Check number 5",
                             5,
                             is(5),
                             shouldMatch(toGet("Sqr values",
@@ -86,7 +86,7 @@ public class CheckTest {
                     "Expected: is <4>\n" +
                     "     but: was <9>")
     public void testOfLinearAssertionCase() {
-        check.check("Check number 9",
+        check.assertThat("Check number 9",
                 9,
                 shouldMatch(toGet("Is integer",
                         (Function<Integer, Boolean>) number ->
@@ -95,7 +95,7 @@ public class CheckTest {
                                 number -> sqrt(number.doubleValue())), is(2D)),
                 is(4), allOf(greaterThan(0), lessThanOrEqualTo(100)))
 
-                .check("Check number 6", 6,
+                .assertThat("Check number 6", 6,
                         is(5),
                         shouldMatch(toGet("Sqr values", (Function<Integer, Double>) integer -> pow(integer, 2)),
                                 is(25D)));
@@ -124,7 +124,7 @@ public class CheckTest {
                     "     but: was <9>")
     public void testOfPerformAssertionCase() {
         check.perform(action("Check number 9", check ->
-                check.check("Check number 9 and 6",
+                check.assertThat("Check number 9 and 6",
                         9,
                         shouldMatch(toGet("Is integer",
                                 (Function<Integer, Boolean>) number ->

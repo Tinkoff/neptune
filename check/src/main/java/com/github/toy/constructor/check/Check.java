@@ -2,6 +2,7 @@ package com.github.toy.constructor.check;
 
 import com.github.toy.constructor.core.api.PerformStep;
 import org.hamcrest.Matcher;
+import org.hamcrest.MatcherAssert;
 
 import java.util.*;
 
@@ -10,8 +11,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 public class Check implements PerformStep<Check> {
 
     private final Set<AssertionError> checkResult = new LinkedHashSet<>();
@@ -24,7 +23,7 @@ public class Check implements PerformStep<Check> {
      * @param <T> the type of the value to check
      * @return self-reference
      */
-    public <T> Check check(String description, T toCheck, Matcher... criteria) {
+    public <T> Check assertThat(String description, T toCheck, Matcher... criteria) {
         checkNotNull(criteria);
         checkArgument(criteria.length > 0, "Should be defined at least one matcher");
         checkResult.clear();
@@ -33,7 +32,7 @@ public class Check implements PerformStep<Check> {
             return perform(action(format("Check: %s", description), check -> {
                 asList(criteria).forEach(matcher -> {
                     try {
-                        perform(action(matcher.toString(), check1 -> assertThat(toCheck, matcher)));
+                        perform(action(matcher.toString(), check1 -> MatcherAssert.assertThat(toCheck, matcher)));
                     } catch (AssertionError e) {
                         check.checkResult.add(e);
                     }

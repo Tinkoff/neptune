@@ -1,4 +1,5 @@
 rootProject.name = 'com.github.toy.constructor'
 include 'core.api'
 include 'check'
+include 'selenium'
 

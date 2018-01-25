@@ -12,7 +12,7 @@ public interface GetStep<THIS extends GetStep<THIS>> {
     @ToBeReported(constantMessagePart = "Get:")
     default  <T> T get(Function<THIS, T> function) {
         checkArgument(function != null,
-                "The function which returns the goal value is not defined");
+                "The function is not defined");
         checkArgument(DescribedFunction.class.isAssignableFrom(function.getClass()),
                 "The function which returns the goal value should be described " +
                         "by the StoryWriter.toGet method.");
