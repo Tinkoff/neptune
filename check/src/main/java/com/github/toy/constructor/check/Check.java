@@ -17,7 +17,7 @@ public class Check implements PerformStep<Check> {
     private final Set<AssertionError> checkResult = new LinkedHashSet<>();
 
     /**
-     * This method performs the checking of some value my matchers.
+     * This method performs the checking of some value by criteria.
      * @param description of a value to check
      * @param toCheck a value to check
      * @param criteria to check the value by
