@@ -36,7 +36,8 @@ project(":check") {
 }
 
 project(":selenium") {
-    compile project(':core.api')
-    compile group: 'org.hamcrest', name: 'java-hamcrest', version: hamcrestVersion
-    testCompile group: 'org.testng', name: 'testng', version: testNGvaersion
+    dependencies {
+        compile project(':core.api')
+        testCompile group: 'org.testng', name: 'testng', version: testNGvaersion
+    }
 }
