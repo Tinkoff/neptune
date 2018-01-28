@@ -3,7 +3,6 @@ package com.github.toy.constructor.core.api.proxy;
 import com.github.toy.constructor.core.api.GetStep;
 import com.github.toy.constructor.core.api.PerformStep;
 import com.github.toy.constructor.core.api.ToBeReported;
-import com.google.common.reflect.TypeToken;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.DynamicType;
 import java.lang.annotation.Annotation;
@@ -48,7 +47,7 @@ public final class Substitution {
      * @param annotations to set to methods that marked by {@link com.github.toy.constructor.core.api.ToBeReported}.
      *                    These annotations should describe steps. Their description should be like {@value {0}} or
      *                    some string convenient to the formatting with a single parameter.
-     * @return new {@link TypeToken} of generated sub-class.
+     * @return generated sub-class.
      */
     public static <T> Class<? extends T> substitute(Class<T> clazz,
                                                     ConstructorParameters constructorParameters,
@@ -88,7 +87,7 @@ public final class Substitution {
      * @param annotations to set to methods that marked by {@link com.github.toy.constructor.core.api.ToBeReported}.
      *                    These annotations should describe steps. Their description should be like {@value {0}} or
      *                    some string convenient to the formatting with a single parameter.
-     * @return new {@link TypeToken} of generated sub-class.
+     * @return generated sub-class.
      */
     public static <T> Class<? extends T> substitute(Class<T> clazz,
                                                     ConstructorParameters constructorParameters,

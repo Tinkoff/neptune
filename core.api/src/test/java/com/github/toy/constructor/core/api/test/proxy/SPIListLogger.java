@@ -1,8 +1,10 @@
 package com.github.toy.constructor.core.api.test.proxy;
 
+import com.github.toy.constructor.core.api.proxy.Logger;
+
 import static java.lang.String.format;
 
-public class SPIListLogger extends DefaultListLogger {
+public class SPIListLogger extends DefaultListLogger implements Logger {
 
     private static SPIListLogger spiListLogger;
 

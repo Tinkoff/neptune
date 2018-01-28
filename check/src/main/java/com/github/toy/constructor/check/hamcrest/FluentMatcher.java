@@ -12,10 +12,8 @@ import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
-import static java.lang.String.join;
 import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class FluentMatcher<T> extends TypeSafeDiagnosingMatcher<T> {
     private final Map<Function<T, ?>, List<Matcher<?>>> matchMap = new LinkedHashMap<>();
@@ -35,7 +33,7 @@ public class FluentMatcher<T> extends TypeSafeDiagnosingMatcher<T> {
      * parameters.
      */
     @SafeVarargs
-    public static <T> FluentMatcher<T> shouldMatch(Matcher<T>... criteria) {
+    public static <T> FluentMatcher<T> shouldMatch(Matcher<? super T>... criteria) {
         return new FluentMatcher<T>().and(criteria);
     }
 
@@ -51,8 +49,9 @@ public class FluentMatcher<T> extends TypeSafeDiagnosingMatcher<T> {
      * parameters.
      */
     @SafeVarargs
-    public static <T, R> FluentMatcher<T> shouldMatch(Function<T, R> function, Matcher<R>... criteria) {
-        return new FluentMatcher<T>().and(function, criteria);
+    public static <T, R> FluentMatcher<T> shouldMatch(String valueDescription, Function<T, R> function,
+                                                      Matcher<? super R>... criteria) {
+        return new FluentMatcher<T>().and(valueDescription, function, criteria);
     }
 
     /**
@@ -64,13 +63,14 @@ public class FluentMatcher<T> extends TypeSafeDiagnosingMatcher<T> {
      * @return self-reference
      */
     @SafeVarargs
-    public final <R> FluentMatcher<T> and(Function<T, R> function, Matcher<R>... criteria) {
+    public final <R> FluentMatcher<T> and(String valueDescription, Function<T, R> function, Matcher<? super R>... criteria) {
+        checkArgument(!isBlank(valueDescription), "Description of a value that the function returns" +
+                "should not be blank");
+        checkNotNull(function);
         checkNotNull(criteria);
         checkArgument(criteria.length > 0, "Should be defined at least one matcher");
         List<Matcher<?>> criteriaList = asList(criteria);
-        String criteriaDescription = join("\n             ",
-                criteriaList.stream().map(Object::toString).collect(toList()));
-        matchMap.put(toGet(format("%s suits criteria:\n             %s", function.toString(), criteriaDescription).trim(),
+        matchMap.put(toGet(valueDescription,
                 function),
                 criteriaList);
         return this;
@@ -83,18 +83,8 @@ public class FluentMatcher<T> extends TypeSafeDiagnosingMatcher<T> {
      * @return self-reference
      */
     @SafeVarargs
-    public final FluentMatcher<T> and(Matcher<T>... criteria) {
-        return and(new Function<>() {
-            @Override
-            public T apply(T t) {
-                return t;
-            }
-
-            @Override
-            public String toString() {
-                return EMPTY;
-            }
-        }, criteria);
+    public final FluentMatcher<T> and(Matcher<? super T>... criteria) {
+        return and("inspected value", t -> t, criteria);
     }
 
     @Override
@@ -106,11 +96,10 @@ public class FluentMatcher<T> extends TypeSafeDiagnosingMatcher<T> {
             value.forEach(matcher -> {
                 boolean result = matcher.matches(valueToMatch);
                 if (!result) {
-                    Description description1 = new StringDescription();
-                    Description description2 = new StringDescription();
-                    matcher.describeTo(description1);
-                    matcher.describeMismatch(valueToMatch, description2);
-                    mismatchList.add(format("expected %s. Actual result is %s", description1, description2));
+                    Description description = new StringDescription();
+                    matcher.describeMismatch(valueToMatch, description);
+                    mismatchList.add(format("  It was expected that %s suits criteria '%s'. Actual result: %s\n", key,
+                            matcher, description));
                 }
             });
             if (mismatchList.size() > 0) {
@@ -122,12 +111,15 @@ public class FluentMatcher<T> extends TypeSafeDiagnosingMatcher<T> {
             return true;
         }
 
-        StringBuilder builder = new StringBuilder().append("Detected mismatches \n\n");
+        StringBuilder builder = new StringBuilder()
+                .append("Detected mismatches:\n")
+                .append("===================================\n");
         mismatches.forEach((key, value) -> {
-            builder.append(format("- expected %s.\n", key));
-            value.forEach(s -> builder.append(format("  %s\n\n", s)));
+            builder.append(format("%s:\n", key));
+            value.forEach(s -> builder.append(format("           %s", s)));
         });
-        mismatchDescription.appendText(format("\n\n%s", builder.toString().trim()));
+        mismatchDescription.appendText("\n\n")
+                .appendText(format("\n%s", builder.toString()).trim());
         return false;
     }
 
@@ -138,8 +130,11 @@ public class FluentMatcher<T> extends TypeSafeDiagnosingMatcher<T> {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder("\n");
-        matchMap.keySet().forEach(function -> builder.append(format("- %s\n", function.toString())));
+        StringBuilder builder = new StringBuilder();
+        matchMap.forEach((key, value) -> {
+            builder.append("\n").append(key.toString());
+            value.forEach(matcher -> builder.append(format("\n           %s", matcher.toString())));
+        });
 
         return builder.toString();
     }

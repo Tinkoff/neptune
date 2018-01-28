@@ -35,7 +35,7 @@ public class InnerInterceptor<T> {
 
 
     @RuntimeType
-    public Object intercept(@SuperCall Callable<?> superMethod, @Origin Method method, @AllArguments Object... args)
+    public Object intercept(@This Object proxy, @SuperCall Callable<?> superMethod, @Origin Method method, @AllArguments Object... args)
             throws Throwable {
         T target = ofNullable(threadLocal.get()).orElseGet(() -> {
             Object[] params = constructorParameters.getParameterValues();
@@ -76,6 +76,12 @@ public class InnerInterceptor<T> {
             throw e.getCause();
         }
         superMethod.call();
-        return result;
+
+        return ofNullable(result).map(o -> {
+            if (o.getClass().equals(target.getClass())) {
+                return proxy;
+            }
+            return result;
+        }).orElse(null);
     }
 }
