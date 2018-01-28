@@ -16,6 +16,7 @@ subprojects {
 
 def testNGvaersion = '6.13.1'
 def hamcrestVersion = '2.0.0.0'
+def seleniumVersion = '3.8.1'
 
 project(":core.api") {
     dependencies {
@@ -38,6 +39,7 @@ project(":check") {
 project(":selenium") {
     dependencies {
         compile project(':core.api')
+        compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: seleniumVersion
         testCompile group: 'org.testng', name: 'testng', version: testNGvaersion
     }
 }
