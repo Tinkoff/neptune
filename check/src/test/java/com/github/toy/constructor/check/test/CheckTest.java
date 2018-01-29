@@ -37,14 +37,21 @@ public class CheckTest {
         check.assertThat("Check number 4", 4,
                 shouldMatch("Is integer",
                         (Function<Integer, Boolean>) number ->
-                                Integer.class.isAssignableFrom(number.getClass()), is(true))
-                        .and("Sqrt value", number -> sqrt(number.doubleValue()), is(2D)))
+                                Integer.class.isAssignableFrom(number.getClass()),
+                        is(true))
 
-                .assertThat("Check number 4", 4,
+                        .and("Sqrt value",
+                                number -> sqrt(number.doubleValue()),
+                                is(2D)))
+
+                .assertThat("Check number 4",
+                        4,
                         is(4))
 
                 .assertThat("Check number 5", 5,
-                        shouldMatch("Sqr value", integer -> pow(integer, 2), is(25D)));
+                        shouldMatch("Sqr value",
+                                integer -> pow(integer, 2),
+                                is(25D)));
 
         MatcherAssert.assertThat("Logged messages",
                 defaultListLogger.messages,
@@ -66,15 +73,21 @@ public class CheckTest {
                     check.assertThat("Check number 4", 4,
                             shouldMatch("Is integer",
                                     (Function<Integer, Boolean>) number ->
-                                            Integer.class.isAssignableFrom(number.getClass()), is(true))
+                                            Integer.class.isAssignableFrom(number.getClass()),
+                                    is(true))
 
-                                    .and("Sqrt value", number -> sqrt(number.doubleValue()), is(2D)));
+                                    .and("Sqrt value",
+                                            number -> sqrt(number.doubleValue()),
+                                            is(2D)));
 
-                    check.assertThat("Check number 4", 4,
+                    check.assertThat("Check number 4",
+                            4,
                             is(4));
 
                     check.assertThat("Check number 5", 5,
-                            shouldMatch("Sqr value", integer -> pow(integer, 2), is(25D)));
+                            shouldMatch("Sqr value",
+                                    integer -> pow(integer, 2),
+                                    is(25D)));
                 }));
 
         MatcherAssert.assertThat("Logged messages",
@@ -110,7 +123,9 @@ public class CheckTest {
                         (Function<Integer, Boolean>) number -> Integer.class.isAssignableFrom(number.getClass()),
                         is(true))
 
-                        .and("Sqrt value", number -> sqrt(number.doubleValue()), is(2D)));
+                        .and("Sqrt value",
+                                number -> sqrt(number.doubleValue()),
+                                is(2D)));
     }
 
     @Test(expectedExceptions = AssertionError.class,
@@ -134,6 +149,8 @@ public class CheckTest {
                                 (Function<Integer, Boolean>) number -> Integer.class.isAssignableFrom(number.getClass()),
                                 is(true))
 
-                                .and("Sqrt value", number -> sqrt(number.doubleValue()), is(2D)))));
+                                .and("Sqrt value",
+                                        number -> sqrt(number.doubleValue()),
+                                        is(2D)))));
     }
 }
