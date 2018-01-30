@@ -1,4 +1,4 @@
-package com.github.toy.constructor.selenium.api.widget.drafts.labeled;
+package com.github.toy.constructor.selenium.api.widget.drafts;
 
 import com.github.toy.constructor.selenium.api.widget.Clickable;
 import com.github.toy.constructor.selenium.api.widget.Labeled;
