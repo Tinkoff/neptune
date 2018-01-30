@@ -16,6 +16,10 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public final class CommonConditions {
 
+    private CommonConditions(){
+        super();
+    }
+
     /**
      * @param <T> type of the input value
      * @return predicate that checks visibility of element
@@ -35,7 +39,7 @@ public final class CommonConditions {
     }
 
     /**
-     * @param labels which can be used for the searching for element
+     * @param labels which can be used for the seeking element
      * @param <T> type of the input value
      * @return predicate that checks labels of an element
      */
@@ -52,7 +56,7 @@ public final class CommonConditions {
      * @param <T> type of the input value
      * @return predicate that checks value of the attribute.
      */
-    public static <T extends Widget> Predicate<T> hasAttr(String attribute, String attrValue) {
+    public static <T extends Widget> Predicate<T> hasAttribute(String attribute, String attrValue) {
         checkArgument(!isBlank(attribute), "Attribute name should not be empty or null.");
         checkArgument(!isBlank(attrValue), "Attribute value should not be empty or null.");
 
@@ -67,7 +71,7 @@ public final class CommonConditions {
      * @param <T> <T> type of the input value
      * @return predicate that checks value of the attribute.
      */
-    public static <T extends Widget> Predicate<T> attrContains(String attribute, String attrValue) {
+    public static <T extends Widget> Predicate<T> attributeContains(String attribute, String attrValue) {
         checkArgument(!isBlank(attribute), "Attribute name should not be empty or null.");
         checkArgument(!isBlank(attrValue), "Attribute value should not be empty or null.");
 

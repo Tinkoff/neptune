@@ -16,7 +16,7 @@ public abstract class Table extends Widget {
         super(wrappedElement);
     }
 
-    private List<String> convertCellListToStringList(List<Cell> cells) {
+    private static List<String> convertCellListToStringList(List<Cell> cells) {
         return cells.stream().map(HasValue::getValue)
                 .collect(toList());
     }
@@ -31,7 +31,11 @@ public abstract class Table extends Widget {
      * @return list of table cells which belong to the column.
      * Header and footer cells of the column are excluded.
      */
-    public abstract List<Cell> getColumn(int columnNumber);
+    public List<Cell> getColumn(int columnNumber) {
+        return getRows()
+                .stream()
+                .map(row -> row.getCells().get(columnNumber)).collect(toList());
+    }
 
     /**
      * @param column string header of the column.
@@ -45,11 +49,30 @@ public abstract class Table extends Widget {
     }
 
     /**
-     * @param rowNumber is a number of the row. It starts from 0.
-     * @return list of table cells which belong to the row.
+     * @return a count of table rows.
      * Header and footer of the table are not considered row.
      */
-    public abstract List<Cell> getRow(int rowNumber);
+    public int size() {
+        return getRows().size();
+    }
+
+    /**
+     * @return returns a list of table rows.
+     * Header and footer of the table are not considered row.
+     */
+    public abstract List<Row> getRows();
+
+    /**
+     * @param rowNumber is a number of the row. It starts from 0.
+     * @return a single table row. Header and footer of the table are not considered row.
+     */
+    public Row getRow(int rowNumber) {
+        int size = size();
+        checkArgument(rowNumber + 1 <= size
+                && rowNumber >= 0, format("The row number %s is out of the table size (from 0 to %s)",
+                rowNumber, size));
+        return getRows().get(rowNumber);
+    }
 
     /**
      * @return list of table cells which belong to table footer.
@@ -83,20 +106,27 @@ public abstract class Table extends Widget {
     }
 
     /**
-     * @param rowNumber is a number of the row. It starts from 0.
-     * @return list of string values of table cells which belong to the row.
-     * Header and footer of the table are not considered row.
-     */
-    public List<String> getStringRow(int rowNumber) {
-        return convertCellListToStringList(getRow(rowNumber));
-    }
-
-    /**
      * @return list of string values of cells which belong to
      * the footer of a table.
      */
     public List<String> getStringFooter() {
         return convertCellListToStringList(getHeader());
+    }
+
+    public static abstract class Row extends Widget {
+
+        public Row(WebElement wrappedElement) {
+            super(wrappedElement);
+        }
+
+        /**
+         * @return list of cells which belong to the row.
+         */
+        public abstract List<Cell> getCells();
+
+        public List<String> getStringCells() {
+            return convertCellListToStringList(getCells());
+        }
     }
 
     public static abstract class Cell extends Widget implements HasValue<String> {
