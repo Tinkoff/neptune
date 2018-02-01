@@ -126,12 +126,9 @@ public final class Substitution {
                 GetStep.class.isAssignableFrom(clazz), "Class to substitute should be " +
                 "assignable from com.github.toy.constructor.core.api.GetStep and/or " +
                 "com.github.toy.constructor.core.api.PerformStep.");
-        Constructor<T> c;
-        checkArgument((c = findSuitableConstructor(clazz, constructorParameters.getParameterValues())) != null);
+        checkArgument(findSuitableConstructor(clazz, constructorParameters.getParameterValues()) != null);
 
         DynamicType.Builder<? extends T> builder = new ByteBuddy().subclass(clazz);
-        c.setAccessible(true);
-        builder.define(c);
 
         InnerInterceptor<T> interceptor = new InnerInterceptor<>(clazz, constructorParameters, loadSPI(loggers));
         return builder.method(isAnnotatedWith(ToBeReported.class))
