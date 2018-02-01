@@ -6,7 +6,6 @@ import org.testng.annotations.Test;
 
 import static com.github.toy.constructor.core.api.proxy.ConstructorParameters.params;
 import static com.github.toy.constructor.core.api.proxy.Substitution.getSubstituted;
-import static com.github.toy.constructor.core.api.proxy.Substitution.substitute;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
@@ -19,20 +18,20 @@ public class NegativeTest {
                     "com.github.toy.constructor.core.api.GetStep " +
                     "and/or com.github.toy.constructor.core.api.PerformStep.")
     public void testOfIllegalClass() throws Exception {
-        substitute(Object.class, params());
+        getSubstituted(Object.class, params());
         fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = NoSuchMethodException.class)
     public void testOfCompletelyMismatchingParameters() throws Exception {
-        substitute(GetStepStub.class, params());
+        getSubstituted(GetStepStub.class, params());
         fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = NoSuchMethodException.class,
             dependsOnMethods = "testOfCompletelyMismatchingParameters")
     public void testOfPartiallyMismatchingParameters() throws Exception {
-        substitute(GetStepStub.class, params("12345", 1, 1.5F, false));
+        getSubstituted(GetStepStub.class, params("12345", 1, 1.5F, false));
         fail("The exception throwing was expected");
     }
 
