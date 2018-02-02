@@ -1,6 +1,8 @@
 package com.github.toy.constructor.selenium.api.widget;
 
-public interface Clickable {
+import org.openqa.selenium.SearchContext;
+
+public interface Clickable extends SearchContext {
 
     /**
      * Performs click on some element (button, link etc.)

@@ -1,8 +1,10 @@
 package com.github.toy.constructor.selenium.api.widget;
 
+import org.openqa.selenium.SearchContext;
+
 import java.util.List;
 
-public interface Labeled {
+public interface Labeled extends SearchContext {
 
     /**
      * It is possible to find some elements by text inside the element or near.

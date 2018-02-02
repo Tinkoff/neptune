@@ -20,6 +20,11 @@ class CalculatorSteps implements PerformStep<CalculatorSteps>, GetStep<Calculato
 
     @Override
     public Double get() {
+        return privateGet();
+    }
+
+    //This method was added for additional test coverage
+    private Double privateGet() {
         return calculated;
     }
 

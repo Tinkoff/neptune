@@ -37,7 +37,7 @@ public abstract class SequentialGetSupplier<T, R, Q, THIS extends SequentialGetS
      * This method is designed to represent a chain of result calculation and restrict it.
      * It is supposed to be overridden or overloaded/used by custom method.
      *
-     * @param supplier of a function which returns a mediate value to get expected result.
+     * @param supplier of a wrapper of the function which returns a mediate value to get expected result.
      * @return self-reference.
      */
     protected THIS from(GetSupplier<T, Q, ?> supplier) {

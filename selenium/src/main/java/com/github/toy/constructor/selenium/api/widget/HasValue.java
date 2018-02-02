@@ -1,6 +1,8 @@
 package com.github.toy.constructor.selenium.api.widget;
 
-public interface HasValue<T> {
+import org.openqa.selenium.SearchContext;
+
+public interface HasValue<T> extends SearchContext {
 
     /**
      * @return value of some element (something like text in a text input field,

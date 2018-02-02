@@ -1,6 +1,8 @@
 package com.github.toy.constructor.selenium.api.widget;
 
-public interface Editable<T> {
+import org.openqa.selenium.SearchContext;
+
+public interface Editable<T> extends SearchContext {
 
     /**
      * Change value of some element (text in a text input field, select a checkbox/radiobutton etc.)
