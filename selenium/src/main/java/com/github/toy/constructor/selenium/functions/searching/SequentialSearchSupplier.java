@@ -3,18 +3,28 @@ package com.github.toy.constructor.selenium.functions.searching;
 import com.github.toy.constructor.core.api.GetSupplier;
 import com.github.toy.constructor.core.api.SequentialGetSupplier;
 import com.github.toy.constructor.selenium.SeleniumSteps;
-import com.google.common.reflect.TypeToken;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 
+import java.util.List;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
+import static com.github.toy.constructor.core.api.ToGetConditionalHelper.getFromIterable;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 
-public class SequentialSearchSupplier<R extends SearchContext>
+public final class SequentialSearchSupplier<R extends SearchContext>
         extends SequentialGetSupplier<SeleniumSteps, R, SearchContext, SequentialSearchSupplier<R>> {
 
+    private final Function<SearchContext, List<R>>  searching;
+    private final Predicate<R> condition;
+
+    SequentialSearchSupplier(Function<SearchContext, List<R>> searching, Predicate<R> condition) {
+        this.searching = searching;
+        this.condition = condition;
+    }
 
     @Override
     protected SequentialSearchSupplier<R> from(GetSupplier<SeleniumSteps, SearchContext, ?> supplier) {
@@ -33,7 +43,14 @@ public class SequentialSearchSupplier<R extends SearchContext>
 
     @Override
     protected Function<SearchContext, R> getEndFunction() {
-        return toGet(format("Find a single %s",
-                new TypeToken<R>(){}.getRawType().getName()), new FindElement<>());
+        Function<SearchContext, R> resultFunction = getFromIterable(searching.toString(),
+                searching,
+                condition, true,
+                false);
+        return toGet(resultFunction.toString(), searchContext ->
+                ofNullable(resultFunction.apply(searchContext)).orElseThrow(() ->
+                        new NoSuchElementException(format("Nothing was found. Attempt: %s. Condition: %s",
+                                searching,
+                                condition))));
     }
 }
