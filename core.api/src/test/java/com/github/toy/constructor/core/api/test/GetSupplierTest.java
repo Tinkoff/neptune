@@ -92,7 +92,7 @@ public class GetSupplierTest {
 
         //this method was overridden for the unit testing
         @Override
-        protected SqrtFromSomeNumericOperation from(GetSupplier<Number, Double, ?> numericOperation) {
+        protected SqrtFromSomeNumericOperation from(GetSupplier<Number, ? extends Double, ?> numericOperation) {
             return super.from(numericOperation);
         }
 
@@ -104,7 +104,7 @@ public class GetSupplierTest {
 
         //this method was overridden for the unit testing
         @Override
-        protected SqrtFromSomeNumericOperation from(Function<Number, Double> function) {
+        protected SqrtFromSomeNumericOperation from(Function<Number, ? extends Double> function) {
             return super.from(function);
         }
     }

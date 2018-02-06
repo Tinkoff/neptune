@@ -24,7 +24,7 @@ public abstract class SequentialGetSupplier<T, R, Q, THIS extends SequentialGetS
      * @param mediatorFunction a function which returns a mediate value to get expected result.
      * @return self-reference.
      */
-    protected THIS from(Function<T, Q> mediatorFunction) {
+    protected THIS from(Function<T, ? extends Q> mediatorFunction) {
         checkArgument(mediatorFunction != null, "Function to get value from was not " +
                 "defined");
         checkArgument(DescribedFunction.class.isAssignableFrom(mediatorFunction.getClass()),
@@ -40,7 +40,7 @@ public abstract class SequentialGetSupplier<T, R, Q, THIS extends SequentialGetS
      * @param supplier of a wrapper of the function which returns a mediate value to get expected result.
      * @return self-reference.
      */
-    protected THIS from(GetSupplier<T, Q, ?> supplier) {
+    protected THIS from(GetSupplier<T, ? extends Q, ?> supplier) {
         checkArgument(supplier != null, "The supplier of the function is not defined");
         return from(supplier.get());
     }
@@ -53,7 +53,7 @@ public abstract class SequentialGetSupplier<T, R, Q, THIS extends SequentialGetS
      *              input value {@code T} firstly.
      * @return self-reference.
      */
-    protected THIS from(Q value) {
+    protected <S extends Q> THIS from(S value) {
         checkArgument(value != null, "The object to get value from is not defined");
         return from(toGet(value.toString(), t -> value));
     }
