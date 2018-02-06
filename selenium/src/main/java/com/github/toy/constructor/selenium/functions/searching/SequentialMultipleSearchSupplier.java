@@ -41,7 +41,7 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
 
     @Override
     protected Function<SearchContext, List<R>> getEndFunction() {
-        return getSubIterable(searching.toString(),
+        return getSubIterable("List of",
                 searching,
                 condition, true,
                 false);

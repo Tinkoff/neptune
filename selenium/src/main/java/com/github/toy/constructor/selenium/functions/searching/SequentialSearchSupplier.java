@@ -43,7 +43,7 @@ public final class SequentialSearchSupplier<R extends SearchContext>
 
     @Override
     protected Function<SearchContext, R> getEndFunction() {
-        Function<SearchContext, R> resultFunction = getFromIterable(searching.toString(),
+        Function<SearchContext, R> resultFunction = getFromIterable("A single item",
                 searching,
                 condition, true,
                 false);
