@@ -41,7 +41,7 @@ project(":selenium") {
     dependencies {
         compile project(':core.api')
         compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: seleniumVersion
-        compile group: 'org.javassist', name: 'javassist', version: '3.22.0-GA'
+        compile group: 'org.reflections', name: 'reflections', version: '0.9.11'
         testCompile group: 'org.testng', name: 'testng', version: testNGvaersion
     }
 }
