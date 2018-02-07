@@ -16,12 +16,12 @@ subprojects {
 
 def testNGvaersion = '6.13.1'
 def hamcrestVersion = '2.0.0.0'
-def seleniumVersion = '3.8.1'
+def seleniumVersion = '3.9.0'
 
 project(":core.api") {
     dependencies {
         compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
-        compile group: 'com.google.guava', name: 'guava', version: '21.0'
+        compile group: 'com.google.guava', name: 'guava', version: '24.0-jre'
         compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.7.9'
         compile group: 'org.objenesis', name: 'objenesis', version: '2.6'
         testCompile group: 'org.testng', name: 'testng', version: testNGvaersion
@@ -41,7 +41,10 @@ project(":selenium") {
     dependencies {
         compile project(':core.api')
         compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: seleniumVersion
-        compile group: 'org.reflections', name: 'reflections', version: '0.9.11'
+        compile (group: 'org.reflections', name: 'reflections', version: '0.9.11') {
+            exclude group: 'com.google.guava'
+            exclude group: 'com.google.code.gson'
+        }
         testCompile group: 'org.testng', name: 'testng', version: testNGvaersion
     }
 }
