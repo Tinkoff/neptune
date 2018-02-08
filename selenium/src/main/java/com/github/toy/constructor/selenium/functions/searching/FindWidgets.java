@@ -2,10 +2,16 @@ package com.github.toy.constructor.selenium.functions.searching;
 
 import com.github.toy.constructor.selenium.api.widget.Widget;
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindAll;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.FindBys;
 import org.reflections.Reflections;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -31,9 +37,33 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
         this.time = time;
     }
 
+    protected static <T extends Annotation> T getAnnotation(Class<? extends Widget> clazz,
+                                                            Class<T> desiredAnnotation) {
+        Class<?> superClass = clazz;
+        while (!superClass.equals(Widget.class)) {
+            T result = superClass.getAnnotation(desiredAnnotation);
+            if (result != null) {
+                return result;
+            }
+            superClass = superClass.getSuperclass();
+        }
+        return null;
+    }
+
     List<Class<? extends R>> getSubclasses() {
         Predicate<Class<? extends R>> classPredicate =
-                clazz -> !Modifier.isAbstract(clazz.getModifiers());
+                clazz -> !Modifier.isAbstract(clazz.getModifiers())
+
+                        && (getAnnotation(clazz, FindBy.class) != null ||
+                        getAnnotation(clazz, FindBys.class) != null ||
+                        getAnnotation(clazz, FindAll.class) != null)
+
+                        && (Arrays.stream(clazz.getDeclaredConstructors())
+                        .filter(constructor -> {
+                            Class<?>[] parameters = constructor.getParameterTypes();
+                            return parameters.length == 1 &&
+                                    WebElement.class.isAssignableFrom(parameters[0]);
+                        }).collect(toList()).size() > 0);
 
         Reflections reflections = new Reflections("");
 
@@ -48,8 +78,9 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
         if (resultList.size() > 0) {
             return resultList;
         }
-        throw new IllegalArgumentException(format("There is no any non-abstract subclass of %s",
-                classOfAWidget.getName()));
+        throw new IllegalArgumentException(format("There is no any non-abstract subclass of %s which " +
+                        "has a constructor with only one parameter of a type extending %s",
+                classOfAWidget.getName(), WebElement.class.getName()));
     }
 
     static <R extends Widget> Function<SearchContext, List<R>> widgets(Class<R> classOfAWidget,
