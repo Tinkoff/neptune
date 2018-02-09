@@ -1,14 +1,13 @@
 package com.github.toy.constructor.selenium.functions.searching;
 
 import com.github.toy.constructor.selenium.api.widget.Widget;
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
+import org.openqa.selenium.support.ui.FluentWait;
 import org.reflections.Reflections;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,12 +17,15 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
+import static com.github.toy.constructor.selenium.api.widget.Widget.getWidgetName;
+import static com.github.toy.constructor.selenium.functions.searching.FindByBuilder.getAnnotation;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 
 class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> {
 
+    private static final FindByBuilder builder = new FindByBuilder();
     final Class<? extends R> classOfAWidget;
     private final TimeUnit timeUnit;
     private final long time;
@@ -35,19 +37,6 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
         this.classOfAWidget = classOfAWidget;
         this.timeUnit = timeUnit;
         this.time = time;
-    }
-
-    protected static <T extends Annotation> T getAnnotation(Class<? extends Widget> clazz,
-                                                            Class<T> desiredAnnotation) {
-        Class<?> superClass = clazz;
-        while (!superClass.equals(Widget.class)) {
-            T result = superClass.getAnnotation(desiredAnnotation);
-            if (result != null) {
-                return result;
-            }
-            superClass = superClass.getSuperclass();
-        }
-        return null;
     }
 
     List<Class<? extends R>> getSubclasses() {
@@ -79,8 +68,9 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
             return resultList;
         }
         throw new IllegalArgumentException(format("There is no any non-abstract subclass of %s which " +
-                        "has a constructor with only one parameter of a type extending %s",
-                classOfAWidget.getName(), WebElement.class.getName()));
+                        "is annotated by any org.openqa.selenium.support.Find* annotation " +
+                        "and has a constructor with only one parameter of a type extending %s",
+                getWidgetName(classOfAWidget), WebElement.class.getName()));
     }
 
     static <R extends Widget> Function<SearchContext, List<R>> widgets(Class<R> classOfAWidget,
@@ -92,6 +82,24 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
 
     @Override
     public List<R> apply(SearchContext searchContext) {
-        return null;
+        List<Class<? extends R>> classesToInstantiate = getSubclasses();
+        FluentWait<SearchContext> wait = new FluentWait<>(searchContext);
+        try {
+            return wait.withTimeout(time, timeUnit)
+                    .ignoring(StaleElementReferenceException.class)
+                    .until(searchContext1 -> {
+                        List<R> result = new ArrayList<>();
+                        classesToInstantiate.forEach(clazz -> {
+                            By by = builder.buildIt(clazz);
+                            List<WebElement> webElements = searchContext.findElements(by);
+                            //TODO to be finished
+                        });
+                        //TODO to be finished
+                        return null;
+                    });
+        }
+        catch (TimeoutException e) {
+            return List.of();
+        }
     }
 }

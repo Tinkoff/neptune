@@ -45,6 +45,7 @@ project(":selenium") {
             exclude group: 'com.google.guava'
             exclude group: 'com.google.code.gson'
         }
+        compile group: 'cglib', name: 'cglib', version: '3.2.6'
         testCompile group: 'org.testng', name: 'testng', version: testNGvaersion
     }
 }

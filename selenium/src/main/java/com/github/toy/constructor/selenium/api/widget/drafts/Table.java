@@ -1,6 +1,7 @@
 package com.github.toy.constructor.selenium.api.widget.drafts;
 
 import com.github.toy.constructor.selenium.api.widget.HasValue;
+import com.github.toy.constructor.selenium.api.widget.Name;
 import com.github.toy.constructor.selenium.api.widget.Widget;
 import org.openqa.selenium.WebElement;
 
@@ -10,6 +11,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 
+@Name("Table")
 public abstract class Table extends Widget {
 
     public Table(WebElement wrappedElement) {
@@ -113,6 +115,7 @@ public abstract class Table extends Widget {
         return convertCellListToStringList(getHeader());
     }
 
+    @Name("Row")
     public static abstract class Row extends Widget {
 
         public Row(WebElement wrappedElement) {
@@ -129,6 +132,7 @@ public abstract class Table extends Widget {
         }
     }
 
+    @Name("Cell")
     public static abstract class Cell extends Widget implements HasValue<String> {
         public Cell(WebElement wrappedElement) {
             super(wrappedElement);

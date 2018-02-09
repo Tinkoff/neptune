@@ -1,5 +1,6 @@
 package com.github.toy.constructor.selenium.functions.searching;
 
+import com.github.toy.constructor.selenium.api.widget.Name;
 import com.github.toy.constructor.selenium.api.widget.Labeled;
 import com.github.toy.constructor.selenium.api.widget.Widget;
 import org.openqa.selenium.SearchContext;
@@ -18,6 +19,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
+import static com.github.toy.constructor.selenium.api.widget.Widget.getWidgetName;
+import static com.github.toy.constructor.selenium.functions.searching.FindByBuilder.getAnnotation;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 
@@ -57,9 +60,10 @@ class FindLabeledWidgets<R extends Widget> extends FindWidgets<R> {
         if (resultList.size() > 0) {
             return resultList;
         }
-        throw new IllegalArgumentException(format("There is no any non-abstract subclass of %s " +
-                        "that also implements %s and has a constructor with only one parameter of a type extending %s",
-                classOfAWidget.getName(),
+        throw new IllegalArgumentException(format("There is no any non-abstract subclass of %s which " +
+                        "is annotated by any org.openqa.selenium.support.Find* annotation " +
+                        "and also implements %s and has a constructor with only one parameter of a type extending %s",
+                getWidgetName(classOfAWidget),
                 Labeled.class.getName(),
                 WebElement.class));
     }

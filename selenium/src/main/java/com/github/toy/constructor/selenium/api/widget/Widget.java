@@ -18,6 +18,18 @@ public abstract class Widget implements WrapsElement, SearchContext, TakesScreen
         this.wrappedElement = wrappedElement;
     }
 
+    public static String getWidgetName(Class<? extends Widget> classOfAWidget) {
+        Class<?> clazz = classOfAWidget;
+        while (!clazz.equals(Widget.class)) {
+            Name name =  classOfAWidget.getAnnotation(Name.class);
+            if (name != null) {
+                return name.value();
+            }
+            clazz = clazz.getSuperclass();
+        }
+        return classOfAWidget.getName();
+    }
+
     @Override
     public List<WebElement> findElements(By by) {
         return wrappedElement.findElements(by);
