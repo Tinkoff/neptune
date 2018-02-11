@@ -1,6 +1,5 @@
 package com.github.toy.constructor.selenium.functions.searching;
 
-import com.github.toy.constructor.selenium.api.widget.Name;
 import com.github.toy.constructor.selenium.api.widget.Labeled;
 import com.github.toy.constructor.selenium.api.widget.Widget;
 import org.openqa.selenium.SearchContext;
@@ -26,8 +25,8 @@ import static java.util.stream.Collectors.toList;
 
 class FindLabeledWidgets<R extends Widget> extends FindWidgets<R> {
 
-    FindLabeledWidgets(Class<R> classOfAWidget, TimeUnit timeUnit, long time) {
-        super(classOfAWidget, timeUnit, time);
+    FindLabeledWidgets(Class<R> classOfAWidget, TimeUnit timeUnit, long time, String conditionString) {
+        super(classOfAWidget, timeUnit, time, conditionString);
     }
 
     @Override
@@ -70,8 +69,8 @@ class FindLabeledWidgets<R extends Widget> extends FindWidgets<R> {
 
     static <R extends Widget> Function<SearchContext, List<R>> labeledWidgets(Class<R> classOfAWidget,
                                                                        TimeUnit timeUnit,
-                                                                       long time) {
-        return toGet(format("Find elements of type %s", classOfAWidget.getName()),
-                new FindLabeledWidgets<>(classOfAWidget, timeUnit, time));
+                                                                       long time, String conditionString) {
+        return toGet(format("Elements of type %s", classOfAWidget.getName()),
+                new FindLabeledWidgets<>(classOfAWidget, timeUnit, time, conditionString));
     }
 }

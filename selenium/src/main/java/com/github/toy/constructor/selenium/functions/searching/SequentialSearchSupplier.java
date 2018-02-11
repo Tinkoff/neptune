@@ -98,7 +98,7 @@ public final class SequentialSearchSupplier<R extends SearchContext>
                                                                         TimeUnit timeUnit,
                                                                         long time,
                                                                         Predicate<T> predicate) {
-        return item(widgets(tClass, timeUnit, time), predicate);
+        return item(widgets(tClass, timeUnit, time, predicate.toString()), predicate);
     }
 
     public static <T extends Widget> SequentialSearchSupplier<T> widget(Class<T> tClass,

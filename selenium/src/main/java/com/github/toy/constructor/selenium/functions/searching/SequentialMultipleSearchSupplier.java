@@ -96,7 +96,7 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
                                                                                  TimeUnit timeUnit,
                                                                                  long time,
                                                                                  Predicate<T> predicate) {
-        return items(FindWidgets.widgets(tClass, timeUnit, time), predicate);
+        return items(FindWidgets.widgets(tClass, timeUnit, time, predicate.toString()), predicate);
     }
 
     public static <T extends Widget> SequentialMultipleSearchSupplier<T> widgets(Class<T> tClass,

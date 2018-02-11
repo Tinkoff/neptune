@@ -1,6 +1,10 @@
 package com.github.toy.constructor.selenium.functions.searching;
 
 import com.github.toy.constructor.selenium.api.widget.Widget;
+import net.sf.cglib.proxy.Callback;
+import net.sf.cglib.proxy.Enhancer;
+import org.objenesis.Objenesis;
+import org.objenesis.ObjenesisStd;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
@@ -22,6 +26,7 @@ import static com.github.toy.constructor.selenium.functions.searching.FindByBuil
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
+import static net.sf.cglib.proxy.Enhancer.registerCallbacks;
 
 class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> {
 
@@ -29,14 +34,25 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
     final Class<? extends R> classOfAWidget;
     private final TimeUnit timeUnit;
     private final long time;
+    private final String conditionString;
 
-    FindWidgets(Class<R> classOfAWidget, TimeUnit timeUnit, long time) {
+    FindWidgets(Class<R> classOfAWidget, TimeUnit timeUnit, long time,
+                String conditionString) {
         checkArgument(classOfAWidget != null, "The class to be instantiated should be defined.");
         checkArgument(timeUnit != null, "The waiting time unit should be defined.");
         checkArgument(time >= 0, "The waiting time should be positive.");
         this.classOfAWidget = classOfAWidget;
         this.timeUnit = timeUnit;
         this.time = time;
+        this.conditionString = conditionString;
+    }
+
+    static <R extends Widget> Function<SearchContext, List<R>> widgets(Class<R> classOfAWidget,
+                                                                       TimeUnit timeUnit,
+                                                                       long time,
+                                                                       String conditionString) {
+        return toGet(format("Elements of type %s", classOfAWidget.getName()),
+                new FindWidgets<>(classOfAWidget, timeUnit, time, conditionString));
     }
 
     List<Class<? extends R>> getSubclasses() {
@@ -73,11 +89,20 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
                 getWidgetName(classOfAWidget), WebElement.class.getName()));
     }
 
-    static <R extends Widget> Function<SearchContext, List<R>> widgets(Class<R> classOfAWidget,
-                                                                       TimeUnit timeUnit,
-                                                                       long time) {
-        return toGet(format("Find elements of type %s", classOfAWidget.getName()),
-                new FindWidgets<>(classOfAWidget, timeUnit, time));
+    private R createWidget(WebElement webElement) {
+        Enhancer enhancer = new Enhancer();
+        WidgetInterceptor interceptor = new WidgetInterceptor(webElement, classOfAWidget, conditionString);
+
+        enhancer.setUseCache(false);
+        enhancer.setCallbackType(WidgetInterceptor.class);
+        enhancer.setSuperclass(classOfAWidget);
+        Class<?> proxyClass = enhancer.createClass();
+        registerCallbacks(proxyClass, new Callback[]{interceptor});
+        enhancer.setClassLoader(classOfAWidget.getClassLoader());
+
+        Objenesis objenesis = new ObjenesisStd();
+        Object proxy = objenesis.newInstance(proxyClass);
+        return (R) proxy;
     }
 
     @Override
@@ -91,10 +116,12 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
                         List<R> result = new ArrayList<>();
                         classesToInstantiate.forEach(clazz -> {
                             By by = builder.buildIt(clazz);
-                            List<WebElement> webElements = searchContext.findElements(by);
-                            //TODO to be finished
+                            result.addAll(searchContext.findElements(by).stream()
+                                    .map(this::createWidget).collect(toList()));
                         });
-                        //TODO to be finished
+                        if (result.size() > 0) {
+                            return result;
+                        }
                         return null;
                     });
         }
