@@ -4,6 +4,7 @@ import com.github.toy.constructor.selenium.api.widget.Widget;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.pagefactory.DefaultElementLocatorFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -12,6 +13,7 @@ import java.lang.reflect.Method;
 import static com.github.toy.constructor.selenium.api.widget.Widget.getWidgetName;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
+import static org.openqa.selenium.support.PageFactory.initElements;
 
 public class WidgetInterceptor implements MethodInterceptor {
 
@@ -44,6 +46,7 @@ public class WidgetInterceptor implements MethodInterceptor {
                             "it has no convenient constructor", widgetClass.getName())));
             widgetConstructor.setAccessible(true);
             widget = (Widget) widgetConstructor.newInstance(webElement);
+            initElements(new DefaultElementLocatorFactory(webElement), widget);
         }
 
         try {
