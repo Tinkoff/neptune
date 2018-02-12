@@ -13,8 +13,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.github.toy.constructor.core.api.StoryWriter.condition;
-import static com.github.toy.constructor.selenium.PropertySupplier.TimeUnitProperty.ELEMENT_WAITING_TIME_UNIT;
-import static com.github.toy.constructor.selenium.PropertySupplier.TimeValueProperty.ELEMENT_WAITING_TIME_VALUE;
+import static com.github.toy.constructor.selenium.properties.FlagProperties.FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION;
+import static com.github.toy.constructor.selenium.properties.TimeProperties.ELEMENT_WAITING_TIME_VALUE;
+import static com.github.toy.constructor.selenium.properties.TimeUnitProperties.ELEMENT_WAITING_TIME_UNIT;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -149,5 +150,14 @@ public final class DefaultWidgetConditions {
         return widgetShouldHaveElements(locatedBy,
                 ELEMENT_WAITING_TIME_UNIT.get(),
                 ELEMENT_WAITING_TIME_VALUE.get());
+    }
+
+    static <T extends Widget> Predicate<T> defaultPredicateForWidgets() {
+        if (FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.get()) {
+            return widgetShouldBeVisible();
+        }
+        else {
+            return condition("with no other restriction", t -> true);
+        }
     }
 }

@@ -12,15 +12,19 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
-import static com.github.toy.constructor.core.api.StoryWriter.condition;
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.github.toy.constructor.core.api.ToGetConditionalHelper.getFromIterable;
-import static com.github.toy.constructor.selenium.PropertySupplier.TimeUnitProperty.ELEMENT_WAITING_TIME_UNIT;
-import static com.github.toy.constructor.selenium.PropertySupplier.TimeValueProperty.ELEMENT_WAITING_TIME_VALUE;
-import static com.github.toy.constructor.selenium.functions.searching.DefaultWebElementConditions.elementShouldBeDisplayed;
+import static com.github.toy.constructor.selenium.functions.searching.DefaultWebElementConditions.defaultPredicateForElements;
+import static com.github.toy.constructor.selenium.functions.searching.DefaultWebElementConditions.elementShouldHaveText;
+import static com.github.toy.constructor.selenium.functions.searching.DefaultWidgetConditions.defaultPredicateForWidgets;
+import static com.github.toy.constructor.selenium.functions.searching.DefaultWidgetConditions.widgetShouldBeLabeledBy;
+import static com.github.toy.constructor.selenium.functions.searching.FindLabeledWidgets.labeledWidgets;
 import static com.github.toy.constructor.selenium.functions.searching.FindWebElements.webElements;
 import static com.github.toy.constructor.selenium.functions.searching.FindWidgets.widgets;
+import static com.github.toy.constructor.selenium.properties.TimeProperties.ELEMENT_WAITING_TIME_VALUE;
+import static com.github.toy.constructor.selenium.properties.TimeUnitProperties.ELEMENT_WAITING_TIME_UNIT;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 
@@ -35,29 +39,203 @@ public final class SequentialSearchSupplier<R extends SearchContext>
         this.condition = condition;
     }
 
-    private static <T> Predicate<T> withNoCondition() {
-        return condition("with no restriction", t -> true);
-    }
-
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes a instance of {@link SearchContext} for the searching
+     * and returns some instance of {@link SearchContext} found from the input value.
+     *
+     * @param transformation is a function which performs the search from some {@link SearchContext}
+     *                       and transform a found item to another instance of {@link SearchContext}
+     * @param condition to specify the searching criteria
+     * @param <T> is a type of a value to be returned by resulted function
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
     public static <T extends SearchContext> SequentialSearchSupplier<T> item(
             Function<SearchContext,List<T>> transformation,
             Predicate<T> condition) {
         return new SequentialSearchSupplier<>(transformation, condition);
     }
 
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes a instance of {@link SearchContext} for the searching
+     * and returns some instance of {@link WebElement} found from the input value.
+     *
+     * @param by locator strategy to find an element
+     * @param timeUnit is the parameter of a time to find the element
+     * @param time is the parameter of a time to find the element
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
     public static SequentialSearchSupplier<WebElement> element(By by,
                                                         TimeUnit timeUnit,
                                                         long time, Predicate<WebElement> predicate) {
-        return item(webElements(by, timeUnit, time), predicate);
+        return item(webElements(by, timeUnit, time, predicate.toString()), predicate);
     }
 
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes a instance of {@link SearchContext} for the searching
+     * and returns some instance of {@link WebElement} found from the input value.
+     *
+     * @param by locator strategy to find an element
+     * @param text which the desired element should have
+     * @param timeUnit is the parameter of a time to find the element
+     * @param time is the parameter of a time to find the element
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
+    public static SequentialSearchSupplier<WebElement> element(By by,
+                                                               String text,
+                                                               TimeUnit timeUnit,
+                                                               long time, Predicate<WebElement> predicate) {
+        return element(by, timeUnit, time,
+                elementShouldHaveText(text).and(predicate));
+    }
+
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes a instance of {@link SearchContext} for the searching
+     * and returns some instance of {@link WebElement} found from the input value.
+     *
+     * @param by locator strategy to find an element
+     * @param textPattern is a regExp to match text of the desired element
+     * @param timeUnit is the parameter of a time to find the element
+     * @param time is the parameter of a time to find the element
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
+    public static SequentialSearchSupplier<WebElement> element(By by,
+                                                               Pattern textPattern,
+                                                               TimeUnit timeUnit,
+                                                               long time, Predicate<WebElement> predicate) {
+        return element(by, timeUnit, time, elementShouldHaveText(textPattern)
+                .and(predicate));
+    }
+
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes a instance of {@link SearchContext} for the searching
+     * and returns some instance of {@link WebElement} found from the input value. The
+     * result function will return the first found element if the property
+     * {@code find.only.visible.elements.when.no.condition} if not defined or has value {@code "false"}.
+     * Otherwise it will return the first found element which is displayed on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param by locator strategy to find an element
+     * @param timeUnit is the parameter of a time to find the element
+     * @param time is the parameter of a time to find the element
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
     public static SequentialSearchSupplier<WebElement> element(By by,
                                                                TimeUnit timeUnit, long time) {
-        return element(by, timeUnit, time, withNoCondition());
+        return element(by, timeUnit, time, defaultPredicateForElements());
     }
 
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes a instance of {@link SearchContext} for the searching
+     * and returns some instance of {@link WebElement} found from the input value. The
+     * result function will return the first found element if the property
+     * {@code find.only.visible.elements.when.no.condition} if not defined or has value {@code "false"}.
+     * Otherwise it will return the first found element which is displayed on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param by locator strategy to find an element
+     * @param text which the desired element should have
+     * @param timeUnit is the parameter of a time to find the element
+     * @param time is the parameter of a time to find the element
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
+    public static SequentialSearchSupplier<WebElement> element(By by,
+                                                               String text,
+                                                               TimeUnit timeUnit, long time) {
+        return element(by, text,
+                timeUnit, time, defaultPredicateForElements());
+    }
+
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes a instance of {@link SearchContext} for the searching
+     * and returns some instance of {@link WebElement} found from the input value. The
+     * result function will return the first found element if the property
+     * {@code find.only.visible.elements.when.no.condition} if not defined or has value {@code "false"}.
+     * Otherwise it will return the first found element which is displayed on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param by locator strategy to find an element
+     * @param textPattern is a regExp to match text of the desired element
+     * @param timeUnit is the parameter of a time to find the element
+     * @param time is the parameter of a time to find the element
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
+    public static SequentialSearchSupplier<WebElement> element(By by,
+                                                               Pattern textPattern,
+                                                               TimeUnit timeUnit, long time) {
+        return element(by, textPattern, timeUnit, time, defaultPredicateForElements());
+    }
+
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes a instance of {@link SearchContext} for the searching
+     * and returns some instance of {@link WebElement} found from the input value. The searching
+     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
+     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time.
+     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
+     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     *
+     * @param by locator strategy to find an element
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
     public static SequentialSearchSupplier<WebElement> element(By by, Predicate<WebElement> predicate) {
         return element(by,
+                ELEMENT_WAITING_TIME_UNIT.get(),
+                ELEMENT_WAITING_TIME_VALUE.get(), predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes a instance of {@link SearchContext} for the searching
+     * and returns some instance of {@link WebElement} found from the input value. The searching
+     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
+     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time.
+     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
+     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     *
+     * @param by locator strategy to find an element
+     * @param text which the desired element should have
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
+    public static SequentialSearchSupplier<WebElement> element(By by,
+                                                               String text,
+                                                               Predicate<WebElement> predicate) {
+        return element(by,
+                text,
+                ELEMENT_WAITING_TIME_UNIT.get(),
+                ELEMENT_WAITING_TIME_VALUE.get(), predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes a instance of {@link SearchContext} for the searching
+     * and returns some instance of {@link WebElement} found from the input value. The searching
+     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
+     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time.
+     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
+     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     *
+     * @param by locator strategy to find an element
+     * @param textPattern is a regExp to match text of the desired element
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
+    public static SequentialSearchSupplier<WebElement> element(By by,
+                                                               Pattern textPattern,
+                                                               Predicate<WebElement> predicate) {
+        return element(by,
+                textPattern,
                 ELEMENT_WAITING_TIME_UNIT.get(),
                 ELEMENT_WAITING_TIME_VALUE.get(), predicate);
     }
@@ -67,30 +245,15 @@ public final class SequentialSearchSupplier<R extends SearchContext>
                 ELEMENT_WAITING_TIME_VALUE.get());
     }
 
-    public static SequentialSearchSupplier<WebElement> displayedElement(By by,
-                                                                       TimeUnit timeUnit,
-                                                                       long time, Predicate<WebElement> predicate) {
-        return element(by,
-                timeUnit,
-                time,
-                elementShouldBeDisplayed().and(predicate));
+    public static SequentialSearchSupplier<WebElement> element(By by,
+                                                               String text) {
+        return element(by, text, ELEMENT_WAITING_TIME_UNIT.get(),
+                ELEMENT_WAITING_TIME_VALUE.get());
     }
 
-    public static SequentialSearchSupplier<WebElement> displayedElement(By by,
-                                                                        TimeUnit timeUnit, long time) {
-        return displayedElement(by, timeUnit, time, withNoCondition());
-    }
-
-    public static SequentialSearchSupplier<WebElement> displayedElement(By by,
-                                                                        Predicate<WebElement> predicate) {
-        return displayedElement(by,
-                ELEMENT_WAITING_TIME_UNIT.get(),
-                ELEMENT_WAITING_TIME_VALUE.get(), predicate);
-    }
-
-    public static SequentialSearchSupplier<WebElement> displayedElement(By by) {
-        return displayedElement(by,
-                ELEMENT_WAITING_TIME_UNIT.get(),
+    public static SequentialSearchSupplier<WebElement> element(By by,
+                                                               Pattern textPattern) {
+        return element(by, textPattern, ELEMENT_WAITING_TIME_UNIT.get(),
                 ELEMENT_WAITING_TIME_VALUE.get());
     }
 
@@ -102,8 +265,43 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     }
 
     public static <T extends Widget> SequentialSearchSupplier<T> widget(Class<T> tClass,
-                                                               TimeUnit timeUnit, long time) {
-        return widget(tClass, timeUnit, time, withNoCondition());
+                                                                        List<String> labels,
+                                                                        TimeUnit timeUnit,
+                                                                        long time,
+                                                                        Predicate<T> predicate) {
+        Predicate<? extends T> labeledBy = widgetShouldBeLabeledBy(labels.toArray(new String[]{}));
+        Predicate<T> resultPredicate = (Predicate<T>) labeledBy.and(predicate);
+        return item(labeledWidgets(tClass, timeUnit, time, resultPredicate.toString()), resultPredicate);
+    }
+
+    public static <T extends Widget> SequentialSearchSupplier<T> widget(Class<T> tClass,
+                                                                        String label,
+                                                                        TimeUnit timeUnit,
+                                                                        long time,
+                                                                        Predicate<T> predicate) {
+        return widget(tClass,
+                List.of(label),
+                timeUnit, time, predicate);
+    }
+
+    public static <T extends Widget> SequentialSearchSupplier<T> widget(Class<T> tClass,
+                                                                        TimeUnit timeUnit,
+                                                                        long time) {
+        return widget(tClass, timeUnit, time, defaultPredicateForWidgets());
+    }
+
+    public static <T extends Widget> SequentialSearchSupplier<T> widget(Class<T> tClass,
+                                                                         List<String> labels,
+                                                                         TimeUnit timeUnit,
+                                                                         long time) {
+        return widget(tClass, labels, timeUnit, time, defaultPredicateForWidgets());
+    }
+
+    public static <T extends Widget> SequentialSearchSupplier<T> widget(Class<T> tClass,
+                                                                        String label,
+                                                                        TimeUnit timeUnit,
+                                                                        long time) {
+        return widget(tClass, label, timeUnit, time, defaultPredicateForWidgets());
     }
 
     public static <T extends Widget> SequentialSearchSupplier<T> widget(Class<T> tClass,
@@ -113,35 +311,38 @@ public final class SequentialSearchSupplier<R extends SearchContext>
                 ELEMENT_WAITING_TIME_VALUE.get(), predicate);
     }
 
+    public static <T extends Widget> SequentialSearchSupplier<T> widget(Class<T> tClass,
+                                                                        List<String> labels,
+                                                                        Predicate<T> predicate) {
+        return widget(tClass,
+                labels,
+                ELEMENT_WAITING_TIME_UNIT.get(),
+                ELEMENT_WAITING_TIME_VALUE.get(), predicate);
+    }
+
+    public static <T extends Widget> SequentialSearchSupplier<T> widget(Class<T> tClass,
+                                                                        String label,
+                                                                        Predicate<T> predicate) {
+        return widget(tClass,
+                label,
+                ELEMENT_WAITING_TIME_UNIT.get(),
+                ELEMENT_WAITING_TIME_VALUE.get(), predicate);
+    }
+
     public static <T extends Widget> SequentialSearchSupplier<T> widget(Class<T> tClass) {
         return widget(tClass, ELEMENT_WAITING_TIME_UNIT.get(),
                 ELEMENT_WAITING_TIME_VALUE.get());
     }
 
-    public static <T extends Widget> SequentialSearchSupplier<T> visibleWidget(Class<T> tClass,
-                                                                     TimeUnit timeUnit,
-                                                                     long time, Predicate<T> predicate) {
-        return widget(tClass,
-                timeUnit,
-                time,
-                DefaultWidgetConditions.<T>widgetShouldBeVisible().and(predicate));
+    public static <T extends Widget> SequentialSearchSupplier<T> widget(Class<T> tClass,
+                                                                        List<String> labels) {
+        return widget(tClass, labels, ELEMENT_WAITING_TIME_UNIT.get(),
+                ELEMENT_WAITING_TIME_VALUE.get());
     }
 
-    public static <T extends Widget> SequentialSearchSupplier<T> visibleWidget(Class<T> tClass,
-                                                                               TimeUnit timeUnit, long time) {
-        return visibleWidget(tClass, timeUnit, time, withNoCondition());
-    }
-
-    public static <T extends Widget> SequentialSearchSupplier<T> visibleWidget(Class<T> tClass,
-                                                                               Predicate<T> predicate) {
-        return visibleWidget(tClass,
-                ELEMENT_WAITING_TIME_UNIT.get(),
-                ELEMENT_WAITING_TIME_VALUE.get(), predicate);
-    }
-
-    public static <T extends Widget> SequentialSearchSupplier<T> visibleWidget(Class<T> tClass) {
-        return visibleWidget(tClass,
-                ELEMENT_WAITING_TIME_UNIT.get(),
+    public static <T extends Widget> SequentialSearchSupplier<T> widget(Class<T> tClass,
+                                                                        String label) {
+        return widget(tClass, label, ELEMENT_WAITING_TIME_UNIT.get(),
                 ELEMENT_WAITING_TIME_VALUE.get());
     }
 

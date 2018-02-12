@@ -15,7 +15,7 @@ import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static org.openqa.selenium.support.PageFactory.initElements;
 
-public class WidgetInterceptor implements MethodInterceptor {
+class WidgetInterceptor implements MethodInterceptor {
 
     private final WebElement webElement;
     private final Class<? extends Widget> widgetClass;

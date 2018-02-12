@@ -11,14 +11,18 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
-import static com.github.toy.constructor.core.api.StoryWriter.condition;
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.github.toy.constructor.core.api.ToGetConditionalHelper.getSubIterable;
-import static com.github.toy.constructor.selenium.PropertySupplier.TimeUnitProperty.ELEMENT_WAITING_TIME_UNIT;
-import static com.github.toy.constructor.selenium.PropertySupplier.TimeValueProperty.ELEMENT_WAITING_TIME_VALUE;
-import static com.github.toy.constructor.selenium.functions.searching.DefaultWebElementConditions.elementShouldBeDisplayed;
+import static com.github.toy.constructor.selenium.functions.searching.DefaultWebElementConditions.defaultPredicateForElements;
+import static com.github.toy.constructor.selenium.functions.searching.DefaultWebElementConditions.elementShouldHaveText;
+import static com.github.toy.constructor.selenium.functions.searching.DefaultWidgetConditions.defaultPredicateForWidgets;
+import static com.github.toy.constructor.selenium.functions.searching.DefaultWidgetConditions.widgetShouldBeLabeledBy;
+import static com.github.toy.constructor.selenium.functions.searching.FindLabeledWidgets.labeledWidgets;
 import static com.github.toy.constructor.selenium.functions.searching.FindWebElements.webElements;
+import static com.github.toy.constructor.selenium.properties.TimeProperties.ELEMENT_WAITING_TIME_VALUE;
+import static com.github.toy.constructor.selenium.properties.TimeUnitProperties.ELEMENT_WAITING_TIME_UNIT;
 import static java.util.Optional.ofNullable;
 
 public final class SequentialMultipleSearchSupplier<R extends SearchContext>
@@ -33,10 +37,6 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
         this.condition = condition;
     }
 
-    private static <T> Predicate<T> withNoCondition() {
-        return condition("with no restriction", t -> true);
-    }
-
     public static <T extends SearchContext> SequentialMultipleSearchSupplier<T> items(
             Function<SearchContext,List<T>> transformation,
             Predicate<T> condition) {
@@ -46,16 +46,64 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
     public static SequentialMultipleSearchSupplier<WebElement> elements(By by,
                                                                TimeUnit timeUnit,
                                                                long time, Predicate<WebElement> predicate) {
-        return items(webElements(by, timeUnit, time), predicate);
+        return items(webElements(by, timeUnit, time, predicate.toString()),
+                predicate);
+    }
+
+    public static SequentialMultipleSearchSupplier<WebElement> elements(By by,
+                                                               String text,
+                                                               TimeUnit timeUnit,
+                                                               long time, Predicate<WebElement> predicate) {
+        return elements(by, timeUnit, time,
+                elementShouldHaveText(text).and(predicate));
+    }
+
+    public static SequentialMultipleSearchSupplier<WebElement> elements(By by,
+                                                               Pattern textPattern,
+                                                               TimeUnit timeUnit,
+                                                               long time, Predicate<WebElement> predicate) {
+        return elements(by, timeUnit, time, elementShouldHaveText(textPattern)
+                .and(predicate));
     }
 
     public static SequentialMultipleSearchSupplier<WebElement> elements(By by,
                                                                TimeUnit timeUnit, long time) {
-        return elements(by, timeUnit, time, withNoCondition());
+        return elements(by, timeUnit, time, defaultPredicateForElements());
+    }
+
+    public static SequentialMultipleSearchSupplier<WebElement> elements(By by,
+                                                               String text,
+                                                               TimeUnit timeUnit, long time) {
+        return elements(by, text,
+                timeUnit, time, defaultPredicateForElements());
+    }
+
+    public static SequentialMultipleSearchSupplier<WebElement> elements(By by,
+                                                               Pattern textPattern,
+                                                               TimeUnit timeUnit, long time) {
+        return elements(by, textPattern, timeUnit, time, defaultPredicateForElements());
     }
 
     public static SequentialMultipleSearchSupplier<WebElement> elements(By by, Predicate<WebElement> predicate) {
         return elements(by,
+                ELEMENT_WAITING_TIME_UNIT.get(),
+                ELEMENT_WAITING_TIME_VALUE.get(), predicate);
+    }
+
+    public static SequentialMultipleSearchSupplier<WebElement> elements(By by,
+                                                                       String text,
+                                                                       Predicate<WebElement> predicate) {
+        return elements(by,
+                text,
+                ELEMENT_WAITING_TIME_UNIT.get(),
+                ELEMENT_WAITING_TIME_VALUE.get(), predicate);
+    }
+
+    public static SequentialMultipleSearchSupplier<WebElement> elements(By by,
+                                                                        Pattern textPattern,
+                                                                        Predicate<WebElement> predicate) {
+        return elements(by,
+                textPattern,
                 ELEMENT_WAITING_TIME_UNIT.get(),
                 ELEMENT_WAITING_TIME_VALUE.get(), predicate);
     }
@@ -65,30 +113,15 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
                 ELEMENT_WAITING_TIME_VALUE.get());
     }
 
-    public static SequentialMultipleSearchSupplier<WebElement> displayedElements(By by,
-                                                                        TimeUnit timeUnit,
-                                                                        long time, Predicate<WebElement> predicate) {
-        return elements(by,
-                timeUnit,
-                time,
-                elementShouldBeDisplayed().and(predicate));
+    public static SequentialMultipleSearchSupplier<WebElement> elements(By by,
+                                                               String text) {
+        return elements(by, text, ELEMENT_WAITING_TIME_UNIT.get(),
+                ELEMENT_WAITING_TIME_VALUE.get());
     }
 
-    public static SequentialMultipleSearchSupplier<WebElement> displayedElements(By by,
-                                                                        TimeUnit timeUnit, long time) {
-        return displayedElements(by, timeUnit, time, withNoCondition());
-    }
-
-    public static SequentialMultipleSearchSupplier<WebElement> displayedElements(By by,
-                                                                        Predicate<WebElement> predicate) {
-        return displayedElements(by,
-                ELEMENT_WAITING_TIME_UNIT.get(),
-                ELEMENT_WAITING_TIME_VALUE.get(), predicate);
-    }
-
-    public static SequentialMultipleSearchSupplier<WebElement> displayedElements(By by) {
-        return displayedElements(by,
-                ELEMENT_WAITING_TIME_UNIT.get(),
+    public static SequentialMultipleSearchSupplier<WebElement> elements(By by,
+                                                               Pattern textPattern) {
+        return elements(by, textPattern, ELEMENT_WAITING_TIME_UNIT.get(),
                 ELEMENT_WAITING_TIME_VALUE.get());
     }
 
@@ -100,8 +133,42 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
     }
 
     public static <T extends Widget> SequentialMultipleSearchSupplier<T> widgets(Class<T> tClass,
+                                                                                 List<String> labels,
+                                                                                 TimeUnit timeUnit,
+                                                                                 long time,
+                                                                                 Predicate<T> predicate) {
+        Predicate<? extends T> labeledBy = widgetShouldBeLabeledBy(labels.toArray(new String[]{}));
+        Predicate<T> resultPredicate = (Predicate<T>) labeledBy.and(predicate);
+        return items(labeledWidgets(tClass, timeUnit, time, resultPredicate.toString()), resultPredicate);
+    }
+
+    public static <T extends Widget> SequentialMultipleSearchSupplier<T> widgets(Class<T> tClass,
+                                                                                 String label,
+                                                                                 TimeUnit timeUnit,
+                                                                                 long time,
+                                                                                 Predicate<T> predicate) {
+        return widgets(tClass,
+                List.of(label),
+                timeUnit, time, predicate);
+    }
+
+    public static <T extends Widget> SequentialMultipleSearchSupplier<T> widgets(Class<T> tClass,
                                                                                  TimeUnit timeUnit, long time) {
-        return widgets(tClass, timeUnit, time, withNoCondition());
+        return widgets(tClass, timeUnit, time, defaultPredicateForWidgets());
+    }
+
+    public static <T extends Widget> SequentialMultipleSearchSupplier<T> widgets(Class<T> tClass,
+                                                                        List<String> labels,
+                                                                        TimeUnit timeUnit,
+                                                                        long time) {
+        return widgets(tClass, labels, timeUnit, time, defaultPredicateForWidgets());
+    }
+
+    public static <T extends Widget> SequentialMultipleSearchSupplier<T> widgets(Class<T> tClass,
+                                                                                 String label,
+                                                                                 TimeUnit timeUnit,
+                                                                                 long time) {
+        return widgets(tClass, label, timeUnit, time, defaultPredicateForWidgets());
     }
 
     public static <T extends Widget> SequentialMultipleSearchSupplier<T> widgets(Class<T> tClass,
@@ -111,36 +178,38 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
                 ELEMENT_WAITING_TIME_VALUE.get(), predicate);
     }
 
+    public static <T extends Widget> SequentialMultipleSearchSupplier<T> widgets(Class<T> tClass,
+                                                                        List<String> labels,
+                                                                        Predicate<T> predicate) {
+        return widgets(tClass,
+                labels,
+                ELEMENT_WAITING_TIME_UNIT.get(),
+                ELEMENT_WAITING_TIME_VALUE.get(), predicate);
+    }
+
+    public static <T extends Widget> SequentialMultipleSearchSupplier<T> widgets(Class<T> tClass,
+                                                                                 String label,
+                                                                                 Predicate<T> predicate) {
+        return widgets(tClass,
+                label,
+                ELEMENT_WAITING_TIME_UNIT.get(),
+                ELEMENT_WAITING_TIME_VALUE.get(), predicate);
+    }
+
     public static <T extends Widget> SequentialMultipleSearchSupplier<T> widgets(Class<T> tClass) {
         return widgets(tClass, ELEMENT_WAITING_TIME_UNIT.get(),
                 ELEMENT_WAITING_TIME_VALUE.get());
     }
 
-    public static <T extends Widget> SequentialMultipleSearchSupplier<T> visibleWidgets(Class<T> tClass,
-                                                                                        TimeUnit timeUnit,
-                                                                                        long time,
-                                                                                        Predicate<T> predicate) {
-        return widgets(tClass,
-                timeUnit,
-                time,
-                DefaultWidgetConditions.<T>widgetShouldBeVisible().and(predicate));
+    public static <T extends Widget> SequentialMultipleSearchSupplier<T> widgets(Class<T> tClass,
+                                                                        List<String> labels) {
+        return widgets(tClass, labels, ELEMENT_WAITING_TIME_UNIT.get(),
+                ELEMENT_WAITING_TIME_VALUE.get());
     }
 
-    public static <T extends Widget> SequentialMultipleSearchSupplier<T> visibleWidgets(Class<T> tClass,
-                                                                               TimeUnit timeUnit, long time) {
-        return visibleWidgets(tClass, timeUnit, time, withNoCondition());
-    }
-
-    public static <T extends Widget> SequentialMultipleSearchSupplier<T> visibleWidgets(Class<T> tClass,
-                                                                               Predicate<T> predicate) {
-        return visibleWidgets(tClass,
-                ELEMENT_WAITING_TIME_UNIT.get(),
-                ELEMENT_WAITING_TIME_VALUE.get(), predicate);
-    }
-
-    public static <T extends Widget> SequentialMultipleSearchSupplier<T> visibleWidgets(Class<T> tClass) {
-        return visibleWidgets(tClass,
-                ELEMENT_WAITING_TIME_UNIT.get(),
+    public static <T extends Widget> SequentialMultipleSearchSupplier<T> widgets(Class<T> tClass,
+                                                                        String label) {
+        return widgets(tClass, label, ELEMENT_WAITING_TIME_UNIT.get(),
                 ELEMENT_WAITING_TIME_VALUE.get());
     }
 
