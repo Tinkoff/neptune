@@ -37,12 +37,35 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
         this.condition = condition;
     }
 
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of instances of {@link SearchContext} found from the input value.
+     *
+     * @param transformation is a function which performs the searching from some {@link SearchContext}
+     *                       and transform the list of found items to another list of instances
+     *                       of {@link SearchContext}
+     * @param condition to specify the searching criteria
+     * @param <T> is a type of a value to be returned by resulted function
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
     public static <T extends SearchContext> SequentialMultipleSearchSupplier<T> items(
             Function<SearchContext,List<T>> transformation,
             Predicate<T> condition) {
         return new SequentialMultipleSearchSupplier<>(transformation, condition);
     }
 
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of {@link WebElement} found from the input value.
+     *
+     * @param by locator strategy to find elements
+     * @param timeUnit is the parameter of a time to find elements
+     * @param time is the parameter of a time to find elements
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
     public static SequentialMultipleSearchSupplier<WebElement> elements(By by,
                                                                TimeUnit timeUnit,
                                                                long time, Predicate<WebElement> predicate) {
@@ -50,6 +73,18 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
                 predicate);
     }
 
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of {@link WebElement} found from the input value.
+     *
+     * @param by locator strategy to find elements
+     * @param text which the desired elements should have
+     * @param timeUnit is the parameter of a time to find elements
+     * @param time is the parameter of a time to find elements
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
     public static SequentialMultipleSearchSupplier<WebElement> elements(By by,
                                                                String text,
                                                                TimeUnit timeUnit,
@@ -58,6 +93,18 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
                 elementShouldHaveText(text).and(predicate));
     }
 
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of {@link WebElement} found from the input value.
+     *
+     * @param by locator strategy to find elements
+     * @param textPattern is a regExp to match text of desired elements
+     * @param timeUnit is the parameter of a time to find elements
+     * @param time is the parameter of a time to find elements
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
     public static SequentialMultipleSearchSupplier<WebElement> elements(By by,
                                                                Pattern textPattern,
                                                                TimeUnit timeUnit,
@@ -66,11 +113,40 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
                 .and(predicate));
     }
 
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of {@link WebElement} found from the input value. The
+     * result function will return a list of any found elements if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found elements which are displayed on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param by locator strategy to find elements
+     * @param timeUnit is the parameter of a time to find elements
+     * @param time is the parameter of a time to find elements
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
     public static SequentialMultipleSearchSupplier<WebElement> elements(By by,
                                                                TimeUnit timeUnit, long time) {
         return elements(by, timeUnit, time, defaultPredicateForElements());
     }
 
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of {@link WebElement} found from the input value. The
+     * result function will return a list of any found elements if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found elements which are displayed on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param by locator strategy to find elements
+     * @param text which the desired elements should have
+     * @param timeUnit is the parameter of a time to find elements
+     * @param time is the parameter of a time to find elements
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
     public static SequentialMultipleSearchSupplier<WebElement> elements(By by,
                                                                String text,
                                                                TimeUnit timeUnit, long time) {
@@ -78,18 +154,60 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
                 timeUnit, time, defaultPredicateForElements());
     }
 
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of {@link WebElement} found from the input value. The
+     * result function will return a list of any found elements if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found elements which are displayed on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param by locator strategy to find elements
+     * @param textPattern is a regExp to match text of desired elements
+     * @param timeUnit is the parameter of a time to find elements
+     * @param time is the parameter of a time to find elements
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
     public static SequentialMultipleSearchSupplier<WebElement> elements(By by,
                                                                Pattern textPattern,
                                                                TimeUnit timeUnit, long time) {
         return elements(by, textPattern, timeUnit, time, defaultPredicateForElements());
     }
 
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of {@link WebElement} found from the input value. The searching
+     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
+     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time.
+     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
+     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     *
+     * @param by locator strategy to find elements
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
     public static SequentialMultipleSearchSupplier<WebElement> elements(By by, Predicate<WebElement> predicate) {
         return elements(by,
                 ELEMENT_WAITING_TIME_UNIT.get(),
                 ELEMENT_WAITING_TIME_VALUE.get(), predicate);
     }
 
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of {@link WebElement} found from the input value. The searching
+     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
+     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time.
+     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
+     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     *
+     * @param by locator strategy to find elements
+     * @param text which the desired elements should have
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
     public static SequentialMultipleSearchSupplier<WebElement> elements(By by,
                                                                        String text,
                                                                        Predicate<WebElement> predicate) {
@@ -99,6 +217,20 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
                 ELEMENT_WAITING_TIME_VALUE.get(), predicate);
     }
 
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of {@link WebElement} found from the input value. The searching
+     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
+     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time.
+     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
+     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     *
+     * @param by locator strategy to find elements
+     * @param textPattern is a regExp to match text of desired elements
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
     public static SequentialMultipleSearchSupplier<WebElement> elements(By by,
                                                                         Pattern textPattern,
                                                                         Predicate<WebElement> predicate) {
@@ -108,23 +240,85 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
                 ELEMENT_WAITING_TIME_VALUE.get(), predicate);
     }
 
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of {@link WebElement} found from the input value. The searching
+     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
+     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time. The
+     * result function will return a list of any found elements if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found elements which are displayed on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
+     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     *
+     * @param by locator strategy to find an element
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
     public static SequentialMultipleSearchSupplier<WebElement> elements(By by) {
         return elements(by, ELEMENT_WAITING_TIME_UNIT.get(),
                 ELEMENT_WAITING_TIME_VALUE.get());
     }
 
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of {@link WebElement} found from the input value. The searching
+     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
+     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time. The
+     * result function will return a list of any found elements if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found elements which are displayed on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
+     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     *
+     * @param by locator strategy to find an element
+     * @param text which the desired elements should have
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
     public static SequentialMultipleSearchSupplier<WebElement> elements(By by,
                                                                String text) {
         return elements(by, text, ELEMENT_WAITING_TIME_UNIT.get(),
                 ELEMENT_WAITING_TIME_VALUE.get());
     }
 
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of {@link WebElement} found from the input value. The searching
+     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
+     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time. The
+     * result function will return a list of any found elements if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found elements which are displayed on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
+     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     *
+     * @param by locator strategy to find an element
+     * @param textPattern is a regExp to match text of desired elements
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
     public static SequentialMultipleSearchSupplier<WebElement> elements(By by,
                                                                Pattern textPattern) {
         return elements(by, textPattern, ELEMENT_WAITING_TIME_UNIT.get(),
                 ELEMENT_WAITING_TIME_VALUE.get());
     }
 
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of {@link Widget} found from the input value.
+     *
+     * @param tClass is a class of {@link Widget} which instances should be returned
+     * @param timeUnit is the parameter of a time to find the element
+     * @param time is the parameter of a time to find the element
+     * @param predicate to specify the searching criteria
+     * @param <T> the type of widget which should be found
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
     public static <T extends Widget> SequentialMultipleSearchSupplier<T> widgets(Class<T> tClass,
                                                                                  TimeUnit timeUnit,
                                                                                  long time,
@@ -132,6 +326,22 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
         return items(FindWidgets.widgets(tClass, timeUnit, time, predicate.toString()), predicate);
     }
 
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of {@link Widget} found from the input value.
+     *
+     * @param tClass is a class of {@link Widget} which instances should be returned
+     * @param labels (texts of some elements or attributes inside or beside the widget) which are used to
+     *               find widgets. @param tClass should have at least one not abstract subclass which
+     *               also implements {@link com.github.toy.constructor.selenium.api.widget.Labeled} or be
+     *               that class
+     * @param timeUnit is the parameter of a time to find elements
+     * @param time is the parameter of a time to find telements
+     * @param predicate to specify the searching criteria
+     * @param <T> the type of widgets which should be found
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
     public static <T extends Widget> SequentialMultipleSearchSupplier<T> widgets(Class<T> tClass,
                                                                                  List<String> labels,
                                                                                  TimeUnit timeUnit,
@@ -142,6 +352,22 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
         return items(labeledWidgets(tClass, timeUnit, time, resultPredicate.toString()), resultPredicate);
     }
 
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of {@link Widget} found from the input value.
+     *
+     * @param tClass is a class of {@link Widget} which instances should be returned
+     * @param label (text of some element or attribute inside or beside the widget) which is used to
+     *               find widgets. @param tClass should have at least one not abstract subclass which
+     *               also implements {@link com.github.toy.constructor.selenium.api.widget.Labeled} or be
+     *               that class
+     * @param timeUnit is the parameter of a time to find elements
+     * @param time is the parameter of a time to find telements
+     * @param predicate to specify the searching criteria
+     * @param <T> the type of widgets which should be found
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
     public static <T extends Widget> SequentialMultipleSearchSupplier<T> widgets(Class<T> tClass,
                                                                                  String label,
                                                                                  TimeUnit timeUnit,
