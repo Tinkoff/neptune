@@ -2,6 +2,7 @@ package com.github.toy.constructor.selenium.functions.searching;
 
 import com.github.toy.constructor.core.api.SequentialGetSupplier;
 import com.github.toy.constructor.selenium.SeleniumSteps;
+import com.github.toy.constructor.selenium.api.widget.Labeled;
 import com.github.toy.constructor.selenium.api.widget.Widget;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -331,11 +332,10 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some instance of {@link Widget} found from the input value.
      *
-     * @param tClass is a class of {@link Widget} which instance should be returned
+     * @param tClass is a class of {@link Widget} which instance should be returned. tClass should have at
+     *               least one not abstract subclass which also implements {@link Labeled} or be that class.
      * @param labels (texts of some elements or attributes inside or beside the widget) which are used to
-     *               find the widget. @param tClass should have at least one not abstract subclass which
-     *               also implements {@link com.github.toy.constructor.selenium.api.widget.Labeled} or be
-     *               that class
+     *               find the widget.
      * @param timeUnit is the parameter of a time to find the element
      * @param time is the parameter of a time to find the element
      * @param predicate to specify the searching criteria
@@ -357,11 +357,10 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some instance of {@link Widget} found from the input value.
      *
-     * @param tClass is a class of {@link Widget} which instance should be returned
+     * @param tClass is a class of {@link Widget} which instance should be returned. tClass should have at
+     *               least one not abstract subclass which also implements {@link Labeled} or be that class.
      * @param label (text of some element or attribute inside or beside the widget) which is used to
-     *               find the widget. @param tClass should have at least one not abstract subclass which
-     *               also implements {@link com.github.toy.constructor.selenium.api.widget.Labeled} or be
-     *               that class
+     *               find the widget.
      * @param timeUnit is the parameter of a time to find the element
      * @param time is the parameter of a time to find the element
      * @param predicate to specify the searching criteria
@@ -408,11 +407,10 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      * Otherwise it will return the first found widget which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
-     * @param tClass is a class of {@link Widget} which instance should be returned
+     * @param tClass is a class of {@link Widget} which instance should be returned. tClass should have at
+     *               least one not abstract subclass which also implements {@link Labeled} or be that class.
      * @param labels (texts of some elements or attributes inside or beside the widget) which are used to
-     *               find the widget. @param tClass should have at least one not abstract subclass which
-     *               also implements {@link com.github.toy.constructor.selenium.api.widget.Labeled} or be
-     *               that class
+     *               find the widget.
      * @param timeUnit is the parameter of a time to find the element
      * @param time is the parameter of a time to find the element
      * @param <T> the type of widget which should be found
@@ -434,11 +432,10 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      * Otherwise it will return the first found widget which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
-     * @param tClass is a class of {@link Widget} which instance should be returned
+     * @param tClass is a class of {@link Widget} which instance should be returned. tClass should have at
+     *               least one not abstract subclass which also implements {@link Labeled} or be that class.
      * @param label (text of some element or attribute inside or beside the widget) which is used to
-     *               find the widget. @param tClass should have at least one not abstract subclass which
-     *               also implements {@link com.github.toy.constructor.selenium.api.widget.Labeled} or be
-     *               that class
+     *               find the widget.
      * @param timeUnit is the parameter of a time to find the element
      * @param time is the parameter of a time to find the element
      * @param <T> the type of widget which should be found
@@ -481,11 +478,10 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
      * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
-     * @param tClass is a class of {@link Widget} which instance should be returned
+     * @param tClass is a class of {@link Widget} which instance should be returned. tClass should have at
+     *               least one not abstract subclass which also implements {@link Labeled} or be that class.
      * @param labels (texts of some elements or attributes inside or beside the widget) which are used to
-     *               find the widget. @param tClass should have at least one not abstract subclass which
-     *               also implements {@link com.github.toy.constructor.selenium.api.widget.Labeled} or be
-     *               that class
+     *               find the widget.
      * @param predicate to specify the searching criteria
      * @param <T> the type of widget which should be found
      * @return an instance of {@link SequentialSearchSupplier}
@@ -508,11 +504,10 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
      * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
-     * @param tClass is a class of {@link Widget} which instance should be returned
+     * @param tClass is a class of {@link Widget} which instance should be returned. tClass should have at
+     *               least one not abstract subclass which also implements {@link Labeled} or be that class.
      * @param label (text of some element or attribute inside or beside the widget) which is used to
-     *               find the widget. @param tClass should have at least one not abstract subclass which
-     *               also implements {@link com.github.toy.constructor.selenium.api.widget.Labeled} or be
-     *               that class
+     *               find the widget.
      * @param predicate to specify the searching criteria
      * @param <T> the type of widget which should be found
      * @return an instance of {@link SequentialSearchSupplier}
@@ -561,11 +556,10 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
      * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
-     * @param tClass is a class of {@link Widget} which instance should be returned
+     * @param tClass is a class of {@link Widget} which instance should be returned. tClass should have at
+     *               least one not abstract subclass which also implements {@link Labeled} or be that class.
      * @param labels (texts of some elements or attributes inside or beside the widget) which are used to
-     *               find the widget. @param tClass should have at least one not abstract subclass which
-     *               also implements {@link com.github.toy.constructor.selenium.api.widget.Labeled} or be
-     *               that class
+     *               find the widget.
      * @param <T> the type of widget which should be found
      * @return an instance of {@link SequentialSearchSupplier}
      */
@@ -588,11 +582,10 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
      * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
-     * @param tClass is a class of {@link Widget} which instance should be returned
-     * @param label label (text of some element or attribute inside or beside the widget) which is used to
-     *              find the widget. @param tClass should have at least one not abstract subclass which
-     *              also implements {@link com.github.toy.constructor.selenium.api.widget.Labeled} or be
-     *               that class
+     * @param tClass is a class of {@link Widget} which instance should be returned. tClass should have at
+     *               least one not abstract subclass which also implements {@link Labeled} or be that class.
+     * @param label (text of some element or attribute inside or beside the widget) which is used to
+     *              find the widget.
      * @param <T> the type of widget which should be found
      * @return an instance of {@link SequentialSearchSupplier}
      */
@@ -605,7 +598,7 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     /**
      * Constructs the chained searching from some instance of {@link SearchContext}.
      *
-     * @param from is how to find from a parent element.
+     * @param from is how to find some element from a parent element.
      * @return self-reference
      */
     public SequentialSearchSupplier<R> from(SequentialSearchSupplier<? extends SearchContext> from) {
