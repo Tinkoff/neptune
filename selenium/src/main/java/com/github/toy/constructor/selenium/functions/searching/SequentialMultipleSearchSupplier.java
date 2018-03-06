@@ -7,12 +7,14 @@ import com.github.toy.constructor.selenium.api.widget.Widget;
 import com.github.toy.constructor.selenium.api.widget.drafts.Button;
 import com.github.toy.constructor.selenium.api.widget.drafts.Flag;
 import com.github.toy.constructor.selenium.api.widget.drafts.Link;
+import com.github.toy.constructor.selenium.api.widget.drafts.Select;
+import com.github.toy.constructor.selenium.properties.WaitingProperties;
 import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 
+import java.time.Duration;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -25,8 +27,7 @@ import static com.github.toy.constructor.selenium.functions.searching.DefaultWid
 import static com.github.toy.constructor.selenium.functions.searching.DefaultWidgetConditions.widgetShouldBeLabeledBy;
 import static com.github.toy.constructor.selenium.functions.searching.FindLabeledWidgets.labeledWidgets;
 import static com.github.toy.constructor.selenium.functions.searching.FindWebElements.webElements;
-import static com.github.toy.constructor.selenium.properties.TimeProperties.ELEMENT_WAITING_TIME_VALUE;
-import static com.github.toy.constructor.selenium.properties.TimeUnitProperties.ELEMENT_WAITING_TIME_UNIT;
+import static com.github.toy.constructor.selenium.properties.WaitingProperties.ELEMENT_WAITING_DURATION;
 import static java.util.Optional.ofNullable;
 
 public final class SequentialMultipleSearchSupplier<R extends SearchContext>
@@ -65,15 +66,14 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      * and returns some list of {@link WebElement} found from the input value.
      *
      * @param by locator strategy to find elements
-     * @param timeUnit is the parameter of a time to find elements
-     * @param time is the parameter of a time to find elements
+     * @param duration is the parameter of a time to find elements
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
     public static SequentialMultipleSearchSupplier<WebElement> elements(By by,
-                                                               TimeUnit timeUnit,
-                                                               long time, Predicate<WebElement> predicate) {
-        return items(webElements(by, timeUnit, time, predicate.toString()),
+                                                                        Duration duration,
+                                                                        Predicate<WebElement> predicate) {
+        return items(webElements(by, duration, predicate.toString()),
                 predicate);
     }
 
@@ -84,16 +84,15 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      *
      * @param by locator strategy to find elements
      * @param text which the desired elements should have
-     * @param timeUnit is the parameter of a time to find elements
-     * @param time is the parameter of a time to find elements
+     * @param duration is the parameter of a time to find elements
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
     public static SequentialMultipleSearchSupplier<WebElement> elements(By by,
-                                                               String text,
-                                                               TimeUnit timeUnit,
-                                                               long time, Predicate<WebElement> predicate) {
-        return elements(by, timeUnit, time,
+                                                                        String text,
+                                                                        Duration duration,
+                                                                        Predicate<WebElement> predicate) {
+        return elements(by, duration,
                 elementShouldHaveText(text).and(predicate));
     }
 
@@ -104,16 +103,15 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      *
      * @param by locator strategy to find elements
      * @param textPattern is a regExp to match text of desired elements
-     * @param timeUnit is the parameter of a time to find elements
-     * @param time is the parameter of a time to find elements
+     * @param duration is the parameter of a time to find elements
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
     public static SequentialMultipleSearchSupplier<WebElement> elements(By by,
-                                                               Pattern textPattern,
-                                                               TimeUnit timeUnit,
-                                                               long time, Predicate<WebElement> predicate) {
-        return elements(by, timeUnit, time, elementShouldHaveText(textPattern)
+                                                                        Pattern textPattern,
+                                                                        Duration duration,
+                                                                        Predicate<WebElement> predicate) {
+        return elements(by, duration, elementShouldHaveText(textPattern)
                 .and(predicate));
     }
 
@@ -127,13 +125,12 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param by locator strategy to find elements
-     * @param timeUnit is the parameter of a time to find elements
-     * @param time is the parameter of a time to find elements
+     * @param duration is the parameter of a time to find elements
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
     public static SequentialMultipleSearchSupplier<WebElement> elements(By by,
-                                                               TimeUnit timeUnit, long time) {
-        return elements(by, timeUnit, time, defaultPredicateForElements());
+                                                               Duration duration) {
+        return elements(by, duration, defaultPredicateForElements());
     }
 
     /**
@@ -147,15 +144,13 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      *
      * @param by locator strategy to find elements
      * @param text which the desired elements should have
-     * @param timeUnit is the parameter of a time to find elements
-     * @param time is the parameter of a time to find elements
+     * @param duration is the parameter of a time to find elements
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
     public static SequentialMultipleSearchSupplier<WebElement> elements(By by,
                                                                String text,
-                                                               TimeUnit timeUnit, long time) {
-        return elements(by, text,
-                timeUnit, time, defaultPredicateForElements());
+                                                               Duration duration) {
+        return elements(by, text, duration, defaultPredicateForElements());
     }
 
     /**
@@ -169,43 +164,36 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      *
      * @param by locator strategy to find elements
      * @param textPattern is a regExp to match text of desired elements
-     * @param timeUnit is the parameter of a time to find elements
-     * @param time is the parameter of a time to find elements
+     * @param duration is the parameter of a time to find elements
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
     public static SequentialMultipleSearchSupplier<WebElement> elements(By by,
                                                                Pattern textPattern,
-                                                               TimeUnit timeUnit, long time) {
-        return elements(by, textPattern, timeUnit, time, defaultPredicateForElements());
+                                                               Duration duration) {
+        return elements(by, textPattern, duration, defaultPredicateForElements());
     }
 
     /**
      * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of {@link WebElement} found from the input value. The searching
-     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
-     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some list of {@link WebElement} found from the input value.
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param by locator strategy to find elements
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
     public static SequentialMultipleSearchSupplier<WebElement> elements(By by, Predicate<WebElement> predicate) {
-        return elements(by,
-                ELEMENT_WAITING_TIME_UNIT.get(),
-                ELEMENT_WAITING_TIME_VALUE.get(), predicate);
+        return elements(by, ELEMENT_WAITING_DURATION.get(), predicate);
     }
 
     /**
      * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of {@link WebElement} found from the input value. The searching
-     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
-     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some list of {@link WebElement} found from the input value.
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param by locator strategy to find elements
      * @param text which the desired elements should have
@@ -215,20 +203,15 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
     public static SequentialMultipleSearchSupplier<WebElement> elements(By by,
                                                                        String text,
                                                                        Predicate<WebElement> predicate) {
-        return elements(by,
-                text,
-                ELEMENT_WAITING_TIME_UNIT.get(),
-                ELEMENT_WAITING_TIME_VALUE.get(), predicate);
+        return elements(by, text, ELEMENT_WAITING_DURATION.get(), predicate);
     }
 
     /**
      * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of {@link WebElement} found from the input value. The searching
-     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
-     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some list of {@link WebElement} found from the input value.
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param by locator strategy to find elements
      * @param textPattern is a regExp to match text of desired elements
@@ -238,68 +221,62 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
     public static SequentialMultipleSearchSupplier<WebElement> elements(By by,
                                                                         Pattern textPattern,
                                                                         Predicate<WebElement> predicate) {
-        return elements(by,
-                textPattern,
-                ELEMENT_WAITING_TIME_UNIT.get(),
-                ELEMENT_WAITING_TIME_VALUE.get(), predicate);
+        return elements(by, textPattern, ELEMENT_WAITING_DURATION.get(), predicate);
     }
 
     /**
      * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of {@link WebElement} found from the input value. The searching
-     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
-     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time. The
-     * result function will return a list of any found elements if the property
+     * and returns some list of {@link WebElement} found from the input value.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found elements if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found elements which are displayed on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @param by locator strategy to find an element
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
     public static SequentialMultipleSearchSupplier<WebElement> elements(By by) {
-        return elements(by, ELEMENT_WAITING_TIME_UNIT.get(),
-                ELEMENT_WAITING_TIME_VALUE.get());
+        return elements(by, ELEMENT_WAITING_DURATION.get());
     }
 
     /**
      * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of {@link WebElement} found from the input value. The searching
-     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
-     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time. The
-     * result function will return a list of any found elements if the property
+     * and returns some list of {@link WebElement} found from the input value.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found elements if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found elements which are displayed on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @param by locator strategy to find an element
      * @param text which the desired elements should have
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
-    public static SequentialMultipleSearchSupplier<WebElement> elements(By by,
-                                                               String text) {
-        return elements(by, text, ELEMENT_WAITING_TIME_UNIT.get(),
-                ELEMENT_WAITING_TIME_VALUE.get());
+    public static SequentialMultipleSearchSupplier<WebElement> elements(By by, String text) {
+        return elements(by, text, ELEMENT_WAITING_DURATION.get());
     }
 
     /**
      * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of {@link WebElement} found from the input value. The searching
-     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
-     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time. The
-     * result function will return a list of any found elements if the property
+     * and returns some list of {@link WebElement} found from the input value.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found elements if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found elements which are displayed on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @param by locator strategy to find an element
      * @param textPattern is a regExp to match text of desired elements
@@ -307,8 +284,7 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      */
     public static SequentialMultipleSearchSupplier<WebElement> elements(By by,
                                                                Pattern textPattern) {
-        return elements(by, textPattern, ELEMENT_WAITING_TIME_UNIT.get(),
-                ELEMENT_WAITING_TIME_VALUE.get());
+        return elements(by, textPattern, ELEMENT_WAITING_DURATION.get());
     }
 
     /**
@@ -317,17 +293,15 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      * and returns some list of {@link Widget} found from the input value.
      *
      * @param tClass is a class of {@link Widget} which instances should be returned
-     * @param timeUnit is the parameter of a time to find elements
-     * @param time is the parameter of a time to find elements
+     * @param duration is the parameter of a time to find elements
      * @param predicate to specify the searching criteria
      * @param <T> the type of widget which should be found
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
     public static <T extends Widget> SequentialMultipleSearchSupplier<T> widgets(Class<T> tClass,
-                                                                                 TimeUnit timeUnit,
-                                                                                 long time,
+                                                                                 Duration duration,
                                                                                  Predicate<T> predicate) {
-        return items(FindWidgets.widgets(tClass, timeUnit, time, predicate.toString()), predicate);
+        return items(FindWidgets.widgets(tClass, duration, predicate.toString()), predicate);
     }
 
     /**
@@ -339,20 +313,18 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      *               not abstract subclass which also implements {@link Labeled} or be that class.
      * @param labels (texts of some elements or attributes inside or beside the widget) which are used to
      *               find widgets.
-     * @param timeUnit is the parameter of a time to find elements
-     * @param time is the parameter of a time to find elements
+     * @param duration is the parameter of a time to find elements
      * @param predicate to specify the searching criteria
      * @param <T> the type of widgets which should be found
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
     public static <T extends Widget> SequentialMultipleSearchSupplier<T> widgets(Class<T> tClass,
                                                                                  List<String> labels,
-                                                                                 TimeUnit timeUnit,
-                                                                                 long time,
+                                                                                 Duration duration,
                                                                                  Predicate<T> predicate) {
         Predicate<? extends T> labeledBy = widgetShouldBeLabeledBy(labels.toArray(new String[]{}));
         Predicate<T> resultPredicate = (Predicate<T>) labeledBy.and(predicate);
-        return items(labeledWidgets(tClass, timeUnit, time, resultPredicate.toString()), resultPredicate);
+        return items(labeledWidgets(tClass, duration, resultPredicate.toString()), resultPredicate);
     }
 
     /**
@@ -364,20 +336,18 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      *               not abstract subclass which also implements {@link Labeled} or be that class.
      * @param label (text of some element or attribute inside or beside the widget) which is used to
      *               find widgets.
-     * @param timeUnit is the parameter of a time to find elements
-     * @param time is the parameter of a time to find elements
+     * @param duration is the parameter of a time to find elements
      * @param predicate to specify the searching criteria
      * @param <T> the type of widgets which should be found
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
     public static <T extends Widget> SequentialMultipleSearchSupplier<T> widgets(Class<T> tClass,
                                                                                  String label,
-                                                                                 TimeUnit timeUnit,
-                                                                                 long time,
+                                                                                 Duration duration,
                                                                                  Predicate<T> predicate) {
         return widgets(tClass,
                 List.of(label),
-                timeUnit, time, predicate);
+                duration, predicate);
     }
 
     /**
@@ -390,14 +360,13 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param tClass is a class of {@link Widget} which instances should be returned
-     * @param timeUnit is the parameter of a time to find elements
-     * @param time is the parameter of a time to find elements
+     * @param duration is the parameter of a time to find elements
      * @param <T> the type of widgets which should be found
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
     public static <T extends Widget> SequentialMultipleSearchSupplier<T> widgets(Class<T> tClass,
-                                                                                 TimeUnit timeUnit, long time) {
-        return widgets(tClass, timeUnit, time, defaultPredicateForWidgets());
+                                                                                 Duration duration) {
+        return widgets(tClass, duration, defaultPredicateForWidgets());
     }
 
     /**
@@ -413,16 +382,14 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      *               not abstract subclass which also implements {@link Labeled} or be that class.
      * @param labels (texts of some elements or attributes inside or beside the widget) which are used to
      *               find widgets.
-     * @param timeUnit is the parameter of a time to find elements
-     * @param time is the parameter of a time to find elements
+     * @param duration is the parameter of a time to find elements
      * @param <T> the type of widgets which should be found
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
     public static <T extends Widget> SequentialMultipleSearchSupplier<T> widgets(Class<T> tClass,
                                                                         List<String> labels,
-                                                                        TimeUnit timeUnit,
-                                                                        long time) {
-        return widgets(tClass, labels, timeUnit, time, defaultPredicateForWidgets());
+                                                                        Duration duration) {
+        return widgets(tClass, labels, duration, defaultPredicateForWidgets());
     }
 
     /**
@@ -438,26 +405,22 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      *               not abstract subclass which also implements {@link Labeled} or be that class.
      * @param label (text of some element or attribute inside or beside the widget) which is used to
      *               find widgets.
-     * @param timeUnit is the parameter of a time to find elements
-     * @param time is the parameter of a time to find elements
+     * @param duration is the parameter of a time to find elements
      * @param <T> the type of widgets which should be found
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
     public static <T extends Widget> SequentialMultipleSearchSupplier<T> widgets(Class<T> tClass,
                                                                                  String label,
-                                                                                 TimeUnit timeUnit,
-                                                                                 long time) {
-        return widgets(tClass, label, timeUnit, time, defaultPredicateForWidgets());
+                                                                                 Duration duration) {
+        return widgets(tClass, label, duration, defaultPredicateForWidgets());
     }
 
     /**
      * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of {@link Widget} found from the input value. The searching
-     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
-     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some list of {@link Widget} found from the input value.
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param tClass is a class of {@link Widget} which instances should be returned
      * @param predicate to specify the searching criteria
@@ -466,19 +429,15 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      */
     public static <T extends Widget> SequentialMultipleSearchSupplier<T> widgets(Class<T> tClass,
                                                                         Predicate<T> predicate) {
-        return widgets(tClass,
-                ELEMENT_WAITING_TIME_UNIT.get(),
-                ELEMENT_WAITING_TIME_VALUE.get(), predicate);
+        return widgets(tClass, ELEMENT_WAITING_DURATION.get(), predicate);
     }
 
     /**
      * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of {@link Widget} found from the input value. The searching
-     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
-     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some list of {@link Widget} found from the input value.
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param tClass is a class of {@link Widget} which instances should be returned. tClass should have at least one
      *               not abstract subclass which also implements {@link Labeled} or be that class.
@@ -491,20 +450,15 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
     public static <T extends Widget> SequentialMultipleSearchSupplier<T> widgets(Class<T> tClass,
                                                                         List<String> labels,
                                                                         Predicate<T> predicate) {
-        return widgets(tClass,
-                labels,
-                ELEMENT_WAITING_TIME_UNIT.get(),
-                ELEMENT_WAITING_TIME_VALUE.get(), predicate);
+        return widgets(tClass, labels, ELEMENT_WAITING_DURATION.get(), predicate);
     }
 
     /**
      * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of {@link Widget} found from the input value. The searching
-     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
-     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some list of {@link Widget} found from the input value.
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param tClass is a class of {@link Widget} which instances should be returned. tClass should have at least one
      *               not abstract subclass which also implements {@link Labeled} or be that class.
@@ -517,46 +471,42 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
     public static <T extends Widget> SequentialMultipleSearchSupplier<T> widgets(Class<T> tClass,
                                                                                  String label,
                                                                                  Predicate<T> predicate) {
-        return widgets(tClass,
-                label,
-                ELEMENT_WAITING_TIME_UNIT.get(),
-                ELEMENT_WAITING_TIME_VALUE.get(), predicate);
+        return widgets(tClass, label, ELEMENT_WAITING_DURATION.get(), predicate);
     }
 
     /**
      * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of {@link Widget} found from the input value. The searching
-     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
-     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time. The
-     * result function will return a list of any found widgets if the property
+     * and returns some list of {@link Widget} found from the input value.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found widgets if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found widgets which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @param tClass is a class of {@link Widget} which instances should be returned
      * @param <T> the type of widgets which should be found
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
     public static <T extends Widget> SequentialMultipleSearchSupplier<T> widgets(Class<T> tClass) {
-        return widgets(tClass, ELEMENT_WAITING_TIME_UNIT.get(),
-                ELEMENT_WAITING_TIME_VALUE.get());
+        return widgets(tClass, ELEMENT_WAITING_DURATION.get());
     }
 
     /**
      * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of {@link Widget} found from the input value. The searching
-     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
-     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time. The
-     * result function will return a list of any found widgets if the property
+     * and returns some list of {@link Widget} found from the input value.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found widgets if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found widgets which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @param tClass is a class of {@link Widget} which instances should be returned. tClass should have at least one
      *               not abstract subclass which also implements {@link Labeled} or be that class.
@@ -567,22 +517,21 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      */
     public static <T extends Widget> SequentialMultipleSearchSupplier<T> widgets(Class<T> tClass,
                                                                         List<String> labels) {
-        return widgets(tClass, labels, ELEMENT_WAITING_TIME_UNIT.get(),
-                ELEMENT_WAITING_TIME_VALUE.get());
+        return widgets(tClass, labels, ELEMENT_WAITING_DURATION.get());
     }
 
     /**
      * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of {@link Widget} found from the input value. The searching
-     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
-     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time. The
-     * result function will return a list of any found widgets if the property
+     * and returns some list of {@link Widget} found from the input value.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found widgets if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found widgets which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @param tClass is a class of {@link Widget} which instances should be returned. tClass should have at least one
      *               not abstract subclass which also implements {@link Labeled} or be that class.
@@ -593,8 +542,7 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      */
     public static <T extends Widget> SequentialMultipleSearchSupplier<T> widgets(Class<T> tClass,
                                                                         String label) {
-        return widgets(tClass, label, ELEMENT_WAITING_TIME_UNIT.get(),
-                ELEMENT_WAITING_TIME_VALUE.get());
+        return widgets(tClass, label, ELEMENT_WAITING_DURATION.get());
     }
 
     /**
@@ -602,15 +550,13 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found buttons.
      *
-     * @param timeUnit is the parameter of a time to find buttons
-     * @param time is the parameter of a time to find buttons
+     * @param duration is the parameter of a time to find buttons
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
-    public static SequentialMultipleSearchSupplier<Button> buttons(TimeUnit timeUnit,
-                                                                   long time,
+    public static SequentialMultipleSearchSupplier<Button> buttons(Duration duration,
                                                                    Predicate<Button> predicate) {
-        return widgets(Button.class, timeUnit, time, predicate);
+        return widgets(Button.class, duration, predicate);
     }
 
     /**
@@ -620,16 +566,14 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      *
      * @param labels (texts of some elements or attributes inside or beside the button) which are used to
      *               find buttons.
-     * @param timeUnit is the parameter of a time to find buttons
-     * @param time is the parameter of a time to find buttons
+     * @param duration is the parameter of a time to find buttons
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
     public static SequentialMultipleSearchSupplier<Button> buttons(List<String> labels,
-                                                                   TimeUnit timeUnit,
-                                                                   long time,
+                                                                   Duration duration,
                                                                    Predicate<Button> predicate) {
-        return widgets(Button.class, labels, timeUnit, time, predicate);
+        return widgets(Button.class, labels, duration, predicate);
     }
 
     /**
@@ -639,17 +583,15 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      *
      * @param label (text of some element or attribute inside or beside the button) which is used to
      *               find buttons.
-     * @param timeUnit is the parameter of a time to find buttons
-     * @param time is the parameter of a time to find buttons
+     * @param duration is the parameter of a time to find buttons
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
     public static SequentialMultipleSearchSupplier<Button> buttons(String label,
-                                                                   TimeUnit timeUnit,
-                                                                   long time,
+                                                                   Duration duration,
                                                                    Predicate<Button> predicate) {
         return widgets(Button.class, label,
-                timeUnit, time, predicate);
+                duration, predicate);
     }
 
     /**
@@ -660,12 +602,11 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      * Otherwise it will return a list of found buttons which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
-     * @param timeUnit is the parameter of a time to find buttons
-     * @param time is the parameter of a time to find buttons
+     * @param duration is the parameter of a time to find buttons
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
-    public static SequentialMultipleSearchSupplier<Button> buttons(TimeUnit timeUnit, long time) {
-        return widgets(Button.class, timeUnit, time);
+    public static SequentialMultipleSearchSupplier<Button> buttons(Duration duration) {
+        return widgets(Button.class, duration);
     }
 
     /**
@@ -678,14 +619,12 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      *
      * @param labels (texts of some elements or attributes inside or beside the button) which are used to
      *               find buttons.
-     * @param timeUnit is the parameter of a time to find buttons
-     * @param time is the parameter of a time to find buttons
+     * @param duration is the parameter of a time to find buttons
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
     public static SequentialMultipleSearchSupplier<Button> buttons(List<String> labels,
-                                                                   TimeUnit timeUnit,
-                                                                   long time) {
-        return widgets(Button.class, labels, timeUnit, time);
+                                                                   Duration duration) {
+        return widgets(Button.class, labels, duration);
     }
 
     /**
@@ -698,24 +637,19 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      *
      * @param label (text of some element or attribute inside or beside the button) which is used to
      *               find buttons.
-     * @param timeUnit is the parameter of a time to find buttons
-     * @param time is the parameter of a time to find buttons
+     * @param duration is the parameter of a time to find buttons
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
     public static SequentialMultipleSearchSupplier<Button> buttons(String label,
-                                                                   TimeUnit timeUnit,
-                                                                   long time) {
-        return widgets(Button.class, label, timeUnit, time);
+                                                                   Duration duration) {
+        return widgets(Button.class, label, duration);
     }
 
     /**
      * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of found buttons. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some list of found buttons. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialMultipleSearchSupplier}
@@ -727,11 +661,8 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of found buttons. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some list of found buttons. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param labels (texts of some elements or attributes inside or beside the button) which are used to
      *               find buttons.
@@ -747,11 +678,8 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of found buttons. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some list of found buttons. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param label (text of some element or attribute inside or beside the button) which is used to
      *               find buttons.
@@ -767,14 +695,15 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of found buttons. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time. The result function will return a list of any found buttons
+     * and returns some list of found buttons.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found buttons
      * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found buttons which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
@@ -785,14 +714,15 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of found buttons. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time. The result function will return a list of any found buttons
+     * and returns some list of found buttons.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found buttons
      * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found buttons which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @param labels (texts of some elements or attributes inside or beside the button) which are used to
      *               find buttons.
@@ -805,14 +735,15 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of found buttons. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time. The result function will return a list of any found buttons
+     * and returns some list of found buttons.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found buttons
      * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found buttons which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @param label (text of some element or attribute inside or beside the button) which is used to
      *               find buttons.
@@ -827,15 +758,13 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found flags.
      *
-     * @param timeUnit is the parameter of a time to find flags
-     * @param time is the parameter of a time to find flags
+     * @param duration is the parameter of a time to find flags
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
-    public static SequentialMultipleSearchSupplier<Flag> flags(TimeUnit timeUnit,
-                                                               long time,
+    public static SequentialMultipleSearchSupplier<Flag> flags(Duration duration,
                                                                Predicate<Flag> predicate) {
-        return widgets(Flag.class, timeUnit, time, predicate);
+        return widgets(Flag.class, duration, predicate);
     }
 
     /**
@@ -845,16 +774,14 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      *
      * @param labels (texts of some elements or attributes inside or beside the flag) which are used to
      *               find flags.
-     * @param timeUnit is the parameter of a time to find flags
-     * @param time is the parameter of a time to find flags
+     * @param duration is the parameter of a time to find flags
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
     public static SequentialMultipleSearchSupplier<Flag> flags(List<String> labels,
-                                                                 TimeUnit timeUnit,
-                                                                 long time,
+                                                                 Duration duration,
                                                                  Predicate<Flag> predicate) {
-        return widgets(Flag.class, labels, timeUnit, time, predicate);
+        return widgets(Flag.class, labels, duration, predicate);
     }
 
     /**
@@ -864,17 +791,15 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      *
      * @param label (text of some element or attribute inside or beside the flag) which is used to
      *               find flags.
-     * @param timeUnit is the parameter of a time to find flags
-     * @param time is the parameter of a time to find flags
+     * @param duration is the parameter of a time to find flags
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
     public static SequentialMultipleSearchSupplier<Flag> flags(String label,
-                                                                 TimeUnit timeUnit,
-                                                                 long time,
+                                                                 Duration duration,
                                                                  Predicate<Flag> predicate) {
         return widgets(Flag.class, label,
-                timeUnit, time, predicate);
+                duration, predicate);
     }
 
     /**
@@ -885,12 +810,11 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      * Otherwise it will return a list of found flags which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
-     * @param timeUnit is the parameter of a time to find flags
-     * @param time is the parameter of a time to find flags
+     * @param duration is the parameter of a time to find flags
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
-    public static SequentialMultipleSearchSupplier<Flag> flags(TimeUnit timeUnit, long time) {
-        return widgets(Flag.class, timeUnit, time);
+    public static SequentialMultipleSearchSupplier<Flag> flags(Duration duration) {
+        return widgets(Flag.class, duration);
     }
 
     /**
@@ -903,14 +827,12 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      *
      * @param labels (texts of some elements or attributes inside or beside the flag) which are used to
      *               find flags.
-     * @param timeUnit is the parameter of a time to find flags
-     * @param time is the parameter of a time to find flags
+     * @param duration is the parameter of a time to find flags
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
     public static SequentialMultipleSearchSupplier<Flag> flags(List<String> labels,
-                                                               TimeUnit timeUnit,
-                                                               long time) {
-        return widgets(Flag.class, labels, timeUnit, time);
+                                                               Duration duration) {
+        return widgets(Flag.class, labels, duration);
     }
 
     /**
@@ -923,24 +845,19 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      *
      * @param label (text of some element or attribute inside or beside the flag) which is used to
      *               find flags.
-     * @param timeUnit is the parameter of a time to find flags
-     * @param time is the parameter of a time to find flags
+     * @param duration is the parameter of a time to find flags
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
     public static SequentialMultipleSearchSupplier<Flag> flags(String label,
-                                                               TimeUnit timeUnit,
-                                                               long time) {
-        return widgets(Flag.class, label, timeUnit, time);
+                                                               Duration duration) {
+        return widgets(Flag.class, label, duration);
     }
 
     /**
      * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of found flags. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some list of found flags. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialMultipleSearchSupplier}
@@ -952,11 +869,8 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of found flags. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some list of found flags. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param labels (texts of some elements or attributes inside or beside the flags) which are used to
      *               find flags.
@@ -972,11 +886,8 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of found flags. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some list of found flags. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param label (text of some element or attribute inside or beside the flag) which is used to
      *               find flags.
@@ -992,14 +903,15 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of found flags. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time. The result function will return a list of any found flags
+     * and returns some list of found flags.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found flags
      * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found flags which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
@@ -1010,14 +922,15 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of found flags. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time. The result function will return a list of any found flags
+     * and returns some list of found flags.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found flags
      * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found flags which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @param labels (texts of some elements or attributes inside or beside the flag) which are used to
      *               find flags.
@@ -1030,14 +943,15 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of found flags. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time. The result function will return a list of any found flags
+     * and returns some list of found flags.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found flags
      * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found flags which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @param label (text of some element or attribute inside or beside the flag) which is used to
      *               find flags.
@@ -1052,15 +966,13 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found links.
      *
-     * @param timeUnit is the parameter of a time to find links
-     * @param time is the parameter of a time to find links
+     * @param duration is the parameter of a time to find links
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
-    public static SequentialMultipleSearchSupplier<Link> links(TimeUnit timeUnit,
-                                                               long time,
+    public static SequentialMultipleSearchSupplier<Link> links(Duration duration,
                                                                Predicate<Link> predicate) {
-        return widgets(Link.class, timeUnit, time, predicate);
+        return widgets(Link.class, duration, predicate);
     }
 
     /**
@@ -1070,16 +982,14 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      *
      * @param labels (texts of some elements or attributes inside or beside the link) which are used to
      *               find links.
-     * @param timeUnit is the parameter of a time to find links
-     * @param time is the parameter of a time to find links
+     * @param duration is the parameter of a time to find links
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
     public static SequentialMultipleSearchSupplier<Link> links(List<String> labels,
-                                                               TimeUnit timeUnit,
-                                                               long time,
+                                                               Duration duration,
                                                                Predicate<Link> predicate) {
-        return widgets(Link.class, labels, timeUnit, time, predicate);
+        return widgets(Link.class, labels, duration, predicate);
     }
 
     /**
@@ -1089,17 +999,15 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      *
      * @param label (text of some element or attribute inside or beside the link) which is used to
      *               find links.
-     * @param timeUnit is the parameter of a time to find links
-     * @param time is the parameter of a time to find links
+     * @param duration is the parameter of a time to find links
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
     public static SequentialMultipleSearchSupplier<Link> links(String label,
-                                                               TimeUnit timeUnit,
-                                                               long time,
+                                                               Duration duration,
                                                                Predicate<Link> predicate) {
         return widgets(Link.class, label,
-                timeUnit, time, predicate);
+                duration, predicate);
     }
 
     /**
@@ -1110,12 +1018,11 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      * Otherwise it will return a list of found links which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
-     * @param timeUnit is the parameter of a time to find links
-     * @param time is the parameter of a time to find links
+     * @param duration is the parameter of a time to find links
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
-    public static SequentialMultipleSearchSupplier<Link> links(TimeUnit timeUnit, long time) {
-        return widgets(Link.class, timeUnit, time);
+    public static SequentialMultipleSearchSupplier<Link> links(Duration duration) {
+        return widgets(Link.class, duration);
     }
 
     /**
@@ -1128,14 +1035,12 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      *
      * @param labels (texts of some elements or attributes inside or beside the links) which are used to
      *               find links.
-     * @param timeUnit is the parameter of a time to find links
-     * @param time is the parameter of a time to find links
+     * @param duration is the parameter of a time to find links
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
     public static SequentialMultipleSearchSupplier<Link> links(List<String> labels,
-                                                               TimeUnit timeUnit,
-                                                               long time) {
-        return widgets(Link.class, labels, timeUnit, time);
+                                                               Duration duration) {
+        return widgets(Link.class, labels, duration);
     }
 
     /**
@@ -1148,24 +1053,19 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      *
      * @param label (text of some element or attribute inside or beside the link) which is used to
      *               find links.
-     * @param timeUnit is the parameter of a time to find links
-     * @param time is the parameter of a time to find links
+     * @param duration is the parameter of a time to find links
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
     public static SequentialMultipleSearchSupplier<Link> links(String label,
-                                                               TimeUnit timeUnit,
-                                                               long time) {
-        return widgets(Link.class, label, timeUnit, time);
+                                                               Duration duration) {
+        return widgets(Link.class, label, duration);
     }
 
     /**
      * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of found links. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some list of found links. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialMultipleSearchSupplier}
@@ -1177,11 +1077,8 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of found links. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some list of found links. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param labels (texts of some elements or attributes inside or beside the link) which are used to
      *               find links.
@@ -1197,11 +1094,8 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of found links. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some list of found links. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param label (text of some element or attribute inside or beside the link) which is used to
      *               find links.
@@ -1217,14 +1111,15 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of found links. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time. The result function will return a list of any found links
+     * and returns some list of found links.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found links
      * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found links which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @return an instance of {@link SequentialMultipleSearchSupplier}
      */
@@ -1235,14 +1130,15 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of found links. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time. The result function will return a list of any found links
+     * and returns some list of found links.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found links
      * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found links which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @param labels (texts of some elements or attributes inside or beside the link) which are used to
      *               find links.
@@ -1255,14 +1151,15 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of found links. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time. The result function will return a list of any found links
+     * and returns some list of found links.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found links
      * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found links which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @param label (text of some element or attribute inside or beside the link) which is used to
      *               find links.
@@ -1270,6 +1167,214 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      */
     public static SequentialMultipleSearchSupplier<Link> links(String label) {
         return widgets(Link.class, label);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found selects.
+     *
+     * @param duration is the parameter of a time to find selects
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Select> selects(Duration duration,
+                                                               Predicate<Select> predicate) {
+        return widgets(Select.class, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found selects.
+     *
+     * @param labels (texts of some elements or attributes inside or beside the select) which are used to
+     *               find selects.
+     * @param duration is the parameter of a time to find selects
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Select> selects(List<String> labels,
+                                                                   Duration duration,
+                                                                   Predicate<Select> predicate) {
+        return widgets(Select.class, labels, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found selects.
+     *
+     * @param label (text of some element or attribute inside or beside the select) which is used to
+     *               find selects.
+     * @param duration is the parameter of a time to find selects
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Select> selects(String label,
+                                                                   Duration duration,
+                                                                   Predicate<Select> predicate) {
+        return widgets(Select.class, label,
+                duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found selects. The result function will return a list of any found selects
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found selects which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param duration is the parameter of a time to find selects
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Select> selects(Duration duration) {
+        return widgets(Select.class, duration);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found selects. The result function will return a list of any found selects
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found selects which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param labels (texts of some elements or attributes inside or beside the select) which are used to
+     *               find selects.
+     * @param duration is the parameter of a time to find selects
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Select> selects(List<String> labels,
+                                                                   Duration duration) {
+        return widgets(Select.class, labels, duration);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found selects. The result function will return a list of any found selects
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found selects which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param label (text of some element or attribute inside or beside the select) which is used to
+     *               find selects.
+     * @param duration is the parameter of a time to find selects
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Select> selects(String label,
+                                                                   Duration duration) {
+        return widgets(Select.class, label, duration);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found selects. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Select> selects(Predicate<Select> predicate) {
+        return widgets(Select.class, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found selects. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param labels (texts of some elements or attributes inside or beside the select) which are used to
+     *               find selects.
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Select> selects(List<String> labels,
+                                                                   Predicate<Select> predicate) {
+        return widgets(Select.class,
+                labels, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found selects. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param label (text of some element or attribute inside or beside the select) which is used to
+     *               find selects.
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Select> selects(String label,
+                                                                   Predicate<Select> predicate) {
+        return widgets(Select.class,
+                label, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found selects.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found selects
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found selects which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Select> selects() {
+        return widgets(Select.class);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found selects.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found selects
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found selects which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param labels (texts of some elements or attributes inside or beside the select) which are used to
+     *               find selects.
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Select> selects(List<String> labels) {
+        return widgets(Select.class, labels);
+    }
+
+    /**selects
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found selects.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found selects
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found selects which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param label (text of some element or attribute inside or beside the select) which is used to
+     *               find selects.
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Select> selects(String label) {
+        return widgets(Select.class, label);
     }
 
     /**

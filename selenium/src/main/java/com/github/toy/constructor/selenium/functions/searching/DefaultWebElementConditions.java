@@ -6,16 +6,15 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.FluentWait;
 
+import java.time.Duration;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.github.toy.constructor.core.api.StoryWriter.condition;
 import static com.github.toy.constructor.selenium.properties.FlagProperties.FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION;
-import static com.github.toy.constructor.selenium.properties.TimeProperties.ELEMENT_WAITING_TIME_VALUE;
-import static com.github.toy.constructor.selenium.properties.TimeUnitProperties.ELEMENT_WAITING_TIME_UNIT;
+import static com.github.toy.constructor.selenium.properties.WaitingProperties.ELEMENT_WAITING_DURATION;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
@@ -116,22 +115,19 @@ public final class DefaultWebElementConditions {
 
     /**
      * @param locatedBy is a locator strategy to find child elements
-     * @param timeUnit used to define the time of the seeking for the element
-     * @param time used to define the time of the seeking for the element
+     * @param duration used to define the time of the seeking for the element
      * @return predicate that checks presence of child elements inside an element.
      */
     public static Predicate<WebElement> widgetShouldHaveElements(By locatedBy,
-                                                        TimeUnit timeUnit,
-                                                        long time) {
+                                                                 Duration duration) {
         checkArgument(locatedBy != null, "Locator strategy should be defined");
-        checkArgument(timeUnit != null, "Time unit should be defined");
-        checkArgument(time >= 0, "Time should have a positive value");
+        checkArgument(duration != null, "Duration should be defined");
 
         return condition(format("Should have nested elements which are located by %s. " +
-                "Time to find it: %s %s.", locatedBy, timeUnit, time), webElement -> {
+                "Time to find it: %s", locatedBy, duration), webElement -> {
             try {
                 new FluentWait<>(webElement).ignoring(StaleElementReferenceException.class)
-                        .withTimeout(time, timeUnit)
+                        .withTimeout(duration)
                         .until(element -> {
                             List<WebElement> result;
                             if ((result = element.findElements(locatedBy)).size() > 0) {
@@ -153,8 +149,7 @@ public final class DefaultWebElementConditions {
      */
     public static Predicate<WebElement> widgetShouldHaveElements(By locatedBy) {
         return widgetShouldHaveElements(locatedBy,
-                ELEMENT_WAITING_TIME_UNIT.get(),
-                ELEMENT_WAITING_TIME_VALUE.get());
+                ELEMENT_WAITING_DURATION.get());
     }
 
     static Predicate<WebElement> defaultPredicateForElements() {

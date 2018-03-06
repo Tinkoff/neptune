@@ -16,7 +16,7 @@ subprojects {
 
 def testNGvaersion = '6.13.1'
 def hamcrestVersion = '2.0.0.0'
-def seleniumVersion = '3.9.0'
+def seleniumVersion = '3.10.0'
 
 project(":core.api") {
     dependencies {

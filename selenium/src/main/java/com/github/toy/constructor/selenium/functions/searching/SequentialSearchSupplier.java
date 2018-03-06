@@ -5,13 +5,14 @@ import com.github.toy.constructor.selenium.SeleniumSteps;
 import com.github.toy.constructor.selenium.api.widget.Labeled;
 import com.github.toy.constructor.selenium.api.widget.Widget;
 import com.github.toy.constructor.selenium.api.widget.drafts.*;
+import com.github.toy.constructor.selenium.properties.WaitingProperties;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 
+import java.time.Duration;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -25,8 +26,7 @@ import static com.github.toy.constructor.selenium.functions.searching.DefaultWid
 import static com.github.toy.constructor.selenium.functions.searching.FindLabeledWidgets.labeledWidgets;
 import static com.github.toy.constructor.selenium.functions.searching.FindWebElements.webElements;
 import static com.github.toy.constructor.selenium.functions.searching.FindWidgets.widgets;
-import static com.github.toy.constructor.selenium.properties.TimeProperties.ELEMENT_WAITING_TIME_VALUE;
-import static com.github.toy.constructor.selenium.properties.TimeUnitProperties.ELEMENT_WAITING_TIME_UNIT;
+import static com.github.toy.constructor.selenium.properties.WaitingProperties.ELEMENT_WAITING_DURATION;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 
@@ -64,15 +64,14 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      * and returns some instance of {@link WebElement} found from the input value.
      *
      * @param by locator strategy to find an element
-     * @param timeUnit is the parameter of a time to find the element
-     * @param time is the parameter of a time to find the element
+     * @param duration is the parameter of a time to find the element
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static SequentialSearchSupplier<WebElement> element(By by,
-                                                        TimeUnit timeUnit,
-                                                        long time, Predicate<WebElement> predicate) {
-        return item(webElements(by, timeUnit, time, predicate.toString()), predicate);
+                                                               Duration duration,
+                                                               Predicate<WebElement> predicate) {
+        return item(webElements(by, duration, predicate.toString()), predicate);
     }
 
     /**
@@ -82,16 +81,14 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      *
      * @param by locator strategy to find an element
      * @param text which the desired element should have
-     * @param timeUnit is the parameter of a time to find the element
-     * @param time is the parameter of a time to find the element
+     * @param duration is the parameter of a time to find the element
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static SequentialSearchSupplier<WebElement> element(By by,
                                                                String text,
-                                                               TimeUnit timeUnit,
-                                                               long time, Predicate<WebElement> predicate) {
-        return element(by, timeUnit, time,
+                                                               Duration duration, Predicate<WebElement> predicate) {
+        return element(by, duration,
                 elementShouldHaveText(text).and(predicate));
     }
 
@@ -102,16 +99,15 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      *
      * @param by locator strategy to find an element
      * @param textPattern is a regExp to match text of the desired element
-     * @param timeUnit is the parameter of a time to find the element
-     * @param time is the parameter of a time to find the element
+     * @param duration is the parameter of a time to find the element
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static SequentialSearchSupplier<WebElement> element(By by,
                                                                Pattern textPattern,
-                                                               TimeUnit timeUnit,
-                                                               long time, Predicate<WebElement> predicate) {
-        return element(by, timeUnit, time, elementShouldHaveText(textPattern)
+                                                               Duration duration,
+                                                               Predicate<WebElement> predicate) {
+        return element(by, duration, elementShouldHaveText(textPattern)
                 .and(predicate));
     }
 
@@ -125,13 +121,12 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param by locator strategy to find an element
-     * @param timeUnit is the parameter of a time to find the element
-     * @param time is the parameter of a time to find the element
+     * @param duration is the parameter of a time to find the element
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static SequentialSearchSupplier<WebElement> element(By by,
-                                                               TimeUnit timeUnit, long time) {
-        return element(by, timeUnit, time, defaultPredicateForElements());
+                                                               Duration duration) {
+        return element(by, duration, defaultPredicateForElements());
     }
 
     /**
@@ -145,15 +140,14 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      *
      * @param by locator strategy to find an element
      * @param text which the desired element should have
-     * @param timeUnit is the parameter of a time to find the element
-     * @param time is the parameter of a time to find the element
+     * @param duration is the parameter of a time to find the element
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static SequentialSearchSupplier<WebElement> element(By by,
                                                                String text,
-                                                               TimeUnit timeUnit, long time) {
+                                                               Duration duration) {
         return element(by, text,
-                timeUnit, time, defaultPredicateForElements());
+                duration, defaultPredicateForElements());
     }
 
     /**
@@ -167,43 +161,36 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      *
      * @param by locator strategy to find an element
      * @param textPattern is a regExp to match text of the desired element
-     * @param timeUnit is the parameter of a time to find the element
-     * @param time is the parameter of a time to find the element
+     * @param duration is the parameter of a time to find the element
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static SequentialSearchSupplier<WebElement> element(By by,
                                                                Pattern textPattern,
-                                                               TimeUnit timeUnit, long time) {
-        return element(by, textPattern, timeUnit, time, defaultPredicateForElements());
+                                                               Duration duration) {
+        return element(by, textPattern, duration, defaultPredicateForElements());
     }
 
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link WebElement} found from the input value. The searching
-     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
-     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some instance of {@link WebElement} found from the input value. About
+     * time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param by locator strategy to find an element
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static SequentialSearchSupplier<WebElement> element(By by, Predicate<WebElement> predicate) {
-        return element(by,
-                ELEMENT_WAITING_TIME_UNIT.get(),
-                ELEMENT_WAITING_TIME_VALUE.get(), predicate);
+        return element(by, ELEMENT_WAITING_DURATION.get(), predicate);
     }
 
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link WebElement} found from the input value. The searching
-     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
-     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some instance of {@link WebElement} found from the input value. About
+     * time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param by locator strategy to find an element
      * @param text which the desired element should have
@@ -213,20 +200,15 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     public static SequentialSearchSupplier<WebElement> element(By by,
                                                                String text,
                                                                Predicate<WebElement> predicate) {
-        return element(by,
-                text,
-                ELEMENT_WAITING_TIME_UNIT.get(),
-                ELEMENT_WAITING_TIME_VALUE.get(), predicate);
+        return element(by, text, ELEMENT_WAITING_DURATION.get(), predicate);
     }
 
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link WebElement} found from the input value. The searching
-     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
-     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some instance of {@link WebElement} found from the input value. About
+     * time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param by locator strategy to find an element
      * @param textPattern is a regExp to match text of the desired element
@@ -236,45 +218,41 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     public static SequentialSearchSupplier<WebElement> element(By by,
                                                                Pattern textPattern,
                                                                Predicate<WebElement> predicate) {
-        return element(by,
-                textPattern,
-                ELEMENT_WAITING_TIME_UNIT.get(),
-                ELEMENT_WAITING_TIME_VALUE.get(), predicate);
+        return element(by, textPattern, ELEMENT_WAITING_DURATION.get(), predicate);
     }
 
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link WebElement} found from the input value. The searching
-     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
-     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time. The
-     * result function will return the first found element if the property
+     * and returns some instance of {@link WebElement} found from the input value.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found element if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found element which is displayed on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @param by locator strategy to find an element
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static SequentialSearchSupplier<WebElement> element(By by) {
-        return element(by, ELEMENT_WAITING_TIME_UNIT.get(),
-                ELEMENT_WAITING_TIME_VALUE.get());
+        return element(by, ELEMENT_WAITING_DURATION.get());
     }
 
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link WebElement} found from the input value. The searching
-     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
-     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time. The
-     * result function will return the first found element if the property
+     * and returns some instance of {@link WebElement} found from the input value.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found element if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found element which is displayed on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @param by locator strategy to find an element
      * @param text which the desired element should have
@@ -282,22 +260,21 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      */
     public static SequentialSearchSupplier<WebElement> element(By by,
                                                                String text) {
-        return element(by, text, ELEMENT_WAITING_TIME_UNIT.get(),
-                ELEMENT_WAITING_TIME_VALUE.get());
+        return element(by, text, ELEMENT_WAITING_DURATION.get());
     }
 
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link WebElement} found from the input value. The searching
-     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
-     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time. The
-     * result function will return the first found element if the property
+     * and returns some instance of {@link WebElement} found from the input value.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found element if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found element which is displayed on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @param by by locator strategy to find an element
      * @param textPattern is a regExp to match text of the desired element
@@ -305,8 +282,7 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      */
     public static SequentialSearchSupplier<WebElement> element(By by,
                                                                Pattern textPattern) {
-        return element(by, textPattern, ELEMENT_WAITING_TIME_UNIT.get(),
-                ELEMENT_WAITING_TIME_VALUE.get());
+        return element(by, textPattern, ELEMENT_WAITING_DURATION.get());
     }
 
     /**
@@ -315,17 +291,15 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      * and returns some instance of {@link Widget} found from the input value.
      *
      * @param tClass is a class of {@link Widget} which instance should be returned
-     * @param timeUnit is the parameter of a time to find the element
-     * @param time is the parameter of a time to find the element
+     * @param duration is the parameter of a time to find the element
      * @param predicate to specify the searching criteria
      * @param <T> the type of widget which should be found
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static <T extends Widget> SequentialSearchSupplier<T> widget(Class<T> tClass,
-                                                                        TimeUnit timeUnit,
-                                                                        long time,
+                                                                        Duration duration,
                                                                         Predicate<T> predicate) {
-        return item(widgets(tClass, timeUnit, time, predicate.toString()), predicate);
+        return item(widgets(tClass, duration, predicate.toString()), predicate);
     }
 
     /**
@@ -337,20 +311,18 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      *               least one not abstract subclass which also implements {@link Labeled} or be that class.
      * @param labels (texts of some elements or attributes inside or beside the widget) which are used to
      *               find the widget.
-     * @param timeUnit is the parameter of a time to find the element
-     * @param time is the parameter of a time to find the element
+     * @param duration is the parameter of a time to find the element
      * @param predicate to specify the searching criteria
      * @param <T> the type of widget which should be found
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static <T extends Widget> SequentialSearchSupplier<T> widget(Class<T> tClass,
                                                                         List<String> labels,
-                                                                        TimeUnit timeUnit,
-                                                                        long time,
+                                                                        Duration duration,
                                                                         Predicate<T> predicate) {
         Predicate<? extends T> labeledBy = widgetShouldBeLabeledBy(labels.toArray(new String[]{}));
         Predicate<T> resultPredicate = (Predicate<T>) labeledBy.and(predicate);
-        return item(labeledWidgets(tClass, timeUnit, time, resultPredicate.toString()), resultPredicate);
+        return item(labeledWidgets(tClass, duration, resultPredicate.toString()), resultPredicate);
     }
 
     /**
@@ -362,20 +334,18 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      *               least one not abstract subclass which also implements {@link Labeled} or be that class.
      * @param label (text of some element or attribute inside or beside the widget) which is used to
      *               find the widget.
-     * @param timeUnit is the parameter of a time to find the element
-     * @param time is the parameter of a time to find the element
+     * @param duration is the parameter of a time to find the element
      * @param predicate to specify the searching criteria
      * @param <T> the type of widget which should be found
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static <T extends Widget> SequentialSearchSupplier<T> widget(Class<T> tClass,
                                                                         String label,
-                                                                        TimeUnit timeUnit,
-                                                                        long time,
+                                                                        Duration duration,
                                                                         Predicate<T> predicate) {
         return widget(tClass,
                 List.of(label),
-                timeUnit, time, predicate);
+                duration, predicate);
     }
 
     /**
@@ -388,15 +358,13 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param tClass is a class of {@link Widget} which instance should be returned
-     * @param timeUnit is the parameter of a time to find the element
-     * @param time is the parameter of a time to find the element
+     * @param duration is the parameter of a time to find the element
      * @param <T> the type of widget which should be found
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static <T extends Widget> SequentialSearchSupplier<T> widget(Class<T> tClass,
-                                                                        TimeUnit timeUnit,
-                                                                        long time) {
-        return widget(tClass, timeUnit, time, defaultPredicateForWidgets());
+                                                                        Duration duration) {
+        return widget(tClass, duration, defaultPredicateForWidgets());
     }
 
     /**
@@ -412,16 +380,14 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      *               least one not abstract subclass which also implements {@link Labeled} or be that class.
      * @param labels (texts of some elements or attributes inside or beside the widget) which are used to
      *               find the widget.
-     * @param timeUnit is the parameter of a time to find the element
-     * @param time is the parameter of a time to find the element
+     * @param duration is the parameter of a time to find the element
      * @param <T> the type of widget which should be found
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static <T extends Widget> SequentialSearchSupplier<T> widget(Class<T> tClass,
                                                                          List<String> labels,
-                                                                         TimeUnit timeUnit,
-                                                                         long time) {
-        return widget(tClass, labels, timeUnit, time, defaultPredicateForWidgets());
+                                                                         Duration duration) {
+        return widget(tClass, labels, duration, defaultPredicateForWidgets());
     }
 
     /**
@@ -437,26 +403,22 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      *               least one not abstract subclass which also implements {@link Labeled} or be that class.
      * @param label (text of some element or attribute inside or beside the widget) which is used to
      *               find the widget.
-     * @param timeUnit is the parameter of a time to find the element
-     * @param time is the parameter of a time to find the element
+     * @param duration is the parameter of a time to find the element
      * @param <T> the type of widget which should be found
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static <T extends Widget> SequentialSearchSupplier<T> widget(Class<T> tClass,
                                                                         String label,
-                                                                        TimeUnit timeUnit,
-                                                                        long time) {
-        return widget(tClass, label, timeUnit, time, defaultPredicateForWidgets());
+                                                                        Duration duration) {
+        return widget(tClass, label, duration, defaultPredicateForWidgets());
     }
 
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link Widget} found from the input value. The searching
-     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
-     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some instance of {@link Widget} found from the input value.
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param tClass is a class of {@link Widget} which instance should be returned
      * @param predicate to specify the searching criteria
@@ -465,19 +427,15 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      */
     public static <T extends Widget> SequentialSearchSupplier<T> widget(Class<T> tClass,
                                                                         Predicate<T> predicate) {
-        return widget(tClass,
-                ELEMENT_WAITING_TIME_UNIT.get(),
-                ELEMENT_WAITING_TIME_VALUE.get(), predicate);
+        return widget(tClass, ELEMENT_WAITING_DURATION.get(), predicate);
     }
 
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link Widget} found from the input value. The searching
-     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
-     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some instance of {@link Widget} found from the input value.
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param tClass is a class of {@link Widget} which instance should be returned. tClass should have at
      *               least one not abstract subclass which also implements {@link Labeled} or be that class.
@@ -490,20 +448,15 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     public static <T extends Widget> SequentialSearchSupplier<T> widget(Class<T> tClass,
                                                                         List<String> labels,
                                                                         Predicate<T> predicate) {
-        return widget(tClass,
-                labels,
-                ELEMENT_WAITING_TIME_UNIT.get(),
-                ELEMENT_WAITING_TIME_VALUE.get(), predicate);
+        return widget(tClass, labels, ELEMENT_WAITING_DURATION.get(), predicate);
     }
 
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link Widget} found from the input value. The searching
-     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
-     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some instance of {@link Widget} found from the input value.
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param tClass is a class of {@link Widget} which instance should be returned. tClass should have at
      *               least one not abstract subclass which also implements {@link Labeled} or be that class.
@@ -516,46 +469,42 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     public static <T extends Widget> SequentialSearchSupplier<T> widget(Class<T> tClass,
                                                                         String label,
                                                                         Predicate<T> predicate) {
-        return widget(tClass,
-                label,
-                ELEMENT_WAITING_TIME_UNIT.get(),
-                ELEMENT_WAITING_TIME_VALUE.get(), predicate);
+        return widget(tClass, label, ELEMENT_WAITING_DURATION.get(), predicate);
     }
 
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link Widget} found from the input value. The searching
-     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
-     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time. The
-     * result function will return the first found widget if the property
+     * and returns some instance of {@link Widget} found from the input value.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found widget if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found widget which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @param tClass is a class of {@link Widget} which instance should be returned
      * @param <T> the type of widget which should be found
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static <T extends Widget> SequentialSearchSupplier<T> widget(Class<T> tClass) {
-        return widget(tClass, ELEMENT_WAITING_TIME_UNIT.get(),
-                ELEMENT_WAITING_TIME_VALUE.get());
+        return widget(tClass, ELEMENT_WAITING_DURATION.get());
     }
 
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link Widget} found from the input value. The searching
-     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
-     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time. The
-     * result function will return the first found widget if the property
+     * and returns some instance of {@link Widget} found from the input value.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found widget if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found widget which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @param tClass is a class of {@link Widget} which instance should be returned. tClass should have at
      *               least one not abstract subclass which also implements {@link Labeled} or be that class.
@@ -566,22 +515,21 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      */
     public static <T extends Widget> SequentialSearchSupplier<T> widget(Class<T> tClass,
                                                                         List<String> labels) {
-        return widget(tClass, labels, ELEMENT_WAITING_TIME_UNIT.get(),
-                ELEMENT_WAITING_TIME_VALUE.get());
+        return widget(tClass, labels, ELEMENT_WAITING_DURATION.get());
     }
 
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link Widget} found from the input value. The searching
-     * will take 1 minute if system properties {@code waiting.for.elements.time.unit} and
-     * {@code waiting.for.elements.time} are not defined. Otherwise it takes the specified time. The
-     * result function will return the first found widget if the property
+     * and returns some instance of {@link Widget} found from the input value.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found widget if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found widget which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @param tClass is a class of {@link Widget} which instance should be returned. tClass should have at
      *               least one not abstract subclass which also implements {@link Labeled} or be that class.
@@ -592,8 +540,7 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      */
     public static <T extends Widget> SequentialSearchSupplier<T> widget(Class<T> tClass,
                                                                         String label) {
-        return widget(tClass, label, ELEMENT_WAITING_TIME_UNIT.get(),
-                ELEMENT_WAITING_TIME_VALUE.get());
+        return widget(tClass, label, ELEMENT_WAITING_DURATION.get());
     }
 
     /**
@@ -601,15 +548,13 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some button.
      *
-     * @param timeUnit is the parameter of a time to find a button
-     * @param time is the parameter of a time to find a button
+     * @param duration is the parameter of a time to find a button
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialSearchSupplier}
      */
-    public static SequentialSearchSupplier<Button> button(TimeUnit timeUnit,
-                                                          long time,
+    public static SequentialSearchSupplier<Button> button(Duration duration,
                                                           Predicate<Button> predicate) {
-        return widget(Button.class, timeUnit, time, predicate);
+        return widget(Button.class, duration, predicate);
     }
 
     /**
@@ -619,16 +564,14 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      *
      * @param labels (texts of some elements or attributes inside or beside the button) which are used to
      *               find a button.
-     * @param timeUnit is the parameter of a time to find a button
-     * @param time is the parameter of a time to find a button
+     * @param duration is the parameter of a time to find a button
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static SequentialSearchSupplier<Button> button(List<String> labels,
-                                                          TimeUnit timeUnit,
-                                                          long time,
+                                                          Duration duration,
                                                           Predicate<Button> predicate) {
-        return widget(Button.class, labels, timeUnit, time, predicate);
+        return widget(Button.class, labels, duration, predicate);
     }
 
     /**
@@ -638,18 +581,16 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      *
      * @param label (text of some element or attribute inside or beside the button) which is used to
      *               find a button.
-     * @param timeUnit is the parameter of a time to find a button
-     * @param time is the parameter of a time to find a button
+     * @param duration is the parameter of a time to find a button
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static SequentialSearchSupplier<Button> button(String label,
-                                                          TimeUnit timeUnit,
-                                                          long time,
+                                                          Duration duration,
                                                           Predicate<Button> predicate) {
         return widget(Button.class,
                 label,
-                timeUnit, time, predicate);
+                duration, predicate);
     }
 
     /**
@@ -660,13 +601,11 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      * Otherwise it will return the first found button which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
-     * @param timeUnit is the parameter of a time to find a button
-     * @param time is the parameter of a time to find a button
+     * @param duration is the parameter of a time to find a button
      * @return an instance of {@link SequentialSearchSupplier}
      */
-    public static SequentialSearchSupplier<Button> button(TimeUnit timeUnit,
-                                                          long time) {
-        return widget(Button.class, timeUnit, time);
+    public static SequentialSearchSupplier<Button> button(Duration duration) {
+        return widget(Button.class, duration);
     }
 
     /**
@@ -679,14 +618,12 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      *
      * @param labels (texts of some elements or attributes inside or beside the button) which are used to
      *               find a button.
-     * @param timeUnit is the parameter of a time to find a button
-     * @param time is the parameter of a time to find a button
+     * @param duration is the parameter of a time to find a button
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static SequentialSearchSupplier<Button> button(List<String> labels,
-                                                          TimeUnit timeUnit,
-                                                          long time) {
-        return widget(Button.class, labels, timeUnit, time);
+                                                          Duration duration) {
+        return widget(Button.class, labels, duration);
     }
 
     /**
@@ -699,24 +636,19 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      *
      * @param label (text of some element or attribute inside or beside the button) which is used to
      *               find a button.
-     * @param timeUnit is the parameter of a time to find a button
-     * @param time is the parameter of a time to find a button
+     * @param duration is the parameter of a time to find a button
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static SequentialSearchSupplier<Button> button(String label,
-                                                          TimeUnit timeUnit,
-                                                          long time) {
-        return widget(Button.class, label, timeUnit, time);
+                                                          Duration duration) {
+        return widget(Button.class, label, duration);
     }
 
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some button. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are
-     * not defined. Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some button. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialSearchSupplier}
@@ -728,11 +660,9 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some button. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some button. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
      * @param labels (texts of some elements or attributes inside or beside the button) which are used to
      *               find a button.
      * @param predicate to specify the searching criteria
@@ -747,11 +677,8 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some button. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some button. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param label (text of some element or attribute inside or beside the button) which is used to
      *               find a button.
@@ -767,14 +694,15 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some button. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time. The result function will return the first found button if the property
+     * and returns some button.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found button if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found button which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @return an instance of {@link SequentialSearchSupplier}
      */
@@ -785,14 +713,15 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some button. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time. The result function will return the first found button if the property
+     * and returns some button.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found button if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found button which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @param labels (texts of some elements or attributes inside or beside the button) which are used to
      *               find a button.
@@ -805,14 +734,15 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some button. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time. The result function will return the first found button if the property
+     * and returns some button.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found button if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found button which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @param label (text of some element or attribute inside or beside the widget) which is used to
      *              find a button.
@@ -827,15 +757,13 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some flag.
      *
-     * @param timeUnit is the parameter of a time to find a flag
-     * @param time is the parameter of a time to find a flag
+     * @param duration is the parameter of a time to find a flag
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialSearchSupplier}
      */
-    public static SequentialSearchSupplier<Flag> flag(TimeUnit timeUnit,
-                                                      long time,
+    public static SequentialSearchSupplier<Flag> flag(Duration duration,
                                                       Predicate<Flag> predicate) {
-        return widget(Flag.class, timeUnit, time, predicate);
+        return widget(Flag.class, duration, predicate);
     }
 
     /**
@@ -845,16 +773,14 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      *
      * @param labels (texts of some elements or attributes inside or beside the flag) which are used to
      *               find a flag.
-     * @param timeUnit is the parameter of a time to find a flag
-     * @param time is the parameter of a time to find a flag
+     * @param duration is the parameter of a time to find a flag
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static SequentialSearchSupplier<Flag> flag(List<String> labels,
-                                                          TimeUnit timeUnit,
-                                                          long time,
+                                                          Duration duration,
                                                           Predicate<Flag> predicate) {
-        return widget(Flag.class, labels, timeUnit, time, predicate);
+        return widget(Flag.class, labels, duration, predicate);
     }
 
     /**
@@ -864,18 +790,16 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      *
      * @param label (text of some element or attribute inside or beside the flag) which is used to
      *               find a flag.
-     * @param timeUnit is the parameter of a time to find a flag
-     * @param time is the parameter of a time to find a flag
+     * @param duration is the parameter of a time to find a flag
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static SequentialSearchSupplier<Flag> flag(String label,
-                                                          TimeUnit timeUnit,
-                                                          long time,
-                                                          Predicate<Flag> predicate) {
+                                                      Duration duration,
+                                                      Predicate<Flag> predicate) {
         return widget(Flag.class,
                 label,
-                timeUnit, time, predicate);
+                duration, predicate);
     }
 
     /**
@@ -886,12 +810,11 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      * Otherwise it will return the first found flag which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
-     * @param timeUnit is the parameter of a time to find a flag
-     * @param time is the parameter of a time to find a flag
+     * @param duration is the parameter of a time to find a flag
      * @return an instance of {@link SequentialSearchSupplier}
      */
-    public static SequentialSearchSupplier<Flag> flag(TimeUnit timeUnit, long time) {
-        return widget(Flag.class, timeUnit, time);
+    public static SequentialSearchSupplier<Flag> flag(Duration duration) {
+        return widget(Flag.class, duration);
     }
 
     /**
@@ -904,14 +827,12 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      *
      * @param labels (texts of some elements or attributes inside or beside the flag) which are used to
      *               find a flag.
-     * @param timeUnit is the parameter of a time to find a flag
-     * @param time is the parameter of a time to find a flag
+     * @param duration is the parameter of a time to find a flag
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static SequentialSearchSupplier<Flag> flag(List<String> labels,
-                                                        TimeUnit timeUnit,
-                                                        long time) {
-        return widget(Flag.class, labels, timeUnit, time);
+                                                      Duration duration) {
+        return widget(Flag.class, labels, duration);
     }
 
     /**
@@ -924,24 +845,19 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      *
      * @param label (text of some element or attribute inside or beside the flag) which is used to
      *               find a flag.
-     * @param timeUnit is the parameter of a time to find a flag
-     * @param time is the parameter of a time to find a flag
+     * @param duration is the parameter of a time to find a flag
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static SequentialSearchSupplier<Flag> flag(String label,
-                                                      TimeUnit timeUnit,
-                                                      long time) {
-        return widget(Flag.class, label, timeUnit, time);
+                                                      Duration duration) {
+        return widget(Flag.class, label, duration);
     }
 
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some flag. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are
-     * not defined. Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some flag. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialSearchSupplier}
@@ -953,11 +869,9 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some flag. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some flag. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
      * @param labels (texts of some elements or attributes inside or beside the flag) which are used to
      *               find a flag.
      * @param predicate to specify the searching criteria
@@ -972,11 +886,8 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some flag. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some flag. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param label (text of some element or attribute inside or beside the flag) which is used to
      *               find a flag.
@@ -991,14 +902,15 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some flag. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time. The result function will return the first found flag if the property
+     * and returns some flag.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found flag if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found flag which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @return an instance of {@link SequentialSearchSupplier}
      */
@@ -1009,14 +921,16 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some flag. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time. The result function will return the first found flag if the property
+     * and returns some flag.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found flag if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found flag which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+
      *
      * @param labels (texts of some elements or attributes inside or beside the flag) which are used to
      *               find a flag.
@@ -1029,14 +943,15 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some flag. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time. The result function will return the first found flag if the property
+     * and returns some flag.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found flag if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found flag which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @param label (text of some element or attribute inside or beside the flag) which is used to
      *              find a flag.
@@ -1051,15 +966,13 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some link.
      *
-     * @param timeUnit is the parameter of a time to find a link
-     * @param time is the parameter of a time to find a link
+     * @param duration is the parameter of a time to find a link
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialSearchSupplier}
      */
-    public static SequentialSearchSupplier<Link> link(TimeUnit timeUnit,
-                                                      long time,
+    public static SequentialSearchSupplier<Link> link(Duration duration,
                                                       Predicate<Link> predicate) {
-        return widget(Link.class, timeUnit, time, predicate);
+        return widget(Link.class, duration, predicate);
     }
 
     /**
@@ -1069,16 +982,14 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      *
      * @param labels (texts of some elements or attributes inside or beside the link) which are used to
      *               find a link.
-     * @param timeUnit is the parameter of a time to find a link
-     * @param time is the parameter of a time to find a link
+     * @param duration is the parameter of a time to find a link
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static SequentialSearchSupplier<Link> link(List<String> labels,
-                                                      TimeUnit timeUnit,
-                                                      long time,
+                                                      Duration duration,
                                                       Predicate<Link> predicate) {
-        return widget(Link.class, labels, timeUnit, time, predicate);
+        return widget(Link.class, labels, duration, predicate);
     }
 
     /**
@@ -1088,18 +999,16 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      *
      * @param label (text of some element or attribute inside or beside the link) which is used to
      *               find a link.
-     * @param timeUnit is the parameter of a time to find a link
-     * @param time is the parameter of a time to find a link
+     * @param duration is the parameter of a time to find a link
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static SequentialSearchSupplier<Link> link(String label,
-                                                      TimeUnit timeUnit,
-                                                      long time,
+                                                      Duration duration,
                                                       Predicate<Link> predicate) {
         return widget(Link.class,
                 label,
-                timeUnit, time, predicate);
+                duration, predicate);
     }
 
     /**
@@ -1110,12 +1019,11 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      * Otherwise it will return the first found link which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
-     * @param timeUnit is the parameter of a time to find a link
-     * @param time is the parameter of a time to find a link
+     * @param duration is the parameter of a time to find a link
      * @return an instance of {@link SequentialSearchSupplier}
      */
-    public static SequentialSearchSupplier<Link> link(TimeUnit timeUnit, long time) {
-        return widget(Link.class, timeUnit, time);
+    public static SequentialSearchSupplier<Link> link(Duration duration) {
+        return widget(Link.class, duration);
     }
 
     /**
@@ -1128,14 +1036,12 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      *
      * @param labels (texts of some elements or attributes inside or beside the link) which are used to
      *               find a link.
-     * @param timeUnit is the parameter of a time to find a link
-     * @param time is the parameter of a time to find a link
+     * @param duration is the parameter of a time to find a link
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static SequentialSearchSupplier<Link> link(List<String> labels,
-                                                      TimeUnit timeUnit,
-                                                      long time) {
-        return widget(Link.class, labels, timeUnit, time);
+                                                      Duration duration) {
+        return widget(Link.class, labels, duration);
     }
 
     /**
@@ -1148,24 +1054,19 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      *
      * @param label (text of some element or attribute inside or beside the link) which is used to
      *               find a link.
-     * @param timeUnit is the parameter of a time to find a link
-     * @param time is the parameter of a time to find a link
+     * @param duration is the parameter of a time to find a link
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static SequentialSearchSupplier<Link> link(String label,
-                                                      TimeUnit timeUnit,
-                                                      long time) {
-        return widget(Link.class, label, timeUnit, time);
+                                                      Duration duration) {
+        return widget(Link.class, label, duration);
     }
 
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some link. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are
-     * not defined. Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some link. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialSearchSupplier}
@@ -1177,11 +1078,9 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some link. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some link. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
      * @param labels (texts of some elements or attributes inside or beside the link) which are used to
      *               find a link.
      * @param predicate to specify the searching criteria
@@ -1196,11 +1095,8 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some link. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some link. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param label (text of some element or attribute inside or beside the link) which is used to
      *               find a link.
@@ -1215,14 +1111,15 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some link. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time. The result function will return the first found link if the property
+     * and returns some link.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found link if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found link which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @return an instance of {@link SequentialSearchSupplier}
      */
@@ -1233,14 +1130,15 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some link. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time. The result function will return the first found link if the property
+     * and returns some link.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found link if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found link which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @param labels (texts of some elements or attributes inside or beside the link) which are used to
      *               find a link.
@@ -1253,14 +1151,15 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some link. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time. The result function will return the first found link if the property
+     * and returns some link.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found link if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found link which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @param label (text of some element or attribute inside or beside the link) which is used to
      *              find a link.
@@ -1275,15 +1174,13 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some select.
      *
-     * @param timeUnit is the parameter of a time to find a select
-     * @param time is the parameter of a time to find a select
+     * @param duration is the parameter of a time to find a select
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialSearchSupplier}
      */
-    public static SequentialSearchSupplier<Select> select(TimeUnit timeUnit,
-                                                          long time,
+    public static SequentialSearchSupplier<Select> select(Duration duration,
                                                           Predicate<Select> predicate) {
-        return widget(Select.class, timeUnit, time, predicate);
+        return widget(Select.class, duration, predicate);
     }
 
     /**
@@ -1293,16 +1190,14 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      *
      * @param labels (texts of some elements or attributes inside or beside the select) which are used to
      *               find a select.
-     * @param timeUnit is the parameter of a time to find a select
-     * @param time is the parameter of a time to find a select
+     * @param duration is the parameter of a time to find a select
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static SequentialSearchSupplier<Select> select(List<String> labels,
-                                                          TimeUnit timeUnit,
-                                                          long time,
+                                                          Duration duration,
                                                           Predicate<Select> predicate) {
-        return widget(Select.class, labels, timeUnit, time, predicate);
+        return widget(Select.class, labels, duration, predicate);
     }
 
     /**
@@ -1312,18 +1207,16 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      *
      * @param label (text of some element or attribute inside or beside the select) which is used to
      *               find a select.
-     * @param timeUnit is the parameter of a time to find a select
-     * @param time is the parameter of a time to find a select
+     * @param duration is the parameter of a time to find a select
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static SequentialSearchSupplier<Select> select(String label,
-                                                          TimeUnit timeUnit,
-                                                          long time,
+                                                          Duration duration,
                                                           Predicate<Select> predicate) {
         return widget(Select.class,
                 label,
-                timeUnit, time, predicate);
+                duration, predicate);
     }
 
     /**
@@ -1334,12 +1227,11 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      * Otherwise it will return the first found select which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
-     * @param timeUnit is the parameter of a time to find a select
-     * @param time is the parameter of a time to find a select
+     * @param duration is the parameter of a time to find a select
      * @return an instance of {@link SequentialSearchSupplier}
      */
-    public static SequentialSearchSupplier<Select> select(TimeUnit timeUnit, long time) {
-        return widget(Select.class, timeUnit, time);
+    public static SequentialSearchSupplier<Select> select(Duration duration) {
+        return widget(Select.class, duration);
     }
 
     /**
@@ -1352,14 +1244,12 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      *
      * @param labels (texts of some elements or attributes inside or beside the select) which are used to
      *               find a select.
-     * @param timeUnit is the parameter of a time to find a select
-     * @param time is the parameter of a time to find a select
+     * @param duration is the parameter of a time to find a select
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static SequentialSearchSupplier<Select> select(List<String> labels,
-                                                          TimeUnit timeUnit,
-                                                          long time) {
-        return widget(Select.class, labels, timeUnit, time);
+                                                          Duration duration) {
+        return widget(Select.class, labels, duration);
     }
 
     /**
@@ -1372,24 +1262,19 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      *
      * @param label (text of some element or attribute inside or beside the select) which is used to
      *               find a select.
-     * @param timeUnit is the parameter of a time to find a select
-     * @param time is the parameter of a time to find a select
+     * @param duration is the parameter of a time to find a select
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static SequentialSearchSupplier<Select> select(String label,
-                                                          TimeUnit timeUnit,
-                                                          long time) {
-        return widget(Select.class, label, timeUnit, time);
+                                                          Duration duration) {
+        return widget(Select.class, label, duration);
     }
 
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some select. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are
-     * not defined. Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some select. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialSearchSupplier}
@@ -1401,11 +1286,9 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some select. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some select. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
      * @param labels (texts of some elements or attributes inside or beside the select) which are used to
      *               find a select.
      * @param predicate to specify the searching criteria
@@ -1420,11 +1303,8 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some select. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some select. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param label (text of some element or attribute inside or beside the select) which is used to
      *               find a select.
@@ -1439,14 +1319,15 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some select. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time. The result function will return the first found select if the property
+     * and returns some select.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found select if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found select which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @return an instance of {@link SequentialSearchSupplier}
      */
@@ -1457,14 +1338,15 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some select. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time. The result function will return the first found select if the property
+     * and returns some select.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found select if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found select which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @param labels (texts of some elements or attributes inside or beside the select) which are used to
      *               find a select.
@@ -1477,14 +1359,15 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some select. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time. The result function will return the first found select if the property
+     * and returns some select.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found select if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found select which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @param label (text of some element or attribute inside or beside the select) which is used to
      *              find a select.
@@ -1499,15 +1382,13 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some tab.
      *
-     * @param timeUnit is the parameter of a time to find a tab
-     * @param time is the parameter of a time to find a tab
+     * @param duration is the parameter of a time to find a tab
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialSearchSupplier}
      */
-    public static SequentialSearchSupplier<Tab> tab(TimeUnit timeUnit,
-                                                    long time,
+    public static SequentialSearchSupplier<Tab> tab(Duration duration,
                                                     Predicate<Tab> predicate) {
-        return widget(Tab.class, timeUnit, time, predicate);
+        return widget(Tab.class, duration, predicate);
     }
 
     /**
@@ -1517,16 +1398,14 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      *
      * @param labels (texts of some elements or attributes inside or beside the tab) which are used to
      *               find a tab.
-     * @param timeUnit is the parameter of a time to find a tab
-     * @param time is the parameter of a time to find a tab
+     * @param duration is the parameter of a time to find a tab
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static SequentialSearchSupplier<Tab> tab(List<String> labels,
-                                                    TimeUnit timeUnit,
-                                                    long time,
+                                                    Duration duration,
                                                     Predicate<Tab> predicate) {
-        return widget(Tab.class, labels, timeUnit, time, predicate);
+        return widget(Tab.class, labels, duration, predicate);
     }
 
     /**
@@ -1536,18 +1415,16 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      *
      * @param label (text of some element or attribute inside or beside the tab) which is used to
      *               find a tab.
-     * @param timeUnit is the parameter of a time to find a tab
-     * @param time is the parameter of a time to find a tab
+     * @param duration is the parameter of a time to find a tab
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static SequentialSearchSupplier<Tab> tab(String label,
-                                                    TimeUnit timeUnit,
-                                                    long time,
+                                                    Duration duration,
                                                     Predicate<Tab> predicate) {
         return widget(Tab.class,
                 label,
-                timeUnit, time, predicate);
+                duration, predicate);
     }
 
     /**
@@ -1558,12 +1435,11 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      * Otherwise it will return the first found tab which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
-     * @param timeUnit is the parameter of a time to find a tab
-     * @param time is the parameter of a time to find a tab
+     * @param duration is the parameter of a time to find a tab
      * @return an instance of {@link SequentialSearchSupplier}
      */
-    public static SequentialSearchSupplier<Tab> tab(TimeUnit timeUnit, long time) {
-        return widget(Tab.class, timeUnit, time);
+    public static SequentialSearchSupplier<Tab> tab(Duration duration) {
+        return widget(Tab.class, duration);
     }
 
     /**
@@ -1576,14 +1452,12 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      *
      * @param labels (texts of some elements or attributes inside or beside the tab) which are used to
      *               find a tab.
-     * @param timeUnit is the parameter of a time to find a tab
-     * @param time is the parameter of a time to find a tab
+     * @param duration is the parameter of a time to find a tab
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static SequentialSearchSupplier<Tab> tab(List<String> labels,
-                                                          TimeUnit timeUnit,
-                                                          long time) {
-        return widget(Tab.class, labels, timeUnit, time);
+                                                          Duration duration) {
+        return widget(Tab.class, labels, duration);
     }
 
     /**
@@ -1596,24 +1470,19 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      *
      * @param label (text of some element or attribute inside or beside the tab) which is used to
      *               find a tab.
-     * @param timeUnit is the parameter of a time to find a tab
-     * @param time is the parameter of a time to find a tab
+     * @param duration is the parameter of a time to find a tab
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static SequentialSearchSupplier<Tab> tab(String label,
-                                                    TimeUnit timeUnit,
-                                                    long time) {
-        return widget(Tab.class, label, timeUnit, time);
+                                                    Duration duration) {
+        return widget(Tab.class, label, duration);
     }
 
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some tab. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are
-     * not defined. Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some tab. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialSearchSupplier}
@@ -1625,11 +1494,9 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some tab. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some tab. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
      * @param labels (texts of some elements or attributes inside or beside the tab) which are used to
      *               find a tab.
      * @param predicate to specify the searching criteria
@@ -1644,11 +1511,8 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some tab. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some tab. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param label (text of some element or attribute inside or beside the tab) which is used to
      *               find a tab.
@@ -1663,14 +1527,15 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some tab. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time. The result function will return the first found tab if the property
+     * and returns some tab.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found tab if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found tab which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @return an instance of {@link SequentialSearchSupplier}
      */
@@ -1681,14 +1546,15 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some tab. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time. The result function will return the first found tab if the property
+     * and returns some tab.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found tab if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found tab which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @param labels (texts of some elements or attributes inside or beside the tab) which are used to
      *               find a tab.
@@ -1701,14 +1567,15 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some tab. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time. The result function will return the first found tab if the property
+     * and returns some tab.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found tab if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found tab which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @param label (text of some element or attribute inside or beside the tab) which is used to
      *              find a tab.
@@ -1723,15 +1590,13 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some text field.
      *
-     * @param timeUnit is the parameter of a time to find a text field
-     * @param time is the parameter of a time to find a text field
+     * @param duration is the parameter of a time to find a text field
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialSearchSupplier}
      */
-    public static SequentialSearchSupplier<TextField> textField(TimeUnit timeUnit,
-                                                                long time,
+    public static SequentialSearchSupplier<TextField> textField(Duration duration,
                                                                 Predicate<TextField> predicate) {
-        return widget(TextField.class, timeUnit, time, predicate);
+        return widget(TextField.class, duration, predicate);
     }
 
     /**
@@ -1741,16 +1606,14 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      *
      * @param labels (texts of some elements or attributes inside or beside the text field) which are used to
      *               find a text field.
-     * @param timeUnit is the parameter of a time to find a text field
-     * @param time is the parameter of a time to find a text fields
+     * @param duration is the parameter of a time to find a text field
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static SequentialSearchSupplier<TextField> textField(List<String> labels,
-                                                                TimeUnit timeUnit,
-                                                                long time,
+                                                                Duration duration,
                                                                 Predicate<TextField> predicate) {
-        return widget(TextField.class, labels, timeUnit, time, predicate);
+        return widget(TextField.class, labels, duration, predicate);
     }
 
     /**
@@ -1760,18 +1623,16 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      *
      * @param label (text of some element or attribute inside or beside the text field) which is used to
      *               find a text field.
-     * @param timeUnit is the parameter of a time to find a text field
-     * @param time is the parameter of a time to find a text field
+     * @param duration is the parameter of a time to find a text field
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static SequentialSearchSupplier<TextField> textField(String label,
-                                                                TimeUnit timeUnit,
-                                                                long time,
+                                                                Duration duration,
                                                                 Predicate<TextField> predicate) {
         return widget(TextField.class,
                 label,
-                timeUnit, time, predicate);
+                duration, predicate);
     }
 
     /**
@@ -1782,12 +1643,11 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      * Otherwise it will return the first found text field which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
-     * @param timeUnit is the parameter of a time to find a text field
-     * @param time is the parameter of a time to find a text field
+     * @param duration is the parameter of a time to find a text field
      * @return an instance of {@link SequentialSearchSupplier}
      */
-    public static SequentialSearchSupplier<TextField> textField(TimeUnit timeUnit, long time) {
-        return widget(TextField.class, timeUnit, time);
+    public static SequentialSearchSupplier<TextField> textField(Duration duration) {
+        return widget(TextField.class, duration);
     }
 
     /**
@@ -1800,14 +1660,12 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      *
      * @param labels (texts of some elements or attributes inside or beside the text field) which are used to
      *               find a text field.
-     * @param timeUnit is the parameter of a time to find a text field
-     * @param time is the parameter of a time to find a text field
+     * @param duration is the parameter of a time to find a text field
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static SequentialSearchSupplier<TextField> textField(List<String> labels,
-                                                    TimeUnit timeUnit,
-                                                    long time) {
-        return widget(TextField.class, labels, timeUnit, time);
+                                                    Duration duration) {
+        return widget(TextField.class, labels, duration);
     }
 
     /**
@@ -1820,24 +1678,19 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      *
      * @param label (text of some element or attribute inside or beside the text field) which is used to
      *               find a text field.
-     * @param timeUnit is the parameter of a time to find a text field
-     * @param time is the parameter of a time to find a text field
+     * @param duration is the parameter of a time to find a text field
      * @return an instance of {@link SequentialSearchSupplier}
      */
     public static SequentialSearchSupplier<TextField> textField(String label,
-                                                    TimeUnit timeUnit,
-                                                    long time) {
-        return widget(TextField.class, label, timeUnit, time);
+                                                                Duration duration) {
+        return widget(TextField.class, label, duration);
     }
 
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some text field. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are
-     * not defined. Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some text field. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SequentialSearchSupplier}
@@ -1849,11 +1702,9 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some text field. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some text field. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
      * @param labels (texts of some elements or attributes inside or beside the text field) which are used to
      *               find a text field.
      * @param predicate to specify the searching criteria
@@ -1868,11 +1719,8 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some text field. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time.
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
+     * and returns some text field. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param label (text of some element or attribute inside or beside the text field) which is used to
      *               find a text field.
@@ -1887,14 +1735,15 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some text field. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time. The result function will return the first found text field if the property
+     * and returns some text field.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found text field if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found text field which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @return an instance of {@link SequentialSearchSupplier}
      */
@@ -1905,14 +1754,15 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some text field. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time. The result function will return the first found text field if the property
+     * and returns some text field.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found text field if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found text field which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @param labels (texts of some elements or attributes inside or beside the text field) which are used to
      *               find a text field.
@@ -1925,14 +1775,15 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some text field. The searching will take 1 minute if system properties
-     * {@code waiting.for.elements.time.unit} and {@code waiting.for.elements.time} are not defined.
-     * Otherwise it takes the specified time. The result function will return the first found text field if the property
+     * and returns some text field.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found text field if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found text field which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     * @see com.github.toy.constructor.selenium.properties.TimeUnitProperties#ELEMENT_WAITING_TIME_UNIT
-     * @see com.github.toy.constructor.selenium.properties.TimeProperties#ELEMENT_WAITING_TIME_VALUE
      *
      * @param label (text of some element or attribute inside or beside the text field) which is used to
      *              find a text field.

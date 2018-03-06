@@ -7,32 +7,35 @@ import org.objenesis.ObjenesisStd;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.FluentWait;
 
+import java.time.Duration;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.List.of;
 import static net.sf.cglib.proxy.Enhancer.registerCallbacks;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 class FindWebElements implements Function<SearchContext, List<WebElement>> {
 
     private final By by;
-    private final TimeUnit timeUnit;
-    private final long time;
+    private final Duration duration;
     private final String conditionString;
 
-    private FindWebElements(By by, TimeUnit timeUnit, long time, String conditionString) {
+    private FindWebElements(By by, Duration duration, String conditionString) {
+        checkArgument(by != null, "Locator by-strategy should be defined.");
+        checkArgument(duration != null, "Duration should be defined.");
+        checkArgument(!isBlank(conditionString), "Description of the condition should not be empty.");
         this.by = by;
-        this.timeUnit = timeUnit;
-        this.time = time;
+        this.duration = duration;
         this.conditionString = conditionString;
     }
 
-    static Function<SearchContext, List<WebElement>> webElements(By by, TimeUnit timeUnit, long time, String conditionString) {
-        return toGet(format("Web elements located by %s", by), new FindWebElements(by, timeUnit, time, conditionString));
+    static Function<SearchContext, List<WebElement>> webElements(By by, Duration duration, String conditionString) {
+        return toGet(format("Web elements located by %s", by), new FindWebElements(by, duration, conditionString));
     }
 
     private WebElement createWidget(WebElement webElement) {
@@ -56,7 +59,7 @@ class FindWebElements implements Function<SearchContext, List<WebElement>> {
         FluentWait<SearchContext> wait = new FluentWait<>(searchContext);
         try {
             return wait.ignoring(StaleElementReferenceException.class)
-                    .withTimeout(time, timeUnit)
+                    .withTimeout(duration)
                     .until(searchContextParam -> {
                         List<WebElement> found = searchContext.findElements(by)
                                 .stream().map(this::createWidget)

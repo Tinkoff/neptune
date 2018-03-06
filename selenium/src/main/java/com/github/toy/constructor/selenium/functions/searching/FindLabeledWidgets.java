@@ -10,10 +10,10 @@ import org.openqa.selenium.support.FindBys;
 import org.reflections.Reflections;
 
 import java.lang.reflect.Modifier;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -25,8 +25,8 @@ import static java.util.stream.Collectors.toList;
 
 class FindLabeledWidgets<R extends Widget> extends FindWidgets<R> {
 
-    FindLabeledWidgets(Class<R> classOfAWidget, TimeUnit timeUnit, long time, String conditionString) {
-        super(classOfAWidget, timeUnit, time, conditionString);
+    FindLabeledWidgets(Class<R> classOfAWidget, Duration duration, String conditionString) {
+        super(classOfAWidget, duration, conditionString);
     }
 
     @Override
@@ -68,9 +68,8 @@ class FindLabeledWidgets<R extends Widget> extends FindWidgets<R> {
     }
 
     static <R extends Widget> Function<SearchContext, List<R>> labeledWidgets(Class<R> classOfAWidget,
-                                                                       TimeUnit timeUnit,
-                                                                       long time, String conditionString) {
+                                                                       Duration duration, String conditionString) {
         return toGet(format("Elements of type %s", classOfAWidget.getName()),
-                new FindLabeledWidgets<>(classOfAWidget, timeUnit, time, conditionString));
+                new FindLabeledWidgets<>(classOfAWidget, duration, conditionString));
     }
 }
