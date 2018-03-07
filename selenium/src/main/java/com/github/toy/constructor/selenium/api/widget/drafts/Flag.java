@@ -16,4 +16,18 @@ public abstract class Flag extends Widget implements Editable<Boolean>,
     public Flag(WebElement wrappedElement) {
         super(wrappedElement);
     }
+
+    @Name("Check box")
+    public static abstract class CheckBox extends Flag {
+        public CheckBox(WebElement wrappedElement) {
+            super(wrappedElement);
+        }
+    }
+
+    @Name("Radio button")
+    public static abstract class RadioButton extends Flag {
+        public RadioButton(WebElement wrappedElement) {
+            super(wrappedElement);
+        }
+    }
 }

@@ -964,6 +964,417 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some check box.
+     *
+     * @param duration is the parameter of a time to find a check box
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
+    public static SequentialSearchSupplier<Flag.CheckBox> checkbox(Duration duration,
+                                                                   Predicate<Flag.CheckBox> predicate) {
+        return widget(Flag.CheckBox.class, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some check box.
+     *
+     * @param labels (texts of some elements or attributes inside or beside the check box) which are used to
+     *               find a check box.
+     * @param duration is the parameter of a time to find a check box
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
+    public static SequentialSearchSupplier<Flag.CheckBox> checkbox(List<String> labels,
+                                                                   Duration duration,
+                                                                   Predicate<Flag.CheckBox> predicate) {
+        return widget(Flag.CheckBox.class, labels, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some check box.
+     *
+     * @param label (text of some element or attribute inside or beside the check box) which is used to
+     *               find a check box.
+     * @param duration is the parameter of a time to find a check box
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
+    public static SequentialSearchSupplier<Flag.CheckBox> checkbox(String label,
+                                                                   Duration duration,
+                                                                   Predicate<Flag.CheckBox> predicate) {
+        return widget(Flag.CheckBox.class, label, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some check box. The result function will return the first found check box if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return the first found check box which is visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param duration is the parameter of a time to find a check box
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
+    public static SequentialSearchSupplier<Flag.CheckBox> checkbox(Duration duration) {
+        return widget(Flag.CheckBox.class, duration);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some check box. The result function will return the first found check box if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return the first found check box which is visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param labels (texts of some elements or attributes inside or beside the check box) which are used to
+     *               find a check box.
+     * @param duration is the parameter of a time to find a check box
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
+    public static SequentialSearchSupplier<Flag.CheckBox> checkbox(List<String> labels,
+                                                                   Duration duration) {
+        return widget(Flag.CheckBox.class, labels, duration);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some check box. The result function will return the first found check box if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return the first found check box which is visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param label (text of some element or attribute inside or beside the check box) which is used to
+     *               find a check box.
+     * @param duration is the parameter of a time to find a check box
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
+    public static SequentialSearchSupplier<Flag.CheckBox> checkbox(String label,
+                                                                   Duration duration) {
+        return widget(Flag.CheckBox.class, label, duration);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some check box. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
+    public static SequentialSearchSupplier<Flag.CheckBox> checkbox(Predicate<Flag.CheckBox> predicate) {
+        return widget(Flag.CheckBox.class, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some check box. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param labels (texts of some elements or attributes inside or beside the check box) which are used to
+     *               find a check box.
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
+    public static SequentialSearchSupplier<Flag.CheckBox> checkbox(List<String> labels,
+                                                                   Predicate<Flag.CheckBox> predicate) {
+        return widget(Flag.CheckBox.class, labels, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some check box. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param label (text of some element or attribute inside or beside the check box) which is used to
+     *               find a check box.
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
+    public static SequentialSearchSupplier<Flag.CheckBox> checkbox(String label, Predicate<Flag.CheckBox> predicate) {
+        return widget(Flag.CheckBox.class, label, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some checkbox.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found checkbox if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return the first found checkbox which is visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     *
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
+    public static SequentialSearchSupplier<Flag.CheckBox> checkbox() {
+        return widget(Flag.CheckBox.class);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some checkbox.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found checkbox if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return the first found checkbox which is visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+
+     *
+     * @param labels (texts of some elements or attributes inside or beside the checkbox) which are used to
+     *               find a checkbox.
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
+    public static SequentialSearchSupplier<Flag.CheckBox> checkbox(List<String> labels) {
+        return widget(Flag.CheckBox.class, labels);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some checkbox.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found checkbox if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return the first found checkbox which is visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     *
+     * @param label (text of some element or attribute inside or beside the checkbox) which is used to
+     *              find a checkbox.
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
+    public static SequentialSearchSupplier<Flag.CheckBox> checkbox(String label) {
+        return widget(Flag.CheckBox.class, label);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some radio button.
+     *
+     * @param duration is the parameter of a time to find a radio button
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
+    public static SequentialSearchSupplier<Flag.RadioButton> radioButton(Duration duration,
+                                                                         Predicate<Flag.RadioButton> predicate) {
+        return widget(Flag.RadioButton.class, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some radio button.
+     *
+     * @param labels (texts of some elements or attributes inside or beside the radio button) which are used to
+     *               find a radio button.
+     * @param duration is the parameter of a time to find a radio button
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
+    public static SequentialSearchSupplier<Flag.RadioButton> radioButton(List<String> labels,
+                                                                         Duration duration,
+                                                                         Predicate<Flag.RadioButton> predicate) {
+        return widget(Flag.RadioButton.class, labels, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some radio button.
+     *
+     * @param label (text of some element or attribute inside or beside the radio button) which is used to
+     *               find a radio button.
+     * @param duration is the parameter of a time to find a radio button
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
+    public static SequentialSearchSupplier<Flag.RadioButton> radioButton(String label,
+                                                                         Duration duration,
+                                                                         Predicate<Flag.RadioButton> predicate) {
+        return widget(Flag.RadioButton.class, label, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some radio button. The result function will return the first found radio button if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return the first found radio button which is visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param duration is the parameter of a time to find a radio button
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
+    public static SequentialSearchSupplier<Flag.RadioButton> radioButton(Duration duration) {
+        return widget(Flag.RadioButton.class, duration);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some radio button. The result function will return the first found radio button if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return the first found radio button which is visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param labels (texts of some elements or attributes inside or beside the radio button) which are used to
+     *               find a radio button.
+     * @param duration is the parameter of a time to find a radio button
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
+    public static SequentialSearchSupplier<Flag.RadioButton> radioButton(List<String> labels,
+                                                                      Duration duration) {
+        return widget(Flag.RadioButton.class, labels, duration);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some radio button. The result function will return the first found radio button if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return the first found radio button which is visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param label (text of some element or attribute inside or beside the radio button) which is used to
+     *               find a radio button.
+     * @param duration is the parameter of a time to find a radio button
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
+    public static SequentialSearchSupplier<Flag.RadioButton> radioButton(String label,
+                                                                         Duration duration) {
+        return widget(Flag.RadioButton.class, label, duration);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some radio button. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
+    public static SequentialSearchSupplier<Flag.RadioButton> radioButton(Predicate<Flag.RadioButton> predicate) {
+        return widget(Flag.RadioButton.class, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some radio button. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param labels (texts of some elements or attributes inside or beside the radio button) which are used to
+     *               find a radio button.
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
+    public static SequentialSearchSupplier<Flag.RadioButton> radioButton(List<String> labels,
+                                                                         Predicate<Flag.RadioButton> predicate) {
+        return widget(Flag.RadioButton.class, labels, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some radio button. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param label (text of some element or attribute inside or beside the radio button) which is used to
+     *               find a radio button.
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
+    public static SequentialSearchSupplier<Flag.RadioButton> radioButton(String label,
+                                                                         Predicate<Flag.RadioButton> predicate) {
+        return widget(Flag.RadioButton.class, label, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some radio button.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found radio button if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return the first found radio button which is visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     *
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
+    public static SequentialSearchSupplier<Flag.RadioButton> radioButton() {
+        return widget(Flag.RadioButton.class);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some radio button.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found radio button if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return the first found radio button which is visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+
+     *
+     * @param labels (texts of some elements or attributes inside or beside the radio button) which are used to
+     *               find a radio button.
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
+    public static SequentialSearchSupplier<Flag.RadioButton> radioButton(List<String> labels) {
+        return widget(Flag.RadioButton.class, labels);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some radio button.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found radio button if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return the first found radio button which is visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     *
+     * @param label (text of some element or attribute inside or beside the radio button) which is used to
+     *              find a radio button.
+     * @return an instance of {@link SequentialSearchSupplier}
+     */
+    public static SequentialSearchSupplier<Flag.RadioButton> radioButton(String label) {
+        return widget(Flag.RadioButton.class, label);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some link.
      *
      * @param duration is the parameter of a time to find a link

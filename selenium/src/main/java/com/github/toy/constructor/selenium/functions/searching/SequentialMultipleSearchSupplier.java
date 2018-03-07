@@ -4,10 +4,7 @@ import com.github.toy.constructor.core.api.SequentialGetSupplier;
 import com.github.toy.constructor.selenium.SeleniumSteps;
 import com.github.toy.constructor.selenium.api.widget.Labeled;
 import com.github.toy.constructor.selenium.api.widget.Widget;
-import com.github.toy.constructor.selenium.api.widget.drafts.Button;
-import com.github.toy.constructor.selenium.api.widget.drafts.Flag;
-import com.github.toy.constructor.selenium.api.widget.drafts.Link;
-import com.github.toy.constructor.selenium.api.widget.drafts.Select;
+import com.github.toy.constructor.selenium.api.widget.drafts.*;
 import com.github.toy.constructor.selenium.properties.WaitingProperties;
 import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
@@ -964,6 +961,416 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found check boxes.
+     *
+     * @param duration is the parameter of a time to find check boxes
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Flag.CheckBox> checkBoxes(Duration duration,
+                                                                             Predicate<Flag.CheckBox> predicate) {
+        return widgets(Flag.CheckBox.class, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found check boxes.
+     *
+     * @param labels (texts of some elements or attributes inside or beside the check box) which are used to
+     *               find check boxes.
+     * @param duration is the parameter of a time to find check boxes
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Flag.CheckBox> checkBoxes(List<String> labels,
+                                                                             Duration duration,
+                                                                             Predicate<Flag.CheckBox> predicate) {
+        return widgets(Flag.CheckBox.class, labels, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found check boxes.
+     *
+     * @param label (text of some element or attribute inside or beside the check box) which is used to
+     *               find check boxes.
+     * @param duration is the parameter of a time to find check boxes
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Flag.CheckBox> checkBoxes(String label,
+                                                                             Duration duration,
+                                                                             Predicate<Flag.CheckBox> predicate) {
+        return widgets(Flag.CheckBox.class, label, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found check boxes. The result function will return a list of any found check boxes
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found check boxes which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param duration is the parameter of a time to find check boxes
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Flag.CheckBox> checkBoxes(Duration duration) {
+        return widgets(Flag.CheckBox.class, duration);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found check boxes. The result function will return a list of any found check boxes
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found check boxes which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param labels (texts of some elements or attributes inside or beside the check box) which are used to
+     *               find check boxes.
+     * @param duration is the parameter of a time to find check box
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Flag.CheckBox> checkBoxes(List<String> labels,
+                                                                             Duration duration) {
+        return widgets(Flag.CheckBox.class, labels, duration);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found check boxes. The result function will return a list of any found check box
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found check boxes which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param label (text of some element or attribute inside or beside the check box) which is used to
+     *               find check boxes.
+     * @param duration is the parameter of a time to find check boxes
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Flag.RadioButton> checkBoxes(String label,
+                                                                                Duration duration) {
+        return widgets(Flag.RadioButton.class, label, duration);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found check boxes. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Flag.CheckBox> checkBoxes(Predicate<Flag.CheckBox> predicate) {
+        return widgets(Flag.CheckBox.class, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found check boxes. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param labels (texts of some elements or attributes inside or beside the check box) which are used to
+     *               find check boxes.
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Flag.CheckBox> checkBoxes(List<String> labels,
+                                                                             Predicate<Flag.CheckBox> predicate) {
+        return widgets(Flag.CheckBox.class, labels, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found check boxes. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param label (text of some element or attribute inside or beside the check box) which is used to
+     *               find check boxes.
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Flag.CheckBox> checkBoxes(String label,
+                                                                             Predicate<Flag.CheckBox> predicate) {
+        return widgets(Flag.CheckBox.class, label, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found check boxes.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found check boxes
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found check boxes which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Flag.CheckBox> checkBoxes() {
+        return widgets(Flag.CheckBox.class);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found check boxes.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found check boxes
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found check boxes which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param labels (texts of some elements or attributes inside or beside the check box) which are used to
+     *               find check boxes.
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Flag.CheckBox> checkBoxes(List<String> labels) {
+        return widgets(Flag.CheckBox.class, labels);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found check boxes.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found check boxes
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found check boxes which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param label (text of some element or attribute inside or beside the check box) which is used to
+     *               find check boxes.
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Flag.CheckBox> checkBoxes(String label) {
+        return widgets(Flag.CheckBox.class, label);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found radio buttons.
+     *
+     * @param duration is the parameter of a time to find radio buttons
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Flag.RadioButton> radioButtons(Duration duration,
+                                                                               Predicate<Flag.RadioButton> predicate) {
+        return widgets(Flag.RadioButton.class, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found radio buttons.
+     *
+     * @param labels (texts of some elements or attributes inside or beside the radio button) which are used to
+     *               find radio buttons.
+     * @param duration is the parameter of a time to find radio buttons
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Flag.RadioButton> radioButtons(List<String> labels,
+                                                                                  Duration duration,
+                                                                                  Predicate<Flag.RadioButton> predicate) {
+        return widgets(Flag.RadioButton.class, labels, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found radio buttons.
+     *
+     * @param label (text of some element or attribute inside or beside the radio button) which is used to
+     *               find radio buttons.
+     * @param duration is the parameter of a time to find radio buttons
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Flag.RadioButton> radioButtons(String label,
+                                                                                  Duration duration,
+                                                                                  Predicate<Flag.RadioButton> predicate) {
+        return widgets(Flag.RadioButton.class, label, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found radio buttons. The result function will return a list of any found radio buttons
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found radio buttons which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param duration is the parameter of a time to find radio buttons
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Flag.RadioButton> radioButtons(Duration duration) {
+        return widgets(Flag.RadioButton.class, duration);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found radio buttons. The result function will return a list of any found radio buttons
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found radio buttons which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param labels (texts of some elements or attributes inside or beside the radio button) which are used to
+     *               find radio buttons.
+     * @param duration is the parameter of a time to find radio buttons
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Flag.RadioButton> radioButtons(List<String> labels,
+                                                                                  Duration duration) {
+        return widgets(Flag.RadioButton.class, labels, duration);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found radio buttons. The result function will return a list of any found radio buttons
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found radio buttons which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param label (text of some element or attribute inside or beside the radio button) which is used to
+     *               find radio buttons.
+     * @param duration is the parameter of a time to find radio buttons
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Flag.RadioButton> radioButtons(String label,
+                                                                                Duration duration) {
+        return widgets(Flag.RadioButton.class, label, duration);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found radio buttons. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Flag.RadioButton> radioButtons(Predicate<Flag.RadioButton> predicate) {
+        return widgets(Flag.RadioButton.class, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found radio buttons. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param labels (texts of some elements or attributes inside or beside the radio button) which are used to
+     *               find radio buttons.
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Flag.RadioButton> radioButtons(List<String> labels,
+                                                                                  Predicate<Flag.RadioButton> predicate) {
+        return widgets(Flag.RadioButton.class, labels, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found radio buttons. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param label (text of some element or attribute inside or beside the radio button) which is used to
+     *               find radio buttons.
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Flag.RadioButton> radioButtons(String label,
+                                                                                  Predicate<Flag.RadioButton> predicate) {
+        return widgets(Flag.RadioButton.class, label, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found radio button.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found radio buttons
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found radio buttons which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Flag.RadioButton> radioButtons() {
+        return widgets(Flag.RadioButton.class);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found radio buttons.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found radio buttons
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found radio buttons which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param labels (texts of some elements or attributes inside or beside the radio button) which are used to
+     *               find radio buttons.
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Flag.RadioButton> radioButtons(List<String> labels) {
+        return widgets(Flag.RadioButton.class, labels);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found radio buttons.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found radio buttons
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found radio buttons which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param label (text of some element or attribute inside or beside the radio button) which is used to
+     *               find radio buttons.
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Flag.RadioButton> radioButtons(String label) {
+        return widgets(Flag.RadioButton.class, label);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found links.
      *
      * @param duration is the parameter of a time to find links
@@ -1375,6 +1782,415 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      */
     public static SequentialMultipleSearchSupplier<Select> selects(String label) {
         return widgets(Select.class, label);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found tabs.
+     *
+     * @param duration is the parameter of a time to find tabs
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Tab> tabs(Duration duration,
+                                                             Predicate<Tab> predicate) {
+        return widgets(Tab.class, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found tabs.
+     *
+     * @param labels (texts of some elements or attributes inside or beside the tab) which are used to
+     *               find tabs.
+     * @param duration is the parameter of a time to find tabs
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Tab> tabs(List<String> labels,
+                                                             Duration duration,
+                                                             Predicate<Tab> predicate) {
+        return widgets(Tab.class, labels, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found tabs.
+     *
+     * @param label (text of some element or attribute inside or beside the tab) which is used to
+     *               find tabs.
+     * @param duration is the parameter of a time to find tabs
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Tab> tabs(String label,
+                                                             Duration duration,
+                                                             Predicate<Tab> predicate) {
+        return widgets(Tab.class, label, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found tabs. The result function will return a list of any found tabs
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found tabs which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param duration is the parameter of a time to find tabs
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Tab> tabs(Duration duration) {
+        return widgets(Tab.class, duration);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found tabs. The result function will return a list of any found tabs
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found tabs which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param labels (texts of some elements or attributes inside or beside the tab) which are used to
+     *               find tabs.
+     * @param duration is the parameter of a time to find tabs
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Tab> tabs(List<String> labels,
+                                                             Duration duration) {
+        return widgets(Tab.class, labels, duration);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found tabs. The result function will return a list of any found tabs
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found tabs which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param label (text of some element or attribute inside or beside the tab) which is used to
+     *               find tabs.
+     * @param duration is the parameter of a time to find tabs
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Tab> tabs(String label,
+                                                             Duration duration) {
+        return widgets(Tab.class, label, duration);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found tabs. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Tab> tabs(Predicate<Tab> predicate) {
+        return widgets(Tab.class, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found tabs. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param labels (texts of some elements or attributes inside or beside the tab) which are used to
+     *               find tabs.
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Tab> tabs(List<String> labels,
+                                                             Predicate<Tab> predicate) {
+        return widgets(Tab.class, labels, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found tabs. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param label (text of some element or attribute inside or beside the tab) which is used to
+     *               find tabs.
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Tab> tabs(String label,
+                                                             Predicate<Tab> predicate) {
+        return widgets(Tab.class, label, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found tabs.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found tabs
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found tabs which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Tab> tabs() {
+        return widgets(Tab.class);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found tabs.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found tabs
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found tabs which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param labels (texts of some elements or attributes inside or beside the tab) which are used to
+     *               find tabs.
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Tab> tabs(List<String> labels) {
+        return widgets(Tab.class, labels);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found tabs.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found tabs
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found tabs which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param label (text of some element or attribute inside or beside the tab) which is used to
+     *               find tabs.
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<Tab> tabs(String label) {
+        return widgets(Tab.class, label);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found text fields.
+     *
+     * @param duration is the parameter of a time to find text fields
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<TextField> textFields(Duration duration,
+                                                                         Predicate<TextField> predicate) {
+        return widgets(TextField.class, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found text fields.
+     *
+     * @param labels (texts of some elements or attributes inside or beside the text field) which are used to
+     *               find text fields.
+     * @param duration is the parameter of a time to find text fields
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<TextField> textFields(List<String> labels,
+                                                                         Duration duration,
+                                                                         Predicate<TextField> predicate) {
+        return widgets(TextField.class, labels, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found text fields.
+     *
+     * @param label (text of some element or attribute inside or beside the text field) which is used to
+     *               find text fields.
+     * @param duration is the parameter of a time to find text fields
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<TextField> textFields(String label,
+                                                                         Duration duration,
+                                                                         Predicate<TextField> predicate) {
+        return widgets(TextField.class, label, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found text fields. The result function will return a list of any found text fields
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found text fields which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param duration is the parameter of a time to find text fields
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<TextField> textFields(Duration duration) {
+        return widgets(TextField.class, duration);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found text fields. The result function will return a list of any found text fields
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found text fields which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param labels (texts of some elements or attributes inside or beside the text field) which are used to
+     *               find text fields.
+     * @param duration is the parameter of a time to find text fields
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<TextField> textFields(List<String> labels,
+                                                                         Duration duration) {
+        return widgets(TextField.class, labels, duration);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found text fields. The result function will return a list of any found text fields
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found text fields which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param label (text of some element or attribute inside or beside the text field) which is used to
+     *               find text fields.
+     * @param duration is the parameter of a time to find text fields
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<TextField> textFields(String label, Duration duration) {
+        return widgets(TextField.class, label, duration);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found text fields. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<TextField> textFields(Predicate<TextField> predicate) {
+        return widgets(TextField.class, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found text fields. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param labels (texts of some elements or attributes inside or beside the text fields) which are used to
+     *               find text fields.
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<TextField> textFields(List<String> labels,
+                                                                         Predicate<TextField> predicate) {
+        return widgets(TextField.class, labels, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found text fields. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param label (text of some element or attribute inside or beside the text fields) which is used to
+     *               find text fields.
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<TextField> textFields(String label,
+                                                                   Predicate<TextField> predicate) {
+        return widgets(TextField.class, label, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found text fields.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found text fields
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found text fields which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<TextField> textFields() {
+        return widgets(TextField.class);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found text fields.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found text fields
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found text fields which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param labels (texts of some elements or attributes inside or beside the text field) which are used to
+     *               find text fields.
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<TextField> textFields(List<String> labels) {
+        return widgets(TextField.class, labels);
+    }
+
+    /**
+     * Returns an instance of {@link SequentialMultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found text fields.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found text fields
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found text fields which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param label (text of some element or attribute inside or beside the text field) which is used to
+     *               find text fields.
+     * @return an instance of {@link SequentialMultipleSearchSupplier}
+     */
+    public static SequentialMultipleSearchSupplier<TextField> textFields(String label) {
+        return widgets(TextField.class, label);
     }
 
     /**
