@@ -15,7 +15,7 @@ public class WebElementInterceptor implements MethodInterceptor {
     private final By by;
     private final String description;
 
-    public WebElementInterceptor(WebElement element, By by, String description) {
+    WebElementInterceptor(WebElement element, By by, String description) {
         this.element = element;
         this.by = by;
         this.description = description;
