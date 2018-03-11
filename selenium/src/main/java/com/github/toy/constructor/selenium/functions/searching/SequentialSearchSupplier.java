@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 import static com.github.toy.constructor.core.api.StoryWriter.condition;
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.github.toy.constructor.selenium.functions.searching.SearchSupplier.item;
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Optional.ofNullable;
 
 public final class SequentialSearchSupplier<R extends SearchContext>
@@ -24,6 +25,7 @@ public final class SequentialSearchSupplier<R extends SearchContext>
     }
 
     public static <R extends SearchContext> SequentialSearchSupplier<R> element(SearchSupplier<R> toFind) {
+        checkArgument(toFind != null, "It is necessary to define what to find");
         return new SequentialSearchSupplier<>(toFind);
     }
 
@@ -34,6 +36,7 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      * @return self-reference
      */
     public <Q extends SearchContext> SequentialSearchSupplier<R> from(Supplier<Function<SearchContext, Q>> from) {
+        checkArgument(from != null, "The searching for the parent element should be defined");
         if (chain != null) {
             chain = from.get().andThen(chain);
         }
@@ -53,6 +56,7 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      */
     @Override
     public <Q extends SearchContext> SequentialSearchSupplier<R> from(Q from) {
+        checkArgument(from != null, "The parent element should be defined");
         return from(item(toGet(from.toString(), q -> List.of(from)),
                 condition("as is", q -> true)));
     }
