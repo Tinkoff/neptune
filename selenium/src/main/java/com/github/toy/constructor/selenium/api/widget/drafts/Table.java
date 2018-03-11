@@ -12,6 +12,7 @@ import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 
 @Name("Table")
+//TODO it is supposed to be re-designed
 public abstract class Table extends Widget {
 
     public Table(WebElement wrappedElement) {

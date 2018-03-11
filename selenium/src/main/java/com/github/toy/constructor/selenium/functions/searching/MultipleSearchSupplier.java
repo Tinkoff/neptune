@@ -21,7 +21,6 @@ import static com.github.toy.constructor.selenium.functions.searching.DefaultWeb
 import static com.github.toy.constructor.selenium.functions.searching.DefaultWidgetConditions.defaultPredicateForWidgets;
 import static com.github.toy.constructor.selenium.functions.searching.DefaultWidgetConditions.widgetShouldBeLabeledBy;
 import static com.github.toy.constructor.selenium.functions.searching.FindLabeledWidgets.labeledWidgets;
-import static com.github.toy.constructor.selenium.functions.searching.FindWebElements.webElements;
 import static com.github.toy.constructor.selenium.properties.WaitingProperties.ELEMENT_WAITING_DURATION;
 
 public final class MultipleSearchSupplier<R extends SearchContext> extends
@@ -64,10 +63,10 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<WebElement> elements(By by,
-                                                                        Duration duration,
-                                                                        Predicate<WebElement> predicate) {
-        return items(webElements(by, duration, predicate.toString()),
+    public static MultipleSearchSupplier<WebElement> webElements(By by,
+                                                                 Duration duration,
+                                                                 Predicate<WebElement> predicate) {
+        return items(FindWebElements.webElements(by, duration, predicate.toString()),
                 predicate);
     }
 
@@ -82,11 +81,11 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<WebElement> elements(By by,
-                                                                        String text,
-                                                                        Duration duration,
-                                                                        Predicate<WebElement> predicate) {
-        return elements(by, duration,
+    public static MultipleSearchSupplier<WebElement> webElements(By by,
+                                                                 String text,
+                                                                 Duration duration,
+                                                                 Predicate<WebElement> predicate) {
+        return webElements(by, duration,
                 elementShouldHaveText(text).and(predicate));
     }
 
@@ -101,11 +100,11 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<WebElement> elements(By by,
-                                                                        Pattern textPattern,
-                                                                        Duration duration,
-                                                                        Predicate<WebElement> predicate) {
-        return elements(by, duration, elementShouldHaveText(textPattern)
+    public static MultipleSearchSupplier<WebElement> webElements(By by,
+                                                                 Pattern textPattern,
+                                                                 Duration duration,
+                                                                 Predicate<WebElement> predicate) {
+        return webElements(by, duration, elementShouldHaveText(textPattern)
                 .and(predicate));
     }
 
@@ -122,9 +121,9 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param duration is the parameter of a time to find elements
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<WebElement> elements(By by,
-                                                                        Duration duration) {
-        return elements(by, duration, defaultPredicateForElements());
+    public static MultipleSearchSupplier<WebElement> webElements(By by,
+                                                                 Duration duration) {
+        return webElements(by, duration, defaultPredicateForElements());
     }
 
     /**
@@ -141,10 +140,10 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param duration is the parameter of a time to find elements
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<WebElement> elements(By by,
-                                                                        String text,
-                                                                        Duration duration) {
-        return elements(by, text, duration, defaultPredicateForElements());
+    public static MultipleSearchSupplier<WebElement> webElements(By by,
+                                                                 String text,
+                                                                 Duration duration) {
+        return webElements(by, text, duration, defaultPredicateForElements());
     }
 
     /**
@@ -161,10 +160,10 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param duration is the parameter of a time to find elements
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<WebElement> elements(By by,
-                                                                        Pattern textPattern,
-                                                                        Duration duration) {
-        return elements(by, textPattern, duration, defaultPredicateForElements());
+    public static MultipleSearchSupplier<WebElement> webElements(By by,
+                                                                 Pattern textPattern,
+                                                                 Duration duration) {
+        return webElements(by, textPattern, duration, defaultPredicateForElements());
     }
 
     /**
@@ -178,8 +177,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<WebElement> elements(By by, Predicate<WebElement> predicate) {
-        return elements(by, ELEMENT_WAITING_DURATION.get(), predicate);
+    public static MultipleSearchSupplier<WebElement> webElements(By by, Predicate<WebElement> predicate) {
+        return webElements(by, ELEMENT_WAITING_DURATION.get(), predicate);
     }
 
     /**
@@ -194,10 +193,10 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<WebElement> elements(By by,
-                                                                        String text,
-                                                                        Predicate<WebElement> predicate) {
-        return elements(by, text, ELEMENT_WAITING_DURATION.get(), predicate);
+    public static MultipleSearchSupplier<WebElement> webElements(By by,
+                                                                 String text,
+                                                                 Predicate<WebElement> predicate) {
+        return webElements(by, text, ELEMENT_WAITING_DURATION.get(), predicate);
     }
 
     /**
@@ -212,10 +211,10 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<WebElement> elements(By by,
-                                                                        Pattern textPattern,
-                                                                        Predicate<WebElement> predicate) {
-        return elements(by, textPattern, ELEMENT_WAITING_DURATION.get(), predicate);
+    public static MultipleSearchSupplier<WebElement> webElements(By by,
+                                                                 Pattern textPattern,
+                                                                 Predicate<WebElement> predicate) {
+        return webElements(by, textPattern, ELEMENT_WAITING_DURATION.get(), predicate);
     }
 
     /**
@@ -234,8 +233,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param by locator strategy to find an element
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<WebElement> elements(By by) {
-        return elements(by, ELEMENT_WAITING_DURATION.get());
+    public static MultipleSearchSupplier<WebElement> webElements(By by) {
+        return webElements(by, ELEMENT_WAITING_DURATION.get());
     }
 
     /**
@@ -255,8 +254,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param text which the desired elements should have
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<WebElement> elements(By by, String text) {
-        return elements(by, text, ELEMENT_WAITING_DURATION.get());
+    public static MultipleSearchSupplier<WebElement> webElements(By by, String text) {
+        return webElements(by, text, ELEMENT_WAITING_DURATION.get());
     }
 
     /**
@@ -276,9 +275,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param textPattern is a regExp to match text of desired elements
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<WebElement> elements(By by,
-                                                                        Pattern textPattern) {
-        return elements(by, textPattern, ELEMENT_WAITING_DURATION.get());
+    public static MultipleSearchSupplier<WebElement> webElements(By by, Pattern textPattern) {
+        return webElements(by, textPattern, ELEMENT_WAITING_DURATION.get());
     }
 
     /**

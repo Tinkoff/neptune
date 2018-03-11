@@ -6,22 +6,25 @@ import org.openqa.selenium.SearchContext;
 
 import java.util.List;
 import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.Supplier;
 
+import static com.github.toy.constructor.core.api.StoryWriter.condition;
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
-import static com.github.toy.constructor.core.api.ToGetConditionalHelper.getSubIterable;
+import static com.github.toy.constructor.selenium.functions.searching.SearchSupplier.item;
 import static java.util.Optional.ofNullable;
 
 public final class SequentialMultipleSearchSupplier<R extends SearchContext>
         extends SequentialGetSupplier<SeleniumSteps, List<R>, SearchContext, SequentialMultipleSearchSupplier<R>> {
     
-    private final Function<SearchContext, List<R>>  searching;
-    private final Predicate<R> condition;
+    private final MultipleSearchSupplier<R> toFind;
+    private Function<SearchContext, ? extends SearchContext> chain;
 
-    private SequentialMultipleSearchSupplier(Function<SearchContext, List<R>> searching,
-                                     Predicate<R> condition) {
-        this.searching = searching;
-        this.condition = condition;
+    private SequentialMultipleSearchSupplier(MultipleSearchSupplier<R> toFind) {
+        this.toFind = toFind;
+    }
+
+    public static <R extends SearchContext> SequentialMultipleSearchSupplier<R> elements(MultipleSearchSupplier<R> toFind) {
+        return new SequentialMultipleSearchSupplier<>(toFind);
     }
 
     /**
@@ -30,8 +33,15 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      * @param from is how to find some elements from a parent element.
      * @return self-reference
      */
-    public SequentialMultipleSearchSupplier<R> from(SequentialSearchSupplier<? extends SearchContext> from) {
-        return super.from(from);
+    public <Q extends SearchContext> SequentialMultipleSearchSupplier<R> from(Supplier<Function<SearchContext, Q>> from) {
+        if (chain != null) {
+            chain = from.get().andThen(chain);
+        }
+        else {
+            chain = from.get();
+        }
+        return super.from(toGet(chain.toString(),
+                seleniumSteps -> chain.apply(seleniumSteps.getWrappedDriver())));
     }
 
     /**
@@ -43,7 +53,8 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
      */
     @Override
     public <Q extends SearchContext> SequentialMultipleSearchSupplier<R> from(Q from) {
-        return super.from(from);
+        return from(item(toGet(from.toString(), q -> List.of(from)),
+                condition("as is", q -> true)));
     }
 
     @Override
@@ -58,9 +69,6 @@ public final class SequentialMultipleSearchSupplier<R extends SearchContext>
 
     @Override
     protected Function<SearchContext, List<R>> getEndFunction() {
-        return getSubIterable("List of",
-                searching,
-                condition, true,
-                true);
+        return toFind.get();
     }
 }

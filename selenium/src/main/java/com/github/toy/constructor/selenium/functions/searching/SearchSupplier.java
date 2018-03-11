@@ -73,9 +73,9 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<WebElement> element(By by,
-                                                               Duration duration,
-                                                               Predicate<WebElement> predicate) {
+    public static SearchSupplier<WebElement> webElement(By by,
+                                                        Duration duration,
+                                                        Predicate<WebElement> predicate) {
         return item(webElements(by, duration, predicate.toString()), predicate);
     }
 
@@ -90,10 +90,10 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<WebElement> element(By by,
-                                                               String text,
-                                                               Duration duration, Predicate<WebElement> predicate) {
-        return element(by, duration,
+    public static SearchSupplier<WebElement> webElement(By by,
+                                                        String text,
+                                                        Duration duration, Predicate<WebElement> predicate) {
+        return webElement(by, duration,
                 elementShouldHaveText(text).and(predicate));
     }
 
@@ -108,11 +108,11 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<WebElement> element(By by,
-                                                               Pattern textPattern,
-                                                               Duration duration,
-                                                               Predicate<WebElement> predicate) {
-        return element(by, duration, elementShouldHaveText(textPattern)
+    public static SearchSupplier<WebElement> webElement(By by,
+                                                        Pattern textPattern,
+                                                        Duration duration,
+                                                        Predicate<WebElement> predicate) {
+        return webElement(by, duration, elementShouldHaveText(textPattern)
                 .and(predicate));
     }
 
@@ -129,9 +129,9 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param duration is the parameter of a time to find the element
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<WebElement> element(By by,
-                                                               Duration duration) {
-        return element(by, duration, defaultPredicateForElements());
+    public static SearchSupplier<WebElement> webElement(By by,
+                                                        Duration duration) {
+        return webElement(by, duration, defaultPredicateForElements());
     }
 
     /**
@@ -148,10 +148,10 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param duration is the parameter of a time to find the element
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<WebElement> element(By by,
-                                                               String text,
-                                                               Duration duration) {
-        return element(by, text,
+    public static SearchSupplier<WebElement> webElement(By by,
+                                                        String text,
+                                                        Duration duration) {
+        return webElement(by, text,
                 duration, defaultPredicateForElements());
     }
 
@@ -169,10 +169,10 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param duration is the parameter of a time to find the element
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<WebElement> element(By by,
-                                                               Pattern textPattern,
-                                                               Duration duration) {
-        return element(by, textPattern, duration, defaultPredicateForElements());
+    public static SearchSupplier<WebElement> webElement(By by,
+                                                        Pattern textPattern,
+                                                        Duration duration) {
+        return webElement(by, textPattern, duration, defaultPredicateForElements());
     }
 
     /**
@@ -186,8 +186,8 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<WebElement> element(By by, Predicate<WebElement> predicate) {
-        return element(by, ELEMENT_WAITING_DURATION.get(), predicate);
+    public static SearchSupplier<WebElement> webElement(By by, Predicate<WebElement> predicate) {
+        return webElement(by, ELEMENT_WAITING_DURATION.get(), predicate);
     }
 
     /**
@@ -202,10 +202,10 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<WebElement> element(By by,
-                                                               String text,
-                                                               Predicate<WebElement> predicate) {
-        return element(by, text, ELEMENT_WAITING_DURATION.get(), predicate);
+    public static SearchSupplier<WebElement> webElement(By by,
+                                                        String text,
+                                                        Predicate<WebElement> predicate) {
+        return webElement(by, text, ELEMENT_WAITING_DURATION.get(), predicate);
     }
 
     /**
@@ -220,10 +220,10 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<WebElement> element(By by,
-                                                               Pattern textPattern,
-                                                               Predicate<WebElement> predicate) {
-        return element(by, textPattern, ELEMENT_WAITING_DURATION.get(), predicate);
+    public static SearchSupplier<WebElement> webElement(By by,
+                                                        Pattern textPattern,
+                                                        Predicate<WebElement> predicate) {
+        return webElement(by, textPattern, ELEMENT_WAITING_DURATION.get(), predicate);
     }
 
     /**
@@ -242,8 +242,8 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param by locator strategy to find an element
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<WebElement> element(By by) {
-        return element(by, ELEMENT_WAITING_DURATION.get());
+    public static SearchSupplier<WebElement> webElement(By by) {
+        return webElement(by, ELEMENT_WAITING_DURATION.get());
     }
 
     /**
@@ -263,9 +263,9 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param text which the desired element should have
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<WebElement> element(By by,
-                                                               String text) {
-        return element(by, text, ELEMENT_WAITING_DURATION.get());
+    public static SearchSupplier<WebElement> webElement(By by,
+                                                        String text) {
+        return webElement(by, text, ELEMENT_WAITING_DURATION.get());
     }
 
     /**
@@ -285,9 +285,9 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param textPattern is a regExp to match text of the desired element
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<WebElement> element(By by,
-                                                               Pattern textPattern) {
-        return element(by, textPattern, ELEMENT_WAITING_DURATION.get());
+    public static SearchSupplier<WebElement> webElement(By by,
+                                                        Pattern textPattern) {
+        return webElement(by, textPattern, ELEMENT_WAITING_DURATION.get());
     }
 
     /**
