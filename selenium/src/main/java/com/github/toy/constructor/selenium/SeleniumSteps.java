@@ -2,8 +2,10 @@ package com.github.toy.constructor.selenium;
 
 import com.github.toy.constructor.core.api.GetStep;
 import com.github.toy.constructor.core.api.PerformStep;
+import com.github.toy.constructor.selenium.functions.click.ClickActionSupplier;
 import com.github.toy.constructor.selenium.functions.searching.SequentialMultipleSearchSupplier;
 import com.github.toy.constructor.selenium.functions.searching.SequentialSearchSupplier;
+import com.github.toy.constructor.selenium.functions.value.SequentialGetValueSupplier;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.WrapsDriver;
@@ -29,5 +31,13 @@ public class SeleniumSteps implements PerformStep<SeleniumSteps>, GetStep<Seleni
 
     public <R extends SearchContext> List<R> find(SequentialMultipleSearchSupplier<R> what) {
         return get(what);
+    }
+
+    public SeleniumSteps click(ClickActionSupplier clickActionSupplier) {
+        return perform(clickActionSupplier);
+    }
+
+    public <T> T getValue(SequentialGetValueSupplier<T> getValueSupplier) {
+        return get(getValueSupplier);
     }
 }

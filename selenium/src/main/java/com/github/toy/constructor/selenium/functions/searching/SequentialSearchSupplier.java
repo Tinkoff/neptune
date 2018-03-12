@@ -35,7 +35,7 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      * @param from is how to find some element from a parent element.
      * @return self-reference
      */
-    public <Q extends SearchContext> SequentialSearchSupplier<R> from(Supplier<Function<SearchContext, Q>> from) {
+    public <Q extends SearchContext> SequentialSearchSupplier<R> foundFrom(Supplier<Function<SearchContext, Q>> from) {
         checkArgument(from != null, "The searching for the parent element should be defined");
         if (chain != null) {
             chain = from.get().andThen(chain);
@@ -54,10 +54,9 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      * @param <Q> is a type of the parent element.
      * @return self-reference
      */
-    @Override
-    public <Q extends SearchContext> SequentialSearchSupplier<R> from(Q from) {
+    public <Q extends SearchContext> SequentialSearchSupplier<R> foundFrom(Q from) {
         checkArgument(from != null, "The parent element should be defined");
-        return from(item(toGet(from.toString(), q -> List.of(from)),
+        return foundFrom(item(toGet(from.toString(), q -> List.of(from)),
                 condition("as is", q -> true)));
     }
 
