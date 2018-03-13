@@ -2,7 +2,9 @@ package com.github.toy.constructor.selenium;
 
 import com.github.toy.constructor.core.api.GetStep;
 import com.github.toy.constructor.core.api.PerformStep;
+import com.github.toy.constructor.selenium.api.widget.Editable;
 import com.github.toy.constructor.selenium.functions.click.ClickActionSupplier;
+import com.github.toy.constructor.selenium.functions.edit.EditActionSupplier;
 import com.github.toy.constructor.selenium.functions.searching.SequentialMultipleSearchSupplier;
 import com.github.toy.constructor.selenium.functions.searching.SequentialSearchSupplier;
 import com.github.toy.constructor.selenium.functions.value.SequentialGetValueSupplier;
@@ -39,5 +41,9 @@ public class SeleniumSteps implements PerformStep<SeleniumSteps>, GetStep<Seleni
 
     public <T> T getValue(SequentialGetValueSupplier<T> getValueSupplier) {
         return get(getValueSupplier);
+    }
+
+    public SeleniumSteps edit(EditActionSupplier editActionSupplier) {
+        return perform(editActionSupplier);
     }
 }

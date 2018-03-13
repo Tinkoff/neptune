@@ -14,14 +14,17 @@ import static com.github.toy.constructor.core.api.StoryWriter.action;
 import static com.github.toy.constructor.core.api.proxy.ConstructorParameters.params;
 import static com.github.toy.constructor.core.api.proxy.Substitution.getSubstituted;
 import static com.github.toy.constructor.selenium.functions.click.ClickActionSupplier.on;
+import static com.github.toy.constructor.selenium.functions.edit.EditActionSupplier.valueOf;
 import static com.github.toy.constructor.selenium.functions.searching.MultipleSearchSupplier.links;
 import static com.github.toy.constructor.selenium.functions.searching.MultipleSearchSupplier.textFields;
 import static com.github.toy.constructor.selenium.functions.searching.SearchSupplier.*;
 import static com.github.toy.constructor.selenium.functions.searching.SequentialMultipleSearchSupplier.elements;
 import static com.github.toy.constructor.selenium.functions.searching.SequentialSearchSupplier.element;
 import static com.github.toy.constructor.selenium.functions.value.SequentialGetValueSupplier.ofThe;
+import static com.google.common.collect.ImmutableList.of;
 import static java.time.Duration.ofSeconds;
 import static org.openqa.selenium.By.xpath;
+import static org.openqa.selenium.Keys.HOME;
 
 public class Tezzt {
 
@@ -49,6 +52,9 @@ public class Tezzt {
                             .foundFrom(webElement(xpath("some path")))));
 
             String text = selenium.getValue(ofThe(element(textField("Some text field"))));
+
+            selenium.edit(valueOf(element(textField()), of("123", HOME))
+                    .andValueOf(element(flag()), true));
         }));
     }
 }
