@@ -3,14 +3,19 @@ package com.github.toy.constructor.core.api;
 import com.google.common.collect.Iterables;
 import org.apache.commons.lang3.ArrayUtils;
 
+import java.time.Duration;
 import java.util.List;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.Objects;
+import java.util.function.*;
 
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
+import static java.lang.System.currentTimeMillis;
+import static java.lang.Thread.sleep;
+import static java.time.Duration.ofMillis;
 import static java.util.Arrays.asList;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.StreamSupport.stream;
 
@@ -29,7 +34,7 @@ public final class ToGetConditionalHelper {
             throw new CheckConditionException(message, t);
         }
 
-        System.out.println(message);
+        System.err.println(message);
         t.printStackTrace();
         return false;
     }
@@ -42,6 +47,45 @@ public final class ToGetConditionalHelper {
 
     private static String getDescription(String description, Function<?, ?> function, Predicate<?> condition) {
         return format("%s from (%s) on condition %s", description, function, condition);
+    }
+
+    private static <T, F> Function<T, F> fluentWaitFunction(String description,
+                                                            Function<T, F> originalFunction,
+                                                            Duration waitingTime,
+                                                            Duration sleepingTime,
+                                                            Predicate<F> till,
+                                                            boolean throwExceptionWhenExpired) {
+        String fullDescription = description;
+        if (waitingTime != null) {
+            fullDescription = format("%s. Time to get valuable result: %s", fullDescription, waitingTime);
+        }
+        Duration timeOut = ofNullable(waitingTime).orElseGet(() -> ofMillis(0));
+        Duration sleeping = ofNullable(sleepingTime).orElseGet(() -> ofMillis(0));
+
+        return toGet(fullDescription, t -> {
+            long currentMillis = currentTimeMillis();
+            long endMillis = currentMillis + timeOut.toMillis();
+
+            F f = null;
+            while (currentTimeMillis() <= endMillis) {
+                f = originalFunction.apply(t);
+                if (till.test(f)) {
+                    return f;
+                }
+                try {
+                    sleep(sleeping.toMillis());
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException(e);
+                }
+            }
+
+            if (throwExceptionWhenExpired) {
+                throw new WaitingTimeHasExpiredException(description, timeOut);
+            }
+
+            return f;
+        });
     }
 
     /**
@@ -63,10 +107,10 @@ public final class ToGetConditionalHelper {
      * The result function will return some value if something is found. {@code null} will be returned otherwise.
      */
     public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(String description,
-                                                                             Function<T, V> function,
-                                                                             Predicate<R> condition,
-                                                                             boolean checkConditionInParallel,
-                                                                             boolean ignoreExceptionOnConditionCheck) {
+                                                                               Function<T, V> function,
+                                                                               Predicate<R> condition,
+                                                                               boolean checkConditionInParallel,
+                                                                               boolean ignoreExceptionOnConditionCheck) {
         checkArgument(function != null, "Function which should return iterable is not defined");
         checkArgument(condition != null, "Predicate which should be used as the condition to check " +
                 "value from iterable is not defined.");
@@ -75,17 +119,18 @@ public final class ToGetConditionalHelper {
                 "Function which should return iterable is not described." +
                         " Use StoryWriter.toGet to describe it.");
         checkCondition(condition);
-        return toGet(getDescription(description, function, condition), t -> {
-            V v = function.apply(t);
-            return stream(v.spliterator(), checkConditionInParallel).filter(r -> {
-                try {
-                    return condition.test(r);
-                }
-                catch (Throwable t1) {
-                    return returnFalseOrThrowException(t1, ignoreExceptionOnConditionCheck);
-                }
-            }).findFirst().orElse(null);
-        });
+        return fluentWaitFunction(getDescription(description, function, condition), t ->
+                        ofNullable(function.apply(t))
+                                .map(v -> stream(v.spliterator(), checkConditionInParallel).filter(r -> {
+                                    try {
+                                        return condition.test(r);
+                                    } catch (Throwable t1) {
+                                        return returnFalseOrThrowException(t1, ignoreExceptionOnConditionCheck);
+                                    }
+                                }).findFirst().orElse(null))
+                                .orElse(null),
+                null,
+                null, Objects::nonNull, false);
     }
 
     /**
@@ -150,18 +195,19 @@ public final class ToGetConditionalHelper {
                 "Function which should return object is not described." +
                         " Use StoryWriter.toGet to describe it.");
         checkCondition(condition);
-        return toGet(getDescription(description, function, condition), t -> {
-            R r = function.apply(t);
-            try {
-                if (condition.test(r)) {
-                    return r;
-                }
-            }
-            catch (Throwable t1) {
-                returnFalseOrThrowException(t1, ignoreExceptionOnConditionCheck);
-            }
-            return null;
-        });
+        return fluentWaitFunction(getDescription(description, function, condition), t ->
+                ofNullable(function.apply(t)).map(r -> {
+                    try {
+                        if (condition.test(r)) {
+                            return r;
+                        }
+                    }
+                    catch (Throwable t1) {
+                        returnFalseOrThrowException(t1, ignoreExceptionOnConditionCheck);
+                    }
+                    return null;
+                }).orElse(null), null,
+                null, Objects::nonNull, false);
     }
 
     /**
@@ -195,20 +241,22 @@ public final class ToGetConditionalHelper {
                 "Function which should return iterable is not described." +
                         " Use StoryWriter.toGet to describe it.");
         checkCondition(condition);
-        return toGet(getDescription(description, function, condition), t -> {
-            V v = function.apply(t);
+        return fluentWaitFunction(getDescription(description, function, condition), t ->
+                ofNullable(function.apply(t)).map(v -> {
+                    List<R> result = stream(v.spliterator(), checkConditionInParallel).filter(r -> {
+                        try {
+                            return !condition.test(r);
+                        } catch (Throwable t1) {
+                            return !returnFalseOrThrowException(t1, ignoreExceptionOnConditionCheck);
+                        }
+                    }).collect(toList());
 
-            List<R> result = stream(v.spliterator(), checkConditionInParallel).filter(r -> {
-                try {
-                    return !condition.test(r);
-                } catch (Throwable t1) {
-                    return !returnFalseOrThrowException(t1, ignoreExceptionOnConditionCheck);
-                }
-            }).collect(toList());
-
-            Iterables.removeAll(v, result);
-            return v;
-        });
+                    Iterables.removeAll(v, result);
+                    return v;
+                }).orElse(null),
+                null,
+                null, v -> v != null && Iterables.size(v) > 0,
+                false);
     }
 
     /**
@@ -241,29 +289,36 @@ public final class ToGetConditionalHelper {
                 "Function which should return array is not described." +
                         " Use StoryWriter.toGet to describe it.");
         checkCondition(condition);
-        return toGet(getDescription(description, function, condition), t -> {
-            R[] got = function.apply(t);
+        return fluentWaitFunction(getDescription(description, function, condition), t ->
+                ofNullable(function.apply(t)).map(rs -> {
+                    List<R> subResult = stream(asList(rs).spliterator(), checkConditionInParallel).filter(r -> {
+                        try {
+                            return !condition.test(r);
+                        } catch (Throwable t1) {
+                            return !returnFalseOrThrowException(t1, ignoreExceptionOnConditionCheck);
+                        }
+                    }).collect(toList());
 
-            List<R> subResult = stream(asList(got).spliterator(), checkConditionInParallel).filter(r -> {
-                try {
-                    return !condition.test(r);
-                } catch (Throwable t1) {
-                    return !returnFalseOrThrowException(t1, ignoreExceptionOnConditionCheck);
-                }
-            }).collect(toList());
-
-            R[] result = got;
-            for (R r: subResult) {
-                result = ArrayUtils.removeElement(result, r);
-            }
-            return result;
-        });
+                    R[] result = rs;
+                    for (R r: subResult) {
+                        result = ArrayUtils.removeElement(result, r);
+                    }
+                    return result;
+                }).orElse(null),
+                null,
+                null, rs -> rs != null && rs.length > 0, false);
     }
 
 
     private static class CheckConditionException extends RuntimeException {
         CheckConditionException(String message, Throwable cause) {
             super(message, cause);
+        }
+    }
+
+    public static class WaitingTimeHasExpiredException extends RuntimeException {
+        WaitingTimeHasExpiredException(String description, Duration duration) {
+            super(format("Waiting time has expired. Was expected: '%s'. Duration: '%s'", description, duration));
         }
     }
 }

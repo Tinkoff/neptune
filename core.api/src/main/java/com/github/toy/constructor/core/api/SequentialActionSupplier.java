@@ -34,7 +34,7 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
      * @param additionalArguments that needed to perform the action. It may be ignored.
      * @return self-reference.
      */
-    protected THIS andThen(String description, Function<T, R> function, Object...additionalArguments) {
+    protected THIS andThen(String description, Function<T, ? extends R> function, Object...additionalArguments) {
         checkArgument(function != null,
                 "Function which gets value to perform action is not defined");
         checkArgument(DescribedFunction.class.isAssignableFrom(function.getClass()),

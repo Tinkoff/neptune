@@ -6,8 +6,6 @@ import com.github.toy.constructor.selenium.api.widget.Editable;
 import com.github.toy.constructor.selenium.functions.searching.SequentialSearchSupplier;
 import org.openqa.selenium.SearchContext;
 
-import java.util.function.Function;
-
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 
@@ -32,7 +30,7 @@ public final class EditActionSupplier extends
         checkArgument(of != null, "The searching for the editable element should be defined");
         checkArgument(value != null, "The value which is used to edit the element should be defined");
         return new EditActionSupplier().andThen(format("Edit. Set new value %s", value),
-                (Function<SeleniumSteps, Editable>) of.get(), value);
+                of.get(), value);
     }
 
     /**
@@ -53,7 +51,7 @@ public final class EditActionSupplier extends
         checkArgument(of != null, "The searching for the editable element should be defined");
         checkArgument(value != null, "The value which is used to edit the element should be defined");
         return andThen(format("Edit. Set new value %s", value),
-                (Function<SeleniumSteps, Editable>) of.get(), value);
+                of.get(), value);
     }
 
     public <T, Q extends SearchContext & Editable<T>> EditActionSupplier andValueOf(Q of, T value) {
