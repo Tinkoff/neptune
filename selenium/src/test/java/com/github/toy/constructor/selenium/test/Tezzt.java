@@ -4,11 +4,8 @@ import com.github.toy.constructor.selenium.SeleniumSteps;
 import com.github.toy.constructor.selenium.api.widget.drafts.Button;
 import com.github.toy.constructor.selenium.api.widget.drafts.Link;
 import com.github.toy.constructor.selenium.api.widget.drafts.TextField;
-import com.github.toy.constructor.selenium.functions.value.SequentialGetValueSupplier;
 
-import java.time.Duration;
 import java.util.List;
-import java.util.function.Consumer;
 
 import static com.github.toy.constructor.core.api.StoryWriter.action;
 import static com.github.toy.constructor.core.api.proxy.ConstructorParameters.params;
