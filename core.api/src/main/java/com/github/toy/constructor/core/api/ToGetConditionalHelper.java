@@ -68,7 +68,7 @@ public final class ToGetConditionalHelper {
             long endMillis = currentMillis + timeOut.toMillis();
 
             F f = null;
-            while (currentTimeMillis() <= endMillis) {
+            while (currentTimeMillis() <= endMillis + 100 && f == null) {
                 f = originalFunction.apply(t);
                 if (till.test(f)) {
                     return f;
