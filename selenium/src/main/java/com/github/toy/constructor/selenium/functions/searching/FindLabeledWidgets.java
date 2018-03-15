@@ -10,8 +10,6 @@ import org.openqa.selenium.support.FindBys;
 import org.reflections.Reflections;
 
 import java.lang.reflect.Modifier;
-import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -25,8 +23,8 @@ import static java.util.stream.Collectors.toList;
 
 class FindLabeledWidgets<R extends Widget> extends FindWidgets<R> {
 
-    FindLabeledWidgets(Class<R> classOfAWidget, Duration duration, String conditionString) {
-        super(classOfAWidget, duration, conditionString);
+    private FindLabeledWidgets(Class<R> classOfAWidget, String conditionString) {
+        super(classOfAWidget, conditionString);
     }
 
     @Override
@@ -48,9 +46,8 @@ class FindLabeledWidgets<R extends Widget> extends FindWidgets<R> {
 
         Reflections reflections = new Reflections("");
 
-        ArrayList<Class<? extends R>> resultList = new ArrayList<>();
-        resultList.addAll(reflections.getSubTypesOf(classOfAWidget).stream()
-                .filter(classPredicate).collect(toList()));
+        List<Class<? extends R>> resultList = reflections.getSubTypesOf(classOfAWidget).stream()
+                .filter(classPredicate).collect(toList());
 
         if (classPredicate.test(classOfAWidget)) {
             resultList.add(classOfAWidget);
@@ -68,8 +65,8 @@ class FindLabeledWidgets<R extends Widget> extends FindWidgets<R> {
     }
 
     static <R extends Widget> Function<SearchContext, List<R>> labeledWidgets(Class<R> classOfAWidget,
-                                                                       Duration duration, String conditionString) {
+                                                                              String conditionString) {
         return toGet(format("Elements of type %s", classOfAWidget.getName()),
-                new FindLabeledWidgets<>(classOfAWidget, duration, conditionString));
+                new FindLabeledWidgets<>(classOfAWidget, conditionString));
     }
 }

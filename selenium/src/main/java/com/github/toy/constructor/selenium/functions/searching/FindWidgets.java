@@ -9,11 +9,9 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
-import org.openqa.selenium.support.ui.FluentWait;
 import org.reflections.Reflections;
 
 import java.lang.reflect.Modifier;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,24 +31,19 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
 
     private static final FindByBuilder builder = new FindByBuilder();
     final Class<? extends R> classOfAWidget;
-    private final Duration duration;
     private final String conditionString;
 
-    FindWidgets(Class<R> classOfAWidget, Duration duration,
-                String conditionString) {
+    FindWidgets(Class<R> classOfAWidget, String conditionString) {
         checkArgument(classOfAWidget != null, "The class to be instantiated should be defined.");
-        checkArgument(duration != null, "Duration should be defined.");
         checkArgument(!isBlank(conditionString), "Description of the condition should not be empty.");
         this.classOfAWidget = classOfAWidget;
-        this.duration = duration;
         this.conditionString = conditionString;
     }
 
     static <R extends Widget> Function<SearchContext, List<R>> widgets(Class<R> classOfAWidget,
-                                                                       Duration duration,
                                                                        String conditionString) {
         return toGet(format("Elements of type %s", classOfAWidget.getName()),
-                new FindWidgets<>(classOfAWidget, duration, conditionString));
+                new FindWidgets<>(classOfAWidget, conditionString));
     }
 
     List<Class<? extends R>> getSubclasses() {
@@ -70,9 +63,8 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
 
         Reflections reflections = new Reflections("");
 
-        ArrayList<Class<? extends R>> resultList = new ArrayList<>();
-        resultList.addAll(reflections.getSubTypesOf(classOfAWidget).stream()
-                .filter(classPredicate).collect(toList()));
+        List<Class<? extends R>> resultList = reflections.getSubTypesOf(classOfAWidget).stream()
+                .filter(classPredicate).collect(toList());
 
         if (classPredicate.test(classOfAWidget)) {
             resultList.add(classOfAWidget);
@@ -106,25 +98,12 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
     @Override
     public List<R> apply(SearchContext searchContext) {
         List<Class<? extends R>> classesToInstantiate = getSubclasses();
-        FluentWait<SearchContext> wait = new FluentWait<>(searchContext);
-        try {
-            return wait.withTimeout(duration)
-                    .ignoring(StaleElementReferenceException.class)
-                    .until(searchContext1 -> {
-                        List<R> result = new ArrayList<>();
-                        classesToInstantiate.forEach(clazz -> {
-                            By by = builder.buildIt(clazz);
-                            result.addAll(searchContext.findElements(by).stream()
-                                    .map(this::createWidget).collect(toList()));
-                        });
-                        if (result.size() > 0) {
-                            return result;
-                        }
-                        return null;
-                    });
-        }
-        catch (TimeoutException e) {
-            return List.of();
-        }
+        List<R> result = new ArrayList<>();
+        classesToInstantiate.forEach(clazz -> {
+            By by = builder.buildIt(clazz);
+            result.addAll(searchContext.findElements(by).stream()
+                    .map(this::createWidget).collect(toList()));
+        });
+        return result;
     }
 }

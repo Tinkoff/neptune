@@ -38,19 +38,37 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param transformation is a function which performs the searching from some {@link SearchContext}
      *                       and transform the list of found items to another list of instances
      *                       of {@link SearchContext}
+     * @param duration is the parameter of a time to find desired items
      * @param condition to specify the searching criteria
      * @param <T> is a type of a value to be returned by resulted function
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static <T extends SearchContext> MultipleSearchSupplier<T> items(
-            Function<SearchContext,List<T>> transformation,
-            Predicate<T> condition) {
+    public static <T extends SearchContext> MultipleSearchSupplier<T> items(Function<SearchContext,List<T>> transformation,
+                                                                            Duration duration, Predicate<T> condition) {
         MultipleSearchSupplier<T> supplier = new MultipleSearchSupplier<>();
 
         return supplier.set(getSubIterable("List of",
-                transformation,
-                condition, true,
-                true));
+                transformation, condition, duration,
+                false, true));
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of instances of {@link SearchContext} found from the input value.
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param transformation is a function which performs the searching from some {@link SearchContext}
+     *                       and transform the list of found items to another list of instances
+     *                       of {@link SearchContext}
+     * @param condition to specify the searching criteria
+     * @param <T> is a type of a value to be returned by resulted function
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static <T extends SearchContext> MultipleSearchSupplier<T> items(Function<SearchContext,List<T>> transformation,
+                                                                            Predicate<T> condition) {
+        return items(transformation, ELEMENT_WAITING_DURATION.get(), condition);
     }
 
     /**
@@ -63,11 +81,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<WebElement> webElements(By by,
-                                                                 Duration duration,
-                                                                 Predicate<WebElement> predicate) {
-        return items(FindWebElements.webElements(by, duration, predicate.toString()),
-                predicate);
+    public static MultipleSearchSupplier<WebElement> webElements(By by, Duration duration, Predicate<WebElement> predicate) {
+        return items(FindWebElements.webElements(by, predicate.toString()), duration, predicate);
     }
 
     /**
@@ -81,12 +96,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<WebElement> webElements(By by,
-                                                                 String text,
-                                                                 Duration duration,
-                                                                 Predicate<WebElement> predicate) {
-        return webElements(by, duration,
-                elementShouldHaveText(text).and(predicate));
+    public static MultipleSearchSupplier<WebElement> webElements(By by, String text, Duration duration, Predicate<WebElement> predicate) {
+        return webElements(by, duration, elementShouldHaveText(text).and(predicate));
     }
 
     /**
@@ -100,12 +111,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<WebElement> webElements(By by,
-                                                                 Pattern textPattern,
-                                                                 Duration duration,
-                                                                 Predicate<WebElement> predicate) {
-        return webElements(by, duration, elementShouldHaveText(textPattern)
-                .and(predicate));
+    public static MultipleSearchSupplier<WebElement> webElements(By by, Pattern textPattern, Duration duration, Predicate<WebElement> predicate) {
+        return webElements(by, duration, elementShouldHaveText(textPattern).and(predicate));
     }
 
     /**
@@ -121,8 +128,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param duration is the parameter of a time to find elements
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<WebElement> webElements(By by,
-                                                                 Duration duration) {
+    public static MultipleSearchSupplier<WebElement> webElements(By by, Duration duration) {
         return webElements(by, duration, defaultPredicateForElements());
     }
 
@@ -140,9 +146,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param duration is the parameter of a time to find elements
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<WebElement> webElements(By by,
-                                                                 String text,
-                                                                 Duration duration) {
+    public static MultipleSearchSupplier<WebElement> webElements(By by, String text, Duration duration) {
         return webElements(by, text, duration, defaultPredicateForElements());
     }
 
@@ -160,9 +164,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param duration is the parameter of a time to find elements
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<WebElement> webElements(By by,
-                                                                 Pattern textPattern,
-                                                                 Duration duration) {
+    public static MultipleSearchSupplier<WebElement> webElements(By by, Pattern textPattern, Duration duration) {
         return webElements(by, textPattern, duration, defaultPredicateForElements());
     }
 
@@ -178,7 +180,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<WebElement> webElements(By by, Predicate<WebElement> predicate) {
-        return webElements(by, ELEMENT_WAITING_DURATION.get(), predicate);
+        return items(FindWebElements.webElements(by, predicate.toString()), predicate);
     }
 
     /**
@@ -193,10 +195,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<WebElement> webElements(By by,
-                                                                 String text,
-                                                                 Predicate<WebElement> predicate) {
-        return webElements(by, text, ELEMENT_WAITING_DURATION.get(), predicate);
+    public static MultipleSearchSupplier<WebElement> webElements(By by, String text, Predicate<WebElement> predicate) {
+        return webElements(by, elementShouldHaveText(text).and(predicate));
     }
 
     /**
@@ -211,10 +211,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<WebElement> webElements(By by,
-                                                                 Pattern textPattern,
-                                                                 Predicate<WebElement> predicate) {
-        return webElements(by, textPattern, ELEMENT_WAITING_DURATION.get(), predicate);
+    public static MultipleSearchSupplier<WebElement> webElements(By by, Pattern textPattern, Predicate<WebElement> predicate) {
+        return webElements(by, elementShouldHaveText(textPattern).and(predicate));
     }
 
     /**
@@ -234,7 +232,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<WebElement> webElements(By by) {
-        return webElements(by, ELEMENT_WAITING_DURATION.get());
+        return webElements(by, defaultPredicateForElements());
     }
 
     /**
@@ -255,7 +253,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<WebElement> webElements(By by, String text) {
-        return webElements(by, text, ELEMENT_WAITING_DURATION.get());
+        return webElements(by, text, defaultPredicateForElements());
     }
 
     /**
@@ -276,7 +274,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<WebElement> webElements(By by, Pattern textPattern) {
-        return webElements(by, textPattern, ELEMENT_WAITING_DURATION.get());
+        return webElements(by, textPattern, defaultPredicateForElements());
     }
 
     /**
@@ -290,10 +288,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param <T> the type of widget which should be found
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass,
-                                                                                 Duration duration,
-                                                                                 Predicate<T> predicate) {
-        return items(FindWidgets.widgets(tClass, duration, predicate.toString()), predicate);
+    public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass, Duration duration, Predicate<T> predicate) {
+        return items(FindWidgets.widgets(tClass, predicate.toString()), duration, predicate);
     }
 
     /**
@@ -310,13 +306,11 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param <T> the type of widgets which should be found
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass,
-                                                                                 List<String> labels,
-                                                                                 Duration duration,
-                                                                                 Predicate<T> predicate) {
+    public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass, List<String> labels, Duration duration,
+                                                                       Predicate<T> predicate) {
         Predicate<? extends T> labeledBy = widgetShouldBeLabeledBy(labels.toArray(new String[]{}));
         Predicate<T> resultPredicate = (Predicate<T>) labeledBy.and(predicate);
-        return items(labeledWidgets(tClass, duration, resultPredicate.toString()), resultPredicate);
+        return items(labeledWidgets(tClass, resultPredicate.toString()), duration, resultPredicate);
     }
 
     /**
@@ -333,13 +327,9 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param <T> the type of widgets which should be found
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass,
-                                                                                 String label,
-                                                                                 Duration duration,
-                                                                                 Predicate<T> predicate) {
-        return widgets(tClass,
-                List.of(label),
-                duration, predicate);
+    public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass, String label, Duration duration,
+                                                                       Predicate<T> predicate) {
+        return widgets(tClass, List.of(label), duration, predicate);
     }
 
     /**
@@ -356,8 +346,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param <T> the type of widgets which should be found
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass,
-                                                                                 Duration duration) {
+    public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass, Duration duration) {
         return widgets(tClass, duration, defaultPredicateForWidgets());
     }
 
@@ -378,9 +367,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param <T> the type of widgets which should be found
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass,
-                                                                                 List<String> labels,
-                                                                                 Duration duration) {
+    public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass, List<String> labels, Duration duration) {
         return widgets(tClass, labels, duration, defaultPredicateForWidgets());
     }
 
@@ -401,9 +388,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param <T> the type of widgets which should be found
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass,
-                                                                                 String label,
-                                                                                 Duration duration) {
+    public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass, String label, Duration duration) {
         return widgets(tClass, label, duration, defaultPredicateForWidgets());
     }
 
@@ -419,9 +404,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param <T> the type of widgets which should be found
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass,
-                                                                                 Predicate<T> predicate) {
-        return widgets(tClass, ELEMENT_WAITING_DURATION.get(), predicate);
+    public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass, Predicate<T> predicate) {
+        return items(FindWidgets.widgets(tClass, predicate.toString()), predicate);
     }
 
     /**
@@ -439,10 +423,11 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param <T> the type of widgets which should be found
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass,
-                                                                                 List<String> labels,
-                                                                                 Predicate<T> predicate) {
-        return widgets(tClass, labels, ELEMENT_WAITING_DURATION.get(), predicate);
+    public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass, List<String> labels,
+                                                                       Predicate<T> predicate) {
+        Predicate<? extends T> labeledBy = widgetShouldBeLabeledBy(labels.toArray(new String[]{}));
+        Predicate<T> resultPredicate = (Predicate<T>) labeledBy.and(predicate);
+        return items(labeledWidgets(tClass, resultPredicate.toString()), resultPredicate);
     }
 
     /**
@@ -460,10 +445,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param <T> the type of widgets which should be found
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass,
-                                                                                 String label,
-                                                                                 Predicate<T> predicate) {
-        return widgets(tClass, label, ELEMENT_WAITING_DURATION.get(), predicate);
+    public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass, String label, Predicate<T> predicate) {
+        return widgets(tClass, List.of(label), predicate);
     }
 
     /**
@@ -484,7 +467,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass) {
-        return widgets(tClass, ELEMENT_WAITING_DURATION.get());
+        return widgets(tClass, defaultPredicateForWidgets());
     }
 
     /**
@@ -507,9 +490,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param <T> the type of widgets which should be found
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass,
-                                                                                 List<String> labels) {
-        return widgets(tClass, labels, ELEMENT_WAITING_DURATION.get());
+    public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass, List<String> labels) {
+        return widgets(tClass, labels, defaultPredicateForWidgets());
     }
 
     /**
@@ -532,9 +514,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param <T> the type of widgets which should be found
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass,
-                                                                                 String label) {
-        return widgets(tClass, label, ELEMENT_WAITING_DURATION.get());
+    public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass, String label) {
+        return widgets(tClass, label, defaultPredicateForWidgets());
     }
 
     /**
@@ -546,8 +527,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Button> buttons(Duration duration,
-                                                                   Predicate<Button> predicate) {
+    public static MultipleSearchSupplier<Button> buttons(Duration duration, Predicate<Button> predicate) {
         return widgets(Button.class, duration, predicate);
     }
 
@@ -562,9 +542,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Button> buttons(List<String> labels,
-                                                                   Duration duration,
-                                                                   Predicate<Button> predicate) {
+    public static MultipleSearchSupplier<Button> buttons(List<String> labels, Duration duration, Predicate<Button> predicate) {
         return widgets(Button.class, labels, duration, predicate);
     }
 
@@ -579,11 +557,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Button> buttons(String label,
-                                                                   Duration duration,
-                                                                   Predicate<Button> predicate) {
-        return widgets(Button.class, label,
-                duration, predicate);
+    public static MultipleSearchSupplier<Button> buttons(String label, Duration duration, Predicate<Button> predicate) {
+        return widgets(Button.class, label, duration, predicate);
     }
 
     /**
@@ -614,8 +589,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param duration is the parameter of a time to find buttons
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Button> buttons(List<String> labels,
-                                                                   Duration duration) {
+    public static MultipleSearchSupplier<Button> buttons(List<String> labels, Duration duration) {
         return widgets(Button.class, labels, duration);
     }
 
@@ -632,8 +606,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param duration is the parameter of a time to find buttons
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Button> buttons(String label,
-                                                                   Duration duration) {
+    public static MultipleSearchSupplier<Button> buttons(String label, Duration duration) {
         return widgets(Button.class, label, duration);
     }
 
@@ -661,10 +634,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Button> buttons(List<String> labels,
-                                                                   Predicate<Button> predicate) {
-        return widgets(Button.class,
-                labels, predicate);
+    public static MultipleSearchSupplier<Button> buttons(List<String> labels, Predicate<Button> predicate) {
+        return widgets(Button.class, labels, predicate);
     }
 
     /**
@@ -678,10 +649,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Button> buttons(String label,
-                                                                   Predicate<Button> predicate) {
-        return widgets(Button.class,
-                label, predicate);
+    public static MultipleSearchSupplier<Button> buttons(String label, Predicate<Button> predicate) {
+        return widgets(Button.class, label, predicate);
     }
 
     /**
@@ -754,8 +723,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Flag> flags(Duration duration,
-                                                               Predicate<Flag> predicate) {
+    public static MultipleSearchSupplier<Flag> flags(Duration duration, Predicate<Flag> predicate) {
         return widgets(Flag.class, duration, predicate);
     }
 
@@ -770,9 +738,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Flag> flags(List<String> labels,
-                                                               Duration duration,
-                                                               Predicate<Flag> predicate) {
+    public static MultipleSearchSupplier<Flag> flags(List<String> labels, Duration duration, Predicate<Flag> predicate) {
         return widgets(Flag.class, labels, duration, predicate);
     }
 
@@ -787,11 +753,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Flag> flags(String label,
-                                                               Duration duration,
-                                                               Predicate<Flag> predicate) {
-        return widgets(Flag.class, label,
-                duration, predicate);
+    public static MultipleSearchSupplier<Flag> flags(String label, Duration duration, Predicate<Flag> predicate) {
+        return widgets(Flag.class, label, duration, predicate);
     }
 
     /**
@@ -822,8 +785,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param duration is the parameter of a time to find flags
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Flag> flags(List<String> labels,
-                                                               Duration duration) {
+    public static MultipleSearchSupplier<Flag> flags(List<String> labels, Duration duration) {
         return widgets(Flag.class, labels, duration);
     }
 
@@ -840,8 +802,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param duration is the parameter of a time to find flags
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Flag> flags(String label,
-                                                               Duration duration) {
+    public static MultipleSearchSupplier<Flag> flags(String label, Duration duration) {
         return widgets(Flag.class, label, duration);
     }
 
@@ -869,10 +830,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Flag> flags(List<String> labels,
-                                                               Predicate<Flag> predicate) {
-        return widgets(Flag.class,
-                labels, predicate);
+    public static MultipleSearchSupplier<Flag> flags(List<String> labels, Predicate<Flag> predicate) {
+        return widgets(Flag.class, labels, predicate);
     }
 
     /**
@@ -886,10 +845,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Flag> flags(String label,
-                                                               Predicate<Flag> predicate) {
-        return widgets(Flag.class,
-                label, predicate);
+    public static MultipleSearchSupplier<Flag> flags(String label, Predicate<Flag> predicate) {
+        return widgets(Flag.class, label, predicate);
     }
 
     /**
@@ -962,8 +919,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Flag.CheckBox> checkBoxes(Duration duration,
-                                                                             Predicate<Flag.CheckBox> predicate) {
+    public static MultipleSearchSupplier<Flag.CheckBox> checkBoxes(Duration duration, Predicate<Flag.CheckBox> predicate) {
         return widgets(Flag.CheckBox.class, duration, predicate);
     }
 
@@ -978,9 +934,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Flag.CheckBox> checkBoxes(List<String> labels,
-                                                                             Duration duration,
-                                                                             Predicate<Flag.CheckBox> predicate) {
+    public static MultipleSearchSupplier<Flag.CheckBox> checkBoxes(List<String> labels, Duration duration,
+                                                                   Predicate<Flag.CheckBox> predicate) {
         return widgets(Flag.CheckBox.class, labels, duration, predicate);
     }
 
@@ -995,9 +950,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Flag.CheckBox> checkBoxes(String label,
-                                                                             Duration duration,
-                                                                             Predicate<Flag.CheckBox> predicate) {
+    public static MultipleSearchSupplier<Flag.CheckBox> checkBoxes(String label, Duration duration,
+                                                                   Predicate<Flag.CheckBox> predicate) {
         return widgets(Flag.CheckBox.class, label, duration, predicate);
     }
 
@@ -1029,8 +983,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param duration is the parameter of a time to find check box
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Flag.CheckBox> checkBoxes(List<String> labels,
-                                                                             Duration duration) {
+    public static MultipleSearchSupplier<Flag.CheckBox> checkBoxes(List<String> labels, Duration duration) {
         return widgets(Flag.CheckBox.class, labels, duration);
     }
 
@@ -1047,8 +1000,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param duration is the parameter of a time to find check boxes
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Flag.RadioButton> checkBoxes(String label,
-                                                                                Duration duration) {
+    public static MultipleSearchSupplier<Flag.RadioButton> checkBoxes(String label, Duration duration) {
         return widgets(Flag.RadioButton.class, label, duration);
     }
 
@@ -1076,8 +1028,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Flag.CheckBox> checkBoxes(List<String> labels,
-                                                                             Predicate<Flag.CheckBox> predicate) {
+    public static MultipleSearchSupplier<Flag.CheckBox> checkBoxes(List<String> labels, Predicate<Flag.CheckBox> predicate) {
         return widgets(Flag.CheckBox.class, labels, predicate);
     }
 
@@ -1092,8 +1043,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Flag.CheckBox> checkBoxes(String label,
-                                                                             Predicate<Flag.CheckBox> predicate) {
+    public static MultipleSearchSupplier<Flag.CheckBox> checkBoxes(String label, Predicate<Flag.CheckBox> predicate) {
         return widgets(Flag.CheckBox.class, label, predicate);
     }
 
@@ -1167,8 +1117,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Flag.RadioButton> radioButtons(Duration duration,
-                                                                                  Predicate<Flag.RadioButton> predicate) {
+    public static MultipleSearchSupplier<Flag.RadioButton> radioButtons(Duration duration, Predicate<Flag.RadioButton> predicate) {
         return widgets(Flag.RadioButton.class, duration, predicate);
     }
 
