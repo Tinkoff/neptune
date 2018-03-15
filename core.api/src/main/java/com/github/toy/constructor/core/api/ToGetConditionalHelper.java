@@ -19,6 +19,7 @@ import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.StreamSupport.stream;
+import static org.apache.commons.lang3.time.DurationFormatUtils.formatDuration;
 
 /**
  * This is the util which helps to crate function with given condition.
@@ -58,7 +59,8 @@ public final class ToGetConditionalHelper {
                                                             @Nullable Supplier<RuntimeException> exceptionOnTimeOut) {
         String fullDescription = description;
         if (waitingTime != null) {
-            fullDescription = format("%s. Time to get valuable result: %s", fullDescription, waitingTime);
+            fullDescription = format("%s. Time to get valuable result: %s", fullDescription,
+                    formatDuration(waitingTime.toMillis(), "H:mm:ss:SSS", true));
         }
         Duration timeOut = ofNullable(waitingTime).orElseGet(() -> ofMillis(0));
         Duration sleeping = ofNullable(sleepingTime).orElseGet(() -> ofMillis(0));
@@ -68,11 +70,8 @@ public final class ToGetConditionalHelper {
             long endMillis = currentMillis + timeOut.toMillis();
 
             F f = null;
-            while (currentTimeMillis() <= endMillis + 100 && f == null) {
+            while (currentTimeMillis() <= endMillis + 100 && !till.test(f)) {
                 f = originalFunction.apply(t);
-                if (till.test(f)) {
-                    return f;
-                }
                 try {
                     sleep(sleeping.toMillis());
                 } catch (InterruptedException e) {
@@ -171,6 +170,39 @@ public final class ToGetConditionalHelper {
         return getFromIterable(description,
                 function, condition, waitingTime, null,
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
+    }
+
+    /**
+     * This method returns a function. The result function returns a single first found value from {@link Iterable}.
+     * The original function should return iterable to match.
+     *
+     * @param description of a value which should be returned
+     * @param function described function which should return {@link Iterable}
+     * @param condition described predicate which is used to find some target value
+     * @param waitingTime is a duration of the waiting for valuable result
+     * @param sleepingTime is a duration of the sleeping between attempts to get
+     *                     expected valuable result
+     * @param checkConditionInParallel is how iterable should be matched. If {@code true} when each value will be
+     *                                 checked in parallel.
+     * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
+     *                                        and some exception is thrown. Exception will be thrown when
+     *                                        {@code true}.
+     * @param <T> is a type of input value
+     * @param <R> is a type of the target value
+     * @param <V> is a type of {@link Iterable} of {@code R}
+     * @return a function. The result function returns a single first found value from {@link Iterable}.
+     * The result function will return some value if something is found. {@code null} is returned otherwise.
+     */
+    public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(String description,
+                                                                               Function<T, V> function,
+                                                                               Predicate<R> condition,
+                                                                               Duration waitingTime,
+                                                                               Duration sleepingTime,
+                                                                               boolean checkConditionInParallel,
+                                                                               boolean ignoreExceptionOnConditionCheck) {
+        return getFromIterable(description,
+                function, condition, waitingTime, sleepingTime,
+                checkConditionInParallel, ignoreExceptionOnConditionCheck, null);
     }
 
     /**
@@ -312,6 +344,8 @@ public final class ToGetConditionalHelper {
      * @param function described function which should return an array
      * @param condition described predicate which is used to find some target value
      * @param waitingTime is a duration of the waiting for valuable result
+     * @param sleepingTime is a duration of the sleeping between attempts to get
+     *                     expected valuable result
      * @param checkConditionInParallel is how array should be matched. If {@code true} when each value will be
      *                                 checked in parallel.
      * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
@@ -320,7 +354,36 @@ public final class ToGetConditionalHelper {
      * @param <T> is a type of input value
      * @param <R> is a type of the target value
      * @return a function. The result function returns a single first found value from array.
-     * The result function will return some value if something is found. {@code null} will be returned otherwise.
+     * The result function will return some value if something is found. {@code null} is returned otherwise.
+     */
+    public static <T, R> Function<T, R> getFromArray(String description,
+                                                     Function<T, R[]> function,
+                                                     Predicate<R> condition,
+                                                     Duration waitingTime,
+                                                     Duration sleepingTime,
+                                                     boolean checkConditionInParallel,
+                                                     boolean ignoreExceptionOnConditionCheck) {
+        return getFromArray(description, function, condition, waitingTime, sleepingTime,
+                checkConditionInParallel, ignoreExceptionOnConditionCheck, null);
+    }
+
+    /**
+     * This method returns a function. The result function returns a single first found value from array.
+     * The original function should return array to match.
+     *
+     * @param description of a value which should be returned.
+     * @param function described function which should return an array
+     * @param condition described predicate which is used to find some target value
+     * @param waitingTime is a duration of the waiting for valuable result
+     * @param checkConditionInParallel is how array should be matched. If {@code true} when each value will be
+     *                                 checked in parallel.
+     * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
+     *                                        and some exception is thrown. Exception will be thrown when
+     *                                        {@code true}.
+     * @param <T> is a type of input value
+     * @param <R> is a type of the target value
+     * @return a function. The result function returns a single first found value from array.
+     * The result function will return some value if something is found. {@code null} is returned otherwise.
      */
     public static <T, R> Function<T, R> getFromArray(String description,
                                                      Function<T, R[]> function,
@@ -347,7 +410,7 @@ public final class ToGetConditionalHelper {
      * @param <T> is a type of input value
      * @param <R> is a type of the target value
      * @return a function. The result function returns a single first found value from array.
-     * The result function will return some value if something is found. {@code null} will be returned otherwise.
+     * The result function will return some value if something is found. {@code null} is returned otherwise.
      */
     public static <T, R> Function<T, R> getFromArray(String description,
                                                      Function<T, R[]> function,
@@ -445,13 +508,41 @@ public final class ToGetConditionalHelper {
      * @param function described function which should return some object
      * @param condition described predicate which is used to find some target value
      * @param waitingTime is a duration of the waiting for valuable result
+     * @param sleepingTime is a duration of the sleeping between attempts to get
+     *                     expected valuable result
      * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
      *                                        and some exception is thrown. Exception will be thrown when
      *                                        {@code true}.
      * @param <T> is a type of input value
      * @param <R> is a type of the target value
      * @return a function. The result function returns a single checked value. The result function will return some
-     * value if the check is passed successfully. {@code null} will be returned otherwise.
+     * value if the check is passed successfully. {@code null} is returned otherwise.
+     */
+    public static <T, R> Function<T, R> getSingleOnCondition(String description,
+                                                             Function<T, R> function,
+                                                             Predicate<R> condition,
+                                                             Duration waitingTime,
+                                                             Duration sleepingTime,
+                                                             boolean ignoreExceptionOnConditionCheck) {
+        return getSingleOnCondition(description, function, condition,
+                waitingTime, sleepingTime, ignoreExceptionOnConditionCheck, null);
+    }
+
+    /**
+     * This method returns a function which returns a single value.
+     * The original function should return a value to check.
+     *
+     * @param description of a value which should be returned.
+     * @param function described function which should return some object
+     * @param condition described predicate which is used to find some target value
+     * @param waitingTime is a duration of the waiting for valuable result
+     * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
+     *                                        and some exception is thrown. Exception will be thrown when
+     *                                        {@code true}.
+     * @param <T> is a type of input value
+     * @param <R> is a type of the target value
+     * @return a function. The result function returns a single checked value. The result function will return some
+     * value if the check is passed successfully. {@code null} is returned otherwise.
      */
     public static <T, R> Function<T, R> getSingleOnCondition(String description,
                                                              Function<T, R> function,
@@ -475,7 +566,7 @@ public final class ToGetConditionalHelper {
      * @param <T> is a type of input value
      * @param <R> is a type of the target value
      * @return a function. The result function returns a single checked value. The result function will return some
-     * value if the check is passed successfully. {@code null} will be returned otherwise.
+     * value if the check is passed successfully. {@code null} is returned otherwise.
      */
     public static <T, R> Function<T, R> getSingleOnCondition(String description,
                                                              Function<T, R> function,
@@ -580,6 +671,8 @@ public final class ToGetConditionalHelper {
      * @param function described function which should return {@link Iterable}
      * @param condition described predicate which is used to find some target value
      * @param waitingTime is a duration of the waiting for valuable result
+     * @param sleepingTime is a duration of the sleeping between attempts to get
+     *                     expected valuable result
      * @param checkConditionInParallel is how iterable should be matched. If {@code true} when each value will be
      *                                 checked in parallel.
      * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
@@ -589,7 +682,39 @@ public final class ToGetConditionalHelper {
      * @param <R> is a type of target values
      * @param <V> is a type of {@link Iterable} of {@code R}
      * @return a function. The result function returns found values from {@link Iterable}.
-     * The result function will return values if something is found. Empty {@link Iterable} will be returned otherwise.
+     * The result function will return values if something is found. Empty {@link Iterable} or {@code null} are
+     * returned otherwise. It depends on result of the {@link Function#apply(Object)}
+     */
+    public static <T, R, V extends Iterable<R>> Function<T, V> getSubIterable(String description,
+                                                                              Function<T, V> function,
+                                                                              Predicate<R> condition,
+                                                                              Duration waitingTime,
+                                                                              Duration sleepingTime,
+                                                                              boolean checkConditionInParallel,
+                                                                              boolean ignoreExceptionOnConditionCheck) {
+        return getSubIterable(description, function, condition, waitingTime, sleepingTime,
+                checkConditionInParallel, ignoreExceptionOnConditionCheck, null);
+    }
+
+    /**
+     * This method returns a function. The result function returns found values from {@link Iterable}.
+     * The original function should return iterable to match.
+     *
+     * @param description of a value which should be returned.
+     * @param function described function which should return {@link Iterable}
+     * @param condition described predicate which is used to find some target value
+     * @param waitingTime is a duration of the waiting for valuable result
+     * @param checkConditionInParallel is how iterable should be matched. If {@code true} when each value will be
+     *                                 checked in parallel.
+     * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
+     *                                        and some exception is thrown. Exception will be thrown when
+     *                                        {@code true}.
+     * @param <T> is a type of input value
+     * @param <R> is a type of target values
+     * @param <V> is a type of {@link Iterable} of {@code R}
+     * @return a function. The result function returns found values from {@link Iterable}.
+     * The result function will return values if something is found. Empty {@link Iterable} or {@code null} are
+     * returned otherwise. It depends on result of the {@link Function#apply(Object)}
      */
     public static <T, R, V extends Iterable<R>> Function<T, V> getSubIterable(String description,
                                                                               Function<T, V> function,
@@ -617,7 +742,8 @@ public final class ToGetConditionalHelper {
      * @param <R> is a type of target values
      * @param <V> is a type of {@link Iterable} of {@code R}
      * @return a function. The result function returns found values from {@link Iterable}.
-     * The result function will return values if something is found. Empty {@link Iterable} will be returned otherwise.
+     * The result function will return values if something is found. Empty {@link Iterable} or {@code null} are
+     * returned otherwise. It depends on result of the {@link Function#apply(Object)}
      */
     public static <T, R, V extends Iterable<R>> Function<T, V> getSubIterable(String description,
                                                                               Function<T, V> function,
@@ -724,6 +850,8 @@ public final class ToGetConditionalHelper {
      * @param function described function which should return {@link Iterable}
      * @param condition described predicate which is used to find some target value
      * @param waitingTime is a duration of the waiting for valuable result
+     * @param sleepingTime is a duration of the sleeping between attempts to get
+     *                     expected valuable result
      * @param checkConditionInParallel is how array should be matched. If {@code true} when each value will be
      *                                 checked in parallel.
      * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
@@ -732,7 +860,38 @@ public final class ToGetConditionalHelper {
      * @param <T> is a type of input value
      * @param <R> is a type of target values
      * @return a function. The result function returns sub-array of found values from array.
-     * The result function will return values if something is found. Empty array will be returned otherwise.
+     * The result function will return values if something is found. Empty array or {@code null} are
+     * returned otherwise. It depends on result of the {@link Function#apply(Object)}
+     */
+    public static <T, R> Function<T, R[]> getSubArray(String description,
+                                                      Function<T, R[]> function,
+                                                      Predicate<R> condition,
+                                                      Duration waitingTime,
+                                                      Duration sleepingTime,
+                                                      boolean checkConditionInParallel,
+                                                      boolean ignoreExceptionOnConditionCheck) {
+        return getSubArray(description, function, condition, waitingTime, sleepingTime,
+                checkConditionInParallel, ignoreExceptionOnConditionCheck, null);
+    }
+
+    /**
+     * This method returns a function. The result function returns sub-array of found values from array.
+     * The original function should return array to match.
+     *
+     * @param description of a value which should be returned.
+     * @param function described function which should return {@link Iterable}
+     * @param condition described predicate which is used to find some target value
+     * @param waitingTime is a duration of the waiting for valuable result
+     * @param checkConditionInParallel is how array should be matched. If {@code true} when each value will be
+     *                                 checked in parallel.
+     * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
+     *                                        and some exception is thrown. Exception will be thrown when
+     *                                        {@code true}.
+     * @param <T> is a type of input value
+     * @param <R> is a type of target values
+     * @return a function. The result function returns sub-array of found values from array.
+     * The result function will return values if something is found. Empty array or {@code null} are
+     * returned otherwise. It depends on result of the {@link Function#apply(Object)}
      */
     public static <T, R> Function<T, R[]> getSubArray(String description,
                                                       Function<T, R[]> function,
@@ -759,7 +918,8 @@ public final class ToGetConditionalHelper {
      * @param <T> is a type of input value
      * @param <R> is a type of target values
      * @return a function. The result function returns sub-array of found values from array.
-     * The result function will return values if something is found. Empty array will be returned otherwise.
+     * The result function will return values if something is found. Empty array or {@code null} are
+     * returned otherwise. It depends on result of the {@link Function#apply(Object)}
      */
     public static <T, R> Function<T, R[]> getSubArray(String description,
                                                      Function<T, R[]> function,
@@ -774,12 +934,6 @@ public final class ToGetConditionalHelper {
     private static class CheckConditionException extends RuntimeException {
         CheckConditionException(String message, Throwable cause) {
             super(message, cause);
-        }
-    }
-
-    public static class WaitingTimeHasExpiredException extends RuntimeException {
-        WaitingTimeHasExpiredException(String description, Duration duration) {
-            super(format("Waiting time has expired. Was expected: '%s'. Duration: '%s'", description, duration));
         }
     }
 }
