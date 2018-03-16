@@ -45,9 +45,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      */
     public static <T extends SearchContext> MultipleSearchSupplier<T> items(Function<SearchContext,List<T>> transformation,
                                                                             Duration duration, Predicate<T> condition) {
-        MultipleSearchSupplier<T> supplier = new MultipleSearchSupplier<>();
-
-        return supplier.set(getSubIterable("List of",
+        return new MultipleSearchSupplier<T>().set(getSubIterable("List of",
                 transformation, condition, duration,
                 false, true));
     }

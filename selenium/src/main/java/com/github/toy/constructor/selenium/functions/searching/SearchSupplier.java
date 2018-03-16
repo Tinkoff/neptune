@@ -48,15 +48,11 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      */
     public static <T extends SearchContext> SearchSupplier<T> item(Function<SearchContext, List<T>> transformation,
                                                                    Duration duration, Predicate<T> condition) {
-        SearchSupplier<T> supplier = new SearchSupplier<>();
-
-        Function<SearchContext, T> resultFunction = getFromIterable("A single item", transformation,
+        return new SearchSupplier<T>().set(getFromIterable("A single item", transformation,
                 condition, duration, true, true,
                 () -> new NoSuchElementException(format("Nothing was found. Attempt to get a single item of %s. Condition: %s",
                         transformation,
-                        condition)));
-
-        return supplier.set(toGet(resultFunction.toString(), resultFunction));
+                        condition))));
     }
 
     /**

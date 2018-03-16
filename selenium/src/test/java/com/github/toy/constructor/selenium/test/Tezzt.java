@@ -4,6 +4,7 @@ import com.github.toy.constructor.selenium.SeleniumSteps;
 import com.github.toy.constructor.selenium.api.widget.drafts.Button;
 import com.github.toy.constructor.selenium.api.widget.drafts.Link;
 import com.github.toy.constructor.selenium.api.widget.drafts.TextField;
+import com.github.toy.constructor.selenium.functions.java.script.GetJavaScriptResultSupplier;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import static com.github.toy.constructor.core.api.proxy.ConstructorParameters.pa
 import static com.github.toy.constructor.core.api.proxy.Substitution.getSubstituted;
 import static com.github.toy.constructor.selenium.functions.click.ClickActionSupplier.on;
 import static com.github.toy.constructor.selenium.functions.edit.EditActionSupplier.valueOf;
+import static com.github.toy.constructor.selenium.functions.java.script.GetJavaScriptResultSupplier.javaScript;
 import static com.github.toy.constructor.selenium.functions.searching.MultipleSearchSupplier.links;
 import static com.github.toy.constructor.selenium.functions.searching.MultipleSearchSupplier.textFields;
 import static com.github.toy.constructor.selenium.functions.searching.SearchSupplier.*;
@@ -52,6 +54,8 @@ public class Tezzt {
 
             selenium.edit(valueOf(element(textField()), of("123", HOME))
                     .andValueOf(element(flag()), true));
+
+            selenium.evaluate(javaScript("Some script"));
         }));
     }
 }
