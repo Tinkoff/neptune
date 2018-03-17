@@ -7,8 +7,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.function.Supplier;
 
 import static com.github.toy.constructor.selenium.properties.WaitingProperties.TimeUnitProperties.ELEMENT_WAITING_TIME_UNIT;
+import static com.github.toy.constructor.selenium.properties.WaitingProperties.TimeUnitProperties.WAITING_ALERT_TIME_UNIT;
 import static com.github.toy.constructor.selenium.properties.WaitingProperties.TimeUnitProperties.WAITING_TIME_UNIT;
 import static com.github.toy.constructor.selenium.properties.WaitingProperties.TimeValueProperties.ELEMENT_WAITING_TIME_VALUE;
+import static com.github.toy.constructor.selenium.properties.WaitingProperties.TimeValueProperties.WAITING_ALERT_TIME_VALUE;
 import static com.github.toy.constructor.selenium.properties.WaitingProperties.TimeValueProperties.WAITING_TIME_VALUE;
 import static java.lang.String.format;
 import static java.time.Duration.of;
@@ -25,12 +27,20 @@ public enum WaitingProperties implements Supplier<Duration> {
     ELEMENT_WAITING_DURATION(ELEMENT_WAITING_TIME_UNIT, ELEMENT_WAITING_TIME_VALUE),
 
     /**
-     * Returns duration of the waiting for some
-     * conditions related to {@code  org.openqa.selenium.*} objects.
+     * Returns duration of the waiting for for appearance
+     * of an alert.
      * When {@code "waiting.selenium.time.unit"} or {@code "waiting.selenium.time"}
      * are not defined then it returns 1 minute. Otherwise it returns defined duration value.
      */
-    WAITING_TIME_DURATION(WAITING_TIME_UNIT, WAITING_TIME_VALUE);
+    WAITING_TIME_DURATION(WAITING_TIME_UNIT, WAITING_TIME_VALUE),
+
+    /**
+     * Returns duration of the waiting for some
+     * conditions related to {@code  org.openqa.selenium.*} objects.
+     * When {@code "waiting.alert.time.unit"} or {@code "waiting.alert.time"}
+     * are not defined then it returns 1 minute. Otherwise it returns defined duration value.
+     */
+    WAITING_ALERT_TIME_DURATION(WAITING_ALERT_TIME_UNIT, WAITING_ALERT_TIME_VALUE);
 
     private final TimeUnitProperties timeUnit;
     private final TimeValueProperties timeValue;
@@ -63,7 +73,14 @@ public enum WaitingProperties implements Supplier<Duration> {
          * conditions related to {@code  org.openqa.selenium.*} objects.
          * Returns read value or {@code null} when nothing is defined
          */
-        WAITING_TIME_UNIT("waiting.selenium.time.unit");
+        WAITING_TIME_UNIT("waiting.selenium.time.unit"),
+
+        /**
+         * Reads property {@code "waiting.alert.time.unit"}.
+         * This property is needed to define time of the waiting for appearance
+         * of an alert. Returns read value or {@code null} when nothing is defined
+         */
+        WAITING_ALERT_TIME_UNIT("waiting.alert.time.unit");
 
         private final String propertyName;
 
@@ -97,13 +114,7 @@ public enum WaitingProperties implements Supplier<Duration> {
          * are present and suit some criteria.
          * Returns read value or {@code null} if nothing is defined.
          */
-        ELEMENT_WAITING_TIME_VALUE("waiting.for.elements.time") {
-            public Long get() {
-                return returnOptional()
-                        .map(Long::parseLong)
-                        .orElse(null);
-            }
-        },
+        ELEMENT_WAITING_TIME_VALUE("waiting.for.elements.time"),
 
         /**
          * Reads property {@code "waiting.selenium.time"}.
@@ -111,13 +122,14 @@ public enum WaitingProperties implements Supplier<Duration> {
          * conditions related to {@code  org.openqa.selenium.*} objects.
          * Returns read value or {@code null} if nothing is defined.
          */
-        WAITING_TIME_VALUE("waiting.selenium.time") {
-            public Long get() {
-                return returnOptional()
-                        .map(Long::parseLong)
-                        .orElse(null);
-            }
-        };
+        WAITING_TIME_VALUE("waiting.selenium.time"),
+
+        /**
+         * Reads property {@code "waiting.alert.time"}.
+         * This property is needed to define time of the waiting for appearance
+         * of an alert. Returns read value or {@code null} if nothing is defined.
+         */
+        WAITING_ALERT_TIME_VALUE("waiting.alert.time");
 
         private final String propertyName;
 
@@ -131,6 +143,10 @@ public enum WaitingProperties implements Supplier<Duration> {
         }
 
         @Override
-        public abstract Long get();
+        public Long get() {
+            return returnOptional()
+                    .map(Long::parseLong)
+                    .orElse(null);
+        }
     }
 }
