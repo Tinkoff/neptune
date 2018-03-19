@@ -56,7 +56,7 @@ public final class ToGetConditionalHelper {
                                                             @Nullable Duration waitingTime,
                                                             @Nullable Duration sleepingTime,
                                                             Predicate<F> till,
-                                                            @Nullable Supplier<RuntimeException> exceptionOnTimeOut) {
+                                                            @Nullable Supplier<? extends RuntimeException> exceptionOnTimeOut) {
         String fullDescription = description;
         if (waitingTime != null) {
             fullDescription = format("%s. Time to get valuable result: %s", fullDescription,
@@ -116,7 +116,7 @@ public final class ToGetConditionalHelper {
                                                                                Duration sleepingTime,
                                                                                boolean checkConditionInParallel,
                                                                                boolean ignoreExceptionOnConditionCheck,
-                                                                               Supplier<RuntimeException> exceptionOnTimeOut) {
+                                                                               Supplier<? extends RuntimeException> exceptionOnTimeOut) {
         checkArgument(function != null, "Function which should return iterable is not defined");
         checkArgument(condition != null, "Predicate which should be used as the condition to check " +
                 "value from iterable is not defined.");
@@ -166,7 +166,7 @@ public final class ToGetConditionalHelper {
                                                                                Duration waitingTime,
                                                                                boolean checkConditionInParallel,
                                                                                boolean ignoreExceptionOnConditionCheck,
-                                                                               Supplier<RuntimeException> exceptionOnTimeOut) {
+                                                                               Supplier<? extends RuntimeException> exceptionOnTimeOut) {
         return getFromIterable(description,
                 function, condition, waitingTime, null,
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
@@ -292,7 +292,7 @@ public final class ToGetConditionalHelper {
                                                      Duration sleepingTime,
                                                      boolean checkConditionInParallel,
                                                      boolean ignoreExceptionOnConditionCheck,
-                                                     Supplier<RuntimeException> exceptionOnTimeOut) {
+                                                     Supplier<? extends RuntimeException> exceptionOnTimeOut) {
         checkArgument(function != null, "Function which should return array is not defined");
         checkArgument(condition != null, "Predicate which should be used as the condition to check " +
                 "value from array is not defined.");
@@ -331,7 +331,7 @@ public final class ToGetConditionalHelper {
                                                      Duration waitingTime,
                                                      boolean checkConditionInParallel,
                                                      boolean ignoreExceptionOnConditionCheck,
-                                                     Supplier<RuntimeException> exceptionOnTimeOut) {
+                                                     Supplier<? extends RuntimeException> exceptionOnTimeOut) {
         return getFromArray(description, function, condition, waitingTime, null,
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
     }
@@ -448,7 +448,7 @@ public final class ToGetConditionalHelper {
                                                              Duration waitingTime,
                                                              Duration sleepingTime,
                                                              boolean ignoreExceptionOnConditionCheck,
-                                                             Supplier<RuntimeException> exceptionOnTimeOut) {
+                                                             Supplier<? extends RuntimeException> exceptionOnTimeOut) {
         checkArgument(function != null, "Function which should return object is not defined");
         checkArgument(condition != null, "Predicate which should be used as the condition to " +
                 "check returned object is not defined.");
@@ -495,7 +495,7 @@ public final class ToGetConditionalHelper {
                                                              Predicate<R> condition,
                                                              Duration waitingTime,
                                                              boolean ignoreExceptionOnConditionCheck,
-                                                             Supplier<RuntimeException> exceptionOnTimeOut) {
+                                                             Supplier<? extends RuntimeException> exceptionOnTimeOut) {
         return getSingleOnCondition(description, function, condition,
                 waitingTime, null, ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
     }
@@ -606,7 +606,7 @@ public final class ToGetConditionalHelper {
                                                                               Duration sleepingTime,
                                                                               boolean checkConditionInParallel,
                                                                               boolean ignoreExceptionOnConditionCheck,
-                                                                              Supplier<RuntimeException> exceptionOnTimeOut) {
+                                                                              Supplier<? extends RuntimeException> exceptionOnTimeOut) {
         checkArgument(function != null, "Function which should return iterable is not defined");
         checkArgument(condition != null, "Predicate which should be used as the condition to " +
                 "filter values from iterable is not defined.");
@@ -658,7 +658,7 @@ public final class ToGetConditionalHelper {
                                                                               Duration waitingTime,
                                                                               boolean checkConditionInParallel,
                                                                               boolean ignoreExceptionOnConditionCheck,
-                                                                              Supplier<RuntimeException> exceptionOnTimeOut) {
+                                                                              Supplier<? extends RuntimeException> exceptionOnTimeOut) {
         return getSubIterable(description, function, condition, waitingTime, null,
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
     }
@@ -783,7 +783,7 @@ public final class ToGetConditionalHelper {
                                                       Duration sleepingTime,
                                                       boolean checkConditionInParallel,
                                                       boolean ignoreExceptionOnConditionCheck,
-                                                      Supplier<RuntimeException> exceptionOnTimeOut) {
+                                                      Supplier<? extends RuntimeException> exceptionOnTimeOut) {
         checkArgument(function != null, "Function which should return array is not defined");
         checkArgument(condition != null, "Predicate which should be used as the condition to " +
                 "filter values from array is not defined.");
@@ -837,7 +837,7 @@ public final class ToGetConditionalHelper {
                                                       Duration waitingTime,
                                                       boolean checkConditionInParallel,
                                                       boolean ignoreExceptionOnConditionCheck,
-                                                      Supplier<RuntimeException> exceptionOnTimeOut) {
+                                                      Supplier<? extends RuntimeException> exceptionOnTimeOut) {
         return getSubArray(description, function, condition, waitingTime, null,
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
     }

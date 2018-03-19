@@ -4,13 +4,18 @@ import com.github.toy.constructor.selenium.SeleniumSteps;
 import com.github.toy.constructor.selenium.api.widget.drafts.Button;
 import com.github.toy.constructor.selenium.api.widget.drafts.Link;
 import com.github.toy.constructor.selenium.api.widget.drafts.TextField;
+import com.github.toy.constructor.selenium.functions.alert.AlertActionSupplier;
 import com.github.toy.constructor.selenium.functions.java.script.GetJavaScriptResultSupplier;
+import org.openqa.selenium.Alert;
 
 import java.util.List;
 
 import static com.github.toy.constructor.core.api.StoryWriter.action;
 import static com.github.toy.constructor.core.api.proxy.ConstructorParameters.params;
 import static com.github.toy.constructor.core.api.proxy.Substitution.getSubstituted;
+import static com.github.toy.constructor.selenium.functions.alert.AlertActionSupplier.accept;
+import static com.github.toy.constructor.selenium.functions.alert.AlertActionSupplier.dismiss;
+import static com.github.toy.constructor.selenium.functions.alert.GetAlertSupplier.alert;
 import static com.github.toy.constructor.selenium.functions.click.ClickActionSupplier.on;
 import static com.github.toy.constructor.selenium.functions.edit.EditActionSupplier.valueOf;
 import static com.github.toy.constructor.selenium.functions.java.script.GetJavaScriptResultSupplier.javaScript;
@@ -56,6 +61,10 @@ public class Tezzt {
                     .andValueOf(element(flag()), true));
 
             selenium.evaluate(javaScript("Some script"));
+
+            Alert alert = seleniumSteps.get(alert());
+
+            seleniumSteps.alert(dismiss(alert)).alert(accept(alert(ofSeconds(20))));
         }));
     }
 }

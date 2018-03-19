@@ -20,7 +20,7 @@ final class EvaluateAsyncJavaScript implements Function<SeleniumSteps, Object> {
         this.parameters = parameters;
     }
 
-    static Function<SeleniumSteps, Object> evaAsycnlJS(String script, Object... parameters) {
+    static Function<SeleniumSteps, Object> evalAsyncJS(String script, Object... parameters) {
         String description = format("Evaluation of asynchronous java script '%s'", script);
         if (parameters.length > 0) {
             description = format("%s with parameters %s", description, Arrays.toString(parameters));
