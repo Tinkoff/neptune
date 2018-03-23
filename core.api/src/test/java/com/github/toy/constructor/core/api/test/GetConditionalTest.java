@@ -41,21 +41,21 @@ public class GetConditionalTest {
     private final Function<List<String>, String> GET_FIRST_OBJECT_FROM_LIST = strings -> strings.get(0);
 
     @Test(expectedExceptions = IllegalArgumentException.class,
-            expectedExceptionsMessageRegExp = "Function which should return iterable is not defined")
+            expectedExceptionsMessageRegExp = "Function is not defined")
     public void negativeTestOfNullFunctionWithIterableInputAndSingleOutput() {
         getFromIterable("Value", null, VALUE_A, true, true);
         fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
-            expectedExceptionsMessageRegExp = "Function which should return iterable is not described. Use StoryWriter.toGet to describe it.")
+            expectedExceptionsMessageRegExp = "Function is not described. Use StoryWriter.toGet to describe it.")
     public void negativeTestOfNotDescribedFunctionWithIterableInputAndSingleOutput() {
         getFromIterable("Value", CONVERT_LIST_TO_SET, VALUE_A, true, true);
         fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
-            expectedExceptionsMessageRegExp = "Predicate which should be used as the condition to check value from iterable is not defined.")
+            expectedExceptionsMessageRegExp = "Predicate is not defined.")
     public void negativeTestOfNullConditionForFunctionWithIterableInputAndSingleOutput() {
         getFromIterable("Value",
                 toGet("Set converted from list", CONVERT_LIST_TO_SET), null,
@@ -222,21 +222,21 @@ public class GetConditionalTest {
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
-            expectedExceptionsMessageRegExp = "Function which should return array is not defined")
+            expectedExceptionsMessageRegExp = "Function is not defined")
     public void negativeTestOfNullFunctionWithArrayInputAndSingleOutput() {
         getFromArray("Value", null, VALUE_A, true, true);
         fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
-            expectedExceptionsMessageRegExp = "Function which should return array is not described. Use StoryWriter.toGet to describe it.")
+            expectedExceptionsMessageRegExp = "Function is not described. Use StoryWriter.toGet to describe it.")
     public void negativeTestOfNotDescribedFunctionWithArrayInputAndSingleOutput() {
         getFromArray("Value", CONVERT_LIST_TO_ARRAY, VALUE_A, true, true);
         fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
-            expectedExceptionsMessageRegExp = "Predicate which should be used as the condition to check value from array is not defined.")
+            expectedExceptionsMessageRegExp = "Predicate is not defined.")
     public void negativeTestOfNullConditionForFunctionWithArrayInputAndSingleOutput() {
         getFromArray("Value",
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY), null,
@@ -403,21 +403,21 @@ public class GetConditionalTest {
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
-            expectedExceptionsMessageRegExp = "Function which should return object is not defined")
+            expectedExceptionsMessageRegExp = "Function is not defined")
     public void negativeTestOfNullFunctionWithSingleInputAndSingleOutput() {
         getSingleOnCondition("Value", null, VALUE_A, true);
         fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
-            expectedExceptionsMessageRegExp = "Function which should return object is not described. Use StoryWriter.toGet to describe it.")
+            expectedExceptionsMessageRegExp = "Function is not described. Use StoryWriter.toGet to describe it.")
     public void negativeTestOfNotDescribedFunctionWithSingleInputAndSingleOutput() {
         getSingleOnCondition("Value", GET_FIRST_OBJECT_FROM_LIST, VALUE_A, true);
         fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
-            expectedExceptionsMessageRegExp = "Predicate which should be used as the condition to check returned object is not defined.")
+            expectedExceptionsMessageRegExp = "Predicate is not defined.")
     public void negativeTestOfNullConditionForFunctionWithSingleInputAndSingleOutput() {
         getSingleOnCondition("Value",
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST), null,
