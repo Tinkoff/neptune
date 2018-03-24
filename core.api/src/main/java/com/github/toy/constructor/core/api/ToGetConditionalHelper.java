@@ -61,7 +61,7 @@ public final class ToGetConditionalHelper {
     }
 
     private static void checkFunction(Function<?, ?> function) {
-        checkArgument(function != null, "Function is not defined");
+        checkArgument(function != null, "Function is not defined.");
         checkArgument(DescribedFunction.class.isAssignableFrom(function.getClass()),
                 "Function is not described." +
                         " Use StoryWriter.toGet to describe it.");
@@ -147,10 +147,10 @@ public final class ToGetConditionalHelper {
     private static <T, R> Function<T, R> checkedSingle(String description,
                                                        Function<T, R> function,
                                                        Predicate<R> condition,
-                                                       Duration waitingTime,
-                                                       Duration sleepingTime,
+                                                       @Nullable Duration waitingTime,
+                                                       @Nullable Duration sleepingTime,
                                                        boolean ignoreExceptionOnConditionCheck,
-                                                       Supplier<? extends RuntimeException> exceptionOnTimeOut) {
+                                                       @Nullable Supplier<? extends RuntimeException> exceptionOnTimeOut) {
         return fluentWaitFunction(getDescription(description, function, condition), t ->
                         ofNullable(function.apply(t)).map(r -> {
                             try {
@@ -164,6 +164,58 @@ public final class ToGetConditionalHelper {
                             return null;
                         }).orElse(null), waitingTime,
                 sleepingTime, Objects::nonNull, exceptionOnTimeOut);
+    }
+
+    private static <T, R, V extends Iterable<R>> Function<T, V> iterable(String description,
+                                                                        Function<T, V> function,
+                                                                        Predicate<R> condition,
+                                                                        @Nullable Duration waitingTime,
+                                                                        @Nullable Duration sleepingTime,
+                                                                        boolean checkConditionInParallel,
+                                                                        boolean ignoreExceptionOnConditionCheck,
+                                                                        @Nullable Supplier<? extends RuntimeException> exceptionOnTimeOut) {
+        return fluentWaitFunction(getDescription(description, function, condition), t ->
+                        ofNullable(function.apply(t)).map(v -> {
+                            List<R> result = stream(v.spliterator(), checkConditionInParallel).filter(r -> {
+                                try {
+                                    return !notNullAnd(condition).test(r);
+                                } catch (Throwable t1) {
+                                    return !returnFalseOrThrowException(t1, ignoreExceptionOnConditionCheck);
+                                }
+                            }).collect(toList());
+
+                            Iterables.removeAll(v, result);
+                            return v;
+                        }).orElse(null),
+                waitingTime, sleepingTime, v -> v != null && Iterables.size(v) > 0, exceptionOnTimeOut);
+
+    }
+
+    private static <T, R> Function<T, R[]> array(String description,
+                                                 Function<T, R[]> function,
+                                                 Predicate<R> condition,
+                                                 Duration waitingTime,
+                                                 Duration sleepingTime,
+                                                 boolean checkConditionInParallel,
+                                                 boolean ignoreExceptionOnConditionCheck,
+                                                 Supplier<? extends RuntimeException> exceptionOnTimeOut) {
+        return fluentWaitFunction(getDescription(description, function, condition), t ->
+                        ofNullable(function.apply(t)).map(rs -> {
+                            List<R> subResult = stream(asList(rs).spliterator(), checkConditionInParallel).filter(r -> {
+                                try {
+                                    return !notNullAnd(condition).test(r);
+                                } catch (Throwable t1) {
+                                    return !returnFalseOrThrowException(t1, ignoreExceptionOnConditionCheck);
+                                }
+                            }).collect(toList());
+
+                            R[] result = rs;
+                            for (R r: subResult) {
+                                result = ArrayUtils.removeElement(result, r);
+                            }
+                            return result;
+                        }).orElse(null),
+                waitingTime, sleepingTime, rs -> rs != null && rs.length > 0, exceptionOnTimeOut);
     }
 
     /**
@@ -968,8 +1020,8 @@ public final class ToGetConditionalHelper {
     }
 
     /**
-     * This method returns a function. The result function returns found values from {@link Iterable}.
-     * The original function should return iterable to match.
+     * This method returns a function. The result function returns an {@link Iterable} of elements which differ from null
+     * and suit the criteria.
      *
      * @param description of a value which should be returned.
      * @param function described function which should return {@link Iterable}
@@ -987,8 +1039,9 @@ public final class ToGetConditionalHelper {
      * @param <T> is a type of input value
      * @param <R> is a type of target values
      * @param <V> is a type of {@link Iterable} of {@code R}
-     * @return a function. The result function returns found values from {@link Iterable}.
-     * The result function will return values if something is found. Some exception is thrown otherwise.
+     * @return a function. The result function returns an {@link Iterable} of elements which differ from null
+     * and suit the criteria. It returns not empty iterable when there are such elements. Some exception is thrown if result
+     * iterable is null or has no elements which suit the criteria.
      */
     public static <T, R, V extends Iterable<R>> Function<T, V> getSubIterable(String description,
                                                                               Function<T, V> function,
@@ -998,65 +1051,107 @@ public final class ToGetConditionalHelper {
                                                                               boolean checkConditionInParallel,
                                                                               boolean ignoreExceptionOnConditionCheck,
                                                                               Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        checkArgument(function != null, "Function which should return iterable is not defined");
-        checkArgument(condition != null, "Predicate which should be used as the condition to " +
-                "filter values from iterable is not defined.");
-
-        checkArgument(DescribedFunction.class.isAssignableFrom(function.getClass()),
-                "Function which should return iterable is not described." +
-                        " Use StoryWriter.toGet to describe it.");
+        checkFunction(function);
         checkCondition(condition);
-        return fluentWaitFunction(getDescription(description, function, condition), t ->
-                        ofNullable(function.apply(t)).map(v -> {
-                            List<R> result = stream(v.spliterator(), checkConditionInParallel).filter(r -> {
-                                try {
-                                    return !condition.test(r);
-                                } catch (Throwable t1) {
-                                    return !returnFalseOrThrowException(t1, ignoreExceptionOnConditionCheck);
-                                }
-                            }).collect(toList());
-
-                            Iterables.removeAll(v, result);
-                            return v;
-                        }).orElse(null),
-                waitingTime, sleepingTime, v -> v != null && Iterables.size(v) > 0, exceptionOnTimeOut);
-    }
-
-    /**
-     * This method returns a function. The result function returns found values from {@link Iterable}.
-     * The original function should return iterable to match.
-     *
-     * @param description of a value which should be returned.
-     * @param function described function which should return {@link Iterable}
-     * @param condition described predicate which is used to find some target value
-     * @param waitingTime is a duration of the waiting for valuable result
-     * @param checkConditionInParallel is how iterable should be matched. If {@code true} when each value will be
-     *                                 checked in parallel.
-     * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
-     *                                        and some exception is thrown. Exception will be thrown when
-     *                                        {@code true}.
-     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
-     *                           expiration
-     * @param <T> is a type of input value
-     * @param <R> is a type of target values
-     * @param <V> is a type of {@link Iterable} of {@code R}
-     * @return a function. The result function returns found values from {@link Iterable}.
-     * The result function will return values if something is found. Some exception is thrown otherwise.
-     */
-    public static <T, R, V extends Iterable<R>> Function<T, V> getSubIterable(String description,
-                                                                              Function<T, V> function,
-                                                                              Predicate<R> condition,
-                                                                              Duration waitingTime,
-                                                                              boolean checkConditionInParallel,
-                                                                              boolean ignoreExceptionOnConditionCheck,
-                                                                              Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        return getSubIterable(description, function, condition, waitingTime, null,
+        checkWaitingTime(waitingTime);
+        checkSleepingTime(sleepingTime);
+        checkExceptionSupplier(exceptionOnTimeOut);
+        return iterable(description, function, condition, waitingTime, sleepingTime,
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
     }
 
     /**
-     * This method returns a function. The result function returns found values from {@link Iterable}.
-     * The original function should return iterable to match.
+     * This method returns a function. The result function returns an {@link Iterable} of elements which differ from null.
+     *
+     * @param function described function which should return {@link Iterable}
+     * @param waitingTime is a duration of the waiting for valuable result
+     * @param sleepingTime is a duration of the sleeping between attempts to get
+     *                     expected valuable result
+     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     *                           expiration
+     * @param <T> is a type of input value
+     * @param <R> is a type of target values
+     * @param <V> is a type of {@link Iterable} of {@code R}
+     * @return a function. The result function returns an {@link Iterable} of elements which differ from null.
+     * It returns not empty iterable when there are such elements. Some exception is thrown if result
+     * iterable is null or has no elements or all elements are {@code null}.
+     */
+    public static <T, R, V extends Iterable<R>> Function<T, V> getIterable(Function<T, V> function,
+                                                                           Duration waitingTime,
+                                                                           Duration sleepingTime,
+                                                                           Supplier<? extends RuntimeException> exceptionOnTimeOut) {
+        checkFunction(function);
+        checkWaitingTime(waitingTime);
+        checkSleepingTime(sleepingTime);
+        checkExceptionSupplier(exceptionOnTimeOut);
+        return iterable(EMPTY, function, asIs(), waitingTime, sleepingTime,
+                true, true, exceptionOnTimeOut);
+    }
+
+    /**
+     * This method returns a function. The result function returns an {@link Iterable} of elements which differ from null
+     * and suit the criteria.
+     *
+     * @param description of a value which should be returned.
+     * @param function described function which should return {@link Iterable}
+     * @param condition described predicate which is used to find some target value
+     * @param waitingTime is a duration of the waiting for valuable result
+     * @param checkConditionInParallel is how iterable should be matched. If {@code true} when each value will be
+     *                                 checked in parallel.
+     * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
+     *                                        and some exception is thrown. Exception will be thrown when
+     *                                        {@code true}.
+     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     *                           expiration
+     * @param <T> is a type of input value
+     * @param <R> is a type of target values
+     * @param <V> is a type of {@link Iterable} of {@code R}
+     * @return a function. The result function returns an {@link Iterable} of elements which differ from null
+     * and suit the criteria. It returns not empty iterable when there are such elements. Some exception is thrown if result
+     * iterable is null or has no elements which suit the criteria.
+     */
+    public static <T, R, V extends Iterable<R>> Function<T, V> getSubIterable(String description,
+                                                                              Function<T, V> function,
+                                                                              Predicate<R> condition,
+                                                                              Duration waitingTime,
+                                                                              boolean checkConditionInParallel,
+                                                                              boolean ignoreExceptionOnConditionCheck,
+                                                                              Supplier<? extends RuntimeException> exceptionOnTimeOut) {
+        checkFunction(function);
+        checkCondition(condition);
+        checkWaitingTime(waitingTime);
+        checkExceptionSupplier(exceptionOnTimeOut);
+        return iterable(description, function, condition, waitingTime, null,
+                checkConditionInParallel, ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
+    }
+
+    /**
+     * This method returns a function. The result function returns an {@link Iterable} of elements which differ from null.
+     *
+     * @param function described function which should return {@link Iterable}
+     * @param waitingTime is a duration of the waiting for valuable result
+     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     *                           expiration
+     * @param <T> is a type of input value
+     * @param <R> is a type of target values
+     * @param <V> is a type of {@link Iterable} of {@code R}
+     * @return a function. The result function returns an {@link Iterable} of elements which differ from null.
+     * It returns not empty iterable when there are such elements. Some exception is thrown if result
+     * iterable is null or has no elements or all elements are {@code null}.
+     */
+    public static <T, R, V extends Iterable<R>> Function<T, V> getIterable(Function<T, V> function,
+                                                                           Duration waitingTime,
+                                                                           Supplier<? extends RuntimeException> exceptionOnTimeOut) {
+        checkFunction(function);
+        checkWaitingTime(waitingTime);
+        checkExceptionSupplier(exceptionOnTimeOut);
+        return iterable(EMPTY, function, asIs(), waitingTime, null,
+                true, true, exceptionOnTimeOut);
+    }
+
+    /**
+     * This method returns a function. The result function returns an {@link Iterable} of elements which differ from null
+     * and suit the criteria.
      *
      * @param description of a value which should be returned.
      * @param function described function which should return {@link Iterable}
@@ -1072,9 +1167,9 @@ public final class ToGetConditionalHelper {
      * @param <T> is a type of input value
      * @param <R> is a type of target values
      * @param <V> is a type of {@link Iterable} of {@code R}
-     * @return a function. The result function returns found values from {@link Iterable}.
-     * The result function will return values if something is found. Empty {@link Iterable} or {@code null} are
-     * returned otherwise. It depends on result of the {@link Function#apply(Object)}
+     * @return a function. The result function returns an {@link Iterable} of elements which differ from null
+     * and suit the criteria. It returns not empty iterable when there are such elements. Empty iterable is returned if result
+     * iterable is null or has no elements which suit the criteria.
      */
     public static <T, R, V extends Iterable<R>> Function<T, V> getSubIterable(String description,
                                                                               Function<T, V> function,
@@ -1083,13 +1178,41 @@ public final class ToGetConditionalHelper {
                                                                               Duration sleepingTime,
                                                                               boolean checkConditionInParallel,
                                                                               boolean ignoreExceptionOnConditionCheck) {
-        return getSubIterable(description, function, condition, waitingTime, sleepingTime,
+        checkFunction(function);
+        checkCondition(condition);
+        checkWaitingTime(waitingTime);
+        checkSleepingTime(sleepingTime);
+        return iterable(description, function, condition, waitingTime, sleepingTime,
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, null);
     }
 
     /**
-     * This method returns a function. The result function returns found values from {@link Iterable}.
-     * The original function should return iterable to match.
+     * This method returns a function. The result function returns an {@link Iterable} of elements which differ from null.
+     *
+     * @param function described function which should return {@link Iterable}
+     * @param waitingTime is a duration of the waiting for valuable result
+     * @param sleepingTime is a duration of the sleeping between attempts to get
+     *                     expected valuable result
+     * @param <T> is a type of input value
+     * @param <R> is a type of target values
+     * @param <V> is a type of {@link Iterable} of {@code R}
+     * @return a function. The result function returns an {@link Iterable} of elements which differ from null.
+     * It returns not empty iterable when there are such elements. Empty iterable is returned if result
+     * iterable is null or has no elements or all elements are {@code null}.
+     */
+    public static <T, R, V extends Iterable<R>> Function<T, V> getIterable(Function<T, V> function,
+                                                                           Duration waitingTime,
+                                                                           Duration sleepingTime) {
+        checkFunction(function);
+        checkWaitingTime(waitingTime);
+        checkSleepingTime(sleepingTime);
+        return iterable(EMPTY, function, asIs(), waitingTime, sleepingTime,
+                true, true, null);
+    }
+
+    /**
+     * This method returns a function. The result function returns an {@link Iterable} of elements which differ from null
+     * and suit the criteria.
      *
      * @param description of a value which should be returned.
      * @param function described function which should return {@link Iterable}
@@ -1103,9 +1226,9 @@ public final class ToGetConditionalHelper {
      * @param <T> is a type of input value
      * @param <R> is a type of target values
      * @param <V> is a type of {@link Iterable} of {@code R}
-     * @return a function. The result function returns found values from {@link Iterable}.
-     * The result function will return values if something is found. Empty {@link Iterable} or {@code null} are
-     * returned otherwise. It depends on result of the {@link Function#apply(Object)}
+     * @return a function. The result function returns an {@link Iterable} of elements which differ from null
+     * and suit the criteria. It returns not empty iterable when there are such elements. Empty iterable is returned if result
+     * iterable is null or has no elements which suit the criteria.
      */
     public static <T, R, V extends Iterable<R>> Function<T, V> getSubIterable(String description,
                                                                               Function<T, V> function,
@@ -1113,13 +1236,36 @@ public final class ToGetConditionalHelper {
                                                                               Duration waitingTime,
                                                                               boolean checkConditionInParallel,
                                                                               boolean ignoreExceptionOnConditionCheck) {
-        return getSubIterable(description, function, condition, waitingTime, null,
+        checkFunction(function);
+        checkCondition(condition);
+        checkWaitingTime(waitingTime);
+        return iterable(description, function, condition, waitingTime, null,
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, null);
     }
 
     /**
-     * This method returns a function. The result function returns found values from {@link Iterable}.
-     * The original function should return iterable to match.
+     * This method returns a function. The result function returns an {@link Iterable} of elements which differ from null.
+     *
+     * @param function described function which should return {@link Iterable}
+     * @param waitingTime is a duration of the waiting for valuable result
+     * @param <T> is a type of input value
+     * @param <R> is a type of target values
+     * @param <V> is a type of {@link Iterable} of {@code R}
+     * @return a function. The result function returns an {@link Iterable} of elements which differ from null.
+     * It returns not empty iterable when there are such elements. Empty iterable is returned if result
+     * iterable is null or has no elements or all elements are {@code null}.
+     */
+    public static <T, R, V extends Iterable<R>> Function<T, V> getIterable(Function<T, V> function,
+                                                                           Duration waitingTime) {
+        checkFunction(function);
+        checkWaitingTime(waitingTime);
+        return iterable(EMPTY, function, asIs(), waitingTime, null,
+                true, true, null);
+    }
+
+    /**
+     * This method returns a function. The result function returns an {@link Iterable} of elements which differ from null
+     * and suit the criteria.
      *
      * @param description of a value which should be returned.
      * @param function described function which should return {@link Iterable}
@@ -1132,22 +1278,24 @@ public final class ToGetConditionalHelper {
      * @param <T> is a type of input value
      * @param <R> is a type of target values
      * @param <V> is a type of {@link Iterable} of {@code R}
-     * @return a function. The result function returns found values from {@link Iterable}.
-     * The result function will return values if something is found. Empty {@link Iterable} or {@code null} are
-     * returned otherwise. It depends on result of the {@link Function#apply(Object)}
+     * @return a function. The result function returns an {@link Iterable} of elements which differ from null
+     * and suit the criteria. It returns not empty iterable when there are such elements. Empty iterable is returned if result
+     * iterable is null or has no elements which suit the criteria.
      */
     public static <T, R, V extends Iterable<R>> Function<T, V> getSubIterable(String description,
                                                                               Function<T, V> function,
                                                                               Predicate<R> condition,
                                                                               boolean checkConditionInParallel,
                                                                               boolean ignoreExceptionOnConditionCheck) {
-        return getSubIterable(description, function, condition, null, null,
+        checkFunction(function);
+        checkCondition(condition);
+        return iterable(description, function, condition, null, null,
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, null);
     }
 
     /**
-     * This method returns a function. The result function returns sub-array of found values from array.
-     * The original function should return array to match.
+     * This method returns a function. The result function returns an array of elements which differ from null
+     * and suit the criteria.
      *
      * @param description of a value which should be returned.
      * @param function described function which should return an array
@@ -1164,8 +1312,9 @@ public final class ToGetConditionalHelper {
      *                           expiration
      * @param <T> is a type of input value
      * @param <R> is a type of target values
-     * @return a function. The result function returns sub-array of found values from array.
-     * The result function will return values if something is found. Some exception is thrown otherwise.
+     * @return a function. The result function returns an array of elements which differ from null
+     * and suit the criteria. It returns not empty array when there are such elements. Some exception is thrown if result
+     * array is null or has no elements which suit the criteria.
      */
     public static <T, R> Function<T, R[]> getSubArray(String description,
                                                       Function<T, R[]> function,
@@ -1175,36 +1324,45 @@ public final class ToGetConditionalHelper {
                                                       boolean checkConditionInParallel,
                                                       boolean ignoreExceptionOnConditionCheck,
                                                       Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        checkArgument(function != null, "Function which should return array is not defined");
-        checkArgument(condition != null, "Predicate which should be used as the condition to " +
-                "filter values from array is not defined.");
-
-        checkArgument(DescribedFunction.class.isAssignableFrom(function.getClass()),
-                "Function which should return array is not described." +
-                        " Use StoryWriter.toGet to describe it.");
+        checkFunction(function);
         checkCondition(condition);
-        return fluentWaitFunction(getDescription(description, function, condition), t ->
-                        ofNullable(function.apply(t)).map(rs -> {
-                            List<R> subResult = stream(asList(rs).spliterator(), checkConditionInParallel).filter(r -> {
-                                try {
-                                    return !condition.test(r);
-                                } catch (Throwable t1) {
-                                    return !returnFalseOrThrowException(t1, ignoreExceptionOnConditionCheck);
-                                }
-                            }).collect(toList());
-
-                            R[] result = rs;
-                            for (R r: subResult) {
-                                result = ArrayUtils.removeElement(result, r);
-                            }
-                            return result;
-                        }).orElse(null),
-                waitingTime, sleepingTime, rs -> rs != null && rs.length > 0, exceptionOnTimeOut);
+        checkWaitingTime(waitingTime);
+        checkSleepingTime(sleepingTime);
+        checkExceptionSupplier(exceptionOnTimeOut);
+        return array(description, function, condition, waitingTime, sleepingTime,
+                checkConditionInParallel, ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
     }
 
     /**
-     * This method returns a function. The result function returns sub-array of found values from array.
-     * The original function should return array to match.
+     * This method returns a function. The result function returns an array of elements which differ from null.
+     *
+     * @param function described function which should return an array
+     * @param waitingTime is a duration of the waiting for valuable result
+     * @param sleepingTime is a duration of the sleeping between attempts to get
+     *                     expected valuable result
+     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     *                           expiration
+     * @param <T> is a type of input value
+     * @param <R> is a type of target values
+     * @return a function. The result function returns an array of elements which differ from null.
+     * It returns not empty array when there are such elements. Some exception is thrown if result
+     * array is null or has no elements or all elements are {@code null}.
+     */
+    public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
+                                                   Duration waitingTime,
+                                                   Duration sleepingTime,
+                                                   Supplier<? extends RuntimeException> exceptionOnTimeOut) {
+        checkFunction(function);
+        checkWaitingTime(waitingTime);
+        checkSleepingTime(sleepingTime);
+        checkExceptionSupplier(exceptionOnTimeOut);
+        return array(EMPTY, function, asIs(), waitingTime, sleepingTime,
+                true, true, exceptionOnTimeOut);
+    }
+
+    /**
+     * This method returns a function. The result function returns an array of elements which differ from null
+     * and suit the criteria.
      *
      * @param description of a value which should be returned.
      * @param function described function which should return an array
@@ -1219,8 +1377,9 @@ public final class ToGetConditionalHelper {
      *                           expiration
      * @param <T> is a type of input value
      * @param <R> is a type of target values
-     * @return a function. The result function returns sub-array of found values from array.
-     * The result function will return values if something is found. Some exception is thrown otherwise.
+     * @return a function. The result function returns an array of elements which differ from null
+     * and suit the criteria. It returns not empty array when there are such elements. Some exception is thrown if result
+     * array is null or has no elements which suit the criteria.
      */
     public static <T, R> Function<T, R[]> getSubArray(String description,
                                                       Function<T, R[]> function,
@@ -1229,13 +1388,42 @@ public final class ToGetConditionalHelper {
                                                       boolean checkConditionInParallel,
                                                       boolean ignoreExceptionOnConditionCheck,
                                                       Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        return getSubArray(description, function, condition, waitingTime, null,
+        checkFunction(function);
+        checkCondition(condition);
+        checkWaitingTime(waitingTime);
+        checkExceptionSupplier(exceptionOnTimeOut);
+        return array(description, function, condition, waitingTime, null,
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
     }
 
     /**
-     * This method returns a function. The result function returns sub-array of found values from array.
-     * The original function should return array to match.
+     * This method returns a function. The result function returns an array of elements which differ from null.
+     *
+     * @param function described function which should return an array
+     * @param waitingTime is a duration of the waiting for valuable result
+     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     *                           expiration
+     * @param <T> is a type of input value
+     * @param <R> is a type of target values
+     * @return a function. The result function returns an array of elements which differ from null.
+     * It returns not empty array when there are such elements. Some exception is thrown if result
+     * array is null or has no elements or all elements are {@code null}.
+     */
+    public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
+                                                   Duration waitingTime,
+                                                   Supplier<? extends RuntimeException> exceptionOnTimeOut) {
+        checkFunction(function);
+        checkWaitingTime(waitingTime);
+        checkExceptionSupplier(exceptionOnTimeOut);
+        return array(EMPTY, function, asIs(), waitingTime, null,
+                true, true, exceptionOnTimeOut);
+    }
+
+
+
+    /**
+     * This method returns a function. The result function returns an array of elements which differ from null
+     * and suit the criteria.
      *
      * @param description of a value which should be returned.
      * @param function described function which should return {@link Iterable}
@@ -1250,9 +1438,9 @@ public final class ToGetConditionalHelper {
      *                                        {@code true}.
      * @param <T> is a type of input value
      * @param <R> is a type of target values
-     * @return a function. The result function returns sub-array of found values from array.
-     * The result function will return values if something is found. Empty array or {@code null} are
-     * returned otherwise. It depends on result of the {@link Function#apply(Object)}
+     * @return a function. The result function returns an array of elements which differ from null
+     * and suit the criteria. It returns not empty array when there are such elements. Empty array is returned if result
+     * array is null or has no elements which suit the criteria.
      */
     public static <T, R> Function<T, R[]> getSubArray(String description,
                                                       Function<T, R[]> function,
@@ -1261,13 +1449,40 @@ public final class ToGetConditionalHelper {
                                                       Duration sleepingTime,
                                                       boolean checkConditionInParallel,
                                                       boolean ignoreExceptionOnConditionCheck) {
-        return getSubArray(description, function, condition, waitingTime, sleepingTime,
+        checkFunction(function);
+        checkCondition(condition);
+        checkWaitingTime(waitingTime);
+        checkSleepingTime(sleepingTime);
+        return array(description, function, condition, waitingTime, sleepingTime,
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, null);
     }
 
     /**
-     * This method returns a function. The result function returns sub-array of found values from array.
-     * The original function should return array to match.
+     * This method returns a function. The result function returns an array of elements which differ from null.
+     *
+     * @param function described function which should return {@link Iterable}
+     * @param waitingTime is a duration of the waiting for valuable result
+     * @param sleepingTime is a duration of the sleeping between attempts to get
+     *                     expected valuable result
+     * @param <T> is a type of input value
+     * @param <R> is a type of target values
+     * @return a function. The result function returns an array of elements which differ from null.
+     * It returns not empty array when there are such elements. Empty array is returned if result
+     * array is null or has no elements or all elements are {@code null}.
+     */
+    public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
+                                                   Duration waitingTime,
+                                                   Duration sleepingTime) {
+        checkFunction(function);
+        checkWaitingTime(waitingTime);
+        checkSleepingTime(sleepingTime);
+        return array(EMPTY, function, asIs(), waitingTime, sleepingTime,
+                true, true, null);
+    }
+
+    /**
+     * This method returns a function. The result function returns an array of elements which differ from null
+     * and suit the criteria.
      *
      * @param description of a value which should be returned.
      * @param function described function which should return {@link Iterable}
@@ -1280,9 +1495,9 @@ public final class ToGetConditionalHelper {
      *                                        {@code true}.
      * @param <T> is a type of input value
      * @param <R> is a type of target values
-     * @return a function. The result function returns sub-array of found values from array.
-     * The result function will return values if something is found. Empty array or {@code null} are
-     * returned otherwise. It depends on result of the {@link Function#apply(Object)}
+     * @return a function. The result function returns an array of elements which differ from null
+     * and suit the criteria. It returns not empty array when there are such elements. Empty array is returned if result
+     * array is null or has no elements which suit the criteria.
      */
     public static <T, R> Function<T, R[]> getSubArray(String description,
                                                       Function<T, R[]> function,
@@ -1290,8 +1505,30 @@ public final class ToGetConditionalHelper {
                                                       Duration waitingTime,
                                                       boolean checkConditionInParallel,
                                                       boolean ignoreExceptionOnConditionCheck) {
-        return getSubArray(description, function, condition, waitingTime, null,
+        checkFunction(function);
+        checkCondition(condition);
+        checkWaitingTime(waitingTime);
+        return array(description, function, condition, waitingTime, null,
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, null);
+    }
+
+    /**
+     * This method returns a function. The result function returns an array of elements which differ from null.
+     *
+     * @param function described function which should return {@link Iterable}
+     * @param waitingTime is a duration of the waiting for valuable result
+     * @param <T> is a type of input value
+     * @param <R> is a type of target values
+     * @return a function. The result function returns an array of elements which differ from null.
+     * It returns not empty array when there are such elements. Empty array is returned if result
+     * array is null or has no elements or all elements are {@code null}.
+     */
+    public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
+                                                   Duration waitingTime) {
+        checkFunction(function);
+        checkWaitingTime(waitingTime);
+        return array(EMPTY, function, asIs(), waitingTime, null,
+                true, true, null);
     }
 
     /**
@@ -1317,7 +1554,9 @@ public final class ToGetConditionalHelper {
                                                      Predicate<R> condition,
                                                      boolean checkConditionInParallel,
                                                      boolean ignoreExceptionOnConditionCheck) {
-        return getSubArray(description, function, condition, null, null,
+        checkFunction(function);
+        checkCondition(condition);
+        return array(description, function, condition, null, null,
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, null);
     }
 
