@@ -22,6 +22,14 @@ public final class GetJavaScriptResultSupplier extends GetSupplier<SeleniumSteps
         super();
     }
 
+    private static void checkScript(String script) {
+        checkArgument(!isBlank(script), "Script to be evaluated should not be null value or empty string");
+    }
+
+    private static void checkArguments(Object...arguments) {
+        checkArgument(arguments != null, "Arguments to be used by script evaluation should not be null");
+    }
+
     /**
      * This method builds a function which evaluates java script, checks the result by criteria and returns it.
      * IT IS IMPORTANT!!!! If script evaluation returns {@null} and it is expected so it is good to make it
@@ -61,24 +69,20 @@ public final class GetJavaScriptResultSupplier extends GetSupplier<SeleniumSteps
      *
      * @param script to be evaluated
      * @param criteria to check the result of script evaluation.
-     * @param timeToGetResult time to evaluate script and get the result which suits the criteria. This value may be
-     *                        {@code null} so then result is returned immediately
-     * @param timeToSleep time for the sleeping between attempts to get the desired result. This value may be
-     *                        {@code null}
+     * @param timeToGetResult time to evaluate script and get the result which suits the criteria.
+     * @param timeToSleep time for the sleeping between attempts to get the desired result.
      * @param exceptionSupplier which returns the exception to be thrown when script returns the result of the evaluation
-     *                          that doesn't suit the given criteria and time is expired. This value may
-     *                          be {@code null} so exception is not thrown and evaluation returns {@code null}
+     *                          that doesn't suit the given criteria and time is expired.
      * @param arguments to be used by script evaluation
      * @return the function which evaluates java script, checks the result by criteria and returns it.
      */
     public static GetJavaScriptResultSupplier javaScript(String script, Predicate<Object> criteria,
-                                                         @Nullable Duration timeToGetResult,
-                                                         @Nullable Duration timeToSleep,
-                                                         @Nullable Supplier<RuntimeException> exceptionSupplier,
+                                                         Duration timeToGetResult,
+                                                         Duration timeToSleep,
+                                                         Supplier<RuntimeException> exceptionSupplier,
                                                          Object... arguments) {
-        checkArgument(!isBlank(script), "Script to be evaluated should not be null value or empty string");
-        checkArgument(criteria != null, "Criteria to check the result of script evaluation should be defined");
-        checkArgument(arguments != null, "Arguments to be used by script evaluation should not be null");
+        checkScript(script);
+        checkArguments(arguments);
         return new GetJavaScriptResultSupplier()
                 .set(getSingleOnCondition("Result",
                         evalJS(script, arguments), criteria, timeToGetResult, timeToSleep, true, exceptionSupplier));
@@ -134,9 +138,11 @@ public final class GetJavaScriptResultSupplier extends GetSupplier<SeleniumSteps
                                                          Duration timeToGetResult,
                                                          Supplier<RuntimeException> exceptionSupplier,
                                                          Object... arguments) {
-        checkArgument(exceptionSupplier != null, "The supplier of the Exception to be thrown should be " +
-                "defined here");
-        return javaScript(script, criteria, timeToGetResult, null, exceptionSupplier, arguments);
+        checkScript(script);
+        checkArguments(arguments);
+        return new GetJavaScriptResultSupplier()
+                .set(getSingleOnCondition("Result",
+                        evalJS(script, arguments), criteria, timeToGetResult, true, exceptionSupplier));
     }
 
 
