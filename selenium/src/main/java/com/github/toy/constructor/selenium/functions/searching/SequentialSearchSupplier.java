@@ -4,13 +4,9 @@ import com.github.toy.constructor.core.api.SequentialGetSupplier;
 import com.github.toy.constructor.selenium.SeleniumSteps;
 import org.openqa.selenium.SearchContext;
 
-import java.util.List;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
-import static com.github.toy.constructor.core.api.StoryWriter.condition;
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
-import static com.github.toy.constructor.selenium.functions.searching.SearchSupplier.item;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Optional.ofNullable;
 
@@ -35,7 +31,7 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      * @param from is how to find some element from a parent element.
      * @return self-reference
      */
-    public <Q extends SearchContext> SequentialSearchSupplier<R> foundFrom(Supplier<Function<SearchContext, Q>> from) {
+    public <Q extends SearchContext> SequentialSearchSupplier<R> foundFrom(SearchSupplier<Q> from) {
         checkArgument(from != null, "The searching for the parent element should be defined");
         if (chain != null) {
             chain = from.get().andThen(chain);
@@ -56,8 +52,7 @@ public final class SequentialSearchSupplier<R extends SearchContext>
      */
     public <Q extends SearchContext> SequentialSearchSupplier<R> foundFrom(Q from) {
         checkArgument(from != null, "The parent element should be defined");
-        return foundFrom(item(toGet(from.toString(), q -> List.of(from)),
-                condition("as is", q -> true)));
+        return super.from(from);
     }
 
     @Override

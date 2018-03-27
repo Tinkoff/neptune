@@ -4,12 +4,10 @@ import com.github.toy.constructor.core.api.GetSupplier;
 import com.github.toy.constructor.selenium.SeleniumSteps;
 import org.openqa.selenium.WebDriver;
 
-import javax.annotation.Nullable;
 import java.time.Duration;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static com.github.toy.constructor.core.api.StoryWriter.condition;
 import static com.github.toy.constructor.core.api.ToGetConditionalHelper.getSingleOnCondition;
 import static com.github.toy.constructor.selenium.functions.java.script.EvaluateAsyncJavaScript.evalAsyncJS;
 import static com.github.toy.constructor.selenium.functions.java.script.EvaluateJavaScript.evalJS;
@@ -32,7 +30,7 @@ public final class GetJavaScriptResultSupplier extends GetSupplier<SeleniumSteps
 
     /**
      * This method builds a function which evaluates java script, checks the result by criteria and returns it.
-     * IT IS IMPORTANT!!!! If script evaluation returns {@null} and it is expected so it is good to make it
+     * IT IS IMPORTANT!!!! If script evaluation returns {@code null} and it is expected so it is good to make it
      * return some {@code boolean} value instead.
      *
      * The documentation below was taken from Selenium:
@@ -90,7 +88,7 @@ public final class GetJavaScriptResultSupplier extends GetSupplier<SeleniumSteps
 
     /**
      * This method builds a function which evaluates java script, checks the result by criteria and returns it.
-     * IT IS IMPORTANT!!!! If script evaluation returns {@null} and it is expected so it is good to make it
+     * IT IS IMPORTANT!!!! If script evaluation returns {@code null} and it is expected so it is good to make it
      * return some {@code boolean} value instead.
      *
      * The documentation below was taken from Selenium:
@@ -127,8 +125,7 @@ public final class GetJavaScriptResultSupplier extends GetSupplier<SeleniumSteps
      *
      * @param script to be evaluated
      * @param criteria to check the result of script evaluation.
-     * @param timeToGetResult time to evaluate script and get the result which suits the criteria. This value may be
-     *                        {@code null} so then result is returned immediately
+     * @param timeToGetResult time to evaluate script and get the result which suits the criteria.
      * @param exceptionSupplier which returns the exception to be thrown when script returns the result of the evaluation
      *                          that doesn't suit the given criteria and time is expired.
      * @param arguments to be used by script evaluation
@@ -186,8 +183,7 @@ public final class GetJavaScriptResultSupplier extends GetSupplier<SeleniumSteps
      *
      * @param script to be evaluated
      * @param criteria to check the result of script evaluation
-     * @param timeToGetResult time to evaluate script and get the result which suits the criteria. This value may be
-     *                        {@code null} so then result is returned immediately
+     * @param timeToGetResult time to evaluate script and get the result which suits the criteria.
      * @param arguments to be used by script evaluation
      * @return the function which evaluates java script, checks the result by criteria and returns it.
      * If the result of evaluation doesn't match criteria then function returns {@code null} when waiting time is
@@ -196,7 +192,11 @@ public final class GetJavaScriptResultSupplier extends GetSupplier<SeleniumSteps
     public static GetJavaScriptResultSupplier javaScript(String script, Predicate<Object> criteria,
                                                          Duration timeToGetResult,
                                                          Object... arguments) {
-        return javaScript(script, criteria, timeToGetResult, null, null, arguments);
+        checkScript(script);
+        checkArguments(arguments);
+        return new GetJavaScriptResultSupplier()
+                .set(getSingleOnCondition("Result",
+                        evalJS(script, arguments), criteria, timeToGetResult, true));
     }
 
     /**
@@ -245,7 +245,11 @@ public final class GetJavaScriptResultSupplier extends GetSupplier<SeleniumSteps
      */
     public static GetJavaScriptResultSupplier javaScript(String script, Predicate<Object> criteria,
                                                          Object... arguments) {
-        return javaScript(script, criteria, null, null, null, arguments);
+        checkScript(script);
+        checkArguments(arguments);
+        return new GetJavaScriptResultSupplier()
+                .set(getSingleOnCondition("Result",
+                        evalJS(script, arguments), criteria, true));
     }
 
     /**
@@ -288,13 +292,14 @@ public final class GetJavaScriptResultSupplier extends GetSupplier<SeleniumSteps
      * @return the function which evaluates java script and returns the result as it is.
      */
     public static GetJavaScriptResultSupplier javaScript(String script, Object... arguments) {
-        return javaScript(script, condition("as is", o -> true), null, null,
-                null, arguments);
+        checkScript(script);
+        checkArguments(arguments);
+        return new GetJavaScriptResultSupplier().set(evalJS(script, arguments));
     }
 
     /**
      * This method builds a function which evaluates java asynchronous script, checks the result by criteria and returns it.
-     * IT IS IMPORTANT!!!! If script evaluation returns {@null} and it is expected so it is good to make it
+     * IT IS IMPORTANT!!!! If script evaluation returns {@code null} and it is expected so it is good to make it
      * return some {@code boolean} value instead.
      *
      * The documentation below was taken from Selenium:
@@ -371,20 +376,18 @@ public final class GetJavaScriptResultSupplier extends GetSupplier<SeleniumSteps
      * @param script to be evaluated
      * @param criteria to check the result of script evaluation
      * @param exceptionSupplier which returns the exception to be thrown when script returns the result of the evaluation
-     *                          that doesn't suit the given criteria. This value may be {@code null} so exception is
-     *                          not thrown and evaluation returns {@code null}
+     *                          that doesn't suit the given criteria.
      * @param arguments to be used by script evaluation
      * @return the function which evaluates java script, checks the result by criteria and returns it.
      */
     public static GetJavaScriptResultSupplier asynchronousJavaScript(String script, Predicate<Object> criteria,
-                                                                     @Nullable Supplier<RuntimeException> exceptionSupplier,
+                                                                     Supplier<RuntimeException> exceptionSupplier,
                                                                      Object... arguments) {
-        checkArgument(!isBlank(script), "Script to be evaluated should not be null value or empty string");
-        checkArgument(criteria != null, "Criteria to check the result of script evaluation should be defined");
-        checkArgument(arguments != null, "Arguments to be used by script evaluation should not be null");
+        checkScript(script);
+        checkArguments(arguments);
         return new GetJavaScriptResultSupplier()
                 .set(getSingleOnCondition("Result",
-                        evalAsyncJS(script, arguments), criteria, null, null, true, exceptionSupplier));
+                        evalAsyncJS(script, arguments), criteria, true, exceptionSupplier));
     }
 
     /**
@@ -471,7 +474,11 @@ public final class GetJavaScriptResultSupplier extends GetSupplier<SeleniumSteps
      */
     public static GetJavaScriptResultSupplier asynchronousJavaScript(String script, Predicate<Object> criteria,
                                                                      Object... arguments) {
-        return asynchronousJavaScript(script, criteria, null, arguments);
+        checkScript(script);
+        checkArguments(arguments);
+        return new GetJavaScriptResultSupplier()
+                .set(getSingleOnCondition("Result",
+                        evalAsyncJS(script, arguments), criteria, true));
     }
 
     /**
@@ -554,6 +561,8 @@ public final class GetJavaScriptResultSupplier extends GetSupplier<SeleniumSteps
      */
     public static GetJavaScriptResultSupplier asynchronousJavaScript(String script,
                                                                      Object... arguments) {
-        return asynchronousJavaScript(script, condition("as is", o -> true), arguments, null);
+        checkScript(script);
+        checkArguments(arguments);
+        return new GetJavaScriptResultSupplier().set(evalAsyncJS(script, arguments));
     }
 }
