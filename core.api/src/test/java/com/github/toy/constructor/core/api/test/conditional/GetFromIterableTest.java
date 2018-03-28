@@ -4,7 +4,7 @@ import org.testng.annotations.Test;
 
 import static com.github.toy.constructor.core.api.StoryWriter.condition;
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
-import static com.github.toy.constructor.core.api.ToGetConditionalHelper.getFromIterable;
+import static com.github.toy.constructor.core.api.ToGetObjectFromIterable.getFromIterable;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.is;

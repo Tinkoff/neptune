@@ -8,7 +8,7 @@ import java.time.Duration;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static com.github.toy.constructor.core.api.ToGetConditionalHelper.getSingleOnCondition;
+import static com.github.toy.constructor.core.api.ToGetSingleCheckedObject.getSingleOnCondition;
 import static com.github.toy.constructor.selenium.functions.java.script.EvaluateAsyncJavaScript.evalAsyncJS;
 import static com.github.toy.constructor.selenium.functions.java.script.EvaluateJavaScript.evalJS;
 import static com.google.common.base.Preconditions.checkArgument;

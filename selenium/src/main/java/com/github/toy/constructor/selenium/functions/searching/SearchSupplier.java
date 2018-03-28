@@ -16,8 +16,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import static com.github.toy.constructor.core.api.StoryWriter.toGet;
-import static com.github.toy.constructor.core.api.ToGetConditionalHelper.getFromIterable;
+import static com.github.toy.constructor.core.api.ToGetObjectFromIterable.getFromIterable;
 import static com.github.toy.constructor.selenium.functions.searching.DefaultWebElementConditions.defaultPredicateForElements;
 import static com.github.toy.constructor.selenium.functions.searching.DefaultWebElementConditions.elementShouldHaveText;
 import static com.github.toy.constructor.selenium.functions.searching.DefaultWidgetConditions.defaultPredicateForWidgets;

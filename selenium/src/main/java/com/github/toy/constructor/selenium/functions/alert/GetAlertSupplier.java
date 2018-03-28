@@ -9,8 +9,8 @@ import java.time.Duration;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static com.github.toy.constructor.core.api.ToGetConditionalHelper.getSingle;
-import static com.github.toy.constructor.core.api.ToGetConditionalHelper.getSingleOnCondition;
+import static com.github.toy.constructor.core.api.ToGetSingleCheckedObject.getSingle;
+import static com.github.toy.constructor.core.api.ToGetSingleCheckedObject.getSingleOnCondition;
 import static com.github.toy.constructor.selenium.functions.alert.GetAlert.getAlert;
 import static com.github.toy.constructor.selenium.properties.WaitingProperties.WAITING_ALERT_TIME_DURATION;
 import static java.lang.String.format;

@@ -7,8 +7,8 @@ import java.util.Set;
 
 import static com.github.toy.constructor.core.api.StoryWriter.condition;
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
-import static com.github.toy.constructor.core.api.ToGetConditionalHelper.getIterable;
-import static com.github.toy.constructor.core.api.ToGetConditionalHelper.getSubIterable;
+import static com.github.toy.constructor.core.api.ToGetSubIterable.getIterable;
+import static com.github.toy.constructor.core.api.ToGetSubIterable.getSubIterable;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.fail;
