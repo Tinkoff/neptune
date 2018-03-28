@@ -23,27 +23,28 @@ public final class SequentialGetAttributeValueSupplier extends
     }
 
     /**
+     * Creates an instance of {@link SequentialGetAttributeValueSupplier} for the taking of value of the attribute.
      *
-     * @param attr
-     * @return
+     * @param attr is the name if the target attribute
+     * @return an instance of {@link SequentialGetAttributeValueSupplier}
      */
     public static SequentialGetAttributeValueSupplier attribute(String attr) {
         return new SequentialGetAttributeValueSupplier(attr);
     }
 
     /**
-     *
-     * @param e
-     * @return
+     * Adds an element to get value of the attribute
+     * @param e is the element to get value of the attribute
+     * @return self-reference
      */
     public SequentialGetAttributeValueSupplier of(WebElement e) {
         return super.from(e);
     }
 
     /**
-     *
-     * @param widget
-     * @return
+     * Adds an element to get value of the attribute
+     * @param widget is the widget to get value of the attribute
+     * @return self-reference
      */
     public SequentialGetAttributeValueSupplier of(Widget widget) {
         return super.from(widget.getWrappedElement());
@@ -51,9 +52,11 @@ public final class SequentialGetAttributeValueSupplier extends
 
 
     /**
-     *
-     * @param searchSupplier
-     * @return
+     * Adds an element to get value of the attribute
+     * @param searchSupplier is how to find the element to get value of the attribute.
+     *                       Expected result if the wrapped function is some instance of {@link WebElement}
+     *                       or {@link WrapsElement}.
+     * @return self-reference
      */
     public SequentialGetAttributeValueSupplier of(SequentialSearchSupplier<?> searchSupplier) {
         return super.from(toGet(searchSupplier.toString(), seleniumSteps -> {
