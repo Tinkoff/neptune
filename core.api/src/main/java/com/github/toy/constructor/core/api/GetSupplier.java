@@ -42,6 +42,6 @@ public abstract class GetSupplier<T, R, THIS extends GetSupplier<T, R, THIS>> im
 
     @Override
     public String toString() {
-        return ofNullable(function).map(function -> function.toString()).orElse(EMPTY);
+        return ofNullable(function).map(Object::toString).orElse(EMPTY);
     }
 }
