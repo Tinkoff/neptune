@@ -127,11 +127,11 @@ class DefaultWindow implements Window {
         return ofNullable(description).orElse(EMPTY);
     }
 
-    String getDescription() {
-        return description;
-    }
-
     void setDescription(String description) {
         this.description = description;
+    }
+
+    String getHandle() {
+        return handle;
     }
 }
