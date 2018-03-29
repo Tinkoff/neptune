@@ -23,6 +23,7 @@ import static com.github.toy.constructor.selenium.functions.searching.SearchSupp
 import static com.github.toy.constructor.selenium.functions.searching.SequentialMultipleSearchSupplier.elements;
 import static com.github.toy.constructor.selenium.functions.searching.SequentialSearchSupplier.element;
 import static com.github.toy.constructor.selenium.functions.value.SequentialGetAttributeValueSupplier.attributeValue;
+import static com.github.toy.constructor.selenium.functions.value.SequentialGetCSSValueSupplier.cssValue;
 import static com.github.toy.constructor.selenium.functions.value.SequentialGetValueSupplier.ofThe;
 import static com.google.common.collect.ImmutableList.of;
 import static java.time.Duration.ofSeconds;
@@ -68,8 +69,11 @@ public class Tezzt {
             seleniumSteps.get(attributeValue("some attr").of(element(webElement(xpath("some path")))
                     .foundFrom(button("Some button"))));
 
-            seleniumSteps.get(attributeValue("some attr").of(element(webElement(xpath("some path")))
-                    .foundFrom(button("Some button"))));
+            seleniumSteps.get(cssValue("some attr")
+                    .of(
+                            element(webElement(xpath("some path")))
+                                    .foundFrom(button("Some button"))
+                    ));
         }));
     }
 }

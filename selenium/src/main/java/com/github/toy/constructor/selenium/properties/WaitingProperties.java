@@ -6,12 +6,8 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.function.Supplier;
 
-import static com.github.toy.constructor.selenium.properties.WaitingProperties.TimeUnitProperties.ELEMENT_WAITING_TIME_UNIT;
-import static com.github.toy.constructor.selenium.properties.WaitingProperties.TimeUnitProperties.WAITING_ALERT_TIME_UNIT;
-import static com.github.toy.constructor.selenium.properties.WaitingProperties.TimeUnitProperties.WAITING_TIME_UNIT;
-import static com.github.toy.constructor.selenium.properties.WaitingProperties.TimeValueProperties.ELEMENT_WAITING_TIME_VALUE;
-import static com.github.toy.constructor.selenium.properties.WaitingProperties.TimeValueProperties.WAITING_ALERT_TIME_VALUE;
-import static com.github.toy.constructor.selenium.properties.WaitingProperties.TimeValueProperties.WAITING_TIME_VALUE;
+import static com.github.toy.constructor.selenium.properties.WaitingProperties.TimeUnitProperties.*;
+import static com.github.toy.constructor.selenium.properties.WaitingProperties.TimeValueProperties.*;
 import static java.lang.String.format;
 import static java.time.Duration.of;
 import static java.time.temporal.ChronoUnit.MINUTES;
@@ -27,20 +23,27 @@ public enum WaitingProperties implements Supplier<Duration> {
     ELEMENT_WAITING_DURATION(ELEMENT_WAITING_TIME_UNIT, ELEMENT_WAITING_TIME_VALUE),
 
     /**
-     * Returns duration of the waiting for for appearance
-     * of an alert.
+     * Returns duration of the waiting for some
+     * conditions related to {@code  org.openqa.selenium.*} objects.
      * When {@code "waiting.selenium.time.unit"} or {@code "waiting.selenium.time"}
      * are not defined then it returns 1 minute. Otherwise it returns defined duration value.
      */
     WAITING_TIME_DURATION(WAITING_TIME_UNIT, WAITING_TIME_VALUE),
 
+
     /**
-     * Returns duration of the waiting for some
-     * conditions related to {@code  org.openqa.selenium.*} objects.
+     * Returns duration of the waiting for appearance of an alert.
      * When {@code "waiting.alert.time.unit"} or {@code "waiting.alert.time"}
      * are not defined then it returns 1 minute. Otherwise it returns defined duration value.
      */
-    WAITING_ALERT_TIME_DURATION(WAITING_ALERT_TIME_UNIT, WAITING_ALERT_TIME_VALUE);
+    WAITING_ALERT_TIME_DURATION(WAITING_ALERT_TIME_UNIT, WAITING_ALERT_TIME_VALUE),
+
+    /**
+     * Returns duration of the waiting for some window.
+     * When {@code "waiting.window.time.unit"} or {@code "waiting.window.time"}
+     * are not defined then it returns 1 minute. Otherwise it returns defined duration value.
+     */
+    WAITING_WINDOW_TIME_DURATION(WAITING_WINDOW_TIME_UNIT, WAITING_WINDOW_TIME_VALUE);
 
     private final TimeUnitProperties timeUnit;
     private final TimeValueProperties timeValue;
@@ -80,7 +83,14 @@ public enum WaitingProperties implements Supplier<Duration> {
          * This property is needed to define time of the waiting for appearance
          * of an alert. Returns read value or {@code null} when nothing is defined
          */
-        WAITING_ALERT_TIME_UNIT("waiting.alert.time.unit");
+        WAITING_ALERT_TIME_UNIT("waiting.alert.time.unit"),
+
+        /**
+         * Reads property {@code "waiting.window.time.unit"}.
+         * This property is needed to define time of the waiting for some window.
+         * Returns read value or {@code null} when nothing is defined
+         */
+        WAITING_WINDOW_TIME_UNIT("waiting.window.time.unit");
 
         private final String propertyName;
 
@@ -129,7 +139,14 @@ public enum WaitingProperties implements Supplier<Duration> {
          * This property is needed to define time of the waiting for appearance
          * of an alert. Returns read value or {@code null} if nothing is defined.
          */
-        WAITING_ALERT_TIME_VALUE("waiting.alert.time");
+        WAITING_ALERT_TIME_VALUE("waiting.alert.time"),
+
+        /**
+         * Reads property {@code "waiting.window.time"}.
+         * This property is needed to define time of the waiting for some window.
+         * Returns read value or {@code null} if nothing is defined.
+         */
+        WAITING_WINDOW_TIME_VALUE("waiting.window.time");
 
         private final String propertyName;
 
