@@ -4,8 +4,6 @@ import com.github.toy.constructor.selenium.SeleniumSteps;
 import com.github.toy.constructor.selenium.api.widget.drafts.Button;
 import com.github.toy.constructor.selenium.api.widget.drafts.Link;
 import com.github.toy.constructor.selenium.api.widget.drafts.TextField;
-import com.github.toy.constructor.selenium.functions.alert.AlertActionSupplier;
-import com.github.toy.constructor.selenium.functions.java.script.GetJavaScriptResultSupplier;
 import org.openqa.selenium.Alert;
 
 import java.util.List;
@@ -24,6 +22,7 @@ import static com.github.toy.constructor.selenium.functions.searching.MultipleSe
 import static com.github.toy.constructor.selenium.functions.searching.SearchSupplier.*;
 import static com.github.toy.constructor.selenium.functions.searching.SequentialMultipleSearchSupplier.elements;
 import static com.github.toy.constructor.selenium.functions.searching.SequentialSearchSupplier.element;
+import static com.github.toy.constructor.selenium.functions.value.SequentialGetAttributeValueSupplier.attributeValue;
 import static com.github.toy.constructor.selenium.functions.value.SequentialGetValueSupplier.ofThe;
 import static com.google.common.collect.ImmutableList.of;
 import static java.time.Duration.ofSeconds;
@@ -65,6 +64,12 @@ public class Tezzt {
             Alert alert = seleniumSteps.get(alert());
 
             seleniumSteps.alert(dismiss(alert)).alert(accept(alert(ofSeconds(20))));
+
+            seleniumSteps.get(attributeValue("some attr").of(element(webElement(xpath("some path")))
+                    .foundFrom(button("Some button"))));
+
+            seleniumSteps.get(attributeValue("some attr").of(element(webElement(xpath("some path")))
+                    .foundFrom(button("Some button"))));
         }));
     }
 }
