@@ -1,5 +1,6 @@
-package com.github.toy.constructor.selenium.functions.window;
+package com.github.toy.constructor.selenium.functions.target.locator.window;
 
+import java.net.URL;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,8 +26,8 @@ final class WindowPredicates {
                 });
     }
 
-    static Predicate<Window> hasUrl(String url) {
-        return condition(format("Has loaded url '%s'", url), window -> url.equals(window.getCurrentUrl()));
+    static Predicate<Window> hasUrl(URL url) {
+        return condition(format("Has loaded url '%s'", url), window -> url.toString().equals(window.getCurrentUrl()));
     }
 
     static Predicate<Window> hasUrl(Pattern urlPattern) {

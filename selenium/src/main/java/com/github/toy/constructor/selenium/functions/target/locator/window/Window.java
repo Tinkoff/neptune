@@ -1,4 +1,4 @@
-package com.github.toy.constructor.selenium.functions.window;
+package com.github.toy.constructor.selenium.functions.target.locator.window;
 
 import org.openqa.selenium.WebDriver;
 
