@@ -1,8 +1,9 @@
 package com.github.toy.constructor.selenium.functions.target.locator.window;
 
+import com.github.toy.constructor.selenium.functions.target.locator.SwitchesToItself;
 import org.openqa.selenium.WebDriver;
 
-public interface Window extends WebDriver.Window, WebDriver.Navigation {
+public interface Window extends WebDriver.Window, WebDriver.Navigation, SwitchesToItself {
     /**
      * Closes the window.
      */

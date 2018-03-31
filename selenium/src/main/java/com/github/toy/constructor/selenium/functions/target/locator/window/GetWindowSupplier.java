@@ -2,6 +2,7 @@ package com.github.toy.constructor.selenium.functions.target.locator.window;
 
 import com.github.toy.constructor.core.api.GetSupplier;
 import com.github.toy.constructor.selenium.SeleniumSteps;
+import com.github.toy.constructor.selenium.functions.target.locator.TargetLocatorSupplier;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.WebDriver;
 
@@ -22,7 +23,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 
-public final class GetWindowSupplier extends GetSupplier<SeleniumSteps, Window, GetWindowSupplier> {
+public final class GetWindowSupplier extends TargetLocatorSupplier<Window, GetWindowSupplier> {
 
     private static final Function<SeleniumSteps, List<Window>> GET_WINDOWS =
             toGet("Browser/web windows/tabs", seleniumSteps -> {

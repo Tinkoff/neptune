@@ -81,7 +81,7 @@ class DefaultWindow implements Window {
         return driver.getCurrentUrl();
     }
 
-    void switchToMe() {
+    public void switchToMe() {
         if (isPresent()) {
             driver.switchTo().window(handle).switchTo().defaultContent();
         }
@@ -133,5 +133,10 @@ class DefaultWindow implements Window {
 
     String getHandle() {
         return handle;
+    }
+
+    @Override
+    public WebDriver getWrappedDriver() {
+        return driver;
     }
 }
