@@ -1,4 +1,4 @@
-package com.github.toy.constructor.selenium.functions.alert;
+package com.github.toy.constructor.selenium.functions.target.locator.alert;
 
 import com.github.toy.constructor.core.api.GetSupplier;
 import com.github.toy.constructor.selenium.SeleniumSteps;
@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 
 import static com.github.toy.constructor.core.api.ToGetSingleCheckedObject.getSingle;
 import static com.github.toy.constructor.core.api.ToGetSingleCheckedObject.getSingleOnCondition;
-import static com.github.toy.constructor.selenium.functions.alert.GetAlert.getAlert;
+import static com.github.toy.constructor.selenium.functions.target.locator.alert.GetAlert.getAlert;
 import static com.github.toy.constructor.selenium.properties.WaitingProperties.WAITING_ALERT_TIME_DURATION;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;

@@ -2,8 +2,7 @@ package com.github.toy.constructor.selenium;
 
 import com.github.toy.constructor.core.api.GetStep;
 import com.github.toy.constructor.core.api.PerformStep;
-import com.github.toy.constructor.selenium.api.widget.Editable;
-import com.github.toy.constructor.selenium.functions.alert.AlertActionSupplier;
+import com.github.toy.constructor.selenium.functions.target.locator.alert.AlertActionSupplier;
 import com.github.toy.constructor.selenium.functions.click.ClickActionSupplier;
 import com.github.toy.constructor.selenium.functions.edit.EditActionSupplier;
 import com.github.toy.constructor.selenium.functions.java.script.GetJavaScriptResultSupplier;

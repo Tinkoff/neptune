@@ -5,22 +5,18 @@ import com.github.toy.constructor.selenium.SeleniumSteps;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.WebDriver;
 
-import java.net.URL;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.github.toy.constructor.core.api.ToGetObjectFromIterable.getFromIterable;
 import static com.github.toy.constructor.core.api.ToGetSingleCheckedObject.getSingle;
 import static com.github.toy.constructor.core.api.ToGetSingleCheckedObject.getSingleOnCondition;
-import static com.github.toy.constructor.selenium.functions.target.locator.window.WindowPredicates.hasTitle;
-import static com.github.toy.constructor.selenium.functions.target.locator.window.WindowPredicates.hasUrl;
 import static com.github.toy.constructor.selenium.properties.WaitingProperties.WAITING_WINDOW_TIME_DURATION;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
@@ -59,39 +55,35 @@ public final class GetWindowSupplier extends GetSupplier<SeleniumSteps, Window, 
         return () -> new NoSuchWindowException(message);
     }
 
+    /**
+     * Creates an instance of {@link GetSupplier}
+     *
+     * @return reference to a new instance of {@link GetSupplier}
+     */
     public static GetWindowSupplier window() {
         return new GetWindowSupplier();
     }
 
+    /**
+     * Sets the index of required window to get.
+     *
+     * @param index of required window.
+     * @return self-reference.
+     */
     public GetWindowSupplier byIndex(int index) {
         this.index = index;
         return this;
     }
 
+    /**
+     * Adds a criteria to find the desired window.
+     *
+     * @param condition criteria to be used to find the desired window.
+     * @return self-reference.
+     */
     public GetWindowSupplier onCondition(Predicate<Window> condition) {
         checkArgument(condition != null, "Condition is not defined");
-        this.condition = ofNullable(condition).map(predicate -> this.condition.and(predicate)).orElse(condition);
-        return this;
-    }
-
-    public GetWindowSupplier withTitle(String title) {
-        return onCondition(hasTitle(title));
-    }
-
-    public GetWindowSupplier withTitle(Pattern titlePattern) {
-        return onCondition(hasTitle(titlePattern));
-    }
-
-    public GetWindowSupplier withUrl(URL url) {
-        return onCondition(hasUrl(url));
-    }
-
-    public GetWindowSupplier withUrl(Pattern urlPattern) {
-        return onCondition(hasUrl(urlPattern));
-    }
-
-    public GetWindowSupplier withTimeOut(Duration timeOut) {
-        this.timeOut = timeOut;
+        this.condition = ofNullable(this.condition).map(predicate -> this.condition.and(predicate)).orElse(condition);
         return this;
     }
 
@@ -103,24 +95,21 @@ public final class GetWindowSupplier extends GetSupplier<SeleniumSteps, Window, 
                 return super.get();
             }
 
-            Function<SeleniumSteps, Window> result;
-            if (index != null) {
-                result = ofNullable(condition).map(windowPredicate ->
-                        getSingleOnCondition("Window", getWindowByIndex(index), condition,
-                                timeOut, true,
-                                noSuchWindowException(format("Window was not found by index %s on condition '%s'", index, condition))))
+            Function<SeleniumSteps, Window> result = ofNullable(index).map(integer -> ofNullable(this.condition).map(windowPredicate ->
+                    getSingleOnCondition("Window", getWindowByIndex(integer), windowPredicate,
+                            timeOut, true,
+                            noSuchWindowException(format("Window was not found by index %s on condition '%s'", integer, windowPredicate))))
 
-                        .orElseGet(() -> getSingle(getWindowByIndex(index),
-                                timeOut,
-                                noSuchWindowException(format("Window was not found by index %s on condition '%s'", index, condition))));
-            }
-            else {
-                result = ofNullable(condition).map(windowPredicate ->
-                        getFromIterable("Window", GET_WINDOWS, condition, timeOut, false, true,
-                                noSuchWindowException(format("Window was not found on condition '%s'", index, condition))))
+                    .orElseGet(() -> getSingle(getWindowByIndex(index),
+                            timeOut,
+                            noSuchWindowException(format("Window was not found by index %s", index)))))
 
-                        .orElseGet(() -> getWindowByIndex(0));
-            }
+                    .orElseGet(() ->
+                            ofNullable(this.condition).map(windowPredicate ->
+                                    getFromIterable("Window", GET_WINDOWS, windowPredicate, timeOut, false, true,
+                                            noSuchWindowException(format("Window was not found on condition '%s'",  windowPredicate))))
+
+                                    .orElseGet(() -> getWindowByIndex(0)));
 
             set(result);
             return result;

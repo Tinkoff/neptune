@@ -1,4 +1,4 @@
-package com.github.toy.constructor.selenium.functions.alert;
+package com.github.toy.constructor.selenium.functions.target.locator.alert;
 
 import com.github.toy.constructor.core.api.SequentialActionSupplier;
 import com.github.toy.constructor.selenium.SeleniumSteps;

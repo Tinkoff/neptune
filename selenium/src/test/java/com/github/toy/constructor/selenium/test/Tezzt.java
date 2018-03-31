@@ -11,9 +11,9 @@ import java.util.List;
 import static com.github.toy.constructor.core.api.StoryWriter.action;
 import static com.github.toy.constructor.core.api.proxy.ConstructorParameters.params;
 import static com.github.toy.constructor.core.api.proxy.Substitution.getSubstituted;
-import static com.github.toy.constructor.selenium.functions.alert.AlertActionSupplier.accept;
-import static com.github.toy.constructor.selenium.functions.alert.AlertActionSupplier.dismiss;
-import static com.github.toy.constructor.selenium.functions.alert.GetAlertSupplier.alert;
+import static com.github.toy.constructor.selenium.functions.target.locator.alert.AlertActionSupplier.accept;
+import static com.github.toy.constructor.selenium.functions.target.locator.alert.AlertActionSupplier.dismiss;
+import static com.github.toy.constructor.selenium.functions.target.locator.alert.GetAlertSupplier.alert;
 import static com.github.toy.constructor.selenium.functions.click.ClickActionSupplier.on;
 import static com.github.toy.constructor.selenium.functions.edit.EditActionSupplier.valueOf;
 import static com.github.toy.constructor.selenium.functions.java.script.GetJavaScriptResultSupplier.javaScript;
@@ -22,11 +22,15 @@ import static com.github.toy.constructor.selenium.functions.searching.MultipleSe
 import static com.github.toy.constructor.selenium.functions.searching.SearchSupplier.*;
 import static com.github.toy.constructor.selenium.functions.searching.SequentialMultipleSearchSupplier.elements;
 import static com.github.toy.constructor.selenium.functions.searching.SequentialSearchSupplier.element;
+import static com.github.toy.constructor.selenium.functions.target.locator.window.GetWindowSupplier.window;
+import static com.github.toy.constructor.selenium.functions.target.locator.window.WindowPredicates.hasTitle;
+import static com.github.toy.constructor.selenium.functions.target.locator.window.WindowPredicates.hasUrl;
 import static com.github.toy.constructor.selenium.functions.value.SequentialGetAttributeValueSupplier.attributeValue;
 import static com.github.toy.constructor.selenium.functions.value.SequentialGetCSSValueSupplier.cssValue;
 import static com.github.toy.constructor.selenium.functions.value.SequentialGetValueSupplier.ofThe;
 import static com.google.common.collect.ImmutableList.of;
 import static java.time.Duration.ofSeconds;
+import static java.util.regex.Pattern.compile;
 import static org.openqa.selenium.By.xpath;
 import static org.openqa.selenium.Keys.HOME;
 
@@ -74,6 +78,9 @@ public class Tezzt {
                             element(webElement(xpath("some path")))
                                     .foundFrom(button("Some button"))
                     ));
+
+            selenium.get(window().byIndex(1).onCondition(hasTitle("Some title")
+                    .or(hasTitle(compile("Some title pattern")).and(hasUrl("Some url")))));
         }));
     }
 }
