@@ -43,7 +43,14 @@ public enum WaitingProperties implements Supplier<Duration> {
      * When {@code "waiting.window.time.unit"} or {@code "waiting.window.time"}
      * are not defined then it returns 1 minute. Otherwise it returns defined duration value.
      */
-    WAITING_WINDOW_TIME_DURATION(WAITING_WINDOW_TIME_UNIT, WAITING_WINDOW_TIME_VALUE);
+    WAITING_WINDOW_TIME_DURATION(WAITING_WINDOW_TIME_UNIT, WAITING_WINDOW_TIME_VALUE),
+
+    /**
+     * Returns duration of the waiting for the switching to some frame succeeded.
+     * When {@code "waiting.frame.switching.time.unit"} or {@code "waiting.frame.switching.time"}
+     * are not defined then it returns 1 minute. Otherwise it returns defined duration value.
+     */
+    WAITING_FRAME_SWITCHING__DURATION(WAITING_FRAME_SWITCHING_TIME_UNIT, WAITING_FRAME_SWITCHING_TIME_VALUE);
 
     private final TimeUnitProperties timeUnit;
     private final TimeValueProperties timeValue;
@@ -90,7 +97,14 @@ public enum WaitingProperties implements Supplier<Duration> {
          * This property is needed to define time of the waiting for some window.
          * Returns read value or {@code null} when nothing is defined
          */
-        WAITING_WINDOW_TIME_UNIT("waiting.window.time.unit");
+        WAITING_WINDOW_TIME_UNIT("waiting.window.time.unit"),
+
+        /**
+         * Reads property {@code "waiting.frame.switching.time.unit"}.
+         * This property is needed to define time of the waiting for the switching to some frame succeeded.
+         * Returns read value or {@code null} when nothing is defined
+         */
+        WAITING_FRAME_SWITCHING_TIME_UNIT("waiting.frame.switching.time.unit");
 
         private final String propertyName;
 
@@ -146,7 +160,14 @@ public enum WaitingProperties implements Supplier<Duration> {
          * This property is needed to define time of the waiting for some window.
          * Returns read value or {@code null} if nothing is defined.
          */
-        WAITING_WINDOW_TIME_VALUE("waiting.window.time");
+        WAITING_WINDOW_TIME_VALUE("waiting.window.time"),
+
+        /**
+         * Reads property {@code "waiting.frame.switching.time"}.
+         * This property is needed to define time of the waiting for the switching to some frame succeeded.
+         * Returns read value or {@code null} if nothing is defined.
+         */
+        WAITING_FRAME_SWITCHING_TIME_VALUE("waiting.frame.switching.time");;
 
         private final String propertyName;
 
