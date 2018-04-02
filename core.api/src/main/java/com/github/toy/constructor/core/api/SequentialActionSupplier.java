@@ -10,6 +10,7 @@ import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
  * This class is designed to restrict actions to perform on certain values.
@@ -35,10 +36,14 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
      * @return self-reference.
      */
     protected THIS andThen(String description, Function<T, ? extends R> function, Object...additionalArguments) {
+        checkArgument(!isBlank(description),
+                "Description should not be blank");
         checkArgument(function != null,
                 "Function which gets value to perform action is not defined");
         checkArgument(DescribedFunction.class.isAssignableFrom(function.getClass()),
-                "Function should be described by the StoryWriter.toGet method.");
+                "Function should be described by the StoryWriter.toGet method");
+        checkArgument(additionalArguments != null,
+                "Array of additional arguments should not be a null value");
         String fullDescription = format("%s on %s", description, function);
         if (additionalArguments.length > 0) {
             fullDescription = format("%s. With parameters: %s", fullDescription, Arrays.toString(additionalArguments));

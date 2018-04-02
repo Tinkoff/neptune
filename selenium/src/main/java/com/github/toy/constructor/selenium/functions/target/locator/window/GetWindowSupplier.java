@@ -7,7 +7,6 @@ import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.WebDriver;
 
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -23,14 +22,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 
-public final class GetWindowSupplier extends TargetLocatorSupplier<Window, GetWindowSupplier> {
-
-    private static final Function<SeleniumSteps, List<Window>> GET_WINDOWS =
-            toGet("Browser/web windows/tabs", seleniumSteps -> {
-                WebDriver driver = seleniumSteps.getWrappedDriver();
-                return driver.getWindowHandles()
-                        .stream().map(s -> new DefaultWindow(s, driver)).collect(Collectors.toList());
-            });
+public final class GetWindowSupplier extends GetSupplier<SeleniumSteps, Window, GetWindowSupplier>
+        implements TargetLocatorSupplier<Window> {
 
     private Predicate<Window> condition;
     private Duration timeOut = WAITING_WINDOW_TIME_DURATION.get();
@@ -40,16 +33,22 @@ public final class GetWindowSupplier extends TargetLocatorSupplier<Window, GetWi
         super();
     }
 
-    private static Function<SeleniumSteps, Window> getWindowByIndex(int index) {
-        checkArgument(index >= 0, "Index of the window should be greater or equal 0");
-        return toGet(format("Browser/web window/tab by index %s", index), seleniumSteps -> {
-            WebDriver driver = seleniumSteps.getWrappedDriver();
-            List<String> handles = new ArrayList<>(driver.getWindowHandles());
-            if (handles.size() >= index + 1) {
-                return new DefaultWindow(handles.get(index), driver);
-            }
-            return null;
-        });
+    private static List<Window> getListOfWindows(SeleniumSteps seleniumSteps, String description) {
+        WebDriver driver = seleniumSteps.getWrappedDriver();
+        return driver.getWindowHandles()
+                .stream().map(s -> {
+                    DefaultWindow window = new DefaultWindow(s, driver);
+                    window.setDescription(description);
+                    return window;
+                }).collect(Collectors.toList());
+    }
+
+    private static Window getWindowByIndex(SeleniumSteps seleniumSteps, String description, int index) {
+        List<Window> windows = getListOfWindows(seleniumSteps, description);
+        if (windows.size() >= index + 1) {
+            return windows.get(index);
+        }
+        return null;
     }
 
     private static Supplier<NoSuchWindowException> noSuchWindowException(String message) {
@@ -88,29 +87,56 @@ public final class GetWindowSupplier extends TargetLocatorSupplier<Window, GetWi
         return this;
     }
 
+    /**
+     * Sets the time to get desired window. If this time has no been set up and {@link #byIndex(int)} or/and
+     * {@link #onCondition(Predicate)} had been invoked then the searching for the window takes time defined at
+     * {@link com.github.toy.constructor.selenium.properties.WaitingProperties#WAITING_WINDOW_TIME_DURATION}.
+     *
+     * @param timeOut time of the searching for the desired window/tab.
+     * @return self-reference.
+     */
+    public GetWindowSupplier withTimeToGetWindow(Duration timeOut) {
+        this.timeOut = timeOut;
+        return this;
+    }
+
     @Override
     public Function<SeleniumSteps, Window> get() {
         return ofNullable(super.get()).orElseGet(() -> {
             if (condition == null && index == null) {
-                set(getWindowByIndex(0));
+                set(toGet("The first window/tab", seleniumSteps ->
+                        getWindowByIndex(seleniumSteps, "The first window", 0)));
                 return super.get();
             }
 
             Function<SeleniumSteps, Window> result = ofNullable(index).map(integer -> ofNullable(this.condition).map(windowPredicate ->
-                    getSingleOnCondition("Window", getWindowByIndex(integer), windowPredicate,
+                    getSingleOnCondition("Window/tab",
+                            toGet(format("Window/tab by index %s", integer),
+                                    (Function<SeleniumSteps, Window>) seleniumSteps -> getWindowByIndex(seleniumSteps,
+                                            format("Window/tab found by index %s on condition '%s'", integer, windowPredicate), integer)),
+                            windowPredicate,
                             timeOut, true,
-                            noSuchWindowException(format("Window was not found by index %s on condition '%s'", integer, windowPredicate))))
+                            noSuchWindowException(format("Window/tab was not found by index %s on condition '%s'", integer, windowPredicate))))
 
-                    .orElseGet(() -> getSingle(getWindowByIndex(index),
+                    .orElseGet(() -> getSingle(toGet(format("Window/tab by index %s", integer),
+                            (Function<SeleniumSteps, Window>) seleniumSteps -> getWindowByIndex(seleniumSteps,
+                                    format("Window/tab found by index %s", integer), integer)),
                             timeOut,
-                            noSuchWindowException(format("Window was not found by index %s", index)))))
+                            noSuchWindowException(format("Window/tab was not found by index %s", index)))))
 
                     .orElseGet(() ->
                             ofNullable(this.condition).map(windowPredicate ->
-                                    getFromIterable("Window", GET_WINDOWS, windowPredicate, timeOut, false, true,
+                                    getFromIterable("Window/tab",
+                                            toGet("Windows/tabs which are currently present",
+                                                    (Function<SeleniumSteps, List<Window>>) seleniumSteps ->
+                                                            getListOfWindows(seleniumSteps, format("Window/tab found on condition '%s'", windowPredicate))),
+                                            windowPredicate,
+                                            timeOut,
+                                            false, true,
                                             noSuchWindowException(format("Window was not found on condition '%s'",  windowPredicate))))
 
-                                    .orElseGet(() -> getWindowByIndex(0)));
+                                    .orElseGet(() -> toGet("The first window/tab",
+                                            seleniumSteps -> getWindowByIndex(seleniumSteps, "The first window", 0))));
 
             set(result);
             return result;

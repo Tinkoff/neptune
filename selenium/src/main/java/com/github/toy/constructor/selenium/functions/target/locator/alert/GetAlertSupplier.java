@@ -1,5 +1,7 @@
 package com.github.toy.constructor.selenium.functions.target.locator.alert;
 
+import com.github.toy.constructor.core.api.GetSupplier;
+import com.github.toy.constructor.selenium.SeleniumSteps;
 import com.github.toy.constructor.selenium.functions.target.locator.TargetLocatorSupplier;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.NoAlertPresentException;
@@ -15,7 +17,8 @@ import static com.github.toy.constructor.selenium.properties.WaitingProperties.W
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 
-public final class GetAlertSupplier extends TargetLocatorSupplier<Alert, GetAlertSupplier> {
+public final class GetAlertSupplier extends GetSupplier<SeleniumSteps, Alert, GetAlertSupplier>
+        implements TargetLocatorSupplier<Alert> {
 
     private static Supplier<NoAlertPresentException> noSuchAlert(Predicate<Alert> predicate) {
         return ofNullable(predicate)

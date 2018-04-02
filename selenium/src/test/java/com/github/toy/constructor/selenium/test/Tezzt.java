@@ -80,7 +80,8 @@ public class Tezzt {
                     ));
 
             selenium.get(window().byIndex(1).onCondition(hasTitle("Some title")
-                    .or(hasTitle(compile("Some title pattern")).and(hasUrl("Some url")))));
+                    .or(hasTitle(compile("Some title pattern")).and(hasUrl("Some url"))))
+                    .withTimeToGetWindow(ofSeconds(5)));
         }));
     }
 }
