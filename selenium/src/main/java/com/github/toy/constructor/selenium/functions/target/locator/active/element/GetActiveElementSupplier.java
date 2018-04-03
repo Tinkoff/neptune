@@ -1,0 +1,77 @@
+package com.github.toy.constructor.selenium.functions.target.locator.active.element;
+
+import com.github.toy.constructor.core.api.GetSupplier;
+import com.github.toy.constructor.selenium.SeleniumSteps;
+import com.github.toy.constructor.selenium.functions.target.locator.TargetLocatorSupplier;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
+
+import java.time.Duration;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+import static com.github.toy.constructor.core.api.StoryWriter.toGet;
+import static com.github.toy.constructor.core.api.ToGetSingleCheckedObject.getSingle;
+
+public final class GetActiveElementSupplier extends GetSupplier<SeleniumSteps, WebElement, GetActiveElementSupplier>
+        implements TargetLocatorSupplier<WebElement> {
+
+    private static final Function<SeleniumSteps, WebElement> GET_ACTIVE_ELEMENT =
+            toGet("Active element", seleniumSteps -> {
+                try {
+                    return seleniumSteps.getWrappedDriver().switchTo().activeElement();
+                }
+                catch (WebDriverException e) {
+                    return null;
+                }
+            });
+
+    private static final Supplier<NoSuchElementException> NO_ACTIVE_ELEMENT_EXCEPTION = () ->
+            new NoSuchElementException("It was impossible to detect the active element for some reason");
+
+    private GetActiveElementSupplier() {
+        super();
+    }
+
+
+    /**
+     * Builds a function which performs the switching to the active element and returns it.
+     * Taken from Selenium documentation:
+     * <p>
+     *     Switches to the element that currently has focus within the document currently "switched to",
+     *     or the body element if this cannot be detected. This matches the semantics of calling
+     *     "document.activeElement" in Javascript.
+     *
+     *      Returns the WebElement with focus, or the body element if no element with focus can be
+     *               detected.
+     * </p>
+     *
+     * @return an instance of {@link GetActiveElementSupplier} which wraps a function. This function
+     * performs the switching to the active element and returns it.
+     */
+    public static GetActiveElementSupplier activeElement() {
+        return new GetActiveElementSupplier().set(getSingle(GET_ACTIVE_ELEMENT, NO_ACTIVE_ELEMENT_EXCEPTION));
+    }
+
+    /**
+     * Builds a function which performs the switching to the active element and returns it.
+     * Taken from Selenium documentation:
+     * <p>
+     *     Switches to the element that currently has focus within the document currently "switched to",
+     *     or the body element if this cannot be detected. This matches the semantics of calling
+     *     "document.activeElement" in Javascript.
+     *
+     *      Returns the WebElement with focus, or the body element if no element with focus can be
+     *               detected.
+     * </p>
+     *
+     * @param duration is the time value to get the result which differs from {@code null}
+     *
+     * @return an instance of {@link GetActiveElementSupplier} which wraps a function. This function
+     * performs the switching to the active element and returns it.
+     */
+    public static GetActiveElementSupplier activeElement(Duration duration) {
+        return new GetActiveElementSupplier().set(getSingle(GET_ACTIVE_ELEMENT, duration, NO_ACTIVE_ELEMENT_EXCEPTION));
+    }
+}
