@@ -46,7 +46,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @return an instance of {@link SearchSupplier}
      */
     public static <T extends SearchContext> SearchSupplier<T> item(Function<SearchContext, List<T>> transformation,
-                                                                   Duration duration, Predicate<T> condition) {
+                                                                   Duration duration, Predicate<? super T> condition) {
         return new SearchSupplier<T>().set(getFromIterable("A single item", transformation,
                 condition, duration, true, true,
                 () -> new NoSuchElementException(format("Nothing was found. Attempt to get a single item of %s. Condition: %s",
@@ -68,7 +68,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @return an instance of {@link SearchSupplier}
      */
     public static <T extends SearchContext> SearchSupplier<T> item(Function<SearchContext, List<T>> transformation,
-                                                                   Predicate<T> condition) {
+                                                                   Predicate<? super T> condition) {
         return item(transformation, ELEMENT_WAITING_DURATION.get(), condition);
     }
 
@@ -292,7 +292,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param <T> the type of widget which should be found
      * @return an instance of {@link SearchSupplier}
      */
-    public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, Duration duration, Predicate<T> predicate) {
+    public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, Duration duration, Predicate<? super T> predicate) {
         return item(widgets(tClass, predicate.toString()), duration, predicate);
     }
 
@@ -311,9 +311,9 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @return an instance of {@link SearchSupplier}
      */
     public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, List<String> labels,
-                                                              Duration duration, Predicate<T> predicate) {
+                                                              Duration duration, Predicate<? super T> predicate) {
         Predicate<? extends T> labeledBy = widgetShouldBeLabeledBy(labels.toArray(new String[]{}));
-        Predicate<T> resultPredicate = (Predicate<T>) labeledBy.and(predicate);
+        Predicate<? super T> resultPredicate = (Predicate<? super T>) labeledBy.and(predicate);
         return item(labeledWidgets(tClass, resultPredicate.toString()), duration, resultPredicate);
     }
 
@@ -334,7 +334,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
     public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass,
                                                                         String label,
                                                                         Duration duration,
-                                                                        Predicate<T> predicate) {
+                                                                        Predicate<? super T> predicate) {
         return widget(tClass, List.of(label), duration, predicate);
     }
 
@@ -413,7 +413,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param <T> the type of widget which should be found
      * @return an instance of {@link SearchSupplier}
      */
-    public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, Predicate<T> predicate) {
+    public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, Predicate<? super T> predicate) {
         return item(widgets(tClass, predicate.toString()), predicate);
     }
 
@@ -432,9 +432,9 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param <T> the type of widget which should be found
      * @return an instance of {@link SearchSupplier}
      */
-    public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, List<String> labels, Predicate<T> predicate) {
+    public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, List<String> labels, Predicate<? super T> predicate) {
         Predicate<? extends T> labeledBy = widgetShouldBeLabeledBy(labels.toArray(new String[]{}));
-        Predicate<T> resultPredicate = (Predicate<T>) labeledBy.and(predicate);
+        Predicate<? super T> resultPredicate = (Predicate<? super T>) labeledBy.and(predicate);
         return item(labeledWidgets(tClass, resultPredicate.toString()), resultPredicate);
     }
 
@@ -453,7 +453,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param <T> the type of widget which should be found
      * @return an instance of {@link SearchSupplier}
      */
-    public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, String label, Predicate<T> predicate) {
+    public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, String label, Predicate<? super T> predicate) {
         return widget(tClass, List.of(label), predicate);
     }
 
@@ -535,7 +535,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Button> button(Duration duration, Predicate<Button> predicate) {
+    public static SearchSupplier<Button> button(Duration duration, Predicate<? super Button> predicate) {
         return widget(Button.class, duration, predicate);
     }
 
@@ -550,7 +550,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Button> button(List<String> labels, Duration duration, Predicate<Button> predicate) {
+    public static SearchSupplier<Button> button(List<String> labels, Duration duration, Predicate<? super Button> predicate) {
         return widget(Button.class, labels, duration, predicate);
     }
 
@@ -565,7 +565,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Button> button(String label, Duration duration, Predicate<Button> predicate) {
+    public static SearchSupplier<Button> button(String label, Duration duration, Predicate<? super Button> predicate) {
         return widget(Button.class, label, duration, predicate);
     }
 
@@ -627,7 +627,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Button> button(Predicate<Button> predicate) {
+    public static SearchSupplier<Button> button(Predicate<? super Button> predicate) {
         return widget(Button.class, predicate);
     }
 
@@ -642,7 +642,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Button> button(List<String> labels, Predicate<Button> predicate) {
+    public static SearchSupplier<Button> button(List<String> labels, Predicate<? super Button> predicate) {
         return widget(Button.class, labels, predicate);
     }
 
@@ -657,7 +657,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Button> button(String label, Predicate<Button> predicate) {
+    public static SearchSupplier<Button> button(String label, Predicate<? super Button> predicate) {
         return widget(Button.class, label, predicate);
     }
 
@@ -731,7 +731,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Flag> flag(Duration duration, Predicate<Flag> predicate) {
+    public static SearchSupplier<Flag> flag(Duration duration, Predicate<? super Flag> predicate) {
         return widget(Flag.class, duration, predicate);
     }
 
@@ -746,7 +746,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Flag> flag(List<String> labels, Duration duration, Predicate<Flag> predicate) {
+    public static SearchSupplier<Flag> flag(List<String> labels, Duration duration, Predicate<? super Flag> predicate) {
         return widget(Flag.class, labels, duration, predicate);
     }
 
@@ -761,7 +761,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Flag> flag(String label, Duration duration, Predicate<Flag> predicate) {
+    public static SearchSupplier<Flag> flag(String label, Duration duration, Predicate<? super Flag> predicate) {
         return widget(Flag.class, label, duration, predicate);
     }
 
@@ -823,7 +823,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Flag> flag(Predicate<Flag> predicate) {
+    public static SearchSupplier<Flag> flag(Predicate<? super Flag> predicate) {
         return widget(Flag.class, predicate);
     }
 
@@ -838,7 +838,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Flag> flag(List<String> labels, Predicate<Flag> predicate) {
+    public static SearchSupplier<Flag> flag(List<String> labels, Predicate<? super Flag> predicate) {
         return widget(Flag.class, labels, predicate);
     }
 
@@ -853,7 +853,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Flag> flag(String label, Predicate<Flag> predicate) {
+    public static SearchSupplier<Flag> flag(String label, Predicate<? super Flag> predicate) {
         return widget(Flag.class, label, predicate);
     }
 
@@ -1326,7 +1326,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Link> link(Duration duration, Predicate<Link> predicate) {
+    public static SearchSupplier<Link> link(Duration duration, Predicate<? super Link> predicate) {
         return widget(Link.class, duration, predicate);
     }
 
@@ -1341,7 +1341,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Link> link(List<String> labels, Duration duration, Predicate<Link> predicate) {
+    public static SearchSupplier<Link> link(List<String> labels, Duration duration, Predicate<? super Link> predicate) {
         return widget(Link.class, labels, duration, predicate);
     }
 
@@ -1356,7 +1356,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Link> link(String label, Duration duration, Predicate<Link> predicate) {
+    public static SearchSupplier<Link> link(String label, Duration duration, Predicate<? super Link> predicate) {
         return widget(Link.class, label, duration, predicate);
     }
 
@@ -1418,7 +1418,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Link> link(Predicate<Link> predicate) {
+    public static SearchSupplier<Link> link(Predicate<? super Link> predicate) {
         return widget(Link.class, predicate);
     }
 
@@ -1433,7 +1433,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Link> link(List<String> labels, Predicate<Link> predicate) {
+    public static SearchSupplier<Link> link(List<String> labels, Predicate<? super Link> predicate) {
         return widget(Link.class, labels, predicate);
     }
 
@@ -1448,7 +1448,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Link> link(String label, Predicate<Link> predicate) {
+    public static SearchSupplier<Link> link(String label, Predicate<? super Link> predicate) {
         return widget(Link.class, label, predicate);
     }
 
@@ -1522,7 +1522,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Select> select(Duration duration, Predicate<Select> predicate) {
+    public static SearchSupplier<Select> select(Duration duration, Predicate<? super Select> predicate) {
         return widget(Select.class, duration, predicate);
     }
 
@@ -1537,7 +1537,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Select> select(List<String> labels, Duration duration, Predicate<Select> predicate) {
+    public static SearchSupplier<Select> select(List<String> labels, Duration duration, Predicate<? super Select> predicate) {
         return widget(Select.class, labels, duration, predicate);
     }
 
@@ -1552,7 +1552,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Select> select(String label, Duration duration, Predicate<Select> predicate) {
+    public static SearchSupplier<Select> select(String label, Duration duration, Predicate<? super Select> predicate) {
         return widget(Select.class, label, duration, predicate);
     }
 
@@ -1614,7 +1614,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Select> select(Predicate<Select> predicate) {
+    public static SearchSupplier<Select> select(Predicate<? super Select> predicate) {
         return widget(Select.class, predicate);
     }
 
@@ -1629,7 +1629,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Select> select(List<String> labels, Predicate<Select> predicate) {
+    public static SearchSupplier<Select> select(List<String> labels, Predicate<? super Select> predicate) {
         return widget(Select.class, labels, predicate);
     }
 
@@ -1644,7 +1644,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Select> select(String label, Predicate<Select> predicate) {
+    public static SearchSupplier<Select> select(String label, Predicate<? super Select> predicate) {
         return widget(Select.class, label, predicate);
     }
 
@@ -1718,7 +1718,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Tab> tab(Duration duration, Predicate<Tab> predicate) {
+    public static SearchSupplier<Tab> tab(Duration duration, Predicate<? super Tab> predicate) {
         return widget(Tab.class, duration, predicate);
     }
 
@@ -1733,7 +1733,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Tab> tab(List<String> labels, Duration duration, Predicate<Tab> predicate) {
+    public static SearchSupplier<Tab> tab(List<String> labels, Duration duration, Predicate<? super Tab> predicate) {
         return widget(Tab.class, labels, duration, predicate);
     }
 
@@ -1748,7 +1748,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Tab> tab(String label, Duration duration, Predicate<Tab> predicate) {
+    public static SearchSupplier<Tab> tab(String label, Duration duration, Predicate<? super Tab> predicate) {
         return widget(Tab.class, label, duration, predicate);
     }
 
@@ -1810,7 +1810,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Tab> tab(Predicate<Tab> predicate) {
+    public static SearchSupplier<Tab> tab(Predicate<? super Tab> predicate) {
         return widget(Tab.class, predicate);
     }
 
@@ -1825,7 +1825,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Tab> tab(List<String> labels, Predicate<Tab> predicate) {
+    public static SearchSupplier<Tab> tab(List<String> labels, Predicate<? super Tab> predicate) {
         return widget(Tab.class, labels, predicate);
     }
 
@@ -1840,7 +1840,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Tab> tab(String label, Predicate<Tab> predicate) {
+    public static SearchSupplier<Tab> tab(String label, Predicate<? super Tab> predicate) {
         return widget(Tab.class, label, predicate);
     }
 
@@ -1914,7 +1914,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<TextField> textField(Duration duration, Predicate<TextField> predicate) {
+    public static SearchSupplier<TextField> textField(Duration duration, Predicate<? super TextField> predicate) {
         return widget(TextField.class, duration, predicate);
     }
 
@@ -1929,7 +1929,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<TextField> textField(List<String> labels, Duration duration, Predicate<TextField> predicate) {
+    public static SearchSupplier<TextField> textField(List<String> labels, Duration duration, Predicate<? super TextField> predicate) {
         return widget(TextField.class, labels, duration, predicate);
     }
 
@@ -1944,7 +1944,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<TextField> textField(String label, Duration duration, Predicate<TextField> predicate) {
+    public static SearchSupplier<TextField> textField(String label, Duration duration, Predicate<? super TextField> predicate) {
         return widget(TextField.class, label, duration, predicate);
     }
 
@@ -2006,7 +2006,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<TextField> textField(Predicate<TextField> predicate) {
+    public static SearchSupplier<TextField> textField(Predicate<? super TextField> predicate) {
         return widget(TextField.class, predicate);
     }
 
@@ -2021,7 +2021,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<TextField> textField(List<String> labels, Predicate<TextField> predicate) {
+    public static SearchSupplier<TextField> textField(List<String> labels, Predicate<? super TextField> predicate) {
         return widget(TextField.class, labels, predicate);
     }
 
@@ -2036,7 +2036,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<TextField> textField(String label, Predicate<TextField> predicate) {
+    public static SearchSupplier<TextField> textField(String label, Predicate<? super TextField> predicate) {
         return widget(TextField.class, label, predicate);
     }
 

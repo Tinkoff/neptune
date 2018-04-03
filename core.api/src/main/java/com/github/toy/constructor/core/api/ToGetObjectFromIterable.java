@@ -19,7 +19,7 @@ public final class ToGetObjectFromIterable {
 
     private static <T, R, V extends Iterable<R>> Function<T, R> singleFromIterable(String description,
                                                                                    Function<T, V> function,
-                                                                                   Predicate<R> condition,
+                                                                                   Predicate<? super R> condition,
                                                                                    @Nullable Duration waitingTime,
                                                                                    @Nullable Duration sleepingTime,
                                                                                    boolean checkConditionInParallel,
@@ -64,7 +64,7 @@ public final class ToGetObjectFromIterable {
      */
     public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(String description,
                                                                                Function<T, V> function,
-                                                                               Predicate<R> condition,
+                                                                               Predicate<? super R> condition,
                                                                                Duration waitingTime,
                                                                                Duration sleepingTime,
                                                                                boolean checkConditionInParallel,
@@ -132,7 +132,7 @@ public final class ToGetObjectFromIterable {
      */
     public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(String description,
                                                                                Function<T, V> function,
-                                                                               Predicate<R> condition,
+                                                                               Predicate<? super  R> condition,
                                                                                Duration waitingTime,
                                                                                boolean checkConditionInParallel,
                                                                                boolean ignoreExceptionOnConditionCheck,
@@ -193,7 +193,7 @@ public final class ToGetObjectFromIterable {
      */
     public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(String description,
                                                                                Function<T, V> function,
-                                                                               Predicate<R> condition,
+                                                                               Predicate<? super R> condition,
                                                                                boolean checkConditionInParallel,
                                                                                boolean ignoreExceptionOnConditionCheck,
                                                                                Supplier<? extends RuntimeException> exceptionOnTimeOut) {
@@ -250,7 +250,7 @@ public final class ToGetObjectFromIterable {
      */
     public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(String description,
                                                                                Function<T, V> function,
-                                                                               Predicate<R> condition,
+                                                                               Predicate<? super R> condition,
                                                                                Duration waitingTime,
                                                                                Duration sleepingTime,
                                                                                boolean checkConditionInParallel,
@@ -310,7 +310,7 @@ public final class ToGetObjectFromIterable {
      */
     public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(String description,
                                                                                Function<T, V> function,
-                                                                               Predicate<R> condition,
+                                                                               Predicate<? super R> condition,
                                                                                Duration waitingTime,
                                                                                boolean checkConditionInParallel,
                                                                                boolean ignoreExceptionOnConditionCheck) {
@@ -363,7 +363,7 @@ public final class ToGetObjectFromIterable {
      */
     public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(String description,
                                                                                Function<T, V> function,
-                                                                               Predicate<R> condition,
+                                                                               Predicate<? super R> condition,
                                                                                boolean checkConditionInParallel,
                                                                                boolean ignoreExceptionOnConditionCheck) {
         checkFunction(function);

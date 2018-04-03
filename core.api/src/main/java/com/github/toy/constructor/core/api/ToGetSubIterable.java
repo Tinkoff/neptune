@@ -23,7 +23,7 @@ public final class ToGetSubIterable {
 
     private static <T, R, V extends Iterable<R>> Function<T, V> iterable(String description,
                                                                          Function<T, V> function,
-                                                                         Predicate<R> condition,
+                                                                         Predicate<? super R> condition,
                                                                          @Nullable Duration waitingTime,
                                                                          @Nullable Duration sleepingTime,
                                                                          boolean checkConditionInParallel,
@@ -72,7 +72,7 @@ public final class ToGetSubIterable {
      */
     public static <T, R, V extends Iterable<R>> Function<T, V> getSubIterable(String description,
                                                                               Function<T, V> function,
-                                                                              Predicate<R> condition,
+                                                                              Predicate<? super R> condition,
                                                                               Duration waitingTime,
                                                                               Duration sleepingTime,
                                                                               boolean checkConditionInParallel,
@@ -139,7 +139,7 @@ public final class ToGetSubIterable {
      */
     public static <T, R, V extends Iterable<R>> Function<T, V> getSubIterable(String description,
                                                                               Function<T, V> function,
-                                                                              Predicate<R> condition,
+                                                                              Predicate<? super R> condition,
                                                                               Duration waitingTime,
                                                                               boolean checkConditionInParallel,
                                                                               boolean ignoreExceptionOnConditionCheck,
@@ -199,7 +199,7 @@ public final class ToGetSubIterable {
      */
     public static <T, R, V extends Iterable<R>> Function<T, V> getSubIterable(String description,
                                                                               Function<T, V> function,
-                                                                              Predicate<R> condition,
+                                                                              Predicate<? super R> condition,
                                                                               boolean checkConditionInParallel,
                                                                               boolean ignoreExceptionOnConditionCheck,
                                                                               Supplier<? extends RuntimeException> exceptionOnTimeOut) {
@@ -255,7 +255,7 @@ public final class ToGetSubIterable {
      */
     public static <T, R, V extends Iterable<R>> Function<T, V> getSubIterable(String description,
                                                                               Function<T, V> function,
-                                                                              Predicate<R> condition,
+                                                                              Predicate<? super R> condition,
                                                                               Duration waitingTime,
                                                                               Duration sleepingTime,
                                                                               boolean checkConditionInParallel,
@@ -314,7 +314,7 @@ public final class ToGetSubIterable {
      */
     public static <T, R, V extends Iterable<R>> Function<T, V> getSubIterable(String description,
                                                                               Function<T, V> function,
-                                                                              Predicate<R> condition,
+                                                                              Predicate<? super R> condition,
                                                                               Duration waitingTime,
                                                                               boolean checkConditionInParallel,
                                                                               boolean ignoreExceptionOnConditionCheck) {
@@ -366,7 +366,7 @@ public final class ToGetSubIterable {
      */
     public static <T, R, V extends Iterable<R>> Function<T, V> getSubIterable(String description,
                                                                               Function<T, V> function,
-                                                                              Predicate<R> condition,
+                                                                              Predicate<? super R> condition,
                                                                               boolean checkConditionInParallel,
                                                                               boolean ignoreExceptionOnConditionCheck) {
         checkFunction(function);

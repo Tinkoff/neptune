@@ -11,6 +11,8 @@ import java.util.List;
 import static com.github.toy.constructor.core.api.StoryWriter.action;
 import static com.github.toy.constructor.core.api.proxy.ConstructorParameters.params;
 import static com.github.toy.constructor.core.api.proxy.Substitution.getSubstituted;
+import static com.github.toy.constructor.selenium.functions.searching.DefaultWidgetConditions.widgetShouldBeEnabled;
+import static com.github.toy.constructor.selenium.functions.searching.DefaultWidgetConditions.widgetShouldBeVisible;
 import static com.github.toy.constructor.selenium.functions.target.locator.alert.AlertActionSupplier.accept;
 import static com.github.toy.constructor.selenium.functions.target.locator.alert.AlertActionSupplier.dismiss;
 import static com.github.toy.constructor.selenium.functions.target.locator.alert.GetAlertSupplier.alert;
@@ -61,7 +63,11 @@ public class Tezzt {
 
             String text = selenium.getValue(ofThe(element(textField("Some text field"))));
 
-            selenium.edit(valueOf(element(textField()), of("123", HOME))
+            selenium.edit(
+                    valueOf(
+                            element(textField(ofSeconds(5),
+                                    widgetShouldBeEnabled().and(widgetShouldBeVisible()))), of("123", HOME))
+
                     .andValueOf(element(flag()), true));
 
             selenium.evaluate(javaScript("Some script"));

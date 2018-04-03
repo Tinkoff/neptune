@@ -18,7 +18,7 @@ public final class ToGetSingleCheckedObject {
 
     private static <T, R> Function<T, R> checkedSingle(String description,
                                                        Function<T, R> function,
-                                                       Predicate<R> condition,
+                                                       Predicate<? super R> condition,
                                                        @Nullable Duration waitingTime,
                                                        @Nullable Duration sleepingTime,
                                                        boolean ignoreExceptionOnConditionCheck,
@@ -60,7 +60,7 @@ public final class ToGetSingleCheckedObject {
      */
     public static <T, R> Function<T, R> getSingleOnCondition(String description,
                                                              Function<T, R> function,
-                                                             Predicate<R> condition,
+                                                             Predicate<? super R> condition,
                                                              Duration waitingTime,
                                                              Duration sleepingTime,
                                                              boolean ignoreExceptionOnConditionCheck,
@@ -119,7 +119,7 @@ public final class ToGetSingleCheckedObject {
      */
     public static <T, R> Function<T, R> getSingleOnCondition(String description,
                                                              Function<T, R> function,
-                                                             Predicate<R> condition,
+                                                             Predicate<? super R> condition,
                                                              Duration waitingTime,
                                                              boolean ignoreExceptionOnConditionCheck,
                                                              Supplier<? extends RuntimeException> exceptionOnTimeOut) {
@@ -172,7 +172,7 @@ public final class ToGetSingleCheckedObject {
      */
     public static <T, R> Function<T, R> getSingleOnCondition(String description,
                                                              Function<T, R> function,
-                                                             Predicate<R> condition,
+                                                             Predicate<? super R> condition,
                                                              boolean ignoreExceptionOnConditionCheck,
                                                              Supplier<? extends RuntimeException> exceptionOnTimeOut) {
         checkFunction(function);
@@ -221,7 +221,7 @@ public final class ToGetSingleCheckedObject {
      */
     public static <T, R> Function<T, R> getSingleOnCondition(String description,
                                                              Function<T, R> function,
-                                                             Predicate<R> condition,
+                                                             Predicate<? super R> condition,
                                                              Duration waitingTime,
                                                              Duration sleepingTime,
                                                              boolean ignoreExceptionOnConditionCheck) {
@@ -273,7 +273,7 @@ public final class ToGetSingleCheckedObject {
      */
     public static <T, R> Function<T, R> getSingleOnCondition(String description,
                                                              Function<T, R> function,
-                                                             Predicate<R> condition,
+                                                             Predicate<? super R> condition,
                                                              Duration waitingTime,
                                                              boolean ignoreExceptionOnConditionCheck) {
         checkFunction(function);
@@ -318,7 +318,7 @@ public final class ToGetSingleCheckedObject {
      */
     public static <T, R> Function<T, R> getSingleOnCondition(String description,
                                                              Function<T, R> function,
-                                                             Predicate<R> condition,
+                                                             Predicate<? super R> condition,
                                                              boolean ignoreExceptionOnConditionCheck) {
         checkFunction(function);
         checkCondition(condition);

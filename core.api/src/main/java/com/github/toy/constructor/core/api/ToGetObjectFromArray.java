@@ -41,7 +41,7 @@ public final class ToGetObjectFromArray {
      */
     public static <T, R> Function<T, R> getFromArray(String description,
                                                      Function<T, R[]> function,
-                                                     Predicate<R> condition,
+                                                     Predicate<? super R> condition,
                                                      Duration waitingTime,
                                                      Duration sleepingTime,
                                                      boolean checkConditionInParallel,
@@ -101,7 +101,7 @@ public final class ToGetObjectFromArray {
      */
     public static <T, R> Function<T, R> getFromArray(String description,
                                                      Function<T, R[]> function,
-                                                     Predicate<R> condition,
+                                                     Predicate<? super R> condition,
                                                      Duration waitingTime,
                                                      boolean checkConditionInParallel,
                                                      boolean ignoreExceptionOnConditionCheck,
@@ -155,7 +155,7 @@ public final class ToGetObjectFromArray {
      */
     public static <T, R> Function<T, R> getFromArray(String description,
                                                      Function<T, R[]> function,
-                                                     Predicate<R> condition,
+                                                     Predicate<? super R> condition,
                                                      boolean checkConditionInParallel,
                                                      boolean ignoreExceptionOnConditionCheck,
                                                      Supplier<? extends RuntimeException> exceptionOnTimeOut) {
@@ -207,7 +207,7 @@ public final class ToGetObjectFromArray {
      */
     public static <T, R> Function<T, R> getFromArray(String description,
                                                      Function<T, R[]> function,
-                                                     Predicate<R> condition,
+                                                     Predicate<? super R> condition,
                                                      Duration waitingTime,
                                                      Duration sleepingTime,
                                                      boolean checkConditionInParallel,
@@ -260,7 +260,7 @@ public final class ToGetObjectFromArray {
      */
     public static <T, R> Function<T, R> getFromArray(String description,
                                                      Function<T, R[]> function,
-                                                     Predicate<R> condition,
+                                                     Predicate<? super R> condition,
                                                      Duration waitingTime,
                                                      boolean checkConditionInParallel,
                                                      boolean ignoreExceptionOnConditionCheck) {
@@ -307,7 +307,7 @@ public final class ToGetObjectFromArray {
      */
     public static <T, R> Function<T, R> getFromArray(String description,
                                                      Function<T, R[]> function,
-                                                     Predicate<R> condition,
+                                                     Predicate<? super R> condition,
                                                      boolean checkConditionInParallel,
                                                      boolean ignoreExceptionOnConditionCheck) {
         checkFunction(function);

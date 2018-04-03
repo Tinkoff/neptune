@@ -2,6 +2,7 @@ package com.github.toy.constructor.selenium;
 
 import com.github.toy.constructor.core.api.GetStep;
 import com.github.toy.constructor.core.api.PerformStep;
+import com.github.toy.constructor.selenium.functions.target.locator.SwitchActionSupplier;
 import com.github.toy.constructor.selenium.functions.target.locator.alert.AlertActionSupplier;
 import com.github.toy.constructor.selenium.functions.click.ClickActionSupplier;
 import com.github.toy.constructor.selenium.functions.edit.EditActionSupplier;
@@ -50,6 +51,10 @@ public class SeleniumSteps implements PerformStep<SeleniumSteps>, GetStep<Seleni
 
     public Object evaluate(GetJavaScriptResultSupplier javaScriptResultSupplier) {
         return get(javaScriptResultSupplier);
+    }
+
+    public SeleniumSteps performSwitch(SwitchActionSupplier switchAction) {
+        return perform(switchAction);
     }
 
     public SeleniumSteps alert(AlertActionSupplier alertActionSupplier) {

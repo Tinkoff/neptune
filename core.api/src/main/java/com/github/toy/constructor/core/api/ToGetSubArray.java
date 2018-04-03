@@ -22,7 +22,7 @@ public final class ToGetSubArray {
 
     private static <T, R> Function<T, R[]> array(String description,
                                                  Function<T, R[]> function,
-                                                 Predicate<R> condition,
+                                                 Predicate<? super R> condition,
                                                  Duration waitingTime,
                                                  Duration sleepingTime,
                                                  boolean checkConditionInParallel,
@@ -72,7 +72,7 @@ public final class ToGetSubArray {
      */
     public static <T, R> Function<T, R[]> getSubArray(String description,
                                                       Function<T, R[]> function,
-                                                      Predicate<R> condition,
+                                                      Predicate<? super R> condition,
                                                       Duration waitingTime,
                                                       Duration sleepingTime,
                                                       boolean checkConditionInParallel,
@@ -137,7 +137,7 @@ public final class ToGetSubArray {
      */
     public static <T, R> Function<T, R[]> getSubArray(String description,
                                                       Function<T, R[]> function,
-                                                      Predicate<R> condition,
+                                                      Predicate<? super R> condition,
                                                       Duration waitingTime,
                                                       boolean checkConditionInParallel,
                                                       boolean ignoreExceptionOnConditionCheck,
@@ -195,7 +195,7 @@ public final class ToGetSubArray {
      */
     public static <T, R> Function<T, R[]> getSubArray(String description,
                                                       Function<T, R[]> function,
-                                                      Predicate<R> condition,
+                                                      Predicate<? super R> condition,
                                                       boolean checkConditionInParallel,
                                                       boolean ignoreExceptionOnConditionCheck,
                                                       Supplier<? extends RuntimeException> exceptionOnTimeOut) {
@@ -249,7 +249,7 @@ public final class ToGetSubArray {
      */
     public static <T, R> Function<T, R[]> getSubArray(String description,
                                                       Function<T, R[]> function,
-                                                      Predicate<R> condition,
+                                                      Predicate<? super R> condition,
                                                       Duration waitingTime,
                                                       Duration sleepingTime,
                                                       boolean checkConditionInParallel,
@@ -306,7 +306,7 @@ public final class ToGetSubArray {
      */
     public static <T, R> Function<T, R[]> getSubArray(String description,
                                                       Function<T, R[]> function,
-                                                      Predicate<R> condition,
+                                                      Predicate<? super R> condition,
                                                       Duration waitingTime,
                                                       boolean checkConditionInParallel,
                                                       boolean ignoreExceptionOnConditionCheck) {
@@ -356,7 +356,7 @@ public final class ToGetSubArray {
      */
     public static <T, R> Function<T, R[]> getSubArray(String description,
                                                      Function<T, R[]> function,
-                                                     Predicate<R> condition,
+                                                     Predicate<? super R> condition,
                                                      boolean checkConditionInParallel,
                                                      boolean ignoreExceptionOnConditionCheck) {
         ToGetConditionalHelper.checkFunction(function);

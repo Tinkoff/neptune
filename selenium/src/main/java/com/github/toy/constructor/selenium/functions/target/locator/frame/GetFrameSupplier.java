@@ -126,7 +126,7 @@ public final class GetFrameSupplier extends SequentialGetSupplier<SeleniumSteps,
 
     @Override
     protected Function<FrameParameterPOJO, Frame> getEndFunction() {
-        return getSingle(toGet("Switch to frame", framePOJO -> {
+        return getSingle(toGet("Switched frame", framePOJO -> {
             try {
                 return new Frame(framePOJO.getDriver(), framePOJO.getFrame());
             }

@@ -29,7 +29,7 @@ public class ActionSupplierTest {
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
-            expectedExceptionsMessageRegExp = "Function should be described by the StoryWriter.toGet method.")
+            expectedExceptionsMessageRegExp = "Function should be described by the StoryWriter.toGet method")
     public void negativeTestOfNotDescribedFunction() {
         new CleanStringAction().andThen(GET_TO_STRING, "A", "B", "D");
         fail("The exception throwing was expected");
