@@ -12,6 +12,8 @@ import java.util.List;
 import static com.github.toy.constructor.core.api.StoryWriter.action;
 import static com.github.toy.constructor.core.api.proxy.ConstructorParameters.params;
 import static com.github.toy.constructor.core.api.proxy.Substitution.getSubstituted;
+import static com.github.toy.constructor.selenium.functions.navigation.GetCurrentUrlSupplier.currentUrl;
+import static com.github.toy.constructor.selenium.functions.navigation.GetCurrentUrlSupplier.currentUrlIn;
 import static com.github.toy.constructor.selenium.functions.navigation.NavigationActionSupplier.toUrl;
 import static com.github.toy.constructor.selenium.functions.searching.DefaultWidgetConditions.widgetShouldBeEnabled;
 import static com.github.toy.constructor.selenium.functions.searching.DefaultWidgetConditions.widgetShouldBeVisible;
@@ -99,5 +101,8 @@ public class Tezzt {
 
         selenium.navigate(toUrl("www.youtube.com")
                 .andThenToUrl(window().byIndex(1), "www.google.com"));
+
+        selenium.get(currentUrl());
+        selenium.get(currentUrlIn(window().byIndex(1)));
     }
 }

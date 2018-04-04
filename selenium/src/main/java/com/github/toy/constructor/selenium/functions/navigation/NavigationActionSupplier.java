@@ -88,6 +88,7 @@ public final class NavigationActionSupplier extends SequentialActionSupplier<Sel
      */
     public NavigationActionSupplier andThenToUrl(GetWindowSupplier windowSupplier, String url) {
         checkUrl(url);
+        checkArgument(windowSupplier != null, "The way how to get window should be defined");
         return andThen(format("Navigation to %s in current window/tab", url),
                 toGet("Current window/tab", seleniumSteps -> seleniumSteps
                         .get(windowSupplier).getWrappedDriver()), url);
@@ -102,6 +103,7 @@ public final class NavigationActionSupplier extends SequentialActionSupplier<Sel
      */
     public NavigationActionSupplier andThenToUrl(Window window, String url) {
         checkUrl(url);
+        checkArgument(window != null, "Window should be defined");
         return andThen(format("Navigation to %s in given window/tab %s", url, window),
                 toGet(format("Window %s", window), seleniumSteps -> {
                     window.switchToMe();
