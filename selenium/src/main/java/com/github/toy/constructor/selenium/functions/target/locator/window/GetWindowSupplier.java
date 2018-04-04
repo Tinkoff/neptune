@@ -8,7 +8,6 @@ import org.openqa.selenium.WebDriver;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -61,7 +60,35 @@ public final class GetWindowSupplier extends GetSupplier<SeleniumSteps, Window, 
      * @return reference to a new instance of {@link GetSupplier}
      */
     public static GetWindowSupplier window() {
-        return new GetWindowSupplier();
+        return new GetWindowSupplier().set(toGet("The first window/tab", seleniumSteps ->
+                getWindowByIndex(seleniumSteps, "The first window", 0)));
+    }
+
+    private GetWindowSupplier setFunctionWithIndexAndCondition() {
+        return set(getSingleOnCondition("Window/tab",
+                toGet(format("Window/tab by index %s", index),
+                        seleniumSteps -> getWindowByIndex(seleniumSteps,
+                                format("Window/tab found by index %s on condition '%s'", index, condition), index)),
+                condition,
+                timeOut, true,
+                noSuchWindowException(format("Window/tab was not found by index %s on condition '%s'", index, condition))));
+    }
+
+    private GetWindowSupplier setFunctionWithCondition() {
+        return set(getFromIterable("Window/tab",
+                toGet("Windows/tabs which are currently present",
+                        seleniumSteps -> getListOfWindows(seleniumSteps, format("Window/tab found on condition '%s'", condition))),
+                condition, timeOut,
+                false, true,
+                noSuchWindowException(format("Window was not found on condition '%s'",  condition))));
+    }
+
+    private GetWindowSupplier setFunctionWithIndex() {
+        return set(getSingle(toGet(format("Window/tab by index %s", index),
+                seleniumSteps -> getWindowByIndex(seleniumSteps,
+                        format("Window/tab found by index %s", index), index)),
+                timeOut,
+                noSuchWindowException(format("Window/tab was not found by index %s", index))));
     }
 
     /**
@@ -71,8 +98,10 @@ public final class GetWindowSupplier extends GetSupplier<SeleniumSteps, Window, 
      * @return self-reference.
      */
     public GetWindowSupplier byIndex(int index) {
+        checkArgument(index >= 0, "Index of a window/tab should be greater than zero");
         this.index = index;
-        return this;
+        return ofNullable(condition).map(windowPredicate -> setFunctionWithIndexAndCondition())
+                .orElseGet(this::setFunctionWithIndex);
     }
 
     /**
@@ -84,7 +113,9 @@ public final class GetWindowSupplier extends GetSupplier<SeleniumSteps, Window, 
     public GetWindowSupplier onCondition(Predicate<Window> condition) {
         checkArgument(condition != null, "Condition is not defined");
         this.condition = ofNullable(this.condition).map(predicate -> this.condition.and(predicate)).orElse(condition);
-        return this;
+        return ofNullable(index).map(integer -> setFunctionWithIndexAndCondition())
+                .orElseGet(this::setFunctionWithCondition);
+
     }
 
     /**
@@ -97,49 +128,14 @@ public final class GetWindowSupplier extends GetSupplier<SeleniumSteps, Window, 
      */
     public GetWindowSupplier withTimeToGetWindow(Duration timeOut) {
         this.timeOut = timeOut;
-        return this;
-    }
+        return ofNullable(index).map(integer -> 
+                ofNullable(condition)
+                        .map(windowPredicate -> setFunctionWithIndexAndCondition())
+                        .orElseGet(this::setFunctionWithIndex))
 
-    @Override
-    public Function<SeleniumSteps, Window> get() {
-        return ofNullable(super.get()).orElseGet(() -> {
-            if (condition == null && index == null) {
-                set(toGet("The first window/tab", seleniumSteps ->
-                        getWindowByIndex(seleniumSteps, "The first window", 0)));
-                return super.get();
-            }
-
-            Function<SeleniumSteps, Window> result = ofNullable(index).map(integer -> ofNullable(this.condition).map(windowPredicate ->
-                    getSingleOnCondition("Window/tab",
-                            toGet(format("Window/tab by index %s", integer),
-                                    (Function<SeleniumSteps, Window>) seleniumSteps -> getWindowByIndex(seleniumSteps,
-                                            format("Window/tab found by index %s on condition '%s'", integer, windowPredicate), integer)),
-                            windowPredicate,
-                            timeOut, true,
-                            noSuchWindowException(format("Window/tab was not found by index %s on condition '%s'", integer, windowPredicate))))
-
-                    .orElseGet(() -> getSingle(toGet(format("Window/tab by index %s", integer),
-                            (Function<SeleniumSteps, Window>) seleniumSteps -> getWindowByIndex(seleniumSteps,
-                                    format("Window/tab found by index %s", integer), integer)),
-                            timeOut,
-                            noSuchWindowException(format("Window/tab was not found by index %s", index)))))
-
-                    .orElseGet(() ->
-                            ofNullable(this.condition).map(windowPredicate ->
-                                    getFromIterable("Window/tab",
-                                            toGet("Windows/tabs which are currently present",
-                                                    (Function<SeleniumSteps, List<Window>>) seleniumSteps ->
-                                                            getListOfWindows(seleniumSteps, format("Window/tab found on condition '%s'", windowPredicate))),
-                                            windowPredicate,
-                                            timeOut,
-                                            false, true,
-                                            noSuchWindowException(format("Window was not found on condition '%s'",  windowPredicate))))
-
-                                    .orElseGet(() -> toGet("The first window/tab",
-                                            seleniumSteps -> getWindowByIndex(seleniumSteps, "The first window", 0))));
-
-            set(result);
-            return result;
-        });
+                .orElseGet(() -> ofNullable(condition)
+                        .map(windowPredicate -> setFunctionWithCondition())
+                        .orElseGet(() -> set(toGet("The first window/tab", seleniumSteps ->
+                                getWindowByIndex(seleniumSteps, "The first window", 0)))));
     }
 }
