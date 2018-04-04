@@ -128,7 +128,7 @@ public final class GetWindowSupplier extends GetSupplier<SeleniumSteps, Window, 
      */
     public GetWindowSupplier withTimeToGetWindow(Duration timeOut) {
         this.timeOut = timeOut;
-        return ofNullable(index).map(integer -> 
+        return ofNullable(index).map(integer ->
                 ofNullable(condition)
                         .map(windowPredicate -> setFunctionWithIndexAndCondition())
                         .orElseGet(this::setFunctionWithIndex))
