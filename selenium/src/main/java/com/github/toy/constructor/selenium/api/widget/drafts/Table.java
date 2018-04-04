@@ -155,7 +155,7 @@ public abstract class Table extends Widget {
         }
     }
 
-    @Name("Header")
+    @Name("Footer")
     public static abstract class Footer extends Widget {
         public Footer(WebElement wrappedElement) {
             super(wrappedElement);
