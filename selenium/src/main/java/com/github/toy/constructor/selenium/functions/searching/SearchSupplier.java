@@ -2032,7 +2032,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param label (text of some element or attribute inside or beside the text field) which is used to
-     *               find a text field.
+     *               find a table.
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
@@ -2043,14 +2043,14 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
     /**
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some text field.
+     * and returns some table.
      *
      * About time which the searching takes
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
-     * The result function will return the first found text field if the property
+     * The result function will return the first found table if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found text field which is visible on a page.
+     * Otherwise it will return the first found table which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @return an instance of {@link SearchSupplier}
@@ -2062,18 +2062,18 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
     /**
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some text field.
+     * and returns some table.
      *
      * About time which the searching takes
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
-     * The result function will return the first found text field if the property
+     * The result function will return the first found table if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found text field which is visible on a page.
+     * Otherwise it will return the first found table which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
-     * @param labels (texts of some elements or attributes inside or beside the text field) which are used to
-     *               find a text field.
+     * @param labels (texts of some elements or attributes inside or beside the table) which are used to
+     *               find a table.
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<TextField> textField(List<String> labels) {
@@ -2083,21 +2083,400 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
     /**
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some text field.
+     * and returns some table.
      *
      * About time which the searching takes
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
-     * The result function will return the first found text field if the property
+     * The result function will return the first found table if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found text field which is visible on a page.
+     * Otherwise it will return the first found table which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
-     * @param label (text of some element or attribute inside or beside the text field) which is used to
-     *              find a text field.
+     * @param label (text of some element or attribute inside or beside the table) which is used to
+     *              find a table.
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<TextField> textField(String label) {
         return widget(TextField.class, label);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some table.
+     *
+     * @param duration is the parameter of a time to find a table
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Table> table(Duration duration, Predicate<? super Table> predicate) {
+        return widget(Table.class, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some table.
+     *
+     * @param labels (texts of some elements or attributes inside or beside the table) which are used to
+     *               find a table.
+     * @param duration is the parameter of a time to find a table
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Table> table(List<String> labels, Duration duration, Predicate<? super Table> predicate) {
+        return widget(Table.class, labels, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some table.
+     *
+     * @param label (text of some element or attribute inside or beside the table) which is used to
+     *               find a table.
+     * @param duration is the parameter of a time to find a table
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Table> table(String label, Duration duration, Predicate<? super Table> predicate) {
+        return widget(Table.class, label, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some table. The result function will return the first found table if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return the first found table which is visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param duration is the parameter of a time to find a table
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Table> table(Duration duration) {
+        return widget(Table.class, duration);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some table. The result function will return the first found table if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return the first found table which is visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param labels (texts of some elements or attributes inside or beside the table) which are used to
+     *               find a table.
+     * @param duration is the parameter of a time to find a table
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Table> table(List<String> labels, Duration duration) {
+        return widget(Table.class, labels, duration);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some table. The result function will return the first found table if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return the first found table which is visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param label (text of some element or attribute inside or beside the table) which is used to
+     *               find a table.
+     * @param duration is the parameter of a time to find a table
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Table> table(String label, Duration duration) {
+        return widget(Table.class, label, duration);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some table. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Table> table(Predicate<? super Table> predicate) {
+        return widget(Table.class, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some table. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param labels (texts of some elements or attributes inside or beside the table) which are used to
+     *               find a table.
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Table> table(List<String> labels, Predicate<? super Table> predicate) {
+        return widget(Table.class, labels, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some table. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param label (text of some element or attribute inside or beside the table) which is used to
+     *               find a table.
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Table> table(String label, Predicate<? super Table> predicate) {
+        return widget(Table.class, label, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some table.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found table if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return the first found table which is visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     *
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Table> table() {
+        return widget(Table.class);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some table.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found table if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return the first found table which is visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     *
+     * @param labels (texts of some elements or attributes inside or beside the table) which are used to
+     *               find a table.
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Table> table(List<String> labels) {
+        return widget(Table.class, labels);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some table.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found table if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return the first found table which is visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     *
+     * @param label (text of some element or attribute inside or beside the table) which is used to
+     *              find a table.
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Table> table(String label) {
+        return widget(Table.class, label);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some table row.
+     *
+     * @param duration is the parameter of a time to find a table row
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Table.Row> row(Duration duration, Predicate<? super Table.Row> predicate) {
+        return widget(Table.Row.class, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some table row. The result function will return the first found table row if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return the first found table row which is visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param duration is the parameter of a time to find a table row
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Table.Row> row(Duration duration) {
+        return widget(Table.Row.class, duration);
+    }
+
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some table row. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Table.Row> row(Predicate<? super Table.Row> predicate) {
+        return widget(Table.Row.class, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some table row.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found table row if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return the first found table row which is visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     *
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Table.Row> row() {
+        return widget(Table.Row.class);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some table header.
+     *
+     * @param duration is the parameter of a time to find a table header
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Table.Header> header(Duration duration, Predicate<? super Table.Header> predicate) {
+        return widget(Table.Header.class, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some table header. The result function will return the first found table header if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return the first found table header which is visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param duration is the parameter of a time to find a table header
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Table.Header> header(Duration duration) {
+        return widget(Table.Header.class, duration);
+    }
+
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some table header. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Table.Header> header(Predicate<? super Table.Header> predicate) {
+        return widget(Table.Header.class, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some table header.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found table header if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return the first found table header which is visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     *
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Table.Header> header() {
+        return widget(Table.Header.class);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some table header.
+     *
+     * @param duration is the parameter of a time to find a table header
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Table.Footer> footer(Duration duration, Predicate<? super Table.Footer> predicate) {
+        return widget(Table.Footer.class, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some table header. The result function will return the first found table header if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return the first found table header which is visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param duration is the parameter of a time to find a table header
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Table.Footer> footer(Duration duration) {
+        return widget(Table.Footer.class, duration);
+    }
+
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some table header. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Table.Footer> footer(Predicate<? super Table.Footer> predicate) {
+        return widget(Table.Footer.class, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some table header.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found table header if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return the first found table header which is visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     *
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Table.Footer> footer() {
+        return widget(Table.Footer.class);
     }
 }

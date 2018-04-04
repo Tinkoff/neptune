@@ -2134,4 +2134,391 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
     public static MultipleSearchSupplier<TextField> textFields(String label) {
         return widgets(TextField.class, label);
     }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found tables.
+     *
+     * @param duration is the parameter of a time to find tables
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<Table> tables(Duration duration,
+                                                               Predicate<? super Table> predicate) {
+        return widgets(Table.class, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found tables.
+     *
+     * @param labels (texts of some elements or attributes inside or beside the text field) which are used to
+     *               find tables.
+     * @param duration is the parameter of a time to find tables
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<Table> tables(List<String> labels,
+                                                      Duration duration,
+                                                      Predicate<? super Table> predicate) {
+        return widgets(Table.class, labels, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found tables.
+     *
+     * @param label (text of some element or attribute inside or beside the text field) which is used to
+     *               find tables.
+     * @param duration is the parameter of a time to find tables
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<Table> tables(String label,
+                                                       Duration duration,
+                                                       Predicate<? super Table> predicate) {
+        return widgets(Table.class, label, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found tables. The result function will return a list of any found tables
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found tables which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param duration is the parameter of a time to find tables
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<Table> tables(Duration duration) {
+        return widgets(Table.class, duration);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found tables. The result function will return a list of any found tables
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found tables which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param labels (texts of some elements or attributes inside or beside the text field) which are used to
+     *               find tables.
+     * @param duration is the parameter of a time to find tables
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<Table> tables(List<String> labels,
+                                                           Duration duration) {
+        return widgets(Table.class, labels, duration);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found tables. The result function will return a list of any found tables
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found tables which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param label (text of some element or attribute inside or beside the text field) which is used to
+     *               find tables.
+     * @param duration is the parameter of a time to find tables
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<Table> tables(String label, Duration duration) {
+        return widgets(Table.class, label, duration);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found tables. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<Table> tables(Predicate<? super Table> predicate) {
+        return widgets(Table.class, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found tables. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param labels (texts of some elements or attributes inside or beside the tables) which are used to
+     *               find tables.
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<Table> tables(List<String> labels,
+                                                           Predicate<? super Table> predicate) {
+        return widgets(Table.class, labels, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found tables. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param label (text of some element or attribute inside or beside the tables) which is used to
+     *               find tables.
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<Table> tables(String label,
+                                                           Predicate<? super Table> predicate) {
+        return widgets(Table.class, label, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found tables.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found tables
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found tables which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<Table> tables() {
+        return widgets(Table.class);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found tables.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found tables
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found tables which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param labels (texts of some elements or attributes inside or beside the text field) which are used to
+     *               find tables.
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<Table> tables(List<String> labels) {
+        return widgets(Table.class, labels);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found tables.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found tables
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found tables which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param label (text of some element or attribute inside or beside the text field) which is used to
+     *               find tables.
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<Table> tables(String label) {
+        return widgets(Table.class, label);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found table rows.
+     *
+     * @param duration is the parameter of a time to find table rows
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<Table.Row> rows(Duration duration,
+                                                           Predicate<? super Table.Row> predicate) {
+        return widgets(Table.Row.class, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found table rows. The result function will return a list of any found table rows
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found table rows which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param duration is the parameter of a time to find table rows
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<Table.Row> rows(Duration duration) {
+        return widgets(Table.Row.class, duration);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found table rows. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<Table.Row> rows(Predicate<? super Table.Row> predicate) {
+        return widgets(Table.Row.class, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found table rows.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found table rows
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found table rows which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<Table.Row> rows() {
+        return widgets(Table.Row.class);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found table headers.
+     *
+     * @param duration is the parameter of a time to find table headers
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<Table.Header> headers(Duration duration,
+                                                            Predicate<? super Table.Header> predicate) {
+        return widgets(Table.Header.class, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found table headers. The result function will return a list of any found table headers
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found table headers which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param duration is the parameter of a time to find table headers
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<Table.Header> headers(Duration duration) {
+        return widgets(Table.Header.class, duration);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found table headers. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<Table.Header> headers(Predicate<? super Table.Header> predicate) {
+        return widgets(Table.Header.class, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found table headers.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found table headers
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found table headers which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<Table.Header> headers() {
+        return widgets(Table.Header.class);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found table footers.
+     *
+     * @param duration is the parameter of a time to find table footers
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<Table.Footer> footers(Duration duration,
+                                                               Predicate<? super Table.Footer> predicate) {
+        return widgets(Table.Footer.class, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found table footers. The result function will return a list of any found table footers
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found table footers which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param duration is the parameter of a time to find table footers
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<Table.Footer> footers(Duration duration) {
+        return widgets(Table.Footer.class, duration);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found table footers. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<Table.Footer> footers(Predicate<? super Table.Footer> predicate) {
+        return widgets(Table.Footer.class, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found table footers.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found table footers
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found table footers which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<Table.Footer> footers() {
+        return widgets(Table.Footer.class);
+    }
 }

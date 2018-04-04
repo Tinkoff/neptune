@@ -12,7 +12,6 @@ import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 
 @Name("Table")
-//TODO it is supposed to be re-designed
 public abstract class Table extends Widget {
 
     public Table(WebElement wrappedElement) {
@@ -137,6 +136,38 @@ public abstract class Table extends Widget {
     public static abstract class Cell extends Widget implements HasValue<String> {
         public Cell(WebElement wrappedElement) {
             super(wrappedElement);
+        }
+    }
+
+    @Name("Header")
+    public static abstract class Header extends Widget {
+        public Header(WebElement wrappedElement) {
+            super(wrappedElement);
+        }
+
+        /**
+         * @return list of cells which belong to the header.
+         */
+        public abstract List<Cell> getCells();
+
+        public List<String> getStringCells() {
+            return convertCellListToStringList(getCells());
+        }
+    }
+
+    @Name("Header")
+    public static abstract class Footer extends Widget {
+        public Footer(WebElement wrappedElement) {
+            super(wrappedElement);
+        }
+
+        /**
+         * @return list of cells which belong to the footer.
+         */
+        public abstract List<Cell> getCells();
+
+        public List<String> getStringCells() {
+            return convertCellListToStringList(getCells());
         }
     }
 }
