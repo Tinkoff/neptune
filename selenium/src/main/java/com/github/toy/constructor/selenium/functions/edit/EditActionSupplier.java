@@ -27,10 +27,7 @@ public final class EditActionSupplier extends
      */
     public static <R, S extends SearchContext & Editable<R>> EditActionSupplier valueOf(
             SequentialSearchSupplier<S> of, R value) {
-        checkArgument(of != null, "The searching for the editable element should be defined");
-        checkArgument(value != null, "The value which is used to edit the element should be defined");
-        return new EditActionSupplier().andThen(format("Edit. Set new value %s", value),
-                of.get(), value);
+        return new EditActionSupplier().andValueOf(of, value);
     }
 
     /**
@@ -42,9 +39,7 @@ public final class EditActionSupplier extends
      * @return built edit action
      */
     public static <R, S extends SearchContext & Editable<R>> EditActionSupplier valueOf(S of, R value) {
-        checkArgument(of != null, "The editable element should be defined");
-        checkArgument(value != null, "The value which is used to edit the element should be defined");
-        return new EditActionSupplier().andThen(format("Edit. Set new value %s", value), of, value);
+        return new EditActionSupplier().andValueOf(of, value);
     }
 
     public <T, Q extends SearchContext & Editable<T>> EditActionSupplier andValueOf(SequentialSearchSupplier<Q> of, T value) {

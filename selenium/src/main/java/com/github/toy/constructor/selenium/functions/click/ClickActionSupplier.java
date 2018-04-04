@@ -23,9 +23,7 @@ public final class ClickActionSupplier extends SequentialActionSupplier<Selenium
      * @return built click action
      */
     public static <R extends SearchContext & Clickable> ClickActionSupplier on(SequentialSearchSupplier<R> on) {
-        checkArgument(on != null, "The searching for the clickable element should be defined");
-        Function<SeleniumSteps, R> function = on.get();
-        return new ClickActionSupplier().andThen("Click", function);
+        return new ClickActionSupplier().andOn(on);
     }
 
     /**
@@ -35,8 +33,7 @@ public final class ClickActionSupplier extends SequentialActionSupplier<Selenium
      * @return built click action
      */
     public static <R extends SearchContext & Clickable> ClickActionSupplier on(R on) {
-        checkArgument(on != null, "The clickable element should be defined");
-        return new ClickActionSupplier().andThen("Click", on);
+        return new ClickActionSupplier().andOn(on);
     }
 
     /**
