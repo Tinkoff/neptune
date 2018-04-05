@@ -116,7 +116,7 @@ public abstract class Table extends Widget {
     }
 
     @Name("Row")
-    public static abstract class Row extends Widget {
+    public static abstract class Row extends Widget implements HasValue<List<String>> {
 
         public Row(WebElement wrappedElement) {
             super(wrappedElement);
@@ -127,7 +127,8 @@ public abstract class Table extends Widget {
          */
         public abstract List<Cell> getCells();
 
-        public List<String> getStringCells() {
+        @Override
+        public List<String> getValue() {
             return convertCellListToStringList(getCells());
         }
     }
@@ -140,7 +141,7 @@ public abstract class Table extends Widget {
     }
 
     @Name("Header")
-    public static abstract class Header extends Widget {
+    public static abstract class Header extends Widget implements HasValue<List<String>> {
         public Header(WebElement wrappedElement) {
             super(wrappedElement);
         }
@@ -150,13 +151,14 @@ public abstract class Table extends Widget {
          */
         public abstract List<Cell> getCells();
 
-        public List<String> getStringCells() {
+        @Override
+        public List<String> getValue() {
             return convertCellListToStringList(getCells());
         }
     }
 
     @Name("Footer")
-    public static abstract class Footer extends Widget {
+    public static abstract class Footer extends Widget implements HasValue<List<String>> {
         public Footer(WebElement wrappedElement) {
             super(wrappedElement);
         }
@@ -166,7 +168,8 @@ public abstract class Table extends Widget {
          */
         public abstract List<Cell> getCells();
 
-        public List<String> getStringCells() {
+        @Override
+        public List<String> getValue() {
             return convertCellListToStringList(getCells());
         }
     }

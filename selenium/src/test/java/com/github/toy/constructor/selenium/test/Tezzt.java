@@ -104,5 +104,9 @@ public class Tezzt {
 
         selenium.get(currentUrl());
         selenium.get(currentUrlIn(window().byIndex(1)));
+
+        selenium.find(element(row(table(ofSeconds(5), widgetShouldBeVisible()),
+                ofSeconds(5),
+                widgetShouldBeVisible())));
     }
 }

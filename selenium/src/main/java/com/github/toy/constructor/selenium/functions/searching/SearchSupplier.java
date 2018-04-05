@@ -16,6 +16,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
+import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.github.toy.constructor.core.api.ToGetObjectFromIterable.getFromIterable;
 import static com.github.toy.constructor.selenium.functions.searching.DefaultWebElementConditions.defaultPredicateForElements;
 import static com.github.toy.constructor.selenium.functions.searching.DefaultWebElementConditions.elementShouldHaveText;
@@ -31,6 +32,14 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
 
     private SearchSupplier() {
         super();
+    }
+
+    private SearchSupplier<R> compose(Function<SearchContext, ? extends SearchContext> before) {
+        return set(get().compose(before));
+    }
+
+    private SearchSupplier<R> compose(SearchSupplier<? extends SearchContext> before) {
+        return compose(before.get());
     }
 
     /**
@@ -2302,18 +2311,83 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some table row.
      *
+     * @param fromTable is how to find the parent table
      * @param duration is the parameter of a time to find a table row
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Table.Row> row(Duration duration, Predicate<? super Table.Row> predicate) {
-        return widget(Table.Row.class, duration, predicate);
+    public static SearchSupplier<Table.Row> row(SearchSupplier<Table> fromTable,
+                                                Duration duration, Predicate<? super Table.Row> predicate) {
+        return widget(Table.Row.class, duration, predicate).compose(fromTable);
     }
 
     /**
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some table row. The result function will return the first found table row if the property
+     * and returns some table row.
+     *
+     * @param fromTable is the parent table
+     * @param duration is the parameter of a time to find a table row
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Table.Row> row(Table fromTable,
+                                                Duration duration, Predicate<? super Table.Row> predicate) {
+        return widget(Table.Row.class, duration, predicate)
+                .compose(toGet(format("Table %s", fromTable), searchContext -> fromTable));
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some table row. It is supposed to be fetched from the first found table.
+     *
+     * @param duration is the parameter of a time to find a table row
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Table.Row> row(Duration duration, Predicate<? super Table.Row> predicate) {
+        return row(table(), duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns first found table row. The result function will return the first found table row if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return the first found table row which is visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param fromTable is how to find the parent table
+     * @param duration is the parameter of a time to find a table row
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Table.Row> row(SearchSupplier<Table> fromTable, Duration duration) {
+        return  widget(Table.Row.class, duration).compose(fromTable);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns first found table row. The result function will return the first found table row if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return the first found table row which is visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param fromTable is the parent table
+     * @param duration is the parameter of a time to find a table row
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Table.Row> row(Table fromTable, Duration duration) {
+        return widget(Table.Row.class, duration)
+                .compose(toGet(format("Table %s", fromTable), searchContext -> fromTable));
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns first found table row. It is supposed to be fetched from the first found table.
+     * The result function will return the first found table row if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table row which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
@@ -2322,9 +2396,8 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<Table.Row> row(Duration duration) {
-        return widget(Table.Row.class, duration);
+        return row(table(), duration);
     }
-
 
     /**
      * Returns an instance of {@link SearchSupplier} which wraps a function.
@@ -2332,17 +2405,89 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * and returns some table row. About time which the searching takes
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
+     * @param fromTable is how to find the parent table
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Table.Row> row(Predicate<? super Table.Row> predicate) {
-        return widget(Table.Row.class, predicate);
+    public static SearchSupplier<Table.Row> row(SearchSupplier<Table> fromTable, Predicate<? super Table.Row> predicate) {
+        return widget(Table.Row.class, predicate).compose(fromTable);
     }
 
     /**
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some table row.
+     * and returns some table row. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param fromTable is the parent table
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Table.Row> row(Table fromTable, Predicate<? super Table.Row> predicate) {
+        return widget(Table.Row.class, predicate)
+                .compose(toGet(format("Table %s", fromTable), searchContext -> fromTable));
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some table row. It is supposed to be fetched from the first found table.
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Table.Row> row(Predicate<? super Table.Row> predicate) {
+        return row(table(), predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns the first found table row.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found table row if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return the first found table row which is visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param fromTable is how to find the parent table
+     *
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Table.Row> row(SearchSupplier<Table> fromTable) {
+        return widget(Table.Row.class).compose(fromTable.get());
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns the first found table row.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found table row if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return the first found table row which is visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     *
+     * @param fromTable is the parent table
+     *
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Table.Row> row(Table fromTable) {
+        return widget(Table.Row.class).compose(toGet(format("Table %s", fromTable), searchContext -> fromTable));
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns the first found table row. It is supposed to be fetched from the first found table.
      *
      * About time which the searching takes
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
@@ -2355,7 +2500,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<Table.Row> row() {
-        return widget(Table.Row.class);
+        return row(table());
     }
 
     /**
