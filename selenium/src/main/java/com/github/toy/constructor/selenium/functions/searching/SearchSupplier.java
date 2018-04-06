@@ -2313,7 +2313,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
     /**
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some table row. The result function will return the first found table row if the property
+     * and returns the first found table row. The result function will return the first found table row if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table row which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
@@ -2342,7 +2342,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
     /**
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some table row.
+     * and returns the first found table row.
      *
      * About time which the searching takes
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
@@ -2374,7 +2374,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
     /**
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some table header. The result function will return the first found table header if the property
+     * and returns the first found  table header. The result function will return the first found table header if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table header which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
@@ -2403,7 +2403,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
     /**
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some table header.
+     * and returns the first found  table header.
      *
      * About time which the searching takes
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
@@ -2422,9 +2422,9 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
     /**
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some table header.
+     * and returns some table footer.
      *
-     * @param duration is the parameter of a time to find a table header
+     * @param duration is the parameter of a time to find a table footer
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
@@ -2435,12 +2435,12 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
     /**
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some table header. The result function will return the first found table header if the property
+     * and returns the first found table footer. The result function will return the first found table footer if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found table header which is visible on a page.
+     * Otherwise it will return the first found table footer which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
-     * @param duration is the parameter of a time to find a table header
+     * @param duration is the parameter of a time to find a table footer
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<Table.Footer> footer(Duration duration) {
@@ -2451,7 +2451,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
     /**
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some table header. About time which the searching takes
+     * and returns some table footer. About time which the searching takes
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * @param predicate to specify the searching criteria
@@ -2464,14 +2464,14 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
     /**
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some table header.
+     * and returns the first found table footer.
      *
      * About time which the searching takes
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
-     * The result function will return the first found table header if the property
+     * The result function will return the first found table footer if the property
      * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found table header which is visible on a page.
+     * Otherwise it will return the first found table footer which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @return an instance of {@link SearchSupplier}
