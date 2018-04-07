@@ -2348,9 +2348,9 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Table.Row> rows(Duration duration,
-                                                           Predicate<? super Table.Row> predicate) {
-        return widgets(Table.Row.class, duration, predicate);
+    public static MultipleSearchSupplier<TableRow> tableRows(Duration duration,
+                                                             Predicate<? super TableRow> predicate) {
+        return widgets(TableRow.class, duration, predicate);
     }
 
     /**
@@ -2364,8 +2364,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param duration is the parameter of a time to find table rows
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Table.Row> rows(Duration duration) {
-        return widgets(Table.Row.class, duration);
+    public static MultipleSearchSupplier<TableRow> tableRows(Duration duration) {
+        return widgets(TableRow.class, duration);
     }
 
     /**
@@ -2377,8 +2377,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Table.Row> rows(Predicate<? super Table.Row> predicate) {
-        return widgets(Table.Row.class, predicate);
+    public static MultipleSearchSupplier<TableRow> tableRows(Predicate<? super TableRow> predicate) {
+        return widgets(TableRow.class, predicate);
     }
 
     /**
@@ -2396,8 +2396,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      *
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Table.Row> rows() {
-        return widgets(Table.Row.class);
+    public static MultipleSearchSupplier<TableRow> tableRows() {
+        return widgets(TableRow.class);
     }
 
     /**
@@ -2409,9 +2409,9 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Table.Header> headers(Duration duration,
-                                                            Predicate<? super Table.Header> predicate) {
-        return widgets(Table.Header.class, duration, predicate);
+    public static MultipleSearchSupplier<TableHeader> tableHeaders(Duration duration,
+                                                                   Predicate<? super TableHeader> predicate) {
+        return widgets(TableHeader.class, duration, predicate);
     }
 
     /**
@@ -2425,8 +2425,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param duration is the parameter of a time to find table headers
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Table.Header> headers(Duration duration) {
-        return widgets(Table.Header.class, duration);
+    public static MultipleSearchSupplier<TableHeader> tableHeaders(Duration duration) {
+        return widgets(TableHeader.class, duration);
     }
 
     /**
@@ -2438,8 +2438,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Table.Header> headers(Predicate<? super Table.Header> predicate) {
-        return widgets(Table.Header.class, predicate);
+    public static MultipleSearchSupplier<TableHeader> tableHeaders(Predicate<? super TableHeader> predicate) {
+        return widgets(TableHeader.class, predicate);
     }
 
     /**
@@ -2457,8 +2457,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      *
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Table.Header> headers() {
-        return widgets(Table.Header.class);
+    public static MultipleSearchSupplier<TableHeader> tableHeaders() {
+        return widgets(TableHeader.class);
     }
 
     /**
@@ -2470,9 +2470,9 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Table.Footer> footers(Duration duration,
-                                                               Predicate<? super Table.Footer> predicate) {
-        return widgets(Table.Footer.class, duration, predicate);
+    public static MultipleSearchSupplier<TableFooter> tableFooters(Duration duration,
+                                                                   Predicate<? super TableFooter> predicate) {
+        return widgets(TableFooter.class, duration, predicate);
     }
 
     /**
@@ -2486,8 +2486,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param duration is the parameter of a time to find table footers
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Table.Footer> footers(Duration duration) {
-        return widgets(Table.Footer.class, duration);
+    public static MultipleSearchSupplier<TableFooter> tableFooters(Duration duration) {
+        return widgets(TableFooter.class, duration);
     }
 
     /**
@@ -2499,8 +2499,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Table.Footer> footers(Predicate<? super Table.Footer> predicate) {
-        return widgets(Table.Footer.class, predicate);
+    public static MultipleSearchSupplier<TableFooter> tableFooters(Predicate<? super TableFooter> predicate) {
+        return widgets(TableFooter.class, predicate);
     }
 
     /**
@@ -2518,7 +2518,68 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      *
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Table.Footer> footers() {
-        return widgets(Table.Footer.class);
+    public static MultipleSearchSupplier<TableFooter> tableFooters() {
+        return widgets(TableFooter.class);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found table cells.
+     *
+     * @param duration is the parameter of a time to find table cells
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<TableCell> tableCells(Duration duration,
+                                                               Predicate<? super TableCell> predicate) {
+        return widgets(TableCell.class, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found table cells. The result function will return a list of any found table cells
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found table cells which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param duration is the parameter of a time to find table cells
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<TableCell> tableCells(Duration duration) {
+        return widgets(TableCell.class, duration);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found table cells. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<TableCell> tableCells(Predicate<? super TableCell> predicate) {
+        return widgets(TableCell.class, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found table cells.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return a list of any found table cells
+     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return a list of found table cells which are visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<TableCell> tableCells() {
+        return widgets(TableCell.class);
     }
 }

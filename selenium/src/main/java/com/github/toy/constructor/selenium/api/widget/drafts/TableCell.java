@@ -5,14 +5,9 @@ import com.github.toy.constructor.selenium.api.widget.Name;
 import com.github.toy.constructor.selenium.api.widget.Widget;
 import org.openqa.selenium.WebElement;
 
-import java.util.List;
-import java.util.Map;
-
-@Name("Table")
-public abstract class Table extends Widget implements HasValue<Map<String, List<String>>> {
-
-    public Table(WebElement wrappedElement) {
+@Name("Cell")
+public abstract class TableCell extends Widget implements HasValue<String> {
+    public TableCell(WebElement wrappedElement) {
         super(wrappedElement);
     }
-
 }

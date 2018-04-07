@@ -2306,8 +2306,8 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Table.Row> row(Duration duration, Predicate<? super Table.Row> predicate) {
-        return widget(Table.Row.class, duration, predicate);
+    public static SearchSupplier<TableRow> tableRow(Duration duration, Predicate<? super TableRow> predicate) {
+        return widget(TableRow.class, duration, predicate);
     }
 
     /**
@@ -2321,8 +2321,8 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param duration is the parameter of a time to find a table row
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Table.Row> row(Duration duration) {
-        return widget(Table.Row.class, duration);
+    public static SearchSupplier<TableRow> tableRow(Duration duration) {
+        return widget(TableRow.class, duration);
     }
 
 
@@ -2335,8 +2335,8 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Table.Row> row(Predicate<? super Table.Row> predicate) {
-        return widget(Table.Row.class, predicate);
+    public static SearchSupplier<TableRow> tableRow(Predicate<? super TableRow> predicate) {
+        return widget(TableRow.class, predicate);
     }
 
     /**
@@ -2354,8 +2354,8 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      *
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Table.Row> row() {
-        return widget(Table.Row.class);
+    public static SearchSupplier<TableRow> tableRow() {
+        return widget(TableRow.class);
     }
 
     /**
@@ -2367,8 +2367,8 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Table.Header> header(Duration duration, Predicate<? super Table.Header> predicate) {
-        return widget(Table.Header.class, duration, predicate);
+    public static SearchSupplier<TableHeader> tableHeader(Duration duration, Predicate<? super TableHeader> predicate) {
+        return widget(TableHeader.class, duration, predicate);
     }
 
     /**
@@ -2382,8 +2382,8 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param duration is the parameter of a time to find a table header
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Table.Header> header(Duration duration) {
-        return widget(Table.Header.class, duration);
+    public static SearchSupplier<TableHeader> tableHeader(Duration duration) {
+        return widget(TableHeader.class, duration);
     }
 
 
@@ -2396,8 +2396,8 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Table.Header> header(Predicate<? super Table.Header> predicate) {
-        return widget(Table.Header.class, predicate);
+    public static SearchSupplier<TableHeader> tableHeader(Predicate<? super TableHeader> predicate) {
+        return widget(TableHeader.class, predicate);
     }
 
     /**
@@ -2415,8 +2415,8 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      *
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Table.Header> header() {
-        return widget(Table.Header.class);
+    public static SearchSupplier<TableHeader> tableHeader() {
+        return widget(TableHeader.class);
     }
 
     /**
@@ -2428,8 +2428,8 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Table.Footer> footer(Duration duration, Predicate<? super Table.Footer> predicate) {
-        return widget(Table.Footer.class, duration, predicate);
+    public static SearchSupplier<TableFooter> tableFooter(Duration duration, Predicate<? super TableFooter> predicate) {
+        return widget(TableFooter.class, duration, predicate);
     }
 
     /**
@@ -2443,8 +2443,8 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param duration is the parameter of a time to find a table footer
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Table.Footer> footer(Duration duration) {
-        return widget(Table.Footer.class, duration);
+    public static SearchSupplier<TableFooter> tableFooter(Duration duration) {
+        return widget(TableFooter.class, duration);
     }
 
 
@@ -2457,8 +2457,8 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Table.Footer> footer(Predicate<? super Table.Footer> predicate) {
-        return widget(Table.Footer.class, predicate);
+    public static SearchSupplier<TableFooter> tableFooter(Predicate<? super TableFooter> predicate) {
+        return widget(TableFooter.class, predicate);
     }
 
     /**
@@ -2476,7 +2476,68 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      *
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Table.Footer> footer() {
-        return widget(Table.Footer.class);
+    public static SearchSupplier<TableFooter> tableFooter() {
+        return widget(TableFooter.class);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some table cell.
+     *
+     * @param duration is the parameter of a time to find a table cell
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<TableCell> tableCell(Duration duration, Predicate<? super TableCell> predicate) {
+        return widget(TableCell.class, duration, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns the first found table cell. The result function will return the first found table cell if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return the first found table cell which is visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     *
+     * @param duration is the parameter of a time to find a table cell
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<TableCell> tableCell(Duration duration) {
+        return widget(TableCell.class, duration);
+    }
+
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns some table cell. About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * @param predicate to specify the searching criteria
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<TableCell> tableCell(Predicate<? super TableCell> predicate) {
+        return widget(TableCell.class, predicate);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} which wraps a function.
+     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * and returns the first found table cell.
+     *
+     * About time which the searching takes
+     * @see WaitingProperties#ELEMENT_WAITING_DURATION
+     *
+     * The result function will return the first found table cell if the property
+     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * Otherwise it will return the first found table cell which is visible on a page.
+     * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     *
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<TableCell> tableCell() {
+        return widget(TableCell.class);
     }
 }
