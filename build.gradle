@@ -46,6 +46,7 @@ project(":selenium") {
             exclude group: 'com.google.code.gson'
         }
         compile group: 'cglib', name: 'cglib', version: '3.2.6'
+        compile group: 'org.hamcrest', name: 'java-hamcrest', version: hamcrestVersion
         testCompile group: 'org.testng', name: 'testng', version: testNGvaersion
     }
 }

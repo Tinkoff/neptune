@@ -36,9 +36,14 @@ import static com.github.toy.constructor.selenium.functions.target.locator.windo
 import static com.github.toy.constructor.selenium.functions.value.SequentialGetAttributeValueSupplier.attributeValue;
 import static com.github.toy.constructor.selenium.functions.value.SequentialGetCSSValueSupplier.cssValue;
 import static com.github.toy.constructor.selenium.functions.value.SequentialGetValueSupplier.ofThe;
+import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.HasNestedElement.hasNestedElement;
+import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.HasNestedElements.hasNestedElements;
+import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.IsElementEnabled.isEnabled;
+import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.IsElementVisible.isVisible;
 import static com.google.common.collect.ImmutableList.of;
 import static java.time.Duration.ofSeconds;
 import static java.util.regex.Pattern.compile;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.openqa.selenium.By.xpath;
 import static org.openqa.selenium.Keys.HOME;
 
@@ -104,5 +109,26 @@ public class Tezzt {
 
         selenium.get(currentUrl());
         selenium.get(currentUrlIn(window().byIndex(1)));
+    }
+
+    public void tezzt2() throws Exception {
+        SeleniumSteps selenium = getSubstituted(SeleniumSteps.class, params());
+
+        assertThat("Check element",
+                selenium.find(element(webElement(xpath("some path")))),
+                hasNestedElement(button("Submit", ofSeconds(50), widgetShouldBeVisible())));
+
+        assertThat("Check elements",
+                selenium.find(element(webElement(xpath("some path 2")))),
+                hasNestedElements(buttons("Submit", ofSeconds(50), widgetShouldBeVisible()))
+                        .withCount(2).checkCountStrictly(true));
+
+        assertThat("Check element",
+                selenium.find(element(webElement(xpath("some path 3")))),
+                isVisible());
+
+        assertThat("Check element",
+                selenium.find(element(webElement(xpath("some path 4")))),
+                isEnabled());
     }
 }
