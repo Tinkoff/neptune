@@ -16,10 +16,9 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import static com.github.toy.constructor.core.api.ToGetSubIterable.getSubIterable;
-import static com.github.toy.constructor.selenium.functions.searching.DefaultWebElementConditions.defaultPredicateForElements;
-import static com.github.toy.constructor.selenium.functions.searching.DefaultWebElementConditions.elementShouldHaveText;
-import static com.github.toy.constructor.selenium.functions.searching.DefaultWidgetConditions.defaultPredicateForWidgets;
-import static com.github.toy.constructor.selenium.functions.searching.DefaultWidgetConditions.widgetShouldBeLabeledBy;
+import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.defaultPredicate;
+import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.shouldBeLabeledBy;
+import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.shouldHaveText;
 import static com.github.toy.constructor.selenium.functions.searching.FindLabeledWidgets.labeledWidgets;
 import static com.github.toy.constructor.selenium.properties.WaitingProperties.ELEMENT_WAITING_DURATION;
 
@@ -95,7 +94,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<WebElement> webElements(By by, String text, Duration duration, Predicate<WebElement> predicate) {
-        return webElements(by, duration, elementShouldHaveText(text).and(predicate));
+        return webElements(by, duration, shouldHaveText(text).and(predicate));
     }
 
     /**
@@ -110,7 +109,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<WebElement> webElements(By by, Pattern textPattern, Duration duration, Predicate<WebElement> predicate) {
-        return webElements(by, duration, elementShouldHaveText(textPattern).and(predicate));
+        return webElements(by, duration, shouldHaveText(textPattern).and(predicate));
     }
 
     /**
@@ -127,7 +126,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<WebElement> webElements(By by, Duration duration) {
-        return webElements(by, duration, defaultPredicateForElements());
+        return webElements(by, duration, defaultPredicate());
     }
 
     /**
@@ -145,7 +144,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<WebElement> webElements(By by, String text, Duration duration) {
-        return webElements(by, text, duration, defaultPredicateForElements());
+        return webElements(by, text, duration, defaultPredicate());
     }
 
     /**
@@ -163,7 +162,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<WebElement> webElements(By by, Pattern textPattern, Duration duration) {
-        return webElements(by, textPattern, duration, defaultPredicateForElements());
+        return webElements(by, textPattern, duration, defaultPredicate());
     }
 
     /**
@@ -194,7 +193,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<WebElement> webElements(By by, String text, Predicate<WebElement> predicate) {
-        return webElements(by, elementShouldHaveText(text).and(predicate));
+        return webElements(by, shouldHaveText(text).and(predicate));
     }
 
     /**
@@ -210,7 +209,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<WebElement> webElements(By by, Pattern textPattern, Predicate<WebElement> predicate) {
-        return webElements(by, elementShouldHaveText(textPattern).and(predicate));
+        return webElements(by, shouldHaveText(textPattern).and(predicate));
     }
 
     /**
@@ -230,7 +229,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<WebElement> webElements(By by) {
-        return webElements(by, defaultPredicateForElements());
+        return webElements(by, defaultPredicate());
     }
 
     /**
@@ -251,7 +250,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<WebElement> webElements(By by, String text) {
-        return webElements(by, text, defaultPredicateForElements());
+        return webElements(by, text, defaultPredicate());
     }
 
     /**
@@ -272,7 +271,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<WebElement> webElements(By by, Pattern textPattern) {
-        return webElements(by, textPattern, defaultPredicateForElements());
+        return webElements(by, textPattern, defaultPredicate());
     }
 
     /**
@@ -306,7 +305,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      */
     public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass, List<String> labels, Duration duration,
                                                                        Predicate<? super T> predicate) {
-        Predicate<? extends T> labeledBy = widgetShouldBeLabeledBy(labels.toArray(new String[]{}));
+        Predicate<? extends T> labeledBy = shouldBeLabeledBy(labels.toArray(new String[]{}));
         Predicate<? super T> resultPredicate = (Predicate<? super T>) labeledBy.and(predicate);
         return items(labeledWidgets(tClass, resultPredicate.toString()), duration, resultPredicate);
     }
@@ -345,7 +344,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass, Duration duration) {
-        return widgets(tClass, duration, defaultPredicateForWidgets());
+        return widgets(tClass, duration, defaultPredicate());
     }
 
     /**
@@ -366,7 +365,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass, List<String> labels, Duration duration) {
-        return widgets(tClass, labels, duration, defaultPredicateForWidgets());
+        return widgets(tClass, labels, duration, defaultPredicate());
     }
 
     /**
@@ -387,7 +386,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass, String label, Duration duration) {
-        return widgets(tClass, label, duration, defaultPredicateForWidgets());
+        return widgets(tClass, label, duration, defaultPredicate());
     }
 
     /**
@@ -423,7 +422,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      */
     public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass, List<String> labels,
                                                                        Predicate<? super T> predicate) {
-        Predicate<? extends T> labeledBy = widgetShouldBeLabeledBy(labels.toArray(new String[]{}));
+        Predicate<? extends T> labeledBy = shouldBeLabeledBy(labels.toArray(new String[]{}));
         Predicate<? super T> resultPredicate = (Predicate<? super T>) labeledBy.and(predicate);
         return items(labeledWidgets(tClass, resultPredicate.toString()), resultPredicate);
     }
@@ -465,7 +464,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass) {
-        return widgets(tClass, defaultPredicateForWidgets());
+        return widgets(tClass, defaultPredicate());
     }
 
     /**
@@ -489,7 +488,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass, List<String> labels) {
-        return widgets(tClass, labels, defaultPredicateForWidgets());
+        return widgets(tClass, labels, defaultPredicate());
     }
 
     /**
@@ -513,7 +512,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass, String label) {
-        return widgets(tClass, label, defaultPredicateForWidgets());
+        return widgets(tClass, label, defaultPredicate());
     }
 
     /**

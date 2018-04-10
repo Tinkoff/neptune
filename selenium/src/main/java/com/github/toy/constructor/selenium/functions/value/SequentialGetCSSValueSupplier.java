@@ -2,6 +2,7 @@ package com.github.toy.constructor.selenium.functions.value;
 
 import com.github.toy.constructor.core.api.SequentialGetSupplier;
 import com.github.toy.constructor.selenium.SeleniumSteps;
+import com.github.toy.constructor.selenium.api.widget.HasCssValue;
 import com.github.toy.constructor.selenium.api.widget.Widget;
 import com.github.toy.constructor.selenium.functions.searching.SequentialSearchSupplier;
 import org.openqa.selenium.SearchContext;
@@ -15,7 +16,7 @@ import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 
 public final class SequentialGetCSSValueSupplier extends
-        SequentialGetSupplier<SeleniumSteps, String, WebElement, SequentialGetCSSValueSupplier> {
+        SequentialGetSupplier<SeleniumSteps, String, SearchContext, SequentialGetCSSValueSupplier> {
     private final String property;
 
     private SequentialGetCSSValueSupplier(String property) {
@@ -50,30 +51,26 @@ public final class SequentialGetCSSValueSupplier extends
         return super.from(widget.getWrappedElement());
     }
 
+    /**
+     * Adds an element to get value of the css property
+     * @param t instance of some type which provides ability to get value of the css property.
+     * @param <T> subtype of {@link SearchContext} which provides ability to get value of the css property.
+     * @return self-reference
+     */
+    public <T extends SearchContext & HasCssValue> SequentialGetCSSValueSupplier of(T t) {
+        return super.from(t);
+    }
 
     /**
      * Adds an element to get value of the css property
      * @param searchSupplier is how to find the element to get value of the css property.
-     *                       Expected result if the wrapped function is some instance of {@link WebElement}
-     *                       or {@link WrapsElement}.
+     *                       It is expected that result of the wrapped function is some instance of {@link WebElement}
+     *                       or some class which implements {@link SearchContext} and {@link HasCssValue}. Otherwise
+     *                       evaluation of the css value throws {@link UnsupportedOperationException}.
      * @return self-reference
      */
     public <T extends SearchContext> SequentialGetCSSValueSupplier of(SequentialSearchSupplier<T> searchSupplier) {
-        return super.from(toGet(searchSupplier.toString(), seleniumSteps -> {
-            T result = searchSupplier.get().apply(seleniumSteps);
-            Class<?> resultClass = result.getClass();
-
-            if (WebElement.class.isAssignableFrom(resultClass)) {
-                return WebElement.class.cast(result);
-            }
-
-            if (WrapsElement.class.isAssignableFrom(resultClass)) {
-                return WrapsElement.class.cast(result).getWrappedElement();
-            }
-
-            throw new UnsupportedOperationException(format("It is impossible to get value of the css property %s from %s",
-                    property, result));
-        }));
+        return super.from(searchSupplier);
     }
 
     @Override
@@ -83,7 +80,21 @@ public final class SequentialGetCSSValueSupplier extends
     }
 
     @Override
-    protected Function<WebElement, String> getEndFunction() {
-        return toGet(format("Value of the css property '%s'", property), webElement -> webElement.getCssValue(property));
+    protected Function<SearchContext, String> getEndFunction() {
+        return toGet(format("Value of the css property '%s'", property), searchContext -> {
+            Class<? extends SearchContext> searchContextClass = searchContext.getClass();
+            if (WebElement.class.isAssignableFrom(searchContextClass)) {
+                return WebElement.class.cast(searchContext).getCssValue(property);
+            }
+
+            if (HasCssValue.class.isAssignableFrom(searchContextClass)) {
+                return HasCssValue.class.cast(searchContext).getCssValue(property);
+            }
+
+            throw new UnsupportedOperationException(format("It is impossible to get value of thr css property %s from " +
+                            "the instance of %s. Instance of " +
+                            "%s or subclass of %s and %s is expected.", property, searchContextClass.getName(), WebElement.class.getName(),
+                    SearchContext.class.getName(), HasCssValue.class.getName()));
+        });
     }
 }

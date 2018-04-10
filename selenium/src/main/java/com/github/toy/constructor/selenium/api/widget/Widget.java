@@ -11,7 +11,7 @@ import java.util.List;
  * element from which other elements can be found.
  */
 public abstract class Widget implements WrapsElement, SearchContext, TakesScreenshot, HasAttribute,
-        IsEnabled, IsVisible, HasSize, HasRectangle, HasLocation {
+        IsEnabled, IsVisible, HasSize, HasRectangle, HasLocation, HasCssValue {
 
     private final WebElement wrappedElement;
 
@@ -69,6 +69,11 @@ public abstract class Widget implements WrapsElement, SearchContext, TakesScreen
     @Override
     public String getAttribute(String attribute) {
         return wrappedElement.getAttribute(attribute);
+    }
+
+    @Override
+    public String getCssValue(String propertyName) {
+        return wrappedElement.getCssValue(propertyName);
     }
 
     @Override

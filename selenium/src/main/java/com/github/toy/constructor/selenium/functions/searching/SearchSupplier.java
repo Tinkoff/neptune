@@ -17,10 +17,9 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import static com.github.toy.constructor.core.api.ToGetObjectFromIterable.getFromIterable;
-import static com.github.toy.constructor.selenium.functions.searching.DefaultWebElementConditions.defaultPredicateForElements;
-import static com.github.toy.constructor.selenium.functions.searching.DefaultWebElementConditions.elementShouldHaveText;
-import static com.github.toy.constructor.selenium.functions.searching.DefaultWidgetConditions.defaultPredicateForWidgets;
-import static com.github.toy.constructor.selenium.functions.searching.DefaultWidgetConditions.widgetShouldBeLabeledBy;
+import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.defaultPredicate;
+import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.shouldBeLabeledBy;
+import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.shouldHaveText;
 import static com.github.toy.constructor.selenium.functions.searching.FindLabeledWidgets.labeledWidgets;
 import static com.github.toy.constructor.selenium.functions.searching.FindWebElements.webElements;
 import static com.github.toy.constructor.selenium.functions.searching.FindWidgets.widgets;
@@ -99,7 +98,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      */
     public static SearchSupplier<WebElement> webElement(By by, String text, Duration duration,
                                                         Predicate<WebElement> predicate) {
-        return webElement(by, duration, elementShouldHaveText(text).and(predicate));
+        return webElement(by, duration, shouldHaveText(text).and(predicate));
     }
 
     /**
@@ -115,7 +114,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      */
     public static SearchSupplier<WebElement> webElement(By by, Pattern textPattern, Duration duration,
                                                         Predicate<WebElement> predicate) {
-        return webElement(by, duration, elementShouldHaveText(textPattern).and(predicate));
+        return webElement(by, duration, shouldHaveText(textPattern).and(predicate));
     }
 
     /**
@@ -132,7 +131,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<WebElement> webElement(By by, Duration duration) {
-        return webElement(by, duration, defaultPredicateForElements());
+        return webElement(by, duration, defaultPredicate());
     }
 
     /**
@@ -150,7 +149,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<WebElement> webElement(By by, String text, Duration duration) {
-        return webElement(by, text, duration, defaultPredicateForElements());
+        return webElement(by, text, duration, defaultPredicate());
     }
 
     /**
@@ -168,7 +167,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<WebElement> webElement(By by, Pattern textPattern, Duration duration) {
-        return webElement(by, textPattern, duration, defaultPredicateForElements());
+        return webElement(by, textPattern, duration, defaultPredicate());
     }
 
     /**
@@ -199,7 +198,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<WebElement> webElement(By by, String text, Predicate<WebElement> predicate) {
-        return webElement(by, elementShouldHaveText(text).and(predicate));
+        return webElement(by, shouldHaveText(text).and(predicate));
     }
 
     /**
@@ -215,7 +214,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<WebElement> webElement(By by, Pattern textPattern, Predicate<WebElement> predicate) {
-        return webElement(by, elementShouldHaveText(textPattern).and(predicate));
+        return webElement(by, shouldHaveText(textPattern).and(predicate));
     }
 
     /**
@@ -235,7 +234,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<WebElement> webElement(By by) {
-        return webElement(by, defaultPredicateForElements());
+        return webElement(by, defaultPredicate());
     }
 
     /**
@@ -257,7 +256,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      */
     public static SearchSupplier<WebElement> webElement(By by,
                                                         String text) {
-        return webElement(by, text, defaultPredicateForElements());
+        return webElement(by, text, defaultPredicate());
     }
 
     /**
@@ -278,7 +277,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<WebElement> webElement(By by, Pattern textPattern) {
-        return webElement(by, textPattern, defaultPredicateForElements());
+        return webElement(by, textPattern, defaultPredicate());
     }
 
     /**
@@ -312,7 +311,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      */
     public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, List<String> labels,
                                                               Duration duration, Predicate<? super T> predicate) {
-        Predicate<? extends T> labeledBy = widgetShouldBeLabeledBy(labels.toArray(new String[]{}));
+        Predicate<? extends T> labeledBy = shouldBeLabeledBy(labels.toArray(new String[]{}));
         Predicate<? super T> resultPredicate = (Predicate<? super T>) labeledBy.and(predicate);
         return item(labeledWidgets(tClass, resultPredicate.toString()), duration, resultPredicate);
     }
@@ -354,7 +353,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      */
     public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass,
                                                                         Duration duration) {
-        return widget(tClass, duration, defaultPredicateForWidgets());
+        return widget(tClass, duration, defaultPredicate());
     }
 
     /**
@@ -376,7 +375,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      */
     public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass,
                                                               List<String> labels, Duration duration) {
-        return widget(tClass, labels, duration, defaultPredicateForWidgets());
+        return widget(tClass, labels, duration, defaultPredicate());
     }
 
     /**
@@ -398,7 +397,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      */
     public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, String label,
                                                               Duration duration) {
-        return widget(tClass, label, duration, defaultPredicateForWidgets());
+        return widget(tClass, label, duration, defaultPredicate());
     }
 
     /**
@@ -433,7 +432,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @return an instance of {@link SearchSupplier}
      */
     public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, List<String> labels, Predicate<? super T> predicate) {
-        Predicate<? extends T> labeledBy = widgetShouldBeLabeledBy(labels.toArray(new String[]{}));
+        Predicate<? extends T> labeledBy = shouldBeLabeledBy(labels.toArray(new String[]{}));
         Predicate<? super T> resultPredicate = (Predicate<? super T>) labeledBy.and(predicate);
         return item(labeledWidgets(tClass, resultPredicate.toString()), resultPredicate);
     }
@@ -475,7 +474,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @return an instance of {@link SearchSupplier}
      */
     public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass) {
-        return widget(tClass, defaultPredicateForWidgets());
+        return widget(tClass, defaultPredicate());
     }
 
     /**
@@ -499,7 +498,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @return an instance of {@link SearchSupplier}
      */
     public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, List<String> labels) {
-        return widget(tClass, labels, defaultPredicateForWidgets());
+        return widget(tClass, labels, defaultPredicate());
     }
 
     /**
@@ -523,7 +522,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @return an instance of {@link SearchSupplier}
      */
     public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, String label) {
-        return widget(tClass, label, defaultPredicateForWidgets());
+        return widget(tClass, label, defaultPredicate());
     }
 
     /**

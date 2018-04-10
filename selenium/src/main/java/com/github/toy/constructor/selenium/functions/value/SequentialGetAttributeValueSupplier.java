@@ -2,11 +2,11 @@ package com.github.toy.constructor.selenium.functions.value;
 
 import com.github.toy.constructor.core.api.SequentialGetSupplier;
 import com.github.toy.constructor.selenium.SeleniumSteps;
+import com.github.toy.constructor.selenium.api.widget.HasAttribute;
 import com.github.toy.constructor.selenium.api.widget.Widget;
 import com.github.toy.constructor.selenium.functions.searching.SequentialSearchSupplier;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.WrapsElement;
 
 import java.util.function.Function;
 
@@ -15,7 +15,7 @@ import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 
 public final class SequentialGetAttributeValueSupplier extends
-        SequentialGetSupplier<SeleniumSteps, String, WebElement, SequentialGetAttributeValueSupplier> {
+        SequentialGetSupplier<SeleniumSteps, String, SearchContext, SequentialGetAttributeValueSupplier> {
     private final String attr;
 
     private SequentialGetAttributeValueSupplier(String attr) {
@@ -47,33 +47,30 @@ public final class SequentialGetAttributeValueSupplier extends
      * @return self-reference
      */
     public SequentialGetAttributeValueSupplier of(Widget widget) {
-        return super.from(widget.getWrappedElement());
+        return super.from(widget);
+    }
+
+    /**
+     * Adds an element to get value of the attribute
+     * @param t instance of some type which provides ability to get value of the attribute.
+     * @param <T> subtype of {@link SearchContext} which provides ability to get value of the attribute.
+     * @return self-reference
+     */
+    public <T extends SearchContext & HasAttribute> SequentialGetAttributeValueSupplier of(T t) {
+        return super.from(t);
     }
 
 
     /**
      * Adds an element to get value of the attribute
      * @param searchSupplier is how to find the element to get value of the attribute.
-     *                       Expected result if the wrapped function is some instance of {@link WebElement}
-     *                       or {@link WrapsElement}.
+     *                       It is expected that result of the wrapped function is some instance of {@link WebElement}
+     *                       or some class which implements {@link SearchContext} and {@link HasAttribute}. Otherwise
+     *                       evaluation of the attribute value throws {@link UnsupportedOperationException}.
      * @return self-reference
      */
     public <T extends SearchContext> SequentialGetAttributeValueSupplier of(SequentialSearchSupplier<T> searchSupplier) {
-        return super.from(toGet(searchSupplier.toString(), seleniumSteps -> {
-            T result = searchSupplier.get().apply(seleniumSteps);
-            Class<?> resultClass = result.getClass();
-
-            if (WebElement.class.isAssignableFrom(resultClass)) {
-                return WebElement.class.cast(result);
-            }
-
-            if (WrapsElement.class.isAssignableFrom(resultClass)) {
-                return WrapsElement.class.cast(result).getWrappedElement();
-            }
-
-            throw new UnsupportedOperationException(format("It is impossible to get value of the attribute %s from %s",
-                    attr, result));
-        }));
+        return super.from(searchSupplier);
     }
 
     @Override
@@ -83,7 +80,21 @@ public final class SequentialGetAttributeValueSupplier extends
     }
 
     @Override
-    protected Function<WebElement, String> getEndFunction() {
-        return toGet(format("Value of the attribute '%s'", attr), webElement -> webElement.getAttribute(attr));
+    protected Function<SearchContext, String> getEndFunction() {
+        return toGet(format("Value of the attribute '%s'", attr), searchContext -> {
+            Class<? extends SearchContext> searchContextClass = searchContext.getClass();
+            if (WebElement.class.isAssignableFrom(searchContextClass)) {
+                return WebElement.class.cast(searchContext).getAttribute(attr);
+            }
+
+            if (HasAttribute.class.isAssignableFrom(searchContextClass)) {
+                return HasAttribute.class.cast(searchContext).getAttribute(attr);
+            }
+
+            throw new UnsupportedOperationException(format("It is impossible to get value of thr attribute %s from " +
+                            "the instance of %s. Instance of " +
+                            "%s or subclass of %s and %s is expected.", attr, searchContextClass.getName(), WebElement.class.getName(),
+                    SearchContext.class.getName(), HasAttribute.class.getName()));
+        });
     }
 }

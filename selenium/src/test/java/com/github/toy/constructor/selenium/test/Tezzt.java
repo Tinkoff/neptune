@@ -12,17 +12,18 @@ import java.util.List;
 import static com.github.toy.constructor.core.api.StoryWriter.action;
 import static com.github.toy.constructor.core.api.proxy.ConstructorParameters.params;
 import static com.github.toy.constructor.core.api.proxy.Substitution.getSubstituted;
+import static com.github.toy.constructor.selenium.functions.edit.EditActionSupplier.valueOf;
 import static com.github.toy.constructor.selenium.functions.navigation.GetCurrentUrlSupplier.currentUrl;
 import static com.github.toy.constructor.selenium.functions.navigation.GetCurrentUrlSupplier.currentUrlIn;
 import static com.github.toy.constructor.selenium.functions.navigation.NavigationActionSupplier.toUrl;
-import static com.github.toy.constructor.selenium.functions.searching.DefaultWidgetConditions.widgetShouldBeEnabled;
-import static com.github.toy.constructor.selenium.functions.searching.DefaultWidgetConditions.widgetShouldBeVisible;
+import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.shouldBeVisible;
+import static com.github.toy.constructor.selenium.functions.searching.MultipleSearchSupplier.buttons;
 import static com.github.toy.constructor.selenium.functions.target.locator.SwitchActionSupplier.to;
 import static com.github.toy.constructor.selenium.functions.target.locator.alert.AlertActionSupplier.accept;
 import static com.github.toy.constructor.selenium.functions.target.locator.alert.AlertActionSupplier.dismiss;
 import static com.github.toy.constructor.selenium.functions.target.locator.alert.GetAlertSupplier.alert;
 import static com.github.toy.constructor.selenium.functions.click.ClickActionSupplier.on;
-import static com.github.toy.constructor.selenium.functions.edit.EditActionSupplier.valueOf;
 import static com.github.toy.constructor.selenium.functions.java.script.GetJavaScriptResultSupplier.javaScript;
 import static com.github.toy.constructor.selenium.functions.searching.MultipleSearchSupplier.links;
 import static com.github.toy.constructor.selenium.functions.searching.MultipleSearchSupplier.textFields;
@@ -77,7 +78,7 @@ public class Tezzt {
             selenium.edit(
                     valueOf(
                             element(textField(ofSeconds(5),
-                                    widgetShouldBeEnabled().and(widgetShouldBeVisible()))), of("123", HOME))
+                                    shouldBeEnabled().and(shouldBeVisible()))), of("123", HOME))
 
                     .andValueOf(element(flag()), true));
 
@@ -116,11 +117,11 @@ public class Tezzt {
 
         assertThat("Check element",
                 selenium.find(element(webElement(xpath("some path")))),
-                hasNestedElement(button("Submit", ofSeconds(50), widgetShouldBeVisible())));
+                hasNestedElement(button("Submit", ofSeconds(50), shouldBeVisible())));
 
         assertThat("Check elements",
                 selenium.find(element(webElement(xpath("some path 2")))),
-                hasNestedElements(buttons("Submit", ofSeconds(50), widgetShouldBeVisible()))
+                hasNestedElements(buttons("Submit", ofSeconds(50), shouldBeVisible()))
                         .withCount(2).checkCountStrictly(true));
 
         assertThat("Check element",
