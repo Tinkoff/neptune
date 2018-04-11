@@ -9,24 +9,24 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
 
-public final class HasNestedElements<T extends SearchContext> extends TypeSafeDiagnosingMatcher<T> {
+public final class HasNestedElementsMatcher<T extends SearchContext> extends TypeSafeDiagnosingMatcher<T> {
 
     private final MultipleSearchSupplier<?> search;
     private int expectedCount = -1;
     private boolean toMatchCountStrictly = false;
 
-    private HasNestedElements(MultipleSearchSupplier<?> search) {
+    private HasNestedElementsMatcher(MultipleSearchSupplier<?> search) {
         this.search = search;
     }
 
     /**
-     * Creates a new instance of {@link HasNestedElements} and defines the way to find desired nested elements.
+     * Creates a new instance of {@link HasNestedElementsMatcher} and defines the way to find desired nested elements.
      * @param search is the way to find desired nested elements.
      * @param <T> is the type of an instance of {@link SearchContext} which is expected to contain desired nested elements.
-     * @return created instance of {@link HasNestedElements}
+     * @return created instance of {@link HasNestedElementsMatcher}
      */
-    public static <T extends SearchContext> HasNestedElements<T> hasNestedElements(MultipleSearchSupplier<?> search) {
-        return new HasNestedElements<>(search);
+    public static <T extends SearchContext> HasNestedElementsMatcher<T> hasNestedElements(MultipleSearchSupplier<?> search) {
+        return new HasNestedElementsMatcher<>(search);
     }
 
     /**
@@ -36,7 +36,7 @@ public final class HasNestedElements<T extends SearchContext> extends TypeSafeDi
      * @param count is expected count of nested elements
      * @return self-reference.
      */
-    public HasNestedElements<T> withCount(int count) {
+    public HasNestedElementsMatcher<T> withCount(int count) {
         checkArgument(count > 0, "Expected count should be greater than zero");
         this.expectedCount = count;
         return this;
@@ -48,7 +48,7 @@ public final class HasNestedElements<T extends SearchContext> extends TypeSafeDi
      *                 is not invoked then this value is ignored.
      * @return self-reference.
      */
-    public HasNestedElements<T> checkCountStrictly(boolean strictly) {
+    public HasNestedElementsMatcher<T> checkCountStrictly(boolean strictly) {
         this.toMatchCountStrictly = strictly;
         return this;
     }

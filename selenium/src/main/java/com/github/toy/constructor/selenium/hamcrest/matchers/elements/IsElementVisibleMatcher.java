@@ -9,21 +9,21 @@ import org.openqa.selenium.internal.WrapsElement;
 
 import static java.lang.String.format;
 
-public final class IsElementVisible extends TypeSafeDiagnosingMatcher<SearchContext> {
+public final class IsElementVisibleMatcher extends TypeSafeDiagnosingMatcher<SearchContext> {
 
-    private IsElementVisible() {
+    private IsElementVisibleMatcher() {
         super();
     }
 
     /**
-     * Creates an instance of {@link IsElementVisible} which checks visibility of some instance of {@link SearchContext}.
+     * Creates an instance of {@link IsElementVisibleMatcher} which checks visibility of some instance of {@link SearchContext}.
      * It should be {@link WebElement} or some implementor of {@link IsVisible} or {@link WrapsElement}.
      * Otherwise the matching returns {@code false}
      *
-     * @return an instance of {@link IsElementVisible}
+     * @return an instance of {@link IsElementVisibleMatcher}
      */
-    public static IsElementVisible isVisible() {
-        return new IsElementVisible();
+    public static IsElementVisibleMatcher isVisible() {
+        return new IsElementVisibleMatcher();
     }
 
     @Override

@@ -9,23 +9,23 @@ import org.openqa.selenium.SearchContext;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
 
-public final class HasNestedElement<T extends SearchContext> extends TypeSafeDiagnosingMatcher<T> {
+public final class HasNestedElementMatcher<T extends SearchContext> extends TypeSafeDiagnosingMatcher<T> {
 
     private final SearchSupplier<?> search;
 
-    private HasNestedElement(SearchSupplier<?> search) {
+    private HasNestedElementMatcher(SearchSupplier<?> search) {
         this.search = search;
     }
 
     /**
-     * Creates a new instance of {@link HasNestedElement} and defines the way to find desired nested element.
+     * Creates a new instance of {@link HasNestedElementMatcher} and defines the way to find desired nested element.
      * @param search is the way to find desired nested element.
      * @param <T> is the type of an instance of {@link SearchContext} which is expected to contain desired nested element.
-     * @return created instance of {@link HasNestedElement}
+     * @return created instance of {@link HasNestedElementMatcher}
      */
-    public static <T extends SearchContext> HasNestedElement<T> hasNestedElement(SearchSupplier<?> search) {
+    public static <T extends SearchContext> HasNestedElementMatcher<T> hasNestedElement(SearchSupplier<?> search) {
 
-        return new HasNestedElement<>(search);
+        return new HasNestedElementMatcher<>(search);
     }
 
     @Override

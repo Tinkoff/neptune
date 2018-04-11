@@ -37,14 +37,17 @@ import static com.github.toy.constructor.selenium.functions.target.locator.windo
 import static com.github.toy.constructor.selenium.functions.value.SequentialGetAttributeValueSupplier.attributeValue;
 import static com.github.toy.constructor.selenium.functions.value.SequentialGetCSSValueSupplier.cssValue;
 import static com.github.toy.constructor.selenium.functions.value.SequentialGetValueSupplier.ofThe;
-import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.HasNestedElement.hasNestedElement;
-import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.HasNestedElements.hasNestedElements;
-import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.IsElementEnabled.isEnabled;
-import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.IsElementVisible.isVisible;
+import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.HasAttributeMatcher.hasAttribute;
+import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.HasCssValueMatcher.hasCss;
+import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.HasNestedElementMatcher.hasNestedElement;
+import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.HasNestedElementsMatcher.hasNestedElements;
+import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.IsElementEnabledMatcher.isEnabled;
+import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.IsElementVisibleMatcher.isVisible;
 import static com.google.common.collect.ImmutableList.of;
 import static java.time.Duration.ofSeconds;
 import static java.util.regex.Pattern.compile;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.StringContains.containsString;
 import static org.openqa.selenium.By.xpath;
 import static org.openqa.selenium.Keys.HOME;
 
@@ -131,5 +134,29 @@ public class Tezzt {
         assertThat("Check element",
                 selenium.find(element(webElement(xpath("some path 4")))),
                 isEnabled());
+
+        assertThat("Check element",
+                selenium.find(element(webElement(xpath("some path 5")))),
+                hasAttribute("Some attr", containsString("123")));
+
+        assertThat("Check element",
+                selenium.find(element(webElement(xpath("some path 6")))),
+                hasAttribute("Some attr2", "123"));
+
+        assertThat("Check element",
+                selenium.find(element(webElement(xpath("some path 7")))),
+                hasAttribute("Some attr3"));
+
+        assertThat("Check element",
+                selenium.find(element(webElement(xpath("some path 8")))),
+                hasCss("Some css", containsString("123")));
+
+        assertThat("Check element",
+                selenium.find(element(webElement(xpath("some path 9")))),
+                hasCss("Some css2", "123"));
+
+        assertThat("Check element",
+                selenium.find(element(webElement(xpath("some path 10")))),
+                hasCss("Some css3"));
     }
 }

@@ -9,21 +9,21 @@ import org.openqa.selenium.internal.WrapsElement;
 
 import static java.lang.String.format;
 
-public final class IsElementEnabled extends TypeSafeDiagnosingMatcher<SearchContext> {
+public final class IsElementEnabledMatcher extends TypeSafeDiagnosingMatcher<SearchContext> {
 
-    private IsElementEnabled() {
+    private IsElementEnabledMatcher() {
         super();
     }
 
     /**
-     * Creates an instance of {@link IsElementEnabled} which checks is some instance of {@link SearchContext} enabled or not.
+     * Creates an instance of {@link IsElementEnabledMatcher} which checks is some instance of {@link SearchContext} enabled or not.
      * It should be {@link WebElement} or some implementor of {@link IsEnabled} or {@link WrapsElement}.
      * Otherwise the matching returns {@code false}
      *
-     * @return an instance of {@link IsElementEnabled}
+     * @return an instance of {@link IsElementEnabledMatcher}
      */
-    public static IsElementEnabled isEnabled() {
-        return new IsElementEnabled();
+    public static IsElementEnabledMatcher isEnabled() {
+        return new IsElementEnabledMatcher();
     }
 
     @Override
