@@ -41,12 +41,16 @@ import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.Has
 import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.HasCssValueMatcher.hasCss;
 import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.HasNestedElementMatcher.hasNestedElement;
 import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.HasNestedElementsMatcher.hasNestedElements;
+import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.HasSizeMatcher.hasDimensionalSize;
+import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.HasTextMatcher.hasText;
+import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.HasValueMatcher.hasValue;
 import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.IsElementEnabledMatcher.isEnabled;
 import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.IsElementVisibleMatcher.isVisible;
 import static com.google.common.collect.ImmutableList.of;
 import static java.time.Duration.ofSeconds;
 import static java.util.regex.Pattern.compile;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.openqa.selenium.By.xpath;
 import static org.openqa.selenium.Keys.HOME;
@@ -158,5 +162,47 @@ public class Tezzt {
         assertThat("Check element",
                 selenium.find(element(webElement(xpath("some path 10")))),
                 hasCss("Some css3"));
+
+        assertThat("Check element",
+                selenium.find(element(webElement(xpath("some path 11")))),
+                hasText(containsString("123")));
+
+        assertThat("Check element",
+                selenium.find(element(webElement(xpath("some path 12")))),
+                hasText("123"));
+
+        assertThat("Check element",
+                selenium.find(element(webElement(xpath("some path 13")))),
+                hasText());
+
+
+        assertThat("Check value",
+                selenium.find(element(textField())),
+                hasValue("123"));
+
+        assertThat("Check value",
+                selenium.find(element(textField())),
+                hasValue(containsString("123")));
+
+        assertThat("Check value",
+                selenium.find(element(checkbox())),
+                hasValue(true));
+
+
+        assertThat("Check size",
+                selenium.find(element(textField())),
+                hasDimensionalSize(1, 2));
+
+        assertThat("Check size",
+                selenium.find(element(textField())),
+                hasDimensionalSize(greaterThan(1), greaterThan(2)));
+
+        assertThat("Check size",
+                selenium.find(element(textField())),
+                hasDimensionalSize(1, greaterThan(2)));
+
+        assertThat("Check size",
+                selenium.find(element(textField())),
+                hasDimensionalSize(greaterThan(1), 2));
     }
 }
