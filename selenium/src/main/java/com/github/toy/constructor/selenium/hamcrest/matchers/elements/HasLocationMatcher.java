@@ -10,6 +10,7 @@ import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsElement;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -22,6 +23,8 @@ public final class HasLocationMatcher<T extends SearchContext> extends TypeSafeD
     private Point relativeTo;
 
     private HasLocationMatcher(Matcher<Integer> xMatcher, Matcher<Integer> yMatcher) {
+        checkArgument(xMatcher != null, "Criteria to check x-value should be defined");
+        checkArgument(yMatcher != null, "Criteria to check y-value should be defined");
         this.xMatcher = xMatcher;
         this.yMatcher = yMatcher;
     }

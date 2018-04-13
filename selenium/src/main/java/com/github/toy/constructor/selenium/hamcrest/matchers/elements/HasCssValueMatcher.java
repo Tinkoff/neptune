@@ -3,7 +3,6 @@ package com.github.toy.constructor.selenium.hamcrest.matchers.elements;
 import com.github.toy.constructor.selenium.api.widget.HasCssValue;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.StringDescription;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
@@ -96,9 +95,7 @@ public final class HasCssValueMatcher<T extends SearchContext> extends TypeSafeD
         }
 
         if (!result) {
-            Description description = new StringDescription();
-            matcher.describeMismatch(cssValue, description);
-            mismatchDescription.appendText(description.toString());
+            matcher.describeMismatch(cssValue, mismatchDescription);
         }
         return result;
     }

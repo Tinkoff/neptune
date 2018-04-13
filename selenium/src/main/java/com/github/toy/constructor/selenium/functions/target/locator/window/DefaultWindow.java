@@ -137,6 +137,7 @@ class DefaultWindow implements Window {
 
     @Override
     public WebDriver getWrappedDriver() {
+        switchToMe();
         return driver;
     }
 }

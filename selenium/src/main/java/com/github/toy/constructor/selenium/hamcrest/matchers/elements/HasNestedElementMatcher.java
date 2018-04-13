@@ -6,6 +6,7 @@ import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
 
@@ -14,6 +15,7 @@ public final class HasNestedElementMatcher<T extends SearchContext> extends Type
     private final SearchSupplier<?> search;
 
     private HasNestedElementMatcher(SearchSupplier<?> search) {
+        checkArgument(search != null, "The way to find nested element should be defined");
         this.search = search;
     }
 
@@ -24,7 +26,6 @@ public final class HasNestedElementMatcher<T extends SearchContext> extends Type
      * @return created instance of {@link HasNestedElementMatcher}
      */
     public static <T extends SearchContext> HasNestedElementMatcher<T> hasNestedElement(SearchSupplier<?> search) {
-
         return new HasNestedElementMatcher<>(search);
     }
 

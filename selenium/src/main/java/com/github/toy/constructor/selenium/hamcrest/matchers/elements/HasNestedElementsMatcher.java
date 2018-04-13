@@ -16,6 +16,7 @@ public final class HasNestedElementsMatcher<T extends SearchContext> extends Typ
     private boolean toMatchCountStrictly = false;
 
     private HasNestedElementsMatcher(MultipleSearchSupplier<?> search) {
+        checkArgument(search != null, "The way to find nested elements should be defined");
         this.search = search;
     }
 

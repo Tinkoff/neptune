@@ -2,7 +2,6 @@ package com.github.toy.constructor.selenium.hamcrest.matchers.elements;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.StringDescription;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
@@ -82,9 +81,7 @@ public final class HasTextMatcher<T extends SearchContext> extends TypeSafeDiagn
         }
 
         if (!result) {
-            Description description = new StringDescription();
-            matcher.describeMismatch(text, description);
-            mismatchDescription.appendText(description.toString());
+            matcher.describeMismatch(text, mismatchDescription);
         }
         return result;
     }

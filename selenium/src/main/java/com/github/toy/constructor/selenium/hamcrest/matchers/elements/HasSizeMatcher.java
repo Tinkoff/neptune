@@ -10,6 +10,7 @@ import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsElement;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.hamcrest.Matchers.*;
@@ -20,6 +21,8 @@ public final class HasSizeMatcher<T extends SearchContext> extends TypeSafeDiagn
     private final Matcher<Integer> heightMatcher;
 
     private HasSizeMatcher(Matcher<Integer> widthMatcher, Matcher<Integer> heightMatcher) {
+        checkArgument(widthMatcher != null, "Criteria to check width should be defined");
+        checkArgument(heightMatcher != null, "Criteria to check height should be defined");
         this.widthMatcher = widthMatcher;
         this.heightMatcher = heightMatcher;
     }

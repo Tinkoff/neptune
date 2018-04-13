@@ -41,6 +41,7 @@ public class Frame implements SwitchesToItself  {
 
     @Override
     public WebDriver getWrappedDriver() {
+        switchToMe();
         return webDriver;
     }
 

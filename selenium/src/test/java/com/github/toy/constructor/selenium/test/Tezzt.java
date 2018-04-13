@@ -47,6 +47,10 @@ import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.Has
 import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.HasValueMatcher.hasValue;
 import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.IsElementEnabledMatcher.isEnabled;
 import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.IsElementVisibleMatcher.isVisible;
+import static com.github.toy.constructor.selenium.hamcrest.matchers.window.IsWindowPresentMatcher.windowIsPresent;
+import static com.github.toy.constructor.selenium.hamcrest.matchers.window.WindowHasPositionMatcher.windowHasPosition;
+import static com.github.toy.constructor.selenium.hamcrest.matchers.window.WindowHasSizeMatcher.windowHasSize;
+import static com.github.toy.constructor.selenium.hamcrest.matchers.window.WindowHasTitleMatcher.windowHasTitle;
 import static com.google.common.collect.ImmutableList.of;
 import static java.time.Duration.ofSeconds;
 import static java.util.regex.Pattern.compile;
@@ -206,11 +210,6 @@ public class Tezzt {
                 selenium.find(element(textField())),
                 hasDimensionalSize(greaterThan(1), 2));
 
-
-
-
-
-
         assertThat("Check location",
                 selenium.find(element(textField())),
                 hasLoction(1, 2));
@@ -234,5 +233,49 @@ public class Tezzt {
         assertThat("Check location",
                 selenium.find(element(textField())),
                 hasLoction(greaterThan(1), 2).relativeTo(selenium.find(element(webElement(xpath("path"))))));
+
+        assertThat("check window title",
+                selenium.get(window().withTimeToGetWindow(ofSeconds(20)).byIndex(2)),
+                windowHasTitle("Title"));
+
+        assertThat("check window title",
+                selenium.get(window().withTimeToGetWindow(ofSeconds(20)).byIndex(2)),
+                windowHasTitle(containsString("Title")));
+
+        assertThat("Check window size",
+                selenium.get(window().withTimeToGetWindow(ofSeconds(20)).byIndex(2)),
+                windowHasSize(1, 2));
+
+        assertThat("Check window size",
+                selenium.get(window().withTimeToGetWindow(ofSeconds(20)).byIndex(2)),
+                windowHasSize(1, greaterThan(2)));
+
+        assertThat("Check window size",
+                selenium.get(window().withTimeToGetWindow(ofSeconds(20)).byIndex(2)),
+                windowHasSize(greaterThan(1), 2));
+
+        assertThat("Check window size",
+                selenium.get(window().withTimeToGetWindow(ofSeconds(20)).byIndex(2)),
+                windowHasSize(greaterThan(1), greaterThan(2)));
+
+        assertThat("Check window position",
+                selenium.get(window().withTimeToGetWindow(ofSeconds(20)).byIndex(2)),
+                windowHasPosition(1, 2));
+
+        assertThat("Check window position",
+                selenium.get(window().withTimeToGetWindow(ofSeconds(20)).byIndex(2)),
+                windowHasPosition(1, greaterThan(2)));
+
+        assertThat("Check window position",
+                selenium.get(window().withTimeToGetWindow(ofSeconds(20)).byIndex(2)),
+                windowHasPosition(greaterThan(1), 2));
+
+        assertThat("Check window position",
+                selenium.get(window().withTimeToGetWindow(ofSeconds(20)).byIndex(2)),
+                windowHasPosition(greaterThan(1), greaterThan(2)));
+
+        Window window = selenium.get(window().withTimeToGetWindow(ofSeconds(20)).byIndex(2));
+        assertThat("Check presence of a window",
+                window, windowIsPresent());
     }
 }

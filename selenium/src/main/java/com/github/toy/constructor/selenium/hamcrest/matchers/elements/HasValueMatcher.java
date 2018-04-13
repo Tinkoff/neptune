@@ -3,7 +3,6 @@ package com.github.toy.constructor.selenium.hamcrest.matchers.elements;
 import com.github.toy.constructor.selenium.api.widget.HasValue;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.StringDescription;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.openqa.selenium.SearchContext;
 
@@ -49,9 +48,7 @@ public final class HasValueMatcher<Q, T extends SearchContext & HasValue<Q>> ext
         Q value = item.getValue();
         boolean result = criteria.matches(value);
         if (!result) {
-            StringDescription description = new StringDescription();
-            criteria.describeMismatch(value, description);
-            mismatchDescription.appendText(description.toString());
+            criteria.describeMismatch(value, mismatchDescription);
         }
         return result;
     }
