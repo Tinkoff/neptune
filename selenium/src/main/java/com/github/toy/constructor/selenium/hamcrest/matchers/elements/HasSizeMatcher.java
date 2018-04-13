@@ -121,6 +121,7 @@ public final class HasSizeMatcher<T extends SearchContext> extends TypeSafeDiagn
                 }
                 heightMatcher.describeMismatch(size.getHeight(), description.appendText("height: "));
             }
+            mismatchDescription.appendText(description.toString());
         }
         return result;
     }

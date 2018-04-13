@@ -39,6 +39,7 @@ import static com.github.toy.constructor.selenium.functions.value.SequentialGetC
 import static com.github.toy.constructor.selenium.functions.value.SequentialGetValueSupplier.ofThe;
 import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.HasAttributeMatcher.hasAttribute;
 import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.HasCssValueMatcher.hasCss;
+import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.HasLocationMatcher.hasLoction;
 import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.HasNestedElementMatcher.hasNestedElement;
 import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.HasNestedElementsMatcher.hasNestedElements;
 import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.HasSizeMatcher.hasDimensionalSize;
@@ -204,5 +205,34 @@ public class Tezzt {
         assertThat("Check size",
                 selenium.find(element(textField())),
                 hasDimensionalSize(greaterThan(1), 2));
+
+
+
+
+
+
+        assertThat("Check location",
+                selenium.find(element(textField())),
+                hasLoction(1, 2));
+
+        assertThat("Check location",
+                selenium.find(element(textField())),
+                hasLoction(greaterThan(1), greaterThan(2)));
+
+        assertThat("Check location",
+                selenium.find(element(textField())),
+                hasLoction(1, greaterThan(2)));
+
+        assertThat("Check location",
+                selenium.find(element(textField())),
+                hasLoction(greaterThan(1), 2));
+
+        assertThat("Check location",
+                selenium.find(element(textField())),
+                hasLoction(greaterThan(1), 2).relativeTo(selenium.find(element(button()))));
+
+        assertThat("Check location",
+                selenium.find(element(textField())),
+                hasLoction(greaterThan(1), 2).relativeTo(selenium.find(element(webElement(xpath("path"))))));
     }
 }
