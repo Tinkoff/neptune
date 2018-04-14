@@ -37,6 +37,7 @@ import static com.github.toy.constructor.selenium.functions.target.locator.windo
 import static com.github.toy.constructor.selenium.functions.value.SequentialGetAttributeValueSupplier.attributeValue;
 import static com.github.toy.constructor.selenium.functions.value.SequentialGetCSSValueSupplier.cssValue;
 import static com.github.toy.constructor.selenium.functions.value.SequentialGetValueSupplier.ofThe;
+import static com.github.toy.constructor.selenium.hamcrest.matchers.alert.AlertHasTextMatcher.alertHasText;
 import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.HasAttributeMatcher.hasAttribute;
 import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.HasCssValueMatcher.hasCss;
 import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.HasLocationMatcher.hasLoction;
@@ -47,6 +48,7 @@ import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.Has
 import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.HasValueMatcher.hasValue;
 import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.IsElementEnabledMatcher.isEnabled;
 import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.IsElementVisibleMatcher.isVisible;
+import static com.github.toy.constructor.selenium.hamcrest.matchers.url.AtThePageMatcher.atThePage;
 import static com.github.toy.constructor.selenium.hamcrest.matchers.window.IsWindowPresentMatcher.windowIsPresent;
 import static com.github.toy.constructor.selenium.hamcrest.matchers.window.WindowHasPositionMatcher.windowHasPosition;
 import static com.github.toy.constructor.selenium.hamcrest.matchers.window.WindowHasSizeMatcher.windowHasSize;
@@ -277,5 +279,37 @@ public class Tezzt {
         Window window = selenium.get(window().withTimeToGetWindow(ofSeconds(20)).byIndex(2));
         assertThat("Check presence of a window",
                 window, windowIsPresent());
+
+        assertThat("Url of the window",
+                window,
+                atThePage("https://www.youtube.com"));
+
+        assertThat("Url of the window",
+                window,
+                atThePage(containsString("www.youtube.com")));
+
+        assertThat("Url",
+                selenium,
+                atThePage("https://www.youtube.com"));
+
+        assertThat("Url",
+                selenium,
+                atThePage(containsString("www.youtube.com")));
+
+        assertThat("Url of frame",
+                selenium.get(frame(1)),
+                atThePage("https://www.youtube.com"));
+
+        assertThat("Url of frame",
+                selenium.get(frame(1)),
+                atThePage(containsString("www.youtube.com")));
+
+        assertThat("Alert text",
+                selenium.get(alert()),
+                alertHasText("Some text"));
+
+        assertThat("Alert text",
+                selenium.get(alert()),
+                alertHasText(containsString("Some text")));
     }
 }
