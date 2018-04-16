@@ -5,6 +5,7 @@ import com.github.toy.constructor.core.api.PerformStep;
 import com.github.toy.constructor.core.api.ToBeReported;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.DynamicType;
+import net.bytebuddy.dynamic.loading.InjectionClassLoader;
 import org.objenesis.ObjenesisStd;
 
 import java.lang.annotation.Annotation;
@@ -137,7 +138,7 @@ public final class Substitution {
                 .method(not(isAnnotatedWith(ToBeReported.class)))
                 .intercept(to(interceptor))
                 .make()
-                .load(Substitution.class.getClassLoader())
+                .load(InjectionClassLoader.getSystemClassLoader())
                 .getLoaded();
     }
 

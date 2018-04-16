@@ -1,6 +1,5 @@
 group 'com.github.toy.constructor'
-def versionValue = '1.0-SNAPSHOT'
-version versionValue
+version '1.0-SNAPSHOT'
 
 
 subprojects {
@@ -14,7 +13,7 @@ subprojects {
     }
 }
 
-def testNGvaersion = '6.14.2'
+def testNGvaersion = '6.14.3'
 def hamcrestVersion = '2.0.0.0'
 def seleniumVersion = '3.11.0'
 
@@ -22,7 +21,7 @@ project(":core.api") {
     dependencies {
         compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
         compile group: 'com.google.guava', name: 'guava', version: '24.1-jre'
-        compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.8.0'
+        compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.8.3'
         compile group: 'org.objenesis', name: 'objenesis', version: '2.6'
         testCompile group: 'org.testng', name: 'testng', version: testNGvaersion
         testCompile group: 'org.hamcrest', name: 'java-hamcrest', version: hamcrestVersion
