@@ -18,18 +18,19 @@ import static com.github.toy.constructor.selenium.functions.navigation.GetCurren
 import static com.github.toy.constructor.selenium.functions.navigation.NavigationActionSupplier.toUrl;
 import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.shouldBeEnabled;
 import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.shouldBeVisible;
-import static com.github.toy.constructor.selenium.functions.searching.MultipleSearchSupplier.buttons;
+import static com.github.toy.constructor.selenium.functions.searching.MultipleSearchSupplier.*;
 import static com.github.toy.constructor.selenium.functions.target.locator.SwitchActionSupplier.to;
 import static com.github.toy.constructor.selenium.functions.target.locator.alert.AlertActionSupplier.accept;
 import static com.github.toy.constructor.selenium.functions.target.locator.alert.AlertActionSupplier.dismiss;
 import static com.github.toy.constructor.selenium.functions.target.locator.alert.GetAlertSupplier.alert;
 import static com.github.toy.constructor.selenium.functions.click.ClickActionSupplier.on;
 import static com.github.toy.constructor.selenium.functions.java.script.GetJavaScriptResultSupplier.javaScript;
-import static com.github.toy.constructor.selenium.functions.searching.MultipleSearchSupplier.links;
-import static com.github.toy.constructor.selenium.functions.searching.MultipleSearchSupplier.textFields;
 import static com.github.toy.constructor.selenium.functions.searching.SearchSupplier.*;
 import static com.github.toy.constructor.selenium.functions.searching.SequentialMultipleSearchSupplier.elements;
 import static com.github.toy.constructor.selenium.functions.searching.SequentialSearchSupplier.element;
+import static com.github.toy.constructor.selenium.functions.target.locator.frame.GetFrameFunction.index;
+import static com.github.toy.constructor.selenium.functions.target.locator.frame.GetFrameFunction.insideElement;
+import static com.github.toy.constructor.selenium.functions.target.locator.frame.GetFrameFunction.nameOrId;
 import static com.github.toy.constructor.selenium.functions.target.locator.frame.GetFrameSupplier.frame;
 import static com.github.toy.constructor.selenium.functions.target.locator.window.GetWindowSupplier.window;
 import static com.github.toy.constructor.selenium.functions.target.locator.window.WindowPredicates.hasTitle;
@@ -48,6 +49,7 @@ import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.Has
 import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.HasValueMatcher.hasValue;
 import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.IsElementEnabledMatcher.isEnabled;
 import static com.github.toy.constructor.selenium.hamcrest.matchers.elements.IsElementVisibleMatcher.isVisible;
+import static com.github.toy.constructor.selenium.hamcrest.matchers.frame.HasFrameMatcher.hasFrame;
 import static com.github.toy.constructor.selenium.hamcrest.matchers.url.AtThePageMatcher.atThePage;
 import static com.github.toy.constructor.selenium.hamcrest.matchers.window.IsWindowPresentMatcher.windowIsPresent;
 import static com.github.toy.constructor.selenium.hamcrest.matchers.window.WindowHasPositionMatcher.windowHasPosition;
@@ -116,7 +118,11 @@ public class Tezzt {
                     .withTimeToGetWindow(ofSeconds(5)));
             selenium.performSwitch(to(window));
 
-            selenium.performSwitch(to(frame(1)).andThenSwitchTo(window));
+            selenium.performSwitch(to(frame(index(ofSeconds(5), 1))).andThenSwitchTo(window));
+            selenium.performSwitch(to(frame(nameOrId(ofSeconds(5), "frame name"))));
+            selenium.performSwitch(to(frame(insideElement(ofSeconds(5),
+                    selenium.find(element(webElement(xpath("some path"))))))));
+            selenium.performSwitch(to(frame(insideElement(ofSeconds(5), webElement(xpath("some path"))))));
         }));
 
         selenium.navigate(toUrl("www.youtube.com")
@@ -297,11 +303,11 @@ public class Tezzt {
                 atThePage(containsString("www.youtube.com")));
 
         assertThat("Url of frame",
-                selenium.get(frame(1)),
+                selenium.get(frame(index(1))),
                 atThePage("https://www.youtube.com"));
 
         assertThat("Url of frame",
-                selenium.get(frame(1)),
+                selenium.get(frame(index(1))),
                 atThePage(containsString("www.youtube.com")));
 
         assertThat("Alert text",
@@ -311,5 +317,16 @@ public class Tezzt {
         assertThat("Alert text",
                 selenium.get(alert()),
                 alertHasText(containsString("Some text")));
+
+        assertThat("Check presence of a frame",
+                window, hasFrame(index(1)));
+
+        assertThat("Check presence of a frame",
+                selenium,
+                hasFrame(index(2)));
+
+        assertThat("Url of the window",
+                selenium.get(frame(nameOrId("some name or id2"))),
+                hasFrame(index(2)));
     }
 }

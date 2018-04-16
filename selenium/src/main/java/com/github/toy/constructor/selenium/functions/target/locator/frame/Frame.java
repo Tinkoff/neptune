@@ -1,10 +1,11 @@
 package com.github.toy.constructor.selenium.functions.target.locator.frame;
 
+import com.github.toy.constructor.selenium.functions.searching.SearchSupplier;
 import com.github.toy.constructor.selenium.functions.target.locator.SwitchesToItself;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.WrapsElement;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 
 public class Frame implements SwitchesToItself  {
@@ -12,10 +13,6 @@ public class Frame implements SwitchesToItself  {
     private final Object frame;
 
     Frame(WebDriver webDriver, Object frame) {
-        Class<?> clazz = frame.getClass();
-        checkArgument(String.class.isAssignableFrom(clazz) || Integer.class.isAssignableFrom(clazz) || WebElement.class.isAssignableFrom(clazz),
-                format("Frame to switch to should be an instance of %s, %s or %s", String.class.getName(),
-                        Integer.class.getName(), WebElement.class.getName()));
         this.webDriver = webDriver;
         this.frame = frame;
         switchToMe();
@@ -36,6 +33,22 @@ public class Frame implements SwitchesToItself  {
 
         if (WebElement.class.isAssignableFrom(clazz)) {
             webDriver.switchTo().frame(WebElement.class.cast(frame));
+            return;
+        }
+
+        if (SearchSupplier.class.isAssignableFrom(clazz)) {
+            SearchSupplier searchSupplier = SearchSupplier.class.cast(frame);
+            Object element = searchSupplier.get().apply(webDriver);
+
+            if (WebElement.class.isAssignableFrom(element.getClass())) {
+                webDriver.switchTo().frame(WebElement.class.cast(element));
+                return;
+            }
+
+            if (WrapsElement.class.isAssignableFrom(element.getClass())) {
+                webDriver.switchTo().frame(WrapsElement.class
+                        .cast(element).getWrappedElement());
+            }
         }
     }
 
