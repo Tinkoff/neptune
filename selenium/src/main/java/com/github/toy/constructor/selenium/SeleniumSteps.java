@@ -2,6 +2,7 @@ package com.github.toy.constructor.selenium;
 
 import com.github.toy.constructor.core.api.GetStep;
 import com.github.toy.constructor.core.api.PerformStep;
+import com.github.toy.constructor.core.api.proxy.CreateWith;
 import com.github.toy.constructor.selenium.functions.navigation.NavigationActionSupplier;
 import com.github.toy.constructor.selenium.functions.target.locator.SwitchActionSupplier;
 import com.github.toy.constructor.selenium.functions.target.locator.alert.AlertActionSupplier;
@@ -17,6 +18,7 @@ import org.openqa.selenium.internal.WrapsDriver;
 
 import java.util.List;
 
+@CreateWith(provider = SeleniumParameterProvider.class)
 public class SeleniumSteps implements PerformStep<SeleniumSteps>, GetStep<SeleniumSteps>, WrapsDriver{
 
     private final WebDriver driver;
