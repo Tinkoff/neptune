@@ -1,6 +1,8 @@
 package com.github.toy.constructor.check;
 
 import com.github.toy.constructor.core.api.PerformStep;
+import com.github.toy.constructor.core.api.proxy.CreateWith;
+import com.github.toy.constructor.core.api.proxy.ProviderOfEmptyParameters;
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 
@@ -8,6 +10,7 @@ import static com.github.toy.constructor.core.api.StoryWriter.action;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 
+@CreateWith(provider = ProviderOfEmptyParameters.class)
 public class Check implements PerformStep<Check> {
 
     /**

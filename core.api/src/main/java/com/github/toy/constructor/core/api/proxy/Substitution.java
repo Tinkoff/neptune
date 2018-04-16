@@ -89,9 +89,9 @@ public final class Substitution {
     }
 
     private static List<Logger> loadSPI(List<Logger> additional) {
-        List<Logger> loggers = new ArrayList<>(ServiceLoader.load(Logger.class)
+        List<Logger> loggers = ServiceLoader.load(Logger.class)
                 .stream()
-                .map(ServiceLoader.Provider::get).collect(toList()));
+                .map(ServiceLoader.Provider::get).collect(toList());
 
         List<? extends Class<? extends Logger>> loggerClasses =
                 loggers.stream().map(Logger::getClass).collect(toList());
@@ -177,6 +177,48 @@ public final class Substitution {
      * {@link com.github.toy.constructor.core.api.GetStep} and/or {@link com.github.toy.constructor.core.api.PerformStep}.
      *
      * @param clazz to substitute. It should be the implementor of {@link com.github.toy.constructor.core.api.GetStep}
+     *              and/or {@link com.github.toy.constructor.core.api.PerformStep}. WARNING!!! It is important!!! Class
+     *              to get substituted instance should be annotated by {@link CreateWith}.
+     * @param manipulationWithClassToInstantiate is a function which transforms class to be instantiated, e.g bytecode
+     *                                            operations by CGLIB or Byte Buddy etc.
+     * @param manipulationWithObjectToReturn is a function which transforms created object, e.g creating proxy,
+     *                                        changing some attributes etc.
+     * @param loggers list of custom loggers. see {@link Logger}
+     * @param annotations to set to methods that marked by {@link com.github.toy.constructor.core.api.ToBeReported}.
+     *                    These annotations should describe steps. Their description should be like {@value {0}} or
+     *                    some string convenient to the formatting with a single parameter.
+     * @param <T> type of the implementor of {@link com.github.toy.constructor.core.api.GetStep} and/or
+     * {@link com.github.toy.constructor.core.api.PerformStep}.
+     * @return an instance.
+     */
+    public static <T> T getSubstituted(Class<T> clazz,
+                                       Function<Class<? extends T>, Class<? extends T>> manipulationWithClassToInstantiate,
+                                       Function<T, T> manipulationWithObjectToReturn,
+                                       List<Logger> loggers,
+                                       Annotation...annotations) throws Exception {
+        CreateWith createWith = ofNullable(clazz.getAnnotation(CreateWith.class))
+                .orElseThrow(() -> new IllegalArgumentException(format("%s should be annotated by %s",
+                        clazz.getName(), CreateWith.class.getName())));
+        Class<? extends ParameterProvider> providerClass = createWith.provider();
+        Constructor<? extends ParameterProvider> defaultConstructor;
+        try {
+            defaultConstructor = providerClass.getDeclaredConstructor();
+        }
+        catch (NoSuchMethodException e) {
+            throw new IllegalArgumentException(format("%s should have declared default constructor",
+                    clazz.getName()));
+        }
+        defaultConstructor.setAccessible(true);
+
+        return getSubstituted(clazz, defaultConstructor.newInstance().provide(), manipulationWithClassToInstantiate,
+                manipulationWithObjectToReturn, loggers, annotations);
+    }
+
+    /**
+     * This is the service method which creates an instance of the given implementor of
+     * {@link com.github.toy.constructor.core.api.GetStep} and/or {@link com.github.toy.constructor.core.api.PerformStep}.
+     *
+     * @param clazz to substitute. It should be the implementor of {@link com.github.toy.constructor.core.api.GetStep}
      *                    and/or {@link com.github.toy.constructor.core.api.PerformStep}.
      *
      * @param constructorParameters is a POJO with wrapped parameters of required constructor.
@@ -193,6 +235,28 @@ public final class Substitution {
                                        List<Logger> loggers,
                                        Annotation...annotations) throws Exception {
         return getSubstituted(clazz, constructorParameters, aClass -> aClass, t -> t, loggers, annotations);
+    }
+
+    /**
+     * This is the service method which creates an instance of the given implementor of
+     * {@link com.github.toy.constructor.core.api.GetStep} and/or {@link com.github.toy.constructor.core.api.PerformStep}.
+     *
+     * @param clazz to substitute. It should be the implementor of {@link com.github.toy.constructor.core.api.GetStep}
+     *                    and/or {@link com.github.toy.constructor.core.api.PerformStep}. WARNING!!! It is important!!! Class
+     *                    to get substituted instance should be annotated by {@link CreateWith}.
+     *
+     * @param loggers list of custom loggers. see {@link Logger}
+     * @param annotations to set to methods that marked by {@link com.github.toy.constructor.core.api.ToBeReported}.
+     *                    These annotations should describe steps. Their description should be like {@value {0}} or
+     *                    some string convenient to the formatting with a single parameter.
+     * @param <T> type of the implementor of {@link com.github.toy.constructor.core.api.GetStep} and/or
+     * {@link com.github.toy.constructor.core.api.PerformStep}.
+     * @return an instance.
+     */
+    public static <T> T getSubstituted(Class<T> clazz,
+                                       List<Logger> loggers,
+                                       Annotation...annotations) throws Exception {
+        return getSubstituted(clazz, aClass -> aClass, t -> t, loggers, annotations);
     }
 
 
@@ -215,5 +279,24 @@ public final class Substitution {
                                        ConstructorParameters constructorParameters,
                                        Annotation...annotations) throws Exception {
         return getSubstituted(clazz, constructorParameters, List.of(), annotations);
+    }
+
+    /**
+     * This is the service method which creates an instance of the given implementor of
+     * {@link com.github.toy.constructor.core.api.GetStep} and/or {@link com.github.toy.constructor.core.api.PerformStep}.
+     *
+     * @param clazz to substitute. It should be the implementor of {@link com.github.toy.constructor.core.api.GetStep}
+     *                    and/or {@link com.github.toy.constructor.core.api.PerformStep}. WARNING!!! It is important!!! Class
+     *                    to get substituted instance should be annotated by {@link CreateWith}.
+     * @param annotations to set to methods that marked by {@link com.github.toy.constructor.core.api.ToBeReported}.
+     *                    These annotations should describe steps. Their description should be like {@value {0}} or
+     *                    some string convenient to the formatting with a single parameter.
+     * @param <T> type of the implementor of {@link com.github.toy.constructor.core.api.GetStep} and/or
+     * {@link com.github.toy.constructor.core.api.PerformStep}.
+     * @return an instance.
+     */
+    public static <T> T getSubstituted(Class<T> clazz,
+                                       Annotation...annotations) throws Exception {
+        return getSubstituted(clazz, List.of(), annotations);
     }
 }

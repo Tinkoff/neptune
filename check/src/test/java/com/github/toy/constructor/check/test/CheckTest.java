@@ -10,7 +10,6 @@ import java.util.function.Function;
 
 import static com.github.toy.constructor.check.hamcrest.FluentMatcher.shouldMatch;
 import static com.github.toy.constructor.core.api.StoryWriter.action;
-import static com.github.toy.constructor.core.api.proxy.ConstructorParameters.params;
 import static com.github.toy.constructor.core.api.proxy.Substitution.getSubstituted;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
@@ -24,7 +23,7 @@ public class CheckTest {
 
     @BeforeTest
     public void beforeTest() throws Exception {
-        check = getSubstituted(Check.class, params(), of(defaultListLogger));
+        check = getSubstituted(Check.class, of(defaultListLogger));
     }
 
     @BeforeMethod
