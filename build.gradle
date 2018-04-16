@@ -21,7 +21,7 @@ project(":core.api") {
     dependencies {
         compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
         compile group: 'com.google.guava', name: 'guava', version: '24.1-jre'
-        compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.8.3'
+        compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.8.5'
         compile group: 'org.objenesis', name: 'objenesis', version: '2.6'
         testCompile group: 'org.testng', name: 'testng', version: testNGvaersion
         testCompile group: 'org.hamcrest', name: 'java-hamcrest', version: hamcrestVersion

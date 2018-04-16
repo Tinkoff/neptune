@@ -5,10 +5,12 @@ import com.github.toy.constructor.core.api.PerformStep;
 import com.github.toy.constructor.core.api.ToBeReported;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.DynamicType;
+import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
 import net.bytebuddy.dynamic.loading.InjectionClassLoader;
 import org.objenesis.ObjenesisStd;
 
 import java.lang.annotation.Annotation;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.util.*;
 import java.util.function.Function;
@@ -138,7 +140,8 @@ public final class Substitution {
                 .method(not(isAnnotatedWith(ToBeReported.class)))
                 .intercept(to(interceptor))
                 .make()
-                .load(InjectionClassLoader.getSystemClassLoader())
+                .load(InjectionClassLoader.getSystemClassLoader(), ClassLoadingStrategy.UsingLookup.of(MethodHandles
+                        .privateLookupIn(clazz, MethodHandles.lookup())))
                 .getLoaded();
     }
 
