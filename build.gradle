@@ -46,6 +46,9 @@ project(":selenium") {
         }
         compile group: 'cglib', name: 'cglib', version: '3.2.6'
         compile group: 'org.hamcrest', name: 'java-hamcrest', version: hamcrestVersion
+        compile (group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '2.2.1') {
+            exclude group: 'org.seleniumhq.selenium'
+        }
         testCompile group: 'org.testng', name: 'testng', version: testNGvaersion
     }
 }

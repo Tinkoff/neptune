@@ -67,7 +67,7 @@ import static org.openqa.selenium.Keys.HOME;
 public class Tezzt {
 
     public void tezzt() throws Exception {
-        SeleniumSteps selenium = getSubstituted(SeleniumSteps.class, params());
+        SeleniumSteps selenium = getSubstituted(SeleniumSteps.class);
 
         Button button = selenium.find(element(button("B1"))
                 .foundFrom(link("L1"))

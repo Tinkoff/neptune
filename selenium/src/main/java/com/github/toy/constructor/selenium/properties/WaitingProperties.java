@@ -22,14 +22,6 @@ public enum WaitingProperties implements Supplier<Duration> {
      */
     ELEMENT_WAITING_DURATION(ELEMENT_WAITING_TIME_UNIT, ELEMENT_WAITING_TIME_VALUE),
 
-    /**
-     * Returns duration of the waiting for some
-     * conditions related to {@code  org.openqa.selenium.*} objects.
-     * When {@code "waiting.selenium.time.unit"} or {@code "waiting.selenium.time"}
-     * are not defined then it returns 1 minute. Otherwise it returns defined duration value.
-     */
-    WAITING_TIME_DURATION(WAITING_TIME_UNIT, WAITING_TIME_VALUE),
-
 
     /**
      * Returns duration of the waiting for appearance of an alert.
@@ -76,14 +68,6 @@ public enum WaitingProperties implements Supplier<Duration> {
          * or {@code null} when nothing is defined
          */
         ELEMENT_WAITING_TIME_UNIT("waiting.for.elements.time.unit"),
-
-        /**
-         * Reads property {@code "waiting.selenium.time.unit"}.
-         * This property is needed to define time of the waiting for some
-         * conditions related to {@code  org.openqa.selenium.*} objects.
-         * Returns read value or {@code null} when nothing is defined
-         */
-        WAITING_TIME_UNIT("waiting.selenium.time.unit"),
 
         /**
          * Reads property {@code "waiting.alert.time.unit"}.
@@ -141,14 +125,6 @@ public enum WaitingProperties implements Supplier<Duration> {
         ELEMENT_WAITING_TIME_VALUE("waiting.for.elements.time"),
 
         /**
-         * Reads property {@code "waiting.selenium.time"}.
-         * This property is needed to define time of the waiting for some
-         * conditions related to {@code  org.openqa.selenium.*} objects.
-         * Returns read value or {@code null} if nothing is defined.
-         */
-        WAITING_TIME_VALUE("waiting.selenium.time"),
-
-        /**
          * Reads property {@code "waiting.alert.time"}.
          * This property is needed to define time of the waiting for appearance
          * of an alert. Returns read value or {@code null} if nothing is defined.
@@ -167,7 +143,7 @@ public enum WaitingProperties implements Supplier<Duration> {
          * This property is needed to define time of the waiting for the switching to some frame succeeded.
          * Returns read value or {@code null} if nothing is defined.
          */
-        WAITING_FRAME_SWITCHING_TIME_VALUE("waiting.frame.switching.time");;
+        WAITING_FRAME_SWITCHING_TIME_VALUE("waiting.frame.switching.time");
 
         private final String propertyName;
 

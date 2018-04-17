@@ -2,6 +2,7 @@ package com.github.toy.constructor.selenium;
 
 import com.github.toy.constructor.core.api.GetStep;
 import com.github.toy.constructor.core.api.PerformStep;
+import com.github.toy.constructor.core.api.Refreshable;
 import com.github.toy.constructor.core.api.proxy.CreateWith;
 import com.github.toy.constructor.selenium.functions.navigation.NavigationActionSupplier;
 import com.github.toy.constructor.selenium.functions.target.locator.SwitchActionSupplier;
@@ -19,17 +20,17 @@ import org.openqa.selenium.internal.WrapsDriver;
 import java.util.List;
 
 @CreateWith(provider = SeleniumParameterProvider.class)
-public class SeleniumSteps implements PerformStep<SeleniumSteps>, GetStep<SeleniumSteps>, WrapsDriver{
+public class SeleniumSteps implements PerformStep<SeleniumSteps>, GetStep<SeleniumSteps>, WrapsDriver, Refreshable {
 
-    private final WebDriver driver;
+    private final WrappedWebDriver wrappedWebDriver;
 
-    public SeleniumSteps(WebDriver driver) {
-        this.driver = driver;
+    public SeleniumSteps(WrappedWebDriver wrappedWebDriver) {
+        this.wrappedWebDriver = wrappedWebDriver;
     }
 
     @Override
     public WebDriver getWrappedDriver() {
-        return driver;
+        return wrappedWebDriver.getWrappedDriver();
     }
 
     public <R extends SearchContext> R find(SequentialSearchSupplier<R> what) {
@@ -66,5 +67,10 @@ public class SeleniumSteps implements PerformStep<SeleniumSteps>, GetStep<Seleni
 
     public SeleniumSteps navigate(NavigationActionSupplier navigationActionSupplier) {
         return perform(navigationActionSupplier);
+    }
+
+    @Override
+    public void refresh() {
+        wrappedWebDriver.refresh();
     }
 }
