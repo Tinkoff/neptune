@@ -23,6 +23,7 @@ project(":core.api") {
         compile group: 'com.google.guava', name: 'guava', version: '24.1-jre'
         compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.8.5'
         compile group: 'org.objenesis', name: 'objenesis', version: '2.6'
+        compile group: 'cglib', name: 'cglib', version: '3.2.6'
         testCompile group: 'org.testng', name: 'testng', version: testNGvaersion
         testCompile group: 'org.hamcrest', name: 'java-hamcrest', version: hamcrestVersion
     }
@@ -44,7 +45,6 @@ project(":selenium") {
             exclude group: 'com.google.guava'
             exclude group: 'com.google.code.gson'
         }
-        compile group: 'cglib', name: 'cglib', version: '3.2.6'
         compile group: 'org.hamcrest', name: 'java-hamcrest', version: hamcrestVersion
         compile (group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '2.2.1') {
             exclude group: 'org.seleniumhq.selenium'

@@ -10,7 +10,6 @@ import net.bytebuddy.dynamic.loading.InjectionClassLoader;
 import org.objenesis.ObjenesisStd;
 
 import java.lang.annotation.Annotation;
-import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.util.*;
 import java.util.function.Function;
@@ -133,15 +132,14 @@ public final class Substitution {
 
         DynamicType.Builder<? extends T> builder = new ByteBuddy().subclass(clazz);
 
-        InnerInterceptor<T> interceptor = new InnerInterceptor<>(clazz, constructorParameters, loadSPI(loggers));
+        InnerByteBuddyInterceptor<T> interceptor = new InnerByteBuddyInterceptor<>(clazz, constructorParameters, loadSPI(loggers));
         return builder.method(isAnnotatedWith(ToBeReported.class))
                 .intercept(to(interceptor))
                 .annotateMethod(annotations)
                 .method(not(isAnnotatedWith(ToBeReported.class)))
                 .intercept(to(interceptor))
                 .make()
-                .load(InjectionClassLoader.getSystemClassLoader(), ClassLoadingStrategy.UsingLookup.of(MethodHandles
-                        .privateLookupIn(clazz, MethodHandles.lookup())))
+                .load(InjectionClassLoader.getSystemClassLoader(), ClassLoadingStrategy.Default.INJECTION)
                 .getLoaded();
     }
 

@@ -46,6 +46,10 @@ public class RefreshTest {
 
         private final List<Object> listToRefresh = new ArrayList<>();
 
+        protected RefreshableStep() {
+            super();
+        }
+
         @Override
         public void refresh() {
             listToRefresh.clear();
