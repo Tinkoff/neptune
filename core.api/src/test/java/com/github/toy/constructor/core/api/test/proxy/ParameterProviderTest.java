@@ -48,7 +48,7 @@ public class ParameterProviderTest {
 
         private final int number;
 
-        protected ParameterizedStep(int number) {
+        private ParameterizedStep(int number) {
             this.number = number;
         }
 
