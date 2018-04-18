@@ -7,6 +7,9 @@ import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
 import net.bytebuddy.dynamic.loading.InjectionClassLoader;
+import net.sf.cglib.proxy.Callback;
+import net.sf.cglib.proxy.Enhancer;
+import org.objenesis.Objenesis;
 import org.objenesis.ObjenesisStd;
 
 import java.lang.annotation.Annotation;
@@ -23,6 +26,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static net.bytebuddy.implementation.MethodDelegation.to;
 import static net.bytebuddy.matcher.ElementMatchers.*;
+import static net.sf.cglib.proxy.Enhancer.registerCallbacks;
 
 public final class Substitution {
 
@@ -114,26 +118,21 @@ public final class Substitution {
      * @param clazz to substitute. It should be the implementor of {@link com.github.toy.constructor.core.api.GetStep}
      *                    and/or {@link com.github.toy.constructor.core.api.PerformStep}.
      *
-     * @param constructorParameters is a POJO with wrapped parameters of required constructor.
-     * @param loggers list of custom loggers. see {@link Logger}
      * @param annotations to set to methods that marked by {@link com.github.toy.constructor.core.api.ToBeReported}.
      *                    These annotations should describe steps. Their description should be like {@value {0}} or
      *                    some string convenient to the formatting with a single parameter.
      * @return generated sub-class.
      */
     private static <T> Class<? extends T> substitute(Class<T> clazz,
-                                                    ConstructorParameters constructorParameters,
-                                                    List<Logger> loggers,
+                                                     List<Logger> loggers,
                                                     Annotation...annotations) throws Exception {
         checkArgument(PerformStep.class.isAssignableFrom(clazz) ||
                 GetStep.class.isAssignableFrom(clazz), "Class to substitute should be " +
                 "assignable from com.github.toy.constructor.core.api.GetStep and/or " +
                 "com.github.toy.constructor.core.api.PerformStep.");
-        checkArgument(findSuitableConstructor(clazz, constructorParameters.getParameterValues()) != null);
-
         DynamicType.Builder<? extends T> builder = new ByteBuddy().subclass(clazz);
 
-        InnerInterceptor<T> interceptor = new InnerInterceptor<>(clazz, constructorParameters, loadSPI(loggers));
+        InnerInterceptor interceptor = new InnerInterceptor(loadSPI(loggers));
         return builder.method(isAnnotatedWith(ToBeReported.class))
                 .intercept(to(interceptor))
                 .annotateMethod(annotations)
@@ -172,8 +171,21 @@ public final class Substitution {
                                        List<Logger> loggers,
                                        Annotation...annotations) throws Exception {
         Class<? extends T> toInstantiate =
-                manipulationWithClassToInstantiate.apply(substitute(clazz, constructorParameters, loggers, annotations));
-        return manipulationWithObjectToReturn.apply(new ObjenesisStd().newInstance(toInstantiate));
+                manipulationWithClassToInstantiate.apply(substitute(clazz, loggers, annotations));
+
+        Enhancer enhancer = new Enhancer();
+        OuterMethodInterceptor<T> interceptor =
+                new OuterMethodInterceptor<>(clazz, (Class<T>) toInstantiate, constructorParameters, manipulationWithObjectToReturn);
+
+        enhancer.setUseCache(false);
+        enhancer.setCallbackType(OuterMethodInterceptor.class);
+        enhancer.setSuperclass(toInstantiate);
+        Class<?> proxyClass = enhancer.createClass();
+        registerCallbacks(proxyClass, new Callback[]{interceptor});
+        enhancer.setClassLoader(toInstantiate.getClassLoader());
+
+        Objenesis objenesis = new ObjenesisStd();
+        return (T) objenesis.newInstance(proxyClass);
     }
 
     /**
