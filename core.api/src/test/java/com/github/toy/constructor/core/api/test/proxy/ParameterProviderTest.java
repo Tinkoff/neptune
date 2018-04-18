@@ -33,7 +33,9 @@ public class ParameterProviderTest {
 
     @CreateWith(provider = ProviderOfEmptyParameters.class)
     private static class EmptyStepClass implements PerformStep<EmptyStepClass> {
-
+        protected EmptyStepClass() {
+            super();
+        }
     }
 
     private static class ParameterizedParameterProvider implements ParameterProvider {
@@ -48,7 +50,7 @@ public class ParameterProviderTest {
 
         private final int number;
 
-        private ParameterizedStep(int number) {
+        protected ParameterizedStep(int number) {
             this.number = number;
         }
 
