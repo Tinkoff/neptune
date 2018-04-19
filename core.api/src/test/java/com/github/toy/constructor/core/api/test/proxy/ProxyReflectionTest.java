@@ -10,6 +10,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.github.toy.constructor.core.api.StoryWriter.action;
 import static com.github.toy.constructor.core.api.proxy.ConstructorParameters.params;
 import static com.github.toy.constructor.core.api.proxy.Substitution.getSubstituted;
 import static java.util.Arrays.asList;
@@ -58,7 +59,7 @@ public class ProxyReflectionTest {
             public String value() {
                 return "Test value";
             }
-        });
+        }).perform(action("Something", calculatorSteps -> {}));
     }
 
     @Test

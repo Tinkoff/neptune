@@ -14,7 +14,7 @@ import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
-public class InnerInterceptor<T> {
+public class InnerInterceptor {
 
     private final Logger defaultLogger;
 
@@ -40,6 +40,12 @@ public class InnerInterceptor<T> {
             }
             defaultLogger.log(format("%s %s", toBeReported.constantMessagePart(), reportedMessage).trim());
         });
-        return superMethod.call();
+
+        try {
+            return superMethod.call();
+        }
+        catch (Throwable t) {
+            throw t;
+        }
     }
 }

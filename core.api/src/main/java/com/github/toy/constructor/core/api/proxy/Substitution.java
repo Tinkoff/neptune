@@ -179,10 +179,10 @@ public final class Substitution {
 
         enhancer.setUseCache(false);
         enhancer.setCallbackType(OuterMethodInterceptor.class);
-        enhancer.setSuperclass(toInstantiate);
+        enhancer.setSuperclass(clazz);
         Class<?> proxyClass = enhancer.createClass();
         registerCallbacks(proxyClass, new Callback[]{interceptor});
-        enhancer.setClassLoader(toInstantiate.getClassLoader());
+        enhancer.setClassLoader(clazz.getClassLoader());
 
         Objenesis objenesis = new ObjenesisStd();
         return (T) objenesis.newInstance(proxyClass);

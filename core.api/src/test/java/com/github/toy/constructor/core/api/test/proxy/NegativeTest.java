@@ -4,6 +4,7 @@ import com.github.toy.constructor.core.api.GetStep;
 import com.github.toy.constructor.core.api.PerformStep;
 import org.testng.annotations.Test;
 
+import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.github.toy.constructor.core.api.proxy.ConstructorParameters.params;
 import static com.github.toy.constructor.core.api.proxy.Substitution.getSubstituted;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -24,14 +25,15 @@ public class NegativeTest {
 
     @Test(expectedExceptions = NoSuchMethodException.class)
     public void testOfCompletelyMismatchingParameters() throws Exception {
-        getSubstituted(GetStepStub.class, params());
+        getSubstituted(GetStepStub.class, params()).get(toGet("Something", getStep -> new Object()));
         fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = NoSuchMethodException.class,
             dependsOnMethods = "testOfCompletelyMismatchingParameters")
     public void testOfPartiallyMismatchingParameters() throws Exception {
-        getSubstituted(GetStepStub.class, params("12345", 1, 1.5F, false));
+        getSubstituted(GetStepStub.class, params("12345", 1, 1.5F, false))
+                .get(toGet("Something", getStep -> new Object()));
         fail("The exception throwing was expected");
     }
 
@@ -39,7 +41,8 @@ public class NegativeTest {
             "testOfCompletelyMismatchingParameters",
             "testOfPartiallyMismatchingParameters"})
     public void positiveTest() throws Exception {
-        assertThat(getSubstituted(GetStepStub.class, params("12345", 1, 1, false)), not(nullValue()));
+        assertThat(getSubstituted(GetStepStub.class, params("12345", 1, 1, false))
+                .get(toGet("Something", getStep -> new Object())), not(nullValue()));
     }
 
     static class GetStepStub implements GetStep<GetStepStub>, PerformStep<GetStepStub> {

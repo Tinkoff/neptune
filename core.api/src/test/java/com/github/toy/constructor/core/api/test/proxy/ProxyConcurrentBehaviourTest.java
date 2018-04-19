@@ -1,7 +1,6 @@
 package com.github.toy.constructor.core.api.test.proxy;
 
 import com.github.toy.constructor.core.api.GetSupplier;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -12,27 +11,13 @@ import static com.github.toy.constructor.core.api.proxy.ConstructorParameters.pa
 import static com.github.toy.constructor.core.api.proxy.Substitution.getSubstituted;
 import static com.github.toy.constructor.core.api.test.proxy.Arithmetical.*;
 import static com.github.toy.constructor.core.api.test.proxy.ArithmeticalSequence.*;
+import static java.util.Optional.ofNullable;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class ProxyConcurrentBehaviourTest {
 
     private CalculatorSteps calculator;
-
-    @BeforeClass
-    public void beforeAll() throws Exception {
-        calculator = getSubstituted(CalculatorSteps.class, params(), new TestAnnotation() {
-            @Override
-            public Class<? extends Annotation> annotationType() {
-                return TestAnnotation.class;
-            }
-
-            @Override
-            public String value() {
-                return "Test value";
-            }
-        });
-    }
 
     @DataProvider(parallel = true)
     public Object[][] getData() {
@@ -120,7 +105,25 @@ public class ProxyConcurrentBehaviourTest {
     }
 
     @BeforeMethod
-    public void beforeTest() {
+    public synchronized void beforeTest() {
+        calculator = ofNullable(calculator).orElseGet(() -> {
+            try {
+                return getSubstituted(CalculatorSteps.class, params(), new TestAnnotation() {
+                    @Override
+                    public Class<? extends Annotation> annotationType() {
+                        return TestAnnotation.class;
+                    }
+
+                    @Override
+                    public String value() {
+                        return "Test value";
+                    }
+                });
+            }
+            catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
         calculator.reset();
     }
 

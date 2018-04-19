@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 
 import static java.util.Optional.ofNullable;
 
-class CalculatorSteps implements PerformStep<CalculatorSteps>, GetStep<CalculatorSteps>, Supplier<Double> {
+public class CalculatorSteps implements PerformStep<CalculatorSteps>, GetStep<CalculatorSteps>, Supplier<Double> {
     private Double calculated = 0D;
 
     @ToBeReported(constantMessagePart = "Reset calculated value to 0")
