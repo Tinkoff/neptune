@@ -46,6 +46,9 @@ project(":selenium") {
             exclude group: 'com.google.code.gson'
         }
         compile group: 'org.hamcrest', name: 'java-hamcrest', version: hamcrestVersion
+        compile (group: 'com.codeborne', name: 'phantomjsdriver', version: '1.4.4') {
+            exclude group: 'org.seleniumhq.selenium';
+        }
         compile (group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '2.2.1') {
             exclude group: 'org.seleniumhq.selenium'
         }

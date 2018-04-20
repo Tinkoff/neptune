@@ -8,7 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.function.Function;
 
-import static com.github.toy.constructor.core.api.proxy.Substitution.findSuitableConstructor;
+import static com.github.toy.constructor.core.api.reflection.ConstructorUtil.findSuitableConstructor;
 import static java.util.Optional.ofNullable;
 
 public class OuterMethodInterceptor<T> implements MethodInterceptor {
