@@ -1,6 +1,5 @@
 package com.github.toy.constructor.selenium.properties;
 
-import com.github.toy.constructor.core.api.proxy.ConstructorParameters;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -11,10 +10,12 @@ import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
 
+import java.net.URL;
 import java.util.function.Supplier;
 
 import static com.github.toy.constructor.selenium.properties.CapabilityTypes.*;
 import static com.github.toy.constructor.selenium.properties.DriverNameProperty.*;
+import static com.github.toy.constructor.selenium.properties.URLProperties.REMOTE_WEB_DRIVER_URL_PROPERTY;
 
 /**
  * This enum wraps a class of supported {@link WebDriver} and array of arguments
@@ -63,6 +64,7 @@ public enum SupportedWebDrivers implements Supplier<Object[]> {
     private final Class<? extends WebDriver> webDriverClass;
     private final CapabilityTypes capabilityType;
     private final boolean requiresRemoteUrl;
+    private final URL remoteURL;
 
     SupportedWebDrivers(DriverNameProperty name, Class<? extends WebDriver> webDriverClass,
                                 CapabilityTypes capabilityType,
@@ -71,6 +73,7 @@ public enum SupportedWebDrivers implements Supplier<Object[]> {
         this.webDriverClass = webDriverClass;
         this.capabilityType = capabilityType;
         this.requiresRemoteUrl = requiresRemoteUrl;
+        remoteURL = REMOTE_WEB_DRIVER_URL_PROPERTY.get();
     }
 
 
@@ -87,5 +90,25 @@ public enum SupportedWebDrivers implements Supplier<Object[]> {
 
     public Class<? extends WebDriver> getWebDriverClass() {
         return webDriverClass;
+    }
+
+    /**
+     * Does supported subclass of {@link WebDriver} require an URL of the remote node
+     * to start a new session or not.
+     *
+     * @return true if supported subclass of {@link WebDriver} requires an URL of the remote node
+     * to start a new session.
+     */
+    public boolean requiresRemoteUrl() {
+        return requiresRemoteUrl;
+    }
+
+    /**
+     * Returns an URL where a new remote session should be started.
+     *
+     * @return URL of the node to start a new remote session.
+     */
+    public URL getRemoteURL() {
+        return remoteURL;
     }
 }

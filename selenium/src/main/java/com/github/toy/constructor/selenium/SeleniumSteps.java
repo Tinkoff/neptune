@@ -3,6 +3,7 @@ package com.github.toy.constructor.selenium;
 import com.github.toy.constructor.core.api.GetStep;
 import com.github.toy.constructor.core.api.PerformStep;
 import com.github.toy.constructor.core.api.Refreshable;
+import com.github.toy.constructor.core.api.Stoppable;
 import com.github.toy.constructor.core.api.proxy.CreateWith;
 import com.github.toy.constructor.selenium.functions.navigation.NavigationActionSupplier;
 import com.github.toy.constructor.selenium.functions.target.locator.SwitchActionSupplier;
@@ -20,7 +21,8 @@ import org.openqa.selenium.internal.WrapsDriver;
 import java.util.List;
 
 @CreateWith(provider = SeleniumParameterProvider.class)
-public class SeleniumSteps implements PerformStep<SeleniumSteps>, GetStep<SeleniumSteps>, WrapsDriver, Refreshable {
+public class SeleniumSteps implements PerformStep<SeleniumSteps>, GetStep<SeleniumSteps>, WrapsDriver, Refreshable,
+        Stoppable {
 
     private final WrappedWebDriver wrappedWebDriver;
 
@@ -72,5 +74,10 @@ public class SeleniumSteps implements PerformStep<SeleniumSteps>, GetStep<Seleni
     @Override
     public void refresh() {
         wrappedWebDriver.refresh();
+    }
+
+    @Override
+    public void shutDown() {
+        wrappedWebDriver.shutDown();
     }
 }

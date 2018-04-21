@@ -52,6 +52,11 @@ project(":selenium") {
         compile (group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '2.2.1') {
             exclude group: 'org.seleniumhq.selenium'
         }
+        compile (group: 'org.seleniumhq.selenium', name: 'selenium-server', version: seleniumVersion) {
+            exclude group: 'org.seleniumhq.selenium' , module: 'htmlunit-driver'
+            exclude group: 'com.google.guava'
+            exclude group: 'com.google.code.gson'
+        }
         testCompile group: 'org.testng', name: 'testng', version: testNGvaersion
     }
 }

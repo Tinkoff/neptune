@@ -7,24 +7,30 @@ import java.net.URL;
 
 import static java.lang.String.format;
 
-public final class RemoteUrlProperty implements PropertySupplier<URL> {
-
-    private static final String URL_PROPERTY = "remote.web.driver.url";
-
+public enum  URLProperties implements PropertySupplier<URL> {
     /**
      * This item read the property {@code 'remote.web.driver.url'} and returns URL to start
      * a new remote session of {@link org.openqa.selenium.WebDriver}
      */
-    public static final RemoteUrlProperty REMOTE_WEB_DRIVER_URL_PROPERTY = new RemoteUrlProperty();
+    REMOTE_WEB_DRIVER_URL_PROPERTY("remote.web.driver.url"),
 
-    private RemoteUrlProperty() {
-        super();
+    /**
+     * This item read the property {@code 'base.web.driver.url'} and returns URL to load at
+     * browser when it is started.
+     * @see org.openqa.selenium.WebDriver#get(String)
+     */
+    BASE_WEB_DRIVER_URL_PROPERTY("base.web.driver.url");
+
+    private final String propertyName;
+
+    URLProperties(String propertyName) {
+        this.propertyName = propertyName;
     }
 
 
     @Override
     public String getPropertyName() {
-        return URL_PROPERTY;
+        return propertyName;
     }
 
     @Override

@@ -20,15 +20,6 @@ public enum FlagProperties implements PropertySupplier<Boolean> {
     KEEP_WEB_DRIVER_SESSION_OPENED("keep.web.driver.session.opened"),
 
     /**
-     * This enum item reads the property {@code 'try.to.resurrect.web.driver.session'}. It means that it
-     * will try to open a new session of {@link org.openqa.selenium.WebDriver} when previous session
-     * has died accidentally during the previous test running if the property is defined and has value
-     * {@code true}. This option has sense if {@code 'keep.web.driver.session.opened'} has value {@code true}.
-     * @see #KEEP_WEB_DRIVER_SESSION_OPENED
-     */
-    TRY_TO_RESURRECT_A_WEB_DRIVER_SESSION("try.to.resurrect.web.driver.session"),
-
-    /**
      * This enum item reads the property {@code 'clear.web.driver.cookies'}. It means that it
      * will try to clear {@link org.openqa.selenium.WebDriver} cookies after the test running has finished if the
      * property is defined and has value {@code true}. This option has sense if {@code 'keep.web.driver.session.opened'}
@@ -36,7 +27,17 @@ public enum FlagProperties implements PropertySupplier<Boolean> {
      * @see #KEEP_WEB_DRIVER_SESSION_OPENED
      * @see WebDriver.Options#deleteAllCookies()
      */
-    CLEAR_WEB_DRIVER_COOKIES("clear.web.driver.cookies");
+    CLEAR_WEB_DRIVER_COOKIES("clear.web.driver.cookies"),
+
+    /**
+     * This enum item reads the property {@code 'get.back.to.base.web.driver.url'}. It means that it
+     * will try to get to defined URL which is supposed to be loaded in browser if the property is defined and
+     * has value {@code true}. This option has sense if {@code 'keep.web.driver.session.opened'} has value {@code true}.
+     * @see #KEEP_WEB_DRIVER_SESSION_OPENED
+     * @see URLProperties#BASE_WEB_DRIVER_URL_PROPERTY
+     * @see WebDriver#get(String)
+     */
+    GET_BACK_TO_BASE_URL("get.back.to.base.web.driver.url");
 
     private final String propertyName;
 
