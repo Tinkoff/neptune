@@ -10,7 +10,7 @@ import java.util.function.Function;
 
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.github.toy.constructor.core.api.ToGetSingleCheckedObject.getSingle;
-import static com.github.toy.constructor.selenium.properties.WaitingProperties.WAITING_FRAME_SWITCHING__DURATION;
+import static com.github.toy.constructor.selenium.properties.WaitingProperties.WAITING_FRAME_SWITCHING_DURATION;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 
@@ -42,13 +42,13 @@ public final class GetFrameFunction implements Function<WebDriver, Frame> {
     /**
      * Builds a function which performs switching to the frame and returns an instance of {@link Frame}.
      * About the time of the switching to the frame is succeeded
-     * @see com.github.toy.constructor.selenium.properties.WaitingProperties#WAITING_FRAME_SWITCHING__DURATION
+     * @see com.github.toy.constructor.selenium.properties.WaitingProperties#WAITING_FRAME_SWITCHING_DURATION
      *
      * @param index index of the frame to switch to.
      * @return instance of {@link Function}
      */
     public static Function<WebDriver, Frame> index(int index) {
-        return index(WAITING_FRAME_SWITCHING__DURATION.get(), index);
+        return index(WAITING_FRAME_SWITCHING_DURATION.get(), index);
     }
 
     /**
@@ -66,13 +66,13 @@ public final class GetFrameFunction implements Function<WebDriver, Frame> {
     /**
      * Builds a function which performs switching to the frame and returns an instance of {@link Frame}.
      * About the time of the switching to the frame is succeeded
-     * @see com.github.toy.constructor.selenium.properties.WaitingProperties#WAITING_FRAME_SWITCHING__DURATION
+     * @see com.github.toy.constructor.selenium.properties.WaitingProperties#WAITING_FRAME_SWITCHING_DURATION
      *
      * @param nameOrId name or id of the frame to switch to.
      * @return instance of {@link GetFrameSupplier}
      */
     public static Function<WebDriver, Frame> nameOrId(String nameOrId) {
-        return nameOrId(WAITING_FRAME_SWITCHING__DURATION.get(), nameOrId);
+        return nameOrId(WAITING_FRAME_SWITCHING_DURATION.get(), nameOrId);
     }
 
     /**
@@ -90,13 +90,13 @@ public final class GetFrameFunction implements Function<WebDriver, Frame> {
     /**
      * Builds a function which performs switching to the frame and returns an instance of {@link Frame}.
      * About the time of the switching to the frame is succeeded
-     * @see com.github.toy.constructor.selenium.properties.WaitingProperties#WAITING_FRAME_SWITCHING__DURATION
+     * @see com.github.toy.constructor.selenium.properties.WaitingProperties#WAITING_FRAME_SWITCHING_DURATION
      *
      * @param webElement is the frame element to switch to.
      * @return instance of {@link GetFrameSupplier}
      */
     public static Function<WebDriver, Frame> insideElement(WebElement webElement) {
-        return insideElement(WAITING_FRAME_SWITCHING__DURATION.get(), webElement);
+        return insideElement(WAITING_FRAME_SWITCHING_DURATION.get(), webElement);
     }
 
     /**
@@ -114,13 +114,13 @@ public final class GetFrameFunction implements Function<WebDriver, Frame> {
     /**
      * Builds a function which performs switching to the frame and returns an instance of {@link Frame}.
      * About the time of the switching to the frame is succeeded
-     * @see com.github.toy.constructor.selenium.properties.WaitingProperties#WAITING_FRAME_SWITCHING__DURATION
+     * @see com.github.toy.constructor.selenium.properties.WaitingProperties#WAITING_FRAME_SWITCHING_DURATION
      *
      * @param howToFind is how to find the frame element to switch to.
      * @return instance of {@link GetFrameSupplier}
      */
     public static Function<WebDriver, Frame> insideElement(SearchSupplier<?> howToFind) {
-        return insideElement(WAITING_FRAME_SWITCHING__DURATION.get(), howToFind);
+        return insideElement(WAITING_FRAME_SWITCHING_DURATION.get(), howToFind);
     }
 
     @Override

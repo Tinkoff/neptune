@@ -25,7 +25,7 @@ public enum SupportedWebDrivers implements Supplier<Object[]> {
     /**
      * This item describes instantiation of {@link RemoteWebDriver}
      */
-    REMOTE_DRIVER(REMOTE_NAME, RemoteWebDriver.class, GENERAL, true),
+    REMOTE_DRIVER(REMOTE_NAME, RemoteWebDriver.class, REMOTE, true),
     /**
      * This item describes instantiation of {@link ChromeDriver}
      */

@@ -22,7 +22,6 @@ public enum WaitingProperties implements Supplier<Duration> {
      */
     ELEMENT_WAITING_DURATION(ELEMENT_WAITING_TIME_UNIT, ELEMENT_WAITING_TIME_VALUE),
 
-
     /**
      * Returns duration of the waiting for appearance of an alert.
      * When {@code "waiting.alert.time.unit"} or {@code "waiting.alert.time"}
@@ -32,7 +31,7 @@ public enum WaitingProperties implements Supplier<Duration> {
 
     /**
      * Returns duration of the waiting for some window.
-     * When {@code "waiting.window.time.unit"} or {@code "waiting.window.time"}
+     * When {@code "waiting.window.time.unit"} or {@code "waiting.window.tim
      * are not defined then it returns 1 minute. Otherwise it returns defined duration value.
      */
     WAITING_WINDOW_TIME_DURATION(WAITING_WINDOW_TIME_UNIT, WAITING_WINDOW_TIME_VALUE),
@@ -42,7 +41,7 @@ public enum WaitingProperties implements Supplier<Duration> {
      * When {@code "waiting.frame.switching.time.unit"} or {@code "waiting.frame.switching.time"}
      * are not defined then it returns 1 minute. Otherwise it returns defined duration value.
      */
-    WAITING_FRAME_SWITCHING__DURATION(WAITING_FRAME_SWITCHING_TIME_UNIT, WAITING_FRAME_SWITCHING_TIME_VALUE);
+    WAITING_FRAME_SWITCHING_DURATION(WAITING_FRAME_SWITCHING_TIME_UNIT, WAITING_FRAME_SWITCHING_TIME_VALUE);
 
     private final TimeUnitProperties timeUnit;
     private final TimeValueProperties timeValue;
