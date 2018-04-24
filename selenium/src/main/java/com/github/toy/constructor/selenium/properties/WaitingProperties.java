@@ -65,6 +65,7 @@ public enum WaitingProperties implements Supplier<Duration> {
          * This property is needed to define time of the waiting for some web elements
          * are present and suit some criteria. Returns read value
          * or {@code null} when nothing is defined
+         * @see ChronoUnit
          */
         ELEMENT_WAITING_TIME_UNIT("waiting.for.elements.time.unit"),
 
@@ -72,6 +73,7 @@ public enum WaitingProperties implements Supplier<Duration> {
          * Reads property {@code "waiting.alert.time.unit"}.
          * This property is needed to define time of the waiting for appearance
          * of an alert. Returns read value or {@code null} when nothing is defined
+         * @see ChronoUnit
          */
         WAITING_ALERT_TIME_UNIT("waiting.alert.time.unit"),
 
@@ -79,6 +81,7 @@ public enum WaitingProperties implements Supplier<Duration> {
          * Reads property {@code "waiting.window.time.unit"}.
          * This property is needed to define time of the waiting for some window.
          * Returns read value or {@code null} when nothing is defined
+         * @see ChronoUnit
          */
         WAITING_WINDOW_TIME_UNIT("waiting.window.time.unit"),
 
@@ -86,6 +89,7 @@ public enum WaitingProperties implements Supplier<Duration> {
          * Reads property {@code "waiting.frame.switching.time.unit"}.
          * This property is needed to define time of the waiting for the switching to some frame succeeded.
          * Returns read value or {@code null} when nothing is defined
+         * @see ChronoUnit
          */
         WAITING_FRAME_SWITCHING_TIME_UNIT("waiting.frame.switching.time.unit");
 

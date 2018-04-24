@@ -27,8 +27,6 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
      * Capabilities for the starting of {@link org.openqa.selenium.remote.RemoteWebDriver}
      */
     REMOTE("remote") {
-        private Capabilities toBeReturned;
-
         /**
          * Creates {@link Capabilities} with following properties:
          * <p>
@@ -49,15 +47,12 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
          */
         @Override
         public Capabilities get() {
-            toBeReturned = ofNullable(toBeReturned).orElseGet(() -> {
-                if (CommonCapabilityProperties.BROWSER_NAME.get() == null ||
-                        isBlank(String.valueOf(CommonCapabilityProperties.BROWSER_NAME.get()))) {
-                    throw new IllegalArgumentException(format("The property %s should be defined",
-                            CommonCapabilityProperties.BROWSER_NAME.getPropertyName()));
-                }
-                return super.get();
-            });
-            return toBeReturned;
+            if (CommonCapabilityProperties.BROWSER_NAME.get() == null ||
+                    isBlank(String.valueOf(CommonCapabilityProperties.BROWSER_NAME.get()))) {
+                throw new IllegalArgumentException(format("The property %s should be defined",
+                        CommonCapabilityProperties.BROWSER_NAME.getPropertyName()));
+            }
+            return super.get();
         }
     },
 
@@ -65,8 +60,6 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
      * Capabilities for the starting of {@link org.openqa.selenium.chrome.ChromeDriver}
      */
     CHROME("chrome") {
-        private Capabilities toBeReturned;
-
         /**
          * Creates {@link Capabilities} with following properties:
          * <p>
@@ -86,8 +79,7 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
          */
         @Override
         public Capabilities get() {
-            toBeReturned = ofNullable(toBeReturned).orElseGet(() -> new ChromeOptions().merge(super.get()));
-            return toBeReturned;
+            return new ChromeOptions().merge(super.get());
         }
     },
 
@@ -95,8 +87,6 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
      * Capabilities for the starting of {@link org.openqa.selenium.edge.EdgeDriver}
      */
     EDGE("edge") {
-        private Capabilities toBeReturned;
-
         /**
          * Creates {@link Capabilities} with following properties:
          * <p>
@@ -116,8 +106,7 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
          */
         @Override
         public Capabilities get() {
-            toBeReturned = ofNullable(toBeReturned).orElseGet(() -> new EdgeOptions().merge(super.get()));
-            return toBeReturned;
+            return new EdgeOptions().merge(super.get());
         }
     },
 
@@ -155,8 +144,6 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
      * Capabilities for the starting of {@link org.openqa.selenium.ie.InternetExplorerDriver}
      */
     IE("ie") {
-        private Capabilities toBeReturned;
-
         /**
          * Creates {@link Capabilities} with following properties:
          * <p>
@@ -176,8 +163,7 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
          */
         @Override
         public Capabilities get() {
-            toBeReturned = ofNullable(toBeReturned).orElseGet(() -> new InternetExplorerOptions().merge(super.get()));
-            return toBeReturned;
+            return new InternetExplorerOptions().merge(super.get());
         }
     },
 
@@ -185,8 +171,6 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
      * Capabilities for the starting of {@link org.openqa.selenium.opera.OperaDriver}
      */
     OPERA("opera") {
-        private Capabilities toBeReturned;
-
         /**
          * Creates {@link Capabilities} with following properties:
          * <p>
@@ -206,8 +190,7 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
          */
         @Override
         public Capabilities get() {
-            toBeReturned = ofNullable(toBeReturned).orElseGet(() -> new OperaOptions().merge(super.get()));
-            return toBeReturned;
+            return new OperaOptions().merge(super.get());
         }
     },
 
@@ -215,8 +198,6 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
      * Capabilities for the starting of {@link org.openqa.selenium.safari.SafariDriver}
      */
     SAFARI("safari") {
-        private Capabilities toBeReturned;
-
         /**
          * Creates {@link Capabilities} with following properties:
          * <p>
@@ -236,8 +217,7 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
          */
         @Override
         public Capabilities get() {
-            toBeReturned = ofNullable(toBeReturned).orElseGet(() -> new SafariOptions().merge(super.get()));
-            return toBeReturned;
+            return new SafariOptions().merge(super.get());
         }
     },
 
@@ -245,16 +225,11 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
      * Capabilities for the starting of {@link org.openqa.selenium.phantomjs.PhantomJSDriver}
      */
     PHANTOM_JS("phantomJs") {
-        private Capabilities toBeReturned;
-
         @Override
         public Capabilities get() {
-            toBeReturned = ofNullable(toBeReturned).orElseGet(() -> {
-                DesiredCapabilities capabilities = new DesiredCapabilities().merge(super.get());
-                capabilities.setCapability(BROWSER_NAME, BrowserType.PHANTOMJS);
-                return capabilities;
-            });
-            return toBeReturned;
+            DesiredCapabilities capabilities = new DesiredCapabilities().merge(super.get());
+            capabilities.setCapability(BROWSER_NAME, BrowserType.PHANTOMJS);
+            return capabilities;
         }
     };
 

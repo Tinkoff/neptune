@@ -4,6 +4,7 @@ import com.github.toy.constructor.core.api.PropertySupplier;
 
 import java.io.*;
 import java.util.Properties;
+import java.util.function.Function;
 
 import static com.github.toy.constructor.selenium.properties.SupportedWebDriverPropertyProperty.SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY;
 import static java.util.Arrays.stream;
@@ -12,7 +13,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public final class SeleniumPropertyInitializer {
 
-    private static final String SELENIUM_PROPERTY_FILE = "selenium.properties";
+    public static final String SELENIUM_PROPERTY_FILE = "selenium.properties";
 
     static {
         try {
@@ -60,7 +61,8 @@ public final class SeleniumPropertyInitializer {
         stream(propertySuppliers).forEach(propertySupplier ->
                 ofNullable(properties.getProperty(propertySupplier.getPropertyName()))
                         .ifPresent(s -> {
-                            if (isBlank(propertySupplier.returnOptionalFromEnvironment().get())) {
+                            if (isBlank(propertySupplier.returnOptionalFromEnvironment().map(String::trim)
+                                    .orElse(null))) {
                                 System.setProperty(propertySupplier.getPropertyName(), s);
                             }
                         }));
@@ -82,5 +84,6 @@ public final class SeleniumPropertyInitializer {
         checkPropertiesAndFillIfNecessary(prop, CapabilityTypes.CommonCapabilityProperties.values());
         checkPropertiesAndFillIfNecessary(prop, CapabilityTypes.values());
         checkPropertiesAndFillIfNecessary(prop, new PropertySupplier[] {SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY});
+        input.close();
     }
 }
