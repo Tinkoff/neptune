@@ -1,6 +1,10 @@
 package com.github.toy.constructor.selenium.test.properties;
 
 
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.remote.CapabilityType;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -9,6 +13,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import static com.github.toy.constructor.selenium.properties.CapabilityTypes.CHROME;
@@ -29,40 +35,42 @@ import static java.time.Duration.ofSeconds;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static java.time.temporal.ChronoUnit.SECONDS;
+import static java.util.Map.entry;
 import static org.apache.commons.io.FileUtils.forceDelete;
 import static org.apache.commons.io.FileUtils.getFile;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 public class DefaultPropertiesTest {
+
+    private static final Map<String, String> properties = Map
+            .ofEntries(entry(ELEMENT_WAITING_TIME_UNIT.getPropertyName(), "MINUTES"),
+                    entry(WAITING_ALERT_TIME_UNIT.getPropertyName(), "SECONDS"),
+                    entry(WAITING_WINDOW_TIME_UNIT.getPropertyName(), "MILLIS"),
+                    entry(WAITING_FRAME_SWITCHING_TIME_UNIT.getPropertyName(), "SECONDS"),
+                    entry(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "3"),
+                    entry(WAITING_ALERT_TIME_VALUE.getPropertyName(), "45"),
+                    entry(WAITING_WINDOW_TIME_VALUE.getPropertyName(), "1500"),
+                    entry(WAITING_FRAME_SWITCHING_TIME_VALUE.getPropertyName(), "100"),
+                    entry(REMOTE_WEB_DRIVER_URL_PROPERTY.getPropertyName(), "https://www.youtube.com"),
+                    entry(BASE_WEB_DRIVER_URL_PROPERTY.getPropertyName(), "http://www.google.com"),
+                    entry(BROWSER_NAME.getPropertyName(), "firefox"),
+                    entry(PLATFORM_NAME.getPropertyName(), "Linux"),
+                    entry(SUPPORTS_JAVASCRIPT.getPropertyName(), "false"),
+                    entry(BROWSER_VERSION.getPropertyName(), "60"),
+                    entry(CHROME.getPropertyName(), "withExperimental"),
+                    entry(CLEAR_WEB_DRIVER_COOKIES.getPropertyName(), "true"),
+                    entry(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName(), "true"),
+                    entry(GET_BACK_TO_BASE_URL.getPropertyName(), "true"),
+                    entry(KEEP_WEB_DRIVER_SESSION_OPENED.getPropertyName(), "true"),
+                    entry(WEB_DRIVER_TO_LAUNCH, "CHROME_DRIVER"));
 
     @BeforeClass
     public void beforeTests() throws Exception {
         Properties prop = new Properties();
         try (OutputStream output = new FileOutputStream(SELENIUM_PROPERTY_FILE)) {
-
             // set the properties value
-            prop.setProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName(), "MINUTES");
-            prop.setProperty(WAITING_ALERT_TIME_UNIT.getPropertyName(), "SECONDS");
-            prop.setProperty(WAITING_WINDOW_TIME_UNIT.getPropertyName(), "MILLIS");
-            prop.setProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getPropertyName(), "SECONDS");
-            prop.setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "3");
-            prop.setProperty(WAITING_ALERT_TIME_VALUE.getPropertyName(), "45");
-            prop.setProperty(WAITING_WINDOW_TIME_VALUE.getPropertyName(), "1500");
-            prop.setProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getPropertyName(), "100");
-            prop.setProperty(REMOTE_WEB_DRIVER_URL_PROPERTY.getPropertyName(), "https://www.youtube.com");
-            prop.setProperty(BASE_WEB_DRIVER_URL_PROPERTY.getPropertyName(), "http://www.google.com");
-            prop.setProperty(BROWSER_NAME.getPropertyName(), "firefox");
-            prop.setProperty(PLATFORM_NAME.getPropertyName(), "Linux");
-            prop.setProperty(SUPPORTS_JAVASCRIPT.getPropertyName(), "false");
-            prop.setProperty(BROWSER_VERSION.getPropertyName(), "60");
-            prop.setProperty(WEB_DRIVER_TO_LAUNCH, "CHROME_DRIVER");
-            prop.setProperty(CHROME.getPropertyName(), "withArguments,withArguments2");
-            prop.setProperty(CLEAR_WEB_DRIVER_COOKIES.getPropertyName(), "true");
-            prop.setProperty(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName(), "true");
-            prop.setProperty(GET_BACK_TO_BASE_URL.getPropertyName(), "true");
-            prop.setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getPropertyName(), "true");
-
+            properties.forEach(prop::setProperty);
             // save properties to project root folder
             prop.store(output, null);
             refreshProperties();
@@ -151,8 +159,42 @@ public class DefaultPropertiesTest {
                 is(ofSeconds(100)));
     }
 
+    @Test
+    public void testOfCommonCapabilityProperties() {
+        assertThat(format("Property %s", BROWSER_NAME.getPropertyName()),
+                BROWSER_NAME.get(),
+                is(BrowserType.FIREFOX));
+
+        assertThat(format("Property %s", PLATFORM_NAME.getPropertyName()),
+                PLATFORM_NAME.get(),
+                is("Linux"));
+
+        assertThat(format("Property %s", SUPPORTS_JAVASCRIPT.getPropertyName()),
+                SUPPORTS_JAVASCRIPT.get(),
+                is(false));
+
+        assertThat(format("Property %s", BROWSER_VERSION.getPropertyName()),
+                BROWSER_VERSION.get(),
+                is("60"));
+    }
+
+    @Test
+    public void testOfSuppliedCapabilityProperties() {
+        ChromeOptions capabilitiesAsIs = (ChromeOptions) CHROME.get();
+        Map<String, ?> capabilities = capabilitiesAsIs.asMap();
+        assertThat("Result map size", capabilities.size(), is(5));
+        //IsMapContaining
+        assertThat("Browser info", capabilities, hasEntry(CapabilityType.BROWSER_NAME, BrowserType.CHROME));
+        assertThat("Platform info", capabilities, hasEntry(CapabilityType.PLATFORM_NAME, "Linux"));
+        assertThat("Java script enabled info", capabilities, hasEntry(CapabilityType.SUPPORTS_JAVASCRIPT, false));
+        assertThat("Browser version info", capabilities, hasEntry("browserVersion", "60"));
+        assertThat("Chrome options info", capabilities, hasKey("goog:chromeOptions"));
+        //TODO needs to be finished
+    }
+
     @AfterTest
     public void afterTests() throws Exception {
+        properties.keySet().forEach(s -> System.getProperties().remove(s));
         File toDelete = getFile(SELENIUM_PROPERTY_FILE);
         if (toDelete.exists()) {
             forceDelete(toDelete);

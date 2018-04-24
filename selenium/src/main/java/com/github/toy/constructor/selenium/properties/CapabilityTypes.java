@@ -35,10 +35,10 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
          *     Windows, Linux etc. This is not the necessary property. @see org.openqa.selenium.Platform</p>
          *     <p>{@code web.driver.capability.javascriptEnabled} to enable or to disable js. Possible values are
          *     {@code true} or {@code false}. By default js is enabled. This is not the necessary property.</p>
-         *     <p>{@code web.driver.capability.browserVersion} to define a vaersion of browser. This is not the necessary
+         *     <p>{@code web.driver.capability.browserVersion} to define a version of browser. This is not the necessary
          *     property.</p>
-         *     <p>{@code remote.capability.suppliers} to define additional capabilities. It is comma-separated string
-         *     which should contain names of suppliers.
+         *     <p>{@code remote.capability.suppliers} to define additional capabilities. It is a string with name of a
+         *     supplier.
          *     @see CapabilitySupplier
          *     @see AdditionalCapabilitiesFor </p>
          * </p>
@@ -67,10 +67,10 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
          *     Windows, Linux etc. This is not the necessary property. @see org.openqa.selenium.Platform</p>
          *     <p>{@code web.driver.capability.javascriptEnabled} to enable or to disable js. Possible values are
          *     {@code true} or {@code false}. By default js is enabled. This is not the necessary property.</p>
-         *     <p>{@code web.driver.capability.browserVersion} to define a vaersion of browser. This is not the necessary
+         *     <p>{@code web.driver.capability.browserVersion} to define a version of browser. This is not the necessary
          *     property.</p>
-         *     <p>{@code remote.capability.suppliers} to define additional capabilities. It is comma-separated string
-         *     which should contain names of suppliers.
+         *     <p>{@code remote.capability.suppliers} to define additional capabilities. It is a string with name of a
+         *     supplier.
          *     @see CapabilitySupplier
          *     @see AdditionalCapabilitiesFor </p>
          * </p>
@@ -94,10 +94,10 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
          *     Windows, Linux etc. This is not the necessary property. @see org.openqa.selenium.Platform</p>
          *     <p>{@code web.driver.capability.javascriptEnabled} to enable or to disable js. Possible values are
          *     {@code true} or {@code false}. By default js is enabled. This is not the necessary property.</p>
-         *     <p>{@code web.driver.capability.browserVersion} to define a vaersion of browser. This is not the necessary
+         *     <p>{@code web.driver.capability.browserVersion} to define a version of browser. This is not the necessary
          *     property.</p>
-         *     <p>{@code remote.capability.suppliers} to define additional capabilities. It is comma-separated string
-         *     which should contain names of suppliers.
+         *     <p>{@code remote.capability.suppliers} to define additional capabilities. It is a string with name of a
+         *     supplier.
          *     @see CapabilitySupplier
          *     @see AdditionalCapabilitiesFor </p>
          * </p>
@@ -123,10 +123,10 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
          *     Windows, Linux etc. This is not the necessary property. @see org.openqa.selenium.Platform</p>
          *     <p>{@code web.driver.capability.javascriptEnabled} to enable or to disable js. Possible values are
          *     {@code true} or {@code false}. By default js is enabled. This is not the necessary property.</p>
-         *     <p>{@code web.driver.capability.browserVersion} to define a vaersion of browser. This is not the necessary
+         *     <p>{@code web.driver.capability.browserVersion} to define a version of browser. This is not the necessary
          *     property.</p>
-         *     <p>{@code remote.capability.suppliers} to define additional capabilities. It is comma-separated string
-         *     which should contain names of suppliers.
+         *     <p>{@code remote.capability.suppliers} to define additional capabilities. It is a string with name of a
+         *     supplier.
          *     @see CapabilitySupplier
          *     @see AdditionalCapabilitiesFor </p>
          * </p>
@@ -151,10 +151,10 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
          *     Windows, Linux etc. This is not the necessary property. @see org.openqa.selenium.Platform</p>
          *     <p>{@code web.driver.capability.javascriptEnabled} to enable or to disable js. Possible values are
          *     {@code true} or {@code false}. By default js is enabled. This is not the necessary property.</p>
-         *     <p>{@code web.driver.capability.browserVersion} to define a vaersion of browser. This is not the necessary
+         *     <p>{@code web.driver.capability.browserVersion} to define a version of browser. This is not the necessary
          *     property.</p>
-         *     <p>{@code remote.capability.suppliers} to define additional capabilities. It is comma-separated string
-         *     which should contain names of suppliers.
+         *     <p>{@code remote.capability.suppliers} to define additional capabilities. It is a string with name of a
+         *     supplier.
          *     @see CapabilitySupplier
          *     @see AdditionalCapabilitiesFor </p>
          * </p>
@@ -178,10 +178,10 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
          *     Windows, Linux etc. This is not the necessary property. @see org.openqa.selenium.Platform</p>
          *     <p>{@code web.driver.capability.javascriptEnabled} to enable or to disable js. Possible values are
          *     {@code true} or {@code false}. By default js is enabled. This is not the necessary property.</p>
-         *     <p>{@code web.driver.capability.browserVersion} to define a vaersion of browser. This is not the necessary
+         *     <p>{@code web.driver.capability.browserVersion} to define a version of browser. This is not the necessary
          *     property.</p>
-         *     <p>{@code remote.capability.suppliers} to define additional capabilities. It is comma-separated string
-         *     which should contain names of suppliers.
+         *     <p>{@code remote.capability.suppliers} to define additional capabilities. It is a string with name of a
+         *     supplier.
          *     @see CapabilitySupplier
          *     @see AdditionalCapabilitiesFor </p>
          * </p>
@@ -205,15 +205,15 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
          *     Windows, Linux etc. This is not the necessary property. @see org.openqa.selenium.Platform</p>
          *     <p>{@code web.driver.capability.javascriptEnabled} to enable or to disable js. Possible values are
          *     {@code true} or {@code false}. By default js is enabled. This is not the necessary property.</p>
-         *     <p>{@code web.driver.capability.browserVersion} to define a vaersion of browser. This is not the necessary
+         *     <p>{@code web.driver.capability.browserVersion} to define a version of browser. This is not the necessary
          *     property.</p>
-         *     <p>{@code remote.capability.suppliers} to define additional capabilities. It is comma-separated string
-         *     which should contain names of suppliers.
+         *     <p>{@code remote.capability.suppliers} to define additional capabilities. It is a string with name of a
+         *     supplier.
          *     @see CapabilitySupplier
          *     @see AdditionalCapabilitiesFor </p>
          * </p>
          *
-         * @return built {@link Capabilities} for {@link org.openqa.selenium.phantomjs.PhantomJSDriver}
+         * @return built {@link SafariOptions}
          */
         @Override
         public Capabilities get() {
@@ -222,7 +222,21 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
     },
 
     /**
-     * Capabilities for the starting of {@link org.openqa.selenium.phantomjs.PhantomJSDriver}
+     * Creates {@link Capabilities} with following properties:
+     * <p>
+     *     <p>{@code web.driver.capability.platformName} to define name of a supported platform.
+     *     Windows, Linux etc. This is not the necessary property. @see org.openqa.selenium.Platform</p>
+     *     <p>{@code web.driver.capability.javascriptEnabled} to enable or to disable js. Possible values are
+     *     {@code true} or {@code false}. By default js is enabled. This is not the necessary property.</p>
+     *     <p>{@code web.driver.capability.browserVersion} to define a version of browser. This is not the necessary
+     *     property.</p>
+     *     <p>{@code remote.capability.suppliers} to define additional capabilities. It is a string with name of a
+     *     supplier.
+     *     @see CapabilitySupplier
+     *     @see AdditionalCapabilitiesFor </p>
+     * </p>
+     *
+     * @return built {@link Capabilities} for {@link org.openqa.selenium.phantomjs.PhantomJSDriver}
      */
     PHANTOM_JS("phantomJs") {
         @Override
