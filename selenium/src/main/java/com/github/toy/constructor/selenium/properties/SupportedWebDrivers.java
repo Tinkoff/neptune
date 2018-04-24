@@ -16,7 +16,6 @@ import java.net.URL;
 import java.util.function.Supplier;
 
 import static com.github.toy.constructor.selenium.properties.CapabilityTypes.*;
-import static com.github.toy.constructor.selenium.properties.DriverNameProperty.*;
 import static com.github.toy.constructor.selenium.properties.URLProperties.REMOTE_WEB_DRIVER_URL_PROPERTY;
 import static io.github.bonigarcia.wdm.WebDriverManager.*;
 import static java.util.Optional.ofNullable;
@@ -30,53 +29,51 @@ public enum SupportedWebDrivers implements Supplier<Object[]> {
     /**
      * This item describes instantiation of {@link RemoteWebDriver}
      */
-    REMOTE_DRIVER(REMOTE_NAME, RemoteWebDriver.class, null, REMOTE, true),
+    REMOTE_DRIVER(RemoteWebDriver.class, null, REMOTE, true),
     /**
      * This item describes instantiation of {@link ChromeDriver}
      */
-    CHROME_DRIVER(CHROME_NAME, ChromeDriver.class, chromedriver(), CHROME, false),
+    CHROME_DRIVER(ChromeDriver.class, chromedriver(), CHROME, false),
     /**
      * This item describes instantiation of {@link EdgeDriver}
      */
-    EDGE_DRIVER(EDGE_NAME, EdgeDriver.class, edgedriver(), EDGE, false),
+    EDGE_DRIVER(EdgeDriver.class, edgedriver(), EDGE, false),
 
     /**
      * This item describes instantiation of {@link FirefoxDriver}
      */
-    FIREFOX_DRIVER(FIREFOX_NAME, FirefoxDriver.class, firefoxdriver(), FIREFOX, false),
+    FIREFOX_DRIVER(FirefoxDriver.class, firefoxdriver(), FIREFOX, false),
 
     /**
      * This item describes instantiation of {@link InternetExplorerDriver}
      */
-    IE_DRIVER(IE_NAME, InternetExplorerDriver.class, iedriver(), IE, false),
+    IE_DRIVER(InternetExplorerDriver.class, iedriver(), IE, false),
 
     /**
      * This item describes instantiation of {@link OperaDriver}
      */
-    OPERA_DRIVER(OPERA_NAME, OperaDriver.class, operadriver(), OPERA, false),
+    OPERA_DRIVER(OperaDriver.class, operadriver(), OPERA, false),
 
     /**
      * This item describes instantiation of {@link SafariDriver}
      */
-    SAFARI_DRIVER(SAFARI_NAME, SafariDriver.class, null, SAFARI, false),
+    SAFARI_DRIVER(SafariDriver.class, null, SAFARI, false),
 
     /**
      * This item describes instantiation of {@link PhantomJSDriver}
      */
-    PHANTOM_JS_DRIVER(PHANTOM_JS_NAME, PhantomJSDriver.class, phantomjs(), PHANTOM_JS, false);
+    PHANTOM_JS_DRIVER(PhantomJSDriver.class, phantomjs(), PHANTOM_JS, false);
 
-    private final DriverNameProperty name;
     private final Class<? extends WebDriver> webDriverClass;
     private WebDriverManager webDriverManager;
     private final CapabilityTypes capabilityType;
     private final boolean requiresRemoteUrl;
     private final URL remoteURL;
 
-    SupportedWebDrivers(DriverNameProperty name, Class<? extends WebDriver> webDriverClass,
+    SupportedWebDrivers(Class<? extends WebDriver> webDriverClass,
                         WebDriverManager webDriverManager,
                         CapabilityTypes capabilityType,
                         boolean requiresRemoteUrl) {
-        this.name = name;
         this.webDriverClass = webDriverClass;
         this.webDriverManager = ofNullable(webDriverManager).orElseGet(() -> {
             String browserName = capabilityType.get().getBrowserName().trim();
@@ -114,13 +111,6 @@ public enum SupportedWebDrivers implements Supplier<Object[]> {
         this.requiresRemoteUrl = requiresRemoteUrl;
         remoteURL = REMOTE_WEB_DRIVER_URL_PROPERTY.get();
     }
-
-
-    @Override
-    public String toString() {
-        return name.toString();
-    }
-
 
     public Object[] get() {
         Object[] args = new Object[]{};

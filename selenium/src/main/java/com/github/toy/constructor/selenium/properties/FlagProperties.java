@@ -52,7 +52,7 @@ public enum FlagProperties implements PropertySupplier<Boolean> {
 
     @Override
     public Boolean get() {
-        return returnOptional()
+        return returnOptionalFromEnvironment()
                 .map(Boolean::parseBoolean).orElse(false);
     }
 }

@@ -16,7 +16,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
  */
 public interface PropertySupplier<T> extends Supplier<T>, Consumer<String> {
 
-    default Optional<String> returnOptional() {
+    default Optional<String> returnOptionalFromEnvironment() {
         return ofNullable(getPropertyValue());
     }
 

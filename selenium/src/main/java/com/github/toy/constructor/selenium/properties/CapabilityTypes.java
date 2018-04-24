@@ -280,7 +280,7 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
         ofNullable(CommonCapabilityProperties.BROWSER_VERSION.get()).ifPresent(o ->
                 desiredCapabilities.setCapability(CapabilityType.BROWSER_VERSION, o));
 
-        returnOptional()
+        returnOptionalFromEnvironment()
                 .map(s -> ServiceLoader.load(CapabilitySupplier.class)
                         .stream()
                         .map(ServiceLoader.Provider::get).collect(toList())
@@ -330,7 +330,7 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
         SUPPORTS_JAVASCRIPT(format("web.driver.capability.%s", CapabilityType.SUPPORTS_JAVASCRIPT)) {
             @Override
                 public Boolean get() {
-                return returnOptional().map(Boolean::parseBoolean).orElse(true);
+                return returnOptionalFromEnvironment().map(Boolean::parseBoolean).orElse(true);
             }
         },
 
@@ -352,7 +352,7 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
 
         @Override
         public Object get() {
-            return returnOptional().orElse(null);
+            return returnOptionalFromEnvironment().orElse(null);
         }
     }
 }

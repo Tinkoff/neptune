@@ -25,7 +25,7 @@ public final class SupportedWebDriverPropertyProperty implements PropertySupplie
 
     @Override
     public SupportedWebDrivers get() {
-        return returnOptional().map(s -> {
+        return returnOptionalFromEnvironment().map(s -> {
             for (SupportedWebDrivers supportedWebDriver: SupportedWebDrivers.values()) {
                 if (supportedWebDriver.name().equalsIgnoreCase(s)) {
                     return supportedWebDriver;

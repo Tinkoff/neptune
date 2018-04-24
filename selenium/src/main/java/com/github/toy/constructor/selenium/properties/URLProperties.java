@@ -35,7 +35,7 @@ public enum  URLProperties implements PropertySupplier<URL> {
 
     @Override
     public URL get() {
-        return returnOptional()
+        return returnOptionalFromEnvironment()
                 .map(s -> {
                     try {
                         return new URL(s);

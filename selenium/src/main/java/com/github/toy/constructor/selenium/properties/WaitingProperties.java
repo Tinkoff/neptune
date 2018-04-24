@@ -102,7 +102,7 @@ public enum WaitingProperties implements Supplier<Duration> {
 
         @Override
         public ChronoUnit get() {
-            return returnOptional()
+            return returnOptionalFromEnvironment()
                     .map(s -> stream(ChronoUnit.values())
                             .filter(timeUnit -> s.trim().equalsIgnoreCase(timeUnit.name()))
                             .findFirst()
@@ -157,7 +157,7 @@ public enum WaitingProperties implements Supplier<Duration> {
 
         @Override
         public Long get() {
-            return returnOptional()
+            return returnOptionalFromEnvironment()
                     .map(Long::parseLong)
                     .orElse(null);
         }
