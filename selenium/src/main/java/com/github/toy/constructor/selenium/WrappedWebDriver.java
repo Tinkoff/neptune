@@ -3,6 +3,7 @@ package com.github.toy.constructor.selenium;
 import com.github.toy.constructor.core.api.Refreshable;
 import com.github.toy.constructor.core.api.Stoppable;
 import com.github.toy.constructor.selenium.properties.SupportedWebDrivers;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.commons.lang3.ArrayUtils;
 import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
 import org.openqa.selenium.WebDriver;
@@ -31,6 +32,7 @@ public class WrappedWebDriver implements WrapsDriver, Refreshable, Stoppable {
 
     private final SupportedWebDrivers supportedWebDriver;
     private WebDriver driver;
+    private boolean isWebDriverInstalled;
 
     public WrappedWebDriver(SupportedWebDrivers supportedWebDriver) {
         this.supportedWebDriver = supportedWebDriver;
@@ -88,6 +90,11 @@ public class WrappedWebDriver implements WrapsDriver, Refreshable, Stoppable {
                 WebDriver driver = c.newInstance(parameters);
                 ofNullable(BASE_WEB_DRIVER_URL_PROPERTY.get())
                         .ifPresent(url -> driver.get(url.toString()));
+
+                if (!isWebDriverInstalled) {
+                    ofNullable(supportedWebDriver.getWebDriverManager()).ifPresent(WebDriverManager::setup);
+                    isWebDriverInstalled = true;
+                }
                 return driver;
             } catch (Exception e) {
                 throw new RuntimeException(e);
