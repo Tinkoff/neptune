@@ -31,6 +31,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.openqa.selenium.Platform.LINUX;
 
+/**
+ * For the testing of the case if all properties are not defined in any way.
+ */
 public class NullPropertiesTest {
 
     @Test

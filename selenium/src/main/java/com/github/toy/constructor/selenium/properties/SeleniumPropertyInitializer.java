@@ -59,6 +59,11 @@ public final class SeleniumPropertyInitializer {
                         }));
     }
 
+    /**
+     * Reads properties which are defined in {@link #SELENIUM_PROPERTY_FILE} which is located in any folder of the project
+     * and instantiates system properties.
+     * @throws IOException when the reading of a file is failed for some reason.
+     */
     public static void refreshProperties() throws IOException  {
         File propertyFile = findPropertyFile();
         if (propertyFile == null) {

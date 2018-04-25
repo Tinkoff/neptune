@@ -114,8 +114,6 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
      * Capabilities for the starting of {@link org.openqa.selenium.firefox.FirefoxDriver}
      */
     FIREFOX("firefox") {
-        private Capabilities toBeReturned;
-
         /**
          * Creates {@link Capabilities} with following properties:
          * <p>

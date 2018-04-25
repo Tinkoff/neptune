@@ -41,6 +41,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.openqa.selenium.Platform.MAC;
 
+/**
+ * For the testing of the case if properties are partially defined before selenium.properties are read.
+ */
 public class WhenPropertiesAreDefinedPreviously {
 
     private static final Map<String, String> properties = Map
