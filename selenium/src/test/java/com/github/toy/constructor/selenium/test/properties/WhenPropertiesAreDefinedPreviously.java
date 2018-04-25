@@ -1,6 +1,5 @@
 package com.github.toy.constructor.selenium.test.properties;
 
-
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.BrowserType;
@@ -30,21 +29,19 @@ import static com.github.toy.constructor.selenium.properties.URLProperties.REMOT
 import static com.github.toy.constructor.selenium.properties.WaitingProperties.*;
 import static com.github.toy.constructor.selenium.properties.WaitingProperties.TimeUnitProperties.*;
 import static com.github.toy.constructor.selenium.properties.WaitingProperties.TimeValueProperties.*;
+import static com.github.toy.constructor.selenium.properties.WaitingProperties.WAITING_FRAME_SWITCHING_DURATION;
+import static com.github.toy.constructor.selenium.test.capability.suppliers.FirefoxTestSupplierWithProfile.EMPTY_PROFILE;
 import static java.lang.String.format;
-import static java.time.Duration.ofMillis;
-import static java.time.Duration.ofMinutes;
-import static java.time.Duration.ofSeconds;
-import static java.time.temporal.ChronoUnit.MILLIS;
-import static java.time.temporal.ChronoUnit.MINUTES;
-import static java.time.temporal.ChronoUnit.SECONDS;
+import static java.time.Duration.*;
+import static java.time.temporal.ChronoUnit.*;
 import static java.util.Map.entry;
 import static org.apache.commons.io.FileUtils.forceDelete;
 import static org.apache.commons.io.FileUtils.getFile;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.openqa.selenium.Platform.LINUX;
+import static org.openqa.selenium.Platform.MAC;
 
-public class DefaultPropertiesTest {
+public class WhenPropertiesAreDefinedPreviously {
 
     private static final Map<String, String> properties = Map
             .ofEntries(entry(ELEMENT_WAITING_TIME_UNIT.getPropertyName(), "MINUTES"),
@@ -70,6 +67,27 @@ public class DefaultPropertiesTest {
 
     @BeforeClass
     public void beforeTests() throws Exception {
+        System.setProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName(), "HOURS");
+        System.setProperty(WAITING_ALERT_TIME_UNIT.getPropertyName(), "MINUTES");
+        System.setProperty(WAITING_WINDOW_TIME_UNIT.getPropertyName(), "DAYS");
+        System.setProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getPropertyName(), "NANOS");
+        System.setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "3");
+        System.setProperty(WAITING_ALERT_TIME_VALUE.getPropertyName(), "45");
+        System.setProperty(WAITING_WINDOW_TIME_VALUE.getPropertyName(), "1500");
+        System.setProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getPropertyName(), "100");
+
+        System.setProperty(REMOTE_WEB_DRIVER_URL_PROPERTY.getPropertyName(), "https://github.com");
+
+        System.setProperty(BROWSER_NAME.getPropertyName(), "safari");
+        System.setProperty(PLATFORM_NAME.getPropertyName(), "Mac");
+        System.setProperty(SUPPORTS_JAVASCRIPT.getPropertyName(), "true");
+
+        System.setProperty(GET_BACK_TO_BASE_URL.getPropertyName(), "FALSE");
+        System.setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getPropertyName(), "false");
+
+        System.setProperty(WEB_DRIVER_TO_LAUNCH, "FIREFOX_DRIVER");
+        System.setProperty(FIREFOX.getPropertyName(), "withProfile");
+
         Properties prop = new Properties();
         try (OutputStream output = new FileOutputStream(SELENIUM_PROPERTY_FILE)) {
             // set the properties value
@@ -92,18 +110,18 @@ public class DefaultPropertiesTest {
 
         assertThat(format("Property %s", GET_BACK_TO_BASE_URL.getPropertyName()),
                 GET_BACK_TO_BASE_URL.get(),
-                is(true));
+                is(false));
 
         assertThat(format("Property %s", KEEP_WEB_DRIVER_SESSION_OPENED.getPropertyName()),
                 KEEP_WEB_DRIVER_SESSION_OPENED.get(),
-                is(true));
+                is(false));
     }
 
     @Test
     public void testOfURLProperties() throws Exception {
         assertThat(format("Property %s", REMOTE_WEB_DRIVER_URL_PROPERTY.getPropertyName()),
                 REMOTE_WEB_DRIVER_URL_PROPERTY.get(),
-                is(new URL("https://www.youtube.com")));
+                is(new URL("https://github.com")));
 
         assertThat(format("Property %s", BASE_WEB_DRIVER_URL_PROPERTY.getPropertyName()),
                 BASE_WEB_DRIVER_URL_PROPERTY.get(),
@@ -114,19 +132,19 @@ public class DefaultPropertiesTest {
     public void testOfWaitingProperties() {
         assertThat(format("Property %s", ELEMENT_WAITING_TIME_UNIT.getPropertyName()),
                 ELEMENT_WAITING_TIME_UNIT.get(),
-                is(MINUTES));
+                is(HOURS));
 
         assertThat(format("Property %s", WAITING_ALERT_TIME_UNIT.getPropertyName()),
                 WAITING_ALERT_TIME_UNIT.get(),
-                is(SECONDS));
+                is(MINUTES));
 
         assertThat(format("Property %s", WAITING_WINDOW_TIME_UNIT.getPropertyName()),
                 WAITING_WINDOW_TIME_UNIT.get(),
-                is(MILLIS));
+                is(DAYS));
 
         assertThat(format("Property %s", WAITING_FRAME_SWITCHING_TIME_UNIT.getPropertyName()),
                 WAITING_FRAME_SWITCHING_TIME_UNIT.get(),
-                is(SECONDS));
+                is(NANOS));
 
         assertThat(format("Property %s", ELEMENT_WAITING_TIME_VALUE.getPropertyName()),
                 ELEMENT_WAITING_TIME_VALUE.get(),
@@ -147,34 +165,34 @@ public class DefaultPropertiesTest {
 
         assertThat(format("Duration item %s", ELEMENT_WAITING_DURATION.name()),
                 ELEMENT_WAITING_DURATION.get(),
-                is(ofMinutes(3)));
+                is(ofHours(3)));
 
         assertThat(format("Duration item %s", WAITING_ALERT_TIME_DURATION.name()),
                 WAITING_ALERT_TIME_DURATION.get(),
-                is(ofSeconds(45)));
+                is(ofMinutes(45)));
 
         assertThat(format("Duration item %s", WAITING_WINDOW_TIME_DURATION.name()),
                 WAITING_WINDOW_TIME_DURATION.get(),
-                is(ofMillis(1500)));
+                is(ofDays(1500)));
 
         assertThat(format("Duration item %s", WAITING_FRAME_SWITCHING_DURATION.name()),
                 WAITING_FRAME_SWITCHING_DURATION.get(),
-                is(ofSeconds(100)));
+                is(ofNanos(100)));
     }
 
     @Test
     public void testOfCommonCapabilityProperties() {
         assertThat(format("Property %s", BROWSER_NAME.getPropertyName()),
                 BROWSER_NAME.get(),
-                is(BrowserType.FIREFOX));
+                is(BrowserType.SAFARI));
 
         assertThat(format("Property %s", PLATFORM_NAME.getPropertyName()),
                 PLATFORM_NAME.get(),
-                is("Linux"));
+                is("Mac"));
 
         assertThat(format("Property %s", SUPPORTS_JAVASCRIPT.getPropertyName()),
                 SUPPORTS_JAVASCRIPT.get(),
-                is(false));
+                is(true));
 
         assertThat(format("Property %s", BROWSER_VERSION.getPropertyName()),
                 BROWSER_VERSION.get(),
@@ -188,8 +206,8 @@ public class DefaultPropertiesTest {
         assertThat("Result map size", capabilities.size(), is(5));
         //IsMapContaining
         assertThat("Browser info", capabilities, hasEntry(CapabilityType.BROWSER_NAME, BrowserType.CHROME));
-        assertThat("Platform info", capabilities, hasEntry(CapabilityType.PLATFORM_NAME, "Linux"));
-        assertThat("Java script enabled info", capabilities, hasEntry(CapabilityType.SUPPORTS_JAVASCRIPT, false));
+        assertThat("Platform info", capabilities, hasEntry(CapabilityType.PLATFORM_NAME, "Mac"));
+        assertThat("Java script enabled info", capabilities, hasEntry(CapabilityType.SUPPORTS_JAVASCRIPT, true));
         assertThat("Browser version info", capabilities, hasEntry("browserVersion", "60"));
         assertThat("Chrome options info", capabilities, hasKey("goog:chromeOptions"));
 
@@ -203,12 +221,12 @@ public class DefaultPropertiesTest {
 
         FirefoxOptions firefoxOptions = (FirefoxOptions) FIREFOX.get();
         assertThat("Browser info", firefoxOptions.getBrowserName(), is(BrowserType.FIREFOX));
-        assertThat("Platform info", firefoxOptions.getPlatform(), is(LINUX));
+        assertThat("Platform info", firefoxOptions.getPlatform(), is(MAC));
         assertThat("Java script enabled info", firefoxOptions.getCapability("javascriptEnabled"),
-                is( false));
+                is( true));
         assertThat("Browser version info", firefoxOptions.getCapability("browserVersion"),
                 is("60"));
-        assertThat("Firefox profile", firefoxOptions.getProfile(), nullValue());
+        assertThat("Firefox profile", firefoxOptions.getProfile(), equalTo(EMPTY_PROFILE));
     }
 
     @AfterClass
@@ -220,3 +238,4 @@ public class DefaultPropertiesTest {
         }
     }
 }
+

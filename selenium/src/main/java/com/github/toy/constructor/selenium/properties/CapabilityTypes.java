@@ -135,8 +135,7 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
          */
         @Override
         public Capabilities get() {
-            toBeReturned = ofNullable(toBeReturned).orElseGet(() -> new FirefoxOptions().merge(super.get()));
-            return toBeReturned;
+            return new FirefoxOptions().merge(super.get());
         }
     },
 

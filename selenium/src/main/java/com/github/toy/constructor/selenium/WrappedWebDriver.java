@@ -18,6 +18,7 @@ import static com.github.toy.constructor.core.api.reflection.ConstructorUtil.fin
 import static com.github.toy.constructor.selenium.properties.FlagProperties.CLEAR_WEB_DRIVER_COOKIES;
 import static com.github.toy.constructor.selenium.properties.FlagProperties.GET_BACK_TO_BASE_URL;
 import static com.github.toy.constructor.selenium.properties.FlagProperties.KEEP_WEB_DRIVER_SESSION_OPENED;
+import static com.github.toy.constructor.selenium.properties.SeleniumPropertyInitializer.refreshProperties;
 import static com.github.toy.constructor.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
@@ -29,6 +30,7 @@ public class WrappedWebDriver implements WrapsDriver, Refreshable, Stoppable {
     private static SeleniumServer server;
     private static boolean serverStarted;
     private static URL serverUrl;
+    private static boolean arePropertiesInitiated;
 
     private final SupportedWebDrivers supportedWebDriver;
     private WebDriver driver;
@@ -36,6 +38,13 @@ public class WrappedWebDriver implements WrapsDriver, Refreshable, Stoppable {
 
     public WrappedWebDriver(SupportedWebDrivers supportedWebDriver) {
         this.supportedWebDriver = supportedWebDriver;
+    }
+
+    private static synchronized void initProperties() throws Exception {
+        if (!arePropertiesInitiated) {
+            refreshProperties();
+            arePropertiesInitiated = true;
+        }
     }
 
     private static synchronized void initServerLocally() {
@@ -74,6 +83,11 @@ public class WrappedWebDriver implements WrapsDriver, Refreshable, Stoppable {
 
     private void initDriverIfNecessary() {
         driver = ofNullable(driver).orElseGet(() -> {
+            try {
+                initProperties();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
             Object[] parameters;
             Object[] arguments = supportedWebDriver.get();
             if (supportedWebDriver.requiresRemoteUrl() && supportedWebDriver.getRemoteURL() == null) {

@@ -4,7 +4,6 @@ import com.github.toy.constructor.core.api.PropertySupplier;
 
 import java.io.*;
 import java.util.Properties;
-import java.util.function.Function;
 
 import static com.github.toy.constructor.selenium.properties.SupportedWebDriverPropertyProperty.SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY;
 import static java.util.Arrays.stream;
@@ -14,14 +13,6 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 public final class SeleniumPropertyInitializer {
 
     public static final String SELENIUM_PROPERTY_FILE = "selenium.properties";
-
-    static {
-        try {
-            refreshProperties();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     private SeleniumPropertyInitializer() {
         super();
