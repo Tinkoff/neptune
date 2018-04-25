@@ -101,14 +101,14 @@ public class WrappedWebDriver implements WrapsDriver, Refreshable, Stoppable {
             try {
                 Constructor<? extends WebDriver> c = findSuitableConstructor(supportedWebDriver.getWebDriverClass(),
                         parameters);
-                WebDriver driver = c.newInstance(parameters);
-                ofNullable(BASE_WEB_DRIVER_URL_PROPERTY.get())
-                        .ifPresent(url -> driver.get(url.toString()));
-
                 if (!isWebDriverInstalled) {
                     ofNullable(supportedWebDriver.getWebDriverManager()).ifPresent(WebDriverManager::setup);
                     isWebDriverInstalled = true;
                 }
+
+                WebDriver driver = c.newInstance(parameters);
+                ofNullable(BASE_WEB_DRIVER_URL_PROPERTY.get())
+                        .ifPresent(url -> driver.get(url.toString()));
                 return driver;
             } catch (Exception e) {
                 throw new RuntimeException(e);

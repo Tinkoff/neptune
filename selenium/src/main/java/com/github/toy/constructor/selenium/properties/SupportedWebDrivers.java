@@ -76,32 +76,42 @@ public enum SupportedWebDrivers implements Supplier<Object[]> {
                         boolean requiresRemoteUrl) {
         this.webDriverClass = webDriverClass;
         this.webDriverManager = ofNullable(webDriverManager).orElseGet(() -> {
-            String browserName = capabilityType.get().getBrowserName().trim();
-            if (BrowserType.SAFARI.equalsIgnoreCase(browserName)) {
+            String browserName = ofNullable(CommonCapabilityProperties.BROWSER_NAME.get())
+                    .map(Object::toString)
+                    .orElse(null);
+
+            if (SafariDriver.class.equals(webDriverClass) || (RemoteWebDriver.class.equals(webDriverClass) &&
+                    BrowserType.SAFARI.equalsIgnoreCase(browserName))) {
                 return null;
             }
 
-            if (BrowserType.CHROME.equalsIgnoreCase(browserName)) {
+            if (ChromeDriver.class.equals(webDriverClass) || (RemoteWebDriver.class.equals(webDriverClass) &&
+                    BrowserType.CHROME.equalsIgnoreCase(browserName))) {
                 return chromedriver();
             }
 
-            if (BrowserType.EDGE.equalsIgnoreCase(browserName)) {
+            if (EdgeDriver.class.equals(webDriverClass) || (RemoteWebDriver.class.equals(webDriverClass) &&
+                    BrowserType.EDGE.equalsIgnoreCase(browserName))) {
                 return edgedriver();
             }
 
-            if (BrowserType.FIREFOX.equalsIgnoreCase(browserName)) {
+            if (FirefoxDriver.class.equals(webDriverClass) || (RemoteWebDriver.class.equals(webDriverClass) &&
+                    BrowserType.FIREFOX.equalsIgnoreCase(browserName))) {
                 return firefoxdriver();
             }
 
-            if (BrowserType.IEXPLORE.equalsIgnoreCase(browserName)) {
+            if (InternetExplorerDriver.class.equals(webDriverClass) || (RemoteWebDriver.class.equals(webDriverClass) &&
+                    BrowserType.IEXPLORE.equalsIgnoreCase(browserName))) {
                 return iedriver();
             }
 
-            if (BrowserType.OPERA_BLINK.equalsIgnoreCase(browserName)) {
+            if (OperaDriver.class.equals(webDriverClass) || (RemoteWebDriver.class.equals(webDriverClass) &&
+                    BrowserType.OPERA_BLINK.equalsIgnoreCase(browserName))) {
                 return operadriver();
             }
 
-            if (BrowserType.PHANTOMJS.equalsIgnoreCase(browserName)) {
+            if (PhantomJSDriver.class.equals(webDriverClass) || (RemoteWebDriver.class.equals(webDriverClass) &&
+                    BrowserType.PHANTOMJS.equalsIgnoreCase(browserName))) {
                 return phantomjs();
             }
 
