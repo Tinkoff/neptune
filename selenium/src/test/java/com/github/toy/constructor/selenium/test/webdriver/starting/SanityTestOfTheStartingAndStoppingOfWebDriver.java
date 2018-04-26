@@ -3,7 +3,6 @@ package com.github.toy.constructor.selenium.test.webdriver.starting;
 import com.github.toy.constructor.selenium.SeleniumParameterProvider;
 import com.github.toy.constructor.selenium.WrappedWebDriver;
 import com.github.toy.constructor.selenium.properties.SupportedWebDrivers;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -24,6 +23,7 @@ import static com.github.toy.constructor.selenium.properties.CapabilityTypes.Com
 import static com.github.toy.constructor.selenium.properties.SupportedWebDriverPropertyProperty.SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY;
 import static com.github.toy.constructor.selenium.properties.SupportedWebDriverPropertyProperty.WEB_DRIVER_TO_LAUNCH;
 import static com.github.toy.constructor.selenium.properties.SupportedWebDrivers.*;
+import static com.github.toy.constructor.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 import static com.github.toy.constructor.selenium.properties.URLProperties.REMOTE_WEB_DRIVER_URL_PROPERTY;
 import static io.github.bonigarcia.wdm.WebDriverManager.phantomjs;
 import static java.lang.String.format;
@@ -121,6 +121,7 @@ public class SanityTestOfTheStartingAndStoppingOfWebDriver {
                 driver = wrappedWebDriver.getWrappedDriver();
                 assertThat("Check class of web driver", driver.getClass(), equalTo(expectedWebDriver));
                 assertThat("Web driver is alive", isDriverAlive(driver), is(true));
+                assertThat("Current url", driver.getCurrentUrl(), anyOf(is("about:blank"), is("data:,")));
                 WebDriver toCheckCapabilities = driver;
                 ofNullable(expectedBrowserType).ifPresent(s -> assertThat("Browser type from returned capabilities",
                         ((HasCapabilities) toCheckCapabilities).getCapabilities().getBrowserName(),
@@ -165,10 +166,31 @@ public class SanityTestOfTheStartingAndStoppingOfWebDriver {
             wrappedWebDriver = new WrappedWebDriver(supportedWebDriver);
             WebDriver driver = wrappedWebDriver.getWrappedDriver();
             assertThat("Web driver is alive", isDriverAlive(driver), is(true));
+            assertThat("Current url", driver.getCurrentUrl(), anyOf(is("about:blank"),
+                    is("data:,")));
         }
         finally {
             ofNullable(wrappedWebDriver).ifPresent(wrappedDriver -> wrappedDriver.shutDown());
             ofNullable(server).ifPresent(SeleniumServer::stop);
+            properties.keySet().forEach(s -> System.getProperties().remove(s));
+        }
+    }
+
+    @Test
+    public void startSessionWithBaseURL() {
+        Map<String, String> properties = new HashMap<>(Map.ofEntries(desiredDriver(CHROME_DRIVER),
+                entry(BASE_WEB_DRIVER_URL_PROPERTY.getPropertyName(), "https://github.com/")));
+        properties.forEach(System::setProperty);
+
+        WrappedWebDriver wrappedWebDriver = (WrappedWebDriver) new SeleniumParameterProvider()
+                .provide().getParameterValues()[0];
+        try {
+            assertThat("Current url",
+                    wrappedWebDriver.getWrappedDriver().getCurrentUrl(),
+                    is("https://github.com/"));
+        }
+        finally {
+            wrappedWebDriver.shutDown();
             properties.keySet().forEach(s -> System.getProperties().remove(s));
         }
     }
