@@ -29,101 +29,133 @@ public enum SupportedWebDrivers implements Supplier<Object[]> {
     /**
      * This item describes instantiation of {@link RemoteWebDriver}
      */
-    REMOTE_DRIVER(RemoteWebDriver.class, null, REMOTE, true),
-    /**
-     * This item describes instantiation of {@link ChromeDriver}
-     */
-    CHROME_DRIVER(ChromeDriver.class, chromedriver(), CHROME, false),
-    /**
-     * This item describes instantiation of {@link EdgeDriver}
-     */
-    EDGE_DRIVER(EdgeDriver.class, edgedriver(), EDGE, false),
+    REMOTE_DRIVER(RemoteWebDriver.class, REMOTE, true) {
+        @Override
+        public WebDriverManager getWebDriverManager() {
 
-    /**
-     * This item describes instantiation of {@link FirefoxDriver}
-     */
-    FIREFOX_DRIVER(FirefoxDriver.class, firefoxdriver(), FIREFOX, false),
+            if (REMOTE_WEB_DRIVER_URL_PROPERTY.get() != null) {
+                return null;
+            }
 
-    /**
-     * This item describes instantiation of {@link InternetExplorerDriver}
-     */
-    IE_DRIVER(InternetExplorerDriver.class, iedriver(), IE, false),
-
-    /**
-     * This item describes instantiation of {@link OperaDriver}
-     */
-    OPERA_DRIVER(OperaDriver.class, operadriver(), OPERA, false),
-
-    /**
-     * This item describes instantiation of {@link SafariDriver}
-     */
-    SAFARI_DRIVER(SafariDriver.class, null, SAFARI, false),
-
-    /**
-     * This item describes instantiation of {@link PhantomJSDriver}
-     */
-    PHANTOM_JS_DRIVER(PhantomJSDriver.class, phantomjs(), PHANTOM_JS, false);
-
-    private final Class<? extends WebDriver> webDriverClass;
-    private WebDriverManager webDriverManager;
-    private final CapabilityTypes capabilityType;
-    private final boolean requiresRemoteUrl;
-    private final URL remoteURL;
-
-    SupportedWebDrivers(Class<? extends WebDriver> webDriverClass,
-                        WebDriverManager webDriverManager,
-                        CapabilityTypes capabilityType,
-                        boolean requiresRemoteUrl) {
-        this.webDriverClass = webDriverClass;
-        this.webDriverManager = ofNullable(webDriverManager).orElseGet(() -> {
             String browserName = ofNullable(CommonCapabilityProperties.BROWSER_NAME.get())
                     .map(Object::toString)
                     .orElse(null);
 
-            if (SafariDriver.class.equals(webDriverClass) || (RemoteWebDriver.class.equals(webDriverClass) &&
-                    BrowserType.SAFARI.equalsIgnoreCase(browserName))) {
+            if (BrowserType.SAFARI.equalsIgnoreCase(browserName)) {
                 return null;
             }
 
-            if (ChromeDriver.class.equals(webDriverClass) || (RemoteWebDriver.class.equals(webDriverClass) &&
-                    BrowserType.CHROME.equalsIgnoreCase(browserName))) {
+            if (BrowserType.CHROME.equalsIgnoreCase(browserName)) {
                 return chromedriver();
             }
 
-            if (EdgeDriver.class.equals(webDriverClass) || (RemoteWebDriver.class.equals(webDriverClass) &&
-                    BrowserType.EDGE.equalsIgnoreCase(browserName))) {
+            if (BrowserType.EDGE.equalsIgnoreCase(browserName)) {
                 return edgedriver();
             }
 
-            if (FirefoxDriver.class.equals(webDriverClass) || (RemoteWebDriver.class.equals(webDriverClass) &&
-                    BrowserType.FIREFOX.equalsIgnoreCase(browserName))) {
+            if (BrowserType.FIREFOX.equalsIgnoreCase(browserName)) {
                 return firefoxdriver();
             }
 
-            if (InternetExplorerDriver.class.equals(webDriverClass) || (RemoteWebDriver.class.equals(webDriverClass) &&
-                    BrowserType.IEXPLORE.equalsIgnoreCase(browserName))) {
+            if (BrowserType.IEXPLORE.equalsIgnoreCase(browserName)) {
                 return iedriver();
             }
 
-            if (OperaDriver.class.equals(webDriverClass) || (RemoteWebDriver.class.equals(webDriverClass) &&
-                    BrowserType.OPERA_BLINK.equalsIgnoreCase(browserName))) {
+            if (BrowserType.OPERA_BLINK.equalsIgnoreCase(browserName)) {
                 return operadriver();
             }
 
-            if (PhantomJSDriver.class.equals(webDriverClass) || (RemoteWebDriver.class.equals(webDriverClass) &&
-                    BrowserType.PHANTOMJS.equalsIgnoreCase(browserName))) {
+            if (BrowserType.PHANTOMJS.equalsIgnoreCase(browserName)) {
                 return phantomjs();
             }
 
             return null;
-        });
+        }
+    },
+    /**
+     * This item describes instantiation of {@link ChromeDriver}
+     */
+    CHROME_DRIVER(ChromeDriver.class, CHROME, false) {
+        @Override
+        public WebDriverManager getWebDriverManager() {
+            return chromedriver();
+        }
+    },
+    /**
+     * This item describes instantiation of {@link EdgeDriver}
+     */
+    EDGE_DRIVER(EdgeDriver.class, EDGE, false) {
+        @Override
+        public WebDriverManager getWebDriverManager() {
+            return edgedriver();
+        }
+    },
+
+    /**
+     * This item describes instantiation of {@link FirefoxDriver}
+     */
+    FIREFOX_DRIVER(FirefoxDriver.class, FIREFOX, false) {
+        @Override
+        public WebDriverManager getWebDriverManager() {
+            return firefoxdriver();
+        }
+    },
+
+    /**
+     * This item describes instantiation of {@link InternetExplorerDriver}
+     */
+    IE_DRIVER(InternetExplorerDriver.class, IE, false) {
+        @Override
+        public WebDriverManager getWebDriverManager() {
+            return iedriver();
+        }
+    },
+
+    /**
+     * This item describes instantiation of {@link OperaDriver}
+     */
+    OPERA_DRIVER(OperaDriver.class, OPERA, false) {
+        @Override
+        public WebDriverManager getWebDriverManager() {
+            return operadriver();
+        }
+    },
+
+    /**
+     * This item describes instantiation of {@link SafariDriver}
+     */
+    SAFARI_DRIVER(SafariDriver.class, SAFARI, false) {
+        @Override
+        public WebDriverManager getWebDriverManager() {
+            return null;
+        }
+    },
+
+    /**
+     * This item describes instantiation of {@link PhantomJSDriver}
+     */
+    PHANTOM_JS_DRIVER(PhantomJSDriver.class, PHANTOM_JS, false) {
+        @Override
+        public WebDriverManager getWebDriverManager() {
+            return phantomjs();
+        }
+    };
+
+    private final Class<? extends WebDriver> webDriverClass;
+    private final CapabilityTypes capabilityType;
+    private final boolean requiresRemoteUrl;
+
+    SupportedWebDrivers(Class<? extends WebDriver> webDriverClass,
+                        CapabilityTypes capabilityType,
+                        boolean requiresRemoteUrl) {
+        this.webDriverClass = webDriverClass;
         this.capabilityType = capabilityType;
         this.requiresRemoteUrl = requiresRemoteUrl;
-        remoteURL = REMOTE_WEB_DRIVER_URL_PROPERTY.get();
     }
 
     public Object[] get() {
         Object[] args = new Object[]{};
+        URL remoteURL = REMOTE_WEB_DRIVER_URL_PROPERTY.get();
         if (remoteURL != null) {
             args = add(args, remoteURL);
         }
@@ -152,10 +184,8 @@ public enum SupportedWebDrivers implements Supplier<Object[]> {
      * @return URL of the node to start a new remote session.
      */
     public URL getRemoteURL() {
-        return remoteURL;
+        return REMOTE_WEB_DRIVER_URL_PROPERTY.get();
     }
 
-    public WebDriverManager getWebDriverManager() {
-        return webDriverManager;
-    }
+    public abstract WebDriverManager getWebDriverManager();
 }

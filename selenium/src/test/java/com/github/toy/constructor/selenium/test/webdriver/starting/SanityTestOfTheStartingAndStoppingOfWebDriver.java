@@ -3,27 +3,37 @@ package com.github.toy.constructor.selenium.test.webdriver.starting;
 import com.github.toy.constructor.selenium.SeleniumParameterProvider;
 import com.github.toy.constructor.selenium.WrappedWebDriver;
 import com.github.toy.constructor.selenium.properties.SupportedWebDrivers;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
+import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.server.SeleniumServer;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 
+import static com.github.toy.constructor.selenium.properties.CapabilityTypes.CommonCapabilityProperties.BROWSER_NAME;
+import static com.github.toy.constructor.selenium.properties.SupportedWebDriverPropertyProperty.SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY;
 import static com.github.toy.constructor.selenium.properties.SupportedWebDriverPropertyProperty.WEB_DRIVER_TO_LAUNCH;
 import static com.github.toy.constructor.selenium.properties.SupportedWebDrivers.*;
+import static com.github.toy.constructor.selenium.properties.URLProperties.REMOTE_WEB_DRIVER_URL_PROPERTY;
+import static io.github.bonigarcia.wdm.WebDriverManager.phantomjs;
+import static java.lang.String.format;
 import static java.util.Map.entry;
 import static java.util.Optional.ofNullable;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.openqa.selenium.Platform.*;
+import static org.openqa.selenium.net.PortProber.findFreePort;
+import static org.openqa.selenium.remote.BrowserType.*;
 
 /**
  * This is the integration sanity test which is supposed to be run on some local environment.
@@ -40,6 +50,8 @@ import static org.openqa.selenium.Platform.*;
  */
 public class SanityTestOfTheStartingAndStoppingOfWebDriver {
 
+    private final static String DEFAULT_LOCAL_HOST = "http://localhost:%s/wd/hub";
+
     private static boolean isDriverAlive(WebDriver driver) {
         try {
             driver.getCurrentUrl();
@@ -54,21 +66,48 @@ public class SanityTestOfTheStartingAndStoppingOfWebDriver {
         return entry(WEB_DRIVER_TO_LAUNCH, supportedWebDriver.name());
     }
 
+    private static Map.Entry<String, String> browserType(String browserType) {
+        return entry(BROWSER_NAME.getPropertyName(), browserType);
+    }
+
+    private static SeleniumServer startServer(int port) {
+        try {
+            StandaloneConfiguration standAloneConfig = new StandaloneConfiguration();
+            standAloneConfig.port = port;
+            SeleniumServer server = new SeleniumServer(standAloneConfig);
+            server.boot();
+            return server;
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @DataProvider
     public Object[][] testData() {
         return new Object[][]{
-                {ANY, Map.ofEntries(desiredDriver(CHROME_DRIVER)), ChromeDriver.class},
-                {ANY, Map.ofEntries(desiredDriver(FIREFOX_DRIVER)), FirefoxDriver.class},
-                {ANY, Map.ofEntries(desiredDriver(PHANTOM_JS_DRIVER)), PhantomJSDriver.class},
-                {WIN8, Map.ofEntries(desiredDriver(IE_DRIVER)), InternetExplorerDriver.class},
-                {WIN10, Map.ofEntries(desiredDriver(EDGE_DRIVER)), EdgeDriver.class},
+                {ANY, Map.ofEntries(desiredDriver(CHROME_DRIVER)), ChromeDriver.class, null},
+                {ANY, Map.ofEntries(desiredDriver(FIREFOX_DRIVER)), FirefoxDriver.class, null},
+                {ANY, Map.ofEntries(desiredDriver(PHANTOM_JS_DRIVER)), PhantomJSDriver.class, null},
+                {WIN8, Map.ofEntries(desiredDriver(IE_DRIVER)), InternetExplorerDriver.class, null},
+                {WIN10, Map.ofEntries(desiredDriver(EDGE_DRIVER)), EdgeDriver.class, null},
+
+                {ANY, Map.ofEntries(desiredDriver(REMOTE_DRIVER),
+                        browserType(CHROME)), RemoteWebDriver.class, CHROME},
+                {ANY, Map.ofEntries(desiredDriver(REMOTE_DRIVER),
+                        browserType(FIREFOX)), RemoteWebDriver.class, FIREFOX},
+                {ANY, Map.ofEntries(desiredDriver(REMOTE_DRIVER),
+                        browserType(PHANTOMJS)), RemoteWebDriver.class, PHANTOMJS},
+                {WIN8, Map.ofEntries(desiredDriver(REMOTE_DRIVER),
+                        browserType(IEXPLORE)), RemoteWebDriver.class, IEXPLORE},
+                {WIN10, Map.ofEntries(desiredDriver(REMOTE_DRIVER),
+                        browserType(EDGE)), RemoteWebDriver.class, EDGE},
 
         };
     }
 
     @Test(dataProvider = "testData")
     public void testOfTheStarting(Platform targetPlatform, Map<String, String> propertiesToSet,
-                                  Class<? extends WebDriver> expectedWebDriver) {
+                                  Class<? extends WebDriver> expectedWebDriver, String expectedBrowserType) {
         if (!getCurrent().is(targetPlatform)) {
             return;
         }
@@ -82,6 +121,10 @@ public class SanityTestOfTheStartingAndStoppingOfWebDriver {
                 driver = wrappedWebDriver.getWrappedDriver();
                 assertThat("Check class of web driver", driver.getClass(), equalTo(expectedWebDriver));
                 assertThat("Web driver is alive", isDriverAlive(driver), is(true));
+                WebDriver toCheckCapabilities = driver;
+                ofNullable(expectedBrowserType).ifPresent(s -> assertThat("Browser type from returned capabilities",
+                        ((HasCapabilities) toCheckCapabilities).getCapabilities().getBrowserName(),
+                        is(expectedBrowserType)));
             }
             finally {
                 wrappedWebDriver.shutDown();
@@ -91,6 +134,42 @@ public class SanityTestOfTheStartingAndStoppingOfWebDriver {
         }
         finally {
             propertiesToSet.keySet().forEach(s -> System.getProperties().remove(s));
+        }
+    }
+
+    @Test
+    public void testOfTheRemoteStartingWithRemoteURL() throws Exception {
+        SeleniumServer server;
+        WrappedWebDriver wrappedWebDriver = null;
+        int port = findFreePort();
+        URL url = new URL(format(DEFAULT_LOCAL_HOST, port));
+
+        Map<String, String> properties = new HashMap<>(Map.ofEntries(desiredDriver(REMOTE_DRIVER),
+                browserType(PHANTOMJS),
+                entry(REMOTE_WEB_DRIVER_URL_PROPERTY.getPropertyName(), url.toString())));
+        properties.forEach(System::setProperty);
+        server = startServer(port);
+
+        SupportedWebDrivers supportedWebDriver = SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.get();
+        Object[] parameters = supportedWebDriver.get();
+
+        try {
+            assertThat("Check that web driver manager is null", supportedWebDriver.getWebDriverManager(),
+                    nullValue());
+            assertThat("Starting parameters contain remote URL as defined according to server settings. Also " +
+                            "parameters should contain capabilities.",
+                    parameters, arrayContaining(is(url), instanceOf(Capabilities.class)));
+
+            phantomjs().setup();
+
+            wrappedWebDriver = new WrappedWebDriver(supportedWebDriver);
+            WebDriver driver = wrappedWebDriver.getWrappedDriver();
+            assertThat("Web driver is alive", isDriverAlive(driver), is(true));
+        }
+        finally {
+            ofNullable(wrappedWebDriver).ifPresent(wrappedDriver -> wrappedDriver.shutDown());
+            ofNullable(server).ifPresent(SeleniumServer::stop);
+            properties.keySet().forEach(s -> System.getProperties().remove(s));
         }
     }
 }
