@@ -58,5 +58,6 @@ project(":selenium") {
             exclude group: 'com.google.code.gson'
         }
         testCompile group: 'org.testng', name: 'testng', version: testNGVersion
+        testCompile group: 'org.mockito', name: 'mockito-core', version: '2.18.3'
     }
 }

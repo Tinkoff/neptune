@@ -17,6 +17,7 @@ import static com.github.toy.constructor.selenium.properties.SupportedWebDriverP
 import static com.github.toy.constructor.selenium.properties.SupportedWebDrivers.CHROME_DRIVER;
 import static com.github.toy.constructor.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 import static java.lang.System.setProperty;
+import static java.lang.Thread.sleep;
 import static java.util.Map.entry;
 import static java.util.Optional.ofNullable;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -111,11 +112,12 @@ public class RefreshingTest {
     }
 
     @Test
-    public void toKeepSessionAliveWithNoOtherOptionTest() {
+    public void toKeepSessionAliveWithNoOtherOptionTest() throws InterruptedException {
         setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getPropertyName(), "true");
 
         WebDriver webDriver = prepareWrappedWebDriver();
         wrappedWebDriver.refresh();
+        sleep(1000);
 
         assertThat("Is driver alive", isDriverAlive(webDriver), is(true));
         assertThat("Current url",
@@ -128,6 +130,7 @@ public class RefreshingTest {
         setProperty(CLEAR_WEB_DRIVER_COOKIES.getPropertyName(), "false");
         setProperty(GET_BACK_TO_BASE_URL.getPropertyName(), "false");
         wrappedWebDriver.refresh();
+        sleep(1000);
 
         assertThat("Is driver alive", isDriverAlive(webDriver), is(true));
         assertThat("Current url",
@@ -139,12 +142,13 @@ public class RefreshingTest {
     }
 
     @Test
-    public void toKeepSessionAliveWithGettingBackToBaseUrlTest() {
+    public void toKeepSessionAliveWithGettingBackToBaseUrlTest() throws InterruptedException {
         setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getPropertyName(), "true");
         setProperty(GET_BACK_TO_BASE_URL.getPropertyName(), "true");
 
         WebDriver webDriver = prepareWrappedWebDriver();
         wrappedWebDriver.refresh();
+        sleep(1000);
 
         assertThat("Is driver alive", isDriverAlive(webDriver), is(true));
         assertThat("Current url",
@@ -156,6 +160,7 @@ public class RefreshingTest {
 
         setProperty(CLEAR_WEB_DRIVER_COOKIES.getPropertyName(), "false");
         wrappedWebDriver.refresh();
+        sleep(1000);
 
         assertThat("Is driver alive", isDriverAlive(webDriver), is(true));
         assertThat("Current url",
@@ -167,12 +172,13 @@ public class RefreshingTest {
     }
 
     @Test
-    public void toKeepSessionAliveWithCookieRemovalTest() {
+    public void toKeepSessionAliveWithCookieRemovalTest() throws InterruptedException {
         setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getPropertyName(), "true");
         setProperty(CLEAR_WEB_DRIVER_COOKIES.getPropertyName(), "true");
 
         WebDriver webDriver = prepareWrappedWebDriver();
         wrappedWebDriver.refresh();
+        sleep(1000);
 
         assertThat("Is driver alive", isDriverAlive(webDriver), is(true));
         assertThat("Current url",
@@ -185,6 +191,7 @@ public class RefreshingTest {
         setProperty(GET_BACK_TO_BASE_URL.getPropertyName(), "false");
         webDriver.get(SELENIUM);
         wrappedWebDriver.refresh();
+        sleep(1000);
 
         assertThat("Is driver alive", isDriverAlive(webDriver), is(true));
         assertThat("Current url",
@@ -196,11 +203,12 @@ public class RefreshingTest {
     }
 
     @Test
-    public void dynamicalChangeOfOptionsTest() {
+    public void dynamicalChangeOfOptionsTest() throws InterruptedException {
         setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getPropertyName(), "true");
 
         WebDriver webDriver = prepareWrappedWebDriver();
         wrappedWebDriver.refresh();
+        sleep(1000);
 
         assertThat("Is driver alive", isDriverAlive(webDriver), is(true));
         assertThat("Current url",
@@ -212,6 +220,7 @@ public class RefreshingTest {
 
         setProperty(GET_BACK_TO_BASE_URL.getPropertyName(), "true");
         wrappedWebDriver.refresh();
+        sleep(1000);
 
         assertThat("Is driver alive", isDriverAlive(webDriver), is(true));
         assertThat("Current url",
@@ -225,6 +234,7 @@ public class RefreshingTest {
         setProperty(GET_BACK_TO_BASE_URL.getPropertyName(), "false");
         setProperty(CLEAR_WEB_DRIVER_COOKIES.getPropertyName(), "true");
         wrappedWebDriver.refresh();
+        sleep(1000);
 
         assertThat("Is driver alive", isDriverAlive(webDriver), is(true));
         assertThat("Current url",

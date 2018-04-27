@@ -66,7 +66,7 @@ class FindLabeledWidgets<R extends Widget> extends FindWidgets<R> {
 
     static <R extends Widget> Function<SearchContext, List<R>> labeledWidgets(Class<R> classOfAWidget,
                                                                               String conditionString) {
-        return toGet(format("Elements of type %s", classOfAWidget.getName()),
+        return toGet(format("Elements of type %s", getWidgetName(classOfAWidget)),
                 new FindLabeledWidgets<>(classOfAWidget, conditionString));
     }
 }

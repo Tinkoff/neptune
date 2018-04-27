@@ -22,6 +22,7 @@ import static com.github.toy.constructor.selenium.functions.searching.CommonCond
 import static com.github.toy.constructor.selenium.functions.searching.FindLabeledWidgets.labeledWidgets;
 import static com.github.toy.constructor.selenium.properties.WaitingProperties.ELEMENT_WAITING_DURATION;
 
+@SuppressWarnings("unused")
 public final class MultipleSearchSupplier<R extends SearchContext> extends
         GetSupplier<SearchContext, List<R>, MultipleSearchSupplier<R>> {
 

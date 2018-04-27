@@ -29,7 +29,7 @@ final class FindWebElements implements Function<SearchContext, List<WebElement>>
     }
 
     static Function<SearchContext, List<WebElement>> webElements(By by, String conditionString) {
-        return toGet(format("Web elements located by %s", by), new FindWebElements(by, conditionString));
+        return toGet(format("Web elements located %s", by), new FindWebElements(by, conditionString));
     }
 
     private WebElement createWebElement(WebElement webElement) {
