@@ -25,9 +25,9 @@ public final class EditActionSupplier extends
      * @param <S> if the type of editable element
      * @return built edit action
      */
-    public static <R, S extends SearchContext & Editable<R>> EditActionSupplier valueOf(
+    public static <R, S extends SearchContext & Editable<R>> EditActionSupplier valueOfThe(
             SequentialSearchSupplier<S> of, R value) {
-        return new EditActionSupplier().andValueOf(of, value);
+        return new EditActionSupplier().andValueOfThe(of, value);
     }
 
     /**
@@ -38,18 +38,18 @@ public final class EditActionSupplier extends
      * @param <S> if the type of editable element
      * @return built edit action
      */
-    public static <R, S extends SearchContext & Editable<R>> EditActionSupplier valueOf(S of, R value) {
-        return new EditActionSupplier().andValueOf(of, value);
+    public static <R, S extends SearchContext & Editable<R>> EditActionSupplier valueOfThe(S of, R value) {
+        return new EditActionSupplier().andValueOfThe(of, value);
     }
 
-    public <T, Q extends SearchContext & Editable<T>> EditActionSupplier andValueOf(SequentialSearchSupplier<Q> of, T value) {
+    public <T, Q extends SearchContext & Editable<T>> EditActionSupplier andValueOfThe(SequentialSearchSupplier<Q> of, T value) {
         checkArgument(of != null, "The searching for the editable element should be defined");
         checkArgument(value != null, "The value which is used to edit the element should be defined");
         return andThen(format("Edit. Set new value %s", value),
                 of.get(), value);
     }
 
-    public <T, Q extends SearchContext & Editable<T>> EditActionSupplier andValueOf(Q of, T value) {
+    public <T, Q extends SearchContext & Editable<T>> EditActionSupplier andValueOfThe(Q of, T value) {
         checkArgument(of != null, "The WWWeditable element should be defined");
         checkArgument(value != null, "The value which is used to edit the element should be defined");
         return andThen(format("Edit. Set new value %s", value), of, value);

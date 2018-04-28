@@ -28,7 +28,7 @@ public abstract class Widget implements WrapsElement, SearchContext, TakesScreen
             }
             clazz = clazz.getSuperclass();
         }
-        return classOfAWidget.getName();
+        return classOfAWidget.getSimpleName();
     }
 
     @Override

@@ -12,7 +12,7 @@ import java.util.List;
 import static com.github.toy.constructor.core.api.StoryWriter.action;
 import static com.github.toy.constructor.core.api.proxy.ConstructorParameters.params;
 import static com.github.toy.constructor.core.api.proxy.Substitution.getSubstituted;
-import static com.github.toy.constructor.selenium.functions.edit.EditActionSupplier.valueOf;
+import static com.github.toy.constructor.selenium.functions.edit.EditActionSupplier.valueOfThe;
 import static com.github.toy.constructor.selenium.functions.navigation.GetCurrentUrlSupplier.currentUrl;
 import static com.github.toy.constructor.selenium.functions.navigation.GetCurrentUrlSupplier.currentUrlIn;
 import static com.github.toy.constructor.selenium.functions.navigation.NavigationActionSupplier.toUrl;
@@ -92,11 +92,11 @@ public class Tezzt {
             String text = selenium.getValue(ofThe(element(textField("Some text field"))));
 
             selenium.edit(
-                    valueOf(
+                    valueOfThe(
                             element(textField(ofSeconds(5),
                                     shouldBeEnabled().and(shouldBeVisible()))), of("123", HOME))
 
-                    .andValueOf(element(flag()), true));
+                    .andValueOfThe(element(flag()), true));
 
             selenium.evaluate(javaScript("Some script"));
 
