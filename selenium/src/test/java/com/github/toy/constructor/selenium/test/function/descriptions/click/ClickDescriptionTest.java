@@ -1,6 +1,7 @@
 package com.github.toy.constructor.selenium.test.function.descriptions.click;
 
 import com.github.toy.constructor.selenium.api.widget.Clickable;
+import com.github.toy.constructor.selenium.api.widget.Name;
 import com.github.toy.constructor.selenium.api.widget.Widget;
 import com.github.toy.constructor.selenium.test.function.descriptions.DescribedWebElement;
 import org.openqa.selenium.*;
@@ -72,6 +73,7 @@ public class ClickDescriptionTest {
     }
 
 
+    @Name("Some clickable widget")
     private static class SomeStubClickableWidget extends Widget implements Clickable {
 
         SomeStubClickableWidget(WebElement wrappedElement) {

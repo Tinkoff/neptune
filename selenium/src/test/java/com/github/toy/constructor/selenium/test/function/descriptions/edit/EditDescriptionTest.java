@@ -1,6 +1,7 @@
 package com.github.toy.constructor.selenium.test.function.descriptions.edit;
 
 import com.github.toy.constructor.selenium.api.widget.Editable;
+import com.github.toy.constructor.selenium.api.widget.Name;
 import com.github.toy.constructor.selenium.api.widget.Widget;
 import com.github.toy.constructor.selenium.test.function.descriptions.DescribedWebElement;
 import org.openqa.selenium.WebElement;
@@ -34,7 +35,7 @@ public class EditDescriptionTest {
                         shouldBeVisible().and(shouldBeEnabled()))), List.of(TAB, "123")).get().toString(),
 
                 is("Edit. Set new value 12345 on Test web element ->\n" +
-                        " A single item from (Elements of type SomeStubEditableWidget) on condition " +
+                        " A single item from (Elements of type Some editable widget) on condition " +
                         "(Should be visible) AND (Should have attribute 'id' which contains value 'someId'). " +
                         "Time to get valuable result: 0:00:50:000. With parameters: [12345] ->\n" +
                         "  Edit. Set new value [\uE004, 123] on A single item from (Elements of type Text field) on condition " +
@@ -48,6 +49,7 @@ public class EditDescriptionTest {
                 is("Edit. Set new value 12345 on Some editable widget. With parameters: [12345]"));
     }
 
+    @Name("Some editable widget")
     private static class SomeStubEditableWidget extends Widget implements Editable<String> {
 
         SomeStubEditableWidget(WebElement wrappedElement) {
