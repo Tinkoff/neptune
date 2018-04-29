@@ -10,7 +10,7 @@ import static java.lang.String.valueOf;
 import static java.util.Optional.ofNullable;
 
 @SuppressWarnings({"unchecked"})
-interface DescribedFunction<T, R> extends Function<T, R> {
+abstract class DescribedFunction<T, R> implements Function<T, R> {
 
     private static <T, V, R> Function<T, R> getSequentialDescribedFunction(Function<? super T, ? extends V> before,
                                                                            Function<? super V, ? extends R> after) {
@@ -27,13 +27,11 @@ interface DescribedFunction<T, R> extends Function<T, R> {
             @Override
             public R apply(T t) {
                 if (GetStep.class.isAssignableFrom(t.getClass())) {
-                    GetStep<?> getStep = GetStep.class.cast(t);
-                    return getStep.get(toGet(toString(),  step -> {
-                        Object result = ((GetStep) step).get(before);
-                        V v = (V) result;
-                        return step.get(toGet(format("From %s get %s", valueOf(v), after),
-                                step1 -> ofNullable(v).map(after::apply).orElse(null)));
-                    }));
+                    GetStep getStep = GetStep.class.cast(t);
+                    Object result = getStep.get(before);
+                    V v = (V) result;
+                    return (R) getStep.get(toGet(format("From %s get %s", valueOf(v), after),
+                            step1 -> ofNullable(v).map(after::apply).orElse(null)));
                 }
 
                 V result = before.apply(t);
@@ -42,7 +40,7 @@ interface DescribedFunction<T, R> extends Function<T, R> {
 
             @Override
             public String toString() {
-                return after.toString();
+                return before.toString();
             }
 
             public  <Q> Function<Q, R> compose(Function<? super Q, ? extends T> before) {
@@ -55,11 +53,11 @@ interface DescribedFunction<T, R> extends Function<T, R> {
         };
     }
 
-    default <V> Function<V, R> compose(Function<? super V, ? extends T> before) {
+    public <V> Function<V, R> compose(Function<? super V, ? extends T> before) {
         return getSequentialDescribedFunction(before, this);
     }
 
-    default  <V> Function<T, V> andThen(Function<? super R, ? extends V> after) {
+    public <V> Function<T, V> andThen(Function<? super R, ? extends V> after) {
         return getSequentialDescribedFunction(this, after);
     }
 }
