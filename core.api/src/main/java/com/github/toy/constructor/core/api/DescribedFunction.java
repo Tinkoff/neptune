@@ -2,15 +2,23 @@ package com.github.toy.constructor.core.api;
 
 import java.util.function.Function;
 
-import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
-import static java.lang.String.valueOf;
 import static java.util.Optional.ofNullable;
 
-@SuppressWarnings({"unchecked"})
 interface DescribedFunction<T, R> extends Function<T, R> {
+
+    String DELIMITER = "->\n";
+
+    private static String tabs(String description) {
+        int delimiters = description.split(DELIMITER).length;
+        StringBuilder result = new StringBuilder();
+        for (int i = 1; i <= delimiters; i++) {
+            result.append(" ");
+        }
+        return result.toString();
+    }
 
     private static <T, V, R> Function<T, R> getSequentialDescribedFunction(Function<? super T, ? extends V> before,
                                                                            Function<? super V, ? extends R> after) {
@@ -26,23 +34,13 @@ interface DescribedFunction<T, R> extends Function<T, R> {
         return new DescribedFunction<>() {
             @Override
             public R apply(T t) {
-                if (GetStep.class.isAssignableFrom(t.getClass())) {
-                    GetStep<?> getStep = GetStep.class.cast(t);
-                    return getStep.get(toGet(toString(),  step -> {
-                        Object result = ((GetStep) step).get(before);
-                        V v = (V) result;
-                        return step.get(toGet(format("From %s get %s", valueOf(v), after),
-                                step1 -> ofNullable(v).map(after::apply).orElse(null)));
-                    }));
-                }
-
                 V result = before.apply(t);
                 return ofNullable(result).map(after).orElse(null);
             }
 
             @Override
             public String toString() {
-                return after.toString();
+                return format("%s ->\n%s%s", before, tabs(before.toString()), after);
             }
 
             public  <Q> Function<Q, R> compose(Function<? super Q, ? extends T> before) {
