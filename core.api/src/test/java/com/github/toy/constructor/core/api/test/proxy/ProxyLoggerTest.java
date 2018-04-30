@@ -47,31 +47,11 @@ public class ProxyLoggerTest {
                 spiListLogger.messages,
                 contains("SPI:Reset calculated value to 0",
                         "SPI:Get: Get calculation",
-                        "SPI:Get: Subtract number 100",
-                        "SPI:Get: Subtract number 100",
-                        "SPI:Get: Divide by number 0.5",
-                        "SPI:Get: Divide by number 0.5",
-                        "SPI:Get: Multiplying by number 11",
-                        "SPI:Get: Multiplying by number 11",
-                        "SPI:Get: Divide by number -6",
-                        "SPI:Get: Divide by number -6",
-                        "SPI:Get: Entering number 9",
-                        "SPI:Returned value: 9.0",
-                        "SPI:Get: From 9.0 get Divide by number -6",
-                        "SPI:Returned value: -1.5",
-                        "SPI:Returned value: -1.5",
-                        "SPI:Returned value: -1.5",
-                        "SPI:Get: From -1.5 get Multiplying by number 11",
-                        "SPI:Returned value: -16.5",
-                        "SPI:Returned value: -16.5",
-                        "SPI:Returned value: -16.5",
-                        "SPI:Get: From -16.5 get Divide by number 0.5",
-                        "SPI:Returned value: -33.0",
-                        "SPI:Returned value: -33.0",
-                        "SPI:Returned value: -33.0",
-                        "SPI:Get: From -33.0 get Subtract number 100",
-                        "SPI:Returned value: -133.0",
-                        "SPI:Returned value: -133.0",
+                        "SPI:Get: Entering number 9 ->\n" +
+                                " Divide by number -6 ->\n" +
+                                "  Multiplying by number 11 ->\n" +
+                                "   Divide by number 0.5 ->\n" +
+                                "    Subtract number 100",
                         "SPI:Returned value: -133.0",
                         "SPI:Returned value: -128.0"));
     }
@@ -82,31 +62,11 @@ public class ProxyLoggerTest {
                 defaultListLogger.messages,
                 contains("Reset calculated value to 0",
                         "Get: Get calculation",
-                        "Get: Subtract number 100",
-                        "Get: Subtract number 100",
-                        "Get: Divide by number 0.5",
-                        "Get: Divide by number 0.5",
-                        "Get: Multiplying by number 11",
-                        "Get: Multiplying by number 11",
-                        "Get: Divide by number -6",
-                        "Get: Divide by number -6",
-                        "Get: Entering number 9",
-                        "Returned value: 9.0",
-                        "Get: From 9.0 get Divide by number -6",
-                        "Returned value: -1.5",
-                        "Returned value: -1.5",
-                        "Returned value: -1.5",
-                        "Get: From -1.5 get Multiplying by number 11",
-                        "Returned value: -16.5",
-                        "Returned value: -16.5",
-                        "Returned value: -16.5",
-                        "Get: From -16.5 get Divide by number 0.5",
-                        "Returned value: -33.0",
-                        "Returned value: -33.0",
-                        "Returned value: -33.0",
-                        "Get: From -33.0 get Subtract number 100",
-                        "Returned value: -133.0",
-                        "Returned value: -133.0",
+                        "Get: Entering number 9 ->\n" +
+                                " Divide by number -6 ->\n" +
+                                "  Multiplying by number 11 ->\n" +
+                                "   Divide by number 0.5 ->\n" +
+                                "    Subtract number 100",
                         "Returned value: -133.0",
                         "Returned value: -128.0"));
     }
