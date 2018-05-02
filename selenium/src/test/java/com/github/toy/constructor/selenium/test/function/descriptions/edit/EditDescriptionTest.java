@@ -34,11 +34,7 @@ public class EditDescriptionTest {
                 .andValueOfThe(element(textField("Some field", ofMillis(500),
                         shouldBeVisible().and(shouldBeEnabled()))), List.of(TAB, "123")).get().toString(),
 
-                is("Edit. Set new value 12345 on Test web element ->\n" +
-                        " A single item from (Elements of type Some editable widget) on condition " +
-                        "(Should be visible) AND (Should have attribute 'id' which contains value 'someId'). " +
-                        "Time to get valuable result: 0:00:50:000. With parameters: [12345] ->\n" +
-                        "  Edit. Set new value [\uE004, 123] on A single item from (Elements of type Text field) on condition " +
+                is("Edit. Set new value [\uE004, 123] on A single item from (Elements of type Text field) on condition " +
                         "(Should have string label(s) [Some field]) AND ((Should be visible) AND (Should be enabled)). " +
                         "Time to get valuable result: 0:00:00:500. With parameters: [[\uE004, 123]]"));
     }

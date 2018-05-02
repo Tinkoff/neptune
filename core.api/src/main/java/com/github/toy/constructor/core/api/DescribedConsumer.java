@@ -1,25 +1,25 @@
 package com.github.toy.constructor.core.api;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.function.Consumer;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.lang.String.format;
 
-interface DescribedConsumer<T> extends Consumer<T> {
+@SuppressWarnings("unchecked")
+class DescribedConsumer<T> implements Consumer<T> {
 
-    String DELIMITER = "->\n";
+    private final LinkedList<Consumer<T>> sequence = new LinkedList<>();
+    private final String description;
+    private final Consumer<T> consumer;
 
-    private static String tabs(String description) {
-        int delimiters = description.split(DELIMITER).length;
-        StringBuilder result = new StringBuilder();
-        for (int i = 1; i <= delimiters; i++) {
-            result.append(" ");
-        }
-        return result.toString();
+    DescribedConsumer(String description, Consumer<T> consumer) {
+        this.description = description;
+        this.consumer = consumer;
     }
 
-    private static <T> Consumer<T> getSequentialDescribedConsumer(Consumer<? super T> before,
+    private static <T> DescribedConsumer<T> getSequentialDescribedConsumer(Consumer<? super T> before,
                                                                   Consumer<? super T> after) {
         checkNotNull(before);
         checkNotNull(after);
@@ -30,23 +30,39 @@ interface DescribedConsumer<T> extends Consumer<T> {
                 "It seems given consumer doesn't describe any after-action. Use method " +
                         "StoryWriter.action to describe the after-action.");
 
-        return new DescribedConsumer<>() {
-            @Override
-            public void accept(T t) {
-                before.accept(t); after.accept(t);
-            }
-
-            public String toString() {
-                return format("%s ->\n%s%s", before, tabs(before.toString()), after);
-            }
-
-            public Consumer<T> andThen(Consumer<? super T> afterAction)  {
-                return getSequentialDescribedConsumer(this, afterAction);
-            }
-        };
+        return new DescribedConsumer<T>(after.toString(), t -> {
+            before.accept(t); after.accept(t);
+        })
+                .addToSequence(DescribedConsumer.class.cast(before))
+                .addToSequence(DescribedConsumer.class.cast(after));
     }
 
-    default Consumer<T> andThen(Consumer<? super T> afterAction)  {
+    @Override
+    public void accept(T t) {
+        consumer.accept(t);
+    }
+
+    @Override
+    public String toString() {
+        return description;
+    }
+
+    LinkedList<Consumer<T>> getSequence() {
+        return sequence;
+    }
+
+    private DescribedConsumer<T> addToSequence(DescribedConsumer<T> sequenceChain) {
+        List<Consumer<T>> consumers = sequenceChain.getSequence();
+        if (sequenceChain.getSequence().size() == 0) {
+            sequence.addLast(sequenceChain);
+        }
+        else {
+            sequence.addAll(consumers);
+        }
+        return this;
+    }
+
+    public Consumer<T> andThen(Consumer<? super T> afterAction)  {
         return getSequentialDescribedConsumer(this, afterAction);
     }
 }

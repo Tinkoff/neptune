@@ -33,12 +33,7 @@ public class ClickDescriptionTest {
                 .foundFrom(webElement(xpath(".//some/xpath"), ofSeconds(5), shouldBeEnabled())))
 
                 .andOn(element(link())).get().toString(),
-                is("Click on A single item from (Web elements located By.xpath: .//some/xpath) on condition " +
-                        "Should be enabled. Time to get valuable result: 0:00:05:000 ->\n" +
-                        " A single item from (Elements of type Button) on condition " +
-                        "(Should have string label(s) [Some button]) AND ((Should be visible) AND (Should have attribute 'some attr' which matches regExp pattern 'some pattern')). Time to get valuable result: 0:00:07:000 ->\n" +
-                        "  Click on A single item from (Elements of type Link) on condition with no other restriction. " +
-                        "Time to get valuable result: 0:01:00:000"));
+                is("Click on A single item from (Elements of type Link) on condition with no other restriction. Time to get valuable result: 0:01:00:000"));
     }
 
     @Test
@@ -48,28 +43,21 @@ public class ClickDescriptionTest {
 
                         .andOn(element(webElement(id("someId")))).get().toString(),
 
-                is("Click on A single item from (Web elements located By.className: someClass) on condition with no other restriction. " +
-                        "Time to get valuable result: 0:01:00:000 ->\n" +
-                        " A single item from (Web elements located By.xpath: .//some/xpath) on condition Should be enabled. " +
-                        "Time to get valuable result: 0:00:05:000 ->\n" +
-                        "  Click on A single item from (Web elements located By.id: someId) on condition with no other restriction. " +
-                        "Time to get valuable result: 0:01:00:000"));
+                is("Click on A single item from (Web elements located By.id: someId) on condition with no other restriction. Time to get valuable result: 0:01:00:000"));
     }
 
     @Test
     public void clickOnSomeClickable() {
         assertThat(on(new SomeStubClickableWidget(new DescribedWebElement()))
                         .andOn(new SomeStubClickableWidget(new DescribedWebElement())).get().toString(),
-                is("Click on Some clickable widget ->\n" +
-                        " Click on Some clickable widget"));
+                is("Click on Some clickable widget"));
     }
 
     @Test
     public void clickOnSomeWebElement() {
         assertThat(on(new DescribedWebElement())
                         .andOn(new DescribedWebElement()).get().toString(),
-                is("Click on Test web element ->\n" +
-                        " Click on Test web element"));
+                is("Click on Test web element"));
     }
 
 

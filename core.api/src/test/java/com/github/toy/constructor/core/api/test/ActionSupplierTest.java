@@ -43,9 +43,7 @@ public class ActionSupplierTest {
                                 "A", "B", "D")
                         .andThen("ABCD", "A", "B", "D")
                         .get().toString(),
-                is("Clean string value of the object of given strings on String value of the object. With parameters: [A, B, D] ->" +
-                        "\n Clean string value of the object of given strings on Substring of first 2 symbols taken from string value of the object. With parameters: [A, B, D] ->" +
-                        "\n  Clean string value ABCD of given strings on ABCD. With parameters: [A, B, D]"));
+                is("Clean string value ABCD of given strings on ABCD. With parameters: [A, B, D]"));
     }
 
     @Test
@@ -55,9 +53,7 @@ public class ActionSupplierTest {
                         .andThen(toGet("Substring of first 2 symbols taken from string value of the object", GET_OBJECT_TO_SUBSTRING))
                         .andThen("ABCD")
                         .get().toString(),
-                is("Clean string value of the object of given strings on String value of the object ->\n" +
-                        " Clean string value of the object of given strings on Substring of first 2 symbols taken from string value of the object ->\n" +
-                        "  Clean string value ABCD of given strings on ABCD"));
+                is("Clean string value ABCD of given strings on ABCD"));
     }
 
     static class CleanStringAction extends SequentialActionSupplier<Object, String, CleanStringAction> {

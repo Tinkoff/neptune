@@ -52,7 +52,7 @@ public class ToGetTest {
 
         assertThat("Sting value of the function",
                 describedToString.andThen(describedStringLength).toString(),
-                is("String value of the object ->\n Length of the given string"));
+                is("Length of the given string"));
     }
 
     @Test
@@ -64,7 +64,7 @@ public class ToGetTest {
 
         assertThat("Sting value of the function",
                 describedStringLength.compose(describedToString).toString(),
-                is("String value of the object ->\n Length of the given string"));
+                is("Length of the given string"));
     }
 
     @Test
@@ -79,9 +79,7 @@ public class ToGetTest {
         System.out.println(describedStringLength.compose(describedToString).andThen(describedPositivityFunction).toString());
         assertThat("Sting value of the function",
                 describedStringLength.compose(describedToString).andThen(describedPositivityFunction).toString(),
-                is("String value of the object ->\n" +
-                        " Length of the given string ->\n" +
-                        "  Positivity of the calculated value"));
+                is("Positivity of the calculated value"));
     }
 
     @Test
