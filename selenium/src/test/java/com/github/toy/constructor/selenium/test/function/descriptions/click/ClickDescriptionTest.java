@@ -33,7 +33,8 @@ public class ClickDescriptionTest {
                 .foundFrom(webElement(xpath(".//some/xpath"), ofSeconds(5), shouldBeEnabled())))
 
                 .andOn(element(link())).get().toString(),
-                is("Click on A single item from (Elements of type Link) on condition with no other restriction. Time to get valuable result: 0:01:00:000"));
+                is("Click. With parameters: {A single item from (Elements of type Link) " +
+                        "on condition with no other restriction. Time to get valuable result: 0:01:00:000}"));
     }
 
     @Test
@@ -43,21 +44,22 @@ public class ClickDescriptionTest {
 
                         .andOn(element(webElement(id("someId")))).get().toString(),
 
-                is("Click on A single item from (Web elements located By.id: someId) on condition with no other restriction. Time to get valuable result: 0:01:00:000"));
+                is("Click. With parameters: {A single item from (Web elements located By.id: someId) " +
+                        "on condition with no other restriction. Time to get valuable result: 0:01:00:000}"));
     }
 
     @Test
     public void clickOnSomeClickable() {
         assertThat(on(new SomeStubClickableWidget(new DescribedWebElement()))
                         .andOn(new SomeStubClickableWidget(new DescribedWebElement())).get().toString(),
-                is("Click on Some clickable widget"));
+                is("Click. With parameters: {Some clickable widget}"));
     }
 
     @Test
     public void clickOnSomeWebElement() {
         assertThat(on(new DescribedWebElement())
                         .andOn(new DescribedWebElement()).get().toString(),
-                is("Click on Test web element"));
+                is("Click. With parameters: {Test web element}"));
     }
 
 

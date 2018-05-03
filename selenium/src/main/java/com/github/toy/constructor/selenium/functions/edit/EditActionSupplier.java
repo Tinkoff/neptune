@@ -45,14 +45,14 @@ public final class EditActionSupplier extends
     public <T, Q extends SearchContext & Editable<T>> EditActionSupplier andValueOfThe(SequentialSearchSupplier<Q> of, T value) {
         checkArgument(of != null, "The searching for the editable element should be defined");
         checkArgument(value != null, "The value which is used to edit the element should be defined");
-        return andThen(format("Edit. Set new value %s", value),
+        return andThen(format("Edit", value),
                 of.get(), value);
     }
 
     public <T, Q extends SearchContext & Editable<T>> EditActionSupplier andValueOfThe(Q of, T value) {
         checkArgument(of != null, "The WWWeditable element should be defined");
         checkArgument(value != null, "The value which is used to edit the element should be defined");
-        return andThen(format("Edit. Set new value %s", value), of, value);
+        return andThen(format("Edit", value), of, value);
     }
 
     @Override

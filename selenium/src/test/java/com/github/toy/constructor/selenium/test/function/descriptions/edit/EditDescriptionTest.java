@@ -34,15 +34,14 @@ public class EditDescriptionTest {
                 .andValueOfThe(element(textField("Some field", ofMillis(500),
                         shouldBeVisible().and(shouldBeEnabled()))), List.of(TAB, "123")).get().toString(),
 
-                is("Edit. Set new value [\uE004, 123] on A single item from (Elements of type Text field) on condition " +
-                        "(Should have string label(s) [Some field]) AND ((Should be visible) AND (Should be enabled)). " +
-                        "Time to get valuable result: 0:00:00:500. With parameters: [[\uE004, 123]]"));
+                is("Edit. With parameters: {A single item from (Elements of type Text field) on condition (Should have string label(s) [Some field]) " +
+                        "AND ((Should be visible) AND (Should be enabled)). Time to get valuable result: 0:00:00:500,[\uE004, 123]}"));
     }
 
     @Test
     public void editOnSomeEditable() {
         assertThat(valueOfThe(new SomeStubEditableWidget(new DescribedWebElement()), "12345").get().toString(),
-                is("Edit. Set new value 12345 on Some editable widget. With parameters: [12345]"));
+                is("Edit. With parameters: {Some editable widget,12345}"));
     }
 
     @Name("Some editable widget")

@@ -21,6 +21,7 @@ import static java.lang.Thread.sleep;
 import static java.util.Map.entry;
 import static java.util.Optional.ofNullable;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.either;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 
@@ -186,7 +187,7 @@ public class RefreshingTest {
                 is(SELENIUM));
         assertThat("Are cookies there",
                 webDriver.manage().getCookies().size(),
-                is(0));
+                either(is(0)).or(is(1)));
 
         setProperty(GET_BACK_TO_BASE_URL.getPropertyName(), "false");
         webDriver.get(SELENIUM);
@@ -199,7 +200,7 @@ public class RefreshingTest {
                 is(SELENIUM));
         assertThat("Are cookies there",
                 webDriver.manage().getCookies().size(),
-                is(0));
+                either(is(0)).or(is(1)));
     }
 
     @Test
@@ -242,7 +243,7 @@ public class RefreshingTest {
                 is(SELENIUM));
         assertThat("Are cookies there",
                 webDriver.manage().getCookies().size(),
-                is(0));
+                either(is(0)).or(is(1)));
 
         setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getPropertyName(), "false");
         wrappedWebDriver.refresh();
