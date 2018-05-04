@@ -20,18 +20,7 @@ public final class StoryWriter {
      * by the {@link #toString()} method.
      */
     public static <T> Consumer<T> action(String description, Consumer<T> consumer) {
-        checkArgument(!isBlank(description), "Description should not be empty");
-        return new DescribedConsumer<>(description, consumer) {
-            @Override
-            public void accept(T t) {
-                consumer.accept(t);
-            }
-
-            @Override
-            public String toString() {
-                return description;
-            }
-        };
+        return new DescribedConsumer<>(description, consumer);
     }
 
     /**
@@ -45,7 +34,6 @@ public final class StoryWriter {
      * by the {@link #toString()} method.
      */
     public static <T, R> Function<T, R> toGet(String description, Function<T, R> function) {
-        checkArgument(!isBlank(description), "Description should not be empty");
         return new DescribedFunction<>(description, function);
     }
 

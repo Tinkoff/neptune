@@ -1,9 +1,11 @@
 package com.github.toy.constructor.core.api;
 
+import java.util.LinkedList;
 import java.util.function.Function;
 
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.lang.String.format;
 
 /**
  * It is designed to typify functions which get required value and to restrict chains of
@@ -14,6 +16,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  * @param <Q> is a type of a mediator value which is used to get the required result.
  * @param <THIS> is self-type. It is necessary for the {@link #set(Function)} method.
  */
+@SuppressWarnings("unchecked")
 public abstract class SequentialGetSupplier<T, R, Q, THIS extends SequentialGetSupplier<T, R, Q, THIS>>
         extends GetSupplier<T, R, THIS> {
 
@@ -30,7 +33,21 @@ public abstract class SequentialGetSupplier<T, R, Q, THIS extends SequentialGetS
         checkArgument(DescribedFunction.class.isAssignableFrom(mediatorFunction.getClass()),
                 "Function to get value from is not described. " +
                         "Use method StoryWriter.toGet to describe it.");
-        return set(mediatorFunction.andThen(getEndFunction()));
+
+        Function<Q, R> goalFunction = getEndFunction();
+        DescribedFunction<T, ? extends Q> describedMediatorFunction = DescribedFunction.class.cast(mediatorFunction);
+        Function<?, ?> previous;
+        LinkedList<Function<Object, Object>> sequence = describedMediatorFunction.getSequence();
+
+        if (sequence.size() == 0) {
+            previous = describedMediatorFunction;
+        }
+        else {
+            previous = sequence.getLast();
+        }
+
+        return set(toGet(format("%s from (%s)", goalFunction, previous),
+                mediatorFunction.andThen(goalFunction)));
     }
 
     /**

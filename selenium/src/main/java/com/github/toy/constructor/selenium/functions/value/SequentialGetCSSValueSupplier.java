@@ -48,7 +48,7 @@ public final class SequentialGetCSSValueSupplier extends
      * @return self-reference
      */
     public SequentialGetCSSValueSupplier of(Widget widget) {
-        return super.from(widget.getWrappedElement());
+        return super.from(widget);
     }
 
     /**

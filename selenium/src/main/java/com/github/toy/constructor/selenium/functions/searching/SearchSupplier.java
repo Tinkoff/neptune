@@ -82,7 +82,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<WebElement> webElement(By by, Duration duration, Predicate<WebElement> predicate) {
+    public static SearchSupplier<WebElement> webElement(By by, Duration duration, Predicate<? super WebElement> predicate) {
         return item(webElements(by, predicate.toString()), duration, predicate);
     }
 
@@ -98,7 +98,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<WebElement> webElement(By by, String text, Duration duration,
-                                                        Predicate<WebElement> predicate) {
+                                                        Predicate<? super WebElement> predicate) {
         return webElement(by, duration, shouldHaveText(text).and(predicate));
     }
 
@@ -114,7 +114,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<WebElement> webElement(By by, Pattern textPattern, Duration duration,
-                                                        Predicate<WebElement> predicate) {
+                                                        Predicate<? super WebElement> predicate) {
         return webElement(by, duration, shouldHaveText(textPattern).and(predicate));
     }
 
@@ -182,7 +182,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<WebElement> webElement(By by, Predicate<WebElement> predicate) {
+    public static SearchSupplier<WebElement> webElement(By by, Predicate<? super WebElement> predicate) {
         return item(webElements(by, predicate.toString()), predicate);
     }
 
@@ -198,7 +198,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<WebElement> webElement(By by, String text, Predicate<WebElement> predicate) {
+    public static SearchSupplier<WebElement> webElement(By by, String text, Predicate<? super WebElement> predicate) {
         return webElement(by, shouldHaveText(text).and(predicate));
     }
 
@@ -214,7 +214,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<WebElement> webElement(By by, Pattern textPattern, Predicate<WebElement> predicate) {
+    public static SearchSupplier<WebElement> webElement(By by, Pattern textPattern, Predicate<? super WebElement> predicate) {
         return webElement(by, shouldHaveText(textPattern).and(predicate));
     }
 

@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @SuppressWarnings("unchecked")
 class DescribedConsumer<T> implements Consumer<T> {
@@ -15,6 +16,8 @@ class DescribedConsumer<T> implements Consumer<T> {
     private final Consumer<T> consumer;
 
     DescribedConsumer(String description, Consumer<T> consumer) {
+        checkArgument(consumer != null, "Consumer should be defined");
+        checkArgument(!isBlank(description), "Description should not be empty");
         this.description = description;
         this.consumer = consumer;
     }

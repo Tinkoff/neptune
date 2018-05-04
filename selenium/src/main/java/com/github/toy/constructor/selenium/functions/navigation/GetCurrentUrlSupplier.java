@@ -36,7 +36,7 @@ public final class GetCurrentUrlSupplier extends SequentialGetSupplier<SeleniumS
      */
     public static GetCurrentUrlSupplier currentUrlIn(GetWindowSupplier from) {
         checkArgument(from != null, "The way how to get window should be defined");
-        return new GetCurrentUrlSupplier().from(toGet(String.format("Window %s", from.get()),
+        return new GetCurrentUrlSupplier().from(toGet("Found window",
                 seleniumSteps -> seleniumSteps.get(from).getWrappedDriver()));
     }
 

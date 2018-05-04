@@ -79,7 +79,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<WebElement> webElements(By by, Duration duration, Predicate<WebElement> predicate) {
+    public static MultipleSearchSupplier<WebElement> webElements(By by, Duration duration, Predicate<? super WebElement> predicate) {
         return items(FindWebElements.webElements(by, predicate.toString()), duration, predicate);
     }
 
@@ -94,7 +94,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<WebElement> webElements(By by, String text, Duration duration, Predicate<WebElement> predicate) {
+    public static MultipleSearchSupplier<WebElement> webElements(By by, String text, Duration duration, Predicate<? super WebElement> predicate) {
         return webElements(by, duration, shouldHaveText(text).and(predicate));
     }
 
@@ -109,7 +109,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<WebElement> webElements(By by, Pattern textPattern, Duration duration, Predicate<WebElement> predicate) {
+    public static MultipleSearchSupplier<WebElement> webElements(By by, Pattern textPattern, Duration duration, Predicate<? super WebElement> predicate) {
         return webElements(by, duration, shouldHaveText(textPattern).and(predicate));
     }
 
@@ -177,7 +177,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<WebElement> webElements(By by, Predicate<WebElement> predicate) {
+    public static MultipleSearchSupplier<WebElement> webElements(By by, Predicate<? super WebElement> predicate) {
         return items(FindWebElements.webElements(by, predicate.toString()), predicate);
     }
 
@@ -193,7 +193,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<WebElement> webElements(By by, String text, Predicate<WebElement> predicate) {
+    public static MultipleSearchSupplier<WebElement> webElements(By by, String text, Predicate<? super WebElement> predicate) {
         return webElements(by, shouldHaveText(text).and(predicate));
     }
 
@@ -209,7 +209,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<WebElement> webElements(By by, Pattern textPattern, Predicate<WebElement> predicate) {
+    public static MultipleSearchSupplier<WebElement> webElements(By by, Pattern textPattern, Predicate<? super WebElement> predicate) {
         return webElements(by, shouldHaveText(textPattern).and(predicate));
     }
 

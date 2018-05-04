@@ -18,7 +18,7 @@ public class GetCurrentUrlTest {
     @Test
     public void currentUrlTest() {
         assertThat(currentUrl().get().toString(),
-                is("Current URL"));
+                is("Current URL from (Current window)"));
     }
 
     @Test
@@ -26,12 +26,12 @@ public class GetCurrentUrlTest {
         assertThat(currentUrlIn(window().byIndex(1).onCondition(hasTitle("Some title")
                         .or(hasTitle(compile("Some title pattern")).and(hasUrl("Some url"))))
                         .withTimeToGetWindow(ofSeconds(5))).get().toString(),
-                is("Current URL"));
+                is("Current URL from (Found window)"));
     }
 
     @Test
     public void currentUrlWithWindowTest() {
         assertThat(currentUrlIn(new DescribedWindow()).get().toString(),
-                is("Current URL"));
+                is("Current URL from (Window Test stab window)"));
     }
 }

@@ -7,6 +7,7 @@ import java.util.function.Function;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @SuppressWarnings("unchecked")
 class DescribedFunction<T, R> implements Function<T, R> {
@@ -16,8 +17,13 @@ class DescribedFunction<T, R> implements Function<T, R> {
     private final Function<T, R> function;
 
     DescribedFunction(String description, Function<T, R> function) {
+        checkArgument(function != null, "Function should be defined");
+        checkArgument(!isBlank(description), "Description should not be empty");
         this.description = description;
         this.function = function;
+        if (DescribedFunction.class.isAssignableFrom(function.getClass())) {
+            addToSequence(DescribedFunction.class.cast(function));
+        }
     }
 
     private static <T, V, R> Function<T, R> getSequentialDescribedFunction(Function<? super T, ? extends V> before,
