@@ -26,7 +26,7 @@ public final class GetFrameSupplier extends SequentialGetSupplier<SeleniumSteps,
      * @return instance of {@link GetFrameSupplier}
      */
     public static GetFrameSupplier frame(Function<WebDriver, Frame> howToGetFrame) {
-        return new GetFrameSupplier(howToGetFrame).from(toGet("Attempt to switch to a frame",
+        return new GetFrameSupplier(howToGetFrame).from(toGet("Current content",
                 SeleniumSteps::getWrappedDriver));
     }
 
