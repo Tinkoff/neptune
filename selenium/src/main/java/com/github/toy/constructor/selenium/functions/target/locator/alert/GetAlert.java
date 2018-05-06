@@ -15,7 +15,7 @@ final class GetAlert implements Function<SeleniumSteps, Alert> {
     }
 
     static Function<SeleniumSteps, Alert> getAlert() {
-        return toGet("Find alert", new GetAlert());
+        return toGet("Present alert", new GetAlert());
     }
 
     @Override
