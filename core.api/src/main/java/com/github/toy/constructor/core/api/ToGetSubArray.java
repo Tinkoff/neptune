@@ -8,6 +8,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static com.github.toy.constructor.core.api.ToGetConditionalHelper.*;
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -28,13 +29,13 @@ public final class ToGetSubArray {
                                                  boolean checkConditionInParallel,
                                                  boolean ignoreExceptionOnConditionCheck,
                                                  Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        return ToGetConditionalHelper.fluentWaitFunction(ToGetConditionalHelper.getDescription(description, function, condition), t ->
+        return fluentWaitFunction(getDescription(description, function, condition), t ->
                         ofNullable(function.apply(t)).map(rs -> {
                             List<R> subResult = stream(asList(rs).spliterator(), checkConditionInParallel).filter(r -> {
                                 try {
-                                    return !ToGetConditionalHelper.notNullAnd(condition).test(r);
+                                    return !notNullAnd(condition).test(r);
                                 } catch (Throwable t1) {
-                                    return !ToGetConditionalHelper.returnFalseOrThrowException(t1, ignoreExceptionOnConditionCheck);
+                                    return !returnFalseOrThrowException(t1, ignoreExceptionOnConditionCheck);
                                 }
                             }).collect(toList());
 
@@ -78,11 +79,11 @@ public final class ToGetSubArray {
                                                       boolean checkConditionInParallel,
                                                       boolean ignoreExceptionOnConditionCheck,
                                                       Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        ToGetConditionalHelper.checkFunction(function);
-        ToGetConditionalHelper.checkCondition(condition);
-        ToGetConditionalHelper.checkWaitingTime(waitingTime);
-        ToGetConditionalHelper.checkSleepingTime(sleepingTime);
-        ToGetConditionalHelper.checkExceptionSupplier(exceptionOnTimeOut);
+        checkFunction(function);
+        checkCondition(condition);
+        checkWaitingTime(waitingTime);
+        checkSleepingTime(sleepingTime);
+        checkExceptionSupplier(exceptionOnTimeOut);
         return array(description, function, condition, waitingTime, sleepingTime,
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
     }
@@ -106,11 +107,11 @@ public final class ToGetSubArray {
                                                    Duration waitingTime,
                                                    Duration sleepingTime,
                                                    Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        ToGetConditionalHelper.checkFunction(function);
-        ToGetConditionalHelper.checkWaitingTime(waitingTime);
-        ToGetConditionalHelper.checkSleepingTime(sleepingTime);
-        ToGetConditionalHelper.checkExceptionSupplier(exceptionOnTimeOut);
-        return array(EMPTY, function, ToGetConditionalHelper.asIs(), waitingTime, sleepingTime,
+        checkFunction(function);
+        checkWaitingTime(waitingTime);
+        checkSleepingTime(sleepingTime);
+        checkExceptionSupplier(exceptionOnTimeOut);
+        return array(EMPTY, function, AS_IS, waitingTime, sleepingTime,
                 true, true, exceptionOnTimeOut);
     }
 
@@ -142,10 +143,10 @@ public final class ToGetSubArray {
                                                       boolean checkConditionInParallel,
                                                       boolean ignoreExceptionOnConditionCheck,
                                                       Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        ToGetConditionalHelper.checkFunction(function);
-        ToGetConditionalHelper.checkCondition(condition);
-        ToGetConditionalHelper.checkWaitingTime(waitingTime);
-        ToGetConditionalHelper.checkExceptionSupplier(exceptionOnTimeOut);
+        checkFunction(function);
+        checkCondition(condition);
+        checkWaitingTime(waitingTime);
+        checkExceptionSupplier(exceptionOnTimeOut);
         return array(description, function, condition, waitingTime, null,
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
     }
@@ -166,10 +167,10 @@ public final class ToGetSubArray {
     public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
                                                    Duration waitingTime,
                                                    Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        ToGetConditionalHelper.checkFunction(function);
-        ToGetConditionalHelper.checkWaitingTime(waitingTime);
-        ToGetConditionalHelper.checkExceptionSupplier(exceptionOnTimeOut);
-        return array(EMPTY, function, ToGetConditionalHelper.asIs(), waitingTime, null,
+        checkFunction(function);
+        checkWaitingTime(waitingTime);
+        checkExceptionSupplier(exceptionOnTimeOut);
+        return array(EMPTY, function, AS_IS, waitingTime, null,
                 true, true, exceptionOnTimeOut);
     }
 
@@ -199,9 +200,9 @@ public final class ToGetSubArray {
                                                       boolean checkConditionInParallel,
                                                       boolean ignoreExceptionOnConditionCheck,
                                                       Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        ToGetConditionalHelper.checkFunction(function);
-        ToGetConditionalHelper.checkCondition(condition);
-        ToGetConditionalHelper.checkExceptionSupplier(exceptionOnTimeOut);
+        checkFunction(function);
+        checkCondition(condition);
+        checkExceptionSupplier(exceptionOnTimeOut);
         return array(description, function, condition, null, null,
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
     }
@@ -220,9 +221,9 @@ public final class ToGetSubArray {
      */
     public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
                                                    Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        ToGetConditionalHelper.checkFunction(function);
-        ToGetConditionalHelper.checkExceptionSupplier(exceptionOnTimeOut);
-        return array(EMPTY, function, ToGetConditionalHelper.asIs(), null, null,
+        checkFunction(function);
+        checkExceptionSupplier(exceptionOnTimeOut);
+        return array(EMPTY, function, AS_IS, null, null,
                 true, true, exceptionOnTimeOut);
     }
 
@@ -254,10 +255,10 @@ public final class ToGetSubArray {
                                                       Duration sleepingTime,
                                                       boolean checkConditionInParallel,
                                                       boolean ignoreExceptionOnConditionCheck) {
-        ToGetConditionalHelper.checkFunction(function);
-        ToGetConditionalHelper.checkCondition(condition);
-        ToGetConditionalHelper.checkWaitingTime(waitingTime);
-        ToGetConditionalHelper.checkSleepingTime(sleepingTime);
+        checkFunction(function);
+        checkCondition(condition);
+        checkWaitingTime(waitingTime);
+        checkSleepingTime(sleepingTime);
         return array(description, function, condition, waitingTime, sleepingTime,
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, null);
     }
@@ -278,10 +279,10 @@ public final class ToGetSubArray {
     public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
                                                    Duration waitingTime,
                                                    Duration sleepingTime) {
-        ToGetConditionalHelper.checkFunction(function);
-        ToGetConditionalHelper.checkWaitingTime(waitingTime);
-        ToGetConditionalHelper.checkSleepingTime(sleepingTime);
-        return array(EMPTY, function, ToGetConditionalHelper.asIs(), waitingTime, sleepingTime,
+        checkFunction(function);
+        checkWaitingTime(waitingTime);
+        checkSleepingTime(sleepingTime);
+        return array(EMPTY, function, AS_IS, waitingTime, sleepingTime,
                 true, true, null);
     }
 
@@ -310,9 +311,9 @@ public final class ToGetSubArray {
                                                       Duration waitingTime,
                                                       boolean checkConditionInParallel,
                                                       boolean ignoreExceptionOnConditionCheck) {
-        ToGetConditionalHelper.checkFunction(function);
-        ToGetConditionalHelper.checkCondition(condition);
-        ToGetConditionalHelper.checkWaitingTime(waitingTime);
+        checkFunction(function);
+        checkCondition(condition);
+        checkWaitingTime(waitingTime);
         return array(description, function, condition, waitingTime, null,
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, null);
     }
@@ -330,9 +331,9 @@ public final class ToGetSubArray {
      */
     public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
                                                    Duration waitingTime) {
-        ToGetConditionalHelper.checkFunction(function);
-        ToGetConditionalHelper.checkWaitingTime(waitingTime);
-        return array(EMPTY, function, ToGetConditionalHelper.asIs(), waitingTime, null,
+        checkFunction(function);
+        checkWaitingTime(waitingTime);
+        return array(EMPTY, function, AS_IS, waitingTime, null,
                 true, true, null);
     }
 
@@ -359,8 +360,8 @@ public final class ToGetSubArray {
                                                      Predicate<? super R> condition,
                                                      boolean checkConditionInParallel,
                                                      boolean ignoreExceptionOnConditionCheck) {
-        ToGetConditionalHelper.checkFunction(function);
-        ToGetConditionalHelper.checkCondition(condition);
+        checkFunction(function);
+        checkCondition(condition);
         return array(description, function, condition, null, null,
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, null);
     }

@@ -89,7 +89,6 @@ public class SanityTestOfTheStartingAndStoppingOfWebDriver {
                 {ANY, Map.ofEntries(desiredDriver(FIREFOX_DRIVER)), FirefoxDriver.class, null},
                 {ANY, Map.ofEntries(desiredDriver(PHANTOM_JS_DRIVER)), PhantomJSDriver.class, null},
                 {WIN8, Map.ofEntries(desiredDriver(IE_DRIVER)), InternetExplorerDriver.class, null},
-                {WIN10, Map.ofEntries(desiredDriver(EDGE_DRIVER)), EdgeDriver.class, null},
 
                 {ANY, Map.ofEntries(desiredDriver(REMOTE_DRIVER),
                         browserType(CHROME)), RemoteWebDriver.class, CHROME},
@@ -98,9 +97,7 @@ public class SanityTestOfTheStartingAndStoppingOfWebDriver {
                 {ANY, Map.ofEntries(desiredDriver(REMOTE_DRIVER),
                         browserType(PHANTOMJS)), RemoteWebDriver.class, PHANTOMJS},
                 {WIN8, Map.ofEntries(desiredDriver(REMOTE_DRIVER),
-                        browserType(IEXPLORE)), RemoteWebDriver.class, IEXPLORE},
-                {WIN10, Map.ofEntries(desiredDriver(REMOTE_DRIVER),
-                        browserType(EDGE)), RemoteWebDriver.class, EDGE},
+                        browserType(IEXPLORE)), RemoteWebDriver.class, IEXPLORE}
 
         };
     }

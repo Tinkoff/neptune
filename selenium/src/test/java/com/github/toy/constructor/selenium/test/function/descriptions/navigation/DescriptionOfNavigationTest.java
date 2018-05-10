@@ -29,9 +29,9 @@ public class DescriptionOfNavigationTest {
                         .andThenToUrl(window().byIndex(1).onCondition(hasTitle("Some title")
                                         .or(hasTitle(compile("Some title pattern")).and(hasUrl("Some url"))))
                                         .withTimeToGetWindow(ofSeconds(5)), "https://github.com").get().toString(),
-                is("Navigate to URL. " +
-                        "With parameters: {Window/tab from (Window/tab by index 1) on condition (Has title 'Some title') OR " +
-                        "((Has title which matches regExp patter 'Some title pattern') AND (Has loaded url 'Some url')). " +
+                is("Navigate to URL. With parameters: {Window/tab by index 1 with condition (Has title 'Some title') " +
+                        "OR ((Has title which matches regExp patter 'Some title pattern') " +
+                        "AND (Has loaded url 'Some url')). " +
                         "Time to get valuable result: 0:00:05:000,https://github.com}"));
     }
 

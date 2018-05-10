@@ -13,12 +13,12 @@ public class GetActiveElementDescriptionTest {
 
     @Test
     public void activeElementWithoutTimeOut() {
-        assertThat(activeElement().get().toString(), is("Active element on condition as is"));
+        assertThat(activeElement().get().toString(), is("Active element"));
     }
 
     @Test
     public void activeElementWithTimeOut() {
-        assertThat(activeElement(ofSeconds(30)).get().toString(), is("Active element on condition as is. " +
+        assertThat(activeElement(ofSeconds(30)).get().toString(), is("Active element. " +
                 "Time to get valuable result: 0:00:30:000"));
     }
 }

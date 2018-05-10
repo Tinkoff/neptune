@@ -1,7 +1,5 @@
 package com.github.toy.constructor.selenium.test.function.descriptions.value;
 
-import com.github.toy.constructor.selenium.api.widget.HasCssValue;
-import com.github.toy.constructor.selenium.api.widget.HasValue;
 import com.github.toy.constructor.selenium.api.widget.Name;
 import com.github.toy.constructor.selenium.api.widget.Widget;
 import com.github.toy.constructor.selenium.test.function.descriptions.DescribedWebElement;
@@ -26,9 +24,8 @@ public class SequentialGetCSSValueDescriptionTest {
         assertThat(cssValue("some value").of(element(textField("Some text field", ofSeconds(55), shouldBeVisible()
                 .and(shouldHaveAttribute("some attr", "some value"))))
                 .foundFrom(tab("Tab 1"))).get().toString(),
-                is("Value of the css property 'some value' from " +
-                        "(A single item from (Elements of type Text field) on condition (Should have string label(s) [Some text field]) " +
-                        "AND ((Should be visible) AND (Should have attribute 'some attr=\"some value\"')). " +
+                is("Value of the css property 'some value' from (A single item from (Elements of type Text field) " +
+                        "with condition (Should have string label(s) [Some text field]) AND ((Should be visible) AND (Should have attribute 'some attr=\"some value\"')). " +
                         "Time to get valuable result: 0:00:55:000)"));
     }
 
@@ -37,9 +34,8 @@ public class SequentialGetCSSValueDescriptionTest {
         assertThat(cssValue("some value").of(element(webElement(By.xpath(".//some//path"), ofSeconds(55), shouldBeVisible()
                         .and(shouldHaveAttributeContains("some attr", "some value"))))
                         .foundFrom(tab("Tab 1"))).get().toString(),
-                is("Value of the css property 'some value' from (A single item from " +
-                        "(Web elements located By.xpath: .//some//path) on condition (Should be visible) " +
-                        "AND (Should have attribute 'some attr' which contains value 'some value'). " +
+                is("Value of the css property 'some value' from (A single item from (Web elements located By.xpath: .//some//path) " +
+                        "with condition (Should be visible) AND (Should have attribute 'some attr' which contains value 'some value'). " +
                         "Time to get valuable result: 0:00:55:000)"));
     }
 

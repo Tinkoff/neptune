@@ -12,12 +12,12 @@ public class ParentFrameDescriptionTest {
     @Test
     public void parentFrameDescriptionTest() {
         assertThat(parentFrame().get().toString(),
-                is("Parent frame on condition as is"));
+                is("Parent frame"));
     }
 
     @Test
     public void parentFrameWithTimeOutDescriptionTest() {
         assertThat(parentFrame(ofMillis(500)).get().toString(),
-                is("Parent frame on condition as is. Time to get valuable result: 0:00:00:500"));
+                is("Parent frame. Time to get valuable result: 0:00:00:500"));
     }
 }

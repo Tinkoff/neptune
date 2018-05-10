@@ -303,7 +303,8 @@ public class GetFromIterableTest extends BaseConditionalTest {
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS,
                 true, true, () -> NOTHING_WAS_FOUND).toString(),
-                is("Value from (Set converted from list) on condition equals A ignore case. Time to get valuable result: 0:00:05:000"));
+                is("Value from (Set converted from list) with condition equals A ignore case. " +
+                        "Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
@@ -312,7 +313,8 @@ public class GetFromIterableTest extends BaseConditionalTest {
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, true, true, () -> NOTHING_WAS_FOUND).toString(),
-                is("Value from (Set converted from list) on condition equals A ignore case. Time to get valuable result: 0:00:05:000"));
+                is("Value from (Set converted from list) with condition equals A ignore case. " +
+                        "Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
@@ -321,7 +323,7 @@ public class GetFromIterableTest extends BaseConditionalTest {
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 true, true, () -> NOTHING_WAS_FOUND).toString(),
-                is("Value from (Set converted from list) on condition equals A ignore case"));
+                is("Value from (Set converted from list) with condition equals A ignore case"));
     }
 
     @Test
@@ -330,7 +332,8 @@ public class GetFromIterableTest extends BaseConditionalTest {
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true).toString(),
-                is("Value from (Set converted from list) on condition equals A ignore case. Time to get valuable result: 0:00:05:000"));
+                is("Value from (Set converted from list) with condition equals A ignore case. " +
+                        "Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
@@ -339,7 +342,8 @@ public class GetFromIterableTest extends BaseConditionalTest {
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, true, true).toString(),
-                is("Value from (Set converted from list) on condition equals A ignore case. Time to get valuable result: 0:00:05:000"));
+                is("Value from (Set converted from list) with condition equals A ignore case. " +
+                        "Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
@@ -348,7 +352,7 @@ public class GetFromIterableTest extends BaseConditionalTest {
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 true, true).toString(),
-                is("Value from (Set converted from list) on condition equals A ignore case"));
+                is("Value from (Set converted from list) with condition equals A ignore case"));
     }
 
     @Test
@@ -356,42 +360,42 @@ public class GetFromIterableTest extends BaseConditionalTest {
         assertThat("Description", getFromIterable("Value",
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, () -> NOTHING_WAS_FOUND).toString(),
-                is("Value from (Set converted from list) on condition as is. Time to get valuable result: 0:00:05:000"));
+                is("Value from (Set converted from list). Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void testOfDescriptionForFunctionWithIterableInputAndSingleOutput8() {
         assertThat("Description", getFromIterable("Value",
                 toGet("Set converted from list", CONVERT_LIST_TO_SET), FIVE_SECONDS, () -> NOTHING_WAS_FOUND).toString(),
-                is("Value from (Set converted from list) on condition as is. Time to get valuable result: 0:00:05:000"));
+                is("Value from (Set converted from list). Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void testOfDescriptionForFunctionWithIterableInputAndSingleOutput9() {
         assertThat("Description", getFromIterable("Value",
                 toGet("Set converted from list", CONVERT_LIST_TO_SET), () -> NOTHING_WAS_FOUND).toString(),
-                is("Value from (Set converted from list) on condition as is"));
+                is("Value from (Set converted from list)"));
     }
 
     @Test
     public void testOfDescriptionForFunctionWithIterableInputAndSingleOutput10() {
         assertThat("Description", getFromIterable("Value",
                 toGet("Set converted from list", CONVERT_LIST_TO_SET), FIVE_SECONDS, FIVE_HUNDRED_MILLIS).toString(),
-                is("Value from (Set converted from list) on condition as is. Time to get valuable result: 0:00:05:000"));
+                is("Value from (Set converted from list). Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void testOfDescriptionForFunctionWithIterableInputAndSingleOutput11() {
         assertThat("Description", getFromIterable("Value",
                 toGet("Set converted from list", CONVERT_LIST_TO_SET), FIVE_SECONDS).toString(),
-                is("Value from (Set converted from list) on condition as is. Time to get valuable result: 0:00:05:000"));
+                is("Value from (Set converted from list). Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void testOfDescriptionForFunctionWithIterableInputAndSingleOutput12() {
         assertThat("Description", getFromIterable("Value",
                 toGet("Set converted from list", CONVERT_LIST_TO_SET)).toString(),
-                is("Value from (Set converted from list) on condition as is"));
+                is("Value from (Set converted from list)"));
     }
 
     @Test

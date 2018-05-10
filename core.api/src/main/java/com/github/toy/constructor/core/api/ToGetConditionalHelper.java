@@ -18,13 +18,15 @@ import static org.apache.commons.lang3.time.DurationFormatUtils.formatDuration;
 /**
  * This is the util which helps to crate function with given condition.
  */
-final class ToGetConditionalHelper {
+public final class ToGetConditionalHelper {
 
     private ToGetConditionalHelper() {
         super();
     }
 
-    static <T> Predicate<T> asIs() {
+    public static final Predicate<Object> AS_IS = asIs();
+
+    private static <T> Predicate<T> asIs() {
         return condition("as is", t -> true);
     }
 
@@ -73,18 +75,27 @@ final class ToGetConditionalHelper {
     }
 
     static String getDescription(String description, Function<?, ?> function, Predicate<?> condition) {
+        String resultDescription;
         if (!isBlank(description)) {
-            return format("%s from (%s) on condition %s", description, function, condition);
+            resultDescription =  format("%s from (%s)", description, function);
         }
-        return format("%s on condition %s", function, condition);
+        else {
+            resultDescription = function.toString().trim();
+        }
+
+        if (!AS_IS.equals(condition)) {
+            resultDescription = format("%s with condition %s", resultDescription, condition).trim();
+        }
+
+        return resultDescription;
     }
 
     static <T, F> Function<T, F> fluentWaitFunction(String description,
-                                                            Function<T, F> originalFunction,
-                                                            @Nullable Duration waitingTime,
-                                                            @Nullable Duration sleepingTime,
-                                                            Predicate<F> till,
-                                                            @Nullable Supplier<? extends RuntimeException> exceptionOnTimeOut) {
+                                                    Function<T, F> originalFunction,
+                                                    @Nullable Duration waitingTime,
+                                                    @Nullable Duration sleepingTime,
+                                                    Predicate<F> till,
+                                                    @Nullable Supplier<? extends RuntimeException> exceptionOnTimeOut) {
         String fullDescription = description;
         if (waitingTime != null) {
             fullDescription = format("%s. Time to get valuable result: %s", fullDescription,

@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.github.toy.constructor.core.api.StoryWriter.condition;
+import static com.github.toy.constructor.core.api.ToGetConditionalHelper.AS_IS;
 import static com.github.toy.constructor.selenium.properties.FlagProperties.FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -18,18 +19,19 @@ import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
+@SuppressWarnings("unchecked")
 public final class CommonConditions {
 
     private CommonConditions() {
         super();
     }
 
-    static <T extends SearchContext> Predicate<T> defaultPredicate() {
+    static Predicate defaultPredicate() {
         if (FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.get()) {
             return shouldBeVisible();
         }
         else {
-            return condition("with no other restriction", t -> true);
+            return AS_IS;
         }
     }
 

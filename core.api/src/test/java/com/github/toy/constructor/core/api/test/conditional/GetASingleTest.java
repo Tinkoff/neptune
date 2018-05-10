@@ -5,7 +5,6 @@ import org.testng.annotations.Test;
 import static com.github.toy.constructor.core.api.StoryWriter.condition;
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.github.toy.constructor.core.api.ToGetSingleCheckedObject.getSingle;
-import static com.github.toy.constructor.core.api.ToGetSingleCheckedObject.getSingleOnCondition;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.fail;
@@ -15,7 +14,7 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not defined.")
     public void negativeTestOfNullFunctionWithSingleInputAndSingleOutput() {
-        getSingleOnCondition("The first object of the list", null, VALUE_A, FIVE_SECONDS, FIVE_HUNDRED_MILLIS,
+        getSingle(null, VALUE_A, FIVE_SECONDS, FIVE_HUNDRED_MILLIS,
                 true, () -> NOTHING_WAS_FOUND);
         fail("The exception throwing was expected");
     }
@@ -23,7 +22,7 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not defined.")
     public void negativeTestOfNullFunctionWithSingleInputAndSingleOutput2() {
-        getSingleOnCondition("The first object of the list", null, VALUE_A, FIVE_SECONDS,
+        getSingle(null, VALUE_A, FIVE_SECONDS,
                 true, () -> NOTHING_WAS_FOUND);
         fail("The exception throwing was expected");
     }
@@ -31,7 +30,7 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not defined.")
     public void negativeTestOfNullFunctionWithSingleInputAndSingleOutput3() {
-        getSingleOnCondition("The first object of the list", null, VALUE_A, true,
+        getSingle(null, VALUE_A, true,
                 () -> NOTHING_WAS_FOUND);
         fail("The exception throwing was expected");
     }
@@ -39,21 +38,21 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not defined.")
     public void negativeTestOfNullFunctionWithSingleInputAndSingleOutput4() {
-        getSingleOnCondition("The first object of the list", null, VALUE_A, FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true);
+        getSingle(null, VALUE_A, FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true);
         fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not defined.")
     public void negativeTestOfNullFunctionWithSingleInputAndSingleOutput5() {
-        getSingleOnCondition("The first object of the list", null, VALUE_A, FIVE_SECONDS, true);
+        getSingle(null, VALUE_A, FIVE_SECONDS, true);
         fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not defined.")
     public void negativeTestOfNullFunctionWithSingleInputAndSingleOutput6() {
-        getSingleOnCondition("The first object of the list", null, VALUE_A, true);
+        getSingle(null, VALUE_A, true);
         fail("The exception throwing was expected");
     }
 
@@ -95,7 +94,7 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not described. Use StoryWriter.toGet to describe it.")
     public void negativeTestOfNotDescribedFunctionWithSingleInputAndSingleOutput() {
-        getSingleOnCondition("The first object of the list", GET_FIRST_OBJECT_FROM_LIST, VALUE_A, FIVE_SECONDS, FIVE_HUNDRED_MILLIS,
+        getSingle( GET_FIRST_OBJECT_FROM_LIST, VALUE_A, FIVE_SECONDS, FIVE_HUNDRED_MILLIS,
                 true, () -> NOTHING_WAS_FOUND);
         fail("The exception throwing was expected");
     }
@@ -103,7 +102,7 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not described. Use StoryWriter.toGet to describe it.")
     public void negativeTestOfNotDescribedFunctionWithSingleInputAndSingleOutput2() {
-        getSingleOnCondition("The first object of the list", GET_FIRST_OBJECT_FROM_LIST, VALUE_A, FIVE_SECONDS,
+        getSingle(GET_FIRST_OBJECT_FROM_LIST, VALUE_A, FIVE_SECONDS,
                 true, () -> NOTHING_WAS_FOUND);
         fail("The exception throwing was expected");
     }
@@ -111,7 +110,7 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not described. Use StoryWriter.toGet to describe it.")
     public void negativeTestOfNotDescribedFunctionWithSingleInputAndSingleOutput3() {
-        getSingleOnCondition("The first object of the list", GET_FIRST_OBJECT_FROM_LIST, VALUE_A,
+        getSingle(GET_FIRST_OBJECT_FROM_LIST, VALUE_A,
                 true, () -> NOTHING_WAS_FOUND);
         fail("The exception throwing was expected");
     }
@@ -119,7 +118,7 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not described. Use StoryWriter.toGet to describe it.")
     public void negativeTestOfNotDescribedFunctionWithSingleInputAndSingleOutput4() {
-        getSingleOnCondition("The first object of the list", GET_FIRST_OBJECT_FROM_LIST,
+        getSingle(GET_FIRST_OBJECT_FROM_LIST,
                 VALUE_A, FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true);
         fail("The exception throwing was expected");
     }
@@ -127,15 +126,14 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not described. Use StoryWriter.toGet to describe it.")
     public void negativeTestOfNotDescribedFunctionWithSingleInputAndSingleOutput5() {
-        getSingleOnCondition("The first object of the list", GET_FIRST_OBJECT_FROM_LIST, VALUE_A, FIVE_SECONDS,
-                true);
+        getSingle(GET_FIRST_OBJECT_FROM_LIST, VALUE_A, FIVE_SECONDS, true);
         fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not described. Use StoryWriter.toGet to describe it.")
     public void negativeTestOfNotDescribedFunctionWithSingleInputAndSingleOutput6() {
-        getSingleOnCondition("The first object of the list", GET_FIRST_OBJECT_FROM_LIST, VALUE_A, true);
+        getSingle(GET_FIRST_OBJECT_FROM_LIST, VALUE_A, true);
         fail("The exception throwing was expected");
     }
 
@@ -178,8 +176,7 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Predicate is not defined.")
     public void negativeTestOfNullConditionForFunctionWithSingleInputAndSingleOutput() {
-        getSingleOnCondition("Value",
-                toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST), null, FIVE_SECONDS, FIVE_HUNDRED_MILLIS,
+        getSingle(toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST), null, FIVE_SECONDS, FIVE_HUNDRED_MILLIS,
                 true, () -> NOTHING_WAS_FOUND);
         fail("The exception throwing was expected");
     }
@@ -187,8 +184,7 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Predicate is not defined.")
     public void negativeTestOfNullConditionForFunctionWithSingleInputAndSingleOutput2() {
-        getSingleOnCondition("Value",
-                toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST), null, FIVE_SECONDS,
+        getSingle(toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST), null, FIVE_SECONDS,
                 true, () -> NOTHING_WAS_FOUND);
         fail("The exception throwing was expected");
     }
@@ -196,8 +192,7 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Predicate is not defined.")
     public void negativeTestOfNullConditionForFunctionWithSingleInputAndSingleOutput3() {
-        getSingleOnCondition("Value",
-                toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST), null,
+        getSingle(toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST), null,
                 true, () -> NOTHING_WAS_FOUND);
         fail("The exception throwing was expected");
     }
@@ -205,16 +200,15 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Predicate is not defined.")
     public void negativeTestOfNullConditionForFunctionWithSingleInputAndSingleOutput4() {
-        getSingleOnCondition("Value",
-                toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST), null, FIVE_SECONDS, FIVE_HUNDRED_MILLIS,
-                true);
+        getSingle(toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST), null,
+                FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true);
         fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Predicate is not defined.")
     public void negativeTestOfNullConditionForFunctionWithSingleInputAndSingleOutput5() {
-        getSingleOnCondition("Value",
+        getSingle(
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST), null, FIVE_SECONDS, true);
         fail("The exception throwing was expected");
     }
@@ -222,7 +216,7 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Predicate is not defined.")
     public void negativeTestOfNullConditionForFunctionWithSingleInputAndSingleOutput6() {
-        getSingleOnCondition("Value",
+        getSingle(
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST), null, true);
         fail("The exception throwing was expected");
     }
@@ -230,7 +224,7 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Condition is not described. Use StoryWriter.condition to describe it.")
     public void negativeTestOfNotDescribedConditionForFunctionWithSingleInputAndSingleOutput() {
-        getSingleOnCondition("Value",
+        getSingle(
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST), VALUE_A, FIVE_SECONDS, FIVE_HUNDRED_MILLIS,
                 true, () -> NOTHING_WAS_FOUND);
         fail("The exception throwing was expected");
@@ -239,7 +233,7 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Condition is not described. Use StoryWriter.condition to describe it.")
     public void negativeTestOfNotDescribedConditionForFunctionWithSingleInputAndSingleOutput2() {
-        getSingleOnCondition("Value",
+        getSingle(
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST), VALUE_A, FIVE_SECONDS,
                 true, () -> NOTHING_WAS_FOUND);
         fail("The exception throwing was expected");
@@ -248,7 +242,7 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Condition is not described. Use StoryWriter.condition to describe it.")
     public void negativeTestOfNotDescribedConditionForFunctionWithSingleInputAndSingleOutput3() {
-        getSingleOnCondition("Value",
+        getSingle(
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST), VALUE_A,
                 true,  () -> NOTHING_WAS_FOUND);
         fail("The exception throwing was expected");
@@ -257,7 +251,7 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Condition is not described. Use StoryWriter.condition to describe it.")
     public void negativeTestOfNotDescribedConditionForFunctionWithSingleInputAndSingleOutput4() {
-        getSingleOnCondition("Value",
+        getSingle(
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST), VALUE_A, FIVE_SECONDS, FIVE_HUNDRED_MILLIS,
                 true);
         fail("The exception throwing was expected");
@@ -266,7 +260,7 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Condition is not described. Use StoryWriter.condition to describe it.")
     public void negativeTestOfNotDescribedConditionForFunctionWithSingleInputAndSingleOutput5() {
-        getSingleOnCondition("Value",
+        getSingle(
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST), VALUE_A, FIVE_SECONDS,
                 true);
         fail("The exception throwing was expected");
@@ -275,64 +269,68 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Condition is not described. Use StoryWriter.condition to describe it.")
     public void negativeTestOfNotDescribedConditionForFunctionWithSingleInputAndSingleOutput6() {
-        getSingleOnCondition("Value",
+        getSingle(
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST), VALUE_A, true);
         fail("The exception throwing was expected");
     }
 
     @Test
     public void testOfDescriptionForFunctionWithSingleInputAndSingleOutput() {
-        assertThat("Description", getSingleOnCondition("Value",
+        assertThat("Description", getSingle(
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS,
                 true, () -> NOTHING_WAS_FOUND).toString(),
-                is("Value from (The first object of the list) on condition equals A ignore case. Time to get valuable result: 0:00:05:000"));
+                is("The first object of the list with condition equals A ignore case. " +
+                        "Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void testOfDescriptionForFunctionWithSingleInputAndSingleOutput2() {
-        assertThat("Description", getSingleOnCondition("Value",
+        assertThat("Description", getSingle(
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, true, () -> NOTHING_WAS_FOUND).toString(),
-                is("Value from (The first object of the list) on condition equals A ignore case. Time to get valuable result: 0:00:05:000"));
+                is("The first object of the list with condition equals A ignore case. " +
+                        "Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void testOfDescriptionForFunctionWithSingleInputAndSingleOutput3() {
-        assertThat("Description", getSingleOnCondition("Value",
+        assertThat("Description", getSingle(
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 true, () -> NOTHING_WAS_FOUND).toString(),
-                is("Value from (The first object of the list) on condition equals A ignore case"));
+                is("The first object of the list with condition equals A ignore case"));
     }
 
     @Test
     public void testOfDescriptionForFunctionWithSingleInputAndSingleOutput4() {
-        assertThat("Description", getSingleOnCondition("Value",
+        assertThat("Description", getSingle(
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true).toString(),
-                is("Value from (The first object of the list) on condition equals A ignore case. Time to get valuable result: 0:00:05:000"));
+                is("The first object of the list with condition equals A ignore case. " +
+                        "Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void testOfDescriptionForFunctionWithSingleInputAndSingleOutput5() {
-        assertThat("Description", getSingleOnCondition("Value",
+        assertThat("Description", getSingle(
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, true).toString(),
-                is("Value from (The first object of the list) on condition equals A ignore case. Time to get valuable result: 0:00:05:000"));
+                is("The first object of the list with condition equals A ignore case. " +
+                        "Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void testOfDescriptionForFunctionWithSingleInputAndSingleOutput6() {
-        assertThat("Description", getSingleOnCondition("Value",
+        assertThat("Description", getSingle(
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 true).toString(),
-                is("Value from (The first object of the list) on condition equals A ignore case"));
+                is("The first object of the list with condition equals A ignore case"));
     }
 
     @Test
@@ -340,7 +338,7 @@ public class GetASingleTest extends BaseConditionalTest {
         assertThat("Description", getSingle(
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, () -> NOTHING_WAS_FOUND).toString(),
-                is("The first object of the list on condition as is. Time to get valuable result: 0:00:05:000"));
+                is("The first object of the list. Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
@@ -348,33 +346,33 @@ public class GetASingleTest extends BaseConditionalTest {
         assertThat("Description", getSingle(
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST),
                 FIVE_SECONDS, () -> NOTHING_WAS_FOUND).toString(),
-                is("The first object of the list on condition as is. Time to get valuable result: 0:00:05:000"));
+                is("The first object of the list. Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void testOfDescriptionForFunctionWithSingleInputAndSingleOutput9() {
         assertThat("Description", getSingle(toGet("The first object of the list",
                 GET_FIRST_OBJECT_FROM_LIST), () -> NOTHING_WAS_FOUND).toString(),
-                is("The first object of the list on condition as is"));
+                is("The first object of the list"));
     }
 
     @Test
     public void testOfDescriptionForFunctionWithSingleInputAndSingleOutput10() {
         assertThat("Description", getSingle(toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS).toString(),
-                is("The first object of the list on condition as is. Time to get valuable result: 0:00:05:000"));
+                is("The first object of the list. Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void testOfDescriptionForFunctionWithSingleInputAndSingleOutput11() {
         assertThat("Description", getSingle(
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST), FIVE_SECONDS).toString(),
-                is("The first object of the list on condition as is. Time to get valuable result: 0:00:05:000"));
+                is("The first object of the list. Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutput() {
-        assertThat("Value", getSingleOnCondition("Value",
+        assertThat("Value", getSingle(
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST),
                 condition("equals " + A_UPPER + " ignore case", VALUE_ONE_NUMBER),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS,
@@ -384,7 +382,7 @@ public class GetASingleTest extends BaseConditionalTest {
 
     @Test
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutput2() {
-        assertThat("Value", getSingleOnCondition("Value",
+        assertThat("Value", getSingle(
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST),
                 condition("equals " + A_UPPER + " ignore case", VALUE_ONE_NUMBER),
                 FIVE_SECONDS, true, () -> NOTHING_WAS_FOUND)
@@ -394,7 +392,7 @@ public class GetASingleTest extends BaseConditionalTest {
 
     @Test
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutput3() {
-        assertThat("Value", getSingleOnCondition("Value",
+        assertThat("Value", getSingle(
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST),
                 condition("equals " + A_UPPER + " ignore case", VALUE_ONE_NUMBER),
                 true, () -> NOTHING_WAS_FOUND)
@@ -404,7 +402,7 @@ public class GetASingleTest extends BaseConditionalTest {
 
     @Test
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutput4() {
-        assertThat("Value", getSingleOnCondition("Value",
+        assertThat("Value", getSingle(
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST),
                 condition("equals " + A_UPPER + " ignore case", VALUE_ONE_NUMBER),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true)
@@ -414,7 +412,7 @@ public class GetASingleTest extends BaseConditionalTest {
 
     @Test
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutput5() {
-        assertThat("Value", getSingleOnCondition("Value",
+        assertThat("Value", getSingle(
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST),
                 condition("equals " + A_UPPER + " ignore case", VALUE_ONE_NUMBER),
                 FIVE_SECONDS, true)
@@ -424,7 +422,7 @@ public class GetASingleTest extends BaseConditionalTest {
 
     @Test
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutput6() {
-        assertThat("Value", getSingleOnCondition("Value",
+        assertThat("Value", getSingle(
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST),
                 condition("equals " + A_UPPER + " ignore case", VALUE_ONE_NUMBER),
                 true).apply(LITERAL_LIST),
@@ -473,7 +471,7 @@ public class GetASingleTest extends BaseConditionalTest {
 
     @Test
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutputIgnoringException() {
-        assertThat("Value", getSingleOnCondition("Value",
+        assertThat("Value", getSingle(
                 toGet("Value", GET_FIRST_OBJECT_FROM_LIST),
                 condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS,
@@ -483,7 +481,7 @@ public class GetASingleTest extends BaseConditionalTest {
 
     @Test
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutputIgnoringException2() {
-        assertThat("Value", getSingleOnCondition("Value",
+        assertThat("Value", getSingle(
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST),
                 condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
                 FIVE_SECONDS, true).apply(LITERAL_LIST),
@@ -492,7 +490,7 @@ public class GetASingleTest extends BaseConditionalTest {
 
     @Test
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutputIgnoringException3() {
-        assertThat("Value", getSingleOnCondition("Value",
+        assertThat("Value", getSingle(
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST),
                 condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
                 true).apply(LITERAL_LIST),
@@ -502,7 +500,7 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test(expectedExceptions = RuntimeException.class,
             expectedExceptionsMessageRegExp = "java.lang.RuntimeException was caught. Message: Exception for the unit testing!")
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutputWithoutIgnoringException() {
-        assertThat("Value", getSingleOnCondition("Value",
+        assertThat("Value", getSingle(
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST),
                 condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS,
@@ -514,7 +512,7 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test(expectedExceptions = RuntimeException.class,
             expectedExceptionsMessageRegExp = "java.lang.RuntimeException was caught. Message: Exception for the unit testing!")
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutputWithoutIgnoringException2() {
-        assertThat("Value", getSingleOnCondition("Value",
+        assertThat("Value", getSingle(
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST),
                 condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
                 FIVE_SECONDS, false).apply(LITERAL_LIST),
@@ -525,7 +523,7 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test(expectedExceptions = RuntimeException.class,
             expectedExceptionsMessageRegExp = "java.lang.RuntimeException was caught. Message: Exception for the unit testing!")
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutputWithoutIgnoringException3() {
-        assertThat("Value", getSingleOnCondition("Value",
+        assertThat("Value", getSingle(
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST),
                 condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
                 false).apply(LITERAL_LIST),
@@ -535,7 +533,7 @@ public class GetASingleTest extends BaseConditionalTest {
 
     @Test
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutputWithNullResult() {
-        assertThat("Value", getSingleOnCondition("Value",
+        assertThat("Value", getSingle(
                 toGet("The first object of the list", s -> "X"),
                 condition("equals W ignore case", VALUE_W),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS,
@@ -545,7 +543,7 @@ public class GetASingleTest extends BaseConditionalTest {
 
     @Test
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutputWithNullResult2() {
-        assertThat("Value", getSingleOnCondition("Value",
+        assertThat("Value", getSingle(
                 toGet("The first object of the list", s -> "X"),
                 condition("equals W ignore case", VALUE_W),
                 FIVE_SECONDS, true).apply(EMPTY_LIST),
@@ -554,7 +552,7 @@ public class GetASingleTest extends BaseConditionalTest {
 
     @Test
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutputWithNullResult3() {
-        assertThat("Value", getSingleOnCondition("Value",
+        assertThat("Value", getSingle(
                 toGet("The first object of the list", s -> "X"),
                 condition("equals W ignore case", VALUE_W), true).apply(EMPTY_LIST),
                 nullValue());
@@ -579,7 +577,7 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutputToCheckTimeOut() {
         long start = System.currentTimeMillis();
-        assertThat("Value", getSingleOnCondition("Value",
+        assertThat("Value", getSingle(
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST),
                 condition("equals W ignore case", VALUE_W),
                 FIVE_SECONDS, true).apply(LITERAL_LIST),
@@ -594,7 +592,7 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutputToCheckSleeping() {
         long start = System.currentTimeMillis();
-        assertThat("Value", getSingleOnCondition("Value",
+        assertThat("Value", getSingle(
                 toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST),
                 condition("equals W ignore case", VALUE_W),
                 ONE_MILLISECOND,
@@ -641,7 +639,7 @@ public class GetASingleTest extends BaseConditionalTest {
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutputToCheckTimeOutAndException() {
         long start = System.currentTimeMillis();
         try {
-            getSingleOnCondition("Value",
+            getSingle(
                     toGet("Value", GET_FIRST_OBJECT_FROM_LIST),
                     condition("equals W ignore case", VALUE_W),
                     FIVE_SECONDS,
@@ -682,7 +680,7 @@ public class GetASingleTest extends BaseConditionalTest {
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutputToCheckTimeOutWithSleepAndException() {
         long start = System.currentTimeMillis();
         try {
-            getSingleOnCondition("Value",
+            getSingle(
                     toGet("The first object of the list", GET_FIRST_OBJECT_FROM_LIST),
                     condition("equals W ignore case", VALUE_W),
                     FIVE_SECONDS,

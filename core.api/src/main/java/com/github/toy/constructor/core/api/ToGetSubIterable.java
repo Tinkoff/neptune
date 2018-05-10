@@ -29,13 +29,13 @@ public final class ToGetSubIterable {
                                                                          boolean checkConditionInParallel,
                                                                          boolean ignoreExceptionOnConditionCheck,
                                                                          @Nullable Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        return ToGetConditionalHelper.fluentWaitFunction(ToGetConditionalHelper.getDescription(description, function, condition), t ->
+        return fluentWaitFunction(getDescription(description, function, condition), t ->
                         ofNullable(function.apply(t)).map(v -> {
                             List<R> result = stream(v.spliterator(), checkConditionInParallel).filter(r -> {
                                 try {
-                                    return !ToGetConditionalHelper.notNullAnd(condition).test(r);
+                                    return !notNullAnd(condition).test(r);
                                 } catch (Throwable t1) {
-                                    return !ToGetConditionalHelper.returnFalseOrThrowException(t1, ignoreExceptionOnConditionCheck);
+                                    return !returnFalseOrThrowException(t1, ignoreExceptionOnConditionCheck);
                                 }
                             }).collect(toList());
 
@@ -110,8 +110,8 @@ public final class ToGetSubIterable {
         checkFunction(function);
         checkWaitingTime(waitingTime);
         checkSleepingTime(sleepingTime);
-        ToGetConditionalHelper.checkExceptionSupplier(exceptionOnTimeOut);
-        return iterable(EMPTY, function, ToGetConditionalHelper.asIs(), waitingTime, sleepingTime,
+        checkExceptionSupplier(exceptionOnTimeOut);
+        return iterable(EMPTY, function, AS_IS, waitingTime, sleepingTime,
                 true, true, exceptionOnTimeOut);
     }
 
@@ -147,7 +147,7 @@ public final class ToGetSubIterable {
         checkFunction(function);
         checkCondition(condition);
         checkWaitingTime(waitingTime);
-        ToGetConditionalHelper.checkExceptionSupplier(exceptionOnTimeOut);
+        checkExceptionSupplier(exceptionOnTimeOut);
         return iterable(description, function, condition, waitingTime, null,
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
     }
@@ -171,8 +171,8 @@ public final class ToGetSubIterable {
                                                                            Supplier<? extends RuntimeException> exceptionOnTimeOut) {
         checkFunction(function);
         checkWaitingTime(waitingTime);
-        ToGetConditionalHelper.checkExceptionSupplier(exceptionOnTimeOut);
-        return iterable(EMPTY, function, ToGetConditionalHelper.asIs(), waitingTime, null,
+        checkExceptionSupplier(exceptionOnTimeOut);
+        return iterable(EMPTY, function, AS_IS, waitingTime, null,
                 true, true, exceptionOnTimeOut);
     }
 
@@ -205,7 +205,7 @@ public final class ToGetSubIterable {
                                                                               Supplier<? extends RuntimeException> exceptionOnTimeOut) {
         checkFunction(function);
         checkCondition(condition);
-        ToGetConditionalHelper.checkExceptionSupplier(exceptionOnTimeOut);
+        checkExceptionSupplier(exceptionOnTimeOut);
         return iterable(description, function, condition, null, null,
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
     }
@@ -226,8 +226,8 @@ public final class ToGetSubIterable {
     public static <T, R, V extends Iterable<R>> Function<T, V> getIterable(Function<T, V> function,
                                                                            Supplier<? extends RuntimeException> exceptionOnTimeOut) {
         checkFunction(function);
-        ToGetConditionalHelper.checkExceptionSupplier(exceptionOnTimeOut);
-        return iterable(EMPTY, function, ToGetConditionalHelper.asIs(), null, null,
+        checkExceptionSupplier(exceptionOnTimeOut);
+        return iterable(EMPTY, function, AS_IS, null, null,
                 true, true, exceptionOnTimeOut);
     }
 
@@ -288,7 +288,7 @@ public final class ToGetSubIterable {
         checkFunction(function);
         checkWaitingTime(waitingTime);
         checkSleepingTime(sleepingTime);
-        return iterable(EMPTY, function, ToGetConditionalHelper.asIs(), waitingTime, sleepingTime,
+        return iterable(EMPTY, function, AS_IS, waitingTime, sleepingTime,
                 true, true, null);
     }
 
@@ -341,7 +341,7 @@ public final class ToGetSubIterable {
                                                                            Duration waitingTime) {
         checkFunction(function);
         checkWaitingTime(waitingTime);
-        return iterable(EMPTY, function, ToGetConditionalHelper.asIs(), waitingTime, null,
+        return iterable(EMPTY, function, AS_IS, waitingTime, null,
                 true, true, null);
     }
 

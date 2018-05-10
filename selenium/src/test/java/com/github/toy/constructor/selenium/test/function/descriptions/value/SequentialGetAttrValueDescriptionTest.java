@@ -22,9 +22,9 @@ public class SequentialGetAttrValueDescriptionTest {
         assertThat(attributeValue("some value").of(element(textField("Some text field", ofSeconds(55), shouldBeVisible()
                 .and(shouldHaveAttribute("some attr", "some value"))))
                 .foundFrom(tab("Tab 1"))).get().toString(),
-                is("Value of the attribute 'some value' from (A single item from " +
-                        "(Elements of type Text field) on condition (Should have string label(s) [Some text field]) " +
-                        "AND ((Should be visible) AND (Should have attribute 'some attr=\"some value\"')). " +
+                is("Value of the attribute 'some value' from (A single item from (Elements of type Text field) " +
+                        "with condition (Should have string label(s) [Some text field]) AND ((Should be visible) " +
+                        "AND (Should have attribute 'some attr=\"some value\"')). " +
                         "Time to get valuable result: 0:00:55:000)"));
     }
 
@@ -34,7 +34,7 @@ public class SequentialGetAttrValueDescriptionTest {
                         .and(shouldHaveAttributeContains("some attr", "some value"))))
                         .foundFrom(tab("Tab 1"))).get().toString(),
                 is("Value of the attribute 'some value' from (A single item from (Web elements located By.xpath: .//some//path) " +
-                        "on condition (Should be visible) AND (Should have attribute 'some attr' which contains value 'some value'). " +
+                        "with condition (Should be visible) AND (Should have attribute 'some attr' which contains value 'some value'). " +
                         "Time to get valuable result: 0:00:55:000)"));
     }
 

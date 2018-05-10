@@ -296,7 +296,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true,
                 () -> NOTHING_WAS_FOUND).toString(),
-                is("Array of values from (Array converted from list) on condition equals A ignore case. " +
+                is("Array of values from (Array converted from list) with condition equals A ignore case. " +
                         "Time to get valuable result: 0:00:05:000"));
     }
 
@@ -307,7 +307,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, true, true,
                 () -> NOTHING_WAS_FOUND).toString(),
-                is("Array of values from (Array converted from list) on condition equals A ignore case. " +
+                is("Array of values from (Array converted from list) with condition equals A ignore case. " +
                         "Time to get valuable result: 0:00:05:000"));
     }
 
@@ -318,7 +318,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 true, true,
                 () -> NOTHING_WAS_FOUND).toString(),
-                is("Array of values from (Array converted from list) on condition equals A ignore case"));
+                is("Array of values from (Array converted from list) with condition equals A ignore case"));
     }
 
     @Test
@@ -327,7 +327,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true).toString(),
-                is("Array of values from (Array converted from list) on condition equals A ignore case. " +
+                is("Array of values from (Array converted from list) with condition equals A ignore case. " +
                         "Time to get valuable result: 0:00:05:000"));
     }
 
@@ -337,7 +337,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, true, true).toString(),
-                is("Array of values from (Array converted from list) on condition equals A ignore case. " +
+                is("Array of values from (Array converted from list) with condition equals A ignore case. " +
                         "Time to get valuable result: 0:00:05:000"));
     }
 
@@ -347,7 +347,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 true, true).toString(),
-                is("Array of values from (Array converted from list) on condition equals A ignore case"));
+                is("Array of values from (Array converted from list) with condition equals A ignore case"));
     }
 
     @Test
@@ -356,7 +356,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS,
                 () -> NOTHING_WAS_FOUND).toString(),
-                is("Array converted from list on condition as is. " +
+                is("Array converted from list. " +
                         "Time to get valuable result: 0:00:05:000"));
     }
 
@@ -365,8 +365,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
         assertThat("Description", getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                 FIVE_SECONDS, () -> NOTHING_WAS_FOUND).toString(),
-                is("Array converted from list on condition as is. " +
-                        "Time to get valuable result: 0:00:05:000"));
+                is("Array converted from list. Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
@@ -374,7 +373,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
         assertThat("Description", getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                 () -> NOTHING_WAS_FOUND).toString(),
-                is("Array converted from list on condition as is"));
+                is("Array converted from list"));
     }
 
     @Test
@@ -382,8 +381,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
         assertThat("Description", getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS).toString(),
-                is("Array converted from list on condition as is. " +
-                        "Time to get valuable result: 0:00:05:000"));
+                is("Array converted from list. Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
@@ -391,8 +389,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
         assertThat("Description", getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                 FIVE_SECONDS).toString(),
-                is("Array converted from list on condition as is. " +
-                        "Time to get valuable result: 0:00:05:000"));
+                is("Array converted from list. Time to get valuable result: 0:00:05:000"));
     }
 
     @Test

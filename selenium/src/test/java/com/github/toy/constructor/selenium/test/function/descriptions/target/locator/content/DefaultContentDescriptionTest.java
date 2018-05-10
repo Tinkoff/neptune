@@ -12,12 +12,12 @@ public class DefaultContentDescriptionTest {
     @Test
     public void defaultContentDescriptionTest() {
         assertThat(defaultContent().get().toString(),
-                is("Default content on condition as is"));
+                is("Default content"));
     }
 
     @Test
     public void defaultContentWithTimeOutDescriptionTest() {
         assertThat(defaultContent(ofMinutes(5)).get().toString(),
-                is("Default content on condition as is. Time to get valuable result: 0:05:00:000"));
+                is("Default content. Time to get valuable result: 0:05:00:000"));
     }
 }

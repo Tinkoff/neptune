@@ -302,7 +302,8 @@ public class GetSubIterableTest extends BaseConditionalTest {
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true,
                 () -> NOTHING_WAS_FOUND).toString(),
-                is("Set of values from (Set converted from list) on condition equals A ignore case. Time to get valuable result: 0:00:05:000"));
+                is("Set of values from (Set converted from list) with condition equals A ignore case. " +
+                        "Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
@@ -312,7 +313,8 @@ public class GetSubIterableTest extends BaseConditionalTest {
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, true, true,
                 () -> NOTHING_WAS_FOUND).toString(),
-                is("Set of values from (Set converted from list) on condition equals A ignore case. Time to get valuable result: 0:00:05:000"));
+                is("Set of values from (Set converted from list) with condition equals A ignore case. " +
+                        "Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
@@ -321,7 +323,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 true, true, () -> NOTHING_WAS_FOUND).toString(),
-                is("Set of values from (Set converted from list) on condition equals A ignore case"));
+                is("Set of values from (Set converted from list) with condition equals A ignore case"));
     }
 
     @Test
@@ -330,7 +332,8 @@ public class GetSubIterableTest extends BaseConditionalTest {
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true).toString(),
-                is("Set of values from (Set converted from list) on condition equals A ignore case. Time to get valuable result: 0:00:05:000"));
+                is("Set of values from (Set converted from list) with condition equals A ignore case. " +
+                        "Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
@@ -339,7 +342,8 @@ public class GetSubIterableTest extends BaseConditionalTest {
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, true, true).toString(),
-                is("Set of values from (Set converted from list) on condition equals A ignore case. Time to get valuable result: 0:00:05:000"));
+                is("Set of values from (Set converted from list) with condition equals A ignore case. " +
+                        "Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
@@ -347,7 +351,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
         assertThat("Description", getSubIterable("Set of values",
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A), true, true).toString(),
-                is("Set of values from (Set converted from list) on condition equals A ignore case"));
+                is("Set of values from (Set converted from list) with condition equals A ignore case"));
     }
 
     @Test
@@ -355,35 +359,35 @@ public class GetSubIterableTest extends BaseConditionalTest {
         assertThat("Description", getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET), FIVE_SECONDS, FIVE_HUNDRED_MILLIS,
                 () -> NOTHING_WAS_FOUND).toString(),
-                is("Set converted from list on condition as is. Time to get valuable result: 0:00:05:000"));
+                is("Set converted from list. Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void testOfDescriptionForFunctionWithIterableInputAndIterableOutput8() {
         assertThat("Description", getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET), FIVE_SECONDS, () -> NOTHING_WAS_FOUND).toString(),
-                is("Set converted from list on condition as is. Time to get valuable result: 0:00:05:000"));
+                is("Set converted from list. Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void testOfDescriptionForFunctionWithIterableInputAndIterableOutput9() {
         assertThat("Description", getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET), () -> NOTHING_WAS_FOUND).toString(),
-                is("Set converted from list on condition as is"));
+                is("Set converted from list"));
     }
 
     @Test
     public void testOfDescriptionForFunctionWithIterableInputAndIterableOutput10() {
         assertThat("Description", getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET), FIVE_SECONDS, FIVE_HUNDRED_MILLIS).toString(),
-                is("Set converted from list on condition as is. Time to get valuable result: 0:00:05:000"));
+                is("Set converted from list. Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void testOfDescriptionForFunctionWithIterableInputAndIterableOutput11() {
         assertThat("Description", getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET), FIVE_SECONDS).toString(),
-                is("Set converted from list on condition as is. Time to get valuable result: 0:00:05:000"));
+                is("Set converted from list. Time to get valuable result: 0:00:05:000"));
     }
 
     @Test

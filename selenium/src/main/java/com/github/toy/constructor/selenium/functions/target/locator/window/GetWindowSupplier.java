@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.github.toy.constructor.core.api.ToGetObjectFromIterable.getFromIterable;
 import static com.github.toy.constructor.core.api.ToGetSingleCheckedObject.getSingle;
-import static com.github.toy.constructor.core.api.ToGetSingleCheckedObject.getSingleOnCondition;
 import static com.github.toy.constructor.selenium.properties.WaitingProperties.WAITING_WINDOW_TIME_DURATION;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
@@ -65,8 +64,7 @@ public final class GetWindowSupplier extends GetSupplier<SeleniumSteps, Window, 
     }
 
     private GetWindowSupplier setFunctionWithIndexAndCondition() {
-        return set(getSingleOnCondition("Window/tab",
-                toGet(format("Window/tab by index %s", index),
+        return set(getSingle(toGet(format("Window/tab by index %s", index),
                         seleniumSteps -> getWindowByIndex(seleniumSteps,
                                 format("Window/tab found by index %s on condition '%s'", index, condition), index)),
                 condition,

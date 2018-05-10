@@ -8,7 +8,7 @@ import java.time.Duration;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static com.github.toy.constructor.core.api.ToGetSingleCheckedObject.getSingleOnCondition;
+import static com.github.toy.constructor.core.api.ToGetSingleCheckedObject.getSingle;
 import static com.github.toy.constructor.selenium.functions.java.script.EvaluateAsyncJavaScript.evalAsyncJS;
 import static com.github.toy.constructor.selenium.functions.java.script.EvaluateJavaScript.evalJS;
 import static com.google.common.base.Preconditions.checkArgument;
@@ -82,8 +82,7 @@ public final class GetJavaScriptResultSupplier extends GetSupplier<SeleniumSteps
         checkScript(script);
         checkArguments(arguments);
         return new GetJavaScriptResultSupplier()
-                .set(getSingleOnCondition("Result",
-                        evalJS(script, arguments), criteria, timeToGetResult, timeToSleep, true, exceptionSupplier));
+                .set(getSingle(evalJS(script, arguments), criteria, timeToGetResult, timeToSleep, true, exceptionSupplier));
     }
 
     /**
@@ -138,15 +137,14 @@ public final class GetJavaScriptResultSupplier extends GetSupplier<SeleniumSteps
         checkScript(script);
         checkArguments(arguments);
         return new GetJavaScriptResultSupplier()
-                .set(getSingleOnCondition("Result",
-                        evalJS(script, arguments), criteria, timeToGetResult, true, exceptionSupplier));
+                .set(getSingle(evalJS(script, arguments), criteria, timeToGetResult, true, exceptionSupplier));
     }
 
 
     /**
      * This method builds a function which evaluates java script, checks the result by criteria and returns it.
      * If the result of evaluation doesn't match criteria then function returns {@code null} when waiting time is
-     * expired. IT IS IMPORTANT!!!! If script evaluation returns {@null} and it is expected so it is good to make it
+     * expired. IT IS IMPORTANT!!!! If script evaluation returns {@code null} and it is expected so it is good to make it
      * return some {@code boolean} value instead.
      *
      * The documentation below was taken from Selenium:
@@ -195,14 +193,13 @@ public final class GetJavaScriptResultSupplier extends GetSupplier<SeleniumSteps
         checkScript(script);
         checkArguments(arguments);
         return new GetJavaScriptResultSupplier()
-                .set(getSingleOnCondition("Result",
-                        evalJS(script, arguments), criteria, timeToGetResult, true));
+                .set(getSingle(evalJS(script, arguments), criteria, timeToGetResult, true));
     }
 
     /**
      * This method builds a function which evaluates java script, checks the result by criteria and returns it.
      * If the result of evaluation doesn't match criteria then function returns {@code null}.
-     * IT IS IMPORTANT!!!! If script evaluation returns {@null} and it is expected so it is good to make it
+     * IT IS IMPORTANT!!!! If script evaluation returns {@code null} and it is expected so it is good to make it
      * return some {@code boolean} value instead.
      *
      * The documentation below was taken from Selenium:
@@ -248,8 +245,7 @@ public final class GetJavaScriptResultSupplier extends GetSupplier<SeleniumSteps
         checkScript(script);
         checkArguments(arguments);
         return new GetJavaScriptResultSupplier()
-                .set(getSingleOnCondition("Result",
-                        evalJS(script, arguments), criteria, true));
+                .set(getSingle(evalJS(script, arguments), criteria, true));
     }
 
     /**
@@ -386,14 +382,13 @@ public final class GetJavaScriptResultSupplier extends GetSupplier<SeleniumSteps
         checkScript(script);
         checkArguments(arguments);
         return new GetJavaScriptResultSupplier()
-                .set(getSingleOnCondition("Result",
-                        evalAsyncJS(script, arguments), criteria, true, exceptionSupplier));
+                .set(getSingle(evalAsyncJS(script, arguments), criteria, true, exceptionSupplier));
     }
 
     /**
      * This method builds a function which evaluates java asynchronous script, checks the result by criteria and returns it.
      * If the result of evaluation doesn't match criteria then function returns {@code null}.
-     * IT IS IMPORTANT!!!! If script evaluation returns {@null} and it is expected so it is good to make it
+     * IT IS IMPORTANT!!!! If script evaluation returns {@code null} and it is expected so it is good to make it
      * return some {@code boolean} value instead.
      *
      * The documentation below was taken from Selenium:
@@ -477,8 +472,7 @@ public final class GetJavaScriptResultSupplier extends GetSupplier<SeleniumSteps
         checkScript(script);
         checkArguments(arguments);
         return new GetJavaScriptResultSupplier()
-                .set(getSingleOnCondition("Result",
-                        evalAsyncJS(script, arguments), criteria, true));
+                .set(getSingle(evalAsyncJS(script, arguments), criteria, true));
     }
 
     /**

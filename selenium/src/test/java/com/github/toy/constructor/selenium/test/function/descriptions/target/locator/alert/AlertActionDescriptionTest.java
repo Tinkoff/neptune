@@ -20,7 +20,7 @@ public class AlertActionDescriptionTest {
     public void dismissWithSearchingForAlertDescriptionTest() {
         assertThat(dismiss(alert(condition("Some alert", alert -> true), ofSeconds(6), ofMillis(500),
                 NoAlertPresentException::new)).get().toString(),
-                is("Dismiss. With parameters: {Alert from (Present alert) on condition Some alert. " +
+                is("Dismiss. With parameters: {Present alert with condition Some alert. " +
                         "Time to get valuable result: 0:00:06:000}"));
     }
 
@@ -34,7 +34,7 @@ public class AlertActionDescriptionTest {
     public void acceptWithSearchingForAlertDescriptionTest() {
         assertThat(accept(alert(condition("Some alert", alert -> true), ofSeconds(6), ofMillis(500),
                 NoAlertPresentException::new)).get().toString(),
-                is("Accept. With parameters: {Alert from (Present alert) on condition Some alert. " +
+                is("Accept. With parameters: {Present alert with condition Some alert. " +
                         "Time to get valuable result: 0:00:06:000}"));
     }
 
@@ -48,7 +48,7 @@ public class AlertActionDescriptionTest {
     public void sendKeysWithSearchingForAlertDescriptionTest() {
         assertThat(sendKeys(alert(condition("Some alert", alert -> true), ofSeconds(6), ofMillis(500),
                 NoAlertPresentException::new), "Some keys").get().toString(),
-                is("Send keys. With parameters: {Alert from (Present alert) on condition Some alert. " +
+                is("Send keys. With parameters: {Present alert with condition Some alert. " +
                         "Time to get valuable result: 0:00:06:000,Some keys}"));
     }
 

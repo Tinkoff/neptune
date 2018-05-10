@@ -26,7 +26,7 @@ import static com.github.toy.constructor.selenium.functions.searching.FindWidget
 import static com.github.toy.constructor.selenium.properties.WaitingProperties.ELEMENT_WAITING_DURATION;
 import static java.lang.String.format;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "unchecked"})
 public final class SearchSupplier<R extends SearchContext> extends GetSupplier<SearchContext, R, SearchSupplier<R>> {
 
     private SearchSupplier() {

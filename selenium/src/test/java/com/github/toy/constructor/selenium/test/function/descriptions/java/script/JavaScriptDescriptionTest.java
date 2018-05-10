@@ -43,32 +43,32 @@ public class JavaScriptDescriptionTest {
     public void jsWithParametersConditionSleepingAndDurationThrowsException() {
         assertThat(javaScript("some script", condition("Not null value", Objects::nonNull),
                 ofSeconds(50), ofSeconds(1), TEST_EXCEPTION_SUPPLIER, PARAMETERS.toArray()).get().toString(),
-                is("Result from (Evaluation of java script 'some script' with parameters [param1, param2, param3]) " +
-                        "on condition Not null value. Time to get valuable result: 0:00:50:000"));
+                is("Evaluation of java script 'some script' with parameters [param1, param2, param3] " +
+                        "with condition Not null value. Time to get valuable result: 0:00:50:000"));
     }
 
     @Test
     public void jsWithParametersConditionAndDurationThrowsException() {
         assertThat(javaScript("some script", condition("Not null value", Objects::nonNull),
                 ofSeconds(50), TEST_EXCEPTION_SUPPLIER, PARAMETERS.toArray()).get().toString(),
-                is("Result from (Evaluation of java script 'some script' with parameters [param1, param2, param3]) " +
-                        "on condition Not null value. Time to get valuable result: 0:00:50:000"));
+                is("Evaluation of java script 'some script' with parameters [param1, param2, param3] " +
+                        "with condition Not null value. Time to get valuable result: 0:00:50:000"));
     }
 
     @Test
     public void jsWithParametersConditionAndDuration() {
         assertThat(javaScript("some script", condition("Not null value", Objects::nonNull),
                 ofSeconds(50), PARAMETERS.toArray()).get().toString(),
-                is("Result from (Evaluation of java script 'some script' with parameters [param1, param2, param3]) " +
-                        "on condition Not null value. Time to get valuable result: 0:00:50:000"));
+                is("Evaluation of java script 'some script' with parameters [param1, param2, param3] " +
+                        "with condition Not null value. Time to get valuable result: 0:00:50:000"));
     }
 
     @Test
     public void jsWithParametersCondition() {
         assertThat(javaScript("some script", condition("Not null value", Objects::nonNull),
                 PARAMETERS.toArray()).get().toString(),
-                is("Result from (Evaluation of java script 'some script' with parameters [param1, param2, param3]) on " +
-                        "condition Not null value"));
+                is("Evaluation of java script 'some script' " +
+                        "with parameters [param1, param2, param3] with condition Not null value"));
     }
 
     @Test
@@ -87,16 +87,16 @@ public class JavaScriptDescriptionTest {
     public void asyncJsWithParametersConditionThrowsException() {
         assertThat(asynchronousJavaScript("some script", condition("Not null value", Objects::nonNull),
                 TEST_EXCEPTION_SUPPLIER, PARAMETERS.toArray()).get().toString(),
-                is("Result from (Evaluation of asynchronous java script 'some script' " +
-                        "with parameters [param1, param2, param3]) on condition Not null value"));
+                is("Evaluation of asynchronous java script 'some script' " +
+                        "with parameters [param1, param2, param3] with condition Not null value"));
     }
 
     @Test
     public void asyncJsWithParametersCondition() {
         assertThat(asynchronousJavaScript("some script", condition("Not null value", Objects::nonNull),
                 PARAMETERS.toArray()).get().toString(),
-                is("Result from (Evaluation of asynchronous java script 'some script' " +
-                        "with parameters [param1, param2, param3]) on condition Not null value"));
+                is("Evaluation of asynchronous java script 'some script' " +
+                        "with parameters [param1, param2, param3] with condition Not null value"));
     }
 
     @Test

@@ -50,14 +50,14 @@ public class Widgets {
     @Test(dataProvider = "supportedClasses")
     public void descriptionOfASingleWidgetsWithDuration(Class<? extends Widget> widgetClass) {
         assertThat(widget(widgetClass, ofSeconds(5), shouldBeEnabled()).toString(),
-                is(format("A single item from (Elements of type %s) on condition Should be enabled. " +
+                is(format("A single item from (Elements of type %s) with condition Should be enabled. " +
                         "Time to get valuable result: 0:00:05:000", getWidgetName(widgetClass))));
     }
 
     @Test(dataProvider = "supportedClasses")
     public void descriptionOfASingleWidgetsWithoutAnyDurationSpecified(Class<? extends Widget> widgetClass) {
         assertThat(widget(widgetClass, shouldBeEnabled()).toString(),
-                is(format("A single item from (Elements of type %s) on condition Should be enabled. " +
+                is(format("A single item from (Elements of type %s) with condition Should be enabled. " +
                         "Time to get valuable result: 0:01:00:000", getWidgetName(widgetClass))));
     }
 
@@ -67,7 +67,7 @@ public class Widgets {
         System.setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "3");
         try {
             assertThat(widget(widgetClass, shouldBeEnabled()).toString(),
-                    is(format("A single item from (Elements of type %s) on condition Should be enabled. " +
+                    is(format("A single item from (Elements of type %s) with condition Should be enabled. " +
                             "Time to get valuable result: 0:03:00:000", getWidgetName(widgetClass))));
         }
         finally {
@@ -79,14 +79,14 @@ public class Widgets {
     @Test(dataProvider = "supportedClasses")
     public void descriptionOfASingleWidgetsWithoutAnyConditionSpecified(Class<? extends Widget> widgetClass) {
         assertThat(widget(widgetClass, ofSeconds(5)).toString(),
-                is(format("A single item from (Elements of type %s) on condition with no other restriction. " +
+                is(format("A single item from (Elements of type %s). " +
                         "Time to get valuable result: 0:00:05:000", getWidgetName(widgetClass))));
     }
 
     @Test(dataProvider = "supportedClasses")
     public void descriptionOfASingleWidgetsWithoutAnyConditionAndTimeSpecified(Class<? extends Widget> widgetClass) {
         assertThat(widget(widgetClass).toString(),
-                is(format("A single item from (Elements of type %s) on condition with no other restriction. " +
+                is(format("A single item from (Elements of type %s). " +
                         "Time to get valuable result: 0:01:00:000", getWidgetName(widgetClass))));
     }
 
@@ -97,7 +97,7 @@ public class Widgets {
 
         try {
             assertThat(widget(widgetClass).toString(),
-                    is(format("A single item from (Elements of type %s) on condition with no other restriction. " +
+                    is(format("A single item from (Elements of type %s). " +
                             "Time to get valuable result: 0:03:00:000", getWidgetName(widgetClass))));
         }
         finally {
@@ -113,7 +113,7 @@ public class Widgets {
 
         try {
             assertThat(widget(widgetClass, shouldBeEnabled()).toString(),
-                    is(format("A single item from (Elements of type %s) on condition Should be enabled. " +
+                    is(format("A single item from (Elements of type %s) with condition Should be enabled. " +
                             "Time to get valuable result: 0:03:00:000", getWidgetName(widgetClass))));
         }
         finally {
@@ -130,7 +130,7 @@ public class Widgets {
 
         try {
             assertThat(widget(widgetClass).toString(),
-                    is(format("A single item from (Elements of type %s) on condition Should be visible. " +
+                    is(format("A single item from (Elements of type %s) with condition Should be visible. " +
                             "Time to get valuable result: 0:03:00:000", getWidgetName(widgetClass))));
         }
         finally {
@@ -143,14 +143,14 @@ public class Widgets {
     @Test(dataProvider = "supportedClasses")
     public void descriptionOfMultipleWidgetsWithDuration(Class<? extends Widget> widgetClass) {
         assertThat(widgets(widgetClass, ofSeconds(5), shouldBeEnabled()).toString(),
-                is(format("List of from (Elements of type %s) on condition Should be enabled. " +
+                is(format("List of from (Elements of type %s) with condition Should be enabled. " +
                         "Time to get valuable result: 0:00:05:000", getWidgetName(widgetClass))));
     }
 
     @Test(dataProvider = "supportedClasses")
     public void descriptionOfMultipleWidgetsWithoutAnyDurationSpecified(Class<? extends Widget> widgetClass) {
         assertThat(widgets(widgetClass, shouldBeEnabled()).toString(),
-                is(format("List of from (Elements of type %s) on condition Should be enabled. " +
+                is(format("List of from (Elements of type %s) with condition Should be enabled. " +
                         "Time to get valuable result: 0:01:00:000", getWidgetName(widgetClass))));
     }
 
@@ -160,7 +160,7 @@ public class Widgets {
         System.setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "3");
         try {
             assertThat(widgets(widgetClass, shouldBeEnabled()).toString(),
-                    is(format("List of from (Elements of type %s) on condition Should be enabled. " +
+                    is(format("List of from (Elements of type %s) with condition Should be enabled. " +
                             "Time to get valuable result: 0:03:00:000", getWidgetName(widgetClass))));
         }
         finally {
@@ -172,14 +172,14 @@ public class Widgets {
     @Test(dataProvider = "supportedClasses")
     public void descriptionOfMultipleWidgetsWithoutAnyConditionSpecified(Class<? extends Widget> widgetClass) {
         assertThat(widgets(widgetClass, ofSeconds(5)).toString(),
-                is(format("List of from (Elements of type %s) on condition with no other restriction. " +
+                is(format("List of from (Elements of type %s). " +
                         "Time to get valuable result: 0:00:05:000", getWidgetName(widgetClass))));
     }
 
     @Test(dataProvider = "supportedClasses")
     public void descriptionOfMultipleWidgetsWithoutAnyConditionAndTimeSpecified(Class<? extends Widget> widgetClass) {
         assertThat(widgets(widgetClass).toString(),
-                is(format("List of from (Elements of type %s) on condition with no other restriction. " +
+                is(format("List of from (Elements of type %s). " +
                         "Time to get valuable result: 0:01:00:000", getWidgetName(widgetClass))));
     }
 
@@ -190,7 +190,7 @@ public class Widgets {
 
         try {
             assertThat(widgets(widgetClass).toString(),
-                    is(format("List of from (Elements of type %s) on condition with no other restriction." +
+                    is(format("List of from (Elements of type %s)." +
                             " Time to get valuable result: 0:03:00:000", getWidgetName(widgetClass))));
         }
         finally {
@@ -206,7 +206,7 @@ public class Widgets {
 
         try {
             assertThat(widgets(widgetClass, shouldBeEnabled()).toString(),
-                    is(format("List of from (Elements of type %s) on condition Should be enabled. " +
+                    is(format("List of from (Elements of type %s) with condition Should be enabled. " +
                             "Time to get valuable result: 0:03:00:000", getWidgetName(widgetClass))));
         }
         finally {
@@ -223,7 +223,7 @@ public class Widgets {
 
         try {
             assertThat(widgets(widgetClass).toString(),
-                    is(format("List of from (Elements of type %s) on condition Should be visible. " +
+                    is(format("List of from (Elements of type %s) with condition Should be visible. " +
                             "Time to get valuable result: 0:03:00:000", getWidgetName(widgetClass))));
         }
         finally {
@@ -236,7 +236,7 @@ public class Widgets {
     @Test(dataProvider = "supportedClasses")
     public void descriptionOfASingleWidgetsWithDurationAndSpecifiedLabels(Class<? extends Widget> widgetClass) {
         assertThat(widget(widgetClass, List.of("Label1", "Label2"), ofSeconds(5), shouldBeEnabled()).toString(),
-                is(format("A single item from (Elements of type %s) on condition " +
+                is(format("A single item from (Elements of type %s) with condition " +
                         "(Should have string label(s) [Label1, Label2]) AND (Should be enabled). " +
                         "Time to get valuable result: 0:00:05:000", getWidgetName(widgetClass))));
     }
@@ -244,7 +244,7 @@ public class Widgets {
     @Test(dataProvider = "supportedClasses")
     public void descriptionOfASingleWidgetsWithoutAnyDurationAndSpecifiedLabels(Class<? extends Widget> widgetClass) {
         assertThat(widget(widgetClass, List.of("Label1", "Label2"), shouldBeEnabled()).toString(),
-                is(format("A single item from (Elements of type %s) on condition " +
+                is(format("A single item from (Elements of type %s) with condition " +
                         "(Should have string label(s) [Label1, Label2]) AND (Should be enabled). " +
                         "Time to get valuable result: 0:01:00:000", getWidgetName(widgetClass))));
     }
@@ -255,7 +255,7 @@ public class Widgets {
         System.setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "3");
         try {
             assertThat(widget(widgetClass, List.of("Label1", "Label2"), shouldBeEnabled()).toString(),
-                    is(format("A single item from (Elements of type %s) on condition " +
+                    is(format("A single item from (Elements of type %s) with condition " +
                             "(Should have string label(s) [Label1, Label2]) AND (Should be enabled). " +
                             "Time to get valuable result: 0:03:00:000", getWidgetName(widgetClass))));
         }
@@ -268,16 +268,16 @@ public class Widgets {
     @Test(dataProvider = "supportedClasses")
     public void descriptionOfASingleWidgetsWithoutAnyConditionSpecifiedAndSpecifiedLabels(Class<? extends Widget> widgetClass) {
         assertThat(widget(widgetClass, List.of("Label1", "Label2"), ofSeconds(5)).toString(),
-                is(format("A single item from (Elements of type %s) on condition " +
-                        "(Should have string label(s) [Label1, Label2]) AND (with no other restriction). " +
+                is(format("A single item from (Elements of type %s) with condition " +
+                        "(Should have string label(s) [Label1, Label2]) AND (as is). " +
                         "Time to get valuable result: 0:00:05:000", getWidgetName(widgetClass))));
     }
 
     @Test(dataProvider = "supportedClasses")
     public void descriptionOfASingleWidgetsWithoutAnyConditionAndTimeSpecifiedAndSpecifiedLabels(Class<? extends Widget> widgetClass) {
         assertThat(widget(widgetClass, List.of("Label1", "Label2")).toString(),
-                is(format("A single item from (Elements of type %s) on condition " +
-                        "(Should have string label(s) [Label1, Label2]) AND (with no other restriction). " +
+                is(format("A single item from (Elements of type %s) with condition " +
+                        "(Should have string label(s) [Label1, Label2]) AND (as is). " +
                         "Time to get valuable result: 0:01:00:000", getWidgetName(widgetClass))));
     }
 
@@ -288,8 +288,8 @@ public class Widgets {
 
         try {
             assertThat(widget(widgetClass, List.of("Label1", "Label2")).toString(),
-                    is(format("A single item from (Elements of type %s) on condition " +
-                            "(Should have string label(s) [Label1, Label2]) AND (with no other restriction). " +
+                    is(format("A single item from (Elements of type %s) with condition " +
+                            "(Should have string label(s) [Label1, Label2]) AND (as is). " +
                             "Time to get valuable result: 0:03:00:000", getWidgetName(widgetClass))));
         }
         finally {
@@ -305,7 +305,7 @@ public class Widgets {
 
         try {
             assertThat(widget(widgetClass, List.of("Label1", "Label2"), shouldBeEnabled()).toString(),
-                    is(format("A single item from (Elements of type %s) on condition " +
+                    is(format("A single item from (Elements of type %s) with condition " +
                             "(Should have string label(s) [Label1, Label2]) AND (Should be enabled). " +
                             "Time to get valuable result: 0:03:00:000", getWidgetName(widgetClass))));
         }
@@ -323,7 +323,7 @@ public class Widgets {
 
         try {
             assertThat(widget(widgetClass, List.of("Label1", "Label2")).toString(),
-                    is(format("A single item from (Elements of type %s) on condition " +
+                    is(format("A single item from (Elements of type %s) with condition " +
                             "(Should have string label(s) [Label1, Label2]) AND (Should be visible). " +
                             "Time to get valuable result: 0:03:00:000", getWidgetName(widgetClass))));
         }
@@ -337,7 +337,7 @@ public class Widgets {
     @Test(dataProvider = "supportedClasses")
     public void descriptionOfMultipleWidgetsWithDurationAndSpecifiedLabels(Class<? extends Widget> widgetClass) {
         assertThat(widgets(widgetClass, List.of("Label1", "Label2"), ofSeconds(5), shouldBeEnabled()).toString(),
-                is(format("List of from (Elements of type %s) on condition " +
+                is(format("List of from (Elements of type %s) with condition " +
                         "(Should have string label(s) [Label1, Label2]) AND (Should be enabled). " +
                         "Time to get valuable result: 0:00:05:000", getWidgetName(widgetClass))));
     }
@@ -345,7 +345,7 @@ public class Widgets {
     @Test(dataProvider = "supportedClasses")
     public void descriptionOfMultipleWidgetsWithoutAnyDurationSpecifiedAndSpecifiedLabels(Class<? extends Widget> widgetClass) {
         assertThat(widgets(widgetClass, List.of("Label1", "Label2"), shouldBeEnabled()).toString(),
-                is(format("List of from (Elements of type %s) on condition " +
+                is(format("List of from (Elements of type %s) with condition " +
                         "(Should have string label(s) [Label1, Label2]) AND (Should be enabled). " +
                         "Time to get valuable result: 0:01:00:000", getWidgetName(widgetClass))));
     }
@@ -356,7 +356,7 @@ public class Widgets {
         System.setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "3");
         try {
             assertThat(widgets(widgetClass, List.of("Label1", "Label2"), shouldBeEnabled()).toString(),
-                    is(format("List of from (Elements of type %s) on condition " +
+                    is(format("List of from (Elements of type %s) with condition " +
                             "(Should have string label(s) [Label1, Label2]) AND (Should be enabled). " +
                             "Time to get valuable result: 0:03:00:000", getWidgetName(widgetClass))));
         }
@@ -369,16 +369,16 @@ public class Widgets {
     @Test(dataProvider = "supportedClasses")
     public void descriptionOfMultipleWidgetsWithoutAnyConditionSpecifiedAndSpecifiedLabels(Class<? extends Widget> widgetClass) {
         assertThat(widgets(widgetClass, List.of("Label1", "Label2"), ofSeconds(5)).toString(),
-                is(format("List of from (Elements of type %s) on condition " +
-                        "(Should have string label(s) [Label1, Label2]) AND (with no other restriction). " +
+                is(format("List of from (Elements of type %s) with condition " +
+                        "(Should have string label(s) [Label1, Label2]) AND (as is). " +
                         "Time to get valuable result: 0:00:05:000", getWidgetName(widgetClass))));
     }
 
     @Test(dataProvider = "supportedClasses")
     public void descriptionOfMultipleWidgetsWithoutAnyConditionAndTimeSpecifiedAndSpecifiedLabels(Class<? extends Widget> widgetClass) {
         assertThat(widgets(widgetClass, List.of("Label1", "Label2")).toString(),
-                is(format("List of from (Elements of type %s) on condition (Should have string label(s) [Label1, Label2]) " +
-                        "AND (with no other restriction). Time to get valuable result: 0:01:00:000", getWidgetName(widgetClass))));
+                is(format("List of from (Elements of type %s) with condition (Should have string label(s) [Label1, Label2]) " +
+                        "AND (as is). Time to get valuable result: 0:01:00:000", getWidgetName(widgetClass))));
     }
 
     @Test(dataProvider = "supportedClasses")
@@ -388,7 +388,7 @@ public class Widgets {
 
         try {
             assertThat(widgets(widgetClass, List.of("Label1", "Label2")).toString(),
-                    is(format("List of from (Elements of type %s) on condition (Should have string label(s) [Label1, Label2]) AND (with no other restriction). Time to get valuable result: 0:03:00:000", getWidgetName(widgetClass))));
+                    is(format("List of from (Elements of type %s) with condition (Should have string label(s) [Label1, Label2]) AND (as is). Time to get valuable result: 0:03:00:000", getWidgetName(widgetClass))));
         }
         finally {
             System.getProperties().remove(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
@@ -403,7 +403,7 @@ public class Widgets {
 
         try {
             assertThat(widgets(widgetClass, List.of("Label1", "Label2"), shouldBeEnabled()).toString(),
-                    is(format("List of from (Elements of type %s) on condition " +
+                    is(format("List of from (Elements of type %s) with condition " +
                             "(Should have string label(s) [Label1, Label2]) AND (Should be enabled). " +
                             "Time to get valuable result: 0:03:00:000", getWidgetName(widgetClass))));
         }
@@ -421,7 +421,7 @@ public class Widgets {
 
         try {
             assertThat(widgets(widgetClass, List.of("Label1", "Label2")).toString(),
-                    is(format("List of from (Elements of type %s) on condition " +
+                    is(format("List of from (Elements of type %s) with condition " +
                             "(Should have string label(s) [Label1, Label2]) AND (Should be visible). " +
                             "Time to get valuable result: 0:03:00:000", getWidgetName(widgetClass))));
         }
@@ -435,7 +435,7 @@ public class Widgets {
     @Test(dataProvider = "supportedClasses")
     public void descriptionOfASingleWidgetsWithDurationAndSpecifiedLabel(Class<? extends Widget> widgetClass) {
         assertThat(widget(widgetClass, "Label1", ofSeconds(5), shouldBeEnabled()).toString(),
-                is(format("A single item from (Elements of type %s) on condition " +
+                is(format("A single item from (Elements of type %s) with condition " +
                         "(Should have string label(s) [Label1]) AND (Should be enabled). " +
                         "Time to get valuable result: 0:00:05:000", getWidgetName(widgetClass))));
     }
@@ -443,7 +443,7 @@ public class Widgets {
     @Test(dataProvider = "supportedClasses")
     public void descriptionOfASingleWidgetsWithoutAnyDurationAndSpecifiedLabel(Class<? extends Widget> widgetClass) {
         assertThat(widget(widgetClass, "Label1", shouldBeEnabled()).toString(),
-                is(format("A single item from (Elements of type %s) on condition " +
+                is(format("A single item from (Elements of type %s) with condition " +
                         "(Should have string label(s) [Label1]) AND (Should be enabled). " +
                         "Time to get valuable result: 0:01:00:000", getWidgetName(widgetClass))));
     }
@@ -454,7 +454,7 @@ public class Widgets {
         System.setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "3");
         try {
             assertThat(widget(widgetClass, "Label1", shouldBeEnabled()).toString(),
-                    is(format("A single item from (Elements of type %s) on condition " +
+                    is(format("A single item from (Elements of type %s) with condition " +
                             "(Should have string label(s) [Label1]) AND (Should be enabled). " +
                             "Time to get valuable result: 0:03:00:000", getWidgetName(widgetClass))));
         }
@@ -467,16 +467,16 @@ public class Widgets {
     @Test(dataProvider = "supportedClasses")
     public void descriptionOfASingleWidgetsWithoutAnyConditionSpecifiedAndSpecifiedLabel(Class<? extends Widget> widgetClass) {
         assertThat(widget(widgetClass, "Label1", ofSeconds(5)).toString(),
-                is(format("A single item from (Elements of type %s) on condition " +
-                        "(Should have string label(s) [Label1]) AND (with no other restriction). " +
+                is(format("A single item from (Elements of type %s) with condition " +
+                        "(Should have string label(s) [Label1]) AND (as is). " +
                         "Time to get valuable result: 0:00:05:000", getWidgetName(widgetClass))));
     }
 
     @Test(dataProvider = "supportedClasses")
     public void descriptionOfASingleWidgetsWithoutAnyConditionAndTimeSpecifiedAndSpecifiedLabel(Class<? extends Widget> widgetClass) {
         assertThat(widget(widgetClass, "Label1").toString(),
-                is(format("A single item from (Elements of type %s) on condition " +
-                        "(Should have string label(s) [Label1]) AND (with no other restriction). " +
+                is(format("A single item from (Elements of type %s) with condition " +
+                        "(Should have string label(s) [Label1]) AND (as is). " +
                         "Time to get valuable result: 0:01:00:000", getWidgetName(widgetClass))));
     }
 
@@ -487,8 +487,8 @@ public class Widgets {
 
         try {
             assertThat(widget(widgetClass, "Label1").toString(),
-                    is(format("A single item from (Elements of type %s) on condition " +
-                            "(Should have string label(s) [Label1]) AND (with no other restriction). " +
+                    is(format("A single item from (Elements of type %s) with condition " +
+                            "(Should have string label(s) [Label1]) AND (as is). " +
                             "Time to get valuable result: 0:03:00:000", getWidgetName(widgetClass))));
         }
         finally {
@@ -504,7 +504,7 @@ public class Widgets {
 
         try {
             assertThat(widget(widgetClass, "Label1", shouldBeEnabled()).toString(),
-                    is(format("A single item from (Elements of type %s) on condition " +
+                    is(format("A single item from (Elements of type %s) with condition " +
                             "(Should have string label(s) [Label1]) AND (Should be enabled). " +
                             "Time to get valuable result: 0:03:00:000", getWidgetName(widgetClass))));
         }
@@ -522,7 +522,7 @@ public class Widgets {
 
         try {
             assertThat(widget(widgetClass, "Label1").toString(),
-                    is(format("A single item from (Elements of type %s) on condition " +
+                    is(format("A single item from (Elements of type %s) with condition " +
                             "(Should have string label(s) [Label1]) AND (Should be visible). " +
                             "Time to get valuable result: 0:03:00:000", getWidgetName(widgetClass))));
         }
@@ -536,7 +536,7 @@ public class Widgets {
     @Test(dataProvider = "supportedClasses")
     public void descriptionOfMultipleWidgetsWithDurationAndSpecifiedLabel(Class<? extends Widget> widgetClass) {
         assertThat(widgets(widgetClass, "Label1", ofSeconds(5), shouldBeEnabled()).toString(),
-                is(format("List of from (Elements of type %s) on condition " +
+                is(format("List of from (Elements of type %s) with condition " +
                         "(Should have string label(s) [Label1]) AND (Should be enabled). " +
                         "Time to get valuable result: 0:00:05:000", getWidgetName(widgetClass))));
     }
@@ -544,7 +544,7 @@ public class Widgets {
     @Test(dataProvider = "supportedClasses")
     public void descriptionOfMultipleWidgetsWithoutAnyDurationSpecifiedAndSpecifiedLabel(Class<? extends Widget> widgetClass) {
         assertThat(widgets(widgetClass, "Label1", shouldBeEnabled()).toString(),
-                is(format("List of from (Elements of type %s) on condition (Should have string label(s) [Label1]) " +
+                is(format("List of from (Elements of type %s) with condition (Should have string label(s) [Label1]) " +
                         "AND (Should be enabled). Time to get valuable result: 0:01:00:000", getWidgetName(widgetClass))));
     }
 
@@ -555,7 +555,7 @@ public class Widgets {
         try {
             assertThat(
                     widgets(widgetClass, "Label1", shouldBeEnabled()).toString(),
-                    is(format("List of from (Elements of type %s) on condition " +
+                    is(format("List of from (Elements of type %s) with condition " +
                             "(Should have string label(s) [Label1]) AND (Should be enabled). " +
                             "Time to get valuable result: 0:03:00:000", getWidgetName(widgetClass))));
         }
@@ -568,16 +568,16 @@ public class Widgets {
     @Test(dataProvider = "supportedClasses")
     public void descriptionOfMultipleWidgetsWithoutAnyConditionSpecifiedAndSpecifiedLabel(Class<? extends Widget> widgetClass) {
         assertThat(widgets(widgetClass, "Label1", ofSeconds(5)).toString(),
-                is(format("List of from (Elements of type %s) on condition " +
-                        "(Should have string label(s) [Label1]) AND (with no other restriction). " +
+                is(format("List of from (Elements of type %s) with condition " +
+                        "(Should have string label(s) [Label1]) AND (as is). " +
                         "Time to get valuable result: 0:00:05:000", getWidgetName(widgetClass))));
     }
 
     @Test(dataProvider = "supportedClasses")
     public void descriptionOfMultipleWidgetsWithoutAnyConditionAndTimeSpecifiedAndSpecifiedLabel(Class<? extends Widget> widgetClass) {
         assertThat(widgets(widgetClass, "Label1").toString(),
-                is(format("List of from (Elements of type %s) on condition " +
-                        "(Should have string label(s) [Label1]) AND (with no other restriction). " +
+                is(format("List of from (Elements of type %s) with condition " +
+                        "(Should have string label(s) [Label1]) AND (as is). " +
                         "Time to get valuable result: 0:01:00:000", getWidgetName(widgetClass))));
     }
 
@@ -588,8 +588,8 @@ public class Widgets {
 
         try {
             assertThat(widgets(widgetClass, "Label1").toString(),
-                    is(format("List of from (Elements of type %s) on condition " +
-                            "(Should have string label(s) [Label1]) AND (with no other restriction). " +
+                    is(format("List of from (Elements of type %s) with condition " +
+                            "(Should have string label(s) [Label1]) AND (as is). " +
                             "Time to get valuable result: 0:03:00:000", getWidgetName(widgetClass))));
         }
         finally {
@@ -605,7 +605,7 @@ public class Widgets {
 
         try {
             assertThat(widgets(widgetClass, "Label1", shouldBeEnabled()).toString(),
-                    is(format("List of from (Elements of type %s) on condition " +
+                    is(format("List of from (Elements of type %s) with condition " +
                             "(Should have string label(s) [Label1]) AND (Should be enabled). " +
                             "Time to get valuable result: 0:03:00:000", getWidgetName(widgetClass))));
         }
@@ -623,7 +623,7 @@ public class Widgets {
 
         try {
             assertThat(widgets(widgetClass, "Label1").toString(),
-                    is(format("List of from (Elements of type %s) on condition " +
+                    is(format("List of from (Elements of type %s) with condition " +
                             "(Should have string label(s) [Label1]) AND (Should be visible). " +
                             "Time to get valuable result: 0:03:00:000", getWidgetName(widgetClass))));
         }

@@ -25,13 +25,13 @@ public final class ToGetObjectFromIterable {
                                                                                    boolean checkConditionInParallel,
                                                                                    boolean ignoreExceptionOnConditionCheck,
                                                                                    @Nullable Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        return ToGetConditionalHelper.fluentWaitFunction(ToGetConditionalHelper.getDescription(description, function, condition), t ->
+        return fluentWaitFunction(getDescription(description, function, condition), t ->
                         ofNullable(function.apply(t))
                                 .map(v -> stream(v.spliterator(), checkConditionInParallel).filter(r -> {
                                     try {
-                                        return ToGetConditionalHelper.notNullAnd(condition).test(r);
+                                        return notNullAnd(condition).test(r);
                                     } catch (Throwable t1) {
-                                        return ToGetConditionalHelper.returnFalseOrThrowException(t1, ignoreExceptionOnConditionCheck);
+                                        return returnFalseOrThrowException(t1, ignoreExceptionOnConditionCheck);
                                     }
                                 }).findFirst().orElse(null))
                                 .orElse(null),
@@ -102,9 +102,9 @@ public final class ToGetObjectFromIterable {
                                                                                Supplier<? extends RuntimeException> exceptionOnTimeOut) {
         checkFunction(function);
         checkWaitingTime(waitingTime);
-        ToGetConditionalHelper.checkSleepingTime(sleepingTime);
-        ToGetConditionalHelper.checkExceptionSupplier(exceptionOnTimeOut);
-        return singleFromIterable(description, function, asIs(), waitingTime, sleepingTime, false,
+        checkSleepingTime(sleepingTime);
+        checkExceptionSupplier(exceptionOnTimeOut);
+        return singleFromIterable(description, function, AS_IS, waitingTime, sleepingTime, false,
                 true, exceptionOnTimeOut);
     }
 
@@ -140,7 +140,7 @@ public final class ToGetObjectFromIterable {
         checkFunction(function);
         checkCondition(condition);
         checkWaitingTime(waitingTime);
-        ToGetConditionalHelper.checkExceptionSupplier(exceptionOnTimeOut);
+        checkExceptionSupplier(exceptionOnTimeOut);
         return singleFromIterable(description, function, condition, waitingTime, null, checkConditionInParallel,
                 ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
     }
@@ -165,8 +165,8 @@ public final class ToGetObjectFromIterable {
                                                                                Supplier<? extends RuntimeException> exceptionOnTimeOut) {
         checkFunction(function);
         checkWaitingTime(waitingTime);
-        ToGetConditionalHelper.checkExceptionSupplier(exceptionOnTimeOut);
-        return singleFromIterable(description, function, asIs(), waitingTime, null, false,
+        checkExceptionSupplier(exceptionOnTimeOut);
+        return singleFromIterable(description, function, AS_IS, waitingTime, null, false,
                 true, exceptionOnTimeOut);
     }
 
@@ -199,7 +199,7 @@ public final class ToGetObjectFromIterable {
                                                                                Supplier<? extends RuntimeException> exceptionOnTimeOut) {
         checkFunction(function);
         checkCondition(condition);
-        ToGetConditionalHelper.checkExceptionSupplier(exceptionOnTimeOut);
+        checkExceptionSupplier(exceptionOnTimeOut);
         return singleFromIterable(description, function, condition, null, null, checkConditionInParallel,
                 ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
     }
@@ -221,8 +221,8 @@ public final class ToGetObjectFromIterable {
                                                                                Function<T, V> function,
                                                                                Supplier<? extends RuntimeException> exceptionOnTimeOut) {
         checkFunction(function);
-        ToGetConditionalHelper.checkExceptionSupplier(exceptionOnTimeOut);
-        return singleFromIterable(description, function, asIs(), null, null,
+        checkExceptionSupplier(exceptionOnTimeOut);
+        return singleFromIterable(description, function, AS_IS, null, null,
                 false, true, exceptionOnTimeOut);
     }
 
@@ -258,7 +258,7 @@ public final class ToGetObjectFromIterable {
         checkFunction(function);
         checkCondition(condition);
         checkWaitingTime(waitingTime);
-        ToGetConditionalHelper.checkSleepingTime(sleepingTime);
+        checkSleepingTime(sleepingTime);
         return singleFromIterable(description, function, condition, waitingTime, sleepingTime, checkConditionInParallel,
                 ignoreExceptionOnConditionCheck, null);
     }
@@ -283,8 +283,8 @@ public final class ToGetObjectFromIterable {
                                                                                Duration sleepingTime) {
         checkFunction(function);
         checkWaitingTime(waitingTime);
-        ToGetConditionalHelper.checkSleepingTime(sleepingTime);
-        return singleFromIterable(description, function, asIs(), waitingTime, sleepingTime, false,
+        checkSleepingTime(sleepingTime);
+        return singleFromIterable(description, function, AS_IS, waitingTime, sleepingTime, false,
                 true, null);
     }
 
@@ -338,7 +338,7 @@ public final class ToGetObjectFromIterable {
                                                                                Duration waitingTime) {
         checkFunction(function);
         checkWaitingTime(waitingTime);
-        return singleFromIterable(description, function, asIs(), waitingTime, null, false,
+        return singleFromIterable(description, function, AS_IS, waitingTime, null, false,
                 true, null);
     }
 
@@ -386,7 +386,7 @@ public final class ToGetObjectFromIterable {
     public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(String description,
                                                                                Function<T, V> function) {
         checkFunction(function);
-        return singleFromIterable(description, function, asIs(), null, null, false,
+        return singleFromIterable(description, function, AS_IS, null, null, false,
                 true, null);
     }
 }

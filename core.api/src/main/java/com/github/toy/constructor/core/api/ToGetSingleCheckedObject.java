@@ -16,22 +16,21 @@ public final class ToGetSingleCheckedObject {
         super();
     }
 
-    private static <T, R> Function<T, R> checkedSingle(String description,
-                                                       Function<T, R> function,
+    private static <T, R> Function<T, R> checkedSingle(Function<T, R> function,
                                                        Predicate<? super R> condition,
                                                        @Nullable Duration waitingTime,
                                                        @Nullable Duration sleepingTime,
                                                        boolean ignoreExceptionOnConditionCheck,
                                                        @Nullable Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        return ToGetConditionalHelper.fluentWaitFunction(ToGetConditionalHelper.getDescription(description, function, condition), t ->
+        return fluentWaitFunction(getDescription(EMPTY, function, condition), t ->
                         ofNullable(function.apply(t)).map(r -> {
                             try {
-                                if (ToGetConditionalHelper.notNullAnd(condition).test(r)) {
+                                if (notNullAnd(condition).test(r)) {
                                     return r;
                                 }
                             }
                             catch (Throwable t1) {
-                                ToGetConditionalHelper.returnFalseOrThrowException(t1, ignoreExceptionOnConditionCheck);
+                                returnFalseOrThrowException(t1, ignoreExceptionOnConditionCheck);
                             }
                             return null;
                         }).orElse(null), waitingTime,
@@ -42,7 +41,6 @@ public final class ToGetSingleCheckedObject {
      * This method returns a function. The result function returns a single value which
      * suits criteria.
      *
-     * @param description of a value which should be returned.
      * @param function described function which should return some object
      * @param condition described predicate which is used to find some target value
      * @param waitingTime is a duration of the waiting for valuable result
@@ -58,19 +56,18 @@ public final class ToGetSingleCheckedObject {
      * @return a function. The result function returns a single value.
      * It returns a value if it suits criteria. Some exception is thrown if value is null or doesn't suit criteria.
      */
-    public static <T, R> Function<T, R> getSingleOnCondition(String description,
-                                                             Function<T, R> function,
-                                                             Predicate<? super R> condition,
-                                                             Duration waitingTime,
-                                                             Duration sleepingTime,
-                                                             boolean ignoreExceptionOnConditionCheck,
-                                                             Supplier<? extends RuntimeException> exceptionOnTimeOut) {
+    public static <T, R> Function<T, R> getSingle(Function<T, R> function,
+                                                  Predicate<? super R> condition,
+                                                  Duration waitingTime,
+                                                  Duration sleepingTime,
+                                                  boolean ignoreExceptionOnConditionCheck,
+                                                  Supplier<? extends RuntimeException> exceptionOnTimeOut) {
         checkFunction(function);
         checkCondition(condition);
         checkWaitingTime(waitingTime);
         checkSleepingTime(sleepingTime);
         checkExceptionSupplier(exceptionOnTimeOut);
-        return checkedSingle(description, function, condition, waitingTime,
+        return checkedSingle(function, condition, waitingTime,
                 sleepingTime, ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
     }
 
@@ -93,9 +90,9 @@ public final class ToGetSingleCheckedObject {
                                                   Supplier<? extends RuntimeException> exceptionOnTimeOut) {
         checkFunction(function);
         checkWaitingTime(waitingTime);
-        ToGetConditionalHelper.checkSleepingTime(sleepingTime);
+        checkSleepingTime(sleepingTime);
         checkExceptionSupplier(exceptionOnTimeOut);
-        return checkedSingle(EMPTY, function, ToGetConditionalHelper.asIs(), waitingTime,
+        return checkedSingle(function, AS_IS, waitingTime,
                 sleepingTime, true, exceptionOnTimeOut);
     }
 
@@ -103,7 +100,6 @@ public final class ToGetSingleCheckedObject {
      * This method returns a function. The result function returns a single value which
      * suits criteria.
      *
-     * @param description of a value which should be returned.
      * @param function described function which should return some object
      * @param condition described predicate which is used to find some target value
      * @param waitingTime is a duration of the waiting for valuable result
@@ -117,17 +113,16 @@ public final class ToGetSingleCheckedObject {
      * @return a function. The result function returns a single value.
      * It returns a value if it suits criteria. Some exception is thrown if value is null or doesn't suit criteria.
      */
-    public static <T, R> Function<T, R> getSingleOnCondition(String description,
-                                                             Function<T, R> function,
-                                                             Predicate<? super R> condition,
-                                                             Duration waitingTime,
-                                                             boolean ignoreExceptionOnConditionCheck,
-                                                             Supplier<? extends RuntimeException> exceptionOnTimeOut) {
+    public static <T, R> Function<T, R> getSingle(Function<T, R> function,
+                                                  Predicate<? super R> condition,
+                                                  Duration waitingTime,
+                                                  boolean ignoreExceptionOnConditionCheck,
+                                                  Supplier<? extends RuntimeException> exceptionOnTimeOut) {
         checkFunction(function);
         checkCondition(condition);
         checkWaitingTime(waitingTime);
         checkExceptionSupplier(exceptionOnTimeOut);
-        return checkedSingle(description, function, condition, waitingTime,
+        return checkedSingle(function, condition, waitingTime,
                 null, ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
     }
 
@@ -149,7 +144,7 @@ public final class ToGetSingleCheckedObject {
         checkFunction(function);
         checkWaitingTime(waitingTime);
         checkExceptionSupplier(exceptionOnTimeOut);
-        return checkedSingle(EMPTY, function, ToGetConditionalHelper.asIs(), waitingTime,
+        return checkedSingle(function, AS_IS, waitingTime,
                 null, true, exceptionOnTimeOut);
     }
 
@@ -157,7 +152,6 @@ public final class ToGetSingleCheckedObject {
      * This method returns a function. The result function returns a single value which
      * suits criteria.
      *
-     * @param description of a value which should be returned.
      * @param function described function which should return some object
      * @param condition described predicate which is used to find some target value
      * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
@@ -170,15 +164,14 @@ public final class ToGetSingleCheckedObject {
      * @return a function. The result function returns a single value.
      * It returns a value if it suits criteria. Some exception is thrown if value is null or doesn't suit criteria.
      */
-    public static <T, R> Function<T, R> getSingleOnCondition(String description,
-                                                             Function<T, R> function,
-                                                             Predicate<? super R> condition,
-                                                             boolean ignoreExceptionOnConditionCheck,
-                                                             Supplier<? extends RuntimeException> exceptionOnTimeOut) {
+    public static <T, R> Function<T, R> getSingle(Function<T, R> function,
+                                                  Predicate<? super R> condition,
+                                                  boolean ignoreExceptionOnConditionCheck,
+                                                  Supplier<? extends RuntimeException> exceptionOnTimeOut) {
         checkFunction(function);
         checkCondition(condition);
         checkExceptionSupplier(exceptionOnTimeOut);
-        return checkedSingle(description, function, condition, null,
+        return checkedSingle(function, condition, null,
                 null, ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
     }
 
@@ -197,7 +190,7 @@ public final class ToGetSingleCheckedObject {
                                                   Supplier<? extends RuntimeException> exceptionOnTimeOut) {
         checkFunction(function);
         checkExceptionSupplier(exceptionOnTimeOut);
-        return checkedSingle(EMPTY, function, ToGetConditionalHelper.asIs(), null,
+        return checkedSingle(function, AS_IS, null,
                 null, true, exceptionOnTimeOut);
     }
 
@@ -205,7 +198,6 @@ public final class ToGetSingleCheckedObject {
      * This method returns a function. The result function returns a single value which
      * suits criteria.
      *
-     * @param description of a value which should be returned.
      * @param function described function which should return some object
      * @param condition described predicate which is used to find some target value
      * @param waitingTime is a duration of the waiting for valuable result
@@ -219,17 +211,16 @@ public final class ToGetSingleCheckedObject {
      * @return a function. The result function returns a single value.
      * It returns a value if it suits criteria. {@code null} is returned if value is null or doesn't suit criteria.
      */
-    public static <T, R> Function<T, R> getSingleOnCondition(String description,
-                                                             Function<T, R> function,
-                                                             Predicate<? super R> condition,
-                                                             Duration waitingTime,
-                                                             Duration sleepingTime,
-                                                             boolean ignoreExceptionOnConditionCheck) {
+    public static <T, R> Function<T, R> getSingle(Function<T, R> function,
+                                                  Predicate<? super R> condition,
+                                                  Duration waitingTime,
+                                                  Duration sleepingTime,
+                                                  boolean ignoreExceptionOnConditionCheck) {
         checkFunction(function);
         checkCondition(condition);
         checkWaitingTime(waitingTime);
-        ToGetConditionalHelper.checkSleepingTime(sleepingTime);
-        return checkedSingle(description, function, condition, waitingTime,
+        checkSleepingTime(sleepingTime);
+        return checkedSingle(function, condition, waitingTime,
                 sleepingTime, ignoreExceptionOnConditionCheck, null);
     }
 
@@ -250,8 +241,8 @@ public final class ToGetSingleCheckedObject {
                                                   Duration sleepingTime) {
         checkFunction(function);
         checkWaitingTime(waitingTime);
-        ToGetConditionalHelper.checkSleepingTime(sleepingTime);
-        return checkedSingle(EMPTY, function, ToGetConditionalHelper.asIs(), waitingTime,
+        checkSleepingTime(sleepingTime);
+        return checkedSingle(function, AS_IS, waitingTime,
                 sleepingTime, true, null);
     }
 
@@ -259,7 +250,6 @@ public final class ToGetSingleCheckedObject {
      * This method returns a function. The result function returns a single value which
      * suits criteria.
      *
-     * @param description of a value which should be returned.
      * @param function described function which should return some object
      * @param condition described predicate which is used to find some target value
      * @param waitingTime is a duration of the waiting for valuable result
@@ -271,15 +261,14 @@ public final class ToGetSingleCheckedObject {
      * @return a function. The result function returns a single value.
      * It returns a value if it suits criteria. {@code null} is returned if value is null or doesn't suit criteria.
      */
-    public static <T, R> Function<T, R> getSingleOnCondition(String description,
-                                                             Function<T, R> function,
-                                                             Predicate<? super R> condition,
-                                                             Duration waitingTime,
-                                                             boolean ignoreExceptionOnConditionCheck) {
+    public static <T, R> Function<T, R> getSingle(Function<T, R> function,
+                                                  Predicate<? super R> condition,
+                                                  Duration waitingTime,
+                                                  boolean ignoreExceptionOnConditionCheck) {
         checkFunction(function);
         checkCondition(condition);
         checkWaitingTime(waitingTime);
-        return checkedSingle(description, function, condition, waitingTime,
+        return checkedSingle(function, condition, waitingTime,
                 null, ignoreExceptionOnConditionCheck, null);
     }
 
@@ -297,7 +286,7 @@ public final class ToGetSingleCheckedObject {
                                                   Duration waitingTime) {
         checkFunction(function);
         checkWaitingTime(waitingTime);
-        return checkedSingle(EMPTY, function, ToGetConditionalHelper.asIs(), waitingTime,
+        return checkedSingle(function, AS_IS, waitingTime,
                 null, true, null);
     }
 
@@ -305,7 +294,6 @@ public final class ToGetSingleCheckedObject {
      * This method returns a function. The result function returns a single value which
      * suits criteria.
      *
-     * @param description of a value which should be returned.
      * @param function which should return a value to check.
      * @param condition which is used to check the target value.
      * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
@@ -316,13 +304,12 @@ public final class ToGetSingleCheckedObject {
      * @return a function. The result function returns a single value.
      * It returns a value if it suits criteria. {@code null} is returned if value is null or doesn't suit criteria.
      */
-    public static <T, R> Function<T, R> getSingleOnCondition(String description,
-                                                             Function<T, R> function,
-                                                             Predicate<? super R> condition,
-                                                             boolean ignoreExceptionOnConditionCheck) {
+    public static <T, R> Function<T, R> getSingle(Function<T, R> function,
+                                                  Predicate<? super R> condition,
+                                                  boolean ignoreExceptionOnConditionCheck) {
         checkFunction(function);
         checkCondition(condition);
-        return checkedSingle(description, function, condition,
+        return checkedSingle(function, condition,
                 null, null, ignoreExceptionOnConditionCheck, null);
     }
 }
