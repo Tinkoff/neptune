@@ -2,6 +2,7 @@ package com.github.toy.constructor.core.api;
 
 import java.util.function.Predicate;
 
+import static com.github.toy.constructor.core.api.AsIsPredicate.AS_IS;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -24,7 +25,10 @@ interface DescribedPredicate<T> extends Predicate<T> {
 
             @Override
             public String toString() {
-                return format("(%s) AND (%s)", thisCondition.toString(), other.toString());
+                if (!AS_IS.equals(other)) {
+                    return format("(%s) AND (%s)", thisCondition.toString(), other.toString());
+                }
+                return thisCondition.toString();
             }
         };
     }
@@ -56,12 +60,18 @@ interface DescribedPredicate<T> extends Predicate<T> {
 
             @Override
             public boolean test(T t) {
-                return thisCondition.test(t) || other.test(t);
+                if (!AS_IS.equals(other)) {
+                    return thisCondition.test(t) || other.test(t);
+                }
+                return thisCondition.test(t);
             }
 
             @Override
             public String toString() {
-                return format("(%s) OR (%s)", thisCondition.toString(), other.toString());
+                if (!AS_IS.equals(other)) {
+                    return format("(%s) OR (%s)", thisCondition.toString(), other.toString());
+                }
+                return thisCondition.toString();
             }
         };
     }

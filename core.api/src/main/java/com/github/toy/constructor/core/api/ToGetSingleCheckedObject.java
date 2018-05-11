@@ -7,6 +7,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static com.github.toy.constructor.core.api.AsIsPredicate.AS_IS;
 import static com.github.toy.constructor.core.api.ToGetConditionalHelper.*;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.EMPTY;

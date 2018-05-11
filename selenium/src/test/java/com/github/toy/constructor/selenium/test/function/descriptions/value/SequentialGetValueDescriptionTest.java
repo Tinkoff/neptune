@@ -23,8 +23,8 @@ public class SequentialGetValueDescriptionTest {
         assertThat(ofThe(element(textField("Some text field", ofSeconds(55), shouldBeVisible()
                 .and(shouldHaveCssValueContains("some css", "some value"))))
                         .foundFrom(tab("Tab 1"))).get().toString(),
-                is("Get value from (A single item from (Elements of type Text field) " +
-                        "with condition (Should have string label(s) [Some text field]) AND ((Should be visible) " +
+                is("Get value from (Text field with condition " +
+                        "(Should have string label(s) [Some text field]) AND ((Should be visible) " +
                         "AND (Should have css property  'some css' which contains value 'some value')). " +
                         "Time to get valuable result: 0:00:55:000)"));
     }

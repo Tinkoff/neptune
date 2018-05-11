@@ -9,8 +9,8 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.github.toy.constructor.core.api.AsIsPredicate.AS_IS;
 import static com.github.toy.constructor.core.api.StoryWriter.condition;
-import static com.github.toy.constructor.core.api.ToGetConditionalHelper.AS_IS;
 import static com.github.toy.constructor.selenium.properties.FlagProperties.FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;

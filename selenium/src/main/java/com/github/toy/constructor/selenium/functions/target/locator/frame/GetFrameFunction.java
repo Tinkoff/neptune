@@ -107,7 +107,7 @@ public final class GetFrameFunction implements Function<WebDriver, Frame> {
      * @return instance of {@link GetFrameSupplier}
      */
     public static Function<WebDriver, Frame> insideElement(Duration timeOut, SearchSupplier<?> howToFind) {
-        return getSingle(toGet(format("Frame inside %s", howToFind), new GetFrameFunction(howToFind)),
+        return getSingle(toGet(format("Frame inside [%s]", howToFind), new GetFrameFunction(howToFind)),
                 timeOut, () -> new NoSuchFrameException("Can't find/switch to the frame"));
     }
 

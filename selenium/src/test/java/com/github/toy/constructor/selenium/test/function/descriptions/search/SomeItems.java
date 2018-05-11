@@ -32,15 +32,15 @@ public class SomeItems {
 
     @Test
     public void descriptionOfASingleItemWithDuration() {
-        assertThat(item(SOME_FUNCTION, ofSeconds(5), SOME_CONDITION).toString(),
-                is("A single item from (Some items from search context) with condition Some condition. " +
+        assertThat(item("A single item", SOME_FUNCTION, ofSeconds(5), SOME_CONDITION).toString(),
+                is("A single item with condition Some condition. " +
                         "Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void descriptionOfASingleItemWithoutAnyDurationSpecified() {
-        assertThat(item(SOME_FUNCTION, SOME_CONDITION).toString(),
-                is("A single item from (Some items from search context) with condition Some condition. " +
+        assertThat(item("A single item", SOME_FUNCTION, SOME_CONDITION).toString(),
+                is("A single item with condition Some condition. " +
                         "Time to get valuable result: 0:01:00:000"));
     }
 
@@ -49,8 +49,8 @@ public class SomeItems {
         System.setProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName(), "MINUTES");
         System.setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "3");
         try {
-            assertThat(item(SOME_FUNCTION, SOME_CONDITION).toString(),
-                    is("A single item from (Some items from search context) with condition Some condition. " +
+            assertThat(item("A single item", SOME_FUNCTION, SOME_CONDITION).toString(),
+                    is("A single item with condition Some condition. " +
                             "Time to get valuable result: 0:03:00:000"));
         }
         finally {
@@ -62,14 +62,14 @@ public class SomeItems {
     @Test
     public void descriptionOfMultipleItemsWithDuration() {
         assertThat(items(SOME_FUNCTION, ofSeconds(5), SOME_CONDITION).toString(),
-                is("List of from (Some items from search context) with condition Some condition. " +
+                is("Some items from search context with condition Some condition. " +
                         "Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void descriptionOfMultipleItemsWithoutAnyDurationSpecified() {
         assertThat(items(SOME_FUNCTION, SOME_CONDITION).toString(),
-                is("List of from (Some items from search context) with condition Some condition. " +
+                is("Some items from search context with condition Some condition. " +
                         "Time to get valuable result: 0:01:00:000"));
     }
 
@@ -79,7 +79,7 @@ public class SomeItems {
         System.setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "3");
         try {
             assertThat(items(SOME_FUNCTION, SOME_CONDITION).toString(),
-                    is("List of from (Some items from search context) with condition Some condition. " +
+                    is("Some items from search context with condition Some condition. " +
                             "Time to get valuable result: 0:03:00:000"));
         }
         finally {

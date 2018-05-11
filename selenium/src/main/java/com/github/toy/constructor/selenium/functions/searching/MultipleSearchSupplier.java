@@ -15,7 +15,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import static com.github.toy.constructor.core.api.ToGetSubIterable.getSubIterable;
+import static com.github.toy.constructor.core.api.ToGetSubIterable.getIterable;
 import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.defaultPredicate;
 import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.shouldBeLabeledBy;
 import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.shouldHaveText;
@@ -45,9 +45,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      */
     public static <T extends SearchContext> MultipleSearchSupplier<T> items(Function<SearchContext,List<T>> transformation,
                                                                             Duration duration, Predicate<? super T> condition) {
-        return new MultipleSearchSupplier<T>().set(getSubIterable("List of",
-                transformation, condition, duration,
-                false, true));
+        return new MultipleSearchSupplier<T>().set(getIterable(transformation, condition, duration, false, true));
     }
 
     /**

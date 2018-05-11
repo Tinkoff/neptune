@@ -8,6 +8,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static com.github.toy.constructor.core.api.AsIsPredicate.AS_IS;
 import static com.github.toy.constructor.core.api.ToGetConditionalHelper.*;
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
@@ -21,15 +22,14 @@ public final class ToGetSubArray {
         super();
     }
 
-    private static <T, R> Function<T, R[]> array(String description,
-                                                 Function<T, R[]> function,
+    private static <T, R> Function<T, R[]> array(Function<T, R[]> function,
                                                  Predicate<? super R> condition,
                                                  Duration waitingTime,
                                                  Duration sleepingTime,
                                                  boolean checkConditionInParallel,
                                                  boolean ignoreExceptionOnConditionCheck,
                                                  Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        return fluentWaitFunction(getDescription(description, function, condition), t ->
+        return fluentWaitFunction(getDescription(EMPTY, function, condition), t ->
                         ofNullable(function.apply(t)).map(rs -> {
                             List<R> subResult = stream(asList(rs).spliterator(), checkConditionInParallel).filter(r -> {
                                 try {
@@ -52,7 +52,6 @@ public final class ToGetSubArray {
      * This method returns a function. The result function returns an array of elements which differ from null
      * and suit the criteria.
      *
-     * @param description of a value which should be returned.
      * @param function described function which should return an array
      * @param condition described predicate which is used to find some target value
      * @param waitingTime is a duration of the waiting for valuable result
@@ -71,20 +70,19 @@ public final class ToGetSubArray {
      * and suit the criteria. It returns not empty array when there are such elements. Some exception is thrown if result
      * array is null or has no elements which suit the criteria.
      */
-    public static <T, R> Function<T, R[]> getSubArray(String description,
-                                                      Function<T, R[]> function,
-                                                      Predicate<? super R> condition,
-                                                      Duration waitingTime,
-                                                      Duration sleepingTime,
-                                                      boolean checkConditionInParallel,
-                                                      boolean ignoreExceptionOnConditionCheck,
-                                                      Supplier<? extends RuntimeException> exceptionOnTimeOut) {
+    public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
+                                                   Predicate<? super R> condition,
+                                                   Duration waitingTime,
+                                                   Duration sleepingTime,
+                                                   boolean checkConditionInParallel,
+                                                   boolean ignoreExceptionOnConditionCheck,
+                                                   Supplier<? extends RuntimeException> exceptionOnTimeOut) {
         checkFunction(function);
         checkCondition(condition);
         checkWaitingTime(waitingTime);
         checkSleepingTime(sleepingTime);
         checkExceptionSupplier(exceptionOnTimeOut);
-        return array(description, function, condition, waitingTime, sleepingTime,
+        return array(function, condition, waitingTime, sleepingTime,
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
     }
 
@@ -111,7 +109,7 @@ public final class ToGetSubArray {
         checkWaitingTime(waitingTime);
         checkSleepingTime(sleepingTime);
         checkExceptionSupplier(exceptionOnTimeOut);
-        return array(EMPTY, function, AS_IS, waitingTime, sleepingTime,
+        return array(function, AS_IS, waitingTime, sleepingTime,
                 true, true, exceptionOnTimeOut);
     }
 
@@ -119,7 +117,6 @@ public final class ToGetSubArray {
      * This method returns a function. The result function returns an array of elements which differ from null
      * and suit the criteria.
      *
-     * @param description of a value which should be returned.
      * @param function described function which should return an array
      * @param condition described predicate which is used to find some target value
      * @param waitingTime is a duration of the waiting for valuable result
@@ -136,18 +133,17 @@ public final class ToGetSubArray {
      * and suit the criteria. It returns not empty array when there are such elements. Some exception is thrown if result
      * array is null or has no elements which suit the criteria.
      */
-    public static <T, R> Function<T, R[]> getSubArray(String description,
-                                                      Function<T, R[]> function,
-                                                      Predicate<? super R> condition,
-                                                      Duration waitingTime,
-                                                      boolean checkConditionInParallel,
-                                                      boolean ignoreExceptionOnConditionCheck,
-                                                      Supplier<? extends RuntimeException> exceptionOnTimeOut) {
+    public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
+                                                   Predicate<? super R> condition,
+                                                   Duration waitingTime,
+                                                   boolean checkConditionInParallel,
+                                                   boolean ignoreExceptionOnConditionCheck,
+                                                   Supplier<? extends RuntimeException> exceptionOnTimeOut) {
         checkFunction(function);
         checkCondition(condition);
         checkWaitingTime(waitingTime);
         checkExceptionSupplier(exceptionOnTimeOut);
-        return array(description, function, condition, waitingTime, null,
+        return array(function, condition, waitingTime, null,
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
     }
 
@@ -170,7 +166,7 @@ public final class ToGetSubArray {
         checkFunction(function);
         checkWaitingTime(waitingTime);
         checkExceptionSupplier(exceptionOnTimeOut);
-        return array(EMPTY, function, AS_IS, waitingTime, null,
+        return array(function, AS_IS, waitingTime, null,
                 true, true, exceptionOnTimeOut);
     }
 
@@ -178,7 +174,6 @@ public final class ToGetSubArray {
      * This method returns a function. The result function returns an array of elements which differ from null
      * and suit the criteria.
      *
-     * @param description of a value which should be returned.
      * @param function described function which should return an array
      * @param condition described predicate which is used to find some target value
      * @param checkConditionInParallel is how array should be matched. If {@code true} when each value will be
@@ -194,16 +189,15 @@ public final class ToGetSubArray {
      * and suit the criteria. It returns not empty array when there are such elements. Some exception is thrown if result
      * array is null or has no elements which suit the criteria.
      */
-    public static <T, R> Function<T, R[]> getSubArray(String description,
-                                                      Function<T, R[]> function,
-                                                      Predicate<? super R> condition,
-                                                      boolean checkConditionInParallel,
-                                                      boolean ignoreExceptionOnConditionCheck,
-                                                      Supplier<? extends RuntimeException> exceptionOnTimeOut) {
+    public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
+                                                   Predicate<? super R> condition,
+                                                   boolean checkConditionInParallel,
+                                                   boolean ignoreExceptionOnConditionCheck,
+                                                   Supplier<? extends RuntimeException> exceptionOnTimeOut) {
         checkFunction(function);
         checkCondition(condition);
         checkExceptionSupplier(exceptionOnTimeOut);
-        return array(description, function, condition, null, null,
+        return array(function, condition, null, null,
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
     }
 
@@ -223,7 +217,7 @@ public final class ToGetSubArray {
                                                    Supplier<? extends RuntimeException> exceptionOnTimeOut) {
         checkFunction(function);
         checkExceptionSupplier(exceptionOnTimeOut);
-        return array(EMPTY, function, AS_IS, null, null,
+        return array(function, AS_IS, null, null,
                 true, true, exceptionOnTimeOut);
     }
 
@@ -231,7 +225,6 @@ public final class ToGetSubArray {
      * This method returns a function. The result function returns an array of elements which differ from null
      * and suit the criteria.
      *
-     * @param description of a value which should be returned.
      * @param function described function which should return {@link Iterable}
      * @param condition described predicate which is used to find some target value
      * @param waitingTime is a duration of the waiting for valuable result
@@ -248,18 +241,17 @@ public final class ToGetSubArray {
      * and suit the criteria. It returns not empty array when there are such elements. Empty array is returned if result
      * array is null or has no elements which suit the criteria.
      */
-    public static <T, R> Function<T, R[]> getSubArray(String description,
-                                                      Function<T, R[]> function,
-                                                      Predicate<? super R> condition,
-                                                      Duration waitingTime,
-                                                      Duration sleepingTime,
-                                                      boolean checkConditionInParallel,
-                                                      boolean ignoreExceptionOnConditionCheck) {
+    public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
+                                                   Predicate<? super R> condition,
+                                                   Duration waitingTime,
+                                                   Duration sleepingTime,
+                                                   boolean checkConditionInParallel,
+                                                   boolean ignoreExceptionOnConditionCheck) {
         checkFunction(function);
         checkCondition(condition);
         checkWaitingTime(waitingTime);
         checkSleepingTime(sleepingTime);
-        return array(description, function, condition, waitingTime, sleepingTime,
+        return array(function, condition, waitingTime, sleepingTime,
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, null);
     }
 
@@ -282,7 +274,7 @@ public final class ToGetSubArray {
         checkFunction(function);
         checkWaitingTime(waitingTime);
         checkSleepingTime(sleepingTime);
-        return array(EMPTY, function, AS_IS, waitingTime, sleepingTime,
+        return array(function, AS_IS, waitingTime, sleepingTime,
                 true, true, null);
     }
 
@@ -290,7 +282,6 @@ public final class ToGetSubArray {
      * This method returns a function. The result function returns an array of elements which differ from null
      * and suit the criteria.
      *
-     * @param description of a value which should be returned.
      * @param function described function which should return {@link Iterable}
      * @param condition described predicate which is used to find some target value
      * @param waitingTime is a duration of the waiting for valuable result
@@ -305,16 +296,15 @@ public final class ToGetSubArray {
      * and suit the criteria. It returns not empty array when there are such elements. Empty array is returned if result
      * array is null or has no elements which suit the criteria.
      */
-    public static <T, R> Function<T, R[]> getSubArray(String description,
-                                                      Function<T, R[]> function,
-                                                      Predicate<? super R> condition,
-                                                      Duration waitingTime,
-                                                      boolean checkConditionInParallel,
-                                                      boolean ignoreExceptionOnConditionCheck) {
+    public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
+                                                   Predicate<? super R> condition,
+                                                   Duration waitingTime,
+                                                   boolean checkConditionInParallel,
+                                                   boolean ignoreExceptionOnConditionCheck) {
         checkFunction(function);
         checkCondition(condition);
         checkWaitingTime(waitingTime);
-        return array(description, function, condition, waitingTime, null,
+        return array(function, condition, waitingTime, null,
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, null);
     }
 
@@ -333,7 +323,7 @@ public final class ToGetSubArray {
                                                    Duration waitingTime) {
         checkFunction(function);
         checkWaitingTime(waitingTime);
-        return array(EMPTY, function, AS_IS, waitingTime, null,
+        return array(function, AS_IS, waitingTime, null,
                 true, true, null);
     }
 
@@ -341,7 +331,6 @@ public final class ToGetSubArray {
      * This method returns a function. The result function returns sub-array of found values from array.
      * The original function should return array to match.
      *
-     * @param description of a value which should be returned
      * @param function which should return an array.
      * @param condition which is used to find target values.
      * @param checkConditionInParallel is how array should be matched. If {@code true} when each value will be
@@ -355,14 +344,13 @@ public final class ToGetSubArray {
      * The result function will return values if something is found. Empty array or {@code null} are
      * returned otherwise. It depends on result of the {@link Function#apply(Object)}
      */
-    public static <T, R> Function<T, R[]> getSubArray(String description,
-                                                     Function<T, R[]> function,
-                                                     Predicate<? super R> condition,
-                                                     boolean checkConditionInParallel,
-                                                     boolean ignoreExceptionOnConditionCheck) {
+    public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
+                                                   Predicate<? super R> condition,
+                                                   boolean checkConditionInParallel,
+                                                   boolean ignoreExceptionOnConditionCheck) {
         checkFunction(function);
         checkCondition(condition);
-        return array(description, function, condition, null, null,
+        return array(function, condition, null, null,
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, null);
     }
 }

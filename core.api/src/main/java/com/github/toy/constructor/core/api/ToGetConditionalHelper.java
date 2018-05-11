@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 import java.time.Duration;
 import java.util.function.*;
 
+import static com.github.toy.constructor.core.api.AsIsPredicate.AS_IS;
 import static com.github.toy.constructor.core.api.StoryWriter.condition;
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.google.common.base.Preconditions.checkArgument;
@@ -18,16 +19,10 @@ import static org.apache.commons.lang3.time.DurationFormatUtils.formatDuration;
 /**
  * This is the util which helps to crate function with given condition.
  */
-public final class ToGetConditionalHelper {
+final class ToGetConditionalHelper {
 
     private ToGetConditionalHelper() {
         super();
-    }
-
-    public static final Predicate<Object> AS_IS = asIs();
-
-    private static <T> Predicate<T> asIs() {
-        return condition("as is", t -> true);
     }
 
     static <T> Predicate<T> notNullAnd(Predicate<T> condition) {
@@ -77,7 +72,7 @@ public final class ToGetConditionalHelper {
     static String getDescription(String description, Function<?, ?> function, Predicate<?> condition) {
         String resultDescription;
         if (!isBlank(description)) {
-            resultDescription =  format("%s from (%s)", description, function);
+            resultDescription =  description.trim();
         }
         else {
             resultDescription = function.toString().trim();

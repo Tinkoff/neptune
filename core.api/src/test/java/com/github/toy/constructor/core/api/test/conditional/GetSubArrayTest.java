@@ -5,7 +5,6 @@ import org.testng.annotations.Test;
 import static com.github.toy.constructor.core.api.StoryWriter.condition;
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.github.toy.constructor.core.api.ToGetSubArray.getArray;
-import static com.github.toy.constructor.core.api.ToGetSubArray.getSubArray;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.fail;
@@ -15,7 +14,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not defined.")
     public void negativeTestOfNullFunctionWithArrayInputAndArrayOutput() {
-        getSubArray("Array of values", null, VALUE_A, FIVE_SECONDS, FIVE_HUNDRED_MILLIS,
+        getArray( null, VALUE_A, FIVE_SECONDS, FIVE_HUNDRED_MILLIS,
                 true, true, () -> NOTHING_WAS_FOUND);
         fail("The exception throwing was expected");
     }
@@ -23,7 +22,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not defined.")
     public void negativeTestOfNullFunctionWithIterableInputAndIterableOutput2() {
-        getSubArray("Array of values", null, VALUE_A, FIVE_SECONDS,
+        getArray( null, VALUE_A, FIVE_SECONDS,
                 true, true, () -> NOTHING_WAS_FOUND);
         fail("The exception throwing was expected");
     }
@@ -31,7 +30,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not defined.")
     public void negativeTestOfNullFunctionWithIterableInputAndIterableOutput3() {
-        getSubArray("Array of values", null, VALUE_A,
+        getArray( null, VALUE_A,
                 true, true, () -> NOTHING_WAS_FOUND);
         fail("The exception throwing was expected");
     }
@@ -39,7 +38,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not defined.")
     public void negativeTestOfNullFunctionWithIterableInputAndIterableOutput4() {
-        getSubArray("Array of values", null, VALUE_A, FIVE_SECONDS, FIVE_HUNDRED_MILLIS,
+        getArray( null, VALUE_A, FIVE_SECONDS, FIVE_HUNDRED_MILLIS,
                 true, true);
         fail("The exception throwing was expected");
     }
@@ -47,14 +46,14 @@ public class GetSubArrayTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not defined.")
     public void negativeTestOfNullFunctionWithIterableInputAndIterableOutput5() {
-        getSubArray("Array of values", null, VALUE_A, FIVE_SECONDS, true, true);
+        getArray( null, VALUE_A, FIVE_SECONDS, true, true);
         fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not defined.")
     public void negativeTestOfNullFunctionWithIterableInputAndIterableOutput6() {
-        getSubArray("Array of values", null, VALUE_A, true, true);
+        getArray( null, VALUE_A, true, true);
         fail("The exception throwing was expected");
     }
 
@@ -96,7 +95,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not described. Use StoryWriter.toGet to describe it.")
     public void negativeTestOfNotDescribedFunctionWithIterableInputAndIterableOutput() {
-        getSubArray("Array of values", CONVERT_LIST_TO_ARRAY, VALUE_A,
+        getArray( CONVERT_LIST_TO_ARRAY, VALUE_A,
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true,
                 () -> NOTHING_WAS_FOUND);
         fail("The exception throwing was expected");
@@ -105,7 +104,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not described. Use StoryWriter.toGet to describe it.")
     public void negativeTestOfNotDescribedFunctionWithIterableInputAndIterableOutput2() {
-        getSubArray("Array of values", CONVERT_LIST_TO_ARRAY, VALUE_A,
+        getArray( CONVERT_LIST_TO_ARRAY, VALUE_A,
                 FIVE_SECONDS, true, true,
                 () -> NOTHING_WAS_FOUND);
         fail("The exception throwing was expected");
@@ -114,7 +113,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not described. Use StoryWriter.toGet to describe it.")
     public void negativeTestOfNotDescribedFunctionWithIterableInputAndIterableOutput3() {
-        getSubArray("Array of values", CONVERT_LIST_TO_ARRAY, VALUE_A,
+        getArray( CONVERT_LIST_TO_ARRAY, VALUE_A,
                 true, true, () -> NOTHING_WAS_FOUND);
         fail("The exception throwing was expected");
     }
@@ -122,7 +121,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not described. Use StoryWriter.toGet to describe it.")
     public void negativeTestOfNotDescribedFunctionWithIterableInputAndIterableOutput4() {
-        getSubArray("Array of values", CONVERT_LIST_TO_ARRAY, VALUE_A,
+        getArray( CONVERT_LIST_TO_ARRAY, VALUE_A,
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true);
         fail("The exception throwing was expected");
     }
@@ -130,7 +129,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not described. Use StoryWriter.toGet to describe it.")
     public void negativeTestOfNotDescribedFunctionWithIterableInputAndIterableOutput5() {
-        getSubArray("Array of values", CONVERT_LIST_TO_ARRAY, VALUE_A,
+        getArray( CONVERT_LIST_TO_ARRAY, VALUE_A,
                 FIVE_SECONDS, true, true);
         fail("The exception throwing was expected");
     }
@@ -138,7 +137,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not described. Use StoryWriter.toGet to describe it.")
     public void negativeTestOfNotDescribedFunctionWithIterableInputAndIterableOutput6() {
-        getSubArray("Array of values", CONVERT_LIST_TO_ARRAY, VALUE_A,
+        getArray( CONVERT_LIST_TO_ARRAY, VALUE_A,
                 true, true);
         fail("The exception throwing was expected");
     }
@@ -181,7 +180,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Predicate is not defined.")
     public void negativeTestOfNullConditionForFunctionWithIterableInputAndIterableOutput() {
-        getSubArray("Array of values",
+        getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY), null,
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true,
                 () -> NOTHING_WAS_FOUND);
@@ -191,7 +190,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Predicate is not defined.")
     public void negativeTestOfNullConditionForFunctionWithIterableInputAndIterableOutput2() {
-        getSubArray("Array of values",
+        getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY), null,
                 FIVE_SECONDS, true, true,
                 () -> NOTHING_WAS_FOUND);
@@ -201,7 +200,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Predicate is not defined.")
     public void negativeTestOfNullConditionForFunctionWithIterableInputAndIterableOutput3() {
-        getSubArray("Array of values",
+        getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY), null,
                 true, true, () -> NOTHING_WAS_FOUND);
         fail("The exception throwing was expected");
@@ -210,7 +209,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Predicate is not defined.")
     public void negativeTestOfNullConditionForFunctionWithIterableInputAndIterableOutput4() {
-        getSubArray("Array of values",
+        getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY), null,
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true);
         fail("The exception throwing was expected");
@@ -219,7 +218,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Predicate is not defined.")
     public void negativeTestOfNullConditionForFunctionWithIterableInputAndIterableOutput5() {
-        getSubArray("Array of values",
+        getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY), null,
                 FIVE_SECONDS, true, true);
         fail("The exception throwing was expected");
@@ -228,7 +227,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Predicate is not defined.")
     public void negativeTestOfNullConditionForFunctionWithIterableInputAndIterableOutput6() {
-        getSubArray("Array of values",
+        getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY), null,
                 true, true);
     }
@@ -236,7 +235,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Condition is not described. Use StoryWriter.condition to describe it.")
     public void negativeTestOfNotDescribedConditionForFunctionWithIterableInputAndIterableOutput() {
-        getSubArray("Array of values",
+        getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY), VALUE_A,
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true,
                 () -> NOTHING_WAS_FOUND);
@@ -246,7 +245,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Condition is not described. Use StoryWriter.condition to describe it.")
     public void negativeTestOfNotDescribedConditionForFunctionWithIterableInputAndIterableOutput2() {
-        getSubArray("Array of values",
+        getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY), VALUE_A,
                 FIVE_SECONDS, true, true,
                 () -> NOTHING_WAS_FOUND);
@@ -256,7 +255,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Condition is not described. Use StoryWriter.condition to describe it.")
     public void negativeTestOfNotDescribedConditionForFunctionWithIterableInputAndIterableOutput3() {
-        getSubArray("Array of values",
+        getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY), VALUE_A,
                 true, true, () -> NOTHING_WAS_FOUND);
         fail("The exception throwing was expected");
@@ -265,7 +264,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Condition is not described. Use StoryWriter.condition to describe it.")
     public void negativeTestOfNotDescribedConditionForFunctionWithIterableInputAndIterableOutput4() {
-        getSubArray("Array of values",
+        getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY), VALUE_A,
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true);
         fail("The exception throwing was expected");
@@ -274,7 +273,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Condition is not described. Use StoryWriter.condition to describe it.")
     public void negativeTestOfNotDescribedConditionForFunctionWithIterableInputAndIterableOutput5() {
-        getSubArray("Array of values",
+        getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY), VALUE_A,
                 FIVE_SECONDS, true, true);
         fail("The exception throwing was expected");
@@ -283,7 +282,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Condition is not described. Use StoryWriter.condition to describe it.")
     public void negativeTestOfNotDescribedConditionForFunctionWithIterableInputAndIterableOutput6() {
-        getSubArray("Array of values",
+        getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY), VALUE_A,
                 true, true);
         fail("The exception throwing was expected");
@@ -291,63 +290,63 @@ public class GetSubArrayTest extends BaseConditionalTest {
 
     @Test
     public void testOfDescriptionForFunctionWithIterableInputAndIterableOutput() {
-        assertThat("Description", getSubArray("Array of values",
+        assertThat("Description", getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true,
                 () -> NOTHING_WAS_FOUND).toString(),
-                is("Array of values from (Array converted from list) with condition equals A ignore case. " +
+                is("Array converted from list with condition equals A ignore case. " +
                         "Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void testOfDescriptionForFunctionWithIterableInputAndIterableOutput2() {
-        assertThat("Description", getSubArray("Array of values",
+        assertThat("Description", getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, true, true,
                 () -> NOTHING_WAS_FOUND).toString(),
-                is("Array of values from (Array converted from list) with condition equals A ignore case. " +
+                is("Array converted from list with condition equals A ignore case. " +
                         "Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void testOfDescriptionForFunctionWithIterableInputAndIterableOutput3() {
-        assertThat("Description", getSubArray("Array of values",
+        assertThat("Description", getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 true, true,
                 () -> NOTHING_WAS_FOUND).toString(),
-                is("Array of values from (Array converted from list) with condition equals A ignore case"));
+                is("Array converted from list with condition equals A ignore case"));
     }
 
     @Test
     public void testOfDescriptionForFunctionWithIterableInputAndIterableOutput4() {
-        assertThat("Description", getSubArray("Array of values",
+        assertThat("Description", getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true).toString(),
-                is("Array of values from (Array converted from list) with condition equals A ignore case. " +
+                is("Array converted from list with condition equals A ignore case. " +
                         "Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void testOfDescriptionForFunctionWithIterableInputAndIterableOutput5() {
-        assertThat("Description", getSubArray("Array of values",
+        assertThat("Description", getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, true, true).toString(),
-                is("Array of values from (Array converted from list) with condition equals A ignore case. " +
+                is("Array converted from list with condition equals A ignore case. " +
                         "Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void testOfDescriptionForFunctionWithIterableInputAndIterableOutput6() {
-        assertThat("Description", getSubArray("Array of values",
+        assertThat("Description", getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 true, true).toString(),
-                is("Array of values from (Array converted from list) with condition equals A ignore case"));
+                is("Array converted from list with condition equals A ignore case"));
     }
 
     @Test
@@ -394,7 +393,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
 
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutput() {
-        assertThat("Value", getSubArray("Array of values",
+        assertThat("Value", getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true,
@@ -404,7 +403,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
 
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutput2() {
-        assertThat("Value", getSubArray("Array of values",
+        assertThat("Value", getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, true, true, () -> NOTHING_WAS_FOUND).apply(LITERAL_LIST),
@@ -413,7 +412,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
 
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutput3() {
-        assertThat("Value", getSubArray("Array of values",
+        assertThat("Value", getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 true, true, () -> NOTHING_WAS_FOUND).apply(LITERAL_LIST),
@@ -422,7 +421,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
 
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutput4() {
-        assertThat("Value", getSubArray("Array of values",
+        assertThat("Value", getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true).apply(LITERAL_LIST),
@@ -431,7 +430,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
 
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutput5() {
-        assertThat("Value", getSubArray("Array of values",
+        assertThat("Value", getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, true, true).apply(LITERAL_LIST),
@@ -440,7 +439,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
 
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutput6() {
-        assertThat("Value", getSubArray("Array of values",
+        assertThat("Value", getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 true, true).apply(LITERAL_LIST),
@@ -489,7 +488,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
 
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputIgnoringException() {
-        assertThat("Value", getSubArray("Array of values",
+        assertThat("Value", getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                 condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true).apply(LITERAL_LIST),
@@ -498,7 +497,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
 
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputIgnoringException2() {
-        assertThat("Value", getSubArray("Array of values",
+        assertThat("Value", getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                 condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
                 FIVE_SECONDS, true, true).apply(LITERAL_LIST),
@@ -507,7 +506,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
 
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputIgnoringException3() {
-        assertThat("Value", getSubArray("Array of values",
+        assertThat("Value", getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                 condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
                 true, true).apply(LITERAL_LIST),
@@ -517,7 +516,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
     @Test(expectedExceptions = RuntimeException.class,
             expectedExceptionsMessageRegExp = "java.lang.RuntimeException was caught. Message: Exception for the unit testing!")
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputWithoutIgnoringException() {
-        assertThat("Value", getSubArray("Array of values",
+        assertThat("Value", getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                 condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, false).apply(LITERAL_LIST),
@@ -528,7 +527,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
     @Test(expectedExceptions = RuntimeException.class,
             expectedExceptionsMessageRegExp = "java.lang.RuntimeException was caught. Message: Exception for the unit testing!")
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputWithoutIgnoringException2() {
-        assertThat("Value", getSubArray("Array of values",
+        assertThat("Value", getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                 condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
                 FIVE_SECONDS, true, false).apply(LITERAL_LIST),
@@ -539,7 +538,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
     @Test(expectedExceptions = RuntimeException.class,
             expectedExceptionsMessageRegExp = "java.lang.RuntimeException was caught. Message: Exception for the unit testing!")
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputWithoutIgnoringException3() {
-        assertThat("Value", getSubArray("Array of values",
+        assertThat("Value", getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                 condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
                 true, false).apply(LITERAL_LIST),
@@ -549,7 +548,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
 
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputWithEmptyResult() {
-        assertThat("Value", getSubArray("Array of values",
+        assertThat("Value", getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                 condition("equals W ignore case", VALUE_W),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true).apply(LITERAL_LIST),
@@ -558,7 +557,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
 
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputWithEmptyResult2() {
-        assertThat("Value", getSubArray("Array of values",
+        assertThat("Value", getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                 condition("equals W ignore case", VALUE_W),
                 FIVE_SECONDS, true, true).apply(LITERAL_LIST),
@@ -567,7 +566,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
 
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputWithEmptyResult3() {
-        assertThat("Value", getSubArray("Array of values",
+        assertThat("Value", getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                 condition("equals W ignore case", VALUE_W), true, true)
                         .apply(LITERAL_LIST),
@@ -593,7 +592,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputToCheckTimeOut() {
         long start = System.currentTimeMillis();
-        assertThat("Value", getSubArray("Array of values",
+        assertThat("Value", getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                 condition("equals W ignore case", VALUE_W),
                 FIVE_SECONDS,
@@ -610,7 +609,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputToCheckSleeping() {
         long start = System.currentTimeMillis();
-        assertThat("Value",  getSubArray("Array of values",
+        assertThat("Value",  getArray(
                 toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                 condition("equals W ignore case", VALUE_W),
                 ONE_MILLISECOND,
@@ -658,7 +657,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputToCheckTimeOutAndException() {
         long start = System.currentTimeMillis();
         try {
-            getSubArray("Array of values",
+            getArray(
                     toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                     condition("equals W ignore case", VALUE_W),
                     FIVE_SECONDS,
@@ -681,7 +680,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputToCheckTimeOutAndException2() {
         long start = System.currentTimeMillis();
         try {
-            getSubArray("Array of values",
+            getArray(
                     toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                     condition("equals W ignore case", VALUE_W),
                     FIVE_SECONDS,
@@ -705,7 +704,7 @@ public class GetSubArrayTest extends BaseConditionalTest {
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputToCheckTimeOutWithSleepAndException() {
         long start = System.currentTimeMillis();
         try {
-            getSubArray("Array of values",
+            getArray(
                     toGet("Array converted from list", CONVERT_LIST_TO_ARRAY),
                     condition("equals W ignore case", VALUE_W),
                     FIVE_SECONDS,

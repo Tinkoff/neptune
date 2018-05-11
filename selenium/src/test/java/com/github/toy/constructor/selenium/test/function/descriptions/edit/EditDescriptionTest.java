@@ -34,9 +34,8 @@ public class EditDescriptionTest {
                 .andValueOfThe(element(textField("Some field", ofMillis(500),
                         shouldBeVisible().and(shouldBeEnabled()))), List.of(TAB, "123")).get().toString(),
 
-                is("Edit. With parameters: {A single item from (Elements of type Text field) " +
-                        "with condition (Should have string label(s) [Some field]) AND ((Should be visible) AND (Should be enabled)). " +
-                        "Time to get valuable result: 0:00:00:500,[\uE004, 123]}"));
+                is("Edit. With parameters: {Text field with condition (Should have string label(s) [Some field]) " +
+                        "AND ((Should be visible) AND (Should be enabled)). Time to get valuable result: 0:00:00:500,[\uE004, 123]}"));
     }
 
     @Test

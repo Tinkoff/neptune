@@ -8,7 +8,6 @@ import java.util.Set;
 import static com.github.toy.constructor.core.api.StoryWriter.condition;
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.github.toy.constructor.core.api.ToGetSubIterable.getIterable;
-import static com.github.toy.constructor.core.api.ToGetSubIterable.getSubIterable;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.fail;
@@ -18,7 +17,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not defined.")
     public void negativeTestOfNullFunctionWithIterableInputAndIterableOutput() {
-        getSubIterable("Set of values", null, VALUE_A,
+        getIterable(null, VALUE_A,
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true,
                 () -> NOTHING_WAS_FOUND);
         fail("The exception throwing was expected");
@@ -27,7 +26,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not defined.")
     public void negativeTestOfNullFunctionWithIterableInputAndIterableOutput2() {
-        getSubIterable("Set of values", null, VALUE_A,
+        getIterable(null, VALUE_A,
                 FIVE_SECONDS, true, true,
                 () -> NOTHING_WAS_FOUND);
         fail("The exception throwing was expected");
@@ -36,7 +35,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not defined.")
     public void negativeTestOfNullFunctionWithIterableInputAndIterableOutput3() {
-        getSubIterable("Set of values", null, VALUE_A, true, true,
+        getIterable(null, VALUE_A, true, true,
                 () -> NOTHING_WAS_FOUND);
         fail("The exception throwing was expected");
     }
@@ -44,7 +43,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not defined.")
     public void negativeTestOfNullFunctionWithIterableInputAndIterableOutput4() {
-        getSubIterable("Set of values", null, VALUE_A,
+        getIterable(null, VALUE_A,
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true);
         fail("The exception throwing was expected");
     }
@@ -52,7 +51,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not defined.")
     public void negativeTestOfNullFunctionWithIterableInputAndIterableOutput5() {
-        getSubIterable("Set of values", null, VALUE_A,
+        getIterable(null, VALUE_A,
                 FIVE_SECONDS, true, true);
         fail("The exception throwing was expected");
     }
@@ -60,7 +59,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not defined.")
     public void negativeTestOfNullFunctionWithIterableInputAndIterableOutput6() {
-        getSubIterable("Set of values", null, VALUE_A,
+        getIterable(null, VALUE_A,
                 true, true);
         fail("The exception throwing was expected");
     }
@@ -104,7 +103,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not described. Use StoryWriter.toGet to describe it.")
     public void negativeTestOfNotDescribedFunctionWithIterableInputAndIterableOutput() {
-        getSubIterable("Set of values", CONVERT_LIST_TO_SET, VALUE_A,
+        getIterable(CONVERT_LIST_TO_SET, VALUE_A,
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true,
                 () -> NOTHING_WAS_FOUND);
         fail("The exception throwing was expected");
@@ -113,7 +112,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not described. Use StoryWriter.toGet to describe it.")
     public void negativeTestOfNotDescribedFunctionWithIterableInputAndIterableOutput2() {
-        getSubIterable("Set of values", CONVERT_LIST_TO_SET, VALUE_A,
+        getIterable(CONVERT_LIST_TO_SET, VALUE_A,
                 FIVE_SECONDS, true, true,
                 () -> NOTHING_WAS_FOUND);
         fail("The exception throwing was expected");
@@ -122,7 +121,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not described. Use StoryWriter.toGet to describe it.")
     public void negativeTestOfNotDescribedFunctionWithIterableInputAndIterableOutput3() {
-        getSubIterable("Set of values", CONVERT_LIST_TO_SET, VALUE_A, true, true,
+        getIterable(CONVERT_LIST_TO_SET, VALUE_A, true, true,
                 () -> NOTHING_WAS_FOUND);
         fail("The exception throwing was expected");
     }
@@ -130,7 +129,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not described. Use StoryWriter.toGet to describe it.")
     public void negativeTestOfNotDescribedFunctionWithIterableInputAndIterableOutput4() {
-        getSubIterable("Set of values", CONVERT_LIST_TO_SET, VALUE_A,
+        getIterable(CONVERT_LIST_TO_SET, VALUE_A,
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true);
         fail("The exception throwing was expected");
     }
@@ -138,7 +137,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not described. Use StoryWriter.toGet to describe it.")
     public void negativeTestOfNotDescribedFunctionWithIterableInputAndIterableOutput5() {
-        getSubIterable("Set of values", CONVERT_LIST_TO_SET, VALUE_A,
+        getIterable(CONVERT_LIST_TO_SET, VALUE_A,
                 FIVE_SECONDS, true, true);
         fail("The exception throwing was expected");
     }
@@ -146,7 +145,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Function is not described. Use StoryWriter.toGet to describe it.")
     public void negativeTestOfNotDescribedFunctionWithIterableInputAndIterableOutput6() {
-        getSubIterable("Set of values", CONVERT_LIST_TO_SET, VALUE_A,
+        getIterable(CONVERT_LIST_TO_SET, VALUE_A,
                 true, true);
         fail("The exception throwing was expected");
     }
@@ -189,7 +188,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Predicate is not defined.")
     public void negativeTestOfNullConditionForFunctionWithIterableInputAndIterableOutput() {
-        getSubIterable("Set of values",
+        getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET), null, FIVE_SECONDS, FIVE_HUNDRED_MILLIS,
                 true, true, () -> NOTHING_WAS_FOUND);
         fail("The exception throwing was expected");
@@ -198,7 +197,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Predicate is not defined.")
     public void negativeTestOfNullConditionForFunctionWithIterableInputAndIterableOutput2() {
-        getSubIterable("Set of values",
+        getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET), null, FIVE_SECONDS,
                 true, true, () -> NOTHING_WAS_FOUND);
         fail("The exception throwing was expected");
@@ -207,7 +206,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Predicate is not defined.")
     public void negativeTestOfNullConditionForFunctionWithIterableInputAndIterableOutput3() {
-        getSubIterable("Set of values",
+        getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET), null,
                 true, true, () -> NOTHING_WAS_FOUND);
         fail("The exception throwing was expected");
@@ -216,7 +215,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Predicate is not defined.")
     public void negativeTestOfNullConditionForFunctionWithIterableInputAndIterableOutput4() {
-        getSubIterable("Set of values",
+        getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET), null, FIVE_SECONDS, FIVE_HUNDRED_MILLIS,
                 true, true);
         fail("The exception throwing was expected");
@@ -225,7 +224,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Predicate is not defined.")
     public void negativeTestOfNullConditionForFunctionWithIterableInputAndIterableOutput5() {
-        getSubIterable("Set of values",
+        getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET), null, FIVE_SECONDS,
                 true, true);
         fail("The exception throwing was expected");
@@ -234,7 +233,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Predicate is not defined.")
     public void negativeTestOfNullConditionForFunctionWithIterableInputAndIterableOutput6() {
-        getSubIterable("Set of values",
+        getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET), null, true, true);
         fail("The exception throwing was expected");
     }
@@ -242,7 +241,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Condition is not described. Use StoryWriter.condition to describe it.")
     public void negativeTestOfNotDescribedConditionForFunctionWithIterableInputAndIterableOutput() {
-        getSubIterable("Set of values",
+        getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET), VALUE_A,
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true,
                 () -> NOTHING_WAS_FOUND);
@@ -252,7 +251,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Condition is not described. Use StoryWriter.condition to describe it.")
     public void negativeTestOfNotDescribedConditionForFunctionWithIterableInputAndIterableOutput2() {
-        getSubIterable("Set of values",
+        getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET), VALUE_A,
                 FIVE_SECONDS, true, true,
                 () -> NOTHING_WAS_FOUND);
@@ -262,7 +261,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Condition is not described. Use StoryWriter.condition to describe it.")
     public void negativeTestOfNotDescribedConditionForFunctionWithIterableInputAndIterableOutput3() {
-        getSubIterable("Set of values",
+        getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET), VALUE_A,
                 true, true, () -> NOTHING_WAS_FOUND);
         fail("The exception throwing was expected");
@@ -271,7 +270,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Condition is not described. Use StoryWriter.condition to describe it.")
     public void negativeTestOfNotDescribedConditionForFunctionWithIterableInputAndIterableOutput4() {
-        getSubIterable("Set of values",
+        getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET), VALUE_A,
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true);
         fail("The exception throwing was expected");
@@ -280,7 +279,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Condition is not described. Use StoryWriter.condition to describe it.")
     public void negativeTestOfNotDescribedConditionForFunctionWithIterableInputAndIterableOutput5() {
-        getSubIterable("Set of values",
+        getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET), VALUE_A,
                 FIVE_SECONDS, true, true);
         fail("The exception throwing was expected");
@@ -289,7 +288,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Condition is not described. Use StoryWriter.condition to describe it.")
     public void negativeTestOfNotDescribedConditionForFunctionWithIterableInputAndIterableOutput6() {
-        getSubIterable("Set of values",
+        getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET), VALUE_A,
                 true, true);
         fail("The exception throwing was expected");
@@ -297,61 +296,61 @@ public class GetSubIterableTest extends BaseConditionalTest {
 
     @Test
     public void testOfDescriptionForFunctionWithIterableInputAndIterableOutput() {
-        assertThat("Description", getSubIterable("Set of values",
+        assertThat("Description", getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true,
                 () -> NOTHING_WAS_FOUND).toString(),
-                is("Set of values from (Set converted from list) with condition equals A ignore case. " +
+                is("Set converted from list with condition equals A ignore case. " +
                         "Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void testOfDescriptionForFunctionWithIterableInputAndIterableOutput2() {
-        assertThat("Description", getSubIterable("Set of values",
+        assertThat("Description", getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, true, true,
                 () -> NOTHING_WAS_FOUND).toString(),
-                is("Set of values from (Set converted from list) with condition equals A ignore case. " +
+                is("Set converted from list with condition equals A ignore case. " +
                         "Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void testOfDescriptionForFunctionWithIterableInputAndIterableOutput3() {
-        assertThat("Description", getSubIterable("Set of values",
+        assertThat("Description", getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 true, true, () -> NOTHING_WAS_FOUND).toString(),
-                is("Set of values from (Set converted from list) with condition equals A ignore case"));
+                is("Set converted from list with condition equals A ignore case"));
     }
 
     @Test
     public void testOfDescriptionForFunctionWithIterableInputAndIterableOutput4() {
-        assertThat("Description", getSubIterable("Set of values",
+        assertThat("Description", getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true).toString(),
-                is("Set of values from (Set converted from list) with condition equals A ignore case. " +
+                is("Set converted from list with condition equals A ignore case. " +
                         "Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void testOfDescriptionForFunctionWithIterableInputAndIterableOutput5() {
-        assertThat("Description", getSubIterable("Set of values",
+        assertThat("Description", getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, true, true).toString(),
-                is("Set of values from (Set converted from list) with condition equals A ignore case. " +
+                is("Set converted from list with condition equals A ignore case. " +
                         "Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void testOfDescriptionForFunctionWithIterableInputAndIterableOutput6() {
-        assertThat("Description", getSubIterable("Set of values",
+        assertThat("Description", getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A), true, true).toString(),
-                is("Set of values from (Set converted from list) with condition equals A ignore case"));
+                is("Set converted from list with condition equals A ignore case"));
     }
 
     @Test
@@ -393,7 +392,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutput() {
         Set<String> result;
-        assertThat("Value", result = getSubIterable("Set of values",
+        assertThat("Value", result = getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true,
@@ -407,7 +406,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutput2() {
         Set<String> result;
-        assertThat("Value", result = getSubIterable("Set of values",
+        assertThat("Value", result = getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, true, true,
@@ -421,7 +420,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutput3() {
         Set<String> result;
-        assertThat("Value", result = getSubIterable("Set of values",
+        assertThat("Value", result = getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 true, true, () -> NOTHING_WAS_FOUND).apply(LITERAL_LIST),
@@ -434,7 +433,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutput4() {
         Set<String> result;
-        assertThat("Value", result = getSubIterable("Set of values",
+        assertThat("Value", result = getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true).apply(LITERAL_LIST),
@@ -447,7 +446,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutput5() {
         Set<String> result;
-        assertThat("Value", result = getSubIterable("Set of values",
+        assertThat("Value", result = getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, true, true).apply(LITERAL_LIST),
@@ -460,7 +459,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutput6() {
         Set<String> result;
-        assertThat("Value", result = getSubIterable("Set of values",
+        assertThat("Value", result = getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 true, true).apply(LITERAL_LIST),
@@ -532,7 +531,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
 
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputIgnoringException() {
-        assertThat("Value", getSubIterable("Set of values",
+        assertThat("Value", getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true).apply(LITERAL_LIST),
@@ -541,7 +540,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
 
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputIgnoringException2() {
-        assertThat("Value", getSubIterable("Set of values",
+        assertThat("Value", getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
                 FIVE_SECONDS, true, true).apply(LITERAL_LIST),
@@ -550,7 +549,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
 
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputIgnoringException3() {
-        assertThat("Value", getSubIterable("Set of values",
+        assertThat("Value", getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
                 true, true).apply(LITERAL_LIST),
@@ -560,7 +559,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test(expectedExceptions = RuntimeException.class,
             expectedExceptionsMessageRegExp = "java.lang.RuntimeException was caught. Message: Exception for the unit testing!")
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputWithoutIgnoringException() {
-        assertThat("Value", getSubIterable("Set of values",
+        assertThat("Value", getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, false).apply(LITERAL_LIST),
@@ -571,7 +570,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test(expectedExceptions = RuntimeException.class,
             expectedExceptionsMessageRegExp = "java.lang.RuntimeException was caught. Message: Exception for the unit testing!")
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputWithoutIgnoringException2() {
-        assertThat("Value", getSubIterable("Set of values",
+        assertThat("Value", getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
                 FIVE_SECONDS, true, false).apply(LITERAL_LIST),
@@ -582,7 +581,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test(expectedExceptions = RuntimeException.class,
             expectedExceptionsMessageRegExp = "java.lang.RuntimeException was caught. Message: Exception for the unit testing!")
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputWithoutIgnoringException3() {
-        assertThat("Value", getSubIterable("Set of values",
+        assertThat("Value", getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
                 true, false).apply(LITERAL_LIST),
@@ -592,7 +591,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
 
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputWithEmptyResult() {
-        assertThat("Value", getSubIterable("Set of values",
+        assertThat("Value", getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 condition("equals W ignore case", VALUE_W),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true).apply(LITERAL_LIST),
@@ -601,7 +600,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
 
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputWithEmptyResult2() {
-        assertThat("Value", getSubIterable("Set of values",
+        assertThat("Value", getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 condition("equals W ignore case", VALUE_W),
                 FIVE_SECONDS, true, true).apply(LITERAL_LIST),
@@ -610,7 +609,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
 
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputWithEmptyResult3() {
-        assertThat("Value", getSubIterable("Set of values",
+        assertThat("Value", getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 condition("equals W ignore case", VALUE_W),
                 true, true).apply(LITERAL_LIST),
@@ -636,7 +635,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputToCheckTimeOut() {
         long start = System.currentTimeMillis();
-        assertThat("Value", getSubIterable("Set of values",
+        assertThat("Value", getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 condition("equals W ignore case", VALUE_W),
                 FIVE_SECONDS,
@@ -653,7 +652,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputToCheckSleeping() {
         long start = System.currentTimeMillis();
-        assertThat("Value",  getSubIterable("Set of values",
+        assertThat("Value",  getIterable(
                 toGet("Set converted from list", CONVERT_LIST_TO_SET),
                 condition("equals W ignore case", VALUE_W),
                 ONE_MILLISECOND,
@@ -701,7 +700,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputToCheckTimeOutAndException() {
         long start = System.currentTimeMillis();
         try {
-            getSubIterable("Set of values",
+            getIterable(
                     toGet("Set converted from list", CONVERT_LIST_TO_SET),
                     condition("equals W ignore case", VALUE_W),
                     FIVE_SECONDS,
@@ -744,7 +743,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputToCheckTimeOutWithSleepAndException() {
         long start = System.currentTimeMillis();
         try {
-            getSubIterable("Set of values",
+            getIterable(
                     toGet("Set converted from list", CONVERT_LIST_TO_SET),
                     condition("equals W ignore case", VALUE_W),
                     FIVE_SECONDS,

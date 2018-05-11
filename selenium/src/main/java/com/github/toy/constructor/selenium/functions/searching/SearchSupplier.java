@@ -17,6 +17,7 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import static com.github.toy.constructor.core.api.ToGetObjectFromIterable.getFromIterable;
+import static com.github.toy.constructor.selenium.api.widget.Widget.getWidgetName;
 import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.defaultPredicate;
 import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.shouldBeLabeledBy;
 import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.shouldHaveText;
@@ -24,7 +25,9 @@ import static com.github.toy.constructor.selenium.functions.searching.FindLabele
 import static com.github.toy.constructor.selenium.functions.searching.FindWebElements.webElements;
 import static com.github.toy.constructor.selenium.functions.searching.FindWidgets.widgets;
 import static com.github.toy.constructor.selenium.properties.WaitingProperties.ELEMENT_WAITING_DURATION;
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
+import static org.seleniumhq.jetty9.util.StringUtil.isBlank;
 
 @SuppressWarnings({"unused", "unchecked"})
 public final class SearchSupplier<R extends SearchContext> extends GetSupplier<SearchContext, R, SearchSupplier<R>> {
@@ -45,10 +48,12 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param <T>            is a type of a value to be returned by resulted function
      * @return an instance of {@link SearchSupplier}
      */
-    public static <T extends SearchContext> SearchSupplier<T> item(Function<SearchContext, List<T>> transformation,
+    public static <T extends SearchContext> SearchSupplier<T> item(String description,
+                                                                   Function<SearchContext, List<T>> transformation,
                                                                    Duration duration, Predicate<? super T> condition) {
-        return new SearchSupplier<T>().set(getFromIterable("A single item", transformation,
-                condition, duration, true, true,
+        checkArgument(!isBlank(description), "Description of the item to be found should be defined");
+        return new SearchSupplier<T>().set(getFromIterable(description,
+                transformation, condition, duration, true, true,
                 () -> new NoSuchElementException(format("Nothing was found. Attempt to get a single item of %s. Condition: %s",
                         transformation,
                         condition))));
@@ -67,9 +72,10 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @param <T>            is a type of a value to be returned by resulted function
      * @return an instance of {@link SearchSupplier}
      */
-    public static <T extends SearchContext> SearchSupplier<T> item(Function<SearchContext, List<T>> transformation,
+    public static <T extends SearchContext> SearchSupplier<T> item(String description,
+                                                                   Function<SearchContext, List<T>> transformation,
                                                                    Predicate<? super T> condition) {
-        return item(transformation, ELEMENT_WAITING_DURATION.get(), condition);
+        return item(description, transformation, ELEMENT_WAITING_DURATION.get(), condition);
     }
 
     /**
@@ -83,7 +89,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<WebElement> webElement(By by, Duration duration, Predicate<? super WebElement> predicate) {
-        return item(webElements(by, predicate.toString()), duration, predicate);
+        return item("Web element", webElements(by, predicate.toString()), duration, predicate);
     }
 
     /**
@@ -183,7 +189,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<WebElement> webElement(By by, Predicate<? super WebElement> predicate) {
-        return item(webElements(by, predicate.toString()), predicate);
+        return item("Web element", webElements(by, predicate.toString()), predicate);
     }
 
     /**
@@ -293,7 +299,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @return an instance of {@link SearchSupplier}
      */
     public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, Duration duration, Predicate<? super T> predicate) {
-        return item(widgets(tClass, predicate.toString()), duration, predicate);
+        return item(getWidgetName(tClass), widgets(tClass, predicate.toString()), duration, predicate);
     }
 
     /**
@@ -314,7 +320,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
                                                               Duration duration, Predicate<? super T> predicate) {
         Predicate<? extends T> labeledBy = shouldBeLabeledBy(labels.toArray(new String[]{}));
         Predicate<? super T> resultPredicate = (Predicate<? super T>) labeledBy.and(predicate);
-        return item(labeledWidgets(tClass, resultPredicate.toString()), duration, resultPredicate);
+        return item(getWidgetName(tClass), labeledWidgets(tClass, resultPredicate.toString()), duration, resultPredicate);
     }
 
     /**
@@ -414,7 +420,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @return an instance of {@link SearchSupplier}
      */
     public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, Predicate<? super T> predicate) {
-        return item(widgets(tClass, predicate.toString()), predicate);
+        return item(getWidgetName(tClass), widgets(tClass, predicate.toString()), predicate);
     }
 
     /**return item(widgets(tClass, predicate.toString()), duration, predicate);
@@ -435,7 +441,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
     public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, List<String> labels, Predicate<? super T> predicate) {
         Predicate<? extends T> labeledBy = shouldBeLabeledBy(labels.toArray(new String[]{}));
         Predicate<? super T> resultPredicate = (Predicate<? super T>) labeledBy.and(predicate);
-        return item(labeledWidgets(tClass, resultPredicate.toString()), resultPredicate);
+        return item(getWidgetName(tClass), labeledWidgets(tClass, resultPredicate.toString()), resultPredicate);
     }
 
     /**

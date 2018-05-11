@@ -33,8 +33,7 @@ public class ClickDescriptionTest {
                 .foundFrom(webElement(xpath(".//some/xpath"), ofSeconds(5), shouldBeEnabled())))
 
                 .andOn(element(link())).get().toString(),
-                is("Click. With parameters: {A single item from (Elements of type Link). " +
-                        "Time to get valuable result: 0:01:00:000}"));
+                is("Click. With parameters: {Link. Time to get valuable result: 0:01:00:000}"));
     }
 
     @Test
@@ -44,8 +43,7 @@ public class ClickDescriptionTest {
 
                         .andOn(element(webElement(id("someId")))).get().toString(),
 
-                is("Click. With parameters: {A single item from (Web elements located By.id: someId). " +
-                        "Time to get valuable result: 0:01:00:000}"));
+                is("Click. With parameters: {Web element. Time to get valuable result: 0:01:00:000}"));
     }
 
     @Test
