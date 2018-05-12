@@ -56,7 +56,7 @@ class DescribedConsumer<T> implements Consumer<T> {
 
     private DescribedConsumer<T> addToSequence(DescribedConsumer<T> sequenceChain) {
         List<Consumer<T>> consumers = sequenceChain.getSequence();
-        if (sequenceChain.getSequence().size() == 0) {
+        if (consumers.size() == 0) {
             sequence.addLast(sequenceChain);
         }
         else {
