@@ -1,18 +1,18 @@
 package com.github.toy.constructor.selenium.functions.click;
 
+import com.github.toy.constructor.core.api.GetSupplier;
 import com.github.toy.constructor.core.api.SequentialActionSupplier;
-import com.github.toy.constructor.core.api.SequentialGetSupplier;
 import com.github.toy.constructor.selenium.SeleniumSteps;
 import com.github.toy.constructor.selenium.api.widget.Clickable;
-import com.github.toy.constructor.selenium.functions.searching.SequentialSearchSupplier;
+import com.github.toy.constructor.selenium.functions.searching.SearchSupplier;
 import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
-import java.util.function.Function;
 
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
+import static com.github.toy.constructor.selenium.CurrentContentFunction.currentContent;
 import static com.google.common.base.Preconditions.checkArgument;
 
 public final class ClickActionSupplier extends SequentialActionSupplier<SeleniumSteps, Clickable, ClickActionSupplier> {
@@ -51,7 +51,7 @@ public final class ClickActionSupplier extends SequentialActionSupplier<Selenium
      * @param <R> is the type of the clickable element
      * @return built click action
      */
-    public static <R extends SearchContext & Clickable> ClickActionSupplier on(SequentialSearchSupplier<R> on) {
+    public static <R extends SearchContext & Clickable> ClickActionSupplier on(SearchSupplier<R> on) {
         return new ClickActionSupplier().andOn(on);
     }
 
@@ -60,7 +60,7 @@ public final class ClickActionSupplier extends SequentialActionSupplier<Selenium
      * @param on is how to find the web element
      * @return built click action
      */
-    public static ClickActionSupplier on(SequentialGetSupplier<SeleniumSteps, WebElement, SearchContext, ?> on) {
+    public static ClickActionSupplier on(GetSupplier<SearchContext, WebElement, ?> on) {
         return new ClickActionSupplier().andOn(on);
     }
 
@@ -89,10 +89,9 @@ public final class ClickActionSupplier extends SequentialActionSupplier<Selenium
      * @param <R> is the type of the clickable element
      * @return built click action
      */
-    public <R extends SearchContext & Clickable> ClickActionSupplier andOn(SequentialSearchSupplier<R> on) {
+    public <R extends SearchContext & Clickable> ClickActionSupplier andOn(SearchSupplier<R> on) {
         checkArgument(on != null, "The searching for the clickable element should be defined");
-        Function<SeleniumSteps, R> function = on.get();
-        return andThen("Click", function);
+        return andThen("Click", on.get().compose(currentContent()));
     }
 
     /**
@@ -100,11 +99,10 @@ public final class ClickActionSupplier extends SequentialActionSupplier<Selenium
      * @param on is how to find the web element
      * @return built click action
      */
-    public ClickActionSupplier andOn(SequentialGetSupplier<SeleniumSteps, WebElement, SearchContext, ?> on) {
+    public ClickActionSupplier andOn(GetSupplier<SearchContext, WebElement, ?> on) {
         checkArgument(on != null, "The searching for the clickable element should be defined");
-        Function<SeleniumSteps, WebElement> function = on.get();
-        return andThen("Click", toGet(function.toString(), seleniumSteps ->
-                getClickableFromElement(function.apply(seleniumSteps))));
+        return andThen("Click", currentContent().andThen(on.get()).andThen(toGet(on.toString(),
+                ClickActionSupplier::getClickableFromElement)));
     }
 
     /**

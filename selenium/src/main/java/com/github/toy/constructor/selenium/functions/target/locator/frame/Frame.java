@@ -1,6 +1,5 @@
 package com.github.toy.constructor.selenium.functions.target.locator.frame;
 
-import com.github.toy.constructor.selenium.functions.searching.SearchSupplier;
 import com.github.toy.constructor.selenium.functions.target.locator.SwitchesToItself;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -36,19 +35,8 @@ public class Frame implements SwitchesToItself  {
             return;
         }
 
-        if (SearchSupplier.class.isAssignableFrom(clazz)) {
-            SearchSupplier searchSupplier = SearchSupplier.class.cast(frame);
-            Object element = searchSupplier.get().apply(webDriver);
-
-            if (WebElement.class.isAssignableFrom(element.getClass())) {
-                webDriver.switchTo().frame(WebElement.class.cast(element));
-                return;
-            }
-
-            if (WrapsElement.class.isAssignableFrom(element.getClass())) {
-                webDriver.switchTo().frame(WrapsElement.class
-                        .cast(element).getWrappedElement());
-            }
+        if (WrapsElement.class.isAssignableFrom(clazz)) {
+            webDriver.switchTo().frame(WrapsElement.class.cast(frame).getWrappedElement());
         }
     }
 

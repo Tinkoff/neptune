@@ -29,13 +29,15 @@ public class WebElements {
     @Test
     public void descriptionOfASingleElementWithDuration() {
         assertThat(webElement(BY_SOME_PATH, ofSeconds(5), shouldBeEnabled()).toString(),
-                is("Web element with condition Should be enabled. Time to get valuable result: 0:00:05:000"));
+                is("Web element located [By.xpath: .//some/path] with condition Should be enabled. " +
+                        "Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void descriptionOfASingleElementWithoutAnyDurationSpecified() {
         assertThat(webElement(BY_SOME_PATH, shouldBeEnabled()).toString(),
-                is("Web element with condition Should be enabled. Time to get valuable result: 0:01:00:000"));
+                is("Web element located [By.xpath: .//some/path] with condition Should be enabled. " +
+                        "Time to get valuable result: 0:01:00:000"));
     }
 
     @Test
@@ -44,7 +46,8 @@ public class WebElements {
         System.setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "3");
         try {
             assertThat(webElement(BY_SOME_PATH, shouldBeEnabled()).toString(),
-                    is("Web element with condition Should be enabled. Time to get valuable result: 0:03:00:000"));
+                    is("Web element located [By.xpath: .//some/path] with condition Should be enabled. " +
+                            "Time to get valuable result: 0:03:00:000"));
         }
         finally {
             System.getProperties().remove(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
@@ -55,13 +58,13 @@ public class WebElements {
     @Test
     public void descriptionOfASingleElementWithoutAnyConditionSpecified() {
         assertThat(webElement(BY_SOME_PATH, ofSeconds(5)).toString(),
-                is("Web element. Time to get valuable result: 0:00:05:000"));
+                is("Web element located [By.xpath: .//some/path]. Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void descriptionOfASingleElementWithoutAnyConditionAndTimeSpecified() {
         assertThat(webElement(BY_SOME_PATH).toString(),
-                is("Web element. Time to get valuable result: 0:01:00:000"));
+                is("Web element located [By.xpath: .//some/path]. Time to get valuable result: 0:01:00:000"));
     }
 
     @Test
@@ -71,7 +74,7 @@ public class WebElements {
 
         try {
             assertThat(webElement(BY_SOME_PATH).toString(),
-                    is("Web element. Time to get valuable result: 0:03:00:000"));
+                    is("Web element located [By.xpath: .//some/path]. Time to get valuable result: 0:03:00:000"));
         }
         finally {
             System.getProperties().remove(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
@@ -86,7 +89,8 @@ public class WebElements {
 
         try {
             assertThat(webElement(BY_SOME_PATH, shouldBeEnabled()).toString(),
-                    is("Web element with condition Should be enabled. Time to get valuable result: 0:03:00:000"));
+                    is("Web element located [By.xpath: .//some/path] with condition Should be enabled. " +
+                            "Time to get valuable result: 0:03:00:000"));
         }
         finally {
             System.getProperties().remove(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
@@ -102,7 +106,8 @@ public class WebElements {
 
         try {
             assertThat(webElement(BY_SOME_PATH).toString(),
-                    is("Web element with condition Should be visible. Time to get valuable result: 0:03:00:000"));
+                    is("Web element located [By.xpath: .//some/path] with condition Should be visible. " +
+                            "Time to get valuable result: 0:03:00:000"));
         }
         finally {
             System.getProperties().remove(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
@@ -114,14 +119,14 @@ public class WebElements {
     @Test
     public void descriptionOfMultipleElementsWithDuration() {
         assertThat(webElements(BY_SOME_PATH, ofSeconds(5), shouldBeEnabled()).toString(),
-                is("Web elements located By.xpath: .//some/path with condition Should be enabled. " +
+                is("Web elements located [By.xpath: .//some/path] with condition Should be enabled. " +
                         "Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void descriptionOfMultipleElementsWithoutAnyDurationSpecified() {
         assertThat(webElements(BY_SOME_PATH, shouldBeEnabled()).toString(),
-                is("Web elements located By.xpath: .//some/path with condition Should be enabled. " +
+                is("Web elements located [By.xpath: .//some/path] with condition Should be enabled. " +
                         "Time to get valuable result: 0:01:00:000"));
     }
 
@@ -131,7 +136,7 @@ public class WebElements {
         System.setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "3");
         try {
             assertThat(webElements(BY_SOME_PATH, shouldBeEnabled()).toString(),
-                    is("Web elements located By.xpath: .//some/path with condition Should be enabled. " +
+                    is("Web elements located [By.xpath: .//some/path] with condition Should be enabled. " +
                             "Time to get valuable result: 0:03:00:000"));
         }
         finally {
@@ -143,13 +148,13 @@ public class WebElements {
     @Test
     public void descriptionOfMultipleElementsWithoutAnyConditionSpecified() {
         assertThat(webElements(BY_SOME_PATH, ofSeconds(5)).toString(),
-                is("Web elements located By.xpath: .//some/path. Time to get valuable result: 0:00:05:000"));
+                is("Web elements located [By.xpath: .//some/path]. Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void descriptionOfMultipleElementsWithoutAnyConditionAndTimeSpecified() {
         assertThat(webElements(BY_SOME_PATH).toString(),
-                is("Web elements located By.xpath: .//some/path. Time to get valuable result: 0:01:00:000"));
+                is("Web elements located [By.xpath: .//some/path]. Time to get valuable result: 0:01:00:000"));
     }
 
     @Test
@@ -159,7 +164,7 @@ public class WebElements {
 
         try {
             assertThat(webElements(BY_SOME_PATH).toString(),
-                    is("Web elements located By.xpath: .//some/path. Time to get valuable result: 0:03:00:000"));
+                    is("Web elements located [By.xpath: .//some/path]. Time to get valuable result: 0:03:00:000"));
         }
         finally {
             System.getProperties().remove(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
@@ -174,7 +179,7 @@ public class WebElements {
 
         try {
             assertThat(webElements(BY_SOME_PATH, shouldBeEnabled()).toString(),
-                    is("Web elements located By.xpath: .//some/path with condition Should be enabled. " +
+                    is("Web elements located [By.xpath: .//some/path] with condition Should be enabled. " +
                             "Time to get valuable result: 0:03:00:000"));
         }
         finally {
@@ -191,7 +196,7 @@ public class WebElements {
 
         try {
             assertThat(webElements(BY_SOME_PATH).toString(),
-                    is("Web elements located By.xpath: .//some/path with condition Should be visible. " +
+                    is("Web elements located [By.xpath: .//some/path] with condition Should be visible. " +
                             "Time to get valuable result: 0:03:00:000"));
         }
         finally {
@@ -204,15 +209,15 @@ public class WebElements {
     @Test
     public void descriptionOfASingleElementWithDurationAndSpecifiedText() {
         assertThat(webElement(BY_SOME_PATH, TEST_TEXT, ofSeconds(5), shouldBeEnabled()).toString(),
-                is("Web element with condition (Should have text 'Test text') AND (Should be enabled). " +
-                        "Time to get valuable result: 0:00:05:000"));
+                is("Web element located [By.xpath: .//some/path] with condition (Should have text 'Test text') " +
+                        "AND (Should be enabled). Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void descriptionOfASingleElementWithoutAnyDurationAndSpecifiedText() {
         assertThat(webElement(BY_SOME_PATH, TEST_TEXT, shouldBeEnabled()).toString(),
-                is("Web element with condition (Should have text 'Test text') AND (Should be enabled). " +
-                        "Time to get valuable result: 0:01:00:000"));
+                is("Web element located [By.xpath: .//some/path] with condition (Should have text 'Test text') " +
+                        "AND (Should be enabled). Time to get valuable result: 0:01:00:000"));
     }
 
     @Test
@@ -221,8 +226,8 @@ public class WebElements {
         System.setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "3");
         try {
             assertThat(webElement(BY_SOME_PATH, TEST_TEXT, shouldBeEnabled()).toString(),
-                    is("Web element with condition (Should have text 'Test text') AND (Should be enabled). " +
-                            "Time to get valuable result: 0:03:00:000"));
+                    is("Web element located [By.xpath: .//some/path] with condition (Should have text 'Test text') " +
+                            "AND (Should be enabled). Time to get valuable result: 0:03:00:000"));
         }
         finally {
             System.getProperties().remove(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
@@ -233,13 +238,15 @@ public class WebElements {
     @Test
     public void descriptionOfASingleElementWithoutAnyConditionSpecifiedAndSpecifiedText() {
         assertThat(webElement(BY_SOME_PATH, TEST_TEXT, ofSeconds(5)).toString(),
-                is("Web element with condition Should have text 'Test text'. Time to get valuable result: 0:00:05:000"));
+                is("Web element located [By.xpath: .//some/path] with condition Should have text 'Test text'. " +
+                        "Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void descriptionOfASingleElementWithoutAnyConditionAndTimeSpecifiedAndSpecifiedText() {
         assertThat(webElement(BY_SOME_PATH, TEST_TEXT).toString(),
-                is("Web element with condition Should have text 'Test text'. Time to get valuable result: 0:01:00:000"));
+                is("Web element located [By.xpath: .//some/path] with condition Should have text 'Test text'. " +
+                        "Time to get valuable result: 0:01:00:000"));
     }
 
     @Test
@@ -249,7 +256,7 @@ public class WebElements {
 
         try {
             assertThat(webElement(BY_SOME_PATH, TEST_TEXT).toString(),
-                    is("Web element with condition Should have text 'Test text'. " +
+                    is("Web element located [By.xpath: .//some/path] with condition Should have text 'Test text'. " +
                             "Time to get valuable result: 0:03:00:000"));
         }
         finally {
@@ -265,7 +272,8 @@ public class WebElements {
 
         try {
             assertThat(webElement(BY_SOME_PATH, TEST_TEXT, shouldBeEnabled()).toString(),
-                    is("Web element with condition (Should have text 'Test text') AND (Should be enabled). " +
+                    is("Web element located [By.xpath: .//some/path] " +
+                            "with condition (Should have text 'Test text') AND (Should be enabled). " +
                             "Time to get valuable result: 0:03:00:000"));
         }
         finally {
@@ -282,8 +290,8 @@ public class WebElements {
 
         try {
             assertThat(webElement(BY_SOME_PATH, TEST_TEXT).toString(),
-                    is("Web element with condition (Should have text 'Test text') AND (Should be visible). " +
-                            "Time to get valuable result: 0:03:00:000"));
+                    is("Web element located [By.xpath: .//some/path] with condition (Should have text 'Test text') " +
+                            "AND (Should be visible). Time to get valuable result: 0:03:00:000"));
         }
         finally {
             System.getProperties().remove(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
@@ -295,16 +303,15 @@ public class WebElements {
     @Test
     public void descriptionOfMultipleElementsWithDurationAndSpecifiedText() {
         assertThat(webElements(BY_SOME_PATH, TEST_TEXT, ofSeconds(5), shouldBeEnabled()).toString(),
-                is("Web elements located By.xpath: .//some/path " +
-                        "with condition (Should have text 'Test text') AND (Should be enabled). " +
-                        "Time to get valuable result: 0:00:05:000"));
+                is("Web elements located [By.xpath: .//some/path] with condition (Should have text 'Test text') " +
+                        "AND (Should be enabled). Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void descriptionOfMultipleElementsWithoutAnyDurationSpecifiedAndSpecifiedText() {
         assertThat(webElements(BY_SOME_PATH, TEST_TEXT, shouldBeEnabled()).toString(),
-                is("Web elements located By.xpath: .//some/path with condition " +
-                        "(Should have text 'Test text') AND (Should be enabled). " +
+                is("Web elements located [By.xpath: .//some/path] " +
+                        "with condition (Should have text 'Test text') AND (Should be enabled). " +
                         "Time to get valuable result: 0:01:00:000"));
     }
 
@@ -314,9 +321,8 @@ public class WebElements {
         System.setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "3");
         try {
             assertThat(webElements(BY_SOME_PATH, TEST_TEXT, shouldBeEnabled()).toString(),
-                    is("Web elements located By.xpath: .//some/path with condition " +
-                            "(Should have text 'Test text') AND (Should be enabled). " +
-                            "Time to get valuable result: 0:03:00:000"));
+                    is("Web elements located [By.xpath: .//some/path] with condition (Should have text 'Test text') " +
+                            "AND (Should be enabled). Time to get valuable result: 0:03:00:000"));
         }
         finally {
             System.getProperties().remove(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
@@ -327,15 +333,15 @@ public class WebElements {
     @Test
     public void descriptionOfMultipleElementsWithoutAnyConditionSpecifiedAndSpecifiedText() {
         assertThat(webElements(BY_SOME_PATH, TEST_TEXT, ofSeconds(5)).toString(),
-                is("Web elements located By.xpath: .//some/path " +
-                        "with condition Should have text 'Test text'. Time to get valuable result: 0:00:05:000"));
+                is("Web elements located [By.xpath: .//some/path] with condition Should have text 'Test text'. " +
+                        "Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void descriptionOfMultipleElementsWithoutAnyConditionAndTimeSpecifiedAndSpecifiedText() {
         assertThat(webElements(BY_SOME_PATH, TEST_TEXT).toString(),
-                is("Web elements located By.xpath: .//some/path " +
-                        "with condition Should have text 'Test text'. Time to get valuable result: 0:01:00:000"));
+                is("Web elements located [By.xpath: .//some/path] with condition Should have text 'Test text'. " +
+                        "Time to get valuable result: 0:01:00:000"));
     }
 
     @Test
@@ -345,7 +351,7 @@ public class WebElements {
 
         try {
             assertThat(webElements(BY_SOME_PATH, TEST_TEXT).toString(),
-                    is("Web elements located By.xpath: .//some/path with condition Should have text 'Test text'. " +
+                    is("Web elements located [By.xpath: .//some/path] with condition Should have text 'Test text'. " +
                             "Time to get valuable result: 0:03:00:000"));
         }
         finally {
@@ -361,8 +367,7 @@ public class WebElements {
 
         try {
             assertThat(webElements(BY_SOME_PATH, TEST_TEXT, shouldBeEnabled()).toString(),
-                    is("Web elements located By.xpath: .//some/path with condition " +
-                            "(Should have text 'Test text') AND (Should be enabled). " +
+                    is("Web elements located [By.xpath: .//some/path] with condition (Should have text 'Test text') AND (Should be enabled). " +
                             "Time to get valuable result: 0:03:00:000"));
         }
         finally {
@@ -379,8 +384,8 @@ public class WebElements {
 
         try {
             assertThat(webElements(BY_SOME_PATH, TEST_TEXT).toString(),
-                    is("Web elements located By.xpath: .//some/path with condition " +
-                            "(Should have text 'Test text') AND (Should be visible). " +
+                    is("Web elements located [By.xpath: .//some/path] " +
+                            "with condition (Should have text 'Test text') AND (Should be visible). " +
                             "Time to get valuable result: 0:03:00:000"));
         }
         finally {
@@ -393,16 +398,17 @@ public class WebElements {
     @Test
     public void descriptionOfASingleElementWithDurationAndSpecifiedTextPattern() {
         assertThat(webElement(BY_SOME_PATH, TEST_TEXT_PATTERN, ofSeconds(5), shouldBeEnabled()).toString(),
-                is("Web element with condition (Should have text which contains regExp pattern '^[a-z0-9_-]{3,15}$') " +
-                        "AND (Should be enabled). Time to get valuable result: 0:00:05:000"));
+                is("Web element located [By.xpath: .//some/path] with condition " +
+                        "(Should have text which contains regExp pattern '^[a-z0-9_-]{3,15}$') AND (Should be enabled). " +
+                        "Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void descriptionOfASingleElementWithoutAnyDurationAndSpecifiedTextPattern() {
         assertThat(webElement(BY_SOME_PATH, TEST_TEXT_PATTERN, shouldBeEnabled()).toString(),
-                is("Web element " +
-                        "with condition (Should have text which contains regExp pattern '^[a-z0-9_-]{3,15}$') " +
-                        "AND (Should be enabled). Time to get valuable result: 0:01:00:000"));
+                is("Web element located [By.xpath: .//some/path] with condition " +
+                        "(Should have text which contains regExp pattern '^[a-z0-9_-]{3,15}$') AND (Should be enabled). " +
+                        "Time to get valuable result: 0:01:00:000"));
     }
 
     @Test
@@ -411,8 +417,9 @@ public class WebElements {
         System.setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "3");
         try {
             assertThat(webElement(BY_SOME_PATH, TEST_TEXT_PATTERN, shouldBeEnabled()).toString(),
-                    is("Web element with condition (Should have text which contains regExp pattern '^[a-z0-9_-]{3,15}$') " +
-                            "AND (Should be enabled). Time to get valuable result: 0:03:00:000"));
+                    is("Web element located [By.xpath: .//some/path] with condition " +
+                            "(Should have text which contains regExp pattern '^[a-z0-9_-]{3,15}$') AND (Should be enabled). " +
+                            "Time to get valuable result: 0:03:00:000"));
         }
         finally {
             System.getProperties().remove(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
@@ -423,14 +430,15 @@ public class WebElements {
     @Test
     public void descriptionOfASingleElementWithoutAnyConditionSpecifiedAndSpecifiedTextPattern() {
         assertThat(webElement(BY_SOME_PATH, TEST_TEXT_PATTERN, ofSeconds(5)).toString(),
-                is("Web element with condition Should have text which contains regExp pattern '^[a-z0-9_-]{3,15}$'. " +
+                is("Web element located [By.xpath: .//some/path] with condition Should have text which contains regExp pattern '^[a-z0-9_-]{3,15}$'. " +
                         "Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void descriptionOfASingleElementWithoutAnyConditionAndTimeSpecifiedAndSpecifiedTextPattern() {
         assertThat(webElement(BY_SOME_PATH, TEST_TEXT_PATTERN).toString(),
-                is("Web element with condition Should have text which contains regExp pattern '^[a-z0-9_-]{3,15}$'. " +
+                is("Web element located [By.xpath: .//some/path] with condition " +
+                        "Should have text which contains regExp pattern '^[a-z0-9_-]{3,15}$'. " +
                         "Time to get valuable result: 0:01:00:000"));
     }
 
@@ -441,8 +449,8 @@ public class WebElements {
 
         try {
             assertThat(webElement(BY_SOME_PATH, TEST_TEXT_PATTERN).toString(),
-                    is("Web element with condition Should have text which contains regExp pattern '^[a-z0-9_-]{3,15}$'. " +
-                            "Time to get valuable result: 0:03:00:000"));
+                    is("Web element located [By.xpath: .//some/path] with condition Should have text which contains " +
+                            "regExp pattern '^[a-z0-9_-]{3,15}$'. Time to get valuable result: 0:03:00:000"));
         }
         finally {
             System.getProperties().remove(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
@@ -457,7 +465,8 @@ public class WebElements {
 
         try {
             assertThat(webElement(BY_SOME_PATH, TEST_TEXT_PATTERN, shouldBeEnabled()).toString(),
-                    is("Web element with condition (Should have text which contains regExp pattern '^[a-z0-9_-]{3,15}$') " +
+                    is("Web element located [By.xpath: .//some/path] with condition " +
+                            "(Should have text which contains regExp pattern '^[a-z0-9_-]{3,15}$') " +
                             "AND (Should be enabled). Time to get valuable result: 0:03:00:000"));
         }
         finally {
@@ -474,7 +483,8 @@ public class WebElements {
 
         try {
             assertThat(webElement(BY_SOME_PATH, TEST_TEXT_PATTERN).toString(),
-                    is("Web element with condition (Should have text which contains regExp pattern '^[a-z0-9_-]{3,15}$') " +
+                    is("Web element located [By.xpath: .//some/path] with condition " +
+                            "(Should have text which contains regExp pattern '^[a-z0-9_-]{3,15}$') " +
                             "AND (Should be visible). Time to get valuable result: 0:03:00:000"));
         }
         finally {
@@ -487,7 +497,7 @@ public class WebElements {
     @Test
     public void descriptionOfMultipleElementsWithDurationAndSpecifiedTexPattern() {
         assertThat(webElements(BY_SOME_PATH, TEST_TEXT_PATTERN, ofSeconds(5), shouldBeEnabled()).toString(),
-                is("Web elements located By.xpath: .//some/path with condition " +
+                is("Web elements located [By.xpath: .//some/path] with condition " +
                         "(Should have text which contains regExp pattern '^[a-z0-9_-]{3,15}$') AND (Should be enabled). " +
                         "Time to get valuable result: 0:00:05:000"));
     }
@@ -495,9 +505,9 @@ public class WebElements {
     @Test
     public void descriptionOfMultipleElementsWithoutAnyDurationSpecifiedAndSpecifiedTextPattern() {
         assertThat(webElements(BY_SOME_PATH, TEST_TEXT_PATTERN, shouldBeEnabled()).toString(),
-                is("Web elements located By.xpath: .//some/path with condition " +
-                        "(Should have text which contains regExp pattern '^[a-z0-9_-]{3,15}$') AND (Should be enabled). " +
-                        "Time to get valuable result: 0:01:00:000"));
+                is("Web elements located [By.xpath: .//some/path] " +
+                        "with condition (Should have text which contains regExp pattern '^[a-z0-9_-]{3,15}$') " +
+                        "AND (Should be enabled). Time to get valuable result: 0:01:00:000"));
     }
 
     @Test
@@ -507,9 +517,9 @@ public class WebElements {
         try {
             assertThat(
                     webElements(BY_SOME_PATH, TEST_TEXT_PATTERN, shouldBeEnabled()).toString(),
-                    is("Web elements located By.xpath: .//some/path with condition " +
-                            "(Should have text which contains regExp pattern '^[a-z0-9_-]{3,15}$') " +
-                            "AND (Should be enabled). Time to get valuable result: 0:03:00:000"));
+                    is("Web elements located [By.xpath: .//some/path] " +
+                            "with condition (Should have text which contains regExp pattern '^[a-z0-9_-]{3,15}$') AND " +
+                            "(Should be enabled). Time to get valuable result: 0:03:00:000"));
         }
         finally {
             System.getProperties().remove(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
@@ -520,16 +530,16 @@ public class WebElements {
     @Test
     public void descriptionOfMultipleElementsWithoutAnyConditionSpecifiedAndSpecifiedTextPattern() {
         assertThat(webElements(BY_SOME_PATH, TEST_TEXT_PATTERN, ofSeconds(5)).toString(),
-                is("Web elements located By.xpath: .//some/path " +
-                        "with condition Should have text which contains regExp pattern '^[a-z0-9_-]{3,15}$'. " +
+                is("Web elements located [By.xpath: .//some/path] with condition " +
+                        "Should have text which contains regExp pattern '^[a-z0-9_-]{3,15}$'. " +
                         "Time to get valuable result: 0:00:05:000"));
     }
 
     @Test
     public void descriptionOfMultipleElementsWithoutAnyConditionAndTimeSpecifiedAndSpecifiedTextPattern() {
         assertThat(webElements(BY_SOME_PATH, TEST_TEXT_PATTERN).toString(),
-                is("Web elements located By.xpath: .//some/path " +
-                        "with condition Should have text which contains regExp pattern '^[a-z0-9_-]{3,15}$'. " +
+                is("Web elements located [By.xpath: .//some/path] with condition " +
+                        "Should have text which contains regExp pattern '^[a-z0-9_-]{3,15}$'. " +
                         "Time to get valuable result: 0:01:00:000"));
     }
 
@@ -540,8 +550,7 @@ public class WebElements {
 
         try {
             assertThat(webElements(BY_SOME_PATH, TEST_TEXT_PATTERN).toString(),
-                    is("Web elements located By.xpath: .//some/path " +
-                            "with condition Should have text which contains regExp pattern '^[a-z0-9_-]{3,15}$'. " +
+                    is("Web elements located [By.xpath: .//some/path] with condition Should have text which contains regExp pattern '^[a-z0-9_-]{3,15}$'. " +
                             "Time to get valuable result: 0:03:00:000"));
         }
         finally {
@@ -557,9 +566,9 @@ public class WebElements {
 
         try {
             assertThat(webElements(BY_SOME_PATH, TEST_TEXT_PATTERN, shouldBeEnabled()).toString(),
-                    is("Web elements located By.xpath: .//some/path with condition " +
-                            "(Should have text which contains regExp pattern '^[a-z0-9_-]{3,15}$') AND (Should be enabled). " +
-                            "Time to get valuable result: 0:03:00:000"));
+                    is("Web elements located [By.xpath: .//some/path] with condition " +
+                            "(Should have text which contains regExp pattern '^[a-z0-9_-]{3,15}$') " +
+                            "AND (Should be enabled). Time to get valuable result: 0:03:00:000"));
         }
         finally {
             System.getProperties().remove(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
@@ -575,9 +584,9 @@ public class WebElements {
 
         try {
             assertThat(webElements(BY_SOME_PATH, TEST_TEXT_PATTERN).toString(),
-                    is("Web elements located By.xpath: .//some/path with condition " +
-                            "(Should have text which contains regExp pattern '^[a-z0-9_-]{3,15}$') " +
-                            "AND (Should be visible). Time to get valuable result: 0:03:00:000"));
+                    is("Web elements located [By.xpath: .//some/path] with condition " +
+                            "(Should have text which contains regExp pattern '^[a-z0-9_-]{3,15}$') AND " +
+                            "(Should be visible). Time to get valuable result: 0:03:00:000"));
         }
         finally {
             System.getProperties().remove(ELEMENT_WAITING_TIME_UNIT.getPropertyName());

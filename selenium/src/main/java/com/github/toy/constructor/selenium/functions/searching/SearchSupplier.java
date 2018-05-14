@@ -1,6 +1,6 @@
 package com.github.toy.constructor.selenium.functions.searching;
 
-import com.github.toy.constructor.core.api.GetSupplier;
+import com.github.toy.constructor.core.api.SequentialGetSupplier;
 import com.github.toy.constructor.selenium.api.widget.Labeled;
 import com.github.toy.constructor.selenium.api.widget.Widget;
 import com.github.toy.constructor.selenium.api.widget.drafts.*;
@@ -30,10 +30,11 @@ import static java.lang.String.format;
 import static org.seleniumhq.jetty9.util.StringUtil.isBlank;
 
 @SuppressWarnings({"unused", "unchecked"})
-public final class SearchSupplier<R extends SearchContext> extends GetSupplier<SearchContext, R, SearchSupplier<R>> {
+public final class SearchSupplier<R extends SearchContext>
+        extends SequentialGetSupplier<SearchContext, R, SearchContext, SearchSupplier<R>> {
 
-    private SearchSupplier() {
-        super();
+    private SearchSupplier(Function<SearchContext, R> function) {
+        set(function);
     }
 
     /**
@@ -52,7 +53,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
                                                                    Function<SearchContext, List<T>> transformation,
                                                                    Duration duration, Predicate<? super T> condition) {
         checkArgument(!isBlank(description), "Description of the item to be found should be defined");
-        return new SearchSupplier<T>().set(getFromIterable(description,
+        return new SearchSupplier<>(getFromIterable(description,
                 transformation, condition, duration, true, true,
                 () -> new NoSuchElementException(format("Nothing was found. Attempt to get a single item of %s. Condition: %s",
                         transformation,
@@ -89,7 +90,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<WebElement> webElement(By by, Duration duration, Predicate<? super WebElement> predicate) {
-        return item("Web element", webElements(by, predicate.toString()), duration, predicate);
+        return item(format("Web element located [%s]", by), webElements(by, predicate.toString()), duration, predicate);
     }
 
     /**
@@ -189,7 +190,7 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<WebElement> webElement(By by, Predicate<? super WebElement> predicate) {
-        return item("Web element", webElements(by, predicate.toString()), predicate);
+        return item(format("Web element located [%s]", by), webElements(by, predicate.toString()), predicate);
     }
 
     /**
@@ -2545,5 +2546,45 @@ public final class SearchSupplier<R extends SearchContext> extends GetSupplier<S
      */
     public static SearchSupplier<TableCell> tableCell() {
         return widget(TableCell.class);
+    }
+
+    @Override
+    protected Function<SearchContext, R> getEndFunction() {
+        return get();
+    }
+
+    /**
+     * Constructs the chained searching from some instance of {@link SearchContext}.
+     *
+     * @param from is a parent element.
+     * @param <Q> is a type of the parent element.
+     * @return self-reference
+     */
+    public <Q extends SearchContext> SearchSupplier<R> foundFrom(SearchSupplier<Q> from) {
+        return super.from(from);
+    }
+
+    /**
+     * Constructs the chained searching from some instance of {@link SearchContext} which is already found.
+     *
+     * @param from is a parent element.
+     * @param <Q> is a type of the parent element.
+     * @return self-reference
+     */
+    public <Q extends SearchContext> SearchSupplier<R> foundFrom(Q from) {
+        return super.from(from);
+    }
+
+    /**
+     * Constructs the chained searching from result of some function applying. This function should take some
+     * {@link SearchContext} as the input parameter and return some found instance of {@link SearchContext}.
+     *
+     * @param from is a function which takes some {@link SearchContext} as the input parameter and returns some
+     *             found instance of {@link SearchContext}.
+     * @param <Q> is a type of the parent element.
+     * @return self-reference
+     */
+    public <Q extends SearchContext>  SearchSupplier<R> foundFrom(Function<SearchContext, Q> from) {
+        return super.from(from);
     }
 }

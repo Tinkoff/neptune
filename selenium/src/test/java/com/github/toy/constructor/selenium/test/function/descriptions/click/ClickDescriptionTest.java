@@ -16,7 +16,6 @@ import static com.github.toy.constructor.selenium.functions.searching.CommonCond
 import static com.github.toy.constructor.selenium.functions.searching.SearchSupplier.button;
 import static com.github.toy.constructor.selenium.functions.searching.SearchSupplier.link;
 import static com.github.toy.constructor.selenium.functions.searching.SearchSupplier.webElement;
-import static com.github.toy.constructor.selenium.functions.searching.SequentialSearchSupplier.element;
 import static java.time.Duration.ofSeconds;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -28,22 +27,23 @@ public class ClickDescriptionTest {
 
     @Test
     public void clickWithSearchingForSomeClickable() {
-        assertThat(on(element(button("Some button", ofSeconds(7),
-                shouldBeVisible().and(shouldHaveAttributeContains("some attr", Pattern.compile("some pattern")))))
+        assertThat(on(button("Some button", ofSeconds(7),
+                shouldBeVisible().and(shouldHaveAttributeContains("some attr", Pattern.compile("some pattern"))))
                 .foundFrom(webElement(xpath(".//some/xpath"), ofSeconds(5), shouldBeEnabled())))
 
-                .andOn(element(link())).get().toString(),
+                .andOn(link()).get().toString(),
                 is("Click. With parameters: {Link. Time to get valuable result: 0:01:00:000}"));
     }
 
     @Test
     public void clickWithSearchingForSomeWebElement() {
-        assertThat(on(element(webElement(xpath(".//some/xpath"), ofSeconds(5), shouldBeEnabled()))
+        assertThat(on(webElement(xpath(".//some/xpath"), ofSeconds(5), shouldBeEnabled())
                         .foundFrom(webElement(className("someClass"))))
 
-                        .andOn(element(webElement(id("someId")))).get().toString(),
+                        .andOn(webElement(id("someId"))).get().toString(),
 
-                is("Click. With parameters: {Web element. Time to get valuable result: 0:01:00:000}"));
+                is("Click. With parameters: {Web element located [By.id: someId]. " +
+                        "Time to get valuable result: 0:01:00:000}"));
     }
 
     @Test

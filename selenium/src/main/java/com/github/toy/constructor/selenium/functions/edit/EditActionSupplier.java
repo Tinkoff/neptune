@@ -3,11 +3,11 @@ package com.github.toy.constructor.selenium.functions.edit;
 import com.github.toy.constructor.core.api.SequentialActionSupplier;
 import com.github.toy.constructor.selenium.SeleniumSteps;
 import com.github.toy.constructor.selenium.api.widget.Editable;
-import com.github.toy.constructor.selenium.functions.searching.SequentialSearchSupplier;
+import com.github.toy.constructor.selenium.functions.searching.SearchSupplier;
 import org.openqa.selenium.SearchContext;
 
+import static com.github.toy.constructor.selenium.CurrentContentFunction.currentContent;
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.format;
 
 
 public final class EditActionSupplier extends
@@ -26,7 +26,7 @@ public final class EditActionSupplier extends
      * @return built edit action
      */
     public static <R, S extends SearchContext & Editable<R>> EditActionSupplier valueOfThe(
-            SequentialSearchSupplier<S> of, R value) {
+            SearchSupplier<S> of, R value) {
         return new EditActionSupplier().andValueOfThe(of, value);
     }
 
@@ -42,17 +42,17 @@ public final class EditActionSupplier extends
         return new EditActionSupplier().andValueOfThe(of, value);
     }
 
-    public <T, Q extends SearchContext & Editable<T>> EditActionSupplier andValueOfThe(SequentialSearchSupplier<Q> of, T value) {
+    public <T, Q extends SearchContext & Editable<T>> EditActionSupplier andValueOfThe(SearchSupplier<Q> of, T value) {
         checkArgument(of != null, "The searching for the editable element should be defined");
         checkArgument(value != null, "The value which is used to edit the element should be defined");
-        return andThen(format("Edit", value),
-                of.get(), value);
+        return andThen("Edit",
+                of.get().compose(currentContent()), value);
     }
 
     public <T, Q extends SearchContext & Editable<T>> EditActionSupplier andValueOfThe(Q of, T value) {
         checkArgument(of != null, "The WWWeditable element should be defined");
         checkArgument(value != null, "The value which is used to edit the element should be defined");
-        return andThen(format("Edit", value), of, value);
+        return andThen("Edit", of, value);
     }
 
     @Override

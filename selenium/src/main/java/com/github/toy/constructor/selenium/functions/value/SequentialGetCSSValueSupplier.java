@@ -4,14 +4,14 @@ import com.github.toy.constructor.core.api.SequentialGetSupplier;
 import com.github.toy.constructor.selenium.SeleniumSteps;
 import com.github.toy.constructor.selenium.api.widget.HasCssValue;
 import com.github.toy.constructor.selenium.api.widget.Widget;
-import com.github.toy.constructor.selenium.functions.searching.SequentialSearchSupplier;
+import com.github.toy.constructor.selenium.functions.searching.SearchSupplier;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.WrapsElement;
 
 import java.util.function.Function;
 
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
+import static com.github.toy.constructor.selenium.CurrentContentFunction.currentContent;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 
@@ -69,8 +69,8 @@ public final class SequentialGetCSSValueSupplier extends
      *                       evaluation of the css value throws {@link UnsupportedOperationException}.
      * @return self-reference
      */
-    public <T extends SearchContext> SequentialGetCSSValueSupplier of(SequentialSearchSupplier<T> searchSupplier) {
-        return super.from(searchSupplier);
+    public <T extends SearchContext> SequentialGetCSSValueSupplier of(SearchSupplier<T> searchSupplier) {
+        return super.from(searchSupplier.get().compose(currentContent()));
     }
 
     @Override

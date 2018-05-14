@@ -15,7 +15,6 @@ import static com.github.toy.constructor.selenium.functions.searching.CommonCond
 import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.shouldHaveAttributeContains;
 import static com.github.toy.constructor.selenium.functions.searching.SearchSupplier.textField;
 import static com.github.toy.constructor.selenium.functions.searching.SearchSupplier.widget;
-import static com.github.toy.constructor.selenium.functions.searching.SequentialSearchSupplier.element;
 import static java.time.Duration.ofMillis;
 import static java.time.Duration.ofSeconds;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -26,13 +25,13 @@ public class EditDescriptionTest {
 
     @Test
     public void editWithSearchingForSomeEditable() {
-        assertThat(valueOfThe(element(widget(SomeStubEditableWidget.class, ofSeconds(50),
-                shouldBeVisible().and(shouldHaveAttributeContains("id", "someId"))))
+        assertThat(valueOfThe(widget(SomeStubEditableWidget.class, ofSeconds(50),
+                shouldBeVisible().and(shouldHaveAttributeContains("id", "someId")))
 
                 .foundFrom(new DescribedWebElement()), "12345")
 
-                .andValueOfThe(element(textField("Some field", ofMillis(500),
-                        shouldBeVisible().and(shouldBeEnabled()))), List.of(TAB, "123")).get().toString(),
+                .andValueOfThe(textField("Some field", ofMillis(500),
+                        shouldBeVisible().and(shouldBeEnabled())), List.of(TAB, "123")).get().toString(),
 
                 is("Edit. With parameters: {Text field with condition (Should have string label(s) [Some field]) " +
                         "AND ((Should be visible) AND (Should be enabled)). Time to get valuable result: 0:00:00:500,[\uE004, 123]}"));

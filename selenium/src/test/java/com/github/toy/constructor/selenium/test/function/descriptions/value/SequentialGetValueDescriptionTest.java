@@ -1,7 +1,6 @@
 package com.github.toy.constructor.selenium.test.function.descriptions.value;
 
 import com.github.toy.constructor.selenium.api.widget.*;
-import com.github.toy.constructor.selenium.functions.searching.SearchSupplier;
 import com.github.toy.constructor.selenium.test.function.descriptions.DescribedWebElement;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.Test;
@@ -10,7 +9,6 @@ import static com.github.toy.constructor.selenium.functions.searching.CommonCond
 import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.shouldHaveCssValueContains;
 import static com.github.toy.constructor.selenium.functions.searching.SearchSupplier.tab;
 import static com.github.toy.constructor.selenium.functions.searching.SearchSupplier.textField;
-import static com.github.toy.constructor.selenium.functions.searching.SequentialSearchSupplier.element;
 import static com.github.toy.constructor.selenium.functions.value.SequentialGetValueSupplier.ofThe;
 import static java.time.Duration.ofSeconds;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -20,8 +18,8 @@ public class SequentialGetValueDescriptionTest {
 
     @Test
     public void getValueWithSearchingForSomeValuable() {
-        assertThat(ofThe(element(textField("Some text field", ofSeconds(55), shouldBeVisible()
-                .and(shouldHaveCssValueContains("some css", "some value"))))
+        assertThat(ofThe(textField("Some text field", ofSeconds(55), shouldBeVisible()
+                .and(shouldHaveCssValueContains("some css", "some value")))
                         .foundFrom(tab("Tab 1"))).get().toString(),
                 is("Get value from (Text field with condition " +
                         "(Should have string label(s) [Some text field]) AND ((Should be visible) " +

@@ -1,20 +1,19 @@
 package com.github.toy.constructor.selenium.test.function.descriptions.target.locator.frame;
 
+import com.github.toy.constructor.selenium.api.widget.Name;
+import com.github.toy.constructor.selenium.api.widget.Widget;
 import com.github.toy.constructor.selenium.test.function.descriptions.DescribedWebElement;
+import org.openqa.selenium.WebElement;
 import org.testng.annotations.Test;
 
 
-import static com.github.toy.constructor.selenium.functions.searching.SearchSupplier.webElement;
-import static com.github.toy.constructor.selenium.functions.target.locator.frame.GetFrameFunction.index;
-import static com.github.toy.constructor.selenium.functions.target.locator.frame.GetFrameFunction.insideElement;
-import static com.github.toy.constructor.selenium.functions.target.locator.frame.GetFrameFunction.nameOrId;
+import static com.github.toy.constructor.selenium.functions.target.locator.frame.GetFrameFunction.*;
 import static com.github.toy.constructor.selenium.functions.target.locator.frame.GetFrameSupplier.frame;
 import static com.github.toy.constructor.selenium.properties.WaitingProperties.TimeUnitProperties.WAITING_FRAME_SWITCHING_TIME_UNIT;
 import static com.github.toy.constructor.selenium.properties.WaitingProperties.TimeValueProperties.WAITING_FRAME_SWITCHING_TIME_VALUE;
 import static java.time.Duration.ofSeconds;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.openqa.selenium.By.xpath;
 
 public class GetFrameDescriptionTest {
 
@@ -106,33 +105,46 @@ public class GetFrameDescriptionTest {
     }
 
     @Test
-    public void webElementSearchingWithTimeOutDescriptionTest() {
-        assertThat(frame(insideElement(ofSeconds(7), webElement(xpath(".//some//path")))).get().toString(),
-                is("Frame inside [Web element. Time to get valuable result: 0:01:00:000]. " +
+    public void wrappedWebElementWithTimeOutDescriptionTest() {
+        assertThat(frame(wrappedBy(ofSeconds(7), new FrameWidget(new DescribedWebElement()))).get().toString(),
+                is("Frame inside element wrapped by Frame widget. " +
                         "Time to get valuable result: 0:00:07:000 from (Current content)"));
     }
 
 
     @Test
-    public void webElementSearchingWithoutTimeOutDescriptionTest() {
-        assertThat(frame(insideElement(webElement(xpath(".//some//path")))).get().toString(),
-                is("Frame inside [Web element. Time to get valuable result: 0:01:00:000]. " +
+    public void wrappedWebElementWithoutTimeOutDescriptionTest() {
+        assertThat(frame(wrappedBy(new FrameWidget(new DescribedWebElement()))).get().toString(),
+                is("Frame inside element wrapped by Frame widget. " +
                         "Time to get valuable result: 0:01:00:000 from (Current content)"));
     }
 
     @Test
-    public void webElementSearchingWithTimeOutDefinedInPropertiesDescriptionTest() {
+    public void wrappedWebElementWithTimeOutDefinedInPropertiesDescriptionTest() {
         System.setProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getPropertyName(), "MINUTES");
         System.setProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getPropertyName(), "3");
 
         try {
-            assertThat(frame(insideElement(webElement(xpath(".//some//path")))).get().toString(),
-                    is("Frame inside [Web element. Time to get valuable result: 0:01:00:000]. " +
+            assertThat(frame(wrappedBy(new FrameWidget(new DescribedWebElement()))).get().toString(),
+                    is("Frame inside element wrapped by Frame widget. " +
                             "Time to get valuable result: 0:03:00:000 from (Current content)"));
         }
         finally {
             System.getProperties().remove(WAITING_FRAME_SWITCHING_TIME_UNIT.getPropertyName());
             System.getProperties().remove(WAITING_FRAME_SWITCHING_TIME_VALUE.getPropertyName());
+        }
+    }
+
+    @Name("Frame widget")
+    private static class FrameWidget extends Widget {
+
+        FrameWidget(WebElement wrappedElement) {
+            super(wrappedElement);
+        }
+
+        @Override
+        public String toString() {
+            return "Frame widget";
         }
     }
 }

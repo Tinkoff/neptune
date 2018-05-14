@@ -1,6 +1,6 @@
 package com.github.toy.constructor.selenium.functions.searching;
 
-import com.github.toy.constructor.core.api.GetSupplier;
+import com.github.toy.constructor.core.api.SequentialGetSupplier;
 import com.github.toy.constructor.selenium.api.widget.Labeled;
 import com.github.toy.constructor.selenium.api.widget.Widget;
 import com.github.toy.constructor.selenium.api.widget.drafts.*;
@@ -24,10 +24,11 @@ import static com.github.toy.constructor.selenium.properties.WaitingProperties.E
 
 @SuppressWarnings("unused")
 public final class MultipleSearchSupplier<R extends SearchContext> extends
-        GetSupplier<SearchContext, List<R>, MultipleSearchSupplier<R>> {
+        SequentialGetSupplier<SearchContext, List<R>, SearchContext, MultipleSearchSupplier<R>> {
 
-    private MultipleSearchSupplier() {
-        super();
+
+    private MultipleSearchSupplier(Function<SearchContext, List<R>> function) {
+        set(function);
     }
 
     /**
@@ -45,7 +46,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      */
     public static <T extends SearchContext> MultipleSearchSupplier<T> items(Function<SearchContext,List<T>> transformation,
                                                                             Duration duration, Predicate<? super T> condition) {
-        return new MultipleSearchSupplier<T>().set(getIterable(transformation, condition, duration, false, true));
+        return new MultipleSearchSupplier<>(getIterable(transformation, condition, duration, false, true));
     }
 
     /**
@@ -2579,5 +2580,44 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      */
     public static MultipleSearchSupplier<TableCell> tableCells() {
         return widgets(TableCell.class);
+    }
+
+    /**
+     * Constructs the chained searching from some instance of {@link SearchContext}.
+     *
+     * @param from is how to find some elements from a parent element.
+     * @return self-reference
+     */
+    public <Q extends SearchContext> MultipleSearchSupplier<R> foundFrom(SearchSupplier<Q> from) {
+        return super.from(from);
+    }
+
+    /**
+     * Constructs the chained searching from some instance of {@link SearchContext}.
+     *
+     * @param from is a parent element.
+     * @param <Q> is a type of the parent element.
+     * @return self-reference
+     */
+    public <Q extends SearchContext> MultipleSearchSupplier<R> foundFrom(Q from) {
+        return super.from(from);
+    }
+
+    /**
+     * Constructs the chained searching from result of some function applying. This function should take some
+     * {@link SearchContext} as the input parameter and return some list of found instances of {@link SearchContext}.
+     *
+     * @param from is a function which takes some {@link SearchContext} as the input parameter and returns some
+     *             list of found instances of {@link SearchContext}.
+     * @param <Q> is a type of the parent element.
+     * @return self-reference
+     */
+    public <Q extends SearchContext>  MultipleSearchSupplier<R> foundFrom(Function<SearchContext, Q> from) {
+        return super.from(from);
+    }
+
+    @Override
+    protected Function<SearchContext, List<R>> getEndFunction() {
+        return get();
     }
 }

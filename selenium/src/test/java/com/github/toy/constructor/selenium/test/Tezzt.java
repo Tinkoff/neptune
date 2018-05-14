@@ -26,11 +26,7 @@ import static com.github.toy.constructor.selenium.functions.target.locator.alert
 import static com.github.toy.constructor.selenium.functions.click.ClickActionSupplier.on;
 import static com.github.toy.constructor.selenium.functions.java.script.GetJavaScriptResultSupplier.javaScript;
 import static com.github.toy.constructor.selenium.functions.searching.SearchSupplier.*;
-import static com.github.toy.constructor.selenium.functions.searching.SequentialMultipleSearchSupplier.elements;
-import static com.github.toy.constructor.selenium.functions.searching.SequentialSearchSupplier.element;
-import static com.github.toy.constructor.selenium.functions.target.locator.frame.GetFrameFunction.index;
-import static com.github.toy.constructor.selenium.functions.target.locator.frame.GetFrameFunction.insideElement;
-import static com.github.toy.constructor.selenium.functions.target.locator.frame.GetFrameFunction.nameOrId;
+import static com.github.toy.constructor.selenium.functions.target.locator.frame.GetFrameFunction.*;
 import static com.github.toy.constructor.selenium.functions.target.locator.frame.GetFrameSupplier.frame;
 import static com.github.toy.constructor.selenium.functions.target.locator.window.GetWindowSupplier.window;
 import static com.github.toy.constructor.selenium.functions.target.locator.window.WindowPredicates.hasTitle;
@@ -69,34 +65,33 @@ public class Tezzt {
     public void tezzt() throws Exception {
         SeleniumSteps selenium = getSubstituted(SeleniumSteps.class);
 
-        Button button = selenium.find(element(button("B1"))
+        Button button = selenium.find(button("B1")
                 .foundFrom(link("L1"))
                 .foundFrom(webElement(xpath(""))));
 
-        List<Link> links = selenium.find(elements(links())
+        List<Link> links = selenium.find(links()
                 .foundFrom(button)
                 .foundFrom(webElement(xpath(""))));
 
         List<TextField> textFields =
-                selenium.click(on(element(button("submit", ofSeconds(50))).foundFrom(webElement(xpath(""))))
-                        .andOn(element(link()))
-                        .andOn(button))
-                .find(elements(textFields()));
+                selenium.click(on(button("submit", ofSeconds(50)).foundFrom(webElement(xpath(""))))
+                        .andOn(link())
+                        .andOn(button()))
+                .find(textFields());
 
         selenium.perform(action("High-level complex step", seleniumSteps -> {
             //everything below will be documented as sub steps
-            seleniumSteps.click(on(element(tab("Some tab")))
-                    .andOn(element(button("Some button", ofSeconds(50)))
+            seleniumSteps.click(on(tab("Some tab"))
+                    .andOn(button("Some button", ofSeconds(50))
                             .foundFrom(webElement(xpath("some path")))));
 
-            String text = selenium.getValue(ofThe(element(textField("Some text field"))));
+            String text = selenium.getValue(ofThe(textField("Some text field")));
 
             selenium.edit(
-                    valueOfThe(
-                            element(textField(ofSeconds(5),
-                                    shouldBeEnabled().and(shouldBeVisible()))), of("123", HOME))
+                    valueOfThe(textField(ofSeconds(5),
+                                    shouldBeEnabled().and(shouldBeVisible())), of("123", HOME))
 
-                    .andValueOfThe(element(flag()), true));
+                    .andValueOfThe(flag(), true));
 
             selenium.evaluate(javaScript("Some script"));
 
@@ -104,14 +99,12 @@ public class Tezzt {
 
             seleniumSteps.alert(dismiss(alert)).alert(accept(alert(ofSeconds(20))));
 
-            seleniumSteps.get(attributeValue("some attr").of(element(webElement(xpath("some path")))
+            seleniumSteps.get(attributeValue("some attr").of(webElement(xpath("some path"))
                     .foundFrom(button("Some button"))));
 
             seleniumSteps.get(cssValue("some attr")
-                    .of(
-                            element(webElement(xpath("some path")))
-                                    .foundFrom(button("S`ome button"))
-                    ));
+                    .of(webElement(xpath("some path"))
+                                    .foundFrom(button("S`ome button"))));
 
             Window window = selenium.get(window().byIndex(1).onCondition(hasTitle("Some title")
                     .or(hasTitle(compile("Some title pattern")).and(hasUrl("Some url"))))
@@ -121,8 +114,7 @@ public class Tezzt {
             selenium.performSwitch(to(frame(index(ofSeconds(5), 1))).andThenSwitchTo(window));
             selenium.performSwitch(to(frame(nameOrId(ofSeconds(5), "frame name"))));
             selenium.performSwitch(to(frame(insideElement(ofSeconds(5),
-                    selenium.find(element(webElement(xpath("some path"))))))));
-            selenium.performSwitch(to(frame(insideElement(ofSeconds(5), webElement(xpath("some path"))))));
+                    selenium.find(webElement(xpath("some path")))))));
         }));
 
         selenium.navigate(toUrl("www.youtube.com")
@@ -136,111 +128,111 @@ public class Tezzt {
         SeleniumSteps selenium = getSubstituted(SeleniumSteps.class, params());
 
         assertThat("Check element",
-                selenium.find(element(webElement(xpath("some path")))),
+                selenium.find(webElement(xpath("some path"))),
                 hasNestedElement(button("Submit", ofSeconds(50), shouldBeVisible())));
 
         assertThat("Check elements",
-                selenium.find(element(webElement(xpath("some path 2")))),
+                selenium.find(webElement(xpath("some path 2"))),
                 hasNestedElements(buttons("Submit", ofSeconds(50), shouldBeVisible()))
                         .withCount(2).checkCountStrictly(true));
 
         assertThat("Check element",
-                selenium.find(element(webElement(xpath("some path 3")))),
+                selenium.find(webElement(xpath("some path 3"))),
                 isVisible());
 
         assertThat("Check element",
-                selenium.find(element(webElement(xpath("some path 4")))),
+                selenium.find(webElement(xpath("some path 4"))),
                 isEnabled());
 
         assertThat("Check element",
-                selenium.find(element(webElement(xpath("some path 5")))),
+                selenium.find(webElement(xpath("some path 5"))),
                 hasAttribute("Some attr", containsString("123")));
 
         assertThat("Check element",
-                selenium.find(element(webElement(xpath("some path 6")))),
+                selenium.find(webElement(xpath("some path 6"))),
                 hasAttribute("Some attr2", "123"));
 
         assertThat("Check element",
-                selenium.find(element(webElement(xpath("some path 7")))),
+                selenium.find(webElement(xpath("some path 7"))),
                 hasAttribute("Some attr3"));
 
         assertThat("Check element",
-                selenium.find(element(webElement(xpath("some path 8")))),
+                selenium.find(webElement(xpath("some path 8"))),
                 hasCss("Some css", containsString("123")));
 
         assertThat("Check element",
-                selenium.find(element(webElement(xpath("some path 9")))),
+                selenium.find(webElement(xpath("some path 9"))),
                 hasCss("Some css2", "123"));
 
         assertThat("Check element",
-                selenium.find(element(webElement(xpath("some path 10")))),
+                selenium.find(webElement(xpath("some path 10"))),
                 hasCss("Some css3"));
 
         assertThat("Check element",
-                selenium.find(element(webElement(xpath("some path 11")))),
+                selenium.find(webElement(xpath("some path 11"))),
                 hasText(containsString("123")));
 
         assertThat("Check element",
-                selenium.find(element(webElement(xpath("some path 12")))),
+                selenium.find(webElement(xpath("some path 12"))),
                 hasText("123"));
 
         assertThat("Check element",
-                selenium.find(element(webElement(xpath("some path 13")))),
+                selenium.find(webElement(xpath("some path 13"))),
                 hasText());
 
 
         assertThat("Check value",
-                selenium.find(element(textField())),
+                selenium.find(textField()),
                 hasValue("123"));
 
         assertThat("Check value",
-                selenium.find(element(textField())),
+                selenium.find(textField()),
                 hasValue(containsString("123")));
 
         assertThat("Check value",
-                selenium.find(element(checkbox())),
+                selenium.find(checkbox()),
                 hasValue(true));
 
 
         assertThat("Check size",
-                selenium.find(element(textField())),
+                selenium.find(textField()),
                 hasDimensionalSize(1, 2));
 
         assertThat("Check size",
-                selenium.find(element(textField())),
+                selenium.find(textField()),
                 hasDimensionalSize(greaterThan(1), greaterThan(2)));
 
         assertThat("Check size",
-                selenium.find(element(textField())),
+                selenium.find(textField()),
                 hasDimensionalSize(1, greaterThan(2)));
 
         assertThat("Check size",
-                selenium.find(element(textField())),
+                selenium.find(textField()),
                 hasDimensionalSize(greaterThan(1), 2));
 
         assertThat("Check location",
-                selenium.find(element(textField())),
+                selenium.find(textField()),
                 hasLoction(1, 2));
 
         assertThat("Check location",
-                selenium.find(element(textField())),
+                selenium.find(textField()),
                 hasLoction(greaterThan(1), greaterThan(2)));
 
         assertThat("Check location",
-                selenium.find(element(textField())),
+                selenium.find(textField()),
                 hasLoction(1, greaterThan(2)));
 
         assertThat("Check location",
-                selenium.find(element(textField())),
+                selenium.find(textField()),
                 hasLoction(greaterThan(1), 2));
 
         assertThat("Check location",
-                selenium.find(element(textField())),
-                hasLoction(greaterThan(1), 2).relativeTo(selenium.find(element(button()))));
+                selenium.find(textField()),
+                hasLoction(greaterThan(1), 2).relativeTo(selenium.find(button())));
 
         assertThat("Check location",
-                selenium.find(element(textField())),
-                hasLoction(greaterThan(1), 2).relativeTo(selenium.find(element(webElement(xpath("path"))))));
+                selenium.find(textField()),
+                hasLoction(greaterThan(1), 2).relativeTo(selenium.find(webElement(xpath("path")))));
 
         assertThat("check window title",
                 selenium.get(window().withTimeToGetWindow(ofSeconds(20)).byIndex(2)),

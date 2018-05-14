@@ -4,13 +4,14 @@ import com.github.toy.constructor.core.api.SequentialGetSupplier;
 import com.github.toy.constructor.selenium.SeleniumSteps;
 import com.github.toy.constructor.selenium.api.widget.HasAttribute;
 import com.github.toy.constructor.selenium.api.widget.Widget;
-import com.github.toy.constructor.selenium.functions.searching.SequentialSearchSupplier;
+import com.github.toy.constructor.selenium.functions.searching.SearchSupplier;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 
 import java.util.function.Function;
 
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
+import static com.github.toy.constructor.selenium.CurrentContentFunction.currentContent;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 
@@ -69,8 +70,8 @@ public final class SequentialGetAttributeValueSupplier extends
      *                       evaluation of the attribute value throws {@link UnsupportedOperationException}.
      * @return self-reference
      */
-    public <T extends SearchContext> SequentialGetAttributeValueSupplier of(SequentialSearchSupplier<T> searchSupplier) {
-        return super.from(searchSupplier);
+    public <T extends SearchContext> SequentialGetAttributeValueSupplier of(SearchSupplier<T> searchSupplier) {
+        return super.from(searchSupplier.get().compose(currentContent()));
     }
 
     @Override

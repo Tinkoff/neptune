@@ -1,12 +1,13 @@
 package com.github.toy.constructor.selenium.functions.target.locator.frame;
 
-import com.github.toy.constructor.selenium.functions.searching.SearchSupplier;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.WrapsElement;
 
 import java.time.Duration;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.github.toy.constructor.core.api.ToGetSingleCheckedObject.getSingle;
@@ -16,14 +17,17 @@ import static java.lang.String.format;
 
 public final class GetFrameFunction implements Function<WebDriver, Frame> {
 
+    private static final Supplier<NoSuchFrameException> NO_SUCH_FRAME_EXCEPTION_SUPPLIER =
+            () -> new NoSuchFrameException("Can't find/switch to the frame");
     private final Object frame;
 
     private GetFrameFunction(Object frame) {
+        checkArgument(frame != null, "Frame object should be defined");
         Class<?> clazz = frame.getClass();
         checkArgument(String.class.isAssignableFrom(clazz) || Integer.class.isAssignableFrom(clazz)
-                        || WebElement.class.isAssignableFrom(clazz) || SearchSupplier.class.isAssignableFrom(clazz),
-                format("Frame to switch to should be an instance of %s, %s or %s", String.class.getName(),
-                        Integer.class.getName(), WebElement.class.getName()));
+                        || WebElement.class.isAssignableFrom(clazz) || WrapsElement.class.isAssignableFrom(clazz),
+                format("Frame to switch to should be an instance of %s, %s, %s or %s", String.class.getName(),
+                        Integer.class.getName(), WebElement.class.getName(), WrapsElement.class.getName()));
         this.frame = frame;
     }
 
@@ -36,7 +40,7 @@ public final class GetFrameFunction implements Function<WebDriver, Frame> {
      */
     public static Function<WebDriver, Frame> index(Duration timeOut, int index) {
         return getSingle(toGet(format("Frame by index %s", index), new GetFrameFunction(index)),
-                timeOut, () -> new NoSuchFrameException("Can't find/switch to the frame"));
+                timeOut, NO_SUCH_FRAME_EXCEPTION_SUPPLIER);
     }
 
     /**
@@ -60,7 +64,7 @@ public final class GetFrameFunction implements Function<WebDriver, Frame> {
      */
     public static Function<WebDriver, Frame> nameOrId(Duration timeOut, String nameOrId) {
         return getSingle(toGet(format("Frame by name or id %s", nameOrId), new GetFrameFunction(nameOrId)),
-                timeOut, () -> new NoSuchFrameException("Can't find/switch to the frame"));
+                timeOut, NO_SUCH_FRAME_EXCEPTION_SUPPLIER);
     }
 
     /**
@@ -84,7 +88,7 @@ public final class GetFrameFunction implements Function<WebDriver, Frame> {
      */
     public static Function<WebDriver, Frame> insideElement(Duration timeOut, WebElement webElement) {
         return getSingle(toGet(format("Frame inside element %s", webElement), new GetFrameFunction(webElement)),
-                timeOut, () -> new NoSuchFrameException("Can't find/switch to the frame"));
+                timeOut, NO_SUCH_FRAME_EXCEPTION_SUPPLIER);
     }
 
     /**
@@ -103,12 +107,12 @@ public final class GetFrameFunction implements Function<WebDriver, Frame> {
      * Builds a function which performs switching to the frame and returns an instance of {@link Frame}.
      *
      * @param timeOut of the switching to the frame is succeeded.
-     * @param howToFind is how to find the frame element to switch to.
+     * @param wrapsElement is the wrapper of a frame element to switch to.
      * @return instance of {@link GetFrameSupplier}
      */
-    public static Function<WebDriver, Frame> insideElement(Duration timeOut, SearchSupplier<?> howToFind) {
-        return getSingle(toGet(format("Frame inside [%s]", howToFind), new GetFrameFunction(howToFind)),
-                timeOut, () -> new NoSuchFrameException("Can't find/switch to the frame"));
+    public static Function<WebDriver, Frame> wrappedBy(Duration timeOut, WrapsElement wrapsElement) {
+        return getSingle(toGet(format("Frame inside element wrapped by %s", wrapsElement), new GetFrameFunction(wrapsElement)),
+                timeOut, NO_SUCH_FRAME_EXCEPTION_SUPPLIER);
     }
 
     /**
@@ -116,11 +120,11 @@ public final class GetFrameFunction implements Function<WebDriver, Frame> {
      * About the time of the switching to the frame is succeeded
      * @see com.github.toy.constructor.selenium.properties.WaitingProperties#WAITING_FRAME_SWITCHING_DURATION
      *
-     * @param howToFind is how to find the frame element to switch to.
+     * @param wrapsElement is the wrapper of a frame element to switch to.
      * @return instance of {@link GetFrameSupplier}
      */
-    public static Function<WebDriver, Frame> insideElement(SearchSupplier<?> howToFind) {
-        return insideElement(WAITING_FRAME_SWITCHING_DURATION.get(), howToFind);
+    public static Function<WebDriver, Frame> wrappedBy(WrapsElement wrapsElement) {
+        return wrappedBy(WAITING_FRAME_SWITCHING_DURATION.get(), wrapsElement);
     }
 
     @Override

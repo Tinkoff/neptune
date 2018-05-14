@@ -3,12 +3,13 @@ package com.github.toy.constructor.selenium.functions.value;
 import com.github.toy.constructor.core.api.SequentialGetSupplier;
 import com.github.toy.constructor.selenium.SeleniumSteps;
 import com.github.toy.constructor.selenium.api.widget.HasValue;
-import com.github.toy.constructor.selenium.functions.searching.SequentialSearchSupplier;
+import com.github.toy.constructor.selenium.functions.searching.SearchSupplier;
 import org.openqa.selenium.SearchContext;
 
 import java.util.function.Function;
 
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
+import static com.github.toy.constructor.selenium.CurrentContentFunction.currentContent;
 import static com.google.common.base.Preconditions.checkArgument;
 
 public final class SequentialGetValueSupplier<T> extends
@@ -26,9 +27,9 @@ public final class SequentialGetValueSupplier<T> extends
      * @return the function which takes a value from some element and returns the value.
      */
     public static <T, R extends SearchContext & HasValue<T>> SequentialGetValueSupplier<T> ofThe(
-            SequentialSearchSupplier<R> from) {
+            SearchSupplier<R> from) {
         checkArgument(from != null, "The searching for the element which has value should be defined");
-        return new SequentialGetValueSupplier<T>().from(from);
+        return new SequentialGetValueSupplier<T>().from(from.get().compose(currentContent()));
     }
 
     /**
