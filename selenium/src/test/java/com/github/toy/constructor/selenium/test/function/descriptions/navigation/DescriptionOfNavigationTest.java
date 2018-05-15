@@ -17,7 +17,7 @@ public class DescriptionOfNavigationTest {
     @Test
     public void toUrlTest() {
         assertThat(toUrl("https://www.google.ru").andThenToUrl("https://github.com").get().toString(),
-                is("Navigate to URL. With parameters: {Current window/tab,https://github.com}"));
+                is("Navigate to URL. With parameters: {The first window/tab,https://github.com}"));
     }
 
     @Test
@@ -40,6 +40,6 @@ public class DescriptionOfNavigationTest {
         assertThat(toUrl(new DescribedWindow(), "https://www.google.ru")
 
                         .andThenToUrl(new DescribedWindow(), "https://github.com").get().toString(),
-                is("Navigate to URL. With parameters: {Window Test stab window,https://github.com}"));
+                is("Navigate to URL. With parameters: {Test stab window,https://github.com}"));
     }
 }

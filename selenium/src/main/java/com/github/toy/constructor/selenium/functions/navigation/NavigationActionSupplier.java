@@ -4,18 +4,17 @@ import com.github.toy.constructor.core.api.SequentialActionSupplier;
 import com.github.toy.constructor.selenium.SeleniumSteps;
 import com.github.toy.constructor.selenium.functions.target.locator.window.GetWindowSupplier;
 import com.github.toy.constructor.selenium.functions.target.locator.window.Window;
-import org.openqa.selenium.WebDriver;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.function.Predicate;
 
-import static com.github.toy.constructor.core.api.StoryWriter.toGet;
+import static com.github.toy.constructor.selenium.functions.target.locator.window.GetWindowSupplier.window;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-public final class NavigationActionSupplier extends SequentialActionSupplier<SeleniumSteps, WebDriver, NavigationActionSupplier> {
+public final class NavigationActionSupplier extends SequentialActionSupplier<SeleniumSteps, Window, NavigationActionSupplier> {
 
     private static final Predicate<String> CHECK_URL = (Predicate<String>) s -> {
         try {
@@ -36,7 +35,7 @@ public final class NavigationActionSupplier extends SequentialActionSupplier<Sel
     }
 
     /**
-     * Builds navigation to some URL in the current window.
+     * Builds navigation to some URL in the first window.
      *
      * @param url the url to navigate to.
      * @return built navigation action
@@ -75,8 +74,7 @@ public final class NavigationActionSupplier extends SequentialActionSupplier<Sel
      */
     public NavigationActionSupplier andThenToUrl(String url) {
         checkUrl(url);
-        return andThen("Navigate to URL",
-                toGet("Current window/tab", SeleniumSteps::getWrappedDriver), url);
+        return andThen("Navigate to URL", window(), url);
     }
 
     /**
@@ -88,10 +86,7 @@ public final class NavigationActionSupplier extends SequentialActionSupplier<Sel
      */
     public NavigationActionSupplier andThenToUrl(GetWindowSupplier windowSupplier, String url) {
         checkUrl(url);
-        checkArgument(windowSupplier != null, "The way how to get window should be defined");
-        return andThen("Navigate to URL",
-                toGet(windowSupplier.get().toString(), seleniumSteps -> seleniumSteps
-                        .get(windowSupplier).getWrappedDriver()), url);
+        return andThen("Navigate to URL", windowSupplier, url);
     }
 
     /**
@@ -103,16 +98,13 @@ public final class NavigationActionSupplier extends SequentialActionSupplier<Sel
      */
     public NavigationActionSupplier andThenToUrl(Window window, String url) {
         checkUrl(url);
-        checkArgument(window != null, "Window should be defined");
-        return andThen("Navigate to URL",
-                toGet(format("Window %s", window), seleniumSteps -> {
-                    window.switchToMe();
-                    return window.getWrappedDriver();
-                }), url);
+        return andThen("Navigate to URL", window, url);
     }
 
+
     @Override
-    protected void performActionOn(WebDriver value, Object... additionalArgument) {
-        value.get(String.valueOf(additionalArgument[0]));
+    protected void performActionOn(Window value, Object... additionalArgument) {
+        value.switchToMe();
+        value.to(String.valueOf(additionalArgument[0]));
     }
 }

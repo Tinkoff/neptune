@@ -4,27 +4,26 @@ import com.github.toy.constructor.core.api.SequentialGetSupplier;
 import com.github.toy.constructor.selenium.SeleniumSteps;
 import com.github.toy.constructor.selenium.functions.target.locator.window.GetWindowSupplier;
 import com.github.toy.constructor.selenium.functions.target.locator.window.Window;
-import org.openqa.selenium.WebDriver;
 
 import java.util.function.Function;
 
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
-import static com.google.common.base.Preconditions.checkArgument;
+import static com.github.toy.constructor.selenium.functions.target.locator.window.GetWindowSupplier.window;
 
-public final class GetCurrentUrlSupplier extends SequentialGetSupplier<SeleniumSteps, String, WebDriver, GetCurrentUrlSupplier> {
+public final class GetCurrentUrlSupplier extends SequentialGetSupplier<SeleniumSteps, String, Window, GetCurrentUrlSupplier> {
 
     private GetCurrentUrlSupplier() {
         super();
     }
 
     /**
-     * Builds a function which returns url of the page loaded in the current window/tab.
+     * Builds a function which returns url of the page loaded in the first window/tab.
      *
      * @return an instance of {@link GetCurrentUrlSupplier} which wraps a function. This function
      * returns url of the page loaded in the current window/tab.
      */
     public static GetCurrentUrlSupplier currentUrl() {
-        return new GetCurrentUrlSupplier().from(toGet("Current window", SeleniumSteps::getWrappedDriver));
+        return new GetCurrentUrlSupplier().from(window());
     }
 
     /**
@@ -35,9 +34,7 @@ public final class GetCurrentUrlSupplier extends SequentialGetSupplier<SeleniumS
      * returns url of the page loaded in some window/tab which should be got by criteria.
      */
     public static GetCurrentUrlSupplier currentUrlIn(GetWindowSupplier from) {
-        checkArgument(from != null, "The way how to get window should be defined");
-        return new GetCurrentUrlSupplier().from(toGet("Found window",
-                seleniumSteps -> seleniumSteps.get(from).getWrappedDriver()));
+        return new GetCurrentUrlSupplier().from(from);
     }
 
     /**
@@ -47,15 +44,11 @@ public final class GetCurrentUrlSupplier extends SequentialGetSupplier<SeleniumS
      * returns url of the page loaded in the window/tab.
      */
     public static GetCurrentUrlSupplier currentUrlIn(Window from) {
-        checkArgument(from != null, "Window should be defined");
-        return new GetCurrentUrlSupplier().from(toGet(String.format("Window %s", from), seleniumSteps -> {
-            from.switchToMe();
-            return from.getWrappedDriver();
-        }));
+        return new GetCurrentUrlSupplier().from(from);
     }
 
     @Override
-    protected Function<WebDriver, String> getEndFunction() {
-        return toGet("Current URL", WebDriver::getCurrentUrl);
+    protected Function<Window, String> getEndFunction() {
+        return toGet("Current URL", Window::getCurrentUrl);
     }
 }

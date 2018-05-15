@@ -101,8 +101,8 @@ public final class ClickActionSupplier extends SequentialActionSupplier<Selenium
      */
     public ClickActionSupplier andOn(GetSupplier<SearchContext, WebElement, ?> on) {
         checkArgument(on != null, "The searching for the clickable element should be defined");
-        return andThen("Click", currentContent().andThen(on.get()).andThen(toGet(on.toString(),
-                ClickActionSupplier::getClickableFromElement)));
+        return andThen("Click", currentContent()
+                .andThen(toGet(on.toString(), webDriver -> getClickableFromElement(on.get().apply(webDriver)))));
     }
 
     /**

@@ -50,7 +50,7 @@ public final class EditActionSupplier extends
     }
 
     public <T, Q extends SearchContext & Editable<T>> EditActionSupplier andValueOfThe(Q of, T value) {
-        checkArgument(of != null, "The WWWeditable element should be defined");
+        checkArgument(of != null, "The editable element should be defined");
         checkArgument(value != null, "The value which is used to edit the element should be defined");
         return andThen("Edit", of, value);
     }

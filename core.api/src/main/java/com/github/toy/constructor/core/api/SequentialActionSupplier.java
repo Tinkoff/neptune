@@ -64,6 +64,21 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
      * the input value. It is supposed to be overridden or overloaded/used by custom method.
      *
      * @param description of the action
+     * @param supplier which contains function to gets a target object from input value.
+     * @param additionalArguments that needed to perform the action. It may be ignored.
+     * @return self-reference.
+     */
+    protected THIS andThen(String description, GetSupplier<T, ? extends R, ?> supplier, Object...additionalArguments) {
+        checkArgument(supplier != null, "Supplier of a function which gets value " +
+                "to perform action is not defined");
+        return andThen(description, supplier.get(), additionalArguments);
+    }
+
+    /**
+     * This is the helping method which designed to build chains of similar actions on some objects got from
+     * the input value. It is supposed to be overridden or overloaded/used by custom method.
+     *
+     * @param description of the action
      * @param value which is used to perform the action. It is supposed that this object is got from the
      *              input value {@code T} firstly.
      * @param additionalArguments that needed to perform the action. It may be ignored.
