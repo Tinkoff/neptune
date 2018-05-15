@@ -36,7 +36,7 @@ public final class SwitchActionSupplier extends SequentialActionSupplier<Seleniu
      * @return built `switch to` action
      */
     public SwitchActionSupplier andThenSwitchTo(TargetLocatorSupplier<?> to) {
-        return andThen("Switch to", to.get());
+        return andThen("Switch to", to);
     }
 
     /**

@@ -20,7 +20,7 @@ public abstract class AlertActionSupplier extends SequentialActionSupplier<Selen
             protected void performActionOn(Alert value, Object... ignored) {
                 value.dismiss();
             }
-        }.andThen("Dismiss", supplier.get());
+        }.andThen("Dismiss", supplier);
     }
 
     /**
@@ -51,7 +51,7 @@ public abstract class AlertActionSupplier extends SequentialActionSupplier<Selen
             protected void performActionOn(Alert value, Object... ignored) {
                 value.accept();
             }
-        }.andThen("Accept", supplier.get());
+        }.andThen("Accept", supplier);
     }
 
     /**
@@ -83,7 +83,7 @@ public abstract class AlertActionSupplier extends SequentialActionSupplier<Selen
             protected void performActionOn(Alert value, Object... keys) {
                 value.sendKeys(keys[0].toString());
             }
-        }.andThen("Send keys", supplier.get(), keysToSend);
+        }.andThen("Send keys", supplier, keysToSend);
     }
 
     /**
