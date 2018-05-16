@@ -131,10 +131,6 @@ class DefaultWindow implements Window {
         this.description = description;
     }
 
-    String getHandle() {
-        return handle;
-    }
-
     @Override
     public WebDriver getWrappedDriver() {
         switchToMe();

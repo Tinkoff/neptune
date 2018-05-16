@@ -15,7 +15,7 @@ import static com.github.toy.constructor.core.api.proxy.Substitution.getSubstitu
 import static com.github.toy.constructor.selenium.functions.edit.EditActionSupplier.valueOfThe;
 import static com.github.toy.constructor.selenium.functions.navigation.GetCurrentUrlSupplier.currentUrl;
 import static com.github.toy.constructor.selenium.functions.navigation.GetCurrentUrlSupplier.currentUrlIn;
-import static com.github.toy.constructor.selenium.functions.navigation.NavigationActionSupplier.toUrl;
+import static com.github.toy.constructor.selenium.functions.navigation.ToUrl.toUrl;
 import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.shouldBeEnabled;
 import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.shouldBeVisible;
 import static com.github.toy.constructor.selenium.functions.searching.MultipleSearchSupplier.*;
