@@ -1,56 +1,71 @@
 package com.github.toy.constructor.selenium.test.steps;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static com.github.toy.constructor.selenium.test.steps.MockTargetLocator.WINDOW_HANDLES;
-import static com.github.toy.constructor.selenium.test.steps.URLs.GITHUB;
-import static com.github.toy.constructor.selenium.test.steps.URLs.GOOGLE;
-import static com.github.toy.constructor.selenium.test.steps.URLs.YOUTUBE;
+import static com.github.toy.constructor.selenium.test.steps.URLs.*;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 
-public class MockWebDriver implements WebDriver {
+public class MockWebDriver implements WebDriver, JavascriptExecutor {
 
     private final MockTargetLocator targetLocator = new MockTargetLocator(this);
+    private final MockNavigation navigation = new MockNavigation(this);
 
-    private Map<String, URLs> handlesAndUrls = new HashMap<>() {
+    final Map<String, LinkedList<URLs>> handlesAndUrlHistory = new HashMap<>() {
         {
-            put(WINDOW_HANDLES[0], GOOGLE);
-            put(WINDOW_HANDLES[1], YOUTUBE);
-            put(WINDOW_HANDLES[2], GITHUB);
+            put(WINDOW_HANDLES[0], new LinkedList<>(List.of(BLANK)));
+            put(WINDOW_HANDLES[1], new LinkedList<>(List.of(BLANK)));
+            put(WINDOW_HANDLES[2], new LinkedList<>(List.of(BLANK)));
         }
     };
 
+    final Map<String, URLs> currentUrls = new HashMap<>() {
+        {
+            put(WINDOW_HANDLES[0], BLANK);
+            put(WINDOW_HANDLES[1], BLANK);
+            put(WINDOW_HANDLES[2], BLANK);
+        }
+    };
+
+    String getMockHandle() {
+        return ofNullable(targetLocator.currentHandle)
+                .orElseThrow(() ->
+                        new WebDriverException("The window which was in focus before has been closed"));
+    }
+
+    void addUrlToHistory(String handle, URLs url) {
+        LinkedList<URLs> history = handlesAndUrlHistory.get(handle);
+        if (!history.getLast().equals(url)) {
+            history.addLast(url);
+        }
+    }
+
+    void changeCurrentUrl(String handle, URLs url) {
+        currentUrls.put(handle, url);
+    }
+
     @Override
     public void get(String url) {
-        handlesAndUrls.put(ofNullable(targetLocator.currentHandle)
-                .orElseThrow(() -> new WebDriverException("The window which was in focus before has been closed")),
-                stream(URLs.values())
-                        .filter(urLs -> url.equals(urLs.getUrl())).findFirst()
-                        .orElseThrow(() -> new IllegalArgumentException(format("Unknown url %s", url))));
+        String handle = getMockHandle();
+        URLs urlEnum = stream(URLs.values())
+                .filter(urLs -> url.equals(urLs.getUrl())).findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(format("Unknown url %s", url)));
+        addUrlToHistory(handle, urlEnum);
+        changeCurrentUrl(handle, urlEnum);
     }
 
     @Override
     public String getCurrentUrl() {
-        return handlesAndUrls.get(ofNullable(targetLocator.currentHandle)
-                .orElseThrow(() -> new WebDriverException("The window which was in focus before has been closed")))
-                .getUrl();
+        return currentUrls.get(getMockHandle()).getUrl();
     }
 
     @Override
     public String getTitle() {
-        return handlesAndUrls.get(ofNullable(targetLocator.currentHandle)
-                .orElseThrow(() -> new WebDriverException("The window which was in focus before has been closed")))
-                .getTitle();
+        return currentUrls.get(getMockHandle()).getTitle();
     }
 
     @Override
@@ -70,12 +85,12 @@ public class MockWebDriver implements WebDriver {
 
     @Override
     public void close() {
-
+        handlesAndUrlHistory.remove(targetLocator.currentHandle);
     }
 
     @Override
     public void quit() {
-
+        handlesAndUrlHistory.clear();
     }
 
     @Override
@@ -95,11 +110,21 @@ public class MockWebDriver implements WebDriver {
 
     @Override
     public Navigation navigate() {
-        return null;
+        return navigation;
     }
 
     @Override
     public Options manage() {
+        return null;
+    }
+
+    @Override
+    public Object executeScript(String script, Object... args) {
+        return null;
+    }
+
+    @Override
+    public Object executeAsyncScript(String script, Object... args) {
         return null;
     }
 }

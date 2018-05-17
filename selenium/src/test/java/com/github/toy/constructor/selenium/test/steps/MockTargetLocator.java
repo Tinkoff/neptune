@@ -15,11 +15,11 @@ public class MockTargetLocator implements WebDriver.TargetLocator {
     public static String[] FRAME_NAMES_IDS = {"name1", "name2", "id1"};
     public static String[] WINDOW_HANDLES = {"handle1", "handle2", "handle3"};
 
-    private final WebDriver driver;
+    private final MockWebDriver driver;
     final List<String> handles = stream(WINDOW_HANDLES).collect(Collectors.toList());
     String currentHandle;
 
-    public MockTargetLocator(WebDriver driver) {
+    public MockTargetLocator(MockWebDriver driver) {
         this.driver = driver;
     }
 
