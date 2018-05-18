@@ -1,4 +1,4 @@
-package com.github.toy.constructor.selenium.test.steps;
+package com.github.toy.constructor.selenium.test.steps.enums;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 

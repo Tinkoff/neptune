@@ -1,5 +1,6 @@
 package com.github.toy.constructor.selenium.test.steps;
 
+import com.github.toy.constructor.selenium.test.steps.enums.URLs;
 import org.openqa.selenium.WebDriver;
 
 import java.net.URL;
@@ -14,7 +15,7 @@ public class MockNavigation implements WebDriver.Navigation {
 
     @Override
     public void back() {
-        String handle = driver.getMockHandle();
+        String handle = driver.getWindowHandle();
         URLs url = driver.currentUrls.get(handle);
         LinkedList<URLs> history = driver.handlesAndUrlHistory.get(handle);
         int index = history.indexOf(url);
@@ -26,7 +27,7 @@ public class MockNavigation implements WebDriver.Navigation {
 
     @Override
     public void forward() {
-        String handle = driver.getMockHandle();
+        String handle = driver.getWindowHandle();
         URLs url = driver.currentUrls.get(handle);
         LinkedList<URLs> history = driver.handlesAndUrlHistory.get(handle);
         int index = history.indexOf(url);
