@@ -5,6 +5,7 @@ import com.github.toy.constructor.selenium.test.steps.enums.URLs;
 import com.github.toy.constructor.selenium.test.steps.enums.WindowHandles;
 import org.apache.commons.lang3.ArrayUtils;
 import org.openqa.selenium.*;
+import org.openqa.selenium.NoSuchElementException;
 
 import java.util.*;
 
@@ -12,12 +13,14 @@ import static com.github.toy.constructor.selenium.test.steps.enums.URLs.*;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 
 public class MockWebDriver implements WebDriver, JavascriptExecutor {
 
     private final MockTargetLocator targetLocator = new MockTargetLocator(this);
     private final MockNavigation navigation = new MockNavigation(this);
     private final MockOptions options = new MockOptions(this);
+    private final List<MockWebElement> children;
 
     final Map<String, LinkedList<URLs>> handlesAndUrlHistory = new HashMap<>() {
         {
@@ -34,6 +37,10 @@ public class MockWebDriver implements WebDriver, JavascriptExecutor {
             put(WindowHandles.HANDLE3.getHandle(), BLANK);
         }
     };
+
+    private MockWebDriver(List<MockWebElement> children) {
+        this.children = children;
+    }
 
     private String getMockHandle() {
         return ofNullable(targetLocator.currentHandle)
@@ -74,12 +81,17 @@ public class MockWebDriver implements WebDriver, JavascriptExecutor {
 
     @Override
     public List<WebElement> findElements(By by) {
-        return null;
+        return children.stream().filter(mockWebElement -> mockWebElement.foundBy.equals(by)).collect(toList());
     }
 
     @Override
     public WebElement findElement(By by) {
-        return null;
+        List<WebElement> result = findElements(by);
+        if (result.size() == 0) {
+            throw new NoSuchElementException(format("Can't locate element with locator %s", by));
+        }
+
+        return result.get(0);
     }
 
     @Override
