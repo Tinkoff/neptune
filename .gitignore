@@ -54,3 +54,4 @@ gradlew
 .gradle/*
 gradle/
 */out/*
+*/*.log
