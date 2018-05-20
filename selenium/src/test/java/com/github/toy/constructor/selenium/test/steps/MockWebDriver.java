@@ -42,6 +42,10 @@ public class MockWebDriver implements WebDriver, JavascriptExecutor {
         this.children = children;
     }
 
+    public MockWebDriver() {
+        this(List.of());
+    }
+
     private String getMockHandle() {
         return ofNullable(targetLocator.currentHandle)
                 .orElseThrow(() ->
