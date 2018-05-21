@@ -1,5 +1,6 @@
 package com.github.toy.constructor.selenium.functions.target.locator;
 
+import com.github.toy.constructor.core.api.GetSupplier;
 import com.github.toy.constructor.core.api.SequentialActionSupplier;
 import com.github.toy.constructor.selenium.SeleniumSteps;
 
@@ -35,8 +36,9 @@ public final class SwitchActionSupplier extends SequentialActionSupplier<Seleniu
      * @param to is how to get some target locator
      * @return built `switch to` action
      */
+    @SuppressWarnings("unchecked")
     public SwitchActionSupplier andThenSwitchTo(TargetLocatorSupplier<?> to) {
-        return andThen("Switch to", to);
+        return andThen("Switch to", (GetSupplier) to);
     }
 
     /**

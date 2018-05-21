@@ -1,4 +1,4 @@
-package com.github.toy.constructor.selenium.test.steps;
+package com.github.toy.constructor.selenium.test.steps.tests;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.openqa.selenium.WebDriverException;

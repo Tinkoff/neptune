@@ -44,7 +44,9 @@ public final class GetWindowSupplier extends GetSupplier<SeleniumSteps, Window, 
     private static Window getWindowByIndex(SeleniumSteps seleniumSteps, String description, int index) {
         List<Window> windows = getListOfWindows(seleniumSteps, description);
         if (windows.size() >= index + 1) {
-            return windows.get(index);
+            Window result = windows.get(index);
+            result.switchToMe();
+            return result;
         }
         return null;
     }

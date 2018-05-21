@@ -1,7 +1,8 @@
-package com.github.toy.constructor.selenium.test.steps;
+package com.github.toy.constructor.selenium.test.steps.tests;
 
 import com.github.toy.constructor.selenium.SeleniumSteps;
 import com.github.toy.constructor.selenium.WrappedWebDriver;
+import com.github.toy.constructor.selenium.test.steps.MockWebDriver;
 import org.mockito.Mock;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.BeforeMethod;
@@ -30,6 +31,14 @@ public abstract class BaseStepTest {
 
     private long start;
     private long end;
+
+    protected static void setProperty(String property, String value) {
+        System.setProperty(property, value);
+    }
+
+    protected static void removeProperty(String property) {
+        System.getProperties().remove(property);
+    }
 
     protected void setStartBenchMark() {
         start = System.currentTimeMillis();

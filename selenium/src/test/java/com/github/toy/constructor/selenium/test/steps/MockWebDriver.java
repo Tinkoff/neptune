@@ -119,7 +119,7 @@ public class MockWebDriver implements WebDriver, JavascriptExecutor {
 
     @Override
     public Set<String> getWindowHandles() {
-        return Set.of(targetLocator.handles.toArray(new String[] {}));
+        return new LinkedHashSet<>(targetLocator.handles);
     }
 
     @Override

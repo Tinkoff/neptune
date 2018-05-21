@@ -30,7 +30,7 @@ public final class WindowPredicates {
      * @return predicate.
      */
     public static Predicate<Window> hasTitle(Pattern titlePattern) {
-        return condition(format("Has title which matches regExp patter '%s'", titlePattern),
+        return condition(format("Has title which matches regExp pattern '%s'", titlePattern),
                 window -> {
                     Matcher m = titlePattern.matcher(window.getTitle());
                     return m.find();
@@ -54,7 +54,7 @@ public final class WindowPredicates {
      * @return predicate.
      */
     public static Predicate<Window> hasUrl(Pattern urlPattern) {
-        return condition(format("Has loaded url which matches regExp patter '%s'", urlPattern),
+        return condition(format("Has loaded url which matches regExp pattern '%s'", urlPattern),
                 window -> {
                     Matcher m = urlPattern.matcher(window.getCurrentUrl());
                     return m.find();

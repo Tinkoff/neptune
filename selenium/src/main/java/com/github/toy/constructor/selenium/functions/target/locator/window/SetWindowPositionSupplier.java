@@ -52,7 +52,7 @@ public final class SetWindowPositionSupplier extends SequentialActionSupplier<Se
      * @return self-reference.
      */
     public SetWindowPositionSupplier andSetPositionOf(GetWindowSupplier supplier, Point position) {
-        return new SetWindowPositionSupplier().andThen("Set position of the window", supplier, position);
+        return andThen("Set position of the window", supplier, position);
     }
 
     /**

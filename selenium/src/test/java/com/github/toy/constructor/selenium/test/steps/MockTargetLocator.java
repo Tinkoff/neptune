@@ -5,17 +5,26 @@ import com.github.toy.constructor.selenium.test.steps.enums.FrameNames;
 import com.github.toy.constructor.selenium.test.steps.enums.WindowHandles;
 import org.openqa.selenium.*;
 
+import java.util.LinkedList;
 import java.util.List;
 
+import static com.github.toy.constructor.selenium.test.steps.enums.WindowHandles.HANDLE1;
+import static com.github.toy.constructor.selenium.test.steps.enums.WindowHandles.HANDLE2;
+import static com.github.toy.constructor.selenium.test.steps.enums.WindowHandles.HANDLE3;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.ArrayUtils.contains;
 
 public class MockTargetLocator implements WebDriver.TargetLocator {
 
     private final MockWebDriver driver;
-    final List<String> handles = stream(WindowHandles.values()).map(WindowHandles::getHandle).collect(toList());
+    final List<String> handles = new LinkedList<>() {
+        {
+            add(0, HANDLE1.getHandle());
+            add(1, HANDLE2.getHandle());
+            add(2, HANDLE3.getHandle());
+        }
+    };
     String currentHandle;
 
     public MockTargetLocator(MockWebDriver driver) {
