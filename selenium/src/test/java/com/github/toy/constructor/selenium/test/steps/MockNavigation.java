@@ -8,6 +8,7 @@ import java.util.LinkedList;
 
 public class MockNavigation implements WebDriver.Navigation {
     private final MockWebDriver driver;
+    private boolean refreshed;
 
     public MockNavigation(MockWebDriver driver) {
         this.driver = driver;
@@ -32,8 +33,8 @@ public class MockNavigation implements WebDriver.Navigation {
         LinkedList<URLs> history = driver.handlesAndUrlHistory.get(handle);
         int index = history.indexOf(url);
         if (index < history.size() -1 ) {
-            URLs previousUrl = history.listIterator(index).next();
-            driver.changeCurrentUrl(handle, previousUrl);
+            URLs nextUrl = history.listIterator(index + 1).next();
+            driver.changeCurrentUrl(handle, nextUrl);
         }
     }
 
@@ -47,6 +48,10 @@ public class MockNavigation implements WebDriver.Navigation {
 
     @Override
     public void refresh() {
-        //does nothing
+        refreshed = true;
+    }
+
+    public boolean isRefreshed() {
+        return refreshed;
     }
 }

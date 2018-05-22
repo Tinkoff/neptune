@@ -5,15 +5,19 @@ import org.openqa.selenium.Alert;
 public class MockAlert implements Alert {
 
     public static final String TEXT_OF_ALERT = "Text of the mocked alert";
+    private boolean accepted;
+    private boolean dismissed;
+    private String sendKeys;
+
 
     @Override
     public void dismiss() {
-        //does nothing
+        dismissed = true;
     }
 
     @Override
     public void accept() {
-        //does nothing
+        accepted = true;
     }
 
     @Override
@@ -23,6 +27,26 @@ public class MockAlert implements Alert {
 
     @Override
     public void sendKeys(String keysToSend) {
-        //does nothing
+        sendKeys = keysToSend;
+    }
+
+    public boolean isAccepted() {
+        return accepted;
+    }
+
+    public void setAccepted(boolean accepted) {
+        this.accepted = accepted;
+    }
+
+    public boolean isDismissed() {
+        return dismissed;
+    }
+
+    public void setDismissed(boolean dismissed) {
+        this.dismissed = dismissed;
+    }
+
+    public String getSendKeys() {
+        return sendKeys;
     }
 }

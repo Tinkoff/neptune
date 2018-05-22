@@ -5,8 +5,8 @@ import com.github.toy.constructor.selenium.WrappedWebDriver;
 import com.github.toy.constructor.selenium.test.steps.MockWebDriver;
 import org.mockito.Mock;
 import org.openqa.selenium.WebDriver;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
 
 import java.time.Duration;
 
@@ -52,7 +52,7 @@ public abstract class BaseStepTest {
         return end - start;
     }
 
-    @BeforeSuite
+    @BeforeClass
     public void setUpBeforeSuite() {
         initMocks(this);
     }

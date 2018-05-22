@@ -33,7 +33,7 @@ public class DescriptionOfNavigationTest {
                                         .or(hasTitle(compile("Some title pattern")).and(hasUrl("Some url"))))
                                         .withTimeToGetWindow(ofSeconds(5)), "https://github.com").get().toString(),
                 is("Navigate to URL. With parameters: {Window/tab by index 1 with condition (Has title 'Some title') " +
-                        "OR ((Has title which matches regExp patter 'Some title pattern') " +
+                        "OR ((Has title which matches regExp pattern 'Some title pattern') " +
                         "AND (Has loaded url 'Some url')). " +
                         "Time to get valuable result: 0:00:05:000,https://github.com}"));
     }
@@ -58,7 +58,7 @@ public class DescriptionOfNavigationTest {
                         .or(hasTitle(compile("Some title pattern")).and(hasUrl("Some url"))))
                         .withTimeToGetWindow(ofSeconds(5))).get().toString(),
                 is("Navigate forward. With parameters: {Window/tab by index 1 with condition " +
-                        "(Has title 'Some title') OR ((Has title which matches regExp patter 'Some title pattern') AND " +
+                        "(Has title 'Some title') OR ((Has title which matches regExp pattern 'Some title pattern') AND " +
                         "(Has loaded url 'Some url')). Time to get valuable result: 0:00:05:000}"));
     }
 
@@ -80,7 +80,7 @@ public class DescriptionOfNavigationTest {
                         .or(hasTitle(compile("Some title pattern")).and(hasUrl("Some url"))))
                         .withTimeToGetWindow(ofSeconds(5))).get().toString(),
                 is("Navigate back. With parameters: {Window/tab by index 1 with condition (Has title 'Some title') " +
-                        "OR ((Has title which matches regExp patter 'Some title pattern') " +
+                        "OR ((Has title which matches regExp pattern 'Some title pattern') " +
                         "AND (Has loaded url 'Some url')). Time to get valuable result: 0:00:05:000}"));
     }
 
@@ -102,7 +102,7 @@ public class DescriptionOfNavigationTest {
                         .or(hasTitle(compile("Some title pattern")).and(hasUrl("Some url"))))
                         .withTimeToGetWindow(ofSeconds(5))).get().toString(),
                 is("Refresh. With parameters: {Window/tab by index 1 with condition (Has title 'Some title') " +
-                        "OR ((Has title which matches regExp patter 'Some title pattern') " +
+                        "OR ((Has title which matches regExp pattern 'Some title pattern') " +
                         "AND (Has loaded url 'Some url')). Time to get valuable result: 0:00:05:000}"));
     }
 
