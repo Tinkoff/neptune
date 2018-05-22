@@ -1,15 +1,20 @@
 package com.github.toy.constructor.selenium.test.steps.tests;
 
 import com.github.toy.constructor.selenium.functions.target.locator.window.Window;
+import com.github.toy.constructor.selenium.test.steps.MockWindow;
 import org.testng.annotations.Test;
 
 import static com.github.toy.constructor.selenium.functions.navigation.Back.back;
 import static com.github.toy.constructor.selenium.functions.navigation.Forward.forward;
 import static com.github.toy.constructor.selenium.functions.navigation.GetCurrentUrlSupplier.currentUrl;
 import static com.github.toy.constructor.selenium.functions.navigation.GetCurrentUrlSupplier.currentUrlIn;
+import static com.github.toy.constructor.selenium.functions.navigation.Refresh.refresh;
 import static com.github.toy.constructor.selenium.functions.navigation.ToUrl.toUrl;
 import static com.github.toy.constructor.selenium.functions.target.locator.window.GetWindowSupplier.window;
 import static com.github.toy.constructor.selenium.test.steps.enums.URLs.*;
+import static com.github.toy.constructor.selenium.test.steps.enums.WindowHandles.HANDLE1;
+import static com.github.toy.constructor.selenium.test.steps.enums.WindowHandles.HANDLE2;
+import static com.github.toy.constructor.selenium.test.steps.enums.WindowHandles.HANDLE3;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -251,5 +256,50 @@ public class NavigationTest extends BaseStepTest {
         assertThat(seleniumSteps.get(currentUrl()), is(GITHUB.getUrl()));
         assertThat(seleniumSteps.get(currentUrlIn(window().byIndex(1))), is(DEEZER.getUrl()));
         assertThat(seleniumSteps.get(currentUrlIn(window().byIndex(2))), is(YOUTUBE.getUrl()));
+    }
+
+    @Test
+    public void refreshFirstTest() {
+        seleniumSteps.navigate(refresh());
+        assertThat(((MockWindow) seleniumSteps.getWrappedDriver().manage().window()).isRefreshed(),
+                is(true));
+    }
+
+    @Test
+    public void refreshWindowBySearching() {
+        seleniumSteps.navigate(refresh(window().byIndex(1)));
+        seleniumSteps.getWrappedDriver().switchTo().window(HANDLE2.getHandle());
+
+        assertThat(((MockWindow) seleniumSteps.getWrappedDriver().manage().window()).isRefreshed(),
+                is(true));
+    }
+
+    @Test
+    public void refreshTheWindow() {
+        Window window = seleniumSteps.get(window().byIndex(2));
+        seleniumSteps.navigate(refresh(window));
+
+        seleniumSteps.getWrappedDriver().switchTo().window(HANDLE3.getHandle());
+
+        assertThat(((MockWindow) seleniumSteps.getWrappedDriver().manage().window()).isRefreshed(),
+                is(true));
+    }
+
+    @Test
+    public void chainedRefreshTest() {
+        Window window = seleniumSteps.get(window().byIndex(2));
+        seleniumSteps.navigate(refresh(window().byIndex(1)).andThenRefresh(window));
+
+        seleniumSteps.getWrappedDriver().switchTo().window(HANDLE1.getHandle());
+        assertThat(((MockWindow) seleniumSteps.getWrappedDriver().manage().window()).isRefreshed(),
+                is(false));
+
+        seleniumSteps.getWrappedDriver().switchTo().window(HANDLE2.getHandle());
+        assertThat(((MockWindow) seleniumSteps.getWrappedDriver().manage().window()).isRefreshed(),
+                is(true));
+
+        seleniumSteps.getWrappedDriver().switchTo().window(HANDLE3.getHandle());
+        assertThat(((MockWindow) seleniumSteps.getWrappedDriver().manage().window()).isRefreshed(),
+                is(true));
     }
 }

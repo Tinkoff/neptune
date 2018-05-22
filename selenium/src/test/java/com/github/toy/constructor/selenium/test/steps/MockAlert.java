@@ -7,7 +7,7 @@ public class MockAlert implements Alert {
     public static final String TEXT_OF_ALERT = "Text of the mocked alert";
     private boolean accepted;
     private boolean dismissed;
-    private String sendKeys;
+    private String sentKeys;
 
 
     @Override
@@ -27,7 +27,7 @@ public class MockAlert implements Alert {
 
     @Override
     public void sendKeys(String keysToSend) {
-        sendKeys = keysToSend;
+        sentKeys = keysToSend;
     }
 
     public boolean isAccepted() {
@@ -46,7 +46,7 @@ public class MockAlert implements Alert {
         this.dismissed = dismissed;
     }
 
-    public String getSendKeys() {
-        return sendKeys;
+    public String getSentKeys() {
+        return sentKeys;
     }
 }

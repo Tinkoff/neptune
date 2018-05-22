@@ -8,6 +8,7 @@ public class MockWindow implements WebDriver.Window {
     private final MockWebDriver driver;
     private Dimension dimension;
     private Point point;
+    private boolean isRefreshed;
 
     public MockWindow(MockWebDriver driver, Dimension dimension, Point size) {
         this.driver = driver;
@@ -43,5 +44,13 @@ public class MockWindow implements WebDriver.Window {
     @Override
     public void fullscreen() {
         //TODO does nothing for now
+    }
+
+    public boolean isRefreshed() {
+        return isRefreshed;
+    }
+
+    public void setRefreshed(boolean refreshed) {
+        isRefreshed = refreshed;
     }
 }

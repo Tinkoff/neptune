@@ -8,7 +8,6 @@ import java.util.LinkedList;
 
 public class MockNavigation implements WebDriver.Navigation {
     private final MockWebDriver driver;
-    private boolean refreshed;
 
     public MockNavigation(MockWebDriver driver) {
         this.driver = driver;
@@ -48,10 +47,6 @@ public class MockNavigation implements WebDriver.Navigation {
 
     @Override
     public void refresh() {
-        refreshed = true;
-    }
-
-    public boolean isRefreshed() {
-        return refreshed;
+        ((MockWindow) driver.manage().window()).setRefreshed(true);
     }
 }

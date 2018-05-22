@@ -18,6 +18,8 @@ import static org.apache.commons.lang3.ArrayUtils.contains;
 public class MockTargetLocator implements WebDriver.TargetLocator {
 
     private final MockWebDriver driver;
+    private final MockAlert alert = new MockAlert();
+
     final List<String> handles = new LinkedList<>() {
         {
             add(0, HANDLE1.getHandle());
@@ -80,6 +82,6 @@ public class MockTargetLocator implements WebDriver.TargetLocator {
 
     @Override
     public Alert alert() {
-        return new MockAlert();
+        return alert;
     }
 }
