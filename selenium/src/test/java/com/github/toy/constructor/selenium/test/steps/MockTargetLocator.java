@@ -13,6 +13,7 @@ import static com.github.toy.constructor.selenium.test.steps.enums.WindowHandles
 import static com.github.toy.constructor.selenium.test.steps.enums.WindowHandles.HANDLE3;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.ArrayUtils.contains;
 
 public class MockTargetLocator implements WebDriver.TargetLocator {
@@ -28,8 +29,9 @@ public class MockTargetLocator implements WebDriver.TargetLocator {
         }
     };
     String currentHandle;
+    private WebElement activeElement;
 
-    public MockTargetLocator(MockWebDriver driver) {
+    MockTargetLocator(MockWebDriver driver) {
         this.driver = driver;
     }
 
@@ -57,7 +59,7 @@ public class MockTargetLocator implements WebDriver.TargetLocator {
 
     @Override
     public WebDriver parentFrame() {
-        return driver;
+        return driver.setSwitchedToParentFrame(true);
     }
 
     @Override
@@ -71,13 +73,15 @@ public class MockTargetLocator implements WebDriver.TargetLocator {
 
     @Override
     public WebDriver defaultContent() {
-        return driver;
+        return driver.setSwitchedToDefaultContent(true);
     }
 
     @Override
     public WebElement activeElement() {
-        //TODO
-        return null;
+        activeElement = (WebElement) ofNullable(activeElement).map(webElement -> {
+            throw new WebDriverException("Test exception");
+        }).orElseGet(ActiveWebElement::new);
+        return activeElement;
     }
 
     @Override

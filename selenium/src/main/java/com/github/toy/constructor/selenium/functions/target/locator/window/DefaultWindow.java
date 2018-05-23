@@ -83,7 +83,7 @@ class DefaultWindow implements Window {
 
     public void switchToMe() {
         if (isPresent()) {
-            driver.switchTo().window(handle).switchTo().defaultContent();
+            driver.switchTo().window(handle);
             return;
         }
         throw new NoSuchWindowException(format("%s is not present", this.toString()));

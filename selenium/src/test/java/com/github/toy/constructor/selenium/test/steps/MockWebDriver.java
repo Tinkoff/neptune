@@ -22,6 +22,9 @@ public class MockWebDriver implements WebDriver, JavascriptExecutor {
     private final MockOptions options = new MockOptions(this);
     private final List<MockWebElement> children;
 
+    private boolean isSwitchedToDefaultContent;
+    private boolean isSwitchedToParentFrame;
+
     final Map<String, LinkedList<URLs>> handlesAndUrlHistory = new HashMap<>() {
         {
             put(WindowHandles.HANDLE1.getHandle(), new LinkedList<>(List.of(BLANK)));
@@ -157,5 +160,29 @@ public class MockWebDriver implements WebDriver, JavascriptExecutor {
     @Override
     public Object executeAsyncScript(String script, Object... args) {
         return executeMockScripts(script, args);
+    }
+
+    public boolean isSwitchedToDefaultContent() {
+        return isSwitchedToDefaultContent;
+    }
+
+    public WebDriver setSwitchedToDefaultContent(boolean switchedToDefaultContent) {
+        if (!isSwitchedToDefaultContent) {
+            isSwitchedToDefaultContent = switchedToDefaultContent;
+            return this;
+        }
+        throw new WebDriverException("Test exception!");
+    }
+
+    public boolean isSwitchedToParentFrame() {
+        return isSwitchedToParentFrame;
+    }
+
+    public WebDriver setSwitchedToParentFrame(boolean switchedToParentFrame) {
+        if (!isSwitchedToParentFrame) {
+            isSwitchedToParentFrame = switchedToParentFrame;
+            return this;
+        }
+        throw new WebDriverException("Test exception!");
     }
 }
