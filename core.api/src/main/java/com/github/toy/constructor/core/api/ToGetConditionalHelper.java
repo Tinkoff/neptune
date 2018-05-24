@@ -19,6 +19,7 @@ import static org.apache.commons.lang3.time.DurationFormatUtils.formatDuration;
 /**
  * This is the util which helps to crate function with given condition.
  */
+@SuppressWarnings("unchecked")
 final class ToGetConditionalHelper {
 
     private ToGetConditionalHelper() {
@@ -97,16 +98,16 @@ final class ToGetConditionalHelper {
                     formatDuration(waitingTime.toMillis(), "H:mm:ss:SSS", true));
         }
         Duration timeOut = ofNullable(waitingTime).orElseGet(() -> ofMillis(0));
-        Duration sleeping = ofNullable(sleepingTime).orElseGet(() -> ofMillis(0));
+        Duration sleeping = ofNullable(sleepingTime).orElseGet(() -> ofMillis(50));
 
         return toGet(fullDescription, t -> {
             long currentMillis = currentTimeMillis();
-            long endMillis = currentMillis + timeOut.toMillis();
+            long endMillis = currentMillis + timeOut.toMillis() + 100;
 
             F f = null;
             boolean suitable = false;
-            while (currentTimeMillis() <= endMillis + 100 && !(suitable = till.test(f))) {
-                f = originalFunction.apply(t);
+            while (currentTimeMillis() < endMillis && !(suitable)) {
+                suitable = till.test(f = originalFunction.apply(t));
                 try {
                     sleep(sleeping.toMillis());
                 } catch (InterruptedException e) {
