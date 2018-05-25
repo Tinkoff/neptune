@@ -1,7 +1,7 @@
 package com.github.toy.constructor.selenium.test.steps.tests.target.locator;
 
-import com.github.toy.constructor.selenium.test.steps.MockWebDriver;
-import com.github.toy.constructor.selenium.test.steps.tests.BaseStepTest;
+import com.github.toy.constructor.selenium.test.MockWebDriver;
+import com.github.toy.constructor.selenium.test.BaseWebDriverTest;
 import org.openqa.selenium.WebDriverException;
 import org.testng.annotations.Test;
 
@@ -11,7 +11,7 @@ import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
 
-public class DefaultContentTest extends BaseStepTest {
+public class DefaultContentTest extends BaseWebDriverTest {
 
     @Test
     public void defaultContentTest() {

@@ -1,15 +1,15 @@
-package com.github.toy.constructor.selenium.test.steps;
+package com.github.toy.constructor.selenium.test;
 
-import com.github.toy.constructor.selenium.test.steps.enums.Scripts;
-import com.github.toy.constructor.selenium.test.steps.enums.URLs;
-import com.github.toy.constructor.selenium.test.steps.enums.WindowHandles;
+import com.github.toy.constructor.selenium.test.enums.Scripts;
+import com.github.toy.constructor.selenium.test.enums.URLs;
+import com.github.toy.constructor.selenium.test.enums.WindowHandles;
 import org.apache.commons.lang3.ArrayUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.NoSuchElementException;
 
 import java.util.*;
 
-import static com.github.toy.constructor.selenium.test.steps.enums.URLs.*;
+import static com.github.toy.constructor.selenium.test.enums.URLs.*;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
@@ -24,6 +24,7 @@ public class MockWebDriver implements WebDriver, JavascriptExecutor {
 
     private boolean isSwitchedToDefaultContent;
     private boolean isSwitchedToParentFrame;
+    private Object currentFrame;
 
     final Map<String, LinkedList<URLs>> handlesAndUrlHistory = new HashMap<>() {
         {
@@ -184,5 +185,14 @@ public class MockWebDriver implements WebDriver, JavascriptExecutor {
             return this;
         }
         throw new WebDriverException("Test exception!");
+    }
+
+    public Object getCurrentFrame() {
+        return currentFrame;
+    }
+
+    public WebDriver setFrame(Object frame) {
+        this.currentFrame = frame;
+        return this;
     }
 }

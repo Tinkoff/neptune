@@ -1,7 +1,8 @@
 package com.github.toy.constructor.selenium.test.steps.tests;
 
 import com.github.toy.constructor.selenium.functions.target.locator.window.Window;
-import com.github.toy.constructor.selenium.test.steps.MockWindow;
+import com.github.toy.constructor.selenium.test.BaseWebDriverTest;
+import com.github.toy.constructor.selenium.test.MockWindow;
 import org.testng.annotations.Test;
 
 import static com.github.toy.constructor.selenium.functions.navigation.Back.back;
@@ -11,14 +12,14 @@ import static com.github.toy.constructor.selenium.functions.navigation.GetCurren
 import static com.github.toy.constructor.selenium.functions.navigation.Refresh.refresh;
 import static com.github.toy.constructor.selenium.functions.navigation.ToUrl.toUrl;
 import static com.github.toy.constructor.selenium.functions.target.locator.window.GetWindowSupplier.window;
-import static com.github.toy.constructor.selenium.test.steps.enums.URLs.*;
-import static com.github.toy.constructor.selenium.test.steps.enums.WindowHandles.HANDLE1;
-import static com.github.toy.constructor.selenium.test.steps.enums.WindowHandles.HANDLE2;
-import static com.github.toy.constructor.selenium.test.steps.enums.WindowHandles.HANDLE3;
+import static com.github.toy.constructor.selenium.test.enums.URLs.*;
+import static com.github.toy.constructor.selenium.test.enums.WindowHandles.HANDLE1;
+import static com.github.toy.constructor.selenium.test.enums.WindowHandles.HANDLE2;
+import static com.github.toy.constructor.selenium.test.enums.WindowHandles.HANDLE3;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class NavigationTest extends BaseStepTest {
+public class NavigationTest extends BaseWebDriverTest {
 
     @Test
     public void navigationInTheFirstWindow() {

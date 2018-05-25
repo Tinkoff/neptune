@@ -1,7 +1,7 @@
 package com.github.toy.constructor.selenium.test.steps.tests.target.locator;
 
-import com.github.toy.constructor.selenium.test.steps.MockWebDriver;
-import com.github.toy.constructor.selenium.test.steps.tests.BaseStepTest;
+import com.github.toy.constructor.selenium.test.MockWebDriver;
+import com.github.toy.constructor.selenium.test.BaseWebDriverTest;
 import org.openqa.selenium.WebDriverException;
 import org.testng.annotations.Test;
 
@@ -9,7 +9,7 @@ import static com.github.toy.constructor.selenium.functions.target.locator.frame
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class ParentFrameTest extends BaseStepTest {
+public class ParentFrameTest extends BaseWebDriverTest {
 
     @Test
     public void parentFrameTest() {

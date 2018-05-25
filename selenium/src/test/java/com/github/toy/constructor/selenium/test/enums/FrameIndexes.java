@@ -1,4 +1,4 @@
-package com.github.toy.constructor.selenium.test.steps.enums;
+package com.github.toy.constructor.selenium.test.enums;
 
 public enum FrameIndexes {
     INDEX1(1),

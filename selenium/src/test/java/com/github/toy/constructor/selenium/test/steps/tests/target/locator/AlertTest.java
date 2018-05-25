@@ -1,7 +1,7 @@
 package com.github.toy.constructor.selenium.test.steps.tests.target.locator;
 
-import com.github.toy.constructor.selenium.test.steps.MockAlert;
-import com.github.toy.constructor.selenium.test.steps.tests.BaseStepTest;
+import com.github.toy.constructor.selenium.test.MockAlert;
+import com.github.toy.constructor.selenium.test.BaseWebDriverTest;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.NoAlertPresentException;
 import org.testng.annotations.Test;
@@ -13,13 +13,13 @@ import static com.github.toy.constructor.selenium.functions.target.locator.alert
 import static com.github.toy.constructor.selenium.functions.target.locator.alert.GetAlertSupplier.alert;
 import static com.github.toy.constructor.selenium.properties.WaitingProperties.TimeUnitProperties.WAITING_ALERT_TIME_UNIT;
 import static com.github.toy.constructor.selenium.properties.WaitingProperties.TimeValueProperties.WAITING_ALERT_TIME_VALUE;
-import static com.github.toy.constructor.selenium.test.steps.MockAlert.TEXT_OF_ALERT;
+import static com.github.toy.constructor.selenium.test.MockAlert.TEXT_OF_ALERT;
 import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.fail;
 
-public class AlertTest extends BaseStepTest {
+public class AlertTest extends BaseWebDriverTest {
 
     @Test
     public void getAlertWithNoArgsTest() {

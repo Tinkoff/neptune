@@ -1,8 +1,8 @@
-package com.github.toy.constructor.selenium.test.steps.tests;
+package com.github.toy.constructor.selenium.test;
 
 import com.github.toy.constructor.selenium.SeleniumSteps;
 import com.github.toy.constructor.selenium.WrappedWebDriver;
-import com.github.toy.constructor.selenium.test.steps.MockWebDriver;
+import com.github.toy.constructor.selenium.test.MockWebDriver;
 import org.mockito.Mock;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.BeforeClass;
@@ -17,7 +17,7 @@ import static java.time.Duration.ofSeconds;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public abstract class BaseStepTest {
+public abstract class BaseWebDriverTest {
 
     protected static final Duration FIVE_SECONDS = ofSeconds(5);
     protected static final Duration ONE_SECOND = ofSeconds(1);

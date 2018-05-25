@@ -1,6 +1,6 @@
-package com.github.toy.constructor.selenium.test.steps;
+package com.github.toy.constructor.selenium.test;
 
-import com.github.toy.constructor.selenium.test.steps.enums.URLs;
+import com.github.toy.constructor.selenium.test.enums.URLs;
 import org.openqa.selenium.WebDriver;
 
 import java.net.URL;

@@ -1,16 +1,16 @@
-package com.github.toy.constructor.selenium.test.steps;
+package com.github.toy.constructor.selenium.test;
 
-import com.github.toy.constructor.selenium.test.steps.enums.FrameIndexes;
-import com.github.toy.constructor.selenium.test.steps.enums.FrameNames;
-import com.github.toy.constructor.selenium.test.steps.enums.WindowHandles;
+import com.github.toy.constructor.selenium.test.enums.FrameIndexes;
+import com.github.toy.constructor.selenium.test.enums.FrameNames;
+import com.github.toy.constructor.selenium.test.enums.WindowHandles;
 import org.openqa.selenium.*;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.github.toy.constructor.selenium.test.steps.enums.WindowHandles.HANDLE1;
-import static com.github.toy.constructor.selenium.test.steps.enums.WindowHandles.HANDLE2;
-import static com.github.toy.constructor.selenium.test.steps.enums.WindowHandles.HANDLE3;
+import static com.github.toy.constructor.selenium.test.enums.WindowHandles.HANDLE1;
+import static com.github.toy.constructor.selenium.test.enums.WindowHandles.HANDLE2;
+import static com.github.toy.constructor.selenium.test.enums.WindowHandles.HANDLE3;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
@@ -40,7 +40,7 @@ public class MockTargetLocator implements WebDriver.TargetLocator {
         if (!contains(stream(FrameIndexes.values()).map(FrameIndexes::getIndex).toArray(), index)) {
             throw new NoSuchFrameException(format("There is no frame found by index %s", index));
         }
-        return driver;
+        return driver.setFrame(index);
     }
 
     @Override
@@ -48,13 +48,15 @@ public class MockTargetLocator implements WebDriver.TargetLocator {
         if (!contains(stream(FrameNames.values()).map(FrameNames::getNameOrId).toArray(), nameOrId)) {
             throw new NoSuchFrameException(format("There is no frame found by name/id %s", nameOrId));
         }
-        return driver;
+        return driver.setFrame(nameOrId);
     }
 
     @Override
     public WebDriver frame(WebElement frameElement) {
-        //TODO
-        return null;
+        if (frameElement instanceof ValidFrameWebElement) {
+            return driver.setFrame(frameElement);
+        }
+        throw new NoSuchFrameException(format("There is no frame found inside %s", frameElement.getClass().getSimpleName()));
     }
 
     @Override

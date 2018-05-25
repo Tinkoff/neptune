@@ -1,7 +1,7 @@
 package com.github.toy.constructor.selenium.test.steps.tests.target.locator;
 
 import com.github.toy.constructor.selenium.functions.target.locator.window.Window;
-import com.github.toy.constructor.selenium.test.steps.tests.BaseStepTest;
+import com.github.toy.constructor.selenium.test.BaseWebDriverTest;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.Point;
@@ -25,25 +25,25 @@ import static com.github.toy.constructor.selenium.functions.target.locator.windo
 import static com.github.toy.constructor.selenium.functions.target.locator.window.WindowPredicates.hasUrl;
 import static com.github.toy.constructor.selenium.properties.WaitingProperties.TimeUnitProperties.WAITING_WINDOW_TIME_UNIT;
 import static com.github.toy.constructor.selenium.properties.WaitingProperties.TimeValueProperties.WAITING_WINDOW_TIME_VALUE;
-import static com.github.toy.constructor.selenium.test.steps.enums.InitialPositions.POSITION_1;
-import static com.github.toy.constructor.selenium.test.steps.enums.InitialPositions.POSITION_2;
-import static com.github.toy.constructor.selenium.test.steps.enums.InitialPositions.POSITION_3;
-import static com.github.toy.constructor.selenium.test.steps.enums.InitialSizes.SIZE1;
-import static com.github.toy.constructor.selenium.test.steps.enums.InitialSizes.SIZE2;
-import static com.github.toy.constructor.selenium.test.steps.enums.InitialSizes.SIZE3;
-import static com.github.toy.constructor.selenium.test.steps.enums.URLs.FACEBOOK;
-import static com.github.toy.constructor.selenium.test.steps.enums.URLs.GITHUB;
-import static com.github.toy.constructor.selenium.test.steps.enums.URLs.GOOGLE;
-import static com.github.toy.constructor.selenium.test.steps.enums.WindowHandles.HANDLE1;
-import static com.github.toy.constructor.selenium.test.steps.enums.WindowHandles.HANDLE2;
-import static com.github.toy.constructor.selenium.test.steps.enums.WindowHandles.HANDLE3;
+import static com.github.toy.constructor.selenium.test.enums.InitialPositions.POSITION_1;
+import static com.github.toy.constructor.selenium.test.enums.InitialPositions.POSITION_2;
+import static com.github.toy.constructor.selenium.test.enums.InitialPositions.POSITION_3;
+import static com.github.toy.constructor.selenium.test.enums.InitialSizes.SIZE1;
+import static com.github.toy.constructor.selenium.test.enums.InitialSizes.SIZE2;
+import static com.github.toy.constructor.selenium.test.enums.InitialSizes.SIZE3;
+import static com.github.toy.constructor.selenium.test.enums.URLs.FACEBOOK;
+import static com.github.toy.constructor.selenium.test.enums.URLs.GITHUB;
+import static com.github.toy.constructor.selenium.test.enums.URLs.GOOGLE;
+import static com.github.toy.constructor.selenium.test.enums.WindowHandles.HANDLE1;
+import static com.github.toy.constructor.selenium.test.enums.WindowHandles.HANDLE2;
+import static com.github.toy.constructor.selenium.test.enums.WindowHandles.HANDLE3;
 import static java.time.Duration.ofSeconds;
 import static java.util.regex.Pattern.compile;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.fail;
 
-public class WindowTest extends BaseStepTest {
+public class WindowTest extends BaseWebDriverTest {
 
     @BeforeMethod
     public void prepare() {

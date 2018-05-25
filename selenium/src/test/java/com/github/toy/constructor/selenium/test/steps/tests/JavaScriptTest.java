@@ -1,5 +1,6 @@
 package com.github.toy.constructor.selenium.test.steps.tests;
 
+import com.github.toy.constructor.selenium.test.BaseWebDriverTest;
 import org.apache.commons.lang3.ArrayUtils;
 import org.openqa.selenium.WebDriverException;
 import org.testng.annotations.Test;
@@ -9,14 +10,14 @@ import java.util.function.Predicate;
 import static com.github.toy.constructor.core.api.StoryWriter.condition;
 import static com.github.toy.constructor.selenium.functions.java.script.GetJavaScriptResultSupplier.asynchronousJavaScript;
 import static com.github.toy.constructor.selenium.functions.java.script.GetJavaScriptResultSupplier.javaScript;
-import static com.github.toy.constructor.selenium.test.steps.enums.Scripts.SCRIPT_1;
-import static com.github.toy.constructor.selenium.test.steps.enums.Scripts.SCRIPT_2;
+import static com.github.toy.constructor.selenium.test.enums.Scripts.SCRIPT_1;
+import static com.github.toy.constructor.selenium.test.enums.Scripts.SCRIPT_2;
 import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.fail;
 
-public class JavaScriptTest extends BaseStepTest {
+public class JavaScriptTest extends BaseWebDriverTest {
 
     private static final Object[] ARGUMENTS = new Object[] {"Argument 1", "Argument 2", "Argument 3", "Argument 4"};
     private static final Predicate<Object> CONTAINS_ARGUMENT_1 =

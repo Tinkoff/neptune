@@ -1,4 +1,4 @@
-package com.github.toy.constructor.selenium.test.steps.enums;
+package com.github.toy.constructor.selenium.test.enums;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.openqa.selenium.*;

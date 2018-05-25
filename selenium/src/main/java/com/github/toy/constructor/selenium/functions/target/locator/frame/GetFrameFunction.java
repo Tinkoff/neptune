@@ -17,8 +17,11 @@ import static java.lang.String.format;
 
 public final class GetFrameFunction implements Function<WebDriver, Frame> {
 
-    private static final Supplier<NoSuchFrameException> NO_SUCH_FRAME_EXCEPTION_SUPPLIER =
-            () -> new NoSuchFrameException("Can't find/switch to the frame");
+
+    private static Supplier<NoSuchFrameException> returnNoSuchFrameException(String description) {
+        return () -> new NoSuchFrameException(format("Can't find/switch to the frame %s", description));
+    }
+
     private final Object frame;
 
     private GetFrameFunction(Object frame) {
@@ -40,7 +43,7 @@ public final class GetFrameFunction implements Function<WebDriver, Frame> {
      */
     public static Function<WebDriver, Frame> index(Duration timeOut, int index) {
         return getSingle(toGet(format("Frame by index %s", index), new GetFrameFunction(index)),
-                timeOut, NO_SUCH_FRAME_EXCEPTION_SUPPLIER);
+                timeOut, returnNoSuchFrameException(format("index %s", index)));
     }
 
     /**
@@ -64,7 +67,7 @@ public final class GetFrameFunction implements Function<WebDriver, Frame> {
      */
     public static Function<WebDriver, Frame> nameOrId(Duration timeOut, String nameOrId) {
         return getSingle(toGet(format("Frame by name or id %s", nameOrId), new GetFrameFunction(nameOrId)),
-                timeOut, NO_SUCH_FRAME_EXCEPTION_SUPPLIER);
+                timeOut, returnNoSuchFrameException(format("name or id %s", nameOrId)));
     }
 
     /**
@@ -88,7 +91,7 @@ public final class GetFrameFunction implements Function<WebDriver, Frame> {
      */
     public static Function<WebDriver, Frame> insideElement(Duration timeOut, WebElement webElement) {
         return getSingle(toGet(format("Frame inside element %s", webElement), new GetFrameFunction(webElement)),
-                timeOut, NO_SUCH_FRAME_EXCEPTION_SUPPLIER);
+                timeOut, returnNoSuchFrameException(format("inside element %s", webElement)));
     }
 
     /**
@@ -112,7 +115,7 @@ public final class GetFrameFunction implements Function<WebDriver, Frame> {
      */
     public static Function<WebDriver, Frame> wrappedBy(Duration timeOut, WrapsElement wrapsElement) {
         return getSingle(toGet(format("Frame inside element wrapped by %s", wrapsElement), new GetFrameFunction(wrapsElement)),
-                timeOut, NO_SUCH_FRAME_EXCEPTION_SUPPLIER);
+                timeOut, returnNoSuchFrameException(format("inside element wrapped by %s", wrapsElement)));
     }
 
     /**

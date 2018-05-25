@@ -1,4 +1,4 @@
-package com.github.toy.constructor.selenium.test.steps;
+package com.github.toy.constructor.selenium.test;
 
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
@@ -6,14 +6,14 @@ import org.openqa.selenium.logging.Logs;
 
 import java.util.Set;
 
-import static com.github.toy.constructor.selenium.test.steps.enums.InitialPositions.POSITION_1;
-import static com.github.toy.constructor.selenium.test.steps.enums.InitialPositions.POSITION_2;
-import static com.github.toy.constructor.selenium.test.steps.enums.InitialPositions.POSITION_3;
-import static com.github.toy.constructor.selenium.test.steps.enums.InitialSizes.SIZE1;
-import static com.github.toy.constructor.selenium.test.steps.enums.InitialSizes.SIZE2;
-import static com.github.toy.constructor.selenium.test.steps.enums.InitialSizes.SIZE3;
-import static com.github.toy.constructor.selenium.test.steps.enums.WindowHandles.HANDLE1;
-import static com.github.toy.constructor.selenium.test.steps.enums.WindowHandles.HANDLE2;
+import static com.github.toy.constructor.selenium.test.enums.InitialPositions.POSITION_1;
+import static com.github.toy.constructor.selenium.test.enums.InitialPositions.POSITION_2;
+import static com.github.toy.constructor.selenium.test.enums.InitialPositions.POSITION_3;
+import static com.github.toy.constructor.selenium.test.enums.InitialSizes.SIZE1;
+import static com.github.toy.constructor.selenium.test.enums.InitialSizes.SIZE2;
+import static com.github.toy.constructor.selenium.test.enums.InitialSizes.SIZE3;
+import static com.github.toy.constructor.selenium.test.enums.WindowHandles.HANDLE1;
+import static com.github.toy.constructor.selenium.test.enums.WindowHandles.HANDLE2;
 
 public class MockOptions implements WebDriver.Options {
 

@@ -1,4 +1,4 @@
-package com.github.toy.constructor.selenium.test.steps;
+package com.github.toy.constructor.selenium.test;
 
 import org.openqa.selenium.Alert;
 

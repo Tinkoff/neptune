@@ -1,8 +1,7 @@
 package com.github.toy.constructor.selenium.test.steps.tests.target.locator;
 
-import com.github.toy.constructor.selenium.test.steps.ActiveWebElement;
-import com.github.toy.constructor.selenium.test.steps.MockWebDriver;
-import com.github.toy.constructor.selenium.test.steps.tests.BaseStepTest;
+import com.github.toy.constructor.selenium.test.ActiveWebElement;
+import com.github.toy.constructor.selenium.test.BaseWebDriverTest;
 import org.openqa.selenium.WebDriverException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -12,7 +11,7 @@ import static com.github.toy.constructor.selenium.functions.target.locator.conte
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class ActiveElementTest extends BaseStepTest {
+public class ActiveElementTest extends BaseWebDriverTest {
 
     @BeforeMethod
     public void clearActiveElement() {
