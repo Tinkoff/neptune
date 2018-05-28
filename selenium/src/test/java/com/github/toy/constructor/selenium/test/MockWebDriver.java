@@ -9,6 +9,7 @@ import org.openqa.selenium.NoSuchElementException;
 
 import java.util.*;
 
+import static com.github.toy.constructor.selenium.test.FakeDOMModel.getFakeDOM;
 import static com.github.toy.constructor.selenium.test.enums.URLs.*;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
@@ -47,7 +48,7 @@ public class MockWebDriver implements WebDriver, JavascriptExecutor {
     }
 
     public MockWebDriver() {
-        this(List.of());
+        this(getFakeDOM());
     }
 
     private String getMockHandle() {
