@@ -8,7 +8,7 @@ public class MockAlert implements Alert {
     private boolean accepted;
     private boolean dismissed;
     private String sentKeys;
-
+    private boolean isSwitchedTo;
 
     @Override
     public void dismiss() {
@@ -48,5 +48,14 @@ public class MockAlert implements Alert {
 
     public String getSentKeys() {
         return sentKeys;
+    }
+
+    public boolean isSwitchedTo() {
+        return isSwitchedTo;
+    }
+
+    public Alert setSwitchedTo(boolean switchedTo) {
+        isSwitchedTo = switchedTo;
+        return this;
     }
 }

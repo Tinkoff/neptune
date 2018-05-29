@@ -13,7 +13,7 @@ import java.util.Map;
 import static com.github.toy.constructor.selenium.properties.FlagProperties.CLEAR_WEB_DRIVER_COOKIES;
 import static com.github.toy.constructor.selenium.properties.FlagProperties.GET_BACK_TO_BASE_URL;
 import static com.github.toy.constructor.selenium.properties.FlagProperties.KEEP_WEB_DRIVER_SESSION_OPENED;
-import static com.github.toy.constructor.selenium.properties.SupportedWebDriverPropertyProperty.WEB_DRIVER_TO_LAUNCH;
+import static com.github.toy.constructor.selenium.properties.SupportedWebDriverProperty.WEB_DRIVER_TO_LAUNCH;
 import static com.github.toy.constructor.selenium.properties.SupportedWebDrivers.CHROME_DRIVER;
 import static com.github.toy.constructor.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 import static java.lang.System.setProperty;

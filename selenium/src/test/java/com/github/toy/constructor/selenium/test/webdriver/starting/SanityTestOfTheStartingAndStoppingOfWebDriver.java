@@ -6,7 +6,6 @@ import com.github.toy.constructor.selenium.properties.SupportedWebDrivers;
 import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
@@ -20,8 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.github.toy.constructor.selenium.properties.CapabilityTypes.CommonCapabilityProperties.BROWSER_NAME;
-import static com.github.toy.constructor.selenium.properties.SupportedWebDriverPropertyProperty.SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY;
-import static com.github.toy.constructor.selenium.properties.SupportedWebDriverPropertyProperty.WEB_DRIVER_TO_LAUNCH;
+import static com.github.toy.constructor.selenium.properties.SupportedWebDriverProperty.SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY;
+import static com.github.toy.constructor.selenium.properties.SupportedWebDriverProperty.WEB_DRIVER_TO_LAUNCH;
 import static com.github.toy.constructor.selenium.properties.SupportedWebDrivers.*;
 import static com.github.toy.constructor.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 import static com.github.toy.constructor.selenium.properties.URLProperties.REMOTE_WEB_DRIVER_URL_PROPERTY;

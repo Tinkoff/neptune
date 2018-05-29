@@ -88,6 +88,10 @@ public class MockTargetLocator implements WebDriver.TargetLocator {
 
     @Override
     public Alert alert() {
+        return alert.setSwitchedTo(true);
+    }
+
+    public MockAlert getAlert() {
         return alert;
     }
 }

@@ -4,17 +4,17 @@ import com.github.toy.constructor.core.api.PropertySupplier;
 
 import static java.lang.String.format;
 
-public final class SupportedWebDriverPropertyProperty implements PropertySupplier<SupportedWebDrivers> {
+public final class SupportedWebDriverProperty implements PropertySupplier<SupportedWebDrivers> {
 
     /**
      * The property {@code web.driver.to.launch}. It should be defined to launch the target browser.
      * It should have the same name as one of item from {@link SupportedWebDrivers}.
      */
     public static final String WEB_DRIVER_TO_LAUNCH = "web.driver.to.launch";
-    public static final SupportedWebDriverPropertyProperty SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY =
-            new SupportedWebDriverPropertyProperty();
+    public static final SupportedWebDriverProperty SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY =
+            new SupportedWebDriverProperty();
 
-    private SupportedWebDriverPropertyProperty() {
+    private SupportedWebDriverProperty() {
         super();
     }
 

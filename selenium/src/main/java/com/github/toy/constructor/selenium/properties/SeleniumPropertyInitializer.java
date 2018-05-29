@@ -5,7 +5,7 @@ import com.github.toy.constructor.core.api.PropertySupplier;
 import java.io.*;
 import java.util.Properties;
 
-import static com.github.toy.constructor.selenium.properties.SupportedWebDriverPropertyProperty.SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY;
+import static com.github.toy.constructor.selenium.properties.SupportedWebDriverProperty.SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;

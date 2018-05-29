@@ -24,7 +24,7 @@ import static com.github.toy.constructor.selenium.properties.CapabilityTypes.FIR
 import static com.github.toy.constructor.selenium.properties.FlagProperties.*;
 import static com.github.toy.constructor.selenium.properties.SeleniumPropertyInitializer.SELENIUM_PROPERTY_FILE;
 import static com.github.toy.constructor.selenium.properties.SeleniumPropertyInitializer.refreshProperties;
-import static com.github.toy.constructor.selenium.properties.SupportedWebDriverPropertyProperty.WEB_DRIVER_TO_LAUNCH;
+import static com.github.toy.constructor.selenium.properties.SupportedWebDriverProperty.WEB_DRIVER_TO_LAUNCH;
 import static com.github.toy.constructor.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 import static com.github.toy.constructor.selenium.properties.URLProperties.REMOTE_WEB_DRIVER_URL_PROPERTY;
 import static com.github.toy.constructor.selenium.properties.WaitingProperties.*;
