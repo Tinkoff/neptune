@@ -34,6 +34,19 @@ class FakeDOMModel {
     public static final String OPTION = "option";
     public static final String MULTI_SELECT_CLASS = "multiSelect";
     public static final String ITEM_OPTION_CLASS = "item";
+    public static final String TABLE = "table";
+    public static final String T_HEAD = "thead";
+    public static final String T_BODY = "thead";
+    public static final String T_FOOT = "tfoot";
+    public static final String TR = "tr";
+    public static final String TH = "th";
+    public static final String TD = "td";
+
+    public static final String SPREAD_SHEET_CLASS = "spreadSheet";
+    public static final String HEADLINE_CLASS = "headline";
+    public static final String STRING_CLASS = "string";
+    public static final String FOOTER_CLASS = "footer";
+    public static final String CELL_CLASS = "cell";
 
     public static final String CHECK_BOX_XPATH = ".//input[@type = 'checkbox']";
     public static final String RADIO_BUTTON_XPATH = ".//input[@type = 'radio']";
@@ -245,6 +258,7 @@ class FakeDOMModel {
     public static final String TAB_TEXT14 = "Tab text Text14";
     public static final String TAB_TEXT15 = "Tab text Text15";
     public static final String TAB_TEXT16 = "Tab text Text16";
+
     private static final ByChained CHAINED_FIND_TAB = new ByChained(tagName(DIV), tagName(SPAN), tagName(LI));
 
     public static final String SELECT_LABEL_TEXT1 = "Select Label Text1";
@@ -259,6 +273,15 @@ class FakeDOMModel {
     public static final String SELECT_LABEL_TEXT10 = "Select Label Text10";
     public static final String SELECT_LABEL_TEXT11 = "Select Label Text11";
     public static final String SELECT_LABEL_TEXT12 = "Select Label Text12";
+
+    public static final String TABLE_LABEL_TEXT1 = "Table Label Text1";
+    public static final String TABLE_LABEL_TEXT2 = "Table Label Text2";
+    public static final String TABLE_LABEL_TEXT3 = "Table Label Text3";
+    public static final String TABLE_LABEL_TEXT4 = "Table Label Text4";
+    public static final String TABLE_LABEL_TEXT5 = "Table Label Text5";
+    public static final String TABLE_LABEL_TEXT6 = "Table Label Text6";
+    public static final String TABLE_LABEL_TEXT9 = "Table Label Text9";
+    public static final String TABLE_LABEL_TEXT10 = "Table Label Text10";
 
     public static final String OPTION_TEXT1 = "Option text Text1";
     public static final String OPTION_TEXT2 = "Option text Text2";
@@ -296,6 +319,162 @@ class FakeDOMModel {
     public static final String OPTION_TEXT34 = "Option text Text34";
     public static final String OPTION_TEXT35 = "Option text Text35";
     public static final String OPTION_TEXT36 = "Option text Text36";
+
+    public static final String HEADER_TEXT1 = "Header Text1";
+    public static final String HEADER_TEXT2 = "Header Text2";
+    public static final String HEADER_TEXT3 = "Header Text3";
+    public static final String HEADER_TEXT4 = "Header Text4";
+    public static final String HEADER_TEXT5 = "Header Text5";
+    public static final String HEADER_TEXT6 = "Header Text6";
+    public static final String HEADER_TEXT7 = "Header Text7";
+    public static final String HEADER_TEXT8 = "Header Text8";
+    public static final String HEADER_TEXT9 = "Header Text9";
+    public static final String HEADER_TEXT10 = "Header Text10";
+    public static final String HEADER_TEXT11 = "Header Text11";
+    public static final String HEADER_TEXT12 = "Header Text12";
+    public static final String HEADER_TEXT13 = "Header Text13";
+    public static final String HEADER_TEXT14 = "Header Text14";
+    public static final String HEADER_TEXT15 = "Header Text15";
+    public static final String HEADER_TEXT16 = "Header Text16";
+    public static final String HEADER_TEXT17 = "Header Text17";
+    public static final String HEADER_TEXT18 = "Header Text18";
+    public static final String HEADER_TEXT19 = "Header Text19";
+    public static final String HEADER_TEXT20 = "Header Text20";
+    public static final String HEADER_TEXT21 = "Header Text21";
+    public static final String HEADER_TEXT22 = "Header Text22";
+    public static final String HEADER_TEXT23 = "Header Text23";
+    public static final String HEADER_TEXT24 = "Header Text24";
+    public static final String HEADER_TEXT25 = "Header Text25";
+    public static final String HEADER_TEXT26 = "Header Text26";
+    public static final String HEADER_TEXT27 = "Header Text27";
+    public static final String HEADER_TEXT28 = "Header Text28";
+    public static final String HEADER_TEXT29 = "Header Text29";
+    public static final String HEADER_TEXT30 = "Header Text30";
+
+    public static final String FOOTER_TEXT1 = "Footer Text1";
+    public static final String FOOTER_TEXT2 = "Footer Text2";
+    public static final String FOOTER_TEXT3 = "Footer Text3";
+    public static final String FOOTER_TEXT4 = "Footer Text4";
+    public static final String FOOTER_TEXT5 = "Footer Text5";
+    public static final String FOOTER_TEXT6 = "Footer Text6";
+    public static final String FOOTER_TEXT7 = "Footer Text7";
+    public static final String FOOTER_TEXT8 = "Footer Text8";
+    public static final String FOOTER_TEXT9 = "Footer Text9";
+    public static final String FOOTER_TEXT10 = "Footer Text10";
+    public static final String FOOTER_TEXT11 = "Footer Text11";
+    public static final String FOOTER_TEXT12 = "Footer Text12";
+    public static final String FOOTER_TEXT13 = "Footer Text13";
+    public static final String FOOTER_TEXT14 = "Footer Text14";
+    public static final String FOOTER_TEXT15 = "Footer Text15";
+    public static final String FOOTER_TEXT16 = "Footer Text16";
+    public static final String FOOTER_TEXT17 = "Footer Text17";
+    public static final String FOOTER_TEXT18 = "Footer Text18";
+    public static final String FOOTER_TEXT19 = "Footer Text19";
+    public static final String FOOTER_TEXT20 = "Footer Text20";
+    public static final String FOOTER_TEXT21 = "Footer Text21";
+    public static final String FOOTER_TEXT22 = "Footer Text22";
+    public static final String FOOTER_TEXT23 = "Footer Text23";
+    public static final String FOOTER_TEXT24 = "Footer Text24";
+    public static final String FOOTER_TEXT25 = "Footer Text25";
+    public static final String FOOTER_TEXT26 = "Footer Text26";
+    public static final String FOOTER_TEXT27 = "Footer Text27";
+    public static final String FOOTER_TEXT28 = "Footer Text28";
+    public static final String FOOTER_TEXT29 = "Footer Text29";
+    public static final String FOOTER_TEXT30 = "Footer Text30";
+
+    public static final String CELL_TEXT1 = "Cell Text1";
+    public static final String CELL_TEXT2 = "Cell Text2";
+    public static final String CELL_TEXT3 = "Cell Text3";
+    public static final String CELL_TEXT4 = "Cell Text4";
+    public static final String CELL_TEXT5 = "Cell Text5";
+    public static final String CELL_TEXT6 = "Cell Text6";
+    public static final String CELL_TEXT7 = "Cell Text7";
+    public static final String CELL_TEXT8 = "Cell Text8";
+    public static final String CELL_TEXT9 = "Cell Text9";
+    public static final String CELL_TEXT10 = "Cell Text10";
+    public static final String CELL_TEXT11 = "Cell Text11";
+    public static final String CELL_TEXT12 = "Cell Text12";
+    public static final String CELL_TEXT13 = "Cell Text13";
+    public static final String CELL_TEXT14 = "Cell Text14";
+    public static final String CELL_TEXT15 = "Cell Text15";
+    public static final String CELL_TEXT16 = "Cell Text16";
+    public static final String CELL_TEXT17 = "Cell Text17";
+    public static final String CELL_TEXT18 = "Cell Text18";
+    public static final String CELL_TEXT19 = "Cell Text19";
+    public static final String CELL_TEXT20 = "Cell Text20";
+    public static final String CELL_TEXT21 = "Cell Text21";
+    public static final String CELL_TEXT22 = "Cell Text22";
+    public static final String CELL_TEXT23 = "Cell Text23";
+    public static final String CELL_TEXT24 = "Cell Text24";
+    public static final String CELL_TEXT25 = "Cell Text25";
+    public static final String CELL_TEXT26 = "Cell Text26";
+    public static final String CELL_TEXT27 = "Cell Text27";
+    public static final String CELL_TEXT28 = "Cell Text28";
+    public static final String CELL_TEXT29 = "Cell Text29";
+    public static final String CELL_TEXT30 = "Cell Text30";
+    public static final String CELL_TEXT31 = "Cell Text31";
+    public static final String CELL_TEXT32 = "Cell Text32";
+    public static final String CELL_TEXT33 = "Cell Text33";
+    public static final String CELL_TEXT34 = "Cell Text34";
+    public static final String CELL_TEXT35 = "Cell Text35";
+    public static final String CELL_TEXT36 = "Cell Text36";
+    public static final String CELL_TEXT37 = "Cell Text37";
+    public static final String CELL_TEXT38 = "Cell Text38";
+    public static final String CELL_TEXT39 = "Cell Text39";
+    public static final String CELL_TEXT40 = "Cell Text40";
+    public static final String CELL_TEXT41 = "Cell Text41";
+    public static final String CELL_TEXT42 = "Cell Text42";
+    public static final String CELL_TEXT43 = "Cell Text43";
+    public static final String CELL_TEXT44 = "Cell Text44";
+    public static final String CELL_TEXT45 = "Cell Text45";
+    public static final String CELL_TEXT46 = "Cell Text46";
+    public static final String CELL_TEXT47 = "Cell Text47";
+    public static final String CELL_TEXT48 = "Cell Text48";
+    public static final String CELL_TEXT49 = "Cell Text49";
+    public static final String CELL_TEXT50 = "Cell Text50";
+    public static final String CELL_TEXT51 = "Cell Text51";
+    public static final String CELL_TEXT52 = "Cell Text52";
+    public static final String CELL_TEXT53 = "Cell Text53";
+    public static final String CELL_TEXT54 = "Cell Text54";
+    public static final String CELL_TEXT55 = "Cell Text55";
+    public static final String CELL_TEXT56 = "Cell Text56";
+    public static final String CELL_TEXT57 = "Cell Text57";
+    public static final String CELL_TEXT58 = "Cell Text58";
+    public static final String CELL_TEXT59 = "Cell Text59";
+    public static final String CELL_TEXT60 = "Cell Text60";
+    public static final String CELL_TEXT61 = "Cell Text61";
+    public static final String CELL_TEXT62 = "Cell Text62";
+    public static final String CELL_TEXT63 = "Cell Text63";
+    public static final String CELL_TEXT64 = "Cell Text64";
+    public static final String CELL_TEXT65 = "Cell Text65";
+    public static final String CELL_TEXT66 = "Cell Text66";
+    public static final String CELL_TEXT67 = "Cell Text67";
+    public static final String CELL_TEXT68 = "Cell Text68";
+    public static final String CELL_TEXT69 = "Cell Text69";
+    public static final String CELL_TEXT70 = "Cell Text70";
+    public static final String CELL_TEXT71 = "Cell Text71";
+    public static final String CELL_TEXT72 = "Cell Text72";
+    public static final String CELL_TEXT73 = "Cell Text73";
+    public static final String CELL_TEXT74 = "Cell Text74";
+    public static final String CELL_TEXT75 = "Cell Text75";
+    public static final String CELL_TEXT76 = "Cell Text76";
+    public static final String CELL_TEXT77 = "Cell Text77";
+    public static final String CELL_TEXT78 = "Cell Text78";
+    public static final String CELL_TEXT79 = "Cell Text79";
+    public static final String CELL_TEXT80 = "Cell Text80";
+    public static final String CELL_TEXT81 = "Cell Text81";
+    public static final String CELL_TEXT82 = "Cell Text82";
+    public static final String CELL_TEXT83 = "Cell Text83";
+    public static final String CELL_TEXT84 = "Cell Text84";
+    public static final String CELL_TEXT85 = "Cell Text85";
+    public static final String CELL_TEXT86 = "Cell Text86";
+    public static final String CELL_TEXT87 = "Cell Text87";
+    public static final String CELL_TEXT88 = "Cell Text88";
+    public static final String CELL_TEXT89 = "Cell Text89";
+
+    private static final ByChained CHAINED_FIND_HEADER = new ByChained(tagName(T_HEAD), tagName(TR));
+    private static final ByChained CHAINED_FIND_ROW = new ByChained(tagName(T_BODY), tagName(TR));
+    private static final ByChained CHAINED_FIND_FOOTER = new ByChained(tagName(T_FOOT), tagName(TR));
 
     private static By getOptionXpath(String text) {
         return xpath(".//option[normalize-space(.) = " + escape(text) + "]");
@@ -1404,6 +1583,743 @@ class FakeDOMModel {
                     false, true, DIV, OPTION_TEXT36, of())
     ));
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public static final MockWebElement COMMON_TABLE1 = new MockWebElement(tagName(TABLE),
+            ofEntries(entry(ATTR1, VALUE3),
+                    entry(ATTR2, VALUE4),
+                    entry(ATTR3, VALUE5)),
+            ofEntries(entry(CSS1, CSS_VALUE3),
+                    entry(CSS2, CSS_VALUE4),
+                    entry(CSS3, CSS_VALUE5)), new Point(10, 20), new Dimension(20, 30), false,
+            false, TABLE, EMPTY,
+            of(new MockWebElement(CHAINED_FIND_HEADER, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TH, HEADER_TEXT1,
+                                    of()),
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TH, HEADER_TEXT2,
+                                    of()),
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TH, HEADER_TEXT3,
+                                    of())
+                    )),
+                    new MockWebElement(CHAINED_FIND_ROW, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TR, EMPTY,
+                            of(
+                                    new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT1,
+                                            of()),
+                                    new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT2,
+                                            of()),
+                                    new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT3,
+                                            of())
+                            )),
+                    new MockWebElement(CHAINED_FIND_ROW, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TR, EMPTY,
+                            of(
+                                    new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT4,
+                                            of()),
+                                    new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT5,
+                                            of()),
+                                    new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT6,
+                                            of())
+                            )),
+                    new MockWebElement(CHAINED_FIND_ROW, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TR, EMPTY,
+                            of(
+                                    new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT7,
+                                            of()),
+                                    new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT8,
+                                            of()),
+                                    new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT9,
+                                            of())
+                            )),
+                    new MockWebElement(CHAINED_FIND_FOOTER, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TR, EMPTY,
+                            of(
+                                    new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TH, FOOTER_TEXT1,
+                                            of()),
+                                    new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TH, FOOTER_TEXT2,
+                                            of()),
+                                    new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TH, FOOTER_TEXT3,
+                                            of())
+                            ))
+            ));
+
+    public static final MockWebElement COMMON_TABLE2 = new MockWebElement(tagName(TABLE),
+            ofEntries(entry(ATTR1, VALUE4),
+                    entry(ATTR2, VALUE5),
+                    entry(ATTR3, VALUE6)),
+            ofEntries(entry(CSS1, CSS_VALUE4),
+                    entry(CSS2, CSS_VALUE5),
+                    entry(CSS3, CSS_VALUE6)), new Point(15, 25), new Dimension(25, 35), true,
+            false, TABLE, EMPTY, of(new MockWebElement(CHAINED_FIND_HEADER, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TH, HEADER_TEXT4,
+                                    of()),
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TH, HEADER_TEXT5,
+                                    of()),
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TH, HEADER_TEXT6,
+                                    of())
+                    )),
+            new MockWebElement(CHAINED_FIND_ROW, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT10,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT11,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT12,
+                                    of())
+                    )),
+            new MockWebElement(CHAINED_FIND_ROW, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT13,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT14,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT15,
+                                    of())
+                    )),
+            new MockWebElement(CHAINED_FIND_ROW, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT16,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT17,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT18,
+                                    of())
+                    )),
+            new MockWebElement(CHAINED_FIND_FOOTER, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TH, FOOTER_TEXT4,
+                                    of()),
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TH, FOOTER_TEXT5,
+                                    of()),
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TH, FOOTER_TEXT6,
+                                    of())
+                    ))
+    ));
+
+    public static final MockWebElement COMMON_TABLE3 = new MockWebElement(tagName(TABLE),
+            ofEntries(entry(ATTR1, VALUE5),
+                    entry(ATTR2, VALUE6),
+                    entry(ATTR3, VALUE7)),
+            ofEntries(entry(CSS1, CSS_VALUE5),
+                    entry(CSS2, CSS_VALUE6),
+                    entry(CSS3, CSS_VALUE7)), new Point(35, 45), new Dimension(45, 44), true,
+            false, TABLE, EMPTY, of(new MockWebElement(CHAINED_FIND_HEADER, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TH, HEADER_TEXT7,
+                                    of()),
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TH, HEADER_TEXT8,
+                                    of()),
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TH, HEADER_TEXT9,
+                                    of())
+                    )),
+            new MockWebElement(CHAINED_FIND_ROW, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT19,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT20,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT21,
+                                    of())
+                    )),
+            new MockWebElement(CHAINED_FIND_ROW, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT22,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT23,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT24,
+                                    of())
+                    )),
+            new MockWebElement(CHAINED_FIND_ROW, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT25,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT26,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT27,
+                                    of())
+                    )),
+            new MockWebElement(CHAINED_FIND_FOOTER, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TH, FOOTER_TEXT7,
+                                    of()),
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TH, FOOTER_TEXT8,
+                                    of()),
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TH, FOOTER_TEXT9,
+                                    of())
+                    ))
+    ));
+
+    public static final MockWebElement COMMON_TABLE4 = new MockWebElement(tagName(TABLE),
+            ofEntries(entry(ATTR1, VALUE6),
+                    entry(ATTR2, VALUE7),
+                    entry(ATTR3, VALUE8)),
+            ofEntries(entry(CSS1, CSS_VALUE6),
+                    entry(CSS2, CSS_VALUE7),
+                    entry(CSS3, CSS_VALUE8)), new Point(53, 70), new Dimension(100, 70), false,
+            false, TABLE, EMPTY, of(new MockWebElement(CHAINED_FIND_HEADER, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TH, HEADER_TEXT10,
+                                    of()),
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TH, HEADER_TEXT11,
+                                    of()),
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TH, HEADER_TEXT12,
+                                    of())
+                    )),
+            new MockWebElement(CHAINED_FIND_ROW, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT28,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT29,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT30,
+                                    of())
+                    )),
+            new MockWebElement(CHAINED_FIND_ROW, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT31,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT32,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT33,
+                                    of())
+                    )),
+            new MockWebElement(CHAINED_FIND_ROW, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT34,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT35,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT36,
+                                    of())
+                    )),
+            new MockWebElement(CHAINED_FIND_FOOTER, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TH, FOOTER_TEXT10,
+                                    of()),
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TH, FOOTER_TEXT11,
+                                    of()),
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TH, FOOTER_TEXT12,
+                                    of())
+                    ))
+    ));
+
+
+    public static final MockWebElement COMMON_LABELED_TABLE1 = new MockWebElement(tagName(TABLE),
+            ofEntries(entry(ATTR1, VALUE7),
+                    entry(ATTR2, VALUE8),
+                    entry(ATTR3, VALUE9)),
+            ofEntries(entry(CSS1, CSS_VALUE7),
+                    entry(CSS2, CSS_VALUE8),
+                    entry(CSS3, CSS_VALUE9)),  new Point(11, 21), new Dimension(21, 32), true,
+            false, TABLE, EMPTY, of(
+            new MockWebElement(tagName(LABEL_TAG), ofEntries(), ofEntries(), new Point(11, 21),
+                    new Dimension(21, 32), true,
+                    false, LABEL_TAG, TABLE_LABEL_TEXT1, of()),
+
+            new MockWebElement(CHAINED_FIND_HEADER, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TH, HEADER_TEXT13,
+                                    of()),
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TH, HEADER_TEXT14,
+                                    of()),
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TH, HEADER_TEXT15,
+                                    of())
+                    )),
+            new MockWebElement(CHAINED_FIND_ROW, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT37,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT38,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT39,
+                                    of())
+                    )),
+            new MockWebElement(CHAINED_FIND_ROW, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT40,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT41,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT42,
+                                    of())
+                    )),
+            new MockWebElement(CHAINED_FIND_ROW, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT43,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT44,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT45,
+                                    of())
+                    )),
+            new MockWebElement(CHAINED_FIND_FOOTER, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TH, FOOTER_TEXT13,
+                                    of()),
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TH, FOOTER_TEXT14,
+                                    of()),
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TH, FOOTER_TEXT15,
+                                    of())
+                    ))
+    ));
+
+    public static final MockWebElement COMMON_LABELED_TABLE2 = new MockWebElement(tagName(SELECT),
+            ofEntries(entry(ATTR1, VALUE8),
+                    entry(ATTR2, VALUE9),
+                    entry(ATTR3, VALUE10)),
+            ofEntries(entry(CSS1, CSS_VALUE8),
+                    entry(CSS2, CSS_VALUE9),
+                    entry(CSS3, CSS_VALUE10)), new Point(13, 23), new Dimension(24, 35), false,
+            false, TABLE, EMPTY, of(
+            new MockWebElement(tagName(LABEL_TAG), ofEntries(), ofEntries(), new Point(11, 21),
+                    new Dimension(25, 31), false,
+                    false, LABEL_TAG, TABLE_LABEL_TEXT2, of()),
+
+            new MockWebElement(CHAINED_FIND_HEADER, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TH, HEADER_TEXT16,
+                                    of()),
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TH, HEADER_TEXT17,
+                                    of()),
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TH, HEADER_TEXT18,
+                                    of())
+                    )),
+            new MockWebElement(CHAINED_FIND_ROW, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT46,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT47,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT48,
+                                    of())
+                    )),
+            new MockWebElement(CHAINED_FIND_ROW, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT49,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT50,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT51,
+                                    of())
+                    )),
+            new MockWebElement(CHAINED_FIND_ROW, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT52,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT53,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT54,
+                                    of())
+                    )),
+            new MockWebElement(CHAINED_FIND_FOOTER, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TH, FOOTER_TEXT16,
+                                    of()),
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TH, FOOTER_TEXT17,
+                                    of()),
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TH, FOOTER_TEXT18,
+                                    of())
+                    ))
+    ));
+
+    public static final MockWebElement COMMON_LABELED_TABLE3 = new MockWebElement(tagName(SELECT),
+            ofEntries(entry(ATTR1, VALUE9),
+                    entry(ATTR2, VALUE10),
+                    entry(ATTR3, VALUE11)),
+            ofEntries(entry(CSS1, CSS_VALUE9),
+                    entry(CSS2, CSS_VALUE10),
+                    entry(CSS3, CSS_VALUE11)), new Point(13, 23), new Dimension(25, 36), false,
+            false, TABLE, EMPTY, of(
+            new MockWebElement(tagName(LABEL_TAG), ofEntries(), ofEntries(), new Point(12, 22),
+                    new Dimension(44, 37), false,
+                    false, LABEL_TAG, TABLE_LABEL_TEXT3, of()),
+
+            new MockWebElement(CHAINED_FIND_HEADER, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TH, HEADER_TEXT19,
+                                    of()),
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TH, HEADER_TEXT20,
+                                    of()),
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TH, HEADER_TEXT21,
+                                    of())
+                    )),
+            new MockWebElement(CHAINED_FIND_ROW, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT55,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT56,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT57,
+                                    of())
+                    )),
+            new MockWebElement(CHAINED_FIND_ROW, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT58,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT59,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT60,
+                                    of())
+                    )),
+            new MockWebElement(CHAINED_FIND_ROW, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT61,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT62,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TD, CELL_TEXT63,
+                                    of())
+                    )),
+            new MockWebElement(CHAINED_FIND_FOOTER, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TH, FOOTER_TEXT19,
+                                    of()),
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TH, FOOTER_TEXT20,
+                                    of()),
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, TH, FOOTER_TEXT21,
+                                    of())
+                    ))
+    ));
+
+    public static final MockWebElement COMMON_LABELED_TABLE4 = new MockWebElement(tagName(SELECT),
+            ofEntries(entry(ATTR1, VALUE10),
+                    entry(ATTR2, VALUE11),
+                    entry(ATTR3, VALUE12)),
+            ofEntries(entry(CSS1, CSS_VALUE10),
+                    entry(CSS2, CSS_VALUE11),
+                    entry(CSS3, CSS_VALUE12)), new Point(13, 23), new Dimension(44, 55), true,
+            false, TABLE, EMPTY, of(
+            new MockWebElement(tagName(LABEL_TAG), ofEntries(), ofEntries(), new Point(13, 27),
+                    new Dimension(36, 52), true,
+                    false, LABEL_TAG, TABLE_LABEL_TEXT4, of()),
+
+            new MockWebElement(CHAINED_FIND_HEADER, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TH, HEADER_TEXT22,
+                                    of()),
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TH, HEADER_TEXT23,
+                                    of()),
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TH, HEADER_TEXT24,
+                                    of())
+                    )),
+            new MockWebElement(CHAINED_FIND_ROW, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT64,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT65,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT66,
+                                    of())
+                    )),
+            new MockWebElement(CHAINED_FIND_ROW, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT67,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT68,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT69,
+                                    of())
+                    )),
+            new MockWebElement(CHAINED_FIND_ROW, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT70,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT71,
+                                    of()),
+                            new MockWebElement(tagName(TD), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TD, CELL_TEXT72,
+                                    of())
+                    )),
+            new MockWebElement(CHAINED_FIND_FOOTER, ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TR, EMPTY,
+                    of(
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TH, FOOTER_TEXT22,
+                                    of()),
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TH, FOOTER_TEXT23,
+                                    of()),
+                            new MockWebElement(tagName(TH), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, TH, FOOTER_TEXT24,
+                                    of())
+                    ))
+    ));
+
+
+    public static final MockWebElement SPREAD_SHEET_TABLE1 = new MockWebElement(className(SPREAD_SHEET_CLASS),
+            ofEntries(entry(ATTR1, VALUE11),
+                    entry(ATTR2, VALUE12),
+                    entry(ATTR3, VALUE13)),
+            ofEntries(entry(CSS1, CSS_VALUE11),
+                    entry(CSS2, CSS_VALUE12),
+                    entry(CSS3, CSS_VALUE13)), new Point(55, 47), new Dimension(45, 69), true,
+            false, DIV, EMPTY, of(
+            new MockWebElement(xpath(LABEL_XPATH), ofEntries(), ofEntries(), new Point(50, 41),
+                    new Dimension(33, 45), true,
+                    false, LABEL_TAG, TABLE_LABEL_TEXT5, of()),
+
+            new MockWebElement(xpath(LABEL_XPATH2), ofEntries(), ofEntries(), new Point(31, 41),
+                    new Dimension(51, 62), true,
+                    false, SPAN, TABLE_LABEL_TEXT9, of()),
+
+            new MockWebElement(className(HEADLINE_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, SPAN, EMPTY,
+                    of(
+                            new MockWebElement(className(CELL_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, DIV, HEADER_TEXT25,
+                                    of()),
+                            new MockWebElement(className(CELL_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, DIV, HEADER_TEXT26,
+                                    of()),
+                            new MockWebElement(className(CELL_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, DIV, HEADER_TEXT27,
+                                    of())
+                    )),
+            new MockWebElement(className(STRING_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, DIV, EMPTY,
+                    of(
+                            new MockWebElement(className(CELL_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, DIV, CELL_TEXT73,
+                                    of(CUSTOM_LABELED_BUTTON1)),
+                            new MockWebElement(className(CELL_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, DIV, CELL_TEXT74,
+                                    of()),
+                            new MockWebElement(className(CELL_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, DIV, CELL_TEXT75,
+                                    of())
+                    )),
+            new MockWebElement(className(STRING_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, DIV, EMPTY,
+                    of(
+                            new MockWebElement(className(CELL_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, DIV, CELL_TEXT76,
+                                    of(TEXT_AREA1)),
+                            new MockWebElement(className(CELL_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, DIV, CELL_TEXT77,
+                                    of()),
+                            new MockWebElement(className(CELL_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, DIV, CELL_TEXT78,
+                                    of())
+                    )),
+            new MockWebElement(className(STRING_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, DIV, EMPTY,
+                    of(
+                            new MockWebElement(className(CELL_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, DIV, CELL_TEXT79,
+                                    of(COMMON_LABELED_CHECKBOX5)),
+                            new MockWebElement(className(CELL_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, DIV, CELL_TEXT80,
+                                    of()),
+                            new MockWebElement(className(CELL_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, DIV, CELL_TEXT81,
+                                    of())
+                    )),
+            new MockWebElement(className(FOOTER_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, SPAN, EMPTY,
+                    of(
+                            new MockWebElement(className(CELL_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, DIV, FOOTER_TEXT25,
+                                    of()),
+                            new MockWebElement(className(CELL_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, DIV, FOOTER_TEXT26,
+                                    of()),
+                            new MockWebElement(className(CELL_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), true, false, DIV, FOOTER_TEXT27,
+                                    of())
+                    ))
+    ));
+
+    public static final MockWebElement SPREAD_SHEET_TABLE2 = new MockWebElement(className(SPREAD_SHEET_CLASS),
+            ofEntries(entry(ATTR1, VALUE12),
+                    entry(ATTR2, VALUE13),
+                    entry(ATTR3, VALUE15)),
+            ofEntries(entry(CSS1, CSS_VALUE12),
+                    entry(CSS2, CSS_VALUE13),
+                    entry(CSS3, CSS_VALUE15)), new Point(56, 48), new Dimension(46, 70), false,
+            false, DIV, EMPTY, of(
+            new MockWebElement(xpath(LABEL_XPATH), ofEntries(), ofEntries(), new Point(51, 42),
+                    new Dimension(33, 45), false,
+                    false, LABEL_TAG, TABLE_LABEL_TEXT6, of()),
+
+            new MockWebElement(xpath(LABEL_XPATH2), ofEntries(), ofEntries(), new Point(32, 42),
+                    new Dimension(52, 63), false,
+                    false, SPAN, TABLE_LABEL_TEXT10, of()),
+
+            new MockWebElement(className(HEADLINE_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, SPAN, EMPTY,
+                    of(
+                            new MockWebElement(className(CELL_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, DIV, HEADER_TEXT28,
+                                    of()),
+                            new MockWebElement(className(CELL_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, DIV, HEADER_TEXT29,
+                                    of()),
+                            new MockWebElement(className(CELL_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, DIV, HEADER_TEXT30,
+                                    of())
+                    )),
+            new MockWebElement(className(STRING_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, DIV, EMPTY,
+                    of(
+                            new MockWebElement(className(CELL_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, DIV, CELL_TEXT81,
+                                    of(CUSTOM_LABELED_BUTTON2)),
+                            new MockWebElement(className(CELL_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, DIV, CELL_TEXT82,
+                                    of()),
+                            new MockWebElement(className(CELL_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, DIV, CELL_TEXT83,
+                                    of())
+                    )),
+            new MockWebElement(className(STRING_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, DIV, EMPTY,
+                    of(
+                            new MockWebElement(className(CELL_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, DIV, CELL_TEXT84,
+                                    of(TEXT_AREA2)),
+                            new MockWebElement(className(CELL_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, DIV, CELL_TEXT85,
+                                    of()),
+                            new MockWebElement(className(CELL_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, DIV, CELL_TEXT86,
+                                    of())
+                    )),
+            new MockWebElement(className(STRING_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, DIV, EMPTY,
+                    of(
+                            new MockWebElement(className(CELL_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, DIV, CELL_TEXT87,
+                                    of(COMMON_LABELED_CHECKBOX6)),
+                            new MockWebElement(className(CELL_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, DIV, CELL_TEXT88,
+                                    of()),
+                            new MockWebElement(className(CELL_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, DIV, CELL_TEXT89,
+                                    of())
+                    )),
+            new MockWebElement(className(FOOTER_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, SPAN, EMPTY,
+                    of(
+                            new MockWebElement(className(CELL_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, DIV, FOOTER_TEXT28,
+                                    of()),
+                            new MockWebElement(className(CELL_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, DIV, FOOTER_TEXT29,
+                                    of()),
+                            new MockWebElement(className(CELL_CLASS), ofEntries(), ofEntries(), new Point(0, 0), new Dimension(0, 0), false, false, DIV, FOOTER_TEXT30,
+                                    of())
+                    ))
+    ));
+
     private final static List<MockWebElement> fakeMock = of(
             COMMON_BUTTON1, COMMON_BUTTON2, COMMON_BUTTON3, COMMON_BUTTON4,
             COMMON_LABELED_BUTTON1, COMMON_LABELED_BUTTON2, COMMON_LABELED_BUTTON3, COMMON_LABELED_BUTTON4,
@@ -1424,7 +2340,9 @@ class FakeDOMModel {
             COMMON_TAB1, COMMON_TAB2, COMMON_TAB3, COMMON_TAB4, CUSTOM_LABELED_TAB1, CUSTOM_LABELED_TAB2, CUSTOM_LABELED_TAB3,
             CUSTOM_LABELED_TAB4,
             COMMON_LABELED_SELECT1, COMMON_LABELED_SELECT2, COMMON_LABELED_SELECT3, COMMON_LABELED_SELECT4, COMMON_SELECT1,
-            COMMON_SELECT2, COMMON_SELECT3, COMMON_SELECT4, MULTI_SELECT1, MULTI_SELECT2, MULTI_SELECT3, MULTI_SELECT4
+            COMMON_SELECT2, COMMON_SELECT3, COMMON_SELECT4, MULTI_SELECT1, MULTI_SELECT2, MULTI_SELECT3, MULTI_SELECT4,
+            COMMON_LABELED_TABLE1, COMMON_LABELED_TABLE2, COMMON_LABELED_TABLE3, COMMON_LABELED_TABLE4,
+            COMMON_TABLE1, COMMON_TABLE2, COMMON_TABLE3, COMMON_TABLE4, SPREAD_SHEET_TABLE1, SPREAD_SHEET_TABLE2
     );
 
     static List<MockWebElement> getFakeDOM() {
