@@ -1,5 +1,6 @@
 package com.github.toy.constructor.selenium.test;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.support.pagefactory.ByChained;
@@ -11,6 +12,7 @@ import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.openqa.selenium.By.*;
+import static org.openqa.selenium.support.ui.Quotes.escape;
 
 class FakeDOMModel {
 
@@ -28,6 +30,10 @@ class FakeDOMModel {
     public static final String SPAN = "span";
     public static final String LI = "li";
     public static final String TAB_CLASS = "tabItem";
+    public static final String SELECT = "select";
+    public static final String OPTION = "option";
+    public static final String MULTI_SELECT_CLASS = "multiSelect";
+    public static final String ITEM_OPTION_CLASS = "item";
 
     public static final String CHECK_BOX_XPATH = ".//input[@type = 'checkbox']";
     public static final String RADIO_BUTTON_XPATH = ".//input[@type = 'radio']";
@@ -240,6 +246,60 @@ class FakeDOMModel {
     public static final String TAB_TEXT15 = "Tab text Text15";
     public static final String TAB_TEXT16 = "Tab text Text16";
     private static final ByChained CHAINED_FIND_TAB = new ByChained(tagName(DIV), tagName(SPAN), tagName(LI));
+
+    public static final String SELECT_LABEL_TEXT1 = "Select Label Text1";
+    public static final String SELECT_LABEL_TEXT2 = "Select Label Text2";
+    public static final String SELECT_LABEL_TEXT3 = "Select Label Text3";
+    public static final String SELECT_LABEL_TEXT4 = "Select Label Text4";
+    public static final String SELECT_LABEL_TEXT5 = "Select Label Text5";
+    public static final String SELECT_LABEL_TEXT6 = "Select Label Text6";
+    public static final String SELECT_LABEL_TEXT7 = "Select Label Text7";
+    public static final String SELECT_LABEL_TEXT8 = "Select Label Text8";
+    public static final String SELECT_LABEL_TEXT9 = "Select Label Text9";
+    public static final String SELECT_LABEL_TEXT10 = "Select Label Text10";
+    public static final String SELECT_LABEL_TEXT11 = "Select Label Text11";
+    public static final String SELECT_LABEL_TEXT12 = "Select Label Text12";
+
+    public static final String OPTION_TEXT1 = "Option text Text1";
+    public static final String OPTION_TEXT2 = "Option text Text2";
+    public static final String OPTION_TEXT3 = "Option text Text3";
+    public static final String OPTION_TEXT4 = "Option text Text4";
+    public static final String OPTION_TEXT5 = "Option text Text5";
+    public static final String OPTION_TEXT6 = "Option text Text6";
+    public static final String OPTION_TEXT7 = "Option text Text7";
+    public static final String OPTION_TEXT8 = "Option text Text8";
+    public static final String OPTION_TEXT9 = "Option text Text9";
+    public static final String OPTION_TEXT10 = "Option text Text10";
+    public static final String OPTION_TEXT11 = "Option text Text11";
+    public static final String OPTION_TEXT12 = "Option text Text12";
+    public static final String OPTION_TEXT13 = "Option text Text13";
+    public static final String OPTION_TEXT14 = "Option text Text14";
+    public static final String OPTION_TEXT15 = "Option text Text15";
+    public static final String OPTION_TEXT16 = "Option text Text16";
+    public static final String OPTION_TEXT17 = "Option text Text17";
+    public static final String OPTION_TEXT18 = "Option text Text18";
+    public static final String OPTION_TEXT19 = "Option text Text19";
+    public static final String OPTION_TEXT20 = "Option text Text20";
+    public static final String OPTION_TEXT21 = "Option text Text21";
+    public static final String OPTION_TEXT22 = "Option text Text22";
+    public static final String OPTION_TEXT23 = "Option text Text23";
+    public static final String OPTION_TEXT24 = "Option text Text24";
+    public static final String OPTION_TEXT25 = "Option text Text25";
+    public static final String OPTION_TEXT26 = "Option text Text26";
+    public static final String OPTION_TEXT27 = "Option text Text27";
+    public static final String OPTION_TEXT28 = "Option text Text28";
+    public static final String OPTION_TEXT29 = "Option text Text29";
+    public static final String OPTION_TEXT30 = "Option text Text30";
+    public static final String OPTION_TEXT31 = "Option text Text31";
+    public static final String OPTION_TEXT32 = "Option text Text32";
+    public static final String OPTION_TEXT33 = "Option text Text33";
+    public static final String OPTION_TEXT34 = "Option text Text34";
+    public static final String OPTION_TEXT35 = "Option text Text35";
+    public static final String OPTION_TEXT36 = "Option text Text36";
+
+    private static By getOptionXpath(String text) {
+        return xpath(".//option[normalize-space(.) = " + escape(text) + "]");
+    }
 
     public static final MockWebElement COMMON_BUTTON1 = new MockWebElement(tagName(BUTTON_TAG),
             ofEntries(entry(ATTR1, VALUE8),
@@ -1105,6 +1165,245 @@ class FakeDOMModel {
                     false, SPAN, TAB_TEXT16, of()
             )));
 
+    public static final MockWebElement COMMON_SELECT1 = new MockWebElement(tagName(SELECT),
+            ofEntries(entry(ATTR1, VALUE3),
+                    entry(ATTR2, VALUE4),
+                    entry(ATTR3, VALUE5)),
+            ofEntries(entry(CSS1, CSS_VALUE3),
+                    entry(CSS2, CSS_VALUE4),
+                    entry(CSS3, CSS_VALUE5)), new Point(10, 20), new Dimension(20, 30), false,
+            false, SELECT, EMPTY, of(
+                    new MockWebElement(getOptionXpath(OPTION_TEXT2), ofEntries(), ofEntries(), new Point(1, 2), new Dimension(2, 3),
+                            false, true, OPTION, OPTION_TEXT1, of()),
+                    new MockWebElement(getOptionXpath(OPTION_TEXT2), ofEntries(), ofEntries(), new Point(2, 3), new Dimension(4, 5),
+                            false, true, OPTION, OPTION_TEXT2, of()),
+                    new MockWebElement(getOptionXpath(OPTION_TEXT3), ofEntries(), ofEntries(), new Point(3, 4), new Dimension(5, 6),
+                            false, true, OPTION, OPTION_TEXT3, of())
+    ));
+
+    public static final MockWebElement COMMON_SELECT2 = new MockWebElement(tagName(SELECT),
+            ofEntries(entry(ATTR1, VALUE4),
+                    entry(ATTR2, VALUE5),
+                    entry(ATTR3, VALUE6)),
+            ofEntries(entry(CSS1, CSS_VALUE4),
+                    entry(CSS2, CSS_VALUE5),
+                    entry(CSS3, CSS_VALUE6)), new Point(15, 25), new Dimension(25, 35), true,
+            false, SELECT, EMPTY, of(
+                    new MockWebElement(getOptionXpath(OPTION_TEXT4), ofEntries(), ofEntries(), new Point(1, 2), new Dimension(2, 3),
+                            false, true, OPTION, OPTION_TEXT4, of()),
+                    new MockWebElement(getOptionXpath(OPTION_TEXT5), ofEntries(), ofEntries(), new Point(2, 3), new Dimension(4, 5),
+                            false, true, OPTION, OPTION_TEXT5, of()),
+                    new MockWebElement(getOptionXpath(OPTION_TEXT6), ofEntries(), ofEntries(), new Point(3, 4), new Dimension(5, 6),
+                            false, true, OPTION, OPTION_TEXT6, of())
+    ));
+
+    public static final MockWebElement COMMON_SELECT3 = new MockWebElement(tagName(SELECT),
+            ofEntries(entry(ATTR1, VALUE5),
+                    entry(ATTR2, VALUE6),
+                    entry(ATTR3, VALUE7)),
+            ofEntries(entry(CSS1, CSS_VALUE5),
+                    entry(CSS2, CSS_VALUE6),
+                    entry(CSS3, CSS_VALUE7)), new Point(35, 45), new Dimension(45, 44), true,
+            false, SELECT, EMPTY, of(
+                    new MockWebElement(getOptionXpath(OPTION_TEXT7), ofEntries(), ofEntries(), new Point(1, 2), new Dimension(2, 3),
+                            false, true, OPTION, OPTION_TEXT7, of()),
+                    new MockWebElement(getOptionXpath(OPTION_TEXT8), ofEntries(), ofEntries(), new Point(2, 3), new Dimension(4, 5),
+                            false, true, OPTION, OPTION_TEXT8, of()),
+                    new MockWebElement(getOptionXpath(OPTION_TEXT9), ofEntries(), ofEntries(), new Point(3, 4), new Dimension(5, 6),
+                            false, true, OPTION, OPTION_TEXT9, of())
+
+    ));
+
+    public static final MockWebElement COMMON_SELECT4 = new MockWebElement(tagName(SELECT),
+            ofEntries(entry(ATTR1, VALUE6),
+                    entry(ATTR2, VALUE7),
+                    entry(ATTR3, VALUE8)),
+            ofEntries(entry(CSS1, CSS_VALUE6),
+                    entry(CSS2, CSS_VALUE7),
+                    entry(CSS3, CSS_VALUE8)), new Point(53, 70), new Dimension(100, 70), false,
+            false, SELECT, EMPTY, of(
+                    new MockWebElement(getOptionXpath(OPTION_TEXT10), ofEntries(), ofEntries(), new Point(1, 2), new Dimension(2, 3),
+                            false, true, OPTION, OPTION_TEXT10, of()),
+                    new MockWebElement(getOptionXpath(OPTION_TEXT11), ofEntries(), ofEntries(), new Point(2, 3), new Dimension(4, 5),
+                            false, true, OPTION, OPTION_TEXT11, of()),
+                    new MockWebElement(getOptionXpath(OPTION_TEXT12), ofEntries(), ofEntries(), new Point(3, 4), new Dimension(5, 6),
+                            false, true, OPTION, OPTION_TEXT12, of())
+    ));
+
+
+    public static final MockWebElement COMMON_LABELED_SELECT1 = new MockWebElement(tagName(SELECT),
+            ofEntries(entry(ATTR1, VALUE7),
+                    entry(ATTR2, VALUE8),
+                    entry(ATTR3, VALUE9)),
+            ofEntries(entry(CSS1, CSS_VALUE7),
+                    entry(CSS2, CSS_VALUE8),
+                    entry(CSS3, CSS_VALUE9)), new Point(11, 21), new Dimension(21, 32), true,
+            false, SELECT, EMPTY, of(
+            new MockWebElement(tagName(LABEL_TAG), ofEntries(), ofEntries(), new Point(11, 21),
+                    new Dimension(21, 32), true,
+                    false, LABEL_TAG, SELECT_LABEL_TEXT1, of()),
+            new MockWebElement(getOptionXpath(OPTION_TEXT13), ofEntries(), ofEntries(), new Point(1, 2), new Dimension(2, 3),
+                    false, true, OPTION, OPTION_TEXT13, of()),
+            new MockWebElement(getOptionXpath(OPTION_TEXT14), ofEntries(), ofEntries(), new Point(2, 3), new Dimension(4, 5),
+                    false, true, OPTION, OPTION_TEXT14, of()),
+            new MockWebElement(getOptionXpath(OPTION_TEXT15), ofEntries(), ofEntries(), new Point(3, 4), new Dimension(5, 6),
+                    false, true, OPTION, OPTION_TEXT15, of())
+    ));
+
+    public static final MockWebElement COMMON_LABELED_SELECT2 = new MockWebElement(tagName(SELECT),
+            ofEntries(entry(ATTR1, VALUE8),
+                    entry(ATTR2, VALUE9),
+                    entry(ATTR3, VALUE10)),
+            ofEntries(entry(CSS1, CSS_VALUE8),
+                    entry(CSS2, CSS_VALUE9),
+                    entry(CSS3, CSS_VALUE10)), new Point(13, 23), new Dimension(24, 35), false,
+            false, SELECT, EMPTY, of(
+            new MockWebElement(tagName(LABEL_TAG), ofEntries(), ofEntries(), new Point(11, 21),
+                    new Dimension(25, 31), false,
+                    false, LABEL_TAG, SELECT_LABEL_TEXT2, of()),
+            new MockWebElement(getOptionXpath(OPTION_TEXT16), ofEntries(), ofEntries(), new Point(1, 2), new Dimension(2, 3),
+                    false, true, OPTION, OPTION_TEXT16, of()),
+            new MockWebElement(getOptionXpath(OPTION_TEXT17), ofEntries(), ofEntries(), new Point(2, 3), new Dimension(4, 5),
+                    false, true, OPTION, OPTION_TEXT17, of()),
+            new MockWebElement(getOptionXpath(OPTION_TEXT18), ofEntries(), ofEntries(), new Point(3, 4), new Dimension(5, 6),
+                    false, true, OPTION, OPTION_TEXT18, of())
+    ));
+
+    public static final MockWebElement COMMON_LABELED_SELECT3 = new MockWebElement(tagName(SELECT),
+            ofEntries(entry(ATTR1, VALUE8),
+                    entry(ATTR2, VALUE9),
+                    entry(ATTR3, VALUE10)),
+            ofEntries(entry(CSS1, CSS_VALUE8),
+                    entry(CSS2, CSS_VALUE9),
+                    entry(CSS3, CSS_VALUE10)), new Point(13, 23), new Dimension(25, 36), false,
+            false, SELECT, EMPTY, of(
+            new MockWebElement(tagName(LABEL_TAG), ofEntries(), ofEntries(), new Point(12, 22),
+                    new Dimension(44, 37), false,
+                    false, LABEL_TAG, SELECT_LABEL_TEXT3, of()),
+            new MockWebElement(getOptionXpath(OPTION_TEXT19), ofEntries(), ofEntries(), new Point(1, 2), new Dimension(2, 3),
+                    false, true, OPTION, OPTION_TEXT19, of()),
+            new MockWebElement(getOptionXpath(OPTION_TEXT20), ofEntries(), ofEntries(), new Point(2, 3), new Dimension(4, 5),
+                    false, true, OPTION, OPTION_TEXT20, of()),
+            new MockWebElement(getOptionXpath(OPTION_TEXT21), ofEntries(), ofEntries(), new Point(3, 4), new Dimension(5, 6),
+                    false, true, OPTION, OPTION_TEXT21, of())
+    ));
+
+    public static final MockWebElement COMMON_LABELED_SELECT4 = new MockWebElement(tagName(SELECT),
+            ofEntries(entry(ATTR1, VALUE9),
+                    entry(ATTR2, VALUE10),
+                    entry(ATTR3, VALUE11)),
+            ofEntries(entry(CSS1, CSS_VALUE9),
+                    entry(CSS2, CSS_VALUE10),
+                    entry(CSS3, CSS_VALUE11)), new Point(13, 23), new Dimension(44, 55), true,
+            false, SELECT, EMPTY, of(
+            new MockWebElement(tagName(LABEL_TAG), ofEntries(), ofEntries(), new Point(13, 27),
+                    new Dimension(36, 52), true,
+                    false, LABEL_TAG, SELECT_LABEL_TEXT4, of()),
+            new MockWebElement(getOptionXpath(OPTION_TEXT22), ofEntries(), ofEntries(), new Point(1, 2), new Dimension(2, 3),
+                    false, true, OPTION, OPTION_TEXT22, of()),
+            new MockWebElement(getOptionXpath(OPTION_TEXT23), ofEntries(), ofEntries(), new Point(2, 3), new Dimension(4, 5),
+                    false, true, OPTION, OPTION_TEXT23, of()),
+            new MockWebElement(getOptionXpath(OPTION_TEXT24), ofEntries(), ofEntries(), new Point(3, 4), new Dimension(5, 6),
+                    false, true, OPTION, OPTION_TEXT24, of())
+    ));
+
+
+    public static final MockWebElement MULTI_SELECT1 = new MockWebElement(className(MULTI_SELECT_CLASS),
+            ofEntries(entry(ATTR1, VALUE10),
+                    entry(ATTR2, VALUE11),
+                    entry(ATTR3, VALUE12)),
+            ofEntries(entry(CSS1, CSS_VALUE10),
+                    entry(CSS2, CSS_VALUE11),
+                    entry(CSS3, CSS_VALUE12)), new Point(55, 47), new Dimension(45, 69), true,
+            false, DIV, EMPTY, of(
+            new MockWebElement(xpath(LABEL_XPATH), ofEntries(), ofEntries(), new Point(50, 41),
+                    new Dimension(33, 45), true,
+                    false, LABEL_TAG, SELECT_LABEL_TEXT5, of()),
+
+            new MockWebElement(xpath(LABEL_XPATH2), ofEntries(), ofEntries(), new Point(31, 41),
+                    new Dimension(51, 62), true,
+                    false, SPAN, SELECT_LABEL_TEXT9, of()),
+
+            new MockWebElement(className(ITEM_OPTION_CLASS), ofEntries(), ofEntries(), new Point(1, 2), new Dimension(2, 3),
+                    false, true, DIV, OPTION_TEXT25, of()),
+            new MockWebElement(className(ITEM_OPTION_CLASS), ofEntries(), ofEntries(), new Point(2, 3), new Dimension(4, 5),
+                    false, true, DIV, OPTION_TEXT26, of()),
+            new MockWebElement(className(ITEM_OPTION_CLASS), ofEntries(), ofEntries(), new Point(3, 4), new Dimension(5, 6),
+                    false, true, DIV, OPTION_TEXT27, of())
+    ));
+
+    public static final MockWebElement MULTI_SELECT2 = new MockWebElement(className(MULTI_SELECT_CLASS),
+            ofEntries(entry(ATTR1, VALUE11),
+                    entry(ATTR2, VALUE12),
+                    entry(ATTR3, VALUE13)),
+            ofEntries(entry(CSS1, CSS_VALUE11),
+                    entry(CSS2, CSS_VALUE12),
+                    entry(CSS3, CSS_VALUE13)), new Point(56, 48), new Dimension(46, 70), false,
+            false, DIV, EMPTY, of(
+            new MockWebElement(xpath(LABEL_XPATH), ofEntries(), ofEntries(), new Point(51, 42),
+                    new Dimension(33, 45), false,
+                    false, LABEL_TAG, SELECT_LABEL_TEXT6, of()),
+
+            new MockWebElement(xpath(LABEL_XPATH2), ofEntries(), ofEntries(), new Point(32, 42),
+                    new Dimension(52, 63), false,
+                    false, SPAN, SELECT_LABEL_TEXT10, of()),
+
+            new MockWebElement(className(ITEM_OPTION_CLASS), ofEntries(), ofEntries(), new Point(1, 2), new Dimension(2, 3),
+                    false, true, DIV, OPTION_TEXT28, of()),
+            new MockWebElement(className(ITEM_OPTION_CLASS), ofEntries(), ofEntries(), new Point(2, 3), new Dimension(4, 5),
+                    false, true, DIV, OPTION_TEXT29, of()),
+            new MockWebElement(className(ITEM_OPTION_CLASS), ofEntries(), ofEntries(), new Point(3, 4), new Dimension(5, 6),
+                    false, true, DIV, OPTION_TEXT30, of())
+    ));
+
+    public static final MockWebElement MULTI_SELECT3 = new MockWebElement(className(MULTI_SELECT_CLASS),
+            ofEntries(entry(ATTR1, VALUE12),
+                    entry(ATTR2, VALUE13),
+                    entry(ATTR3, VALUE14)),
+            ofEntries(entry(CSS1, CSS_VALUE12),
+                    entry(CSS2, CSS_VALUE13),
+                    entry(CSS3, CSS_VALUE14)), new Point(57, 49), new Dimension(47, 71), true,
+            false, DIV, EMPTY, of(
+            new MockWebElement(xpath(LABEL_XPATH), ofEntries(), ofEntries(), new Point(52, 43),
+                    new Dimension(34, 46), true,
+                    false, LABEL_TAG, SELECT_LABEL_TEXT7, of()),
+
+            new MockWebElement(xpath(LABEL_XPATH2), ofEntries(), ofEntries(), new Point(33, 43),
+                    new Dimension(53, 64), true,
+                    false, SPAN, SELECT_LABEL_TEXT11, of()),
+
+            new MockWebElement(className(ITEM_OPTION_CLASS), ofEntries(), ofEntries(), new Point(1, 2), new Dimension(2, 3),
+                    false, true, DIV, OPTION_TEXT31, of()),
+            new MockWebElement(className(ITEM_OPTION_CLASS), ofEntries(), ofEntries(), new Point(2, 3), new Dimension(4, 5),
+                    false, true, DIV, OPTION_TEXT32, of()),
+            new MockWebElement(className(ITEM_OPTION_CLASS), ofEntries(), ofEntries(), new Point(3, 4), new Dimension(5, 6),
+                    false, true, DIV, OPTION_TEXT33, of())
+    ));
+
+    public static final MockWebElement MULTI_SELECT4 = new MockWebElement(className(MULTI_SELECT_CLASS),
+            ofEntries(entry(ATTR1, VALUE13),
+                    entry(ATTR2, VALUE14),
+                    entry(ATTR3, VALUE15)),
+            ofEntries(entry(CSS1, CSS_VALUE13),
+                    entry(CSS2, CSS_VALUE14),
+                    entry(CSS3, CSS_VALUE15)), new Point(58, 50), new Dimension(48, 72), false,
+            false, DIV, EMPTY, of(
+            new MockWebElement(xpath(LABEL_XPATH), ofEntries(), ofEntries(), new Point(53, 44),
+                    new Dimension(35, 47), false,
+                    false, LABEL_TAG, SELECT_LABEL_TEXT8, of()),
+
+            new MockWebElement(xpath(LABEL_XPATH2), ofEntries(), ofEntries(), new Point(34, 44),
+                    new Dimension(54, 65), false,
+                    false, SPAN, SELECT_LABEL_TEXT12, of()),
+
+            new MockWebElement(className(ITEM_OPTION_CLASS), ofEntries(), ofEntries(), new Point(1, 2), new Dimension(2, 3),
+                    false, true, DIV, OPTION_TEXT34, of()),
+            new MockWebElement(className(ITEM_OPTION_CLASS), ofEntries(), ofEntries(), new Point(2, 3), new Dimension(4, 5),
+                    false, true, DIV, OPTION_TEXT35, of()),
+            new MockWebElement(className(ITEM_OPTION_CLASS), ofEntries(), ofEntries(), new Point(3, 4), new Dimension(5, 6),
+                    false, true, DIV, OPTION_TEXT36, of())
+    ));
+
     private final static List<MockWebElement> fakeMock = of(
             COMMON_BUTTON1, COMMON_BUTTON2, COMMON_BUTTON3, COMMON_BUTTON4,
             COMMON_LABELED_BUTTON1, COMMON_LABELED_BUTTON2, COMMON_LABELED_BUTTON3, COMMON_LABELED_BUTTON4,
@@ -1123,7 +1422,9 @@ class FakeDOMModel {
             COMMON_LINK1, COMMON_LINK2, COMMON_LINK3, COMMON_LINK4,
             COMMON_LABELED_TAB1, COMMON_LABELED_TAB2, COMMON_LABELED_TAB3, COMMON_LABELED_TAB4,
             COMMON_TAB1, COMMON_TAB2, COMMON_TAB3, COMMON_TAB4, CUSTOM_LABELED_TAB1, CUSTOM_LABELED_TAB2, CUSTOM_LABELED_TAB3,
-            CUSTOM_LABELED_TAB4
+            CUSTOM_LABELED_TAB4,
+            COMMON_LABELED_SELECT1, COMMON_LABELED_SELECT2, COMMON_LABELED_SELECT3, COMMON_LABELED_SELECT4, COMMON_SELECT1,
+            COMMON_SELECT2, COMMON_SELECT3, COMMON_SELECT4, MULTI_SELECT1, MULTI_SELECT2, MULTI_SELECT3, MULTI_SELECT4
     );
 
     static List<MockWebElement> getFakeDOM() {
