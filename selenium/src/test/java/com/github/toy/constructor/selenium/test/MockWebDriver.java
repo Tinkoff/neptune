@@ -90,7 +90,14 @@ public class MockWebDriver implements WebDriver, JavascriptExecutor {
 
     @Override
     public List<WebElement> findElements(By by) {
-        return children.stream().filter(mockWebElement -> mockWebElement.foundBy.equals(by)).collect(toList());
+        List<WebElement> elements = new LinkedList<>();
+        children.forEach(mockWebElement -> {
+            if (mockWebElement.foundBy.equals(by)) {
+                elements.add(mockWebElement);
+            }
+            elements.addAll(mockWebElement.findElements(by));
+        });
+        return elements;
     }
 
     @Override

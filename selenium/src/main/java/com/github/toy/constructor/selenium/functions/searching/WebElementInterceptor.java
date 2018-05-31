@@ -8,6 +8,7 @@ import org.openqa.selenium.WebElement;
 import java.lang.reflect.Method;
 
 import static java.lang.String.format;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class WebElementInterceptor implements MethodInterceptor {
 
@@ -26,7 +27,11 @@ public class WebElementInterceptor implements MethodInterceptor {
         if ("toString".equals(method.getName()) &&
                 method.getParameterTypes().length == 0
                 && String.class.equals(method.getReturnType())) {
-            return format("Web element found by %s on condition '%s'", by, description);
+            String stringDescription = format("Web element found %s", by);
+            if (!isBlank(description)) {
+                stringDescription = format("%s on condition '%s'", stringDescription, description);
+            }
+            return stringDescription;
         }
         return method.invoke(element, args);
     }

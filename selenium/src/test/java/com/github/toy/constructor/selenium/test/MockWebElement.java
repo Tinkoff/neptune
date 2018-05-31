@@ -2,18 +2,17 @@ package com.github.toy.constructor.selenium.test;
 
 import org.openqa.selenium.*;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import static com.github.toy.constructor.selenium.test.FakeDOMModel.VALUE;
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
 import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class MockWebElement implements WebElement {
-
-    public static final String VALUE = "value";
 
     final By foundBy;
     private final Map<String, String> attributes;
@@ -21,6 +20,7 @@ public class MockWebElement implements WebElement {
     private final Point location;
     private final Dimension size;
     private final boolean isDisplayed;
+    private final boolean isEnabled;
     private final boolean isFlag;
     private boolean isSelected;
     private final String tagName;
@@ -28,14 +28,16 @@ public class MockWebElement implements WebElement {
     private final List<MockWebElement> children;
     private int clickCount;
 
-    public MockWebElement(By foundBy, Map<String, String> attributes, Map<String, String> css, Point location,
-                          Dimension size, boolean isDisplayed, boolean isFlag, String tagName, String text, List<MockWebElement> children) {
+    MockWebElement(By foundBy, Map<String, String> attributes, Map<String, String> css, Point location,
+                   Dimension size, boolean isDisplayed, boolean isEnabled, boolean isFlag, String tagName, String text,
+                   List<MockWebElement> children) {
         this.foundBy = foundBy;
         this.attributes = attributes;
         this.css = css;
         this.location = location;
         this.size = size;
         this.isDisplayed = isDisplayed;
+        this.isEnabled = isEnabled;
         this.isFlag = isFlag;
         this.tagName = tagName;
         this.text = text;
@@ -93,7 +95,7 @@ public class MockWebElement implements WebElement {
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return isEnabled;
     }
 
     @Override
@@ -103,7 +105,14 @@ public class MockWebElement implements WebElement {
 
     @Override
     public List<WebElement> findElements(By by) {
-        return children.stream().filter(mockWebElement -> mockWebElement.foundBy.equals(by)).collect(toList());
+        List<WebElement> elements = new LinkedList<>();
+        children.forEach(mockWebElement -> {
+            if (mockWebElement.foundBy.equals(by)) {
+                elements.add(mockWebElement);
+            }
+            elements.addAll(mockWebElement.findElements(by));
+        });
+        return elements;
     }
 
     @Override

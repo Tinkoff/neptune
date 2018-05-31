@@ -15,12 +15,14 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
+import static com.github.toy.constructor.core.api.AsIsPredicate.AS_IS;
 import static com.github.toy.constructor.core.api.ToGetSubIterable.getIterable;
 import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.defaultPredicate;
 import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.shouldBeLabeledBy;
 import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.shouldHaveText;
 import static com.github.toy.constructor.selenium.functions.searching.FindLabeledWidgets.labeledWidgets;
 import static com.github.toy.constructor.selenium.properties.WaitingProperties.ELEMENT_WAITING_DURATION;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 @SuppressWarnings("unused")
 public final class MultipleSearchSupplier<R extends SearchContext> extends
@@ -79,7 +81,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<WebElement> webElements(By by, Duration duration, Predicate<? super WebElement> predicate) {
-        return items(FindWebElements.webElements(by, predicate.toString()), duration, predicate);
+        return items(FindWebElements.webElements(by, predicate == AS_IS? EMPTY: predicate.toString()),
+                duration, predicate);
     }
 
     /**
@@ -177,7 +180,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<WebElement> webElements(By by, Predicate<? super WebElement> predicate) {
-        return items(FindWebElements.webElements(by, predicate.toString()), predicate);
+        return items(FindWebElements.webElements(by, predicate == AS_IS? EMPTY: predicate.toString()),
+                predicate);
     }
 
     /**

@@ -16,6 +16,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
+import static com.github.toy.constructor.core.api.AsIsPredicate.AS_IS;
 import static com.github.toy.constructor.core.api.ToGetObjectFromIterable.getFromIterable;
 import static com.github.toy.constructor.selenium.api.widget.Widget.getWidgetName;
 import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.defaultPredicate;
@@ -27,6 +28,7 @@ import static com.github.toy.constructor.selenium.functions.searching.FindWidget
 import static com.github.toy.constructor.selenium.properties.WaitingProperties.ELEMENT_WAITING_DURATION;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.seleniumhq.jetty9.util.StringUtil.isBlank;
 
 @SuppressWarnings({"unused", "unchecked"})
@@ -54,7 +56,7 @@ public final class SearchSupplier<R extends SearchContext>
                                                                    Duration duration, Predicate<? super T> condition) {
         checkArgument(!isBlank(description), "Description of the item to be found should be defined");
         return new SearchSupplier<>(getFromIterable(description,
-                transformation, condition, duration, true, true,
+                transformation, condition, duration, false, true,
                 () -> new NoSuchElementException(format("Nothing was found. Attempt to get a single item of %s. Condition: %s",
                         transformation,
                         condition))));
@@ -90,7 +92,8 @@ public final class SearchSupplier<R extends SearchContext>
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<WebElement> webElement(By by, Duration duration, Predicate<? super WebElement> predicate) {
-        return item(format("Web element located [%s]", by), webElements(by, predicate.toString()), duration, predicate);
+        return item(format("Web element located [%s]", by), webElements(by, predicate == AS_IS? EMPTY: predicate.toString()),
+                duration, predicate);
     }
 
     /**
@@ -190,7 +193,8 @@ public final class SearchSupplier<R extends SearchContext>
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<WebElement> webElement(By by, Predicate<? super WebElement> predicate) {
-        return item(format("Web element located [%s]", by), webElements(by, predicate.toString()), predicate);
+        return item(format("Web element located [%s]", by), webElements(by, predicate == AS_IS? EMPTY: predicate.toString()),
+                predicate);
     }
 
     /**
