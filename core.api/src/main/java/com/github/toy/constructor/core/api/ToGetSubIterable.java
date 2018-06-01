@@ -21,7 +21,7 @@ public final class ToGetSubIterable {
     private ToGetSubIterable() {
         super();
     }
-
+    
     private static <T, R, V extends Iterable<R>> Function<T, V> iterable(Function<T, V> function,
                                                                          Predicate<? super R> condition,
                                                                          @Nullable Duration waitingTime,

@@ -22,9 +22,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
-import static org.openqa.selenium.By.className;
-import static org.openqa.selenium.By.tagName;
-import static org.openqa.selenium.By.xpath;
+import static org.openqa.selenium.By.*;
 
 @SuppressWarnings("unchecked")
 public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
@@ -289,6 +287,150 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
         try {
             setStartBenchMark();
             WebElement webElement = seleniumSteps.find(webElement(by, (Predicate<? super WebElement>) criteria));
+            setEndBenchMark();
+            assertThat(getTimeDifference(), lessThan(HALF_SECOND.toMillis()));
+            assertThat(webElement, equalTo(expected));
+            assertThat(webElement.toString(), is(expectedElementDescription));
+        }
+        finally {
+            removeProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
+            removeProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName());
+        }
+    }
+
+    @DataProvider(name = "search criteria2")
+    public static Object[][] searchCriteriaForText() {
+        return new Object[][] {
+                {tagName(BUTTON_TAG), BUTTON_TEXT4, shouldBeEnabled(), COMMON_BUTTON4,
+                        "Web element found By.tagName: button on condition '(Should have text 'Button Text4') AND (Should be enabled)'"},
+
+                {tagName(BUTTON_TAG), BUTTON_TEXT5, shouldBeEnabled().negate(), COMMON_LABELED_BUTTON1,
+                        "Web element found By.tagName: button on condition '(Should have text 'Button Text5') AND (NOT Should be enabled)'"},
+
+                {tagName(LINK_TAG), LINK_TEXT2, shouldBeVisible(), COMMON_LINK2,
+                        "Web element found By.tagName: a on condition '(Should have text 'Link Text2') AND (Should be visible)'"},
+
+                {tagName(LINK_TAG), LINK_TEXT4,  shouldBeVisible().negate(), COMMON_LINK4,
+                        "Web element found By.tagName: a on condition '(Should have text 'Link Text4') AND (NOT Should be visible)'"},
+
+                {tagName(SELECT), OPTION_TEXT23,
+                        shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT22, FIVE_SECONDS), 2), COMMON_LABELED_SELECT4,
+                        "Web element found By.tagName: select on condition " +
+                                "'(Should have text 'Option text Text23') AND (Should have 2 nested Web elements located [By.tagName: option] " +
+                                "with condition Should have text 'Option text Text22'. Time to get valuable result: 0:00:05:000)'"},
+
+                {tagName(SELECT), OPTION_TEXT19,
+                        shouldContainElements(webElements(tagName(OPTION), FIVE_SECONDS), 3).negate(), COMMON_LABELED_SELECT3,
+                        "Web element found By.tagName: select on condition '(Should have text 'Option text Text19') " +
+                                "AND (NOT Should have 3 nested Web elements located [By.tagName: option]. " +
+                                "Time to get valuable result: 0:00:05:000)'"},
+
+                {tagName(BUTTON_TAG), BUTTON_TEXT5,
+                        shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1, FIVE_SECONDS)),
+                        COMMON_LABELED_BUTTON1,
+                        "Web element found By.tagName: button on condition '(Should have text 'Button Text5') AND " +
+                                "(Should have nested Web elements located [By.tagName: label] with condition Should have text 'Button Label Text1'. " +
+                                "Time to get valuable result: 0:00:05:000)'"},
+
+                {tagName(BUTTON_TAG), BUTTON_TEXT3,
+                        shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1, ofMillis(50))).negate(),
+                        COMMON_BUTTON3,
+                        "Web element found By.tagName: button on condition '(Should have text 'Button Text3') AND " +
+                                "(NOT Should have nested Web elements located [By.tagName: label] with condition Should have text 'Button Label Text1'. " +
+                                "Time to get valuable result: 0:00:00:050)'"},
+
+                {CHAINED_FIND_TAB, TAB_TEXT2, shouldHaveAttribute(ATTR19, VALUE12), COMMON_TAB2,
+                        "Web element found By.chained({By.tagName: div,By.tagName: span,By.tagName: li}) on condition " +
+                                "'(Should have text 'Tab text Text2') AND (Should have attribute 'attribute19=\"value12\"')'"},
+
+                {CHAINED_FIND_TAB, TAB_TEXT3, shouldHaveAttribute(ATTR19, VALUE12).negate(), COMMON_TAB3,
+                        "Web element found By.chained({By.tagName: div,By.tagName: span,By.tagName: li}) on condition " +
+                                "'(Should have text 'Tab text Text3') AND (NOT Should have attribute 'attribute19=\"value12\"')'"},
+
+                {CHAINED_FIND_TAB, TAB_TEXT3, shouldHaveAttributeContains(ATTR20, VALUE14), COMMON_TAB3,
+                        "Web element found By.chained({By.tagName: div,By.tagName: span,By.tagName: li}) on condition " +
+                                "'(Should have text 'Tab text Text3') AND " +
+                                "(Should have attribute 'attribute20' which contains value 'value14')'"},
+
+                {CHAINED_FIND_TAB, TAB_TEXT4, shouldHaveAttributeContains(ATTR20, VALUE14).negate(), COMMON_TAB4,
+                        "Web element found By.chained({By.tagName: div,By.tagName: span,By.tagName: li}) on condition " +
+                                "'(Should have text 'Tab text Text4') AND " +
+                                "(NOT Should have attribute 'attribute20' which contains value 'value14')'"},
+
+                {CHAINED_FIND_TAB, TAB_TEXT1, shouldHaveAttributeContains(ATTR20, compile(VALUE12)), COMMON_TAB1,
+                        "Web element found By.chained({By.tagName: div,By.tagName: span,By.tagName: li}) on condition " +
+                                "'(Should have text 'Tab text Text1') AND " +
+                                "(Should have attribute 'attribute20' which matches regExp pattern 'value12')'"},
+
+                {CHAINED_FIND_TAB, TAB_TEXT3, shouldHaveAttributeContains(ATTR20, compile(VALUE12)).negate(), COMMON_TAB3,
+                        "Web element found By.chained({By.tagName: div,By.tagName: span,By.tagName: li}) on condition " +
+                                "'(Should have text 'Tab text Text3') AND " +
+                                "(NOT Should have attribute 'attribute20' which matches regExp pattern 'value12')'"},
+
+                {xpath(TEXT_FIELD_XPATH), INPUT_TEXT3, shouldHaveCssValue(CSS8, CSS_VALUE6), COMMON_TEXT_INPUT3,
+                        "Web element found By.xpath: .//input[@type = 'text'] on condition " +
+                                "'(Should have text 'Input Text2') AND (Should have css property 'css8=\"css_value6\"')'"},
+
+                {xpath(TEXT_FIELD_XPATH), INPUT_TEXT4, shouldHaveCssValue(CSS8, CSS_VALUE6).negate(), COMMON_TEXT_INPUT4,
+                        "Web element found By.xpath: .//input[@type = 'text'] on condition " +
+                                "'(Should have text 'Input Text4') AND (NOT Should have css property 'css8=\"css_value6\"')'"},
+
+                {xpath(TEXT_FIELD_XPATH), INPUT_TEXT1, shouldHaveCssValueContains(CSS8, "4")
+                        .and(shouldHaveCssValueContains(CSS9, "5")), COMMON_TEXT_INPUT1,
+                        "Web element found By.xpath: .//input[@type = 'text'] on condition " +
+                                "'(Should have text 'Input Text1') AND ((Should have css property  'css8' which contains value '4') " +
+                                "AND (Should have css property  'css9' which contains value '5'))'"},
+
+                {xpath(TEXT_FIELD_XPATH), INPUT_TEXT4, shouldHaveCssValueContains(CSS8, "4")
+                        .and(shouldHaveCssValueContains(CSS9, "5")).negate(), COMMON_TEXT_INPUT4,
+                        "Web element found By.xpath: .//input[@type = 'text'] on condition " +
+                                "'(Should have text 'Input Text4') AND (NOT (Should have css property  'css8' which contains value '4') " +
+                                "AND (Should have css property  'css9' which contains value '5'))'"},
+
+                {xpath(TEXT_FIELD_XPATH), INPUT_TEXT1, shouldHaveCssValueContains(CSS8, compile("4"))
+                        .and(shouldHaveCssValueContains(CSS9, compile("5"))), COMMON_TEXT_INPUT1,
+                        "Web element found By.xpath: .//input[@type = 'text'] on condition " +
+                                "'(Should have text 'Input Text1') AND ((Should have css property 'css8' which matches regExp pattern '4') " +
+                                "AND (Should have css property 'css9' which matches regExp pattern '5'))'"},
+
+                {xpath(TEXT_FIELD_XPATH), INPUT_TEXT4, shouldHaveCssValueContains(CSS8, compile("4"))
+                        .and(shouldHaveCssValueContains(CSS9, compile("5"))).negate(), COMMON_TEXT_INPUT4,
+                        "Web element found By.xpath: .//input[@type = 'text'] on condition '(Should have text 'Input Text4') " +
+                                "AND (NOT (Should have css property 'css8' which matches regExp pattern '4') " +
+                                "AND (Should have css property 'css9' which matches regExp pattern '5'))'"},
+        };
+    }
+
+    @Test(dataProvider = "search criteria2")
+    public void findElementByCriteriaAndTextTest(By by, String text, Predicate<? extends SearchContext> criteria, WebElement expected,
+                                          String expectedElementDescription) {
+        setStartBenchMark();
+        WebElement webElement = seleniumSteps.find(webElement(by, text, (Predicate<? super WebElement>) criteria));
+        setEndBenchMark();
+        assertThat(getTimeDifference(), lessThan(HALF_SECOND.toMillis()));
+        assertThat(webElement, equalTo(expected));
+        assertThat(webElement.toString(), is(expectedElementDescription));
+    }
+
+    @Test(dataProvider = "search criteria2")
+    public void findElementByCriteriaAndTextWithDefinedTimeTest(By by, String text, Predicate<? extends SearchContext> criteria, WebElement expected,
+                                                         String expectedElementDescription) {
+        setStartBenchMark();
+        WebElement webElement = seleniumSteps.find(webElement(by, text, FIVE_SECONDS, (Predicate<? super WebElement>) criteria));
+        setEndBenchMark();
+        assertThat(getTimeDifference(), lessThan(HALF_SECOND.toMillis()));
+        assertThat(webElement, equalTo(expected));
+        assertThat(webElement.toString(), is(expectedElementDescription));
+    }
+
+    @Test(dataProvider = "search criteria2")
+    public void findElementByCriteriaAndTextWithTimeDefinedImplicitlyTest(By by, String text, Predicate<? extends SearchContext> criteria, WebElement expected,
+                                                                   String expectedElementDescription) {
+        setProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName(), "SECONDS");
+        setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "5");
+        try {
+            setStartBenchMark();
+            WebElement webElement = seleniumSteps.find(webElement(by, text, (Predicate<? super WebElement>) criteria));
             setEndBenchMark();
             assertThat(getTimeDifference(), lessThan(HALF_SECOND.toMillis()));
             assertThat(webElement, equalTo(expected));

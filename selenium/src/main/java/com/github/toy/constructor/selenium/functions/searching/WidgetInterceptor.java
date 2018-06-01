@@ -49,6 +49,17 @@ class WidgetInterceptor implements MethodInterceptor {
             initElements(new DefaultElementLocatorFactory(webElement), widget);
         }
 
+        Class<?>[] parameters;
+        if ("equals".equals(method.getName()) && (parameters = method.getParameterTypes()).length == 0
+                && parameters[0].equals(Object.class)) {
+            boolean result = widget.equals(args[0]);
+            //it may be another proxy
+            if (!result) {
+                result = (boolean) proxy.invokeSuper(obj, args);
+            }
+            return result;
+        }
+
         try {
             return method.invoke(widget, args);
         }
