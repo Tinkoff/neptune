@@ -36,6 +36,10 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
         return format(FOUND_ON_CONDITION, by, condition);
     }
 
+    private static String expectedDescriptionOfTheFoundElement(By by) {
+        return format(FOUND_BY_PATTERN, by);
+    }
+
     @Test
     public void findWebElementFirstLevelWithoutConditionTest() {
         WebElement webElement = seleniumSteps.find(webElement(tagName(BUTTON_TAG)));
@@ -64,7 +68,7 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
         setEndBenchMark();
         assertThat(getTimeDifference(), lessThan(HALF_SECOND.toMillis()));
         assertThat(webElement, equalTo(COMMON_LABELED_TABLE1));
-        assertThat(webElement.toString(), is(format(FOUND_BY_PATTERN, tagName(TABLE))));
+        assertThat(webElement.toString(), is(expectedDescriptionOfTheFoundElement(tagName(TABLE))));
     }
 
     @Test
@@ -77,7 +81,7 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
             setEndBenchMark();
             assertThat(getTimeDifference(), lessThan(HALF_SECOND.toMillis()));
             assertThat(webElement, equalTo(COMMON_LABELED_TABLE1));
-            assertThat(webElement.toString(), is(format(FOUND_BY_PATTERN, tagName(TABLE))));
+            assertThat(webElement.toString(), is(expectedDescriptionOfTheFoundElement(tagName(TABLE))));
         }
         finally {
             removeProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
@@ -90,7 +94,7 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
         WebElement webElement = seleniumSteps.find(webElement(className(CUSTOM_BUTTON_CLASS))
                 .foundFrom(webElement(className(SPREAD_SHEET_CLASS))));
         assertThat(webElement, equalTo(CUSTOM_LABELED_BUTTON1));
-        assertThat(webElement.toString(), is(format(FOUND_BY_PATTERN, className(CUSTOM_BUTTON_CLASS))));
+        assertThat(webElement.toString(), is(expectedDescriptionOfTheFoundElement(className(CUSTOM_BUTTON_CLASS))));
     }
 
     @Test
@@ -116,7 +120,7 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
         setEndBenchMark();
         assertThat(getTimeDifference(), lessThan(HALF_SECOND.toMillis()));
         assertThat(webElement, equalTo(CUSTOM_LABELED_BUTTON1));
-        assertThat(webElement.toString(), is(format(FOUND_BY_PATTERN, className(CUSTOM_BUTTON_CLASS))));
+        assertThat(webElement.toString(), is(expectedDescriptionOfTheFoundElement(className(CUSTOM_BUTTON_CLASS))));
     }
 
     @Test
@@ -130,7 +134,7 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
             setEndBenchMark();
             assertThat(getTimeDifference(), lessThan(HALF_SECOND.toMillis()));
             assertThat(webElement, equalTo(CUSTOM_LABELED_BUTTON1));
-            assertThat(webElement.toString(), is(format(FOUND_BY_PATTERN, className(CUSTOM_BUTTON_CLASS))));
+            assertThat(webElement.toString(), is(expectedDescriptionOfTheFoundElement(className(CUSTOM_BUTTON_CLASS))));
         }
         finally {
             removeProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
@@ -144,7 +148,7 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
         WebElement webElement = seleniumSteps.find(webElement(className(CUSTOM_BUTTON_CLASS))
                 .foundFrom(spreadSheet));
         assertThat(webElement, equalTo(CUSTOM_LABELED_BUTTON1));
-        assertThat(webElement.toString(), is(format(FOUND_BY_PATTERN, className(CUSTOM_BUTTON_CLASS))));
+        assertThat(webElement.toString(), is(expectedDescriptionOfTheFoundElement(className(CUSTOM_BUTTON_CLASS))));
     }
 
     @Test
@@ -173,7 +177,7 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
         setEndBenchMark();
         assertThat(getTimeDifference(), lessThan(HALF_SECOND.toMillis()));
         assertThat(webElement, equalTo(CUSTOM_LABELED_BUTTON1));
-        assertThat(webElement.toString(), is(format(FOUND_BY_PATTERN, className(CUSTOM_BUTTON_CLASS))));
+        assertThat(webElement.toString(), is(expectedDescriptionOfTheFoundElement(className(CUSTOM_BUTTON_CLASS))));
     }
 
     @Test
@@ -188,7 +192,7 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
             setEndBenchMark();
             assertThat(getTimeDifference(), lessThan(HALF_SECOND.toMillis()));
             assertThat(webElement, equalTo(CUSTOM_LABELED_BUTTON1));
-            assertThat(webElement.toString(), is(format(FOUND_BY_PATTERN, className(CUSTOM_BUTTON_CLASS))));
+            assertThat(webElement.toString(), is(expectedDescriptionOfTheFoundElement(className(CUSTOM_BUTTON_CLASS))));
         }
         finally {
             removeProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
