@@ -161,7 +161,7 @@ public class FakeDOMModel {
 
     public static final String INPUT_TEXT1 = "Input Text1";
     public static final String INPUT_TEXT2 = "Input Text2";
-    public static final String INPUT_TEXT3 = "Input Text2";
+    public static final String INPUT_TEXT3 = "Input Text3";
     public static final String INPUT_TEXT4 = "Input Text4";
     public static final String INPUT_TEXT5 = "Input Text5";
     public static final String INPUT_TEXT6 = "Input Text6";
