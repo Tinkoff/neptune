@@ -35,7 +35,7 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
 
     FindWidgets(Class<R> classOfAWidget, String conditionString) {
         checkArgument(classOfAWidget != null, "The class to be instantiated should be defined.");
-        checkArgument(!isBlank(conditionString), "Description of the condition should not be empty.");
+        checkArgument(conditionString != null, "Description of the condition should be defined.");
         this.classOfAWidget = classOfAWidget;
         this.conditionString = conditionString;
     }

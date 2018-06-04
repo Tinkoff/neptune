@@ -6,18 +6,19 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-class WebElementInterceptor implements MethodInterceptor {
+class WebElementListInterceptor implements MethodInterceptor {
 
-    private final WebElement element;
+    private final List<WebElement> elements;
     private final By by;
     private final String description;
 
-    WebElementInterceptor(WebElement element, By by, String description) {
-        this.element = element;
+    WebElementListInterceptor(List<WebElement> elements, By by, String description) {
+        this.elements = elements;
         this.by = by;
         this.description = description;
     }
@@ -27,7 +28,7 @@ class WebElementInterceptor implements MethodInterceptor {
         if ("toString".equals(method.getName()) &&
                 method.getParameterTypes().length == 0
                 && String.class.equals(method.getReturnType())) {
-            String stringDescription = format("Web element found %s", by);
+            String stringDescription = format("%s web elements found %s", elements.size(), by);
             if (!isBlank(description)) {
                 stringDescription = format("%s on condition '%s'", stringDescription, description);
             }
@@ -37,7 +38,7 @@ class WebElementInterceptor implements MethodInterceptor {
         Class<?>[] parameters;
         if ("equals".equals(method.getName()) && (parameters = method.getParameterTypes()).length == 1
                 && parameters[0].equals(Object.class)) {
-            boolean result = element.equals(args[0]);
+            boolean result = elements.equals(args[0]);
             //it may be another proxy
             if (!result) {
                 result = (boolean) proxy.invokeSuper(obj, args);
@@ -45,6 +46,6 @@ class WebElementInterceptor implements MethodInterceptor {
             return result;
         }
 
-        return method.invoke(element, args);
+        return method.invoke(elements, args);
     }
 }

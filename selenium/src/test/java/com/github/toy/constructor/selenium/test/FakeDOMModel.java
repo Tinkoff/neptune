@@ -633,7 +633,7 @@ public class FakeDOMModel {
             ofEntries(entry(CSS7, CSS_VALUE4),
                     entry(CSS8, CSS_VALUE5),
                     entry(CSS9, CSS_VALUE6)), new Point(15, 25), new Dimension(25, 35), true,
-            true, false, BUTTON_TAG, INPUT_TEXT2, of());
+            true, false, INPUT_TAG, INPUT_TEXT2, of());
 
     public static final MockWebElement COMMON_TEXT_INPUT3 = new MockWebElement(xpath(TEXT_FIELD_XPATH),
             ofEntries(entry(ATTR7, VALUE5),
@@ -1852,7 +1852,7 @@ public class FakeDOMModel {
                     ))
     ));
 
-    public static final MockWebElement COMMON_LABELED_TABLE2 = new MockWebElement(tagName(SELECT),
+    public static final MockWebElement COMMON_LABELED_TABLE2 = new MockWebElement(tagName(TABLE),
             ofEntries(entry(ATTR1, VALUE8),
                     entry(ATTR2, VALUE9),
                     entry(ATTR3, VALUE10)),
@@ -1911,7 +1911,7 @@ public class FakeDOMModel {
                     ))
     ));
 
-    public static final MockWebElement COMMON_LABELED_TABLE3 = new MockWebElement(tagName(SELECT),
+    public static final MockWebElement COMMON_LABELED_TABLE3 = new MockWebElement(tagName(TABLE),
             ofEntries(entry(ATTR1, VALUE9),
                     entry(ATTR2, VALUE10),
                     entry(ATTR3, VALUE11)),
@@ -1970,7 +1970,7 @@ public class FakeDOMModel {
                     ))
     ));
 
-    public static final MockWebElement COMMON_LABELED_TABLE4 = new MockWebElement(tagName(SELECT),
+    public static final MockWebElement COMMON_LABELED_TABLE4 = new MockWebElement(tagName(TABLE),
             ofEntries(entry(ATTR1, VALUE10),
                     entry(ATTR2, VALUE11),
                     entry(ATTR3, VALUE12)),

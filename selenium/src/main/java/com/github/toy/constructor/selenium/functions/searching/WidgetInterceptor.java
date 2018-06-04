@@ -13,6 +13,7 @@ import java.lang.reflect.Method;
 import static com.github.toy.constructor.selenium.api.widget.Widget.getWidgetName;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.openqa.selenium.support.PageFactory.initElements;
 
 class WidgetInterceptor implements MethodInterceptor {
@@ -33,7 +34,11 @@ class WidgetInterceptor implements MethodInterceptor {
         if ("toString".equals(method.getName()) &&
                 method.getParameterTypes().length == 0
                 && String.class.equals(method.getReturnType())) {
-            return format("%s found on condition '%s'", getWidgetName(widgetClass), conditionString);
+            String stringDescription = getWidgetName(widgetClass);
+            if (!isBlank(conditionString)) {
+                stringDescription = format("%s found on condition '%s'", stringDescription, conditionString);
+            }
+            return stringDescription;
         }
 
         if (widget == null) {

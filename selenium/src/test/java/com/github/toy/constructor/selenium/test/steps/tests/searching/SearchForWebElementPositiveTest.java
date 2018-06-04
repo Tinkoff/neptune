@@ -44,7 +44,7 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
     public void findWebElementFirstLevelWithoutConditionTest() {
         WebElement webElement = seleniumSteps.find(webElement(tagName(BUTTON_TAG)));
         assertThat(webElement, equalTo(COMMON_BUTTON1));
-        assertThat(webElement.toString(), is(format(FOUND_BY_PATTERN, tagName(BUTTON_TAG))));
+        assertThat(webElement.toString(), is(expectedDescriptionOfTheFoundElement(tagName(BUTTON_TAG))));
     }
 
     @Test
