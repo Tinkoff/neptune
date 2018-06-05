@@ -586,7 +586,6 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
         };
     }
 
-
     @Test(dataProvider = "search criteria3")
     public void findElementByCriteriaAndTextPatternTest(By by, Pattern pattern, Predicate<? extends SearchContext> criteria, WebElement expected,
                                                         String expectedElementDescription) {

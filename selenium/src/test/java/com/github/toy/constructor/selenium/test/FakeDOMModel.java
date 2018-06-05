@@ -213,7 +213,7 @@ public class FakeDOMModel {
 
     public static final String LINK_TEXT1 = "Link Text1";
     public static final String LINK_TEXT2 = "Link Text2";
-    public static final String LINK_TEXT3 = "Link Text2";
+    public static final String LINK_TEXT3 = "Link Text3";
     public static final String LINK_TEXT4 = "Link Text4";
 
     public static final String LINK_LABEL_TEXT1 = "Link Label Text1";

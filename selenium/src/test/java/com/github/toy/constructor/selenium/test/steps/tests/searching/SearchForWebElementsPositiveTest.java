@@ -10,6 +10,7 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.*;
 import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.shouldHaveCssValueContains;
@@ -481,6 +482,348 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
         try {
             setStartBenchMark();
             List<WebElement> webElements = seleniumSteps.find(webElements(by, (Predicate<? super WebElement>) criteria));
+            setEndBenchMark();
+            assertThat(getTimeDifference(), lessThan(ONE_SECOND.toMillis()));
+            assertThat(webElements, matcher);
+            assertThat(webElements.toString(), is(expectedListDescription));
+        }
+        finally {
+            removeProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
+            removeProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName());
+        }
+    }
+
+    @DataProvider(name = "search criteria2")
+    public static Object[][] searchCriteriaForText() {
+        return new Object[][]{
+                {tagName(BUTTON_TAG), BUTTON_TEXT4, shouldBeEnabled(),
+                        contains(equalTo(COMMON_BUTTON4)),
+                        expectedDescriptionOfTheFoundElements(1, tagName(BUTTON_TAG),
+                                shouldHaveText(BUTTON_TEXT4).and(shouldBeEnabled()))},
+
+                {tagName(BUTTON_TAG), BUTTON_TEXT5, shouldBeEnabled().negate(),
+                        contains(equalTo(COMMON_LABELED_BUTTON1)),
+                        expectedDescriptionOfTheFoundElements(1, tagName(BUTTON_TAG),
+                                shouldHaveText(BUTTON_TEXT5).and(shouldBeEnabled().negate()))},
+
+                {tagName(LINK_TAG), LINK_TEXT2, shouldBeVisible(),
+                        contains(equalTo(COMMON_LINK2)),
+                        expectedDescriptionOfTheFoundElements(1, tagName(LINK_TAG),
+                                shouldHaveText(LINK_TEXT2).and(shouldBeVisible()))},
+
+                {tagName(LINK_TAG), LINK_TEXT4,  shouldBeVisible().negate(),
+                        contains(equalTo(COMMON_LINK4)),
+                        expectedDescriptionOfTheFoundElements(1, tagName(LINK_TAG),
+                                shouldHaveText(LINK_TEXT4).and(shouldBeVisible().negate()))},
+
+                {tagName(SELECT), OPTION_TEXT23,
+                        shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT22, FIVE_SECONDS), 2),
+                        contains(equalTo(COMMON_LABELED_SELECT4)),
+                        expectedDescriptionOfTheFoundElements(1, tagName(SELECT), shouldHaveText(OPTION_TEXT23)
+                                .and(shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT22, FIVE_SECONDS), 2)))},
+
+                {tagName(SELECT), OPTION_TEXT19,
+                        shouldContainElements(webElements(tagName(OPTION), FIVE_SECONDS), 3).negate(),
+                        contains(equalTo(COMMON_LABELED_SELECT3)),
+                        expectedDescriptionOfTheFoundElements(1, tagName(SELECT),
+                                shouldHaveText(OPTION_TEXT19).and(shouldContainElements(webElements(tagName(OPTION), FIVE_SECONDS), 3).negate()))},
+
+                {tagName(BUTTON_TAG), BUTTON_TEXT5,
+                        shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1, FIVE_SECONDS)),
+                        contains(equalTo(COMMON_LABELED_BUTTON1)),
+                        expectedDescriptionOfTheFoundElements(1, tagName(BUTTON_TAG),
+                                shouldHaveText(BUTTON_TEXT5).and(shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1, FIVE_SECONDS))))},
+
+                {tagName(BUTTON_TAG), BUTTON_TEXT3,
+                        shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1, ofMillis(50))).negate(),
+                        contains(equalTo(COMMON_BUTTON3)),
+                        expectedDescriptionOfTheFoundElements(1, tagName(BUTTON_TAG),
+                                shouldHaveText(BUTTON_TEXT3).and(shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1, ofMillis(50))).negate()))},
+
+                {CHAINED_FIND_TAB, TAB_TEXT2, shouldHaveAttribute(ATTR19, VALUE12),
+                        contains(equalTo(COMMON_TAB2)),
+                        expectedDescriptionOfTheFoundElements(1, CHAINED_FIND_TAB,
+                                shouldHaveText(TAB_TEXT2).and(shouldHaveAttribute(ATTR19, VALUE12)))},
+
+                {CHAINED_FIND_TAB, TAB_TEXT3, shouldHaveAttribute(ATTR19, VALUE12).negate(),
+                        contains(equalTo(COMMON_TAB3)),
+                        expectedDescriptionOfTheFoundElements(1, CHAINED_FIND_TAB,
+                                shouldHaveText(TAB_TEXT3).and(shouldHaveAttribute(ATTR19, VALUE12).negate()))},
+
+                {CHAINED_FIND_TAB, TAB_TEXT3, shouldHaveAttributeContains(ATTR20, VALUE14),
+                        contains(equalTo(COMMON_TAB3)),
+                        expectedDescriptionOfTheFoundElements(1, CHAINED_FIND_TAB,
+                                shouldHaveText(TAB_TEXT3).and(shouldHaveAttributeContains(ATTR20, VALUE14)))},
+
+                {CHAINED_FIND_TAB, TAB_TEXT4,
+                        shouldHaveAttributeContains(ATTR20, VALUE14).negate(),
+                        contains(equalTo(COMMON_TAB4)),
+                        expectedDescriptionOfTheFoundElements(1, CHAINED_FIND_TAB,
+                                shouldHaveText(TAB_TEXT4).and(shouldHaveAttributeContains(ATTR20, VALUE14).negate()))},
+
+                {CHAINED_FIND_TAB, TAB_TEXT1, shouldHaveAttributeContains(ATTR20, compile(VALUE12)),
+                        contains(equalTo(COMMON_TAB1)),
+                        expectedDescriptionOfTheFoundElements(1, CHAINED_FIND_TAB,
+                                shouldHaveText(TAB_TEXT1).and(shouldHaveAttributeContains(ATTR20, compile(VALUE12))))},
+
+                {CHAINED_FIND_TAB, TAB_TEXT3, shouldHaveAttributeContains(ATTR20, compile(VALUE12)).negate(),
+                        contains(equalTo(COMMON_TAB3)),
+                        expectedDescriptionOfTheFoundElements(1, CHAINED_FIND_TAB,
+                                shouldHaveText(TAB_TEXT3).and(shouldHaveAttributeContains(ATTR20, compile(VALUE12)).negate()))},
+
+                {xpath(TEXT_FIELD_XPATH), INPUT_TEXT3, shouldHaveCssValue(CSS8, CSS_VALUE6),
+                        contains(equalTo(COMMON_TEXT_INPUT3)),
+                        expectedDescriptionOfTheFoundElements(1, xpath(TEXT_FIELD_XPATH),
+                                shouldHaveText(INPUT_TEXT3).and(shouldHaveCssValue(CSS8, CSS_VALUE6)))},
+
+                {xpath(TEXT_FIELD_XPATH), INPUT_TEXT4, shouldHaveCssValue(CSS8, CSS_VALUE6).negate(),
+                        contains(equalTo(COMMON_TEXT_INPUT4)),
+                        expectedDescriptionOfTheFoundElements(1, xpath(TEXT_FIELD_XPATH),
+                                shouldHaveText(INPUT_TEXT4).and(shouldHaveCssValue(CSS8, CSS_VALUE6).negate()))},
+
+                {xpath(TEXT_FIELD_XPATH), INPUT_TEXT1, shouldHaveCssValueContains(CSS8, "4")
+                        .and(shouldHaveCssValueContains(CSS9, "5")),
+                        contains(equalTo(COMMON_TEXT_INPUT1)),
+                        expectedDescriptionOfTheFoundElements(1, xpath(TEXT_FIELD_XPATH),
+                                shouldHaveText(INPUT_TEXT1).and(shouldHaveCssValueContains(CSS8, "4")
+                                        .and(shouldHaveCssValueContains(CSS9, "5"))))},
+
+                {xpath(TEXT_FIELD_XPATH), INPUT_TEXT4, shouldHaveCssValueContains(CSS8, "4")
+                        .and(shouldHaveCssValueContains(CSS9, "5")).negate(),
+                        contains(equalTo(COMMON_TEXT_INPUT4)),
+                        expectedDescriptionOfTheFoundElements(1, xpath(TEXT_FIELD_XPATH),
+                                shouldHaveText(INPUT_TEXT4).and(shouldHaveCssValueContains(CSS8, "4")
+                                        .and(shouldHaveCssValueContains(CSS9, "5")).negate()))},
+
+                {xpath(TEXT_FIELD_XPATH), INPUT_TEXT1, shouldHaveCssValueContains(CSS8, compile("4"))
+                        .and(shouldHaveCssValueContains(CSS9, compile("5"))),
+                        contains(equalTo(COMMON_TEXT_INPUT1)),
+                        expectedDescriptionOfTheFoundElements(1, xpath(TEXT_FIELD_XPATH),
+                                shouldHaveText(INPUT_TEXT1).and(shouldHaveCssValueContains(CSS8, compile("4"))
+                                        .and(shouldHaveCssValueContains(CSS9, compile("5")))))},
+
+                {xpath(TEXT_FIELD_XPATH), INPUT_TEXT4, shouldHaveCssValueContains(CSS8, compile("4"))
+                        .and(shouldHaveCssValueContains(CSS9, compile("5"))).negate(),
+                        contains(equalTo(COMMON_TEXT_INPUT4)),
+                        expectedDescriptionOfTheFoundElements(1, xpath(TEXT_FIELD_XPATH),
+                                shouldHaveText(INPUT_TEXT4).and(shouldHaveCssValueContains(CSS8, compile("4"))
+                                        .and(shouldHaveCssValueContains(CSS9, compile("5"))).negate()))},
+        };
+    }
+
+    @Test(dataProvider = "search criteria2")
+    public void findElementsByCriteriaAndTextTest(By by, String text, Predicate<? extends SearchContext> criteria,
+                                                  Matcher<List<WebElement>> matcher,
+                                                  String expectedListDescription) {
+        setStartBenchMark();
+        List<WebElement> webElements = seleniumSteps.find(webElements(by, text, (Predicate<? super WebElement>) criteria));
+        setEndBenchMark();
+        assertThat(getTimeDifference(), lessThan(ONE_SECOND.toMillis()));
+        assertThat(webElements, matcher);
+        assertThat(webElements.toString(), is(expectedListDescription));
+    }
+
+    @Test(dataProvider = "search criteria2")
+    public void findElementsByCriteriaAndTextWithDefinedTimeTest(By by, String text, Predicate<? extends SearchContext> criteria,
+                                                                 Matcher<List<WebElement>> matcher,
+                                                                 String expectedListDescription) {
+        setStartBenchMark();
+        List<WebElement> webElements = seleniumSteps.find(webElements(by, text, FIVE_SECONDS, (Predicate<? super WebElement>) criteria));
+        setEndBenchMark();
+        assertThat(getTimeDifference(), lessThan(ONE_SECOND.toMillis()));
+        assertThat(webElements, matcher);
+        assertThat(webElements.toString(), is(expectedListDescription));
+    }
+
+    @Test(dataProvider = "search criteria2")
+    public void findElementsByCriteriaAndTextWithTimeDefinedImplicitlyTest(By by, String text, Predicate<? extends SearchContext> criteria,
+                                                                           Matcher<List<WebElement>> matcher,
+                                                                           String expectedListDescription) {
+        setProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName(), "SECONDS");
+        setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "5");
+        try {
+            setStartBenchMark();
+            List<WebElement> webElements = seleniumSteps.find(webElements(by, text, (Predicate<? super WebElement>) criteria));
+            setEndBenchMark();
+            assertThat(getTimeDifference(), lessThan(ONE_SECOND.toMillis()));
+            assertThat(webElements, matcher);
+            assertThat(webElements.toString(), is(expectedListDescription));
+        }
+        finally {
+            removeProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
+            removeProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName());
+        }
+    }
+
+    @DataProvider(name = "search criteria3")
+    public static Object[][] searchCriteriaForTextPattern() {
+        return new Object[][] {
+                {tagName(BUTTON_TAG), compile(BUTTON_TEXT4), shouldBeEnabled(),
+                        contains(equalTo(COMMON_BUTTON4)),
+                        expectedDescriptionOfTheFoundElements(1, tagName(BUTTON_TAG),
+                                shouldHaveText(compile(BUTTON_TEXT4)).and(shouldBeEnabled()))},
+
+                {tagName(BUTTON_TAG), compile(BUTTON_TEXT5), shouldBeEnabled().negate(),
+                        contains(equalTo(COMMON_LABELED_BUTTON1)),
+                        expectedDescriptionOfTheFoundElements(1, tagName(BUTTON_TAG),
+                                shouldHaveText(compile(BUTTON_TEXT5)).and(shouldBeEnabled().negate()))},
+
+                {tagName(LINK_TAG), compile("2"), shouldBeVisible(),
+                        contains(equalTo(COMMON_LINK2)),
+                        expectedDescriptionOfTheFoundElements(1, tagName(LINK_TAG),
+                                shouldHaveText(compile("2")).and(shouldBeVisible()))},
+
+                {tagName(LINK_TAG), compile("4"),
+                        shouldBeVisible().negate(),
+                        contains(equalTo(COMMON_LINK4)),
+                        expectedDescriptionOfTheFoundElements(1, tagName(LINK_TAG),
+                                shouldHaveText(compile("4")).and(shouldBeVisible().negate()))},
+
+                {tagName(SELECT), compile(OPTION_TEXT23),
+                        shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT22, FIVE_SECONDS), 2),
+                        contains(equalTo(COMMON_LABELED_SELECT4)),
+                        expectedDescriptionOfTheFoundElements(1, tagName(SELECT),
+                                shouldHaveText(compile(OPTION_TEXT23))
+                                        .and(shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT22, FIVE_SECONDS), 2)))},
+
+                {tagName(SELECT), compile("19"),
+                        shouldContainElements(webElements(tagName(OPTION), FIVE_SECONDS), 3).negate(),
+                        contains(equalTo(COMMON_LABELED_SELECT3)),
+                        expectedDescriptionOfTheFoundElements(1, tagName(SELECT),
+                                shouldHaveText(compile("19"))
+                                        .and(shouldContainElements(webElements(tagName(OPTION), FIVE_SECONDS), 3).negate()))},
+
+                {tagName(BUTTON_TAG), compile("Text5"),
+                        shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1, FIVE_SECONDS)),
+                        contains(equalTo(COMMON_LABELED_BUTTON1)),
+                        expectedDescriptionOfTheFoundElements(1, tagName(BUTTON_TAG),
+                                shouldHaveText(compile("Text5"))
+                                        .and(shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1, FIVE_SECONDS))))},
+
+                {tagName(BUTTON_TAG), compile("Text3"),
+                        shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1, ofMillis(50))).negate(),
+                        contains(equalTo(COMMON_BUTTON3)),
+                        expectedDescriptionOfTheFoundElements(1, tagName(BUTTON_TAG),
+                                shouldHaveText(compile("Text3"))
+                                        .and(shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1, ofMillis(50))).negate()))},
+
+                {CHAINED_FIND_TAB, compile(TAB_TEXT2), shouldHaveAttribute(ATTR19, VALUE12),
+                        contains(equalTo(COMMON_TAB2)),
+                        expectedDescriptionOfTheFoundElements(1, CHAINED_FIND_TAB,
+                                shouldHaveText(compile(TAB_TEXT2))
+                                        .and(shouldHaveAttribute(ATTR19, VALUE12)))},
+
+                {CHAINED_FIND_TAB, compile("Text3"), shouldHaveAttribute(ATTR19, VALUE12).negate(),
+                        contains(equalTo(COMMON_TAB3)),
+                        expectedDescriptionOfTheFoundElements(1, CHAINED_FIND_TAB,
+                                shouldHaveText(compile("Text3"))
+                                        .and(shouldHaveAttribute(ATTR19, VALUE12).negate()))},
+
+                {CHAINED_FIND_TAB, compile("Text3"), shouldHaveAttributeContains(ATTR20, VALUE14),
+                        contains(equalTo(COMMON_TAB3)),
+                        expectedDescriptionOfTheFoundElements(1, CHAINED_FIND_TAB,
+                                shouldHaveText(compile("Text3"))
+                                        .and(shouldHaveAttributeContains(ATTR20, VALUE14)))},
+
+                {CHAINED_FIND_TAB, compile("Tab text "), shouldHaveAttributeContains(ATTR20, VALUE14).negate(),
+                        contains(equalTo(COMMON_TAB1),
+                                equalTo(COMMON_TAB2),
+                                equalTo(COMMON_TAB4)),
+                        expectedDescriptionOfTheFoundElements(3, CHAINED_FIND_TAB,
+                                shouldHaveText(compile("Tab text "))
+                                        .and(shouldHaveAttributeContains(ATTR20, VALUE14).negate()))},
+
+                {CHAINED_FIND_TAB, compile("1"), shouldHaveAttributeContains(ATTR20, compile(VALUE12)),
+                        contains(equalTo(COMMON_TAB1)),
+                        expectedDescriptionOfTheFoundElements(1, CHAINED_FIND_TAB,
+                                shouldHaveText(compile("1"))
+                                        .and(shouldHaveAttributeContains(ATTR20, compile(VALUE12))))},
+
+                {CHAINED_FIND_TAB, compile("3"), shouldHaveAttributeContains(ATTR20, compile(VALUE12)).negate(),
+                        contains(equalTo(COMMON_TAB3)),
+                        expectedDescriptionOfTheFoundElements(1, CHAINED_FIND_TAB,
+                                shouldHaveText(compile("3"))
+                                        .and(shouldHaveAttributeContains(ATTR20, compile(VALUE12)).negate()))},
+
+                {xpath(TEXT_FIELD_XPATH), compile("3"), shouldHaveCssValue(CSS8, CSS_VALUE6),
+                        contains(equalTo(COMMON_TEXT_INPUT3)),
+                        expectedDescriptionOfTheFoundElements(1, xpath(TEXT_FIELD_XPATH),
+                                shouldHaveText(compile("3"))
+                                        .and(shouldHaveCssValue(CSS8, CSS_VALUE6)))},
+
+                {xpath(TEXT_FIELD_XPATH), compile("4"), shouldHaveCssValue(CSS8, CSS_VALUE6).negate(),
+                        contains(equalTo(COMMON_TEXT_INPUT4)),
+                        expectedDescriptionOfTheFoundElements(1, xpath(TEXT_FIELD_XPATH),
+                                shouldHaveText(compile("4"))
+                                        .and(shouldHaveCssValue(CSS8, CSS_VALUE6).negate()))},
+
+                {xpath(TEXT_FIELD_XPATH), compile(INPUT_TEXT1), shouldHaveCssValueContains(CSS8, "4")
+                        .and(shouldHaveCssValueContains(CSS9, "5")),
+                        contains(equalTo(COMMON_TEXT_INPUT1)),
+                        expectedDescriptionOfTheFoundElements(1, xpath(TEXT_FIELD_XPATH),
+                                shouldHaveText(compile(INPUT_TEXT1))
+                                        .and(shouldHaveCssValueContains(CSS8, "4")
+                                                .and(shouldHaveCssValueContains(CSS9, "5"))))},
+
+                {xpath(TEXT_FIELD_XPATH), compile(INPUT_TEXT4), shouldHaveCssValueContains(CSS8, "4")
+                        .and(shouldHaveCssValueContains(CSS9, "5")).negate(),
+                        contains(equalTo(COMMON_TEXT_INPUT4)),
+                        expectedDescriptionOfTheFoundElements(1, xpath(TEXT_FIELD_XPATH),
+                                shouldHaveText(compile(INPUT_TEXT4))
+                                        .and(shouldHaveCssValueContains(CSS8, "4")
+                                                .and(shouldHaveCssValueContains(CSS9, "5")).negate()))},
+
+                {xpath(TEXT_FIELD_XPATH), compile("1"), shouldHaveCssValueContains(CSS8, compile("4"))
+                        .and(shouldHaveCssValueContains(CSS9, compile("5"))),
+                        contains(equalTo(COMMON_TEXT_INPUT1)),
+                        expectedDescriptionOfTheFoundElements(1, xpath(TEXT_FIELD_XPATH),
+                                shouldHaveText(compile("1"))
+                                        .and(shouldHaveCssValueContains(CSS8, compile("4"))
+                                                .and(shouldHaveCssValueContains(CSS9, compile("5")))))},
+
+                {xpath(TEXT_FIELD_XPATH), compile(INPUT_TEXT4), shouldHaveCssValueContains(CSS8, compile("4"))
+                        .and(shouldHaveCssValueContains(CSS9, compile("5"))).negate(),
+                        contains(equalTo(COMMON_TEXT_INPUT4)),
+                        expectedDescriptionOfTheFoundElements(1, xpath(TEXT_FIELD_XPATH),
+                                shouldHaveText(compile(INPUT_TEXT4))
+                                        .and(shouldHaveCssValueContains(CSS8, compile("4"))
+                                                .and(shouldHaveCssValueContains(CSS9, compile("5"))).negate()))},
+        };
+    }
+
+    @Test(dataProvider = "search criteria3")
+    public void findElementByCriteriaAndTextPatternTest(By by, Pattern pattern, Predicate<? extends SearchContext> criteria,
+                                                        Matcher<List<WebElement>> matcher,
+                                                        String expectedListDescription) {
+        setStartBenchMark();
+        List<WebElement> webElements = seleniumSteps.find(webElements(by, pattern, (Predicate<? super WebElement>) criteria));
+        setEndBenchMark();
+        assertThat(getTimeDifference(), lessThan(ONE_SECOND.toMillis()));
+        assertThat(webElements, matcher);
+        assertThat(webElements.toString(), is(expectedListDescription));
+    }
+
+    @Test(dataProvider = "search criteria3")
+    public void findElementByCriteriaAndTextPatternWithDefinedTimeTest(By by, Pattern pattern, Predicate<? extends SearchContext> criteria,
+                                                                       Matcher<List<WebElement>> matcher,
+                                                                       String expectedListDescription) {
+        setStartBenchMark();
+        List<WebElement> webElements = seleniumSteps.find(webElements(by, pattern, FIVE_SECONDS, (Predicate<? super WebElement>) criteria));
+        setEndBenchMark();
+        assertThat(getTimeDifference(), lessThan(ONE_SECOND.toMillis()));
+        assertThat(webElements, matcher);
+        assertThat(webElements.toString(), is(expectedListDescription));
+    }
+
+    @Test(dataProvider = "search criteria3")
+    public void findElementByCriteriaAndTexPatterntWithTimeDefinedImplicitlyTest(By by, Pattern pattern, Predicate<? extends SearchContext> criteria,
+                                                                                 Matcher<List<WebElement>> matcher,
+                                                                                 String expectedListDescription) {
+        setProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName(), "SECONDS");
+        setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "5");
+        try {
+            setStartBenchMark();
+            List<WebElement> webElements = seleniumSteps.find(webElements(by, pattern, (Predicate<? super WebElement>) criteria));
             setEndBenchMark();
             assertThat(getTimeDifference(), lessThan(ONE_SECOND.toMillis()));
             assertThat(webElements, matcher);
