@@ -67,7 +67,7 @@ public class ConditionTest {
         Predicate<Number> describedIsPositive = condition("Number should be positive", IS_POSITIVE);
         assertThat("String value of the predicate",
                 describedIsPositive.negate().toString(),
-                is("NOT Number should be positive"));
+                is("NOT (Number should be positive)"));
     }
 
     @Test
@@ -84,7 +84,8 @@ public class ConditionTest {
                         .and(describedGreaterThan10
                         .or(describedGreaterThan15))
                         .or(describedLowerThan20.negate()).toString(),
-                is("(((Number should be positive) AND (Number shoid not have decimal value)) AND " +
-                        "((Number should be greater than 10) OR (Number should be greater than 15))) OR (NOT Number should be lower than 20)"));
+                is("(((Number should be positive) AND (Number shoid not have decimal value)) " +
+                        "AND ((Number should be greater than 10) OR (Number should be greater than 15))) " +
+                        "OR (NOT (Number should be lower than 20))"));
     }
 }

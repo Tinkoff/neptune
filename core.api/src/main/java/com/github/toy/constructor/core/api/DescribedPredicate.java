@@ -44,7 +44,7 @@ interface DescribedPredicate<T> extends Predicate<T> {
 
             @Override
             public String toString() {
-                return format("NOT %s", thisCondition.toString());
+                return format("NOT (%s)", thisCondition.toString());
             }
         };
     }

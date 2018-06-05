@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.*;
+import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.shouldHaveCssValueContains;
 import static com.github.toy.constructor.selenium.functions.searching.MultipleSearchSupplier.webElements;
 import static com.github.toy.constructor.selenium.functions.searching.SearchSupplier.webElement;
 import static com.github.toy.constructor.selenium.properties.FlagProperties.FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION;
@@ -20,6 +21,7 @@ import static com.github.toy.constructor.selenium.properties.WaitingProperties.T
 import static com.github.toy.constructor.selenium.test.FakeDOMModel.*;
 import static java.lang.String.format;
 import static java.time.Duration.ofMillis;
+import static java.util.regex.Pattern.compile;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.openqa.selenium.By.className;
@@ -292,6 +294,157 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
                                 equalTo(COMMON_SELECT4)),
                         expectedDescriptionOfTheFoundElements(8, tagName(SELECT),
                                 shouldContainElements(webElements(className(ITEM_OPTION_CLASS), ofMillis(1))).negate())},
+
+                {tagName(TEXT_AREA_TAG),
+                        shouldHaveAttribute(ATTR11, VALUE13),
+                        contains(equalTo(TEXT_AREA2),
+                                equalTo(TEXT_AREA2)),
+                        expectedDescriptionOfTheFoundElements(2, tagName(TEXT_AREA_TAG),
+                                shouldHaveAttribute(ATTR11, VALUE13))},
+
+                {tagName(TEXT_AREA_TAG),
+                        shouldHaveAttribute(ATTR11, VALUE13).negate(),
+                        contains(equalTo(TEXT_AREA1),
+                                equalTo(TEXT_AREA3),
+                                equalTo(TEXT_AREA4),
+                                equalTo(TEXT_AREA1)),
+                        expectedDescriptionOfTheFoundElements(4, tagName(TEXT_AREA_TAG),
+                                shouldHaveAttribute(ATTR11, VALUE13).negate())},
+
+                {tagName(TEXT_AREA_TAG), shouldHaveAttributeContains(ATTR11, "13"),
+                        contains(equalTo(TEXT_AREA2),
+                                equalTo(TEXT_AREA2)),
+                        expectedDescriptionOfTheFoundElements(2, tagName(TEXT_AREA_TAG),
+                                shouldHaveAttributeContains(ATTR11, "13"))},
+
+                {tagName(TEXT_AREA_TAG),
+                        shouldHaveAttributeContains(ATTR11, "13").negate(),
+                        contains(equalTo(TEXT_AREA1),
+                                equalTo(TEXT_AREA3),
+                                equalTo(TEXT_AREA4),
+                                equalTo(TEXT_AREA1)),
+                        expectedDescriptionOfTheFoundElements(4, tagName(TEXT_AREA_TAG),
+                                shouldHaveAttributeContains(ATTR11, "13").negate())},
+
+                {tagName(TEXT_AREA_TAG), shouldHaveAttributeContains(ATTR11, compile("13")),
+                        contains(equalTo(TEXT_AREA2),
+                                equalTo(TEXT_AREA2)),
+                        expectedDescriptionOfTheFoundElements(2, tagName(TEXT_AREA_TAG),
+                                shouldHaveAttributeContains(ATTR11, compile("13")))},
+
+                {tagName(TEXT_AREA_TAG),
+                        shouldHaveAttributeContains(ATTR11, compile("13")).negate(),
+                        contains(equalTo(TEXT_AREA1),
+                                equalTo(TEXT_AREA3),
+                                equalTo(TEXT_AREA4),
+                                equalTo(TEXT_AREA1)),
+                        expectedDescriptionOfTheFoundElements(4, tagName(TEXT_AREA_TAG),
+                                shouldHaveAttributeContains(ATTR11, compile("13")).negate())},
+
+                {xpath(RADIO_BUTTON_XPATH),
+                        shouldHaveCssValue(CSS18, CSS_VALUE9),
+                        contains(equalTo(COMMON_RADIOBUTTON3)),
+                        expectedDescriptionOfTheFoundElements(1, xpath(RADIO_BUTTON_XPATH),
+                                shouldHaveCssValue(CSS18, CSS_VALUE9))},
+
+                {xpath(RADIO_BUTTON_XPATH),
+                        shouldHaveCssValue(CSS18, CSS_VALUE9).negate(),
+                        contains(equalTo(COMMON_RADIOBUTTON1),
+                                equalTo(COMMON_RADIOBUTTON2),
+                                equalTo(COMMON_RADIOBUTTON4),
+                                equalTo(COMMON_LABELED_RADIOBUTTON1),
+                                equalTo(COMMON_LABELED_RADIOBUTTON2),
+                                equalTo(COMMON_LABELED_RADIOBUTTON3),
+                                equalTo(COMMON_LABELED_RADIOBUTTON4),
+                                equalTo(COMMON_LABELED_RADIOBUTTON5),
+                                equalTo(COMMON_LABELED_RADIOBUTTON6),
+                                equalTo(COMMON_LABELED_RADIOBUTTON7),
+                                equalTo(COMMON_LABELED_RADIOBUTTON8)),
+                        expectedDescriptionOfTheFoundElements(11,
+                                xpath(RADIO_BUTTON_XPATH), shouldHaveCssValue(CSS18, CSS_VALUE9).negate())},
+
+                {xpath(CHECK_BOX_XPATH),
+                        shouldHaveCssValueContains(CSS13, "15")
+                                .or(shouldHaveCssValueContains(CSS2, "17")),
+                        contains(
+                                equalTo(COMMON_CHECKBOX4),
+                                equalTo(COMMON_LABELED_CHECKBOX1)),
+                        expectedDescriptionOfTheFoundElements(2,
+                                xpath(CHECK_BOX_XPATH), shouldHaveCssValueContains(CSS13, "15")
+                                        .or(shouldHaveCssValueContains(CSS2, "17")))},
+
+                {xpath(CHECK_BOX_XPATH),
+                        shouldHaveCssValueContains(CSS13, "15")
+                                .or(shouldHaveCssValueContains(CSS2, "17")).negate(),
+                        contains(equalTo(COMMON_CHECKBOX1),
+                                equalTo(COMMON_CHECKBOX2),
+                                equalTo(COMMON_CHECKBOX3),
+                                equalTo(COMMON_LABELED_CHECKBOX2),
+                                equalTo(COMMON_LABELED_CHECKBOX3),
+                                equalTo(COMMON_LABELED_CHECKBOX4),
+                                equalTo(COMMON_LABELED_CHECKBOX5),
+                                equalTo(COMMON_LABELED_CHECKBOX6),
+                                equalTo(COMMON_LABELED_CHECKBOX7),
+                                equalTo(COMMON_LABELED_CHECKBOX8),
+                                equalTo(COMMON_LABELED_CHECKBOX5),
+                                equalTo(COMMON_LABELED_CHECKBOX6)),
+                        expectedDescriptionOfTheFoundElements(12, xpath(CHECK_BOX_XPATH),
+                                shouldHaveCssValueContains(CSS13, "15")
+                                        .or(shouldHaveCssValueContains(CSS2, "17")).negate())},
+
+                {className(TAB_CLASS),
+                        shouldHaveCssValueContains(CSS15, compile("1"))
+                                .and(shouldHaveCssValueContains(CSS20, compile(CSS_VALUE2))),
+                        contains(equalTo(CUSTOM_LABELED_TAB1),
+                                equalTo(CUSTOM_LABELED_TAB3)),
+                        expectedDescriptionOfTheFoundElements(2, className(TAB_CLASS),
+                                shouldHaveCssValueContains(CSS15, compile("1"))
+                                        .and(shouldHaveCssValueContains(CSS20, compile(CSS_VALUE2))))},
+
+                {className(TAB_CLASS),
+                        shouldHaveCssValueContains(CSS15, compile("1"))
+                                .and(shouldHaveCssValueContains(CSS20, compile(CSS_VALUE2))).negate(),
+                        contains(equalTo(CUSTOM_LABELED_TAB2),
+                                equalTo(CUSTOM_LABELED_TAB4)),
+                        expectedDescriptionOfTheFoundElements(2, className(TAB_CLASS),
+                                shouldHaveCssValueContains(CSS15, compile("1"))
+                                        .and(shouldHaveCssValueContains(CSS20, compile(CSS_VALUE2))).negate())},
+
+                {xpath(TEXT_FIELD_XPATH),
+                        shouldHaveText(INPUT_TEXT2),
+                        contains(equalTo(COMMON_TEXT_INPUT2)),
+                        expectedDescriptionOfTheFoundElements(1,
+                                xpath(TEXT_FIELD_XPATH), shouldHaveText(INPUT_TEXT2))},
+
+                {xpath(TEXT_FIELD_XPATH),
+                        shouldHaveText(INPUT_TEXT2).negate(),
+                        contains(equalTo(COMMON_LABELED_INPUT1),
+                                equalTo(COMMON_LABELED_INPUT2),
+                                equalTo(COMMON_LABELED_INPUT3),
+                                equalTo(COMMON_LABELED_INPUT4),
+                                equalTo(COMMON_TEXT_INPUT1),
+                                equalTo(COMMON_TEXT_INPUT3),
+                                equalTo(COMMON_TEXT_INPUT4)),
+                        expectedDescriptionOfTheFoundElements(7, xpath(TEXT_FIELD_XPATH), shouldHaveText(INPUT_TEXT2).negate())},
+
+                {xpath(TEXT_FIELD_XPATH),
+                        shouldHaveText(compile("Text")),
+                        contains(equalTo(COMMON_TEXT_INPUT1),
+                                equalTo(COMMON_TEXT_INPUT2),
+                                equalTo(COMMON_TEXT_INPUT3),
+                                equalTo(COMMON_TEXT_INPUT4)),
+                        expectedDescriptionOfTheFoundElements(4,
+                                xpath(TEXT_FIELD_XPATH),
+                                shouldHaveText(compile("Text")))},
+
+                {xpath(TEXT_FIELD_XPATH), shouldHaveText(compile("Text")).negate(),
+                        contains(equalTo(COMMON_LABELED_INPUT1),
+                                equalTo(COMMON_LABELED_INPUT2),
+                                equalTo(COMMON_LABELED_INPUT3),
+                                equalTo(COMMON_LABELED_INPUT4)),
+                        expectedDescriptionOfTheFoundElements(4,
+                                xpath(TEXT_FIELD_XPATH),
+                                shouldHaveText(compile("Text")).negate())}
         };
     }
 
