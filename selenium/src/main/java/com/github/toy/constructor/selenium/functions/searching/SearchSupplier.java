@@ -14,6 +14,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import static com.github.toy.constructor.core.api.AsIsPredicate.AS_IS;
@@ -34,6 +35,16 @@ import static org.seleniumhq.jetty9.util.StringUtil.isBlank;
 @SuppressWarnings({"unused", "unchecked"})
 public final class SearchSupplier<R extends SearchContext>
         extends SequentialGetSupplier<SearchContext, R, SearchContext, SearchSupplier<R>> {
+
+    private static Supplier<NoSuchElementException> noSuchElementException(Function<SearchContext, ?> transformation,
+                                                                           Predicate<?> condition) {
+        String errorMessage = format("Nothing was found. Attempt to get a single item of %s", transformation);
+        if (!AS_IS.equals(condition)) {
+            errorMessage = format("%s. Condition: %s", errorMessage, condition);
+        }
+        String messageToThrow = errorMessage;
+        return () -> new NoSuchElementException(messageToThrow);
+    }
 
     private SearchSupplier(Function<SearchContext, R> function) {
         set(function);
@@ -57,9 +68,7 @@ public final class SearchSupplier<R extends SearchContext>
         checkArgument(!isBlank(description), "Description of the item to be found should be defined");
         return new SearchSupplier<>(getFromIterable(description,
                 transformation, condition, duration, false, true,
-                () -> new NoSuchElementException(format("Nothing was found. Attempt to get a single item of %s. Condition: %s",
-                        transformation,
-                        condition))));
+                noSuchElementException(transformation, condition)));
     }
 
     /**
