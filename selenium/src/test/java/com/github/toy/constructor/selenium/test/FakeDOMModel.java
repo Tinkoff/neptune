@@ -496,23 +496,7 @@ public class FakeDOMModel {
             ofEntries(entry(CSS1, CSS_VALUE3),
                     entry(CSS4, CSS_VALUE6),
                     entry(CSS16, CSS_VALUE18)), new Point(10, 20), new Dimension(20, 30), false,
-            false, false, SPAN, INVISIBLE_SPAN, of(VISIBLE_DIV_ELEMENT,
-            VISIBLE_DIV_ELEMENT,
-            VISIBLE_DIV_ELEMENT,
-            VISIBLE_DIV_ELEMENT,
-            VISIBLE_DIV_ELEMENT));
-
-    private static final MockWebElement VISIBLE_DIV_ELEMENT2 = new MockWebElement(VISIBLE_DIV_BY,
-            ofEntries(entry(ATTR1, VALUE10),
-                    entry(ATTR4, VALUE4),
-                    entry(ATTR3, VALUE6)),
-            ofEntries(entry(CSS1, CSS_VALUE4),
-                    entry(CSS4, CSS_VALUE7),
-                    entry(CSS16, CSS_VALUE19)), new Point(10, 20), new Dimension(20, 30), true,
-            true, false, DIV, VISIBLE_DIV, of(INVISIBLE_SPAN_ELEMENT,
-            INVISIBLE_SPAN_ELEMENT,
-            INVISIBLE_SPAN_ELEMENT,
-            INVISIBLE_SPAN_ELEMENT));
+            false, false, SPAN, INVISIBLE_SPAN, of());
 
     public static final MockWebElement COMMON_BUTTON1 = new MockWebElement(tagName(BUTTON_TAG),
             ofEntries(entry(ATTR1, VALUE8),
@@ -2198,7 +2182,6 @@ public class FakeDOMModel {
     private final static List<MockWebElement> fakeMock = of(
             VISIBLE_DIV_ELEMENT,
             INVISIBLE_SPAN_ELEMENT,
-            VISIBLE_DIV_ELEMENT2,
             COMMON_BUTTON1, COMMON_BUTTON2, COMMON_BUTTON3, COMMON_BUTTON4,
             COMMON_LABELED_BUTTON1, COMMON_LABELED_BUTTON2, COMMON_LABELED_BUTTON3, COMMON_LABELED_BUTTON4,
             CUSTOM_LABELED_BUTTON1, CUSTOM_LABELED_BUTTON2, CUSTOM_LABELED_BUTTON3, CUSTOM_LABELED_BUTTON4,
