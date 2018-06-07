@@ -472,22 +472,13 @@ public class FakeDOMModel {
     public static final String CELL_TEXT89 = "Cell Text89";
 
     private static final String INVISIBLE_SPAN = "Invisible span";
-    private static final String VISIBLE_DIV = "Visible div";
+    public static final String VISIBLE_DIV = "Visible div";
 
     private static final ByChained CHAINED_FIND_HEADER = new ByChained(tagName(T_HEAD), tagName(TR));
     private static final ByChained CHAINED_FIND_ROW = new ByChained(tagName(T_BODY), tagName(TR));
     private static final ByChained CHAINED_FIND_FOOTER = new ByChained(tagName(T_FOOT), tagName(TR));
     public static final By INVISIBLE_SPAN_BY = tagName(SPAN);
     public static final By VISIBLE_DIV_BY = tagName(DIV);
-
-    private static final MockWebElement INVISIBLE_SPAN_ELEMENT = new MockWebElement(INVISIBLE_SPAN_BY,
-            ofEntries(entry(ATTR1, VALUE9),
-                    entry(ATTR4, VALUE3),
-                    entry(ATTR3, VALUE5)),
-            ofEntries(entry(CSS1, CSS_VALUE3),
-                    entry(CSS4, CSS_VALUE6),
-                    entry(CSS16, CSS_VALUE18)), new Point(10, 20), new Dimension(20, 30), false,
-            false, false, SPAN, INVISIBLE_SPAN, of());
 
     private static final MockWebElement VISIBLE_DIV_ELEMENT = new MockWebElement(VISIBLE_DIV_BY,
             ofEntries(entry(ATTR1, VALUE10),
@@ -497,6 +488,31 @@ public class FakeDOMModel {
                     entry(CSS4, CSS_VALUE7),
                     entry(CSS16, CSS_VALUE19)), new Point(10, 20), new Dimension(20, 30), true,
             true, false, DIV, VISIBLE_DIV, of());
+
+    private static final MockWebElement INVISIBLE_SPAN_ELEMENT = new MockWebElement(INVISIBLE_SPAN_BY,
+            ofEntries(entry(ATTR1, VALUE9),
+                    entry(ATTR4, VALUE3),
+                    entry(ATTR3, VALUE5)),
+            ofEntries(entry(CSS1, CSS_VALUE3),
+                    entry(CSS4, CSS_VALUE6),
+                    entry(CSS16, CSS_VALUE18)), new Point(10, 20), new Dimension(20, 30), false,
+            false, false, SPAN, INVISIBLE_SPAN, of(VISIBLE_DIV_ELEMENT,
+            VISIBLE_DIV_ELEMENT,
+            VISIBLE_DIV_ELEMENT,
+            VISIBLE_DIV_ELEMENT,
+            VISIBLE_DIV_ELEMENT));
+
+    private static final MockWebElement VISIBLE_DIV_ELEMENT2 = new MockWebElement(VISIBLE_DIV_BY,
+            ofEntries(entry(ATTR1, VALUE10),
+                    entry(ATTR4, VALUE4),
+                    entry(ATTR3, VALUE6)),
+            ofEntries(entry(CSS1, CSS_VALUE4),
+                    entry(CSS4, CSS_VALUE7),
+                    entry(CSS16, CSS_VALUE19)), new Point(10, 20), new Dimension(20, 30), true,
+            true, false, DIV, VISIBLE_DIV, of(INVISIBLE_SPAN_ELEMENT,
+            INVISIBLE_SPAN_ELEMENT,
+            INVISIBLE_SPAN_ELEMENT,
+            INVISIBLE_SPAN_ELEMENT));
 
     public static final MockWebElement COMMON_BUTTON1 = new MockWebElement(tagName(BUTTON_TAG),
             ofEntries(entry(ATTR1, VALUE8),
@@ -2180,8 +2196,9 @@ public class FakeDOMModel {
     ));
 
     private final static List<MockWebElement> fakeMock = of(
-            INVISIBLE_SPAN_ELEMENT,
             VISIBLE_DIV_ELEMENT,
+            INVISIBLE_SPAN_ELEMENT,
+            VISIBLE_DIV_ELEMENT2,
             COMMON_BUTTON1, COMMON_BUTTON2, COMMON_BUTTON3, COMMON_BUTTON4,
             COMMON_LABELED_BUTTON1, COMMON_LABELED_BUTTON2, COMMON_LABELED_BUTTON3, COMMON_LABELED_BUTTON4,
             CUSTOM_LABELED_BUTTON1, CUSTOM_LABELED_BUTTON2, CUSTOM_LABELED_BUTTON3, CUSTOM_LABELED_BUTTON4,

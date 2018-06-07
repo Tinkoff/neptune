@@ -1,6 +1,7 @@
 package com.github.toy.constructor.selenium.test.steps.tests.searching;
 
 import com.github.toy.constructor.selenium.test.BaseWebDriverTest;
+import com.github.toy.constructor.selenium.test.RetryAnalyzer;
 import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
@@ -40,14 +41,14 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
         return format(FOUND_BY_PATTERN, by);
     }
 
-    @Test
+    @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findWebElementFirstLevelWithoutConditionTest() {
         WebElement webElement = seleniumSteps.find(webElement(tagName(BUTTON_TAG)));
         assertThat(webElement, equalTo(COMMON_BUTTON1));
         assertThat(webElement.toString(), is(expectedDescriptionOfTheFoundElement(tagName(BUTTON_TAG))));
     }
 
-    @Test
+    @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findWebElementFirstLevelOnlyVisibleImplicitConditionTest() {
         setProperty(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName(), "true");
         try {
@@ -61,7 +62,7 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
         }
     }
 
-    @Test
+    @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findWebElementFirstLevelOnlyWhenTimeIsDefinedTest() {
         setStartBenchMark();
         WebElement webElement = seleniumSteps.find(webElement(tagName(TABLE), FIVE_SECONDS));
@@ -71,7 +72,7 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
         assertThat(webElement.toString(), is(expectedDescriptionOfTheFoundElement(tagName(TABLE))));
     }
 
-    @Test
+    @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findWebElementFirstLevelOnlyWhenTimeIsDefinedImplicitlyTest() {
         setProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName(), "SECONDS");
         setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "5");
@@ -89,7 +90,7 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
         }
     }
 
-    @Test
+    @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findWebElementChainedWithoutConditionTest() {
         WebElement webElement = seleniumSteps.find(webElement(className(CUSTOM_BUTTON_CLASS))
                 .foundFrom(webElement(className(SPREAD_SHEET_CLASS))));
@@ -97,7 +98,7 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
         assertThat(webElement.toString(), is(expectedDescriptionOfTheFoundElement(className(CUSTOM_BUTTON_CLASS))));
     }
 
-    @Test
+    @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findWebElementChainedOnlyVisibleImplicitConditionTest() {
         setProperty(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName(), "true");
         try {
@@ -112,7 +113,7 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
         }
     }
 
-    @Test
+    @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findWebElementChainedOnlyWhenTimeIsDefinedTest() {
         setStartBenchMark();
         WebElement webElement = seleniumSteps.find(webElement(className(CUSTOM_BUTTON_CLASS), FIVE_SECONDS)
@@ -123,7 +124,7 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
         assertThat(webElement.toString(), is(expectedDescriptionOfTheFoundElement(className(CUSTOM_BUTTON_CLASS))));
     }
 
-    @Test
+    @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findWebElementChainedOnlyWhenTimeIsDefinedImplicitlyTest() {
         setProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName(), "SECONDS");
         setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "5");
@@ -142,7 +143,7 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
         }
     }
 
-    @Test
+    @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findWebElementFromAnotherWithoutConditionTest() {
         WebElement spreadSheet = seleniumSteps.find(webElement(className(SPREAD_SHEET_CLASS)));
         WebElement webElement = seleniumSteps.find(webElement(className(CUSTOM_BUTTON_CLASS))
@@ -151,7 +152,7 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
         assertThat(webElement.toString(), is(expectedDescriptionOfTheFoundElement(className(CUSTOM_BUTTON_CLASS))));
     }
 
-    @Test
+    @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findWebElementFromAnotherOnlyVisibleImplicitConditionTest() {
         setProperty(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName(), "true");
         try {
@@ -168,7 +169,7 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
         }
     }
 
-    @Test
+    @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findWebElementFromAnotherOnlyWhenTimeIsDefinedTest() {
         WebElement spreadSheet = seleniumSteps.find(webElement(className(SPREAD_SHEET_CLASS)));
         setStartBenchMark();
@@ -180,7 +181,7 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
         assertThat(webElement.toString(), is(expectedDescriptionOfTheFoundElement(className(CUSTOM_BUTTON_CLASS))));
     }
 
-    @Test
+    @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findWebElementFromAnotherOnlyWhenTimeIsDefinedImplicitlyTest() {
         setProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName(), "SECONDS");
         setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "5");
@@ -290,9 +291,11 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
         };
     }
 
-    @Test(dataProvider = "search criteria1")
-    public void findElementByCriteriaTest(By by, Predicate<? extends SearchContext> criteria, WebElement expected,
-                                      String expectedElementDescription) {
+    @Test(dataProvider = "search criteria1", retryAnalyzer = RetryAnalyzer.class)
+    public void findElementByCriteriaTest(By by,
+                                          Predicate<? extends SearchContext> criteria,
+                                          WebElement expected,
+                                          String expectedElementDescription) {
         setStartBenchMark();
         WebElement webElement = seleniumSteps.find(webElement(by, (Predicate<? super WebElement>) criteria));
         setEndBenchMark();
@@ -301,9 +304,11 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
         assertThat(webElement.toString(), is(expectedElementDescription));
     }
 
-    @Test(dataProvider = "search criteria1")
-    public void findElementByCriteriaWithDefinedTimeTest(By by, Predicate<? extends SearchContext> criteria, WebElement expected,
-                                      String expectedElementDescription) {
+    @Test(dataProvider = "search criteria1", retryAnalyzer = RetryAnalyzer.class)
+    public void findElementByCriteriaWithDefinedTimeTest(By by,
+                                                         Predicate<? extends SearchContext> criteria,
+                                                         WebElement expected,
+                                                         String expectedElementDescription) {
         setStartBenchMark();
         WebElement webElement = seleniumSteps.find(webElement(by, FIVE_SECONDS, (Predicate<? super WebElement>) criteria));
         setEndBenchMark();
@@ -312,8 +317,10 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
         assertThat(webElement.toString(), is(expectedElementDescription));
     }
 
-    @Test(dataProvider = "search criteria1")
-    public void findElementByCriteriaWithTimeDefinedImplicitlyTest(By by, Predicate<? extends SearchContext> criteria, WebElement expected,
+    @Test(dataProvider = "search criteria1", retryAnalyzer = RetryAnalyzer.class)
+    public void findElementByCriteriaWithTimeDefinedImplicitlyTest(By by,
+                                                                   Predicate<? extends SearchContext> criteria,
+                                                                   WebElement expected,
                                                                    String expectedElementDescription) {
         setProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName(), "SECONDS");
         setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "5");
@@ -430,9 +437,12 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
         };
     }
 
-    @Test(dataProvider = "search criteria2")
-    public void findElementByCriteriaAndTextTest(By by, String text, Predicate<? extends SearchContext> criteria, WebElement expected,
-                                          String expectedElementDescription) {
+    @Test(dataProvider = "search criteria2", retryAnalyzer = RetryAnalyzer.class)
+    public void findElementByCriteriaAndTextTest(By by,
+                                                 String text,
+                                                 Predicate<? extends SearchContext> criteria,
+                                                 WebElement expected,
+                                                 String expectedElementDescription) {
         setStartBenchMark();
         WebElement webElement = seleniumSteps.find(webElement(by, text, (Predicate<? super WebElement>) criteria));
         setEndBenchMark();
@@ -441,9 +451,12 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
         assertThat(webElement.toString(), is(expectedElementDescription));
     }
 
-    @Test(dataProvider = "search criteria2")
-    public void findElementByCriteriaAndTextWithDefinedTimeTest(By by, String text, Predicate<? extends SearchContext> criteria, WebElement expected,
-                                                         String expectedElementDescription) {
+    @Test(dataProvider = "search criteria2", retryAnalyzer = RetryAnalyzer.class)
+    public void findElementByCriteriaAndTextWithDefinedTimeTest(By by,
+                                                                String text,
+                                                                Predicate<? extends SearchContext> criteria,
+                                                                WebElement expected,
+                                                                String expectedElementDescription) {
         setStartBenchMark();
         WebElement webElement = seleniumSteps.find(webElement(by, text, FIVE_SECONDS, (Predicate<? super WebElement>) criteria));
         setEndBenchMark();
@@ -452,9 +465,12 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
         assertThat(webElement.toString(), is(expectedElementDescription));
     }
 
-    @Test(dataProvider = "search criteria2")
-    public void findElementByCriteriaAndTextWithTimeDefinedImplicitlyTest(By by, String text, Predicate<? extends SearchContext> criteria, WebElement expected,
-                                                                   String expectedElementDescription) {
+    @Test(dataProvider = "search criteria2", retryAnalyzer = RetryAnalyzer.class)
+    public void findElementByCriteriaAndTextWithTimeDefinedImplicitlyTest(By by,
+                                                                          String text,
+                                                                          Predicate<? extends SearchContext> criteria,
+                                                                          WebElement expected,
+                                                                          String expectedElementDescription) {
         setProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName(), "SECONDS");
         setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "5");
         try {
@@ -586,8 +602,11 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
         };
     }
 
-    @Test(dataProvider = "search criteria3")
-    public void findElementByCriteriaAndTextPatternTest(By by, Pattern pattern, Predicate<? extends SearchContext> criteria, WebElement expected,
+    @Test(dataProvider = "search criteria3", retryAnalyzer = RetryAnalyzer.class)
+    public void findElementByCriteriaAndTextPatternTest(By by,
+                                                        Pattern pattern,
+                                                        Predicate<? extends SearchContext> criteria,
+                                                        WebElement expected,
                                                         String expectedElementDescription) {
         setStartBenchMark();
         WebElement webElement = seleniumSteps.find(webElement(by, pattern, (Predicate<? super WebElement>) criteria));
@@ -597,9 +616,12 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
         assertThat(webElement.toString(), is(expectedElementDescription));
     }
 
-    @Test(dataProvider = "search criteria3")
-    public void findElementByCriteriaAndTextPatternWithDefinedTimeTest(By by, Pattern pattern, Predicate<? extends SearchContext> criteria, WebElement expected,
-                                                                String expectedElementDescription) {
+    @Test(dataProvider = "search criteria3", retryAnalyzer = RetryAnalyzer.class)
+    public void findElementByCriteriaAndTextPatternWithDefinedTimeTest(By by,
+                                                                       Pattern pattern,
+                                                                       Predicate<? extends SearchContext> criteria,
+                                                                       WebElement expected,
+                                                                       String expectedElementDescription) {
         setStartBenchMark();
         WebElement webElement = seleniumSteps.find(webElement(by, pattern, FIVE_SECONDS, (Predicate<? super WebElement>) criteria));
         setEndBenchMark();
@@ -608,9 +630,12 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
         assertThat(webElement.toString(), is(expectedElementDescription));
     }
 
-    @Test(dataProvider = "search criteria3")
-    public void findElementByCriteriaAndTexPatterntWithTimeDefinedImplicitlyTest(By by, Pattern pattern, Predicate<? extends SearchContext> criteria, WebElement expected,
-                                                                          String expectedElementDescription) {
+    @Test(dataProvider = "search criteria3", retryAnalyzer = RetryAnalyzer.class)
+    public void findElementByCriteriaAndTexPatterntWithTimeDefinedImplicitlyTest(By by,
+                                                                                 Pattern pattern,
+                                                                                 Predicate<? extends SearchContext> criteria,
+                                                                                 WebElement expected,
+                                                                                 String expectedElementDescription) {
         setProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName(), "SECONDS");
         setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "5");
         try {
