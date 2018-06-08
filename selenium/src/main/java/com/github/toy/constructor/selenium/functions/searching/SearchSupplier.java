@@ -101,7 +101,8 @@ public final class SearchSupplier<R extends SearchContext>
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<WebElement> webElement(By by, Duration duration, Predicate<? super WebElement> predicate) {
-        return item(format("Web element located [%s]", by), webElements(by, predicate == AS_IS? EMPTY: predicate.toString()),
+        return item(format("Web element located [%s]", by),
+                webElements(by, predicate == AS_IS? EMPTY: predicate.toString()),
                 duration, predicate);
     }
 
@@ -202,7 +203,8 @@ public final class SearchSupplier<R extends SearchContext>
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<WebElement> webElement(By by, Predicate<? super WebElement> predicate) {
-        return item(format("Web element located [%s]", by), webElements(by, predicate == AS_IS? EMPTY: predicate.toString()),
+        return item(format("Web element located [%s]", by),
+                webElements(by, predicate == AS_IS? EMPTY: predicate.toString()),
                 predicate);
     }
 
@@ -313,7 +315,8 @@ public final class SearchSupplier<R extends SearchContext>
      * @return an instance of {@link SearchSupplier}
      */
     public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, Duration duration, Predicate<? super T> predicate) {
-        return item(getWidgetName(tClass), widgets(tClass, predicate.toString()), duration, predicate);
+        return item(getWidgetName(tClass),
+                widgets(tClass, predicate == AS_IS? EMPTY: predicate.toString()), duration, predicate);
     }
 
     /**
@@ -334,7 +337,9 @@ public final class SearchSupplier<R extends SearchContext>
                                                               Duration duration, Predicate<? super T> predicate) {
         Predicate<? extends T> labeledBy = shouldBeLabeledBy(labels.toArray(new String[]{}));
         Predicate<? super T> resultPredicate = (Predicate<? super T>) labeledBy.and(predicate);
-        return item(getWidgetName(tClass), labeledWidgets(tClass, resultPredicate.toString()), duration, resultPredicate);
+        return item(getWidgetName(tClass),
+                labeledWidgets(tClass, predicate == AS_IS? EMPTY: predicate.toString()),
+                duration, resultPredicate);
     }
 
     /**
@@ -434,7 +439,8 @@ public final class SearchSupplier<R extends SearchContext>
      * @return an instance of {@link SearchSupplier}
      */
     public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, Predicate<? super T> predicate) {
-        return item(getWidgetName(tClass), widgets(tClass, predicate.toString()), predicate);
+        return item(getWidgetName(tClass),
+                widgets(tClass, predicate == AS_IS? EMPTY: predicate.toString()), predicate);
     }
 
     /**return item(widgets(tClass, predicate.toString()), duration, predicate);
@@ -455,7 +461,8 @@ public final class SearchSupplier<R extends SearchContext>
     public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, List<String> labels, Predicate<? super T> predicate) {
         Predicate<? extends T> labeledBy = shouldBeLabeledBy(labels.toArray(new String[]{}));
         Predicate<? super T> resultPredicate = (Predicate<? super T>) labeledBy.and(predicate);
-        return item(getWidgetName(tClass), labeledWidgets(tClass, resultPredicate.toString()), resultPredicate);
+        return item(getWidgetName(tClass),
+                labeledWidgets(tClass, predicate == AS_IS? EMPTY: predicate.toString()), resultPredicate);
     }
 
     /**

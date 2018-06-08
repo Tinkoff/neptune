@@ -23,9 +23,9 @@ import static com.github.toy.constructor.selenium.api.widget.Widget.getWidgetNam
 import static com.github.toy.constructor.selenium.functions.searching.FindByBuilder.getAnnotation;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 import static net.sf.cglib.proxy.Enhancer.registerCallbacks;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> {
 
@@ -64,6 +64,7 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
         Reflections reflections = new Reflections("");
 
         List<Class<? extends R>> resultList = reflections.getSubTypesOf(classOfAWidget).stream()
+                .sorted(comparing(Class::getName))
                 .filter(classPredicate).collect(toList());
 
         if (classPredicate.test(classOfAWidget)) {
@@ -79,9 +80,9 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
                 getWidgetName(classOfAWidget), WebElement.class.getName()));
     }
 
-    private R createWidget(WebElement webElement) {
+    private R createWidget(WebElement webElement, Class<? extends Widget> desiredClass) {
         Enhancer enhancer = new Enhancer();
-        WidgetInterceptor interceptor = new WidgetInterceptor(webElement, classOfAWidget, conditionString);
+        WidgetInterceptor interceptor = new WidgetInterceptor(webElement, desiredClass, conditionString);
 
         enhancer.setUseCache(false);
         enhancer.setCallbackType(WidgetInterceptor.class);
@@ -102,7 +103,7 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
         classesToInstantiate.forEach(clazz -> {
             By by = builder.buildIt(clazz);
             result.addAll(searchContext.findElements(by).stream()
-                    .map(this::createWidget).collect(toList()));
+                    .map(webElement -> createWidget(webElement, clazz)).collect(toList()));
         });
         return result;
     }

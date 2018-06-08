@@ -13,7 +13,7 @@ import java.util.List;
 public abstract class Widget implements WrapsElement, SearchContext, TakesScreenshot, HasAttribute,
         IsEnabled, IsVisible, HasSize, HasRectangle, HasLocation, HasCssValue {
 
-    private final WebElement wrappedElement;
+    private final SearchContext wrappedElement;
 
     public Widget(WebElement wrappedElement) {
         this.wrappedElement = wrappedElement;
@@ -43,46 +43,46 @@ public abstract class Widget implements WrapsElement, SearchContext, TakesScreen
 
     @Override
     public WebElement getWrappedElement() {
-        return wrappedElement;
+        return (WebElement) wrappedElement;
     }
 
     @Override
     public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
-        return wrappedElement.getScreenshotAs(target);
+        return ((WebElement) wrappedElement).getScreenshotAs(target);
     }
 
     @Override
     public Point getLocation() {
-        return wrappedElement.getLocation();
+        return ((WebElement) wrappedElement).getLocation();
     }
 
     @Override
     public Dimension getSize() {
-        return wrappedElement.getSize();
+        return ((WebElement) wrappedElement).getSize();
     }
 
     @Override
     public Rectangle getRect() {
-        return wrappedElement.getRect();
+        return ((WebElement) wrappedElement).getRect();
     }
 
     @Override
     public String getAttribute(String attribute) {
-        return wrappedElement.getAttribute(attribute);
+        return ((WebElement) wrappedElement).getAttribute(attribute);
     }
 
     @Override
     public String getCssValue(String propertyName) {
-        return wrappedElement.getCssValue(propertyName);
+        return ((WebElement) wrappedElement).getCssValue(propertyName);
     }
 
     @Override
     public boolean isVisible() {
-        return wrappedElement.isDisplayed();
+        return ((WebElement) wrappedElement).isDisplayed();
     }
 
     @Override
     public boolean isEnabled() {
-        return wrappedElement.isEnabled();
+        return ((WebElement) wrappedElement).isEnabled();
     }
 }
