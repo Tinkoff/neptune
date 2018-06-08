@@ -88,7 +88,7 @@ class FindByBuilder extends AbstractFindByBuilder {
     }
 
     @Override
-    public By buildIt(@Deprecated Object ignored, Field field) {
+    public By buildIt(Object ignored, Field field) {
         return buildIt(format("Field %s declared by %s",
                 field.getName(),
                 field.getDeclaringClass().getName()),
