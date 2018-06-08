@@ -5,11 +5,14 @@ import org.openqa.selenium.internal.WrapsElement;
 
 import java.util.List;
 
+import static com.github.toy.constructor.selenium.api.widget.Priority.LOWEST;
+
 /**
  * This class is designed to represent hierarchical structure
  * of related elements. It is expected that there should be some top-level
  * element from which other elements can be found.
  */
+@Priority(LOWEST)
 public abstract class Widget implements WrapsElement, SearchContext, TakesScreenshot, HasAttribute,
         IsEnabled, IsVisible, HasSize, HasRectangle, HasLocation, HasCssValue {
 

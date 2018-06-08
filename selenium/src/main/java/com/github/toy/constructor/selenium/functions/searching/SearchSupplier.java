@@ -338,7 +338,7 @@ public final class SearchSupplier<R extends SearchContext>
         Predicate<? extends T> labeledBy = shouldBeLabeledBy(labels.toArray(new String[]{}));
         Predicate<? super T> resultPredicate = (Predicate<? super T>) labeledBy.and(predicate);
         return item(getWidgetName(tClass),
-                labeledWidgets(tClass, predicate == AS_IS? EMPTY: predicate.toString()),
+                labeledWidgets(tClass, resultPredicate.toString()),
                 duration, resultPredicate);
     }
 
@@ -462,7 +462,7 @@ public final class SearchSupplier<R extends SearchContext>
         Predicate<? extends T> labeledBy = shouldBeLabeledBy(labels.toArray(new String[]{}));
         Predicate<? super T> resultPredicate = (Predicate<? super T>) labeledBy.and(predicate);
         return item(getWidgetName(tClass),
-                labeledWidgets(tClass, predicate == AS_IS? EMPTY: predicate.toString()), resultPredicate);
+                labeledWidgets(tClass, resultPredicate.toString()), resultPredicate);
     }
 
     /**

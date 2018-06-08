@@ -290,7 +290,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass, Duration duration, Predicate<? super T> predicate) {
-        return items(FindWidgets.widgets(tClass, predicate.toString()), duration, predicate);
+        return items(FindWidgets.widgets(tClass,
+                predicate == AS_IS? EMPTY: predicate.toString()), duration, predicate);
     }
 
     /**
@@ -406,7 +407,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass, Predicate<? super T> predicate) {
-        return items(FindWidgets.widgets(tClass, predicate.toString()), predicate);
+        return items(FindWidgets.widgets(tClass,
+                predicate == AS_IS? EMPTY: predicate.toString()), predicate);
     }
 
     /**

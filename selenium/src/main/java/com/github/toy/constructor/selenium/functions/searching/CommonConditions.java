@@ -398,7 +398,6 @@ public final class CommonConditions {
     /**
      * @param <T> is type of elements under the test.
      * @param labels which can be used for the seeking element
-     * @param <T> type of the input value
      * @return predicate that checks labels of a complex element
      */
     public static  <T extends SearchContext & Labeled> Predicate<T> shouldBeLabeledBy(String...labels) {

@@ -3,6 +3,7 @@ package com.github.toy.constructor.selenium.test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.support.pagefactory.ByAll;
 import org.openqa.selenium.support.pagefactory.ByChained;
 
 import java.util.List;
@@ -477,6 +478,7 @@ public class FakeDOMModel {
     private static final ByChained CHAINED_FIND_HEADER = new ByChained(tagName(T_HEAD), tagName(TR));
     private static final ByChained CHAINED_FIND_ROW = new ByChained(tagName(T_BODY), tagName(TR));
     private static final ByChained CHAINED_FIND_FOOTER = new ByChained(tagName(T_FOOT), tagName(TR));
+    private static final ByAll CUSTOM_LABEL_BY = new ByAll(xpath(LABEL_XPATH), xpath(LABEL_XPATH2));
     public static final By INVISIBLE_SPAN_BY = tagName(SPAN);
     public static final By VISIBLE_DIV_BY = tagName(DIV);
 
@@ -586,11 +588,11 @@ public class FakeDOMModel {
             ofEntries(entry(CSS5, CSS_VALUE7),
                     entry(CSS6, CSS_VALUE8)), new Point(55, 47), new Dimension(45, 69), true,
             true, false, BUTTON_TAG, EMPTY, of(
-            new MockWebElement(xpath(LABEL_XPATH), ofEntries(), ofEntries(), new Point(50, 41),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(50, 41),
                     new Dimension(33, 45), true,
                     true, false, LABEL_TAG, BUTTON_LABEL_TEXT5, of()),
 
-            new MockWebElement(xpath(LABEL_XPATH2), ofEntries(), ofEntries(), new Point(31, 41),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(31, 41),
                     new Dimension(51, 62), true,
                     true, false, LABEL_TAG, BUTTON_LABEL_TEXT9, of()
             )));
@@ -601,11 +603,11 @@ public class FakeDOMModel {
             ofEntries(entry(CSS5, CSS_VALUE8),
                     entry(CSS6, CSS_VALUE9)), new Point(56, 48), new Dimension(46, 70), false,
             true, false, BUTTON_TAG, EMPTY, of(
-            new MockWebElement(xpath(LABEL_XPATH), ofEntries(), ofEntries(), new Point(51, 42),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(51, 42),
                     new Dimension(33, 45), false,
                     true, false, LABEL_TAG, BUTTON_LABEL_TEXT6, of()),
 
-            new MockWebElement(xpath(LABEL_XPATH2), ofEntries(), ofEntries(), new Point(32, 42),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(32, 42),
                     new Dimension(52, 63), false,
                     true, false, LABEL_TAG, BUTTON_LABEL_TEXT10, of()
             )));
@@ -616,11 +618,11 @@ public class FakeDOMModel {
             ofEntries(entry(CSS5, CSS_VALUE9),
                     entry(CSS6, CSS_VALUE10)), new Point(57, 49), new Dimension(47, 71), true,
             false, false, BUTTON_TAG, EMPTY, of(
-            new MockWebElement(xpath(LABEL_XPATH), ofEntries(), ofEntries(), new Point(52, 43),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(52, 43),
                     new Dimension(34, 46), true,
                     false, false, LABEL_TAG, BUTTON_LABEL_TEXT7, of()),
 
-            new MockWebElement(xpath(LABEL_XPATH2), ofEntries(), ofEntries(), new Point(33, 43),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(33, 43),
                     new Dimension(53, 64), true,
                     false, false, LABEL_TAG, BUTTON_LABEL_TEXT11, of()
             )));
@@ -631,11 +633,11 @@ public class FakeDOMModel {
             ofEntries(entry(CSS5, CSS_VALUE10),
                     entry(CSS6, CSS_VALUE11)), new Point(58, 50), new Dimension(48, 72), false,
             false, false, BUTTON_TAG, EMPTY, of(
-            new MockWebElement(xpath(LABEL_XPATH), ofEntries(), ofEntries(), new Point(53, 44),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(53, 44),
                     new Dimension(35, 47), false,
                     false, false, LABEL_TAG, BUTTON_LABEL_TEXT8, of()),
 
-            new MockWebElement(xpath(LABEL_XPATH2), ofEntries(), ofEntries(), new Point(34, 44),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(34, 44),
                     new Dimension(54, 65), false,
                     false, false, LABEL_TAG, BUTTON_LABEL_TEXT12, of()
             )));
@@ -1171,11 +1173,11 @@ public class FakeDOMModel {
             ofEntries(entry(CSS15, CSS_VALUE7),
                     entry(CSS20, CSS_VALUE8)), new Point(55, 47), new Dimension(45, 69), true,
             true, false, DIV, EMPTY, of(
-            new MockWebElement(xpath(LABEL_XPATH), ofEntries(), ofEntries(), new Point(50, 41),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(50, 41),
                     new Dimension(33, 45), true,
                     true, false, LABEL_TAG, LINK_LABEL_TEXT5, of()),
 
-            new MockWebElement(xpath(LABEL_XPATH2), ofEntries(), ofEntries(), new Point(31, 41),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(31, 41),
                     new Dimension(51, 62), true,
                     true, false, SPAN, LINK_LABEL_TEXT9, of()
             )));
@@ -1187,11 +1189,11 @@ public class FakeDOMModel {
             ofEntries(entry(CSS15, CSS_VALUE8),
                     entry(CSS20, CSS_VALUE9)), new Point(56, 48), new Dimension(46, 70), false,
             true, false, DIV, EMPTY, of(
-            new MockWebElement(xpath(LABEL_XPATH), ofEntries(), ofEntries(), new Point(51, 42),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(51, 42),
                     new Dimension(33, 45), false,
                     true, false, LABEL_TAG, LINK_LABEL_TEXT6, of()),
 
-            new MockWebElement(xpath(LABEL_XPATH2), ofEntries(), ofEntries(), new Point(32, 42),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(32, 42),
                     new Dimension(52, 63), false,
                     true, false, SPAN, LINK_LABEL_TEXT10, of()
             )));
@@ -1203,11 +1205,11 @@ public class FakeDOMModel {
             ofEntries(entry(CSS15, CSS_VALUE9),
                     entry(CSS20, CSS_VALUE10)), new Point(57, 49), new Dimension(47, 71), true,
             false, false, DIV, EMPTY, of(
-            new MockWebElement(xpath(LABEL_XPATH), ofEntries(), ofEntries(), new Point(52, 43),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(52, 43),
                     new Dimension(34, 46), true,
                     false, false, LABEL_TAG, LINK_LABEL_TEXT7, of()),
 
-            new MockWebElement(xpath(LABEL_XPATH2), ofEntries(), ofEntries(), new Point(33, 43),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(33, 43),
                     new Dimension(53, 64), true,
                     false, false, SPAN, LINK_LABEL_TEXT11, of()
             )));
@@ -1219,11 +1221,11 @@ public class FakeDOMModel {
             ofEntries(entry(CSS15, CSS_VALUE10),
                     entry(CSS20, CSS_VALUE11)), new Point(58, 50), new Dimension(48, 72), false,
             false, false, DIV, EMPTY, of(
-            new MockWebElement(xpath(LABEL_XPATH), ofEntries(), ofEntries(), new Point(53, 44),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(53, 44),
                     new Dimension(35, 47), false,
                     false, false, LABEL_TAG, LINK_LABEL_TEXT8, of()),
 
-            new MockWebElement(xpath(LABEL_XPATH2), ofEntries(), ofEntries(), new Point(34, 44),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(34, 44),
                     new Dimension(54, 65), false,
                     false, false, SPAN, LINK_LABEL_TEXT12, of()
             )));
@@ -1308,11 +1310,11 @@ public class FakeDOMModel {
             ofEntries(entry(CSS15, CSS_VALUE19),
                     entry(CSS20, CSS_VALUE20)), new Point(55, 47), new Dimension(45, 69), true,
             true, false, DIV, EMPTY, of(
-            new MockWebElement(xpath(LABEL_XPATH), ofEntries(), ofEntries(), new Point(50, 41),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(50, 41),
                     new Dimension(33, 45), true,
                     true, false, LABEL_TAG, TAB_TEXT9, of()),
 
-            new MockWebElement(xpath(LABEL_XPATH2), ofEntries(), ofEntries(), new Point(31, 41),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(31, 41),
                     new Dimension(51, 62), true,
                     true, false, SPAN, TAB_TEXT13, of()
             )));
@@ -1323,11 +1325,11 @@ public class FakeDOMModel {
             ofEntries(entry(CSS15, CSS_VALUE20),
                     entry(CSS20, CSS_VALUE1)), new Point(56, 48), new Dimension(46, 70), false,
             true, false, DIV, EMPTY, of(
-            new MockWebElement(xpath(LABEL_XPATH), ofEntries(), ofEntries(), new Point(51, 42),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(51, 42),
                     new Dimension(33, 45), false,
                     true, false, LABEL_TAG, TAB_TEXT10, of()),
 
-            new MockWebElement(xpath(LABEL_XPATH2), ofEntries(), ofEntries(), new Point(32, 42),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(32, 42),
                     new Dimension(52, 63), false,
                     true, false, SPAN, TAB_TEXT14, of()
             )));
@@ -1338,11 +1340,11 @@ public class FakeDOMModel {
             ofEntries(entry(CSS15, CSS_VALUE1),
                     entry(CSS20, CSS_VALUE2)), new Point(57, 49), new Dimension(47, 71), true,
             true, false, DIV, EMPTY, of(
-            new MockWebElement(xpath(LABEL_XPATH), ofEntries(), ofEntries(), new Point(52, 43),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(52, 43),
                     new Dimension(34, 46), true,
                     true, false, LABEL_TAG, TAB_TEXT11, of()),
 
-            new MockWebElement(xpath(LABEL_XPATH2), ofEntries(), ofEntries(), new Point(33, 43),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(33, 43),
                     new Dimension(53, 64), true,
                     true, false, SPAN, TAB_TEXT15, of()
             )));
@@ -1353,11 +1355,11 @@ public class FakeDOMModel {
             ofEntries(entry(CSS15, CSS_VALUE2),
                     entry(CSS20, CSS_VALUE3)), new Point(58, 50), new Dimension(48, 72), false,
             false, false, DIV, EMPTY, of(
-            new MockWebElement(xpath(LABEL_XPATH), ofEntries(), ofEntries(), new Point(53, 44),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(53, 44),
                     new Dimension(35, 47), false,
                     false, false, LABEL_TAG, TAB_TEXT12, of()),
 
-            new MockWebElement(xpath(LABEL_XPATH2), ofEntries(), ofEntries(), new Point(34, 44),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(34, 44),
                     new Dimension(54, 65), false,
                     false, false, SPAN, TAB_TEXT16, of()
             )));
@@ -1512,11 +1514,11 @@ public class FakeDOMModel {
                     entry(CSS2, CSS_VALUE11),
                     entry(CSS3, CSS_VALUE12)), new Point(55, 47), new Dimension(45, 69), true,
             true, false, DIV, EMPTY, of(
-            new MockWebElement(xpath(LABEL_XPATH), ofEntries(), ofEntries(), new Point(50, 41),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(50, 41),
                     new Dimension(33, 45), true,
                     true, false, LABEL_TAG, SELECT_LABEL_TEXT5, of()),
 
-            new MockWebElement(xpath(LABEL_XPATH2), ofEntries(), ofEntries(), new Point(31, 41),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(31, 41),
                     new Dimension(51, 62), true,
                     true, false, SPAN, SELECT_LABEL_TEXT9, of()),
 
@@ -1536,11 +1538,11 @@ public class FakeDOMModel {
                     entry(CSS2, CSS_VALUE12),
                     entry(CSS3, CSS_VALUE13)), new Point(56, 48), new Dimension(46, 70), false,
             true, false, DIV, EMPTY, of(
-            new MockWebElement(xpath(LABEL_XPATH), ofEntries(), ofEntries(), new Point(51, 42),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(51, 42),
                     new Dimension(33, 45), false,
                     true, false, LABEL_TAG, SELECT_LABEL_TEXT6, of()),
 
-            new MockWebElement(xpath(LABEL_XPATH2), ofEntries(), ofEntries(), new Point(32, 42),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(32, 42),
                     new Dimension(52, 63), false,
                     true, false, SPAN, SELECT_LABEL_TEXT10, of()),
 
@@ -1560,11 +1562,11 @@ public class FakeDOMModel {
                     entry(CSS2, CSS_VALUE13),
                     entry(CSS3, CSS_VALUE14)), new Point(57, 49), new Dimension(47, 71), true,
             true, false, DIV, EMPTY, of(
-            new MockWebElement(xpath(LABEL_XPATH), ofEntries(), ofEntries(), new Point(52, 43),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(52, 43),
                     new Dimension(34, 46), true,
                     true, false, LABEL_TAG, SELECT_LABEL_TEXT7, of()),
 
-            new MockWebElement(xpath(LABEL_XPATH2), ofEntries(), ofEntries(), new Point(33, 43),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(33, 43),
                     new Dimension(53, 64), true,
                     true, false, SPAN, SELECT_LABEL_TEXT11, of()),
 
@@ -1584,11 +1586,11 @@ public class FakeDOMModel {
                     entry(CSS2, CSS_VALUE14),
                     entry(CSS3, CSS_VALUE15)), new Point(58, 50), new Dimension(48, 72), false,
             false, false, DIV, EMPTY, of(
-            new MockWebElement(xpath(LABEL_XPATH), ofEntries(), ofEntries(), new Point(53, 44),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(53, 44),
                     new Dimension(35, 47), false,
                     false, false, LABEL_TAG, SELECT_LABEL_TEXT8, of()),
 
-            new MockWebElement(xpath(LABEL_XPATH2), ofEntries(), ofEntries(), new Point(34, 44),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(34, 44),
                     new Dimension(54, 65), false,
                     false, false, SPAN, SELECT_LABEL_TEXT12, of()),
 
@@ -2061,11 +2063,11 @@ public class FakeDOMModel {
                     entry(CSS2, CSS_VALUE12),
                     entry(CSS3, CSS_VALUE13)), new Point(55, 47), new Dimension(45, 69), true,
             false, false, DIV, EMPTY, of(
-            new MockWebElement(xpath(LABEL_XPATH), ofEntries(), ofEntries(), new Point(50, 41),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(50, 41),
                     new Dimension(33, 45), true,
                     false, false, LABEL_TAG, TABLE_LABEL_TEXT5, of()),
 
-            new MockWebElement(xpath(LABEL_XPATH2), ofEntries(), ofEntries(), new Point(31, 41),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(31, 41),
                     new Dimension(51, 62), true,
                     false, false, SPAN, TABLE_LABEL_TEXT9, of()),
 
@@ -2124,11 +2126,11 @@ public class FakeDOMModel {
                     entry(CSS2, CSS_VALUE13),
                     entry(CSS3, CSS_VALUE15)), new Point(56, 48), new Dimension(46, 70), false,
             true, false, DIV, EMPTY, of(
-            new MockWebElement(xpath(LABEL_XPATH), ofEntries(), ofEntries(), new Point(51, 42),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(51, 42),
                     new Dimension(33, 45), false,
                     true, false, LABEL_TAG, TABLE_LABEL_TEXT6, of()),
 
-            new MockWebElement(xpath(LABEL_XPATH2), ofEntries(), ofEntries(), new Point(32, 42),
+            new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(32, 42),
                     new Dimension(52, 63), false,
                     true, false, SPAN, TABLE_LABEL_TEXT10, of()),
 

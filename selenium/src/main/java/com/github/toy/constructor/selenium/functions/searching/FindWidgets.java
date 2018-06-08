@@ -21,6 +21,7 @@ import java.util.function.Predicate;
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.github.toy.constructor.selenium.api.widget.Widget.getWidgetName;
 import static com.github.toy.constructor.selenium.functions.searching.FindByBuilder.getAnnotation;
+import static com.github.toy.constructor.selenium.functions.searching.WidgetPriorityComparator.widgetPriorityComparator;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Comparator.comparing;
@@ -64,8 +65,8 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
         Reflections reflections = new Reflections("");
 
         List<Class<? extends R>> resultList = reflections.getSubTypesOf(classOfAWidget).stream()
-                .sorted(comparing(Class::getName))
-                .filter(classPredicate).collect(toList());
+                .filter(classPredicate)
+                .sorted(widgetPriorityComparator()).collect(toList());
 
         if (classPredicate.test(classOfAWidget)) {
             resultList.add(classOfAWidget);
@@ -86,10 +87,10 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
 
         enhancer.setUseCache(false);
         enhancer.setCallbackType(WidgetInterceptor.class);
-        enhancer.setSuperclass(classOfAWidget);
+        enhancer.setSuperclass(desiredClass);
         Class<?> proxyClass = enhancer.createClass();
         registerCallbacks(proxyClass, new Callback[]{interceptor});
-        enhancer.setClassLoader(classOfAWidget.getClassLoader());
+        enhancer.setClassLoader(desiredClass.getClassLoader());
 
         Objenesis objenesis = new ObjenesisStd();
         Object proxy = objenesis.newInstance(proxyClass);

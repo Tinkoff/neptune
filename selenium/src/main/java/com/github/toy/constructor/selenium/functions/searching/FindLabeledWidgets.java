@@ -18,6 +18,7 @@ import java.util.function.Predicate;
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.github.toy.constructor.selenium.api.widget.Widget.getWidgetName;
 import static com.github.toy.constructor.selenium.functions.searching.FindByBuilder.getAnnotation;
+import static com.github.toy.constructor.selenium.functions.searching.WidgetPriorityComparator.widgetPriorityComparator;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 
@@ -47,7 +48,8 @@ class FindLabeledWidgets<R extends Widget> extends FindWidgets<R> {
         Reflections reflections = new Reflections("");
 
         List<Class<? extends R>> resultList = reflections.getSubTypesOf(classOfAWidget).stream()
-                .filter(classPredicate).collect(toList());
+                .filter(classPredicate)
+                .sorted(widgetPriorityComparator()).collect(toList());
 
         if (classPredicate.test(classOfAWidget)) {
             resultList.add(classOfAWidget);
