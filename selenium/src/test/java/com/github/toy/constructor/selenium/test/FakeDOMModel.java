@@ -266,7 +266,6 @@ public class FakeDOMModel {
     public static final String SELECT_LABEL_TEXT2 = "Select Label Text2";
     public static final String SELECT_LABEL_TEXT3 = "Select Label Text3";
     public static final String SELECT_LABEL_TEXT4 = "Select Label Text4";
-    public static final String SELECT_LABEL_TEXT5 = "Select Label Text5";
     public static final String SELECT_LABEL_TEXT6 = "Select Label Text6";
     public static final String SELECT_LABEL_TEXT7 = "Select Label Text7";
     public static final String SELECT_LABEL_TEXT8 = "Select Label Text8";
@@ -1516,7 +1515,7 @@ public class FakeDOMModel {
             true, false, DIV, EMPTY, of(
             new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(50, 41),
                     new Dimension(33, 45), true,
-                    true, false, LABEL_TAG, SELECT_LABEL_TEXT5, of()),
+                    true, false, LABEL_TAG, SELECT_LABEL_TEXT1, of()),
 
             new MockWebElement(CUSTOM_LABEL_BY, ofEntries(), ofEntries(), new Point(31, 41),
                     new Dimension(51, 62), true,

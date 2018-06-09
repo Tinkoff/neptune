@@ -543,7 +543,7 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
             assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
             assertThat(new BigDecimal(getTimeDifference() - ONE_SECOND.toMillis()),
                     either(lessThan(new BigDecimal(HALF_SECOND.toMillis())))
-                            .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(100))));
+                            .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(200))));
         }
     }
 
@@ -568,7 +568,7 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
             assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
             assertThat(new BigDecimal(getTimeDifference() - ONE_SECOND.toMillis()),
                     either(lessThan(new BigDecimal(HALF_SECOND.toMillis())))
-                            .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(100))));
+                            .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(200))));
         }
     }
 
@@ -698,7 +698,7 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
             assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
             assertThat(new BigDecimal(getTimeDifference() - ONE_SECOND.toMillis()),
                     either(lessThan(new BigDecimal(HALF_SECOND.toMillis())))
-                            .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(100))));
+                            .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(200))));
         }
     }
 
@@ -724,7 +724,7 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
             assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
             assertThat(new BigDecimal(getTimeDifference() - ONE_SECOND.toMillis()),
                     either(lessThan(new BigDecimal(HALF_SECOND.toMillis())))
-                            .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(100))));
+                            .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(200))));
         }
     }
 
@@ -854,7 +854,7 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
             assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
             assertThat(new BigDecimal(getTimeDifference() - ONE_SECOND.toMillis()),
                     either(lessThan(new BigDecimal(HALF_SECOND.toMillis())))
-                            .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(100))));
+                            .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(200))));
         }
     }
 
@@ -880,7 +880,7 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
             assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
             assertThat(new BigDecimal(getTimeDifference() - ONE_SECOND.toMillis()),
                     either(lessThan(new BigDecimal(HALF_SECOND.toMillis())))
-                            .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(100))));
+                            .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(200))));
         }
     }
 }

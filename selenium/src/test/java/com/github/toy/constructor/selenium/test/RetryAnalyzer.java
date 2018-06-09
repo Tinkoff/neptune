@@ -12,6 +12,7 @@ public class RetryAnalyzer implements IRetryAnalyzer {
     public boolean retry(ITestResult result) {
         if (counter < RETRY_LIMIT) {
             counter++;
+            result.setStatus(ITestResult.STARTED);
             return true;
         }
         counter = 0;
