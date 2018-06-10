@@ -29,12 +29,14 @@ import org.testng.annotations.Test;
 import java.math.BigDecimal;
 import java.util.function.Predicate;
 
+import static com.github.toy.constructor.core.api.StoryWriter.condition;
 import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.shouldBeLabeledBy;
 import static com.github.toy.constructor.selenium.functions.searching.SearchSupplier.*;
 import static com.github.toy.constructor.selenium.test.FakeDOMModel.*;
 import static com.github.toy.constructor.selenium.test.steps.tests.searching.widgets.WidgetNames.*;
 import static java.lang.String.format;
 import static java.util.List.of;
+import static java.util.Optional.ofNullable;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -301,6 +303,7 @@ public class SearchForWidgetPositiveTest extends BaseWebDriverTest {
                         getWidgetDescription(CUSTOMIZED_TAB,
                                 shouldBeLabeledBy(TAB_TEXT14))},
 
+
                 {table(), COMMON_LABELED_TABLE1,
                         SimpleTable.class, SIMPLE_TABLE},
 
@@ -334,6 +337,95 @@ public class SearchForWidgetPositiveTest extends BaseWebDriverTest {
                 {table(TABLE_LABEL_TEXT3, FIVE_SECONDS), COMMON_LABELED_TABLE3, LabeledTable.class,
                         getWidgetDescription(LABELED_TABLE,
                                 shouldBeLabeledBy(TABLE_LABEL_TEXT3))},
+
+
+                {button()
+                        .foundFrom(tableCell(condition("Cell should be equal to " + CELL_TEXT73,
+                                tableCell -> CELL_TEXT73.equals(tableCell.getValue()))))
+
+                        .foundFrom(tableRow(condition("Row should have tag " + DIV,
+                                tableRow -> DIV.equals(tableRow.getWrappedElement().getTagName()))))
+
+                        .foundFrom(table(TABLE_LABEL_TEXT5)),
+
+                        CUSTOM_LABELED_BUTTON1,
+                        CustomizedButton.class, CUSTOM_BUTTON},
+
+                {button(FIVE_SECONDS)
+                        .foundFrom(tableRow())
+                                .foundFrom(table(TABLE_LABEL_TEXT6)),
+
+                        CUSTOM_LABELED_BUTTON2,
+                        CustomizedButton.class, CUSTOM_BUTTON},
+
+                {button(of(BUTTON_LABEL_TEXT5))
+                        .foundFrom(tableCell(condition("Cell should be equal to " + CELL_TEXT73,
+                                tableCell -> CELL_TEXT73.equals(tableCell.getValue()))))
+
+                        .foundFrom(tableRow(condition("Row should have tag " + DIV,
+                                tableRow -> DIV.equals(tableRow.getWrappedElement().getTagName()))))
+
+                        .foundFrom(table(TABLE_LABEL_TEXT5)),
+
+                        CUSTOM_LABELED_BUTTON1,
+                        CustomizedButton.class,
+                        getWidgetDescription(CUSTOM_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT5))},
+
+                {button(of(BUTTON_LABEL_TEXT6), FIVE_SECONDS)
+                        .foundFrom(tableRow())
+                        .foundFrom(table(TABLE_LABEL_TEXT6)),
+
+                        CUSTOM_LABELED_BUTTON2,
+                        CustomizedButton.class,
+                        getWidgetDescription(CUSTOM_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT6))},
+
+                {button(of(BUTTON_LABEL_TEXT6, BUTTON_LABEL_TEXT10))
+                        .foundFrom(tableRow())
+                        .foundFrom(table(TABLE_LABEL_TEXT6)),
+
+                        CUSTOM_LABELED_BUTTON2,
+                        CustomizedButton.class,
+                        getWidgetDescription(CUSTOM_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT6, BUTTON_LABEL_TEXT10))},
+
+                {button(of(BUTTON_LABEL_TEXT5, BUTTON_LABEL_TEXT9), FIVE_SECONDS)
+                        .foundFrom(tableCell(condition("Cell should be equal to " + CELL_TEXT73,
+                                tableCell -> CELL_TEXT73.equals(tableCell.getValue()))))
+
+                        .foundFrom(tableRow(condition("Row should have tag " + DIV,
+                                tableRow -> DIV.equals(tableRow.getWrappedElement().getTagName()))))
+
+                        .foundFrom(table(TABLE_LABEL_TEXT5)),
+
+                        CUSTOM_LABELED_BUTTON1,
+                        CustomizedButton.class,
+                        getWidgetDescription(CUSTOM_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT5, BUTTON_LABEL_TEXT9))},
+
+                {button(BUTTON_LABEL_TEXT6)
+                        .foundFrom(tableRow())
+                        .foundFrom(table(TABLE_LABEL_TEXT6)),
+
+                        CUSTOM_LABELED_BUTTON2,
+                        CustomizedButton.class,
+                        getWidgetDescription(CUSTOM_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT6))},
+
+                {button(BUTTON_LABEL_TEXT5, FIVE_SECONDS)
+                        .foundFrom(tableCell(condition("Cell should be equal to " + CELL_TEXT73,
+                                tableCell -> CELL_TEXT73.equals(tableCell.getValue()))))
+
+                        .foundFrom(tableRow(condition("Row should have tag " + DIV,
+                                tableRow -> DIV.equals(tableRow.getWrappedElement().getTagName()))))
+
+                        .foundFrom(table(TABLE_LABEL_TEXT5)),
+
+                        CUSTOM_LABELED_BUTTON1,
+                        CustomizedButton.class,
+                        getWidgetDescription(CUSTOM_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT5))},
         };
     }
 
@@ -345,10 +437,11 @@ public class SearchForWidgetPositiveTest extends BaseWebDriverTest {
         setStartBenchMark();
         T t = seleniumSteps.find(search);
         setEndBenchMark();
+        System.out.println(t.getClass().getName());
         assertThat(widgetClass.isAssignableFrom(t.getClass()), is(true));
-        assertThat(t.getWrappedElement(), equalTo(element));
+        ofNullable(element).ifPresent(element1 -> assertThat(t.getWrappedElement(), equalTo(element1)));
         assertThat(t.toString(), is(expectedDescription));
         assertThat(new BigDecimal(getTimeDifference()), either(lessThan(new BigDecimal(HALF_SECOND.toMillis())))
-                .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(100))));
+                .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(300))));
     }
 }

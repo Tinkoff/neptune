@@ -13,7 +13,7 @@ import static com.github.toy.constructor.selenium.test.steps.tests.searching.wid
 
 @Name(SIMPLE_RADIOBUTTON)
 @FindBy(xpath = RADIO_BUTTON_XPATH)
-@Priority(HIGHEST)
+@Priority(2)
 public class SimpleRadioButton extends Flag.RadioButton {
 
     public SimpleRadioButton(WebElement wrappedElement) {

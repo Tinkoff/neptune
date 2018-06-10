@@ -2,6 +2,7 @@ package com.github.toy.constructor.selenium.test.steps.tests.searching.widgets.f
 
 import com.github.toy.constructor.selenium.api.widget.Labeled;
 import com.github.toy.constructor.selenium.api.widget.Name;
+import com.github.toy.constructor.selenium.api.widget.Priority;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
@@ -12,6 +13,7 @@ import static com.github.toy.constructor.selenium.test.FakeDOMModel.LABEL_TAG;
 import static com.github.toy.constructor.selenium.test.steps.tests.searching.widgets.WidgetNames.LABELED_RADIOBUTTON;
 
 @Name(LABELED_RADIOBUTTON)
+@Priority(3)
 public class LabeledRadioButton extends SimpleRadioButton implements Labeled {
 
     @FindBy(tagName = LABEL_TAG)

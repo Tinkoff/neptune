@@ -13,7 +13,6 @@ import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.openqa.selenium.By.*;
-import static org.openqa.selenium.support.ui.Quotes.escape;
 
 public class FakeDOMModel {
 

@@ -27,4 +27,17 @@ public final class WidgetNames {
     public static final String SIMPLE_TABLE = "Simple table";
     public static final String LABELED_TABLE = "Labeled table";
     public static final String SPREADSHEET_TABLE = "Spreadsheet table";
+
+    public static final String COMMON_BORDER_CELL = "Common Header/Footer Cell";
+    public static final String COMMON_ROW_CELL = "Common Cell";
+    public static final String SPREADSHEET_CELL = "Spreadsheet Cell";
+
+    public static final String COMMON_HEADER = "Common Header";
+    public static final String SPREADSHEET_HEADER = "Spreadsheet Header";
+
+    public static final String COMMON_ROW = "Common Row";
+    public static final String SPREADSHEET_ROW = "Spreadsheet Row";
+
+    public static final String COMMON_FOOTER = "Common Footer";
+    public static final String SPREADSHEET_FOOTER = "Spreadsheet Footer";
 }

@@ -25,6 +25,7 @@ import static com.github.toy.constructor.selenium.functions.searching.WidgetPrio
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Comparator.comparing;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static net.sf.cglib.proxy.Enhancer.registerCallbacks;
 
@@ -33,6 +34,7 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
     private static final FindByBuilder builder = new FindByBuilder();
     final Class<? extends R> classOfAWidget;
     private final String conditionString;
+    private List<Class<? extends R>> classesToInstantiate;
 
     FindWidgets(Class<R> classOfAWidget, String conditionString) {
         checkArgument(classOfAWidget != null, "The class to be instantiated should be defined.");
@@ -99,7 +101,8 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
 
     @Override
     public List<R> apply(SearchContext searchContext) {
-        List<Class<? extends R>> classesToInstantiate = getSubclasses();
+        classesToInstantiate = ofNullable(classesToInstantiate)
+                .orElseGet(this::getSubclasses);
         List<R> result = new ArrayList<>();
         classesToInstantiate.forEach(clazz -> {
             By by = builder.buildIt(clazz);
