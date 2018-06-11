@@ -30,15 +30,20 @@ import java.math.BigDecimal;
 import java.util.function.Predicate;
 
 import static com.github.toy.constructor.core.api.StoryWriter.condition;
-import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.shouldBeLabeledBy;
+import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.*;
+import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.shouldHaveAttribute;
+import static com.github.toy.constructor.selenium.functions.searching.MultipleSearchSupplier.webElements;
 import static com.github.toy.constructor.selenium.functions.searching.SearchSupplier.*;
 import static com.github.toy.constructor.selenium.test.FakeDOMModel.*;
 import static com.github.toy.constructor.selenium.test.steps.tests.searching.widgets.WidgetNames.*;
 import static java.lang.String.format;
+import static java.time.Duration.ofMillis;
 import static java.util.List.of;
 import static java.util.Optional.ofNullable;
+import static java.util.regex.Pattern.compile;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.openqa.selenium.By.tagName;
 
 public class SearchForWidgetPositiveTest extends BaseWebDriverTest {
 
@@ -82,6 +87,291 @@ public class SearchForWidgetPositiveTest extends BaseWebDriverTest {
                         CustomizedButton.class,
                         getWidgetDescription(CUSTOM_BUTTON,
                                 shouldBeLabeledBy(BUTTON_LABEL_TEXT10))},
+
+                {button(shouldBeEnabled()), COMMON_BUTTON3,
+                        SimpleButton.class,
+                        getWidgetDescription(SIMPLE_BUTTON,
+                                shouldBeEnabled())},
+
+                {button(shouldBeEnabled().negate()), COMMON_BUTTON1,
+                        SimpleButton.class,
+                        getWidgetDescription(SIMPLE_BUTTON,
+                                shouldBeEnabled().negate())},
+
+                {button(shouldBeVisible()), COMMON_BUTTON2,
+                        SimpleButton.class,
+                        getWidgetDescription(SIMPLE_BUTTON,
+                                shouldBeVisible())},
+
+                {button(shouldBeVisible().negate()), COMMON_BUTTON1,
+                        SimpleButton.class,
+                        getWidgetDescription(SIMPLE_BUTTON,
+                                shouldBeVisible().negate())},
+
+                {button(shouldContainElements(webElements(tagName(LABEL_TAG), ofMillis(5)), 1)),
+                        COMMON_LABELED_BUTTON1,
+                        SimpleButton.class,
+                        getWidgetDescription(SIMPLE_BUTTON,
+                                shouldContainElements(webElements(tagName(LABEL_TAG), ofMillis(5)), 1))},
+
+                {button(shouldContainElements(webElements(tagName(LABEL_TAG), ofMillis(5)), 1)
+                        .negate()),
+                        COMMON_BUTTON1,
+                        SimpleButton.class,
+                        getWidgetDescription(SIMPLE_BUTTON,
+                                shouldContainElements(webElements(tagName(LABEL_TAG), ofMillis(5)), 1)
+                                        .negate())},
+
+                {button(shouldHaveAttribute(ATTR5, VALUE11)
+                        .and(shouldHaveAttribute(ATTR6, VALUE12))), CUSTOM_LABELED_BUTTON2,
+                        CustomizedButton.class,
+                        getWidgetDescription(CUSTOM_BUTTON,
+                                shouldHaveAttribute(ATTR5, VALUE11)
+                                        .and(shouldHaveAttribute(ATTR6, VALUE12)))},
+
+                {button(shouldHaveAttribute(ATTR5, VALUE11)
+                        .and(shouldHaveAttribute(ATTR6, VALUE12)).negate()), COMMON_BUTTON1,
+                        SimpleButton.class,
+                        getWidgetDescription(SIMPLE_BUTTON,
+                                shouldHaveAttribute(ATTR5, VALUE11)
+                                        .and(shouldHaveAttribute(ATTR6, VALUE12)).negate())},
+
+                {button(shouldHaveAttributeContains(ATTR1, "1")
+                        .or(shouldHaveAttributeContains(ATTR6, "12"))), COMMON_LABELED_BUTTON1,
+                        SimpleButton.class,
+                        getWidgetDescription(SIMPLE_BUTTON,
+                                shouldHaveAttributeContains(ATTR1, "1")
+                                        .or(shouldHaveAttributeContains(ATTR6, "12")))},
+
+                {button(shouldHaveAttributeContains(ATTR1, "1")
+                        .or(shouldHaveAttributeContains(ATTR6, "12")).negate()), COMMON_BUTTON1,
+                        SimpleButton.class,
+                        getWidgetDescription(SIMPLE_BUTTON,
+                                shouldHaveAttributeContains(ATTR1, "1")
+                                        .or(shouldHaveAttributeContains(ATTR6, "12")).negate())},
+
+                {button(shouldHaveAttributeContains(ATTR1, compile("1"))
+                        .or(shouldHaveAttributeContains(ATTR6, compile("12")))), COMMON_LABELED_BUTTON1,
+                        SimpleButton.class,
+                        getWidgetDescription(SIMPLE_BUTTON,
+                                shouldHaveAttributeContains(ATTR1, compile("1"))
+                                        .or(shouldHaveAttributeContains(ATTR6, compile("12"))))},
+
+                {button(shouldHaveAttributeContains(ATTR1, compile("1"))
+                        .or(shouldHaveAttributeContains(ATTR6, compile("12"))).negate()), COMMON_BUTTON1,
+                        SimpleButton.class,
+                        getWidgetDescription(SIMPLE_BUTTON,
+                                shouldHaveAttributeContains(ATTR1, compile("1"))
+                                        .or(shouldHaveAttributeContains(ATTR6, compile("12"))).negate())},
+
+                {button(shouldHaveCssValue(CSS2, CSS_VALUE4)
+                        .and(shouldHaveCssValue(CSS3, CSS_VALUE8))), COMMON_LABELED_BUTTON2,
+                        SimpleButton.class,
+                        getWidgetDescription(SIMPLE_BUTTON,
+                                shouldHaveCssValue(CSS2, CSS_VALUE4)
+                                        .and(shouldHaveCssValue(CSS3, CSS_VALUE8)))},
+
+                {button(shouldHaveCssValue(CSS2, CSS_VALUE4)
+                        .and(shouldHaveCssValue(CSS3, CSS_VALUE8)).negate()), COMMON_BUTTON1,
+                        SimpleButton.class,
+                        getWidgetDescription(SIMPLE_BUTTON,
+                                shouldHaveCssValue(CSS2, CSS_VALUE4)
+                                        .and(shouldHaveCssValue(CSS3, CSS_VALUE8)).negate())},
+
+                {button(shouldHaveCssValueContains(CSS5, "9")
+                        .or(shouldHaveCssValueContains(CSS6, "11"))), CUSTOM_LABELED_BUTTON3,
+                        CustomizedButton.class,
+                        getWidgetDescription(CUSTOM_BUTTON,
+                                shouldHaveCssValueContains(CSS5, "9")
+                                        .or(shouldHaveCssValueContains(CSS6, "11")))},
+
+                {button(shouldHaveCssValueContains(CSS5, "9")
+                        .or(shouldHaveCssValueContains(CSS6, "11")).negate()), COMMON_BUTTON1,
+                        SimpleButton.class,
+                        getWidgetDescription(SIMPLE_BUTTON,
+                                shouldHaveCssValueContains(CSS5, "9")
+                                        .or(shouldHaveCssValueContains(CSS6, "11")).negate())},
+
+                {button(shouldHaveCssValueContains(CSS16, compile("18"))
+                        .or(shouldHaveCssValueContains(CSS4, compile("5")))), COMMON_BUTTON1,
+                        SimpleButton.class,
+                        getWidgetDescription(SIMPLE_BUTTON,
+                                shouldHaveCssValueContains(CSS16, compile("18"))
+                                        .or(shouldHaveCssValueContains(CSS4, compile("5"))))},
+
+                {button(shouldHaveCssValueContains(CSS4, compile("5"))
+                        .or(shouldHaveCssValueContains(CSS16, compile("18"))).negate()), COMMON_BUTTON3,
+                        SimpleButton.class,
+                        getWidgetDescription(SIMPLE_BUTTON,
+                                shouldHaveCssValueContains(CSS4, compile("5"))
+                                        .or(shouldHaveCssValueContains(CSS16, compile("18"))).negate())},
+
+                {button(FIVE_SECONDS, shouldBeEnabled()), COMMON_BUTTON3,
+                        SimpleButton.class,
+                        getWidgetDescription(SIMPLE_BUTTON,
+                                shouldBeEnabled())},
+
+                {button(FIVE_SECONDS, shouldBeEnabled().negate()), COMMON_BUTTON1,
+                        SimpleButton.class,
+                        getWidgetDescription(SIMPLE_BUTTON,
+                                shouldBeEnabled().negate())},
+
+                {button(FIVE_SECONDS, shouldBeVisible()), COMMON_BUTTON2,
+                        SimpleButton.class,
+                        getWidgetDescription(SIMPLE_BUTTON,
+                                shouldBeVisible())},
+
+                {button(FIVE_SECONDS, shouldBeVisible().negate()), COMMON_BUTTON1,
+                        SimpleButton.class,
+                        getWidgetDescription(SIMPLE_BUTTON,
+                                shouldBeVisible().negate())},
+
+                {button(FIVE_SECONDS, shouldContainElements(webElements(tagName(LABEL_TAG), ofMillis(5)), 1)),
+                        COMMON_LABELED_BUTTON1,
+                        SimpleButton.class,
+                        getWidgetDescription(SIMPLE_BUTTON,
+                                shouldContainElements(webElements(tagName(LABEL_TAG), ofMillis(5)), 1))},
+
+                {button(FIVE_SECONDS, shouldContainElements(webElements(tagName(LABEL_TAG), ofMillis(5)), 1)
+                        .negate()),
+                        COMMON_BUTTON1,
+                        SimpleButton.class,
+                        getWidgetDescription(SIMPLE_BUTTON,
+                                shouldContainElements(webElements(tagName(LABEL_TAG), ofMillis(5)), 1)
+                                        .negate())},
+
+                {button(FIVE_SECONDS, shouldHaveAttribute(ATTR5, VALUE11)
+                        .and(shouldHaveAttribute(ATTR6, VALUE12))), CUSTOM_LABELED_BUTTON2,
+                        CustomizedButton.class,
+                        getWidgetDescription(CUSTOM_BUTTON,
+                                shouldHaveAttribute(ATTR5, VALUE11)
+                                        .and(shouldHaveAttribute(ATTR6, VALUE12)))},
+
+                {button(FIVE_SECONDS, shouldHaveAttribute(ATTR5, VALUE11)
+                        .and(shouldHaveAttribute(ATTR6, VALUE12)).negate()), COMMON_BUTTON1,
+                        SimpleButton.class,
+                        getWidgetDescription(SIMPLE_BUTTON,
+                                shouldHaveAttribute(ATTR5, VALUE11)
+                                        .and(shouldHaveAttribute(ATTR6, VALUE12)).negate())},
+
+                {button(FIVE_SECONDS, shouldHaveAttributeContains(ATTR1, "1")
+                        .or(shouldHaveAttributeContains(ATTR6, "12"))), COMMON_LABELED_BUTTON1,
+                        SimpleButton.class,
+                        getWidgetDescription(SIMPLE_BUTTON,
+                                shouldHaveAttributeContains(ATTR1, "1")
+                                        .or(shouldHaveAttributeContains(ATTR6, "12")))},
+
+                {button(FIVE_SECONDS, shouldHaveAttributeContains(ATTR1, "1")
+                        .or(shouldHaveAttributeContains(ATTR6, "12")).negate()), COMMON_BUTTON1,
+                        SimpleButton.class,
+                        getWidgetDescription(SIMPLE_BUTTON,
+                                shouldHaveAttributeContains(ATTR1, "1")
+                                        .or(shouldHaveAttributeContains(ATTR6, "12")).negate())},
+
+                {button(FIVE_SECONDS, shouldHaveAttributeContains(ATTR1, compile("1"))
+                        .or(shouldHaveAttributeContains(ATTR6, compile("12")))), COMMON_LABELED_BUTTON1,
+                        SimpleButton.class,
+                        getWidgetDescription(SIMPLE_BUTTON,
+                                shouldHaveAttributeContains(ATTR1, compile("1"))
+                                        .or(shouldHaveAttributeContains(ATTR6, compile("12"))))},
+
+                {button(FIVE_SECONDS, shouldHaveAttributeContains(ATTR1, compile("1"))
+                        .or(shouldHaveAttributeContains(ATTR6, compile("12"))).negate()), COMMON_BUTTON1,
+                        SimpleButton.class,
+                        getWidgetDescription(SIMPLE_BUTTON,
+                                shouldHaveAttributeContains(ATTR1, compile("1"))
+                                        .or(shouldHaveAttributeContains(ATTR6, compile("12"))).negate())},
+
+                {button(FIVE_SECONDS, shouldHaveCssValue(CSS2, CSS_VALUE4)
+                        .and(shouldHaveCssValue(CSS3, CSS_VALUE8))), COMMON_LABELED_BUTTON2,
+                        SimpleButton.class,
+                        getWidgetDescription(SIMPLE_BUTTON,
+                                shouldHaveCssValue(CSS2, CSS_VALUE4)
+                                        .and(shouldHaveCssValue(CSS3, CSS_VALUE8)))},
+
+                {button(FIVE_SECONDS, shouldHaveCssValue(CSS2, CSS_VALUE4)
+                        .and(shouldHaveCssValue(CSS3, CSS_VALUE8)).negate()), COMMON_BUTTON1,
+                        SimpleButton.class,
+                        getWidgetDescription(SIMPLE_BUTTON,
+                                shouldHaveCssValue(CSS2, CSS_VALUE4)
+                                        .and(shouldHaveCssValue(CSS3, CSS_VALUE8)).negate())},
+
+                {button(FIVE_SECONDS, shouldHaveCssValueContains(CSS5, "9")
+                        .or(shouldHaveCssValueContains(CSS6, "11"))), CUSTOM_LABELED_BUTTON3,
+                        CustomizedButton.class,
+                        getWidgetDescription(CUSTOM_BUTTON,
+                                shouldHaveCssValueContains(CSS5, "9")
+                                        .or(shouldHaveCssValueContains(CSS6, "11")))},
+
+                {button(FIVE_SECONDS, shouldHaveCssValueContains(CSS5, "9")
+                        .or(shouldHaveCssValueContains(CSS6, "11")).negate()), COMMON_BUTTON1,
+                        SimpleButton.class,
+                        getWidgetDescription(SIMPLE_BUTTON,
+                                shouldHaveCssValueContains(CSS5, "9")
+                                        .or(shouldHaveCssValueContains(CSS6, "11")).negate())},
+
+                {button(FIVE_SECONDS, shouldHaveCssValueContains(CSS16, compile("18"))
+                        .or(shouldHaveCssValueContains(CSS4, compile("5")))), COMMON_BUTTON1,
+                        SimpleButton.class,
+                        getWidgetDescription(SIMPLE_BUTTON,
+                                shouldHaveCssValueContains(CSS16, compile("18"))
+                                        .or(shouldHaveCssValueContains(CSS4, compile("5"))))},
+
+                {button(FIVE_SECONDS, shouldHaveCssValueContains(CSS4, compile("5"))
+                        .or(shouldHaveCssValueContains(CSS16, compile("18"))).negate()), COMMON_BUTTON3,
+                        SimpleButton.class,
+                        getWidgetDescription(SIMPLE_BUTTON,
+                                shouldHaveCssValueContains(CSS4, compile("5"))
+                                        .or(shouldHaveCssValueContains(CSS16, compile("18"))).negate())},
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                {button(of(BUTTON_LABEL_TEXT5, BUTTON_LABEL_TEXT9),
+                        shouldBeEnabled()),
+                        CUSTOM_LABELED_BUTTON1,
+                        CustomizedButton.class,
+                        getWidgetDescription(CUSTOM_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT5, BUTTON_LABEL_TEXT9).and(shouldBeEnabled()))},
+
+                {button(BUTTON_LABEL_TEXT7,
+                        shouldBeEnabled().negate()),
+                        CUSTOM_LABELED_BUTTON3,
+                        CustomizedButton.class,
+                        getWidgetDescription(CUSTOM_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT7).and(shouldBeEnabled().negate()))},
+
+                {button(BUTTON_LABEL_TEXT11, shouldBeVisible()),
+                        CUSTOM_LABELED_BUTTON3,
+                        CustomizedButton.class,
+                        getWidgetDescription(CUSTOM_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT11).and(shouldBeVisible()))},
+
+                {button(of(BUTTON_LABEL_TEXT6, BUTTON_LABEL_TEXT10),
+                        shouldBeVisible().negate()),
+                        CUSTOM_LABELED_BUTTON2,
+                        CustomizedButton.class,
+                        getWidgetDescription(CUSTOM_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT6, BUTTON_LABEL_TEXT10)
+                                        .and(shouldBeVisible().negate()))},
+
+
+
+
 
 
 

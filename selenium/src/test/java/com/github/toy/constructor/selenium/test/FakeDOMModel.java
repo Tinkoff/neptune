@@ -476,7 +476,7 @@ public class FakeDOMModel {
     private static final ByChained CHAINED_FIND_HEADER = new ByChained(tagName(T_HEAD), tagName(TR));
     private static final ByChained CHAINED_FIND_ROW = new ByChained(tagName(T_BODY), tagName(TR));
     private static final ByChained CHAINED_FIND_FOOTER = new ByChained(tagName(T_FOOT), tagName(TR));
-    private static final ByAll CUSTOM_LABEL_BY = new ByAll(xpath(LABEL_XPATH), xpath(LABEL_XPATH2));
+    public static final ByAll CUSTOM_LABEL_BY = new ByAll(xpath(LABEL_XPATH), xpath(LABEL_XPATH2));
     public static final By INVISIBLE_SPAN_BY = tagName(SPAN);
     public static final By VISIBLE_DIV_BY = tagName(DIV);
 
@@ -521,7 +521,7 @@ public class FakeDOMModel {
                     entry(ATTR4, VALUE6),
                     entry(ATTR3, VALUE5)),
             ofEntries(entry(CSS1, CSS_VALUE6),
-                    entry(CSS4, CSS_VALUE5),
+                    entry(CSS4, CSS_VALUE6),
                     entry(CSS16, CSS_VALUE16)), new Point(35, 45), new Dimension(45, 44), true,
             true, false, BUTTON_TAG, BUTTON_TEXT3, of());
 
