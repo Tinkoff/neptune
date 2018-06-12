@@ -35,6 +35,7 @@ import static com.github.toy.constructor.selenium.functions.searching.CommonCond
 import static com.github.toy.constructor.selenium.functions.searching.MultipleSearchSupplier.webElements;
 import static com.github.toy.constructor.selenium.functions.searching.SearchSupplier.*;
 import static com.github.toy.constructor.selenium.test.FakeDOMModel.*;
+import static com.github.toy.constructor.selenium.test.FakeDOMModel.COMMON_LABELED_BUTTON1;
 import static com.github.toy.constructor.selenium.test.steps.tests.searching.widgets.WidgetNames.*;
 import static java.lang.String.format;
 import static java.time.Duration.ofMillis;
@@ -324,23 +325,6 @@ public class SearchForWidgetPositiveTest extends BaseWebDriverTest {
                                 shouldHaveCssValueContains(CSS4, compile("5"))
                                         .or(shouldHaveCssValueContains(CSS16, compile("18"))).negate())},
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                 {button(of(BUTTON_LABEL_TEXT5, BUTTON_LABEL_TEXT9),
                         shouldBeEnabled()),
                         CUSTOM_LABELED_BUTTON1,
@@ -369,11 +353,266 @@ public class SearchForWidgetPositiveTest extends BaseWebDriverTest {
                                 shouldBeLabeledBy(BUTTON_LABEL_TEXT6, BUTTON_LABEL_TEXT10)
                                         .and(shouldBeVisible().negate()))},
 
+                {button(BUTTON_LABEL_TEXT3, shouldContainElements(webElements(tagName(LABEL_TAG), ofMillis(5)), 1)),
+                        COMMON_LABELED_BUTTON3,
+                        LabeledButton.class,
+                        getWidgetDescription(LABELED_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT3)
+                                        .and(shouldContainElements(webElements(tagName(LABEL_TAG), ofMillis(5)), 1)))},
 
+                {button(of(BUTTON_LABEL_TEXT7, BUTTON_LABEL_TEXT11),
+                        shouldContainElements(webElements(tagName(LABEL_TAG), ofMillis(5)), 2)
+                                .negate()),
+                        CUSTOM_LABELED_BUTTON3,
+                        CustomizedButton.class,
+                        getWidgetDescription(CUSTOM_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT7, BUTTON_LABEL_TEXT11)
+                                        .and(shouldContainElements(webElements(tagName(LABEL_TAG), ofMillis(5)), 2)
+                                                .negate()))},
 
+                {button(BUTTON_LABEL_TEXT2, shouldHaveAttribute(ATTR1, VALUE2)
+                        .and(shouldHaveAttribute(ATTR2, VALUE10))),
+                        COMMON_LABELED_BUTTON2,
+                        LabeledButton.class,
+                        getWidgetDescription(LABELED_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT2)
+                                        .and(shouldHaveAttribute(ATTR1, VALUE2)
+                                                .and(shouldHaveAttribute(ATTR2, VALUE10))))},
 
+                {button(BUTTON_LABEL_TEXT4, shouldHaveAttribute(ATTR1, VALUE3)
+                        .and(shouldHaveAttribute(ATTR2, VALUE11)).negate()),
+                        COMMON_LABELED_BUTTON4,
+                        SimpleButton.class,
+                        getWidgetDescription(LABELED_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT4)
+                                        .and(shouldHaveAttribute(ATTR1, VALUE3)
+                                                .and(shouldHaveAttribute(ATTR2, VALUE11)).negate()))},
 
+                {button(of(BUTTON_LABEL_TEXT8, BUTTON_LABEL_TEXT12),
+                        shouldHaveAttributeContains(ATTR5, "1")), CUSTOM_LABELED_BUTTON4,
+                        CustomizedButton.class,
+                        getWidgetDescription(CUSTOM_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT8, BUTTON_LABEL_TEXT12)
+                                        .and(shouldHaveAttributeContains(ATTR5, "1")))},
 
+                {button(BUTTON_LABEL_TEXT1, shouldHaveAttributeContains(ATTR5, "1").negate()),
+                        COMMON_LABELED_BUTTON1,
+                        LabeledButton.class,
+                        getWidgetDescription(LABELED_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT1)
+                                        .and(shouldHaveAttributeContains(ATTR5, "1").negate()))},
+
+                {button(of(BUTTON_LABEL_TEXT8, BUTTON_LABEL_TEXT12),
+                        shouldHaveAttributeContains(ATTR5, compile("1"))),
+                        CUSTOM_LABELED_BUTTON4,
+                        CustomizedButton.class,
+                        getWidgetDescription(CUSTOM_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT8, BUTTON_LABEL_TEXT12)
+                                        .and(shouldHaveAttributeContains(ATTR5, compile("1"))))},
+
+                {button(BUTTON_LABEL_TEXT1, shouldHaveAttributeContains(ATTR5, compile("1")).negate()),
+                        COMMON_LABELED_BUTTON1,
+                        LabeledButton.class,
+                        getWidgetDescription(LABELED_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT1)
+                                        .and(shouldHaveAttributeContains(ATTR5, compile("1")).negate()))},
+
+                {button(BUTTON_LABEL_TEXT2, shouldHaveCssValue(CSS2, CSS_VALUE4)
+                        .and(shouldHaveCssValue(CSS3, CSS_VALUE8))),
+                        COMMON_LABELED_BUTTON2,
+                        LabeledButton.class,
+                        getWidgetDescription(LABELED_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT2)
+                                        .and(shouldHaveCssValue(CSS2, CSS_VALUE4).and(shouldHaveCssValue(CSS3, CSS_VALUE8))))},
+
+                {button(BUTTON_LABEL_TEXT1, shouldHaveCssValue(CSS2, CSS_VALUE4)
+                        .and(shouldHaveCssValue(CSS3, CSS_VALUE8)).negate()),
+                        COMMON_LABELED_BUTTON1,
+                        LabeledButton.class,
+                        getWidgetDescription(LABELED_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT1).and(shouldHaveCssValue(CSS2, CSS_VALUE4)
+                                        .and(shouldHaveCssValue(CSS3, CSS_VALUE8)).negate()))},
+
+                {button(of(BUTTON_LABEL_TEXT7, BUTTON_LABEL_TEXT11),
+                        shouldHaveCssValueContains(CSS5, "9")
+                                .or(shouldHaveCssValueContains(CSS6, "11"))),
+                        CUSTOM_LABELED_BUTTON3,
+                        CustomizedButton.class,
+                        getWidgetDescription(CUSTOM_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT7, BUTTON_LABEL_TEXT11).and(shouldHaveCssValueContains(CSS5, "9")
+                                        .or(shouldHaveCssValueContains(CSS6, "11"))))},
+
+                {button(BUTTON_LABEL_TEXT1, shouldHaveCssValueContains(CSS5, "9")
+                        .or(shouldHaveCssValueContains(CSS6, "11")).negate()),
+                        COMMON_LABELED_BUTTON1,
+                        LabeledButton.class,
+                        getWidgetDescription(LABELED_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT1)
+                                        .and(shouldHaveCssValueContains(CSS5, "9")
+                                                .or(shouldHaveCssValueContains(CSS6, "11")).negate()))},
+
+                {button(BUTTON_LABEL_TEXT2,
+                        shouldHaveCssValueContains(CSS2, compile("4"))
+                                .or(shouldHaveCssValueContains(CSS3, compile("8")))),
+                        COMMON_LABELED_BUTTON2,
+                        LabeledButton.class,
+                        getWidgetDescription(LABELED_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT2)
+                                        .and(shouldHaveCssValueContains(CSS2, compile("4"))
+                                                .or(shouldHaveCssValueContains(CSS3, compile("8")))))},
+
+                {button(BUTTON_LABEL_TEXT6,
+                        shouldHaveCssValueContains(CSS2, compile("4"))
+                                .or(shouldHaveCssValueContains(CSS3, compile("8"))).negate()),
+                        CUSTOM_LABELED_BUTTON2,
+                        CustomizedButton.class,
+                        getWidgetDescription(CUSTOM_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT6).and(shouldHaveCssValueContains(CSS2, compile("4"))
+                                        .or(shouldHaveCssValueContains(CSS3, compile("8"))).negate()))},
+
+                {button(of(BUTTON_LABEL_TEXT5, BUTTON_LABEL_TEXT9), FIVE_SECONDS, shouldBeEnabled()),
+                        CUSTOM_LABELED_BUTTON1,
+                        CustomizedButton.class,
+                        getWidgetDescription(CUSTOM_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT5, BUTTON_LABEL_TEXT9).and(shouldBeEnabled()))},
+
+                {button(BUTTON_LABEL_TEXT7, FIVE_SECONDS,
+                        shouldBeEnabled().negate()),
+                        CUSTOM_LABELED_BUTTON3,
+                        CustomizedButton.class,
+                        getWidgetDescription(CUSTOM_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT7).and(shouldBeEnabled().negate()))},
+
+                {button(BUTTON_LABEL_TEXT11, FIVE_SECONDS,  shouldBeVisible()),
+                        CUSTOM_LABELED_BUTTON3,
+                        CustomizedButton.class,
+                        getWidgetDescription(CUSTOM_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT11).and(shouldBeVisible()))},
+
+                {button(of(BUTTON_LABEL_TEXT6, BUTTON_LABEL_TEXT10), FIVE_SECONDS,
+                        shouldBeVisible().negate()),
+                        CUSTOM_LABELED_BUTTON2,
+                        CustomizedButton.class,
+                        getWidgetDescription(CUSTOM_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT6, BUTTON_LABEL_TEXT10)
+                                        .and(shouldBeVisible().negate()))},
+
+                {button(BUTTON_LABEL_TEXT3, FIVE_SECONDS, shouldContainElements(webElements(tagName(LABEL_TAG), ofMillis(5)), 1)),
+                        COMMON_LABELED_BUTTON3,
+                        LabeledButton.class,
+                        getWidgetDescription(LABELED_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT3)
+                                        .and(shouldContainElements(webElements(tagName(LABEL_TAG), ofMillis(5)), 1)))},
+
+                {button(of(BUTTON_LABEL_TEXT7, BUTTON_LABEL_TEXT11), FIVE_SECONDS,
+                        shouldContainElements(webElements(tagName(LABEL_TAG), ofMillis(5)), 2)
+                                .negate()),
+                        CUSTOM_LABELED_BUTTON3,
+                        CustomizedButton.class,
+                        getWidgetDescription(CUSTOM_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT7, BUTTON_LABEL_TEXT11)
+                                        .and(shouldContainElements(webElements(tagName(LABEL_TAG), ofMillis(5)), 2)
+                                                .negate()))},
+
+                {button(BUTTON_LABEL_TEXT2, FIVE_SECONDS, shouldHaveAttribute(ATTR1, VALUE2)
+                        .and(shouldHaveAttribute(ATTR2, VALUE10))),
+                        COMMON_LABELED_BUTTON2,
+                        LabeledButton.class,
+                        getWidgetDescription(LABELED_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT2)
+                                        .and(shouldHaveAttribute(ATTR1, VALUE2)
+                                                .and(shouldHaveAttribute(ATTR2, VALUE10))))},
+
+                {button(BUTTON_LABEL_TEXT4, FIVE_SECONDS,  shouldHaveAttribute(ATTR1, VALUE3)
+                        .and(shouldHaveAttribute(ATTR2, VALUE11)).negate()),
+                        COMMON_LABELED_BUTTON4,
+                        SimpleButton.class,
+                        getWidgetDescription(LABELED_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT4)
+                                        .and(shouldHaveAttribute(ATTR1, VALUE3)
+                                                .and(shouldHaveAttribute(ATTR2, VALUE11)).negate()))},
+
+                {button(of(BUTTON_LABEL_TEXT8, BUTTON_LABEL_TEXT12), FIVE_SECONDS,
+                        shouldHaveAttributeContains(ATTR5, "1")), CUSTOM_LABELED_BUTTON4,
+                        CustomizedButton.class,
+                        getWidgetDescription(CUSTOM_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT8, BUTTON_LABEL_TEXT12)
+                                        .and(shouldHaveAttributeContains(ATTR5, "1")))},
+
+                {button(BUTTON_LABEL_TEXT1, FIVE_SECONDS, shouldHaveAttributeContains(ATTR5, "1").negate()),
+                        COMMON_LABELED_BUTTON1,
+                        LabeledButton.class,
+                        getWidgetDescription(LABELED_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT1)
+                                        .and(shouldHaveAttributeContains(ATTR5, "1").negate()))},
+
+                {button(of(BUTTON_LABEL_TEXT8, BUTTON_LABEL_TEXT12), FIVE_SECONDS,
+                        shouldHaveAttributeContains(ATTR5, compile("1"))),
+                        CUSTOM_LABELED_BUTTON4,
+                        CustomizedButton.class,
+                        getWidgetDescription(CUSTOM_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT8, BUTTON_LABEL_TEXT12)
+                                        .and(shouldHaveAttributeContains(ATTR5, compile("1"))))},
+
+                {button(BUTTON_LABEL_TEXT1, FIVE_SECONDS, shouldHaveAttributeContains(ATTR5, compile("1")).negate()),
+                        COMMON_LABELED_BUTTON1,
+                        LabeledButton.class,
+                        getWidgetDescription(LABELED_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT1)
+                                        .and(shouldHaveAttributeContains(ATTR5, compile("1")).negate()))},
+
+                {button(BUTTON_LABEL_TEXT2, FIVE_SECONDS, shouldHaveCssValue(CSS2, CSS_VALUE4)
+                        .and(shouldHaveCssValue(CSS3, CSS_VALUE8))),
+                        COMMON_LABELED_BUTTON2,
+                        LabeledButton.class,
+                        getWidgetDescription(LABELED_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT2)
+                                        .and(shouldHaveCssValue(CSS2, CSS_VALUE4).and(shouldHaveCssValue(CSS3, CSS_VALUE8))))},
+
+                {button(BUTTON_LABEL_TEXT1, FIVE_SECONDS, shouldHaveCssValue(CSS2, CSS_VALUE4)
+                        .and(shouldHaveCssValue(CSS3, CSS_VALUE8)).negate()),
+                        COMMON_LABELED_BUTTON1,
+                        LabeledButton.class,
+                        getWidgetDescription(LABELED_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT1).and(shouldHaveCssValue(CSS2, CSS_VALUE4)
+                                        .and(shouldHaveCssValue(CSS3, CSS_VALUE8)).negate()))},
+
+                {button(of(BUTTON_LABEL_TEXT7, BUTTON_LABEL_TEXT11), FIVE_SECONDS,
+                        shouldHaveCssValueContains(CSS5, "9")
+                                .or(shouldHaveCssValueContains(CSS6, "11"))),
+                        CUSTOM_LABELED_BUTTON3,
+                        CustomizedButton.class,
+                        getWidgetDescription(CUSTOM_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT7, BUTTON_LABEL_TEXT11).and(shouldHaveCssValueContains(CSS5, "9")
+                                        .or(shouldHaveCssValueContains(CSS6, "11"))))},
+
+                {button(BUTTON_LABEL_TEXT1, FIVE_SECONDS, shouldHaveCssValueContains(CSS5, "9")
+                        .or(shouldHaveCssValueContains(CSS6, "11")).negate()),
+                        COMMON_LABELED_BUTTON1,
+                        LabeledButton.class,
+                        getWidgetDescription(LABELED_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT1)
+                                        .and(shouldHaveCssValueContains(CSS5, "9")
+                                                .or(shouldHaveCssValueContains(CSS6, "11")).negate()))},
+
+                {button(BUTTON_LABEL_TEXT2, FIVE_SECONDS,
+                        shouldHaveCssValueContains(CSS2, compile("4"))
+                                .or(shouldHaveCssValueContains(CSS3, compile("8")))),
+                        COMMON_LABELED_BUTTON2,
+                        LabeledButton.class,
+                        getWidgetDescription(LABELED_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT2)
+                                        .and(shouldHaveCssValueContains(CSS2, compile("4"))
+                                                .or(shouldHaveCssValueContains(CSS3, compile("8")))))},
+
+                {button(BUTTON_LABEL_TEXT6, FIVE_SECONDS,
+                        shouldHaveCssValueContains(CSS2, compile("4"))
+                                .or(shouldHaveCssValueContains(CSS3, compile("8"))).negate()),
+                        CUSTOM_LABELED_BUTTON2,
+                        CustomizedButton.class,
+                        getWidgetDescription(CUSTOM_BUTTON,
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT6).and(shouldHaveCssValueContains(CSS2, compile("4"))
+                                        .or(shouldHaveCssValueContains(CSS3, compile("8"))).negate()))},
 
                 {flag(), COMMON_CHECKBOX1,
                         SimpleCheckbox.class, SIMPLE_CHECKBOX},
@@ -410,6 +649,354 @@ public class SearchForWidgetPositiveTest extends BaseWebDriverTest {
                                 shouldBeLabeledBy(CHECKBOX_LABEL_TEXT5))},
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                {flag(CHECKBOX_LABEL_TEXT3,
+                        shouldBeEnabled()),
+                        COMMON_LABELED_CHECKBOX3,
+                        LabeledCheckBox.class,
+                        getWidgetDescription(LABELED_CHECKBOX,
+                                shouldBeLabeledBy(CHECKBOX_LABEL_TEXT3).and(shouldBeEnabled()))},
+
+                {flag(CHECKBOX_LABEL_TEXT2,
+                        shouldBeEnabled().negate()),
+                        COMMON_LABELED_CHECKBOX2,
+                        LabeledCheckBox.class,
+                        getWidgetDescription(LABELED_CHECKBOX,
+                                shouldBeLabeledBy(CHECKBOX_LABEL_TEXT2).and(shouldBeEnabled().negate()))},
+
+                {flag(CHECKBOX_LABEL_TEXT4, shouldBeVisible()),
+                        COMMON_LABELED_CHECKBOX4,
+                        LabeledCheckBox.class,
+                        getWidgetDescription(LABELED_CHECKBOX,
+                                shouldBeLabeledBy(CHECKBOX_LABEL_TEXT4).and(shouldBeVisible()))},
+
+                {flag(of(CHECKBOX_LABEL_TEXT6, CHECKBOX_LABEL_TEXT10),
+                        shouldBeVisible().negate()),
+                        COMMON_LABELED_CHECKBOX6,
+                        LabeledCheckBox.class,
+                        getWidgetDescription(LABELED_CHECKBOX,
+                                shouldBeLabeledBy(CHECKBOX_LABEL_TEXT6, CHECKBOX_LABEL_TEXT10)
+                                        .and(shouldBeVisible().negate()))},
+
+                {flag(CHECKBOX_LABEL_TEXT5, shouldContainElements(webElements(tagName(LABEL_TAG), ofMillis(5)), 2)),
+                        COMMON_LABELED_CHECKBOX5,
+                        LabeledCheckBox.class,
+                        getWidgetDescription(LABELED_CHECKBOX,
+                                shouldBeLabeledBy(CHECKBOX_LABEL_TEXT5)
+                                        .and(shouldContainElements(webElements(tagName(LABEL_TAG), ofMillis(5)), 2)))},
+
+                {flag(of(CHECKBOX_LABEL_TEXT1),
+                        shouldContainElements(webElements(tagName(LABEL_TAG), ofMillis(5)), 2)
+                                .negate()),
+                        COMMON_LABELED_CHECKBOX1,
+                        LabeledCheckBox.class,
+                        getWidgetDescription(LABELED_CHECKBOX,
+                                shouldBeLabeledBy(CHECKBOX_LABEL_TEXT1)
+                                        .and(shouldContainElements(webElements(tagName(LABEL_TAG), ofMillis(5)), 2)
+                                                .negate()))},
+
+                {flag(of(RADIOBUTTON_LABEL_TEXT3),
+                        shouldHaveAttribute(ATTR14, VALUE14)
+                                .and(shouldHaveAttribute(ATTR15, VALUE15))),
+                        COMMON_LABELED_RADIOBUTTON3,
+                        LabeledRadioButton.class,
+                        getWidgetDescription(LABELED_RADIOBUTTON,
+                                shouldBeLabeledBy(RADIOBUTTON_LABEL_TEXT3)
+                                        .and(shouldHaveAttribute(ATTR14, VALUE14)
+                                                .and(shouldHaveAttribute(ATTR15, VALUE15))))},
+
+                {flag(RADIOBUTTON_LABEL_TEXT4,
+                        shouldHaveAttribute(ATTR14, VALUE14)
+                                .and(shouldHaveAttribute(ATTR15, VALUE15)).negate()),
+                        COMMON_LABELED_RADIOBUTTON4,
+                        LabeledRadioButton.class,
+                        getWidgetDescription(LABELED_RADIOBUTTON,
+                                shouldBeLabeledBy(RADIOBUTTON_LABEL_TEXT4)
+                                        .and(shouldHaveAttribute(ATTR14, VALUE14)
+                                                .and(shouldHaveAttribute(ATTR15, VALUE15)).negate()))},
+
+                {flag(of(RADIOBUTTON_LABEL_TEXT7, RADIOBUTTON_LABEL_TEXT11),
+                        shouldHaveAttributeContains(ATTR14, "18")
+                                .and(shouldHaveAttributeContains(ATTR15, "19"))),
+                        COMMON_LABELED_RADIOBUTTON7,
+                        LabeledRadioButton.class,
+                        getWidgetDescription(LABELED_RADIOBUTTON,
+                                shouldBeLabeledBy(RADIOBUTTON_LABEL_TEXT7, RADIOBUTTON_LABEL_TEXT11)
+                                        .and(shouldHaveAttributeContains(ATTR14, "18")
+                                                .and(shouldHaveAttributeContains(ATTR15, "19"))))},
+
+                {flag(of(RADIOBUTTON_LABEL_TEXT6, RADIOBUTTON_LABEL_TEXT10),
+                        shouldHaveAttributeContains(ATTR14, "18")
+                                .and(shouldHaveAttributeContains(ATTR15, "19")).negate()),
+                        COMMON_LABELED_RADIOBUTTON6,
+                        LabeledRadioButton.class,
+                        getWidgetDescription(LABELED_RADIOBUTTON,
+                                shouldBeLabeledBy(RADIOBUTTON_LABEL_TEXT6, RADIOBUTTON_LABEL_TEXT10)
+                                        .and(shouldHaveAttributeContains(ATTR14, "18")
+                                                .and(shouldHaveAttributeContains(ATTR15, "19")).negate()))},
+
+                {flag(of(RADIOBUTTON_LABEL_TEXT7, RADIOBUTTON_LABEL_TEXT11),
+                        shouldHaveAttributeContains(ATTR14, compile("18"))
+                                .and(shouldHaveAttributeContains(ATTR15, compile("19")))),
+                        COMMON_LABELED_RADIOBUTTON7,
+                        LabeledRadioButton.class,
+                        getWidgetDescription(LABELED_RADIOBUTTON,
+                                shouldBeLabeledBy(RADIOBUTTON_LABEL_TEXT7, RADIOBUTTON_LABEL_TEXT11)
+                                        .and(shouldHaveAttributeContains(ATTR14, compile("18"))
+                                                .and(shouldHaveAttributeContains(ATTR15, compile("19")))))},
+
+                {flag(of(RADIOBUTTON_LABEL_TEXT6, RADIOBUTTON_LABEL_TEXT10),
+                        shouldHaveAttributeContains(ATTR14, compile("18"))
+                                .and(shouldHaveAttributeContains(ATTR15, compile("19"))).negate()),
+                        COMMON_LABELED_RADIOBUTTON6,
+                        LabeledRadioButton.class,
+                        getWidgetDescription(LABELED_RADIOBUTTON,
+                                shouldBeLabeledBy(RADIOBUTTON_LABEL_TEXT6, RADIOBUTTON_LABEL_TEXT10)
+                                        .and(shouldHaveAttributeContains(ATTR14, compile("18"))
+                                                .and(shouldHaveAttributeContains(ATTR15, compile("19"))).negate()))},
+
+                {flag(RADIOBUTTON_LABEL_TEXT2, shouldHaveCssValue(CSS18, CSS_VALUE13)
+                        .and(shouldHaveCssValue(CSS19, CSS_VALUE14))),
+                        COMMON_LABELED_RADIOBUTTON2,
+                        LabeledRadioButton.class,
+                        getWidgetDescription(LABELED_RADIOBUTTON,
+                                shouldBeLabeledBy(RADIOBUTTON_LABEL_TEXT2)
+                                        .and(shouldHaveCssValue(CSS18, CSS_VALUE13)
+                                                .and(shouldHaveCssValue(CSS19, CSS_VALUE14))))},
+
+                {flag(CHECKBOX_LABEL_TEXT9, shouldHaveCssValue(ATTR14, VALUE13)
+                        .and(shouldHaveCssValue(ATTR15, VALUE14)).negate()),
+                        COMMON_LABELED_CHECKBOX5,
+                        LabeledCheckBox.class,
+                        getWidgetDescription(LABELED_CHECKBOX,
+                                shouldBeLabeledBy(CHECKBOX_LABEL_TEXT9).and(shouldHaveCssValue(ATTR14, VALUE13)
+                                        .and(shouldHaveCssValue(ATTR15, VALUE14)).negate()))},
+
+                {flag(of(CHECKBOX_LABEL_TEXT8, CHECKBOX_LABEL_TEXT12),
+                        shouldHaveCssValueContains(CSS2, CSS_VALUE5)
+                                .or(shouldHaveCssValueContains(CSS3, CSS_VALUE8))),
+                        COMMON_LABELED_CHECKBOX8,
+                        LabeledCheckBox.class,
+                        getWidgetDescription(LABELED_CHECKBOX,
+                                shouldBeLabeledBy(CHECKBOX_LABEL_TEXT8, CHECKBOX_LABEL_TEXT12)
+                                        .and(shouldHaveCssValueContains(CSS2, CSS_VALUE5)
+                                                .or(shouldHaveCssValueContains(CSS3, CSS_VALUE8))))},
+
+                {flag(of(CHECKBOX_LABEL_TEXT1),
+                        shouldHaveCssValueContains(CSS2, CSS_VALUE5)
+                                .or(shouldHaveCssValueContains(CSS3, CSS_VALUE8)).negate()),
+                        COMMON_LABELED_CHECKBOX1,
+                        LabeledCheckBox.class,
+                        getWidgetDescription(LABELED_CHECKBOX,
+                                shouldBeLabeledBy(CHECKBOX_LABEL_TEXT1)
+                                        .and(shouldHaveCssValueContains(CSS2, CSS_VALUE5)
+                                                .or(shouldHaveCssValueContains(CSS3, CSS_VALUE8)).negate()))},
+
+                {flag(of(CHECKBOX_LABEL_TEXT8, CHECKBOX_LABEL_TEXT12),
+                        shouldHaveCssValueContains(CSS2, compile(CSS_VALUE5))
+                                .or(shouldHaveCssValueContains(CSS3, compile(CSS_VALUE8)))),
+                        COMMON_LABELED_CHECKBOX8,
+                        LabeledCheckBox.class,
+                        getWidgetDescription(LABELED_CHECKBOX,
+                                shouldBeLabeledBy(CHECKBOX_LABEL_TEXT8, CHECKBOX_LABEL_TEXT12)
+                                        .and(shouldHaveCssValueContains(CSS2, compile(CSS_VALUE5))
+                                                .or(shouldHaveCssValueContains(CSS3, compile(CSS_VALUE8)))))},
+
+                {flag(of(CHECKBOX_LABEL_TEXT1),
+                        shouldHaveCssValueContains(CSS2, compile(CSS_VALUE5))
+                                .or(shouldHaveCssValueContains(CSS3, compile(CSS_VALUE8))).negate()),
+                        COMMON_LABELED_CHECKBOX1,
+                        LabeledCheckBox.class,
+                        getWidgetDescription(LABELED_CHECKBOX,
+                                shouldBeLabeledBy(CHECKBOX_LABEL_TEXT1)
+                                        .and(shouldHaveCssValueContains(CSS2, compile(CSS_VALUE5))
+                                                .or(shouldHaveCssValueContains(CSS3, compile(CSS_VALUE8))).negate()))},
+
+                {flag(CHECKBOX_LABEL_TEXT3, FIVE_SECONDS,
+                        shouldBeEnabled()),
+                        COMMON_LABELED_CHECKBOX3,
+                        LabeledCheckBox.class,
+                        getWidgetDescription(LABELED_CHECKBOX,
+                                shouldBeLabeledBy(CHECKBOX_LABEL_TEXT3).and(shouldBeEnabled()))},
+
+                {flag(CHECKBOX_LABEL_TEXT2, FIVE_SECONDS,
+                        shouldBeEnabled().negate()),
+                        COMMON_LABELED_CHECKBOX2,
+                        LabeledCheckBox.class,
+                        getWidgetDescription(LABELED_CHECKBOX,
+                                shouldBeLabeledBy(CHECKBOX_LABEL_TEXT2).and(shouldBeEnabled().negate()))},
+
+                {flag(CHECKBOX_LABEL_TEXT4, FIVE_SECONDS, shouldBeVisible()),
+                        COMMON_LABELED_CHECKBOX4,
+                        LabeledCheckBox.class,
+                        getWidgetDescription(LABELED_CHECKBOX,
+                                shouldBeLabeledBy(CHECKBOX_LABEL_TEXT4).and(shouldBeVisible()))},
+
+                {flag(of(CHECKBOX_LABEL_TEXT6, CHECKBOX_LABEL_TEXT10), FIVE_SECONDS,
+                        shouldBeVisible().negate()),
+                        COMMON_LABELED_CHECKBOX6,
+                        LabeledCheckBox.class,
+                        getWidgetDescription(LABELED_CHECKBOX,
+                                shouldBeLabeledBy(CHECKBOX_LABEL_TEXT6, CHECKBOX_LABEL_TEXT10)
+                                        .and(shouldBeVisible().negate()))},
+
+                {flag(CHECKBOX_LABEL_TEXT5, FIVE_SECONDS, shouldContainElements(webElements(tagName(LABEL_TAG), ofMillis(5)), 2)),
+                        COMMON_LABELED_CHECKBOX5,
+                        LabeledCheckBox.class,
+                        getWidgetDescription(LABELED_CHECKBOX,
+                                shouldBeLabeledBy(CHECKBOX_LABEL_TEXT5)
+                                        .and(shouldContainElements(webElements(tagName(LABEL_TAG), ofMillis(5)), 2)))},
+
+                {flag(of(CHECKBOX_LABEL_TEXT1), FIVE_SECONDS,
+                        shouldContainElements(webElements(tagName(LABEL_TAG), ofMillis(5)), 2)
+                                .negate()),
+                        COMMON_LABELED_CHECKBOX1,
+                        LabeledCheckBox.class,
+                        getWidgetDescription(LABELED_CHECKBOX,
+                                shouldBeLabeledBy(CHECKBOX_LABEL_TEXT1)
+                                        .and(shouldContainElements(webElements(tagName(LABEL_TAG), ofMillis(5)), 2)
+                                                .negate()))},
+
+                {flag(of(RADIOBUTTON_LABEL_TEXT3), FIVE_SECONDS,
+                        shouldHaveAttribute(ATTR14, VALUE14)
+                                .and(shouldHaveAttribute(ATTR15, VALUE15))),
+                        COMMON_LABELED_RADIOBUTTON3,
+                        LabeledRadioButton.class,
+                        getWidgetDescription(LABELED_RADIOBUTTON,
+                                shouldBeLabeledBy(RADIOBUTTON_LABEL_TEXT3)
+                                        .and(shouldHaveAttribute(ATTR14, VALUE14)
+                                                .and(shouldHaveAttribute(ATTR15, VALUE15))))},
+
+                {flag(RADIOBUTTON_LABEL_TEXT4, FIVE_SECONDS,
+                        shouldHaveAttribute(ATTR14, VALUE14)
+                                .and(shouldHaveAttribute(ATTR15, VALUE15)).negate()),
+                        COMMON_LABELED_RADIOBUTTON4,
+                        LabeledRadioButton.class,
+                        getWidgetDescription(LABELED_RADIOBUTTON,
+                                shouldBeLabeledBy(RADIOBUTTON_LABEL_TEXT4)
+                                        .and(shouldHaveAttribute(ATTR14, VALUE14)
+                                                .and(shouldHaveAttribute(ATTR15, VALUE15)).negate()))},
+
+                {flag(of(RADIOBUTTON_LABEL_TEXT7, RADIOBUTTON_LABEL_TEXT11), FIVE_SECONDS,
+                        shouldHaveAttributeContains(ATTR14, "18")
+                                .and(shouldHaveAttributeContains(ATTR15, "19"))),
+                        COMMON_LABELED_RADIOBUTTON7,
+                        LabeledRadioButton.class,
+                        getWidgetDescription(LABELED_RADIOBUTTON,
+                                shouldBeLabeledBy(RADIOBUTTON_LABEL_TEXT7, RADIOBUTTON_LABEL_TEXT11)
+                                        .and(shouldHaveAttributeContains(ATTR14, "18")
+                                                .and(shouldHaveAttributeContains(ATTR15, "19"))))},
+
+                {flag(of(RADIOBUTTON_LABEL_TEXT6, RADIOBUTTON_LABEL_TEXT10), FIVE_SECONDS,
+                        shouldHaveAttributeContains(ATTR14, "18")
+                                .and(shouldHaveAttributeContains(ATTR15, "19")).negate()),
+                        COMMON_LABELED_RADIOBUTTON6,
+                        LabeledRadioButton.class,
+                        getWidgetDescription(LABELED_RADIOBUTTON,
+                                shouldBeLabeledBy(RADIOBUTTON_LABEL_TEXT6, RADIOBUTTON_LABEL_TEXT10)
+                                        .and(shouldHaveAttributeContains(ATTR14, "18")
+                                                .and(shouldHaveAttributeContains(ATTR15, "19")).negate()))},
+
+                {flag(of(RADIOBUTTON_LABEL_TEXT7, RADIOBUTTON_LABEL_TEXT11), FIVE_SECONDS,
+                        shouldHaveAttributeContains(ATTR14, compile("18"))
+                                .and(shouldHaveAttributeContains(ATTR15, compile("19")))),
+                        COMMON_LABELED_RADIOBUTTON7,
+                        LabeledRadioButton.class,
+                        getWidgetDescription(LABELED_RADIOBUTTON,
+                                shouldBeLabeledBy(RADIOBUTTON_LABEL_TEXT7, RADIOBUTTON_LABEL_TEXT11)
+                                        .and(shouldHaveAttributeContains(ATTR14, compile("18"))
+                                                .and(shouldHaveAttributeContains(ATTR15, compile("19")))))},
+
+                {flag(of(RADIOBUTTON_LABEL_TEXT6, RADIOBUTTON_LABEL_TEXT10), FIVE_SECONDS,
+                        shouldHaveAttributeContains(ATTR14, compile("18"))
+                                .and(shouldHaveAttributeContains(ATTR15, compile("19"))).negate()),
+                        COMMON_LABELED_RADIOBUTTON6,
+                        LabeledRadioButton.class,
+                        getWidgetDescription(LABELED_RADIOBUTTON,
+                                shouldBeLabeledBy(RADIOBUTTON_LABEL_TEXT6, RADIOBUTTON_LABEL_TEXT10)
+                                        .and(shouldHaveAttributeContains(ATTR14, compile("18"))
+                                                .and(shouldHaveAttributeContains(ATTR15, compile("19"))).negate()))},
+
+                {flag(RADIOBUTTON_LABEL_TEXT2, FIVE_SECONDS, shouldHaveCssValue(CSS18, CSS_VALUE13)
+                        .and(shouldHaveCssValue(CSS19, CSS_VALUE14))),
+                        COMMON_LABELED_RADIOBUTTON2,
+                        LabeledRadioButton.class,
+                        getWidgetDescription(LABELED_RADIOBUTTON,
+                                shouldBeLabeledBy(RADIOBUTTON_LABEL_TEXT2)
+                                        .and(shouldHaveCssValue(CSS18, CSS_VALUE13)
+                                                .and(shouldHaveCssValue(CSS19, CSS_VALUE14))))},
+
+                {flag(CHECKBOX_LABEL_TEXT9, FIVE_SECONDS, shouldHaveCssValue(ATTR14, VALUE13)
+                        .and(shouldHaveCssValue(ATTR15, VALUE14)).negate()),
+                        COMMON_LABELED_CHECKBOX5,
+                        LabeledCheckBox.class,
+                        getWidgetDescription(LABELED_CHECKBOX,
+                                shouldBeLabeledBy(CHECKBOX_LABEL_TEXT9).and(shouldHaveCssValue(ATTR14, VALUE13)
+                                        .and(shouldHaveCssValue(ATTR15, VALUE14)).negate()))},
+
+                {flag(of(CHECKBOX_LABEL_TEXT8, CHECKBOX_LABEL_TEXT12), FIVE_SECONDS,
+                        shouldHaveCssValueContains(CSS2, CSS_VALUE5)
+                                .or(shouldHaveCssValueContains(CSS3, CSS_VALUE8))),
+                        COMMON_LABELED_CHECKBOX8,
+                        LabeledCheckBox.class,
+                        getWidgetDescription(LABELED_CHECKBOX,
+                                shouldBeLabeledBy(CHECKBOX_LABEL_TEXT8, CHECKBOX_LABEL_TEXT12)
+                                        .and(shouldHaveCssValueContains(CSS2, CSS_VALUE5)
+                                                .or(shouldHaveCssValueContains(CSS3, CSS_VALUE8))))},
+
+                {flag(of(CHECKBOX_LABEL_TEXT1), FIVE_SECONDS,
+                        shouldHaveCssValueContains(CSS2, CSS_VALUE5)
+                                .or(shouldHaveCssValueContains(CSS3, CSS_VALUE8)).negate()),
+                        COMMON_LABELED_CHECKBOX1,
+                        LabeledCheckBox.class,
+                        getWidgetDescription(LABELED_CHECKBOX,
+                                shouldBeLabeledBy(CHECKBOX_LABEL_TEXT1)
+                                        .and(shouldHaveCssValueContains(CSS2, CSS_VALUE5)
+                                                .or(shouldHaveCssValueContains(CSS3, CSS_VALUE8)).negate()))},
+
+                {flag(of(CHECKBOX_LABEL_TEXT8, CHECKBOX_LABEL_TEXT12), FIVE_SECONDS,
+                        shouldHaveCssValueContains(CSS2, compile(CSS_VALUE5))
+                                .or(shouldHaveCssValueContains(CSS3, compile(CSS_VALUE8)))),
+                        COMMON_LABELED_CHECKBOX8,
+                        LabeledCheckBox.class,
+                        getWidgetDescription(LABELED_CHECKBOX,
+                                shouldBeLabeledBy(CHECKBOX_LABEL_TEXT8, CHECKBOX_LABEL_TEXT12)
+                                        .and(shouldHaveCssValueContains(CSS2, compile(CSS_VALUE5))
+                                                .or(shouldHaveCssValueContains(CSS3, compile(CSS_VALUE8)))))},
+
+                {flag(of(CHECKBOX_LABEL_TEXT1), FIVE_SECONDS,
+                        shouldHaveCssValueContains(CSS2, compile(CSS_VALUE5))
+                                .or(shouldHaveCssValueContains(CSS3, compile(CSS_VALUE8))).negate()),
+                        COMMON_LABELED_CHECKBOX1,
+                        LabeledCheckBox.class,
+                        getWidgetDescription(LABELED_CHECKBOX,
+                                shouldBeLabeledBy(CHECKBOX_LABEL_TEXT1)
+                                        .and(shouldHaveCssValueContains(CSS2, compile(CSS_VALUE5))
+                                                .or(shouldHaveCssValueContains(CSS3, compile(CSS_VALUE8))).negate()))},
 
                 {checkbox(), COMMON_CHECKBOX1,
                         SimpleCheckbox.class, SIMPLE_CHECKBOX},

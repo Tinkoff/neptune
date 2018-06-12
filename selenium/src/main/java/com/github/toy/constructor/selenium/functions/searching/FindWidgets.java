@@ -3,6 +3,7 @@ package com.github.toy.constructor.selenium.functions.searching;
 import com.github.toy.constructor.selenium.api.widget.Widget;
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.Enhancer;
+import net.sf.cglib.proxy.MethodInterceptor;
 import org.objenesis.Objenesis;
 import org.objenesis.ObjenesisStd;
 import org.openqa.selenium.*;
@@ -24,11 +25,11 @@ import static com.github.toy.constructor.selenium.functions.searching.FindByBuil
 import static com.github.toy.constructor.selenium.functions.searching.WidgetPriorityComparator.widgetPriorityComparator;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
-import static java.util.Comparator.comparing;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static net.sf.cglib.proxy.Enhancer.registerCallbacks;
 
+@SuppressWarnings("unchecked")
 class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> {
 
     private static final FindByBuilder builder = new FindByBuilder();
@@ -83,20 +84,19 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
                 getWidgetName(classOfAWidget), WebElement.class.getName()));
     }
 
-    private R createWidget(WebElement webElement, Class<? extends Widget> desiredClass) {
+    private <T> T createProxy(Class<T> tClass, MethodInterceptor interceptor) {
         Enhancer enhancer = new Enhancer();
-        WidgetInterceptor interceptor = new WidgetInterceptor(webElement, desiredClass, conditionString);
 
         enhancer.setUseCache(false);
-        enhancer.setCallbackType(WidgetInterceptor.class);
-        enhancer.setSuperclass(desiredClass);
+        enhancer.setCallbackType(interceptor.getClass());
+        enhancer.setSuperclass(tClass);
         Class<?> proxyClass = enhancer.createClass();
         registerCallbacks(proxyClass, new Callback[]{interceptor});
-        enhancer.setClassLoader(desiredClass.getClassLoader());
+        enhancer.setClassLoader(tClass.getClass().getClassLoader());
 
         Objenesis objenesis = new ObjenesisStd();
         Object proxy = objenesis.newInstance(proxyClass);
-        return (R) proxy;
+        return (T) proxy;
     }
 
     @Override
@@ -107,8 +107,10 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
         classesToInstantiate.forEach(clazz -> {
             By by = builder.buildIt(clazz);
             result.addAll(searchContext.findElements(by).stream()
-                    .map(webElement -> createWidget(webElement, clazz)).collect(toList()));
+                    .map(webElement -> createProxy(clazz, new WidgetInterceptor(webElement, clazz, conditionString)))
+                    .collect(toList()));
         });
-        return result;
+        return (List<R>) createProxy(result.getClass(),
+                new WidgetListInterceptor(classOfAWidget, result, conditionString));
     }
 }
