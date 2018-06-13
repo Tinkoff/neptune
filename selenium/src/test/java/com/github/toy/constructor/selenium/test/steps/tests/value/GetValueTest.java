@@ -1,19 +1,19 @@
 package com.github.toy.constructor.selenium.test.steps.tests.value;
 
-import com.github.toy.constructor.selenium.api.widget.drafts.Flag;
-import com.github.toy.constructor.selenium.api.widget.drafts.Select;
-import com.github.toy.constructor.selenium.api.widget.drafts.Table;
-import com.github.toy.constructor.selenium.api.widget.drafts.TextField;
+import com.github.toy.constructor.selenium.api.widget.drafts.*;
 import com.github.toy.constructor.selenium.test.BaseWebDriverTest;
 import org.testng.annotations.Test;
 
 import static com.github.toy.constructor.selenium.functions.edit.EditActionSupplier.valueOfThe;
 import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.*;
+import static com.github.toy.constructor.selenium.functions.searching.MultipleSearchSupplier.buttons;
+import static com.github.toy.constructor.selenium.functions.searching.MultipleSearchSupplier.textFields;
 import static com.github.toy.constructor.selenium.functions.searching.MultipleSearchSupplier.webElements;
 import static com.github.toy.constructor.selenium.functions.searching.SearchSupplier.*;
 import static com.github.toy.constructor.selenium.functions.searching.SearchSupplier.radioButton;
 import static com.github.toy.constructor.selenium.functions.value.SequentialGetValueSupplier.ofThe;
 import static com.github.toy.constructor.selenium.test.FakeDOMModel.*;
+import static java.time.Duration.ofMillis;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import static java.util.List.of;
@@ -202,5 +202,21 @@ public class GetValueTest extends BaseWebDriverTest {
                 allOf(hasEntry(is(HEADER_TEXT19), contains(CELL_TEXT55, CELL_TEXT58, CELL_TEXT61)),
                         hasEntry(is(HEADER_TEXT20), contains(CELL_TEXT56, CELL_TEXT59, CELL_TEXT62)),
                         hasEntry(is(HEADER_TEXT21), contains(CELL_TEXT57, CELL_TEXT60, CELL_TEXT63))));
+    }
+
+    @Test
+    public void valueOfRow() {
+        assertThat(seleniumSteps.getValue(ofThe(tableRow())),
+                contains(CELL_TEXT37, CELL_TEXT38, CELL_TEXT39));
+
+        assertThat(seleniumSteps.getValue(ofThe(tableRow(shouldContainElements(buttons()))
+                .foundFrom(table(of(TABLE_LABEL_TEXT5, TABLE_LABEL_TEXT9))))),
+                contains(CELL_TEXT73, CELL_TEXT74, CELL_TEXT75));
+
+        TableRow row = seleniumSteps.find(tableRow(shouldContainElements(textFields(ofMillis(5))))
+                .foundFrom(table(of(TABLE_LABEL_TEXT5, TABLE_LABEL_TEXT9))));
+
+        assertThat(seleniumSteps.getValue(ofThe(row)),
+                contains(CELL_TEXT76, CELL_TEXT77, CELL_TEXT78));
     }
 }
