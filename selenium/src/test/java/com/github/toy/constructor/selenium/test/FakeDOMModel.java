@@ -36,7 +36,7 @@ public class FakeDOMModel {
     public static final String ITEM_OPTION_CLASS = "item";
     public static final String TABLE = "table";
     public static final String T_HEAD = "thead";
-    public static final String T_BODY = "thead";
+    public static final String T_BODY = "tbody";
     public static final String T_FOOT = "tfoot";
     public static final String TR = "tr";
     public static final String TH = "th";

@@ -40,4 +40,8 @@ public final class WidgetNames {
 
     public static final String COMMON_FOOTER = "Common Footer";
     public static final String SPREADSHEET_FOOTER = "Spreadsheet Footer";
+
+    public static final String SIMPLE_TEXT_FIELD = "Simple text field";
+    public static final String LABELED_TEXT_FIELD = "Labeled text field";
+    public static final String TEXT_AREA = "Customized tab";
 }

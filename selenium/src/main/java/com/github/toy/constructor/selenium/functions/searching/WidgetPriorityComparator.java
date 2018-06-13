@@ -16,14 +16,6 @@ class WidgetPriorityComparator implements Comparator<Class<? extends Widget>> {
     public int compare(Class<? extends Widget> o1, Class<? extends Widget> o2) {
         int priority1 = getPriority(o1);
         int priority2 = getPriority(o2);
-        if (priority1 > priority2) {
-            return 1;
-        }
-        else if (priority1 == priority2) {
-            return 0;
-        }
-        else {
-            return -1;
-        }
+        return Integer.compare(priority1, priority2);
     }
 }

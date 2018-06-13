@@ -2,6 +2,7 @@ package com.github.toy.constructor.selenium.test;
 
 import org.openqa.selenium.*;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -32,8 +33,8 @@ public class MockWebElement implements WebElement {
                    Dimension size, boolean isDisplayed, boolean isEnabled, boolean isFlag, String tagName, String text,
                    List<MockWebElement> children) {
         this.foundBy = foundBy;
-        this.attributes = attributes;
-        this.css = css;
+        this.attributes = new HashMap<>(attributes);
+        this.css = new HashMap<>(css);
         this.location = location;
         this.size = size;
         this.isDisplayed = isDisplayed;
@@ -59,15 +60,13 @@ public class MockWebElement implements WebElement {
 
     @Override
     public void sendKeys(CharSequence... keysToSend) {
-        if (attributes.keySet().contains(VALUE)) {
-            if (keysToSend.length == 1) {
-                attributes.put(VALUE, valueOf(keysToSend[0]));
-            }
+        if (keysToSend.length == 1) {
+            attributes.put(VALUE, valueOf(keysToSend[0]));
+        }
 
-            if (keysToSend.length > 0) {
-                stream(keysToSend).filter(charSequence -> String.class.isAssignableFrom(charSequence.getClass()))
-                        .findFirst().ifPresent(charSequence -> attributes.put(VALUE, valueOf(charSequence)));
-            }
+        if (keysToSend.length > 0) {
+            stream(keysToSend).filter(charSequence -> String.class.isAssignableFrom(charSequence.getClass()))
+                    .findFirst().ifPresent(charSequence -> attributes.put(VALUE, valueOf(charSequence)));
         }
     }
 

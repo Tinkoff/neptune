@@ -955,7 +955,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Flag.CheckBox> checkbox(Duration duration, Predicate<Flag.CheckBox> predicate) {
+    public static SearchSupplier<Flag.CheckBox> checkbox(Duration duration, Predicate<? super Flag.CheckBox> predicate) {
         return widget(Flag.CheckBox.class, duration, predicate);
     }
 
@@ -971,7 +971,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<Flag.CheckBox> checkbox(List<String> labels, Duration duration,
-                                                         Predicate<Flag.CheckBox> predicate) {
+                                                         Predicate<? super Flag.CheckBox> predicate) {
         return widget(Flag.CheckBox.class, labels, duration, predicate);
     }
 
@@ -987,7 +987,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<Flag.CheckBox> checkbox(String label, Duration duration,
-                                                         Predicate<Flag.CheckBox> predicate) {
+                                                         Predicate<? super Flag.CheckBox> predicate) {
         return widget(Flag.CheckBox.class, label, duration, predicate);
     }
 
@@ -1049,7 +1049,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Flag.CheckBox> checkbox(Predicate<Flag.CheckBox> predicate) {
+    public static SearchSupplier<Flag.CheckBox> checkbox(Predicate<? super Flag.CheckBox> predicate) {
         return widget(Flag.CheckBox.class, predicate);
     }
 
@@ -1064,7 +1064,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Flag.CheckBox> checkbox(List<String> labels, Predicate<Flag.CheckBox> predicate) {
+    public static SearchSupplier<Flag.CheckBox> checkbox(List<String> labels, Predicate<? super Flag.CheckBox> predicate) {
         return widget(Flag.CheckBox.class, labels, predicate);
     }
 
@@ -1079,7 +1079,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Flag.CheckBox> checkbox(String label, Predicate<Flag.CheckBox> predicate) {
+    public static SearchSupplier<Flag.CheckBox> checkbox(String label, Predicate<? super Flag.CheckBox> predicate) {
         return widget(Flag.CheckBox.class, label, predicate);
     }
 
@@ -1154,7 +1154,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Flag.RadioButton> radioButton(Duration duration, Predicate<Flag.RadioButton> predicate) {
+    public static SearchSupplier<Flag.RadioButton> radioButton(Duration duration, Predicate<? super Flag.RadioButton> predicate) {
         return widget(Flag.RadioButton.class, duration, predicate);
     }
 
@@ -1170,7 +1170,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<Flag.RadioButton> radioButton(List<String> labels, Duration duration,
-                                                               Predicate<Flag.RadioButton> predicate) {
+                                                               Predicate<? super Flag.RadioButton> predicate) {
         return widget(Flag.RadioButton.class, labels, duration, predicate);
     }
 
@@ -1186,7 +1186,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<Flag.RadioButton> radioButton(String label, Duration duration,
-                                                               Predicate<Flag.RadioButton> predicate) {
+                                                               Predicate<? super Flag.RadioButton> predicate) {
         return widget(Flag.RadioButton.class, label, duration, predicate);
     }
 
@@ -1248,7 +1248,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Flag.RadioButton> radioButton(Predicate<Flag.RadioButton> predicate) {
+    public static SearchSupplier<Flag.RadioButton> radioButton(Predicate<? super Flag.RadioButton> predicate) {
         return widget(Flag.RadioButton.class, predicate);
     }
 
@@ -1263,7 +1263,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Flag.RadioButton> radioButton(List<String> labels, Predicate<Flag.RadioButton> predicate) {
+    public static SearchSupplier<Flag.RadioButton> radioButton(List<String> labels, Predicate<? super Flag.RadioButton> predicate) {
         return widget(Flag.RadioButton.class, labels, predicate);
     }
 
@@ -1278,7 +1278,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Flag.RadioButton> radioButton(String label, Predicate<Flag.RadioButton> predicate) {
+    public static SearchSupplier<Flag.RadioButton> radioButton(String label, Predicate<? super Flag.RadioButton> predicate) {
         return widget(Flag.RadioButton.class, label, predicate);
     }
 

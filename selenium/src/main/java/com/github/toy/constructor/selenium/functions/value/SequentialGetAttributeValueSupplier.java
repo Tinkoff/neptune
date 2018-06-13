@@ -92,7 +92,7 @@ public final class SequentialGetAttributeValueSupplier extends
                 return HasAttribute.class.cast(searchContext).getAttribute(attr);
             }
 
-            throw new UnsupportedOperationException(format("It is impossible to get value of thr attribute %s from " +
+            throw new UnsupportedOperationException(format("It is impossible to get value of the attribute %s from " +
                             "the instance of %s. Instance of " +
                             "%s or subclass of %s and %s is expected.", attr, searchContextClass.getName(), WebElement.class.getName(),
                     SearchContext.class.getName(), HasAttribute.class.getName()));

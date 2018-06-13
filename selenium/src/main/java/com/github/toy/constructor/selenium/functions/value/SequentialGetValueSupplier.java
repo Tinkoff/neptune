@@ -46,6 +46,6 @@ public final class SequentialGetValueSupplier<T> extends
 
     @Override
     protected Function<HasValue<T>, T> getEndFunction() {
-        return toGet("Get value", HasValue::getValue);
+        return toGet("Value", HasValue::getValue);
     }
 }
