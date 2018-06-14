@@ -43,5 +43,5 @@ public final class WidgetNames {
 
     public static final String SIMPLE_TEXT_FIELD = "Simple text field";
     public static final String LABELED_TEXT_FIELD = "Labeled text field";
-    public static final String TEXT_AREA = "Customized tab";
+    public static final String TEXT_AREA = "Text area";
 }

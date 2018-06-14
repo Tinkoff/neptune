@@ -1,18 +1,21 @@
 package com.github.toy.constructor.selenium.test.steps.tests.value;
 
+import com.github.toy.constructor.selenium.api.widget.HasValue;
 import com.github.toy.constructor.selenium.api.widget.drafts.*;
 import com.github.toy.constructor.selenium.test.BaseWebDriverTest;
 import org.testng.annotations.Test;
 
+import java.util.stream.Collectors;
+
+import static com.github.toy.constructor.core.api.StoryWriter.condition;
 import static com.github.toy.constructor.selenium.functions.edit.EditActionSupplier.valueOfThe;
 import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.*;
-import static com.github.toy.constructor.selenium.functions.searching.MultipleSearchSupplier.buttons;
-import static com.github.toy.constructor.selenium.functions.searching.MultipleSearchSupplier.textFields;
-import static com.github.toy.constructor.selenium.functions.searching.MultipleSearchSupplier.webElements;
+import static com.github.toy.constructor.selenium.functions.searching.MultipleSearchSupplier.*;
 import static com.github.toy.constructor.selenium.functions.searching.SearchSupplier.*;
 import static com.github.toy.constructor.selenium.functions.searching.SearchSupplier.radioButton;
 import static com.github.toy.constructor.selenium.functions.value.SequentialGetValueSupplier.ofThe;
 import static com.github.toy.constructor.selenium.test.FakeDOMModel.*;
+import static java.lang.String.format;
 import static java.time.Duration.ofMillis;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -185,7 +188,7 @@ public class GetValueTest extends BaseWebDriverTest {
     }
 
     @Test
-    public void valueOfTable() {
+    public void valueOfTableTest() {
         assertThat(seleniumSteps.getValue(ofThe(table())),
                 allOf(hasEntry(is(HEADER_TEXT14), contains(CELL_TEXT38, CELL_TEXT41, CELL_TEXT44)),
                         hasEntry(is(HEADER_TEXT13), contains(CELL_TEXT37, CELL_TEXT40, CELL_TEXT43)),
@@ -205,7 +208,7 @@ public class GetValueTest extends BaseWebDriverTest {
     }
 
     @Test
-    public void valueOfRow() {
+    public void valueOfRowTest() {
         assertThat(seleniumSteps.getValue(ofThe(tableRow())),
                 contains(CELL_TEXT37, CELL_TEXT38, CELL_TEXT39));
 
@@ -218,5 +221,69 @@ public class GetValueTest extends BaseWebDriverTest {
 
         assertThat(seleniumSteps.getValue(ofThe(row)),
                 contains(CELL_TEXT76, CELL_TEXT77, CELL_TEXT78));
+    }
+
+    @Test
+    public void valueOfHeaderTest() {
+        assertThat(seleniumSteps.getValue(ofThe(tableHeader())),
+                contains(HEADER_TEXT13, HEADER_TEXT14, HEADER_TEXT15));
+
+        assertThat(seleniumSteps.getValue(ofThe(
+                tableHeader(condition(format("Contains value %s", HEADER_TEXT16),
+                        tableHeader -> tableHeader.getValue().contains(HEADER_TEXT16))))),
+                contains(HEADER_TEXT16, HEADER_TEXT17, HEADER_TEXT18));
+
+        assertThat(seleniumSteps.getValue(ofThe(tableHeader(FIVE_SECONDS).foundFrom(
+                        table(shouldContainElements(
+                                textFields(INPUT_LABEL_TEXT10, ofMillis(5))))))),
+                contains(HEADER_TEXT28, HEADER_TEXT29, HEADER_TEXT30));
+
+        TableHeader header = seleniumSteps.find(tableHeader(FIVE_SECONDS,
+                condition(format("Contains value %s", HEADER_TEXT22), tableHeader -> tableHeader.getValue().contains(HEADER_TEXT22)))
+                .foundFrom(table(TABLE_LABEL_TEXT4)));
+
+        assertThat(seleniumSteps.getValue(ofThe(header)),
+                contains(HEADER_TEXT22, HEADER_TEXT23, HEADER_TEXT24));
+    }
+
+    @Test
+    public void valueOfFooterTest() {
+        assertThat(seleniumSteps.getValue(ofThe(tableFooter())),
+                contains(FOOTER_TEXT13, FOOTER_TEXT14, FOOTER_TEXT15));
+
+        assertThat(seleniumSteps.getValue(ofThe(
+                tableFooter(condition(format("Contains value %s", FOOTER_TEXT1),
+                        tableFooter -> tableFooter.getValue().contains(FOOTER_TEXT1))))),
+                contains(FOOTER_TEXT1, FOOTER_TEXT2, FOOTER_TEXT3));
+
+        assertThat(seleniumSteps.getValue(ofThe(tableFooter(FIVE_SECONDS).foundFrom(
+                table(shouldContainElements(
+                        textFields(of(INPUT_LABEL_TEXT6, INPUT_LABEL_TEXT10), ofMillis(5))))))),
+                contains(FOOTER_TEXT28, FOOTER_TEXT29, FOOTER_TEXT30));
+
+        TableFooter footer = seleniumSteps.find(tableFooter(FIVE_SECONDS,
+                condition(format("Contains value %s", FOOTER_TEXT22), tableFooter -> tableFooter.getValue().contains(FOOTER_TEXT22)))
+                .foundFrom(table(TABLE_LABEL_TEXT4)));
+
+        assertThat(seleniumSteps.getValue(ofThe(footer)),
+                contains(FOOTER_TEXT22, FOOTER_TEXT23, FOOTER_TEXT24));
+    }
+
+    @Test
+    public void valueOfCellTest() {
+        assertThat(seleniumSteps.getValue(ofThe(tableCell())),
+                is(CELL_TEXT37));
+
+        assertThat(seleniumSteps.getValue(ofThe(tableCell(
+                shouldContainElements(textFields(of(INPUT_LABEL_TEXT6, INPUT_LABEL_TEXT10), ofMillis(5))))
+                        .foundFrom(table(TABLE_LABEL_TEXT6)))),
+                is(CELL_TEXT84));
+
+        TableCell cell = seleniumSteps
+                .find(tableCell(
+                        shouldContainElements(checkBoxes(of(CHECKBOX_LABEL_TEXT6, CHECKBOX_LABEL_TEXT10), ofMillis(5))))
+                        .foundFrom(table(TABLE_LABEL_TEXT6)));
+        assertThat(seleniumSteps.getValue(ofThe(cell)),
+                is(CELL_TEXT87));
     }
 }

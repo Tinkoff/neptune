@@ -55,7 +55,7 @@ class WidgetInterceptor implements MethodInterceptor {
         }
 
         Class<?>[] parameters;
-        if ("equals".equals(method.getName()) && (parameters = method.getParameterTypes()).length == 0
+        if ("equals".equals(method.getName()) && (parameters = method.getParameterTypes()).length == 1
                 && parameters[0].equals(Object.class)) {
             boolean result = widget.equals(args[0]);
             //it may be another proxy
