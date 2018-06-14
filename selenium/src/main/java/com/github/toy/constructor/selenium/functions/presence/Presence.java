@@ -2,15 +2,21 @@ package com.github.toy.constructor.selenium.functions.presence;
 
 import com.github.toy.constructor.core.api.GetSupplier;
 import com.github.toy.constructor.core.api.SequentialGetSupplier;
-import com.github.toy.constructor.core.api.StoryWriter;
 import com.github.toy.constructor.selenium.SeleniumSteps;
+import com.github.toy.constructor.selenium.functions.searching.MultipleSearchSupplier;
+import com.github.toy.constructor.selenium.functions.searching.SearchSupplier;
 import com.google.common.collect.Iterables;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import static com.github.toy.constructor.core.api.StoryWriter.toGet;
+import static com.github.toy.constructor.selenium.CurrentContentFunction.currentContent;
+import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
 
@@ -45,6 +51,28 @@ public final class Presence extends SequentialGetSupplier<SeleniumSteps, Boolean
     }
 
     /**
+     * Creates an instance of {@link Presence}.
+     *
+     * @param supplier supplier of a search criteria to find a single element.
+     * @return an instance of {@link Presence}.
+     */
+    public static Presence presenceOf(SearchSupplier<?> supplier) {
+        return new Presence().from(supplier.get().compose(currentContent()))
+                .ignore(NoSuchElementException.class, StaleElementReferenceException.class);
+    }
+
+    /**
+     * Creates an instance of {@link Presence}.
+     *
+     * @param supplier supplier of a search criteria to find a list of elements.
+     * @return an instance of {@link Presence}.
+     */
+    public static Presence presenceOf(MultipleSearchSupplier<?> supplier) {
+        return new Presence().from(supplier.get().compose(currentContent()))
+                .ignore(StaleElementReferenceException.class);
+    }
+
+    /**
      * This method add types of {@link Throwable} to be ignored.
      *
      * @param toBeIgnored types of throwable which should be ignored. When {@link Function#apply(Object)}
@@ -59,8 +87,31 @@ public final class Presence extends SequentialGetSupplier<SeleniumSteps, Boolean
     }
 
     @Override
+    protected Presence from(GetSupplier<SeleniumSteps, ?, ?> supplier) {
+        return from(supplier.get());
+    }
+
+    @Override
+    protected Presence from(Function<SeleniumSteps, ?> function) {
+        return super.from(toGet(format("Presence of %s", function), seleniumSteps -> {
+            try {
+                return seleniumSteps.get(function);
+            }
+            catch (Throwable t) {
+                Class<? extends Throwable> errorClass = t.getClass();
+                for (Class<? extends Throwable> c: ignored) {
+                    if (c.isAssignableFrom(errorClass)) {
+                        return null;
+                    }
+                }
+                throw new RuntimeException(t.getMessage(), t);
+            }
+        }));
+    }
+
+    @Override
     protected Function<Object, Boolean> getEndFunction() {
-        return StoryWriter.toGet("Presence", o ->
+        return toGet("Presence", o ->
                 ofNullable(o)
                         .map(o1 -> {
                             Class<?> clazz = o1.getClass();
