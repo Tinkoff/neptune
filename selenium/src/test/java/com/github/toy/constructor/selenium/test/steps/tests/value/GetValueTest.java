@@ -1,11 +1,8 @@
 package com.github.toy.constructor.selenium.test.steps.tests.value;
 
-import com.github.toy.constructor.selenium.api.widget.HasValue;
 import com.github.toy.constructor.selenium.api.widget.drafts.*;
 import com.github.toy.constructor.selenium.test.BaseWebDriverTest;
 import org.testng.annotations.Test;
-
-import java.util.stream.Collectors;
 
 import static com.github.toy.constructor.core.api.StoryWriter.condition;
 import static com.github.toy.constructor.selenium.functions.edit.EditActionSupplier.valueOfThe;
