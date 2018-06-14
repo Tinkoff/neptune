@@ -476,7 +476,7 @@ public class FakeDOMModel {
     private static final ByChained CHAINED_FIND_HEADER = new ByChained(tagName(T_HEAD), tagName(TR));
     private static final ByChained CHAINED_FIND_ROW = new ByChained(tagName(T_BODY), tagName(TR));
     private static final ByChained CHAINED_FIND_FOOTER = new ByChained(tagName(T_FOOT), tagName(TR));
-    private static final ByAll CUSTOM_LABEL_BY = new ByAll(xpath(LABEL_XPATH), xpath(LABEL_XPATH2));
+    public static final ByAll CUSTOM_LABEL_BY = new ByAll(xpath(LABEL_XPATH), xpath(LABEL_XPATH2));
     public static final By INVISIBLE_SPAN_BY = tagName(SPAN);
     public static final By VISIBLE_DIV_BY = tagName(DIV);
 
