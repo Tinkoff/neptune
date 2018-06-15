@@ -91,17 +91,38 @@ public final class Presence extends SequentialGetSupplier<SeleniumSteps, Boolean
         return from(supplier.get());
     }
 
+    private boolean isPresent(Object o) {
+        return ofNullable(o)
+                .map(o1 -> {
+                    Class<?> clazz = o1.getClass();
+
+                    if (Boolean.class.isAssignableFrom(clazz)) {
+                        return Boolean.class.cast(o);
+                    }
+
+                    if (Iterable.class.isAssignableFrom(clazz)) {
+                        return Iterables.size(Iterable.class.cast(o1)) > 0;
+                    }
+
+                    if (clazz.isArray()) {
+                        return Array.getLength(o1) > 0;
+                    }
+                    return true;
+                })
+                .orElse(false);
+    }
+
     @Override
     protected Presence from(Function<SeleniumSteps, ?> function) {
         return super.from(toGet(format("Presence of %s", function), seleniumSteps -> {
             try {
-                return seleniumSteps.get(function);
+                return isPresent(seleniumSteps.get(function));
             }
             catch (Throwable t) {
                 Class<? extends Throwable> errorClass = t.getClass();
                 for (Class<? extends Throwable> c: ignored) {
                     if (c.isAssignableFrom(errorClass)) {
-                        return null;
+                        return false;
                     }
                 }
                 throw new RuntimeException(t.getMessage(), t);
@@ -111,19 +132,6 @@ public final class Presence extends SequentialGetSupplier<SeleniumSteps, Boolean
 
     @Override
     protected Function<Object, Boolean> getEndFunction() {
-        return toGet("Presence", o ->
-                ofNullable(o)
-                        .map(o1 -> {
-                            Class<?> clazz = o1.getClass();
-                            if (Iterable.class.isAssignableFrom(clazz)) {
-                                return Iterables.size(Iterable.class.cast(o1)) > 0;
-                            }
-
-                            if (clazz.isArray()) {
-                                return Array.getLength(o1) > 0;
-                            }
-                            return true;
-                        })
-                        .orElse(false));
+        return toGet("Presence", Boolean.class::cast);
     }
 }

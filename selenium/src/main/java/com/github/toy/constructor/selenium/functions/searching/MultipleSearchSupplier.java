@@ -922,7 +922,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Flag.CheckBox> checkBoxes(Duration duration, Predicate<Flag.CheckBox> predicate) {
+    public static MultipleSearchSupplier<Flag.CheckBox> checkBoxes(Duration duration, Predicate<? super Flag.CheckBox> predicate) {
         return widgets(Flag.CheckBox.class, duration, predicate);
     }
 
@@ -938,7 +938,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<Flag.CheckBox> checkBoxes(List<String> labels, Duration duration,
-                                                                   Predicate<Flag.CheckBox> predicate) {
+                                                                   Predicate<? super Flag.CheckBox> predicate) {
         return widgets(Flag.CheckBox.class, labels, duration, predicate);
     }
 
@@ -954,7 +954,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<Flag.CheckBox> checkBoxes(String label, Duration duration,
-                                                                   Predicate<Flag.CheckBox> predicate) {
+                                                                   Predicate<? super Flag.CheckBox> predicate) {
         return widgets(Flag.CheckBox.class, label, duration, predicate);
     }
 
@@ -1016,7 +1016,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Flag.CheckBox> checkBoxes(Predicate<Flag.CheckBox> predicate) {
+    public static MultipleSearchSupplier<Flag.CheckBox> checkBoxes(Predicate<? super Flag.CheckBox> predicate) {
         return widgets(Flag.CheckBox.class, predicate);
     }
 
@@ -1031,7 +1031,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Flag.CheckBox> checkBoxes(List<String> labels, Predicate<Flag.CheckBox> predicate) {
+    public static MultipleSearchSupplier<Flag.CheckBox> checkBoxes(List<String> labels, Predicate<? super Flag.CheckBox> predicate) {
         return widgets(Flag.CheckBox.class, labels, predicate);
     }
 
@@ -1046,7 +1046,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Flag.CheckBox> checkBoxes(String label, Predicate<Flag.CheckBox> predicate) {
+    public static MultipleSearchSupplier<Flag.CheckBox> checkBoxes(String label, Predicate<? super Flag.CheckBox> predicate) {
         return widgets(Flag.CheckBox.class, label, predicate);
     }
 
@@ -1120,7 +1120,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Flag.RadioButton> radioButtons(Duration duration, Predicate<Flag.RadioButton> predicate) {
+    public static MultipleSearchSupplier<Flag.RadioButton> radioButtons(Duration duration, Predicate<? super Flag.RadioButton> predicate) {
         return widgets(Flag.RadioButton.class, duration, predicate);
     }
 
@@ -1137,7 +1137,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      */
     public static MultipleSearchSupplier<Flag.RadioButton> radioButtons(List<String> labels,
                                                                                   Duration duration,
-                                                                                  Predicate<Flag.RadioButton> predicate) {
+                                                                                  Predicate<? super Flag.RadioButton> predicate) {
         return widgets(Flag.RadioButton.class, labels, duration, predicate);
     }
 
@@ -1154,7 +1154,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      */
     public static MultipleSearchSupplier<Flag.RadioButton> radioButtons(String label,
                                                                                   Duration duration,
-                                                                                  Predicate<Flag.RadioButton> predicate) {
+                                                                                  Predicate<? super Flag.RadioButton> predicate) {
         return widgets(Flag.RadioButton.class, label, duration, predicate);
     }
 
@@ -1218,7 +1218,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param predicate to specify the searching criteria
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Flag.RadioButton> radioButtons(Predicate<Flag.RadioButton> predicate) {
+    public static MultipleSearchSupplier<Flag.RadioButton> radioButtons(Predicate<? super Flag.RadioButton> predicate) {
         return widgets(Flag.RadioButton.class, predicate);
     }
 
@@ -1234,7 +1234,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<Flag.RadioButton> radioButtons(List<String> labels,
-                                                                                  Predicate<Flag.RadioButton> predicate) {
+                                                                                  Predicate<? super Flag.RadioButton> predicate) {
         return widgets(Flag.RadioButton.class, labels, predicate);
     }
 
@@ -1250,7 +1250,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<Flag.RadioButton> radioButtons(String label,
-                                                                                  Predicate<Flag.RadioButton> predicate) {
+                                                                                  Predicate<? super Flag.RadioButton> predicate) {
         return widgets(Flag.RadioButton.class, label, predicate);
     }
 

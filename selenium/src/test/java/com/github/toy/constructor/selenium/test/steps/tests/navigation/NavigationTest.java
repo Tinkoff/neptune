@@ -1,4 +1,4 @@
-package com.github.toy.constructor.selenium.test.steps.tests;
+package com.github.toy.constructor.selenium.test.steps.tests.navigation;
 
 import com.github.toy.constructor.selenium.functions.target.locator.window.Window;
 import com.github.toy.constructor.selenium.test.BaseWebDriverTest;

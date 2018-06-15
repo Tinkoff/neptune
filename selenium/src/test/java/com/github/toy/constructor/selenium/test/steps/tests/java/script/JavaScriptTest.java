@@ -1,4 +1,4 @@
-package com.github.toy.constructor.selenium.test.steps.tests;
+package com.github.toy.constructor.selenium.test.steps.tests.java.script;
 
 import com.github.toy.constructor.selenium.test.BaseWebDriverTest;
 import org.apache.commons.lang3.ArrayUtils;
