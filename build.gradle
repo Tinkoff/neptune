@@ -61,3 +61,10 @@ project(":selenium") {
         testCompile group: 'org.mockito', name: 'mockito-core', version: '2.18.3'
     }
 }
+
+project(":testng.integration") {
+    dependencies {
+        compile project(':core.api')
+        compile group: 'org.testng', name: 'testng', version: testNGVersion
+    }
+}
