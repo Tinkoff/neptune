@@ -115,7 +115,8 @@ public class SanityTestOfTheStartingAndStoppingOfWebDriver {
             WebDriver driver = null;
             try {
                 driver = wrappedWebDriver.getWrappedDriver();
-                assertThat("Check class of web driver", driver.getClass(), equalTo(expectedWebDriver));
+                assertThat("Check class of web driver", expectedWebDriver.isAssignableFrom(driver.getClass()),
+                        is(true));
                 assertThat("Web driver is alive", isDriverAlive(driver), is(true));
                 assertThat("Current url", driver.getCurrentUrl(), anyOf(is("about:blank"), is("data:,")));
                 WebDriver toCheckCapabilities = driver;

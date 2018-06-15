@@ -21,7 +21,7 @@ project(":core.api") {
     dependencies {
         compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
         compile group: 'com.google.guava', name: 'guava', version: '25.0-jre'
-        compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.8.11'
+        compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.8.12'
         compile group: 'org.objenesis', name: 'objenesis', version: '2.6'
         compile group: 'cglib', name: 'cglib', version: '3.2.6'
         testCompile group: 'org.testng', name: 'testng', version: testNGVersion
@@ -49,7 +49,7 @@ project(":selenium") {
         compile (group: 'com.codeborne', name: 'phantomjsdriver', version: '1.4.4') {
             exclude group: 'org.seleniumhq.selenium';
         }
-        compile (group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '2.2.1') {
+        compile (group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '2.2.2') {
             exclude group: 'org.seleniumhq.selenium'
         }
         compile (group: 'org.seleniumhq.selenium', name: 'selenium-server', version: seleniumVersion) {

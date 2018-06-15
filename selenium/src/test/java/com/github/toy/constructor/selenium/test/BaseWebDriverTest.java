@@ -1,8 +1,10 @@
 package com.github.toy.constructor.selenium.test;
 
 import com.github.toy.constructor.selenium.SeleniumSteps;
+import com.github.toy.constructor.selenium.WebDriverMethodInterceptor;
 import com.github.toy.constructor.selenium.WrappedWebDriver;
 import com.github.toy.constructor.selenium.test.MockWebDriver;
+import net.sf.cglib.proxy.Enhancer;
 import org.mockito.Mock;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.BeforeClass;
@@ -61,7 +63,11 @@ public abstract class BaseWebDriverTest {
     public void beforeTestMethod() throws Exception {
         start = 0;
         end = 0;
-        driver = new MockWebDriver();
+
+        Enhancer enhancer = new Enhancer();
+        enhancer.setSuperclass(MockWebDriver.class);
+        enhancer.setCallback(new WebDriverMethodInterceptor());
+        driver = (WebDriver) enhancer.create();
         when(wrappedWebDriver.getWrappedDriver()).thenReturn(driver);
         seleniumSteps = getSubstituted(SeleniumSteps.class, params(wrappedWebDriver));
     }

@@ -4,6 +4,7 @@ import com.github.toy.constructor.core.api.Refreshable;
 import com.github.toy.constructor.core.api.Stoppable;
 import com.github.toy.constructor.selenium.properties.SupportedWebDrivers;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import net.sf.cglib.proxy.Enhancer;
 import org.apache.commons.lang3.ArrayUtils;
 import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
 import org.openqa.selenium.WebDriver;
@@ -108,7 +109,11 @@ public class WrappedWebDriver implements WrapsDriver, Refreshable, Stoppable {
                     isWebDriverInstalled = true;
                 }
 
-                WebDriver driver = c.newInstance(parameters);
+                Enhancer enhancer = new Enhancer();
+                enhancer.setSuperclass(supportedWebDriver.getWebDriverClass());
+                enhancer.setCallback(new WebDriverMethodInterceptor());
+
+                WebDriver driver = (WebDriver) enhancer.create(c.getParameterTypes(), parameters);
                 ofNullable(BASE_WEB_DRIVER_URL_PROPERTY.get())
                         .ifPresent(url -> driver.get(url.toString()));
                 return driver;
