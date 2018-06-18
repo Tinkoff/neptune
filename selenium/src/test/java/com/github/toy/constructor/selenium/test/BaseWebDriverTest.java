@@ -3,7 +3,6 @@ package com.github.toy.constructor.selenium.test;
 import com.github.toy.constructor.selenium.SeleniumSteps;
 import com.github.toy.constructor.selenium.WebDriverMethodInterceptor;
 import com.github.toy.constructor.selenium.WrappedWebDriver;
-import com.github.toy.constructor.selenium.test.MockWebDriver;
 import net.sf.cglib.proxy.Enhancer;
 import org.mockito.Mock;
 import org.openqa.selenium.WebDriver;
@@ -12,8 +11,8 @@ import org.testng.annotations.BeforeMethod;
 
 import java.time.Duration;
 
-import static com.github.toy.constructor.core.api.proxy.ConstructorParameters.params;
-import static com.github.toy.constructor.core.api.proxy.Substitution.getSubstituted;
+import static com.github.toy.constructor.core.api.ConstructorParameters.params;
+import static com.github.toy.constructor.core.api.Substitution.getSubstituted;
 import static java.time.Duration.ofMillis;
 import static java.time.Duration.ofSeconds;
 import static org.mockito.Mockito.when;

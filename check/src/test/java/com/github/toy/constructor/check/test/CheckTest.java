@@ -10,7 +10,7 @@ import java.util.function.Function;
 
 import static com.github.toy.constructor.check.hamcrest.FluentMatcher.shouldMatch;
 import static com.github.toy.constructor.core.api.StoryWriter.action;
-import static com.github.toy.constructor.core.api.proxy.Substitution.getSubstituted;
+import static com.github.toy.constructor.core.api.Substitution.getSubstituted;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 import static java.util.List.of;
@@ -19,16 +19,15 @@ import static org.hamcrest.Matchers.*;
 public class CheckTest {
 
     private Check check;
-    private DefaultListLogger defaultListLogger = new DefaultListLogger();
 
     @BeforeTest
     public void beforeTest() throws Exception {
-        check = getSubstituted(Check.class, of(defaultListLogger));
+        check = getSubstituted(Check.class);
     }
 
     @BeforeMethod
     public void beforeMethod() {
-        defaultListLogger.messages.clear();
+        DefaultListLogger.messages.clear();
     }
 
     @Test
@@ -53,16 +52,19 @@ public class CheckTest {
                                 is(25D)));
 
         MatcherAssert.assertThat("Logged messages",
-                defaultListLogger.messages,
-                contains("Perform: Check number 4 by criteria \n" +
-                        "Is integer\n" +
-                        "           is <true>\n" +
-                        "Sqrt value\n" +
-                        "           is <2.0>",
-                        "Perform: Check number 4 by criteria is <4>",
-                        "Perform: Check number 5 by criteria \n" +
+                DefaultListLogger.messages,
+                contains("Getting of 'Is integer' succeed",
+                        "Getting of 'Sqrt value' succeed",
+                        "Performing of 'Check number 4 by criteria \n" +
+                                "Is integer\n" +
+                                "           is <true>\n" +
+                                "Sqrt value\n" +
+                                "           is <2.0>' succeed",
+                        "Performing of 'Check number 4 by criteria is <4>' succeed",
+                        "Getting of 'Sqr value' succeed",
+                        "Performing of 'Check number 5 by criteria \n" +
                                 "Sqr value\n" +
-                                "           is <25.0>"));
+                                "           is <25.0>' succeed"));
     }
 
     @Test
@@ -90,17 +92,20 @@ public class CheckTest {
                 }));
 
         MatcherAssert.assertThat("Logged messages",
-                defaultListLogger.messages,
-                contains("Perform: Check numbers 4 and 5",
-                        "Perform: Check number 4 by criteria \n" +
+                DefaultListLogger.messages,
+                contains("Getting of 'Is integer' succeed",
+                        "Getting of 'Sqrt value' succeed",
+                        "Performing of 'Check number 4 by criteria \n" +
                                 "Is integer\n" +
                                 "           is <true>\n" +
                                 "Sqrt value\n" +
-                                "           is <2.0>",
-                        "Perform: Check number 4 by criteria is <4>",
-                        "Perform: Check number 5 by criteria \n" +
+                                "           is <2.0>' succeed",
+                        "Performing of 'Check number 4 by criteria is <4>' succeed",
+                        "Getting of 'Sqr value' succeed",
+                        "Performing of 'Check number 5 by criteria \n" +
                                 "Sqr value\n" +
-                                "           is <25.0>"));
+                                "           is <25.0>' succeed",
+                        "Performing of 'Check numbers 4 and 5' succeed"));
     }
 
     @Test(expectedExceptions = AssertionError.class,

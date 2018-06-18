@@ -4,8 +4,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static com.github.toy.constructor.core.api.StaticLogger.log;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @SuppressWarnings("unchecked")
@@ -42,7 +44,13 @@ class DescribedConsumer<T> implements Consumer<T> {
 
     @Override
     public void accept(T t) {
-        consumer.accept(t);
+        try {
+            consumer.accept(t);
+            log(t, format("Performing of '%s' succeed", toString()));
+        }
+        catch (RuntimeException e) {
+            log(t, format("'%s' failed", toString()));
+        }
     }
 
     @Override

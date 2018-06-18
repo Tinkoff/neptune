@@ -14,6 +14,18 @@ import static java.util.Optional.ofNullable;
 @SuppressWarnings("unchecked")
 public interface GetStep<THIS extends GetStep<THIS>> {
 
+    private <T, S> T logResult(S input, Function<S, T> function) {
+        try {
+            T result = log(function.apply(input));
+            StaticLogger.log(result, format("Getting of '%s' succeed", function.toString()));
+            return result;
+        }
+        catch (RuntimeException e){
+            StaticLogger.log(input, format("Getting of '%s' failed", function.toString()));
+            throw e;
+        }
+    }
+
     @StepMark(constantMessagePart = "Get:")
     default  <T> T get(Function<THIS, T> function) {
         checkArgument(function != null,
@@ -26,18 +38,23 @@ public interface GetStep<THIS extends GetStep<THIS>> {
         LinkedList<Function<Object, Object>> functionSequence = describedFunction.getSequence();
 
         if (functionSequence.size() == 0) {
-            return log(function.apply((THIS) this));
+            if (!describedFunction.isSecondary()) {
+                return logResult((THIS) this, function);
+            }
+            else {
+                return function.apply((THIS) this);
+            }
         }
 
         LinkedList<Function<Object, Object>> sequence = new LinkedList<>(functionSequence);
         Function<Object, Object> first = sequence.get(0);
         sequence.removeFirst();
-        Object value = get(toGet(first.toString(), thisParam -> first.apply(this)));
+        Object value = get(toGet(first.toString(), thisParam -> logResult(this, first)));
 
         for (Function<Object, Object> function1: sequence) {
             Object from = value;
-            value = get(toGet(format("from %s get %s", valueOf(from), function1), thisParam ->
-                    ofNullable(from).map(function1).orElse(null)));
+            value = get(((DescribedFunction) toGet(format("from %s get %s", valueOf(from), function1), thisParam ->
+                    ofNullable(from).map(o -> logResult(o, function1)).orElse(null))).setSecondary(true));
         }
         return (T) value;
     }

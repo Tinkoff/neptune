@@ -1,11 +1,13 @@
 package com.github.toy.constructor.check;
 
 import com.github.toy.constructor.core.api.PerformStep;
-import com.github.toy.constructor.core.api.proxy.CreateWith;
-import com.github.toy.constructor.core.api.proxy.ProviderOfEmptyParameters;
+import com.github.toy.constructor.core.api.CreateWith;
+import com.github.toy.constructor.core.api.ProviderOfEmptyParameters;
+import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 
+import static com.github.toy.constructor.core.api.StaticLogger.log;
 import static com.github.toy.constructor.core.api.StoryWriter.action;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
@@ -25,6 +27,30 @@ public class Check implements PerformStep<Check> {
         checkArgument(criteria != null, "Criteria matcher should be defined");
 
         return perform(action(format("%s by criteria %s", description, criteria),
-                check -> MatcherAssert.assertThat(toCheck, criteria)));
+                check -> MatcherAssert.assertThat(toCheck, new Matcher<>() {
+                    @Override
+                    public boolean matches(Object item) {
+                        boolean result = criteria.matches(item);
+                        if (!result) {
+                            log(item, "Mismatched object");
+                        }
+                        return result;
+                    }
+
+                    @Override
+                    public void describeMismatch(Object item, Description mismatchDescription) {
+                        criteria.describeMismatch(item, mismatchDescription);
+                    }
+
+                    @Override
+                    public void _dont_implement_Matcher___instead_extend_BaseMatcher_() {
+                        criteria._dont_implement_Matcher___instead_extend_BaseMatcher_();
+                    }
+
+                    @Override
+                    public void describeTo(Description description) {
+                        criteria.describeTo(description);
+                    }
+                })));
     }
 }

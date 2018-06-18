@@ -15,6 +15,7 @@ class DescribedFunction<T, R> implements Function<T, R> {
     private final LinkedList<Function<Object, Object>> sequence = new LinkedList<>();
     private final String description;
     private final Function<T, R> function;
+    private boolean isSecondary;
 
     DescribedFunction(String description, Function<T, R> function) {
         checkArgument(function != null, "Function should be defined");
@@ -77,5 +78,14 @@ class DescribedFunction<T, R> implements Function<T, R> {
 
     public <V> Function<T, V> andThen(Function<? super R, ? extends V> after) {
         return getSequentialDescribedFunction(this, after);
+    }
+
+    public boolean isSecondary() {
+        return isSecondary;
+    }
+
+    public DescribedFunction setSecondary(boolean secondary) {
+        isSecondary = secondary;
+        return this;
     }
 }
