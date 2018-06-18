@@ -14,7 +14,7 @@ import static java.util.Optional.ofNullable;
 @SuppressWarnings("unchecked")
 public interface GetStep<THIS extends GetStep<THIS>> {
 
-    @ToBeReported(constantMessagePart = "Get:")
+    @StepMark(constantMessagePart = "Get:")
     default  <T> T get(Function<THIS, T> function) {
         checkArgument(function != null,
                 "The function is not defined");
@@ -47,7 +47,7 @@ public interface GetStep<THIS extends GetStep<THIS>> {
         return get(functionSupplier.get());
     }
 
-    @ToBeReported(constantMessagePart = "Returned value:")
+    @StepMark(constantMessagePart = "Returned value:")
     default  <T> T log(T value) {
         return value;
     }

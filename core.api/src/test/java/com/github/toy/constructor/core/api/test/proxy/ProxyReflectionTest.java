@@ -1,6 +1,6 @@
 package com.github.toy.constructor.core.api.test.proxy;
 
-import com.github.toy.constructor.core.api.ToBeReported;
+import com.github.toy.constructor.core.api.StepMark;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -75,7 +75,7 @@ public class ProxyReflectionTest {
                 CalculatorSteps.class, Object.class);
         List<Method> toBeReported = methodsDeclaredByClasses
                 .stream()
-                .filter(method -> method.getAnnotation(ToBeReported.class) != null).collect(toList());
+                .filter(method -> method.getAnnotation(StepMark.class) != null).collect(toList());
 
         List<Method> found = new ArrayList<>();
 
@@ -101,7 +101,7 @@ public class ProxyReflectionTest {
                 CalculatorSteps.class, Object.class);
         List<Method> toBeReported = methodsDeclaredByInterfaces
                 .stream()
-                .filter(method -> method.getAnnotation(ToBeReported.class) != null).collect(toList());
+                .filter(method -> method.getAnnotation(StepMark.class) != null).collect(toList());
 
         List<Method> toBeReportedByProxy = declaredByProxyClass.stream().filter(method ->
                 method.getAnnotation(TestAnnotation.class) != null).collect(toList());

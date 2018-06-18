@@ -12,7 +12,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
  * Also it is supposed to be used in byte-code manipulations.
  */
 @Retention(RUNTIME) @Target({METHOD})
-public @interface ToBeReported {
+public @interface StepMark {
     /**
      * @return some constant part of the message to be logged.
      */

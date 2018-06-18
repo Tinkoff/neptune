@@ -2,7 +2,7 @@ package com.github.toy.constructor.core.api.proxy;
 
 import com.github.toy.constructor.core.api.GetStep;
 import com.github.toy.constructor.core.api.PerformStep;
-import com.github.toy.constructor.core.api.ToBeReported;
+import com.github.toy.constructor.core.api.StepMark;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
@@ -55,7 +55,7 @@ public final class Substitution {
      * @param clazz to substitute. It should be the implementor of {@link com.github.toy.constructor.core.api.GetStep}
      *                    and/or {@link com.github.toy.constructor.core.api.PerformStep}.
      *
-     * @param annotations to set to methods that marked by {@link com.github.toy.constructor.core.api.ToBeReported}.
+     * @param annotations to set to methods that marked by {@link StepMark}.
      *                    These annotations should describe steps. Their description should be like {@value {0}} or
      *                    some string convenient to the formatting with a single parameter.
      * @return generated sub-class.
@@ -70,10 +70,10 @@ public final class Substitution {
         DynamicType.Builder<? extends T> builder = new ByteBuddy().subclass(clazz);
 
         InnerInterceptor interceptor = new InnerInterceptor(loadSPI(loggers));
-        return builder.method(isAnnotatedWith(ToBeReported.class))
+        return builder.method(isAnnotatedWith(StepMark.class))
                 .intercept(to(interceptor))
                 .annotateMethod(annotations)
-                .method(not(isAnnotatedWith(ToBeReported.class)))
+                .method(not(isAnnotatedWith(StepMark.class)))
                 .intercept(to(interceptor))
                 .make()
                 .load(InjectionClassLoader.getSystemClassLoader(), ClassLoadingStrategy.UsingLookup.of(MethodHandles
@@ -94,7 +94,7 @@ public final class Substitution {
      * @param manipulationWithObjectToReturn is a function which transforms created object, e.g creating proxy,
      *                                        changing some attributes etc.
      * @param loggers list of custom loggers. see {@link Logger}
-     * @param annotations to set to methods that marked by {@link com.github.toy.constructor.core.api.ToBeReported}.
+     * @param annotations to set to methods that marked by {@link StepMark}.
      *                    These annotations should describe steps. Their description should be like {@value {0}} or
      *                    some string convenient to the formatting with a single parameter.
      * @param <T> type of the implementor of {@link com.github.toy.constructor.core.api.GetStep} and/or
@@ -137,7 +137,7 @@ public final class Substitution {
      * @param manipulationWithObjectToReturn is a function which transforms created object, e.g creating proxy,
      *                                        changing some attributes etc.
      * @param loggers list of custom loggers. see {@link Logger}
-     * @param annotations to set to methods that marked by {@link com.github.toy.constructor.core.api.ToBeReported}.
+     * @param annotations to set to methods that marked by {@link StepMark}.
      *                    These annotations should describe steps. Their description should be like {@value {0}} or
      *                    some string convenient to the formatting with a single parameter.
      * @param <T> type of the implementor of {@link com.github.toy.constructor.core.api.GetStep} and/or
@@ -176,7 +176,7 @@ public final class Substitution {
      *
      * @param constructorParameters is a POJO with wrapped parameters of required constructor.
      * @param loggers list of custom loggers. see {@link Logger}
-     * @param annotations to set to methods that marked by {@link com.github.toy.constructor.core.api.ToBeReported}.
+     * @param annotations to set to methods that marked by {@link StepMark}.
      *                    These annotations should describe steps. Their description should be like {@value {0}} or
      *                    some string convenient to the formatting with a single parameter.
      * @param <T> type of the implementor of {@link com.github.toy.constructor.core.api.GetStep} and/or
@@ -199,7 +199,7 @@ public final class Substitution {
      *                    to get substituted instance should be annotated by {@link CreateWith}.
      *
      * @param loggers list of custom loggers. see {@link Logger}
-     * @param annotations to set to methods that marked by {@link com.github.toy.constructor.core.api.ToBeReported}.
+     * @param annotations to set to methods that marked by {@link StepMark}.
      *                    These annotations should describe steps. Their description should be like {@value {0}} or
      *                    some string convenient to the formatting with a single parameter.
      * @param <T> type of the implementor of {@link com.github.toy.constructor.core.api.GetStep} and/or
@@ -221,7 +221,7 @@ public final class Substitution {
      *                    and/or {@link com.github.toy.constructor.core.api.PerformStep}.
      *
      * @param constructorParameters is a POJO with wrapped parameters of required constructor.
-     * @param annotations to set to methods that marked by {@link com.github.toy.constructor.core.api.ToBeReported}.
+     * @param annotations to set to methods that marked by {@link StepMark}.
      *                    These annotations should describe steps. Their description should be like {@value {0}} or
      *                    some string convenient to the formatting with a single parameter.
      * @param <T> type of the implementor of {@link com.github.toy.constructor.core.api.GetStep} and/or
@@ -241,7 +241,7 @@ public final class Substitution {
      * @param clazz to substitute. It should be the implementor of {@link com.github.toy.constructor.core.api.GetStep}
      *                    and/or {@link com.github.toy.constructor.core.api.PerformStep}. WARNING!!! It is important!!! Class
      *                    to get substituted instance should be annotated by {@link CreateWith}.
-     * @param annotations to set to methods that marked by {@link com.github.toy.constructor.core.api.ToBeReported}.
+     * @param annotations to set to methods that marked by {@link StepMark}.
      *                    These annotations should describe steps. Their description should be like {@value {0}} or
      *                    some string convenient to the formatting with a single parameter.
      * @param <T> type of the implementor of {@link com.github.toy.constructor.core.api.GetStep} and/or

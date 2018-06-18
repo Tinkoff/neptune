@@ -1,6 +1,6 @@
 package com.github.toy.constructor.core.api.proxy;
 
-import com.github.toy.constructor.core.api.ToBeReported;
+import com.github.toy.constructor.core.api.StepMark;
 import net.bytebuddy.implementation.bind.annotation.*;
 
 import java.lang.reflect.Method;
@@ -29,8 +29,8 @@ public class InnerInterceptor {
     public Object intercept(@SuperCall Callable<?> superMethod, @Origin Method method,
                             @AllArguments Object... args)
             throws Throwable {
-        ToBeReported toBeReportedAnnotation = method.getAnnotation(ToBeReported.class);
-        ofNullable(toBeReportedAnnotation).ifPresent(toBeReported -> {
+        StepMark step = method.getAnnotation(StepMark.class);
+        ofNullable(step).ifPresent(toBeReported -> {
             String reportedMessage = EMPTY;
             if (args.length == 1) {
                 reportedMessage = valueOf(args[0]);
@@ -41,11 +41,6 @@ public class InnerInterceptor {
             defaultLogger.log(format("%s %s", toBeReported.constantMessagePart(), reportedMessage).trim());
         });
 
-        try {
-            return superMethod.call();
-        }
-        catch (Throwable t) {
-            throw t;
-        }
+        return superMethod.call();
     }
 }
