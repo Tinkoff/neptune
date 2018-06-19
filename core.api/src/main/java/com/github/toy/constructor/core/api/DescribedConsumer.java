@@ -4,10 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static com.github.toy.constructor.core.api.StaticLogger.log;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @SuppressWarnings("unchecked")
@@ -16,6 +14,7 @@ class DescribedConsumer<T> implements Consumer<T> {
     private final LinkedList<Consumer<T>> sequence = new LinkedList<>();
     private final String description;
     private final Consumer<T> consumer;
+    private boolean isSecondary;
 
     DescribedConsumer(String description, Consumer<T> consumer) {
         checkArgument(consumer != null, "Consumer should be defined");
@@ -44,13 +43,7 @@ class DescribedConsumer<T> implements Consumer<T> {
 
     @Override
     public void accept(T t) {
-        try {
-            consumer.accept(t);
-            log(t, format("Performing of '%s' succeed", toString()));
-        }
-        catch (RuntimeException e) {
-            log(t, format("'%s' failed", toString()));
-        }
+        consumer.accept(t);
     }
 
     @Override
@@ -75,5 +68,14 @@ class DescribedConsumer<T> implements Consumer<T> {
 
     public Consumer<T> andThen(Consumer<? super T> afterAction)  {
         return getSequentialDescribedConsumer(this, afterAction);
+    }
+
+    boolean isSecondary() {
+        return isSecondary;
+    }
+
+    DescribedConsumer setSecondary() {
+        isSecondary = true;
+        return this;
     }
 }

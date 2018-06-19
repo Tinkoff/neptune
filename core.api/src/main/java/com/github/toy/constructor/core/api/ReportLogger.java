@@ -1,6 +1,6 @@
 package com.github.toy.constructor.core.api;
 
-public interface Logger<T> {
+public interface ReportLogger<T> {
     /**
      * Simple logging of a message.
      * @param message to be logged

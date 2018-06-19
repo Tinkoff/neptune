@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.github.toy.constructor.core.api.StaticRecorder.recordResult;
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -13,18 +14,6 @@ import static java.util.Optional.ofNullable;
 
 @SuppressWarnings("unchecked")
 public interface GetStep<THIS extends GetStep<THIS>> {
-
-    private <T, S> T logResult(S input, Function<S, T> function) {
-        try {
-            T result = log(function.apply(input));
-            StaticLogger.log(result, format("Getting of '%s' succeed", function.toString()));
-            return result;
-        }
-        catch (RuntimeException e){
-            StaticLogger.log(input, format("Getting of '%s' failed", function.toString()));
-            throw e;
-        }
-    }
 
     @StepMark(constantMessagePart = "Get:")
     default  <T> T get(Function<THIS, T> function) {
@@ -39,22 +28,25 @@ public interface GetStep<THIS extends GetStep<THIS>> {
 
         if (functionSequence.size() == 0) {
             if (!describedFunction.isSecondary()) {
-                return logResult((THIS) this, function);
+                return log(recordResult((THIS) this, function));
             }
             else {
-                return function.apply((THIS) this);
+                return log(function.apply((THIS) this));
             }
         }
 
         LinkedList<Function<Object, Object>> sequence = new LinkedList<>(functionSequence);
         Function<Object, Object> first = sequence.get(0);
         sequence.removeFirst();
-        Object value = get(toGet(first.toString(), thisParam -> logResult(this, first)));
+        Object value = get(((DescribedFunction) toGet(first.toString(),
+                thisParam -> recordResult(this, first))).setSecondary());
 
         for (Function<Object, Object> function1: sequence) {
             Object from = value;
             value = get(((DescribedFunction) toGet(format("from %s get %s", valueOf(from), function1), thisParam ->
-                    ofNullable(from).map(o -> logResult(o, function1)).orElse(null))).setSecondary(true));
+                    ofNullable(from).map(o -> recordResult(o, function1))
+                            .orElse(null)))
+                    .setSecondary());
         }
         return (T) value;
     }

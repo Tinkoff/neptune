@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static com.github.toy.constructor.core.api.StaticRecorder.recordResult;
 import static com.github.toy.constructor.core.api.StoryWriter.action;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -22,15 +23,18 @@ public interface PerformStep<THIS extends PerformStep<THIS>> {
         LinkedList<Consumer<THIS>> sequence = describedConsumer.getSequence();
 
         if (sequence.size() == 0) {
-            actionConsumer.accept((THIS) this);
+            if (!describedConsumer.isSecondary()) {
+                recordResult((THIS) this, actionConsumer);
+            }
+            else {
+                actionConsumer.accept((THIS) this);
+            }
             return (THIS) this;
         }
 
-        Consumer<THIS> first = sequence.get(0);
-        sequence.removeFirst();
-
-        perform(first);
-        sequence.forEach(thisConsumer -> perform(action(format("and then %s", thisConsumer), thisConsumer)));
+        sequence.forEach(thisConsumer ->
+                perform(((DescribedConsumer) action(format("and then %s", thisConsumer),
+                        thisParam -> recordResult((THIS) this, thisConsumer))).setSecondary()));
 
         return (THIS) this;
     }

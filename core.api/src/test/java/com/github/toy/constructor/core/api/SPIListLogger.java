@@ -5,7 +5,7 @@ import java.util.List;
 
 import static java.lang.String.format;
 
-public class SPIListLogger implements Logger<Object> {
+public class SPIListLogger implements ReportLogger<Object> {
 
     static SPIListLogger spiListLogger;
 

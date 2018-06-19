@@ -5,7 +5,7 @@ import net.bytebuddy.implementation.bind.annotation.*;
 import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
 
-class InnerInterceptor {
+public class InnerInterceptor {
 
     @RuntimeType
     public Object intercept(@SuperCall Callable<?> superMethod, @Origin Method method,

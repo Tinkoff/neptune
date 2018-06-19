@@ -80,12 +80,12 @@ class DescribedFunction<T, R> implements Function<T, R> {
         return getSequentialDescribedFunction(this, after);
     }
 
-    public boolean isSecondary() {
+    boolean isSecondary() {
         return isSecondary;
     }
 
-    public DescribedFunction setSecondary(boolean secondary) {
-        isSecondary = secondary;
+    DescribedFunction setSecondary() {
+        isSecondary = true;
         return this;
     }
 }

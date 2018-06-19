@@ -17,7 +17,6 @@ import static org.hamcrest.Matchers.contains;
 public class ProxyLoggerTest {
 
     private CalculatorSteps calculator;
-    private SPIListLogger spiListLogger;
 
     private final GetSupplier<CalculatorSteps, Number, ?> calculation =
             subtractFromResultOf(100,
@@ -44,7 +43,6 @@ public class ProxyLoggerTest {
         assertThat("Check messages logged by SPI logger",
                 SPIListLogger.messages,
                 contains("Performing of 'Reset calculated value to 0' succeed. Result: Calculator. Current value is 0.0",
-                        "Getting of 'Entering number 9' succeed. Result: 9.0",
                         "Getting of 'Entering number 9' succeed. Result: 9.0",
                         "Getting of 'Divide by number -6' succeed. Result: -1.5",
                         "Getting of 'Multiplying by number 11' succeed. Result: -16.5",
