@@ -1,6 +1,5 @@
 package com.github.toy.constructor.core.api;
 
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.lang.annotation.Annotation;
@@ -9,8 +8,8 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.github.toy.constructor.core.api.StoryWriter.action;
 import static com.github.toy.constructor.core.api.ConstructorParameters.params;
+import static com.github.toy.constructor.core.api.StoryWriter.action;
 import static com.github.toy.constructor.core.api.Substitution.getSubstituted;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.deepEquals;
@@ -18,6 +17,7 @@ import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
+import static org.testng.Assert.assertTrue;
 
 public class ProxyReflectionTest {
 
@@ -45,9 +45,8 @@ public class ProxyReflectionTest {
         return result;
     }
 
-    @BeforeClass
-    public void beforeAll() throws Exception {
-        calculator = getSubstituted(CalculatorSteps.class, params(), new TestAnnotation() {
+    private void createWithDefinedAnnotationFactory() throws Exception {
+        TestAnnotation testAnnotation = new TestAnnotation() {
             @Override
             public Class<? extends Annotation> annotationType() {
                 return TestAnnotation.class;
@@ -57,26 +56,45 @@ public class ProxyReflectionTest {
             public String value() {
                 return "Test value";
             }
-        }).perform(action("Something", calculatorSteps -> {}));
+        };
+
+        calculator = getSubstituted(CalculatorSteps.class, params(), List.of(new StepAnnotationFactory() {
+            @Override
+            public Annotation forPerform() {
+                return testAnnotation;
+            }
+
+            @Override
+            public Annotation forGet() {
+                return testAnnotation;
+            }
+
+            @Override
+            public Annotation forReturn() {
+                return testAnnotation;
+            }
+        })).perform(action("Something", calculatorSteps -> {}));;
     }
 
     @Test
-    public void reflectionTestOfNotTheFinalClass() {
+    public void reflectionTestOfNotTheFinalClass() throws Exception {
+        createWithDefinedAnnotationFactory();
         assertThat("Check that class of resulted object is not final",
                 !Modifier.isFinal(calculator.getClass().getModifiers()),
                 is(true));
     }
 
-    @Test
-    public void reflectionTestOfMethodsDeclaredByInterfaces() {
+    private boolean checkAnnotatedMethods(Class<? extends Annotation> annotationClass) {
         List<Method> declaredByProxyClass = getMethodsFromClasses(calculator.getClass(),
                 CalculatorSteps.class, Object.class);
         List<Method> toBeReported = methodsDeclaredByInterfaces
                 .stream()
-                .filter(method -> method.getAnnotation(StepMark.class) != null).collect(toList());
+                .filter(method -> method.getAnnotation(StepMarkPerform.class) != null
+                        || method.getAnnotation(StepMarkGet.class) != null
+                        || method.getAnnotation(StepMarkReturn.class) != null).collect(toList());
 
         List<Method> toBeReportedByProxy = declaredByProxyClass.stream().filter(method ->
-                method.getAnnotation(TestAnnotation.class) != null).collect(toList());
+                method.getAnnotation(annotationClass) != null).collect(toList());
 
         List<Method> found = new ArrayList<>();
 
@@ -89,8 +107,23 @@ public class ProxyReflectionTest {
                 }
             }
         });
-        assertThat("Methods declared by implemented interfaces which are supposed to be reported and annotated by TestAnnotation",
+        assertThat("Methods declared by implemented interfaces which are supposed to be reported and annotated by "
+                        + annotationClass.getSimpleName(),
                 found,
                 containsInAnyOrder(toBeReported.toArray()));
+        return true;
+    }
+
+    @Test
+    public void reflectionTestOfAnnotatedMethodsDeclaredByInterfaces() throws Exception {
+        createWithDefinedAnnotationFactory();
+        assertTrue(checkAnnotatedMethods(TestAnnotation.class));
+    }
+
+    @Test
+    public void reflectionTestOfAnnotatedMethodsDeclaredByInterfaces2() throws Exception {
+        calculator = getSubstituted(CalculatorSteps.class, params())
+                .perform(action("Something", calculatorSteps -> {}));;
+        assertTrue(checkAnnotatedMethods(TestAnnotation2.class));
     }
 }

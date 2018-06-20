@@ -6,19 +6,13 @@ import java.util.ServiceLoader;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static com.github.toy.constructor.core.api.SPIUtil.loadSPI;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toList;
 
 @SuppressWarnings("unchecked")
 public class StaticRecorder {
     private static final ThreadLocal<List<ReportLogger>> LIST_THREAD_LOCAL = new ThreadLocal<>();
-
-    private static List<ReportLogger> loadSPI() {
-        return ServiceLoader.load(ReportLogger.class)
-                .stream()
-                .map(ServiceLoader.Provider::get).collect(toList());
-    }
 
     public static <T> void recordResult(T objectToLog, String message) {
         if (objectToLog == null) {
@@ -26,7 +20,7 @@ public class StaticRecorder {
         }
 
         List<ReportLogger> loggerList = ofNullable(LIST_THREAD_LOCAL.get()).orElseGet(() -> {
-            List<ReportLogger> loggers = loadSPI();
+            List<ReportLogger> loggers = loadSPI(ReportLogger.class);
             LIST_THREAD_LOCAL.set(loggers);
             return loggers;
         });

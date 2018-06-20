@@ -15,7 +15,7 @@ import static java.util.Optional.ofNullable;
 @SuppressWarnings("unchecked")
 public interface GetStep<THIS extends GetStep<THIS>> {
 
-    @StepMark(constantMessagePart = "Get:")
+    @StepMarkGet
     default  <T> T get(Function<THIS, T> function) {
         checkArgument(function != null,
                 "The function is not defined");
@@ -28,10 +28,10 @@ public interface GetStep<THIS extends GetStep<THIS>> {
 
         if (functionSequence.size() == 0) {
             if (!describedFunction.isSecondary()) {
-                return log(recordResult((THIS) this, function));
+                return fireValue(recordResult((THIS) this, function));
             }
             else {
-                return log(function.apply((THIS) this));
+                return fireValue(function.apply((THIS) this));
             }
         }
 
@@ -56,8 +56,8 @@ public interface GetStep<THIS extends GetStep<THIS>> {
         return get(functionSupplier.get());
     }
 
-    @StepMark(constantMessagePart = "Returned value:")
-    default  <T> T log(T value) {
+    @StepMarkReturn
+    default  <T> T fireValue(T value) {
         return value;
     }
 }

@@ -4,11 +4,9 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.lang.annotation.Annotation;
-
+import static com.github.toy.constructor.core.api.Arithmetical.*;
 import static com.github.toy.constructor.core.api.ConstructorParameters.params;
 import static com.github.toy.constructor.core.api.Substitution.getSubstituted;
-import static com.github.toy.constructor.core.api.Arithmetical.*;
 import static java.util.Optional.ofNullable;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -106,17 +104,7 @@ public class ProxyConcurrentBehaviourTest {
     public synchronized void beforeTest() {
         calculator = ofNullable(calculator).orElseGet(() -> {
             try {
-                return getSubstituted(CalculatorSteps.class, params(), new TestAnnotation() {
-                    @Override
-                    public Class<? extends Annotation> annotationType() {
-                        return TestAnnotation.class;
-                    }
-
-                    @Override
-                    public String value() {
-                        return "Test value";
-                    }
-                });
+                return getSubstituted(CalculatorSteps.class, params());
             }
             catch (Exception e) {
                 throw new RuntimeException(e);

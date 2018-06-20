@@ -13,7 +13,7 @@ import static java.lang.String.format;
 @SuppressWarnings("unchecked")
 public interface PerformStep<THIS extends PerformStep<THIS>> {
 
-    @StepMark(constantMessagePart = "Perform:")
+    @StepMarkPerform
     default THIS perform(Consumer<THIS> actionConsumer) {
         checkArgument(actionConsumer != null, "Action is not defined");
         checkArgument(DescribedConsumer.class.isAssignableFrom(actionConsumer.getClass()),

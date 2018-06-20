@@ -8,13 +8,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 /**
- * This is the service annotation which is designed to mark step-methods.
- * Also it is supposed to be used in byte-code manipulations.
+ * This is the service annotation is designed to mark step-methods that
+ * perform some actions and don't return any result. It is supposed to be
+ * used in byte-code manipulations.
  */
 @Retention(RUNTIME) @Target({METHOD})
-@interface StepMark {
-    /**
-     * @return some constant part of the message to be logged.
-     */
-    String constantMessagePart() default EMPTY;
+@interface StepMarkPerform {
 }
