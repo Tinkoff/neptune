@@ -14,7 +14,7 @@ import static com.github.toy.constructor.core.api.Arithmetical.number;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 
-public class ProxyLoggerTest {
+public class CaptorTest {
 
     private CalculatorSteps calculator;
 
@@ -32,16 +32,16 @@ public class ProxyLoggerTest {
 
     @BeforeMethod
     public void beforeTest() {
-        SPIListLogger.messages.clear();
+        TestCaptor.messages.clear();
         calculator.reset();
         calculator.get(toGet("Get calculation",
                 calculator1 -> calculator1.get(calculation).floatValue() + 5F));
     }
 
     @Test
-    public void spiLoggerTest() {
+    public void captorTest() {
         assertThat("Check messages logged by SPI logger",
-                SPIListLogger.messages,
+                TestCaptor.messages,
                 contains("Performing of 'Reset calculated value to 0' succeed. Result: Calculator. Current value is 0.0",
                         "Getting of 'Entering number 9' succeed. Result: 9.0",
                         "Getting of 'Divide by number -6' succeed. Result: -1.5",

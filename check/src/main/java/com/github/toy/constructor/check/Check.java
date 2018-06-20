@@ -8,7 +8,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 
-import static com.github.toy.constructor.core.api.StaticRecorder.recordResult;
+import static com.github.toy.constructor.core.api.CaptorStatic.catchResult;
 import static com.github.toy.constructor.core.api.StoryWriter.action;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
@@ -33,7 +33,7 @@ public class Check implements PerformStep<Check> {
                     public boolean matches(Object item) {
                         boolean result = criteria.matches(item);
                         if (!result) {
-                            recordResult(item, format("Mismatched object %s", item));
+                            catchResult(item, format("Mismatched object %s", item));
                         }
                         return result;
                     }

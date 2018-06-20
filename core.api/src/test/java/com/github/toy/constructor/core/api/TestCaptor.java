@@ -5,18 +5,18 @@ import java.util.List;
 
 import static java.lang.String.format;
 
-public class SPIListLogger implements ReportLogger<Object> {
+public class TestCaptor implements Captor<Object> {
 
-    static SPIListLogger spiListLogger;
+    static TestCaptor spiListLogger;
 
     static final List<String> messages = new ArrayList<>();
 
-    public SPIListLogger() {
+    public TestCaptor() {
         spiListLogger = this;
     }
 
     @Override
-    public void log(Object objectToLog, String message) {
-        messages.add(format("%s. Result: %s", message, objectToLog));
+    public void doCapture(Object caught, String message) {
+        messages.add(format("%s. Result: %s", message, caught));
     }
 }

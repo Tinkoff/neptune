@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.github.toy.constructor.core.api.StaticRecorder.recordResult;
+import static com.github.toy.constructor.core.api.CaptorStatic.catchResult;
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -28,7 +28,7 @@ public interface GetStep<THIS extends GetStep<THIS>> {
 
         if (functionSequence.size() == 0) {
             if (!describedFunction.isSecondary()) {
-                return fireValue(recordResult((THIS) this, function));
+                return fireValue(CaptorStatic.catchResult((THIS) this, function));
             }
             else {
                 return fireValue(function.apply((THIS) this));
@@ -39,12 +39,12 @@ public interface GetStep<THIS extends GetStep<THIS>> {
         Function<Object, Object> first = sequence.get(0);
         sequence.removeFirst();
         Object value = get(((DescribedFunction) toGet(first.toString(),
-                thisParam -> recordResult(this, first))).setSecondary());
+                thisParam -> CaptorStatic.catchResult(this, first))).setSecondary());
 
         for (Function<Object, Object> function1: sequence) {
             Object from = value;
             value = get(((DescribedFunction) toGet(format("from %s get %s", valueOf(from), function1), thisParam ->
-                    ofNullable(from).map(o -> recordResult(o, function1))
+                    ofNullable(from).map(o -> CaptorStatic.catchResult(o, function1))
                             .orElse(null)))
                     .setSecondary());
         }

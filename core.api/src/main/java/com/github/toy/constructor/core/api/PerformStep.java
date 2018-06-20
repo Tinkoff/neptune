@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static com.github.toy.constructor.core.api.StaticRecorder.recordResult;
+import static com.github.toy.constructor.core.api.CaptorStatic.catchResult;
 import static com.github.toy.constructor.core.api.StoryWriter.action;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -24,7 +24,7 @@ public interface PerformStep<THIS extends PerformStep<THIS>> {
 
         if (sequence.size() == 0) {
             if (!describedConsumer.isSecondary()) {
-                recordResult((THIS) this, actionConsumer);
+                catchResult((THIS) this, actionConsumer);
             }
             else {
                 actionConsumer.accept((THIS) this);
@@ -34,7 +34,7 @@ public interface PerformStep<THIS extends PerformStep<THIS>> {
 
         sequence.forEach(thisConsumer ->
                 perform(((DescribedConsumer) action(format("and then %s", thisConsumer),
-                        thisParam -> recordResult((THIS) this, thisConsumer))).setSecondary()));
+                        thisParam -> catchResult((THIS) this, thisConsumer))).setSecondary()));
 
         return (THIS) this;
     }
