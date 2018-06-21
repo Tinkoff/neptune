@@ -5,13 +5,21 @@ import com.github.toy.constructor.core.api.Captor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DefaultListLogger implements Captor {
+import static java.lang.String.format;
+
+public class DefaultListLogger extends Captor<Object, String> {
 
     static final List<String> messages = new ArrayList<>();
 
+    public DefaultListLogger() {
+        super(List.of((toBeInjected, message) -> {
+            System.out.println(message);
+            messages.add(message);
+        }));
+    }
+
     @Override
-    public void doCapture(Object caught, String message) {
-        System.out.println(message);
-        messages.add(message);
+    protected String getData(Object caught) {
+        return caught.toString();
     }
 }

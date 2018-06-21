@@ -15,6 +15,7 @@ import static com.github.toy.constructor.core.api.properties.CapturedEvents.FAIL
 import static com.github.toy.constructor.core.api.properties.CapturedEvents.SUCCESS;
 import static com.github.toy.constructor.core.api.properties.CapturedEvents.SUCCESS_AND_FAILURE;
 import static com.github.toy.constructor.core.api.properties.DoCapturesOf.DO_CAPTURES_OF_INSTANCE;
+import static java.lang.System.getProperties;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.emptyIterable;
@@ -37,8 +38,11 @@ public class CaptorTest {
 
     private void prepare() {
         TestCaptor.messages.clear();
+        TestCapturedStringInjector.messages.clear();
+        TestCapturedFileInjector.messages.clear();
+
         calculator.reset();
-        Float result = calculator.get(toGet("Get calculation",
+        calculator.get(toGet("Get calculation",
                 calculator1 -> calculator1.get(calculation).floatValue() + 5F));
         try {
             calculator.get(divide(0F));
@@ -53,6 +57,14 @@ public class CaptorTest {
         prepare();
         assertThat("Check messages logged by SPI logger",
                 TestCaptor.messages,
+                emptyIterable());
+
+        assertThat("Check messages logged by SPI String logger",
+                TestCapturedStringInjector.messages,
+                emptyIterable());
+
+        assertThat("Check messages logged by SPI File logger",
+                TestCapturedFileInjector.messages,
                 emptyIterable());
     }
 
@@ -70,9 +82,23 @@ public class CaptorTest {
                             "Getting of 'Divide by number 0.5' succeed. Result: -33.0",
                             "Getting of 'Subtract number 100' succeed. Result: -133.0",
                             "Getting of 'Get calculation' succeed. Result: -128.0"));
+
+            assertThat("Check messages logged by SPI String logger",
+                    TestCapturedStringInjector.messages,
+                    contains("Performing of 'Reset calculated value to 0' succeed. Result: Calculator. Current value is 0.0",
+                            "Getting of 'Entering number 9' succeed. Result: 9.0",
+                            "Getting of 'Divide by number -6' succeed. Result: -1.5",
+                            "Getting of 'Multiplying by number 11' succeed. Result: -16.5",
+                            "Getting of 'Divide by number 0.5' succeed. Result: -33.0",
+                            "Getting of 'Subtract number 100' succeed. Result: -133.0",
+                            "Getting of 'Get calculation' succeed. Result: -128.0"));
+
+            assertThat("Check messages logged by SPI File logger",
+                    TestCapturedFileInjector.messages,
+                    emptyIterable());
         }
         finally {
-            System.getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
+            getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
         }
     }
 
@@ -84,9 +110,17 @@ public class CaptorTest {
             assertThat("Check messages logged by SPI logger",
                     TestCaptor.messages,
                     contains("Getting of 'Divide by number 0.0' failed. Result: Calculator. Current value is 9.0"));
+
+            assertThat("Check messages logged by SPI String logger",
+                    TestCapturedStringInjector.messages,
+                    contains("Getting of 'Divide by number 0.0' failed. Result: Calculator. Current value is 9.0"));
+
+            assertThat("Check messages logged by SPI File logger",
+                    TestCapturedFileInjector.messages,
+                    emptyIterable());
         }
         finally {
-            System.getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
+            getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
         }
     }
 
@@ -105,9 +139,24 @@ public class CaptorTest {
                             "Getting of 'Subtract number 100' succeed. Result: -133.0",
                             "Getting of 'Get calculation' succeed. Result: -128.0",
                             "Getting of 'Divide by number 0.0' failed. Result: Calculator. Current value is 9.0"));
+
+            assertThat("Check messages logged by SPI String logger",
+                    TestCapturedStringInjector.messages,
+                    contains("Performing of 'Reset calculated value to 0' succeed. Result: Calculator. Current value is 0.0",
+                            "Getting of 'Entering number 9' succeed. Result: 9.0",
+                            "Getting of 'Divide by number -6' succeed. Result: -1.5",
+                            "Getting of 'Multiplying by number 11' succeed. Result: -16.5",
+                            "Getting of 'Divide by number 0.5' succeed. Result: -33.0",
+                            "Getting of 'Subtract number 100' succeed. Result: -133.0",
+                            "Getting of 'Get calculation' succeed. Result: -128.0",
+                            "Getting of 'Divide by number 0.0' failed. Result: Calculator. Current value is 9.0"));
+
+            assertThat("Check messages logged by SPI File logger",
+                    TestCapturedFileInjector.messages,
+                    emptyIterable());
         }
         finally {
-            System.getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
+            getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
         }
     }
 }

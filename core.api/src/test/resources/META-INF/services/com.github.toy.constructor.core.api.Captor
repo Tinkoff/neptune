@@ -1,1 +1,3 @@
 com.github.toy.constructor.core.api.TestCaptor
+com.github.toy.constructor.core.api.TestStringCaptor
+com.github.toy.constructor.core.api.TestFileCaptor

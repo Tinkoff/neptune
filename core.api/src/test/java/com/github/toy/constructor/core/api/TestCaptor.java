@@ -5,18 +5,19 @@ import java.util.List;
 
 import static java.lang.String.format;
 
-public class TestCaptor implements Captor<Object> {
-
-    static TestCaptor spiListLogger;
+public class TestCaptor extends Captor<Object, String> {
 
     static final List<String> messages = new ArrayList<>();
 
     public TestCaptor() {
-        spiListLogger = this;
+        super(List.of((toBeInjected, message) -> {
+            String msg = format("%s. Result: %s", message, toBeInjected);
+            messages.add(msg);
+        }));
     }
 
     @Override
-    public void doCapture(Object caught, String message) {
-        messages.add(format("%s. Result: %s", message, caught));
+    protected String getData(Object caught) {
+        return caught.toString();
     }
 }

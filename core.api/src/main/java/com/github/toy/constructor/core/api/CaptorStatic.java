@@ -32,13 +32,13 @@ public class CaptorStatic {
 
             for (Method m : methods) {
                 Class<?>[] types = m.getParameterTypes();
-                if ("doCapture".equals(m.getName()) && types.length == 2
-                        && types[0].isAssignableFrom(caught.getClass()) && String.class.equals(types[1])) {
+                if ("getData".equals(m.getName()) && types.length == 1
+                        && types[0].isAssignableFrom(caught.getClass())) {
                     return true;
                 }
             }
             return false;
-        }).forEach(captor -> captor.doCapture(caught, message));
+        }).forEach(captor -> captor.capture(caught, message));
     }
 
     static <T, S> T catchResult(S input, Function<S, T> function) {
