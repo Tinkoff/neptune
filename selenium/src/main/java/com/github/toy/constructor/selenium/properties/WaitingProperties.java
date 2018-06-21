@@ -1,6 +1,6 @@
 package com.github.toy.constructor.selenium.properties;
 
-import com.github.toy.constructor.core.api.PropertySupplier;
+import com.github.toy.constructor.core.api.properties.PropertySupplier;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;

@@ -6,6 +6,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static com.github.toy.constructor.core.api.SPIUtil.loadSPI;
+import static com.github.toy.constructor.core.api.properties.DoCapturesOf.catchFailureEvent;
+import static com.github.toy.constructor.core.api.properties.DoCapturesOf.catchSuccessEvent;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 
@@ -42,11 +44,15 @@ public class CaptorStatic {
     static <T, S> T catchResult(S input, Function<S, T> function) {
         try {
             T result = function.apply(input);
-            catchResult(result, format("Getting of '%s' succeed", function.toString()));
+            if (catchSuccessEvent()) {
+                catchResult(result, format("Getting of '%s' succeed", function.toString()));
+            }
             return result;
         }
         catch (Throwable e){
-            catchResult(input, format("Getting of '%s' failed", function.toString()));
+            if (catchFailureEvent()) {
+                catchResult(input, format("Getting of '%s' failed", function.toString()));
+            }
             throw e;
         }
     }
@@ -54,10 +60,14 @@ public class CaptorStatic {
     static <T> void catchResult(T input, Consumer<T> consumer) {
         try {
             consumer.accept(input);
-            catchResult(input, format("Performing of '%s' succeed", consumer.toString()));
+            if (catchSuccessEvent()) {
+                catchResult(input, format("Performing of '%s' succeed", consumer.toString()));
+            }
         }
         catch (Throwable e) {
-            catchResult(input, format("'%s' failed", consumer.toString()));
+            if (catchFailureEvent()) {
+                catchResult(input, format("'%s' failed", consumer.toString()));
+            }
             throw e;
         }
     }

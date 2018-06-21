@@ -10,6 +10,7 @@ import org.hamcrest.MatcherAssert;
 
 import static com.github.toy.constructor.core.api.CaptorStatic.catchResult;
 import static com.github.toy.constructor.core.api.StoryWriter.action;
+import static com.github.toy.constructor.core.api.properties.DoCapturesOf.catchFailureEvent;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 
@@ -33,7 +34,9 @@ public class Check implements PerformStep<Check> {
                     public boolean matches(Object item) {
                         boolean result = criteria.matches(item);
                         if (!result) {
-                            catchResult(item, format("Mismatched object %s", item));
+                            if (catchFailureEvent()) {
+                                catchResult(item, format("Mismatched object %s", item));
+                            }
                         }
                         return result;
                     }

@@ -1,6 +1,6 @@
 package com.github.toy.constructor.selenium.properties;
 
-import com.github.toy.constructor.core.api.PropertySupplier;
+import com.github.toy.constructor.core.api.properties.PropertySupplier;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeOptions;

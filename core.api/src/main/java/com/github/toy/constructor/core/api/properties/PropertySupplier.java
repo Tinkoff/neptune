@@ -1,4 +1,4 @@
-package com.github.toy.constructor.core.api;
+package com.github.toy.constructor.core.api.properties;
 
 import java.util.Optional;
 import java.util.function.Consumer;

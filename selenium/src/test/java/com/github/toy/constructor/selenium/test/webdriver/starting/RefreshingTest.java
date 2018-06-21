@@ -1,6 +1,6 @@
 package com.github.toy.constructor.selenium.test.webdriver.starting;
 
-import com.github.toy.constructor.core.api.PropertySupplier;
+import com.github.toy.constructor.core.api.properties.PropertySupplier;
 import com.github.toy.constructor.selenium.SeleniumParameterProvider;
 import com.github.toy.constructor.selenium.WrappedWebDriver;
 import org.openqa.selenium.WebDriver;
