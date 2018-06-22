@@ -66,5 +66,6 @@ project(":testng.integration") {
     dependencies {
         compile project(':core.api')
         compile group: 'org.testng', name: 'testng', version: testNGVersion
+        testCompile group: 'org.hamcrest', name: 'java-hamcrest', version: hamcrestVersion
     }
 }
