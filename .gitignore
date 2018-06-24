@@ -55,3 +55,4 @@ gradlew
 gradle/
 */out/*
 */*.log
+*/test-output
