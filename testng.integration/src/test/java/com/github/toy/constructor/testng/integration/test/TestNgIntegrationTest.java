@@ -18,4 +18,9 @@ public class TestNgIntegrationTest extends BaseTestNgIntegrationTest {
         assertThat(getStepClass3(), nullValue());
         assertThat(getStepClass4(), nullValue());
     }
+
+    @Test
+    public void someEmptyTest() {
+       assertThat(true, is(true));
+    }
 }
