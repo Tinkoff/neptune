@@ -3,6 +3,8 @@ package com.github.toy.constructor.testng.integration;
 import com.github.toy.constructor.core.api.Stoppable;
 import com.github.toy.constructor.testng.integration.properties.RefreshEachTimeBefore;
 import org.testng.*;
+import org.testng.annotations.Ignore;
+import org.testng.annotations.Test;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -13,6 +15,7 @@ import java.util.Set;
 
 import static com.github.toy.constructor.core.api.Refreshable.refresh;
 import static com.github.toy.constructor.testng.integration.properties.TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY;
+import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
@@ -22,10 +25,35 @@ public class DefaultTestRunningListener implements IInvokedMethodListener, ISuit
     private final List<Class<? extends Annotation>> refreshBeforeMethodsAnnotatedBy =
             new ArrayList<>(REFRESH_STRATEGY_PROPERTY.get().stream().map(RefreshEachTimeBefore::get).collect(toList()));
 
+    private static boolean isIgnored(Method method) {
+        Class<?> declaredBy;
+        Test test;
+        return (((test = method.getAnnotation(Test.class)) != null)
+                && (method.getAnnotation(Ignore.class) != null || !test.enabled()))
+                || isClassIgnored(declaredBy = method.getDeclaringClass())
+                || declaredBy.getPackage().getAnnotation(Ignore.class) != null;
+    }
+
+    private static boolean isClassIgnored(Class<?> classToBeIgnored) {
+        Class<?> clazz = classToBeIgnored;
+        while (!clazz.equals(Object.class)) {
+            if (clazz.getAnnotation(Ignore.class) != null) {
+                return true;
+            }
+            clazz = clazz.getSuperclass();
+        }
+        return false;
+    }
+
     private void refreshIfNecessary(Object instance, Method method) {
-        if (stream(method.getAnnotations())
+        if (isIgnored(method)) {
+            return;
+        }
+
+        int methodModifiers = method.getModifiers();
+        if (!isStatic(methodModifiers) && stream(method.getAnnotations())
                 .filter(annotation -> refreshBeforeMethodsAnnotatedBy
-                        .contains(annotation.getClass())).collect(toList())
+                        .contains(((Annotation) annotation).annotationType())).collect(toList())
                 .size() > 0) {
             refresh(instance);
         }
@@ -35,14 +63,17 @@ public class DefaultTestRunningListener implements IInvokedMethodListener, ISuit
     @Override
     public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
         Object instance = testResult.getInstance();
-        knownTests.add(instance);
         refreshIfNecessary(instance, method.getTestMethod().getConstructorOrMethod()
                 .getMethod());
     }
 
     @Override
     public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
-        //does nothing
+        if (!isIgnored(method.getTestMethod().getConstructorOrMethod()
+                .getMethod())) {
+            Object instance = testResult.getInstance();
+            knownTests.add(instance);
+        }
     }
 
     @Override

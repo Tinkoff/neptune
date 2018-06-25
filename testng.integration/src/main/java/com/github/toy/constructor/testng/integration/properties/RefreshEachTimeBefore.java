@@ -5,8 +5,18 @@ import org.testng.annotations.*;
 import java.lang.annotation.Annotation;
 import java.util.function.Supplier;
 
+/**
+ * This enum is designed to define the strategy of the invoking of {@link com.github.toy.constructor.core.api.Refreshable#refresh()}
+ * by engines of TestNg. It is supposed to be invoked before methods annotated by {@link BeforeSuite} and/or {@link BeforeTest}
+ * and/or {@link BeforeClass} and/or {@link BeforeGroups} and/or {@link BeforeMethod} and/or {@link Test}.
+ */
 public enum RefreshEachTimeBefore implements Supplier<Class<? extends Annotation>> {
 
+    /**
+     * This element is used to define the strategy to invoke the
+     * {@link com.github.toy.constructor.core.api.Refreshable#refresh()} each time before
+     * any method annotated by {@link BeforeSuite} is run.
+     */
     SUITE_STARTING {
         @Override
         public Class<? extends Annotation> get() {
@@ -14,6 +24,11 @@ public enum RefreshEachTimeBefore implements Supplier<Class<? extends Annotation
         }
     },
 
+    /**
+     * This element is used to define the strategy to invoke the
+     * {@link com.github.toy.constructor.core.api.Refreshable#refresh()} each time before
+     * any method annotated by {@link BeforeTest} is run.
+     */
     ALL_TEST_STARTING {
         @Override
         public Class<? extends Annotation> get() {
@@ -21,6 +36,11 @@ public enum RefreshEachTimeBefore implements Supplier<Class<? extends Annotation
         }
     },
 
+    /**
+     * This element is used to define the strategy to invoke the
+     * {@link com.github.toy.constructor.core.api.Refreshable#refresh()} each time before
+     * any method annotated by {@link BeforeClass} is run.
+     */
     CLASS_STARTING {
         @Override
         public Class<? extends Annotation> get() {
@@ -28,6 +48,11 @@ public enum RefreshEachTimeBefore implements Supplier<Class<? extends Annotation
         }
     },
 
+    /**
+     * This element is used to define the strategy to invoke the
+     * {@link com.github.toy.constructor.core.api.Refreshable#refresh()} each time before
+     * any method annotated by {@link BeforeGroups} is run.
+     */
     GROUP_STARTING {
         @Override
         public Class<? extends Annotation> get() {
@@ -35,6 +60,11 @@ public enum RefreshEachTimeBefore implements Supplier<Class<? extends Annotation
         }
     },
 
+    /**
+     * This element is used to define the strategy to invoke the
+     * {@link com.github.toy.constructor.core.api.Refreshable#refresh()} each time before
+     * any method annotated by {@link BeforeMethod} is run.
+     */
     BEFORE_METHOD_STARTING {
         @Override
         public Class<? extends Annotation> get() {
@@ -42,6 +72,11 @@ public enum RefreshEachTimeBefore implements Supplier<Class<? extends Annotation
         }
     },
 
+    /**
+     * This element is used to define the strategy to invoke the
+     * {@link com.github.toy.constructor.core.api.Refreshable#refresh()} each time before
+     * any method annotated by {@link Test} is run.
+     */
     METHOD_STARTING {
         @Override
         public Class<? extends Annotation> get() {

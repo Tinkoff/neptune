@@ -7,7 +7,13 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 
-public class TestNgIntegrationTest extends BaseTestNgIntegrationTest {
+public class TestNgInstantiationTest extends BaseTestNgIntegrationTest {
+
+    static TestNgInstantiationTest testNgInstantiationTest;
+
+    public TestNgInstantiationTest() {
+        testNgInstantiationTest = this;
+    }
 
     @Test
     public void instantiationTest() {
@@ -17,10 +23,5 @@ public class TestNgIntegrationTest extends BaseTestNgIntegrationTest {
         assertThat(getStepClass2().getB(), is(2));
         assertThat(getStepClass3(), nullValue());
         assertThat(getStepClass4(), nullValue());
-    }
-
-    @Test
-    public void someEmptyTest() {
-       assertThat(true, is(true));
     }
 }

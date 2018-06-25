@@ -1,6 +1,10 @@
 package com.github.toy.constructor.testng.integration.test;
 
 import com.github.toy.constructor.testng.integration.BaseTestNgTest;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.BeforeTest;
 
 public class BaseTestNgIntegrationTest extends BaseTestNgTest {
 
@@ -9,19 +13,59 @@ public class BaseTestNgIntegrationTest extends BaseTestNgTest {
     private final StepClass3 stepClass3 = null;
     private StepClass4 stepClass4;
 
-    public StepClass1 getStepClass1() {
+    @BeforeSuite
+    public static void beforeSuiteStatic() {
+        //does nothing
+    }
+
+    @BeforeSuite
+    public void beforeSuiteObject() {
+        //does nothing
+    }
+
+    @BeforeTest
+    public static void beforeTestStatic() {
+        //does nothing
+    }
+
+    @BeforeTest
+    public void beforeTestObject() {
+        //does nothing
+    }
+
+    @BeforeClass
+    public static void beforeClassStatic() {
+        //does nothing
+    }
+
+    @BeforeClass
+    public void beforeClassObject() {
+        //does nothing
+    }
+
+    @BeforeMethod
+    public static void beforeMethodStatic() {
+        //does nothing
+    }
+
+    @BeforeMethod
+    public void beforeMethodObject() {
+        //does nothing
+    }
+
+    StepClass1 getStepClass1() {
         return stepClass1;
     }
 
-    public StepClass2 getStepClass2() {
+    StepClass2 getStepClass2() {
         return stepClass2;
     }
 
-    public StepClass3 getStepClass3() {
+    StepClass3 getStepClass3() {
         return stepClass3;
     }
 
-    public StepClass4 getStepClass4() {
+    StepClass4 getStepClass4() {
         return stepClass4;
     }
 }

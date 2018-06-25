@@ -5,8 +5,6 @@ import com.github.toy.constructor.core.api.*;
 @CreateWith(provider = ABParameterProvider.class)
 public class StepClass2 implements GetStep<StepClass2>, PerformStep<StepClass2>, Refreshable, Stoppable {
 
-    public static StepClass2 stepClass2;
-
     private final int a;
     private final int b;
     private int refreshCount;
@@ -15,14 +13,13 @@ public class StepClass2 implements GetStep<StepClass2>, PerformStep<StepClass2>,
     public StepClass2(int a, int b) {
         this.a = a;
         this.b = b;
-        stepClass2 = this;
     }
 
-    public int getA() {
+    int getA() {
         return a;
     }
 
-    public int getB() {
+    int getB() {
         return b;
     }
 
@@ -36,11 +33,11 @@ public class StepClass2 implements GetStep<StepClass2>, PerformStep<StepClass2>,
         stopCount ++;
     }
 
-    public int getRefreshCount() {
+    int getRefreshCount() {
         return refreshCount;
     }
 
-    public int getStopCount() {
+    int getStopCount() {
         return stopCount;
     }
 }

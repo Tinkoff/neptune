@@ -8,7 +8,9 @@ import org.testng.internal.ObjectFactoryImpl;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.github.toy.constructor.core.api.Substitution.getSubstituted;
 import static java.lang.reflect.Modifier.isFinal;
@@ -17,6 +19,8 @@ import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
 public class DefaultObjectFactory extends ObjectFactoryImpl {
+
+    private final Map<Class<?>, Object> stepMap = new HashMap<>();
 
     /**
      * This factory method does the same as {@link ObjectFactoryImpl#newInstance(Constructor, Object...)} does
@@ -35,6 +39,7 @@ public class DefaultObjectFactory extends ObjectFactoryImpl {
     @ObjectFactory
     @Override
     public Object newInstance(Constructor constructor, Object... params) {
+
         Object result = super.newInstance(constructor, params);
         Class<?> clazz = result.getClass();
         while (!clazz.equals(Object.class)) {
@@ -50,7 +55,22 @@ public class DefaultObjectFactory extends ObjectFactoryImpl {
             fields.forEach(field -> {
                 field.setAccessible(true);
                 try {
-                    field.set(result, getSubstituted(field.getType()));
+                    Class<?> fieldType = field.getType();
+                    Object objectToSet = stepMap.entrySet().stream()
+                            .filter(entry -> entry.getKey().isAssignableFrom(fieldType)
+                                    || fieldType.isAssignableFrom(entry.getKey()))
+                            .findFirst().map(Map.Entry::getValue)
+                            .orElseGet(() -> {
+                                try {
+                                    Object toBeReturned = getSubstituted(fieldType);
+                                    stepMap.put(fieldType, toBeReturned);
+                                    return toBeReturned;
+                                } catch (Throwable t) {
+                                    throw new TestNGException(t.getMessage(), t);
+                                }
+                            });
+
+                    field.set(result, objectToSet);
                 } catch (Exception e) {
                     throw new TestNGException(e.getMessage(), e);
                 }

@@ -169,7 +169,7 @@ public class WrappedWebDriver implements WrapsDriver, Refreshable, Stoppable {
     public void shutDown() {
         ofNullable(driver).ifPresent(webDriver -> {
             try {
-                driver.quit();
+                webDriver.quit();
             }
             catch (Throwable ignored) {}
         });

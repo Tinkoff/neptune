@@ -12,7 +12,7 @@ import static java.util.List.of;
 
 public final class TestNGRefreshStrategyProperty implements PropertySupplier<List<RefreshEachTimeBefore>> {
 
-    public static final String PROPERTY_NAME = "testng.refresh.before";
+    private static final String PROPERTY_NAME = "testng.refresh.before";
     public static final TestNGRefreshStrategyProperty REFRESH_STRATEGY_PROPERTY = new TestNGRefreshStrategyProperty();
 
     private TestNGRefreshStrategyProperty() {
@@ -24,6 +24,17 @@ public final class TestNGRefreshStrategyProperty implements PropertySupplier<Lis
         return PROPERTY_NAME;
     }
 
+    /**
+     * This method returns a list filled by elements of {@link RefreshEachTimeBefore}. These elements
+     * should be defined by the property {@code 'testng.refresh.before'} as a comma-separated string of elements names
+     * taken from the {@link RefreshEachTimeBefore}. When the property is not defined then a list filled by
+     * {@link com.github.toy.constructor.testng.integration.properties.RefreshEachTimeBefore#METHOD_STARTING} is
+     * returned.
+     *
+     * @return list of defined strategies how to invoke the
+     * {@link com.github.toy.constructor.core.api.Refreshable#refresh()}. Each strategy is described by
+     * elements of the {@link RefreshEachTimeBefore}.
+     */
     @Override
     public List<RefreshEachTimeBefore> get() {
         return returnOptionalFromEnvironment().map(s ->
