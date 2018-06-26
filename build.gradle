@@ -1,8 +1,7 @@
-group 'com.github.toy.constructor'
-version '1.0-SNAPSHOT'
-
-
 subprojects {
+    group 'com.github.toy.constructor'
+    version '1.0-SNAPSHOT'
+
     apply plugin: 'java'
 
     sourceCompatibility = 1.9
@@ -11,83 +10,18 @@ subprojects {
     repositories {
         mavenCentral()
     }
-}
 
-def testNGVersion = '6.14.3'
-def hamcrestVersion = '2.0.0.0'
-def seleniumVersion = '3.12.0'
-def allureVersion = '2.6.0'
+    ext {
+        testNGVersion = '6.14.3'
+        hamcrestVersion = '2.0.0.0'
+        seleniumVersion = '3.12.0'
+        allureVersion = '2.6.0'
+    }
 
-project(":core.api") {
     dependencies {
         compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
         compile group: 'com.google.guava', name: 'guava', version: '25.0-jre'
-        compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.8.12'
-        compile group: 'org.objenesis', name: 'objenesis', version: '2.6'
-        compile group: 'cglib', name: 'cglib', version: '3.2.6'
         testCompile group: 'org.testng', name: 'testng', version: testNGVersion
         testCompile group: 'org.hamcrest', name: 'java-hamcrest', version: hamcrestVersion
-    }
-}
-
-project(":check") {
-    dependencies {
-        compile project(':core.api')
-        compile group: 'org.hamcrest', name: 'java-hamcrest', version: hamcrestVersion
-        testCompile group: 'org.testng', name: 'testng', version: testNGVersion
-    }
-}
-
-project(":selenium") {
-    dependencies {
-        compile project(':core.api')
-        compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: seleniumVersion
-        compile (group: 'org.reflections', name: 'reflections', version: '0.9.11') {
-            exclude group: 'com.google.guava'
-            exclude group: 'com.google.code.gson'
-        }
-        compile group: 'org.hamcrest', name: 'java-hamcrest', version: hamcrestVersion
-        compile (group: 'com.codeborne', name: 'phantomjsdriver', version: '1.4.4') {
-            exclude group: 'org.seleniumhq.selenium';
-        }
-        compile (group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '2.2.2') {
-            exclude group: 'org.seleniumhq.selenium'
-        }
-        compile (group: 'org.seleniumhq.selenium', name: 'selenium-server', version: seleniumVersion) {
-            exclude group: 'org.seleniumhq.selenium' , module: 'htmlunit-driver'
-            exclude group: 'com.google.guava'
-            exclude group: 'com.google.code.gson'
-        }
-        testCompile group: 'org.testng', name: 'testng', version: testNGVersion
-        testCompile group: 'org.mockito', name: 'mockito-core', version: '2.18.3'
-    }
-}
-
-project(":testng.integration") {
-    dependencies {
-        compile project(':core.api')
-        compile group: 'org.testng', name: 'testng', version: testNGVersion
-        testCompile group: 'org.hamcrest', name: 'java-hamcrest', version: hamcrestVersion
-    }
-}
-
-project(":allure.integration") {
-    dependencies {
-        compile project(':core.api')
-        compile (group: 'io.qameta.allure', name: 'allure-java-commons', version: allureVersion) {
-            exclude group: 'org.aspectj', module: 'aspectjrt'
-        }
-        testCompile group: 'org.testng', name: 'testng', version: testNGVersion
-        testCompile group: 'org.hamcrest', name: 'java-hamcrest', version: hamcrestVersion
-        compile group: 'org.aspectj', name: 'aspectjrt', version: '1.9.1'
-    }
-}
-
-project(":allure.testng.bridge") {
-    dependencies {
-        compile project(":testng.integration")
-        compile (group: 'io.qameta.allure', name: 'allure-testng', version: allureVersion) {
-            exclude group: 'org.aspectj', module: 'aspectjrt'
-        }
     }
 }

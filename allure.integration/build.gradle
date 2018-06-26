@@ -1,0 +1,7 @@
+dependencies {
+    compile project(':core.api')
+    compile (group: 'io.qameta.allure', name: 'allure-java-commons', version: allureVersion) {
+        exclude group: 'org.aspectj', module: 'aspectjrt'
+    }
+    compile group: 'org.aspectj', name: 'aspectjrt', version: '1.9.1'
+}
