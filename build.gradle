@@ -74,8 +74,20 @@ project(":testng.integration") {
 project(":allure.integration") {
     dependencies {
         compile project(':core.api')
-        compile group: 'io.qameta.allure', name: 'allure-java-commons', version: allureVersion
+        compile (group: 'io.qameta.allure', name: 'allure-java-commons', version: allureVersion) {
+            exclude group: 'org.aspectj', module: 'aspectjrt'
+        }
         testCompile group: 'org.testng', name: 'testng', version: testNGVersion
         testCompile group: 'org.hamcrest', name: 'java-hamcrest', version: hamcrestVersion
+        compile group: 'org.aspectj', name: 'aspectjrt', version: '1.9.1'
+    }
+}
+
+project(":allure.testng.bridge") {
+    dependencies {
+        compile project(":testng.integration")
+        compile (group: 'io.qameta.allure', name: 'allure-testng', version: allureVersion) {
+            exclude group: 'org.aspectj', module: 'aspectjrt'
+        }
     }
 }
