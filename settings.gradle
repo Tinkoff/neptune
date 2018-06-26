@@ -3,4 +3,5 @@ include 'core.api'
 include 'check'
 include 'selenium'
 include 'testng.integration'
+include 'allure.integration'
 
