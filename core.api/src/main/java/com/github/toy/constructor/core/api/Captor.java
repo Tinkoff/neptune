@@ -12,7 +12,7 @@ import static java.util.List.of;
  */
 public abstract class Captor<T, S> {
 
-    private final List<? extends CapturedDataInjector<S>> injectors;
+    protected final List<? extends CapturedDataInjector<S>> injectors;
 
     public Captor(List<? extends CapturedDataInjector<S>> injectors) {
         this.injectors = injectors;
@@ -22,7 +22,7 @@ public abstract class Captor<T, S> {
         this(of());
     }
 
-    void capture(T caught, String message) {
+    protected void capture(T caught, String message) {
         S s = getData(caught);
         injectors.forEach(injector -> injector.inject(s, message));
     }
