@@ -1,5 +1,6 @@
 package com.github.toy.constructor.allure;
 
+import com.github.toy.constructor.core.api.StepAnnotationFactory;
 import com.github.toy.constructor.core.api.captors.CapturedFileInjector;
 import com.github.toy.constructor.core.api.captors.CapturedImageInjector;
 import com.github.toy.constructor.core.api.captors.CapturedStringInjector;
@@ -26,6 +27,12 @@ public class SPIInstantiationTest {
     @Test
     public void instantiationOfStringInjectorTest() {
         assertThat(AllureStringInjector.class.isAssignableFrom(loadSPI(CapturedStringInjector.class).get(0).getClass()),
+                Matchers.is(true));
+    }
+
+    @Test
+    public void instantiationOfAllureAnnotationFactory() {
+        assertThat(AllureAnnotationFactory.class.isAssignableFrom(loadSPI(StepAnnotationFactory.class).get(0).getClass()),
                 Matchers.is(true));
     }
 }
