@@ -22,8 +22,8 @@ import static com.github.toy.constructor.selenium.properties.CapabilityTypes.CHR
 import static com.github.toy.constructor.selenium.properties.CapabilityTypes.CommonCapabilityProperties.*;
 import static com.github.toy.constructor.selenium.properties.CapabilityTypes.FIREFOX;
 import static com.github.toy.constructor.selenium.properties.FlagProperties.*;
-import static com.github.toy.constructor.selenium.properties.SeleniumPropertyInitializer.SELENIUM_PROPERTY_FILE;
-import static com.github.toy.constructor.selenium.properties.SeleniumPropertyInitializer.refreshProperties;
+import static com.github.toy.constructor.core.api.properties.GeneralPropertyInitializer.GENERAL_PROPERTIES;
+import static com.github.toy.constructor.core.api.properties.GeneralPropertyInitializer.refreshProperties;
 import static com.github.toy.constructor.selenium.properties.SupportedWebDriverProperty.WEB_DRIVER_TO_LAUNCH;
 import static com.github.toy.constructor.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 import static com.github.toy.constructor.selenium.properties.URLProperties.REMOTE_WEB_DRIVER_URL_PROPERTY;
@@ -47,6 +47,7 @@ import static org.openqa.selenium.Platform.LINUX;
 /**
  * For the testing of the case if all properties are defined in selenium.properties.
  */
+@SuppressWarnings("unchecked")
 public class DefaultPropertiesTest {
 
     private static final Map<String, String> properties = Map
@@ -74,7 +75,7 @@ public class DefaultPropertiesTest {
     @BeforeClass
     public void beforeTests() throws Exception {
         Properties prop = new Properties();
-        try (OutputStream output = new FileOutputStream(SELENIUM_PROPERTY_FILE)) {
+        try (OutputStream output = new FileOutputStream(GENERAL_PROPERTIES)) {
             // set the properties value
             properties.forEach(prop::setProperty);
             // save properties to project root folder
@@ -217,7 +218,7 @@ public class DefaultPropertiesTest {
     @AfterClass
     public void afterTests() throws Exception {
         properties.keySet().forEach(s -> System.getProperties().remove(s));
-        File toDelete = getFile(SELENIUM_PROPERTY_FILE);
+        File toDelete = getFile(GENERAL_PROPERTIES);
         if (toDelete.exists()) {
             forceDelete(toDelete);
         }
