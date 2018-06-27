@@ -2,6 +2,7 @@ package com.github.toy.constructor.selenium.properties;
 
 import com.github.toy.constructor.core.api.properties.PropertySupplier;
 
+import static com.github.toy.constructor.selenium.properties.SupportedWebDrivers.CHROME_DRIVER;
 import static java.lang.String.format;
 
 public final class SupportedWebDriverProperty implements PropertySupplier<SupportedWebDrivers> {
@@ -32,7 +33,6 @@ public final class SupportedWebDriverProperty implements PropertySupplier<Suppor
                 }
             }
             throw new IllegalArgumentException(format("Unknown supported web driver %s", s));
-        }).orElseThrow(() ->
-                new IllegalArgumentException(format("Property %s should be defined", WEB_DRIVER_TO_LAUNCH)));
+        }).orElse(CHROME_DRIVER);
     }
 }

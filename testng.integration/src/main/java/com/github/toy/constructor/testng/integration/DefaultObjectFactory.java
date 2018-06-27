@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.github.toy.constructor.core.api.Substitution.getSubstituted;
+import static com.github.toy.constructor.core.api.properties.GeneralPropertyInitializer.refreshProperties;
 import static java.lang.reflect.Modifier.isFinal;
 import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Arrays.stream;
@@ -21,6 +22,15 @@ import static java.util.stream.Collectors.toList;
 public class DefaultObjectFactory extends ObjectFactoryImpl {
 
     private final Map<Class<?>, Object> stepMap = new HashMap<>();
+    private boolean arePropertiesInitialized;
+
+    DefaultObjectFactory() {
+        super();
+        if (!arePropertiesInitialized) {
+            refreshProperties();
+            arePropertiesInitialized = true;
+        }
+    }
 
     /**
      * This factory method does the same as {@link ObjectFactoryImpl#newInstance(Constructor, Object...)} does

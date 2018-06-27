@@ -91,11 +91,6 @@ public final class GeneralPropertyInitializer {
         }
     }
 
-
-    static {
-        refreshProperties();
-    }
-
     private static class PropertyReadException extends RuntimeException {
         private PropertyReadException(String message, Throwable cause) {
             super(message, cause);
