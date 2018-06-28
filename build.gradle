@@ -5,6 +5,9 @@ subprojects {
     apply plugin: 'java'
 
     sourceCompatibility = 1.9
+    targetCompatibility = 1.9
+
+    [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
     apply plugin: "java"
     repositories {
@@ -23,5 +26,9 @@ subprojects {
         compile group: 'com.google.guava', name: 'guava', version: '25.0-jre'
         testCompile group: 'org.testng', name: 'testng', version: testNGVersion
         testCompile group: 'org.hamcrest', name: 'java-hamcrest', version: hamcrestVersion
+    }
+
+    test {
+        useTestNG()
     }
 }
