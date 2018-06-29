@@ -12,4 +12,9 @@ public class TestStringCaptor extends StringCaptor<Object> {
     protected StringBuilder getData(Object caught) {
         return new StringBuilder(caught.toString());
     }
+
+    @Override
+    protected Class<Object> getTypeToBeCaptured() {
+        return Object.class;
+    }
 }

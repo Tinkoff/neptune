@@ -4,5 +4,6 @@ dependencies {
         exclude group: 'org.aspectj', module: 'aspectjrt'
         exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
         exclude group: 'com.fasterxml.jackson.module', module: 'jackson-module-jaxb-annotations'
+        exclude group: 'org.testng', module: 'testng'
     }
 }

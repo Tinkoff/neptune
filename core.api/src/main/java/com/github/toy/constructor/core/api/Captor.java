@@ -34,4 +34,6 @@ public abstract class Captor<T, S> {
      * @return S produced data to be injected to a log/report
      */
     protected abstract S getData(T caught);
+
+    protected abstract Class<T> getTypeToBeCaptured();
 }

@@ -1,6 +1,5 @@
 package com.github.toy.constructor.core.api;
 
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -26,19 +25,8 @@ public class CaptorStatic {
             return captorss;
         });
 
-        captorList.stream().filter(captor -> {
-            Class<? extends Captor> captorClass = captor.getClass();
-            Method[] methods = captorClass.getDeclaredMethods();
-
-            for (Method m : methods) {
-                Class<?>[] types = m.getParameterTypes();
-                if ("getData".equals(m.getName()) && types.length == 1
-                        && types[0].isAssignableFrom(caught.getClass())) {
-                    return true;
-                }
-            }
-            return false;
-        }).forEach(captor -> captor.capture(caught, message));
+        captorList.stream().filter(captor -> captor.getTypeToBeCaptured()
+                .isAssignableFrom(caught.getClass())).forEach(captor -> captor.capture(caught, message));
     }
 
     static <T, S> T catchResult(S input, Function<S, T> function) {

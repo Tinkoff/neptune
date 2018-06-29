@@ -22,4 +22,9 @@ public class DefaultListLogger extends Captor<Object, String> {
     protected String getData(Object caught) {
         return caught.toString();
     }
+
+    @Override
+    protected Class<Object> getTypeToBeCaptured() {
+        return Object.class;
+    }
 }

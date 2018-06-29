@@ -32,4 +32,9 @@ public class SeleniumImageCaptor extends ImageCaptor<TakesScreenshot> {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    protected Class<TakesScreenshot> getTypeToBeCaptured() {
+        return TakesScreenshot.class;
+    }
 }
