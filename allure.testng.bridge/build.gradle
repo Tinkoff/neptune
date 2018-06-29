@@ -2,5 +2,7 @@ dependencies {
     compile project(":testng.integration")
     compile (group: 'io.qameta.allure', name: 'allure-testng', version: allureVersion) {
         exclude group: 'org.aspectj', module: 'aspectjrt'
+        exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
+        exclude group: 'com.fasterxml.jackson.module', module: 'jackson-module-jaxb-annotations'
     }
 }

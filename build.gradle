@@ -17,8 +17,9 @@ subprojects {
     ext {
         testNGVersion = '6.14.3'
         hamcrestVersion = '2.0.0.0'
-        seleniumVersion = '3.12.0'
+        seleniumVersion = '3.13.0'
         allureVersion = '2.6.0'
+        jacksonVersion = '2.9.6'
     }
 
     dependencies {
@@ -26,6 +27,9 @@ subprojects {
         compile group: 'com.google.guava', name: 'guava', version: '25.0-jre'
         testCompile group: 'org.testng', name: 'testng', version: testNGVersion
         testCompile group: 'org.hamcrest', name: 'java-hamcrest', version: hamcrestVersion
+        compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
+        compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
+        compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-jaxb-annotations', version: jacksonVersion
     }
 
     test {

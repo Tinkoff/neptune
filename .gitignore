@@ -56,3 +56,4 @@ gradle/
 */out/*
 */*.log
 */test-output
+*/allure-results
