@@ -49,6 +49,6 @@ public final class GetCurrentUrlSupplier extends SequentialGetSupplier<SeleniumS
 
     @Override
     protected Function<Window, String> getEndFunction() {
-        return toGet("Current URL", Window::getCurrentUrl);
+        return toGet("URL of the loaded page", Window::getCurrentUrl);
     }
 }

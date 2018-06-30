@@ -18,7 +18,7 @@ public class GetCurrentUrlTest {
     @Test
     public void currentUrlTest() {
         assertThat(currentUrl().get().toString(),
-                is("Current URL from (The first window/tab)"));
+                is("URL of the loaded page"));
     }
 
     @Test
@@ -26,14 +26,12 @@ public class GetCurrentUrlTest {
         assertThat(currentUrlIn(window().byIndex(1).onCondition(hasTitle("Some title")
                         .or(hasTitle(compile("Some title pattern")).and(hasUrl("Some url"))))
                         .withTimeToGetWindow(ofSeconds(5))).get().toString(),
-                is("Current URL from (Window/tab by index 1 with condition " +
-                        "(Has title 'Some title') OR ((Has title which matches regExp pattern 'Some title pattern') " +
-                        "AND (Has loaded url 'Some url')). Time to get valuable result: 0:00:05:000)"));
+                is("URL of the loaded page"));
     }
 
     @Test
     public void currentUrlWithWindowTest() {
         assertThat(currentUrlIn(new DescribedWindow()).get().toString(),
-                is("Current URL from (Test stab window)"));
+                is("URL of the loaded page"));
     }
 }

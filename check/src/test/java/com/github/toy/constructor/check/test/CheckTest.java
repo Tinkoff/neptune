@@ -25,7 +25,7 @@ public class CheckTest {
     private Check check;
 
     @BeforeTest
-    public void beforeTest() throws Exception {
+    public void beforeTest() {
         check = getSubstituted(Check.class);
     }
 
@@ -85,12 +85,15 @@ public class CheckTest {
 
             assertThat("Logged messages",
                     DefaultListLogger.messages,
-                    contains("Performing of 'Check number 4 by criteria \n" +
+                    contains("Getting of 'Is integer' succeed",
+                            "Getting of 'Sqrt value' succeed",
+                            "Performing of 'Check number 4 by criteria \n" +
                                     "Is integer\n" +
                                     "           is <true>\n" +
                                     "Sqrt value\n" +
                                     "           is <2.0>' succeed",
                             "Performing of 'Check number 4 by criteria is <4>' succeed",
+                            "Getting of 'Sqr value' succeed",
                             "Performing of 'Check number 5 by criteria \n" +
                                     "Sqr value\n" +
                                     "           is <25.0>' succeed"));
@@ -157,12 +160,15 @@ public class CheckTest {
 
             assertThat("Logged messages",
                     DefaultListLogger.messages,
-                    contains("Performing of 'Check number 4 by criteria \n" +
+                    contains("Getting of 'Is integer' succeed",
+                            "Getting of 'Sqrt value' succeed",
+                            "Performing of 'Check number 4 by criteria \n" +
                                     "Is integer\n" +
                                     "           is <true>\n" +
                                     "Sqrt value\n" +
                                     "           is <2.0>' succeed",
                             "Performing of 'Check number 4 by criteria is <4>' succeed",
+                            "Getting of 'Sqr value' succeed",
                             "Performing of 'Check number 5 by criteria \n" +
                                     "Sqr value\n" +
                                     "           is <25.0>' succeed"));
@@ -229,12 +235,15 @@ public class CheckTest {
 
             assertThat("Logged messages",
                     DefaultListLogger.messages,
-                    contains("Performing of 'Check number 4 by criteria \n" +
+                    contains("Getting of 'Is integer' succeed",
+                            "Getting of 'Sqrt value' succeed",
+                            "Performing of 'Check number 4 by criteria \n" +
                                     "Is integer\n" +
                                     "           is <true>\n" +
                                     "Sqrt value\n" +
                                     "           is <2.0>' succeed",
                             "Performing of 'Check number 4 by criteria is <4>' succeed",
+                            "Getting of 'Sqr value' succeed",
                             "Performing of 'Check number 5 by criteria \n" +
                                     "Sqr value\n" +
                                     "           is <25.0>' succeed",
@@ -308,12 +317,15 @@ public class CheckTest {
 
             assertThat("Logged messages",
                     DefaultListLogger.messages,
-                    contains("Performing of 'Check number 4 by criteria \n" +
+                    contains("Getting of 'Is integer' succeed",
+                            "Getting of 'Sqrt value' succeed",
+                            "Performing of 'Check number 4 by criteria \n" +
                                     "Is integer\n" +
                                     "           is <true>\n" +
                                     "Sqrt value\n" +
                                     "           is <2.0>' succeed",
                             "Performing of 'Check number 4 by criteria is <4>' succeed",
+                            "Getting of 'Sqr value' succeed",
                             "Performing of 'Check number 5 by criteria \n" +
                                     "Sqr value\n" +
                                     "           is <25.0>' succeed",
