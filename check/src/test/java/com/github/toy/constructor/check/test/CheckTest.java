@@ -415,7 +415,7 @@ public class CheckTest {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
             assertThat(DefaultListLogger.messages,
                     contains("Mismatched object 9",
-                            "'Check number 9 by criteria \n" +
+                            "Performing of 'Check number 9 by criteria \n" +
                                     "Is integer\n" +
                                     "           is <true>\n" +
                                     "Sqrt value\n" +
@@ -557,12 +557,11 @@ public class CheckTest {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
             assertThat(DefaultListLogger.messages,
                     contains("Mismatched object 9",
-                            "'Check number 9 by criteria \n" +
+                            "Performing of 'Check number 9 by criteria \n" +
                                     "Is integer\n" +
                                     "           is <true>\n" +
                                     "Sqrt value\n" +
-                                    "           is <2.0>' failed",
-                            "'Check number 9' failed"));
+                                    "           is <2.0>' failed"));
         }
     }
 

@@ -7,6 +7,5 @@ public class AllureTestNGIntegrationTest extends BaseTestNgTest {
 
     @Test
     public void tezt() {
-
     }
 }

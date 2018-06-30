@@ -1,6 +1,6 @@
 package com.github.toy.constructor.core.api;
 
-import com.github.toy.constructor.core.api.captors.CapturedFileInjector;
+import com.github.toy.constructor.core.api.event.firing.captors.CapturedFileInjector;
 
 import java.io.File;
 import java.util.ArrayList;

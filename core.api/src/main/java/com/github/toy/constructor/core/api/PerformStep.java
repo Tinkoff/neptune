@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static com.github.toy.constructor.core.api.CaptorStatic.catchResult;
+import static com.github.toy.constructor.core.api.StaticEventFiring.catchResult;
 import static com.github.toy.constructor.core.api.StoryWriter.action;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -13,29 +13,11 @@ import static java.lang.String.format;
 @SuppressWarnings("unchecked")
 public interface PerformStep<THIS extends PerformStep<THIS>> {
 
-    @StepMarkPerform
     default THIS perform(Consumer<THIS> actionConsumer) {
         checkArgument(actionConsumer != null, "Action is not defined");
         checkArgument(DescribedConsumer.class.isAssignableFrom(actionConsumer.getClass()),
                 "Action should be described by the StoryWriter.action method.");
-
-        DescribedConsumer<THIS> describedConsumer = DescribedConsumer.class.cast(actionConsumer);
-        LinkedList<Consumer<THIS>> sequence = describedConsumer.getSequence();
-
-        if (sequence.size() == 0) {
-            if (!describedConsumer.isSecondary()) {
-                catchResult((THIS) this, actionConsumer);
-            }
-            else {
-                actionConsumer.accept((THIS) this);
-            }
-            return (THIS) this;
-        }
-
-        sequence.forEach(thisConsumer ->
-                perform(((DescribedConsumer) action(format("and then %s", thisConsumer),
-                        thisParam -> catchResult((THIS) this, thisConsumer))).setSecondary()));
-
+        actionConsumer.accept((THIS) this);
         return (THIS) this;
     }
 

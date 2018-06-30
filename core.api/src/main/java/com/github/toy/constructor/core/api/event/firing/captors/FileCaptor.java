@@ -1,11 +1,11 @@
-package com.github.toy.constructor.core.api.captors;
+package com.github.toy.constructor.core.api.event.firing.captors;
 
-import com.github.toy.constructor.core.api.Captor;
+import com.github.toy.constructor.core.api.event.firing.Captor;
 
 import java.io.File;
 import java.util.List;
 
-import static com.github.toy.constructor.core.api.SPIUtil.loadSPI;
+import static com.github.toy.constructor.core.api.utils.SPIUtil.loadSPI;
 
 public abstract class FileCaptor<T> extends Captor<T, File> {
 

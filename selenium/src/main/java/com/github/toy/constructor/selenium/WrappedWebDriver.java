@@ -15,7 +15,7 @@ import org.openqa.selenium.remote.server.SeleniumServer;
 import java.lang.reflect.Constructor;
 import java.net.URL;
 
-import static com.github.toy.constructor.core.api.ConstructorUtil.findSuitableConstructor;
+import static com.github.toy.constructor.core.api.utils.ConstructorUtil.findSuitableConstructor;
 import static com.github.toy.constructor.selenium.properties.FlagProperties.CLEAR_WEB_DRIVER_COOKIES;
 import static com.github.toy.constructor.selenium.properties.FlagProperties.GET_BACK_TO_BASE_URL;
 import static com.github.toy.constructor.selenium.properties.FlagProperties.KEEP_WEB_DRIVER_SESSION_OPENED;

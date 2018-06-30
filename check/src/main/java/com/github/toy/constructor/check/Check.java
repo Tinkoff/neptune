@@ -8,7 +8,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 
-import static com.github.toy.constructor.core.api.CaptorStatic.catchResult;
+import static com.github.toy.constructor.core.api.StaticEventFiring.catchResult;
 import static com.github.toy.constructor.core.api.StoryWriter.action;
 import static com.github.toy.constructor.core.api.properties.DoCapturesOf.catchFailureEvent;
 import static com.google.common.base.Preconditions.checkArgument;

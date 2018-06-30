@@ -1,6 +1,6 @@
 package com.github.toy.constructor.core.api;
 
-import com.github.toy.constructor.core.api.captors.CapturedStringInjector;
+import com.github.toy.constructor.core.api.event.firing.captors.CapturedStringInjector;
 
 import java.util.ArrayList;
 import java.util.List;

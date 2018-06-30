@@ -1,6 +1,6 @@
 package com.github.toy.constructor.core.api;
 
-import com.github.toy.constructor.core.api.captors.StringCaptor;
+import com.github.toy.constructor.core.api.event.firing.captors.StringCaptor;
 
 public class TestStringCaptor extends StringCaptor<Object> {
 
@@ -14,7 +14,7 @@ public class TestStringCaptor extends StringCaptor<Object> {
     }
 
     @Override
-    protected Class<Object> getTypeToBeCaptured() {
+    public Class<Object> getTypeToBeCaptured() {
         return Object.class;
     }
 }

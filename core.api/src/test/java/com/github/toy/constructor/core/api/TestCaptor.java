@@ -1,5 +1,7 @@
 package com.github.toy.constructor.core.api;
 
+import com.github.toy.constructor.core.api.event.firing.Captor;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +24,7 @@ public class TestCaptor extends Captor<Object, String> {
     }
 
     @Override
-    protected Class<Object> getTypeToBeCaptured() {
+    public Class<Object> getTypeToBeCaptured() {
         return Object.class;
     }
 }

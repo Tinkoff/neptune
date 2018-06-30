@@ -1,6 +1,6 @@
 package com.github.toy.constructor.allure;
 
-import com.github.toy.constructor.core.api.captors.CapturedImageInjector;
+import com.github.toy.constructor.core.api.event.firing.captors.CapturedImageInjector;
 
 import java.awt.image.*;
 import java.io.ByteArrayInputStream;

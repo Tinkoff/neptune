@@ -13,7 +13,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.safari.SafariOptions;
 
 import java.util.List;
-import static com.github.toy.constructor.core.api.SPIUtil.loadSPI;
+import static com.github.toy.constructor.core.api.utils.SPIUtil.loadSPI;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;

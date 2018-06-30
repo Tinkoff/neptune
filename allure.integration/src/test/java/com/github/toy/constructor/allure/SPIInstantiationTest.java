@@ -1,13 +1,12 @@
 package com.github.toy.constructor.allure;
 
-import com.github.toy.constructor.core.api.StepAnnotationFactory;
-import com.github.toy.constructor.core.api.captors.CapturedFileInjector;
-import com.github.toy.constructor.core.api.captors.CapturedImageInjector;
-import com.github.toy.constructor.core.api.captors.CapturedStringInjector;
+import com.github.toy.constructor.core.api.event.firing.captors.CapturedFileInjector;
+import com.github.toy.constructor.core.api.event.firing.captors.CapturedImageInjector;
+import com.github.toy.constructor.core.api.event.firing.captors.CapturedStringInjector;
 import org.hamcrest.Matchers;
 import org.testng.annotations.Test;
 
-import static com.github.toy.constructor.core.api.SPIUtil.loadSPI;
+import static com.github.toy.constructor.core.api.utils.SPIUtil.loadSPI;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class SPIInstantiationTest {
@@ -27,12 +26,6 @@ public class SPIInstantiationTest {
     @Test
     public void instantiationOfStringInjectorTest() {
         assertThat(AllureStringInjector.class.isAssignableFrom(loadSPI(CapturedStringInjector.class).get(0).getClass()),
-                Matchers.is(true));
-    }
-
-    @Test
-    public void instantiationOfAllureAnnotationFactory() {
-        assertThat(AllureAnnotationFactory.class.isAssignableFrom(loadSPI(StepAnnotationFactory.class).get(0).getClass()),
                 Matchers.is(true));
     }
 }

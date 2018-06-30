@@ -1,6 +1,6 @@
 package com.github.toy.constructor.check.test;
 
-import com.github.toy.constructor.core.api.Captor;
+import com.github.toy.constructor.core.api.event.firing.Captor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ public class DefaultListLogger extends Captor<Object, String> {
     }
 
     @Override
-    protected Class<Object> getTypeToBeCaptured() {
+    public Class<Object> getTypeToBeCaptured() {
         return Object.class;
     }
 }

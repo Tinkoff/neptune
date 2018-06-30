@@ -1,6 +1,6 @@
 package com.github.toy.constructor.selenium.captors;
 
-import com.github.toy.constructor.core.api.captors.ImageCaptor;
+import com.github.toy.constructor.core.api.event.firing.captors.ImageCaptor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 
@@ -14,7 +14,7 @@ import static java.lang.String.format;
 
 public class SeleniumImageCaptor extends ImageCaptor<TakesScreenshot> {
     @Override
-    protected void capture(TakesScreenshot caught, String message) {
+    public void capture(TakesScreenshot caught, String message) {
         try {
             BufferedImage image = getData(caught);
             injectors.forEach(injector -> injector.inject(image, format("Taken browser picture of '%s'", message)));
@@ -34,7 +34,7 @@ public class SeleniumImageCaptor extends ImageCaptor<TakesScreenshot> {
     }
 
     @Override
-    protected Class<TakesScreenshot> getTypeToBeCaptured() {
+    public Class<TakesScreenshot> getTypeToBeCaptured() {
         return TakesScreenshot.class;
     }
 }

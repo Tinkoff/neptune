@@ -1,4 +1,4 @@
-package com.github.toy.constructor.core.api;
+package com.github.toy.constructor.core.api.utils;
 
 import java.lang.reflect.Constructor;
 import java.util.Arrays;

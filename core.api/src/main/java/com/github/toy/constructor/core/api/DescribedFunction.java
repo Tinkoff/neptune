@@ -1,30 +1,28 @@
 package com.github.toy.constructor.core.api;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.function.Function;
 
+import static com.github.toy.constructor.core.api.StaticEventFiring.*;
+import static com.github.toy.constructor.core.api.properties.DoCapturesOf.catchFailureEvent;
+import static com.github.toy.constructor.core.api.properties.DoCapturesOf.catchSuccessEvent;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @SuppressWarnings("unchecked")
 class DescribedFunction<T, R> implements Function<T, R> {
 
-    private final LinkedList<Function<Object, Object>> sequence = new LinkedList<>();
     private final String description;
     private final Function<T, R> function;
-    private boolean isSecondary;
+    private boolean isComplex;
 
     DescribedFunction(String description, Function<T, R> function) {
         checkArgument(function != null, "Function should be defined");
         checkArgument(!isBlank(description), "Description should not be empty");
         this.description = description;
         this.function = function;
-        if (DescribedFunction.class.isAssignableFrom(function.getClass())) {
-            addToSequence(DescribedFunction.class.cast(function));
-        }
     }
 
     private static <T, V, R> Function<T, R> getSequentialDescribedFunction(Function<? super T, ? extends V> before,
@@ -42,29 +40,30 @@ class DescribedFunction<T, R> implements Function<T, R> {
         return new DescribedFunction<T, R>(after.toString(), t -> {
             V result = before.apply(t);
             return ofNullable(result).map(after).orElse(null);
-        })
-                .addToSequence(DescribedFunction.class.cast(before))
-                .addToSequence(DescribedFunction.class.cast(after));
+        }).setComplex();
     }
 
     @Override
     public R apply(T t) {
-        return function.apply(t);
-    }
-
-    LinkedList<Function<Object, Object>> getSequence() {
-        return sequence;
-    }
-
-    private DescribedFunction<T, R> addToSequence(DescribedFunction<?, ?> sequenceChain) {
-        List<Function<Object, Object>> functions = sequenceChain.getSequence();
-        if (sequenceChain.getSequence().size() == 0) {
-           sequence.addLast((Function<Object, Object>) sequenceChain);
+        try {
+            fireEventStarting(format("From %s get %s", t, description));
+            R result = function.apply(t);
+            fireReturnedValue(result);
+            if (catchSuccessEvent() && !isComplex) {
+                catchResult(result, format("Getting of '%s' succeed", description));
+            }
+            return result;
         }
-        else {
-            sequence.addAll(functions);
+        catch (Throwable thrown) {
+            fireThrownException(thrown);
+            if (catchFailureEvent() && !isComplex) {
+                catchResult(t, format("Getting of '%s' failed", description));
+            }
+            throw thrown;
         }
-        return this;
+        finally {
+            fireEventFinishing();
+        }
     }
 
     @Override
@@ -80,12 +79,8 @@ class DescribedFunction<T, R> implements Function<T, R> {
         return getSequentialDescribedFunction(this, after);
     }
 
-    boolean isSecondary() {
-        return isSecondary;
-    }
-
-    DescribedFunction setSecondary() {
-        isSecondary = true;
+    private DescribedFunction<T, R> setComplex() {
+        isComplex = true;
         return this;
     }
 }

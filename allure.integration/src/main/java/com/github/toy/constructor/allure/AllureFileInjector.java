@@ -1,6 +1,6 @@
 package com.github.toy.constructor.allure;
 
-import com.github.toy.constructor.core.api.captors.CapturedFileInjector;
+import com.github.toy.constructor.core.api.event.firing.captors.CapturedFileInjector;
 import io.qameta.allure.AllureResultsWriteException;
 
 import java.io.File;

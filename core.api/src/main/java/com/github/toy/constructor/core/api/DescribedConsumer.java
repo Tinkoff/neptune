@@ -1,20 +1,21 @@
 package com.github.toy.constructor.core.api;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.function.Consumer;
 
+import static com.github.toy.constructor.core.api.StaticEventFiring.*;
+import static com.github.toy.constructor.core.api.properties.DoCapturesOf.catchFailureEvent;
+import static com.github.toy.constructor.core.api.properties.DoCapturesOf.catchSuccessEvent;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @SuppressWarnings("unchecked")
 class DescribedConsumer<T> implements Consumer<T> {
 
-    private final LinkedList<Consumer<T>> sequence = new LinkedList<>();
     private final String description;
     private final Consumer<T> consumer;
-    private boolean isSecondary;
+    private boolean isComplex;
 
     DescribedConsumer(String description, Consumer<T> consumer) {
         checkArgument(consumer != null, "Consumer should be defined");
@@ -36,14 +37,28 @@ class DescribedConsumer<T> implements Consumer<T> {
 
         return new DescribedConsumer<T>(after.toString(), t -> {
             before.accept(t); after.accept(t);
-        })
-                .addToSequence(DescribedConsumer.class.cast(before))
-                .addToSequence(DescribedConsumer.class.cast(after));
+        }).setComplex();
     }
 
     @Override
     public void accept(T t) {
-        consumer.accept(t);
+        try {
+            fireEventStarting(format("Perform %s on %s", description, t));
+            consumer.accept(t);
+            if (catchSuccessEvent() && !isComplex) {
+                catchResult(t, format("Performing of '%s' succeed", description));
+            }
+        }
+        catch (Throwable thrown) {
+            fireThrownException(thrown);
+            if (catchFailureEvent() && !isComplex) {
+                catchResult(t, format("Performing of '%s' failed", description));
+            }
+            throw thrown;
+        }
+        finally {
+            fireEventFinishing();
+        }
     }
 
     @Override
@@ -51,31 +66,12 @@ class DescribedConsumer<T> implements Consumer<T> {
         return description;
     }
 
-    LinkedList<Consumer<T>> getSequence() {
-        return sequence;
-    }
-
-    private DescribedConsumer<T> addToSequence(DescribedConsumer<T> sequenceChain) {
-        List<Consumer<T>> consumers = sequenceChain.getSequence();
-        if (consumers.size() == 0) {
-            sequence.addLast(sequenceChain);
-        }
-        else {
-            sequence.addAll(consumers);
-        }
-        return this;
-    }
-
     public Consumer<T> andThen(Consumer<? super T> afterAction)  {
         return getSequentialDescribedConsumer(this, afterAction);
     }
 
-    boolean isSecondary() {
-        return isSecondary;
-    }
-
-    DescribedConsumer setSecondary() {
-        isSecondary = true;
+    private DescribedConsumer<T> setComplex() {
+        isComplex = true;
         return this;
     }
 }

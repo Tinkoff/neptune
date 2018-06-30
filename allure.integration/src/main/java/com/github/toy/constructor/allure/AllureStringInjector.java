@@ -1,6 +1,6 @@
 package com.github.toy.constructor.allure;
 
-import com.github.toy.constructor.core.api.captors.CapturedStringInjector;
+import com.github.toy.constructor.core.api.event.firing.captors.CapturedStringInjector;
 
 import static io.qameta.allure.Allure.addAttachment;
 

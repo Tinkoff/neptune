@@ -1,11 +1,9 @@
 package com.github.toy.constructor.core.api;
 
-import java.util.LinkedList;
 import java.util.function.Function;
 
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.format;
 
 /**
  * It is designed to typify functions which get required value and to restrict chains of
@@ -34,20 +32,7 @@ public abstract class SequentialGetSupplier<T, R, Q, THIS extends SequentialGetS
                 "Function to get value from is not described. " +
                         "Use method StoryWriter.toGet to describe it.");
 
-        Function<Q, R> goalFunction = getEndFunction();
-        DescribedFunction<T, ? extends Q> describedMediatorFunction = DescribedFunction.class.cast(mediatorFunction);
-        Function<?, ?> previous;
-        LinkedList<Function<Object, Object>> sequence = describedMediatorFunction.getSequence();
-
-        if (sequence.size() == 0) {
-            previous = describedMediatorFunction;
-        }
-        else {
-            previous = sequence.getLast();
-        }
-
-        return set(toGet(format("%s from (%s)", goalFunction, previous),
-                mediatorFunction.andThen(goalFunction)));
+        return set(mediatorFunction.andThen(getEndFunction()));
     }
 
     /**

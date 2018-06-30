@@ -1,11 +1,13 @@
-package com.github.toy.constructor.core.api;
+package com.github.toy.constructor.core.api.event.firing;
+
+import com.github.toy.constructor.core.api.CapturedDataInjector;
 
 import java.util.List;
 
 import static java.util.List.of;
 
 /**
- * This class is designed to catch events for the logging/report.
+ * This class is designed to catch different objects for the logging/report.
  *
  * @param <T> is a type of an object to be caught for the logging/reporting.
  * @param <S> is a type of produced data.
@@ -22,7 +24,7 @@ public abstract class Captor<T, S> {
         this(of());
     }
 
-    protected void capture(T caught, String message) {
+    public void capture(T caught, String message) {
         S s = getData(caught);
         injectors.forEach(injector -> injector.inject(s, message));
     }
@@ -35,5 +37,5 @@ public abstract class Captor<T, S> {
      */
     protected abstract S getData(T caught);
 
-    protected abstract Class<T> getTypeToBeCaptured();
+    public abstract Class<T> getTypeToBeCaptured();
 }

@@ -1,6 +1,6 @@
 package com.github.toy.constructor.core.api;
 
-import com.github.toy.constructor.core.api.captors.FileCaptor;
+import com.github.toy.constructor.core.api.event.firing.captors.FileCaptor;
 
 import java.io.File;
 
@@ -16,7 +16,7 @@ public class TestFileCaptor extends FileCaptor<Object> {
     }
 
     @Override
-    protected Class<Object> getTypeToBeCaptured() {
+    public Class<Object> getTypeToBeCaptured() {
         return Object.class;
     }
 }
