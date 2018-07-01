@@ -20,13 +20,13 @@ public class GetFrameDescriptionTest {
     @Test
     public void indexWithTimeOutDescriptionTest() {
         assertThat(frame(index(ofSeconds(7), 2)).get().toString(),
-                is("Frame by index 2. Time to get valuable result: 0:00:07:000 from (Current content)"));
+                is("Frame by index 2. Time to get valuable result: 0:00:07:000"));
     }
 
     @Test
     public void indexWithoutTimeOutDescriptionTest() {
         assertThat(frame(index(2)).get().toString(),
-                is("Frame by index 2. Time to get valuable result: 0:01:00:000 from (Current content)"));
+                is("Frame by index 2. Time to get valuable result: 0:01:00:000"));
     }
 
     @Test
@@ -36,7 +36,7 @@ public class GetFrameDescriptionTest {
 
         try {
             assertThat(frame(index(2)).get().toString(),
-                    is("Frame by index 2. Time to get valuable result: 0:03:00:000 from (Current content)"));
+                    is("Frame by index 2. Time to get valuable result: 0:03:00:000"));
         }
         finally {
             System.getProperties().remove(WAITING_FRAME_SWITCHING_TIME_UNIT.getPropertyName());
@@ -47,15 +47,13 @@ public class GetFrameDescriptionTest {
     @Test
     public void nameOrIdWithTimeOutDescriptionTest() {
         assertThat(frame(nameOrId(ofSeconds(7), "someFrameName")).get().toString(),
-                is("Frame by name or id someFrameName. " +
-                        "Time to get valuable result: 0:00:07:000 from (Current content)"));
+                is("Frame by name or id someFrameName. Time to get valuable result: 0:00:07:000"));
     }
 
     @Test
     public void nameOrIdWithoutTimeOutDescriptionTest() {
         assertThat(frame(nameOrId("someFrameName")).get().toString(),
-                is("Frame by name or id someFrameName. " +
-                        "Time to get valuable result: 0:01:00:000 from (Current content)"));
+                is("Frame by name or id someFrameName. Time to get valuable result: 0:01:00:000"));
     }
 
     @Test
@@ -65,8 +63,7 @@ public class GetFrameDescriptionTest {
 
         try {
             assertThat(frame(nameOrId("someFrameName")).get().toString(),
-                    is("Frame by name or id someFrameName. " +
-                            "Time to get valuable result: 0:03:00:000 from (Current content)"));
+                    is("Frame by name or id someFrameName. Time to get valuable result: 0:03:00:000"));
         }
         finally {
             System.getProperties().remove(WAITING_FRAME_SWITCHING_TIME_UNIT.getPropertyName());
@@ -77,15 +74,13 @@ public class GetFrameDescriptionTest {
     @Test
     public void webElementWithTimeOutDescriptionTest() {
         assertThat(frame(insideElement(ofSeconds(7), new DescribedWebElement())).get().toString(),
-                is("Frame inside element Test web element. " +
-                        "Time to get valuable result: 0:00:07:000 from (Current content)"));
+                is("Frame inside element Test web element. Time to get valuable result: 0:00:07:000"));
     }
 
     @Test
     public void webElementWithoutTimeOutDescriptionTest() {
         assertThat(frame(insideElement(new DescribedWebElement())).get().toString(),
-                is("Frame inside element Test web element. " +
-                        "Time to get valuable result: 0:01:00:000 from (Current content)"));
+                is("Frame inside element Test web element. Time to get valuable result: 0:01:00:000"));
     }
 
     @Test
@@ -95,8 +90,7 @@ public class GetFrameDescriptionTest {
 
         try {
             assertThat(frame(insideElement(new DescribedWebElement())).get().toString(),
-                    is("Frame inside element Test web element. " +
-                            "Time to get valuable result: 0:03:00:000 from (Current content)"));
+                    is("Frame inside element Test web element. Time to get valuable result: 0:03:00:000"));
         }
         finally {
             System.getProperties().remove(WAITING_FRAME_SWITCHING_TIME_UNIT.getPropertyName());
@@ -108,7 +102,7 @@ public class GetFrameDescriptionTest {
     public void wrappedWebElementWithTimeOutDescriptionTest() {
         assertThat(frame(wrappedBy(ofSeconds(7), new FrameWidget(new DescribedWebElement()))).get().toString(),
                 is("Frame inside element wrapped by Frame widget. " +
-                        "Time to get valuable result: 0:00:07:000 from (Current content)"));
+                        "Time to get valuable result: 0:00:07:000"));
     }
 
 
@@ -116,7 +110,7 @@ public class GetFrameDescriptionTest {
     public void wrappedWebElementWithoutTimeOutDescriptionTest() {
         assertThat(frame(wrappedBy(new FrameWidget(new DescribedWebElement()))).get().toString(),
                 is("Frame inside element wrapped by Frame widget. " +
-                        "Time to get valuable result: 0:01:00:000 from (Current content)"));
+                        "Time to get valuable result: 0:01:00:000"));
     }
 
     @Test
@@ -127,7 +121,7 @@ public class GetFrameDescriptionTest {
         try {
             assertThat(frame(wrappedBy(new FrameWidget(new DescribedWebElement()))).get().toString(),
                     is("Frame inside element wrapped by Frame widget. " +
-                            "Time to get valuable result: 0:03:00:000 from (Current content)"));
+                            "Time to get valuable result: 0:03:00:000"));
         }
         finally {
             System.getProperties().remove(WAITING_FRAME_SWITCHING_TIME_UNIT.getPropertyName());

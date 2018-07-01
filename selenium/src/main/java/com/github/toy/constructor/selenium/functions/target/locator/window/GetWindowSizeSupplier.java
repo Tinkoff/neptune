@@ -47,6 +47,6 @@ public final class GetWindowSizeSupplier extends SequentialGetSupplier<SeleniumS
 
     @Override
     protected Function<Window, Dimension> getEndFunction() {
-        return toGet("Size", WebDriver.Window::getSize);
+        return toGet("Size of the window", WebDriver.Window::getSize);
     }
 }

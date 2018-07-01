@@ -19,7 +19,7 @@ public class WindowSizeHandlingDescription {
     @Test
     public void getSizeDescription() {
         assertThat(windowSize().toString(),
-                is("Size from (The first window/tab)"));
+                is("Size of the window"));
     }
 
     @Test
@@ -27,14 +27,13 @@ public class WindowSizeHandlingDescription {
         assertThat(sizeOf(window().byIndex(2)
                         .withTimeToGetWindow(ofSeconds(5))
                         .onCondition(hasTitle("Some title"))).toString(),
-                is("Size from (Window/tab by index 2 with condition Has title 'Some title'. " +
-                        "Time to get valuable result: 0:00:05:000)"));
+                is("Size of the window"));
     }
 
     @Test
     public void getSizeOfWindowDescription() {
         assertThat(sizeOf(new DescribedWindow()).toString(),
-                is("Size from (Test stab window)"));
+                is("Size of the window"));
     }
 
     @Test

@@ -45,6 +45,6 @@ public final class GetWindowTitleSupplier extends SequentialGetSupplier<Selenium
 
     @Override
     protected Function<Window, String> getEndFunction() {
-        return toGet("Title", Window::getTitle);
+        return toGet("Title of the window", Window::getTitle);
     }
 }

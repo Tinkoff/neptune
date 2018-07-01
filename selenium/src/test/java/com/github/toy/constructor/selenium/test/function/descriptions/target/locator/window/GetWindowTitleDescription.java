@@ -16,7 +16,7 @@ public class GetWindowTitleDescription {
     @Test
     public void getPositionDescription() {
         assertThat(windowTitle().toString(),
-                is("Title from (The first window/tab)"));
+                is("Title of the window"));
     }
 
     @Test
@@ -24,13 +24,12 @@ public class GetWindowTitleDescription {
         assertThat(titleOf(window().byIndex(2)
                         .withTimeToGetWindow(ofSeconds(5))
                         .onCondition(hasTitle("Some title"))).toString(),
-                is("Title from (Window/tab by index 2 with condition Has title 'Some title'. " +
-                        "Time to get valuable result: 0:00:05:000)"));
+                is("Title of the window"));
     }
 
     @Test
     public void getPositionOfWindowDescription() {
         assertThat(titleOf(new DescribedWindow()).toString(),
-                is("Title from (Test stab window)"));
+                is("Title of the window"));
     }
 }

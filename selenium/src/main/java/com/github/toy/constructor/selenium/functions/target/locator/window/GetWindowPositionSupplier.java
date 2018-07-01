@@ -47,6 +47,6 @@ public final class GetWindowPositionSupplier extends SequentialGetSupplier<Selen
 
     @Override
     protected Function<Window, Point> getEndFunction() {
-        return toGet("Position", WebDriver.Window::getPosition);
+        return toGet("Position of the window", WebDriver.Window::getPosition);
     }
 }

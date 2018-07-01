@@ -21,16 +21,13 @@ public class SequentialGetValueDescriptionTest {
         assertThat(ofThe(textField("Some text field", ofSeconds(55), shouldBeVisible()
                 .and(shouldHaveCssValueContains("some css", "some value")))
                         .foundFrom(tab("Tab 1"))).get().toString(),
-                is("Value from (Text field with condition " +
-                        "(Should have string label(s) [Some text field]) AND ((Should be visible) " +
-                        "AND (Should have css property  'some css' which contains value 'some value')). " +
-                        "Time to get valuable result: 0:00:55:000)"));
+                is("Value"));
     }
 
     @Test
     public void getValueOfSomeValuable() {
         assertThat(ofThe(new SomeStubValuableWidget(new DescribedWebElement())).get().toString(),
-                is("Value from (Some widget which has string value)"));
+                is("Value"));
     }
 
     @Name("Some valuable widget")

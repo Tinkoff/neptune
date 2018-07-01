@@ -19,7 +19,7 @@ public class WindowPositionHandlingDescription {
     @Test
     public void getPositionDescription() {
         assertThat(windowPosition().toString(),
-                is("Position from (The first window/tab)"));
+                is("Position of the window"));
     }
 
     @Test
@@ -27,14 +27,13 @@ public class WindowPositionHandlingDescription {
         assertThat(positionOf(window().byIndex(2)
                         .withTimeToGetWindow(ofSeconds(5))
                         .onCondition(hasTitle("Some title"))).toString(),
-                is("Position from (Window/tab by index 2 with condition Has title 'Some title'. " +
-                        "Time to get valuable result: 0:00:05:000)"));
+                is("Position of the window"));
     }
 
     @Test
     public void getPositionOfWindowDescription() {
         assertThat(positionOf(new DescribedWindow()).toString(),
-                is("Position from (Test stab window)"));
+                is("Position of the window"));
     }
 
     @Test
