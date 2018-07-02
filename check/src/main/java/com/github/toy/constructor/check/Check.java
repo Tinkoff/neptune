@@ -11,12 +11,12 @@ import static java.lang.String.format;
 public class Check implements PerformStep<Check> {
 
     /**
-     * This method performs the checking of some value by criteria.
-     * @param that is a how to check some value.
-     * @param <T> the type of the value to check
+     * This method performs the checking of some thatValue by criteria.
+     * @param that is a how to check some thatValue.
+     * @param <T> the type of the thatValue to check
      * @return self-reference
      */
-    public <T> Check verify(Value<T> that) {
+    public <T> Check verify(ThatValue<T> that) {
         checkArgument(that != null, "Verifying should be described");
         return perform(that);
     }

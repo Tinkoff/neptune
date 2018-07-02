@@ -1,5 +1,6 @@
 package com.github.toy.constructor.allure;
 
+import com.github.toy.constructor.core.api.event.firing.EventLogger;
 import com.github.toy.constructor.core.api.event.firing.captors.CapturedFileInjector;
 import com.github.toy.constructor.core.api.event.firing.captors.CapturedImageInjector;
 import com.github.toy.constructor.core.api.event.firing.captors.CapturedStringInjector;
@@ -26,6 +27,12 @@ public class SPIInstantiationTest {
     @Test
     public void instantiationOfStringInjectorTest() {
         assertThat(AllureStringInjector.class.isAssignableFrom(loadSPI(CapturedStringInjector.class).get(0).getClass()),
+                Matchers.is(true));
+    }
+
+    @Test
+    public void instantiationOfAllureEventLogger() {
+        assertThat(AllureEventLogger.class.isAssignableFrom(loadSPI(EventLogger.class).get(0).getClass()),
                 Matchers.is(true));
     }
 }

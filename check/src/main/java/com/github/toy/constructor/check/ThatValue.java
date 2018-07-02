@@ -23,48 +23,62 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class Value<T> extends SequentialActionSupplier<Check, T, Value<T>> {
+public final class ThatValue<T> extends SequentialActionSupplier<Check, T, ThatValue<T>> {
 
     private final T inspected;
     private final FluentMatcher<T> matcher;
+    private final String description;
 
-    private Value(T inspected) {
+    private ThatValue(String description, T inspected) {
         this.inspected = inspected;
+        this.description = description;
         matcher = new FluentMatcher<>();
     }
 
     /**
-     * Creates an instance of {@link Value} and defines value to be verified.
+     * Creates an instance of {@link ThatValue} and defines thatValue to be verified.
      *
-     * @param t value to be verified.
+     * @param description of a thatValue to be verified.
+     * @param t thatValue to be verified.
      * @param <T> is a type to be verified.
-     * @return an instance of {@link Value} with defined value to be verified.
+     * @return an instance of {@link ThatValue} with defined thatValue to be verified.
      */
-    public static <T> Value<T> value(T t) {
-        return new Value<>(t);
+    public static <T> ThatValue<T> thatValue(String description, T t) {
+        return new ThatValue<>(description, t);
     }
 
     /**
-     * Adds more criteria to check the value.
+     * Creates an instance of {@link ThatValue} and defines thatValue to be verified.
      *
-     * @param function value gets some value from an object which is needed to be matched
+     * @param t thatValue to be verified.
+     * @param <T> is a type to be verified.
+     * @return an instance of {@link ThatValue} with defined thatValue to be verified.
+     */
+    public static <T> ThatValue<T> thatValue(T t) {
+        return new ThatValue<>(null, t);
+    }
+
+    /**
+     * Adds more criteria to check the thatValue.
+     *
+     * @param function thatValue gets some thatValue from an object which is needed to be matched
      * @param criteria matcher to be added
-     * @param <R> the type of a value value should be returned by function and matched by criteria.
+     * @param <R> the type of a thatValue thatValue should be returned by function and matched by criteria.
      * @return self-reference
      */
-    public <R> Value<T> expected(String description,
-                                 Function<T, R> function, Matcher<? super R> criteria) {
+    public <R> ThatValue<T> suitsCriteria(String description,
+                                          Function<T, R> function, Matcher<? super R> criteria) {
         matcher.shouldMatch(description, function, criteria);
         return this;
     }
 
     /**
-     * Adds more criteria to check value value.
+     * Adds more criteria to check thatValue thatValue.
      *
      * @param criteria matcher to be added
      * @return self-reference
      */
-    public Value<T> expected(Matcher<? super T> criteria) {
+    public ThatValue<T> suitsCriteria(Matcher<? super T> criteria) {
         matcher.shouldMatch(criteria);
         return this;
     }
@@ -72,8 +86,10 @@ public final class Value<T> extends SequentialActionSupplier<Check, T, Value<T>>
     @Override
     public Consumer<Check> get() {
         return ofNullable(super.get())
-                .orElseGet(() -> andThen("Assert value ",
-                        toGet(format("Inspected value %s", inspected), check -> inspected), matcher)
+                .orElseGet(() -> andThen("Assert thatValue ",
+                        toGet(ofNullable(description)
+                                .orElseGet(() -> format("Inspected thatValue %s", inspected)),
+                                check -> inspected), matcher)
                         .get());
     }
 
@@ -103,15 +119,15 @@ public final class Value<T> extends SequentialActionSupplier<Check, T, Value<T>>
         }
 
         /**
-         * Adds more criteria to check some value.
+         * Adds more criteria to check some thatValue.
          *
-         * @param function value gets some value from an object which is needed to be matched
+         * @param function thatValue gets some thatValue from an object which is needed to be matched
          * @param criteria matcher to be added
-         * @param <R> the type of a value value should be returned by function and matched by criteria.
+         * @param <R> the type of a thatValue thatValue should be returned by function and matched by criteria.
          * @return self-reference
          */
         private <R> FluentMatcher<T> shouldMatch(String valueDescription, Function<T, R> function, Matcher<? super R> criteria) {
-            checkArgument(!isBlank(valueDescription), "Description of a value value the function returns" +
+            checkArgument(!isBlank(valueDescription), "Description of a thatValue thatValue the function returns" +
                     "should not be blank");
             checkNotNull(function);
             checkNotNull(criteria);
@@ -122,13 +138,13 @@ public final class Value<T> extends SequentialActionSupplier<Check, T, Value<T>>
         }
 
         /**
-         * Adds more criteria to check some value.
+         * Adds more criteria to check some thatValue.
          *
          * @param criteria matcher to be added
          * @return self-reference
          */
         private FluentMatcher<T> shouldMatch(Matcher<? super T> criteria) {
-            return shouldMatch("Inspected value", t -> t, criteria);
+            return shouldMatch("Inspected thatValue", t -> t, criteria);
         }
 
         @Override
@@ -141,7 +157,7 @@ public final class Value<T> extends SequentialActionSupplier<Check, T, Value<T>>
                 if (!result) {
                     Description description = new StringDescription();
                     value.describeMismatch(valueToMatch, description);
-                    mismatchList.add(format("  It was expected value %s suits criteria '%s'. Actual result: %s\n", key,
+                    mismatchList.add(format("  It was suitsCriteria thatValue %s suits criteria '%s'. Actual result: %s\n", key,
                             value, description));
                 }
                 if (mismatchList.size() > 0) {
