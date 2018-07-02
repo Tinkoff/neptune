@@ -5,9 +5,12 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
+import java.util.List;
+
 import static com.github.toy.constructor.check.Value.value;
+import static com.github.toy.constructor.check.test.TestEventLogger.MESSAGES;
 import static com.github.toy.constructor.core.api.StoryWriter.action;
-import static com.github.toy.constructor.core.api.Substitution.getSubstituted;
+import static com.github.toy.constructor.core.api.proxy.Substitution.getSubstituted;
 import static com.github.toy.constructor.core.api.properties.CapturedEvents.FAILURE;
 import static com.github.toy.constructor.core.api.properties.CapturedEvents.SUCCESS;
 import static com.github.toy.constructor.core.api.properties.CapturedEvents.SUCCESS_AND_FAILURE;
@@ -15,6 +18,7 @@ import static com.github.toy.constructor.core.api.properties.DoCapturesOf.DO_CAP
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 import static java.lang.System.getProperties;
+import static java.util.List.of;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -30,7 +34,103 @@ public class CheckTest {
     @BeforeMethod
     public void beforeMethod() {
         DefaultListLogger.messages.clear();
+        MESSAGES.clear();
     }
+
+    private static final List<String> EXPECTED_LOGGER_MESSAGES1 =
+            of("Perform Assert value . With parameters: {Inspected value 4,\n" +
+                            "Is integer\n" +
+                            "           is <true>\n" +
+                            "Sqrt value\n" +
+                            "           is <2.0>} has started",
+                    "Get Inspected value 4 has started",
+                    "4 has been returned",
+                    "Event finished",
+                    "From 4 get Is integer has started",
+                    "true has been returned",
+                    "Event finished",
+                    "From 4 get Sqrt value has started",
+                    "2.0 has been returned",
+                    "Event finished",
+                    "Event finished",
+                    "Perform Assert value . With parameters: {Inspected value 5,\n" +
+                            "Sqr value\n" +
+                            "           is <25.0>} has started",
+                    "Get Inspected value 5 has started",
+                    "5 has been returned",
+                    "Event finished",
+                    "From 5 get Sqr value has started",
+                    "25.0 has been returned",
+                    "Event finished",
+                    "Event finished");
+
+    private static final List<String> EXPECTED_LOGGER_MESSAGES2 =
+            of("Perform Check numbers 4 and 5 has started",
+                    "Perform Assert value . With parameters: {Inspected value 4,\n" +
+                            "Is integer\n" +
+                            "           is <true>\n" +
+                            "Sqrt value\n" +
+                            "           is <2.0>} has started",
+                    "Get Inspected value 4 has started",
+                    "4 has been returned",
+                    "Event finished",
+                    "From 4 get Is integer has started",
+                    "true has been returned",
+                    "Event finished",
+                    "From 4 get Sqrt value has started",
+                    "2.0 has been returned",
+                    "Event finished",
+                    "Event finished",
+                    "Perform Assert value . With parameters: {Inspected value 5,\n" +
+                            "Sqr value\n" +
+                            "           is <25.0>} has started",
+                    "Get Inspected value 5 has started",
+                    "5 has been returned",
+                    "Event finished",
+                    "From 5 get Sqr value has started",
+                    "25.0 has been returned",
+                    "Event finished",
+                    "Event finished",
+                    "Event finished");
+
+    private static final List<String> EXPECTED_LOGGER_MESSAGES3 =
+            of("Perform Assert value . With parameters: {Inspected value 9,\n" +
+                    "Is integer\n" +
+                    "           is <true>\n" +
+                    "Sqrt value\n" +
+                    "           is <2.0>} has started",
+                    "Get Inspected value 9 has started",
+                    "9 has been returned",
+                    "Event finished",
+                    "From 9 get Is integer has started",
+                    "true has been returned",
+                    "Event finished",
+                    "From 9 get Sqrt value has started",
+                    "3.0 has been returned",
+                    "Event finished",
+                    "java.lang.AssertionError has been thrown",
+                    "Event finished");
+
+    private static final List<String> EXPECTED_LOGGER_MESSAGES4 =
+            of("Perform Check number 9 has started",
+                    "Perform Assert value . With parameters: {Inspected value 9,\n" +
+                            "Is integer\n" +
+                            "           is <true>\n" +
+                            "Sqrt value\n" +
+                            "           is <2.0>} has started",
+                    "Get Inspected value 9 has started",
+                    "9 has been returned",
+                    "Event finished",
+                    "From 9 get Is integer has started",
+                    "true has been returned",
+                    "Event finished",
+                    "From 9 get Sqrt value has started",
+                    "3.0 has been returned",
+                    "Event finished",
+                    "java.lang.AssertionError has been thrown",
+                    "Event finished",
+                    "java.lang.AssertionError has been thrown",
+                    "Event finished");
 
     @Test
     public void testOfLinearPositiveCaseWhenEventIsNotDefined() {
@@ -46,6 +146,9 @@ public class CheckTest {
         assertThat("Logged messages",
                 DefaultListLogger.messages,
                 emptyIterable());
+
+        assertThat(MESSAGES,
+                contains(EXPECTED_LOGGER_MESSAGES1.toArray()));
     }
 
 
@@ -80,6 +183,9 @@ public class CheckTest {
                             "Performing of 'Assert value . With parameters: {Inspected value 5,\n" +
                                     "Sqr value\n" +
                                     "           is <25.0>}' succeed"));
+
+            assertThat(MESSAGES,
+                    contains(EXPECTED_LOGGER_MESSAGES1.toArray()));
         }
         finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
@@ -105,6 +211,9 @@ public class CheckTest {
             assertThat("Logged messages",
                     DefaultListLogger.messages,
                     emptyIterable());
+
+            assertThat(MESSAGES,
+                    contains(EXPECTED_LOGGER_MESSAGES1.toArray()));
         }
         finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
@@ -142,6 +251,9 @@ public class CheckTest {
                             "Performing of 'Assert value . With parameters: {Inspected value 5,\n" +
                                     "Sqr value\n" +
                                     "           is <25.0>}' succeed"));
+
+            assertThat(MESSAGES,
+                    contains(EXPECTED_LOGGER_MESSAGES1.toArray()));
         }
         finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
@@ -166,6 +278,9 @@ public class CheckTest {
         assertThat("Logged messages",
                 DefaultListLogger.messages,
                 emptyIterable());
+
+        assertThat(MESSAGES,
+                contains(EXPECTED_LOGGER_MESSAGES2.toArray()));
     }
 
     @Test
@@ -201,6 +316,9 @@ public class CheckTest {
                                     "Sqr value\n" +
                                     "           is <25.0>}' succeed",
                             "Performing of 'Check numbers 4 and 5' succeed"));
+
+            assertThat(MESSAGES,
+                    contains(EXPECTED_LOGGER_MESSAGES2.toArray()));
         }
         finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
@@ -227,6 +345,9 @@ public class CheckTest {
             assertThat("Logged messages",
                     DefaultListLogger.messages,
                     emptyIterable());
+
+            assertThat(MESSAGES,
+                    contains(EXPECTED_LOGGER_MESSAGES2.toArray()));
         }
         finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
@@ -266,6 +387,9 @@ public class CheckTest {
                                     "Sqr value\n" +
                                     "           is <25.0>}' succeed",
                             "Performing of 'Check numbers 4 and 5' succeed"));
+
+            assertThat(MESSAGES,
+                    contains(EXPECTED_LOGGER_MESSAGES2.toArray()));
         }
         finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
@@ -299,6 +423,9 @@ public class CheckTest {
         finally {
             assertThat(DefaultListLogger.messages,
                     emptyIterable());
+
+            assertThat(MESSAGES,
+                    contains(EXPECTED_LOGGER_MESSAGES3.toArray()));
         }
     }
 
@@ -333,6 +460,9 @@ public class CheckTest {
                     contains("Getting of 'Inspected value 9' succeed",
                             "Getting of 'Is integer' succeed",
                             "Getting of 'Sqrt value' succeed"));
+
+            assertThat(MESSAGES,
+                    contains(EXPECTED_LOGGER_MESSAGES3.toArray()));
         }
     }
 
@@ -370,6 +500,9 @@ public class CheckTest {
                                     "           is <true>\n" +
                                     "Sqrt value\n" +
                                     "           is <2.0>}' failed"));
+
+            assertThat(MESSAGES,
+                    contains(EXPECTED_LOGGER_MESSAGES3.toArray()));
         }
     }
 
@@ -410,6 +543,9 @@ public class CheckTest {
                                     "           is <true>\n" +
                                     "Sqrt value\n" +
                                     "           is <2.0>}' failed"));
+
+            assertThat(MESSAGES,
+                    contains(EXPECTED_LOGGER_MESSAGES3.toArray()));
         }
     }
 
@@ -441,6 +577,9 @@ public class CheckTest {
         finally {
             assertThat(DefaultListLogger.messages,
                     emptyIterable());
+
+            assertThat(MESSAGES,
+                    contains(EXPECTED_LOGGER_MESSAGES4.toArray()));
         }
     }
 
@@ -476,6 +615,9 @@ public class CheckTest {
                     contains("Getting of 'Inspected value 9' succeed",
                             "Getting of 'Is integer' succeed",
                             "Getting of 'Sqrt value' succeed"));
+
+            assertThat(MESSAGES,
+                    contains(EXPECTED_LOGGER_MESSAGES4.toArray()));
         }
     }
 
@@ -515,6 +657,9 @@ public class CheckTest {
                                     "Sqrt value\n" +
                                     "           is <2.0>}' failed",
                             "Performing of 'Check number 9' failed"));
+
+            assertThat(MESSAGES,
+                    contains(EXPECTED_LOGGER_MESSAGES4.toArray()));
         }
     }
 
@@ -557,6 +702,9 @@ public class CheckTest {
                                     "Sqrt value\n" +
                                     "           is <2.0>}' failed",
                             "Performing of 'Check number 9' failed"));
+
+            assertThat(MESSAGES,
+                    contains(EXPECTED_LOGGER_MESSAGES4.toArray()));
         }
     }
 }

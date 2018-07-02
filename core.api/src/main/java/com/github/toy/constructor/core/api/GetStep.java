@@ -16,7 +16,7 @@ public interface GetStep<THIS extends GetStep<THIS>> {
                 "The function which returns the goal value should be described " +
                         "by the StoryWriter.toGet method.");
 
-        return (T) function.apply((THIS) this);
+        return function.apply((THIS) this);
     }
 
     default  <T> T get(Supplier<Function<THIS, T>> functionSupplier) {

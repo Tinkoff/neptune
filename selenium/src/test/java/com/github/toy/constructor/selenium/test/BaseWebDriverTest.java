@@ -12,7 +12,7 @@ import org.testng.annotations.BeforeMethod;
 import java.time.Duration;
 
 import static com.github.toy.constructor.core.api.ConstructorParameters.params;
-import static com.github.toy.constructor.core.api.Substitution.getSubstituted;
+import static com.github.toy.constructor.core.api.proxy.Substitution.getSubstituted;
 import static java.time.Duration.ofMillis;
 import static java.time.Duration.ofSeconds;
 import static org.mockito.Mockito.when;

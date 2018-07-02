@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 
 import static com.github.toy.constructor.core.api.Arithmetical.*;
 import static com.github.toy.constructor.core.api.ConstructorParameters.params;
-import static com.github.toy.constructor.core.api.Substitution.getSubstituted;
+import static com.github.toy.constructor.core.api.proxy.Substitution.getSubstituted;
 import static java.util.Optional.ofNullable;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;

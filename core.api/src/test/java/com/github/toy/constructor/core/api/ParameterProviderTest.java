@@ -1,15 +1,9 @@
 package com.github.toy.constructor.core.api;
 
-import com.github.toy.constructor.core.api.GetStep;
-import com.github.toy.constructor.core.api.PerformStep;
-import com.github.toy.constructor.core.api.ConstructorParameters;
-import com.github.toy.constructor.core.api.CreateWith;
-import com.github.toy.constructor.core.api.ParameterProvider;
-import com.github.toy.constructor.core.api.ProviderOfEmptyParameters;
 import org.testng.annotations.Test;
 
 import static com.github.toy.constructor.core.api.ConstructorParameters.params;
-import static com.github.toy.constructor.core.api.Substitution.getSubstituted;
+import static com.github.toy.constructor.core.api.proxy.Substitution.getSubstituted;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;

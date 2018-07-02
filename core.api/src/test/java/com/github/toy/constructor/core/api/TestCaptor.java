@@ -7,7 +7,7 @@ import java.util.List;
 
 import static java.lang.String.format;
 
-public class TestCaptor extends Captor<Object, String> {
+public class TestCaptor extends Captor<Number, String> {
 
     static final List<String> messages = new ArrayList<>();
 
@@ -19,12 +19,12 @@ public class TestCaptor extends Captor<Object, String> {
     }
 
     @Override
-    protected String getData(Object caught) {
+    protected String getData(Number caught) {
         return caught.toString();
     }
 
     @Override
-    public Class<Object> getTypeToBeCaptured() {
-        return Object.class;
+    public Class<Number> getTypeToBeCaptured() {
+        return Number.class;
     }
 }

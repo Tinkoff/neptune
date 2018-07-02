@@ -1,10 +1,5 @@
 package com.github.toy.constructor.core.api;
 
-import com.github.toy.constructor.core.api.GetStep;
-import com.github.toy.constructor.core.api.PerformStep;
-import com.github.toy.constructor.core.api.Refreshable;
-import com.github.toy.constructor.core.api.CreateWith;
-import com.github.toy.constructor.core.api.ProviderOfEmptyParameters;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -13,7 +8,7 @@ import java.util.List;
 import static com.github.toy.constructor.core.api.Refreshable.refresh;
 import static com.github.toy.constructor.core.api.StoryWriter.action;
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
-import static com.github.toy.constructor.core.api.Substitution.getSubstituted;
+import static com.github.toy.constructor.core.api.proxy.Substitution.getSubstituted;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.emptyCollectionOf;

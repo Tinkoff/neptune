@@ -1,5 +1,6 @@
-package com.github.toy.constructor.core.api;
+package com.github.toy.constructor.core.api.proxy;
 
+import com.github.toy.constructor.core.api.ConstructorParameters;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
@@ -31,6 +32,7 @@ class OuterMethodInterceptor<T> implements MethodInterceptor {
     @Override
     public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
         T target;
+
         try {
             target = ofNullable(threadLocal.get()).orElseGet(() -> {
                 Object[] params = constructorParameters.getParameterValues();
@@ -69,9 +71,6 @@ class OuterMethodInterceptor<T> implements MethodInterceptor {
         }
         catch (InvocationTargetException e) {
             throw ofNullable(e.getCause()).orElse(e);
-        }
-        catch (Throwable e) {
-            throw e;
         }
     }
 }

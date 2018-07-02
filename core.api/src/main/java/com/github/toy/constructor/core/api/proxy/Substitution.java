@@ -1,5 +1,6 @@
-package com.github.toy.constructor.core.api;
+package com.github.toy.constructor.core.api.proxy;
 
+import com.github.toy.constructor.core.api.*;
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.Enhancer;
 import org.objenesis.Objenesis;

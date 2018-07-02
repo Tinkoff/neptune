@@ -30,6 +30,6 @@ public class CalculatorSteps implements PerformStep<CalculatorSteps>, GetStep<Ca
     }
 
     public String toString() {
-        return format("Calculator. Current value is %s", calculated);
+        return "Calculator";
     }
 }

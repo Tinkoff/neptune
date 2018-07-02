@@ -40,24 +40,47 @@ class DescribedConsumer<T> implements Consumer<T> {
         }).setComplex();
     }
 
+    private void fireEventStartingIfNecessary(T t) {
+        if (!isComplex) {
+            if (!PerformStep.class.isAssignableFrom(t.getClass())) {
+                fireEventStarting(format("Perform %s on %s", description, t));
+            }
+            else {
+                fireEventStarting(format("Perform %s", description));
+            }
+        }
+    }
+
+    private void fireThrownExceptionIfNecessary(Throwable thrown) {
+        if (!isComplex) {
+            fireThrownException(thrown);
+        }
+    }
+
+    private void fireEventFinishingIfNecessary() {
+        if (!isComplex) {
+            fireEventFinishing();
+        }
+    }
+
     @Override
     public void accept(T t) {
         try {
-            fireEventStarting(format("Perform %s on %s", description, t));
+            fireEventStartingIfNecessary(t);
             consumer.accept(t);
             if (catchSuccessEvent() && !isComplex) {
                 catchResult(t, format("Performing of '%s' succeed", description));
             }
         }
         catch (Throwable thrown) {
-            fireThrownException(thrown);
+            fireThrownExceptionIfNecessary(thrown);
             if (catchFailureEvent() && !isComplex) {
                 catchResult(t, format("Performing of '%s' failed", description));
             }
             throw thrown;
         }
         finally {
-            fireEventFinishing();
+            fireEventFinishingIfNecessary();
         }
     }
 

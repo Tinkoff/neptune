@@ -43,26 +43,57 @@ class DescribedFunction<T, R> implements Function<T, R> {
         }).setComplex();
     }
 
+    private void fireEventStartingIfNecessary(T t) {
+        if (!isComplex) {
+            Class<?> valueClass = t.getClass();
+            if (!GetStep.class.isAssignableFrom(valueClass) &&
+                    !PerformStep.class.isAssignableFrom(valueClass)) {
+                fireEventStarting(format("From %s get %s", t, description));
+            }
+            else {
+                fireEventStarting(format("Get %s", description));
+            }
+        }
+    }
+
+    private void fireReturnedValueIfNecessary(R r) {
+        if (!isComplex) {
+            fireReturnedValue(r);
+        }
+    }
+
+    private void fireThrownExceptionIfNecessary(Throwable thrown) {
+        if (!isComplex) {
+            fireThrownException(thrown);
+        }
+    }
+
+    private void fireEventFinishingIfNecessary() {
+        if (!isComplex) {
+            fireEventFinishing();
+        }
+    }
+
     @Override
     public R apply(T t) {
         try {
-            fireEventStarting(format("From %s get %s", t, description));
+            fireEventStartingIfNecessary(t);
             R result = function.apply(t);
-            fireReturnedValue(result);
+            fireReturnedValueIfNecessary(result);
             if (catchSuccessEvent() && !isComplex) {
                 catchResult(result, format("Getting of '%s' succeed", description));
             }
             return result;
         }
         catch (Throwable thrown) {
-            fireThrownException(thrown);
+            fireThrownExceptionIfNecessary(thrown);
             if (catchFailureEvent() && !isComplex) {
                 catchResult(t, format("Getting of '%s' failed", description));
             }
             throw thrown;
         }
         finally {
-            fireEventFinishing();
+            fireEventFinishingIfNecessary();
         }
     }
 
