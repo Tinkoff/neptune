@@ -36,34 +36,34 @@ public final class ThatValue<T> extends SequentialActionSupplier<Check, T, ThatV
     }
 
     /**
-     * Creates an instance of {@link ThatValue} and defines thatValue to be verified.
+     * Creates an instance of {@link ThatValue} and defines value to be verified.
      *
-     * @param description of a thatValue to be verified.
-     * @param t thatValue to be verified.
+     * @param description of a value to be verified.
+     * @param t value to be verified.
      * @param <T> is a type to be verified.
-     * @return an instance of {@link ThatValue} with defined thatValue to be verified.
+     * @return an instance of {@link ThatValue} with defined value to be verified.
      */
     public static <T> ThatValue<T> thatValue(String description, T t) {
         return new ThatValue<>(description, t);
     }
 
     /**
-     * Creates an instance of {@link ThatValue} and defines thatValue to be verified.
+     * Creates an instance of {@link ThatValue} and defines value to be verified.
      *
-     * @param t thatValue to be verified.
+     * @param t value to be verified.
      * @param <T> is a type to be verified.
-     * @return an instance of {@link ThatValue} with defined thatValue to be verified.
+     * @return an instance of {@link ThatValue} with defined value to be verified.
      */
     public static <T> ThatValue<T> thatValue(T t) {
         return new ThatValue<>(null, t);
     }
 
     /**
-     * Adds more criteria to check the thatValue.
+     * Adds more criteria to check the value.
      *
-     * @param function thatValue gets some thatValue from an object which is needed to be matched
+     * @param function value gets some value from an object which is needed to be matched
      * @param criteria matcher to be added
-     * @param <R> the type of a thatValue thatValue should be returned by function and matched by criteria.
+     * @param <R> the type of a value that should be returned by function and matched by criteria.
      * @return self-reference
      */
     public <R> ThatValue<T> suitsCriteria(String description,
@@ -73,7 +73,7 @@ public final class ThatValue<T> extends SequentialActionSupplier<Check, T, ThatV
     }
 
     /**
-     * Adds more criteria to check thatValue thatValue.
+     * Adds more criteria to check value.
      *
      * @param criteria matcher to be added
      * @return self-reference
@@ -86,9 +86,9 @@ public final class ThatValue<T> extends SequentialActionSupplier<Check, T, ThatV
     @Override
     public Consumer<Check> get() {
         return ofNullable(super.get())
-                .orElseGet(() -> andThen("Assert thatValue ",
+                .orElseGet(() -> andThen("Assert value ",
                         toGet(ofNullable(description)
-                                .orElseGet(() -> format("Inspected thatValue %s", inspected)),
+                                .orElseGet(() -> format("Inspected value %s", inspected)),
                                 check -> inspected), matcher)
                         .get());
     }
@@ -119,15 +119,15 @@ public final class ThatValue<T> extends SequentialActionSupplier<Check, T, ThatV
         }
 
         /**
-         * Adds more criteria to check some thatValue.
+         * Adds more criteria to check some value.
          *
-         * @param function thatValue gets some thatValue from an object which is needed to be matched
+         * @param function value gets some value from an object which is needed to be matched
          * @param criteria matcher to be added
-         * @param <R> the type of a thatValue thatValue should be returned by function and matched by criteria.
+         * @param <R> the type of a value that should be returned by function and matched by criteria.
          * @return self-reference
          */
         private <R> FluentMatcher<T> shouldMatch(String valueDescription, Function<T, R> function, Matcher<? super R> criteria) {
-            checkArgument(!isBlank(valueDescription), "Description of a thatValue thatValue the function returns" +
+            checkArgument(!isBlank(valueDescription), "Description of a value that the function returns" +
                     "should not be blank");
             checkNotNull(function);
             checkNotNull(criteria);
@@ -138,13 +138,13 @@ public final class ThatValue<T> extends SequentialActionSupplier<Check, T, ThatV
         }
 
         /**
-         * Adds more criteria to check some thatValue.
+         * Adds more criteria to check some value.
          *
          * @param criteria matcher to be added
          * @return self-reference
          */
         private FluentMatcher<T> shouldMatch(Matcher<? super T> criteria) {
-            return shouldMatch("Inspected thatValue", t -> t, criteria);
+            return shouldMatch("Inspected value", t -> t, criteria);
         }
 
         @Override
@@ -157,7 +157,7 @@ public final class ThatValue<T> extends SequentialActionSupplier<Check, T, ThatV
                 if (!result) {
                     Description description = new StringDescription();
                     value.describeMismatch(valueToMatch, description);
-                    mismatchList.add(format("  It was suitsCriteria thatValue %s suits criteria '%s'. Actual result: %s\n", key,
+                    mismatchList.add(format("  It was expected that %s suits criteria '%s'. Actual result: %s\n", key,
                             value, description));
                 }
                 if (mismatchList.size() > 0) {

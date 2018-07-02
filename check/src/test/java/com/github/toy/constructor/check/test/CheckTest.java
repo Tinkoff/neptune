@@ -38,74 +38,74 @@ public class CheckTest {
     }
 
     private static final List<String> EXPECTED_LOGGER_MESSAGES1 =
-            of("Perform Assert thatValue . With parameters: {Inspected thatValue 4,\n" +
+            of("Perform Assert value . With parameters: {Inspected value 4,\n" +
                             "Is integer\n" +
                             "           is <true>\n" +
-                            "Sqrt thatValue\n" +
+                            "Sqrt value\n" +
                             "           is <2.0>} has started",
-                    "Get Inspected thatValue 4 has started",
+                    "Get Inspected value 4 has started",
                     "4 has been returned",
                     "Event finished",
                     "From 4 get Is integer has started",
                     "true has been returned",
                     "Event finished",
-                    "From 4 get Sqrt thatValue has started",
+                    "From 4 get Sqrt value has started",
                     "2.0 has been returned",
                     "Event finished",
                     "Event finished",
-                    "Perform Assert thatValue . With parameters: {Inspected thatValue 5,\n" +
-                            "Sqr thatValue\n" +
+                    "Perform Assert value . With parameters: {Inspected value 5,\n" +
+                            "Sqr value\n" +
                             "           is <25.0>} has started",
-                    "Get Inspected thatValue 5 has started",
+                    "Get Inspected value 5 has started",
                     "5 has been returned",
                     "Event finished",
-                    "From 5 get Sqr thatValue has started",
+                    "From 5 get Sqr value has started",
                     "25.0 has been returned",
                     "Event finished",
                     "Event finished");
 
     private static final List<String> EXPECTED_LOGGER_MESSAGES2 =
             of("Perform Check numbers 4 and 5 has started",
-                    "Perform Assert thatValue . With parameters: {Inspected thatValue 4,\n" +
+                    "Perform Assert value . With parameters: {Inspected value 4,\n" +
                             "Is integer\n" +
                             "           is <true>\n" +
-                            "Sqrt thatValue\n" +
+                            "Sqrt value\n" +
                             "           is <2.0>} has started",
-                    "Get Inspected thatValue 4 has started",
+                    "Get Inspected value 4 has started",
                     "4 has been returned",
                     "Event finished",
                     "From 4 get Is integer has started",
                     "true has been returned",
                     "Event finished",
-                    "From 4 get Sqrt thatValue has started",
+                    "From 4 get Sqrt value has started",
                     "2.0 has been returned",
                     "Event finished",
                     "Event finished",
-                    "Perform Assert thatValue . With parameters: {Inspected thatValue 5,\n" +
-                            "Sqr thatValue\n" +
+                    "Perform Assert value . With parameters: {Inspected value 5,\n" +
+                            "Sqr value\n" +
                             "           is <25.0>} has started",
-                    "Get Inspected thatValue 5 has started",
+                    "Get Inspected value 5 has started",
                     "5 has been returned",
                     "Event finished",
-                    "From 5 get Sqr thatValue has started",
+                    "From 5 get Sqr value has started",
                     "25.0 has been returned",
                     "Event finished",
                     "Event finished",
                     "Event finished");
 
     private static final List<String> EXPECTED_LOGGER_MESSAGES3 =
-            of("Perform Assert thatValue . With parameters: {Inspected thatValue 9,\n" +
+            of("Perform Assert value . With parameters: {Inspected value 9,\n" +
                     "Is integer\n" +
                     "           is <true>\n" +
-                    "Sqrt thatValue\n" +
+                    "Sqrt value\n" +
                     "           is <2.0>} has started",
-                    "Get Inspected thatValue 9 has started",
+                    "Get Inspected value 9 has started",
                     "9 has been returned",
                     "Event finished",
                     "From 9 get Is integer has started",
                     "true has been returned",
                     "Event finished",
-                    "From 9 get Sqrt thatValue has started",
+                    "From 9 get Sqrt value has started",
                     "3.0 has been returned",
                     "Event finished",
                     "java.lang.AssertionError has been thrown",
@@ -113,18 +113,18 @@ public class CheckTest {
 
     private static final List<String> EXPECTED_LOGGER_MESSAGES4 =
             of("Perform Check number 9 has started",
-                    "Perform Assert thatValue . With parameters: {Inspected thatValue 9,\n" +
+                    "Perform Assert value . With parameters: {Inspected value 9,\n" +
                             "Is integer\n" +
                             "           is <true>\n" +
-                            "Sqrt thatValue\n" +
+                            "Sqrt value\n" +
                             "           is <2.0>} has started",
-                    "Get Inspected thatValue 9 has started",
+                    "Get Inspected value 9 has started",
                     "9 has been returned",
                     "Event finished",
                     "From 9 get Is integer has started",
                     "true has been returned",
                     "Event finished",
-                    "From 9 get Sqrt thatValue has started",
+                    "From 9 get Sqrt value has started",
                     "3.0 has been returned",
                     "Event finished",
                     "java.lang.AssertionError has been thrown",
@@ -138,9 +138,9 @@ public class CheckTest {
                 .suitsCriteria("Is integer", number ->
                         Integer.class.isAssignableFrom(number.getClass()),
                         is(true))
-                .suitsCriteria("Sqrt thatValue", number -> sqrt(number.doubleValue()), is(2D)))
+                .suitsCriteria("Sqrt value", number -> sqrt(number.doubleValue()), is(2D)))
 
-                .verify(thatValue(5).suitsCriteria("Sqr thatValue",
+                .verify(thatValue(5).suitsCriteria("Sqr value",
                         number -> pow(number.doubleValue(), 2), is(25D)));
 
         assertThat("Logged messages",
@@ -161,27 +161,27 @@ public class CheckTest {
                             Integer.class.isAssignableFrom(number.getClass()),
                             is(true))
 
-                    .suitsCriteria("Sqrt thatValue", number -> sqrt(number.doubleValue()),
+                    .suitsCriteria("Sqrt value", number -> sqrt(number.doubleValue()),
                             is(2D)))
 
-                    .verify(thatValue(5).suitsCriteria("Sqr thatValue",
+                    .verify(thatValue(5).suitsCriteria("Sqr value",
                             number -> pow(number.doubleValue(), 2),
                             is(25D)));
 
             assertThat("Logged messages",
                     DefaultListLogger.messages,
-                    contains("Getting of 'Inspected thatValue 4' succeed",
+                    contains("Getting of 'Inspected value 4' succeed",
                             "Getting of 'Is integer' succeed",
-                            "Getting of 'Sqrt thatValue' succeed",
-                            "Performing of 'Assert thatValue . With parameters: {Inspected thatValue 4,\n" +
+                            "Getting of 'Sqrt value' succeed",
+                            "Performing of 'Assert value . With parameters: {Inspected value 4,\n" +
                                     "Is integer\n" +
                                     "           is <true>\n" +
-                                    "Sqrt thatValue\n" +
+                                    "Sqrt value\n" +
                                     "           is <2.0>}' succeed",
-                            "Getting of 'Inspected thatValue 5' succeed",
-                            "Getting of 'Sqr thatValue' succeed",
-                            "Performing of 'Assert thatValue . With parameters: {Inspected thatValue 5,\n" +
-                                    "Sqr thatValue\n" +
+                            "Getting of 'Inspected value 5' succeed",
+                            "Getting of 'Sqr value' succeed",
+                            "Performing of 'Assert value . With parameters: {Inspected value 5,\n" +
+                                    "Sqr value\n" +
                                     "           is <25.0>}' succeed"));
 
             assertThat(MESSAGES,
@@ -201,10 +201,10 @@ public class CheckTest {
                                     Integer.class.isAssignableFrom(number.getClass()),
                             is(true))
 
-                    .suitsCriteria("Sqrt thatValue", number -> sqrt(number.doubleValue()),
+                    .suitsCriteria("Sqrt value", number -> sqrt(number.doubleValue()),
                             is(2D)))
 
-                    .verify(thatValue(5).suitsCriteria("Sqr thatValue",
+                    .verify(thatValue(5).suitsCriteria("Sqr value",
                             number -> pow(number.doubleValue(), 2),
                             is(25D)));
 
@@ -229,27 +229,27 @@ public class CheckTest {
                                     Integer.class.isAssignableFrom(number.getClass()),
                             is(true))
 
-                    .suitsCriteria("Sqrt thatValue", number -> sqrt(number.doubleValue()),
+                    .suitsCriteria("Sqrt value", number -> sqrt(number.doubleValue()),
                             is(2D)))
 
-                    .verify(thatValue(5).suitsCriteria("Sqr thatValue",
+                    .verify(thatValue(5).suitsCriteria("Sqr value",
                             number -> pow(number.doubleValue(), 2),
                             is(25D)));
 
             assertThat("Logged messages",
                     DefaultListLogger.messages,
-                    contains("Getting of 'Inspected thatValue 4' succeed",
+                    contains("Getting of 'Inspected value 4' succeed",
                             "Getting of 'Is integer' succeed",
-                            "Getting of 'Sqrt thatValue' succeed",
-                            "Performing of 'Assert thatValue . With parameters: {Inspected thatValue 4,\n" +
+                            "Getting of 'Sqrt value' succeed",
+                            "Performing of 'Assert value . With parameters: {Inspected value 4,\n" +
                                     "Is integer\n" +
                                     "           is <true>\n" +
-                                    "Sqrt thatValue\n" +
+                                    "Sqrt value\n" +
                                     "           is <2.0>}' succeed",
-                            "Getting of 'Inspected thatValue 5' succeed",
-                            "Getting of 'Sqr thatValue' succeed",
-                            "Performing of 'Assert thatValue . With parameters: {Inspected thatValue 5,\n" +
-                                    "Sqr thatValue\n" +
+                            "Getting of 'Inspected value 5' succeed",
+                            "Getting of 'Sqr value' succeed",
+                            "Performing of 'Assert value . With parameters: {Inspected value 5,\n" +
+                                    "Sqr value\n" +
                                     "           is <25.0>}' succeed"));
 
             assertThat(MESSAGES,
@@ -268,10 +268,10 @@ public class CheckTest {
                                         Integer.class.isAssignableFrom(number.getClass()),
                                 is(true))
 
-                        .suitsCriteria("Sqrt thatValue", number -> sqrt(number.doubleValue()),
+                        .suitsCriteria("Sqrt value", number -> sqrt(number.doubleValue()),
                                 is(2D)))
 
-                        .verify(thatValue(5).suitsCriteria("Sqr thatValue",
+                        .verify(thatValue(5).suitsCriteria("Sqr value",
                                 number -> pow(number.doubleValue(), 2),
                                 is(25D)))));
 
@@ -293,27 +293,27 @@ public class CheckTest {
                                             Integer.class.isAssignableFrom(number.getClass()),
                                     is(true))
 
-                            .suitsCriteria("Sqrt thatValue", number -> sqrt(number.doubleValue()),
+                            .suitsCriteria("Sqrt value", number -> sqrt(number.doubleValue()),
                                     is(2D)))
 
-                            .verify(thatValue(5).suitsCriteria("Sqr thatValue",
+                            .verify(thatValue(5).suitsCriteria("Sqr value",
                                     number -> pow(number.doubleValue(), 2),
                                     is(25D)))));
 
             assertThat("Logged messages",
                     DefaultListLogger.messages,
-                    contains("Getting of 'Inspected thatValue 4' succeed",
+                    contains("Getting of 'Inspected value 4' succeed",
                             "Getting of 'Is integer' succeed",
-                            "Getting of 'Sqrt thatValue' succeed",
-                            "Performing of 'Assert thatValue . With parameters: {Inspected thatValue 4,\n" +
+                            "Getting of 'Sqrt value' succeed",
+                            "Performing of 'Assert value . With parameters: {Inspected value 4,\n" +
                                     "Is integer\n" +
                                     "           is <true>\n" +
-                                    "Sqrt thatValue\n" +
+                                    "Sqrt value\n" +
                                     "           is <2.0>}' succeed",
-                            "Getting of 'Inspected thatValue 5' succeed",
-                            "Getting of 'Sqr thatValue' succeed",
-                            "Performing of 'Assert thatValue . With parameters: {Inspected thatValue 5,\n" +
-                                    "Sqr thatValue\n" +
+                            "Getting of 'Inspected value 5' succeed",
+                            "Getting of 'Sqr value' succeed",
+                            "Performing of 'Assert value . With parameters: {Inspected value 5,\n" +
+                                    "Sqr value\n" +
                                     "           is <25.0>}' succeed",
                             "Performing of 'Check numbers 4 and 5' succeed"));
 
@@ -335,10 +335,10 @@ public class CheckTest {
                                             Integer.class.isAssignableFrom(number.getClass()),
                                     is(true))
 
-                            .suitsCriteria("Sqrt thatValue", number -> sqrt(number.doubleValue()),
+                            .suitsCriteria("Sqrt value", number -> sqrt(number.doubleValue()),
                                     is(2D)))
 
-                            .verify(thatValue(5).suitsCriteria("Sqr thatValue",
+                            .verify(thatValue(5).suitsCriteria("Sqr value",
                                     number -> pow(number.doubleValue(), 2),
                                     is(25D)))));
 
@@ -364,27 +364,27 @@ public class CheckTest {
                                             Integer.class.isAssignableFrom(number.getClass()),
                                     is(true))
 
-                            .suitsCriteria("Sqrt thatValue", number -> sqrt(number.doubleValue()),
+                            .suitsCriteria("Sqrt value", number -> sqrt(number.doubleValue()),
                                     is(2D)))
 
-                            .verify(thatValue(5).suitsCriteria("Sqr thatValue",
+                            .verify(thatValue(5).suitsCriteria("Sqr value",
                                     number -> pow(number.doubleValue(), 2),
                                     is(25D)))));
 
             assertThat("Logged messages",
                     DefaultListLogger.messages,
-                    contains("Getting of 'Inspected thatValue 4' succeed",
+                    contains("Getting of 'Inspected value 4' succeed",
                             "Getting of 'Is integer' succeed",
-                            "Getting of 'Sqrt thatValue' succeed",
-                            "Performing of 'Assert thatValue . With parameters: {Inspected thatValue 4,\n" +
+                            "Getting of 'Sqrt value' succeed",
+                            "Performing of 'Assert value . With parameters: {Inspected value 4,\n" +
                                     "Is integer\n" +
                                     "           is <true>\n" +
-                                    "Sqrt thatValue\n" +
+                                    "Sqrt value\n" +
                                     "           is <2.0>}' succeed",
-                            "Getting of 'Inspected thatValue 5' succeed",
-                            "Getting of 'Sqr thatValue' succeed",
-                            "Performing of 'Assert thatValue . With parameters: {Inspected thatValue 5,\n" +
-                                    "Sqr thatValue\n" +
+                            "Getting of 'Inspected value 5' succeed",
+                            "Getting of 'Sqr value' succeed",
+                            "Performing of 'Assert value . With parameters: {Inspected value 5,\n" +
+                                    "Sqr value\n" +
                                     "           is <25.0>}' succeed",
                             "Performing of 'Check numbers 4 and 5' succeed"));
 
@@ -401,14 +401,14 @@ public class CheckTest {
                     "Expected:  \n" +
                     "Is integer\n" +
                     "           is <true>\n" +
-                    "Sqrt thatValue\n" +
+                    "Sqrt value\n" +
                     "           is <2.0>\n" +
                     "     but: \n" +
                     "\n" +
                     "Detected mismatches:\n" +
                     "===================================\n" +
-                    "Sqrt thatValue:\n" +
-                    "             It was suitsCriteria thatValue Sqrt thatValue suits criteria 'is <2.0>'. Actual result: was <3.0>")
+                    "Sqrt value:\n" +
+                    "             It was expected that Sqrt value suits criteria 'is <2.0>'. Actual result: was <3.0>")
     public void testOfLinearNegativeCaseWhenEventIsNotDefined() {
         try {
             check.verify(thatValue(9)
@@ -416,7 +416,7 @@ public class CheckTest {
                             number -> Integer.class.isAssignableFrom(number.getClass()),
                             is(true))
 
-                    .suitsCriteria("Sqrt thatValue",
+                    .suitsCriteria("Sqrt value",
                                     number -> sqrt(number.doubleValue()),
                                     is(2D)));
         }
@@ -434,14 +434,14 @@ public class CheckTest {
                     "Expected:  \n" +
                     "Is integer\n" +
                     "           is <true>\n" +
-                    "Sqrt thatValue\n" +
+                    "Sqrt value\n" +
                     "           is <2.0>\n" +
                     "     but: \n" +
                     "\n" +
                     "Detected mismatches:\n" +
                     "===================================\n" +
-                    "Sqrt thatValue:\n" +
-                    "             It was suitsCriteria thatValue Sqrt thatValue suits criteria 'is <2.0>'. Actual result: was <3.0>")
+                    "Sqrt value:\n" +
+                    "             It was expected that Sqrt value suits criteria 'is <2.0>'. Actual result: was <3.0>")
     public void testOfLinearNegativeCaseWhenEventIsSuccess() {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS.name());
         try {
@@ -450,16 +450,16 @@ public class CheckTest {
                             number -> Integer.class.isAssignableFrom(number.getClass()),
                             is(true))
 
-                    .suitsCriteria("Sqrt thatValue",
+                    .suitsCriteria("Sqrt value",
                             number -> sqrt(number.doubleValue()),
                             is(2D)));
         }
         finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
             assertThat(DefaultListLogger.messages,
-                    contains("Getting of 'Inspected thatValue 9' succeed",
+                    contains("Getting of 'Inspected value 9' succeed",
                             "Getting of 'Is integer' succeed",
-                            "Getting of 'Sqrt thatValue' succeed"));
+                            "Getting of 'Sqrt value' succeed"));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES3.toArray()));
@@ -471,14 +471,14 @@ public class CheckTest {
                     "Expected:  \n" +
                     "Is integer\n" +
                     "           is <true>\n" +
-                    "Sqrt thatValue\n" +
+                    "Sqrt value\n" +
                     "           is <2.0>\n" +
                     "     but: \n" +
                     "\n" +
                     "Detected mismatches:\n" +
                     "===================================\n" +
-                    "Sqrt thatValue:\n" +
-                    "             It was suitsCriteria thatValue Sqrt thatValue suits criteria 'is <2.0>'. Actual result: was <3.0>")
+                    "Sqrt value:\n" +
+                    "             It was expected that Sqrt value suits criteria 'is <2.0>'. Actual result: was <3.0>")
     public void testOfLinearNegativeCaseWhenEventIsFailure() {
         DO_CAPTURES_OF_INSTANCE.accept(FAILURE.name());
         try {
@@ -487,7 +487,7 @@ public class CheckTest {
                             number -> Integer.class.isAssignableFrom(number.getClass()),
                             is(true))
 
-                    .suitsCriteria("Sqrt thatValue",
+                    .suitsCriteria("Sqrt value",
                             number -> sqrt(number.doubleValue()),
                             is(2D)));
         }
@@ -495,10 +495,10 @@ public class CheckTest {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
             assertThat(DefaultListLogger.messages,
                     contains("Mismatched object 9",
-                            "Performing of 'Assert thatValue . With parameters: {Inspected thatValue 9,\n" +
+                            "Performing of 'Assert value . With parameters: {Inspected value 9,\n" +
                                     "Is integer\n" +
                                     "           is <true>\n" +
-                                    "Sqrt thatValue\n" +
+                                    "Sqrt value\n" +
                                     "           is <2.0>}' failed"));
 
             assertThat(MESSAGES,
@@ -511,14 +511,14 @@ public class CheckTest {
                     "Expected:  \n" +
                     "Is integer\n" +
                     "           is <true>\n" +
-                    "Sqrt thatValue\n" +
+                    "Sqrt value\n" +
                     "           is <2.0>\n" +
                     "     but: \n" +
                     "\n" +
                     "Detected mismatches:\n" +
                     "===================================\n" +
-                    "Sqrt thatValue:\n" +
-                    "             It was suitsCriteria thatValue Sqrt thatValue suits criteria 'is <2.0>'. Actual result: was <3.0>")
+                    "Sqrt value:\n" +
+                    "             It was expected that Sqrt value suits criteria 'is <2.0>'. Actual result: was <3.0>")
     public void testOfLinearNegativeCaseWhenEventIsAll() {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE.name());
         try {
@@ -527,21 +527,21 @@ public class CheckTest {
                             number -> Integer.class.isAssignableFrom(number.getClass()),
                             is(true))
 
-                    .suitsCriteria("Sqrt thatValue",
+                    .suitsCriteria("Sqrt value",
                             number -> sqrt(number.doubleValue()),
                             is(2D)));
         }
         finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
             assertThat(DefaultListLogger.messages,
-                    contains("Getting of 'Inspected thatValue 9' succeed",
+                    contains("Getting of 'Inspected value 9' succeed",
                             "Getting of 'Is integer' succeed",
-                            "Getting of 'Sqrt thatValue' succeed",
+                            "Getting of 'Sqrt value' succeed",
                             "Mismatched object 9",
-                            "Performing of 'Assert thatValue . With parameters: {Inspected thatValue 9,\n" +
+                            "Performing of 'Assert value . With parameters: {Inspected value 9,\n" +
                                     "Is integer\n" +
                                     "           is <true>\n" +
-                                    "Sqrt thatValue\n" +
+                                    "Sqrt value\n" +
                                     "           is <2.0>}' failed"));
 
             assertThat(MESSAGES,
@@ -554,14 +554,14 @@ public class CheckTest {
                     "Expected:  \n" +
                     "Is integer\n" +
                     "           is <true>\n" +
-                    "Sqrt thatValue\n" +
+                    "Sqrt value\n" +
                     "           is <2.0>\n" +
                     "     but: \n" +
                     "\n" +
                     "Detected mismatches:\n" +
                     "===================================\n" +
-                    "Sqrt thatValue:\n" +
-                    "             It was suitsCriteria thatValue Sqrt thatValue suits criteria 'is <2.0>'. Actual result: was <3.0>")
+                    "Sqrt value:\n" +
+                    "             It was expected that Sqrt value suits criteria 'is <2.0>'. Actual result: was <3.0>")
     public void testOfPerformNegativeCaseWhenEventIsNotDefined() {
         try {
             check.perform(action("Check number 9", check ->
@@ -570,7 +570,7 @@ public class CheckTest {
                                     number -> Integer.class.isAssignableFrom(number.getClass()),
                                     is(true))
 
-                            .suitsCriteria("Sqrt thatValue",
+                            .suitsCriteria("Sqrt value",
                                     number -> sqrt(number.doubleValue()),
                                     is(2D)))));
         }
@@ -588,14 +588,14 @@ public class CheckTest {
                     "Expected:  \n" +
                     "Is integer\n" +
                     "           is <true>\n" +
-                    "Sqrt thatValue\n" +
+                    "Sqrt value\n" +
                     "           is <2.0>\n" +
                     "     but: \n" +
                     "\n" +
                     "Detected mismatches:\n" +
                     "===================================\n" +
-                    "Sqrt thatValue:\n" +
-                    "             It was suitsCriteria thatValue Sqrt thatValue suits criteria 'is <2.0>'. Actual result: was <3.0>")
+                    "Sqrt value:\n" +
+                    "             It was expected that Sqrt value suits criteria 'is <2.0>'. Actual result: was <3.0>")
     public void testOfPerformNegativeCaseWhenEventIsSuccess() {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS.name());
         try {
@@ -605,16 +605,16 @@ public class CheckTest {
                                     number -> Integer.class.isAssignableFrom(number.getClass()),
                                     is(true))
 
-                            .suitsCriteria("Sqrt thatValue",
+                            .suitsCriteria("Sqrt value",
                                     number -> sqrt(number.doubleValue()),
                                     is(2D)))));
         }
         finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
             assertThat(DefaultListLogger.messages,
-                    contains("Getting of 'Inspected thatValue 9' succeed",
+                    contains("Getting of 'Inspected value 9' succeed",
                             "Getting of 'Is integer' succeed",
-                            "Getting of 'Sqrt thatValue' succeed"));
+                            "Getting of 'Sqrt value' succeed"));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES4.toArray()));
@@ -626,14 +626,14 @@ public class CheckTest {
                     "Expected:  \n" +
                     "Is integer\n" +
                     "           is <true>\n" +
-                    "Sqrt thatValue\n" +
+                    "Sqrt value\n" +
                     "           is <2.0>\n" +
                     "     but: \n" +
                     "\n" +
                     "Detected mismatches:\n" +
                     "===================================\n" +
-                    "Sqrt thatValue:\n" +
-                    "             It was suitsCriteria thatValue Sqrt thatValue suits criteria 'is <2.0>'. Actual result: was <3.0>")
+                    "Sqrt value:\n" +
+                    "             It was expected that Sqrt value suits criteria 'is <2.0>'. Actual result: was <3.0>")
     public void testOfPerformNegativeCaseWhenEventIsFailure() {
         DO_CAPTURES_OF_INSTANCE.accept(FAILURE.name());
         try {
@@ -643,7 +643,7 @@ public class CheckTest {
                                     number -> Integer.class.isAssignableFrom(number.getClass()),
                                     is(true))
 
-                            .suitsCriteria("Sqrt thatValue",
+                            .suitsCriteria("Sqrt value",
                                     number -> sqrt(number.doubleValue()),
                                     is(2D)))));
         }
@@ -651,10 +651,10 @@ public class CheckTest {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
             assertThat(DefaultListLogger.messages,
                     contains("Mismatched object 9",
-                            "Performing of 'Assert thatValue . With parameters: {Inspected thatValue 9,\n" +
+                            "Performing of 'Assert value . With parameters: {Inspected value 9,\n" +
                                     "Is integer\n" +
                                     "           is <true>\n" +
-                                    "Sqrt thatValue\n" +
+                                    "Sqrt value\n" +
                                     "           is <2.0>}' failed",
                             "Performing of 'Check number 9' failed"));
 
@@ -668,14 +668,14 @@ public class CheckTest {
                     "Expected:  \n" +
                     "Is integer\n" +
                     "           is <true>\n" +
-                    "Sqrt thatValue\n" +
+                    "Sqrt value\n" +
                     "           is <2.0>\n" +
                     "     but: \n" +
                     "\n" +
                     "Detected mismatches:\n" +
                     "===================================\n" +
-                    "Sqrt thatValue:\n" +
-                    "             It was suitsCriteria thatValue Sqrt thatValue suits criteria 'is <2.0>'. Actual result: was <3.0>")
+                    "Sqrt value:\n" +
+                    "             It was expected that Sqrt value suits criteria 'is <2.0>'. Actual result: was <3.0>")
     public void testOfPerformNegativeCaseWhenEventIsAll() {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE.name());
         try {
@@ -685,21 +685,21 @@ public class CheckTest {
                                     number -> Integer.class.isAssignableFrom(number.getClass()),
                                     is(true))
 
-                            .suitsCriteria("Sqrt thatValue",
+                            .suitsCriteria("Sqrt value",
                                     number -> sqrt(number.doubleValue()),
                                     is(2D)))));
         }
         finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
             assertThat(DefaultListLogger.messages,
-                    contains("Getting of 'Inspected thatValue 9' succeed",
+                    contains("Getting of 'Inspected value 9' succeed",
                             "Getting of 'Is integer' succeed",
-                            "Getting of 'Sqrt thatValue' succeed",
+                            "Getting of 'Sqrt value' succeed",
                             "Mismatched object 9",
-                            "Performing of 'Assert thatValue . With parameters: {Inspected thatValue 9,\n" +
+                            "Performing of 'Assert value . With parameters: {Inspected value 9,\n" +
                                     "Is integer\n" +
                                     "           is <true>\n" +
-                                    "Sqrt thatValue\n" +
+                                    "Sqrt value\n" +
                                     "           is <2.0>}' failed",
                             "Performing of 'Check number 9' failed"));
 
