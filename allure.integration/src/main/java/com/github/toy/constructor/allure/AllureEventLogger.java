@@ -14,6 +14,7 @@ import static io.qameta.allure.model.Status.BROKEN;
 import static io.qameta.allure.model.Status.PASSED;
 import static io.qameta.allure.util.ResultsUtils.getStatus;
 import static io.qameta.allure.util.ResultsUtils.getStatusDetails;
+import static java.lang.String.format;
 
 public class AllureEventLogger implements EventLogger {
 
@@ -56,6 +57,10 @@ public class AllureEventLogger implements EventLogger {
         if (stepUIIDs.size() == 0) {
             return;
         }
+
+        fireTheEventStarting(format("Returned value: %s", returned));
+        fireEventFinishing();
+
         String uuid = stepUIIDs.getLast();
         allureLifecycle.updateStep(uuid, s -> s.withStatus(PASSED));
         results.put(uuid, PASSED);
