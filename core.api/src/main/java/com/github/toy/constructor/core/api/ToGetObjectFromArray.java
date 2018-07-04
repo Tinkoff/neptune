@@ -5,8 +5,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static com.github.toy.constructor.core.api.StoryWriter.toGet;
-import static com.github.toy.constructor.core.api.ToGetConditionalHelper.checkFunction;
+import static com.github.toy.constructor.core.api.ToGetConditionalHelper.*;
 import static com.github.toy.constructor.core.api.ToGetObjectFromIterable.getFromIterable;
 import static java.util.Arrays.asList;
 
@@ -31,7 +30,7 @@ public final class ToGetObjectFromArray {
      * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
      *                                        and some exception is thrown. Exception will be thrown when
      *                                        {@code true}.
-     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                           expiration
      * @param <T> is a type of input value
      * @param <R> is a type of the target value
@@ -46,11 +45,10 @@ public final class ToGetObjectFromArray {
                                                      Duration sleepingTime,
                                                      boolean checkConditionInParallel,
                                                      boolean ignoreExceptionOnConditionCheck,
-                                                     Supplier<? extends RuntimeException> exceptionOnTimeOut) {
+                                                     Supplier<? extends RuntimeException> exceptionSupplier) {
         checkFunction(function);
-        return getFromIterable(description, toGet(function.toString(), t -> asList(function.apply(t))),
-                condition, waitingTime, sleepingTime, checkConditionInParallel, ignoreExceptionOnConditionCheck,
-                exceptionOnTimeOut);
+        return getFromIterable(description, t -> asList(function.apply(t)), checkCondition(condition), waitingTime, sleepingTime,
+                checkConditionInParallel, ignoreExceptionOnConditionCheck, exceptionSupplier);
     }
 
     /**
@@ -61,7 +59,7 @@ public final class ToGetObjectFromArray {
      * @param waitingTime is a duration of the waiting for valuable result
      * @param sleepingTime is a duration of the sleeping between attempts to get
      *                     expected valuable result
-     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                           expiration
      * @param <T> is a type of input value
      * @param <R> is a type of the target value
@@ -72,10 +70,9 @@ public final class ToGetObjectFromArray {
                                                      Function<T, R[]> function,
                                                      Duration waitingTime,
                                                      Duration sleepingTime,
-                                                     Supplier<? extends RuntimeException> exceptionOnTimeOut) {
+                                                     Supplier<? extends RuntimeException> exceptionSupplier) {
         checkFunction(function);
-        return getFromIterable(description, toGet(function.toString(), t -> asList(function.apply(t))),
-                waitingTime, sleepingTime, exceptionOnTimeOut);
+        return getFromIterable(description, t -> asList(function.apply(t)), waitingTime, sleepingTime, exceptionSupplier);
     }
 
     /**
@@ -91,7 +88,7 @@ public final class ToGetObjectFromArray {
      * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
      *                                        and some exception is thrown. Exception will be thrown when
      *                                        {@code true}.
-     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                           expiration
      * @param <T> is a type of input value
      * @param <R> is a type of the target value
@@ -105,10 +102,10 @@ public final class ToGetObjectFromArray {
                                                      Duration waitingTime,
                                                      boolean checkConditionInParallel,
                                                      boolean ignoreExceptionOnConditionCheck,
-                                                     Supplier<? extends RuntimeException> exceptionOnTimeOut) {
+                                                     Supplier<? extends RuntimeException> exceptionSupplier) {
         checkFunction(function);
-        return getFromIterable(description, toGet(function.toString(), t -> asList(function.apply(t))), condition,
-                waitingTime, checkConditionInParallel, ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
+        return getFromIterable(description, t -> asList(function.apply(t)), condition, waitingTime, checkConditionInParallel,
+                ignoreExceptionOnConditionCheck, exceptionSupplier);
     }
 
     /**
@@ -117,7 +114,7 @@ public final class ToGetObjectFromArray {
      * @param description of a value which should be returned.
      * @param function described function which should return an array
      * @param waitingTime is a duration of the waiting for valuable result
-     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                           expiration
      * @param <T> is a type of input value
      * @param <R> is a type of the target value
@@ -127,10 +124,9 @@ public final class ToGetObjectFromArray {
     public static <T, R> Function<T, R> getFromArray(String description,
                                                      Function<T, R[]> function,
                                                      Duration waitingTime,
-                                                     Supplier<? extends RuntimeException> exceptionOnTimeOut) {
+                                                     Supplier<? extends RuntimeException> exceptionSupplier) {
         checkFunction(function);
-        return getFromIterable(description, toGet(function.toString(), t -> asList(function.apply(t))),
-                waitingTime, exceptionOnTimeOut);
+        return getFromIterable(description, t -> asList(function.apply(t)), waitingTime, exceptionSupplier);
     }
 
     /**
@@ -145,7 +141,7 @@ public final class ToGetObjectFromArray {
      * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
      *                                        and some exception is thrown. Exception will be thrown when
      *                                        {@code true}.
-     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                           expiration
      * @param <T> is a type of input value
      * @param <R> is a type of the target value
@@ -158,10 +154,10 @@ public final class ToGetObjectFromArray {
                                                      Predicate<? super R> condition,
                                                      boolean checkConditionInParallel,
                                                      boolean ignoreExceptionOnConditionCheck,
-                                                     Supplier<? extends RuntimeException> exceptionOnTimeOut) {
+                                                     Supplier<? extends RuntimeException> exceptionSupplier) {
         checkFunction(function);
-        return getFromIterable(description, toGet(function.toString(), t -> asList(function.apply(t))), condition,
-                checkConditionInParallel, ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
+        return getFromIterable(description, t -> asList(function.apply(t)), condition, checkConditionInParallel,
+                ignoreExceptionOnConditionCheck, exceptionSupplier);
     }
 
     /**
@@ -169,7 +165,7 @@ public final class ToGetObjectFromArray {
      *
      * @param description of a value which should be returned.
      * @param function described function which should return an array
-     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                           expiration
      * @param <T> is a type of input value
      * @param <R> is a type of the target value
@@ -178,10 +174,9 @@ public final class ToGetObjectFromArray {
      */
     public static <T, R> Function<T, R> getFromArray(String description,
                                                      Function<T, R[]> function,
-                                                     Supplier<? extends RuntimeException> exceptionOnTimeOut) {
+                                                     Supplier<? extends RuntimeException> exceptionSupplier) {
         checkFunction(function);
-        return getFromIterable(description, toGet(function.toString(), t -> asList(function.apply(t))),
-                exceptionOnTimeOut);
+        return getFromIterable(description, t -> asList(function.apply(t)), checkExceptionSupplier(exceptionSupplier));
     }
 
     /**
@@ -213,7 +208,7 @@ public final class ToGetObjectFromArray {
                                                      boolean checkConditionInParallel,
                                                      boolean ignoreExceptionOnConditionCheck) {
         checkFunction(function);
-        return getFromIterable(description, toGet(function.toString(), t -> asList(function.apply(t))),
+        return getFromIterable(description, t -> asList(function.apply(t)),
                 condition, waitingTime, sleepingTime, checkConditionInParallel, ignoreExceptionOnConditionCheck);
     }
 
@@ -235,8 +230,7 @@ public final class ToGetObjectFromArray {
                                                      Duration waitingTime,
                                                      Duration sleepingTime) {
         checkFunction(function);
-        return getFromIterable(description, toGet(function.toString(), t -> asList(function.apply(t))),
-                waitingTime, sleepingTime);
+        return getFromIterable(description, t -> asList(function.apply(t)), waitingTime, sleepingTime);
     }
 
     /**
@@ -265,7 +259,7 @@ public final class ToGetObjectFromArray {
                                                      boolean checkConditionInParallel,
                                                      boolean ignoreExceptionOnConditionCheck) {
         checkFunction(function);
-        return getFromIterable(description, toGet(function.toString(), t -> asList(function.apply(t))),
+        return getFromIterable(description, t -> asList(function.apply(t)),
                 condition, waitingTime, checkConditionInParallel, ignoreExceptionOnConditionCheck);
     }
 
@@ -284,8 +278,7 @@ public final class ToGetObjectFromArray {
                                                      Function<T, R[]> function,
                                                      Duration waitingTime) {
         checkFunction(function);
-        return getFromIterable(description, toGet(function.toString(), t -> asList(function.apply(t))),
-                waitingTime);
+        return getFromIterable(description, t -> asList(function.apply(t)), waitingTime);
     }
 
     /**
@@ -311,8 +304,8 @@ public final class ToGetObjectFromArray {
                                                      boolean checkConditionInParallel,
                                                      boolean ignoreExceptionOnConditionCheck) {
         checkFunction(function);
-        return getFromIterable(description, toGet(function.toString(), t -> asList(function.apply(t))),
-                condition, checkConditionInParallel, ignoreExceptionOnConditionCheck);
+        return getFromIterable(description, t -> asList(function.apply(t)), condition, checkConditionInParallel,
+                ignoreExceptionOnConditionCheck);
 
     }
 
@@ -329,6 +322,6 @@ public final class ToGetObjectFromArray {
     public static <T, R> Function<T, R> getFromArray(String description,
                                                      Function<T, R[]> function) {
         checkFunction(function);
-        return getFromIterable(description, toGet(function.toString(), t -> asList(function.apply(t))));
+        return getFromIterable(description, t -> asList(function.apply(t)));
     }
 }

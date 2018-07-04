@@ -22,7 +22,7 @@ public final class ToGetSingleCheckedObject {
                                                        @Nullable Duration waitingTime,
                                                        @Nullable Duration sleepingTime,
                                                        boolean ignoreExceptionOnConditionCheck,
-                                                       @Nullable Supplier<? extends RuntimeException> exceptionOnTimeOut) {
+                                                       @Nullable Supplier<? extends RuntimeException> exceptionSupplier) {
         return fluentWaitFunction(getDescription(EMPTY, function, condition), t ->
                         ofNullable(function.apply(t)).map(r -> {
                             try {
@@ -35,7 +35,7 @@ public final class ToGetSingleCheckedObject {
                             }
                             return null;
                         }).orElse(null), waitingTime,
-                sleepingTime, Objects::nonNull, exceptionOnTimeOut);
+                sleepingTime, Objects::nonNull, exceptionSupplier);
     }
 
     /**
@@ -50,7 +50,7 @@ public final class ToGetSingleCheckedObject {
      * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
      *                                        and some exception is thrown. Exception will be thrown when
      *                                        {@code true}.
-     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                           expiration
      * @param <T> is a type of input value
      * @param <R> is a type of the target value
@@ -62,14 +62,9 @@ public final class ToGetSingleCheckedObject {
                                                   Duration waitingTime,
                                                   Duration sleepingTime,
                                                   boolean ignoreExceptionOnConditionCheck,
-                                                  Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        checkFunction(function);
-        checkCondition(condition);
-        checkWaitingTime(waitingTime);
-        checkSleepingTime(sleepingTime);
-        checkExceptionSupplier(exceptionOnTimeOut);
-        return checkedSingle(function, condition, waitingTime,
-                sleepingTime, ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
+                                                  Supplier<? extends RuntimeException> exceptionSupplier) {
+        return checkedSingle(checkFunction(function), checkCondition(condition), checkWaitingTime(waitingTime),
+                checkSleepingTime(sleepingTime), ignoreExceptionOnConditionCheck, checkExceptionSupplier(exceptionSupplier));
     }
 
     /**
@@ -79,7 +74,7 @@ public final class ToGetSingleCheckedObject {
      * @param waitingTime is a duration of the waiting for valuable result
      * @param sleepingTime is a duration of the sleeping between attempts to get
      *                     expected valuable result
-     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                           expiration
      * @param <T> is a type of input value
      * @param <R> is a type of the target value
@@ -88,13 +83,9 @@ public final class ToGetSingleCheckedObject {
      */
     public static <T, R> Function<T, R> getSingle(Function<T, R> function,
                                                   Duration waitingTime, Duration sleepingTime,
-                                                  Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        checkFunction(function);
-        checkWaitingTime(waitingTime);
-        checkSleepingTime(sleepingTime);
-        checkExceptionSupplier(exceptionOnTimeOut);
-        return checkedSingle(function, AS_IS, waitingTime,
-                sleepingTime, true, exceptionOnTimeOut);
+                                                  Supplier<? extends RuntimeException> exceptionSupplier) {
+        return checkedSingle(checkFunction(function), AS_IS, checkWaitingTime(waitingTime),
+                checkSleepingTime(sleepingTime), true, checkExceptionSupplier(exceptionSupplier));
     }
 
     /**
@@ -107,7 +98,7 @@ public final class ToGetSingleCheckedObject {
      * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
      *                                        and some exception is thrown. Exception will be thrown when
      *                                        {@code true}.
-     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                           expiration
      * @param <T> is a type of input value
      * @param <R> is a type of the target value
@@ -118,13 +109,9 @@ public final class ToGetSingleCheckedObject {
                                                   Predicate<? super R> condition,
                                                   Duration waitingTime,
                                                   boolean ignoreExceptionOnConditionCheck,
-                                                  Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        checkFunction(function);
-        checkCondition(condition);
-        checkWaitingTime(waitingTime);
-        checkExceptionSupplier(exceptionOnTimeOut);
-        return checkedSingle(function, condition, waitingTime,
-                null, ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
+                                                  Supplier<? extends RuntimeException> exceptionSupplier) {
+        return checkedSingle(checkFunction(function), checkCondition(condition), checkWaitingTime(waitingTime),
+                null, ignoreExceptionOnConditionCheck, checkExceptionSupplier(exceptionSupplier));
     }
 
     /**
@@ -132,7 +119,7 @@ public final class ToGetSingleCheckedObject {
      *
      * @param function described function which should return some object
      * @param waitingTime is a duration of the waiting for valuable result
-     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                           expiration
      * @param <T> is a type of input value
      * @param <R> is a type of the target value
@@ -141,12 +128,9 @@ public final class ToGetSingleCheckedObject {
      */
     public static <T, R> Function<T, R> getSingle(Function<T, R> function,
                                                   Duration waitingTime,
-                                                  Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        checkFunction(function);
-        checkWaitingTime(waitingTime);
-        checkExceptionSupplier(exceptionOnTimeOut);
-        return checkedSingle(function, AS_IS, waitingTime,
-                null, true, exceptionOnTimeOut);
+                                                  Supplier<? extends RuntimeException> exceptionSupplier) {
+        return checkedSingle(checkFunction(function), AS_IS, checkWaitingTime(waitingTime),
+                null, true, checkExceptionSupplier(exceptionSupplier));
     }
 
     /**
@@ -158,7 +142,7 @@ public final class ToGetSingleCheckedObject {
      * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
      *                                        and some exception is thrown. Exception will be thrown when
      *                                        {@code true}.
-     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                           expiration
      * @param <T> is a type of input value
      * @param <R> is a type of the target value
@@ -168,19 +152,16 @@ public final class ToGetSingleCheckedObject {
     public static <T, R> Function<T, R> getSingle(Function<T, R> function,
                                                   Predicate<? super R> condition,
                                                   boolean ignoreExceptionOnConditionCheck,
-                                                  Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        checkFunction(function);
-        checkCondition(condition);
-        checkExceptionSupplier(exceptionOnTimeOut);
-        return checkedSingle(function, condition, null,
-                null, ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
+                                                  Supplier<? extends RuntimeException> exceptionSupplier) {
+        return checkedSingle(checkFunction(function), checkCondition(condition), null,
+                null, ignoreExceptionOnConditionCheck, checkExceptionSupplier(exceptionSupplier));
     }
 
     /**
      * This method returns a function. The result function returns a single value which differs from null.
      *
      * @param function described function which should return some object
-     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                           expiration
      * @param <T> is a type of input value
      * @param <R> is a type of the target value
@@ -188,11 +169,9 @@ public final class ToGetSingleCheckedObject {
      * It returns a value if it differs from null. Some exception is thrown if value is null.
      */
     public static <T, R> Function<T, R> getSingle(Function<T, R> function,
-                                                  Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        checkFunction(function);
-        checkExceptionSupplier(exceptionOnTimeOut);
-        return checkedSingle(function, AS_IS, null,
-                null, true, exceptionOnTimeOut);
+                                                  Supplier<? extends RuntimeException> exceptionSupplier) {
+        return checkedSingle(checkFunction(function), AS_IS, null,
+                null, true, checkExceptionSupplier(exceptionSupplier));
     }
 
     /**
@@ -217,12 +196,8 @@ public final class ToGetSingleCheckedObject {
                                                   Duration waitingTime,
                                                   Duration sleepingTime,
                                                   boolean ignoreExceptionOnConditionCheck) {
-        checkFunction(function);
-        checkCondition(condition);
-        checkWaitingTime(waitingTime);
-        checkSleepingTime(sleepingTime);
-        return checkedSingle(function, condition, waitingTime,
-                sleepingTime, ignoreExceptionOnConditionCheck, null);
+        return checkedSingle(checkFunction(function), checkCondition(condition), checkWaitingTime(waitingTime),
+                checkSleepingTime(sleepingTime), ignoreExceptionOnConditionCheck, null);
     }
 
     /**
@@ -240,11 +215,8 @@ public final class ToGetSingleCheckedObject {
     public static <T, R> Function<T, R> getSingle(Function<T, R> function,
                                                   Duration waitingTime,
                                                   Duration sleepingTime) {
-        checkFunction(function);
-        checkWaitingTime(waitingTime);
-        checkSleepingTime(sleepingTime);
-        return checkedSingle(function, AS_IS, waitingTime,
-                sleepingTime, true, null);
+        return checkedSingle(checkFunction(function), AS_IS, checkWaitingTime(waitingTime),
+                checkSleepingTime(sleepingTime), true, null);
     }
 
     /**
@@ -266,10 +238,7 @@ public final class ToGetSingleCheckedObject {
                                                   Predicate<? super R> condition,
                                                   Duration waitingTime,
                                                   boolean ignoreExceptionOnConditionCheck) {
-        checkFunction(function);
-        checkCondition(condition);
-        checkWaitingTime(waitingTime);
-        return checkedSingle(function, condition, waitingTime,
+        return checkedSingle(checkFunction(function), checkCondition(condition), checkWaitingTime(waitingTime),
                 null, ignoreExceptionOnConditionCheck, null);
     }
 
@@ -285,9 +254,7 @@ public final class ToGetSingleCheckedObject {
      */
     public static <T, R> Function<T, R> getSingle(Function<T, R> function,
                                                   Duration waitingTime) {
-        checkFunction(function);
-        checkWaitingTime(waitingTime);
-        return checkedSingle(function, AS_IS, waitingTime,
+        return checkedSingle(checkFunction(function), AS_IS, checkWaitingTime(waitingTime),
                 null, true, null);
     }
 
@@ -308,9 +275,7 @@ public final class ToGetSingleCheckedObject {
     public static <T, R> Function<T, R> getSingle(Function<T, R> function,
                                                   Predicate<? super R> condition,
                                                   boolean ignoreExceptionOnConditionCheck) {
-        checkFunction(function);
-        checkCondition(condition);
-        return checkedSingle(function, condition,
+        return checkedSingle(checkFunction(function), checkCondition(condition),
                 null, null, ignoreExceptionOnConditionCheck, null);
     }
 }

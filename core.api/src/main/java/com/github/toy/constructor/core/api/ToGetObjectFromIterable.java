@@ -25,7 +25,7 @@ public final class ToGetObjectFromIterable {
                                                                                    @Nullable Duration sleepingTime,
                                                                                    boolean checkConditionInParallel,
                                                                                    boolean ignoreExceptionOnConditionCheck,
-                                                                                   @Nullable Supplier<? extends RuntimeException> exceptionOnTimeOut) {
+                                                                                   @Nullable Supplier<? extends RuntimeException> exceptionSupplier) {
         return fluentWaitFunction(getDescription(description, function, condition), t ->
                         ofNullable(function.apply(t))
                                 .map(v -> stream(v.spliterator(), checkConditionInParallel).filter(r -> {
@@ -36,7 +36,7 @@ public final class ToGetObjectFromIterable {
                                     }
                                 }).findFirst().orElse(null))
                                 .orElse(null),
-                waitingTime, sleepingTime, Objects::nonNull, exceptionOnTimeOut);
+                waitingTime, sleepingTime, Objects::nonNull, exceptionSupplier);
     }
 
     /**
@@ -54,7 +54,7 @@ public final class ToGetObjectFromIterable {
      * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
      *                                        and some exception is thrown. Exception will be thrown when
      *                                        {@code true}.
-     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                           expiration
      * @param <T> is a type of input value
      * @param <R> is a type of the target value
@@ -70,14 +70,9 @@ public final class ToGetObjectFromIterable {
                                                                                Duration sleepingTime,
                                                                                boolean checkConditionInParallel,
                                                                                boolean ignoreExceptionOnConditionCheck,
-                                                                               Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        checkFunction(function);
-        checkCondition(condition);
-        checkWaitingTime(waitingTime);
-        checkSleepingTime(sleepingTime);
-        checkExceptionSupplier(exceptionOnTimeOut);
-        return singleFromIterable(description, function, condition, waitingTime, sleepingTime, checkConditionInParallel,
-                ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
+                                                                               Supplier<? extends RuntimeException> exceptionSupplier) {
+        return singleFromIterable(description, checkFunction(function), checkCondition(condition), checkWaitingTime(waitingTime),
+                checkSleepingTime(sleepingTime), checkConditionInParallel, ignoreExceptionOnConditionCheck, checkExceptionSupplier(exceptionSupplier));
     }
 
     /**
@@ -88,7 +83,7 @@ public final class ToGetObjectFromIterable {
      * @param waitingTime is a duration of the waiting for valuable result
      * @param sleepingTime is a duration of the sleeping between attempts to get
      *                     expected valuable result
-     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                           expiration
      * @param <T> is a type of input value
      * @param <R> is a type of the target value
@@ -100,13 +95,10 @@ public final class ToGetObjectFromIterable {
                                                                                Function<T, V> function,
                                                                                Duration waitingTime,
                                                                                Duration sleepingTime,
-                                                                               Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        checkFunction(function);
-        checkWaitingTime(waitingTime);
-        checkSleepingTime(sleepingTime);
-        checkExceptionSupplier(exceptionOnTimeOut);
-        return singleFromIterable(description, function, AS_IS, waitingTime, sleepingTime, false,
-                true, exceptionOnTimeOut);
+                                                                               Supplier<? extends RuntimeException> exceptionSupplier) {
+
+        return singleFromIterable(description, checkFunction(function), AS_IS, checkWaitingTime(waitingTime),
+                checkSleepingTime(sleepingTime), false, true, checkExceptionSupplier(exceptionSupplier));
     }
 
     /**
@@ -122,7 +114,7 @@ public final class ToGetObjectFromIterable {
      * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
      *                                        and some exception is thrown. Exception will be thrown when
      *                                        {@code true}.
-     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                           expiration
      * @param <T> is a type of input value
      * @param <R> is a type of the target value
@@ -137,13 +129,9 @@ public final class ToGetObjectFromIterable {
                                                                                Duration waitingTime,
                                                                                boolean checkConditionInParallel,
                                                                                boolean ignoreExceptionOnConditionCheck,
-                                                                               Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        checkFunction(function);
-        checkCondition(condition);
-        checkWaitingTime(waitingTime);
-        checkExceptionSupplier(exceptionOnTimeOut);
-        return singleFromIterable(description, function, condition, waitingTime, null, checkConditionInParallel,
-                ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
+                                                                               Supplier<? extends RuntimeException> exceptionSupplier) {
+        return singleFromIterable(description, checkFunction(function), checkCondition(condition), checkWaitingTime(waitingTime),
+                null, checkConditionInParallel, ignoreExceptionOnConditionCheck, checkExceptionSupplier(exceptionSupplier));
     }
 
     /**
@@ -152,7 +140,7 @@ public final class ToGetObjectFromIterable {
      * @param description of a value which should be returned
      * @param function described function which should return {@link Iterable}
      * @param waitingTime is a duration of the waiting for valuable result
-     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                           expiration
      * @param <T> is a type of input value
      * @param <R> is a type of the target value
@@ -163,12 +151,9 @@ public final class ToGetObjectFromIterable {
     public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(String description,
                                                                                Function<T, V> function,
                                                                                Duration waitingTime,
-                                                                               Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        checkFunction(function);
-        checkWaitingTime(waitingTime);
-        checkExceptionSupplier(exceptionOnTimeOut);
-        return singleFromIterable(description, function, AS_IS, waitingTime, null, false,
-                true, exceptionOnTimeOut);
+                                                                               Supplier<? extends RuntimeException> exceptionSupplier) {
+        return singleFromIterable(description, checkFunction(function), AS_IS, checkWaitingTime(waitingTime), null, false,
+                true, checkExceptionSupplier(exceptionSupplier));
     }
 
     /**
@@ -183,7 +168,7 @@ public final class ToGetObjectFromIterable {
      * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
      *                                        and some exception is thrown. Exception will be thrown when
      *                                        {@code true}.
-     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                           expiration
      * @param <T> is a type of input value
      * @param <R> is a type of the target value
@@ -197,12 +182,9 @@ public final class ToGetObjectFromIterable {
                                                                                Predicate<? super R> condition,
                                                                                boolean checkConditionInParallel,
                                                                                boolean ignoreExceptionOnConditionCheck,
-                                                                               Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        checkFunction(function);
-        checkCondition(condition);
-        checkExceptionSupplier(exceptionOnTimeOut);
-        return singleFromIterable(description, function, condition, null, null, checkConditionInParallel,
-                ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
+                                                                               Supplier<? extends RuntimeException> exceptionSupplier) {
+        return singleFromIterable(description, checkFunction(function), checkCondition(condition), null, null, checkConditionInParallel,
+                ignoreExceptionOnConditionCheck, checkExceptionSupplier(exceptionSupplier));
     }
 
     /**
@@ -210,7 +192,7 @@ public final class ToGetObjectFromIterable {
      *
      * @param description of a value which should be returned
      * @param function described function which should return {@link Iterable}
-     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                           expiration
      * @param <T> is a type of input value
      * @param <R> is a type of the target value
@@ -220,11 +202,9 @@ public final class ToGetObjectFromIterable {
      */
     public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(String description,
                                                                                Function<T, V> function,
-                                                                               Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        checkFunction(function);
-        checkExceptionSupplier(exceptionOnTimeOut);
-        return singleFromIterable(description, function, AS_IS, null, null,
-                false, true, exceptionOnTimeOut);
+                                                                               Supplier<? extends RuntimeException> exceptionSupplier) {
+        return singleFromIterable(description, checkFunction(function), AS_IS, null, null,
+                false, true, checkExceptionSupplier(exceptionSupplier));
     }
 
     /**
@@ -256,12 +236,8 @@ public final class ToGetObjectFromIterable {
                                                                                Duration sleepingTime,
                                                                                boolean checkConditionInParallel,
                                                                                boolean ignoreExceptionOnConditionCheck) {
-        checkFunction(function);
-        checkCondition(condition);
-        checkWaitingTime(waitingTime);
-        checkSleepingTime(sleepingTime);
-        return singleFromIterable(description, function, condition, waitingTime, sleepingTime, checkConditionInParallel,
-                ignoreExceptionOnConditionCheck, null);
+        return singleFromIterable(description, checkFunction(function), checkCondition(condition), checkWaitingTime(waitingTime),
+                checkSleepingTime(sleepingTime), checkConditionInParallel, ignoreExceptionOnConditionCheck, null);
     }
 
     /**
@@ -282,11 +258,8 @@ public final class ToGetObjectFromIterable {
                                                                                Function<T, V> function,
                                                                                Duration waitingTime,
                                                                                Duration sleepingTime) {
-        checkFunction(function);
-        checkWaitingTime(waitingTime);
-        checkSleepingTime(sleepingTime);
-        return singleFromIterable(description, function, AS_IS, waitingTime, sleepingTime, false,
-                true, null);
+        return singleFromIterable(description, checkFunction(function), AS_IS, checkWaitingTime(waitingTime), checkSleepingTime(sleepingTime),
+                false, true, null);
     }
 
     /**
@@ -315,11 +288,8 @@ public final class ToGetObjectFromIterable {
                                                                                Duration waitingTime,
                                                                                boolean checkConditionInParallel,
                                                                                boolean ignoreExceptionOnConditionCheck) {
-        checkFunction(function);
-        checkCondition(condition);
-        checkWaitingTime(waitingTime);
-        return singleFromIterable(description, function, condition, waitingTime, null, checkConditionInParallel,
-                ignoreExceptionOnConditionCheck, null);
+        return singleFromIterable(description, checkFunction(function), checkCondition(condition), checkWaitingTime(waitingTime),
+                null, checkConditionInParallel, ignoreExceptionOnConditionCheck, null);
     }
 
     /**
@@ -337,9 +307,7 @@ public final class ToGetObjectFromIterable {
     public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(String description,
                                                                                Function<T, V> function,
                                                                                Duration waitingTime) {
-        checkFunction(function);
-        checkWaitingTime(waitingTime);
-        return singleFromIterable(description, function, AS_IS, waitingTime, null, false,
+        return singleFromIterable(description, checkFunction(function), AS_IS, checkWaitingTime(waitingTime), null, false,
                 true, null);
     }
 
@@ -367,9 +335,7 @@ public final class ToGetObjectFromIterable {
                                                                                Predicate<? super R> condition,
                                                                                boolean checkConditionInParallel,
                                                                                boolean ignoreExceptionOnConditionCheck) {
-        checkFunction(function);
-        checkCondition(condition);
-        return singleFromIterable(description, function, condition, null, null, checkConditionInParallel,
+        return singleFromIterable(description, checkFunction(function), checkCondition(condition), null, null, checkConditionInParallel,
                 ignoreExceptionOnConditionCheck, null);
     }
 
@@ -386,8 +352,7 @@ public final class ToGetObjectFromIterable {
      */
     public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(String description,
                                                                                Function<T, V> function) {
-        checkFunction(function);
-        return singleFromIterable(description, function, AS_IS, null, null, false,
+        return singleFromIterable(description, checkFunction(function), AS_IS, null, null, false,
                 true, null);
     }
 }

@@ -28,7 +28,7 @@ public final class ToGetSubIterable {
                                                                          @Nullable Duration sleepingTime,
                                                                          boolean checkConditionInParallel,
                                                                          boolean ignoreExceptionOnConditionCheck,
-                                                                         @Nullable Supplier<? extends RuntimeException> exceptionOnTimeOut) {
+                                                                         @Nullable Supplier<? extends RuntimeException> exceptionSupplier) {
         return fluentWaitFunction(getDescription(EMPTY, function, condition), t ->
                         ofNullable(function.apply(t)).map(v -> {
                             List<R> result = stream(v.spliterator(), checkConditionInParallel).filter(r -> {
@@ -42,7 +42,7 @@ public final class ToGetSubIterable {
                             Iterables.removeAll(v, result);
                             return v;
                         }).orElse(null),
-                waitingTime, sleepingTime, v -> v != null && Iterables.size(v) > 0, exceptionOnTimeOut);
+                waitingTime, sleepingTime, v -> v != null && Iterables.size(v) > 0, exceptionSupplier);
 
     }
 
@@ -60,7 +60,7 @@ public final class ToGetSubIterable {
      * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
      *                                        and some exception is thrown. Exception will be thrown when
      *                                        {@code true}.
-     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                           expiration
      * @param <T> is a type of input value
      * @param <R> is a type of target values
@@ -75,14 +75,9 @@ public final class ToGetSubIterable {
                                                                            Duration sleepingTime,
                                                                            boolean checkConditionInParallel,
                                                                            boolean ignoreExceptionOnConditionCheck,
-                                                                           Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        checkFunction(function);
-        checkCondition(condition);
-        checkWaitingTime(waitingTime);
-        checkSleepingTime(sleepingTime);
-        checkExceptionSupplier(exceptionOnTimeOut);
-        return iterable(function, condition, waitingTime, sleepingTime,
-                checkConditionInParallel, ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
+                                                                           Supplier<? extends RuntimeException> exceptionSupplier) {
+        return iterable(checkFunction(function), checkCondition(condition), checkWaitingTime(waitingTime), checkSleepingTime(sleepingTime),
+                checkConditionInParallel, ignoreExceptionOnConditionCheck, checkExceptionSupplier(exceptionSupplier));
     }
 
     /**
@@ -92,7 +87,7 @@ public final class ToGetSubIterable {
      * @param waitingTime is a duration of the waiting for valuable result
      * @param sleepingTime is a duration of the sleeping between attempts to get
      *                     expected valuable result
-     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                           expiration
      * @param <T> is a type of input value
      * @param <R> is a type of target values
@@ -104,12 +99,9 @@ public final class ToGetSubIterable {
     public static <T, R, V extends Iterable<R>> Function<T, V> getIterable(Function<T, V> function,
                                                                            Duration waitingTime,
                                                                            Duration sleepingTime,
-                                                                           Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        checkFunction(function);
-        checkWaitingTime(waitingTime);
-        checkSleepingTime(sleepingTime);
-        checkExceptionSupplier(exceptionOnTimeOut);
-        return iterable(function, AS_IS, waitingTime, sleepingTime, true, true, exceptionOnTimeOut);
+                                                                           Supplier<? extends RuntimeException> exceptionSupplier) {
+        return iterable(checkFunction(function), AS_IS, checkWaitingTime(waitingTime), checkSleepingTime(sleepingTime), true,
+                true, checkExceptionSupplier(exceptionSupplier));
     }
 
     /**
@@ -124,7 +116,7 @@ public final class ToGetSubIterable {
      * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
      *                                        and some exception is thrown. Exception will be thrown when
      *                                        {@code true}.
-     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                           expiration
      * @param <T> is a type of input value
      * @param <R> is a type of target values
@@ -138,13 +130,9 @@ public final class ToGetSubIterable {
                                                                            Duration waitingTime,
                                                                            boolean checkConditionInParallel,
                                                                            boolean ignoreExceptionOnConditionCheck,
-                                                                           Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        checkFunction(function);
-        checkCondition(condition);
-        checkWaitingTime(waitingTime);
-        checkExceptionSupplier(exceptionOnTimeOut);
-        return iterable(function, condition, waitingTime, null,
-                checkConditionInParallel, ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
+                                                                           Supplier<? extends RuntimeException> exceptionSupplier) {
+        return iterable(checkFunction(function), checkCondition(condition), checkWaitingTime(waitingTime), null,
+                checkConditionInParallel, ignoreExceptionOnConditionCheck, checkExceptionSupplier(exceptionSupplier));
     }
 
     /**
@@ -152,7 +140,7 @@ public final class ToGetSubIterable {
      *
      * @param function described function which should return {@link Iterable}
      * @param waitingTime is a duration of the waiting for valuable result
-     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                           expiration
      * @param <T> is a type of input value
      * @param <R> is a type of target values
@@ -163,11 +151,9 @@ public final class ToGetSubIterable {
      */
     public static <T, R, V extends Iterable<R>> Function<T, V> getIterable(Function<T, V> function,
                                                                            Duration waitingTime,
-                                                                           Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        checkFunction(function);
-        checkWaitingTime(waitingTime);
-        checkExceptionSupplier(exceptionOnTimeOut);
-        return iterable(function, AS_IS, waitingTime, null, true, true, exceptionOnTimeOut);
+                                                                           Supplier<? extends RuntimeException> exceptionSupplier) {
+        return iterable(checkFunction(function), AS_IS, checkWaitingTime(waitingTime), null, true,
+                true, checkExceptionSupplier(exceptionSupplier));
     }
 
     /**
@@ -181,7 +167,7 @@ public final class ToGetSubIterable {
      * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
      *                                        and some exception is thrown. Exception will be thrown when
      *                                        {@code true}.
-     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                           expiration
      * @param <T> is a type of input value
      * @param <R> is a type of target values
@@ -194,19 +180,16 @@ public final class ToGetSubIterable {
                                                                               Predicate<? super R> condition,
                                                                               boolean checkConditionInParallel,
                                                                               boolean ignoreExceptionOnConditionCheck,
-                                                                              Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        checkFunction(function);
-        checkCondition(condition);
-        checkExceptionSupplier(exceptionOnTimeOut);
-        return iterable(function, condition, null, null,
-                checkConditionInParallel, ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
+                                                                              Supplier<? extends RuntimeException> exceptionSupplier) {
+        return iterable(checkFunction(function), checkCondition(condition), null, null,
+                checkConditionInParallel, ignoreExceptionOnConditionCheck, checkExceptionSupplier(exceptionSupplier));
     }
 
     /**
      * This method returns a function. The result function returns an {@link Iterable} of elements which differ from null.
      *
      * @param function described function which should return {@link Iterable}
-     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                           expiration
      * @param <T> is a type of input value
      * @param <R> is a type of target values
@@ -216,10 +199,9 @@ public final class ToGetSubIterable {
      * iterable is null or has no elements or all elements are {@code null}.
      */
     public static <T, R, V extends Iterable<R>> Function<T, V> getIterable(Function<T, V> function,
-                                                                           Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        checkFunction(function);
-        checkExceptionSupplier(exceptionOnTimeOut);
-        return iterable(function, AS_IS, null, null, true, true, exceptionOnTimeOut);
+                                                                           Supplier<? extends RuntimeException> exceptionSupplier) {
+        return iterable(checkFunction(function), AS_IS, null, null, true,
+                true, checkExceptionSupplier(exceptionSupplier));
     }
 
     /**
@@ -249,11 +231,7 @@ public final class ToGetSubIterable {
                                                                               Duration sleepingTime,
                                                                               boolean checkConditionInParallel,
                                                                               boolean ignoreExceptionOnConditionCheck) {
-        checkFunction(function);
-        checkCondition(condition);
-        checkWaitingTime(waitingTime);
-        checkSleepingTime(sleepingTime);
-        return iterable(function, condition, waitingTime, sleepingTime,
+        return iterable(checkFunction(function), checkCondition(condition), checkWaitingTime(waitingTime), checkSleepingTime(sleepingTime),
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, null);
     }
 
@@ -274,10 +252,8 @@ public final class ToGetSubIterable {
     public static <T, R, V extends Iterable<R>> Function<T, V> getIterable(Function<T, V> function,
                                                                            Duration waitingTime,
                                                                            Duration sleepingTime) {
-        checkFunction(function);
-        checkWaitingTime(waitingTime);
-        checkSleepingTime(sleepingTime);
-        return iterable(function, AS_IS, waitingTime, sleepingTime, true, true, null);
+        return iterable(checkFunction(function), AS_IS, checkWaitingTime(waitingTime), checkSleepingTime(sleepingTime), true,
+                true, null);
     }
 
     /**
@@ -304,10 +280,7 @@ public final class ToGetSubIterable {
                                                                               Duration waitingTime,
                                                                               boolean checkConditionInParallel,
                                                                               boolean ignoreExceptionOnConditionCheck) {
-        checkFunction(function);
-        checkCondition(condition);
-        checkWaitingTime(waitingTime);
-        return iterable(function, condition, waitingTime, null,
+        return iterable(checkFunction(function), checkCondition(condition), checkWaitingTime(waitingTime), null,
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, null);
     }
 
@@ -325,9 +298,8 @@ public final class ToGetSubIterable {
      */
     public static <T, R, V extends Iterable<R>> Function<T, V> getIterable(Function<T, V> function,
                                                                            Duration waitingTime) {
-        checkFunction(function);
-        checkWaitingTime(waitingTime);
-        return iterable(function, AS_IS, waitingTime, null, true, true, null);
+        return iterable(checkFunction(function), AS_IS, checkWaitingTime(waitingTime), null,
+                true, true, null);
     }
 
     /**
@@ -352,9 +324,7 @@ public final class ToGetSubIterable {
                                                                            Predicate<? super R> condition,
                                                                            boolean checkConditionInParallel,
                                                                            boolean ignoreExceptionOnConditionCheck) {
-        checkFunction(function);
-        checkCondition(condition);
-        return iterable(function, condition, null, null,
+        return iterable(checkFunction(function), checkCondition(condition), null, null,
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, null);
     }
 }

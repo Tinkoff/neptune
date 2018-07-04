@@ -43,32 +43,34 @@ final class ToGetConditionalHelper {
         return false;
     }
 
-    static void checkCondition(Predicate<?> condition) {
+    static <T> Predicate<T> checkCondition(Predicate<T> condition) {
         checkArgument(condition != null, "Predicate is not defined.");
         checkArgument(DescribedPredicate.class.isAssignableFrom(condition.getClass()),
                 "Condition is not described. " +
                         "Use StoryWriter.condition to describe it.");
+        return condition;
     }
 
-    static void checkFunction(Function<?, ?> function) {
+    static <T, R>  Function<T, R> checkFunction(Function<T, R> function) {
         checkArgument(function != null, "Function is not defined.");
-        checkArgument(DescribedFunction.class.isAssignableFrom(function.getClass()),
-                "Function is not described." +
-                        " Use StoryWriter.toGet to describe it.");
+        return function;
     }
 
-    static void checkWaitingTime(Duration duration) {
+    static Duration checkWaitingTime(Duration duration) {
         checkArgument(duration != null, "Time of the waiting for some " +
                 "valuable result is not defined");
+        return duration;
     }
 
-    static void checkSleepingTime(Duration duration) {
+    static Duration checkSleepingTime(Duration duration) {
         checkArgument(duration != null, "Time of the sleeping is not defined");
+        return duration;
     }
 
-    static void checkExceptionSupplier(Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        checkArgument(exceptionOnTimeOut != null,
+    static Supplier<? extends RuntimeException> checkExceptionSupplier(Supplier<? extends RuntimeException> exceptionSupplier) {
+        checkArgument(exceptionSupplier != null,
                 "Supplier of an exception to be thrown is not defined");
+        return exceptionSupplier;
     }
 
     static String getDescription(String description, Function<?, ?> function, Predicate<?> condition) {

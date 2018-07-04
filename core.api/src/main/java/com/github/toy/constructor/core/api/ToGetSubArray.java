@@ -28,7 +28,7 @@ public final class ToGetSubArray {
                                                  Duration sleepingTime,
                                                  boolean checkConditionInParallel,
                                                  boolean ignoreExceptionOnConditionCheck,
-                                                 Supplier<? extends RuntimeException> exceptionOnTimeOut) {
+                                                 Supplier<? extends RuntimeException> exceptionSupplier) {
         return fluentWaitFunction(getDescription(EMPTY, function, condition), t ->
                         ofNullable(function.apply(t)).map(rs -> {
                             List<R> subResult = stream(asList(rs).spliterator(), checkConditionInParallel).filter(r -> {
@@ -45,7 +45,7 @@ public final class ToGetSubArray {
                             }
                             return result;
                         }).orElse(null),
-                waitingTime, sleepingTime, rs -> rs != null && rs.length > 0, exceptionOnTimeOut);
+                waitingTime, sleepingTime, rs -> rs != null && rs.length > 0, exceptionSupplier);
     }
 
     /**
@@ -62,7 +62,7 @@ public final class ToGetSubArray {
      * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
      *                                        and some exception is thrown. Exception will be thrown when
      *                                        {@code true}.
-     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                           expiration
      * @param <T> is a type of input value
      * @param <R> is a type of target values
@@ -76,14 +76,9 @@ public final class ToGetSubArray {
                                                    Duration sleepingTime,
                                                    boolean checkConditionInParallel,
                                                    boolean ignoreExceptionOnConditionCheck,
-                                                   Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        checkFunction(function);
-        checkCondition(condition);
-        checkWaitingTime(waitingTime);
-        checkSleepingTime(sleepingTime);
-        checkExceptionSupplier(exceptionOnTimeOut);
-        return array(function, condition, waitingTime, sleepingTime,
-                checkConditionInParallel, ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
+                                                   Supplier<? extends RuntimeException> exceptionSupplier) {
+        return array(checkFunction(function), checkCondition(condition), checkWaitingTime(waitingTime), checkSleepingTime(sleepingTime),
+                checkConditionInParallel, ignoreExceptionOnConditionCheck, checkExceptionSupplier(exceptionSupplier));
     }
 
     /**
@@ -93,7 +88,7 @@ public final class ToGetSubArray {
      * @param waitingTime is a duration of the waiting for valuable result
      * @param sleepingTime is a duration of the sleeping between attempts to get
      *                     expected valuable result
-     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                           expiration
      * @param <T> is a type of input value
      * @param <R> is a type of target values
@@ -104,13 +99,9 @@ public final class ToGetSubArray {
     public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
                                                    Duration waitingTime,
                                                    Duration sleepingTime,
-                                                   Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        checkFunction(function);
-        checkWaitingTime(waitingTime);
-        checkSleepingTime(sleepingTime);
-        checkExceptionSupplier(exceptionOnTimeOut);
-        return array(function, AS_IS, waitingTime, sleepingTime,
-                true, true, exceptionOnTimeOut);
+                                                   Supplier<? extends RuntimeException> exceptionSupplier) {
+        return array(checkFunction(function), AS_IS, checkWaitingTime(waitingTime), checkSleepingTime(sleepingTime),
+                true, true, checkExceptionSupplier(exceptionSupplier));
     }
 
     /**
@@ -125,7 +116,7 @@ public final class ToGetSubArray {
      * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
      *                                        and some exception is thrown. Exception will be thrown when
      *                                        {@code true}.
-     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                           expiration
      * @param <T> is a type of input value
      * @param <R> is a type of target values
@@ -138,13 +129,9 @@ public final class ToGetSubArray {
                                                    Duration waitingTime,
                                                    boolean checkConditionInParallel,
                                                    boolean ignoreExceptionOnConditionCheck,
-                                                   Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        checkFunction(function);
-        checkCondition(condition);
-        checkWaitingTime(waitingTime);
-        checkExceptionSupplier(exceptionOnTimeOut);
-        return array(function, condition, waitingTime, null,
-                checkConditionInParallel, ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
+                                                   Supplier<? extends RuntimeException> exceptionSupplier) {
+        return array(checkFunction(function), checkCondition(condition), checkWaitingTime(waitingTime), null,
+                checkConditionInParallel, ignoreExceptionOnConditionCheck, checkExceptionSupplier(exceptionSupplier));
     }
 
     /**
@@ -152,7 +139,7 @@ public final class ToGetSubArray {
      *
      * @param function described function which should return an array
      * @param waitingTime is a duration of the waiting for valuable result
-     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                           expiration
      * @param <T> is a type of input value
      * @param <R> is a type of target values
@@ -162,12 +149,9 @@ public final class ToGetSubArray {
      */
     public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
                                                    Duration waitingTime,
-                                                   Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        checkFunction(function);
-        checkWaitingTime(waitingTime);
-        checkExceptionSupplier(exceptionOnTimeOut);
-        return array(function, AS_IS, waitingTime, null,
-                true, true, exceptionOnTimeOut);
+                                                   Supplier<? extends RuntimeException> exceptionSupplier) {
+        return array(checkFunction(function), AS_IS, checkWaitingTime(waitingTime), null,
+                true, true, checkExceptionSupplier(exceptionSupplier));
     }
 
     /**
@@ -181,7 +165,7 @@ public final class ToGetSubArray {
      * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
      *                                        and some exception is thrown. Exception will be thrown when
      *                                        {@code true}.
-     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                           expiration
      * @param <T> is a type of input value
      * @param <R> is a type of target values
@@ -193,19 +177,16 @@ public final class ToGetSubArray {
                                                    Predicate<? super R> condition,
                                                    boolean checkConditionInParallel,
                                                    boolean ignoreExceptionOnConditionCheck,
-                                                   Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        checkFunction(function);
-        checkCondition(condition);
-        checkExceptionSupplier(exceptionOnTimeOut);
-        return array(function, condition, null, null,
-                checkConditionInParallel, ignoreExceptionOnConditionCheck, exceptionOnTimeOut);
+                                                   Supplier<? extends RuntimeException> exceptionSupplier) {
+        return array(checkFunction(function), checkCondition(condition), null, null,
+                checkConditionInParallel, ignoreExceptionOnConditionCheck, checkExceptionSupplier(exceptionSupplier));
     }
 
     /**
      * This method returns a function. The result function returns an array of elements which differ from null.
      *
      * @param function described function which should return an array
-     * @param exceptionOnTimeOut is a supplier which returns the exception to be thrown on the waiting time
+     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                           expiration
      * @param <T> is a type of input value
      * @param <R> is a type of target values
@@ -214,11 +195,9 @@ public final class ToGetSubArray {
      * array is null or has no elements or all elements are {@code null}.
      */
     public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
-                                                   Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        checkFunction(function);
-        checkExceptionSupplier(exceptionOnTimeOut);
-        return array(function, AS_IS, null, null,
-                true, true, exceptionOnTimeOut);
+                                                   Supplier<? extends RuntimeException> exceptionSupplier) {
+        return array(checkFunction(function), AS_IS, null, null,
+                true, true, checkExceptionSupplier(exceptionSupplier));
     }
 
     /**
@@ -247,11 +226,7 @@ public final class ToGetSubArray {
                                                    Duration sleepingTime,
                                                    boolean checkConditionInParallel,
                                                    boolean ignoreExceptionOnConditionCheck) {
-        checkFunction(function);
-        checkCondition(condition);
-        checkWaitingTime(waitingTime);
-        checkSleepingTime(sleepingTime);
-        return array(function, condition, waitingTime, sleepingTime,
+        return array(checkFunction(function), checkCondition(condition), checkWaitingTime(waitingTime), checkSleepingTime(sleepingTime),
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, null);
     }
 
@@ -271,10 +246,7 @@ public final class ToGetSubArray {
     public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
                                                    Duration waitingTime,
                                                    Duration sleepingTime) {
-        checkFunction(function);
-        checkWaitingTime(waitingTime);
-        checkSleepingTime(sleepingTime);
-        return array(function, AS_IS, waitingTime, sleepingTime,
+        return array(checkFunction(function), AS_IS, checkWaitingTime(waitingTime), checkSleepingTime(sleepingTime),
                 true, true, null);
     }
 
@@ -301,10 +273,7 @@ public final class ToGetSubArray {
                                                    Duration waitingTime,
                                                    boolean checkConditionInParallel,
                                                    boolean ignoreExceptionOnConditionCheck) {
-        checkFunction(function);
-        checkCondition(condition);
-        checkWaitingTime(waitingTime);
-        return array(function, condition, waitingTime, null,
+        return array(checkFunction(function), checkCondition(condition), checkWaitingTime(waitingTime), null,
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, null);
     }
 
@@ -321,9 +290,7 @@ public final class ToGetSubArray {
      */
     public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
                                                    Duration waitingTime) {
-        checkFunction(function);
-        checkWaitingTime(waitingTime);
-        return array(function, AS_IS, waitingTime, null,
+        return array(checkFunction(function), AS_IS, checkWaitingTime(waitingTime), null,
                 true, true, null);
     }
 
@@ -348,9 +315,7 @@ public final class ToGetSubArray {
                                                    Predicate<? super R> condition,
                                                    boolean checkConditionInParallel,
                                                    boolean ignoreExceptionOnConditionCheck) {
-        checkFunction(function);
-        checkCondition(condition);
-        return array(function, condition, null, null,
+        return array(checkFunction(function), checkCondition(condition), null, null,
                 checkConditionInParallel, ignoreExceptionOnConditionCheck, null);
     }
 }
