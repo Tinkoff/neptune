@@ -17,7 +17,6 @@ class DescribedFunction<T, R> implements Function<T, R> {
     private final String description;
     private final Function<T, R> function;
     private boolean isComplex;
-    private boolean toReport = true;
 
     DescribedFunction(String description, Function<T, R> function) {
         checkArgument(function != null, "Function should be defined");
@@ -44,12 +43,8 @@ class DescribedFunction<T, R> implements Function<T, R> {
         }).setComplex();
     }
 
-    private boolean shouldBeReported() {
-        return (!isComplex && toReport);
-    }
-
     private void fireEventStartingIfNecessary(T t) {
-        if (!shouldBeReported()) {
+        if (isComplex) {
             return;
         }
 
@@ -64,19 +59,19 @@ class DescribedFunction<T, R> implements Function<T, R> {
     }
 
     private void fireReturnedValueIfNecessary(R r) {
-        if (shouldBeReported()) {
+        if (!isComplex) {
             fireReturnedValue(r);
         }
     }
 
     private void fireThrownExceptionIfNecessary(Throwable thrown) {
-        if (shouldBeReported()) {
+        if (!isComplex) {
             fireThrownException(thrown);
         }
     }
 
     private void fireEventFinishingIfNecessary() {
-        if (shouldBeReported()) {
+        if (!isComplex) {
             fireEventFinishing();
         }
     }
@@ -119,11 +114,6 @@ class DescribedFunction<T, R> implements Function<T, R> {
 
     private DescribedFunction<T, R> setComplex() {
         isComplex = true;
-        return this;
-    }
-
-    DescribedFunction<T, R> doNotReport() {
-        toReport = false;
         return this;
     }
 }

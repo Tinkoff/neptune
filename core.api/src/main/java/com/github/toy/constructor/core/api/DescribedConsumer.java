@@ -16,7 +16,6 @@ class DescribedConsumer<T> implements Consumer<T> {
     private final String description;
     private final Consumer<T> consumer;
     private boolean isComplex;
-    private boolean toReport = true;
 
     DescribedConsumer(String description, Consumer<T> consumer) {
         checkArgument(consumer != null, "Consumer should be defined");
@@ -41,12 +40,8 @@ class DescribedConsumer<T> implements Consumer<T> {
         }).setComplex();
     }
 
-    private boolean shouldBeReported() {
-        return (!isComplex && toReport);
-    }
-
     private void fireEventStartingIfNecessary(T t) {
-        if (!shouldBeReported()) {
+        if (isComplex) {
             return;
         }
 
@@ -59,13 +54,13 @@ class DescribedConsumer<T> implements Consumer<T> {
     }
 
     private void fireThrownExceptionIfNecessary(Throwable thrown) {
-        if (shouldBeReported()) {
+        if (!isComplex) {
             fireThrownException(thrown);
         }
     }
 
     private void fireEventFinishingIfNecessary() {
-        if (shouldBeReported()) {
+        if (!isComplex) {
             fireEventFinishing();
         }
     }
@@ -102,11 +97,6 @@ class DescribedConsumer<T> implements Consumer<T> {
 
     private DescribedConsumer<T> setComplex() {
         isComplex = true;
-        return this;
-    }
-
-    DescribedConsumer<T> doNotReport() {
-        toReport = false;
         return this;
     }
 }
