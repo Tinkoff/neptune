@@ -17,6 +17,7 @@ class DescribedFunction<T, R> implements Function<T, R> {
     private final String description;
     private final Function<T, R> function;
     private boolean isComplex;
+    private boolean toReport = true;
 
     DescribedFunction(String description, Function<T, R> function) {
         checkArgument(function != null, "Function should be defined");
@@ -43,33 +44,39 @@ class DescribedFunction<T, R> implements Function<T, R> {
         }).setComplex();
     }
 
+    private boolean shouldBeReported() {
+        return (!isComplex && toReport);
+    }
+
     private void fireEventStartingIfNecessary(T t) {
-        if (!isComplex) {
-            Class<?> valueClass = t.getClass();
-            if (!GetStep.class.isAssignableFrom(valueClass) &&
-                    !PerformStep.class.isAssignableFrom(valueClass)) {
-                fireEventStarting(format("From %s get %s", t, description));
-            }
-            else {
-                fireEventStarting(format("Get %s", description));
-            }
+        if (!shouldBeReported()) {
+            return;
+        }
+
+        Class<?> valueClass = t.getClass();
+        if (!GetStep.class.isAssignableFrom(valueClass) &&
+                !PerformStep.class.isAssignableFrom(valueClass)) {
+            fireEventStarting(format("From %s get %s", t, description));
+        }
+        else {
+            fireEventStarting(format("Get %s", description));
         }
     }
 
     private void fireReturnedValueIfNecessary(R r) {
-        if (!isComplex) {
+        if (shouldBeReported()) {
             fireReturnedValue(r);
         }
     }
 
     private void fireThrownExceptionIfNecessary(Throwable thrown) {
-        if (!isComplex) {
+        if (shouldBeReported()) {
             fireThrownException(thrown);
         }
     }
 
     private void fireEventFinishingIfNecessary() {
-        if (!isComplex) {
+        if (shouldBeReported()) {
             fireEventFinishing();
         }
     }
@@ -112,6 +119,11 @@ class DescribedFunction<T, R> implements Function<T, R> {
 
     private DescribedFunction<T, R> setComplex() {
         isComplex = true;
+        return this;
+    }
+
+    DescribedFunction<T, R> doNotReport() {
+        toReport = false;
         return this;
     }
 }

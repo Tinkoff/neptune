@@ -16,6 +16,7 @@ class DescribedConsumer<T> implements Consumer<T> {
     private final String description;
     private final Consumer<T> consumer;
     private boolean isComplex;
+    private boolean toReport = true;
 
     DescribedConsumer(String description, Consumer<T> consumer) {
         checkArgument(consumer != null, "Consumer should be defined");
@@ -40,25 +41,31 @@ class DescribedConsumer<T> implements Consumer<T> {
         }).setComplex();
     }
 
+    private boolean shouldBeReported() {
+        return (!isComplex && toReport);
+    }
+
     private void fireEventStartingIfNecessary(T t) {
-        if (!isComplex) {
-            if (!PerformStep.class.isAssignableFrom(t.getClass())) {
-                fireEventStarting(format("Perform %s on %s", description, t));
-            }
-            else {
-                fireEventStarting(format("Perform %s", description));
-            }
+        if (!shouldBeReported()) {
+            return;
+        }
+
+        if (!PerformStep.class.isAssignableFrom(t.getClass())) {
+            fireEventStarting(format("Perform %s on %s", description, t));
+        }
+        else {
+            fireEventStarting(format("Perform %s", description));
         }
     }
 
     private void fireThrownExceptionIfNecessary(Throwable thrown) {
-        if (!isComplex) {
+        if (shouldBeReported()) {
             fireThrownException(thrown);
         }
     }
 
     private void fireEventFinishingIfNecessary() {
-        if (!isComplex) {
+        if (shouldBeReported()) {
             fireEventFinishing();
         }
     }
@@ -95,6 +102,11 @@ class DescribedConsumer<T> implements Consumer<T> {
 
     private DescribedConsumer<T> setComplex() {
         isComplex = true;
+        return this;
+    }
+
+    DescribedConsumer<T> doNotReport() {
+        toReport = false;
         return this;
     }
 }
