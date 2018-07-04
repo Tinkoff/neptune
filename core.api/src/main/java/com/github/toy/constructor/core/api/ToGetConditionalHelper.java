@@ -2,6 +2,7 @@ package com.github.toy.constructor.core.api;
 
 import javax.annotation.Nullable;
 import java.time.Duration;
+import java.util.Objects;
 import java.util.function.*;
 
 import static com.github.toy.constructor.core.api.AsIsPredicate.AS_IS;
@@ -27,7 +28,7 @@ final class ToGetConditionalHelper {
     }
 
     static <T> Predicate<T> notNullAnd(Predicate<T> condition) {
-        return ((Predicate<T>) condition("is not null value", t -> true))
+        return ((Predicate<T>) condition("is not null value", Objects::nonNull))
                 .and(condition);
     }
 
