@@ -22,7 +22,6 @@ dependencies {
     test {
         useTestNG()
         options.suites("property.suite.xml")
-        options.suites("function.description.suite.xml")
         options.suites("step.suite.xml")
         options.suites("webdriver.suite.xml")
     }

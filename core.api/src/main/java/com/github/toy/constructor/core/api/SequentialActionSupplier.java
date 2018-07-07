@@ -10,9 +10,7 @@ import static com.github.toy.constructor.core.api.StoryWriter.action;
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
-import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.ArrayUtils.addAll;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
@@ -47,9 +45,11 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
                 "Function should be described by the StoryWriter.toGet method");
         checkArgument(additionalArguments != null,
                 "Array of additional arguments should not be a null value");
-        String fullDescription = description;
-        fullDescription = format("%s. With parameters: %s", fullDescription,
-                ArrayUtils.toString(addAll(new Object[]{function}, additionalArguments)));
+
+        String fullDescription = format("%s. Target: %s", description, function);
+        fullDescription = additionalArguments.length == 0? fullDescription: format("%s. Action parameters: %s", fullDescription,
+                ArrayUtils.toString(additionalArguments));
+
         Consumer<T> action = action(fullDescription, t -> {
             R r = function.apply(t);
             performActionOn(r, additionalArguments);

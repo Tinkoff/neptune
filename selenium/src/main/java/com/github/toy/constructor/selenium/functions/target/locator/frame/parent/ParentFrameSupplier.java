@@ -3,7 +3,6 @@ package com.github.toy.constructor.selenium.functions.target.locator.frame.paren
 import com.github.toy.constructor.core.api.GetSupplier;
 import com.github.toy.constructor.selenium.SeleniumSteps;
 import com.github.toy.constructor.selenium.functions.target.locator.TargetLocatorSupplier;
-import com.github.toy.constructor.selenium.functions.target.locator.content.DefaultContentSupplier;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -12,21 +11,21 @@ import java.time.Duration;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.github.toy.constructor.core.api.ToGetSingleCheckedObject.getSingle;
+import static com.github.toy.constructor.selenium.CurrentContentFunction.currentContent;
 
 public final class ParentFrameSupplier extends GetSupplier<SeleniumSteps, WebDriver, ParentFrameSupplier>
         implements TargetLocatorSupplier<WebDriver> {
 
-    private static final Function<SeleniumSteps, WebDriver> GET_PARENT_FRAME =
-            toGet("Parent frame", seleniumSteps -> {
+    private static final Function<WebDriver, WebDriver> GET_PARENT_FRAME =
+            driver -> {
                 try {
-                    return seleniumSteps.getWrappedDriver().switchTo().parentFrame();
+                    return driver.switchTo().parentFrame();
                 }
                 catch (WebDriverException e) {
                     return null;
                 }
-            });
+            };
 
     private static final Supplier<WebDriverException> CAN_NOT_SWITCH_TO_PARENT_FRAME =
             () -> new NoSuchFrameException("It was impossible to switch to the parent frame for some reason");
@@ -47,8 +46,8 @@ public final class ParentFrameSupplier extends GetSupplier<SeleniumSteps, WebDri
      *      performs the switching to the parent frame and returns it.
      */
     public static ParentFrameSupplier parentFrame() {
-        return new ParentFrameSupplier().set(getSingle(GET_PARENT_FRAME,
-                CAN_NOT_SWITCH_TO_PARENT_FRAME));
+        return new ParentFrameSupplier().set(getSingle("Parent frame",
+                currentContent().andThen(GET_PARENT_FRAME), CAN_NOT_SWITCH_TO_PARENT_FRAME));
     }
 
     /**
@@ -65,7 +64,7 @@ public final class ParentFrameSupplier extends GetSupplier<SeleniumSteps, WebDri
      *      performs the switching to the parent frame and returns it.
      */
     public static ParentFrameSupplier parentFrame(Duration duration) {
-        return new ParentFrameSupplier().set(getSingle(GET_PARENT_FRAME, duration,
-                CAN_NOT_SWITCH_TO_PARENT_FRAME));
+        return new ParentFrameSupplier().set(getSingle("Parent frame", currentContent().andThen(GET_PARENT_FRAME),
+                duration, CAN_NOT_SWITCH_TO_PARENT_FRAME));
     }
 }

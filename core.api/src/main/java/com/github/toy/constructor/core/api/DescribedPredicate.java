@@ -26,7 +26,7 @@ interface DescribedPredicate<T> extends Predicate<T> {
             @Override
             public String toString() {
                 if (!AS_IS.equals(other)) {
-                    return format("(%s) AND (%s)", thisCondition.toString(), other.toString());
+                    return format("%s, %s", thisCondition.toString(), other.toString());
                 }
                 return thisCondition.toString();
             }
@@ -44,7 +44,7 @@ interface DescribedPredicate<T> extends Predicate<T> {
 
             @Override
             public String toString() {
-                return format("NOT (%s)", thisCondition.toString());
+                return format("not (%s)", thisCondition.toString());
             }
         };
     }
@@ -69,7 +69,7 @@ interface DescribedPredicate<T> extends Predicate<T> {
             @Override
             public String toString() {
                 if (!AS_IS.equals(other)) {
-                    return format("(%s) OR (%s)", thisCondition.toString(), other.toString());
+                    return format("(%s) or (%s)", thisCondition.toString(), other.toString());
                 }
                 return thisCondition.toString();
             }

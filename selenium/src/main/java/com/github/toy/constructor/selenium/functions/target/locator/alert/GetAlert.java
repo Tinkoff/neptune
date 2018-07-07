@@ -1,27 +1,25 @@
 package com.github.toy.constructor.selenium.functions.target.locator.alert;
 
-import com.github.toy.constructor.selenium.SeleniumSteps;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.NoAlertPresentException;
+import org.openqa.selenium.WebDriver;
 
 import java.util.function.Function;
 
-import static com.github.toy.constructor.core.api.StoryWriter.toGet;
-
-final class GetAlert implements Function<SeleniumSteps, Alert> {
+final class GetAlert implements Function<WebDriver, Alert> {
 
     private GetAlert() {
         super();
     }
 
-    static Function<SeleniumSteps, Alert> getAlert() {
-        return toGet("Present alert", new GetAlert());
+    static Function<WebDriver, Alert> getAlert() {
+        return new GetAlert();
     }
 
     @Override
-    public Alert apply(SeleniumSteps seleniumSteps) {
+    public Alert apply(WebDriver webDriver) {
         try {
-            return seleniumSteps.getWrappedDriver().switchTo().alert();
+            return webDriver.switchTo().alert();
         }
         catch (NoAlertPresentException e) {
             return null;

@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.github.toy.constructor.selenium.api.widget.Widget.getWidgetName;
 import static com.github.toy.constructor.selenium.functions.searching.FindByBuilder.getAnnotation;
 import static com.github.toy.constructor.selenium.functions.searching.WidgetPriorityComparator.widgetPriorityComparator;
@@ -46,8 +45,7 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
 
     static <R extends Widget> Function<SearchContext, List<R>> widgets(Class<R> classOfAWidget,
                                                                        String conditionString) {
-        return toGet(format("Elements of type %s", getWidgetName(classOfAWidget)),
-                new FindWidgets<>(classOfAWidget, conditionString));
+        return new FindWidgets<>(classOfAWidget, conditionString);
     }
 
     List<Class<? extends R>> getSubclasses() {

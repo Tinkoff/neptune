@@ -8,6 +8,7 @@ import org.openqa.selenium.WebDriver;
 import java.util.function.Function;
 
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
+import static com.github.toy.constructor.selenium.CurrentContentFunction.currentContent;
 
 public final class GetFrameSupplier extends SequentialGetSupplier<SeleniumSteps, Frame, WebDriver, GetFrameSupplier>
         implements TargetLocatorSupplier<Frame> {
@@ -26,8 +27,7 @@ public final class GetFrameSupplier extends SequentialGetSupplier<SeleniumSteps,
      * @return instance of {@link GetFrameSupplier}
      */
     public static GetFrameSupplier frame(Function<WebDriver, Frame> howToGetFrame) {
-        return new GetFrameSupplier(howToGetFrame).from(toGet("Current content",
-                SeleniumSteps::getWrappedDriver));
+        return new GetFrameSupplier(howToGetFrame).from(currentContent());
     }
 
     @Override

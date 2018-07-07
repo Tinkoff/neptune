@@ -1,5 +1,11 @@
 package com.github.toy.constructor.core.api;
 
+import com.github.toy.constructor.core.api.exception.management.IgnoresThrowable;
+import com.github.toy.constructor.core.api.exception.management.StopsIgnoreThrowable;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
 import static com.github.toy.constructor.core.api.StaticEventFiring.*;
@@ -12,11 +18,13 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @SuppressWarnings("unchecked")
-class DescribedFunction<T, R> implements Function<T, R> {
+class DescribedFunction<T, R> implements Function<T, R>, IgnoresThrowable<DescribedFunction<T, R>>,
+        StopsIgnoreThrowable<DescribedFunction<T, R>> {
 
     private final String description;
     private final Function<T, R> function;
     private boolean isComplex;
+    protected final Set<Class<? extends Throwable>> ignored = new HashSet<>();
 
     DescribedFunction(String description, Function<T, R> function) {
         checkArgument(function != null, "Function should be defined");
@@ -29,9 +37,6 @@ class DescribedFunction<T, R> implements Function<T, R> {
                                                                            Function<? super V, ? extends R> after) {
         checkNotNull(before);
         checkNotNull(after);
-        checkArgument(DescribedFunction.class.isAssignableFrom(before.getClass()),
-                "It seems given before-function doesn't describe any value to get. Use method " +
-                        "StoryWriter.toGet to describe the value to get previously.");
         checkArgument(DescribedFunction.class.isAssignableFrom(after.getClass()),
                 "It seems given after-function doesn't describe any value to get. Use method " +
                         "StoryWriter.toGet to describe the value to get previously.");
@@ -41,6 +46,15 @@ class DescribedFunction<T, R> implements Function<T, R> {
             V result = before.apply(t);
             return ofNullable(result).map(after).orElse(null);
         }).setComplex();
+    }
+
+    private boolean shouldBeThrowableIgnored(Throwable toBeIgnored) {
+        for (Class<? extends Throwable> throwableClass: ignored) {
+            if (throwableClass.isAssignableFrom(toBeIgnored.getClass())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void fireEventStartingIfNecessary(T t) {
@@ -88,11 +102,17 @@ class DescribedFunction<T, R> implements Function<T, R> {
             return result;
         }
         catch (Throwable thrown) {
-            fireThrownExceptionIfNecessary(thrown);
-            if (catchFailureEvent() && !isComplex) {
-                catchResult(t, format("Getting of '%s' failed", description));
+            if (!shouldBeThrowableIgnored(thrown)) {
+                fireThrownExceptionIfNecessary(thrown);
+                if (catchFailureEvent() && !isComplex) {
+                    catchResult(t, format("Getting of '%s' failed", description));
+                }
+                throw thrown;
             }
-            throw thrown;
+            else {
+                fireReturnedValueIfNecessary(null);
+                return null;
+            }
         }
         finally {
             fireEventFinishingIfNecessary();
@@ -114,6 +134,18 @@ class DescribedFunction<T, R> implements Function<T, R> {
 
     private DescribedFunction<T, R> setComplex() {
         isComplex = true;
+        return this;
+    }
+
+    @Override
+    public DescribedFunction<T, R> addIgnored(List<Class<? extends Throwable>> toBeIgnored) {
+        ignored.addAll(toBeIgnored);
+        return this;
+    }
+
+    @Override
+    public DescribedFunction<T, R> stopIgnore(List<Class<? extends Throwable>> toStopIgnore) {
+        ignored.removeAll(toStopIgnore);
         return this;
     }
 }

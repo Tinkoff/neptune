@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.github.toy.constructor.selenium.api.widget.Widget.getWidgetName;
 import static com.github.toy.constructor.selenium.functions.searching.FindByBuilder.getAnnotation;
 import static com.github.toy.constructor.selenium.functions.searching.WidgetPriorityComparator.widgetPriorityComparator;
@@ -68,7 +67,6 @@ class FindLabeledWidgets<R extends Widget> extends FindWidgets<R> {
 
     static <R extends Widget> Function<SearchContext, List<R>> labeledWidgets(Class<R> classOfAWidget,
                                                                               String conditionString) {
-        return toGet(format("Elements of type %s", getWidgetName(classOfAWidget)),
-                new FindLabeledWidgets<>(classOfAWidget, conditionString));
+        return new FindLabeledWidgets<>(classOfAWidget, conditionString);
     }
 }

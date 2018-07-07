@@ -15,8 +15,10 @@ import java.util.stream.Collectors;
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.github.toy.constructor.core.api.ToGetObjectFromIterable.getFromIterable;
 import static com.github.toy.constructor.core.api.ToGetSingleCheckedObject.getSingle;
+import static com.github.toy.constructor.selenium.CurrentContentFunction.currentContent;
 import static com.github.toy.constructor.selenium.properties.WaitingProperties.WAITING_WINDOW_TIME_DURATION;
 import static com.google.common.base.Preconditions.checkArgument;
+
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 
@@ -31,8 +33,7 @@ public final class GetWindowSupplier extends GetSupplier<SeleniumSteps, Window, 
         super();
     }
 
-    private static List<Window> getListOfWindows(SeleniumSteps seleniumSteps, String description) {
-        WebDriver driver = seleniumSteps.getWrappedDriver();
+    private static List<Window> getListOfWindows(WebDriver driver, String description) {
         return driver.getWindowHandles()
                 .stream().map(s -> {
                     DefaultWindow window = new DefaultWindow(s, driver);
@@ -41,8 +42,8 @@ public final class GetWindowSupplier extends GetSupplier<SeleniumSteps, Window, 
                 }).collect(Collectors.toList());
     }
 
-    private static Window getWindowByIndex(SeleniumSteps seleniumSteps, String description, int index) {
-        List<Window> windows = getListOfWindows(seleniumSteps, description);
+    private static Window getWindowByIndex(WebDriver driver,  String description, int index) {
+        List<Window> windows = getListOfWindows(driver, description);
         if (windows.size() >= index + 1) {
             Window result = windows.get(index);
             result.switchToMe();
@@ -61,31 +62,31 @@ public final class GetWindowSupplier extends GetSupplier<SeleniumSteps, Window, 
      * @return reference to a new instance of {@link GetSupplier}
      */
     public static GetWindowSupplier window() {
-        return new GetWindowSupplier().set(toGet("The first window/tab", seleniumSteps ->
-                getWindowByIndex(seleniumSteps, "The first window", 0)));
+        return new GetWindowSupplier().set(toGet("The first window/tab",
+                currentContent().andThen(webDriver -> getWindowByIndex(webDriver, "The first window", 0))));
     }
 
     private GetWindowSupplier setFunctionWithIndexAndCondition() {
-        return set(getSingle(toGet(format("Window/tab by index %s", index),
-                        seleniumSteps -> getWindowByIndex(seleniumSteps,
-                                format("Window/tab found by index %s on condition '%s'", index, condition), index)),
+        return set(getSingle(format("Window/tab by index %s", index),
+                currentContent().andThen(webDriver -> getWindowByIndex(webDriver,
+                        format("Window/tab found by index %s and by condition: %s", index, condition), index)),
                 condition,
                 timeOut, true,
-                noSuchWindowException(format("Window/tab was not found by index %s on condition '%s'", index, condition))));
+                noSuchWindowException(format("Window/tab was not found by index %s and by condition %s", index, condition))));
     }
 
     private GetWindowSupplier setFunctionWithCondition() {
         return set(getFromIterable("Window/tab",
-                toGet("Windows/tabs which are currently present",
-                        seleniumSteps -> getListOfWindows(seleniumSteps, format("Window/tab found on condition '%s'", condition))),
+                currentContent().andThen(webDriver ->
+                        getListOfWindows(webDriver, format("Window/tab found by condition: %s", condition))),
                 condition, timeOut,
                 false, true,
-                noSuchWindowException(format("Window was not found on condition '%s'",  condition))));
+                noSuchWindowException(format("Window was not found by condition %s",  condition))));
     }
 
     private GetWindowSupplier setFunctionWithIndex() {
-        return set(getSingle(toGet(format("Window/tab by index %s", index),
-                seleniumSteps -> getWindowByIndex(seleniumSteps,
+        return set(getSingle(format("Window/tab by index %s", index),
+                currentContent().andThen(webDriver -> getWindowByIndex(webDriver,
                         format("Window/tab found by index %s", index), index)),
                 timeOut,
                 noSuchWindowException(format("Window/tab was not found by index %s", index))));
@@ -135,7 +136,8 @@ public final class GetWindowSupplier extends GetSupplier<SeleniumSteps, Window, 
 
                 .orElseGet(() -> ofNullable(condition)
                         .map(windowPredicate -> setFunctionWithCondition())
-                        .orElseGet(() -> set(toGet("The first window/tab", seleniumSteps ->
-                                getWindowByIndex(seleniumSteps, "The first window", 0)))));
+                        .orElseGet(() -> set(toGet("The first window/tab",
+                                currentContent().andThen(webDriver ->
+                                        getWindowByIndex(webDriver, "The first window", 0))))));
     }
 }

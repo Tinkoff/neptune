@@ -12,7 +12,7 @@ public class WebDriverMethodInterceptor implements MethodInterceptor {
         if ("toString".equals(method.getName()) &&
                 method.getParameterTypes().length == 0
                 && String.class.equals(method.getReturnType())) {
-            return "Current content";
+            return "Loaded page";
         }
 
         return proxy.invokeSuper(obj, args);

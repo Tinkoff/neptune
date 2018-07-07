@@ -162,7 +162,7 @@ public class EventFiringTest {
     @Test
     public void eventFiringTest() {
         prepare();
-        assertThat(MESSAGES, contains("Perform Reset calculated value to 0 has started",
+        assertThat(MESSAGES, contains("Reset calculated value to 0 has started",
                 "Event finished",
                 "Get Calculation has started",
                 "Get Entering number 9 has started",

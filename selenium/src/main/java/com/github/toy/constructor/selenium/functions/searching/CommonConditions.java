@@ -16,7 +16,9 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
+import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @SuppressWarnings("unchecked")
@@ -42,7 +44,7 @@ public final class CommonConditions {
      * @return predicate that checks is some element visible or not
      */
     public static <T extends SearchContext> Predicate<T> shouldBeVisible() {
-        return condition("Should be visible", t -> {
+        return condition("visible", t -> {
             Class<?> tClass = t.getClass();
             if (WebElement.class.isAssignableFrom(tClass)) {
                 return WebElement.class.cast(t).isDisplayed();
@@ -72,7 +74,7 @@ public final class CommonConditions {
      * @return predicate that checks is some element enabled or not
      */
     public static <T extends SearchContext> Predicate<T> shouldBeEnabled() {
-        return condition("Should be enabled", t -> {
+        return condition("enabled", t -> {
             Class<?> tClass = t.getClass();
             if (WebElement.class.isAssignableFrom(tClass)) {
                 return WebElement.class.cast(t).isEnabled();
@@ -102,7 +104,7 @@ public final class CommonConditions {
     public static  Predicate<WebElement> shouldHaveText(String text) {
         checkArgument(!isBlank(text), "String which is used to check text " +
                 "of an element should not be null or empty. ");
-        return condition(format("Should have text '%s'", text),
+        return condition(format("has text '%s'", text),
                 webElement -> text.equals(webElement.getText()));
     }
 
@@ -112,7 +114,7 @@ public final class CommonConditions {
      */
     public static  Predicate<WebElement> shouldHaveText(Pattern pattern) {
         checkArgument(pattern != null, "RegEx pattern should be defined");
-        return condition(format("Should have text which contains " +
+        return condition(format("has text that meets " +
                         "regExp pattern '%s'", pattern),
                 webElement -> {
                     Matcher m = pattern.matcher(webElement.getText());
@@ -132,7 +134,7 @@ public final class CommonConditions {
         checkArgument(!isBlank(attribute), "Attribute name should not be empty or null.");
         checkArgument(!isBlank(attrValue), "Attribute value should not be empty or null.");
 
-        return condition(format("Should have attribute '%s=\"%s\"'", attribute, attrValue), t -> {
+        return condition(format("has attribute '%s=\"%s\"'", attribute, attrValue), t -> {
             Class<?> tClass = t.getClass();
             if (WebElement.class.isAssignableFrom(tClass)) {
                 return attrValue.equals(WebElement.class.cast(t).getAttribute(attribute));
@@ -168,7 +170,7 @@ public final class CommonConditions {
         checkArgument(!isBlank(attribute), "Attribute name should not be empty or null.");
         checkArgument(!isBlank(attrValue), "Attribute value should not be empty or null.");
 
-        return condition(format("Should have attribute '%s' which contains value '%s'", attribute, attrValue), t -> {
+        return condition(format("has attribute '%s' that contains string '%s'", attribute, attrValue), t -> {
             Class<?> tClass = t.getClass();
             if (WebElement.class.isAssignableFrom(tClass)) {
                 return ofNullable(WebElement.class.cast(t).getAttribute(attribute))
@@ -208,7 +210,7 @@ public final class CommonConditions {
         checkArgument(pattern != null, "RegEx pattern of the desired " +
                 "attribute value should be defined.");
 
-        return condition(format("Should have attribute '%s' which matches " +
+        return condition(format("has attribute '%s' that meets " +
                 "regExp pattern '%s'", attribute, pattern), t -> {
             Class<?> tClass = t.getClass();
             if (WebElement.class.isAssignableFrom(tClass)) {
@@ -258,7 +260,7 @@ public final class CommonConditions {
         checkArgument(!isBlank(cssProperty), "Css property should not be empty or null.");
         checkArgument(!isBlank(cssValue), "Css value should not be empty or null.");
 
-        return condition(format("Should have css property '%s=\"%s\"'", cssProperty, cssValue), t -> {
+        return condition(format("has css property '%s=\"%s\"'", cssProperty, cssValue), t -> {
             Class<?> tClass = t.getClass();
             if (WebElement.class.isAssignableFrom(tClass)) {
                 return cssValue.equals(WebElement.class.cast(t).getCssValue(cssProperty));
@@ -294,7 +296,7 @@ public final class CommonConditions {
         checkArgument(!isBlank(cssProperty), "Css property should not be empty or null.");
         checkArgument(!isBlank(cssValue), "Css value should not be empty or null.");
 
-        return condition(format("Should have css property  '%s' which contains value '%s'", cssProperty, cssValue), t -> {
+        return condition(format("has css property '%s' that contains string '%s'", cssProperty, cssValue), t -> {
             Class<?> tClass = t.getClass();
             if (WebElement.class.isAssignableFrom(tClass)) {
                 return ofNullable(WebElement.class.cast(t).getCssValue(cssProperty))
@@ -335,7 +337,7 @@ public final class CommonConditions {
         checkArgument(pattern != null, "RegEx pattern of the desired " +
                 "css value should be defined.");
 
-        return condition(format("Should have css property '%s' which matches " +
+        return condition(format("has css property '%s' that meets " +
                 "regExp pattern '%s'", cssProperty, pattern), t -> {
             Class<?> tClass = t.getClass();
             if (WebElement.class.isAssignableFrom(tClass)) {
@@ -379,7 +381,7 @@ public final class CommonConditions {
      */
     public static <T extends SearchContext> Predicate<T> shouldContainElements(MultipleSearchSupplier<?> howToFind) {
         checkArgument(howToFind != null, "The way how to find nested elements should be defined");
-        return condition(format("Should have nested %s", howToFind), t -> howToFind.get().apply(t).size() > 0);
+        return condition(format("has nested %s", howToFind), t -> howToFind.get().apply(t).size() > 0);
     }
 
     /**
@@ -391,7 +393,7 @@ public final class CommonConditions {
     public static <T extends SearchContext> Predicate<T> shouldContainElements(MultipleSearchSupplier<?> howToFind, int expected) {
         checkArgument(howToFind != null, "The way how to find nested elements should be defined");
         checkArgument(expected >=0 , "Count of expected nested elements can't be a negative value.");
-        return condition(format("Should have %s nested %s", expected, howToFind),
+        return condition(format("has %s nested %s", expected, howToFind),
                 t -> howToFind.get().apply(t).size() == expected);
     }
 
@@ -403,7 +405,7 @@ public final class CommonConditions {
     public static  <T extends SearchContext & Labeled> Predicate<T> shouldBeLabeledBy(String...labels) {
         checkNotNull(labels);
         checkArgument(labels.length > 0, "At least one label should be defined");
-        return condition(format("Should have string label(s) %s", Arrays.toString(labels)),
+        return condition(format("has label(s) %s", String.join("and ", stream(labels).collect(toList()))),
                 t -> t.labels().containsAll(asList(labels)));
     }
 }

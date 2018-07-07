@@ -20,8 +20,8 @@ public final class ToGetObjectFromArray {
      * suits criteria from array.
      *
      * @param description of a value which should be returned.
-     * @param function described function which should return an array
-     * @param condition described predicate which is used to find some target value
+     * @param function function which should return an array
+     * @param condition predicate which is used to find some target value
      * @param waitingTime is a duration of the waiting for valuable result
      * @param sleepingTime is a duration of the sleeping between attempts to get
      *                     expected valuable result
@@ -55,7 +55,7 @@ public final class ToGetObjectFromArray {
      * This method returns a function. The result function returns a single first found value from array.
      *
      * @param description of a value which should be returned.
-     * @param function described function which should return an array
+     * @param function function which should return an array
      * @param waitingTime is a duration of the waiting for valuable result
      * @param sleepingTime is a duration of the sleeping between attempts to get
      *                     expected valuable result
@@ -80,8 +80,8 @@ public final class ToGetObjectFromArray {
      * suits criteria from array.
      *
      * @param description of a value which should be returned.
-     * @param function described function which should return an array
-     * @param condition described predicate which is used to find some target value
+     * @param function function which should return an array
+     * @param condition predicate which is used to find some target value
      * @param waitingTime is a duration of the waiting for valuable result
      * @param checkConditionInParallel is how array should be matched. If {@code true} when each value will be
      *                                 checked in parallel.
@@ -112,7 +112,7 @@ public final class ToGetObjectFromArray {
      * This method returns a function. The result function returns a single first found value from array.
      *
      * @param description of a value which should be returned.
-     * @param function described function which should return an array
+     * @param function function which should return an array
      * @param waitingTime is a duration of the waiting for valuable result
      * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                           expiration
@@ -134,8 +134,8 @@ public final class ToGetObjectFromArray {
      * suits criteria from array.
      *
      * @param description of a value which should be returned.
-     * @param function described function which should return an array
-     * @param condition described predicate which is used to find some target value
+     * @param function function which should return an array
+     * @param condition predicate which is used to find some target value
      * @param checkConditionInParallel is how array should be matched. If {@code true} when each value will be
      *                                 checked in parallel.
      * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
@@ -164,7 +164,7 @@ public final class ToGetObjectFromArray {
      * This method returns a function. The result function returns a single first found value from array.
      *
      * @param description of a value which should be returned.
-     * @param function described function which should return an array
+     * @param function function which should return an array
      * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                           expiration
      * @param <T> is a type of input value
@@ -184,8 +184,8 @@ public final class ToGetObjectFromArray {
      * suits criteria from array.
      *
      * @param description of a value which should be returned.
-     * @param function described function which should return an array
-     * @param condition described predicate which is used to find some target value
+     * @param function function which should return an array
+     * @param condition predicate which is used to find some target value
      * @param waitingTime is a duration of the waiting for valuable result
      * @param sleepingTime is a duration of the sleeping between attempts to get
      *                     expected valuable result
@@ -216,7 +216,7 @@ public final class ToGetObjectFromArray {
      * This method returns a function. The result function returns a single first found value from array.
      *
      * @param description of a value which should be returned.
-     * @param function described function which should return an array
+     * @param function function which should return an array
      * @param waitingTime is a duration of the waiting for valuable result
      * @param sleepingTime is a duration of the sleeping between attempts to get
      *                     expected valuable result
@@ -238,8 +238,8 @@ public final class ToGetObjectFromArray {
      * suits criteria from array.
      *
      * @param description of a value which should be returned.
-     * @param function described function which should return an array
-     * @param condition described predicate which is used to find some target value
+     * @param function function which should return an array
+     * @param condition predicate which is used to find some target value
      * @param waitingTime is a duration of the waiting for valuable result
      * @param checkConditionInParallel is how array should be matched. If {@code true} when each value will be
      *                                 checked in parallel.
@@ -267,7 +267,7 @@ public final class ToGetObjectFromArray {
      * This method returns a function. The result function returns a single first found value from array.
      *
      * @param description of a value which should be returned.
-     * @param function described function which should return an array
+     * @param function function which should return an array
      * @param waitingTime is a duration of the waiting for valuable result
      * @param <T> is a type of input value
      * @param <R> is a type of the target value
@@ -286,8 +286,8 @@ public final class ToGetObjectFromArray {
      * suits criteria from array.
      *
      * @param description of a value which should be returned.
-     * @param function described function which should return an array
-     * @param condition described predicate which is used to find some target value
+     * @param function function which should return an array
+     * @param condition predicate which is used to find some target value
      * @param checkConditionInParallel is how array should be matched. If {@code true} when each value will be
      *                                 checked in parallel.
      * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
@@ -313,7 +313,7 @@ public final class ToGetObjectFromArray {
      * This method returns a function. The result function returns a single first found value from array.
      *
      * @param description of a value which should be returned.
-     * @param function described function which should return an array
+     * @param function function which should return an array
      * @param <T> is a type of input value
      * @param <R> is a type of the target value
      * @return a function. The result function returns a single first found non-null value from array.

@@ -46,10 +46,10 @@ class DescribedConsumer<T> implements Consumer<T> {
         }
 
         if (!PerformStep.class.isAssignableFrom(t.getClass())) {
-            fireEventStarting(format("Perform %s on %s", description, t));
+            fireEventStarting(format("%s. Target: %s", description, t));
         }
         else {
-            fireEventStarting(format("Perform %s", description));
+            fireEventStarting(format("%s", description));
         }
     }
 

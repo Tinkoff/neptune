@@ -9,7 +9,7 @@ import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 public final class CurrentContentFunction implements Function<SeleniumSteps, WebDriver> {
 
     public static Function<SeleniumSteps, WebDriver> currentContent() {
-        return toGet("Current content", new CurrentContentFunction());
+        return new CurrentContentFunction();
     }
 
     private CurrentContentFunction() {

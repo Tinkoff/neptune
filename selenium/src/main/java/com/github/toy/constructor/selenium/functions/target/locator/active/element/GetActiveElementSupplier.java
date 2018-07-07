@@ -4,6 +4,7 @@ import com.github.toy.constructor.core.api.GetSupplier;
 import com.github.toy.constructor.selenium.SeleniumSteps;
 import com.github.toy.constructor.selenium.functions.target.locator.TargetLocatorSupplier;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
@@ -11,21 +12,21 @@ import java.time.Duration;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.github.toy.constructor.core.api.ToGetSingleCheckedObject.getSingle;
+import static com.github.toy.constructor.selenium.CurrentContentFunction.currentContent;
 
 public final class GetActiveElementSupplier extends GetSupplier<SeleniumSteps, WebElement, GetActiveElementSupplier>
         implements TargetLocatorSupplier<WebElement> {
 
-    private static final Function<SeleniumSteps, WebElement> GET_ACTIVE_ELEMENT =
-            toGet("Active element", seleniumSteps -> {
+    private static final Function<WebDriver, WebElement> GET_ACTIVE_ELEMENT =
+            webDriver -> {
                 try {
-                    return seleniumSteps.getWrappedDriver().switchTo().activeElement();
+                    return webDriver.switchTo().activeElement();
                 }
                 catch (WebDriverException e) {
                     return null;
                 }
-            });
+            };
 
     private static final Supplier<NoSuchElementException> NO_ACTIVE_ELEMENT_EXCEPTION = () ->
             new NoSuchElementException("It was impossible to detect the active element for some reason");
@@ -51,7 +52,8 @@ public final class GetActiveElementSupplier extends GetSupplier<SeleniumSteps, W
      * performs the switching to the active element and returns it.
      */
     public static GetActiveElementSupplier activeElement() {
-        return new GetActiveElementSupplier().set(getSingle(GET_ACTIVE_ELEMENT, NO_ACTIVE_ELEMENT_EXCEPTION));
+        return new GetActiveElementSupplier().set(getSingle("Active element",
+                currentContent().andThen(GET_ACTIVE_ELEMENT), NO_ACTIVE_ELEMENT_EXCEPTION));
     }
 
     /**
@@ -72,6 +74,7 @@ public final class GetActiveElementSupplier extends GetSupplier<SeleniumSteps, W
      * performs the switching to the active element and returns it.
      */
     public static GetActiveElementSupplier activeElement(Duration duration) {
-        return new GetActiveElementSupplier().set(getSingle(GET_ACTIVE_ELEMENT, duration, NO_ACTIVE_ELEMENT_EXCEPTION));
+        return new GetActiveElementSupplier().set(getSingle("Active element",
+                currentContent().andThen(GET_ACTIVE_ELEMENT), duration, NO_ACTIVE_ELEMENT_EXCEPTION));
     }
 }

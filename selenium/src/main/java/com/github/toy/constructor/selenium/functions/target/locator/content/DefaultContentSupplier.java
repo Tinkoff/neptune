@@ -10,21 +10,21 @@ import java.time.Duration;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.github.toy.constructor.core.api.ToGetSingleCheckedObject.getSingle;
+import static com.github.toy.constructor.selenium.CurrentContentFunction.currentContent;
 
 public final class DefaultContentSupplier extends GetSupplier<SeleniumSteps, WebDriver, DefaultContentSupplier>
         implements TargetLocatorSupplier<WebDriver> {
 
-    private static final Function<SeleniumSteps, WebDriver> GET_DEFAULT_CONTENT =
-            toGet("Default content", seleniumSteps -> {
+    private static final Function<WebDriver, WebDriver> GET_DEFAULT_CONTENT =
+            driver -> {
                 try {
-                    return seleniumSteps.getWrappedDriver().switchTo().defaultContent();
+                    return driver.switchTo().defaultContent();
                 }
                 catch (WebDriverException e) {
                    return null;
                 }
-            });
+            };
 
     private static final Supplier<WebDriverException> CAN_NOT_SWITCH_TO_DEFAULT_CONTENT =
             () -> new WebDriverException("It was impossible to switch to default content for some reason");
@@ -48,8 +48,8 @@ public final class DefaultContentSupplier extends GetSupplier<SeleniumSteps, Web
      * performs the switching to the default content and returns it.
      */
     public static DefaultContentSupplier defaultContent() {
-        return new DefaultContentSupplier().set(getSingle(GET_DEFAULT_CONTENT,
-                CAN_NOT_SWITCH_TO_DEFAULT_CONTENT));
+        return new DefaultContentSupplier().set(getSingle("Default content",
+                currentContent().andThen(GET_DEFAULT_CONTENT), CAN_NOT_SWITCH_TO_DEFAULT_CONTENT));
     }
 
     /**
@@ -68,7 +68,7 @@ public final class DefaultContentSupplier extends GetSupplier<SeleniumSteps, Web
      * performs the switching to the default content and returns it.
      */
     public static DefaultContentSupplier defaultContent(Duration duration) {
-        return new DefaultContentSupplier().set(getSingle(GET_DEFAULT_CONTENT, duration,
-                CAN_NOT_SWITCH_TO_DEFAULT_CONTENT));
+        return new DefaultContentSupplier().set(getSingle("Default content",
+                currentContent().andThen(GET_DEFAULT_CONTENT), duration, CAN_NOT_SWITCH_TO_DEFAULT_CONTENT));
     }
 }

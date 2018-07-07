@@ -5,13 +5,16 @@ import com.github.toy.constructor.selenium.SeleniumSteps;
 import org.openqa.selenium.WebDriver;
 
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static com.github.toy.constructor.core.api.ToGetSingleCheckedObject.getSingle;
+import static com.github.toy.constructor.selenium.CurrentContentFunction.currentContent;
 import static com.github.toy.constructor.selenium.functions.java.script.EvaluateAsyncJavaScript.evalAsyncJS;
 import static com.github.toy.constructor.selenium.functions.java.script.EvaluateJavaScript.evalJS;
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public final class GetJavaScriptResultSupplier extends GetSupplier<SeleniumSteps, Object, GetJavaScriptResultSupplier> {
@@ -26,6 +29,22 @@ public final class GetJavaScriptResultSupplier extends GetSupplier<SeleniumSteps
 
     private static void checkArguments(Object...arguments) {
         checkArgument(arguments != null, "Arguments to be used by script evaluation should not be null");
+    }
+
+    private static String getScriptDescription(String script, Object...parameters) {
+        String description = format("Evaluation of java script '%s'", script);
+        if (parameters.length > 0) {
+            description = format("%s with parameters %s", description, Arrays.toString(parameters));
+        }
+        return description;
+    }
+
+    private static String getAsyncScriptDescription(String script, Object...parameters) {
+        String description = format("Evaluation of asynchronous java script '%s'", script);
+        if (parameters.length > 0) {
+            description = format("%s with parameters %s", description, Arrays.toString(parameters));
+        }
+        return description;
     }
 
     /**
@@ -82,7 +101,8 @@ public final class GetJavaScriptResultSupplier extends GetSupplier<SeleniumSteps
         checkScript(script);
         checkArguments(arguments);
         return new GetJavaScriptResultSupplier()
-                .set(getSingle(evalJS(script, arguments), criteria, timeToGetResult, timeToSleep, true, exceptionSupplier));
+                .set(getSingle(getScriptDescription(script, arguments), currentContent().andThen(evalJS(script, arguments)),
+                        criteria, timeToGetResult, timeToSleep, true, exceptionSupplier));
     }
 
     /**
@@ -137,7 +157,8 @@ public final class GetJavaScriptResultSupplier extends GetSupplier<SeleniumSteps
         checkScript(script);
         checkArguments(arguments);
         return new GetJavaScriptResultSupplier()
-                .set(getSingle(evalJS(script, arguments), criteria, timeToGetResult, true, exceptionSupplier));
+                .set(getSingle(getScriptDescription(script, arguments), currentContent().andThen(evalJS(script, arguments)),
+                        criteria, timeToGetResult, true, exceptionSupplier));
     }
 
 
@@ -193,7 +214,8 @@ public final class GetJavaScriptResultSupplier extends GetSupplier<SeleniumSteps
         checkScript(script);
         checkArguments(arguments);
         return new GetJavaScriptResultSupplier()
-                .set(getSingle(evalJS(script, arguments), criteria, timeToGetResult, true));
+                .set(getSingle(getScriptDescription(script, arguments), currentContent().andThen(evalJS(script, arguments)),
+                        criteria, timeToGetResult, true));
     }
 
     /**
@@ -245,7 +267,8 @@ public final class GetJavaScriptResultSupplier extends GetSupplier<SeleniumSteps
         checkScript(script);
         checkArguments(arguments);
         return new GetJavaScriptResultSupplier()
-                .set(getSingle(evalJS(script, arguments), criteria, true));
+                .set(getSingle(getScriptDescription(script, arguments), currentContent().andThen(evalJS(script, arguments)),
+                        criteria, true));
     }
 
     /**
@@ -290,7 +313,7 @@ public final class GetJavaScriptResultSupplier extends GetSupplier<SeleniumSteps
     public static GetJavaScriptResultSupplier javaScript(String script, Object... arguments) {
         checkScript(script);
         checkArguments(arguments);
-        return new GetJavaScriptResultSupplier().set(evalJS(script, arguments));
+        return new GetJavaScriptResultSupplier().set(currentContent().andThen(evalJS(script, arguments)));
     }
 
     /**
@@ -382,7 +405,8 @@ public final class GetJavaScriptResultSupplier extends GetSupplier<SeleniumSteps
         checkScript(script);
         checkArguments(arguments);
         return new GetJavaScriptResultSupplier()
-                .set(getSingle(evalAsyncJS(script, arguments), criteria, true, exceptionSupplier));
+                .set(getSingle(getAsyncScriptDescription(script, arguments), currentContent().andThen(evalAsyncJS(script, arguments)),
+                        criteria, true, exceptionSupplier));
     }
 
     /**
@@ -472,7 +496,8 @@ public final class GetJavaScriptResultSupplier extends GetSupplier<SeleniumSteps
         checkScript(script);
         checkArguments(arguments);
         return new GetJavaScriptResultSupplier()
-                .set(getSingle(evalAsyncJS(script, arguments), criteria, true));
+                .set(getSingle(getAsyncScriptDescription(script, arguments), currentContent().andThen(evalAsyncJS(script, arguments)),
+                        criteria, true));
     }
 
     /**
@@ -557,6 +582,6 @@ public final class GetJavaScriptResultSupplier extends GetSupplier<SeleniumSteps
                                                                      Object... arguments) {
         checkScript(script);
         checkArguments(arguments);
-        return new GetJavaScriptResultSupplier().set(evalAsyncJS(script, arguments));
+        return new GetJavaScriptResultSupplier().set(currentContent().andThen(evalAsyncJS(script, arguments)));
     }
 }

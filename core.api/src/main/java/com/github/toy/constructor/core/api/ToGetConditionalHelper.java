@@ -15,7 +15,6 @@ import static java.lang.Thread.sleep;
 import static java.time.Duration.ofMillis;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.time.DurationFormatUtils.formatDuration;
 
 /**
  * This is the util which helps to crate function with given condition.
@@ -25,6 +24,35 @@ final class ToGetConditionalHelper {
 
     private ToGetConditionalHelper() {
         super();
+    }
+
+    static <T> Predicate<T> checkCondition(Predicate<T> condition) {
+        checkArgument(condition != null, "Predicate is not defined.");
+        checkArgument(DescribedPredicate.class.isAssignableFrom(condition.getClass()),
+                "Condition is not described. " +
+                        "Use StoryWriter.condition to describe it.");
+        return condition;
+    }
+
+    static String checkDescription(String description) {
+        checkArgument(!isBlank(description), "Description should not be empty or null value");
+        return description;
+    }
+
+    static <T, R>  Function<T, R> checkFunction(Function<T, R> function) {
+        checkArgument(function != null, "Function is not defined.");
+        return function;
+    }
+
+    static Duration checkSleepingTime(Duration duration) {
+        checkArgument(duration != null, "Time of the sleeping is not defined");
+        return duration;
+    }
+
+    static Duration checkWaitingTime(Duration duration) {
+        checkArgument(duration != null, "Time of the waiting for some " +
+                "valuable result is not defined");
+        return duration;
     }
 
     static <T> Predicate<T> notNullAnd(Predicate<T> condition) {
@@ -43,47 +71,17 @@ final class ToGetConditionalHelper {
         return false;
     }
 
-    static <T> Predicate<T> checkCondition(Predicate<T> condition) {
-        checkArgument(condition != null, "Predicate is not defined.");
-        checkArgument(DescribedPredicate.class.isAssignableFrom(condition.getClass()),
-                "Condition is not described. " +
-                        "Use StoryWriter.condition to describe it.");
-        return condition;
-    }
-
-    static <T, R>  Function<T, R> checkFunction(Function<T, R> function) {
-        checkArgument(function != null, "Function is not defined.");
-        return function;
-    }
-
-    static Duration checkWaitingTime(Duration duration) {
-        checkArgument(duration != null, "Time of the waiting for some " +
-                "valuable result is not defined");
-        return duration;
-    }
-
-    static Duration checkSleepingTime(Duration duration) {
-        checkArgument(duration != null, "Time of the sleeping is not defined");
-        return duration;
-    }
-
     static Supplier<? extends RuntimeException> checkExceptionSupplier(Supplier<? extends RuntimeException> exceptionSupplier) {
         checkArgument(exceptionSupplier != null,
                 "Supplier of an exception to be thrown is not defined");
         return exceptionSupplier;
     }
 
-    static String getDescription(String description, Function<?, ?> function, Predicate<?> condition) {
-        String resultDescription;
-        if (!isBlank(description)) {
-            resultDescription =  description.trim();
-        }
-        else {
-            resultDescription = function.toString().trim();
-        }
+    static String getDescription(String description, Predicate<?> condition) {
+        String resultDescription = description;
 
         if (!AS_IS.equals(condition)) {
-            resultDescription = format("%s with condition %s", resultDescription, condition).trim();
+            resultDescription = format("%s. Criteria: %s", resultDescription, condition).trim();
         }
 
         return resultDescription;
@@ -95,18 +93,13 @@ final class ToGetConditionalHelper {
                                                     @Nullable Duration sleepingTime,
                                                     Predicate<F> till,
                                                     @Nullable Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        String fullDescription = description;
-        if (waitingTime != null) {
-            fullDescription = format("%s. Time to get valuable result: %s", fullDescription,
-                    formatDuration(waitingTime.toMillis(), "H:mm:ss:SSS", true));
-        }
         Duration timeOut = ofNullable(waitingTime).orElseGet(() -> ofMillis(0));
         Duration sleeping = ofNullable(sleepingTime).orElseGet(() -> ofMillis(50));
 
-        return toGet(fullDescription, t -> {
+        return toGet(description, t -> {
+
             long currentMillis = currentTimeMillis();
             long endMillis = currentMillis + timeOut.toMillis() + 100;
-
             F f = null;
             boolean suitable = false;
             while (currentTimeMillis() < endMillis && !(suitable)) {

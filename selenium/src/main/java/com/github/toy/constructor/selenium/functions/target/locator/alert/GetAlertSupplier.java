@@ -11,6 +11,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static com.github.toy.constructor.core.api.ToGetSingleCheckedObject.getSingle;
+import static com.github.toy.constructor.selenium.CurrentContentFunction.currentContent;
 import static com.github.toy.constructor.selenium.functions.target.locator.alert.GetAlert.getAlert;
 import static com.github.toy.constructor.selenium.properties.WaitingProperties.WAITING_ALERT_TIME_DURATION;
 import static java.lang.String.format;
@@ -18,6 +19,8 @@ import static java.util.Optional.ofNullable;
 
 public final class GetAlertSupplier extends GetSupplier<SeleniumSteps, Alert, GetAlertSupplier>
         implements TargetLocatorSupplier<Alert> {
+
+    private static final String GET_ALERT_DESCRIPTION = "Present alert";
 
     private static Supplier<NoAlertPresentException> noSuchAlert(Predicate<Alert> predicate) {
         return ofNullable(predicate)
@@ -47,8 +50,8 @@ public final class GetAlertSupplier extends GetSupplier<SeleniumSteps, Alert, Ge
                                          Duration duration,
                                          Duration sleeping,
                                          Supplier<? extends NoAlertPresentException> supplier) {
-        return new GetAlertSupplier().set(getSingle(getAlert(), criteria, duration, sleeping,
-                true, supplier));
+        return new GetAlertSupplier().set(getSingle(GET_ALERT_DESCRIPTION, currentContent().andThen(getAlert()),
+                criteria, duration, sleeping, true, supplier));
     }
 
     /**
@@ -64,7 +67,8 @@ public final class GetAlertSupplier extends GetSupplier<SeleniumSteps, Alert, Ge
     public static GetAlertSupplier alert(Duration duration,
                                          Duration sleeping,
                                          Supplier<? extends NoAlertPresentException> supplier) {
-        return new GetAlertSupplier().set(getSingle(getAlert(), duration, sleeping, supplier));
+        return new GetAlertSupplier().set(getSingle(GET_ALERT_DESCRIPTION, currentContent().andThen(getAlert()),
+                duration, sleeping, supplier));
     }
 
     /**
@@ -79,8 +83,8 @@ public final class GetAlertSupplier extends GetSupplier<SeleniumSteps, Alert, Ge
     public static GetAlertSupplier alert(Predicate<Alert> criteria,
                                          Duration duration,
                                          Duration sleeping) {
-        return new GetAlertSupplier().set(getSingle(getAlert(), criteria, duration, sleeping,
-                true, noSuchAlert(criteria)));
+        return new GetAlertSupplier().set(getSingle(GET_ALERT_DESCRIPTION, currentContent().andThen(getAlert()),
+                criteria, duration, sleeping, true, noSuchAlert(criteria)));
     }
 
     /**
@@ -93,7 +97,8 @@ public final class GetAlertSupplier extends GetSupplier<SeleniumSteps, Alert, Ge
      */
     public static GetAlertSupplier alert(Duration duration,
                                          Duration sleeping) {
-        return new GetAlertSupplier().set(getSingle(getAlert(), duration, sleeping, noSuchAlert(null)));
+        return new GetAlertSupplier().set(getSingle(GET_ALERT_DESCRIPTION, currentContent().andThen(getAlert()),
+                duration, sleeping, noSuchAlert(null)));
     }
 
     /**
@@ -110,7 +115,8 @@ public final class GetAlertSupplier extends GetSupplier<SeleniumSteps, Alert, Ge
     public static GetAlertSupplier alert(Predicate<Alert> criteria,
                                          Supplier<? extends NoAlertPresentException> supplier) {
         return new GetAlertSupplier()
-                .set(getSingle(getAlert(), criteria, WAITING_ALERT_TIME_DURATION.get(), true, supplier));
+                .set(getSingle(GET_ALERT_DESCRIPTION, currentContent().andThen(getAlert()), criteria,
+                        WAITING_ALERT_TIME_DURATION.get(), true, supplier));
     }
 
     /**
@@ -122,7 +128,8 @@ public final class GetAlertSupplier extends GetSupplier<SeleniumSteps, Alert, Ge
      * when alert is not appear.
      */
     public static GetAlertSupplier alert(Supplier<? extends NoAlertPresentException> supplier) {
-        return new GetAlertSupplier().set(getSingle(getAlert(), WAITING_ALERT_TIME_DURATION.get(), supplier));
+        return new GetAlertSupplier().set(getSingle(GET_ALERT_DESCRIPTION, currentContent().andThen(getAlert()),
+                WAITING_ALERT_TIME_DURATION.get(), supplier));
     }
 
     /**
@@ -135,8 +142,8 @@ public final class GetAlertSupplier extends GetSupplier<SeleniumSteps, Alert, Ge
      */
     public static GetAlertSupplier alert(Predicate<Alert> criteria,
                                          Duration duration) {
-        return new GetAlertSupplier().set(getSingle(getAlert(), criteria, duration,
-                true, noSuchAlert(criteria)));
+        return new GetAlertSupplier().set(getSingle(GET_ALERT_DESCRIPTION, currentContent().andThen(getAlert()),
+                criteria, duration, true, noSuchAlert(criteria)));
     }
 
     /**
@@ -147,7 +154,8 @@ public final class GetAlertSupplier extends GetSupplier<SeleniumSteps, Alert, Ge
      * when alert is not appear.
      */
     public static GetAlertSupplier alert(Duration duration) {
-        return new GetAlertSupplier().set(getSingle(getAlert(), duration, noSuchAlert(null)));
+        return new GetAlertSupplier().set(getSingle(GET_ALERT_DESCRIPTION, currentContent().andThen(getAlert()),
+                duration, noSuchAlert(null)));
     }
 
     /**
@@ -160,8 +168,8 @@ public final class GetAlertSupplier extends GetSupplier<SeleniumSteps, Alert, Ge
      * {@link NoAlertPresentException} when alert is not appear or it doesn't suit the criteria.
      */
     public static GetAlertSupplier alert(Predicate<Alert> criteria) {
-        return new GetAlertSupplier().set(getSingle(getAlert(), criteria, WAITING_ALERT_TIME_DURATION.get(),
-                true, noSuchAlert(criteria)));
+        return new GetAlertSupplier().set(getSingle(GET_ALERT_DESCRIPTION, currentContent().andThen(getAlert()),
+                criteria, WAITING_ALERT_TIME_DURATION.get(), true, noSuchAlert(criteria)));
     }
 
     /**
@@ -173,7 +181,7 @@ public final class GetAlertSupplier extends GetSupplier<SeleniumSteps, Alert, Ge
      * when alert is not appear.
      */
     public static GetAlertSupplier alert() {
-        return new GetAlertSupplier().set(getSingle(getAlert(),  WAITING_ALERT_TIME_DURATION.get(),
-                noSuchAlert(null)));
+        return new GetAlertSupplier().set(getSingle(GET_ALERT_DESCRIPTION, currentContent().andThen(getAlert()),
+                WAITING_ALERT_TIME_DURATION.get(), noSuchAlert(null)));
     }
 }

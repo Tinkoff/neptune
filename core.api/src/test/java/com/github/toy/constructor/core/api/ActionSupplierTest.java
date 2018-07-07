@@ -1,6 +1,5 @@
 package com.github.toy.constructor.core.api;
 
-import com.github.toy.constructor.core.api.SequentialActionSupplier;
 import org.testng.annotations.Test;
 
 import java.util.function.Function;
@@ -43,7 +42,7 @@ public class ActionSupplierTest {
                                 "A", "B", "D")
                         .andThen("ABCD", "A", "B", "D")
                         .get().toString(),
-                is("Clean string value ABCD of given strings. With parameters: {ABCD,A,B,D}"));
+                is("Clean string value ABCD of given strings. Target: ABCD. Action parameters: {A,B,D}"));
     }
 
     @Test
@@ -53,12 +52,12 @@ public class ActionSupplierTest {
                         .andThen(toGet("Substring of first 2 symbols taken from string value of the object", GET_OBJECT_TO_SUBSTRING))
                         .andThen("ABCD")
                         .get().toString(),
-                is("Clean string value ABCD of given strings. With parameters: {ABCD}"));
+                is("Clean string value ABCD of given strings. Target: ABCD"));
     }
 
     static class CleanStringAction extends SequentialActionSupplier<Object, String, CleanStringAction> {
 
-        public CleanStringAction() {
+        CleanStringAction() {
             super();
         }
 

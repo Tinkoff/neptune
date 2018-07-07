@@ -26,15 +26,6 @@ public class ToGetTest {
         fail("The exception throwing was expected");
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class,
-            expectedExceptionsMessageRegExp = "It seems given before-function doesn't describe any value to get. " +
-                    "Use method StoryWriter.toGet to describe the value to get previously.")
-    public void negativeTestWhenThePreviousFunctionIsNotDescribed() {
-        Function<String, Integer> describedStringLength = toGet("Length of the given string",
-                GET_STRING_LENGTH);
-        describedStringLength.compose(GET_TO_STRING);
-        fail("The exception throwing was expected");
-    }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Description should not be empty")

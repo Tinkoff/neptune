@@ -11,9 +11,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.format;
 import static net.sf.cglib.proxy.Enhancer.registerCallbacks;
 
 @SuppressWarnings("unchecked")
@@ -30,7 +28,7 @@ final class FindWebElements implements Function<SearchContext, List<WebElement>>
     }
 
     static Function<SearchContext, List<WebElement>> webElements(By by, String conditionString) {
-        return toGet(format("Web elements located [%s]", by), new FindWebElements(by, conditionString));
+        return new FindWebElements(by, conditionString);
     }
 
     private <T> T createProxy(Class<T> tClass, MethodInterceptor interceptor) {
