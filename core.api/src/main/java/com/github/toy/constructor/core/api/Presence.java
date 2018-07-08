@@ -24,7 +24,7 @@ public class Presence<T extends GetStep<T>> extends GetSupplier<T, Boolean, Pres
         set(toGet(format("Presence of %s", toBePresent), t -> {
             DescribedFunction<T, ?> describedToBePresent = DescribedFunction.class.cast(toBePresent);
             HashSet<Class<? extends Throwable>> toBeIgnored = new HashSet<>(ignored);
-            toBeIgnored.removeAll(describedToBePresent.ignored);
+            toBeIgnored.removeAll(describedToBePresent.getIgnored());
             List<Class<? extends Throwable>> listOfThrowableClasses = new ArrayList<>(toBeIgnored);
             try {
                 return isPresent(t.get(describedToBePresent.addIgnored(listOfThrowableClasses)));

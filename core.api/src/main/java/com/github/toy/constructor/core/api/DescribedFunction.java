@@ -14,6 +14,7 @@ import static com.github.toy.constructor.core.api.properties.DoCapturesOf.catchS
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
+import static java.util.List.of;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -23,8 +24,8 @@ class DescribedFunction<T, R> implements Function<T, R>, IgnoresThrowable<Descri
 
     private final String description;
     private final Function<T, R> function;
-    private boolean isComplex;
-    protected final Set<Class<? extends Throwable>> ignored = new HashSet<>();
+    private final Set<Class<? extends Throwable>> ignored = new HashSet<>();
+    private List<Function<?, ?>> functions;
 
     DescribedFunction(String description, Function<T, R> function) {
         checkArgument(function != null, "Function should be defined");
@@ -42,10 +43,12 @@ class DescribedFunction<T, R> implements Function<T, R>, IgnoresThrowable<Descri
                         "StoryWriter.toGet to describe the value to get previously.");
 
 
-        return new DescribedFunction<T, R>(after.toString(), t -> {
+        DescribedFunction<T, R> resultFunction = new DescribedFunction<>(after.toString(), t -> {
             V result = before.apply(t);
             return ofNullable(result).map(after).orElse(null);
-        }).setComplex();
+        });
+        resultFunction.functions = of(before, after);
+        return resultFunction;
     }
 
     private boolean shouldBeThrowableIgnored(Throwable toBeIgnored) {
@@ -57,7 +60,11 @@ class DescribedFunction<T, R> implements Function<T, R>, IgnoresThrowable<Descri
         return false;
     }
 
-    private void fireEventStartingIfNecessary(T t) {
+    private boolean isComplex() {
+        return functions != null;
+    }
+
+    private void fireEventStartingIfNecessary(T t, boolean isComplex) {
         if (isComplex) {
             return;
         }
@@ -72,19 +79,19 @@ class DescribedFunction<T, R> implements Function<T, R>, IgnoresThrowable<Descri
         }
     }
 
-    private void fireReturnedValueIfNecessary(R r) {
+    private static <R> void fireReturnedValueIfNecessary(R r, boolean isComplex) {
         if (!isComplex) {
             fireReturnedValue(r);
         }
     }
 
-    private void fireThrownExceptionIfNecessary(Throwable thrown) {
+    private static void fireThrownExceptionIfNecessary(Throwable thrown, boolean isComplex) {
         if (!isComplex) {
             fireThrownException(thrown);
         }
     }
 
-    private void fireEventFinishingIfNecessary() {
+    private void fireEventFinishingIfNecessary(boolean isComplex) {
         if (!isComplex) {
             fireEventFinishing();
         }
@@ -92,10 +99,11 @@ class DescribedFunction<T, R> implements Function<T, R>, IgnoresThrowable<Descri
 
     @Override
     public R apply(T t) {
+        boolean isComplex = isComplex();
         try {
-            fireEventStartingIfNecessary(t);
+            fireEventStartingIfNecessary(t, isComplex);
             R result = function.apply(t);
-            fireReturnedValueIfNecessary(result);
+            fireReturnedValueIfNecessary(result, isComplex);
             if (catchSuccessEvent() && !isComplex) {
                 catchResult(result, format("Getting of '%s' succeed", description));
             }
@@ -103,19 +111,19 @@ class DescribedFunction<T, R> implements Function<T, R>, IgnoresThrowable<Descri
         }
         catch (Throwable thrown) {
             if (!shouldBeThrowableIgnored(thrown)) {
-                fireThrownExceptionIfNecessary(thrown);
+                fireThrownExceptionIfNecessary(thrown, isComplex);
                 if (catchFailureEvent() && !isComplex) {
                     catchResult(t, format("Getting of '%s' failed", description));
                 }
                 throw thrown;
             }
             else {
-                fireReturnedValueIfNecessary(null);
+                fireReturnedValueIfNecessary(null, isComplex);
                 return null;
             }
         }
         finally {
-            fireEventFinishingIfNecessary();
+            fireEventFinishingIfNecessary(isComplex);
         }
     }
 
@@ -132,20 +140,29 @@ class DescribedFunction<T, R> implements Function<T, R>, IgnoresThrowable<Descri
         return getSequentialDescribedFunction(this, after);
     }
 
-    private DescribedFunction<T, R> setComplex() {
-        isComplex = true;
-        return this;
-    }
-
     @Override
     public DescribedFunction<T, R> addIgnored(List<Class<? extends Throwable>> toBeIgnored) {
         ignored.addAll(toBeIgnored);
+        ofNullable(functions).ifPresent(functionList -> functionList.forEach(function1 -> {
+            if (DescribedFunction.class.isAssignableFrom(function1.getClass())) {
+                DescribedFunction.class.cast(function1).addIgnored(toBeIgnored);
+            }
+        }));
         return this;
     }
 
     @Override
     public DescribedFunction<T, R> stopIgnore(List<Class<? extends Throwable>> toStopIgnore) {
         ignored.removeAll(toStopIgnore);
+        ofNullable(functions).ifPresent(functionList -> functionList.forEach(function1 -> {
+            if (DescribedFunction.class.isAssignableFrom(function1.getClass())) {
+                DescribedFunction.class.cast(function1).stopIgnore(toStopIgnore);
+            }
+        }));
         return this;
+    }
+
+    Set<Class<? extends Throwable>> getIgnored() {
+        return new HashSet<>(ignored);
     }
 }
