@@ -30,7 +30,7 @@ class WebElementListInterceptor implements MethodInterceptor {
                 && String.class.equals(method.getReturnType())) {
             String stringDescription = format("%s web elements found %s", elements.size(), by);
             if (!isBlank(description)) {
-                stringDescription = format("%s on condition '%s'", stringDescription, description);
+                stringDescription = format("%s on conditions '%s'", stringDescription, description);
             }
             return stringDescription;
         }

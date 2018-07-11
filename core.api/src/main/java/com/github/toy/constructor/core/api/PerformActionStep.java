@@ -1,23 +1,32 @@
 package com.github.toy.constructor.core.api;
 
-import java.util.LinkedList;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static com.github.toy.constructor.core.api.StaticEventFiring.catchResult;
 import static com.github.toy.constructor.core.api.StoryWriter.action;
+import static com.github.toy.constructor.core.api.utils.IsDescribedUtil.isDescribed;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 
 @SuppressWarnings("unchecked")
-public interface PerformStep<THIS extends PerformStep<THIS>> {
+public interface PerformActionStep<THIS extends PerformActionStep<THIS>> {
 
     default THIS perform(Consumer<THIS> actionConsumer) {
         checkArgument(actionConsumer != null, "Action is not defined");
-        checkArgument(DescribedConsumer.class.isAssignableFrom(actionConsumer.getClass()),
-                "Action should be described by the StoryWriter.action method.");
-        actionConsumer.accept((THIS) this);
+        checkArgument(isDescribed(actionConsumer),
+                "Action should be described by the StoryWriter.action method." +
+                        "Also you can override the toString method");
+
+        StepAction<THIS> stepAction;
+        if (StepAction.class.isAssignableFrom(actionConsumer.getClass())) {
+            stepAction = StepAction.class.cast(actionConsumer);
+        }
+        else {
+            stepAction = StepAction.class.cast(action(actionConsumer.toString(), actionConsumer));
+        }
+
+        stepAction.accept((THIS) this);
         return (THIS) this;
     }
 

@@ -1,7 +1,7 @@
 package com.github.toy.constructor.testng.integration;
 
 import com.github.toy.constructor.core.api.GetStep;
-import com.github.toy.constructor.core.api.PerformStep;
+import com.github.toy.constructor.core.api.PerformActionStep;
 import org.testng.TestNGException;
 import org.testng.annotations.ObjectFactory;
 import org.testng.internal.ObjectFactoryImpl;
@@ -34,7 +34,7 @@ public class DefaultObjectFactory extends ObjectFactoryImpl {
 
     /**
      * This factory method does the same as {@link ObjectFactoryImpl#newInstance(Constructor, Object...)} does
-     * and fills fields of type that extend {@link GetStep} and/or {@link PerformStep}.
+     * and fills fields of type that extend {@link GetStep} and/or {@link PerformActionStep}.
      * <p>
      *     WARNING!!!!
      *     It is supposed that every class which instance should be set as a field value should be annotated
@@ -59,7 +59,7 @@ public class DefaultObjectFactory extends ObjectFactoryImpl {
                         int modifiers = field.getModifiers();
                         return !isStatic(modifiers) && !isFinal(modifiers)
                                 && (GetStep.class.isAssignableFrom(type)
-                                || PerformStep.class.isAssignableFrom(type));
+                                || PerformActionStep.class.isAssignableFrom(type));
                     }).collect(toList());
 
             fields.forEach(field -> {

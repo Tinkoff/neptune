@@ -14,19 +14,19 @@ public class ParameterProviderTest {
     private static Integer FIVE = 5;
 
     @Test
-    public void testOfProviderOfEmptyParameters() throws Exception {
+    public void testOfProviderOfEmptyParameters() {
         EmptyStepClass emptyStep = getSubstituted(EmptyStepClass.class);
         assertThat("Check created instance", emptyStep, not(nullValue()));
     }
 
     @Test
-    public void testOfProviderOfParameterizedParameters() throws Exception {
+    public void testOfProviderOfParameterizedParameters() {
         ParameterizedStep parameterizedStep = getSubstituted(ParameterizedStep.class);
         assertThat("Check injected value", parameterizedStep.getNumber(), is(FIVE));
     }
 
     @CreateWith(provider = ProviderOfEmptyParameters.class)
-    private static class EmptyStepClass implements PerformStep<EmptyStepClass> {
+    private static class EmptyStepClass implements PerformActionStep<EmptyStepClass> {
         protected EmptyStepClass() {
             super();
         }
@@ -48,7 +48,7 @@ public class ParameterProviderTest {
             this.number = number;
         }
 
-        public int getNumber() {
+        int getNumber() {
             return number;
         }
     }

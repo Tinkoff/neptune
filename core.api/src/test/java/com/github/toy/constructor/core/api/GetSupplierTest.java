@@ -42,16 +42,9 @@ public class GetSupplierTest {
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
-            expectedExceptionsMessageRegExp = "Function to get value from is not described. Use method StoryWriter.toGet to describe it.")
-    public void negativeTestOfNotDescribedFunction() {
-        sqrt().from(DOUBLE_CUBE_FUNCTION);
-        fail("The exception throwing was expected");
-    }
-
-    @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "The supplier of the function is not defined")
     public void negativeTestOfNullGetSupplier() {
-        sqrt().from((GetSupplier<Number, Double, ?>) null);
+        sqrt().from((GetStepSupplier<Number, Double, ?>) null);
         fail("The exception throwing was expected");
     }
 
@@ -62,20 +55,20 @@ public class GetSupplierTest {
         fail("The exception throwing was expected");
     }
 
-    static class Cube extends GetSupplier<Number, Double, Cube> {
+    static class Cube extends GetStepSupplier<Number, Double, Cube> {
         static Cube cube(Number origin) {
             return new Cube().set(toGet(format("Cube value of %s", origin), DOUBLE_CUBE_FUNCTION));
         }
     }
 
-    static class SqrtFromSomeNumericOperation extends SequentialGetSupplier<Number, Double, Double, SqrtFromSomeNumericOperation> {
+    static class SqrtFromSomeNumericOperation extends SequentialGetStepSupplier<Number, Double, Double, SqrtFromSomeNumericOperation> {
 
         //this method was added for the unit testing
         static SqrtFromSomeNumericOperation sqrt() {
             return new SqrtFromSomeNumericOperation();
         }
 
-        static SqrtFromSomeNumericOperation sqrt(GetSupplier<Number, Double, ?> numericOperation) {
+        static SqrtFromSomeNumericOperation sqrt(GetStepSupplier<Number, Double, ?> numericOperation) {
             return new SqrtFromSomeNumericOperation().from(numericOperation);
         }
 
@@ -90,7 +83,7 @@ public class GetSupplierTest {
 
         //this method was overridden for the unit testing
         @Override
-        protected SqrtFromSomeNumericOperation from(GetSupplier<Number, ? extends Double, ?> numericOperation) {
+        protected SqrtFromSomeNumericOperation from(GetStepSupplier<Number, ? extends Double, ?> numericOperation) {
             return super.from(numericOperation);
         }
 

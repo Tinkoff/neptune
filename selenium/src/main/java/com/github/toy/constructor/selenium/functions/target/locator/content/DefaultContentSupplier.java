@@ -1,6 +1,6 @@
 package com.github.toy.constructor.selenium.functions.target.locator.content;
 
-import com.github.toy.constructor.core.api.GetSupplier;
+import com.github.toy.constructor.core.api.GetStepSupplier;
 import com.github.toy.constructor.selenium.SeleniumSteps;
 import com.github.toy.constructor.selenium.functions.target.locator.TargetLocatorSupplier;
 import org.openqa.selenium.WebDriver;
@@ -10,10 +10,10 @@ import java.time.Duration;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.github.toy.constructor.core.api.ToGetSingleCheckedObject.getSingle;
+import static com.github.toy.constructor.core.api.conditions.ToGetSingleCheckedObject.getSingle;
 import static com.github.toy.constructor.selenium.CurrentContentFunction.currentContent;
 
-public final class DefaultContentSupplier extends GetSupplier<SeleniumSteps, WebDriver, DefaultContentSupplier>
+public final class DefaultContentSupplier extends GetStepSupplier<SeleniumSteps, WebDriver, DefaultContentSupplier>
         implements TargetLocatorSupplier<WebDriver> {
 
     private static final Function<WebDriver, WebDriver> GET_DEFAULT_CONTENT =

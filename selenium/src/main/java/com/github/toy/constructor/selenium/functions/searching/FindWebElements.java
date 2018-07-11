@@ -22,7 +22,7 @@ final class FindWebElements implements Function<SearchContext, List<WebElement>>
 
     private FindWebElements(By by, String conditionString) {
         checkArgument(by != null, "Locator by-strategy should be defined.");
-        checkArgument(conditionString != null, "Description of the condition should be defined.");
+        checkArgument(conditionString != null, "Description of the conditions should be defined.");
         this.by = by;
         this.conditionString = conditionString;
     }

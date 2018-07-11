@@ -14,7 +14,7 @@ public class ActionSupplierTest {
     private static final Function<Object, String> GET_OBJECT_TO_SUBSTRING = o -> o.toString().substring(0, 2);
 
     @Test(expectedExceptions = IllegalArgumentException.class,
-            expectedExceptionsMessageRegExp = "Function which gets value to perform action is not defined")
+            expectedExceptionsMessageRegExp = "Function which gets value/an object to perform action is not defined")
     public void negativeTestOfNullFunction() {
         new CleanStringAction().andThen((Function<Object, String>) null, "A", "B", "D");
         fail("The exception throwing was expected");
@@ -24,13 +24,6 @@ public class ActionSupplierTest {
             expectedExceptionsMessageRegExp = "Object to perform action is not defined")
     public void negativeTestOfNullObject() {
         new CleanStringAction().andThen((String) null, "A", "B", "D");
-        fail("The exception throwing was expected");
-    }
-
-    @Test(expectedExceptions = IllegalArgumentException.class,
-            expectedExceptionsMessageRegExp = "Function should be described by the StoryWriter.toGet method")
-    public void negativeTestOfNotDescribedFunction() {
-        new CleanStringAction().andThen(GET_TO_STRING, "A", "B", "D");
         fail("The exception throwing was expected");
     }
 

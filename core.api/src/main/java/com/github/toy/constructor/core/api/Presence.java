@@ -12,17 +12,17 @@ import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 
 @SuppressWarnings("unchecked")
-public class Presence<T extends GetStep<T>> extends GetSupplier<T, Boolean, Presence<T>> {
+public class Presence<T extends GetStep<T>> extends GetStepSupplier<T, Boolean, Presence<T>> {
 
     protected Presence(Function<T, ?> toBePresent) {
         checkArgument(toBePresent != null,
                 "The function is not defined");
-        checkArgument(DescribedFunction.class.isAssignableFrom(toBePresent.getClass()),
+        checkArgument(StepFunction.class.isAssignableFrom(toBePresent.getClass()),
                 "The function which returns the goal value should be described " +
                         "by the StoryWriter.toGet method.");
 
         set(toGet(format("Presence of %s", toBePresent), t -> {
-            DescribedFunction<T, ?> describedToBePresent = DescribedFunction.class.cast(toBePresent);
+            StepFunction<T, ?> describedToBePresent = StepFunction.class.cast(toBePresent);
             HashSet<Class<? extends Throwable>> toBeIgnored = new HashSet<>(ignored);
             toBeIgnored.removeAll(describedToBePresent.getIgnored());
             List<Class<? extends Throwable>> listOfThrowableClasses = new ArrayList<>(toBeIgnored);
@@ -74,7 +74,7 @@ public class Presence<T extends GetStep<T>> extends GetSupplier<T, Boolean, Pres
      *                 {@code null} and not the empty iterable/array the this is considered present.
      * @return an instance of {@link Presence}.
      */
-    public static <T extends GetStep<T>> Presence<T> presenceOf(GetSupplier<T, ?, ?> supplier) {
+    public static <T extends GetStep<T>> Presence<T> presenceOf(GetStepSupplier<T, ?, ?> supplier) {
         return presenceOf(supplier.get());
     }
 }

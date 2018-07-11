@@ -18,7 +18,7 @@ public class RefreshTest {
     private RefreshableStep refreshableStep;
 
     @Test
-    public void checkRefreshTest() throws Exception {
+    public void checkRefreshTest() {
         refreshableStep = getSubstituted(RefreshableStep.class);
         refreshableStep.perform(action("Add elements to some list", refreshableStep1 -> {
             refreshableStep.getListToRefresh().add(1);
@@ -37,7 +37,7 @@ public class RefreshTest {
     }
 
     @CreateWith(provider = ProviderOfEmptyParameters.class)
-    private static class RefreshableStep implements PerformStep<RefreshableStep>, GetStep<RefreshableStep>, Refreshable {
+    private static class RefreshableStep implements PerformActionStep<RefreshableStep>, GetStep<RefreshableStep>, Refreshable {
 
         private final List<Object> listToRefresh = new ArrayList<>();
 
@@ -50,7 +50,7 @@ public class RefreshTest {
             listToRefresh.clear();
         }
 
-        public List<Object> getListToRefresh() {
+        List<Object> getListToRefresh() {
             return listToRefresh;
         }
     }

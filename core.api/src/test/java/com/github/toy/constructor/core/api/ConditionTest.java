@@ -19,7 +19,7 @@ public class ConditionTest {
 
     @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp =
             "It seems given predicate doesn't describe any condition. " +
-                    "Use method StoryWriter.condition to describe the AND-condition.")
+                    "Use method StoryWriter.condition to describe the AND-condition or override the toString method")
     public void negativeTestWhenPredicateANDIsNotDescribed() {
         Predicate<Number> describedIsPositive = condition("Number should be positive", IS_POSITIVE);
         describedIsPositive.and(IS_NOT_FRACTION);
@@ -28,7 +28,7 @@ public class ConditionTest {
 
     @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp =
             "It seems given predicate doesn't describe any condition. " +
-                    "Use method StoryWriter.condition to describe the OR-condition.")
+                    "Use method StoryWriter.condition to describe the OR-condition or override the toString method")
     public void negativeTestWhenPredicateORIsNotDescribed() {
         Predicate<Number> describedIsPositive = condition("Number should be positive", IS_POSITIVE);
         describedIsPositive.or(IS_NOT_FRACTION);

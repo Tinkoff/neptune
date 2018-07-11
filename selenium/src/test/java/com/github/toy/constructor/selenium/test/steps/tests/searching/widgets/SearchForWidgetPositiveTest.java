@@ -49,7 +49,7 @@ import static org.openqa.selenium.By.tagName;
 public class SearchForWidgetPositiveTest extends BaseWebDriverTest {
 
     private static String getWidgetDescription(String name, Predicate<?> condition) {
-        return format("%s found on condition '%s'", name, condition);
+        return format("%s found on conditions '%s'", name, condition);
     }
 
     @DataProvider(name = "search without criteria")
@@ -1293,6 +1293,6 @@ public class SearchForWidgetPositiveTest extends BaseWebDriverTest {
         ofNullable(element).ifPresent(element1 -> assertThat(t.getWrappedElement(), equalTo(element1)));
         assertThat(t.toString(), is(expectedDescription));
         assertThat(new BigDecimal(getTimeDifference()), either(lessThan(new BigDecimal(HALF_SECOND.toMillis())))
-                .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(300))));
+                .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(600))));
     }
 }

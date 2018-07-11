@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static java.lang.String.format;
 
-class Arithmetical extends GetSupplier<CalculatorSteps, Number, Arithmetical> {
+class Arithmetical extends GetStepSupplier<CalculatorSteps, Number, Arithmetical> {
 
     static Arithmetical number(Number number) {
         return new Arithmetical().set(toGet(format("Entering number %s", number.toString()),

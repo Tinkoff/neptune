@@ -33,7 +33,7 @@ import static org.openqa.selenium.By.xpath;
 @SuppressWarnings("unchecked")
 public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
 
-    private static final String FOUND_BY_PATTERN_ERROR = "Nothing was found. Attempt to get a single item of Web elements located [%s]";
+    private static final String FOUND_BY_PATTERN_ERROR = "Nothing was found. Attempt to get a single item Web element located %s";
     private static final String FOUND_ON_CONDITION_ERROR = FOUND_BY_PATTERN_ERROR + ". Condition: %s";
     private static final By CLASS_THAT_DOES_NOT_EXIST = className("fakeClass");
 

@@ -1,6 +1,6 @@
 package com.github.toy.constructor.selenium.functions.target.locator.alert;
 
-import com.github.toy.constructor.core.api.GetSupplier;
+import com.github.toy.constructor.core.api.GetStepSupplier;
 import com.github.toy.constructor.selenium.SeleniumSteps;
 import com.github.toy.constructor.selenium.functions.target.locator.TargetLocatorSupplier;
 import org.openqa.selenium.Alert;
@@ -10,14 +10,14 @@ import java.time.Duration;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static com.github.toy.constructor.core.api.ToGetSingleCheckedObject.getSingle;
+import static com.github.toy.constructor.core.api.conditions.ToGetSingleCheckedObject.getSingle;
 import static com.github.toy.constructor.selenium.CurrentContentFunction.currentContent;
 import static com.github.toy.constructor.selenium.functions.target.locator.alert.GetAlert.getAlert;
 import static com.github.toy.constructor.selenium.properties.WaitingProperties.WAITING_ALERT_TIME_DURATION;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 
-public final class GetAlertSupplier extends GetSupplier<SeleniumSteps, Alert, GetAlertSupplier>
+public final class GetAlertSupplier extends GetStepSupplier<SeleniumSteps, Alert, GetAlertSupplier>
         implements TargetLocatorSupplier<Alert> {
 
     private static final String GET_ALERT_DESCRIPTION = "Present alert";

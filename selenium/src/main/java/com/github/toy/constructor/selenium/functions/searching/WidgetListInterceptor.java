@@ -30,7 +30,7 @@ class WidgetListInterceptor implements MethodInterceptor {
                 && String.class.equals(method.getReturnType())) {
             String stringDescription = format("%s elements of type %s", widgets.size(), getWidgetName(targetClass));
             if (!isBlank(description)) {
-                stringDescription = format("%s found on condition '%s'", stringDescription, description);
+                stringDescription = format("%s found on conditions '%s'", stringDescription, description);
             }
             return stringDescription;
         }

@@ -15,7 +15,7 @@ public class ActionTest {
 
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "It seems given consumer doesn't describe any after-action. " +
-                    "Use method StoryWriter.action to describe the after-action.")
+                    "Use method StoryWriter.action to describe the after-action or override the toString method")
     public void negativeTestNextActionIsNotDescribed() {
         Consumer<String> describedSpaceReplacing = action("Replace spaces from the string", REPLACE_SPACE);
         describedSpaceReplacing.andThen(REPLACE_A);

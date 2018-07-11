@@ -5,14 +5,14 @@ import java.util.function.Function;
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static java.lang.String.format;
 
-abstract class ArithmeticalSequence extends SequentialGetSupplier<CalculatorSteps, Number, Number, ArithmeticalSequence> {
+abstract class ArithmeticalSequence extends SequentialGetStepSupplier<CalculatorSteps, Number, Number, ArithmeticalSequence> {
 
     private static ArithmeticalSequence getResulted(ArithmeticalSequence sequence,
-                                                    GetSupplier<CalculatorSteps, Number, ?> supplier) {
+                                                    GetStepSupplier<CalculatorSteps, Number, ?> supplier) {
         return sequence.from(supplier);
     }
 
-    static ArithmeticalSequence appendToResultOf(Number toAppend, GetSupplier<CalculatorSteps, Number, ?> result) {
+    static ArithmeticalSequence appendToResultOf(Number toAppend, GetStepSupplier<CalculatorSteps, Number, ?> result) {
         return getResulted(new ArithmeticalSequence() {
             @Override
             protected Function<Number, Number> getEndFunction() {
@@ -22,7 +22,7 @@ abstract class ArithmeticalSequence extends SequentialGetSupplier<CalculatorStep
         }, result);
     }
 
-    static ArithmeticalSequence subtractFromResultOf(Number toSubtract, GetSupplier<CalculatorSteps, Number, ?> result) {
+    static ArithmeticalSequence subtractFromResultOf(Number toSubtract, GetStepSupplier<CalculatorSteps, Number, ?> result) {
         return getResulted(new ArithmeticalSequence() {
             @Override
             protected Function<Number, Number> getEndFunction() {
@@ -31,7 +31,7 @@ abstract class ArithmeticalSequence extends SequentialGetSupplier<CalculatorStep
         }, result);
     }
 
-    static ArithmeticalSequence multiplyByResultOf(Number toMultiply, GetSupplier<CalculatorSteps, Number, ?> result) {
+    static ArithmeticalSequence multiplyByResultOf(Number toMultiply, GetStepSupplier<CalculatorSteps, Number, ?> result) {
         return getResulted(new ArithmeticalSequence() {
             @Override
             protected Function<Number, Number> getEndFunction() {
@@ -40,7 +40,7 @@ abstract class ArithmeticalSequence extends SequentialGetSupplier<CalculatorStep
         }, result);
     }
 
-    static ArithmeticalSequence divideByResultOf(Number toDivide, GetSupplier<CalculatorSteps, Number, ?> result) {
+    static ArithmeticalSequence divideByResultOf(Number toDivide, GetStepSupplier<CalculatorSteps, Number, ?> result) {
         return getResulted(new ArithmeticalSequence() {
             @Override
             protected Function<Number, Number> getEndFunction() {

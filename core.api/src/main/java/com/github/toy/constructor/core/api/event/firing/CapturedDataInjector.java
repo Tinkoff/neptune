@@ -1,4 +1,4 @@
-package com.github.toy.constructor.core.api;
+package com.github.toy.constructor.core.api.event.firing;
 
 public interface CapturedDataInjector<T> {
 

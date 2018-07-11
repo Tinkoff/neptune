@@ -5,7 +5,7 @@ import org.openqa.selenium.WebDriver;
 
 public enum FlagProperties implements PropertySupplier<Boolean> {
     /**
-     * This enum item reads the property {@code 'find.only.visible.elements.when.no.condition'}.
+     * This enum item reads the property {@code 'find.only.visible.elements.when.no.conditions'}.
      * That means that the searching for some element finds only visible elements when the property
      * is defined and has value {@code true} in case if user doesn't define any match criteria of the
      * searching. Otherwise any suitable elements are found.

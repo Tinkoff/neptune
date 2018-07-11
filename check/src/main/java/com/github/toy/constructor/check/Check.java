@@ -1,6 +1,6 @@
 package com.github.toy.constructor.check;
 
-import com.github.toy.constructor.core.api.PerformStep;
+import com.github.toy.constructor.core.api.PerformActionStep;
 import com.github.toy.constructor.core.api.CreateWith;
 import com.github.toy.constructor.core.api.ProviderOfEmptyParameters;
 
@@ -8,7 +8,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 
 @CreateWith(provider = ProviderOfEmptyParameters.class)
-public class Check implements PerformStep<Check> {
+public class Check implements PerformActionStep<Check> {
 
     /**
      * This method performs the checking of some value by criteria.

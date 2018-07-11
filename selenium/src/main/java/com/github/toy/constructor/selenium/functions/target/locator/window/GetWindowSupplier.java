@@ -1,6 +1,6 @@
 package com.github.toy.constructor.selenium.functions.target.locator.window;
 
-import com.github.toy.constructor.core.api.GetSupplier;
+import com.github.toy.constructor.core.api.GetStepSupplier;
 import com.github.toy.constructor.selenium.SeleniumSteps;
 import com.github.toy.constructor.selenium.functions.target.locator.TargetLocatorSupplier;
 import org.openqa.selenium.NoSuchWindowException;
@@ -13,8 +13,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
-import static com.github.toy.constructor.core.api.ToGetObjectFromIterable.getFromIterable;
-import static com.github.toy.constructor.core.api.ToGetSingleCheckedObject.getSingle;
+import static com.github.toy.constructor.core.api.conditions.ToGetObjectFromIterable.getFromIterable;
+import static com.github.toy.constructor.core.api.conditions.ToGetSingleCheckedObject.getSingle;
 import static com.github.toy.constructor.selenium.CurrentContentFunction.currentContent;
 import static com.github.toy.constructor.selenium.properties.WaitingProperties.WAITING_WINDOW_TIME_DURATION;
 import static com.google.common.base.Preconditions.checkArgument;
@@ -22,7 +22,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 
-public final class GetWindowSupplier extends GetSupplier<SeleniumSteps, Window, GetWindowSupplier>
+public final class GetWindowSupplier extends GetStepSupplier<SeleniumSteps, Window, GetWindowSupplier>
         implements TargetLocatorSupplier<Window> {
 
     private Predicate<Window> condition;
@@ -57,9 +57,9 @@ public final class GetWindowSupplier extends GetSupplier<SeleniumSteps, Window, 
     }
 
     /**
-     * Creates an instance of {@link GetSupplier}
+     * Creates an instance of {@link GetStepSupplier}
      *
-     * @return reference to a new instance of {@link GetSupplier}
+     * @return reference to a new instance of {@link GetStepSupplier}
      */
     public static GetWindowSupplier window() {
         return new GetWindowSupplier().set(toGet("The first window/tab",
@@ -69,19 +69,19 @@ public final class GetWindowSupplier extends GetSupplier<SeleniumSteps, Window, 
     private GetWindowSupplier setFunctionWithIndexAndCondition() {
         return set(getSingle(format("Window/tab by index %s", index),
                 currentContent().andThen(webDriver -> getWindowByIndex(webDriver,
-                        format("Window/tab found by index %s and by condition: %s", index, condition), index)),
+                        format("Window/tab found by index %s and by conditions: %s", index, condition), index)),
                 condition,
                 timeOut, true,
-                noSuchWindowException(format("Window/tab was not found by index %s and by condition %s", index, condition))));
+                noSuchWindowException(format("Window/tab was not found by index %s and by conditions %s", index, condition))));
     }
 
     private GetWindowSupplier setFunctionWithCondition() {
         return set(getFromIterable("Window/tab",
                 currentContent().andThen(webDriver ->
-                        getListOfWindows(webDriver, format("Window/tab found by condition: %s", condition))),
+                        getListOfWindows(webDriver, format("Window/tab found by conditions: %s", condition))),
                 condition, timeOut,
                 false, true,
-                noSuchWindowException(format("Window was not found by condition %s",  condition))));
+                noSuchWindowException(format("Window was not found by conditions %s",  condition))));
     }
 
     private GetWindowSupplier setFunctionWithIndex() {

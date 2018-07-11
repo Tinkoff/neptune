@@ -31,7 +31,7 @@ import static org.openqa.selenium.By.*;
 public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
 
     private static final String FOUND_BY_PATTERN = "Web element found %s";
-    private static final String FOUND_ON_CONDITION = FOUND_BY_PATTERN + " on condition '%s'";
+    private static final String FOUND_ON_CONDITION = FOUND_BY_PATTERN + " on conditions '%s'";
 
     private static String expectedDescriptionOfTheFoundElement(By by, Predicate<? extends SearchContext> condition) {
         return format(FOUND_ON_CONDITION, by, condition);
@@ -623,9 +623,8 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
         setStartBenchMark();
         WebElement webElement = seleniumSteps.find(webElement(by, pattern, (Predicate<? super WebElement>) criteria));
         setEndBenchMark();
-        assertThat(new BigDecimal(getTimeDifference()),
-                either(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(450)))
-                        .or(closeTo(new BigDecimal(ONE_SECOND.toMillis()), new BigDecimal(200))));
+        assertThat(new BigDecimal(getTimeDifference()), either(lessThan(new BigDecimal(HALF_SECOND.toMillis())))
+                .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(600))));
         assertThat(webElement, equalTo(expected));
         assertThat(webElement.toString(), is(expectedElementDescription));
     }
@@ -639,9 +638,8 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
         setStartBenchMark();
         WebElement webElement = seleniumSteps.find(webElement(by, pattern, FIVE_SECONDS, (Predicate<? super WebElement>) criteria));
         setEndBenchMark();
-        assertThat(new BigDecimal(getTimeDifference()),
-                either(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(450)))
-                        .or(closeTo(new BigDecimal(ONE_SECOND.toMillis()), new BigDecimal(200))));
+        assertThat(new BigDecimal(getTimeDifference()), either(lessThan(new BigDecimal(HALF_SECOND.toMillis())))
+                .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(600))));
         assertThat(webElement, equalTo(expected));
         assertThat(webElement.toString(), is(expectedElementDescription));
     }
@@ -658,9 +656,8 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
             setStartBenchMark();
             WebElement webElement = seleniumSteps.find(webElement(by, pattern, (Predicate<? super WebElement>) criteria));
             setEndBenchMark();
-            assertThat(new BigDecimal(getTimeDifference()),
-                    either(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(450)))
-                            .or(closeTo(new BigDecimal(ONE_SECOND.toMillis()), new BigDecimal(200))));
+            assertThat(new BigDecimal(getTimeDifference()), either(lessThan(new BigDecimal(HALF_SECOND.toMillis())))
+                    .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(600))));
             assertThat(webElement, equalTo(expected));
             assertThat(webElement.toString(), is(expectedElementDescription));
         }

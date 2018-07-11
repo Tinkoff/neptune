@@ -1,7 +1,5 @@
 package com.github.toy.constructor.core.api.event.firing;
 
-import com.github.toy.constructor.core.api.CapturedDataInjector;
-
 import java.util.List;
 
 import static java.util.List.of;

@@ -1,12 +1,12 @@
-package com.github.toy.constructor.core.api;
+package com.github.toy.constructor.core.api.conditions;
 
 import java.time.Duration;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static com.github.toy.constructor.core.api.ToGetConditionalHelper.*;
-import static com.github.toy.constructor.core.api.ToGetObjectFromIterable.getFromIterable;
+import static com.github.toy.constructor.core.api.conditions.ToGetConditionalHelper.*;
+import static com.github.toy.constructor.core.api.conditions.ToGetObjectFromIterable.getFromIterable;
 import static java.util.Arrays.asList;
 
 public final class ToGetObjectFromArray {

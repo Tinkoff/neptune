@@ -1,13 +1,14 @@
-package com.github.toy.constructor.core.api;
+package com.github.toy.constructor.core.api.conditions;
 
 import javax.annotation.Nullable;
 import java.time.Duration;
 import java.util.Objects;
 import java.util.function.*;
 
-import static com.github.toy.constructor.core.api.AsIsPredicate.AS_IS;
+import static com.github.toy.constructor.core.api.AsIsCondition.AS_IS;
 import static com.github.toy.constructor.core.api.StoryWriter.condition;
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
+import static com.github.toy.constructor.core.api.utils.IsDescribedUtil.isDescribed;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
@@ -17,7 +18,7 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
- * This is the util which helps to crate function with given condition.
+ * This is the util which helps to crate function with given conditions.
  */
 @SuppressWarnings("unchecked")
 final class ToGetConditionalHelper {
@@ -28,9 +29,9 @@ final class ToGetConditionalHelper {
 
     static <T> Predicate<T> checkCondition(Predicate<T> condition) {
         checkArgument(condition != null, "Predicate is not defined.");
-        checkArgument(DescribedPredicate.class.isAssignableFrom(condition.getClass()),
+        checkArgument(isDescribed(condition),
                 "Condition is not described. " +
-                        "Use StoryWriter.condition to describe it.");
+                        "Use StoryWriter.conditions to describe it.");
         return condition;
     }
 

@@ -3,13 +3,12 @@ package com.github.toy.constructor.core.api;
 import java.util.function.Supplier;
 
 import static com.github.toy.constructor.core.api.StoryWriter.action;
-import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 
-public class CalculatorSteps implements PerformStep<CalculatorSteps>, GetStep<CalculatorSteps>, Supplier<Double> {
+public class CalculatorSteps implements PerformActionStep<CalculatorSteps>, GetStep<CalculatorSteps>, Supplier<Double> {
     private Double calculated = 0D;
 
-    public void reset() {
+    void reset() {
         perform(action("Reset calculated value to 0",
                 calculatorSteps -> calculatorSteps.calculated = 0D));
     }

@@ -2,11 +2,11 @@ package com.github.toy.constructor.core.api;
 
 import static java.util.Optional.ofNullable;
 
-public final class AsIsPredicate<T> implements DescribedPredicate<T> {
+public final class AsIsCondition<T> implements Condition<T> {
 
-    public static final AsIsPredicate<Object> AS_IS = new AsIsPredicate<>();
+    public static final AsIsCondition<Object> AS_IS = new AsIsCondition<>();
 
-    private AsIsPredicate() {
+    private AsIsCondition() {
         super();
     }
 
@@ -22,7 +22,7 @@ public final class AsIsPredicate<T> implements DescribedPredicate<T> {
 
     @Override
     public boolean equals(Object obj) {
-        return ofNullable(obj).map(o -> AsIsPredicate.class.isAssignableFrom(o.getClass()))
+        return ofNullable(obj).map(o -> AsIsCondition.class.isAssignableFrom(o.getClass()))
                 .orElse(false);
     }
 }

@@ -31,7 +31,7 @@ import static org.openqa.selenium.By.*;
 public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
 
     private static final String FOUND_BY_PATTERN = "0 web elements found %s";
-    private static final String FOUND_ON_CONDITION = FOUND_BY_PATTERN + " on condition '%s'";
+    private static final String FOUND_ON_CONDITION = FOUND_BY_PATTERN + " on conditions '%s'";
     private static final By CLASS_THAT_DOES_NOT_EXIST = className("fakeClass");
 
     private static String expectedDescriptionOfTheFoundElements(By by, Predicate<? extends SearchContext> condition) {
@@ -492,7 +492,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
         assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
         assertThat(new BigDecimal(getTimeDifference() - ONE_SECOND.toMillis()),
                 either(lessThan(new BigDecimal(HALF_SECOND.toMillis())))
-                        .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(200))));
+                        .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(HALF_SECOND.toMillis()))));
         assertThat(webElements.size(), is(0));
         assertThat(webElements.toString(), is(expectedListDescription));
     }
@@ -510,7 +510,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
             assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
             assertThat(new BigDecimal(getTimeDifference() - ONE_SECOND.toMillis()),
                     either(lessThan(new BigDecimal(HALF_SECOND.toMillis())))
-                            .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(200))));
+                            .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(HALF_SECOND.toMillis()))));
             assertThat(webElements.size(), is(0));
             assertThat(webElements.toString(), is(expectedListDescription));
         }

@@ -3,7 +3,7 @@ package com.github.toy.constructor.core.api.conditional;
 import org.testng.annotations.Test;
 
 import static com.github.toy.constructor.core.api.StoryWriter.condition;
-import static com.github.toy.constructor.core.api.ToGetObjectFromIterable.getFromIterable;
+import static com.github.toy.constructor.core.api.conditions.ToGetObjectFromIterable.getFromIterable;
 import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;

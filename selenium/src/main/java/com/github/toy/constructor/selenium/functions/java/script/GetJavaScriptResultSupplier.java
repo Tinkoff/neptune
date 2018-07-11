@@ -1,6 +1,6 @@
 package com.github.toy.constructor.selenium.functions.java.script;
 
-import com.github.toy.constructor.core.api.GetSupplier;
+import com.github.toy.constructor.core.api.GetStepSupplier;
 import com.github.toy.constructor.selenium.SeleniumSteps;
 import org.openqa.selenium.WebDriver;
 
@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static com.github.toy.constructor.core.api.ToGetSingleCheckedObject.getSingle;
+import static com.github.toy.constructor.core.api.conditions.ToGetSingleCheckedObject.getSingle;
 import static com.github.toy.constructor.selenium.CurrentContentFunction.currentContent;
 import static com.github.toy.constructor.selenium.functions.java.script.EvaluateAsyncJavaScript.evalAsyncJS;
 import static com.github.toy.constructor.selenium.functions.java.script.EvaluateJavaScript.evalJS;
@@ -17,7 +17,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-public final class GetJavaScriptResultSupplier extends GetSupplier<SeleniumSteps, Object, GetJavaScriptResultSupplier> {
+public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumSteps, Object, GetJavaScriptResultSupplier> {
 
     private GetJavaScriptResultSupplier() {
         super();

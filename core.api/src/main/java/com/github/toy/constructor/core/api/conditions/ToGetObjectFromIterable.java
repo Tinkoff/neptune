@@ -1,4 +1,4 @@
-package com.github.toy.constructor.core.api;
+package com.github.toy.constructor.core.api.conditions;
 
 import javax.annotation.Nullable;
 import java.time.Duration;
@@ -7,8 +7,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static com.github.toy.constructor.core.api.AsIsPredicate.AS_IS;
-import static com.github.toy.constructor.core.api.ToGetConditionalHelper.*;
+import static com.github.toy.constructor.core.api.AsIsCondition.AS_IS;
+import static com.github.toy.constructor.core.api.conditions.ToGetConditionalHelper.*;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.StreamSupport.stream;
 

@@ -1,6 +1,6 @@
 package com.github.toy.constructor.selenium.functions.value;
 
-import com.github.toy.constructor.core.api.SequentialGetSupplier;
+import com.github.toy.constructor.core.api.SequentialGetStepSupplier;
 import com.github.toy.constructor.selenium.SeleniumSteps;
 import com.github.toy.constructor.selenium.api.widget.HasValue;
 import com.github.toy.constructor.selenium.functions.searching.SearchSupplier;
@@ -13,7 +13,7 @@ import static com.github.toy.constructor.selenium.CurrentContentFunction.current
 import static com.google.common.base.Preconditions.checkArgument;
 
 public final class SequentialGetValueSupplier<T> extends
-        SequentialGetSupplier<SeleniumSteps, T, HasValue<T>, SequentialGetValueSupplier<T>> {
+        SequentialGetStepSupplier<SeleniumSteps, T, HasValue<T>, SequentialGetValueSupplier<T>> {
 
     private SequentialGetValueSupplier() {
         super();

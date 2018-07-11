@@ -9,7 +9,7 @@ dependencies {
     compile (group: 'com.codeborne', name: 'phantomjsdriver', version: '1.4.4') {
         exclude group: 'org.seleniumhq.selenium'
     }
-    compile (group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '2.2.2') {
+    compile (group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '2.2.4') {
         exclude group: 'org.seleniumhq.selenium'
     }
     compile (group: 'org.seleniumhq.selenium', name: 'selenium-server', version: seleniumVersion) {

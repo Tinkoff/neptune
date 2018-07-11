@@ -9,6 +9,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.github.toy.constructor.core.api.StoryWriter.toGet;
+import static com.github.toy.constructor.core.api.utils.IsDescribedUtil.isDescribed;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Optional.ofNullable;
@@ -22,10 +24,10 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
  * @param <THIS> is self-type. It is necessary for the {@link #set(Function)} method.
  */
 @SuppressWarnings("unchecked")
-public abstract class GetSupplier<T, R, THIS extends GetSupplier<T, R, THIS>> implements Supplier<Function<T, R>>,
+public abstract class GetStepSupplier<T, R, THIS extends GetStepSupplier<T, R, THIS>> implements Supplier<Function<T, R>>,
         IgnoresThrowable<THIS> {
 
-    private Function<T, R> function;
+    private StepFunction<T, R> function;
     protected final Set<Class<? extends Throwable>> ignored = new HashSet<>();
 
     /**
@@ -35,12 +37,21 @@ public abstract class GetSupplier<T, R, THIS extends GetSupplier<T, R, THIS>> im
      * @param function which returns a goal value.
      * @return self-reference.
      */
-    protected THIS set(Function<T, R> function){
+    protected THIS set(Function<T, R> function) {
         checkNotNull(function);
-        checkArgument(DescribedFunction.class.isAssignableFrom(function.getClass()),
+        checkArgument(isDescribed(function),
                 "It seems given function doesn't describe any value to get. Use method " +
-                        "StoryWriter.toGet to describe the value to get previously.");
-        this.function = DescribedFunction.class.cast(function)
+                        "StoryWriter.toGet to describe it or override the toString method");
+        StepFunction stepFunction;
+        if (StepFunction.class.isAssignableFrom(function.getClass())) {
+            stepFunction = StepFunction.class
+                    .cast(function);
+        }
+        else {
+            stepFunction = StepFunction.class
+                    .cast(toGet(function.toString(), function));
+        }
+        this.function = stepFunction
                 .addIgnored(new ArrayList<>(ignored));
         return (THIS) this;
     }

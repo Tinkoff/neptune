@@ -1,4 +1,4 @@
-package com.github.toy.constructor.core.api;
+package com.github.toy.constructor.core.api.event.firing;
 
 import com.github.toy.constructor.core.api.event.firing.Captor;
 import com.github.toy.constructor.core.api.event.firing.EventLogger;
@@ -41,22 +41,22 @@ public class StaticEventFiring {
                 });
     }
 
-    static void fireEventStarting(String message) {
+    public static void fireEventStarting(String message) {
         initEventLoggersIfNecessary().forEach(eventLogger ->
                 eventLogger.fireTheEventStarting(message));
     }
 
-    static void fireThrownException(Throwable throwable) {
+    public static void fireThrownException(Throwable throwable) {
         initEventLoggersIfNecessary().forEach(eventLogger ->
                 eventLogger.fireThrownException(throwable));
     }
 
-    static void fireReturnedValue(Object returned) {
+    public static void fireReturnedValue(Object returned) {
         initEventLoggersIfNecessary().forEach(eventLogger ->
                 eventLogger.fireReturnedValue(returned));
     }
 
-    static void fireEventFinishing() {
+    public static void fireEventFinishing() {
         initEventLoggersIfNecessary().forEach(EventLogger::fireEventFinishing);
     }
 }

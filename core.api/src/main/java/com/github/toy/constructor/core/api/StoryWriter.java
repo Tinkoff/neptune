@@ -20,7 +20,7 @@ public final class StoryWriter {
      * by the {@link #toString()} method.
      */
     public static <T> Consumer<T> action(String description, Consumer<T> consumer) {
-        return new DescribedConsumer<>(description, consumer);
+        return new StepAction<>(description, consumer);
     }
 
     /**
@@ -34,14 +34,14 @@ public final class StoryWriter {
      * by the {@link #toString()} method.
      */
     public static <T, R> Function<T, R> toGet(String description, Function<T, R> function) {
-        return new DescribedFunction<>(description, function);
+        return new StepFunction<>(description, function);
     }
 
     /**
      * This method creates a predicate with some string description. This predicate is
-     * supposed to be used as some condition or filter.
+     * supposed to be used as some conditions or filter.
      *
-     * @param description string narration of the condition
+     * @param description string narration of the conditions
      * @param predicate which checks some input value
      * @param <T> type of the input value
      * @return a new predicate with the given string description. Description is returned
@@ -49,7 +49,7 @@ public final class StoryWriter {
      */
     public static <T> Predicate<T> condition(String description, Predicate<T> predicate) {
         checkArgument(!isBlank(description), "Description should not be empty");
-        return new DescribedPredicate<>() {
+        return new Condition<>() {
             @Override
             public boolean test(T t) {
                 return predicate.test(t);

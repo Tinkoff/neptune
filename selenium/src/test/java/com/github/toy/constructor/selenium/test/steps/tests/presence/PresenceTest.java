@@ -1,6 +1,6 @@
 package com.github.toy.constructor.selenium.test.steps.tests.presence;
 
-import com.github.toy.constructor.core.api.GetSupplier;
+import com.github.toy.constructor.core.api.GetStepSupplier;
 import com.github.toy.constructor.selenium.SeleniumSteps;
 import com.github.toy.constructor.selenium.test.BaseWebDriverTest;
 import org.openqa.selenium.NoSuchElementException;
@@ -208,7 +208,7 @@ public class PresenceTest extends BaseWebDriverTest {
                 is(false));
     }
 
-    private static class TestGetSupplier extends GetSupplier<SeleniumSteps, Object, TestGetSupplier> {
+    private static class TestGetSupplier extends GetStepSupplier<SeleniumSteps, Object, TestGetSupplier> {
         public TestGetSupplier set(Function<SeleniumSteps, Object> function) {
             return super.set(function);
         }

@@ -1,6 +1,6 @@
 package com.github.toy.constructor.selenium.functions.click;
 
-import com.github.toy.constructor.core.api.GetSupplier;
+import com.github.toy.constructor.core.api.GetStepSupplier;
 import com.github.toy.constructor.core.api.SequentialActionSupplier;
 import com.github.toy.constructor.selenium.SeleniumSteps;
 import com.github.toy.constructor.selenium.api.widget.Clickable;
@@ -60,7 +60,7 @@ public final class ClickActionSupplier extends SequentialActionSupplier<Selenium
      * @param on is how to find the web element
      * @return built click action
      */
-    public static ClickActionSupplier on(GetSupplier<SearchContext, WebElement, ?> on) {
+    public static ClickActionSupplier on(GetStepSupplier<SearchContext, WebElement, ?> on) {
         return new ClickActionSupplier().andOn(on);
     }
 
@@ -99,7 +99,7 @@ public final class ClickActionSupplier extends SequentialActionSupplier<Selenium
      * @param on is how to find the web element
      * @return built click action
      */
-    public ClickActionSupplier andOn(GetSupplier<SearchContext, WebElement, ?> on) {
+    public ClickActionSupplier andOn(GetStepSupplier<SearchContext, WebElement, ?> on) {
         checkArgument(on != null, "The searching for the clickable element should be defined");
         return andThen("Click", currentContent()
                 .andThen(toGet(on.toString(), webDriver -> getClickableFromElement(on.get().apply(webDriver)))));

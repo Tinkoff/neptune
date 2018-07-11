@@ -2,21 +2,22 @@ package com.github.toy.constructor.core.api;
 
 import java.util.function.Predicate;
 
-import static com.github.toy.constructor.core.api.AsIsPredicate.AS_IS;
+import static com.github.toy.constructor.core.api.AsIsCondition.AS_IS;
+import static com.github.toy.constructor.core.api.utils.IsDescribedUtil.isDescribed;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 
-interface DescribedPredicate<T> extends Predicate<T> {
+interface Condition<T> extends Predicate<T> {
 
     default Predicate<T> and(Predicate<? super T> other) {
         checkNotNull(other);
-        checkArgument(DescribedPredicate.class.isAssignableFrom(other.getClass()),
+        checkArgument(isDescribed(other),
                 "It seems given predicate doesn't describe any condition. Use method " +
-                        "StoryWriter.condition to describe the AND-condition.");
+                        "StoryWriter.condition to describe the AND-condition or override the toString method");
 
         Predicate<T> thisCondition = this;
-        return new DescribedPredicate<>() {
+        return new Condition<>() {
 
             @Override
             public boolean test(T t) {
@@ -36,7 +37,7 @@ interface DescribedPredicate<T> extends Predicate<T> {
     default Predicate<T> negate() {
         Predicate<T> thisCondition = this;
 
-        return new DescribedPredicate<>() {
+        return new Condition<>() {
             @Override
             public boolean test(T t) {
                 return !thisCondition.test(t);
@@ -51,12 +52,12 @@ interface DescribedPredicate<T> extends Predicate<T> {
 
     default Predicate<T> or(Predicate<? super T> other) {
         checkNotNull(other);
-        checkArgument(DescribedPredicate.class.isAssignableFrom(other.getClass()),
+        checkArgument(isDescribed(other),
                 "It seems given predicate doesn't describe any condition. Use method " +
-                        "StoryWriter.condition to describe the OR-condition.");
+                        "StoryWriter.condition to describe the OR-condition or override the toString method");
 
         Predicate<T> thisCondition = this;
-        return new DescribedPredicate<>() {
+        return new Condition<>() {
 
             @Override
             public boolean test(T t) {

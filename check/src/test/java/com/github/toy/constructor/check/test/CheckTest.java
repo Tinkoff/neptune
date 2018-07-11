@@ -38,94 +38,100 @@ public class CheckTest {
     }
 
     private static final List<String> EXPECTED_LOGGER_MESSAGES1 =
-            of("Perform Assert value . With parameters: {Inspected value 4,\n" +
-                            "Is integer\n" +
-                            "           is <true>\n" +
-                            "Sqrt value\n" +
-                            "           is <2.0>} has started",
-                    "Get Inspected value 4 has started",
-                    "4 has been returned",
-                    "Event finished",
-                    "From 4 get Is integer has started",
+            of("Verify inspected value has started",
+                    "Assertion. Target: Is integer. Action parameters: {is <true>} has started",
+                    "Get Is integer has started",
                     "true has been returned",
                     "Event finished",
-                    "From 4 get Sqrt value has started",
+                    "Attempt to verify. Target: true has started",
+                    "Event finished",
+                    "Event finished",
+                    "Assertion. Target: Sqrt value. Action parameters: {is <2.0>} has started",
+                    "Get Sqrt value has started",
                     "2.0 has been returned",
                     "Event finished",
+                    "Attempt to verify. Target: 2.0 has started",
                     "Event finished",
-                    "Perform Assert value . With parameters: {Inspected value 5,\n" +
-                            "Sqr value\n" +
-                            "           is <25.0>} has started",
-                    "Get Inspected value 5 has started",
-                    "5 has been returned",
                     "Event finished",
-                    "From 5 get Sqr value has started",
+                    "Event finished",
+                    "Verify inspected value has started",
+                    "Assertion. Target: Sqr value. Action parameters: {is <25.0>} has started",
+                    "Get Sqr value has started",
                     "25.0 has been returned",
+                    "Event finished",
+                    "Attempt to verify. Target: 25.0 has started",
+                    "Event finished",
                     "Event finished",
                     "Event finished");
 
     private static final List<String> EXPECTED_LOGGER_MESSAGES2 =
-            of("Perform Check numbers 4 and 5 has started",
-                    "Perform Assert value . With parameters: {Inspected value 4,\n" +
-                            "Is integer\n" +
-                            "           is <true>\n" +
-                            "Sqrt value\n" +
-                            "           is <2.0>} has started",
-                    "Get Inspected value 4 has started",
-                    "4 has been returned",
-                    "Event finished",
-                    "From 4 get Is integer has started",
+            of("Check numbers 4 and 5 has started",
+                    "Verify inspected value has started",
+                    "Assertion. Target: Is integer. Action parameters: {is <true>} has started",
+                    "Get Is integer has started",
                     "true has been returned",
                     "Event finished",
-                    "From 4 get Sqrt value has started",
+                    "Attempt to verify. Target: true has started",
+                    "Event finished",
+                    "Event finished",
+                    "Assertion. Target: Sqrt value. Action parameters: {is <2.0>} has started",
+                    "Get Sqrt value has started",
                     "2.0 has been returned",
                     "Event finished",
+                    "Attempt to verify. Target: 2.0 has started",
                     "Event finished",
-                    "Perform Assert value . With parameters: {Inspected value 5,\n" +
-                            "Sqr value\n" +
-                            "           is <25.0>} has started",
-                    "Get Inspected value 5 has started",
-                    "5 has been returned",
                     "Event finished",
-                    "From 5 get Sqr value has started",
+                    "Event finished",
+                    "Verify inspected value has started",
+                    "Assertion. Target: Sqr value. Action parameters: {is <25.0>} has started",
+                    "Get Sqr value has started",
                     "25.0 has been returned",
+                    "Event finished",
+                    "Attempt to verify. Target: 25.0 has started",
+                    "Event finished",
                     "Event finished",
                     "Event finished",
                     "Event finished");
 
     private static final List<String> EXPECTED_LOGGER_MESSAGES3 =
-            of("Perform Assert value . With parameters: {Inspected value 9,\n" +
-                    "Is integer\n" +
-                    "           is <true>\n" +
-                    "Sqrt value\n" +
-                    "           is <2.0>} has started",
-                    "Get Inspected value 9 has started",
-                    "9 has been returned",
-                    "Event finished",
-                    "From 9 get Is integer has started",
+            of("Verify inspected value has started",
+                    "Assertion. Target: Is integer. Action parameters: {is <true>} has started",
+                    "Get Is integer has started",
                     "true has been returned",
                     "Event finished",
-                    "From 9 get Sqrt value has started",
+                    "Attempt to verify. Target: true has started",
+                    "Event finished",
+                    "Event finished",
+                    "Assertion. Target: Sqrt value. Action parameters: {is <2.0>} has started",
+                    "Get Sqrt value has started",
                     "3.0 has been returned",
+                    "Event finished",
+                    "Attempt to verify. Target: 3.0 has started",
+                    "java.lang.AssertionError has been thrown",
+                    "Event finished",
+                    "java.lang.AssertionError has been thrown",
                     "Event finished",
                     "java.lang.AssertionError has been thrown",
                     "Event finished");
 
     private static final List<String> EXPECTED_LOGGER_MESSAGES4 =
-            of("Perform Check number 9 has started",
-                    "Perform Assert value . With parameters: {Inspected value 9,\n" +
-                            "Is integer\n" +
-                            "           is <true>\n" +
-                            "Sqrt value\n" +
-                            "           is <2.0>} has started",
-                    "Get Inspected value 9 has started",
-                    "9 has been returned",
-                    "Event finished",
-                    "From 9 get Is integer has started",
+            of("Check number 9 has started",
+                    "Verify inspected value has started",
+                    "Assertion. Target: Is integer. Action parameters: {is <true>} has started",
+                    "Get Is integer has started",
                     "true has been returned",
                     "Event finished",
-                    "From 9 get Sqrt value has started",
+                    "Attempt to verify. Target: true has started",
+                    "Event finished",
+                    "Event finished",
+                    "Assertion. Target: Sqrt value. Action parameters: {is <2.0>} has started",
+                    "Get Sqrt value has started",
                     "3.0 has been returned",
+                    "Event finished",
+                    "Attempt to verify. Target: 3.0 has started",
+                    "java.lang.AssertionError has been thrown",
+                    "Event finished",
+                    "java.lang.AssertionError has been thrown",
                     "Event finished",
                     "java.lang.AssertionError has been thrown",
                     "Event finished",
@@ -170,19 +176,17 @@ public class CheckTest {
 
             assertThat("Logged messages",
                     DefaultListLogger.messages,
-                    contains("Getting of 'Inspected value 4' succeed",
-                            "Getting of 'Is integer' succeed",
+                    contains("Getting of 'Is integer' succeed",
+                            "Performing of 'Attempt to verify' succeed",
+                            "Performing of 'Assertion. Target: Is integer. Action parameters: {is <true>}' succeed",
                             "Getting of 'Sqrt value' succeed",
-                            "Performing of 'Assert value . With parameters: {Inspected value 4,\n" +
-                                    "Is integer\n" +
-                                    "           is <true>\n" +
-                                    "Sqrt value\n" +
-                                    "           is <2.0>}' succeed",
-                            "Getting of 'Inspected value 5' succeed",
+                            "Performing of 'Attempt to verify' succeed",
+                            "Performing of 'Assertion. Target: Sqrt value. Action parameters: {is <2.0>}' succeed",
+                            "Performing of 'Verify inspected value' succeed",
                             "Getting of 'Sqr value' succeed",
-                            "Performing of 'Assert value . With parameters: {Inspected value 5,\n" +
-                                    "Sqr value\n" +
-                                    "           is <25.0>}' succeed"));
+                            "Performing of 'Attempt to verify' succeed",
+                            "Performing of 'Assertion. Target: Sqr value. Action parameters: {is <25.0>}' succeed",
+                            "Performing of 'Verify inspected value' succeed"));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES1.toArray()));
@@ -238,19 +242,17 @@ public class CheckTest {
 
             assertThat("Logged messages",
                     DefaultListLogger.messages,
-                    contains("Getting of 'Inspected value 4' succeed",
-                            "Getting of 'Is integer' succeed",
+                    contains("Getting of 'Is integer' succeed",
+                            "Performing of 'Attempt to verify' succeed",
+                            "Performing of 'Assertion. Target: Is integer. Action parameters: {is <true>}' succeed",
                             "Getting of 'Sqrt value' succeed",
-                            "Performing of 'Assert value . With parameters: {Inspected value 4,\n" +
-                                    "Is integer\n" +
-                                    "           is <true>\n" +
-                                    "Sqrt value\n" +
-                                    "           is <2.0>}' succeed",
-                            "Getting of 'Inspected value 5' succeed",
+                            "Performing of 'Attempt to verify' succeed",
+                            "Performing of 'Assertion. Target: Sqrt value. Action parameters: {is <2.0>}' succeed",
+                            "Performing of 'Verify inspected value' succeed",
                             "Getting of 'Sqr value' succeed",
-                            "Performing of 'Assert value . With parameters: {Inspected value 5,\n" +
-                                    "Sqr value\n" +
-                                    "           is <25.0>}' succeed"));
+                            "Performing of 'Attempt to verify' succeed",
+                            "Performing of 'Assertion. Target: Sqr value. Action parameters: {is <25.0>}' succeed",
+                            "Performing of 'Verify inspected value' succeed"));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES1.toArray()));
@@ -302,19 +304,17 @@ public class CheckTest {
 
             assertThat("Logged messages",
                     DefaultListLogger.messages,
-                    contains("Getting of 'Inspected value 4' succeed",
-                            "Getting of 'Is integer' succeed",
+                    contains("Getting of 'Is integer' succeed",
+                            "Performing of 'Attempt to verify' succeed",
+                            "Performing of 'Assertion. Target: Is integer. Action parameters: {is <true>}' succeed",
                             "Getting of 'Sqrt value' succeed",
-                            "Performing of 'Assert value . With parameters: {Inspected value 4,\n" +
-                                    "Is integer\n" +
-                                    "           is <true>\n" +
-                                    "Sqrt value\n" +
-                                    "           is <2.0>}' succeed",
-                            "Getting of 'Inspected value 5' succeed",
+                            "Performing of 'Attempt to verify' succeed",
+                            "Performing of 'Assertion. Target: Sqrt value. Action parameters: {is <2.0>}' succeed",
+                            "Performing of 'Verify inspected value' succeed",
                             "Getting of 'Sqr value' succeed",
-                            "Performing of 'Assert value . With parameters: {Inspected value 5,\n" +
-                                    "Sqr value\n" +
-                                    "           is <25.0>}' succeed",
+                            "Performing of 'Attempt to verify' succeed",
+                            "Performing of 'Assertion. Target: Sqr value. Action parameters: {is <25.0>}' succeed",
+                            "Performing of 'Verify inspected value' succeed",
                             "Performing of 'Check numbers 4 and 5' succeed"));
 
             assertThat(MESSAGES,
@@ -373,19 +373,17 @@ public class CheckTest {
 
             assertThat("Logged messages",
                     DefaultListLogger.messages,
-                    contains("Getting of 'Inspected value 4' succeed",
-                            "Getting of 'Is integer' succeed",
+                    contains("Getting of 'Is integer' succeed",
+                            "Performing of 'Attempt to verify' succeed",
+                            "Performing of 'Assertion. Target: Is integer. Action parameters: {is <true>}' succeed",
                             "Getting of 'Sqrt value' succeed",
-                            "Performing of 'Assert value . With parameters: {Inspected value 4,\n" +
-                                    "Is integer\n" +
-                                    "           is <true>\n" +
-                                    "Sqrt value\n" +
-                                    "           is <2.0>}' succeed",
-                            "Getting of 'Inspected value 5' succeed",
+                            "Performing of 'Attempt to verify' succeed",
+                            "Performing of 'Assertion. Target: Sqrt value. Action parameters: {is <2.0>}' succeed",
+                            "Performing of 'Verify inspected value' succeed",
                             "Getting of 'Sqr value' succeed",
-                            "Performing of 'Assert value . With parameters: {Inspected value 5,\n" +
-                                    "Sqr value\n" +
-                                    "           is <25.0>}' succeed",
+                            "Performing of 'Attempt to verify' succeed",
+                            "Performing of 'Assertion. Target: Sqr value. Action parameters: {is <25.0>}' succeed",
+                            "Performing of 'Verify inspected value' succeed",
                             "Performing of 'Check numbers 4 and 5' succeed"));
 
             assertThat(MESSAGES,
@@ -396,19 +394,11 @@ public class CheckTest {
         }
     }
 
-    @Test(expectedExceptions = AssertionError.class,
-            expectedExceptionsMessageRegExp = "\n" +
-                    "Expected:  \n" +
-                    "Is integer\n" +
-                    "           is <true>\n" +
-                    "Sqrt value\n" +
-                    "           is <2.0>\n" +
-                    "     but: \n" +
-                    "\n" +
-                    "Detected mismatches:\n" +
-                    "===================================\n" +
-                    "Sqrt value:\n" +
-                    "             It was expected that Sqrt value suits criteria 'is <2.0>'. Actual result: was <3.0>")
+    @Test(expectedExceptions = AssertionError.class, expectedExceptionsMessageRegExp = "List of mismatches:\n" +
+            "\t\n" +
+            "Expected: is <2.0>\n" +
+            "     but: Sqrt value: \n" +
+            "\twas <3.0>")
     public void testOfLinearNegativeCaseWhenEventIsNotDefined() {
         try {
             check.verify(thatValue(9)
@@ -429,19 +419,11 @@ public class CheckTest {
         }
     }
 
-    @Test(expectedExceptions = AssertionError.class,
-            expectedExceptionsMessageRegExp = "\n" +
-                    "Expected:  \n" +
-                    "Is integer\n" +
-                    "           is <true>\n" +
-                    "Sqrt value\n" +
-                    "           is <2.0>\n" +
-                    "     but: \n" +
-                    "\n" +
-                    "Detected mismatches:\n" +
-                    "===================================\n" +
-                    "Sqrt value:\n" +
-                    "             It was expected that Sqrt value suits criteria 'is <2.0>'. Actual result: was <3.0>")
+    @Test(expectedExceptions = AssertionError.class, expectedExceptionsMessageRegExp = "List of mismatches:\n" +
+            "\t\n" +
+            "Expected: is <2.0>\n" +
+            "     but: Sqrt value: \n" +
+            "\twas <3.0>")
     public void testOfLinearNegativeCaseWhenEventIsSuccess() {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS.name());
         try {
@@ -454,11 +436,16 @@ public class CheckTest {
                             number -> sqrt(number.doubleValue()),
                             is(2D)));
         }
+        catch (AssertionError e) {
+            System.out.println(e.getMessage());
+            throw e;
+        }
         finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
             assertThat(DefaultListLogger.messages,
-                    contains("Getting of 'Inspected value 9' succeed",
-                            "Getting of 'Is integer' succeed",
+                    contains("Getting of 'Is integer' succeed",
+                            "Performing of 'Attempt to verify' succeed",
+                            "Performing of 'Assertion. Target: Is integer. Action parameters: {is <true>}' succeed",
                             "Getting of 'Sqrt value' succeed"));
 
             assertThat(MESSAGES,
@@ -467,18 +454,11 @@ public class CheckTest {
     }
 
     @Test(expectedExceptions = AssertionError.class,
-            expectedExceptionsMessageRegExp = "\n" +
-                    "Expected:  \n" +
-                    "Is integer\n" +
-                    "           is <true>\n" +
-                    "Sqrt value\n" +
-                    "           is <2.0>\n" +
-                    "     but: \n" +
-                    "\n" +
-                    "Detected mismatches:\n" +
-                    "===================================\n" +
-                    "Sqrt value:\n" +
-                    "             It was expected that Sqrt value suits criteria 'is <2.0>'. Actual result: was <3.0>")
+            expectedExceptionsMessageRegExp = "List of mismatches:\n" +
+                    "\t\n" +
+                    "Expected: is <2.0>\n" +
+                    "     but: Sqrt value: \n" +
+                    "\twas <3.0>")
     public void testOfLinearNegativeCaseWhenEventIsFailure() {
         DO_CAPTURES_OF_INSTANCE.accept(FAILURE.name());
         try {
@@ -494,12 +474,9 @@ public class CheckTest {
         finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
             assertThat(DefaultListLogger.messages,
-                    contains("Mismatched object 9",
-                            "Performing of 'Assert value . With parameters: {Inspected value 9,\n" +
-                                    "Is integer\n" +
-                                    "           is <true>\n" +
-                                    "Sqrt value\n" +
-                                    "           is <2.0>}' failed"));
+                    contains("Performing of 'Attempt to verify' failed",
+                            "Performing of 'Assertion. Target: Sqrt value. Action parameters: {is <2.0>}' failed",
+                            "Performing of 'Verify inspected value' failed"));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES3.toArray()));
@@ -507,18 +484,11 @@ public class CheckTest {
     }
 
     @Test(expectedExceptions = AssertionError.class,
-            expectedExceptionsMessageRegExp = "\n" +
-                    "Expected:  \n" +
-                    "Is integer\n" +
-                    "           is <true>\n" +
-                    "Sqrt value\n" +
-                    "           is <2.0>\n" +
-                    "     but: \n" +
-                    "\n" +
-                    "Detected mismatches:\n" +
-                    "===================================\n" +
-                    "Sqrt value:\n" +
-                    "             It was expected that Sqrt value suits criteria 'is <2.0>'. Actual result: was <3.0>")
+            expectedExceptionsMessageRegExp = "List of mismatches:\n" +
+                    "\t\n" +
+                    "Expected: is <2.0>\n" +
+                    "     but: Sqrt value: \n" +
+                    "\twas <3.0>")
     public void testOfLinearNegativeCaseWhenEventIsAll() {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE.name());
         try {
@@ -534,15 +504,13 @@ public class CheckTest {
         finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
             assertThat(DefaultListLogger.messages,
-                    contains("Getting of 'Inspected value 9' succeed",
-                            "Getting of 'Is integer' succeed",
+                    contains("Getting of 'Is integer' succeed",
+                            "Performing of 'Attempt to verify' succeed",
+                            "Performing of 'Assertion. Target: Is integer. Action parameters: {is <true>}' succeed",
                             "Getting of 'Sqrt value' succeed",
-                            "Mismatched object 9",
-                            "Performing of 'Assert value . With parameters: {Inspected value 9,\n" +
-                                    "Is integer\n" +
-                                    "           is <true>\n" +
-                                    "Sqrt value\n" +
-                                    "           is <2.0>}' failed"));
+                            "Performing of 'Attempt to verify' failed",
+                            "Performing of 'Assertion. Target: Sqrt value. Action parameters: {is <2.0>}' failed",
+                            "Performing of 'Verify inspected value' failed"));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES3.toArray()));
@@ -550,18 +518,11 @@ public class CheckTest {
     }
 
     @Test(expectedExceptions = AssertionError.class,
-            expectedExceptionsMessageRegExp = "\n" +
-                    "Expected:  \n" +
-                    "Is integer\n" +
-                    "           is <true>\n" +
-                    "Sqrt value\n" +
-                    "           is <2.0>\n" +
-                    "     but: \n" +
-                    "\n" +
-                    "Detected mismatches:\n" +
-                    "===================================\n" +
-                    "Sqrt value:\n" +
-                    "             It was expected that Sqrt value suits criteria 'is <2.0>'. Actual result: was <3.0>")
+            expectedExceptionsMessageRegExp = "List of mismatches:\n" +
+                    "\t\n" +
+                    "Expected: is <2.0>\n" +
+                    "     but: Sqrt value: \n" +
+                    "\twas <3.0>")
     public void testOfPerformNegativeCaseWhenEventIsNotDefined() {
         try {
             check.perform(action("Check number 9", check ->
@@ -584,18 +545,11 @@ public class CheckTest {
     }
 
     @Test(expectedExceptions = AssertionError.class,
-            expectedExceptionsMessageRegExp = "\n" +
-                    "Expected:  \n" +
-                    "Is integer\n" +
-                    "           is <true>\n" +
-                    "Sqrt value\n" +
-                    "           is <2.0>\n" +
-                    "     but: \n" +
-                    "\n" +
-                    "Detected mismatches:\n" +
-                    "===================================\n" +
-                    "Sqrt value:\n" +
-                    "             It was expected that Sqrt value suits criteria 'is <2.0>'. Actual result: was <3.0>")
+            expectedExceptionsMessageRegExp = "List of mismatches:\n" +
+                    "\t\n" +
+                    "Expected: is <2.0>\n" +
+                    "     but: Sqrt value: \n" +
+                    "\twas <3.0>")
     public void testOfPerformNegativeCaseWhenEventIsSuccess() {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS.name());
         try {
@@ -612,8 +566,9 @@ public class CheckTest {
         finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
             assertThat(DefaultListLogger.messages,
-                    contains("Getting of 'Inspected value 9' succeed",
-                            "Getting of 'Is integer' succeed",
+                    contains("Getting of 'Is integer' succeed",
+                            "Performing of 'Attempt to verify' succeed",
+                            "Performing of 'Assertion. Target: Is integer. Action parameters: {is <true>}' succeed",
                             "Getting of 'Sqrt value' succeed"));
 
             assertThat(MESSAGES,
@@ -622,18 +577,11 @@ public class CheckTest {
     }
 
     @Test(expectedExceptions = AssertionError.class,
-            expectedExceptionsMessageRegExp = "\n" +
-                    "Expected:  \n" +
-                    "Is integer\n" +
-                    "           is <true>\n" +
-                    "Sqrt value\n" +
-                    "           is <2.0>\n" +
-                    "     but: \n" +
-                    "\n" +
-                    "Detected mismatches:\n" +
-                    "===================================\n" +
-                    "Sqrt value:\n" +
-                    "             It was expected that Sqrt value suits criteria 'is <2.0>'. Actual result: was <3.0>")
+            expectedExceptionsMessageRegExp = "List of mismatches:\n" +
+                    "\t\n" +
+                    "Expected: is <2.0>\n" +
+                    "     but: Sqrt value: \n" +
+                    "\twas <3.0>")
     public void testOfPerformNegativeCaseWhenEventIsFailure() {
         DO_CAPTURES_OF_INSTANCE.accept(FAILURE.name());
         try {
@@ -650,12 +598,9 @@ public class CheckTest {
         finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
             assertThat(DefaultListLogger.messages,
-                    contains("Mismatched object 9",
-                            "Performing of 'Assert value . With parameters: {Inspected value 9,\n" +
-                                    "Is integer\n" +
-                                    "           is <true>\n" +
-                                    "Sqrt value\n" +
-                                    "           is <2.0>}' failed",
+                    contains("Performing of 'Attempt to verify' failed",
+                            "Performing of 'Assertion. Target: Sqrt value. Action parameters: {is <2.0>}' failed",
+                            "Performing of 'Verify inspected value' failed",
                             "Performing of 'Check number 9' failed"));
 
             assertThat(MESSAGES,
@@ -664,18 +609,11 @@ public class CheckTest {
     }
 
     @Test(expectedExceptions = AssertionError.class,
-            expectedExceptionsMessageRegExp = "\n" +
-                    "Expected:  \n" +
-                    "Is integer\n" +
-                    "           is <true>\n" +
-                    "Sqrt value\n" +
-                    "           is <2.0>\n" +
-                    "     but: \n" +
-                    "\n" +
-                    "Detected mismatches:\n" +
-                    "===================================\n" +
-                    "Sqrt value:\n" +
-                    "             It was expected that Sqrt value suits criteria 'is <2.0>'. Actual result: was <3.0>")
+            expectedExceptionsMessageRegExp = "List of mismatches:\n" +
+                    "\t\n" +
+                    "Expected: is <2.0>\n" +
+                    "     but: Sqrt value: \n" +
+                    "\twas <3.0>")
     public void testOfPerformNegativeCaseWhenEventIsAll() {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE.name());
         try {
@@ -692,15 +630,13 @@ public class CheckTest {
         finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
             assertThat(DefaultListLogger.messages,
-                    contains("Getting of 'Inspected value 9' succeed",
-                            "Getting of 'Is integer' succeed",
+                    contains("Getting of 'Is integer' succeed",
+                            "Performing of 'Attempt to verify' succeed",
+                            "Performing of 'Assertion. Target: Is integer. Action parameters: {is <true>}' succeed",
                             "Getting of 'Sqrt value' succeed",
-                            "Mismatched object 9",
-                            "Performing of 'Assert value . With parameters: {Inspected value 9,\n" +
-                                    "Is integer\n" +
-                                    "           is <true>\n" +
-                                    "Sqrt value\n" +
-                                    "           is <2.0>}' failed",
+                            "Performing of 'Attempt to verify' failed",
+                            "Performing of 'Assertion. Target: Sqrt value. Action parameters: {is <2.0>}' failed",
+                            "Performing of 'Verify inspected value' failed",
                             "Performing of 'Check number 9' failed"));
 
             assertThat(MESSAGES,

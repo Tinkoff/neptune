@@ -1,4 +1,4 @@
 dependencies {
     compile group: 'org.objenesis', name: 'objenesis', version: '2.6'
-    compile group: 'cglib', name: 'cglib', version: '3.2.6'
+    compile group: 'cglib', name: 'cglib', version: '3.2.7'
 }

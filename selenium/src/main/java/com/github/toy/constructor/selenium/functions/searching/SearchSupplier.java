@@ -1,6 +1,6 @@
 package com.github.toy.constructor.selenium.functions.searching;
 
-import com.github.toy.constructor.core.api.SequentialGetSupplier;
+import com.github.toy.constructor.core.api.SequentialGetStepSupplier;
 import com.github.toy.constructor.selenium.api.widget.Labeled;
 import com.github.toy.constructor.selenium.api.widget.Widget;
 import com.github.toy.constructor.selenium.api.widget.drafts.*;
@@ -14,8 +14,8 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
-import static com.github.toy.constructor.core.api.AsIsPredicate.AS_IS;
-import static com.github.toy.constructor.core.api.ToGetObjectFromIterable.getFromIterable;
+import static com.github.toy.constructor.core.api.AsIsCondition.AS_IS;
+import static com.github.toy.constructor.core.api.conditions.ToGetObjectFromIterable.getFromIterable;
 import static com.github.toy.constructor.selenium.api.widget.Widget.getWidgetName;
 import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.defaultPredicate;
 import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.shouldBeLabeledBy;
@@ -30,7 +30,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 @SuppressWarnings({"unused", "unchecked"})
 public final class SearchSupplier<R extends SearchContext>
-        extends SequentialGetSupplier<SearchContext, R, SearchContext, SearchSupplier<R>> {
+        extends SequentialGetStepSupplier<SearchContext, R, SearchContext, SearchSupplier<R>> {
 
     private SearchSupplier(Function<SearchContext, R> function) {
         set(function);
@@ -41,9 +41,9 @@ public final class SearchSupplier<R extends SearchContext>
         return predicate == AS_IS? EMPTY: predicate.toString();
     }
 
-    private static Supplier<NoSuchElementException> noSuchElementException(Function<SearchContext, ?> transformation,
+    private static Supplier<NoSuchElementException> noSuchElementException(String description,
                                                                            Predicate<?> condition) {
-        String errorMessage = format("Nothing was found. Attempt to get a single item of %s", transformation);
+        String errorMessage = format("Nothing was found. Attempt to get a single item %s", description);
         if (!AS_IS.equals(condition)) {
             errorMessage = format("%s. Condition: %s", errorMessage, condition);
         }
@@ -68,7 +68,7 @@ public final class SearchSupplier<R extends SearchContext>
                                                                    Duration duration, Predicate<? super T> condition) {
         return new SearchSupplier<>(getFromIterable(description,
                 transformation, condition, duration, false, true,
-                noSuchElementException(transformation, condition)));
+                noSuchElementException(description, condition)));
     }
 
     /**
@@ -142,7 +142,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some instance of {@link WebElement} found from the input value. The
      * result function will return the first found element if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found element which is displayed on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -159,7 +159,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some instance of {@link WebElement} found from the input value. The
      * result function will return the first found element if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found element which is displayed on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -177,7 +177,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some instance of {@link WebElement} found from the input value. The
      * result function will return the first found element if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found element which is displayed on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -247,7 +247,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found element if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found element which is displayed on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -267,7 +267,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found element if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found element which is displayed on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -289,7 +289,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found element if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found element which is displayed on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -365,7 +365,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some instance of {@link Widget} found from the input value. The
      * result function will return the first found widget if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found widget which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -384,7 +384,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some instance of {@link Widget} found from the input value. The
      * result function will return the first found widget if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found widget which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -406,7 +406,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some instance of {@link Widget} found from the input value. The
      * result function will return the first found widget if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found widget which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -490,7 +490,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found widget if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found widget which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
@@ -511,7 +511,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found widget if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found widget which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
@@ -535,7 +535,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found widget if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found widget which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
@@ -597,7 +597,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some button. The result function will return the first found button if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found button which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -612,7 +612,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some button. The result function will return the first found button if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found button which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -629,7 +629,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some button. The result function will return the first found button if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found button which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -694,7 +694,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found button if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found button which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
@@ -713,7 +713,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found button if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found button which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
@@ -734,7 +734,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found button if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found button which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
@@ -793,7 +793,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some flag. The result function will return the first found flag if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found flag which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -808,7 +808,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some flag. The result function will return the first found flag if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found flag which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -825,7 +825,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some flag. The result function will return the first found flag if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found flag which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -890,7 +890,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found flag if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found flag which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
@@ -909,7 +909,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found flag if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found flag which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
 
@@ -931,7 +931,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found flag if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found flag which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
@@ -992,7 +992,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some check box. The result function will return the first found check box if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found check box which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1007,7 +1007,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some check box. The result function will return the first found check box if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found check box which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1024,7 +1024,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some check box. The result function will return the first found check box if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found check box which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1089,7 +1089,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found checkbox if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found checkbox which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
@@ -1108,7 +1108,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found checkbox if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found checkbox which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
 
@@ -1130,7 +1130,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found checkbox if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found checkbox which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
@@ -1191,7 +1191,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some radio button. The result function will return the first found radio button if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found radio button which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1206,7 +1206,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some radio button. The result function will return the first found radio button if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found radio button which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1223,7 +1223,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some radio button. The result function will return the first found radio button if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found radio button which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1288,7 +1288,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found radio button if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found radio button which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
@@ -1307,7 +1307,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found radio button if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found radio button which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
 
@@ -1329,7 +1329,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found radio button if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found radio button which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
@@ -1388,7 +1388,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some link. The result function will return the first found link if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found link which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1403,7 +1403,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some link. The result function will return the first found link if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found link which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1420,7 +1420,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some link. The result function will return the first found link if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found link which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1485,7 +1485,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found link if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found link which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
@@ -1504,7 +1504,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found link if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found link which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
@@ -1525,7 +1525,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found link if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found link which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
@@ -1584,7 +1584,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some select. The result function will return the first found select if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found select which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1599,7 +1599,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some select. The result function will return the first found select if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found select which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1616,7 +1616,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some select. The result function will return the first found select if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found select which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1681,7 +1681,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found select if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found select which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
@@ -1700,7 +1700,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found select if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found select which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
@@ -1721,7 +1721,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found select if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found select which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
@@ -1780,7 +1780,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some tab. The result function will return the first found tab if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found tab which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1795,7 +1795,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some tab. The result function will return the first found tab if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found tab which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1812,7 +1812,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some tab. The result function will return the first found tab if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found tab which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1877,7 +1877,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found tab if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found tab which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
@@ -1896,7 +1896,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found tab if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found tab which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
@@ -1917,7 +1917,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found tab if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found tab which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
@@ -1976,7 +1976,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some text field. The result function will return the first found text field if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found text field which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1991,7 +1991,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some text field. The result function will return the first found text field if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found text field which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -2008,7 +2008,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some text field. The result function will return the first found text field if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found text field which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -2073,7 +2073,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found table if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
@@ -2092,7 +2092,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found table if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
@@ -2113,7 +2113,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found table if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
@@ -2172,7 +2172,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some table. The result function will return the first found table if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -2187,7 +2187,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some table. The result function will return the first found table if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -2204,7 +2204,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some table. The result function will return the first found table if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -2269,7 +2269,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found table if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
@@ -2288,7 +2288,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found table if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
@@ -2309,7 +2309,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found table if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
@@ -2338,7 +2338,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns the first found table row. The result function will return the first found table row if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table row which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -2372,7 +2372,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found table row if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table row which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
@@ -2399,7 +2399,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns the first found  table header. The result function will return the first found table header if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table header which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -2433,7 +2433,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found table header if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table header which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
@@ -2460,7 +2460,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns the first found table footer. The result function will return the first found table footer if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table footer which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -2494,7 +2494,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found table footer if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table footer which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
@@ -2521,7 +2521,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Returns an instance of {@link SearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns the first found table cell. The result function will return the first found table cell if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table cell which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -2555,7 +2555,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return the first found table cell if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table cell which is visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *

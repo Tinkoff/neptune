@@ -1,6 +1,6 @@
 package com.github.toy.constructor.selenium.functions.value;
 
-import com.github.toy.constructor.core.api.SequentialGetSupplier;
+import com.github.toy.constructor.core.api.SequentialGetStepSupplier;
 import com.github.toy.constructor.selenium.SeleniumSteps;
 import com.github.toy.constructor.selenium.api.widget.HasAttribute;
 import com.github.toy.constructor.selenium.api.widget.Widget;
@@ -16,7 +16,7 @@ import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 
 public final class SequentialGetAttributeValueSupplier extends
-        SequentialGetSupplier<SeleniumSteps, String, SearchContext, SequentialGetAttributeValueSupplier> {
+        SequentialGetStepSupplier<SeleniumSteps, String, SearchContext, SequentialGetAttributeValueSupplier> {
     private final String attr;
 
     private SequentialGetAttributeValueSupplier(String attr) {

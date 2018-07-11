@@ -1,6 +1,6 @@
 package com.github.toy.constructor.selenium.functions.target.locator.window;
 
-import com.github.toy.constructor.core.api.SequentialGetSupplier;
+import com.github.toy.constructor.core.api.SequentialGetStepSupplier;
 import com.github.toy.constructor.selenium.SeleniumSteps;
 
 import java.util.function.Function;
@@ -8,7 +8,7 @@ import java.util.function.Function;
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.github.toy.constructor.selenium.functions.target.locator.window.GetWindowSupplier.window;
 
-public final class GetWindowTitleSupplier extends SequentialGetSupplier<SeleniumSteps, String, Window, GetWindowTitleSupplier> {
+public final class GetWindowTitleSupplier extends SequentialGetStepSupplier<SeleniumSteps, String, Window, GetWindowTitleSupplier> {
 
     private GetWindowTitleSupplier() {
         super();

@@ -15,21 +15,21 @@ public class NegativeTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Class to substitute should be assignable from " +
                     "com.github.toy.constructor.core.api.GetStep " +
-                    "and/or com.github.toy.constructor.core.api.PerformStep.")
-    public void testOfIllegalClass() throws Exception {
+                    "and/or com.github.toy.constructor.core.api.PerformActionStep.")
+    public void testOfIllegalClass() {
         getSubstituted(Object.class, params());
         fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = NoSuchMethodException.class)
-    public void testOfCompletelyMismatchingParameters() throws Exception {
+    public void testOfCompletelyMismatchingParameters() {
         getSubstituted(GetStepStub.class, params()).get(toGet("Something", getStep -> new Object()));
         fail("The exception throwing was expected");
     }
 
     @Test(expectedExceptions = NoSuchMethodException.class,
             dependsOnMethods = "testOfCompletelyMismatchingParameters")
-    public void testOfPartiallyMismatchingParameters() throws Exception {
+    public void testOfPartiallyMismatchingParameters() {
         getSubstituted(GetStepStub.class, params("12345", 1, 1.5F, false))
                 .get(toGet("Something", getStep -> new Object()));
         fail("The exception throwing was expected");
@@ -38,12 +38,12 @@ public class NegativeTest {
     @Test(dependsOnMethods = {"testOfIllegalClass",
             "testOfCompletelyMismatchingParameters",
             "testOfPartiallyMismatchingParameters"})
-    public void positiveTest() throws Exception {
+    public void positiveTest() {
         assertThat(getSubstituted(GetStepStub.class, params("12345", 1, 1, false))
                 .get(toGet("Something", getStep -> new Object())), not(nullValue()));
     }
 
-    static class GetStepStub implements GetStep<GetStepStub>, PerformStep<GetStepStub> {
+    static class GetStepStub implements GetStep<GetStepStub>, PerformActionStep<GetStepStub> {
         private final CharSequence sequence;
         private final Integer integer2;
         private final int integer1;

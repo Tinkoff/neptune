@@ -1,6 +1,6 @@
 package com.github.toy.constructor.selenium.functions.target.locator.active.element;
 
-import com.github.toy.constructor.core.api.GetSupplier;
+import com.github.toy.constructor.core.api.GetStepSupplier;
 import com.github.toy.constructor.selenium.SeleniumSteps;
 import com.github.toy.constructor.selenium.functions.target.locator.TargetLocatorSupplier;
 import org.openqa.selenium.NoSuchElementException;
@@ -12,10 +12,10 @@ import java.time.Duration;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.github.toy.constructor.core.api.ToGetSingleCheckedObject.getSingle;
+import static com.github.toy.constructor.core.api.conditions.ToGetSingleCheckedObject.getSingle;
 import static com.github.toy.constructor.selenium.CurrentContentFunction.currentContent;
 
-public final class GetActiveElementSupplier extends GetSupplier<SeleniumSteps, WebElement, GetActiveElementSupplier>
+public final class GetActiveElementSupplier extends GetStepSupplier<SeleniumSteps, WebElement, GetActiveElementSupplier>
         implements TargetLocatorSupplier<WebElement> {
 
     private static final Function<WebDriver, WebElement> GET_ACTIVE_ELEMENT =

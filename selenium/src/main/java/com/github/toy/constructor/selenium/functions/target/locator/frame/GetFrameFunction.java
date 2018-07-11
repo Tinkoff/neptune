@@ -9,7 +9,7 @@ import java.time.Duration;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.github.toy.constructor.core.api.ToGetSingleCheckedObject.getSingle;
+import static com.github.toy.constructor.core.api.conditions.ToGetSingleCheckedObject.getSingle;
 import static com.github.toy.constructor.selenium.properties.WaitingProperties.WAITING_FRAME_SWITCHING_DURATION;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;

@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static com.github.toy.constructor.core.api.StoryWriter.condition;
-import static com.github.toy.constructor.core.api.ToGetSubIterable.getIterable;
+import static com.github.toy.constructor.core.api.conditions.ToGetSubIterable.getIterable;
 import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;

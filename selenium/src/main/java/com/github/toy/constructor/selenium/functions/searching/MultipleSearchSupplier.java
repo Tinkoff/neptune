@@ -1,6 +1,6 @@
 package com.github.toy.constructor.selenium.functions.searching;
 
-import com.github.toy.constructor.core.api.SequentialGetSupplier;
+import com.github.toy.constructor.core.api.SequentialGetStepSupplier;
 import com.github.toy.constructor.selenium.api.widget.Labeled;
 import com.github.toy.constructor.selenium.api.widget.Widget;
 import com.github.toy.constructor.selenium.api.widget.drafts.*;
@@ -16,8 +16,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import static com.github.toy.constructor.core.api.AsIsPredicate.AS_IS;
-import static com.github.toy.constructor.core.api.ToGetSubIterable.getIterable;
+import static com.github.toy.constructor.core.api.AsIsCondition.AS_IS;
+import static com.github.toy.constructor.core.api.conditions.ToGetSubIterable.getIterable;
 import static com.github.toy.constructor.selenium.api.widget.Widget.getWidgetName;
 import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.defaultPredicate;
 import static com.github.toy.constructor.selenium.functions.searching.CommonConditions.shouldBeLabeledBy;
@@ -30,7 +30,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 @SuppressWarnings({"unchecked", "unused"})
 public final class MultipleSearchSupplier<R extends SearchContext> extends
-        SequentialGetSupplier<SearchContext, List<R>, SearchContext, MultipleSearchSupplier<R>> {
+        SequentialGetStepSupplier<SearchContext, List<R>, SearchContext, MultipleSearchSupplier<R>> {
 
 
     private MultipleSearchSupplier(Function<SearchContext, List<R>> function) {
@@ -128,7 +128,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of {@link WebElement} found from the input value. The
      * result function will return a list of any found elements if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found elements which are displayed on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -145,7 +145,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of {@link WebElement} found from the input value. The
      * result function will return a list of any found elements if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found elements which are displayed on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -163,7 +163,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of {@link WebElement} found from the input value. The
      * result function will return a list of any found elements if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found elements which are displayed on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -234,7 +234,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found elements if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found elements which are displayed on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -254,7 +254,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found elements if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found elements which are displayed on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -275,7 +275,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found elements if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found elements which are displayed on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -350,7 +350,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of {@link Widget} found from the input value. The
      * result function will return a list of any found widgets if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found widgets which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -368,7 +368,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of {@link Widget} found from the input value. The
      * result function will return a list of any found widgets if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found widgets which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -389,7 +389,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of {@link Widget} found from the input value. The
      * result function will return a list of any found widgets if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found widgets which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -474,7 +474,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found widgets if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found widgets which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -495,7 +495,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found widgets if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found widgets which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -519,7 +519,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found widgets if the property
-     * {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found widgets which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -581,7 +581,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found buttons. The result function will return a list of any found buttons
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found buttons which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -596,7 +596,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found buttons. The result function will return a list of any found buttons
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found buttons which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -613,7 +613,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found buttons. The result function will return a list of any found buttons
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found buttons which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -678,7 +678,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found buttons
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found buttons which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -697,7 +697,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found buttons
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found buttons which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -718,7 +718,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found buttons
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found buttons which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -777,7 +777,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found flags. The result function will return a list of any found flags
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found flags which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -792,7 +792,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found flags. The result function will return a list of any found flags
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found flags which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -809,7 +809,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found flags. The result function will return a list of any found flags
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found flags which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -874,7 +874,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found flags
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found flags which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -893,7 +893,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found flags
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found flags which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -914,7 +914,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found flags
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found flags which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -975,7 +975,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found check boxes. The result function will return a list of any found check boxes
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found check boxes which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -990,7 +990,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found check boxes. The result function will return a list of any found check boxes
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found check boxes which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1007,7 +1007,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found check boxes. The result function will return a list of any found check box
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found check boxes which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1072,7 +1072,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found check boxes
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found check boxes which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1091,7 +1091,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found check boxes
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found check boxes which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1112,7 +1112,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found check boxes
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found check boxes which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1175,7 +1175,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found radio buttons. The result function will return a list of any found radio buttons
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found radio buttons which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1190,7 +1190,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found radio buttons. The result function will return a list of any found radio buttons
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found radio buttons which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1208,7 +1208,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found radio buttons. The result function will return a list of any found radio buttons
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found radio buttons which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1276,7 +1276,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found radio buttons
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found radio buttons which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1295,7 +1295,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found radio buttons
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found radio buttons which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1316,7 +1316,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found radio buttons
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found radio buttons which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1381,7 +1381,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found links. The result function will return a list of any found links
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found links which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1396,7 +1396,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found links. The result function will return a list of any found links
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found links which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1414,7 +1414,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found links. The result function will return a list of any found links
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found links which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1484,7 +1484,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found links
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found links which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1503,7 +1503,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found links
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found links which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1524,7 +1524,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found links
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found links which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1589,7 +1589,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found selects. The result function will return a list of any found selects
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found selects which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1604,7 +1604,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found selects. The result function will return a list of any found selects
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found selects which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1622,7 +1622,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found selects. The result function will return a list of any found selects
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found selects which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1692,7 +1692,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found selects
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found selects which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1711,7 +1711,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found selects
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found selects which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1732,7 +1732,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found selects
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found selects which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1796,7 +1796,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found tabs. The result function will return a list of any found tabs
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found tabs which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1811,7 +1811,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found tabs. The result function will return a list of any found tabs
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found tabs which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1829,7 +1829,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found tabs. The result function will return a list of any found tabs
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found tabs which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1897,7 +1897,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found tabs
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found tabs which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1916,7 +1916,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found tabs
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found tabs which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -1937,7 +1937,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found tabs
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found tabs which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -2001,7 +2001,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found text fields. The result function will return a list of any found text fields
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found text fields which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -2016,7 +2016,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found text fields. The result function will return a list of any found text fields
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found text fields which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -2034,7 +2034,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found text fields. The result function will return a list of any found text fields
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found text fields which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -2101,7 +2101,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found text fields
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found text fields which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -2120,7 +2120,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found text fields
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found text fields which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -2141,7 +2141,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found text fields
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found text fields which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -2205,7 +2205,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found tables. The result function will return a list of any found tables
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found tables which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -2220,7 +2220,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found tables. The result function will return a list of any found tables
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found tables which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -2238,7 +2238,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found tables. The result function will return a list of any found tables
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found tables which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -2305,7 +2305,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found tables
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found tables which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -2324,7 +2324,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found tables
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found tables which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -2345,7 +2345,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found tables
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found tables which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -2375,7 +2375,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found table rows. The result function will return a list of any found table rows
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found table rows which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -2408,7 +2408,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found table rows
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found table rows which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -2436,7 +2436,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found table headers. The result function will return a list of any found table headers
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found table headers which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -2469,7 +2469,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found table headers
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found table headers which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -2497,7 +2497,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found table footers. The result function will return a list of any found table footers
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found table footers which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -2530,7 +2530,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found table footers
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found table footers which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -2558,7 +2558,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Returns an instance of {@link MultipleSearchSupplier} which wraps a function.
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found table cells. The result function will return a list of any found table cells
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found table cells which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
@@ -2591,7 +2591,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
      * The result function will return a list of any found table cells
-     * if the property {@code find.only.visible.elements.when.no.condition} is not defined or has value {@code "false"}.
+     * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found table cells which are visible on a page.
      * @see com.github.toy.constructor.selenium.properties.FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *

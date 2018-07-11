@@ -4,7 +4,7 @@ import org.hamcrest.Matchers;
 import org.testng.annotations.Test;
 
 import static com.github.toy.constructor.core.api.StoryWriter.condition;
-import static com.github.toy.constructor.core.api.ToGetSubArray.getArray;
+import static com.github.toy.constructor.core.api.conditions.ToGetSubArray.getArray;
 import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;

@@ -25,7 +25,7 @@ public class EventFiringTest {
 
     private CalculatorSteps calculator;
 
-    private final GetSupplier<CalculatorSteps, Number, ?> calculation =
+    private final GetStepSupplier<CalculatorSteps, Number, ?> calculation =
             subtractFromResultOf(100,
                             divideByResultOf(0.5,
                                     multiplyByResultOf(11,

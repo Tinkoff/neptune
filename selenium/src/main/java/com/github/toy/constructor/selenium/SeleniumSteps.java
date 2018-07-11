@@ -1,7 +1,7 @@
 package com.github.toy.constructor.selenium;
 
 import com.github.toy.constructor.core.api.GetStep;
-import com.github.toy.constructor.core.api.PerformStep;
+import com.github.toy.constructor.core.api.PerformActionStep;
 import com.github.toy.constructor.core.api.Refreshable;
 import com.github.toy.constructor.core.api.Stoppable;
 import com.github.toy.constructor.core.api.CreateWith;
@@ -23,7 +23,7 @@ import java.util.List;
 import static com.github.toy.constructor.selenium.CurrentContentFunction.currentContent;
 
 @CreateWith(provider = SeleniumParameterProvider.class)
-public class SeleniumSteps implements PerformStep<SeleniumSteps>, GetStep<SeleniumSteps>, WrapsDriver, Refreshable,
+public class SeleniumSteps implements PerformActionStep<SeleniumSteps>, GetStep<SeleniumSteps>, WrapsDriver, Refreshable,
         Stoppable {
 
     private final WrappedWebDriver wrappedWebDriver;

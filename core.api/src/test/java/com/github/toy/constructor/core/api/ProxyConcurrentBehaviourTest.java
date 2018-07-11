@@ -114,7 +114,7 @@ public class ProxyConcurrentBehaviourTest {
     }
 
     @Test(threadPoolSize = 4, dataProvider = "getData")
-    public void threadSafetyTest(GetSupplier<CalculatorSteps, Number, ?> calculation, Number number) {
+    public void threadSafetyTest(GetStepSupplier<CalculatorSteps, Number, ?> calculation, Number number) {
         assertThat("Result of calculation", calculator.get(calculation), is(number.doubleValue()));
     }
 }

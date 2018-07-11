@@ -24,10 +24,10 @@ public final class Substitution {
 
     /**
      * This is the service method which creates an instance of the given implementor of
-     * {@link com.github.toy.constructor.core.api.GetStep} and/or {@link com.github.toy.constructor.core.api.PerformStep}.
+     * {@link com.github.toy.constructor.core.api.GetStep} and/or {@link PerformActionStep}.
      *
      * @param clazz to substitute. It should be the implementor of {@link com.github.toy.constructor.core.api.GetStep}
-     *                    and/or {@link com.github.toy.constructor.core.api.PerformStep}.
+     *                    and/or {@link PerformActionStep}.
      *
      * @param constructorParameters is a POJO with wrapped parameters of required constructor.
      * @param manipulationWithClassToInstantiate is a function which transforms class to be instantiated, e.g bytecode
@@ -35,7 +35,7 @@ public final class Substitution {
      * @param manipulationWithObjectToReturn is a function which transforms created object, e.g creating proxy,
      *                                       changing some attributes etc.
      * @param <T> type of the implementor of {@link com.github.toy.constructor.core.api.GetStep} and/or
-     * {@link com.github.toy.constructor.core.api.PerformStep}.
+     * {@link PerformActionStep}.
      * @return an instance.
      */
     public static <T> T getSubstituted(Class<T> clazz,
@@ -43,10 +43,10 @@ public final class Substitution {
                                        Function<Class<? extends T>, Class<? extends T>> manipulationWithClassToInstantiate,
                                        Function<T, T> manipulationWithObjectToReturn) {
 
-        checkArgument(PerformStep.class.isAssignableFrom(clazz) ||
+        checkArgument(PerformActionStep.class.isAssignableFrom(clazz) ||
                 GetStep.class.isAssignableFrom(clazz), "Class to substitute should be " +
                 "assignable from com.github.toy.constructor.core.api.GetStep and/or " +
-                "com.github.toy.constructor.core.api.PerformStep.");
+                "com.github.toy.constructor.core.api.PerformActionStep.");
 
         Class<? extends T> toInstantiate =
                 manipulationWithClassToInstantiate.apply(clazz);
@@ -68,17 +68,17 @@ public final class Substitution {
 
     /**
      * This is the service method which creates an instance of the given implementor of
-     * {@link com.github.toy.constructor.core.api.GetStep} and/or {@link com.github.toy.constructor.core.api.PerformStep}.
+     * {@link com.github.toy.constructor.core.api.GetStep} and/or {@link PerformActionStep}.
      *
      * @param clazz to substitute. It should be the implementor of {@link com.github.toy.constructor.core.api.GetStep}
-     *              and/or {@link com.github.toy.constructor.core.api.PerformStep}. WARNING!!! It is important!!! Class
+     *              and/or {@link PerformActionStep}. WARNING!!! It is important!!! Class
      *              to get substituted instance should be annotated by {@link CreateWith}.
      * @param manipulationWithClassToInstantiate is a function which transforms class to be instantiated, e.g bytecode
      *                                            operations by CGLIB or Byte Buddy etc.
      * @param manipulationWithObjectToReturn is a function which transforms created object, e.g creating proxy,
      *                                        changing some attributes etc.
      * @param <T> type of the implementor of {@link com.github.toy.constructor.core.api.GetStep} and/or
-     * {@link com.github.toy.constructor.core.api.PerformStep}.
+     * {@link PerformActionStep}.
      * @return an instance.
      */
     public static <T> T getSubstituted(Class<T> clazz,
@@ -112,14 +112,14 @@ public final class Substitution {
 
     /**
      * This is the service method which creates an instance of the given implementor of
-     * {@link com.github.toy.constructor.core.api.GetStep} and/or {@link com.github.toy.constructor.core.api.PerformStep}.
+     * {@link com.github.toy.constructor.core.api.GetStep} and/or {@link PerformActionStep}.
      *
      * @param clazz to substitute. It should be the implementor of {@link com.github.toy.constructor.core.api.GetStep}
-     *                    and/or {@link com.github.toy.constructor.core.api.PerformStep}.
+     *                    and/or {@link PerformActionStep}.
      *
      * @param constructorParameters is a POJO with wrapped parameters of required constructor.
      * @param <T> type of the implementor of {@link com.github.toy.constructor.core.api.GetStep} and/or
-     * {@link com.github.toy.constructor.core.api.PerformStep}.
+     * {@link PerformActionStep}.
      * @return an instance.
      */
     public static <T> T getSubstituted(Class<T> clazz,
@@ -129,13 +129,13 @@ public final class Substitution {
 
     /**
      * This is the service method which creates an instance of the given implementor of
-     * {@link com.github.toy.constructor.core.api.GetStep} and/or {@link com.github.toy.constructor.core.api.PerformStep}.
+     * {@link com.github.toy.constructor.core.api.GetStep} and/or {@link PerformActionStep}.
      *
      * @param clazz to substitute. It should be the implementor of {@link com.github.toy.constructor.core.api.GetStep}
-     *                    and/or {@link com.github.toy.constructor.core.api.PerformStep}. WARNING!!! It is important!!! Class
+     *                    and/or {@link PerformActionStep}. WARNING!!! It is important!!! Class
      *                    to get substituted instance should be annotated by {@link CreateWith}.
      * @param <T> type of the implementor of {@link com.github.toy.constructor.core.api.GetStep} and/or
-     * {@link com.github.toy.constructor.core.api.PerformStep}.
+     * {@link PerformActionStep}.
      * @return an instance.
      */
     public static <T> T getSubstituted(Class<T> clazz) {

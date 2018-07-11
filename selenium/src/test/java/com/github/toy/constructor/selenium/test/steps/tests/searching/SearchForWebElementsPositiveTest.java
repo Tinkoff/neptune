@@ -35,7 +35,7 @@ import static org.openqa.selenium.By.xpath;
 public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
 
     private static final String FOUND_BY_PATTERN = "%s web elements found %s";
-    private static final String FOUND_ON_CONDITION = FOUND_BY_PATTERN + " on condition '%s'";
+    private static final String FOUND_ON_CONDITION = FOUND_BY_PATTERN + " on conditions '%s'";
 
     private static String expectedDescriptionOfTheFoundElements(int count, By by, Predicate<? extends SearchContext> condition) {
         return format(FOUND_ON_CONDITION, count, by, condition);
