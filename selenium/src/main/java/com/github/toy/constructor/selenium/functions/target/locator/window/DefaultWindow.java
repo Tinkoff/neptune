@@ -1,9 +1,6 @@
 package com.github.toy.constructor.selenium.functions.target.locator.window;
 
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.NoSuchWindowException;
-import org.openqa.selenium.Point;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 
 import java.net.URL;
 
@@ -11,7 +8,7 @@ import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
-class DefaultWindow implements Window {
+class DefaultWindow implements Window, TakesScreenshot {
 
     private final String handle;
     private final WebDriver driver;
@@ -136,5 +133,10 @@ class DefaultWindow implements Window {
     public WebDriver getWrappedDriver() {
         switchToMe();
         return driver;
+    }
+
+    @Override
+    public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
+        return ((TakesScreenshot) driver).getScreenshotAs(target);
     }
 }

@@ -1,13 +1,12 @@
 package com.github.toy.constructor.selenium.functions.target.locator.frame;
 
 import com.github.toy.constructor.selenium.functions.target.locator.SwitchesToItself;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.internal.WrapsElement;
 
 import static java.lang.String.format;
 
-public class Frame implements SwitchesToItself  {
+public class Frame implements SwitchesToItself, TakesScreenshot {
     private final WebDriver webDriver;
     private final Object frame;
 
@@ -48,5 +47,11 @@ public class Frame implements SwitchesToItself  {
 
     public String toString() {
         return format("frame %s", frame);
+    }
+
+    @Override
+    public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
+        switchToMe();
+        return ((TakesScreenshot) webDriver).getScreenshotAs(target);
     }
 }

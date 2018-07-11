@@ -1,29 +1,41 @@
 package com.github.toy.constructor.allure;
 
 import com.github.toy.constructor.core.api.event.firing.captors.CapturedImageInjector;
+import io.qameta.allure.AllureResultsWriteException;
 
+import javax.imageio.ImageIO;
 import java.awt.image.*;
-import java.io.ByteArrayInputStream;
+import java.io.*;
 
 import static io.qameta.allure.Allure.addAttachment;
+import static java.io.File.createTempFile;
+import static java.util.Optional.ofNullable;
+import static java.util.UUID.randomUUID;
 
 public class AllureImageInjector implements CapturedImageInjector {
 
-    private static byte[] getBytes(BufferedImage image) {
-        DataBuffer dataBuffer = image.getRaster().getDataBuffer();
-        Class<?> dataBufferClass = dataBuffer.getClass();
-        if (DataBufferByte.class.isAssignableFrom(dataBufferClass)) {
-            return DataBufferByte.class.cast(dataBuffer).getData();
+    private InputStream inputStream(BufferedImage image) {
+        File picForLog = null;
+        try {
+            picForLog = createTempFile("picture", randomUUID().toString() + ".png");
+            ImageIO.write(image, "png", picForLog);
+            return new FileInputStream(picForLog);
         }
-
-        BufferedImage newImage = new BufferedImage(image.getWidth(),
-                image.getHeight(), BufferedImage.TYPE_BYTE_BINARY);
-        return getBytes(newImage);
+        catch (IOException e) {
+            throw new AllureResultsWriteException(e.getMessage(), e);
+        }
+        finally {
+            ofNullable(picForLog).ifPresent(file -> {
+                if (file.exists()) {
+                    file.deleteOnExit();
+                }
+            });
+        }
     }
 
     @Override
     public void inject(BufferedImage toBeInjected, String message) {
-        byte[] bytes = getBytes(toBeInjected);
-        addAttachment(message, "image/*", new ByteArrayInputStream(bytes), "jpeg");
+        InputStream inputStream = inputStream(toBeInjected);
+        addAttachment(message, "image/*", inputStream, "png");
     }
 }

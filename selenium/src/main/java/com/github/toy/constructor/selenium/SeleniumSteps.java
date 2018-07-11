@@ -14,8 +14,7 @@ import com.github.toy.constructor.selenium.functions.click.ClickActionSupplier;
 import com.github.toy.constructor.selenium.functions.edit.EditActionSupplier;
 import com.github.toy.constructor.selenium.functions.java.script.GetJavaScriptResultSupplier;
 import com.github.toy.constructor.selenium.functions.value.SequentialGetValueSupplier;
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.internal.WrapsDriver;
 
 import java.util.List;
@@ -24,7 +23,7 @@ import static com.github.toy.constructor.selenium.CurrentContentFunction.current
 
 @CreateWith(provider = SeleniumParameterProvider.class)
 public class SeleniumSteps implements PerformActionStep<SeleniumSteps>, GetStep<SeleniumSteps>, WrapsDriver, Refreshable,
-        Stoppable {
+        Stoppable, TakesScreenshot {
 
     private final WrappedWebDriver wrappedWebDriver;
 
@@ -81,5 +80,10 @@ public class SeleniumSteps implements PerformActionStep<SeleniumSteps>, GetStep<
     @Override
     public void shutDown() {
         wrappedWebDriver.shutDown();
+    }
+
+    @Override
+    public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
+        return ((TakesScreenshot) getWrappedDriver()).getScreenshotAs(target);
     }
 }
