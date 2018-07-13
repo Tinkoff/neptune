@@ -1,9 +1,9 @@
 package com.github.toy.constructor.selenium.hamcrest.matchers.window;
 
 import com.github.toy.constructor.selenium.functions.target.locator.window.Window;
+import com.github.toy.constructor.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeDiagnosingMatcher;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;

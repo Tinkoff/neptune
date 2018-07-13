@@ -1,8 +1,8 @@
 package com.github.toy.constructor.selenium.hamcrest.matchers.alert;
 
+import com.github.toy.constructor.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.openqa.selenium.Alert;
 
 import static com.google.common.base.Preconditions.checkArgument;

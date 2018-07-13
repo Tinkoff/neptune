@@ -1,11 +1,12 @@
 package com.github.toy.constructor.core.api;
 
+import com.github.toy.constructor.core.api.cleaning.Refreshable;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.github.toy.constructor.core.api.Refreshable.refresh;
+import static com.github.toy.constructor.core.api.cleaning.RefreshAndStopUtil.refresh;
 import static com.github.toy.constructor.core.api.StoryWriter.action;
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.github.toy.constructor.core.api.proxy.Substitution.getSubstituted;

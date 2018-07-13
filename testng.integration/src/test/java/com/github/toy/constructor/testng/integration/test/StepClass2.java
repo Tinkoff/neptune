@@ -1,6 +1,8 @@
 package com.github.toy.constructor.testng.integration.test;
 
 import com.github.toy.constructor.core.api.*;
+import com.github.toy.constructor.core.api.cleaning.Refreshable;
+import com.github.toy.constructor.core.api.cleaning.Stoppable;
 
 @CreateWith(provider = ABParameterProvider.class)
 public class StepClass2 implements GetStep<StepClass2>, PerformActionStep<StepClass2>, Refreshable, Stoppable {

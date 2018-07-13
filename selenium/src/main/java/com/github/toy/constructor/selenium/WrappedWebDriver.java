@@ -1,7 +1,7 @@
 package com.github.toy.constructor.selenium;
 
-import com.github.toy.constructor.core.api.Refreshable;
-import com.github.toy.constructor.core.api.Stoppable;
+import com.github.toy.constructor.core.api.cleaning.Refreshable;
+import com.github.toy.constructor.core.api.cleaning.Stoppable;
 import com.github.toy.constructor.selenium.properties.SupportedWebDrivers;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import net.sf.cglib.proxy.Enhancer;
@@ -16,9 +16,7 @@ import java.lang.reflect.Constructor;
 import java.net.URL;
 
 import static com.github.toy.constructor.core.api.utils.ConstructorUtil.findSuitableConstructor;
-import static com.github.toy.constructor.selenium.properties.FlagProperties.CLEAR_WEB_DRIVER_COOKIES;
-import static com.github.toy.constructor.selenium.properties.FlagProperties.GET_BACK_TO_BASE_URL;
-import static com.github.toy.constructor.selenium.properties.FlagProperties.KEEP_WEB_DRIVER_SESSION_OPENED;
+import static com.github.toy.constructor.selenium.properties.FlagProperties.*;
 import static com.github.toy.constructor.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
@@ -102,6 +100,9 @@ public class WrappedWebDriver implements WrapsDriver, Refreshable, Stoppable {
                 WebDriver driver = (WebDriver) enhancer.create(c.getParameterTypes(), parameters);
                 ofNullable(BASE_WEB_DRIVER_URL_PROPERTY.get())
                         .ifPresent(url -> driver.get(url.toString()));
+                if (FORCE_WINDOW_MAXIMIZING_ON_START.get()) {
+                    driver.manage().window().maximize();
+                }
                 return driver;
             } catch (Exception e) {
                 throw new RuntimeException(e);

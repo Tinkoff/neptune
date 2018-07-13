@@ -9,6 +9,6 @@ import static com.github.toy.constructor.selenium.properties.SupportedWebDriverP
 public class SeleniumParameterProvider implements ParameterProvider {
     @Override
     public ConstructorParameters provide() {
-        return params(new WrappedWebDriver(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.get()));
+        return params(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.get());
     }
 }

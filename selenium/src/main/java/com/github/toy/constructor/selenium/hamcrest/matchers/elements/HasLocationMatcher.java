@@ -1,10 +1,10 @@
 package com.github.toy.constructor.selenium.hamcrest.matchers.elements;
 
 import com.github.toy.constructor.selenium.api.widget.HasLocation;
+import com.github.toy.constructor.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
-import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;

@@ -1,6 +1,6 @@
 package com.github.toy.constructor.testng.integration;
 
-import com.github.toy.constructor.core.api.Stoppable;
+import com.github.toy.constructor.core.api.cleaning.RefreshAndStopUtil;
 import com.github.toy.constructor.testng.integration.properties.RefreshEachTimeBefore;
 import org.testng.*;
 import org.testng.annotations.Ignore;
@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.github.toy.constructor.core.api.Refreshable.refresh;
+import static com.github.toy.constructor.core.api.cleaning.RefreshAndStopUtil.refresh;
 import static com.github.toy.constructor.testng.integration.properties.TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY;
 import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Arrays.stream;
@@ -83,6 +83,6 @@ public class DefaultTestRunningListener implements IInvokedMethodListener, ISuit
 
     @Override
     public void onFinish(ISuite suite) {
-        knownTests.forEach(Stoppable::shutDown);
+        knownTests.forEach(RefreshAndStopUtil::shutDown);
     }
 }

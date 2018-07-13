@@ -1,8 +1,8 @@
 package com.github.toy.constructor.selenium.hamcrest.matchers.frame;
 
 import com.github.toy.constructor.selenium.functions.target.locator.frame.Frame;
+import com.github.toy.constructor.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
 import org.hamcrest.Description;
-import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.internal.WrapsDriver;

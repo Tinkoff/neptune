@@ -1,8 +1,8 @@
 package com.github.toy.constructor.selenium.hamcrest.matchers.window;
 
 import com.github.toy.constructor.selenium.functions.target.locator.window.Window;
+import com.github.toy.constructor.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
 import org.hamcrest.Description;
-import org.hamcrest.TypeSafeDiagnosingMatcher;
 
 public final class IsWindowPresentMatcher extends TypeSafeDiagnosingMatcher<Window> {
 

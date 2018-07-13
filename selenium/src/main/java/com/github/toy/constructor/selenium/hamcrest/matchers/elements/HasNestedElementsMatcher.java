@@ -1,19 +1,20 @@
 package com.github.toy.constructor.selenium.hamcrest.matchers.elements;
 
 import com.github.toy.constructor.selenium.functions.searching.MultipleSearchSupplier;
+import com.github.toy.constructor.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
 import org.hamcrest.Description;
-import org.hamcrest.TypeSafeDiagnosingMatcher;
+import org.hamcrest.Matcher;
 import org.openqa.selenium.SearchContext;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
+import static org.hamcrest.Matchers.*;
 
 public final class HasNestedElementsMatcher<T extends SearchContext> extends TypeSafeDiagnosingMatcher<T> {
 
     private final MultipleSearchSupplier<?> search;
-    private int expectedCount = -1;
-    private boolean toMatchCountStrictly = false;
+    private Matcher<Integer> expectedCount = greaterThan(0);
 
     private HasNestedElementsMatcher(MultipleSearchSupplier<?> search) {
         checkArgument(search != null, "The way to find nested elements should be defined");
@@ -31,66 +32,46 @@ public final class HasNestedElementsMatcher<T extends SearchContext> extends Typ
     }
 
     /**
-     * Sets count of nested items that is expected. If the method {@link #checkCountStrictly(boolean)} is not invoked
-     * then in means that actual count of nested elements should be greater or equal to expected count. Actual count of
-     * nested elements should be equal to expected count otherwise.
+     * Sets expected count of nested elements.
      * @param count is expected count of nested elements
      * @return self-reference.
      */
     public HasNestedElementsMatcher<T> withCount(int count) {
-        checkArgument(count > 0, "Expected count should be greater than zero");
-        this.expectedCount = count;
+        checkArgument(count >= 0, "Expected count should be greater than zero or equal to zero.");
+        this.expectedCount = is(count);
         return this;
     }
 
     /**
-     * Sets how strictly count of found elements should be checked.
-     * @param strictly how strictly count of found elements should be checked. If the method {@link #withCount(int)}
-     *                 is not invoked then this value is ignored.
+     * Sets criteria to check the count of found elements.
+     * @param matcher is criteria to check the count of found elements
      * @return self-reference.
      */
-    public HasNestedElementsMatcher<T> checkCountStrictly(boolean strictly) {
-        this.toMatchCountStrictly = strictly;
+    public HasNestedElementsMatcher<T> withCount(Matcher<Integer> matcher) {
+        checkArgument(matcher != null,  "Criteria to check the count of found elements should be defined");
+        this.expectedCount = matcher;
         return this;
     }
 
     @Override
     protected boolean matchesSafely(T item, Description mismatchDescription) {
-
         try {
             int foundSize = search.get().apply(item).size();
 
-            if (foundSize == 0) {
-                mismatchDescription.appendText("no such elements were found");
+            if (!expectedCount.matches(foundSize)) {
+                mismatchDescription.appendText(format("actual count %s of found items doesn't meet the criteria %s",
+                        foundSize, expectedCount));
                 return false;
-            }
-
-            if (expectedCount > 0) {
-                if (!toMatchCountStrictly) {
-                    if (!(foundSize >= expectedCount)) {
-                        mismatchDescription.appendText(format("Were expected at least %s items. %s items were found actually",
-                                expectedCount, foundSize));
-                        return false;
-                    }
-                    return true;
-                }
-                else {
-                    if (foundSize != expectedCount) {
-                        mismatchDescription.appendText(format("Were expected %s items strictly. %s items were found actually",
-                                expectedCount, foundSize));
-                        return false;
-                    }
-                    return true;
-                }
             }
             return true;
         }
         catch (Throwable e) {
-            mismatchDescription.appendText("The attempt to find nested elements was failed. Something went wrong.\n")
+            mismatchDescription.appendText("The attempt to find nested elements has failed. Something went wrong.\n")
                     .appendText(format("Caught throwable: %s\n", e.getClass().getName()))
                     .appendText("Stack trace:\n");
 
-            stream(e.getStackTrace()).forEach(stackTraceElement -> mismatchDescription.appendText(format("%s\n",
+            stream(e.getStackTrace())
+                    .forEach(stackTraceElement -> mismatchDescription.appendText(format("%s\n",
                     stackTraceElement.toString())));
             return false;
         }
@@ -103,12 +84,7 @@ public final class HasNestedElementsMatcher<T extends SearchContext> extends Typ
 
     @Override
     public String toString() {
-        if (expectedCount > 0) {
-            if (!toMatchCountStrictly) {
-                return format("has at least %s nested elements %s", expectedCount,  search.toString());
-            }
-            return format("has %s nested elements %s", expectedCount,  search.toString());
-        }
-        return format("has nested elements %s", search.toString());
+        return format("has nested elements %s. Count should meet the criteria %s", search.toString(),
+                expectedCount);
     }
 }

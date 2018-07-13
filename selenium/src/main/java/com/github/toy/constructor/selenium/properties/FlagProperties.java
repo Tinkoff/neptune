@@ -37,7 +37,13 @@ public enum FlagProperties implements PropertySupplier<Boolean> {
      * @see URLProperties#BASE_WEB_DRIVER_URL_PROPERTY
      * @see WebDriver#get(String)
      */
-    GET_BACK_TO_BASE_URL("get.back.to.base.web.driver.url");
+    GET_BACK_TO_BASE_URL("get.back.to.base.web.driver.url"),
+
+    /**
+     * This enum item reads the property {@code 'force.window.maximizing.on.start'}. It means that browser window is
+     * maximized on each starting when value is {@code true}.
+     */
+    FORCE_WINDOW_MAXIMIZING_ON_START("force.window.maximizing.on.start");
 
     private final String propertyName;
 

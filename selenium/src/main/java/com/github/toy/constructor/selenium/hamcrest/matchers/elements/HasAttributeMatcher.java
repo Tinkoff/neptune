@@ -1,9 +1,9 @@
 package com.github.toy.constructor.selenium.hamcrest.matchers.elements;
 
 import com.github.toy.constructor.selenium.api.widget.HasAttribute;
+import com.github.toy.constructor.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsElement;

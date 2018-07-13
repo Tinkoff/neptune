@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.github.toy.constructor.core.api.cleaning.RefreshAndStopUtil.refresh;
 import static com.github.toy.constructor.core.api.proxy.Substitution.getSubstituted;
 import static com.github.toy.constructor.core.api.properties.GeneralPropertyInitializer.refreshProperties;
 import static java.lang.reflect.Modifier.isFinal;
@@ -87,6 +88,7 @@ public class DefaultObjectFactory extends ObjectFactoryImpl {
             });
             clazz = clazz.getSuperclass();
         }
+        refresh(result);
         return result;
     }
 }

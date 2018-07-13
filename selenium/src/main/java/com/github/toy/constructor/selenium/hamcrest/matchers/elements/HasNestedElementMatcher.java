@@ -1,8 +1,8 @@
 package com.github.toy.constructor.selenium.hamcrest.matchers.elements;
 
 import com.github.toy.constructor.selenium.functions.searching.SearchSupplier;
+import com.github.toy.constructor.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
 import org.hamcrest.Description;
-import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 

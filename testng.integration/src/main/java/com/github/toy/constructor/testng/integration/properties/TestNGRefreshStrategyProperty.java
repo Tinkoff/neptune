@@ -1,5 +1,6 @@
 package com.github.toy.constructor.testng.integration.properties;
 
+import com.github.toy.constructor.core.api.cleaning.Refreshable;
 import com.github.toy.constructor.core.api.properties.PropertySupplier;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public final class TestNGRefreshStrategyProperty implements PropertySupplier<Lis
      * returned.
      *
      * @return list of defined strategies how to invoke the
-     * {@link com.github.toy.constructor.core.api.Refreshable#refresh()}. Each strategy is described by
+     * {@link Refreshable#refresh()}. Each strategy is described by
      * elements of the {@link RefreshEachTimeBefore}.
      */
     @Override

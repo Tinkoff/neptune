@@ -3,6 +3,7 @@ package com.github.toy.constructor.core.api.event.firing;
 import java.util.List;
 
 import static java.util.List.of;
+import static java.util.Optional.ofNullable;
 
 /**
  * This class is designed to catch different objects for the logging/report.
@@ -24,7 +25,7 @@ public abstract class Captor<T, S> {
 
     public void capture(T caught, String message) {
         S s = getData(caught);
-        injectors.forEach(injector -> injector.inject(s, message));
+        ofNullable(s).ifPresent(s1 -> injectors.forEach(injector -> injector.inject(s1, message)));
     }
 
     /**

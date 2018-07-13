@@ -18,11 +18,11 @@ dependencies {
         exclude group: 'com.google.code.gson'
     }
     testCompile group: 'org.mockito', name: 'mockito-core', version: '2.18.3'
+}
 
-    test {
-        useTestNG()
-        options.suites("property.suite.xml")
-        options.suites("step.suite.xml")
-        options.suites("webdriver.suite.xml")
-    }
+test {
+    useTestNG()
+    options.suites("property.suite.xml")
+    options.suites("step.suite.xml")
+    options.suites("webdriver.suite.xml")
 }

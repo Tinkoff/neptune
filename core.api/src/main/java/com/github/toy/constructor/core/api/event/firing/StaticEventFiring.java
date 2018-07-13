@@ -14,20 +14,27 @@ public class StaticEventFiring {
     private static final ThreadLocal<List<Captor>> LIST_THREAD_LOCAL_CAPTORS = new ThreadLocal<>();
     private static final ThreadLocal<List<EventLogger>> LIST_THREAD_LOCAL_EVENT_LOGGERS = new ThreadLocal<>();
 
-    private static <T> Stream<Captor> filter(T caught) {
-        List<Captor> captorList = ofNullable(LIST_THREAD_LOCAL_CAPTORS.get()).orElseGet(() -> {
+    private static List<Captor> getCaptors() {
+        return  ofNullable(LIST_THREAD_LOCAL_CAPTORS.get()).orElseGet(() -> {
             List<Captor> captors = loadSPI(Captor.class);
             LIST_THREAD_LOCAL_CAPTORS.set(captors);
             return captors;
         });
+    }
 
-        return captorList.stream().filter(captor -> captor.getTypeToBeCaptured()
+    private static <T> Stream<Captor> filter(T caught) {
+        return getCaptors().stream().filter(captor -> captor.getTypeToBeCaptured()
                 .isAssignableFrom(caught.getClass()));
+    }
+
+    public static void addCaptors(List<Captor<?, ?>> captors) {
+        getCaptors().addAll(captors);
     }
 
     public static <T> void catchResult(T caught, String message) {
         if (caught == null) {
-            return;        }
+            return;
+        }
 
         filter(caught).forEach(captor -> captor.capture(caught, message));
     }

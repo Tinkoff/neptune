@@ -2,8 +2,8 @@ package com.github.toy.constructor.selenium;
 
 import com.github.toy.constructor.core.api.GetStep;
 import com.github.toy.constructor.core.api.PerformActionStep;
-import com.github.toy.constructor.core.api.Refreshable;
-import com.github.toy.constructor.core.api.Stoppable;
+import com.github.toy.constructor.core.api.cleaning.Refreshable;
+import com.github.toy.constructor.core.api.cleaning.Stoppable;
 import com.github.toy.constructor.core.api.CreateWith;
 import com.github.toy.constructor.selenium.functions.navigation.NavigationActionSupplier;
 import com.github.toy.constructor.selenium.functions.searching.MultipleSearchSupplier;
@@ -14,6 +14,7 @@ import com.github.toy.constructor.selenium.functions.click.ClickActionSupplier;
 import com.github.toy.constructor.selenium.functions.edit.EditActionSupplier;
 import com.github.toy.constructor.selenium.functions.java.script.GetJavaScriptResultSupplier;
 import com.github.toy.constructor.selenium.functions.value.SequentialGetValueSupplier;
+import com.github.toy.constructor.selenium.properties.SupportedWebDrivers;
 import org.openqa.selenium.*;
 import org.openqa.selenium.internal.WrapsDriver;
 
@@ -27,8 +28,8 @@ public class SeleniumSteps implements PerformActionStep<SeleniumSteps>, GetStep<
 
     private final WrappedWebDriver wrappedWebDriver;
 
-    public SeleniumSteps(WrappedWebDriver wrappedWebDriver) {
-        this.wrappedWebDriver = wrappedWebDriver;
+    public SeleniumSteps(SupportedWebDrivers supportedWebDriver) {
+        this.wrappedWebDriver = new WrappedWebDriver(supportedWebDriver);
     }
 
     @Override
