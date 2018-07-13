@@ -24,6 +24,7 @@ public final class ThatValue<T> extends SequentialActionSupplier<Check, Object, 
     private final T inspected;
     private final String description;
     private final List<AssertionError> caughtMismatches = new ArrayList<>();
+    private final StringBuilder toStringBuilder = new StringBuilder().append("Assertions: \n");
 
     private ThatValue(String description, T inspected) {
         checkArgument(!isBlank(description),
@@ -138,6 +139,7 @@ public final class ThatValue<T> extends SequentialActionSupplier<Check, Object, 
 
     @Override
     protected Consumer<Check> getActionSequence(Consumer<Check> action) {
+        toStringBuilder.append(format("%s \n", action.toString()));
         return ofNullable(super.get()).map(checkConsumer -> checkConsumer.andThen(check -> {
             try {
                 action.accept(check);
@@ -153,8 +155,11 @@ public final class ThatValue<T> extends SequentialActionSupplier<Check, Object, 
                 caughtMismatches.add(e);
             }
         });
+    }
 
-
+    @Override
+    public String toString() {
+        return toStringBuilder.toString();
     }
 
     @Override

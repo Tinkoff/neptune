@@ -12,6 +12,7 @@ import static com.github.toy.constructor.core.api.utils.IsDescribedUtil.isDescri
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
@@ -153,5 +154,10 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
     @Override
     public Consumer<T> get() {
         return wrappedConsumer;
+    }
+
+    @Override
+    public String toString() {
+        return ofNullable(wrappedConsumer).map(Object::toString).orElse(EMPTY);
     }
 }

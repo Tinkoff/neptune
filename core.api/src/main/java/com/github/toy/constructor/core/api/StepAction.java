@@ -36,7 +36,7 @@ class StepAction<T> implements Consumer<T> {
                 "It seems given consumer doesn't describe any after-action. Use method " +
                         "StoryWriter.action to describe the after-action or override the toString method");
 
-        return new StepAction<T>(after.toString(), t -> {
+        return new StepAction<T>(format("%s\n\t  and then %s", before, after), t -> {
             before.accept(t); after.accept(t);
         }).setComplex();
     }
