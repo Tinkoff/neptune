@@ -10,7 +10,7 @@ import java.util.List;
 import static com.github.toy.constructor.check.ThatValue.thatValue;
 import static com.github.toy.constructor.check.test.TestEventLogger.MESSAGES;
 import static com.github.toy.constructor.core.api.StoryWriter.action;
-import static com.github.toy.constructor.core.api.proxy.Substitution.getSubstituted;
+import static com.github.toy.constructor.core.api.proxy.ProxyFactory.getProxied;
 import static com.github.toy.constructor.core.api.properties.CapturedEvents.FAILURE;
 import static com.github.toy.constructor.core.api.properties.CapturedEvents.SUCCESS;
 import static com.github.toy.constructor.core.api.properties.CapturedEvents.SUCCESS_AND_FAILURE;
@@ -28,7 +28,7 @@ public class CheckTest {
 
     @BeforeTest
     public void beforeTest() {
-        check = getSubstituted(Check.class);
+        check = getProxied(Check.class);
     }
 
     @BeforeMethod

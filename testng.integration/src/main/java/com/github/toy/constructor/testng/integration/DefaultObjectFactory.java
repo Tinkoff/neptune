@@ -12,8 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.github.toy.constructor.core.api.cleaning.RefreshAndStopUtil.refresh;
-import static com.github.toy.constructor.core.api.proxy.Substitution.getSubstituted;
+import static com.github.toy.constructor.core.api.proxy.ProxyFactory.getProxied;
 import static com.github.toy.constructor.core.api.properties.GeneralPropertyInitializer.refreshProperties;
 import static java.lang.reflect.Modifier.isFinal;
 import static java.lang.reflect.Modifier.isStatic;
@@ -73,7 +72,7 @@ public class DefaultObjectFactory extends ObjectFactoryImpl {
                             .findFirst().map(Map.Entry::getValue)
                             .orElseGet(() -> {
                                 try {
-                                    Object toBeReturned = getSubstituted(fieldType);
+                                    Object toBeReturned = getProxied(fieldType);
                                     stepMap.put(fieldType, toBeReturned);
                                     return toBeReturned;
                                 } catch (Throwable t) {
@@ -88,7 +87,6 @@ public class DefaultObjectFactory extends ObjectFactoryImpl {
             });
             clazz = clazz.getSuperclass();
         }
-        refresh(result);
         return result;
     }
 }

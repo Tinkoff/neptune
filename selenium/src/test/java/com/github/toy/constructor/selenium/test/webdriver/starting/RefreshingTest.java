@@ -3,6 +3,7 @@ package com.github.toy.constructor.selenium.test.webdriver.starting;
 import com.github.toy.constructor.core.api.properties.PropertySupplier;
 import com.github.toy.constructor.selenium.SeleniumParameterProvider;
 import com.github.toy.constructor.selenium.WrappedWebDriver;
+import com.github.toy.constructor.selenium.properties.SupportedWebDrivers;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.testng.annotations.*;
@@ -70,7 +71,8 @@ public class RefreshingTest {
     }
 
     private WebDriver prepareWrappedWebDriver() {
-        wrappedWebDriver = (WrappedWebDriver) new SeleniumParameterProvider().provide().getParameterValues()[0];
+        wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
+                new SeleniumParameterProvider().provide().getParameterValues()[0]);
         WebDriver toReturn = wrappedWebDriver.getWrappedDriver();
         assertThat("Current url",
                 toReturn.getCurrentUrl(),
@@ -252,7 +254,7 @@ public class RefreshingTest {
 
     @AfterMethod
     public void afterTest() {
-        ofNullable(wrappedWebDriver).ifPresent(wrappedWebDriver1 -> wrappedWebDriver1.shutDown());
+        ofNullable(wrappedWebDriver).ifPresent(WrappedWebDriver::shutDown);
     }
 
     @AfterClass

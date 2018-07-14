@@ -32,42 +32,53 @@ import static net.sf.cglib.proxy.Enhancer.registerCallbacks;
 class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> {
 
     private static final FindByBuilder builder = new FindByBuilder();
-    final Class<? extends R> classOfAWidget;
+    private static final Reflections reflections = new Reflections("");
+
+    private final Class<? extends R> classOfAWidget;
+    private final Predicate<Class<? extends R>> classPredicate;
     private final String conditionString;
     private List<Class<? extends R>> classesToInstantiate;
 
-    FindWidgets(Class<R> classOfAWidget, String conditionString) {
+    FindWidgets(Class<R> classOfAWidget, String conditionString, Predicate<Class<? extends R>> classPredicate) {
         checkArgument(classOfAWidget != null, "The class to be instantiated should be defined.");
         checkArgument(conditionString != null, "Description of the conditions should be defined.");
         this.classOfAWidget = classOfAWidget;
         this.conditionString = conditionString;
+        this.classPredicate = classPredicate;
     }
+
+    private FindWidgets(Class<R> classOfAWidget, String conditionString) {
+        this(classOfAWidget, conditionString, clazz -> !Modifier.isAbstract(clazz.getModifiers())
+
+                && (getAnnotation(clazz, FindBy.class) != null ||
+                getAnnotation(clazz, FindBys.class) != null ||
+                getAnnotation(clazz, FindAll.class) != null)
+
+                && (Arrays.stream(clazz.getDeclaredConstructors())
+                .filter(constructor -> {
+                    Class<?>[] parameters = constructor.getParameterTypes();
+                    return parameters.length == 1 &&
+                            WebElement.class.isAssignableFrom(parameters[0]);
+                }).collect(toList()).size() > 0));
+    }
+
+
 
     static <R extends Widget> Function<SearchContext, List<R>> widgets(Class<R> classOfAWidget,
                                                                        String conditionString) {
         return new FindWidgets<>(classOfAWidget, conditionString);
     }
 
-    List<Class<? extends R>> getSubclasses() {
-        Predicate<Class<? extends R>> classPredicate =
-                clazz -> !Modifier.isAbstract(clazz.getModifiers())
-
-                        && (getAnnotation(clazz, FindBy.class) != null ||
-                        getAnnotation(clazz, FindBys.class) != null ||
-                        getAnnotation(clazz, FindAll.class) != null)
-
-                        && (Arrays.stream(clazz.getDeclaredConstructors())
-                        .filter(constructor -> {
-                            Class<?>[] parameters = constructor.getParameterTypes();
-                            return parameters.length == 1 &&
-                                    WebElement.class.isAssignableFrom(parameters[0]);
-                        }).collect(toList()).size() > 0);
-
-        Reflections reflections = new Reflections("");
-
-        List<Class<? extends R>> resultList = reflections.getSubTypesOf(classOfAWidget).stream()
+    private static <R extends Widget> List<Class<? extends R>> findSubclasses(Class<? extends R> classOfAWidget,
+                                                                              Predicate<Class<? extends R>> classPredicate) {
+        return reflections.getSubTypesOf(classOfAWidget).stream()
                 .filter(classPredicate)
                 .sorted(widgetPriorityComparator()).collect(toList());
+    }
+
+    private List<Class<? extends R>> getSubclasses() {
+
+        List<Class<? extends R>> resultList = findSubclasses(classOfAWidget, classPredicate);
 
         if (classPredicate.test(classOfAWidget)) {
             resultList.add(classOfAWidget);

@@ -10,7 +10,7 @@ import static com.github.toy.constructor.core.api.ArithmeticalSequence.subtractF
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
 import static com.github.toy.constructor.core.api.ConstructorParameters.params;
 import static com.github.toy.constructor.core.api.TestEventLogger.MESSAGES;
-import static com.github.toy.constructor.core.api.proxy.Substitution.getSubstituted;
+import static com.github.toy.constructor.core.api.proxy.ProxyFactory.getProxied;
 import static com.github.toy.constructor.core.api.Arithmetical.number;
 import static com.github.toy.constructor.core.api.properties.CapturedEvents.FAILURE;
 import static com.github.toy.constructor.core.api.properties.CapturedEvents.SUCCESS;
@@ -34,7 +34,7 @@ public class EventFiringTest {
 
     @BeforeClass
     public void beforeAll() {
-        calculator = getSubstituted(CalculatorSteps.class, params());
+        calculator = getProxied(CalculatorSteps.class, params());
     }
 
     private void prepare() {

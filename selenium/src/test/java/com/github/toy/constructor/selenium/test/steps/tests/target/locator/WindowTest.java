@@ -47,7 +47,7 @@ public class WindowTest extends BaseWebDriverTest {
 
     @BeforeMethod
     public void prepare() {
-        WebDriver driver = wrappedWebDriver.getWrappedDriver();
+        WebDriver driver = seleniumSteps.getWrappedDriver();
         driver.switchTo().window(HANDLE1.getHandle()).get(GOOGLE.getUrl());
         driver.switchTo().window(HANDLE2.getHandle()).get(FACEBOOK.getUrl());
         driver.switchTo().window(HANDLE3.getHandle()).get(GITHUB.getUrl());

@@ -9,6 +9,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.server.SeleniumServer;
 import org.testng.annotations.DataProvider;
@@ -110,8 +111,8 @@ public class SanityTestOfTheStartingAndStoppingOfWebDriver {
         propertiesToSet.forEach(System::setProperty);
 
         try {
-            WrappedWebDriver wrappedWebDriver = (WrappedWebDriver)
-                    new SeleniumParameterProvider().provide().getParameterValues()[0];
+            WrappedWebDriver wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
+                    new SeleniumParameterProvider().provide().getParameterValues()[0]);
             WebDriver driver = null;
             try {
                 driver = wrappedWebDriver.getWrappedDriver();
@@ -179,8 +180,8 @@ public class SanityTestOfTheStartingAndStoppingOfWebDriver {
                 entry(BASE_WEB_DRIVER_URL_PROPERTY.getPropertyName(), "https://github.com/")));
         properties.forEach(System::setProperty);
 
-        WrappedWebDriver wrappedWebDriver = (WrappedWebDriver) new SeleniumParameterProvider()
-                .provide().getParameterValues()[0];
+        WrappedWebDriver wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
+                new SeleniumParameterProvider().provide().getParameterValues()[0]);
         try {
             assertThat("Current url",
                     wrappedWebDriver.getWrappedDriver().getCurrentUrl(),

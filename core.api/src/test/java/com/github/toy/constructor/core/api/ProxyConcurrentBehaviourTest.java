@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 
 import static com.github.toy.constructor.core.api.Arithmetical.*;
 import static com.github.toy.constructor.core.api.ConstructorParameters.params;
-import static com.github.toy.constructor.core.api.proxy.Substitution.getSubstituted;
+import static com.github.toy.constructor.core.api.proxy.ProxyFactory.getProxied;
 import static java.util.Optional.ofNullable;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -104,7 +104,7 @@ public class ProxyConcurrentBehaviourTest {
     public synchronized void beforeTest() {
         calculator = ofNullable(calculator).orElseGet(() -> {
             try {
-                return getSubstituted(CalculatorSteps.class, params());
+                return getProxied(CalculatorSteps.class, params());
             }
             catch (Exception e) {
                 throw new RuntimeException(e);

@@ -1,11 +1,14 @@
 package com.github.toy.constructor.core.api.proxy;
 
 import com.github.toy.constructor.core.api.*;
-import net.sf.cglib.proxy.Callback;
-import net.sf.cglib.proxy.Enhancer;
+import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.dynamic.DynamicType;
+import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
+import net.bytebuddy.dynamic.loading.InjectionClassLoader;
 import org.objenesis.Objenesis;
 import org.objenesis.ObjenesisStd;
 
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Function;
@@ -13,12 +16,13 @@ import java.util.function.Function;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
-import static net.sf.cglib.proxy.Enhancer.registerCallbacks;
+import static net.bytebuddy.implementation.MethodDelegation.to;
+import static net.bytebuddy.matcher.ElementMatchers.any;
 
 @SuppressWarnings("unchecked")
-public final class Substitution {
+public final class ProxyFactory {
 
-    private Substitution() {
+    private ProxyFactory() {
         super();
     }
 
@@ -38,10 +42,10 @@ public final class Substitution {
      * {@link PerformActionStep}.
      * @return an instance.
      */
-    public static <T> T getSubstituted(Class<T> clazz,
-                                       ConstructorParameters constructorParameters,
-                                       Function<Class<? extends T>, Class<? extends T>> manipulationWithClassToInstantiate,
-                                       Function<T, T> manipulationWithObjectToReturn) {
+    public static <T> T getProxied(Class<T> clazz,
+                                   ConstructorParameters constructorParameters,
+                                   Function<Class<? extends T>, Class<? extends T>> manipulationWithClassToInstantiate,
+                                   Function<T, T> manipulationWithObjectToReturn) {
 
         checkArgument(PerformActionStep.class.isAssignableFrom(clazz) ||
                 GetStep.class.isAssignableFrom(clazz), "Class to substitute should be " +
@@ -51,19 +55,26 @@ public final class Substitution {
         Class<? extends T> toInstantiate =
                 manipulationWithClassToInstantiate.apply(clazz);
 
-        Enhancer enhancer = new Enhancer();
-        OuterMethodInterceptor<T> interceptor =
-                new OuterMethodInterceptor<>(clazz, (Class<T>) toInstantiate, constructorParameters, manipulationWithObjectToReturn);
+        DynamicType.Builder<? extends T> builder = new ByteBuddy().subclass(clazz);
 
-        enhancer.setUseCache(false);
-        enhancer.setCallbackType(OuterMethodInterceptor.class);
-        enhancer.setSuperclass(clazz);
-        Class<?> proxyClass = enhancer.createClass();
-        registerCallbacks(proxyClass, new Callback[]{interceptor});
-        enhancer.setClassLoader(clazz.getClassLoader());
+        MethodInterceptor<T> interceptor = new MethodInterceptor<>(clazz,
+                (Class<T>) toInstantiate, constructorParameters,
+                manipulationWithObjectToReturn);
+
+        Class<? extends T> proxyClass;
+        try {
+            proxyClass = builder.method(any())
+                    .intercept(to(interceptor))
+                    .make()
+                    .load(InjectionClassLoader.getSystemClassLoader(), ClassLoadingStrategy.UsingLookup.of(MethodHandles
+                            .privateLookupIn(clazz, MethodHandles.lookup())))
+                    .getLoaded();
+        } catch (Throwable e) {
+            throw new ProxyCreationFailureException(e.getMessage(), e);
+        }
 
         Objenesis objenesis = new ObjenesisStd();
-        return (T) objenesis.newInstance(proxyClass);
+        return objenesis.newInstance(proxyClass);
     }
 
     /**
@@ -81,9 +92,9 @@ public final class Substitution {
      * {@link PerformActionStep}.
      * @return an instance.
      */
-    public static <T> T getSubstituted(Class<T> clazz,
-                                       Function<Class<? extends T>, Class<? extends T>> manipulationWithClassToInstantiate,
-                                       Function<T, T> manipulationWithObjectToReturn) {
+    public static <T> T getProxied(Class<T> clazz,
+                                   Function<Class<? extends T>, Class<? extends T>> manipulationWithClassToInstantiate,
+                                   Function<T, T> manipulationWithObjectToReturn) {
         CreateWith createWith = ofNullable(clazz.getAnnotation(CreateWith.class))
                 .orElseThrow(() -> new IllegalArgumentException(format("%s should be annotated by %s",
                         clazz.getName(), CreateWith.class.getName())));
@@ -106,7 +117,7 @@ public final class Substitution {
             throw new RuntimeException(e);
         }
 
-        return getSubstituted(clazz, parameters, manipulationWithClassToInstantiate,
+        return getProxied(clazz, parameters, manipulationWithClassToInstantiate,
                 manipulationWithObjectToReturn);
     }
 
@@ -122,9 +133,9 @@ public final class Substitution {
      * {@link PerformActionStep}.
      * @return an instance.
      */
-    public static <T> T getSubstituted(Class<T> clazz,
-                                       ConstructorParameters constructorParameters) {
-        return getSubstituted(clazz, constructorParameters, aClass -> aClass, t -> t);
+    public static <T> T getProxied(Class<T> clazz,
+                                   ConstructorParameters constructorParameters) {
+        return getProxied(clazz, constructorParameters, aClass -> aClass, t -> t);
     }
 
     /**
@@ -138,7 +149,7 @@ public final class Substitution {
      * {@link PerformActionStep}.
      * @return an instance.
      */
-    public static <T> T getSubstituted(Class<T> clazz) {
-        return getSubstituted(clazz, aClass -> aClass, t -> t);
+    public static <T> T getProxied(Class<T> clazz) {
+        return getProxied(clazz, aClass -> aClass, t -> t);
     }
 }

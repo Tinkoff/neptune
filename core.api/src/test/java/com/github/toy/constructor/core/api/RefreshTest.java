@@ -9,7 +9,7 @@ import java.util.List;
 import static com.github.toy.constructor.core.api.cleaning.RefreshAndStopUtil.refresh;
 import static com.github.toy.constructor.core.api.StoryWriter.action;
 import static com.github.toy.constructor.core.api.StoryWriter.toGet;
-import static com.github.toy.constructor.core.api.proxy.Substitution.getSubstituted;
+import static com.github.toy.constructor.core.api.proxy.ProxyFactory.getProxied;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.emptyCollectionOf;
@@ -20,7 +20,7 @@ public class RefreshTest {
 
     @Test
     public void checkRefreshTest() {
-        refreshableStep = getSubstituted(RefreshableStep.class);
+        refreshableStep = getProxied(RefreshableStep.class);
         refreshableStep.perform(action("Add elements to some list", refreshableStep1 -> {
             refreshableStep.getListToRefresh().add(1);
             refreshableStep.getListToRefresh().add(true);

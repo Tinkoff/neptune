@@ -1,8 +1,10 @@
 package com.github.toy.constructor.core.api.proxy;
 
 import com.github.toy.constructor.core.api.ConstructorParameters;
-import net.sf.cglib.proxy.MethodInterceptor;
-import net.sf.cglib.proxy.MethodProxy;
+import net.bytebuddy.implementation.bind.annotation.AllArguments;
+import net.bytebuddy.implementation.bind.annotation.Origin;
+import net.bytebuddy.implementation.bind.annotation.RuntimeType;
+import net.bytebuddy.implementation.bind.annotation.This;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -12,7 +14,7 @@ import java.util.function.Function;
 import static com.github.toy.constructor.core.api.utils.ConstructorUtil.findSuitableConstructor;
 import static java.util.Optional.ofNullable;
 
-class OuterMethodInterceptor<T> implements MethodInterceptor {
+public class MethodInterceptor<T> {
 
     private final Class<T> originalClass;
     private final Class<T> classToInstantiate;
@@ -20,8 +22,8 @@ class OuterMethodInterceptor<T> implements MethodInterceptor {
     private final Function<T, T> manipulationWithObjectToReturn;
     private final ThreadLocal<T> threadLocal;
 
-    OuterMethodInterceptor(Class<T> originalClass, Class<T> classToInstantiate, ConstructorParameters constructorParameters,
-                           Function<T, T> manipulationWithObjectToReturn) {
+    MethodInterceptor(Class<T> originalClass, Class<T> classToInstantiate, ConstructorParameters constructorParameters,
+                      Function<T, T> manipulationWithObjectToReturn) {
         this.originalClass = originalClass;
         this.classToInstantiate = classToInstantiate;
         this.constructorParameters = constructorParameters;
@@ -29,8 +31,8 @@ class OuterMethodInterceptor<T> implements MethodInterceptor {
         threadLocal = new ThreadLocal<>();
     }
 
-    @Override
-    public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
+    @RuntimeType
+    public Object intercept(@This Object obj, @Origin Method method, @AllArguments Object[] args) throws Throwable {
         T target;
 
         try {
@@ -47,15 +49,14 @@ class OuterMethodInterceptor<T> implements MethodInterceptor {
                 try {
                     t = manipulationWithObjectToReturn.apply(c.newInstance(constructorParameters.getParameterValues()));
                     threadLocal.set(t);
-                } catch (InstantiationException|IllegalAccessException e) {
+                } catch (InstantiationException | IllegalAccessException e) {
                     throw new RuntimeException(e);
                 } catch (InvocationTargetException e) {
                     throw new RuntimeException(e.getCause());
                 }
                 return t;
             });
-        }
-        catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             throw ofNullable(e.getCause()).orElse(e);
         }
 
@@ -68,8 +69,7 @@ class OuterMethodInterceptor<T> implements MethodInterceptor {
                 }
                 return o;
             }).orElse(null);
-        }
-        catch (InvocationTargetException e) {
+        } catch (InvocationTargetException e) {
             throw ofNullable(e.getCause()).orElse(e);
         }
     }

@@ -3,7 +3,7 @@ package com.github.toy.constructor.core.api;
 import org.testng.annotations.Test;
 
 import static com.github.toy.constructor.core.api.ConstructorParameters.params;
-import static com.github.toy.constructor.core.api.proxy.Substitution.getSubstituted;
+import static com.github.toy.constructor.core.api.proxy.ProxyFactory.getProxied;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -15,13 +15,13 @@ public class ParameterProviderTest {
 
     @Test
     public void testOfProviderOfEmptyParameters() {
-        EmptyStepClass emptyStep = getSubstituted(EmptyStepClass.class);
+        EmptyStepClass emptyStep = getProxied(EmptyStepClass.class);
         assertThat("Check created instance", emptyStep, not(nullValue()));
     }
 
     @Test
     public void testOfProviderOfParameterizedParameters() {
-        ParameterizedStep parameterizedStep = getSubstituted(ParameterizedStep.class);
+        ParameterizedStep parameterizedStep = getProxied(ParameterizedStep.class);
         assertThat("Check injected value", parameterizedStep.getNumber(), is(FIVE));
     }
 
