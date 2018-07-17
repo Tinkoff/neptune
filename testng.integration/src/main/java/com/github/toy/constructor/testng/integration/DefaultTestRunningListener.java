@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 import static com.github.toy.constructor.core.api.cleaning.RefreshAndStopUtil.refresh;
+import static com.github.toy.constructor.core.api.concurency.GroupingObjects.addGroupingObjectForCurrentThread;
 import static com.github.toy.constructor.testng.integration.properties.TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY;
 import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Arrays.stream;
@@ -62,6 +63,7 @@ public class DefaultTestRunningListener implements IInvokedMethodListener, ISuit
 
     @Override
     public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
+        addGroupingObjectForCurrentThread(testResult.getTestContext().getSuite());
         Object instance = testResult.getInstance();
         refreshIfNecessary(instance, method.getTestMethod().getConstructorOrMethod()
                 .getMethod());
@@ -78,7 +80,7 @@ public class DefaultTestRunningListener implements IInvokedMethodListener, ISuit
 
     @Override
     public void onStart(ISuite suite) {
-        //does nothing
+        addGroupingObjectForCurrentThread(suite);
     }
 
     @Override

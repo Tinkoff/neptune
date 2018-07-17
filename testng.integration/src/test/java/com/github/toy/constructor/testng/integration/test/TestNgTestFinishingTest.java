@@ -48,7 +48,7 @@ public class TestNgTestFinishingTest {
     public void shuttingDownTest() {
         runBeforeTheChecking();
         assertThat(TestNgInstantiationTest.testNgInstantiationTest.getStepClass2()
-                .getStopCount(), is(2));
+                .getStopCount(), is(1));
     }
 
     @Test
