@@ -1,0 +1,8 @@
+package ru.tinkoff.qa.neptune.selenium.properties;
+
+import org.openqa.selenium.Capabilities;
+
+import java.util.function.Supplier;
+
+public interface CapabilitySupplier extends Supplier<Capabilities> {
+}

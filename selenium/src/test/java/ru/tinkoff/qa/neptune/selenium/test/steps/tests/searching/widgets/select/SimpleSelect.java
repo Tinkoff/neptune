@@ -1,0 +1,43 @@
+package ru.tinkoff.qa.neptune.selenium.test.steps.tests.searching.widgets.select;
+
+import ru.tinkoff.qa.neptune.selenium.api.widget.Name;
+import ru.tinkoff.qa.neptune.selenium.api.widget.Priority;
+import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Select;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+
+import java.util.List;
+
+import static ru.tinkoff.qa.neptune.selenium.api.widget.Priority.HIGHEST;
+import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.OPTION;
+import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.SELECT;
+import static ru.tinkoff.qa.neptune.selenium.test.steps.tests.searching.widgets.WidgetNames.SIMPLE_SELECT;
+
+@Name(SIMPLE_SELECT)
+@FindBy(tagName = SELECT)
+@Priority(HIGHEST)
+public class SimpleSelect extends Select {
+
+    @FindBy(tagName = OPTION)
+    private List<WebElement> options;
+
+    public SimpleSelect(WebElement wrappedElement) {
+        super(wrappedElement);
+    }
+
+    @Override
+    public void edit(String valueToSet) {
+        WebElement optionToSelect =
+                options.stream().filter(option -> valueToSet.equals(option.getText()))
+                .findFirst().orElseThrow(() -> new NoSuchElementException("There is no option " + valueToSet));
+        optionToSelect.click();
+    }
+
+    @Override
+    public List<String> getValue() {
+        return options.stream().filter(WebElement::isSelected)
+                .findFirst().map(webElement -> List.of(webElement.getText())).
+                orElse(List.of());
+    }
+}

@@ -1,5 +1,5 @@
 subprojects {
-    group 'com.github.toy.constructor'
+    group 'ru.tinkoff.qa.neptune'
     version '1.0-SNAPSHOT'
 
     apply plugin: 'java'

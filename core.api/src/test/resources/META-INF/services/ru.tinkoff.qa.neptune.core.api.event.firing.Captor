@@ -1,0 +1,3 @@
+ru.tinkoff.qa.neptune.core.api.TestCaptor
+ru.tinkoff.qa.neptune.core.api.TestStringCaptor
+ru.tinkoff.qa.neptune.core.api.TestFileCaptor

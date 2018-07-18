@@ -1,4 +1,4 @@
-rootProject.name = 'com.github.toy.constructor'
+rootProject.name = 'ru.tinkoff.qa.neptune'
 include 'core.api'
 include 'check'
 include 'selenium'

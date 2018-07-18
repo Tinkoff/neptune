@@ -1,7 +1,7 @@
 <suite name="Property suite">
     <test name="Property tests">
         <packages>
-            <package name="com.github.toy.constructor.selenium.test.webdriver.starting"/>
+            <package name="ru.tinkoff.qa.neptune.selenium.test.webdriver.starting"/>
         </packages>
     </test>
 </suite>

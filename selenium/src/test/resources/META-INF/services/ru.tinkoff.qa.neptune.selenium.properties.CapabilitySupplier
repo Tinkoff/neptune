@@ -1,0 +1,4 @@
+ru.tinkoff.qa.neptune.selenium.test.capability.suppliers.ChromeTestSupplierWithOptions
+ru.tinkoff.qa.neptune.selenium.test.capability.suppliers.ChromeTestSupplierWithExperimentalOption
+ru.tinkoff.qa.neptune.selenium.test.capability.suppliers.ChromeTestSupplierWithOptions3
+ru.tinkoff.qa.neptune.selenium.test.capability.suppliers.FirefoxTestSupplierWithProfile
