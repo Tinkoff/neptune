@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.testng.integration;
 
 import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
+import ru.tinkoff.qa.neptune.core.api.concurency.GroupingObjects;
 import ru.tinkoff.qa.neptune.testng.integration.properties.RefreshEachTimeBefore;
 import org.testng.*;
 import org.testng.annotations.Ignore;
@@ -13,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.cleaning.Refreshable.refresh;
 import static ru.tinkoff.qa.neptune.core.api.concurency.GroupingObjects.addGroupingObjectForCurrentThread;
 import static ru.tinkoff.qa.neptune.testng.integration.properties.TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY;
@@ -63,10 +65,10 @@ public class DefaultTestRunningListener implements IInvokedMethodListener, ISuit
 
     @Override
     public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
-        addGroupingObjectForCurrentThread(testResult.getTestContext().getSuite());
-        Object instance = testResult.getInstance();
-        refreshIfNecessary(instance, method.getTestMethod().getConstructorOrMethod()
-                .getMethod());
+        ofNullable(testResult.getTestContext()).map(ITestContext::getSuite)
+                .ifPresent(GroupingObjects::addGroupingObjectForCurrentThread);
+        ofNullable(testResult.getInstance()).ifPresent(o ->
+                refreshIfNecessary(o, method.getTestMethod().getConstructorOrMethod().getMethod()));
     }
 
     @Override

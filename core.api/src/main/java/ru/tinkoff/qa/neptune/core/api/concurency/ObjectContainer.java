@@ -16,7 +16,7 @@ import static java.util.stream.Collectors.toList;
 
 public class ObjectContainer<T> {
 
-    private static Set<ObjectContainer<?>> containers = synchronizedSet(new HashSet<>());
+    private static final Set<ObjectContainer<?>> containers = synchronizedSet(new HashSet<>());
 
     private final T t;
     private Thread busyBy;
@@ -29,18 +29,22 @@ public class ObjectContainer<T> {
                 "assignable from ru.tinkoff.qa.neptune.core.api.GetStep and/or " +
                 "ru.tinkoff.qa.neptune.core.api.PerformActionStep.");
         this.t = t;
-        containers.add(this);
+        synchronized (containers) {
+            containers.add(this);
+        }
     }
 
     private static <T> List<ObjectContainer<?>> getAllObjects(Class<T> tClass,
-                                                                               Predicate<ObjectContainer<?>> predicate) {
+                                                              Predicate<ObjectContainer<?>> predicate) {
         checkNotNull(tClass);
         checkNotNull(predicate);
         checkArgument(PerformActionStep.class.isAssignableFrom(tClass) ||
                 GetStep.class.isAssignableFrom(tClass), "Class of an object should be " +
                 "assignable from ru.tinkoff.qa.neptune.core.api.GetStep and/or " +
                 "ru.tinkoff.qa.neptune.core.api.PerformActionStep.");
-        return containers.stream().filter(predicate).collect(toList());
+        synchronized (containers) {
+            return containers.stream().filter(predicate).collect(toList());
+        }
     }
 
     /**
@@ -113,7 +117,9 @@ public class ObjectContainer<T> {
 
     public static synchronized void remove(List<ObjectContainer<?>> objectContainers) {
         checkNotNull(objectContainers);
-        containers.removeAll(objectContainers);
+        synchronized (containers) {
+            containers.removeAll(objectContainers);
+        }
     }
 
     private synchronized boolean isBusy() {
