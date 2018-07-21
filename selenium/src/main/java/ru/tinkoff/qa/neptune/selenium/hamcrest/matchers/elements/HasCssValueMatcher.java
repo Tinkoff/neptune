@@ -32,6 +32,8 @@ public final class HasCssValueMatcher<T extends SearchContext> extends TypeSafeD
      *
      * @param cssProperty to be checked
      * @param value criteria to check the css property
+     * @param <T> is a type of a value to be matched. It should extend {@link WebElement} or it should extend both
+     *           {@link SearchContext} and {@link HasCssValue}.
      * @return instance of {@link HasCssValueMatcher}
      */
     public static <T extends SearchContext> HasCssValueMatcher<T> hasCss(String cssProperty, Matcher<String> value) {
@@ -46,6 +48,8 @@ public final class HasCssValueMatcher<T extends SearchContext> extends TypeSafeD
      *
      * @param cssProperty to be checked
      * @param value which is expected to be equal to value of the css property.
+     * @param <T> is a type of a value to be matched. It should extend {@link WebElement} or it should extend both
+     *           {@link SearchContext} and {@link HasCssValue}.
      * @return instance of {@link HasCssValueMatcher}
      */
     public static <T extends SearchContext> HasCssValueMatcher<T> hasCss(String cssProperty, String value) {
@@ -59,6 +63,8 @@ public final class HasCssValueMatcher<T extends SearchContext> extends TypeSafeD
      * value.
      *
      * @param cssProperty to be checked
+     * @param <T> is a type of a value to be matched. It should extend {@link WebElement} or it should extend both
+     *           {@link SearchContext} and {@link HasCssValue}.
      * @return instance of {@link HasCssValueMatcher}
      */
     public static <T extends SearchContext> HasCssValueMatcher<T> hasCss(String cssProperty) {

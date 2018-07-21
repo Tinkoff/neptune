@@ -74,6 +74,8 @@ public abstract class AlertActionSupplier extends SequentialActionSupplier<Selen
      * Builds the send keys action on some alert that is supposed to be appeared.
      *
      * @param supplier is which alert should appear
+     * @param keysToSend string to be sent to the alert
+     *
      * @return built send keys action
      */
     public static AlertActionSupplier sendKeys(GetAlertSupplier supplier, String keysToSend) {
@@ -90,6 +92,8 @@ public abstract class AlertActionSupplier extends SequentialActionSupplier<Selen
      * Builds the send keys action on some alert that is appeared.
      *
      * @param alert is the alert which is appeared previously
+     * @param keysToSend string to be sent to the alert
+     *
      * @return built send keys action
      */
     public static AlertActionSupplier sendKeys(Alert alert, String keysToSend) {

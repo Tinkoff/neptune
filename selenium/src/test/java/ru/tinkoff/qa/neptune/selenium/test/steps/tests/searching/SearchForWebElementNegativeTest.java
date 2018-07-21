@@ -41,8 +41,8 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
         return format(FOUND_ON_CONDITION_ERROR, by, condition);
     }
 
-    private static String expectedDescriptionOfNotFoundElementError(By by) {
-        return format(FOUND_BY_PATTERN_ERROR, by);
+    private static String expectedDescriptionOfNotFoundElementError() {
+        return format(FOUND_BY_PATTERN_ERROR, CLASS_THAT_DOES_NOT_EXIST);
     }
 
     @Test(expectedExceptions = NoSuchElementException.class, retryAnalyzer = RetryAnalyzer.class)
@@ -53,7 +53,7 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
         }
         catch (Exception e) {
             setEndBenchMark();
-            assertThat(e.getMessage(), containsString(expectedDescriptionOfNotFoundElementError(CLASS_THAT_DOES_NOT_EXIST)));
+            assertThat(e.getMessage(), containsString(expectedDescriptionOfNotFoundElementError()));
             throw e;
         }
         finally {
@@ -72,7 +72,7 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
         }
         catch (Exception e) {
             setEndBenchMark();
-            assertThat(e.getMessage(), containsString(expectedDescriptionOfNotFoundElementError(CLASS_THAT_DOES_NOT_EXIST)));
+            assertThat(e.getMessage(), containsString(expectedDescriptionOfNotFoundElementError()));
             throw e;
         }
         finally {
@@ -160,7 +160,7 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
         }
         catch (Exception e) {
             setEndBenchMark();
-            assertThat(e.getMessage(), containsString(expectedDescriptionOfNotFoundElementError(CLASS_THAT_DOES_NOT_EXIST)));
+            assertThat(e.getMessage(), containsString(expectedDescriptionOfNotFoundElementError()));
             throw e;
         }
         finally {
@@ -180,7 +180,7 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
         }
         catch (Exception e) {
             setEndBenchMark();
-            assertThat(e.getMessage(), containsString(expectedDescriptionOfNotFoundElementError(CLASS_THAT_DOES_NOT_EXIST)));
+            assertThat(e.getMessage(), containsString(expectedDescriptionOfNotFoundElementError()));
             throw e;
         }
         finally {
@@ -272,7 +272,7 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
         }
         catch (Exception e) {
             setEndBenchMark();
-            assertThat(e.getMessage(), containsString(expectedDescriptionOfNotFoundElementError(CLASS_THAT_DOES_NOT_EXIST)));
+            assertThat(e.getMessage(), containsString(expectedDescriptionOfNotFoundElementError()));
             throw e;
         }
         finally {
@@ -293,7 +293,7 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
         }
         catch (Exception e) {
             setEndBenchMark();
-            assertThat(e.getMessage(), containsString(expectedDescriptionOfNotFoundElementError(CLASS_THAT_DOES_NOT_EXIST)));
+            assertThat(e.getMessage(), containsString(expectedDescriptionOfNotFoundElementError()));
             throw e;
         }
         finally {
@@ -566,9 +566,8 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
             removeProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
             removeProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName());
             assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
-            assertThat(new BigDecimal(getTimeDifference() - ONE_SECOND.toMillis()),
-                    either(lessThan(new BigDecimal(HALF_SECOND.toMillis())))
-                            .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(200))));
+            assertThat(getTimeDifference() - ONE_SECOND.toMillis(),
+                    lessThan(ONE_SECOND.toMillis()));
         }
     }
 
@@ -696,9 +695,8 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
         }
         finally {
             assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
-            assertThat(new BigDecimal(getTimeDifference() - ONE_SECOND.toMillis()),
-                    either(lessThan(new BigDecimal(HALF_SECOND.toMillis())))
-                            .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(400))));
+            assertThat(getTimeDifference() - ONE_SECOND.toMillis(),
+                    lessThan(ONE_SECOND.toMillis()));
         }
     }
 
@@ -722,9 +720,8 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
             removeProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
             removeProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName());
             assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
-            assertThat(new BigDecimal(getTimeDifference() - ONE_SECOND.toMillis()),
-                    either(lessThan(new BigDecimal(HALF_SECOND.toMillis())))
-                            .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(400))));
+            assertThat(getTimeDifference() - ONE_SECOND.toMillis(),
+                    lessThan(ONE_SECOND.toMillis()));
         }
     }
 
@@ -852,9 +849,8 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
         }
         finally {
             assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
-            assertThat(new BigDecimal(getTimeDifference() - ONE_SECOND.toMillis()),
-                    either(lessThan(new BigDecimal(HALF_SECOND.toMillis())))
-                            .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(400))));
+            assertThat(getTimeDifference() - ONE_SECOND.toMillis(),
+                    lessThan(ONE_SECOND.toMillis()));
         }
     }
 
@@ -878,9 +874,8 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
             removeProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
             removeProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName());
             assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
-            assertThat(new BigDecimal(getTimeDifference() - ONE_SECOND.toMillis()),
-                    either(lessThan(new BigDecimal(HALF_SECOND.toMillis())))
-                            .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(400))));
+            assertThat(getTimeDifference() - ONE_SECOND.toMillis(),
+                    lessThan(ONE_SECOND.toMillis()));
         }
     }
 }

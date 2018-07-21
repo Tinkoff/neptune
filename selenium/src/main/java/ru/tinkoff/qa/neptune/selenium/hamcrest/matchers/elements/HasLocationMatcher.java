@@ -36,6 +36,8 @@ public final class HasLocationMatcher<T extends SearchContext> extends TypeSafeD
      *
      * @param x expected x value
      * @param y expected y value
+     * @param <T> is a type of a value to be matched. It should extend {@link WebElement} or it should extend both
+     *           {@link SearchContext} and {@link HasLocation}.
      * @return instance of {@link HasLocationMatcher}
      */
     public static <T extends SearchContext> HasLocationMatcher<T> hasLoction(int x, int y) {
@@ -49,6 +51,8 @@ public final class HasLocationMatcher<T extends SearchContext> extends TypeSafeD
      *
      * @param x expected x value
      * @param yMatcher y-value criteria
+     * @param <T> is a type of a value to be matched. It should extend {@link WebElement} or it should extend both
+     *           {@link SearchContext} and {@link HasLocation}.
      * @return instance of {@link HasLocationMatcher}
      */
     public static <T extends SearchContext> HasLocationMatcher<T> hasLoction(int x, Matcher<Integer> yMatcher) {
@@ -62,6 +66,8 @@ public final class HasLocationMatcher<T extends SearchContext> extends TypeSafeD
      *
      * @param xMatcher x-value criteria
      * @param y expected y value
+     * @param <T> is a type of a value to be matched. It should extend {@link WebElement} or it should extend both
+     *           {@link SearchContext} and {@link HasLocation}.
      * @return instance of {@link HasLocationMatcher}
      */
     public static <T extends SearchContext> HasLocationMatcher<T> hasLoction(Matcher<Integer> xMatcher, int y) {
@@ -75,6 +81,8 @@ public final class HasLocationMatcher<T extends SearchContext> extends TypeSafeD
      *
      * @param xMatcher x-value criteria
      * @param yMatcher y-value criteria
+     * @param <T> is a type of a value to be matched. It should extend {@link WebElement} or it should extend both
+     *           {@link SearchContext} and {@link HasLocation}.
      * @return instance of {@link HasLocationMatcher}
      */
     public static <T extends SearchContext> HasLocationMatcher<T> hasLoction(Matcher<Integer> xMatcher,

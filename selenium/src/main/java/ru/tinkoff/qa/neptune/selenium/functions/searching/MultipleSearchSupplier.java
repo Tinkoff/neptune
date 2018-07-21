@@ -44,6 +44,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some list of instances of {@link SearchContext} found from the input value.
      *
+     * @param description is a description of a list of elements to find.
      * @param transformation is a function which performs the searching from some {@link SearchContext}
      *                       and transform the list of found items to another list of instances
      *                       of {@link SearchContext}
@@ -65,6 +66,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * About time which the searching takes
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
+     * @param description is a description of a list of elements to find.
      * @param transformation is a function which performs the searching from some {@link SearchContext}
      *                       and transform the list of found items to another list of instances
      *                       of {@link SearchContext}
@@ -2606,6 +2608,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Constructs the chained searching from some instance of {@link SearchContext}.
      *
      * @param from is how to find some elements from a parent element.
+     * @param <Q> is a type of the parent element.
      * @return self-reference
      */
     public <Q extends SearchContext> MultipleSearchSupplier<R> foundFrom(SearchSupplier<Q> from) {

@@ -2,3 +2,42 @@ dependencies {
     compile group: 'org.objenesis', name: 'objenesis', version: '2.6'
     compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.8.13'
 }
+
+jar {
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives jar, javadocJar, sourcesJar
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            pom.project {
+                packaging 'jar'
+                name 'core.api'
+                description 'Java client for Appium Mobile Webdriver'
+                url 'https://github.com/TinkoffCreditSystems/neptune'
+                developers {
+                    developer {
+                        name 'Sergey Tikhomirov'
+                        email 'tichomirovsergey@gmail.com'
+                        url 'https://github.com/TikhomirovSergey'
+                        id 'TikhomirovSergey'
+                    }
+                }
+            }
+        }
+    }
+}

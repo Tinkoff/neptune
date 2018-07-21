@@ -68,6 +68,7 @@ public final class SequentialGetAttributeValueSupplier extends
      *                       It is expected that result of the wrapped function is some instance of {@link WebElement}
      *                       or some class which implements {@link SearchContext} and {@link HasAttribute}. Otherwise
      *                       evaluation of the attribute value throws {@link UnsupportedOperationException}.
+     * @param <T> subtype of {@link SearchContext} which provides ability to get value of the attribute.
      * @return self-reference
      */
     public <T extends SearchContext> SequentialGetAttributeValueSupplier of(SearchSupplier<T> searchSupplier) {

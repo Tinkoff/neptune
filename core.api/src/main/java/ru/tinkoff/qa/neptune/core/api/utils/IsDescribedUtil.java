@@ -26,39 +26,36 @@ public final class IsDescribedUtil {
     }
 
     /**
-     * Check is {@link Function} described or not. It means that {@link Function#toString()} returns a value
-     * that differs from the result of {@link Object#toString()}.
+     * Check is {@link Function} described or not. It means that toString() returns a value that differs from the
+     * result of {@link Object#toString()}.
      *
      * @param toBeDescribed is a function which is supposed to be described.
-     * @return {@code true} if the function is not null-value and {@link Function#toString()} returns a value
-     * that differs from blank string and from the result of {@link Object#toString()}. {@code false} is
-     * returned otherwise.
+     * @return {@code true} if the function is not null-value and toString() returns a value that differs from blank
+     * string and from the result of {@link Object#toString()}. {@code false} is returned otherwise.
      */
     public static boolean isDescribed(Function<?, ?> toBeDescribed) {
         return isDescribed((Object) toBeDescribed);
     }
 
     /**
-     * Check is {@link Consumer} described or not. It means that {@link Consumer#toString()} returns a value
-     * that differs from the result of {@link Object#toString()}.
+     * Check is {@link Consumer} described or not. It means that toString() returns a value that differs from the result
+     * of {@link Object#toString()}.
      *
      * @param toBeDescribed is a function which is supposed to be described.
-     * @return {@code true} if the function is not null-value and {@link Consumer#toString()} returns a value
-     * that differs from blank string and from the result of {@link Object#toString()}. {@code false} is
-     * returned otherwise.
+     * @return {@code true} if the function is not null-value and toString() returns a value that differs from blank
+     * string and from the result of {@link Object#toString()}. {@code false} is returned otherwise.
      */
     public static boolean isDescribed(Consumer<?> toBeDescribed) {
         return isDescribed((Object) toBeDescribed);
     }
 
     /**
-     * Check is {@link Predicate} described or not. It means that {@link Predicate#toString()} returns a value
-     * that differs from the result of {@link Object#toString()}.
+     * Check is {@link Predicate} described or not. It means that toString() returns a value that differs from the result
+     * of {@link Object#toString()}.
      *
      * @param toBeDescribed is a function which is supposed to be described.
-     * @return {@code true} if the function is not null-value and {@link Predicate#toString()} returns a value
-     * that differs from blank string and from the result of {@link Object#toString()}. {@code false} is
-     * returned otherwise.
+     * @return {@code true} if the function is not null-value and toString() returns a value that differs from blank
+     * string and from the result of {@link Object#toString()}. {@code false} is returned otherwise.
      */
     public static boolean isDescribed(Predicate<?> toBeDescribed) {
         return isDescribed((Object) toBeDescribed);

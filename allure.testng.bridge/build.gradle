@@ -8,3 +8,24 @@ dependencies {
         exclude group: 'org.testng', module: 'testng'
     }
 }
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            pom.project {
+                packaging 'pom'
+                name 'allure.testng.bridge'
+                description 'Java client for Appium Mobile Webdriver'
+                url 'https://github.com/TinkoffCreditSystems/neptune'
+                developers {
+                    developer {
+                        name 'Sergey Tikhomirov'
+                        email 'tichomirovsergey@gmail.com'
+                        url 'https://github.com/TikhomirovSergey'
+                        id 'TikhomirovSergey'
+                    }
+                }
+            }
+        }
+    }
+}

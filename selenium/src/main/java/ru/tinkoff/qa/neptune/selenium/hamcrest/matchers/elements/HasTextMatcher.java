@@ -25,6 +25,8 @@ public final class HasTextMatcher<T extends SearchContext> extends TypeSafeDiagn
      * It should be {@link WebElement} or some implementor of {@link WrapsElement}. Otherwise the matching returns {@code false}
      *
      * @param value criteria to check text
+     * @param <T> is a type of a value to be matched. It should extend {@link WebElement} or it should extend both
+     *           {@link SearchContext} and {@link WrapsElement}.
      * @return instance of {@link HasTextMatcher}
      */
     public static <T extends SearchContext> HasTextMatcher<T> hasText(Matcher<String> value) {
@@ -38,6 +40,8 @@ public final class HasTextMatcher<T extends SearchContext> extends TypeSafeDiagn
      * defined value.
      *
      * @param value which is expected to be equal to text of the element.
+     * @param <T> is a type of a value to be matched. It should extend {@link WebElement} or it should extend both
+     *           {@link SearchContext} and {@link WrapsElement}.
      * @return instance of {@link HasTextMatcher}
      */
     public static <T extends SearchContext> HasTextMatcher<T> hasText(String value) {
@@ -49,6 +53,8 @@ public final class HasTextMatcher<T extends SearchContext> extends TypeSafeDiagn
      * It should be {@link WebElement} or some implementor of {@link WrapsElement}.
      * Otherwise the matching returns {@code false}. It is expected that text is not null or empty value.
      *
+     * @param <T> is a type of a value to be matched. It should extend {@link WebElement} or it should extend both
+     *           {@link SearchContext} and {@link WrapsElement}.
      * @return instance of {@link HasTextMatcher}
      */
     public static <T extends SearchContext> HasTextMatcher<T> hasText() {

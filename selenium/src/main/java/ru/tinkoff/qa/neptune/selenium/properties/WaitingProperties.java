@@ -31,7 +31,7 @@ public enum WaitingProperties implements Supplier<Duration> {
 
     /**
      * Returns duration of the waiting for some window.
-     * When {@code "waiting.window.time.unit"} or {@code "waiting.window.tim
+     * When {@code "waiting.window.time.unit"} or {@code "waiting.window..time"}
      * are not defined then it returns 1 minute. Otherwise it returns defined duration value.
      */
     WAITING_WINDOW_TIME_DURATION(WAITING_WINDOW_TIME_UNIT, WAITING_WINDOW_TIME_VALUE),

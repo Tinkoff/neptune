@@ -26,7 +26,6 @@ import org.openqa.selenium.WebElement;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.math.BigDecimal;
 import java.util.function.Predicate;
 
 import static ru.tinkoff.qa.neptune.core.api.StoryWriter.condition;
@@ -1292,7 +1291,6 @@ public class SearchForWidgetPositiveTest extends BaseWebDriverTest {
         assertThat(widgetClass.isAssignableFrom(t.getClass()), is(true));
         ofNullable(element).ifPresent(element1 -> assertThat(t.getWrappedElement(), equalTo(element1)));
         assertThat(t.toString(), is(expectedDescription));
-        assertThat(new BigDecimal(getTimeDifference()), either(lessThan(new BigDecimal(HALF_SECOND.toMillis())))
-                .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(600))));
+        assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(HALF_SECOND.toMillis()));
     }
 }

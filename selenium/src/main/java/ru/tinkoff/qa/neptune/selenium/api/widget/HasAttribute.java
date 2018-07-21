@@ -35,7 +35,6 @@ public interface HasAttribute {
      * properties. If you need to do something more precise, e.g., refer to an attribute even when a
      * property of the same name exists, then you should evaluate Javascript to obtain the result
      * you desire.
-     * </p>
      *
      * @param attribute The name of the attribute.
      * @return The attribute/property's current value or null if the value is not set.

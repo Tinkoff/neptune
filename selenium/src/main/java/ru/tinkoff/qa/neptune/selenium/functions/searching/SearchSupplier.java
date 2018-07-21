@@ -57,6 +57,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The wrapped function takes an instance of {@link SearchContext} for the searching
      * and returns some instance of {@link SearchContext} found from the input value.
      *
+     * @param description is a description of an element to find.
      * @param transformation is a function which performs the searching from some {@link SearchContext}
      *                       and transform a found item to another instance of {@link SearchContext}
      * @param duration       is the parameter of a time to find desired item
@@ -79,6 +80,7 @@ public final class SearchSupplier<R extends SearchContext>
      * time which the searching takes
      * @see WaitingProperties#ELEMENT_WAITING_DURATION
      *
+     * @param description is a description of an element to find.
      * @param transformation is a function which performs the searching from some {@link SearchContext}
      *                       and transform a found item to another instance of {@link SearchContext}
      * @param condition      to specify the searching criteria

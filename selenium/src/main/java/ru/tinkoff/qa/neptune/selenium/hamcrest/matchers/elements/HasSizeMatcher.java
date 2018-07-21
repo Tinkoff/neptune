@@ -34,6 +34,8 @@ public final class HasSizeMatcher<T extends SearchContext> extends TypeSafeDiagn
      *
      * @param width expected width of the element
      * @param height expected height of the element
+     * @param <T> is a type of a value to be matched. It should extend {@link WebElement} or it should extend both
+     *           {@link SearchContext} and {@link HasSize}.
      * @return instance of {@link HasSizeMatcher}
      */
     public static <T extends SearchContext> HasSizeMatcher<T> hasDimensionalSize(int width, int height) {
@@ -47,6 +49,8 @@ public final class HasSizeMatcher<T extends SearchContext> extends TypeSafeDiagn
      *
      * @param width expected width of the element
      * @param heightMatcher height criteria
+     * @param <T> is a type of a value to be matched. It should extend {@link WebElement} or it should extend both
+     *           {@link SearchContext} and {@link HasSize}.
      * @return instance of {@link HasSizeMatcher}
      */
     public static <T extends SearchContext> HasSizeMatcher<T> hasDimensionalSize(int width, Matcher<Integer> heightMatcher) {
@@ -60,6 +64,8 @@ public final class HasSizeMatcher<T extends SearchContext> extends TypeSafeDiagn
      *
      * @param widthMatcher width criteria
      * @param height expected height of the element
+     * @param <T> is a type of a value to be matched. It should extend {@link WebElement} or it should extend both
+     *           {@link SearchContext} and {@link HasSize}.
      * @return instance of {@link HasSizeMatcher}
      */
     public static <T extends SearchContext> HasSizeMatcher<T> hasDimensionalSize(Matcher<Integer> widthMatcher, int height) {
@@ -73,6 +79,8 @@ public final class HasSizeMatcher<T extends SearchContext> extends TypeSafeDiagn
      *
      * @param widthMatcher width criteria
      * @param heightMatcher height criteria
+     * @param <T> is a type of a value to be matched. It should extend {@link WebElement} or it should extend both
+     *           {@link SearchContext} and {@link HasSize}.
      * @return instance of {@link HasSizeMatcher}
      */
     public static <T extends SearchContext> HasSizeMatcher<T> hasDimensionalSize(Matcher<Integer> widthMatcher,

@@ -34,6 +34,8 @@ public final class HasAttributeMatcher<T extends SearchContext> extends TypeSafe
      *
      * @param attribute to be checked
      * @param value criteria to check the attribute
+     * @param <T> is a type of a value to be matched. It should extend {@link WebElement} or it should extend both
+     *           {@link SearchContext} and {@link HasAttribute}.
      * @return instance of {@link HasAttributeMatcher}
      */
     public static <T extends SearchContext> HasAttributeMatcher<T> hasAttribute(String attribute, Matcher<String> value) {
@@ -48,6 +50,8 @@ public final class HasAttributeMatcher<T extends SearchContext> extends TypeSafe
      *
      * @param attribute to be checked
      * @param value which is expected to be equal to value of the attribute.
+     * @param <T> is a type of a value to be matched. It should extend {@link WebElement} or it should extend both
+     *           {@link SearchContext} and {@link HasAttribute}.
      * @return instance of {@link HasAttributeMatcher}
      */
     public static <T extends SearchContext> HasAttributeMatcher<T> hasAttribute(String attribute, String value) {
@@ -61,6 +65,8 @@ public final class HasAttributeMatcher<T extends SearchContext> extends TypeSafe
      * value.
      *
      * @param attribute to be checked
+     * @param <T> is a type of a value to be matched. It should extend {@link WebElement} or it should extend both
+     *           {@link SearchContext} and {@link HasAttribute}.
      * @return instance of {@link HasAttributeMatcher}
      */
     public static <T extends SearchContext> HasAttributeMatcher<T> hasAttribute(String attribute) {

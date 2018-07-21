@@ -61,6 +61,7 @@ public class Presence<T extends GetStep<T>> extends GetStepSupplier<T, Boolean, 
      *
      * @param function that should return something. If the result of {@link Function#apply(Object)} is not {@code null}
      *                 and not the empty iterable/array the this is considered present.
+     * @param <T> is a type of a {@link GetStep} subclass.
      * @return an instance of {@link Presence}.
      */
     public static <T extends GetStep<T>> Presence<T> presenceOf(Function<T, ?> function) {
@@ -72,6 +73,7 @@ public class Presence<T extends GetStep<T>> extends GetStepSupplier<T, Boolean, 
      *
      * @param supplier of a function. If the result of {@link Function#apply(Object)} is not
      *                 {@code null} and not the empty iterable/array the this is considered present.
+     * @param <T> is a type of a {@link GetStep} subclass.
      * @return an instance of {@link Presence}.
      */
     public static <T extends GetStep<T>> Presence<T> presenceOf(GetStepSupplier<T, ?, ?> supplier) {

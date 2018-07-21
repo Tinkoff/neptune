@@ -38,7 +38,7 @@ public final class ThatValue<T> extends SequentialActionSupplier<Check, Object, 
      *
      * @param description of a value to be verified.
      * @param t value to be verified.
-     * @param <T> is a type to be verified.
+     * @param <T> is a type of a value to be verified.
      * @return an instance of {@link ThatValue} with defined value to be verified.
      */
     public static <T> ThatValue<T> thatValue(String description, T t) {
@@ -59,6 +59,7 @@ public final class ThatValue<T> extends SequentialActionSupplier<Check, Object, 
     /**
      * Adds more criteria to check the value.
      *
+     * @param description of a function
      * @param function value gets some value from an object which is needed to be matched
      * @param criteria matcher to be added
      * @param <R> the type of a value that should be returned by function and matched by criteria.

@@ -38,8 +38,8 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
         return format(FOUND_ON_CONDITION, by, condition);
     }
 
-    private static String expectedDescriptionOfTheFoundElements(By by) {
-        return format(FOUND_BY_PATTERN, by);
+    private static String expectedDescriptionOfTheFoundElements() {
+        return format(FOUND_BY_PATTERN, CLASS_THAT_DOES_NOT_EXIST);
     }
 
     @Test(retryAnalyzer = RetryAnalyzer.class)
@@ -50,7 +50,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
         assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
         assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(HALF_SECOND.toMillis()));
         assertThat(webElements.size(), is(0));
-        assertThat(webElements.toString(), is(expectedDescriptionOfTheFoundElements(CLASS_THAT_DOES_NOT_EXIST)));
+        assertThat(webElements.toString(), is(expectedDescriptionOfTheFoundElements()));
     }
 
     @Test(retryAnalyzer = RetryAnalyzer.class)
@@ -64,7 +64,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
             assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
             assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(HALF_SECOND.toMillis()));
             assertThat(webElements.size(), is(0));
-            assertThat(webElements.toString(), is(expectedDescriptionOfTheFoundElements(CLASS_THAT_DOES_NOT_EXIST)));
+            assertThat(webElements.toString(), is(expectedDescriptionOfTheFoundElements()));
         }
         finally {
             removeProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
@@ -143,7 +143,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
         assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
         assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(HALF_SECOND.toMillis()));
         assertThat(webElements.size(), is(0));
-        assertThat(webElements.toString(), is(expectedDescriptionOfTheFoundElements(CLASS_THAT_DOES_NOT_EXIST)));
+        assertThat(webElements.toString(), is(expectedDescriptionOfTheFoundElements()));
     }
 
     @Test(retryAnalyzer = RetryAnalyzer.class)
@@ -158,7 +158,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
             assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
             assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(HALF_SECOND.toMillis()));
             assertThat(webElements.size(), is(0));
-            assertThat(webElements.toString(), is(expectedDescriptionOfTheFoundElements(CLASS_THAT_DOES_NOT_EXIST)));
+            assertThat(webElements.toString(), is(expectedDescriptionOfTheFoundElements()));
         }
         finally {
             removeProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
@@ -241,7 +241,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
         assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
         assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(HALF_SECOND.toMillis()));
         assertThat(webElements.size(), is(0));
-        assertThat(webElements.toString(), is(expectedDescriptionOfTheFoundElements(CLASS_THAT_DOES_NOT_EXIST)));
+        assertThat(webElements.toString(), is(expectedDescriptionOfTheFoundElements()));
     }
 
     @Test(retryAnalyzer = RetryAnalyzer.class)
@@ -257,7 +257,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
             assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
             assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(HALF_SECOND.toMillis()));
             assertThat(webElements.size(), is(0));
-            assertThat(webElements.toString(), is(expectedDescriptionOfTheFoundElements(CLASS_THAT_DOES_NOT_EXIST)));
+            assertThat(webElements.toString(), is(expectedDescriptionOfTheFoundElements()));
         }
         finally {
             removeProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
@@ -637,9 +637,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
         List<WebElement> webElements = seleniumSteps.find(webElements(by, text, ONE_SECOND, (Predicate<? super WebElement>) criteria));
         setEndBenchMark();
         assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
-        assertThat(new BigDecimal(getTimeDifference() - ONE_SECOND.toMillis()),
-                either(lessThan(new BigDecimal(HALF_SECOND.toMillis())))
-                        .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(200))));
+        assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(HALF_SECOND.toMillis()));
         assertThat(webElements.size(), is(0));
         assertThat(webElements.toString(), is(expectedListDescription));
     }
@@ -656,9 +654,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
             List<WebElement> webElements = seleniumSteps.find(webElements(by, text, (Predicate<? super WebElement>) criteria));
             setEndBenchMark();
             assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
-            assertThat(new BigDecimal(getTimeDifference() - ONE_SECOND.toMillis()),
-                    either(lessThan(new BigDecimal(HALF_SECOND.toMillis())))
-                            .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(200))));
+            assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(HALF_SECOND.toMillis()));
             assertThat(webElements.size(), is(0));
             assertThat(webElements.toString(), is(expectedListDescription));
         }
@@ -785,9 +781,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
         List<WebElement> webElements = seleniumSteps.find(webElements(by, pattern, ONE_SECOND, (Predicate<? super WebElement>) criteria));
         setEndBenchMark();
         assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
-        assertThat(new BigDecimal(getTimeDifference() - ONE_SECOND.toMillis()),
-                either(lessThan(new BigDecimal(HALF_SECOND.toMillis())))
-                        .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(200))));
+        assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(HALF_SECOND.toMillis()));
         assertThat(webElements.size(), is(0));
         assertThat(webElements.toString(), is(expectedListDescription));
     }
@@ -804,9 +798,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
             List<WebElement> webElements = seleniumSteps.find(webElements(by, pattern, (Predicate<? super WebElement>) criteria));
             setEndBenchMark();
             assertThat(getTimeDifference(), greaterThanOrEqualTo(ONE_SECOND.toMillis()));
-            assertThat(new BigDecimal(getTimeDifference() - ONE_SECOND.toMillis()),
-                    either(lessThan(new BigDecimal(HALF_SECOND.toMillis())))
-                            .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(200))));
+            assertThat(getTimeDifference() - ONE_SECOND.toMillis(), lessThan(HALF_SECOND.toMillis()));
             assertThat(webElements.size(), is(0));
             assertThat(webElements.toString(), is(expectedListDescription));
         }

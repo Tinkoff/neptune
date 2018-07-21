@@ -67,6 +67,7 @@ public final class SequentialGetCSSValueSupplier extends
      *                       It is expected that result of the wrapped function is some instance of {@link WebElement}
      *                       or some class which implements {@link SearchContext} and {@link HasCssValue}. Otherwise
      *                       evaluation of the css value throws {@link UnsupportedOperationException}.
+     * @param <T> subtype of {@link SearchContext} which provides ability to get value of the css property.
      * @return self-reference
      */
     public <T extends SearchContext> SequentialGetCSSValueSupplier of(SearchSupplier<T> searchSupplier) {

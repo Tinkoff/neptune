@@ -11,6 +11,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSingleCheckedObject.getSingle;
+import static ru.tinkoff.qa.neptune.selenium.functions.java.script.EvaluateAsyncJavaScript.evalAsyncJS;
 import static ru.tinkoff.qa.neptune.selenium.functions.java.script.EvaluateJavaScript.evalJS;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
@@ -52,14 +53,16 @@ public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumS
      * return some {@code boolean} value instead.
      *
      * The documentation below was taken from Selenium:
-     * <>p</>
-     * The script
+     * <p>
+     * Executes JavaScript in the context of the currently selected frame or window. The script
      * fragment provided will be executed as the body of an anonymous function.
+     * 
      *
-     * <>p</>
+     * <p>
      * Within the script, use <code>document</code> to refer to the current document. Note that local
      * variables will not be available once the script has finished executing, though global variables
      * will persist.
+     * 
      *
      * <p>
      * If the script has a return value (i.e. if the script contains a <code>return</code> statement),
@@ -76,8 +79,8 @@ public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumS
      * <li>For a map, return a Map&lt;String, Object&gt; with values following the rules above.</li>
      * <li>Unless the value is null or there is no return value, in which null is returned</li>
      * </ul>
+     * 
      *
-     * <p>
      * Arguments must be a number, a boolean, a String, WebElement, or a List of any combination of
      * the above. An exception will be thrown if the arguments do not meet these criteria. The
      * arguments will be made available to the JavaScript via the "arguments" magic variable, as if
@@ -110,14 +113,16 @@ public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumS
      * return some {@code boolean} value instead.
      *
      * The documentation below was taken from Selenium:
-     * <>p</>
-     * The script
+     * <p>
+     * Executes JavaScript in the context of the currently selected frame or window. The script
      * fragment provided will be executed as the body of an anonymous function.
+     * 
      *
-     * <>p</>
+     * <p>
      * Within the script, use <code>document</code> to refer to the current document. Note that local
      * variables will not be available once the script has finished executing, though global variables
      * will persist.
+     * 
      *
      * <p>
      * If the script has a return value (i.e. if the script contains a <code>return</code> statement),
@@ -134,8 +139,8 @@ public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumS
      * <li>For a map, return a Map&lt;String, Object&gt; with values following the rules above.</li>
      * <li>Unless the value is null or there is no return value, in which null is returned</li>
      * </ul>
+     * 
      *
-     * <p>
      * Arguments must be a number, a boolean, a String, WebElement, or a List of any combination of
      * the above. An exception will be thrown if the arguments do not meet these criteria. The
      * arguments will be made available to the JavaScript via the "arguments" magic variable, as if
@@ -168,14 +173,16 @@ public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumS
      * return some {@code boolean} value instead.
      *
      * The documentation below was taken from Selenium:
-     * <>p</>
-     * The script
+     * <p>
+     * Executes JavaScript in the context of the currently selected frame or window. The script
      * fragment provided will be executed as the body of an anonymous function.
+     * 
      *
-     * <>p</>
+     * <p>
      * Within the script, use <code>document</code> to refer to the current document. Note that local
      * variables will not be available once the script has finished executing, though global variables
      * will persist.
+     * 
      *
      * <p>
      * If the script has a return value (i.e. if the script contains a <code>return</code> statement),
@@ -192,8 +199,8 @@ public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumS
      * <li>For a map, return a Map&lt;String, Object&gt; with values following the rules above.</li>
      * <li>Unless the value is null or there is no return value, in which null is returned</li>
      * </ul>
+     * 
      *
-     * <p>
      * Arguments must be a number, a boolean, a String, WebElement, or a List of any combination of
      * the above. An exception will be thrown if the arguments do not meet these criteria. The
      * arguments will be made available to the JavaScript via the "arguments" magic variable, as if
@@ -224,14 +231,16 @@ public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumS
      * return some {@code boolean} value instead.
      *
      * The documentation below was taken from Selenium:
-     * <>p</>
-     * The script
+     * <p>
+     * Executes JavaScript in the context of the currently selected frame or window. The script
      * fragment provided will be executed as the body of an anonymous function.
+     * 
      *
-     * <>p</>
+     * <p>
      * Within the script, use <code>document</code> to refer to the current document. Note that local
      * variables will not be available once the script has finished executing, though global variables
      * will persist.
+     * 
      *
      * <p>
      * If the script has a return value (i.e. if the script contains a <code>return</code> statement),
@@ -248,8 +257,8 @@ public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumS
      * <li>For a map, return a Map&lt;String, Object&gt; with values following the rules above.</li>
      * <li>Unless the value is null or there is no return value, in which null is returned</li>
      * </ul>
+     * 
      *
-     * <p>
      * Arguments must be a number, a boolean, a String, WebElement, or a List of any combination of
      * the above. An exception will be thrown if the arguments do not meet these criteria. The
      * arguments will be made available to the JavaScript via the "arguments" magic variable, as if
@@ -274,14 +283,16 @@ public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumS
      * This methods builds a function which evaluates java script and returns the result as it is.
      *
      * The documentation below was taken from Selenium:
-     * <>p</>
-     * The script
+     * <p>
+     * Executes JavaScript in the context of the currently selected frame or window. The script
      * fragment provided will be executed as the body of an anonymous function.
+     * 
      *
-     * <>p</>
+     * <p>
      * Within the script, use <code>document</code> to refer to the current document. Note that local
      * variables will not be available once the script has finished executing, though global variables
      * will persist.
+     * 
      *
      * <p>
      * If the script has a return value (i.e. if the script contains a <code>return</code> statement),
@@ -298,8 +309,8 @@ public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumS
      * <li>For a map, return a Map&lt;String, Object&gt; with values following the rules above.</li>
      * <li>Unless the value is null or there is no return value, in which null is returned</li>
      * </ul>
+     * 
      *
-     * <p>
      * Arguments must be a number, a boolean, a String, WebElement, or a List of any combination of
      * the above. An exception will be thrown if the arguments do not meet these criteria. The
      * arguments will be made available to the JavaScript via the "arguments" magic variable, as if
@@ -321,11 +332,13 @@ public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumS
      * return some {@code boolean} value instead.
      *
      * The documentation below was taken from Selenium:
-     * <>p</>
-     * Unlike executing {@link org.openqa.selenium.JavascriptExecutor#executeScript(String, Object...) synchronous JavaScript},
+     * <p>
+     * Execute an asynchronous piece of JavaScript in the context of the currently selected frame or
+     * window. Unlike executing {@link org.openqa.selenium.JavascriptExecutor#executeScript(String, Object...) synchronous JavaScript},
      * scripts executed with this method must explicitly signal they are finished by invoking the
      * provided callback. This callback is always injected into the executed function as the last
      * argument.
+     * 
      *
      * <p>
      * The first argument passed to the callback function will be used as the script's result. This
@@ -341,13 +354,14 @@ public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumS
      * <li>For a map, return a Map&lt;String, Object&gt; with values following the rules above.</li>
      * <li>Unless the value is null or there is no return value, in which null is returned</li>
      * </ul>
+     * 
      *
      * <p>
      * The default timeout for a script to be executed is 0ms. In most cases, including the examples
      * below, one must set the script timeout
      * {@link WebDriver.Timeouts#setScriptTimeout(long, java.util.concurrent.TimeUnit)}  beforehand
      * to a value sufficiently large enough.
-     *
+     * 
      *
      * <p>
      * Example #1: Performing a sleep in the browser under test. <pre>{@code
@@ -357,6 +371,7 @@ public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumS
      *   System.out.println(
      *       "Elapsed time: " + System.currentTimeMillis() - start);
      * }</pre>
+     * 
      *
      * <p>
      * Example #2: Synchronizing a test with an AJAX application: <pre>{@code
@@ -368,6 +383,7 @@ public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumS
      *   driver.switchTo().frame("composeWidget");
      *   driver.findElement(By.id("to")).sendKeys("bog@example.com");
      * }</pre>
+     * 
      *
      * <p>
      * Example #3: Injecting a XMLHttpRequest and waiting for the result: <pre>{@code
@@ -385,7 +401,8 @@ public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumS
      *   assertEquals("cheese", json.get("food").getAsString());
      * }</pre>
      *
-     * <p>
+     * 
+     *
      * Script arguments must be a number, a boolean, a String, WebElement, or a List of any
      * combination of the above. An exception will be thrown if the arguments do not meet these
      * criteria. The arguments will be made available to the JavaScript via the "arguments"
@@ -404,7 +421,7 @@ public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumS
         checkScript(script);
         checkArguments(arguments);
         return new GetJavaScriptResultSupplier()
-                .set(getSingle(getAsyncScriptDescription(script, arguments), CurrentContentFunction.currentContent().andThen(EvaluateAsyncJavaScript.evalAsyncJS(script, arguments)),
+                .set(getSingle(getAsyncScriptDescription(script, arguments), CurrentContentFunction.currentContent().andThen(evalAsyncJS(script, arguments)),
                         criteria, true, exceptionSupplier));
     }
 
@@ -415,11 +432,13 @@ public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumS
      * return some {@code boolean} value instead.
      *
      * The documentation below was taken from Selenium:
-     * <>p</>
-     * Unlike executing {@link org.openqa.selenium.JavascriptExecutor#executeScript(String, Object...) synchronous JavaScript},
+     * <p>
+     * Execute an asynchronous piece of JavaScript in the context of the currently selected frame or
+     * window. Unlike executing {@link org.openqa.selenium.JavascriptExecutor#executeScript(String, Object...) synchronous JavaScript},
      * scripts executed with this method must explicitly signal they are finished by invoking the
      * provided callback. This callback is always injected into the executed function as the last
      * argument.
+     * 
      *
      * <p>
      * The first argument passed to the callback function will be used as the script's result. This
@@ -435,13 +454,14 @@ public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumS
      * <li>For a map, return a Map&lt;String, Object&gt; with values following the rules above.</li>
      * <li>Unless the value is null or there is no return value, in which null is returned</li>
      * </ul>
+     * 
      *
      * <p>
      * The default timeout for a script to be executed is 0ms. In most cases, including the examples
      * below, one must set the script timeout
      * {@link WebDriver.Timeouts#setScriptTimeout(long, java.util.concurrent.TimeUnit)}  beforehand
      * to a value sufficiently large enough.
-     *
+     * 
      *
      * <p>
      * Example #1: Performing a sleep in the browser under test. <pre>{@code
@@ -451,6 +471,7 @@ public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumS
      *   System.out.println(
      *       "Elapsed time: " + System.currentTimeMillis() - start);
      * }</pre>
+     * 
      *
      * <p>
      * Example #2: Synchronizing a test with an AJAX application: <pre>{@code
@@ -462,6 +483,7 @@ public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumS
      *   driver.switchTo().frame("composeWidget");
      *   driver.findElement(By.id("to")).sendKeys("bog@example.com");
      * }</pre>
+     * 
      *
      * <p>
      * Example #3: Injecting a XMLHttpRequest and waiting for the result: <pre>{@code
@@ -479,7 +501,8 @@ public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumS
      *   assertEquals("cheese", json.get("food").getAsString());
      * }</pre>
      *
-     * <p>
+     * 
+     *
      * Script arguments must be a number, a boolean, a String, WebElement, or a List of any
      * combination of the above. An exception will be thrown if the arguments do not meet these
      * criteria. The arguments will be made available to the JavaScript via the "arguments"
@@ -495,7 +518,7 @@ public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumS
         checkScript(script);
         checkArguments(arguments);
         return new GetJavaScriptResultSupplier()
-                .set(getSingle(getAsyncScriptDescription(script, arguments), CurrentContentFunction.currentContent().andThen(EvaluateAsyncJavaScript.evalAsyncJS(script, arguments)),
+                .set(getSingle(getAsyncScriptDescription(script, arguments), CurrentContentFunction.currentContent().andThen(evalAsyncJS(script, arguments)),
                         criteria, true));
     }
 
@@ -503,11 +526,13 @@ public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumS
      * This method builds a function which evaluates java asynchronous script and returns the result as it is.
      *
      * The documentation below was taken from Selenium:
-     * <>p</>
-     * Unlike executing {@link org.openqa.selenium.JavascriptExecutor#executeScript(String, Object...) synchronous JavaScript},
+     * <p>
+     * Execute an asynchronous piece of JavaScript in the context of the currently selected frame or
+     * window. Unlike executing {@link org.openqa.selenium.JavascriptExecutor#executeScript(String, Object...) synchronous JavaScript},
      * scripts executed with this method must explicitly signal they are finished by invoking the
      * provided callback. This callback is always injected into the executed function as the last
      * argument.
+     * 
      *
      * <p>
      * The first argument passed to the callback function will be used as the script's result. This
@@ -523,13 +548,14 @@ public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumS
      * <li>For a map, return a Map&lt;String, Object&gt; with values following the rules above.</li>
      * <li>Unless the value is null or there is no return value, in which null is returned</li>
      * </ul>
+     * 
      *
      * <p>
      * The default timeout for a script to be executed is 0ms. In most cases, including the examples
      * below, one must set the script timeout
      * {@link WebDriver.Timeouts#setScriptTimeout(long, java.util.concurrent.TimeUnit)}  beforehand
      * to a value sufficiently large enough.
-     *
+     * 
      *
      * <p>
      * Example #1: Performing a sleep in the browser under test. <pre>{@code
@@ -539,6 +565,7 @@ public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumS
      *   System.out.println(
      *       "Elapsed time: " + System.currentTimeMillis() - start);
      * }</pre>
+     * 
      *
      * <p>
      * Example #2: Synchronizing a test with an AJAX application: <pre>{@code
@@ -550,6 +577,7 @@ public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumS
      *   driver.switchTo().frame("composeWidget");
      *   driver.findElement(By.id("to")).sendKeys("bog@example.com");
      * }</pre>
+     * 
      *
      * <p>
      * Example #3: Injecting a XMLHttpRequest and waiting for the result: <pre>{@code
@@ -567,7 +595,8 @@ public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumS
      *   assertEquals("cheese", json.get("food").getAsString());
      * }</pre>
      *
-     * <p>
+     * 
+     *
      * Script arguments must be a number, a boolean, a String, WebElement, or a List of any
      * combination of the above. An exception will be thrown if the arguments do not meet these
      * criteria. The arguments will be made available to the JavaScript via the "arguments"
@@ -581,6 +610,6 @@ public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumS
                                                                      Object... arguments) {
         checkScript(script);
         checkArguments(arguments);
-        return new GetJavaScriptResultSupplier().set(CurrentContentFunction.currentContent().andThen(EvaluateAsyncJavaScript.evalAsyncJS(script, arguments)));
+        return new GetJavaScriptResultSupplier().set(CurrentContentFunction.currentContent().andThen(evalAsyncJS(script, arguments)));
     }
 }
