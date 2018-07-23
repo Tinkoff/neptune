@@ -12,9 +12,14 @@ dependencies {
 uploadArchives {
     repositories {
         mavenDeployer {
+            repository(url: 'http://nexus.tcsbank.ru/content/repositories/tcs-qa') {
+                authentication(userName: mavenDeployLogin, password: mavenDeployPassword)
+            }
+
             pom.project {
                 packaging 'pom'
                 name 'allure.testng.bridge'
+                version version
                 description 'Java client for Appium Mobile Webdriver'
                 url 'https://github.com/TinkoffCreditSystems/neptune'
                 developers {
@@ -24,6 +29,19 @@ uploadArchives {
                         url 'https://github.com/TikhomirovSergey'
                         id 'TikhomirovSergey'
                     }
+                }
+                licenses {
+                    license {
+                        name 'Apache License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution 'repo'
+                    }
+                }
+                scm {
+                    url 'https://github.com/TinkoffCreditSystems/neptune'
+                    connection 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
+                    developerConnection 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
+                    tag 'HEAD'
                 }
             }
         }
