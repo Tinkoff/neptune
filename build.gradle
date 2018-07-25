@@ -25,6 +25,8 @@ subprojects {
         jacksonVersion = '2.9.6'
         mavenDeployLogin =  REPO_USER_NAME
         mavenDeployPassword = REPO_USER_PASSWORD
+        ebeanVersion = '11.19.1'
+        jaxbVersion = '2.3.0.1'
     }
 
     dependencies {
@@ -33,6 +35,7 @@ subprojects {
         testCompile group: 'org.testng', name: 'testng', version: testNGVersion
         testCompile group: 'org.hamcrest', name: 'java-hamcrest', version: hamcrestVersion
         compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
+        compile group: 'com.fasterxml.jackson.core', name: 'jackson.core', version: jacksonVersion
         compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
         compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-jaxb-annotations', version: jacksonVersion
     }
