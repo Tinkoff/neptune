@@ -34,6 +34,19 @@ class FindLabeledWidgets<R extends Widget> extends FindWidgets<R> {
                 }).collect(toList()).size() > 0));
     }
 
+    List<Class<? extends R>> getSubclasses() {
+        List<Class<? extends R>> resultList = findSubclasses();
+
+        if (resultList.size() > 0) {
+            return resultList;
+        }
+        throw new IllegalArgumentException(String.format("There is no any non-abstract subclass of %s which " +
+                        "is annotated by any org.openqa.selenium.support.Find* annotation " +
+                        "and has a constructor with only one parameter of a type extending %s. " +
+                        "Also convenient classes should implement %s",
+                Widget.getWidgetName(classOfAWidget), WebElement.class.getName(), Labeled.class.getName()));
+    }
+
     static <R extends Widget> Function<SearchContext, List<R>> labeledWidgets(Class<R> classOfAWidget,
                                                                               String conditionString) {
         return new FindLabeledWidgets<>(classOfAWidget, conditionString);
