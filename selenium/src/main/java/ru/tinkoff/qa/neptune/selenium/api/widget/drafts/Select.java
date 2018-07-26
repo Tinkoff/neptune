@@ -14,4 +14,11 @@ public abstract class Select extends Widget implements Editable<String>, HasValu
     public Select(WebElement wrappedElement) {
         super(wrappedElement);
     }
+
+    /**
+     * This method returns options available for current select.
+     *
+     * @return a list of available options.
+     */
+    public abstract List<String> getOptions();
 }

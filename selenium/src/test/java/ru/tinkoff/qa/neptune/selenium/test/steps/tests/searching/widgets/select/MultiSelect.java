@@ -31,6 +31,11 @@ public class MultiSelect extends Select implements Labeled {
     }
 
     @Override
+    public List<String> getOptions() {
+        return options.stream().map(WebElement::getText).collect(toList());
+    }
+
+    @Override
     public void edit(String valueToSet) {
         WebElement optionToSelect =
                 options.stream().filter(option -> valueToSet.equals(option.getText()))
