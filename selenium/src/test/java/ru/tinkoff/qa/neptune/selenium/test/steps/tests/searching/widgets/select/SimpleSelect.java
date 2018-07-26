@@ -8,7 +8,9 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
 import static ru.tinkoff.qa.neptune.selenium.api.widget.Priority.HIGHEST;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.OPTION;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.SELECT;
@@ -24,6 +26,11 @@ public class SimpleSelect extends Select {
 
     public SimpleSelect(WebElement wrappedElement) {
         super(wrappedElement);
+    }
+
+    @Override
+    public List<String> getOptions() {
+        return options.stream().map(WebElement::getText).collect(toList());
     }
 
     @Override

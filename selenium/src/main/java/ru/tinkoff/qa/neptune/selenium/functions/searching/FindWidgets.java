@@ -32,7 +32,7 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
     private static final FindByBuilder builder = new FindByBuilder();
     private static final Reflections reflections = new Reflections("");
 
-    private final Class<? extends R> classOfAWidget;
+    final Class<? extends R> classOfAWidget;
     private final Predicate<Class<? extends R>> classPredicate;
     private final String conditionString;
     private List<Class<? extends R>> classesToInstantiate;
@@ -74,13 +74,18 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
                 .sorted(widgetPriorityComparator()).collect(toList());
     }
 
-    private List<Class<? extends R>> getSubclasses() {
-
+    List<Class<? extends R>> findSubclasses() {
         List<Class<? extends R>> resultList = findSubclasses(classOfAWidget, classPredicate);
 
         if (classPredicate.test(classOfAWidget)) {
             resultList.add(classOfAWidget);
         }
+
+        return resultList;
+    }
+
+    List<Class<? extends R>> getSubclasses() {
+        List<Class<? extends R>> resultList = findSubclasses();
 
         if (resultList.size() > 0) {
             return resultList;
