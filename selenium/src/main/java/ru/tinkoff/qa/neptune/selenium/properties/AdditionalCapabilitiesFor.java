@@ -16,7 +16,7 @@ public @interface AdditionalCapabilitiesFor {
      * of the marked class
      * @return type of capabilities to be amended
      */
-    CapabilityTypes type();
+    CapabilityTypes[] type();
 
     /**
      * Name of the supplier which is given by customizer.

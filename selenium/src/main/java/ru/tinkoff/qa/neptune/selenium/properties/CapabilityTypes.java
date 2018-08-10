@@ -260,7 +260,7 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
                             AdditionalCapabilitiesFor additionalCapabilitiesFor;
                             return ((additionalCapabilitiesFor =
                                     capabilitySupplier.getClass().getAnnotation(AdditionalCapabilitiesFor.class)) != null
-                                    && additionalCapabilitiesFor.type().equals(this)
+                                    && contains(additionalCapabilitiesFor.type(), this)
                                     && contains(s.split(","), additionalCapabilitiesFor.supplierName().trim())
                             );
                         }).collect(toList()))

@@ -5,7 +5,7 @@ subprojects {
     apply plugin: 'maven-publish'
 
     group 'ru.tinkoff.qa.neptune'
-    version '0.0.2-ALPHA'
+    version '0.0.3-ALPHA'
 
     sourceCompatibility = 1.9
     targetCompatibility = 1.9
@@ -20,7 +20,7 @@ subprojects {
     ext {
         testNGVersion = '6.14.3'
         hamcrestVersion = '2.0.0.0'
-        seleniumVersion = '3.13.0'
+        seleniumVersion = '3.14.0'
         allureVersion = '2.7.0'
         jacksonVersion = '2.9.6'
         mavenDeployLogin =  REPO_USER_NAME
@@ -29,7 +29,7 @@ subprojects {
 
     dependencies {
         compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
-        compile group: 'com.google.guava', name: 'guava', version: '25.0-jre'
+        compile group: 'com.google.guava', name: 'guava', version: '26.0-jre'
         testCompile group: 'org.testng', name: 'testng', version: testNGVersion
         testCompile group: 'org.hamcrest', name: 'java-hamcrest', version: hamcrestVersion
         compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
