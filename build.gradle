@@ -17,6 +17,10 @@ subprojects {
         mavenCentral()
     }
 
+    repositories {
+        mavenCentral()
+    }
+
     ext {
         testNGVersion = '6.14.3'
         hamcrestVersion = '2.0.0.0'
@@ -38,6 +42,10 @@ subprojects {
         compile group: 'com.fasterxml.jackson.core', name: 'jackson.core', version: jacksonVersion
         compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
         compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-jaxb-annotations', version: jacksonVersion
+        compile (group: 'org.reflections', name: 'reflections', version: '0.9.11') {
+            exclude group: 'com.google.guava'
+            exclude group: 'com.google.code.gson'
+        }
     }
 
     test {

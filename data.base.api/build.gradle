@@ -1,3 +1,6 @@
 dependencies {
     compile project(':core.api')
+    compile group: 'org.datanucleus', name: 'datanucleus-accessplatform-jpa-rdbms', version: '5.1.11'
+    compile group: 'javax.annotation', name: 'javax.annotation-api', version: '1.3.2'
+    compile group: 'org.apache.ant', name: 'ant', version: '1.10.5'
 }

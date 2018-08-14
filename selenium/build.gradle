@@ -1,10 +1,6 @@
 dependencies {
     compile project(':core.api')
     compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: seleniumVersion
-    compile (group: 'org.reflections', name: 'reflections', version: '0.9.11') {
-        exclude group: 'com.google.guava'
-        exclude group: 'com.google.code.gson'
-    }
     compile group: 'org.hamcrest', name: 'java-hamcrest', version: hamcrestVersion
     compile (group: 'com.codeborne', name: 'phantomjsdriver', version: '1.4.4') {
         exclude group: 'org.seleniumhq.selenium'

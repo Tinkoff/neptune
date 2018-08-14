@@ -6,6 +6,4 @@ include 'testng.integration'
 include 'allure.integration'
 include 'allure.testng.bridge'
 include 'data.base.api'
-include 'data.base.sql'
-include 'data.base.no.sql'
 
