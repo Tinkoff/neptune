@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.data.base.api.persistence.data;
 
+import org.datanucleus.api.jpa.JPAEntityManagerFactory;
 import org.datanucleus.metadata.PersistenceUnitMetaData;
 import org.datanucleus.metadata.TransactionType;
 import org.reflections.Reflections;
@@ -14,9 +15,9 @@ import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.datanucleus.metadata.TransactionType.RESOURCE_LOCAL;
-import static ru.tinkoff.qa.neptune.data.base.api.persistence.data.PersistenceUnitMetaDataStore.isPersistentUnitMetaDataPresent;
+import static ru.tinkoff.qa.neptune.data.base.api.persistence.data.PersistenceEntityManagerFactoryStore.isPersistentEntityManagerFactory;
 
-public abstract class PersistenceUnitMetaDataSupplier implements Supplier<PersistenceUnitMetaData> {
+public abstract class PersistenceEntityManagerFactorySupplier implements Supplier<JPAEntityManagerFactory> {
 
     private static String DEFAULT_PERSISTENCE_NAME = "dynamic-unit";
     private static TransactionType DEFAULT_TRANSACTION_TYPE = RESOURCE_LOCAL;
@@ -24,9 +25,9 @@ public abstract class PersistenceUnitMetaDataSupplier implements Supplier<Persis
 
     private final PersistenceUnitMetaData persistenceUnitMetaData;
 
-    public PersistenceUnitMetaDataSupplier() {
+    public PersistenceEntityManagerFactorySupplier() {
         PersistenceUnit unit = this.getClass().getAnnotation(PersistenceUnit.class);
-        Class<? extends PersistenceUnitMetaDataSupplier> supplierClass = this.getClass();
+        Class<? extends PersistenceEntityManagerFactorySupplier> supplierClass = this.getClass();
         persistenceUnitMetaData = fillPersistenceUnit(ofNullable(unit)
                 .map(persistenceUnit -> {
                     if (isBlank(persistenceUnit.uri())) {
@@ -54,7 +55,7 @@ public abstract class PersistenceUnitMetaDataSupplier implements Supplier<Persis
     private static String getDynamicUnitName() {
         String unitName = DEFAULT_PERSISTENCE_NAME;
         int index = 0;
-        while (isPersistentUnitMetaDataPresent(unitName)) {
+        while (isPersistentEntityManagerFactory(unitName)) {
             index ++;
             unitName = DEFAULT_PERSISTENCE_NAME + index;
         }
@@ -79,7 +80,7 @@ public abstract class PersistenceUnitMetaDataSupplier implements Supplier<Persis
     }
 
     @Override
-    public PersistenceUnitMetaData get() {
-        return persistenceUnitMetaData;
+    public JPAEntityManagerFactory get() {
+        return new JPAEntityManagerFactory(persistenceUnitMetaData, null);
     }
 }
