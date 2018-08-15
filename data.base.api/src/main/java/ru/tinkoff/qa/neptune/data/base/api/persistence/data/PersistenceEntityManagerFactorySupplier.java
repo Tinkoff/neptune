@@ -19,7 +19,6 @@ import static ru.tinkoff.qa.neptune.data.base.api.persistence.data.PersistenceEn
 
 public abstract class PersistenceEntityManagerFactorySupplier implements Supplier<JPAEntityManagerFactory> {
 
-    private static String DEFAULT_PERSISTENCE_NAME = "dynamic-unit";
     private static TransactionType DEFAULT_TRANSACTION_TYPE = RESOURCE_LOCAL;
     private static final Reflections REFLECTIONS = new Reflections("");
 
@@ -53,11 +52,12 @@ public abstract class PersistenceEntityManagerFactorySupplier implements Supplie
     }
 
     private static String getDynamicUnitName() {
-        String unitName = DEFAULT_PERSISTENCE_NAME;
+        String defaultPersistenceName = "dynamic-unit";
+        String unitName = defaultPersistenceName;
         int index = 0;
         while (isPersistentEntityManagerFactory(unitName)) {
             index ++;
-            unitName = DEFAULT_PERSISTENCE_NAME + index;
+            unitName = defaultPersistenceName + index;
         }
         return unitName;
     }
