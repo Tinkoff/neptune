@@ -81,6 +81,9 @@ public abstract class PersistenceManagerFactorySupplier implements Supplier<JDOP
 
     @Override
     public JDOPersistenceManagerFactory get() {
-        return new JDOPersistenceManagerFactory(persistenceUnitMetaData, null);
+        JDOPersistenceManagerFactory managerFactory =
+                new JDOPersistenceManagerFactory(persistenceUnitMetaData, null);
+        managerFactory.setName(persistenceUnitMetaData.getName());
+        return managerFactory;
     }
 }

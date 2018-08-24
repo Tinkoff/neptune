@@ -25,8 +25,9 @@ public class DataBaseSteps implements GetStep<DataBaseSteps>, PerformActionStep<
 
     public DataBaseSteps switchTo(JDOPersistenceManagerFactory jdoPersistenceManagerFactory) {
         PersistenceManager factory = jdoPersistenceManagerMap.get(jdoPersistenceManagerFactory);
-        if (factory == null || !factory.isClosed()) {
-            jdoPersistenceManagerMap.put(defaultFactory, defaultFactory.getPersistenceManager());
+        if (factory == null || factory.isClosed()) {
+            jdoPersistenceManagerMap.put(jdoPersistenceManagerFactory,
+                    jdoPersistenceManagerFactory.getPersistenceManager());
         }
         currentFactory = jdoPersistenceManagerFactory;
         return this;
