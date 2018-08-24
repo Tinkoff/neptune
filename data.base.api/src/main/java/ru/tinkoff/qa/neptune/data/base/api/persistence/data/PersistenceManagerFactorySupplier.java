@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.data.base.api.persistence.data;
 
-import org.datanucleus.api.jpa.JPAEntityManagerFactory;
+import org.datanucleus.api.jdo.JDOPersistenceManagerFactory;
 import org.datanucleus.metadata.PersistenceUnitMetaData;
 import org.datanucleus.metadata.TransactionType;
 import org.reflections.Reflections;
@@ -15,18 +15,18 @@ import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.datanucleus.metadata.TransactionType.RESOURCE_LOCAL;
-import static ru.tinkoff.qa.neptune.data.base.api.persistence.data.PersistenceEntityManagerFactoryStore.isPersistentEntityManagerFactory;
+import static ru.tinkoff.qa.neptune.data.base.api.persistence.data.PersistenceManagerFactoryStore.isPersistentManagerFactory;
 
-public abstract class PersistenceEntityManagerFactorySupplier implements Supplier<JPAEntityManagerFactory> {
+public abstract class PersistenceManagerFactorySupplier implements Supplier<JDOPersistenceManagerFactory> {
 
     private static TransactionType DEFAULT_TRANSACTION_TYPE = RESOURCE_LOCAL;
     private static final Reflections REFLECTIONS = new Reflections("");
 
     private final PersistenceUnitMetaData persistenceUnitMetaData;
 
-    public PersistenceEntityManagerFactorySupplier() {
+    public PersistenceManagerFactorySupplier() {
         PersistenceUnit unit = this.getClass().getAnnotation(PersistenceUnit.class);
-        Class<? extends PersistenceEntityManagerFactorySupplier> supplierClass = this.getClass();
+        Class<? extends PersistenceManagerFactorySupplier> supplierClass = this.getClass();
         persistenceUnitMetaData = fillPersistenceUnit(ofNullable(unit)
                 .map(persistenceUnit -> {
                     if (isBlank(persistenceUnit.uri())) {
@@ -55,7 +55,7 @@ public abstract class PersistenceEntityManagerFactorySupplier implements Supplie
         String defaultPersistenceName = "dynamic-unit";
         String unitName = defaultPersistenceName;
         int index = 0;
-        while (isPersistentEntityManagerFactory(unitName)) {
+        while (isPersistentManagerFactory(unitName)) {
             index ++;
             unitName = defaultPersistenceName + index;
         }
@@ -80,7 +80,7 @@ public abstract class PersistenceEntityManagerFactorySupplier implements Supplie
     }
 
     @Override
-    public JPAEntityManagerFactory get() {
-        return new JPAEntityManagerFactory(persistenceUnitMetaData, null);
+    public JDOPersistenceManagerFactory get() {
+        return new JDOPersistenceManagerFactory(persistenceUnitMetaData, null);
     }
 }

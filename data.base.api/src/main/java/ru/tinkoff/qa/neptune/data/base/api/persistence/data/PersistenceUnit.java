@@ -10,7 +10,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static org.datanucleus.metadata.TransactionType.RESOURCE_LOCAL;
 
 /**
- * This annotation is designed to mark some subclass of {@link PersistenceEntityManagerFactorySupplier}.
+ * This annotation is designed to mark some subclass of {@link PersistenceManagerFactorySupplier}.
  */
 @Retention(RUNTIME) @Target({TYPE})
 public @interface PersistenceUnit {

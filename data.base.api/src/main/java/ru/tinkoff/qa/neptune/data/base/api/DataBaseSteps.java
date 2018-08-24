@@ -1,47 +1,46 @@
 package ru.tinkoff.qa.neptune.data.base.api;
 
-import org.datanucleus.api.jpa.JPAEntityManagerFactory;
+import org.datanucleus.api.jdo.JDOPersistenceManagerFactory;
 import ru.tinkoff.qa.neptune.core.api.CreateWith;
 import ru.tinkoff.qa.neptune.core.api.GetStep;
 import ru.tinkoff.qa.neptune.core.api.PerformActionStep;
 
-import javax.persistence.EntityManager;
+import javax.jdo.PersistenceManager;
 import java.util.HashMap;
 import java.util.Map;
 
-import static java.util.Optional.ofNullable;
-import static ru.tinkoff.qa.neptune.data.base.api.persistence.data.PersistenceEntityManagerFactoryStore.getEntityManagerFactory;
+import static ru.tinkoff.qa.neptune.data.base.api.persistence.data.PersistenceManagerFactoryStore.getPersistenceManagerFactory;
 
 @CreateWith(provider = DataBaseParameterProvider.class)
 public class DataBaseSteps implements GetStep<DataBaseSteps>, PerformActionStep<DataBaseSteps> {
 
-    private final JPAEntityManagerFactory defaultFactory;
-    private final Map<JPAEntityManagerFactory, EntityManager> jpaEntityManagerMap = new HashMap<>();
-    private JPAEntityManagerFactory currentFactory;
+    private final JDOPersistenceManagerFactory defaultFactory;
+    private final Map<JDOPersistenceManagerFactory, PersistenceManager> jdoPersistenceManagerMap = new HashMap<>();
+    private JDOPersistenceManagerFactory currentFactory;
 
-    public DataBaseSteps(JPAEntityManagerFactory defaultFactory) {
+    public DataBaseSteps(JDOPersistenceManagerFactory defaultFactory) {
         this.defaultFactory = defaultFactory;
         switchToDefault();
     }
 
-    public DataBaseSteps switchTo(JPAEntityManagerFactory jpaEntityManagerFactory) {
-        EntityManager factory = jpaEntityManagerMap.get(jpaEntityManagerFactory);
-        if (factory == null || factory.isOpen()) {
-            jpaEntityManagerMap.put(defaultFactory, defaultFactory.createEntityManager());
+    public DataBaseSteps switchTo(JDOPersistenceManagerFactory jdoPersistenceManagerFactory) {
+        PersistenceManager factory = jdoPersistenceManagerMap.get(jdoPersistenceManagerFactory);
+        if (factory == null || !factory.isClosed()) {
+            jdoPersistenceManagerMap.put(defaultFactory, defaultFactory.getPersistenceManager());
         }
-        currentFactory = jpaEntityManagerFactory;
+        currentFactory = jdoPersistenceManagerFactory;
         return this;
     }
 
     public DataBaseSteps switchTo(String persistenceUnitName) {
-        return switchTo(getEntityManagerFactory(persistenceUnitName, true));
+        return switchTo(getPersistenceManagerFactory(persistenceUnitName, true));
     }
 
     public DataBaseSteps switchToDefault() {
         return switchTo(defaultFactory);
     }
 
-    protected JPAEntityManagerFactory getCurrentFactory() {
+    protected JDOPersistenceManagerFactory getCurrentFactory() {
         return currentFactory;
     }
 }
