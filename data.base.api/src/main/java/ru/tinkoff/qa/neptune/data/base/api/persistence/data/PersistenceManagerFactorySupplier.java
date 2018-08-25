@@ -6,6 +6,7 @@ import org.datanucleus.metadata.TransactionType;
 import org.reflections.Reflections;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
+import javax.jdo.annotations.PersistenceCapable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.function.Supplier;
@@ -46,6 +47,7 @@ public abstract class PersistenceManagerFactorySupplier implements Supplier<JDOP
                 null)));
 
         REFLECTIONS.getSubTypesOf(PersistableObject.class).stream()
+                .filter(clazz -> clazz.getAnnotation(PersistenceCapable.class) != null)
                 .map(Class::getName).collect(Collectors.toList()).forEach(persistenceUnitMetaData::addClassName);
         persistenceUnitMetaData.setExcludeUnlistedClasses();
 

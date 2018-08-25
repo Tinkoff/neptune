@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseSteps;
+import ru.tinkoff.qa.neptune.data.base.api.PersistableEnhancer;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +35,7 @@ public abstract class BaseDbOperationTest {
         Files.copy(db2.toPath(), (testDB2 = new File(format("%s.db", TEST_BASE2))).toPath(), REPLACE_EXISTING);
         System.setProperty(DEFAULT_JDO_PERSISTENCE_MANAGER_FACTORY_PROPERTY.getPropertyName(),
                 TEST_BASE);
+        PersistableEnhancer.main(new String[]{});
         dataBaseSteps = getProxied(DataBaseSteps.class);
     }
 

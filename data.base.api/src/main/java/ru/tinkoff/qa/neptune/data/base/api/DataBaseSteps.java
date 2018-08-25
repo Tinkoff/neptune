@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.data.base.api;
 
+import org.datanucleus.api.jdo.JDOPersistenceManager;
 import org.datanucleus.api.jdo.JDOPersistenceManagerFactory;
 import ru.tinkoff.qa.neptune.core.api.CreateWith;
 import ru.tinkoff.qa.neptune.core.api.GetStep;
@@ -10,13 +11,14 @@ import javax.jdo.PersistenceManager;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static ru.tinkoff.qa.neptune.data.base.api.persistence.data.PersistenceManagerFactoryStore.getPersistenceManagerFactory;
 
 @CreateWith(provider = DataBaseParameterProvider.class)
 public class DataBaseSteps implements GetStep<DataBaseSteps>, PerformActionStep<DataBaseSteps>, Stoppable {
 
     private final JDOPersistenceManagerFactory defaultFactory;
-    private final Map<JDOPersistenceManagerFactory, PersistenceManager> jdoPersistenceManagerMap = new HashMap<>();
+    private final Map<JDOPersistenceManagerFactory, JDOPersistenceManager> jdoPersistenceManagerMap = new HashMap<>();
     private JDOPersistenceManagerFactory currentFactory;
 
     public DataBaseSteps(JDOPersistenceManagerFactory defaultFactory) {
@@ -25,10 +27,12 @@ public class DataBaseSteps implements GetStep<DataBaseSteps>, PerformActionStep<
     }
 
     public DataBaseSteps switchTo(JDOPersistenceManagerFactory jdoPersistenceManagerFactory) {
-        PersistenceManager factory = jdoPersistenceManagerMap.get(jdoPersistenceManagerFactory);
-        if (factory == null || factory.isClosed()) {
+        checkArgument(!jdoPersistenceManagerFactory.isClosed(), "Persistence manager " +
+                "factory should be not closed");
+        JDOPersistenceManager manager = jdoPersistenceManagerMap.get(jdoPersistenceManagerFactory);
+        if (manager == null || manager.isClosed()) {
             jdoPersistenceManagerMap.put(jdoPersistenceManagerFactory,
-                    jdoPersistenceManagerFactory.getPersistenceManager());
+                    (JDOPersistenceManager) jdoPersistenceManagerFactory.getPersistenceManager());
         }
         currentFactory = jdoPersistenceManagerFactory;
         return this;
@@ -44,6 +48,11 @@ public class DataBaseSteps implements GetStep<DataBaseSteps>, PerformActionStep<
 
     public JDOPersistenceManagerFactory getCurrentFactory() {
         return currentFactory;
+    }
+
+    public JDOPersistenceManager getCurrentPersistenceManager() {
+        switchTo(getCurrentFactory());
+        return jdoPersistenceManagerMap.get(currentFactory);
     }
 
     @Override
