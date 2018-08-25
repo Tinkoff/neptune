@@ -1,5 +1,7 @@
 package ru.tinkoff.qa.neptune.data.base.api;
 
+import com.google.gson.Gson;
+
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -62,5 +64,10 @@ public abstract class PersistableObject {
                             toCheck.equalsByFields(obj);
                 })
                 .orElse(false);
+    }
+
+    @Override
+    public String toString() {
+        return new Gson().toJson(this);
     }
 }

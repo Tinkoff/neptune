@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.data.base.test.persistable.object.equality;
+package ru.tinkoff.qa.neptune.data.base.test.persistable.object;
 
 import java.util.List;
 
