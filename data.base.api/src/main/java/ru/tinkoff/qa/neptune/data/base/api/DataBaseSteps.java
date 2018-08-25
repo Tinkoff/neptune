@@ -4,6 +4,7 @@ import org.datanucleus.api.jdo.JDOPersistenceManagerFactory;
 import ru.tinkoff.qa.neptune.core.api.CreateWith;
 import ru.tinkoff.qa.neptune.core.api.GetStep;
 import ru.tinkoff.qa.neptune.core.api.PerformActionStep;
+import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
 
 import javax.jdo.PersistenceManager;
 import java.util.HashMap;
@@ -12,7 +13,7 @@ import java.util.Map;
 import static ru.tinkoff.qa.neptune.data.base.api.persistence.data.PersistenceManagerFactoryStore.getPersistenceManagerFactory;
 
 @CreateWith(provider = DataBaseParameterProvider.class)
-public class DataBaseSteps implements GetStep<DataBaseSteps>, PerformActionStep<DataBaseSteps> {
+public class DataBaseSteps implements GetStep<DataBaseSteps>, PerformActionStep<DataBaseSteps>, Stoppable {
 
     private final JDOPersistenceManagerFactory defaultFactory;
     private final Map<JDOPersistenceManagerFactory, PersistenceManager> jdoPersistenceManagerMap = new HashMap<>();
@@ -41,7 +42,15 @@ public class DataBaseSteps implements GetStep<DataBaseSteps>, PerformActionStep<
         return switchTo(defaultFactory);
     }
 
-    protected JDOPersistenceManagerFactory getCurrentFactory() {
+    public JDOPersistenceManagerFactory getCurrentFactory() {
         return currentFactory;
+    }
+
+    @Override
+    public void shutDown() {
+        jdoPersistenceManagerMap.forEach((key, value) -> {
+            value.close();
+            key.close();
+        });
     }
 }
