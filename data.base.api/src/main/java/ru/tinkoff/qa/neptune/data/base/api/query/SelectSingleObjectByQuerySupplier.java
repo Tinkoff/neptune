@@ -3,7 +3,12 @@ package ru.tinkoff.qa.neptune.data.base.api.query;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
 import javax.jdo.JDOQLTypedQuery;
+import java.util.List;
 import java.util.function.Function;
+
+import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetObjectFromIterable.getFromIterable;
+import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSubIterable.getIterable;
 
 public final class SelectSingleObjectByQuerySupplier<T extends PersistableObject>
         extends ByQuerySequentialGetStepSupplier<T, T, SelectSingleObjectByQuerySupplier<T>>  {
@@ -26,6 +31,19 @@ public final class SelectSingleObjectByQuerySupplier<T extends PersistableObject
 
     @Override
     protected Function<JDOQLTypedQuery<T>, T> getEndFunction() {
-        return null;
+        Function<JDOQLTypedQuery<T>, List<T>> listFunction = JDOQLTypedQuery::executeList;
+        return ofNullable(condition).map(tPredicate ->
+                ofNullable(nothingIsSelectedExceptionSupplier).map(nothingIsSelectedExceptionSupplier1 ->
+                        getFromIterable("Get selection result as a single item", listFunction, tPredicate,
+                                timeToGetResult, false, true, nothingIsSelectedExceptionSupplier1))
+                        .orElseGet(() -> getFromIterable("Get selection result as a single item", listFunction, tPredicate,
+                                timeToGetResult, false, true)))
+
+                .orElseGet(() -> ofNullable(nothingIsSelectedExceptionSupplier)
+                        .map(nothingIsSelectedExceptionSupplier1 -> getFromIterable("Get selection result as a single item",
+                                listFunction, timeToGetResult,  nothingIsSelectedExceptionSupplier1)
+                        ).orElseGet(() ->
+                                getFromIterable("Get selection result as a single item", listFunction, timeToGetResult)
+                        ));
     }
 }

@@ -1,6 +1,8 @@
 package ru.tinkoff.qa.neptune.selenium.properties;
 
-import ru.tinkoff.qa.neptune.core.api.properties.PropertySupplier;
+import ru.tinkoff.qa.neptune.core.api.properties.waiting.time.DurationSupplier;
+import ru.tinkoff.qa.neptune.core.api.properties.waiting.time.DurationUnitPropertySupplier;
+import ru.tinkoff.qa.neptune.core.api.properties.waiting.time.DurationValuePropertySupplier;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -8,10 +10,8 @@ import java.util.function.Supplier;
 
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeUnitProperties.*;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeValueProperties.*;
-import static java.lang.String.format;
 import static java.time.Duration.of;
 import static java.time.temporal.ChronoUnit.MINUTES;
-import static java.util.Arrays.stream;
 
 public enum WaitingProperties implements Supplier<Duration> {
     /**
@@ -43,23 +43,23 @@ public enum WaitingProperties implements Supplier<Duration> {
      */
     WAITING_FRAME_SWITCHING_DURATION(WAITING_FRAME_SWITCHING_TIME_UNIT, WAITING_FRAME_SWITCHING_TIME_VALUE);
 
-    private final TimeUnitProperties timeUnit;
-    private final TimeValueProperties timeValue;
+    private final DurationSupplier durationSupplier;
 
     WaitingProperties(TimeUnitProperties timeUnit, TimeValueProperties timeValue) {
-        this.timeUnit = timeUnit;
-        this.timeValue = timeValue;
+        durationSupplier = new DurationSupplier(timeUnit, timeValue) {
+            @Override
+            public Duration get() {
+                return getDuration(of(1, MINUTES));
+            }
+        };
     }
 
     @Override
     public Duration get() {
-        if (timeUnit.get() == null || timeValue.get() == null) {
-            return of(1, MINUTES);
-        }
-        return of(timeValue.get(), timeUnit.get());
+        return durationSupplier.get();
     }
 
-    public enum TimeUnitProperties implements PropertySupplier<ChronoUnit> {
+    public enum TimeUnitProperties implements DurationUnitPropertySupplier {
         /**
          * Reads property {@code "waiting.for.elements.time.unit"}.
          * This property is needed to define time of the waiting for some web elements
@@ -103,22 +103,9 @@ public enum WaitingProperties implements Supplier<Duration> {
         public String getPropertyName() {
             return propertyName;
         }
-
-        @Override
-        public ChronoUnit get() {
-            return returnOptionalFromEnvironment()
-                    .map(s -> stream(ChronoUnit.values())
-                            .filter(timeUnit -> s.trim().equalsIgnoreCase(timeUnit.name()))
-                            .findFirst()
-                            .orElseThrow(
-                                    () -> new IllegalArgumentException(format("Property: %s. Unidentified " +
-                                                    "time unit %s. Please take a look at " +
-                                                    "elements of %s", this.toString(), s,
-                                            ChronoUnit.class.getName())))).orElse(null);
-        }
     }
 
-    public enum TimeValueProperties implements PropertySupplier<Long> {
+    public enum TimeValueProperties implements DurationValuePropertySupplier {
         /**
          * Reads property {@code "waiting.for.elements.time"}.
          * This property is needed to define time of the waiting for some web elements
@@ -157,13 +144,6 @@ public enum WaitingProperties implements Supplier<Duration> {
         @Override
         public String getPropertyName() {
             return propertyName;
-        }
-
-        @Override
-        public Long get() {
-            return returnOptionalFromEnvironment()
-                    .map(Long::parseLong)
-                    .orElse(null);
         }
     }
 }

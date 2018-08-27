@@ -6,6 +6,7 @@ import ru.tinkoff.qa.neptune.core.api.CreateWith;
 import ru.tinkoff.qa.neptune.core.api.GetStep;
 import ru.tinkoff.qa.neptune.core.api.PerformActionStep;
 import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
+import ru.tinkoff.qa.neptune.data.base.api.query.SelectSupplier;
 
 import javax.jdo.PersistenceManager;
 import java.util.HashMap;
@@ -53,6 +54,10 @@ public class DataBaseSteps implements GetStep<DataBaseSteps>, PerformActionStep<
     public JDOPersistenceManager getCurrentPersistenceManager() {
         switchTo(getCurrentFactory());
         return jdoPersistenceManagerMap.get(currentFactory);
+    }
+
+    public <T> T select(SelectSupplier<T> selectSupplier) {
+        return get(selectSupplier.get());
     }
 
     @Override

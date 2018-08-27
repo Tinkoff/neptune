@@ -38,7 +38,7 @@ public final class QueryBuilderFunction<T extends PersistableObject> implements 
      * @return a function that builds a typed JDO query.
      */
     public static <T extends PersistableObject> QueryBuilderFunction<T> ofType(Class<T> toSelect) {
-        return new QueryBuilderFunction<T>(toSelect);
+        return new QueryBuilderFunction<>(toSelect);
     }
 
     private QueryBuilderFunction(Class<T> toSelect) {

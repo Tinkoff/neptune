@@ -8,6 +8,7 @@ import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 import ru.tinkoff.qa.neptune.data.base.api.persistence.data.PersistenceManagerFactorySupplier;
 
 import javax.jdo.JDOQLTypedQuery;
+import java.time.Duration;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -16,6 +17,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
+import static ru.tinkoff.qa.neptune.data.base.api.properties.DefaultWaitingForSelectionResultProperty.DEFAULT_WAITING_FOR_SELECTION_RESULT_PROPERTY;
 
 @SuppressWarnings("unchecked")
 public abstract class ByQuerySequentialGetStepSupplier<T extends PersistableObject, S, Q extends ByQuerySequentialGetStepSupplier<T, S, Q>>
@@ -25,6 +27,7 @@ public abstract class ByQuerySequentialGetStepSupplier<T extends PersistableObje
     private boolean toUseDefaultConnection;
     Predicate<T> condition;
     Supplier<NothingIsSelectedException> nothingIsSelectedExceptionSupplier;
+    Duration timeToGetResult = DEFAULT_WAITING_FOR_SELECTION_RESULT_PROPERTY.get();
 
     ByQuerySequentialGetStepSupplier(QueryBuilderFunction<T> queryBuilder) {
         super.from(queryBuilder);
@@ -98,6 +101,18 @@ public abstract class ByQuerySequentialGetStepSupplier<T extends PersistableObje
     public Q withCondiotion(Predicate<T> condition) {
         checkArgument(condition != null, "Condition should be defined");
         this.condition = condition;
+        return (Q) this;
+    }
+
+    /**
+     * This method sets specific time to get valuable result.
+     *
+     * @param timeToGetValue time to get valuable result.
+     * @return self-reference
+     */
+    public Q withTimeToGetValue(Duration timeToGetValue) {
+        checkArgument(condition != null, "Time to get value should be defined");
+        this.timeToGetResult = timeToGetValue;
         return (Q) this;
     }
 

@@ -6,6 +6,9 @@ import javax.jdo.JDOQLTypedQuery;
 import java.util.List;
 import java.util.function.Function;
 
+import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSubIterable.getIterable;
+
 public final class SelectListByQuerySupplier<T extends PersistableObject>
         extends ByQuerySequentialGetStepSupplier<T, List<T>, SelectListByQuerySupplier<T>> {
 
@@ -26,6 +29,19 @@ public final class SelectListByQuerySupplier<T extends PersistableObject>
 
     @Override
     protected Function<JDOQLTypedQuery<T>, List<T>> getEndFunction() {
-        return null;
+        Function<JDOQLTypedQuery<T>, List<T>> listFunction = JDOQLTypedQuery::executeList;
+        return ofNullable(condition).map(tPredicate ->
+                ofNullable(nothingIsSelectedExceptionSupplier).map(nothingIsSelectedExceptionSupplier1 ->
+                        getIterable("Get selection result as a list", listFunction, tPredicate,
+                                timeToGetResult, false, true, nothingIsSelectedExceptionSupplier1))
+                        .orElseGet(() -> getIterable("Get selection result as a list", listFunction, tPredicate,
+                                timeToGetResult, false, true)))
+
+                .orElseGet(() -> ofNullable(nothingIsSelectedExceptionSupplier)
+                        .map(nothingIsSelectedExceptionSupplier1 -> getIterable("Get selection result as a list",
+                                listFunction, timeToGetResult,  nothingIsSelectedExceptionSupplier1)
+                        ).orElseGet(() ->
+                                getIterable("Get selection result as a list", listFunction, timeToGetResult)
+                        ));
     }
 }
