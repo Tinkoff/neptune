@@ -14,7 +14,6 @@ public class PersistenceManagerFactorySupplierForTestBase1 extends PersistenceMa
 
     @Override
     protected PersistenceUnitMetaData fillPersistenceUnit(PersistenceUnitMetaData toBeFilled) {
-        toBeFilled.addProperty("datanucleus.Mapping", "sqlite");
         toBeFilled.addProperty("datanucleus.ConnectionDriverName", JDBC.class.getName());
         toBeFilled.addProperty("datanucleus.identifier.case", "MixedCase");
         toBeFilled.addProperty("datanucleus.ConnectionURL", format("jdbc:sqlite:%s", testDB1.getAbsolutePath()));

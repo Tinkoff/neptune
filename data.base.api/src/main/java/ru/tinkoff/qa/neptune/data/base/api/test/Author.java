@@ -4,9 +4,12 @@ package ru.tinkoff.qa.neptune.data.base.api.test;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
 import javax.jdo.annotations.Column;
+import javax.jdo.annotations.Element;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.PrimaryKey;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 @PersistenceCapable(table = "Authors")
 public class Author extends PersistableObject {
@@ -29,6 +32,9 @@ public class Author extends PersistableObject {
 
     @Column(name = "BiographyDescription")
     private String biography;
+
+    @Element(column="Author")
+    private Collection<Book> books;
 
     public int getId() {
         return id;
@@ -76,5 +82,9 @@ public class Author extends PersistableObject {
 
     public void setBiography(String biography) {
         this.biography = biography;
+    }
+
+    public Collection<Book> getBooks() {
+        return books;
     }
 }

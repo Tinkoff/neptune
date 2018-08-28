@@ -25,19 +25,19 @@ public abstract class ByQuerySequentialGetStepSupplier<T extends PersistableObje
 
     private Object connectionDescription;
     private boolean toUseDefaultConnection;
+    private final QueryBuilderFunction<T> queryBuilder;
     Predicate<T> condition;
     Supplier<NothingIsSelectedException> nothingIsSelectedExceptionSupplier;
     Duration timeToGetResult = DEFAULT_WAITING_FOR_SELECTION_RESULT_PROPERTY.get();
 
     ByQuerySequentialGetStepSupplier(QueryBuilderFunction<T> queryBuilder) {
-        super.from(queryBuilder);
+        this.queryBuilder = queryBuilder;
     }
 
     /**
      * This method defines where (on which data base) query should be performed.
      * WARNING!!! After the query performing the instance of {@link DataBaseSteps} keeps the given connection
      * until another query is performed. This query should have another parameter set up by
-     * {@link ByQuerySequentialGetStepSupplier#fromDbDescribedBy(String)} or
      * {@link ByQuerySequentialGetStepSupplier#fromDbDescribedBy(JDOPersistenceManagerFactory)} or
      * {@link ByQuerySequentialGetStepSupplier#useDefaultConnection}. Also it is possible
      * to invoke {@link DataBaseSteps#switchTo(String)} or {@link DataBaseSteps#switchTo(JDOPersistenceManagerFactory)}
@@ -58,7 +58,6 @@ public abstract class ByQuerySequentialGetStepSupplier<T extends PersistableObje
      * WARNING!!! After the query performing the instance of {@link DataBaseSteps} keeps the given connection
      * until another query is performed. This query should have another parameter set up by
      * {@link ByQuerySequentialGetStepSupplier#fromDbDescribedBy(String)} or
-     * {@link ByQuerySequentialGetStepSupplier#fromDbDescribedBy(JDOPersistenceManagerFactory)} or
      * {@link ByQuerySequentialGetStepSupplier#useDefaultConnection}. Also it is possible
      * to invoke {@link DataBaseSteps#switchTo(String)} or {@link DataBaseSteps#switchTo(JDOPersistenceManagerFactory)}
      * or {@link DataBaseSteps#switchToDefault()} for same purposes.
@@ -78,8 +77,7 @@ public abstract class ByQuerySequentialGetStepSupplier<T extends PersistableObje
      * WARNING!!! After the query performing the instance of {@link DataBaseSteps} keeps default connection
      * until another query is performed. This query should have another parameter set up by
      * {@link ByQuerySequentialGetStepSupplier#fromDbDescribedBy(String)} or
-     * {@link ByQuerySequentialGetStepSupplier#fromDbDescribedBy(JDOPersistenceManagerFactory)} or
-     * {@link ByQuerySequentialGetStepSupplier#useDefaultConnection}. Also it is possible
+     * {@link ByQuerySequentialGetStepSupplier#fromDbDescribedBy(JDOPersistenceManagerFactory)}. Also it is possible
      * to invoke {@link DataBaseSteps#switchTo(String)} or {@link DataBaseSteps#switchTo(JDOPersistenceManagerFactory)}
      * for same purposes.
      *
@@ -111,7 +109,7 @@ public abstract class ByQuerySequentialGetStepSupplier<T extends PersistableObje
      * @return self-reference
      */
     public Q withTimeToGetValue(Duration timeToGetValue) {
-        checkArgument(condition != null, "Time to get value should be defined");
+        checkArgument(timeToGetValue != null, "Time to get value should be defined");
         this.timeToGetResult = timeToGetValue;
         return (Q) this;
     }
@@ -131,24 +129,26 @@ public abstract class ByQuerySequentialGetStepSupplier<T extends PersistableObje
     @Override
     public Function<DataBaseSteps, S> get() {
         if (toUseDefaultConnection) {
+            super.from(queryBuilder);
             return super.get().compose(toGet("Use default connection", DataBaseSteps::switchToDefault));
         }
 
-        return ofNullable(connectionDescription).map(o -> {
+        ofNullable(connectionDescription).map(o -> {
             Class<?> objectClass = o.getClass();
             if (String.class.equals(objectClass)) {
-                return super.get().compose(toGet(format("Change connection by name %s", o),
-                        (Function<DataBaseSteps, DataBaseSteps>) dataBaseSteps -> dataBaseSteps.switchTo(String.valueOf(o))));
+                return super.from(queryBuilder.compose(toGet(format("Change connection by name %s", o),
+                        dataBaseSteps -> dataBaseSteps.switchTo(String.valueOf(o)))));
             }
 
             if (JDOPersistenceManagerFactory.class.isAssignableFrom(objectClass)) {
-                return super.get().compose(toGet(format("Change connection by name %s", o),
-                        (Function<DataBaseSteps, DataBaseSteps>) dataBaseSteps -> dataBaseSteps
-                                .switchTo((JDOPersistenceManagerFactory) o)));
+                return super.from(queryBuilder.compose(toGet(format("Change connection by name %s", o),
+                        dataBaseSteps -> dataBaseSteps.switchTo((JDOPersistenceManagerFactory) o))));
             }
 
             throw new IllegalArgumentException(format("Unknown description of a connection of type %s",
                     objectClass.getName()));
-        }).orElse(super.get());
+        }).orElseGet(() -> super.from(queryBuilder));
+
+        return super.get();
     }
 }

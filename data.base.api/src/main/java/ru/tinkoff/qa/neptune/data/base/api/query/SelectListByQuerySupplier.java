@@ -29,7 +29,9 @@ public final class SelectListByQuerySupplier<T extends PersistableObject>
 
     @Override
     protected Function<JDOQLTypedQuery<T>, List<T>> getEndFunction() {
-        Function<JDOQLTypedQuery<T>, List<T>> listFunction = JDOQLTypedQuery::executeList;
+        Function<JDOQLTypedQuery<T>, List<T>> listFunction = jdoTypedQuery ->
+                new PersistableList<>(jdoTypedQuery.executeList());
+
         return ofNullable(condition).map(tPredicate ->
                 ofNullable(nothingIsSelectedExceptionSupplier).map(nothingIsSelectedExceptionSupplier1 ->
                         getIterable("Get selection result as a list", listFunction, tPredicate,

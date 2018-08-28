@@ -64,7 +64,7 @@ public final class QueryBuilderFunction<T extends PersistableObject> implements 
         return this;
     }
 
-    public QueryBuilderFunction<T> orderBy(Expression<?>... groupByExpressions) {
+    public QueryBuilderFunction<T> groupBy(Expression<?>... groupByExpressions) {
         checkArgument(groupByExpressions != null, "Grouping expression should be defined as not a null value");
         checkArgument(groupByExpressions.length > 0, "At least one grouping expression is expected to be defined");
         this.groupByExpressions = groupByExpressions;
@@ -77,7 +77,7 @@ public final class QueryBuilderFunction<T extends PersistableObject> implements 
         return this;
     }
 
-    public QueryBuilderFunction<T> groupBy(OrderExpression<?>... orderExpressions) {
+    public QueryBuilderFunction<T> orderBy(OrderExpression<?>... orderExpressions) {
         checkArgument(orderExpressions != null, "Order expression should be defined as not a null value");
         checkArgument(orderExpressions.length > 0, "At least one order expression is expected to be defined");
         this.orderExpressions = orderExpressions;

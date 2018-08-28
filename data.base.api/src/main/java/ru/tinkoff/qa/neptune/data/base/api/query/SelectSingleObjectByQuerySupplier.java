@@ -8,7 +8,6 @@ import java.util.function.Function;
 
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetObjectFromIterable.getFromIterable;
-import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSubIterable.getIterable;
 
 public final class SelectSingleObjectByQuerySupplier<T extends PersistableObject>
         extends ByQuerySequentialGetStepSupplier<T, T, SelectSingleObjectByQuerySupplier<T>>  {
@@ -26,7 +25,7 @@ public final class SelectSingleObjectByQuerySupplier<T extends PersistableObject
      * @return created supplier of a function.
      */
     public static <T extends PersistableObject>  SelectSingleObjectByQuerySupplier<T> aSingle(QueryBuilderFunction<T> queryBuilder) {
-        return new SelectSingleObjectByQuerySupplier<T>(queryBuilder);
+        return new SelectSingleObjectByQuerySupplier<>(queryBuilder);
     }
 
     @Override
