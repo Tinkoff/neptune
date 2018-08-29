@@ -261,13 +261,13 @@ public class SelectByIds extends BaseDbOperationTest {
     @Test(expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = "Test exception")
     public void selectEmptyListByIdWithExceptionThrowing() {
         dataBaseSteps.select(listOfTypeByIds(Catalog.class, -1)
-                .toThowrowOnEmptyResult(TEST_SUPPLIER));
+                .toThrowOnEmptyResult(TEST_SUPPLIER));
     }
 
     @Test(expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = "Test exception")
     public void selectNullByIdWithExceptionThrowing() {
         dataBaseSteps.select(aSingleOfTypeById(Catalog.class, -1)
-                .toThowrowOnEmptyResult(TEST_SUPPLIER));
+                .toThrowOnEmptyResult(TEST_SUPPLIER));
     }
 
     @Test(expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = "Test exception")
@@ -275,7 +275,7 @@ public class SelectByIds extends BaseDbOperationTest {
         dataBaseSteps.select(listOfTypeByIds(Catalog.class, 1)
                 .withCondition(condition("ISBN is 0-671-73246-3",
                         catalog -> catalog.getIsbn().equals("0-671-73246-3")))
-                .toThowrowOnEmptyResult(TEST_SUPPLIER));
+                .toThrowOnEmptyResult(TEST_SUPPLIER));
     }
 
     @Test(expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = "Test exception")
@@ -283,7 +283,7 @@ public class SelectByIds extends BaseDbOperationTest {
         dataBaseSteps.select(aSingleOfTypeById(Catalog.class, 1)
                 .withCondition(condition("ISBN is 0-671-73246-3",
                         catalog -> catalog.getIsbn().equals("0-671-73246-3")))
-                .toThowrowOnEmptyResult(TEST_SUPPLIER));
+                .toThrowOnEmptyResult(TEST_SUPPLIER));
     }
 
     @Test
@@ -291,8 +291,8 @@ public class SelectByIds extends BaseDbOperationTest {
         SelectListByIdsSupplier<Catalog> query = listOfTypeByIds(Catalog.class, 1);
 
         try {
-            assertThat(dataBaseSteps.select(query.fromDbDescribedBy(TEST_BASE2)), hasSize(0));
-            assertThat(dataBaseSteps.select(query.useDefaultConnection()), hasSize(1));
+            assertThat(dataBaseSteps.select(query.usePersistenceUnit(TEST_BASE2)), hasSize(0));
+            assertThat(dataBaseSteps.select(query.useDefaultPersistenceUnit()), hasSize(1));
         }
         finally {
             dataBaseSteps.switchToDefault();
@@ -304,8 +304,8 @@ public class SelectByIds extends BaseDbOperationTest {
         SelectSingleObjectByIdSupplier<Catalog> query = aSingleOfTypeById(Catalog.class, 1);
 
         try {
-            assertThat(dataBaseSteps.select(query.fromDbDescribedBy(TEST_BASE2)), nullValue());
-            assertThat(dataBaseSteps.select(query.useDefaultConnection()), not(nullValue()));
+            assertThat(dataBaseSteps.select(query.usePersistenceUnit(TEST_BASE2)), nullValue());
+            assertThat(dataBaseSteps.select(query.useDefaultPersistenceUnit()), not(nullValue()));
         }
         finally {
             dataBaseSteps.switchToDefault();
@@ -318,8 +318,8 @@ public class SelectByIds extends BaseDbOperationTest {
 
         try {
             assertThat(dataBaseSteps.select(query.
-                    fromDbDescribedBy(getPersistenceManagerFactory(TEST_BASE2, true))), hasSize(0));
-            assertThat(dataBaseSteps.select(query.useDefaultConnection()), hasSize(1));
+                    usePersistenceUnit(getPersistenceManagerFactory(TEST_BASE2, true))), hasSize(0));
+            assertThat(dataBaseSteps.select(query.useDefaultPersistenceUnit()), hasSize(1));
         }
         finally {
             dataBaseSteps.switchToDefault();
@@ -332,8 +332,8 @@ public class SelectByIds extends BaseDbOperationTest {
 
         try {
             assertThat(dataBaseSteps.select(query
-                    .fromDbDescribedBy(getPersistenceManagerFactory(TEST_BASE2, true))), nullValue());
-            assertThat(dataBaseSteps.select(query.useDefaultConnection()), not(nullValue()));
+                    .usePersistenceUnit(getPersistenceManagerFactory(TEST_BASE2, true))), nullValue());
+            assertThat(dataBaseSteps.select(query.useDefaultPersistenceUnit()), not(nullValue()));
         }
         finally {
             dataBaseSteps.switchToDefault();

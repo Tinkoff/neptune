@@ -44,7 +44,7 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
     @Test
     public void selectListTestWithQuery() {
         QCatalog c = QCatalog.candidate();
-        List<Catalog> catalogItems = dataBaseSteps.select(listByQuery(ofType(Catalog.class).withConstraint(c.book.name.eq("Ruslan and Ludmila")
+        List<Catalog> catalogItems = dataBaseSteps.select(listByQuery(ofType(Catalog.class).where(c.book.name.eq("Ruslan and Ludmila")
                 .or(c.isbn.eq("0-671-73246-3")) //<Journey to Ixtlan
                 .or(c.book.author.lastName.eq("Pushkin")))
                 .orderBy(c.recordId.desc())));
@@ -57,7 +57,7 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
     @Test
     public void selectOneTestWithQuery() {
         QCatalog c = QCatalog.candidate();
-        Catalog catalogItem = dataBaseSteps.select(aSingleByQuery(ofType(Catalog.class).withConstraint(c.book.name.eq("Ruslan and Ludmila")
+        Catalog catalogItem = dataBaseSteps.select(aSingleByQuery(ofType(Catalog.class).where(c.book.name.eq("Ruslan and Ludmila")
                 .or(c.isbn.eq("0-671-73246-3")) //<Journey to Ixtlan
                 .or(c.book.author.lastName.eq("Pushkin")))
                 .orderBy(c.recordId.desc())));
@@ -92,14 +92,14 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         QCatalog qCatalog = QCatalog.candidate();
 
         Book journeyToIxtlan = dataBaseSteps.select(aSingleByQuery(ofType(Book.class)
-                .withConstraint(qBook.name.eq("Journey to Ixtlan"))));
+                .where(qBook.name.eq("Journey to Ixtlan"))));
 
         Author carlosCastaneda = dataBaseSteps.select(aSingleByQuery(ofType(Author.class)
-                .withConstraint(qAuthor.firstName.eq("Carlos")
+                .where(qAuthor.firstName.eq("Carlos")
                         .and(qAuthor.lastName.eq("Castaneda")))));
 
         List<Catalog> catalogItems = dataBaseSteps.select(listByQuery(ofType(Catalog.class)
-                .withConstraint(qCatalog.book.eq(journeyToIxtlan)))
+                .where(qCatalog.book.eq(journeyToIxtlan)))
                 .withCondition(condition("Publisher is 'Simon & Schuster'",
                         catalog -> "Simon & Schuster".equals(catalog.getPublisher().getName()))));
 
@@ -115,14 +115,14 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         QCatalog qCatalog = QCatalog.candidate();
 
         Book journeyToIxtlan = dataBaseSteps.select(aSingleByQuery(ofType(Book.class)
-                .withConstraint(qBook.name.eq("Journey to Ixtlan"))));
+                .where(qBook.name.eq("Journey to Ixtlan"))));
 
         Author carlosCastaneda = dataBaseSteps.select(aSingleByQuery(ofType(Author.class)
-                .withConstraint(qAuthor.firstName.eq("Carlos")
+                .where(qAuthor.firstName.eq("Carlos")
                         .and(qAuthor.lastName.eq("Castaneda")))));
 
         Catalog catalogItem = dataBaseSteps.select(aSingleByQuery(ofType(Catalog.class)
-                .withConstraint(qCatalog.book.eq(journeyToIxtlan)
+                .where(qCatalog.book.eq(journeyToIxtlan)
                         .and(qCatalog.book.author.eq(carlosCastaneda))))
                 .withCondition(condition("Publisher is 'Simon & Schuster'",
                         catalog -> "Simon & Schuster".equals(catalog.getPublisher().getName()))));
@@ -138,15 +138,15 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         QCatalog qCatalog = QCatalog.candidate();
 
         Book ruslanAndLudmila = dataBaseSteps.select(aSingleByQuery(ofType(Book.class)
-                .withConstraint(qBook.name.eq("Ruslan and Ludmila"))));
+                .where(qBook.name.eq("Ruslan and Ludmila"))));
 
         Author carlosCastaneda = dataBaseSteps.select(aSingleByQuery(ofType(Author.class)
-                .withConstraint(qAuthor.firstName.eq("Carlos")
+                .where(qAuthor.firstName.eq("Carlos")
                         .and(qAuthor.lastName.eq("Castaneda")))));
 
         long start = currentTimeMillis();
         List<Catalog> catalogItems = dataBaseSteps.select(listByQuery(ofType(Catalog.class)
-                .withConstraint(qCatalog.book.eq(ruslanAndLudmila)
+                .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(carlosCastaneda)))));
         long end = currentTimeMillis();
 
@@ -163,15 +163,15 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         QCatalog qCatalog = QCatalog.candidate();
 
         Book ruslanAndLudmila = dataBaseSteps.select(aSingleByQuery(ofType(Book.class)
-                .withConstraint(qBook.name.eq("Ruslan and Ludmila"))));
+                .where(qBook.name.eq("Ruslan and Ludmila"))));
 
         Author carlosCastaneda = dataBaseSteps.select(aSingleByQuery(ofType(Author.class)
-                .withConstraint(qAuthor.firstName.eq("Carlos")
+                .where(qAuthor.firstName.eq("Carlos")
                         .and(qAuthor.lastName.eq("Castaneda")))));
 
         long start = currentTimeMillis();
         Catalog catalogItem = dataBaseSteps.select(aSingleByQuery(ofType(Catalog.class)
-                .withConstraint(qCatalog.book.eq(ruslanAndLudmila)
+                .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(carlosCastaneda)))));
         long end = currentTimeMillis();
 
@@ -188,16 +188,16 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         QCatalog qCatalog = QCatalog.candidate();
 
         Book ruslanAndLudmila = dataBaseSteps.select(aSingleByQuery(ofType(Book.class)
-                .withConstraint(qBook.name.eq("Ruslan and Ludmila"))));
+                .where(qBook.name.eq("Ruslan and Ludmila"))));
 
         Author carlosCastaneda = dataBaseSteps.select(aSingleByQuery(ofType(Author.class)
-                .withConstraint(qAuthor.firstName.eq("Carlos")
+                .where(qAuthor.firstName.eq("Carlos")
                         .and(qAuthor.lastName.eq("Castaneda")))));
 
         Duration sixSeconds = ofSeconds(6);
         long start = currentTimeMillis();
         List<Catalog> catalogItems = dataBaseSteps.select(listByQuery(ofType(Catalog.class)
-                .withConstraint(qCatalog.book.eq(ruslanAndLudmila)
+                .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(carlosCastaneda))))
                 .withTimeToGetValue(sixSeconds));
         long end = currentTimeMillis();
@@ -214,16 +214,16 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         QCatalog qCatalog = QCatalog.candidate();
 
         Book ruslanAndLudmila = dataBaseSteps.select(aSingleByQuery(ofType(Book.class)
-                .withConstraint(qBook.name.eq("Ruslan and Ludmila"))));
+                .where(qBook.name.eq("Ruslan and Ludmila"))));
 
         Author carlosCastaneda = dataBaseSteps.select(aSingleByQuery(ofType(Author.class)
-                .withConstraint(qAuthor.firstName.eq("Carlos")
+                .where(qAuthor.firstName.eq("Carlos")
                         .and(qAuthor.lastName.eq("Castaneda")))));
 
         Duration sixSeconds = ofSeconds(6);
         long start = currentTimeMillis();
         Catalog catalogItem = dataBaseSteps.select(aSingleByQuery(ofType(Catalog.class)
-                .withConstraint(qCatalog.book.eq(ruslanAndLudmila)
+                .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(carlosCastaneda))))
                 .withTimeToGetValue(sixSeconds));
         long end = currentTimeMillis();
@@ -243,16 +243,16 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         QCatalog qCatalog = QCatalog.candidate();
 
         Book ruslanAndLudmila = dataBaseSteps.select(aSingleByQuery(ofType(Book.class)
-                .withConstraint(qBook.name.eq("Ruslan and Ludmila"))));
+                .where(qBook.name.eq("Ruslan and Ludmila"))));
 
         Author carlosCastaneda = dataBaseSteps.select(aSingleByQuery(ofType(Author.class)
-                .withConstraint(qAuthor.firstName.eq("Carlos")
+                .where(qAuthor.firstName.eq("Carlos")
                         .and(qAuthor.lastName.eq("Castaneda")))));
 
         Duration twoSeconds = ofSeconds(2);
         long start = currentTimeMillis();
         List<Catalog> catalogItems = dataBaseSteps.select(listByQuery(ofType(Catalog.class)
-                .withConstraint(qCatalog.book.eq(ruslanAndLudmila)
+                .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(carlosCastaneda)))));
         long end = currentTimeMillis();
 
@@ -277,16 +277,16 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         QCatalog qCatalog = QCatalog.candidate();
 
         Book ruslanAndLudmila = dataBaseSteps.select(aSingleByQuery(ofType(Book.class)
-                .withConstraint(qBook.name.eq("Ruslan and Ludmila"))));
+                .where(qBook.name.eq("Ruslan and Ludmila"))));
 
         Author carlosCastaneda = dataBaseSteps.select(aSingleByQuery(ofType(Author.class)
-                .withConstraint(qAuthor.firstName.eq("Carlos")
+                .where(qAuthor.firstName.eq("Carlos")
                         .and(qAuthor.lastName.eq("Castaneda")))));
 
         Duration twoSeconds = ofSeconds(2);
         long start = currentTimeMillis();
         Catalog catalogItem = dataBaseSteps.select(aSingleByQuery(ofType(Catalog.class)
-                .withConstraint(qCatalog.book.eq(ruslanAndLudmila)
+                .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(carlosCastaneda)))));
         long end = currentTimeMillis();
 
@@ -308,15 +308,15 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         QCatalog qCatalog = QCatalog.candidate();
 
         Book ruslanAndLudmila = dataBaseSteps.select(aSingleByQuery(ofType(Book.class)
-                .withConstraint(qBook.name.eq("Ruslan and Ludmila"))));
+                .where(qBook.name.eq("Ruslan and Ludmila"))));
 
         Author alexanderPushkin = dataBaseSteps.select(aSingleByQuery(ofType(Author.class)
-                .withConstraint(qAuthor.firstName.eq("Alexander")
+                .where(qAuthor.firstName.eq("Alexander")
                         .and(qAuthor.lastName.eq("Pushkin")))));
 
         long start = currentTimeMillis();
         List<Catalog> catalogItems = dataBaseSteps.select(listByQuery(ofType(Catalog.class)
-                .withConstraint(qCatalog.book.eq(ruslanAndLudmila)
+                .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(alexanderPushkin))))
                 .withCondition(condition("ISBN is 0-671-73246-3",
                         catalog -> catalog.getIsbn().equals("0-671-73246-3"))));
@@ -335,15 +335,15 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         QCatalog qCatalog = QCatalog.candidate();
 
         Book ruslanAndLudmila = dataBaseSteps.select(aSingleByQuery(ofType(Book.class)
-                .withConstraint(qBook.name.eq("Ruslan and Ludmila"))));
+                .where(qBook.name.eq("Ruslan and Ludmila"))));
 
         Author alexanderPushkin = dataBaseSteps.select(aSingleByQuery(ofType(Author.class)
-                .withConstraint(qAuthor.firstName.eq("Alexander")
+                .where(qAuthor.firstName.eq("Alexander")
                         .and(qAuthor.lastName.eq("Pushkin")))));
 
         long start = currentTimeMillis();
         Catalog catalogItem = dataBaseSteps.select(aSingleByQuery(ofType(Catalog.class)
-                .withConstraint(qCatalog.book.eq(ruslanAndLudmila)
+                .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(alexanderPushkin))))
                 .withCondition(condition("ISBN is 0-671-73246-3",
                         catalog -> catalog.getIsbn().equals("0-671-73246-3"))));
@@ -362,16 +362,16 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         QCatalog qCatalog = QCatalog.candidate();
 
         Book ruslanAndLudmila = dataBaseSteps.select(aSingleByQuery(ofType(Book.class)
-                .withConstraint(qBook.name.eq("Ruslan and Ludmila"))));
+                .where(qBook.name.eq("Ruslan and Ludmila"))));
 
         Author alexanderPushkin = dataBaseSteps.select(aSingleByQuery(ofType(Author.class)
-                .withConstraint(qAuthor.firstName.eq("Alexander")
+                .where(qAuthor.firstName.eq("Alexander")
                         .and(qAuthor.lastName.eq("Pushkin")))));
 
         Duration sixSeconds = ofSeconds(6);
         long start = currentTimeMillis();
         List<Catalog> catalogItems = dataBaseSteps.select(listByQuery(ofType(Catalog.class)
-                .withConstraint(qCatalog.book.eq(ruslanAndLudmila)
+                .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(alexanderPushkin))))
                 .withCondition(condition("ISBN is 0-671-73246-3",
                         catalog -> catalog.getIsbn().equals("0-671-73246-3")))
@@ -390,16 +390,16 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         QCatalog qCatalog = QCatalog.candidate();
 
         Book ruslanAndLudmila = dataBaseSteps.select(aSingleByQuery(ofType(Book.class)
-                .withConstraint(qBook.name.eq("Ruslan and Ludmila"))));
+                .where(qBook.name.eq("Ruslan and Ludmila"))));
 
         Author alexanderPushkin = dataBaseSteps.select(aSingleByQuery(ofType(Author.class)
-                .withConstraint(qAuthor.firstName.eq("Alexander")
+                .where(qAuthor.firstName.eq("Alexander")
                         .and(qAuthor.lastName.eq("Pushkin")))));
 
         Duration sixSeconds = ofSeconds(6);
         long start = currentTimeMillis();
         Catalog catalogItem = dataBaseSteps.select(aSingleByQuery(ofType(Catalog.class)
-                .withConstraint(qCatalog.book.eq(ruslanAndLudmila)
+                .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(alexanderPushkin))))
                 .withCondition(condition("ISBN is 0-671-73246-3",
                         catalog -> catalog.getIsbn().equals("0-671-73246-3")))
@@ -421,16 +421,16 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         QCatalog qCatalog = QCatalog.candidate();
 
         Book ruslanAndLudmila = dataBaseSteps.select(aSingleByQuery(ofType(Book.class)
-                .withConstraint(qBook.name.eq("Ruslan and Ludmila"))));
+                .where(qBook.name.eq("Ruslan and Ludmila"))));
 
         Author alexanderPushkin = dataBaseSteps.select(aSingleByQuery(ofType(Author.class)
-                .withConstraint(qAuthor.firstName.eq("Alexander")
+                .where(qAuthor.firstName.eq("Alexander")
                         .and(qAuthor.lastName.eq("Pushkin")))));
 
         Duration twoSeconds = ofSeconds(2);
         long start = currentTimeMillis();
         List<Catalog> catalogItems = dataBaseSteps.select(listByQuery(ofType(Catalog.class)
-                .withConstraint(qCatalog.book.eq(ruslanAndLudmila)
+                .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(alexanderPushkin))))
                 .withCondition(condition("ISBN is 0-671-73246-3",
                         catalog -> catalog.getIsbn().equals("0-671-73246-3"))));
@@ -457,16 +457,16 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         QCatalog qCatalog = QCatalog.candidate();
 
         Book ruslanAndLudmila = dataBaseSteps.select(aSingleByQuery(ofType(Book.class)
-                .withConstraint(qBook.name.eq("Ruslan and Ludmila"))));
+                .where(qBook.name.eq("Ruslan and Ludmila"))));
 
         Author alexanderPushkin = dataBaseSteps.select(aSingleByQuery(ofType(Author.class)
-                .withConstraint(qAuthor.firstName.eq("Alexander")
+                .where(qAuthor.firstName.eq("Alexander")
                         .and(qAuthor.lastName.eq("Pushkin")))));
 
         Duration twoSeconds = ofSeconds(2);
         long start = currentTimeMillis();
         Catalog catalogItem = dataBaseSteps.select(aSingleByQuery(ofType(Catalog.class)
-                .withConstraint(qCatalog.book.eq(ruslanAndLudmila)
+                .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(alexanderPushkin))))
                 .withCondition(condition("ISBN is 0-671-73246-3",
                         catalog -> catalog.getIsbn().equals("0-671-73246-3"))));
@@ -490,16 +490,16 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         QCatalog qCatalog = QCatalog.candidate();
 
         Book ruslanAndLudmila = dataBaseSteps.select(aSingleByQuery(ofType(Book.class)
-                .withConstraint(qBook.name.eq("Ruslan and Ludmila"))));
+                .where(qBook.name.eq("Ruslan and Ludmila"))));
 
         Author carlosCastaneda = dataBaseSteps.select(aSingleByQuery(ofType(Author.class)
-                .withConstraint(qAuthor.firstName.eq("Carlos")
+                .where(qAuthor.firstName.eq("Carlos")
                         .and(qAuthor.lastName.eq("Castaneda")))));
 
         dataBaseSteps.select(listByQuery(ofType(Catalog.class)
-                .withConstraint(qCatalog.book.eq(ruslanAndLudmila)
+                .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(carlosCastaneda))))
-                .toThowrowOnEmptyResult(TEST_SUPPLIER));
+                .toThrowOnEmptyResult(TEST_SUPPLIER));
     }
 
     @Test(expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = "Test exception")
@@ -509,16 +509,16 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         QCatalog qCatalog = QCatalog.candidate();
 
         Book ruslanAndLudmila = dataBaseSteps.select(aSingleByQuery(ofType(Book.class)
-                .withConstraint(qBook.name.eq("Ruslan and Ludmila"))));
+                .where(qBook.name.eq("Ruslan and Ludmila"))));
 
         Author carlosCastaneda = dataBaseSteps.select(aSingleByQuery(ofType(Author.class)
-                .withConstraint(qAuthor.firstName.eq("Carlos")
+                .where(qAuthor.firstName.eq("Carlos")
                         .and(qAuthor.lastName.eq("Castaneda")))));
 
         dataBaseSteps.select(aSingleByQuery(ofType(Catalog.class)
-                .withConstraint(qCatalog.book.eq(ruslanAndLudmila)
+                .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(carlosCastaneda))))
-                .toThowrowOnEmptyResult(TEST_SUPPLIER));
+                .toThrowOnEmptyResult(TEST_SUPPLIER));
     }
 
     @Test(expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = "Test exception")
@@ -528,18 +528,18 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         QCatalog qCatalog = QCatalog.candidate();
 
         Book ruslanAndLudmila = dataBaseSteps.select(aSingleByQuery(ofType(Book.class)
-                .withConstraint(qBook.name.eq("Ruslan and Ludmila"))));
+                .where(qBook.name.eq("Ruslan and Ludmila"))));
 
         Author alexanderPushkin = dataBaseSteps.select(aSingleByQuery(ofType(Author.class)
-                .withConstraint(qAuthor.firstName.eq("Alexander")
+                .where(qAuthor.firstName.eq("Alexander")
                         .and(qAuthor.lastName.eq("Pushkin")))));
 
         dataBaseSteps.select(listByQuery(ofType(Catalog.class)
-                .withConstraint(qCatalog.book.eq(ruslanAndLudmila)
+                .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(alexanderPushkin))))
                 .withCondition(condition("ISBN is 0-671-73246-3",
                         catalog -> catalog.getIsbn().equals("0-671-73246-3")))
-                .toThowrowOnEmptyResult(TEST_SUPPLIER));
+                .toThrowOnEmptyResult(TEST_SUPPLIER));
     }
 
     @Test(expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = "Test exception")
@@ -549,18 +549,18 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         QCatalog qCatalog = QCatalog.candidate();
 
         Book ruslanAndLudmila = dataBaseSteps.select(aSingleByQuery(ofType(Book.class)
-                .withConstraint(qBook.name.eq("Ruslan and Ludmila"))));
+                .where(qBook.name.eq("Ruslan and Ludmila"))));
 
         Author alexanderPushkin = dataBaseSteps.select(aSingleByQuery(ofType(Author.class)
-                .withConstraint(qAuthor.firstName.eq("Alexander")
+                .where(qAuthor.firstName.eq("Alexander")
                         .and(qAuthor.lastName.eq("Pushkin")))));
 
         dataBaseSteps.select(aSingleByQuery(ofType(Catalog.class)
-                .withConstraint(qCatalog.book.eq(ruslanAndLudmila)
+                .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(alexanderPushkin))))
                 .withCondition(condition("ISBN is 0-671-73246-3",
                         catalog -> catalog.getIsbn().equals("0-671-73246-3")))
-                .toThowrowOnEmptyResult(TEST_SUPPLIER));
+                .toThrowOnEmptyResult(TEST_SUPPLIER));
     }
 
     @Test
@@ -570,19 +570,19 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         QCatalog qCatalog = QCatalog.candidate();
 
         Book ruslanAndLudmila = dataBaseSteps.select(aSingleByQuery(ofType(Book.class)
-                .withConstraint(qBook.name.eq("Ruslan and Ludmila"))));
+                .where(qBook.name.eq("Ruslan and Ludmila"))));
 
         Author alexanderPushkin = dataBaseSteps.select(aSingleByQuery(ofType(Author.class)
-                .withConstraint(qAuthor.firstName.eq("Alexander")
+                .where(qAuthor.firstName.eq("Alexander")
                         .and(qAuthor.lastName.eq("Pushkin")))));
 
         SelectListByQuerySupplier<Catalog> query = listByQuery(ofType(Catalog.class)
-                .withConstraint(qCatalog.book.eq(ruslanAndLudmila)
+                .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(alexanderPushkin))));
 
         try {
-            assertThat(dataBaseSteps.select(query.fromDbDescribedBy(TEST_BASE2)), hasSize(0));
-            assertThat(dataBaseSteps.select(query.useDefaultConnection()), hasSize(1));
+            assertThat(dataBaseSteps.select(query.usePersistenceUnit(TEST_BASE2)), hasSize(0));
+            assertThat(dataBaseSteps.select(query.useDefaultPersistenceUnit()), hasSize(1));
         }
         finally {
             dataBaseSteps.switchToDefault();
@@ -596,19 +596,19 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         QCatalog qCatalog = QCatalog.candidate();
 
         Book ruslanAndLudmila = dataBaseSteps.select(aSingleByQuery(ofType(Book.class)
-                .withConstraint(qBook.name.eq("Ruslan and Ludmila"))));
+                .where(qBook.name.eq("Ruslan and Ludmila"))));
 
         Author alexanderPushkin = dataBaseSteps.select(aSingleByQuery(ofType(Author.class)
-                .withConstraint(qAuthor.firstName.eq("Alexander")
+                .where(qAuthor.firstName.eq("Alexander")
                         .and(qAuthor.lastName.eq("Pushkin")))));
 
         SelectSingleObjectByQuerySupplier<Catalog> query = aSingleByQuery(ofType(Catalog.class)
-                .withConstraint(qCatalog.book.eq(ruslanAndLudmila)
+                .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(alexanderPushkin))));
 
         try {
-            assertThat(dataBaseSteps.select(query.fromDbDescribedBy(TEST_BASE2)), nullValue());
-            assertThat(dataBaseSteps.select(query.useDefaultConnection()), not(nullValue()));
+            assertThat(dataBaseSteps.select(query.usePersistenceUnit(TEST_BASE2)), nullValue());
+            assertThat(dataBaseSteps.select(query.useDefaultPersistenceUnit()), not(nullValue()));
         }
         finally {
             dataBaseSteps.switchToDefault();
@@ -622,20 +622,20 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         QCatalog qCatalog = QCatalog.candidate();
 
         Book ruslanAndLudmila = dataBaseSteps.select(aSingleByQuery(ofType(Book.class)
-                .withConstraint(qBook.name.eq("Ruslan and Ludmila"))));
+                .where(qBook.name.eq("Ruslan and Ludmila"))));
 
         Author alexanderPushkin = dataBaseSteps.select(aSingleByQuery(ofType(Author.class)
-                .withConstraint(qAuthor.firstName.eq("Alexander")
+                .where(qAuthor.firstName.eq("Alexander")
                         .and(qAuthor.lastName.eq("Pushkin")))));
 
         SelectListByQuerySupplier<Catalog> query = listByQuery(ofType(Catalog.class)
-                .withConstraint(qCatalog.book.eq(ruslanAndLudmila)
+                .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(alexanderPushkin))));
 
         try {
             assertThat(dataBaseSteps.select(query.
-                    fromDbDescribedBy(getPersistenceManagerFactory(TEST_BASE2, true))), hasSize(0));
-            assertThat(dataBaseSteps.select(query.useDefaultConnection()), hasSize(1));
+                    usePersistenceUnit(getPersistenceManagerFactory(TEST_BASE2, true))), hasSize(0));
+            assertThat(dataBaseSteps.select(query.useDefaultPersistenceUnit()), hasSize(1));
         }
         finally {
             dataBaseSteps.switchToDefault();
@@ -649,20 +649,20 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         QCatalog qCatalog = QCatalog.candidate();
 
         Book ruslanAndLudmila = dataBaseSteps.select(aSingleByQuery(ofType(Book.class)
-                .withConstraint(qBook.name.eq("Ruslan and Ludmila"))));
+                .where(qBook.name.eq("Ruslan and Ludmila"))));
 
         Author alexanderPushkin = dataBaseSteps.select(aSingleByQuery(ofType(Author.class)
-                .withConstraint(qAuthor.firstName.eq("Alexander")
+                .where(qAuthor.firstName.eq("Alexander")
                         .and(qAuthor.lastName.eq("Pushkin")))));
 
         SelectSingleObjectByQuerySupplier<Catalog> query = aSingleByQuery(ofType(Catalog.class)
-                .withConstraint(qCatalog.book.eq(ruslanAndLudmila)
+                .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(alexanderPushkin))));
 
         try {
             assertThat(dataBaseSteps.select(query
-                    .fromDbDescribedBy(getPersistenceManagerFactory(TEST_BASE2, true))), nullValue());
-            assertThat(dataBaseSteps.select(query.useDefaultConnection()), not(nullValue()));
+                    .usePersistenceUnit(getPersistenceManagerFactory(TEST_BASE2, true))), nullValue());
+            assertThat(dataBaseSteps.select(query.useDefaultPersistenceUnit()), not(nullValue()));
         }
         finally {
             dataBaseSteps.switchToDefault();

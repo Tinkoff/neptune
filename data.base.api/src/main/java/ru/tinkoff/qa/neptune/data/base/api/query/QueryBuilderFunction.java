@@ -48,7 +48,7 @@ public final class QueryBuilderFunction<T extends PersistableObject> implements 
         this.toSelect = toSelect;
     }
 
-    public QueryBuilderFunction<T> withConstraint(BooleanExpression constraintsExpression) {
+    public QueryBuilderFunction<T> where(BooleanExpression constraintsExpression) {
         checkArgument(constraintsExpression != null, "Constraint expression should be defined");
         this.constraintsExpression = constraintsExpression;
         return this;
