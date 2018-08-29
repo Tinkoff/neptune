@@ -1,11 +1,9 @@
 package ru.tinkoff.qa.neptune.data.base.api.query;
 
 import org.datanucleus.api.jdo.JDOPersistenceManagerFactory;
-import ru.tinkoff.qa.neptune.core.api.StoryWriter;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseSteps;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
-import javax.jdo.JDOQLTypedQuery;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -17,21 +15,25 @@ import static ru.tinkoff.qa.neptune.data.base.api.query.ChangePersistenceManager
 import static ru.tinkoff.qa.neptune.data.base.api.query.ChangePersistenceManagerToDefault.changeConnectionToDefault;
 
 @SuppressWarnings("unchecked")
-public abstract class ByQuerySequentialGetStepSupplier<T extends PersistableObject, S, Q extends ByQuerySequentialGetStepSupplier<T, S, Q>>
-        extends SelectSequentialGetStepSupplier<S, JDOQLTypedQuery<T>, Q> {
+public abstract class ByIdsSequentialGetStepSupplier<T extends PersistableObject, S, Q extends ByIdsSequentialGetStepSupplier<T, S, Q>>
+        extends SelectSequentialGetStepSupplier<S, DataBaseSteps, Q> {
 
-    private final QueryBuilderFunction<T> queryBuilder;
+    final Class<T> ofType;
+    final Object[] ids;
     Predicate<T> condition;
 
-    ByQuerySequentialGetStepSupplier(QueryBuilderFunction<T> queryBuilder) {
-        this.queryBuilder = queryBuilder;
+    ByIdsSequentialGetStepSupplier(Class<T> ofType, Object... ids) {
+        checkArgument(ofType != null, "A class of objects to be selected by ids should be defined");
+        checkArgument(ids != null, "Ids of objects to be selected should not be passed as a null-value");
+        checkArgument(ids.length > 0, "At least one id to be found should be defined");
+        this.ofType = ofType;
+        this.ids = ids;
     }
 
     /**
-     * Sometimes the performing of a query can take o lot of time. The better solution is to create lighter query
-     * and filter result by some condition. It is necessary to describe given condition by {@link StoryWriter#condition(String, Predicate)}.
+     * This methods defines the criteria to get the final result.
      *
-     * @param condition is a predicate to filter the selection result.
+     * @param condition is a predicate to filter the result.
      * @return self-reference
      */
     public Q withCondition(Predicate<T> condition) {
@@ -43,27 +45,25 @@ public abstract class ByQuerySequentialGetStepSupplier<T extends PersistableObje
     @Override
     public Function<DataBaseSteps, S> get() {
         if (toUseDefaultConnection) {
-            super.from(queryBuilder);
-            return super.get().compose(changeConnectionToDefault());
+            super.from(changeConnectionToDefault());
         }
 
-        return ofNullable(connectionDescription).map(o -> {
+        ofNullable(connectionDescription).ifPresent(o -> {
             Class<?> objectClass = o.getClass();
             if (String.class.equals(objectClass)) {
-                super.from(queryBuilder.compose(changeConnectionByName(String.valueOf(o))));
-                return super.get();
+                super.from(changeConnectionByName(String.valueOf(o)));
+                return;
             }
 
             if (JDOPersistenceManagerFactory.class.isAssignableFrom(objectClass)) {
-                super.from(queryBuilder.compose(changeConnectionByersistenceManagerFactory((JDOPersistenceManagerFactory) o)));
-                return super.get();
+                super.from(changeConnectionByersistenceManagerFactory((JDOPersistenceManagerFactory) o));
+                return;
             }
 
             throw new IllegalArgumentException(format("Unknown description of a connection of type %s",
                     objectClass.getName()));
-        }).orElseGet(() -> {
-            super.from(queryBuilder);
-            return super.get();
         });
+
+        return super.get();
     }
 }

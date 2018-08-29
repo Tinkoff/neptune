@@ -3,15 +3,13 @@ package ru.tinkoff.qa.neptune.data.base.api.test;
 
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
-import javax.jdo.annotations.Column;
-import javax.jdo.annotations.Element;
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.PrimaryKey;
+import javax.jdo.annotations.*;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 @PersistenceCapable(table = "Authors")
+@DatastoreIdentity(strategy=IdGeneratorStrategy.INCREMENT)
 public class Author extends PersistableObject {
 
     @PrimaryKey

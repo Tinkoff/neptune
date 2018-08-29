@@ -2,11 +2,10 @@ package ru.tinkoff.qa.neptune.data.base.api.test;
 
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
-import javax.jdo.annotations.Column;
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.PrimaryKey;
+import javax.jdo.annotations.*;
 
 @PersistenceCapable(table = "Books")
+@DatastoreIdentity(strategy= IdGeneratorStrategy.INCREMENT)
 public class Book extends PersistableObject {
 
     @PrimaryKey

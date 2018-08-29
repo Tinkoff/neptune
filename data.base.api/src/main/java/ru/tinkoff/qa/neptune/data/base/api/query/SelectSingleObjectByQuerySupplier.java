@@ -12,6 +12,8 @@ import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetObjectFromIterable.
 public final class SelectSingleObjectByQuerySupplier<T extends PersistableObject>
         extends ByQuerySequentialGetStepSupplier<T, T, SelectSingleObjectByQuerySupplier<T>>  {
 
+    private static final String DESCRIPTION = "Get selection result as a single item";
+
 
     private SelectSingleObjectByQuerySupplier(QueryBuilderFunction<T> queryBuilder) {
         super(queryBuilder);
@@ -24,7 +26,7 @@ public final class SelectSingleObjectByQuerySupplier<T extends PersistableObject
      * @param <T> is a type of result element.
      * @return created supplier of a function.
      */
-    public static <T extends PersistableObject>  SelectSingleObjectByQuerySupplier<T> aSingle(QueryBuilderFunction<T> queryBuilder) {
+    public static <T extends PersistableObject>  SelectSingleObjectByQuerySupplier<T> aSingleByQuery(QueryBuilderFunction<T> queryBuilder) {
         return new SelectSingleObjectByQuerySupplier<>(queryBuilder);
     }
 
@@ -33,16 +35,16 @@ public final class SelectSingleObjectByQuerySupplier<T extends PersistableObject
         Function<JDOQLTypedQuery<T>, List<T>> listFunction = JDOQLTypedQuery::executeList;
         return ofNullable(condition).map(tPredicate ->
                 ofNullable(nothingIsSelectedExceptionSupplier).map(nothingIsSelectedExceptionSupplier1 ->
-                        getFromIterable("Get selection result as a single item", listFunction, tPredicate,
+                        getFromIterable(DESCRIPTION, listFunction, tPredicate,
                                 timeToGetResult, false, true, nothingIsSelectedExceptionSupplier1))
-                        .orElseGet(() -> getFromIterable("Get selection result as a single item", listFunction, tPredicate,
+                        .orElseGet(() -> getFromIterable(DESCRIPTION, listFunction, tPredicate,
                                 timeToGetResult, false, true)))
 
                 .orElseGet(() -> ofNullable(nothingIsSelectedExceptionSupplier)
-                        .map(nothingIsSelectedExceptionSupplier1 -> getFromIterable("Get selection result as a single item",
+                        .map(nothingIsSelectedExceptionSupplier1 -> getFromIterable(DESCRIPTION,
                                 listFunction, timeToGetResult,  nothingIsSelectedExceptionSupplier1)
                         ).orElseGet(() ->
-                                getFromIterable("Get selection result as a single item", listFunction, timeToGetResult)
+                                getFromIterable(DESCRIPTION, listFunction, timeToGetResult)
                         ));
     }
 }

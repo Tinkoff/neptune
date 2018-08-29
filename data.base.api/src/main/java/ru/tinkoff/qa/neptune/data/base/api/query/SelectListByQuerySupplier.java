@@ -12,6 +12,8 @@ import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSubIterable.getIter
 public final class SelectListByQuerySupplier<T extends PersistableObject>
         extends ByQuerySequentialGetStepSupplier<T, List<T>, SelectListByQuerySupplier<T>> {
 
+    private static final String DESCRIPTION = "Get selection result as a list";
+
     private SelectListByQuerySupplier(QueryBuilderFunction<T> queryBuilder) {
         super(queryBuilder);
     }
@@ -20,10 +22,10 @@ public final class SelectListByQuerySupplier<T extends PersistableObject>
      * Creates a supplier of a function that performs selection from a data base and returns the result as a list.
      *
      * @param queryBuilder is a builder of a query.
-     * @param <T> is a type of am item from the result list.
+     * @param <T> is a type of an item from the result list.
      * @return created supplier of a function.
      */
-    public static <T extends PersistableObject> SelectListByQuerySupplier<T> list(QueryBuilderFunction<T> queryBuilder) {
+    public static <T extends PersistableObject> SelectListByQuerySupplier<T> listByQuery(QueryBuilderFunction<T> queryBuilder) {
         return new SelectListByQuerySupplier<>(queryBuilder);
     }
 
@@ -34,16 +36,16 @@ public final class SelectListByQuerySupplier<T extends PersistableObject>
 
         return ofNullable(condition).map(tPredicate ->
                 ofNullable(nothingIsSelectedExceptionSupplier).map(nothingIsSelectedExceptionSupplier1 ->
-                        getIterable("Get selection result as a list", listFunction, tPredicate,
+                        getIterable(DESCRIPTION, listFunction, tPredicate,
                                 timeToGetResult, false, true, nothingIsSelectedExceptionSupplier1))
-                        .orElseGet(() -> getIterable("Get selection result as a list", listFunction, tPredicate,
+                        .orElseGet(() -> getIterable(DESCRIPTION, listFunction, tPredicate,
                                 timeToGetResult, false, true)))
 
                 .orElseGet(() -> ofNullable(nothingIsSelectedExceptionSupplier)
-                        .map(nothingIsSelectedExceptionSupplier1 -> getIterable("Get selection result as a list",
+                        .map(nothingIsSelectedExceptionSupplier1 -> getIterable(DESCRIPTION,
                                 listFunction, timeToGetResult,  nothingIsSelectedExceptionSupplier1)
                         ).orElseGet(() ->
-                                getIterable("Get selection result as a list", listFunction, timeToGetResult)
+                                getIterable(DESCRIPTION, listFunction, timeToGetResult)
                         ));
     }
 }

@@ -5,6 +5,7 @@ import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 import javax.jdo.annotations.*;
 
 @PersistenceCapable(table = "Catalog")
+@DatastoreIdentity(strategy=IdGeneratorStrategy.INCREMENT)
 public class Catalog extends PersistableObject {
 
     @PrimaryKey
