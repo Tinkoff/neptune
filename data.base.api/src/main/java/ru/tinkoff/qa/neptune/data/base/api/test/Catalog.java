@@ -5,10 +5,10 @@ import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 import javax.jdo.annotations.*;
 
 @PersistenceCapable(table = "Catalog")
-@DatastoreIdentity(strategy=IdGeneratorStrategy.INCREMENT)
 public class Catalog extends PersistableObject {
 
     @PrimaryKey
+    @Persistent(valueStrategy=IdGeneratorStrategy.INCREMENT)
     @Column(name = "RecordID")
     private int recordId;
 
@@ -28,39 +28,39 @@ public class Catalog extends PersistableObject {
         return recordId;
     }
 
-    public void setRecordId(int recordId) {
-        this.recordId = recordId;
-    }
-
     public String getIsbn() {
         return isbn;
     }
 
-    public void setIsbn(String isbn) {
+    public Catalog setIsbn(String isbn) {
         this.isbn = isbn;
+        return this;
     }
 
     public int getYearOfPublishing() {
         return yearOfPublishing;
     }
 
-    public void setYearOfPublishing(int yearOfPublishing) {
+    public Catalog setYearOfPublishing(int yearOfPublishing) {
         this.yearOfPublishing = yearOfPublishing;
+        return this;
     }
 
     public Book getBook() {
         return book;
     }
 
-    public void setBook(Book book) {
+    public Catalog setBook(Book book) {
         this.book = book;
+        return this;
     }
 
     public Publisher getPublisher() {
         return publisher;
     }
 
-    public void setPublisher(Publisher publisher) {
+    public Catalog setPublisher(Publisher publisher) {
         this.publisher = publisher;
+        return this;
     }
 }

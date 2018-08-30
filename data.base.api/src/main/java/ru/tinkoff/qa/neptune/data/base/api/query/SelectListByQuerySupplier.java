@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.data.base.api.query;
 
+import ru.tinkoff.qa.neptune.data.base.api.PersistableList;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
 import javax.jdo.JDOQLTypedQuery;

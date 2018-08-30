@@ -5,10 +5,10 @@ import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 import javax.jdo.annotations.*;
 
 @PersistenceCapable(table = "Publishers")
-@DatastoreIdentity(strategy= IdGeneratorStrategy.INCREMENT)
 public class Publisher extends PersistableObject {
 
     @PrimaryKey
+    @Persistent(valueStrategy=IdGeneratorStrategy.INCREMENT)
     @Column(name = "ID")
     private int id;
 
@@ -26,9 +26,5 @@ public class Publisher extends PersistableObject {
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 }

@@ -1,18 +1,16 @@
 package ru.tinkoff.qa.neptune.data.base.api.test;
 
-
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
 import javax.jdo.annotations.*;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 @PersistenceCapable(table = "Authors")
-@DatastoreIdentity(strategy=IdGeneratorStrategy.INCREMENT)
 public class Author extends PersistableObject {
 
     @PrimaryKey
+    @Persistent(valueStrategy=IdGeneratorStrategy.INCREMENT)
     @Column(name = "Id")
     private int id;
 
@@ -22,64 +20,66 @@ public class Author extends PersistableObject {
     @Column(name = "LastName")
     private String lastName;
 
-    @Column(name = "BirthDate")
+    @Column(name = "BirthDate", jdbcType = "TIMESTAMP")
     private Date birthDate;
 
-    @Column(name = "DeathDate")
+    @Column(name = "DeathDate", jdbcType = "TIMESTAMP")
     private Date deathDate;
 
-    @Column(name = "BiographyDescription")
+    @Column(name = "BiographyDescription", length = 10000)
     private String biography;
 
+    @Persistent
     @Element(column="Author")
-    private Collection<Book> books;
+    transient Collection<Book> books;
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
+    public Author setFirstName(String firstName) {
         this.firstName = firstName;
+        return this;
     }
 
     public String getLastName() {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
+    public Author setLastName(String lastName) {
         this.lastName = lastName;
+        return this;
     }
 
     public Date getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public Author setBirthDate(java.util.Date birthDate) {
         this.birthDate = birthDate;
+        return this;
     }
 
     public Date getDeathDate() {
         return deathDate;
     }
 
-    public void setDeathDate(Date deathDate) {
+    public Author setDeathDate(java.util.Date deathDate) {
         this.deathDate = deathDate;
+        return this;
     }
 
     public String getBiography() {
         return biography;
     }
 
-    public void setBiography(String biography) {
+    public Author setBiography(String biography) {
         this.biography = biography;
+        return this;
     }
 
     public Collection<Book> getBooks() {

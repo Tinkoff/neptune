@@ -32,7 +32,7 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
 
     @Test
     public void selectListTestWithoutAnyCondition() {
-        assertThat(dataBaseSteps.select(listByQuery(ofType(Author.class))), hasSize(2));
+        assertThat(dataBaseSteps.select(listByQuery(ofType(Author.class))), hasSize(greaterThanOrEqualTo(2)));
     }
 
     @Test

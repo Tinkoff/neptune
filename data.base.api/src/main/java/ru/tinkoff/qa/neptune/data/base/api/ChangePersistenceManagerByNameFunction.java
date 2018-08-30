@@ -1,21 +1,19 @@
-package ru.tinkoff.qa.neptune.data.base.api.query;
-
-import ru.tinkoff.qa.neptune.data.base.api.DataBaseSteps;
+package ru.tinkoff.qa.neptune.data.base.api;
 
 import java.util.function.Function;
 
 import static java.lang.String.format;
 import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
 
-class ChangePersistenceManagerByNameFunction implements Function<DataBaseSteps, DataBaseSteps> {
+final class ChangePersistenceManagerByNameFunction implements Function<DataBaseSteps, DataBaseSteps> {
 
     private final String name;
 
-    ChangePersistenceManagerByNameFunction(String name) {
+    private ChangePersistenceManagerByNameFunction(String name) {
         this.name = name;
     }
 
-    static Function<DataBaseSteps, DataBaseSteps> changeConnectionByName(String name) {
+    public static Function<DataBaseSteps, DataBaseSteps> changeConnectionByName(String name) {
         return toGet(format("Change connection by name %s", name), new ChangePersistenceManagerByNameFunction(name));
     }
 

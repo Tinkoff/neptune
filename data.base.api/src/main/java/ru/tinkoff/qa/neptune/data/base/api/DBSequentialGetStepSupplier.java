@@ -4,6 +4,13 @@ import org.datanucleus.api.jdo.JDOPersistenceManagerFactory;
 import ru.tinkoff.qa.neptune.core.api.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.data.base.api.persistence.data.PersistenceManagerFactorySupplier;
 
+import java.util.function.Function;
+
+import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.data.base.api.ChangePersistenceManagerByNameFunction.changeConnectionByName;
+import static ru.tinkoff.qa.neptune.data.base.api.ChangePersistenceManagerByPersistenceManagerFactory.changeConnectionByPersistenceManagerFactory;
+import static ru.tinkoff.qa.neptune.data.base.api.ChangePersistenceManagerToDefault.changeConnectionToDefault;
+
 @SuppressWarnings("unchecked")
 public abstract class DBSequentialGetStepSupplier<T, Q, R extends DBSequentialGetStepSupplier<T, Q, R>>
         extends SequentialGetStepSupplier<DataBaseSteps, T, Q, R> {
@@ -64,6 +71,29 @@ public abstract class DBSequentialGetStepSupplier<T, Q, R extends DBSequentialGe
         connectionDescription = null;
         toUseDefaultConnection = true;
         return (R) this;
+    }
+
+    private Function<DataBaseSteps, T> changeConnectionAndGet(Function<DataBaseSteps, DataBaseSteps> changeConnection) {
+        return ofNullable(super.get()).map(f -> f.compose(changeConnection))
+                .orElseThrow(() -> new IllegalStateException("Supplied function has null value"));
+    }
+
+    @Override
+    public Function<DataBaseSteps, T> get() {
+        if (toUseDefaultConnection) {
+            return changeConnectionAndGet(changeConnectionToDefault());
+        }
+
+        Class<?> objectClass = connectionDescription.getClass();
+        if (String.class.equals(objectClass)) {
+            return changeConnectionAndGet(changeConnectionByName(String.valueOf(connectionDescription)));
+        }
+
+        if (JDOPersistenceManagerFactory.class.isAssignableFrom(objectClass)) {
+            return changeConnectionAndGet(changeConnectionByPersistenceManagerFactory((JDOPersistenceManagerFactory) connectionDescription));
+        }
+
+        throw new IllegalStateException("It is unknown what to do with a connection");
     }
 }
 

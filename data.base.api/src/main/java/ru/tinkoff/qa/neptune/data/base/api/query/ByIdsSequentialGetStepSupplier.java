@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.data.base.api.query;
 
-import org.datanucleus.api.jdo.JDOPersistenceManagerFactory;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseSteps;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
@@ -8,11 +7,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.format;
-import static java.util.Optional.ofNullable;
-import static ru.tinkoff.qa.neptune.data.base.api.query.ChangePersistenceManagerByNameFunction.changeConnectionByName;
-import static ru.tinkoff.qa.neptune.data.base.api.query.ChangePersistenceManagerByPersistenceManagerFactory.changeConnectionByersistenceManagerFactory;
-import static ru.tinkoff.qa.neptune.data.base.api.query.ChangePersistenceManagerToDefault.changeConnectionToDefault;
 
 @SuppressWarnings("unchecked")
 public abstract class ByIdsSequentialGetStepSupplier<T extends PersistableObject, S, Q extends ByIdsSequentialGetStepSupplier<T, S, Q>>
@@ -44,26 +38,7 @@ public abstract class ByIdsSequentialGetStepSupplier<T extends PersistableObject
 
     @Override
     public Function<DataBaseSteps, S> get() {
-        if (toUseDefaultConnection) {
-            super.from(changeConnectionToDefault());
-        }
-
-        ofNullable(connectionDescription).ifPresent(o -> {
-            Class<?> objectClass = o.getClass();
-            if (String.class.equals(objectClass)) {
-                super.from(changeConnectionByName(String.valueOf(o)));
-                return;
-            }
-
-            if (JDOPersistenceManagerFactory.class.isAssignableFrom(objectClass)) {
-                super.from(changeConnectionByersistenceManagerFactory((JDOPersistenceManagerFactory) o));
-                return;
-            }
-
-            throw new IllegalArgumentException(format("Unknown description of a connection of type %s",
-                    objectClass.getName()));
-        });
-
+        super.from(dataBaseSteps -> dataBaseSteps);
         return super.get();
     }
 }
