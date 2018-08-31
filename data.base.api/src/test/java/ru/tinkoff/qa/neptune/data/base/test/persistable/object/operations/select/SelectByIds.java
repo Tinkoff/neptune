@@ -29,7 +29,7 @@ public class SelectByIds extends BaseDbOperationTest {
 
     @Test
     public void selectListTest() {
-        List<Catalog> catalogItems = dataBaseSteps.select(listOfTypeByIds(Catalog.class, -3, 1, 2));
+        List<Catalog> catalogItems = dataBaseSteps.get(listOfTypeByIds(Catalog.class, -3, 1, 2));
         assertThat(catalogItems, hasSize(2));
         assertThat(catalogItems.stream().map(Catalog::getRecordId).collect(toList()),
                 contains(1, 2));
@@ -37,14 +37,14 @@ public class SelectByIds extends BaseDbOperationTest {
 
     @Test
     public void selectOneTest() {
-        Catalog catalogItem = dataBaseSteps.select(aSingleOfTypeById(Catalog.class, 2));
+        Catalog catalogItem = dataBaseSteps.get(aSingleOfTypeById(Catalog.class, 2));
         assertThat(catalogItem.getRecordId(), is(2));
         assertThat(catalogItem.getPublisher().getName(), is("Simon & Schuster"));
     }
 
     @Test
     public void selectListTestByCondition() {
-        List<Catalog> catalogItems = dataBaseSteps.select(listOfTypeByIds(Catalog.class, -3, 1, 2)
+        List<Catalog> catalogItems = dataBaseSteps.get(listOfTypeByIds(Catalog.class, -3, 1, 2)
                 .withCondition(condition("A book with title `Ruslan and Ludmila`",
                         catalog -> catalog.getBook().getName().equalsIgnoreCase("ruslan and ludmila"))));
         assertThat(catalogItems, hasSize(1));
@@ -54,7 +54,7 @@ public class SelectByIds extends BaseDbOperationTest {
 
     @Test
     public void selectOneTestByCondition() {
-        Author author = dataBaseSteps.select(aSingleOfTypeById(Author.class, 1)
+        Author author = dataBaseSteps.get(aSingleOfTypeById(Author.class, 1)
                 .withCondition(condition("Wrote `Ruslan and Ludmila`", author1 ->
                         null != author1.getBooks().stream()
                                 .filter(book -> "ruslan and ludmila".equalsIgnoreCase(book.getName()))
@@ -65,7 +65,7 @@ public class SelectByIds extends BaseDbOperationTest {
     @Test
     public void selectEmptyListTestWithDefaultTime() {
         long start = currentTimeMillis();
-        List<Catalog> catalogItems = dataBaseSteps.select(listOfTypeByIds(Catalog.class, -1, -2));
+        List<Catalog> catalogItems = dataBaseSteps.get(listOfTypeByIds(Catalog.class, -1, -2));
         long end = currentTimeMillis();
 
         Duration fiveSeconds = ofSeconds(5);
@@ -77,7 +77,7 @@ public class SelectByIds extends BaseDbOperationTest {
     @Test
     public void selectNullTestWithDefaultTime() {
         long start = currentTimeMillis();
-        Catalog catalogItem = dataBaseSteps.select(aSingleOfTypeById(Catalog.class, -2));
+        Catalog catalogItem = dataBaseSteps.get(aSingleOfTypeById(Catalog.class, -2));
         long end = currentTimeMillis();
 
         Duration fiveSeconds = ofSeconds(5);
@@ -90,7 +90,7 @@ public class SelectByIds extends BaseDbOperationTest {
     public void selectEmptyListByIdWithDefinedTime() {
         Duration sixSeconds = ofSeconds(6);
         long start = currentTimeMillis();
-        List<Catalog> catalogItems = dataBaseSteps.select(listOfTypeByIds(Catalog.class, -1, -2)
+        List<Catalog> catalogItems = dataBaseSteps.get(listOfTypeByIds(Catalog.class, -1, -2)
                 .withTimeToGetValue(sixSeconds));
         long end = currentTimeMillis();
 
@@ -103,7 +103,7 @@ public class SelectByIds extends BaseDbOperationTest {
     public void selectNullByIdWithDefinedTime() {
         Duration sixSeconds = ofSeconds(6);
         long start = currentTimeMillis();
-        Catalog catalogItem = dataBaseSteps.select(aSingleOfTypeById(Catalog.class, -2)
+        Catalog catalogItem = dataBaseSteps.get(aSingleOfTypeById(Catalog.class, -2)
                 .withTimeToGetValue(sixSeconds));
         long end = currentTimeMillis();
 
@@ -119,7 +119,7 @@ public class SelectByIds extends BaseDbOperationTest {
 
         Duration twoSeconds = ofSeconds(2);
         long start = currentTimeMillis();
-        List<Catalog> catalogItems = dataBaseSteps.select(listOfTypeByIds(Catalog.class, -1, -2));
+        List<Catalog> catalogItems = dataBaseSteps.get(listOfTypeByIds(Catalog.class, -1, -2));
         long end = currentTimeMillis();
 
         try {
@@ -140,7 +140,7 @@ public class SelectByIds extends BaseDbOperationTest {
 
         Duration twoSeconds = ofSeconds(2);
         long start = currentTimeMillis();
-        Catalog catalogItem = dataBaseSteps.select(aSingleOfTypeById(Catalog.class, -2));
+        Catalog catalogItem = dataBaseSteps.get(aSingleOfTypeById(Catalog.class, -2));
         long end = currentTimeMillis();
 
         try {
@@ -157,7 +157,7 @@ public class SelectByIds extends BaseDbOperationTest {
     @Test
     public void selectEmptyListByIdAndConditionWithDefaultTime() {
         long start = currentTimeMillis();
-        List<Catalog> catalogItems = dataBaseSteps.select(listOfTypeByIds(Catalog.class, 1)
+        List<Catalog> catalogItems = dataBaseSteps.get(listOfTypeByIds(Catalog.class, 1)
                 .withCondition(condition("ISBN is 0-671-73246-3",
                         catalog -> catalog.getIsbn().equals("0-671-73246-3"))));
         long end = currentTimeMillis();
@@ -171,7 +171,7 @@ public class SelectByIds extends BaseDbOperationTest {
     @Test
     public void selectNullByIdAndConditionWithDefaultTime() {
         long start = currentTimeMillis();
-        Catalog catalogItem = dataBaseSteps.select(aSingleOfTypeById(Catalog.class, 1)
+        Catalog catalogItem = dataBaseSteps.get(aSingleOfTypeById(Catalog.class, 1)
                 .withCondition(condition("ISBN is 0-671-73246-3",
                         catalog -> catalog.getIsbn().equals("0-671-73246-3"))));
         long end = currentTimeMillis();
@@ -186,7 +186,7 @@ public class SelectByIds extends BaseDbOperationTest {
     public void selectEmptyListByIdAndConditionWithDefinedTime() {
         Duration sixSeconds = ofSeconds(6);
         long start = currentTimeMillis();
-        List<Catalog> catalogItems = dataBaseSteps.select(listOfTypeByIds(Catalog.class, 1)
+        List<Catalog> catalogItems = dataBaseSteps.get(listOfTypeByIds(Catalog.class, 1)
                 .withCondition(condition("ISBN is 0-671-73246-3",
                         catalog -> catalog.getIsbn().equals("0-671-73246-3")))
                 .withTimeToGetValue(sixSeconds));
@@ -201,7 +201,7 @@ public class SelectByIds extends BaseDbOperationTest {
     public void selectNullByIdAndConditionWithDefinedTime() {
         Duration sixSeconds = ofSeconds(6);
         long start = currentTimeMillis();
-        Catalog catalogItem = dataBaseSteps.select(aSingleOfTypeById(Catalog.class, 1)
+        Catalog catalogItem = dataBaseSteps.get(aSingleOfTypeById(Catalog.class, 1)
                 .withCondition(condition("ISBN is 0-671-73246-3",
                         catalog -> catalog.getIsbn().equals("0-671-73246-3")))
                 .withTimeToGetValue(sixSeconds));
@@ -219,7 +219,7 @@ public class SelectByIds extends BaseDbOperationTest {
 
         Duration twoSeconds = ofSeconds(2);
         long start = currentTimeMillis();
-        List<Catalog> catalogItems = dataBaseSteps.select(listOfTypeByIds(Catalog.class, 1)
+        List<Catalog> catalogItems = dataBaseSteps.get(listOfTypeByIds(Catalog.class, 1)
                 .withCondition(condition("ISBN is 0-671-73246-3",
                         catalog -> catalog.getIsbn().equals("0-671-73246-3"))));
         long end = currentTimeMillis();
@@ -242,7 +242,7 @@ public class SelectByIds extends BaseDbOperationTest {
 
         Duration twoSeconds = ofSeconds(2);
         long start = currentTimeMillis();
-        Catalog catalogItem = dataBaseSteps.select(aSingleOfTypeById(Catalog.class, 1)
+        Catalog catalogItem = dataBaseSteps.get(aSingleOfTypeById(Catalog.class, 1)
                 .withCondition(condition("ISBN is 0-671-73246-3",
                         catalog -> catalog.getIsbn().equals("0-671-73246-3"))));
         long end = currentTimeMillis();
@@ -260,19 +260,19 @@ public class SelectByIds extends BaseDbOperationTest {
 
     @Test(expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = "Test exception")
     public void selectEmptyListByIdWithExceptionThrowing() {
-        dataBaseSteps.select(listOfTypeByIds(Catalog.class, -1)
+        dataBaseSteps.get(listOfTypeByIds(Catalog.class, -1)
                 .toThrowOnEmptyResult(TEST_SUPPLIER));
     }
 
     @Test(expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = "Test exception")
     public void selectNullByIdWithExceptionThrowing() {
-        dataBaseSteps.select(aSingleOfTypeById(Catalog.class, -1)
+        dataBaseSteps.get(aSingleOfTypeById(Catalog.class, -1)
                 .toThrowOnEmptyResult(TEST_SUPPLIER));
     }
 
     @Test(expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = "Test exception")
     public void selectEmptyListByIdAndConditionWithExceptionThrowing() {
-        dataBaseSteps.select(listOfTypeByIds(Catalog.class, 1)
+        dataBaseSteps.get(listOfTypeByIds(Catalog.class, 1)
                 .withCondition(condition("ISBN is 0-671-73246-3",
                         catalog -> catalog.getIsbn().equals("0-671-73246-3")))
                 .toThrowOnEmptyResult(TEST_SUPPLIER));
@@ -280,7 +280,7 @@ public class SelectByIds extends BaseDbOperationTest {
 
     @Test(expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = "Test exception")
     public void selectNullByIdAndConditionWithExceptionThrowing() {
-        dataBaseSteps.select(aSingleOfTypeById(Catalog.class, 1)
+        dataBaseSteps.get(aSingleOfTypeById(Catalog.class, 1)
                 .withCondition(condition("ISBN is 0-671-73246-3",
                         catalog -> catalog.getIsbn().equals("0-671-73246-3")))
                 .toThrowOnEmptyResult(TEST_SUPPLIER));
@@ -291,8 +291,8 @@ public class SelectByIds extends BaseDbOperationTest {
         SelectListByIdsSupplier<Catalog> query = listOfTypeByIds(Catalog.class, 1);
 
         try {
-            assertThat(dataBaseSteps.select(query.usePersistenceUnit(TEST_BASE2)), hasSize(0));
-            assertThat(dataBaseSteps.select(query.useDefaultPersistenceUnit()), hasSize(1));
+            assertThat(dataBaseSteps.get(query.usePersistenceUnit(TEST_BASE2)), hasSize(0));
+            assertThat(dataBaseSteps.get(query.useDefaultPersistenceUnit()), hasSize(1));
         }
         finally {
             dataBaseSteps.switchToDefault();
@@ -304,8 +304,8 @@ public class SelectByIds extends BaseDbOperationTest {
         SelectSingleObjectByIdSupplier<Catalog> query = aSingleOfTypeById(Catalog.class, 1);
 
         try {
-            assertThat(dataBaseSteps.select(query.usePersistenceUnit(TEST_BASE2)), nullValue());
-            assertThat(dataBaseSteps.select(query.useDefaultPersistenceUnit()), not(nullValue()));
+            assertThat(dataBaseSteps.get(query.usePersistenceUnit(TEST_BASE2)), nullValue());
+            assertThat(dataBaseSteps.get(query.useDefaultPersistenceUnit()), not(nullValue()));
         }
         finally {
             dataBaseSteps.switchToDefault();
@@ -317,9 +317,9 @@ public class SelectByIds extends BaseDbOperationTest {
         SelectListByIdsSupplier<Catalog> query = listOfTypeByIds(Catalog.class, 1);
 
         try {
-            assertThat(dataBaseSteps.select(query.
+            assertThat(dataBaseSteps.get(query.
                     usePersistenceUnit(getPersistenceManagerFactory(TEST_BASE2, true))), hasSize(0));
-            assertThat(dataBaseSteps.select(query.useDefaultPersistenceUnit()), hasSize(1));
+            assertThat(dataBaseSteps.get(query.useDefaultPersistenceUnit()), hasSize(1));
         }
         finally {
             dataBaseSteps.switchToDefault();
@@ -331,9 +331,9 @@ public class SelectByIds extends BaseDbOperationTest {
         SelectSingleObjectByIdSupplier<Catalog> query = aSingleOfTypeById(Catalog.class, 1);
 
         try {
-            assertThat(dataBaseSteps.select(query
+            assertThat(dataBaseSteps.get(query
                     .usePersistenceUnit(getPersistenceManagerFactory(TEST_BASE2, true))), nullValue());
-            assertThat(dataBaseSteps.select(query.useDefaultPersistenceUnit()), not(nullValue()));
+            assertThat(dataBaseSteps.get(query.useDefaultPersistenceUnit()), not(nullValue()));
         }
         finally {
             dataBaseSteps.switchToDefault();

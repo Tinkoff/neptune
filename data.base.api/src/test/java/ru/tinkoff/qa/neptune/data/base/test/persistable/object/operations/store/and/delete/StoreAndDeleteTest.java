@@ -3,7 +3,6 @@ package ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.store
 import org.datanucleus.store.rdbms.exceptions.MissingTableException;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 import ru.tinkoff.qa.neptune.data.base.api.store.StoreSequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.data.base.api.test.*;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDbOperationTest;
@@ -19,6 +18,7 @@ import static org.apache.commons.lang3.time.DateUtils.addHours;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.core.api.StoryWriter.condition;
+import static ru.tinkoff.qa.neptune.data.base.api.delete.GetDeletedSequentialSupplier.deleted;
 import static ru.tinkoff.qa.neptune.data.base.api.persistence.data.PersistenceManagerFactoryStore.getPersistenceManagerFactory;
 import static ru.tinkoff.qa.neptune.data.base.api.query.QueryBuilderFunction.ofType;
 import static ru.tinkoff.qa.neptune.data.base.api.query.SelectListByQuerySupplier.listByQuery;
@@ -76,6 +76,7 @@ public class StoreAndDeleteTest extends BaseDbOperationTest {
     private Book theHunchbackOfNotreDame;
     private Book theLegendOfTheAges;
 
+    private Publisher bantamDoubledayDellPublishing;
     private Publisher signet;
     private Publisher createSpaceIndependent;
 
@@ -93,8 +94,6 @@ public class StoreAndDeleteTest extends BaseDbOperationTest {
 
     private Catalog catalogCrimeAndPunishment;
     private Catalog catalogItemTheDevils;
-
-    private Date birthDateKing;
 
     private Author stephenKing;
 
@@ -138,6 +137,7 @@ public class StoreAndDeleteTest extends BaseDbOperationTest {
 
         signet = new Publisher().setName("Signet");
         createSpaceIndependent = new Publisher().setName("CreateSpace Independent Publishing Platform");
+        bantamDoubledayDellPublishing = new Publisher().setName("Bantam Doubleday Dell Publishing");
 
         catalogItemOfNotreDame = new Catalog().setBook(theHunchbackOfNotreDame)
                 .setIsbn("978-1853260681")
@@ -201,7 +201,7 @@ public class StoreAndDeleteTest extends BaseDbOperationTest {
         c5.set(MINUTE, 0);
         c5.set(SECOND, 0);
         c5.set(MILLISECOND, 0);
-        birthDateKing = c5.getTime();
+        Date birthDateKing = c5.getTime();
 
         stephenKing = new Author().setFirstName("Stephen").setLastName("King")
                 .setBirthDate(birthDateKing).setBiography(KING_BIOGRAPHY);
@@ -236,7 +236,7 @@ public class StoreAndDeleteTest extends BaseDbOperationTest {
 
         QCatalog qCatalog = QCatalog.candidate();
 
-        assertThat(dataBaseSteps.select(listByQuery(ofType(Catalog.class)
+        assertThat(dataBaseSteps.get(listByQuery(ofType(Catalog.class)
                         .where(qCatalog.book.author.books.contains(theHunchbackOfNotreDame)
                                 .and(qCatalog.book.author.books.contains(theLegendOfTheAges))
                                 .and(qCatalog.book.author.firstName.eq(victorHugo.getFirstName()))
@@ -320,5 +320,101 @@ public class StoreAndDeleteTest extends BaseDbOperationTest {
         finally {
             dataBaseSteps.switchToDefault();
         }
+    }
+
+    @Test(dependsOnMethods = "storeANewObject")
+    public void deletePreviouslyPersistedObjects() {
+        dataBaseSteps.get(deleted(catalogItemOfNotreDame, catalogItemOfLegendOfTheAges));
+        assertThat(catalogItemOfNotreDame.getRecordId(), not(nullValue()));
+        assertThat(catalogItemOfLegendOfTheAges.getRecordId(), not(nullValue()));
+
+        QCatalog qCatalog = QCatalog.candidate();
+        assertThat(dataBaseSteps.get(listByQuery(ofType(Catalog.class)
+                        .where(qCatalog.book.author.books.contains(theHunchbackOfNotreDame)
+                                .and(qCatalog.book.author.books.contains(theLegendOfTheAges))
+                                .and(qCatalog.book.author.firstName.eq(victorHugo.getFirstName()))
+                                .and(qCatalog.book.author.lastName.eq(victorHugo.getLastName()))
+                                .and(qCatalog.publisher.eq(signet).or(qCatalog.publisher.eq(createSpaceIndependent)))
+                        ))),
+                hasSize(0));
+
+        QBook qBook = QBook.candidate();
+        QAuthor qAuthor = QAuthor.candidate();
+        QPublisher qPublisher = QPublisher.candidate();
+
+        assertThat(dataBaseSteps
+                .get(aSingleByQuery(ofType(Book.class).where(qBook.id.eq(theHunchbackOfNotreDame.getId())))),
+                not(nullValue()));
+        assertThat(dataBaseSteps
+                        .get(aSingleByQuery(ofType(Book.class).where(qBook.id.eq(theLegendOfTheAges.getId())))),
+                not(nullValue()));
+
+        assertThat(dataBaseSteps
+                        .get(aSingleByQuery(ofType(Author.class).where(qAuthor.id.eq(victorHugo.getId())))),
+                not(nullValue()));
+
+        assertThat(dataBaseSteps
+                        .get(aSingleByQuery(ofType(Publisher.class).where(qPublisher.id.eq(signet.getId())))),
+                not(nullValue()));
+        assertThat(dataBaseSteps
+                        .get(aSingleByQuery(ofType(Publisher.class).where(qPublisher.id.eq(createSpaceIndependent.getId())))),
+                not(nullValue()));
+    }
+
+    @Test(dependsOnMethods = {"storeANewObject", "deletePreviouslyPersistedObjects"})
+    public void storePersistedDeletedObjects() {
+        List<Catalog> catalogItems = dataBaseSteps
+                .get(storedObjects(catalogItemOfNotreDame, catalogItemOfLegendOfTheAges));
+
+        QCatalog qCatalog = QCatalog.candidate();
+
+        assertThat(dataBaseSteps.get(listByQuery(ofType(Catalog.class)
+                        .where(qCatalog.book.author.books.contains(theHunchbackOfNotreDame)
+                                .and(qCatalog.book.author.books.contains(theLegendOfTheAges))
+                                .and(qCatalog.publisher.eq(signet).or(qCatalog.publisher.eq(createSpaceIndependent)))
+                        ))),
+                containsInAnyOrder(catalogItems.toArray()));
+        catalogItemOfNotreDame = catalogItems.get(0);
+        catalogItemOfLegendOfTheAges = catalogItems.get(1);
+    }
+
+    @Test(dependsOnMethods = {"storeANewObject", "deletePreviouslyPersistedObjects", "storePersistedDeletedObjects"})
+    public void storePersistedModifiedObjectThatWasDeletedPreviously() {
+        List<Catalog> catalogItems = dataBaseSteps
+                .get(deleted(catalogItemOfNotreDame, catalogItemOfLegendOfTheAges));
+
+        QCatalog qCatalog = QCatalog.candidate();
+        assertThat(dataBaseSteps.get(listByQuery(ofType(Catalog.class)
+                        .where(qCatalog.book.author.books.contains(theHunchbackOfNotreDame)
+                                .and(qCatalog.book.author.books.contains(theLegendOfTheAges))
+                                .and(qCatalog.book.author.firstName.eq(victorHugo.getFirstName()))
+                                .and(qCatalog.book.author.lastName.eq(victorHugo.getLastName()))
+                                .and(qCatalog.publisher.eq(signet).or(qCatalog.publisher.eq(createSpaceIndependent)))
+                        ))),
+                hasSize(0));
+
+        catalogItemOfNotreDame = catalogItems.get(0);
+        catalogItemOfLegendOfTheAges = catalogItems.get(1);
+        
+        catalogItemOfNotreDame
+                .setPublisher(bantamDoubledayDellPublishing)
+                .setIsbn("0553213709")
+                .setYearOfPublishing(2013);
+
+        catalogItems = dataBaseSteps
+                .get(storedObjects(catalogItemOfNotreDame, catalogItemOfLegendOfTheAges));
+
+        assertThat(dataBaseSteps.get(listByQuery(ofType(Catalog.class)
+                        .where(qCatalog.book.author.books.contains(theHunchbackOfNotreDame)
+                                .and(qCatalog.book.author.books.contains(theLegendOfTheAges))
+                        ))),
+                hasSize(2));
+
+        assertThat(catalogItems.get(0).getPublisher().getName(), is(bantamDoubledayDellPublishing.getName()));
+        assertThat(catalogItems.get(0).getYearOfPublishing(), is(2013));
+        assertThat(catalogItems.get(0).getIsbn(), is("0553213709"));
+
+        catalogItemOfNotreDame = catalogItems.get(0);
+        catalogItemOfLegendOfTheAges = catalogItems.get(1);
     }
 }

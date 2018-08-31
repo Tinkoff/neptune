@@ -13,7 +13,7 @@ import static java.util.Optional.ofNullable;
 /**
  * This abstract class is designed to mark persistable classes.
  */
-public abstract class PersistableObject {
+public abstract class PersistableObject implements Cloneable {
 
     private boolean equalsByFields(Object obj) {
         Class<?> clazz = this.getClass();
@@ -69,5 +69,13 @@ public abstract class PersistableObject {
     @Override
     public String toString() {
         return new Gson().toJson(this);
+    }
+
+    public Object clone() {
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -6,6 +6,7 @@ import ru.tinkoff.qa.neptune.data.base.api.DataBaseSteps;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableList;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
@@ -13,6 +14,7 @@ import java.util.function.Function;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
+import static javax.jdo.JDOHelper.isDeleted;
 import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
 
 /**
@@ -21,6 +23,7 @@ import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
  *
  * @param <T> is a type of objects to be created/updated.
  */
+@SuppressWarnings("unchecked")
 public final class StoreSequentialGetStepSupplier<T extends PersistableObject>
         extends DBSequentialGetStepSupplier<List<T>, DataBaseSteps, StoreSequentialGetStepSupplier<T>> {
 
@@ -62,7 +65,16 @@ public final class StoreSequentialGetStepSupplier<T extends PersistableObject>
         String description = format("Store objects: \n %s", toBePersisted.toString());
         return toGet(description, dataBaseSteps -> {
             JDOPersistenceManager manager = dataBaseSteps.getCurrentPersistenceManager();
-            return new PersistableList<>(manager.makePersistentAll(toBePersisted));
+            ArrayList<T> toBeStored = new ArrayList<>(toBePersisted);
+            toBePersisted.forEach(o -> {
+                if (isDeleted(o)) {
+                    toBeStored.remove(o);
+                    T clone = (T) o.clone();
+                    toBeStored.add(clone);
+                }
+            });
+
+            return new PersistableList<>(manager.makePersistentAll(toBeStored));
         });
     }
 
