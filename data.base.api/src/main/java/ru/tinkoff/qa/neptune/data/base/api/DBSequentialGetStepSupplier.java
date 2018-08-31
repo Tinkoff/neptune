@@ -6,6 +6,7 @@ import ru.tinkoff.qa.neptune.data.base.api.persistence.data.PersistenceManagerFa
 
 import java.util.function.Function;
 
+import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.data.base.api.ChangePersistenceManagerByNameFunction.changeConnectionByName;
 import static ru.tinkoff.qa.neptune.data.base.api.ChangePersistenceManagerByPersistenceManagerFactory.changeConnectionByPersistenceManagerFactory;
@@ -15,8 +16,8 @@ import static ru.tinkoff.qa.neptune.data.base.api.ChangePersistenceManagerToDefa
 public abstract class DBSequentialGetStepSupplier<T, Q, R extends DBSequentialGetStepSupplier<T, Q, R>>
         extends SequentialGetStepSupplier<DataBaseSteps, T, Q, R> {
 
-    protected Object connectionDescription;
-    protected boolean toUseDefaultConnection = true;
+    private Object connectionDescription;
+    private boolean toUseDefaultConnection = false;
 
     /**
      * This method defines where (on which data base) query should be performed.
@@ -84,16 +85,18 @@ public abstract class DBSequentialGetStepSupplier<T, Q, R extends DBSequentialGe
             return changeConnectionAndGet(changeConnectionToDefault());
         }
 
-        Class<?> objectClass = connectionDescription.getClass();
-        if (String.class.equals(objectClass)) {
-            return changeConnectionAndGet(changeConnectionByName(String.valueOf(connectionDescription)));
-        }
+        return ofNullable(connectionDescription).map(o -> {
+            Class<?> objectClass = o.getClass();
+            if (String.class.equals(objectClass)) {
+                return changeConnectionAndGet(changeConnectionByName(String.valueOf(o)));
+            }
 
-        if (JDOPersistenceManagerFactory.class.isAssignableFrom(objectClass)) {
-            return changeConnectionAndGet(changeConnectionByPersistenceManagerFactory((JDOPersistenceManagerFactory) connectionDescription));
-        }
+            if (JDOPersistenceManagerFactory.class.isAssignableFrom(objectClass)) {
+                return changeConnectionAndGet(changeConnectionByPersistenceManagerFactory((JDOPersistenceManagerFactory) o));
+            }
 
-        throw new IllegalStateException("It is unknown what to do with a connection");
+            throw new IllegalStateException(format("It is unknown what to do with a connection described by %s", objectClass.getName()));
+        }).orElseGet(() -> changeConnectionAndGet(dataBaseSteps -> dataBaseSteps));
     }
 }
 
