@@ -18,9 +18,9 @@ public final class PersistableEnhancer {
         DataNucleusEnhancer enhancer = new DataNucleusEnhancer("JDO", null);
         enhancer.setVerbose(true);
 
-        REFLECTIONS.getSubTypesOf(PersistableObject.class).stream()
+        enhancer.addClasses(REFLECTIONS.getSubTypesOf(PersistableObject.class).stream()
                 .filter(clazz -> clazz.getAnnotation(PersistenceCapable.class) != null)
-                .map(Class::getName).collect(Collectors.toList()).forEach(enhancer::addClasses);
+                .map(Class::getName).collect(Collectors.toList()).toArray(new String[]{}));
         enhancer.enhance();
     }
 }

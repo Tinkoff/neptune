@@ -5,7 +5,7 @@ dependencies {
     compile (group: 'com.codeborne', name: 'phantomjsdriver', version: '1.4.4') {
         exclude group: 'org.seleniumhq.selenium'
     }
-    compile (group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '2.2.4') {
+    compile (group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '2.2.5') {
         exclude group: 'org.seleniumhq.selenium'
     }
     compile (group: 'org.seleniumhq.selenium', name: 'selenium-server', version: seleniumVersion) {
@@ -50,7 +50,6 @@ uploadArchives {
                 packaging 'jar'
                 name 'selenium'
                 version version
-                description 'Java client for Appium Mobile Webdriver'
                 url 'https://github.com/TinkoffCreditSystems/neptune'
                 developers {
                     developer {
