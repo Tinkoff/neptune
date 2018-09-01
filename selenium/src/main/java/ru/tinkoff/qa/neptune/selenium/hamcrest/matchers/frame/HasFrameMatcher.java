@@ -1,11 +1,11 @@
 package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.frame;
 
+import org.openqa.selenium.WrapsDriver;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.Frame;
 import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
 import org.hamcrest.Description;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.internal.WrapsDriver;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;

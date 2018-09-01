@@ -5,7 +5,7 @@ subprojects {
     apply plugin: 'maven-publish'
 
     group 'ru.tinkoff.qa.neptune'
-    version '0.0.3-ALPHA'
+    version '0.1.0-ALPHA'
 
     sourceCompatibility = 1.9
     targetCompatibility = 1.9
@@ -13,6 +13,7 @@ subprojects {
     [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
     apply plugin: "java"
+
     repositories {
         mavenCentral()
     }
@@ -25,6 +26,8 @@ subprojects {
         jacksonVersion = '2.9.6'
         mavenDeployLogin =  REPO_USER_NAME
         mavenDeployPassword = REPO_USER_PASSWORD
+        ebeanVersion = '11.19.1'
+        jaxbVersion = '2.3.0.1'
     }
 
     dependencies {
@@ -35,6 +38,10 @@ subprojects {
         compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
         compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
         compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-jaxb-annotations', version: jacksonVersion
+        compile (group: 'org.reflections', name: 'reflections', version: '0.9.11') {
+            exclude group: 'com.google.guava'
+            exclude group: 'com.google.code.gson'
+        }
     }
 
     test {

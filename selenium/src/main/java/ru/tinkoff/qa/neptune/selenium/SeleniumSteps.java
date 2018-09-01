@@ -16,7 +16,6 @@ import ru.tinkoff.qa.neptune.selenium.functions.java.script.GetJavaScriptResultS
 import ru.tinkoff.qa.neptune.selenium.functions.value.SequentialGetValueSupplier;
 import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
 import org.openqa.selenium.*;
-import org.openqa.selenium.internal.WrapsDriver;
 
 import java.util.List;
 

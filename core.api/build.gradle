@@ -1,6 +1,6 @@
 dependencies {
     compile group: 'org.objenesis', name: 'objenesis', version: '2.6'
-    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.8.17'
+    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.8.20'
 }
 
 task javadocJar(type: Jar) {
@@ -29,7 +29,6 @@ uploadArchives {
                 packaging 'jar'
                 name 'core.api'
                 version version
-                description 'Java client for Appium Mobile Webdriver'
                 url 'https://github.com/TinkoffCreditSystems/neptune'
                 developers {
                     developer {

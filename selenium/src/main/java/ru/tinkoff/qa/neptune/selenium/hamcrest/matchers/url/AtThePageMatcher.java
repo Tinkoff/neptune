@@ -1,10 +1,10 @@
 package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.url;
 
+import org.openqa.selenium.WrapsDriver;
 import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.internal.WrapsDriver;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;

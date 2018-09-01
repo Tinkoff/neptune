@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium;
 
+import org.openqa.selenium.WrapsDriver;
 import ru.tinkoff.qa.neptune.core.api.cleaning.Refreshable;
 import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
 import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
@@ -9,7 +10,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.internal.WrapsDriver;
 import org.openqa.selenium.remote.server.SeleniumServer;
 
 import java.lang.reflect.Constructor;

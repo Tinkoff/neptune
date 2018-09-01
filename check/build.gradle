@@ -29,7 +29,6 @@ uploadArchives {
                 packaging 'jar'
                 name 'check'
                 version version
-                description 'Java client for Appium Mobile Webdriver'
                 url 'https://github.com/TinkoffCreditSystems/neptune'
                 developers {
                     developer {
