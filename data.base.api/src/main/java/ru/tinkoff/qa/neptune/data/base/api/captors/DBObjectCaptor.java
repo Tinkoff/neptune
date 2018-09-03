@@ -24,7 +24,9 @@ public class DBObjectCaptor extends FileCaptor<PersistableObject> {
             File json = createTempFile("persistable", UUID.randomUUID().toString() + ".json");
             JsonWriter writer = new JsonWriter(new FileWriter(json));
             writer.setHtmlSafe(true);
-            writer.beginObject().jsonValue(caught.toString()).endObject().close();
+            writer.beginObject()
+                    .name(caught.getClass().getSimpleName().toLowerCase())
+                    .jsonValue(caught.toString()).endObject().close();
             json.deleteOnExit();
             return json;
         } catch (IOException e) {

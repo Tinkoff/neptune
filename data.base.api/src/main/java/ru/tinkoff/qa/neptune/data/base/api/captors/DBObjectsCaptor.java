@@ -29,7 +29,9 @@ public class DBObjectsCaptor extends FileCaptor<PersistableList> {
 
             caught.forEach(o -> {
                 try {
-                    writer.beginObject().jsonValue(o.toString()).endObject();
+                    writer.beginObject()
+                            .name(o.getClass().getSimpleName().toLowerCase())
+                            .jsonValue(o.toString()).endObject();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
