@@ -25,14 +25,14 @@ public abstract class DBSequentialGetStepSupplier<T, Q, R extends DBSequentialGe
      * until another query is performed. This query should have another parameter set up by
      * {@link #usePersistenceUnit(JDOPersistenceManagerFactory)} or
      * {@link #useDefaultPersistenceUnit}. Also it is possible
-     * to invoke {@link DataBaseSteps#switchTo(String)} or {@link DataBaseSteps#switchTo(JDOPersistenceManagerFactory)}
+     * to invoke {@link DataBaseSteps#switchTo(CharSequence)} or {@link DataBaseSteps#switchTo(JDOPersistenceManagerFactory)}
      * or {@link DataBaseSteps#switchToDefault()} for same purposes.
      *
      * @param persistenceUnitName is a name of dynamic persistence unit described by any subclass of
      *                            {@link PersistenceManagerFactorySupplier}
      * @return self-reference
      */
-    public R usePersistenceUnit(String persistenceUnitName) {
+    public R usePersistenceUnit(CharSequence persistenceUnitName) {
         connectionDescription = persistenceUnitName;
         toUseDefaultConnection = false;
         return (R) this;
@@ -42,9 +42,9 @@ public abstract class DBSequentialGetStepSupplier<T, Q, R extends DBSequentialGe
      * This method defines where (on which data base) query should be performed.
      * WARNING!!! After the query performing the instance of {@link DataBaseSteps} keeps the given connection
      * until another query is performed. This query should have another parameter set up by
-     * {@link #usePersistenceUnit(String)} or
+     * {@link #usePersistenceUnit(CharSequence)} or
      * {@link #useDefaultPersistenceUnit}. Also it is possible
-     * to invoke {@link DataBaseSteps#switchTo(String)} or {@link DataBaseSteps#switchTo(JDOPersistenceManagerFactory)}
+     * to invoke {@link DataBaseSteps#switchTo(CharSequence)} or {@link DataBaseSteps#switchTo(JDOPersistenceManagerFactory)}
      * or {@link DataBaseSteps#switchToDefault()} for same purposes.
      *
      * @param persistenceManagerFactory is not closed instance of {@link JDOPersistenceManagerFactory}
@@ -61,9 +61,9 @@ public abstract class DBSequentialGetStepSupplier<T, Q, R extends DBSequentialGe
      * {@link PersistenceManagerFactorySupplier} and its name defined by the property {@code `default.persistence.unit.name`}.
      * WARNING!!! After the query performing the instance of {@link DataBaseSteps} keeps default connection
      * until another query is performed. This query should have another parameter set up by
-     * {@link #usePersistenceUnit(String)} or
+     * {@link #usePersistenceUnit(CharSequence)} or
      * {@link #usePersistenceUnit(JDOPersistenceManagerFactory)}. Also it is possible
-     * to invoke {@link DataBaseSteps#switchTo(String)} or {@link DataBaseSteps#switchTo(JDOPersistenceManagerFactory)}
+     * to invoke {@link DataBaseSteps#switchTo(CharSequence)} or {@link DataBaseSteps#switchTo(JDOPersistenceManagerFactory)}
      * for same purposes.
      *
      * @return self-reference
@@ -87,8 +87,8 @@ public abstract class DBSequentialGetStepSupplier<T, Q, R extends DBSequentialGe
 
         return ofNullable(connectionDescription).map(o -> {
             Class<?> objectClass = o.getClass();
-            if (String.class.equals(objectClass)) {
-                return changeConnectionAndGet(changeConnectionByName(String.valueOf(o)));
+            if (CharSequence.class.isAssignableFrom(objectClass)) {
+                return changeConnectionAndGet(changeConnectionByName((CharSequence) o));
             }
 
             if (JDOPersistenceManagerFactory.class.isAssignableFrom(objectClass)) {

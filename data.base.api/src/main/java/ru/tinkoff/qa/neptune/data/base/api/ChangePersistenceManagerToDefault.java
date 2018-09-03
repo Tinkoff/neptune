@@ -10,7 +10,7 @@ final class ChangePersistenceManagerToDefault implements Function<DataBaseSteps,
         super();
     }
 
-    public static Function<DataBaseSteps, DataBaseSteps> changeConnectionToDefault() {
+    static Function<DataBaseSteps, DataBaseSteps> changeConnectionToDefault() {
         return toGet("Use default connection", new ChangePersistenceManagerToDefault());
     }
 

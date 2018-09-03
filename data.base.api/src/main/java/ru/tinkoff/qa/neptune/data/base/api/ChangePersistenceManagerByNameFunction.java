@@ -7,13 +7,13 @@ import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
 
 final class ChangePersistenceManagerByNameFunction implements Function<DataBaseSteps, DataBaseSteps> {
 
-    private final String name;
+    private final CharSequence name;
 
-    private ChangePersistenceManagerByNameFunction(String name) {
+    private ChangePersistenceManagerByNameFunction(CharSequence name) {
         this.name = name;
     }
 
-    public static Function<DataBaseSteps, DataBaseSteps> changeConnectionByName(String name) {
+    static Function<DataBaseSteps, DataBaseSteps> changeConnectionByName(CharSequence name) {
         return toGet(format("Change connection by name %s", name), new ChangePersistenceManagerByNameFunction(name));
     }
 
