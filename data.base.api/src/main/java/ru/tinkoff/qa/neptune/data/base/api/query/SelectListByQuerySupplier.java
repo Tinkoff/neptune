@@ -13,7 +13,7 @@ import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSubIterable.getIter
 public final class SelectListByQuerySupplier<T extends PersistableObject>
         extends ByQuerySequentialGetStepSupplier<T, List<T>, SelectListByQuerySupplier<T>> {
 
-    private static final String DESCRIPTION = "Get selection result as a list";
+    private static final String DESCRIPTION = "Selection result as a list";
 
     private SelectListByQuerySupplier(QueryBuilderFunction<T> queryBuilder) {
         super(queryBuilder);

@@ -12,7 +12,7 @@ import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetObjectFromIterable.
 public final class SelectSingleObjectByQuerySupplier<T extends PersistableObject>
         extends ByQuerySequentialGetStepSupplier<T, T, SelectSingleObjectByQuerySupplier<T>>  {
 
-    private static final String DESCRIPTION = "Get selection result as a single item";
+    private static final String DESCRIPTION = "Selection result as a single item";
 
 
     private SelectSingleObjectByQuerySupplier(QueryBuilderFunction<T> queryBuilder) {

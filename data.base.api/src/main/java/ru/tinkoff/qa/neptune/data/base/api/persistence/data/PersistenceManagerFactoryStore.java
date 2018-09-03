@@ -46,11 +46,11 @@ public final class PersistenceManagerFactoryStore {
      *                                   is thrown. {@code null} is returned otherwise.
      * @return an instance of {@link PersistenceManagerFactorySupplier} found by name.
      */
-    public static JDOPersistenceManagerFactory getPersistenceManagerFactory(String name,
+    public static JDOPersistenceManagerFactory getPersistenceManagerFactory(CharSequence name,
                                                                             boolean throwExceptionIfNotPresent) {
         checkArgument(!isBlank(name), "Persistence unit name is expected to be not a blank string.");
         return getPersistenceManagerFactorySuppliers().stream().filter(persistenceManagerFactorySupplier ->
-                persistenceManagerFactorySupplier.name().equalsIgnoreCase(name))
+                persistenceManagerFactorySupplier.name().equalsIgnoreCase(name.toString()))
                 .findFirst()
                 .map(PersistenceManagerFactorySupplier::get).orElseGet(() -> {
                     if (!throwExceptionIfNotPresent) {

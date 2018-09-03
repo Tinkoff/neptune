@@ -17,7 +17,7 @@ import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSubIterable.getIter
 public final class SelectListByIdsSupplier<T extends PersistableObject>
         extends ByIdsSequentialGetStepSupplier<T, List<T>, SelectListByIdsSupplier<T>> {
 
-    private static final String DESCRIPTION = "Get result as a list of type %s by ids %s";
+    private static final String DESCRIPTION = "Result as a list of type %s by ids %s";
 
     private SelectListByIdsSupplier(Class<T> ofType, Object... ids) {
         super(ofType, ids);

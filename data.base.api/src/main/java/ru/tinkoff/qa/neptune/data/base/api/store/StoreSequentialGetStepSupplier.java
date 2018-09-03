@@ -62,7 +62,7 @@ public final class StoreSequentialGetStepSupplier<T extends PersistableObject>
 
     @Override
     protected Function<DataBaseSteps, List<T>> getEndFunction() {
-        String description = format("Store objects: \n %s", toBePersisted.toString());
+        String description = format("Stored objects: \n %s", toBePersisted.toString());
         return toGet(description, dataBaseSteps -> {
             JDOPersistenceManager manager = dataBaseSteps.getCurrentPersistenceManager();
             ArrayList<T> toBeStored = new ArrayList<>(toBePersisted);

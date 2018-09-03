@@ -52,7 +52,7 @@ public class DataBaseSteps implements GetStep<DataBaseSteps>, PerformActionStep<
      * @return self-reference
      */
     public DataBaseSteps switchTo(CharSequence persistenceUnitName) {
-        return switchTo(getPersistenceManagerFactory(persistenceUnitName.toString(), true));
+        return switchTo(getPersistenceManagerFactory(persistenceUnitName, true));
     }
 
     public DataBaseSteps switchToDefault() {
