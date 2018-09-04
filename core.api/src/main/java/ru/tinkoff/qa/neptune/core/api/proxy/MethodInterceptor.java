@@ -69,6 +69,7 @@ public class MethodInterceptor<T> {
             List<ObjectContainer<T>> containers = getAllInstancesToShutDown();
             try {
                 for (ObjectContainer<T> objectContainer: containers) {
+                    method.setAccessible(true);
                     method.invoke(objectContainer.getWrappedObject(), args);
                 }
                 return null;
