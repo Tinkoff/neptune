@@ -85,7 +85,7 @@ public final class ProxyFactory {
      * {@link ru.tinkoff.qa.neptune.core.api.GetStep} and/or {@link PerformActionStep}.
      *
      * @param clazz to substitute. It should be the implementor of {@link ru.tinkoff.qa.neptune.core.api.GetStep}
-     *              and/or {@link PerformActionStep}. WARNING!!! It is important!!! Class
+     *              and/or {@link PerformActionStep}. WARNING!!! It is important!!! Class or super-classes
      *              to get substituted instance should be annotated by {@link CreateWith}.
      * @param manipulationWithClassToInstantiate is a function which transforms class to be instantiated, e.g bytecode
      *                                            operations by CGLIB or Byte Buddy etc.
@@ -99,8 +99,19 @@ public final class ProxyFactory {
                                    Function<Class<? extends T>, Class<? extends T>> manipulationWithClassToInstantiate,
                                    Function<T, T> manipulationWithObjectToReturn) {
         CreateWith createWith = ofNullable(clazz.getAnnotation(CreateWith.class))
-                .orElseThrow(() -> new IllegalArgumentException(format("%s should be annotated by %s",
-                        clazz.getName(), CreateWith.class.getName())));
+                .orElseGet(() -> {
+                    Class<?> superClass = clazz.getSuperclass();
+                    while (!superClass.equals(Object.class)) {
+                        CreateWith createWithA = superClass.getAnnotation(CreateWith.class);
+                        if (createWithA != null) {
+                            return createWithA;
+                        }
+                        superClass = superClass.getSuperclass();
+                    }
+                    throw new IllegalArgumentException(format("%s or super-classes should be annotated by %s",
+                            clazz.getName(), CreateWith.class.getName()));
+                });
+
         Class<? extends ParameterProvider> providerClass = createWith.provider();
         Constructor<? extends ParameterProvider> defaultConstructor;
         try {
@@ -146,7 +157,7 @@ public final class ProxyFactory {
      * {@link ru.tinkoff.qa.neptune.core.api.GetStep} and/or {@link PerformActionStep}.
      *
      * @param clazz to substitute. It should be the implementor of {@link ru.tinkoff.qa.neptune.core.api.GetStep}
-     *                    and/or {@link PerformActionStep}. WARNING!!! It is important!!! Class
+     *                    and/or {@link PerformActionStep}. WARNING!!! It is important!!! Class or super-classes
      *                    to get substituted instance should be annotated by {@link CreateWith}.
      * @param <T> type of the implementor of {@link ru.tinkoff.qa.neptune.core.api.GetStep} and/or
      * {@link PerformActionStep}.

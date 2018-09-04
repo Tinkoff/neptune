@@ -39,16 +39,21 @@ public class ParameterProviderTest {
     }
 
     @CreateWith(provider = ParameterizedParameterProvider.class)
-    private static class ParameterizedStep implements GetStep<ParameterizedStep> {
-
+    private static class ParameterizedSuperStep implements GetStep<ParameterizedStep> {
         private final int number;
 
-        protected ParameterizedStep(int number) {
+        protected ParameterizedSuperStep(int number) {
             this.number = number;
         }
 
         int getNumber() {
             return number;
+        }
+    }
+
+    private static class ParameterizedStep extends ParameterizedSuperStep {
+        protected ParameterizedStep(int number) {
+            super(number);
         }
     }
 }

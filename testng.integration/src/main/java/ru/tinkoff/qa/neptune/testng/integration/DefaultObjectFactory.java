@@ -37,7 +37,7 @@ public class DefaultObjectFactory extends ObjectFactoryImpl {
      * and fills fields of type that extend {@link GetStep} and/or {@link PerformActionStep}.
      * <p>
      *     WARNING!!!!
-     *     It is supposed that every class which instance should be set as a field value should be annotated
+     *     It is supposed that every class (or super-classes) whose instance is supposed be set as a field value should be annotated
      *     by {@link ru.tinkoff.qa.neptune.core.api.CreateWith} by default.
      *     Also test classes should extend {@link BaseTestNgTest}
      * </p>
