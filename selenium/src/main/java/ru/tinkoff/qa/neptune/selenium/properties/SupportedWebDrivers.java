@@ -15,11 +15,11 @@ import org.openqa.selenium.safari.SafariDriver;
 import java.net.URL;
 import java.util.function.Supplier;
 
+import static org.apache.commons.lang3.ArrayUtils.addAll;
 import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.*;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.REMOTE_WEB_DRIVER_URL_PROPERTY;
 import static io.github.bonigarcia.wdm.WebDriverManager.*;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.ArrayUtils.add;
 
 /**
  * This enum wraps a class of supported {@link WebDriver} and array of arguments
@@ -70,6 +70,15 @@ public enum SupportedWebDrivers implements Supplier<Object[]> {
             }
 
             return null;
+        }
+
+        @Override
+        public Object[] get() {
+            return ofNullable(REMOTE_WEB_DRIVER_URL_PROPERTY.get())
+                    .map(url -> {
+                        Object[] result = new Object[]{url};
+                        return addAll(result, super.get());
+                    }).orElseGet(super::get);
         }
     },
     /**
@@ -154,13 +163,7 @@ public enum SupportedWebDrivers implements Supplier<Object[]> {
     }
 
     public Object[] get() {
-        Object[] args = new Object[]{};
-        URL remoteURL = URLProperties.REMOTE_WEB_DRIVER_URL_PROPERTY.get();
-        if (remoteURL != null) {
-            args = add(args, remoteURL);
-        }
-        args = add(args, capabilityType.get());
-        return args;
+       return new Object[]{capabilityType.get()};
     }
 
     public Class<? extends WebDriver> getWebDriverClass() {
