@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.lang.String.format;
 import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Arrays.stream;
 
@@ -51,5 +52,10 @@ public abstract class CompositeKey extends OrmObject implements Serializable {
         }
 
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return format("%s:%s", this.getClass(), hashCode());
     }
 }
