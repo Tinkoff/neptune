@@ -106,11 +106,17 @@ uploadArchives {
 }
 
 task javadocJar(type: Jar) {
+    exclude('**/ru/tinkoff/qa/neptune/data/base/api/test/**')
     classifier = 'javadoc'
     from javadoc
 }
 
+javadoc {
+    exclude('**/ru/tinkoff/qa/neptune/data/base/api/test/**')
+}
+
 task sourcesJar(type: Jar) {
+    exclude('**/ru/tinkoff/qa/neptune/data/base/api/test/**')
     classifier = 'sources'
     from sourceSets.main.allSource
 }
