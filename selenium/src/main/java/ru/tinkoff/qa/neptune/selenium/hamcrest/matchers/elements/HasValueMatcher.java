@@ -12,9 +12,9 @@ import static org.hamcrest.Matchers.equalTo;
 
 public final class HasValueMatcher<Q, T extends SearchContext & HasValue<Q>> extends TypeSafeDiagnosingMatcher<T> {
 
-    private final Matcher<Q> criteria;
+    private final Matcher<? super Q> criteria;
 
-    private HasValueMatcher(Matcher<Q> criteria) {
+    private HasValueMatcher(Matcher<? super Q> criteria) {
         checkArgument(criteria != null, "Matcher to check value should be defined.");
         this.criteria = criteria;
     }
@@ -39,7 +39,7 @@ public final class HasValueMatcher<Q, T extends SearchContext & HasValue<Q>> ext
      * @param <T> type of an element
      * @return instance of {@link HasValueMatcher}
      */
-    public static <Q, T extends SearchContext & HasValue<Q>> HasValueMatcher<Q, T> hasValue(Matcher<Q> value) {
+    public static <Q, T extends SearchContext & HasValue<Q>> HasValueMatcher<Q, T> hasValue(Matcher<? super Q> value) {
         return new HasValueMatcher<>(value);
     }
 
