@@ -4,17 +4,14 @@ import ru.tinkoff.qa.neptune.selenium.api.widget.Labeled;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindAll;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.FindBys;
 
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindByBuilder.getAnnotation;
 import static java.util.stream.Collectors.toList;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindByBuilder.getAnnotations;
 
 class FindLabeledWidgets<R extends Widget> extends FindWidgets<R> {
 
@@ -22,9 +19,7 @@ class FindLabeledWidgets<R extends Widget> extends FindWidgets<R> {
         super(classOfAWidget, conditionString, clazz -> !Modifier.isAbstract(clazz.getModifiers())
                 && Labeled.class.isAssignableFrom(clazz)
 
-                && (getAnnotation(clazz, FindBy.class) != null ||
-                getAnnotation(clazz, FindBys.class) != null ||
-                getAnnotation(clazz, FindAll.class) != null)
+                && (getAnnotations(clazz) != null)
 
                 && (Arrays.stream(clazz.getDeclaredConstructors())
                 .filter(constructor -> {

@@ -7,9 +7,6 @@ import net.sf.cglib.proxy.MethodInterceptor;
 import org.objenesis.Objenesis;
 import org.objenesis.ObjenesisStd;
 import org.openqa.selenium.*;
-import org.openqa.selenium.support.FindAll;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.FindBys;
 import org.reflections.Reflections;
 
 import java.lang.reflect.Modifier;
@@ -19,7 +16,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindByBuilder.getAnnotation;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindByBuilder.getAnnotations;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.WidgetPriorityComparator.widgetPriorityComparator;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Optional.ofNullable;
@@ -48,9 +45,7 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
     private FindWidgets(Class<R> classOfAWidget, String conditionString) {
         this(classOfAWidget, conditionString, clazz -> !Modifier.isAbstract(clazz.getModifiers())
 
-                && (getAnnotation(clazz, FindBy.class) != null ||
-                getAnnotation(clazz, FindBys.class) != null ||
-                getAnnotation(clazz, FindAll.class) != null)
+                && (getAnnotations(clazz) != null)
 
                 && (Arrays.stream(clazz.getDeclaredConstructors())
                 .filter(constructor -> {
@@ -104,7 +99,7 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
         enhancer.setSuperclass(tClass);
         Class<?> proxyClass = enhancer.createClass();
         registerCallbacks(proxyClass, new Callback[]{interceptor});
-        enhancer.setClassLoader(tClass.getClass().getClassLoader());
+        enhancer.setClassLoader(tClass.getClassLoader());
 
         Objenesis objenesis = new ObjenesisStd();
         Object proxy = objenesis.newInstance(proxyClass);
