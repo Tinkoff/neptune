@@ -13,7 +13,7 @@ import java.util.*;
 
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.testng.ITestResult.FAILURE;
 import static org.testng.ITestResult.SKIP;
 import static ru.tinkoff.qa.neptune.core.api.cleaning.Refreshable.refresh;
@@ -73,7 +73,7 @@ public class DefaultTestRunningListener implements IInvokedMethodListener, ISuit
                 refreshIfNecessary(o, reflectionMethod));
 
         ofNullable(reflectionMethod.getAnnotation(Test.class)).ifPresent(test -> {
-            String name = !isBlank(test.description()) ? test.description() : reflectionMethod.getName();
+            String name = isNotBlank(test.description()) ? test.description() : reflectionMethod.getName();
             Object[] params = testResult.getParameters();
 
             System.out.println();
@@ -93,13 +93,13 @@ public class DefaultTestRunningListener implements IInvokedMethodListener, ISuit
         }
 
         ofNullable(reflectionMethod.getAnnotation(Test.class)).ifPresent(test -> {
-            String name = !isBlank(test.description()) ? test.description() : reflectionMethod.getName();
+            String name = isNotBlank(test.description()) ? test.description() : reflectionMethod.getName();
+            int status = method.getTestResult().getStatus();
             Object[] params = testResult.getParameters();
 
             System.out.println();
             System.out.println();
             System.out.println(format("TEST '%s' HAS FINISHED WITH PARAMETERS: %s", name, Arrays.toString(params)));
-            int status = method.getTestResult().getStatus();
             switch (status) {
                 case FAILURE:
                     System.err.println("STATUS: FAILED. Exception:");
@@ -111,7 +111,7 @@ public class DefaultTestRunningListener implements IInvokedMethodListener, ISuit
                     break;
 
                 default:
-                    System.out.println("STATUS: SUCCEED. CONGRATULATIONS!!!!!!!");
+                    System.out.println("STATUS: SUCCEED. CONGRATULATIONS!");
                     break;
             }
             System.out.println();
