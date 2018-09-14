@@ -5,7 +5,7 @@ dependencies {
     compile (group: 'com.codeborne', name: 'phantomjsdriver', version: '1.4.4') {
         exclude group: 'org.seleniumhq.selenium'
     }
-    compile (group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '2.2.5') {
+    compile (group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '3.0.0') {
         exclude group: 'org.seleniumhq.selenium'
     }
     compile (group: 'org.seleniumhq.selenium', name: 'selenium-server', version: seleniumVersion) {
@@ -13,8 +13,8 @@ dependencies {
         exclude group: 'com.google.guava'
         exclude group: 'com.google.code.gson'
     }
-    compile group: 'cglib', name: 'cglib', version: '3.2.7'
-    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.21.0'
+    compile group: 'cglib', name: 'cglib', version: '3.2.8'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.22.0'
 }
 
 test {
