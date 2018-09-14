@@ -49,7 +49,7 @@ public abstract class PersistenceManagerFactorySupplier implements Supplier<JDOP
         REFLECTIONS.getSubTypesOf(PersistableObject.class).stream()
                 .filter(clazz -> clazz.getAnnotation(PersistenceCapable.class) != null)
                 .map(Class::getName).collect(Collectors.toList()).forEach(persistenceUnitMetaData::addClassName);
-        persistenceUnitMetaData.setExcludeUnlistedClasses();
+        persistenceUnitMetaData.setExcludeUnlistedClasses(true);
 
     }
 
