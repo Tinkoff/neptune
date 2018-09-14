@@ -9,12 +9,13 @@ import org.testng.annotations.Test;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
+import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.testng.ITestResult.FAILURE;
+import static org.testng.ITestResult.SKIP;
 import static ru.tinkoff.qa.neptune.core.api.cleaning.Refreshable.refresh;
 import static ru.tinkoff.qa.neptune.core.api.concurency.GroupingObjects.addGroupingObjectForCurrentThread;
 import static ru.tinkoff.qa.neptune.testng.integration.properties.TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY;
@@ -67,17 +68,55 @@ public class DefaultTestRunningListener implements IInvokedMethodListener, ISuit
     public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
         ofNullable(testResult.getTestContext()).map(ITestContext::getSuite)
                 .ifPresent(GroupingObjects::addGroupingObjectForCurrentThread);
+        Method reflectionMethod = method.getTestMethod().getConstructorOrMethod().getMethod();
         ofNullable(testResult.getInstance()).ifPresent(o ->
-                refreshIfNecessary(o, method.getTestMethod().getConstructorOrMethod().getMethod()));
+                refreshIfNecessary(o, reflectionMethod));
+
+        ofNullable(reflectionMethod.getAnnotation(Test.class)).ifPresent(test -> {
+            String name = isNotBlank(test.description()) ? test.description() : reflectionMethod.getName();
+            Object[] params = testResult.getParameters();
+
+            System.out.println();
+            System.out.println();
+            System.out.println(format("TEST '%s' HAS STARTED WITH PARAMETERS: %s", name, Arrays.toString(params)));
+            System.out.println();
+            System.out.println();
+        });
     }
 
     @Override
     public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
-        if (!isIgnored(method.getTestMethod().getConstructorOrMethod()
-                .getMethod())) {
+        Method reflectionMethod = method.getTestMethod().getConstructorOrMethod().getMethod();
+        if (!isIgnored(reflectionMethod)) {
             Object instance = testResult.getInstance();
             knownTests.add(instance);
         }
+
+        ofNullable(reflectionMethod.getAnnotation(Test.class)).ifPresent(test -> {
+            String name = isNotBlank(test.description()) ? test.description() : reflectionMethod.getName();
+            int status = method.getTestResult().getStatus();
+            Object[] params = testResult.getParameters();
+
+            System.out.println();
+            System.out.println();
+            System.out.println(format("TEST '%s' HAS FINISHED WITH PARAMETERS: %s", name, Arrays.toString(params)));
+            switch (status) {
+                case FAILURE:
+                    System.err.println("STATUS: FAILED. Exception:");
+                    testResult.getThrowable().printStackTrace();
+                    break;
+
+                case SKIP:
+                    System.out.println("STATUS: SKIPPED");
+                    break;
+
+                default:
+                    System.out.println("STATUS: SUCCEED. CONGRATULATIONS!");
+                    break;
+            }
+            System.out.println();
+            System.out.println();
+        });
     }
 
     @Override

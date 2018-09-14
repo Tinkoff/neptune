@@ -69,7 +69,6 @@ final class ToGetConditionalHelper {
         }
 
         System.err.println(message);
-        t.printStackTrace();
         return false;
     }
 
