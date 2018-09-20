@@ -30,11 +30,11 @@ public enum RefreshEachTimeBefore implements Supplier<Class<? extends Annotation
      * {@link Refreshable#refresh()} each time before
      * the first annotated by {@link BeforeTest} is run.
      *
-     * <>p</>
+     * <p></p>
      * Rule:
-     * <>p</>
+     * <p></p>
      * {@link Refreshable#refresh()} is invoked when:
-     * <>p</>
+     * <p></p>
      * 1. {@link Refreshable#refresh()} has not been invoked before any not static
      * {@link BeforeSuite}/{@link BeforeTest}-method.
      */
@@ -50,15 +50,15 @@ public enum RefreshEachTimeBefore implements Supplier<Class<? extends Annotation
      * {@link Refreshable#refresh()} each time before
      * the first {@link BeforeClass} - method of a class is run.
      *
-     * <>p</>
+     * <p></p>
      * Rule:
-     * <>p</>
+     * <p></p>
      * {@link Refreshable#refresh()} is invoked when:
-     * <>p</>
+     * <p></p>
      * 1. {@link Refreshable#refresh()} has not been invoked before some not static
      * {@link BeforeSuite}/{@link BeforeTest}/{@link BeforeClass}-method
      * and any {@link Test}-method has not been started still.
-     * <>p</>
+     * <p></p>
      * 2. {@link Refreshable#refresh()} has not been invoked before some not static
      * {@link BeforeClass}-method and any {@link Test}-method has not been started still.
      */
@@ -86,15 +86,15 @@ public enum RefreshEachTimeBefore implements Supplier<Class<? extends Annotation
      * {@link Refreshable#refresh()} each time before
      * the first method annotated by {@link BeforeMethod} is run before any test.
      *
-     * <>p</>
+     * <p></p>
      * Rule:
-     * <>p</>
+     * <p></p>
      * {@link Refreshable#refresh()} is invoked when:
-     * <>p</>
+     * <p></p>
      * 1. {@link Refreshable#refresh()} has not been invoked before some not static
      * {@link BeforeSuite}/{@link BeforeTest}/{@link BeforeClass}/{@link BeforeGroups}/
      * {@link BeforeMethod}-method and any {@link Test}-method has not been started still.
-     * <>p</>
+     * <p></p>
      * 2. {@link Refreshable#refresh()} has not been invoked before some not static
      * {@link BeforeMethod}-method and any {@link Test}-method has not been started still.
      */
@@ -110,15 +110,15 @@ public enum RefreshEachTimeBefore implements Supplier<Class<? extends Annotation
      * {@link Refreshable#refresh()} each time before
      * any method annotated by {@link Test} is run.
      *
-     * <>p</>
+     * <p></p>
      * Rule:
-     * <>p</>
+     * <p></p>
      * {@link Refreshable#refresh()} is invoked when:
-     * <>p</>
+     * <p></p>
      * 1. {@link Refreshable#refresh()} has not been invoked before some not static
      * {@link BeforeSuite}/{@link BeforeTest}/{@link BeforeClass}/{@link BeforeGroups}/
      * {@link BeforeMethod}-method and any {@link Test}-method has not been started still.
-     * <>p</>
+     * <p></p>
      * 2. {@link Refreshable#refresh()} has not been invoked before some not static
      * {@link BeforeMethod}-method and any {@link Test}-method has not been started still.
      */
