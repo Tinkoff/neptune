@@ -97,27 +97,60 @@ public final class CommonConditions {
 
     /**
      * @param text which element should have
-     * @return predicate that checks web element by text
+     * @return predicate that checks element by text
      */
-    public static  Predicate<WebElement> shouldHaveText(String text) {
+    public static <T extends SearchContext> Predicate<T>  shouldHaveText(String text) {
         checkArgument(!isBlank(text), "String which is used to check text " +
                 "of an element should not be null or empty. ");
-        return condition(format("has text '%s'", text),
-                webElement -> text.equals(webElement.getText()));
+        return condition(format("has text '%s'", text), t -> {
+            Class<? extends SearchContext> clazz = t.getClass();
+            if (WebElement.class.isAssignableFrom(clazz)) {
+                return text.equals(((WebElement) t).getText());
+            }
+
+            if (WrapsElement.class.isAssignableFrom(clazz)) {
+                return ofNullable(((WrapsElement) t).getWrappedElement())
+                        .map(webElement -> text.equals(webElement.getText()))
+                        .orElse(false);
+            }
+
+            return false;
+        });
     }
 
     /**
      * @param pattern is a regExp pattern to check text of an element
-     * @return predicate that checks web element by text and reg exp pattern
+     * @return predicate that checks element by text and reg exp pattern
      */
-    public static  Predicate<WebElement> shouldHaveText(Pattern pattern) {
+    public static <T extends SearchContext> Predicate<T> shouldHaveText(Pattern pattern) {
         checkArgument(pattern != null, "RegEx pattern should be defined");
-        return condition(format("has text that meets " +
-                        "regExp pattern '%s'", pattern),
-                webElement -> {
+        return condition(format("has text that meets regExp pattern '%s'", pattern), t -> {
+            Class<? extends SearchContext> clazz = t.getClass();
+            Matcher m;
+            if (WebElement.class.isAssignableFrom(clazz)) {
+                m = pattern.matcher(((WebElement) t).getText());
+            }
+            else if (WrapsElement.class.isAssignableFrom(clazz)) {
+                m = ofNullable(((WrapsElement) t).getWrappedElement())
+                        .map(webElement -> pattern.matcher(webElement.getText()))
+                        .orElse(null);
+                if (m == null) {
+                    return false;
+                }
+            }
+            else {
+                return false;
+            }
+
+            return m.find();
+        });
+
+        /*
+        webElement -> {
                     Matcher m = pattern.matcher(webElement.getText());
                     return m.find();
-                });
+                }
+         */
     }
 
     /**

@@ -121,7 +121,8 @@ public final class SearchSupplier<R extends SearchContext>
      */
     public static SearchSupplier<WebElement> webElement(By by, String text, Duration duration,
                                                         Predicate<? super WebElement> predicate) {
-        return webElement(by, duration, shouldHaveText(text).and(predicate));
+        return webElement(by, duration, ((Predicate<WebElement>) predicate)
+                .and(shouldHaveText(text)));
     }
 
     /**
@@ -137,7 +138,8 @@ public final class SearchSupplier<R extends SearchContext>
      */
     public static SearchSupplier<WebElement> webElement(By by, Pattern textPattern, Duration duration,
                                                         Predicate<? super WebElement> predicate) {
-        return webElement(by, duration, shouldHaveText(textPattern).and(predicate));
+        return webElement(by, duration, ((Predicate<WebElement>) predicate)
+                .and(shouldHaveText(textPattern)));
     }
 
     /**
@@ -222,7 +224,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<WebElement> webElement(By by, String text, Predicate<? super WebElement> predicate) {
-        return webElement(by, shouldHaveText(text).and(predicate));
+        return webElement(by, ((Predicate<WebElement>) predicate).and(shouldHaveText(text)));
     }
 
     /**
@@ -238,7 +240,8 @@ public final class SearchSupplier<R extends SearchContext>
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<WebElement> webElement(By by, Pattern textPattern, Predicate<? super WebElement> predicate) {
-        return webElement(by, shouldHaveText(textPattern).and(predicate));
+        return webElement(by, ((Predicate<WebElement>) predicate)
+                .and(shouldHaveText(textPattern)));
     }
 
     /**

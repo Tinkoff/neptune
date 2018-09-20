@@ -108,7 +108,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<WebElement> webElements(By by, String text, Duration duration, Predicate<? super WebElement> predicate) {
-        return webElements(by, duration, shouldHaveText(text).and(predicate));
+        return webElements(by, duration, ((Predicate<WebElement>) predicate)
+                .and(shouldHaveText(text)));
     }
 
     /**
@@ -123,7 +124,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<WebElement> webElements(By by, Pattern textPattern, Duration duration, Predicate<? super WebElement> predicate) {
-        return webElements(by, duration, shouldHaveText(textPattern).and(predicate));
+        return webElements(by, duration, ((Predicate<WebElement>) predicate)
+                .and(shouldHaveText(textPattern)));
     }
 
     /**
@@ -209,7 +211,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<WebElement> webElements(By by, String text, Predicate<? super WebElement> predicate) {
-        return webElements(by, CommonConditions.shouldHaveText(text).and(predicate));
+        return webElements(by, ((Predicate<WebElement>) predicate).and(shouldHaveText(text)));
     }
 
     /**
@@ -225,7 +227,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<WebElement> webElements(By by, Pattern textPattern, Predicate<? super WebElement> predicate) {
-        return webElements(by, CommonConditions.shouldHaveText(textPattern).and(predicate));
+        return webElements(by, ((Predicate<WebElement>) predicate).and(shouldHaveText(textPattern)));
     }
 
     /**
