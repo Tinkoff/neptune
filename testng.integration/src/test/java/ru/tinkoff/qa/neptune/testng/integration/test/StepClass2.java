@@ -9,8 +9,8 @@ public class StepClass2 implements GetStep<StepClass2>, PerformActionStep<StepCl
 
     private final int a;
     private final int b;
-    private int refreshCount;
-    private int stopCount;
+    private static int refreshCount;
+    private static int stopCount;
 
     public StepClass2(int a, int b) {
         this.a = a;
@@ -35,11 +35,16 @@ public class StepClass2 implements GetStep<StepClass2>, PerformActionStep<StepCl
         stopCount ++;
     }
 
-    int getRefreshCount() {
+    static int getRefreshCount() {
         return refreshCount;
     }
 
-    int getStopCount() {
+    static int getStopCount() {
         return stopCount;
+    }
+
+    static void countsToZero() {
+        refreshCount = 0;
+        stopCount = 0;
     }
 }

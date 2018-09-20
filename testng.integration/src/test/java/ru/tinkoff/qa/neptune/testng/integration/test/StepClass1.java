@@ -8,7 +8,7 @@ import ru.tinkoff.qa.neptune.core.api.cleaning.Refreshable;
 @CreateWith(provider = ProviderOfEmptyParameters.class)
 public class StepClass1 implements PerformActionStep<StepClass1>, Refreshable {
 
-    private int refreshCount;
+    private static int refreshCount;
 
     @Override
     public void refresh() {
@@ -16,7 +16,7 @@ public class StepClass1 implements PerformActionStep<StepClass1>, Refreshable {
     }
 
 
-    public int getRefreshCount() {
+    public static int getRefreshCount() {
         return refreshCount;
     }
 }

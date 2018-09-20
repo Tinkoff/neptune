@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.testng.integration.test;
 
+import org.testng.annotations.BeforeMethod;
 import ru.tinkoff.qa.neptune.testng.integration.properties.RefreshEachTimeBefore;
 import ru.tinkoff.qa.neptune.testng.integration.test.ignored.IgnoredStubTest;
 import ru.tinkoff.qa.neptune.testng.integration.test.ignored.entries.IgnoredStubTest2;
@@ -43,27 +44,29 @@ public class TestNgTestFinishingTest {
         testNG.run();
     }
 
+    @BeforeMethod
+    public void refresh() {
+        StepClass2.countsToZero();
+    }
+
     @Test
     public void shuttingDownTest() {
         runBeforeTheChecking();
-        assertThat(TestNgInstantiationTest.testNgInstantiationTest.getStepClass2()
-                .getStopCount(), is(1));
+        assertThat(StepClass2.getStopCount(), is(1));
     }
 
     @Test
     public void whenNoRefreshingStrategyIsDefined() {
         runBeforeTheChecking();
-        assertThat(TestNgStubTest.testNgStubTest
-                .getStepClass2().getRefreshCount(), is(3));
+        assertThat(StepClass2.getRefreshCount(), is(8));
     }
 
     @Test
-    public void whenNoRefreshingStrategyIsBeforeSuite() {
+    public void whenRefreshingStrategyIsBeforeSuite() {
         TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY.accept(RefreshEachTimeBefore.SUITE_STARTING.name());
         try {
             runBeforeTheChecking();
-            assertThat(TestNgStubTest.testNgStubTest
-                    .getStepClass2().getRefreshCount(), is(2));
+            assertThat(StepClass2.getRefreshCount(), is(1));
         }
         finally {
             System.getProperties().remove(TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY.getPropertyName());
@@ -71,12 +74,11 @@ public class TestNgTestFinishingTest {
     }
 
     @Test
-    public void whenNoRefreshingStrategyIsBeforeTest() {
+    public void whenRefreshingStrategyIsBeforeTest() {
         TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY.accept(RefreshEachTimeBefore.ALL_TEST_STARTING.name());
         try {
             runBeforeTheChecking();
-            assertThat(TestNgStubTest.testNgStubTest
-                    .getStepClass2().getRefreshCount(), is(2));
+            assertThat(StepClass2.getRefreshCount(), is(1));
         }
         finally {
             System.getProperties().remove(TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY.getPropertyName());
@@ -84,12 +86,11 @@ public class TestNgTestFinishingTest {
     }
 
     @Test
-    public void whenNoRefreshingStrategyIsBeforeClass() {
+    public void whenRefreshingStrategyIsBeforeClass() {
         TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY.accept(RefreshEachTimeBefore.CLASS_STARTING.name());
         try {
             runBeforeTheChecking();
-            assertThat(TestNgStubTest.testNgStubTest
-                    .getStepClass2().getRefreshCount(), is(3));
+            assertThat(StepClass2.getRefreshCount(), is(2));
         }
         finally {
             System.getProperties().remove(TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY.getPropertyName());
@@ -97,12 +98,11 @@ public class TestNgTestFinishingTest {
     }
 
     @Test
-    public void whenNoRefreshingStrategyIsBeforeMethod() {
+    public void whenRefreshingStrategyIsBeforeMethod() {
         TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY.accept(RefreshEachTimeBefore.BEFORE_METHOD_STARTING.name());
         try {
             runBeforeTheChecking();
-            assertThat(TestNgStubTest.testNgStubTest
-                    .getStepClass2().getRefreshCount(), is(7));
+            assertThat(StepClass2.getRefreshCount(), is(9));
         }
         finally {
             System.getProperties().remove(TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY.getPropertyName());
@@ -110,13 +110,12 @@ public class TestNgTestFinishingTest {
     }
 
     @Test
-    public void whenNoRefreshingStrategyIsCombined() {
+    public void whenRefreshingStrategyIsCombined() {
         TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY.accept(String.join(",", stream(RefreshEachTimeBefore.values())
                 .map(Enum::name).collect(toList())));
         try {
             runBeforeTheChecking();
-            assertThat(TestNgStubTest.testNgStubTest
-                    .getStepClass2().getRefreshCount(), is(17));
+            assertThat(StepClass2.getRefreshCount(), is(9));
         }
         finally {
             System.getProperties().remove(TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY.getPropertyName());
