@@ -45,15 +45,15 @@ public final class CommonConditions {
         return condition("visible", t -> {
             Class<?> tClass = t.getClass();
             if (WebElement.class.isAssignableFrom(tClass)) {
-                return WebElement.class.cast(t).isDisplayed();
+                return ((WebElement) t).isDisplayed();
             }
 
             if (IsVisible.class.isAssignableFrom(tClass)) {
-                return IsVisible.class.cast(t).isVisible();
+                return ((IsVisible) t).isVisible();
             }
 
             if (WrapsElement.class.isAssignableFrom(tClass)) {
-                return ofNullable(WrapsElement.class.cast(t).getWrappedElement())
+                return ofNullable(((WrapsElement) t).getWrappedElement())
                         .map(WebElement::isDisplayed)
                         .orElseThrow(() -> new NullPointerException("It was expected that wrapped element differs from null. " +
                                 "It is impossible to get visibility."));
@@ -75,15 +75,15 @@ public final class CommonConditions {
         return condition("enabled", t -> {
             Class<?> tClass = t.getClass();
             if (WebElement.class.isAssignableFrom(tClass)) {
-                return WebElement.class.cast(t).isEnabled();
+                return ((WebElement) t).isEnabled();
             }
 
             if (IsEnabled.class.isAssignableFrom(tClass)) {
-                return IsEnabled.class.cast(t).isEnabled();
+                return ((IsEnabled) t).isEnabled();
             }
 
             if (WrapsElement.class.isAssignableFrom(tClass)) {
-                return ofNullable(WrapsElement.class.cast(t).getWrappedElement())
+                return ofNullable(((WrapsElement) t).getWrappedElement())
                         .map(WebElement::isEnabled)
                         .orElseThrow(() -> new NullPointerException("It was expected that wrapped element differs from null. " +
                                 "It is impossible to check is it enable or not."));
@@ -126,31 +126,16 @@ public final class CommonConditions {
         checkArgument(pattern != null, "RegEx pattern should be defined");
         return condition(format("has text that meets regExp pattern '%s'", pattern), t -> {
             Class<? extends SearchContext> clazz = t.getClass();
-            Matcher m;
             if (WebElement.class.isAssignableFrom(clazz)) {
-                m = pattern.matcher(((WebElement) t).getText());
+                return pattern.matcher(((WebElement) t).getText()).find();
             }
             else if (WrapsElement.class.isAssignableFrom(clazz)) {
-                m = ofNullable(((WrapsElement) t).getWrappedElement())
-                        .map(webElement -> pattern.matcher(webElement.getText()))
-                        .orElse(null);
-                if (m == null) {
-                    return false;
-                }
+                return ofNullable(((WrapsElement) t).getWrappedElement())
+                        .map(webElement -> pattern.matcher(webElement.getText()).find())
+                        .orElse(false);
             }
-            else {
-                return false;
-            }
-
-            return m.find();
+            return false;
         });
-
-        /*
-        webElement -> {
-                    Matcher m = pattern.matcher(webElement.getText());
-                    return m.find();
-                }
-         */
     }
 
     /**
@@ -168,15 +153,15 @@ public final class CommonConditions {
         return condition(format("has attribute '%s=\"%s\"'", attribute, attrValue), t -> {
             Class<?> tClass = t.getClass();
             if (WebElement.class.isAssignableFrom(tClass)) {
-                return attrValue.equals(WebElement.class.cast(t).getAttribute(attribute));
+                return attrValue.equals(((WebElement) t).getAttribute(attribute));
             }
 
             if (HasAttribute.class.isAssignableFrom(tClass)) {
-                return attrValue.equals(HasAttribute.class.cast(t).getAttribute(attribute));
+                return attrValue.equals(((HasAttribute) t).getAttribute(attribute));
             }
 
             if (WrapsElement.class.isAssignableFrom(tClass)) {
-                return ofNullable(WrapsElement.class.cast(t).getWrappedElement())
+                return ofNullable(((WrapsElement) t).getWrappedElement())
                         .map(webElement -> attrValue.equals(webElement.getAttribute(attribute)))
                         .orElseThrow(() -> new NullPointerException(format("It was expected that wrapped element differs from null. " +
                                 "It was impossible to value of the attribute %s from the instance of %s", attribute, tClass)));
@@ -204,17 +189,17 @@ public final class CommonConditions {
         return condition(format("has attribute '%s' that contains string '%s'", attribute, attrValue), t -> {
             Class<?> tClass = t.getClass();
             if (WebElement.class.isAssignableFrom(tClass)) {
-                return ofNullable(WebElement.class.cast(t).getAttribute(attribute))
+                return ofNullable(((WebElement) t).getAttribute(attribute))
                         .map(s -> s.contains(attrValue)).orElse(false);
             }
 
             if (HasAttribute.class.isAssignableFrom(tClass)) {
-                return ofNullable(HasAttribute.class.cast(t).getAttribute(attribute))
+                return ofNullable(((HasAttribute) t).getAttribute(attribute))
                         .map(s -> s.contains(attrValue)).orElse(false);
             }
 
             if (WrapsElement.class.isAssignableFrom(tClass)) {
-                return ofNullable(WrapsElement.class.cast(t).getWrappedElement())
+                return ofNullable(((WrapsElement) t).getWrappedElement())
                         .map(webElement -> ofNullable(webElement.getAttribute(attribute))
                                 .map(s -> s.contains(attrValue))
                                 .orElse(false))
@@ -245,7 +230,7 @@ public final class CommonConditions {
                 "regExp pattern '%s'", attribute, pattern), t -> {
             Class<?> tClass = t.getClass();
             if (WebElement.class.isAssignableFrom(tClass)) {
-                return ofNullable(WebElement.class.cast(t).getAttribute(attribute))
+                return ofNullable(((WebElement) t).getAttribute(attribute))
                         .map(s -> {
                             Matcher m = pattern.matcher(s);
                             return m.find();
@@ -253,7 +238,7 @@ public final class CommonConditions {
             }
 
             if (HasAttribute.class.isAssignableFrom(tClass)) {
-                return ofNullable(HasAttribute.class.cast(t).getAttribute(attribute))
+                return ofNullable(((HasAttribute) t).getAttribute(attribute))
                         .map(s -> {
                             Matcher m = pattern.matcher(s);
                             return m.find();
@@ -261,7 +246,7 @@ public final class CommonConditions {
             }
 
             if (WrapsElement.class.isAssignableFrom(tClass)) {
-                return ofNullable(WrapsElement.class.cast(t).getWrappedElement())
+                return ofNullable(((WrapsElement) t).getWrappedElement())
                         .map(webElement -> ofNullable(webElement.getAttribute(attribute))
                                 .map(s -> {
                                     Matcher m = pattern.matcher(s);
@@ -294,15 +279,15 @@ public final class CommonConditions {
         return condition(format("has css property '%s=\"%s\"'", cssProperty, cssValue), t -> {
             Class<?> tClass = t.getClass();
             if (WebElement.class.isAssignableFrom(tClass)) {
-                return cssValue.equals(WebElement.class.cast(t).getCssValue(cssProperty));
+                return cssValue.equals(((WebElement) t).getCssValue(cssProperty));
             }
 
             if (HasCssValue.class.isAssignableFrom(tClass)) {
-                return cssValue.equals(HasCssValue.class.cast(t).getCssValue(cssProperty));
+                return cssValue.equals(((HasCssValue) t).getCssValue(cssProperty));
             }
 
             if (WrapsElement.class.isAssignableFrom(tClass)) {
-                return ofNullable(WrapsElement.class.cast(t).getWrappedElement())
+                return ofNullable(((WrapsElement) t).getWrappedElement())
                         .map(webElement -> cssValue.equals(webElement.getCssValue(cssProperty)))
                         .orElseThrow(() -> new NullPointerException(format("It was expected that wrapped element differs from null. " +
                                 "It was impossible to value of the css property %s from the instance of %s", cssProperty, tClass)));
@@ -330,17 +315,17 @@ public final class CommonConditions {
         return condition(format("has css property '%s' that contains string '%s'", cssProperty, cssValue), t -> {
             Class<?> tClass = t.getClass();
             if (WebElement.class.isAssignableFrom(tClass)) {
-                return ofNullable(WebElement.class.cast(t).getCssValue(cssProperty))
+                return ofNullable(((WebElement) t).getCssValue(cssProperty))
                         .map(s -> s.contains(cssValue)).orElse(false);
             }
 
             if (HasCssValue.class.isAssignableFrom(tClass)) {
-                return ofNullable(HasCssValue.class.cast(t).getCssValue(cssProperty))
+                return ofNullable(((HasCssValue) t).getCssValue(cssProperty))
                         .map(s -> s.contains(cssValue)).orElse(false);
             }
 
             if (WrapsElement.class.isAssignableFrom(tClass)) {
-                return ofNullable(WrapsElement.class.cast(t).getWrappedElement())
+                return ofNullable(((WrapsElement) t).getWrappedElement())
                         .map(webElement -> ofNullable(webElement.getCssValue(cssProperty))
                                 .map(s -> s.contains(cssValue))
                                 .orElse(false))
@@ -372,7 +357,7 @@ public final class CommonConditions {
                 "regExp pattern '%s'", cssProperty, pattern), t -> {
             Class<?> tClass = t.getClass();
             if (WebElement.class.isAssignableFrom(tClass)) {
-                return ofNullable(WebElement.class.cast(t).getCssValue(cssProperty))
+                return ofNullable(((WebElement) t).getCssValue(cssProperty))
                         .map(s -> {
                             Matcher m = pattern.matcher(s);
                             return m.find();
@@ -380,7 +365,7 @@ public final class CommonConditions {
             }
 
             if (HasCssValue.class.isAssignableFrom(tClass)) {
-                return ofNullable(HasCssValue.class.cast(t).getCssValue(cssProperty))
+                return ofNullable(((HasCssValue) t).getCssValue(cssProperty))
                         .map(s -> {
                             Matcher m = pattern.matcher(s);
                             return m.find();
@@ -388,7 +373,7 @@ public final class CommonConditions {
             }
 
             if (WrapsElement.class.isAssignableFrom(tClass)) {
-                return ofNullable(WrapsElement.class.cast(t).getWrappedElement())
+                return ofNullable(((WrapsElement) t).getWrappedElement())
                         .map(webElement -> ofNullable(webElement.getCssValue(cssProperty))
                                 .map(s -> {
                                     Matcher m = pattern.matcher(s);
