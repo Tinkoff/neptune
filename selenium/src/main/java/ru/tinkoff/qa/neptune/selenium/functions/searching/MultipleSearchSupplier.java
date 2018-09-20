@@ -108,7 +108,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<WebElement> webElements(By by, String text, Duration duration, Predicate<? super WebElement> predicate) {
-        return webElements(by, duration, shouldHaveText(text).and(predicate));
+        Predicate<WebElement> textPredicate = shouldHaveText(text);
+        return webElements(by, duration, textPredicate.and(predicate));
     }
 
     /**
@@ -123,7 +124,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<WebElement> webElements(By by, Pattern textPattern, Duration duration, Predicate<? super WebElement> predicate) {
-        return webElements(by, duration, shouldHaveText(textPattern).and(predicate));
+        Predicate<WebElement> textPredicate = shouldHaveText(textPattern);
+        return webElements(by, duration, textPredicate.and(predicate));
     }
 
     /**
@@ -209,7 +211,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<WebElement> webElements(By by, String text, Predicate<? super WebElement> predicate) {
-        return webElements(by, CommonConditions.shouldHaveText(text).and(predicate));
+        Predicate<WebElement> textPredicate = shouldHaveText(text);
+        return webElements(by, textPredicate.and(predicate));
     }
 
     /**
@@ -225,7 +228,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<WebElement> webElements(By by, Pattern textPattern, Predicate<? super WebElement> predicate) {
-        return webElements(by, CommonConditions.shouldHaveText(textPattern).and(predicate));
+        Predicate<WebElement> textPredicate = shouldHaveText(textPattern);
+        return webElements(by, textPredicate.and(predicate));
     }
 
     /**
