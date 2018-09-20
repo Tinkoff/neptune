@@ -97,6 +97,9 @@ public final class CommonConditions {
 
     /**
      * @param text which element should have
+     * @param <T> is type of elements under the test. It is expected to extend {@link WebElement}
+     *           or {@link WrapsElement}. The {@link Predicate#test(Object)} method returns {@code false}
+     *           otherwise.
      * @return predicate that checks element by text
      */
     public static <T extends SearchContext> Predicate<T>  shouldHaveText(String text) {
@@ -120,6 +123,9 @@ public final class CommonConditions {
 
     /**
      * @param pattern is a regExp pattern to check text of an element
+     * @param <T> is type of elements under the test. It is expected to extend {@link WebElement}
+     *           or {@link WrapsElement}. The {@link Predicate#test(Object)} method returns {@code false}
+     *           otherwise.
      * @return predicate that checks element by text and reg exp pattern
      */
     public static <T extends SearchContext> Predicate<T> shouldHaveText(Pattern pattern) {
