@@ -28,6 +28,8 @@ public class DefaultTestRunningListener implements IInvokedMethodListener, ISuit
     private final List<Class<? extends Annotation>> refreshBeforeMethodsAnnotatedBy =
             new ArrayList<>(REFRESH_STRATEGY_PROPERTY.get().stream().map(RefreshEachTimeBefore::get).collect(toList()));
 
+    private final ThreadLocal<Method> previouslyRefreshed = new ThreadLocal<>();
+
     private static boolean isIgnored(Method method) {
         Class<?> declaredBy;
         Test test;
@@ -53,14 +55,17 @@ public class DefaultTestRunningListener implements IInvokedMethodListener, ISuit
             return;
         }
 
-        int methodModifiers = method.getModifiers();
-        if (!isStatic(methodModifiers) && stream(method.getAnnotations())
-                .filter(annotation -> refreshBeforeMethodsAnnotatedBy
-                        .contains(((Annotation) annotation).annotationType())).collect(toList())
-                .size() > 0) {
-            refresh(instance);
-        }
-
+        ofNullable(previouslyRefreshed.get())
+                .ifPresentOrElse(method1 -> {}, () -> {
+                    int methodModifiers = method.getModifiers();
+                    if (!isStatic(methodModifiers) && stream(method.getAnnotations())
+                            .filter(annotation -> refreshBeforeMethodsAnnotatedBy
+                                    .contains(((Annotation) annotation).annotationType())).collect(toList())
+                            .size() > 0) {
+                        refresh(instance);
+                        previouslyRefreshed.set(method);
+                    }
+                });
     }
 
     @Override
@@ -70,6 +75,10 @@ public class DefaultTestRunningListener implements IInvokedMethodListener, ISuit
         Method reflectionMethod = method.getTestMethod().getConstructorOrMethod().getMethod();
         ofNullable(testResult.getInstance()).ifPresent(o ->
                 refreshIfNecessary(o, reflectionMethod));
+
+        if (method.isTestMethod()) {
+            previouslyRefreshed.remove();
+        }
 
         ofNullable(reflectionMethod.getAnnotation(Test.class)).ifPresent(test -> {
             String name = isNotBlank(test.description()) ? test.description() : reflectionMethod.getName();

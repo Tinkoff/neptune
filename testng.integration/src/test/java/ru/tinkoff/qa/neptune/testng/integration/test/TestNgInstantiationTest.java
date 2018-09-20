@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.testng.integration.test;
 
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -23,5 +24,22 @@ public class TestNgInstantiationTest extends BaseTestNgIntegrationTest {
         assertThat(getStepClass2().getB(), is(2));
         assertThat(getStepClass3(), nullValue());
         assertThat(getStepClass4(), nullValue());
+    }
+
+    @DataProvider(parallel = true)
+    public Object[][] dataProvider() {
+        return new Object[][]{
+                {1},
+                {2},
+                {3},
+                {4},
+                {5},
+        };
+    }
+
+    @Test(dataProvider = "dataProvider")
+    public void instantiationTest2(Integer integer) {
+        assertThat(getStepClass2().getA() + integer, is(1 + integer));
+        assertThat(getStepClass2().getB() + integer, is(2 + integer));
     }
 }
