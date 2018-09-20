@@ -5,7 +5,7 @@ subprojects {
     apply plugin: 'maven-publish'
 
     group 'ru.tinkoff.qa.neptune'
-    version '0.2.0-ALPHA'
+    version '0.2.1-ALPHA'
 
     sourceCompatibility = 1.9
     targetCompatibility = 1.9

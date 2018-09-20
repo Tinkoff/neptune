@@ -14,8 +14,7 @@ import java.util.*;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.testng.ITestResult.FAILURE;
-import static org.testng.ITestResult.SKIP;
+import static org.testng.ITestResult.*;
 import static ru.tinkoff.qa.neptune.core.api.cleaning.Refreshable.refresh;
 import static ru.tinkoff.qa.neptune.core.api.concurency.GroupingObjects.addGroupingObjectForCurrentThread;
 import static ru.tinkoff.qa.neptune.testng.integration.properties.TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY;
@@ -117,6 +116,14 @@ public class DefaultTestRunningListener implements IInvokedMethodListener, ISuit
 
                 case SKIP:
                     System.out.println("STATUS: SKIPPED");
+                    break;
+
+                case CREATED:
+                    System.out.println("STATUS: NOT STARTED");
+                    break;
+
+                case STARTED:
+                    System.out.println("STATUS: STILL NOT FINISHED");
                     break;
 
                 default:
