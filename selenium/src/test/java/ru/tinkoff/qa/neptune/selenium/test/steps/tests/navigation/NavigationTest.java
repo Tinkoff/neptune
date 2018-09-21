@@ -5,6 +5,8 @@ import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 import ru.tinkoff.qa.neptune.selenium.test.MockWindow;
 import org.testng.annotations.Test;
 
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 import static ru.tinkoff.qa.neptune.selenium.functions.navigation.Back.back;
 import static ru.tinkoff.qa.neptune.selenium.functions.navigation.Forward.forward;
 import static ru.tinkoff.qa.neptune.selenium.functions.navigation.GetCurrentUrlSupplier.currentUrl;
@@ -12,6 +14,9 @@ import static ru.tinkoff.qa.neptune.selenium.functions.navigation.GetCurrentUrlS
 import static ru.tinkoff.qa.neptune.selenium.functions.navigation.Refresh.refresh;
 import static ru.tinkoff.qa.neptune.selenium.functions.navigation.ToUrl.toUrl;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
+import static ru.tinkoff.qa.neptune.selenium.properties.FlagProperties.ENABLE_ABILITY_TO_USE_RELATIVE_URL;
+import static ru.tinkoff.qa.neptune.selenium.properties.FlagProperties.GET_BACK_TO_BASE_URL;
+import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.test.enums.URLs.*;
 import static ru.tinkoff.qa.neptune.selenium.test.enums.WindowHandles.HANDLE1;
 import static ru.tinkoff.qa.neptune.selenium.test.enums.WindowHandles.HANDLE2;
@@ -44,6 +49,42 @@ public class NavigationTest extends BaseWebDriverTest {
         assertThat(seleniumSteps.get(currentUrlIn(window().byIndex(2))), is(YOUTUBE.getUrl()));
 
         assertThat(window.getCurrentUrl(), is(YOUTUBE.getUrl()));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class,
+            expectedExceptionsMessageRegExp = "It is impossible to navigate by URL /index.html. This value is not a valid URL and the " +
+                    "property enable.ability.to.use.relative.url is not defined or its value is false")
+    public void invalidNavigationByRelativeUrl() {
+        seleniumSteps.navigate(toUrl("/index.html"));
+        assertThat(seleniumSteps.get(currentUrl()), containsString("/index.html"));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class,
+            expectedExceptionsMessageRegExp = "It is impossible to navigate by URL /index.html. " +
+                    "This value is not a valid URL and the property base.web.driver.url is not defined")
+    public void invalidNavigationByRelativeUrl2() {
+        System.setProperty(ENABLE_ABILITY_TO_USE_RELATIVE_URL.getPropertyName(), "true");
+        try {
+            seleniumSteps.navigate(toUrl("/index.html"));
+            assertThat(seleniumSteps.get(currentUrl()), containsString("/index.html"));
+        }
+        finally {
+            System.getProperties().remove(GET_BACK_TO_BASE_URL.getPropertyName());
+        }
+    }
+
+    @Test
+    public void validNavigationByRelativeUrl() {
+        System.setProperty(BASE_WEB_DRIVER_URL_PROPERTY.getPropertyName(), GITHUB.getUrl());
+        System.setProperty(ENABLE_ABILITY_TO_USE_RELATIVE_URL.getPropertyName(), "true");
+        try {
+            seleniumSteps.navigate(toUrl("/index.html"));
+            assertThat(seleniumSteps.get(currentUrl()), containsString(GITHUB.getUrl()));
+        }
+        finally {
+            System.getProperties().remove(BASE_WEB_DRIVER_URL_PROPERTY.getPropertyName());
+            System.getProperties().remove(GET_BACK_TO_BASE_URL.getPropertyName());
+        }
     }
 
     @Test

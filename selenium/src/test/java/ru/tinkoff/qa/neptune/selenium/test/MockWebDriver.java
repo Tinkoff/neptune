@@ -71,7 +71,10 @@ public class MockWebDriver implements WebDriver, JavascriptExecutor {
     public void get(String url) {
         String handle = getMockHandle();
         URLs urlEnum = stream(values())
-                .filter(urLs -> url.equals(urLs.getUrl())).findFirst()
+                .filter(urLs ->
+                        !urLs.equals(BLANK) &&
+                                (url.equals(urLs.getUrl()) || url.contains(urLs.getUrl()))
+                ).findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(format("Unknown url %s", url)));
         addUrlToHistory(handle, urlEnum);
         changeCurrentUrl(handle, urlEnum);
