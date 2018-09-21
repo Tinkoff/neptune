@@ -1,17 +1,22 @@
 package ru.tinkoff.qa.neptune.selenium.functions.navigation;
 
+import org.apache.commons.validator.routines.UrlValidator;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static ru.tinkoff.qa.neptune.selenium.properties.FlagProperties.ENABLE_ABILITY_TO_USE_RELATIVE_URL;
+import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 
 public final class ToUrl extends NavigationActionSupplier<ToUrl> {
+    private static final UrlValidator URL_VALIDATOR = new UrlValidator();
 
     private ToUrl() {
         super();
@@ -19,8 +24,28 @@ public final class ToUrl extends NavigationActionSupplier<ToUrl> {
 
     private static String checkUrl(String url) {
         checkArgument(!isBlank(url), "Url should not be blank");
+
+        String toURL;
+        if (URL_VALIDATOR.isValid(url)) {
+            toURL = url;
+        }
+        else {
+            if (ENABLE_ABILITY_TO_USE_RELATIVE_URL.get()) {
+                toURL = ofNullable(BASE_WEB_DRIVER_URL_PROPERTY.get())
+                        .map(url1 -> url1 + url)
+                        .orElseThrow(() -> new IllegalArgumentException(format("It is impossible to navigate by URL %s. " +
+                                        "This value is not a valid URL and the property %s is not defined", url,
+                                BASE_WEB_DRIVER_URL_PROPERTY.getPropertyName())));
+            }
+            else {
+                throw new IllegalArgumentException(format("It is impossible to navigate by URL %s. " +
+                                "This value is not a valid URL and the property %s is not defined or its value is %s", url,
+                        ENABLE_ABILITY_TO_USE_RELATIVE_URL.getPropertyName(), false));
+            }
+        }
+
         try {
-            return new URL(url).toString();
+            return new URL(toURL).toString();
         } catch (MalformedURLException e) {
             throw new IllegalArgumentException(format("Given url %s is malformed", url));
         }

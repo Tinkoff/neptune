@@ -43,7 +43,16 @@ public enum FlagProperties implements PropertySupplier<Boolean> {
      * This enum item reads the property {@code 'force.window.maximizing.on.start'}. It means that browser window is
      * maximized on each starting when value is {@code true}.
      */
-    FORCE_WINDOW_MAXIMIZING_ON_START("force.window.maximizing.on.start");
+    FORCE_WINDOW_MAXIMIZING_ON_START("force.window.maximizing.on.start"),
+
+    /**
+     * This enum item reads the property {@code 'enable.ability.to.use.relative.url'}. It means that it is possible to
+     * navigate with only part of an url. It should be relative to value defined by {@link URLProperties#BASE_WEB_DRIVER_URL_PROPERTY}.
+     * <p>Use case:</p>
+     * <p>{@code seleniumSteps.navigate(toUrl("/relative/url/path.html")}</p>
+     * <p>WARNING: it is necessary to define {@link URLProperties#BASE_WEB_DRIVER_URL_PROPERTY}</p>
+     */
+    ENABLE_ABILITY_TO_USE_RELATIVE_URL("enable.ability.to.use.relative.url");
 
     private final String propertyName;
 
