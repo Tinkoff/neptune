@@ -1,7 +1,5 @@
 package ru.tinkoff.qa.neptune.testng.integration;
 
-import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
-import ru.tinkoff.qa.neptune.core.api.concurency.GroupingObjects;
 import ru.tinkoff.qa.neptune.testng.integration.properties.RefreshEachTimeBefore;
 import org.testng.*;
 import org.testng.annotations.Ignore;
@@ -16,15 +14,13 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.testng.ITestResult.*;
 import static ru.tinkoff.qa.neptune.core.api.cleaning.Refreshable.refresh;
-import static ru.tinkoff.qa.neptune.core.api.concurency.GroupingObjects.addGroupingObjectForCurrentThread;
 import static ru.tinkoff.qa.neptune.testng.integration.properties.TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY;
 import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
-public class DefaultTestRunningListener implements IInvokedMethodListener, ISuiteListener {
+public class DefaultTestRunningListener implements IInvokedMethodListener {
 
-    private final Set<Object> knownTests = new HashSet<>();
     private final List<Class<? extends Annotation>> refreshBeforeMethodsAnnotatedBy =
             new ArrayList<>(REFRESH_STRATEGY_PROPERTY.get().stream().map(RefreshEachTimeBefore::get).collect(toList()));
 
@@ -70,8 +66,6 @@ public class DefaultTestRunningListener implements IInvokedMethodListener, ISuit
 
     @Override
     public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
-        ofNullable(testResult.getTestContext()).map(ITestContext::getSuite)
-                .ifPresent(GroupingObjects::addGroupingObjectForCurrentThread);
         Method reflectionMethod = method.getTestMethod().getConstructorOrMethod().getMethod();
         ofNullable(testResult.getInstance()).ifPresent(o ->
                 refreshIfNecessary(o, reflectionMethod));
@@ -95,10 +89,6 @@ public class DefaultTestRunningListener implements IInvokedMethodListener, ISuit
     @Override
     public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
         Method reflectionMethod = method.getTestMethod().getConstructorOrMethod().getMethod();
-        if (!isIgnored(reflectionMethod)) {
-            Object instance = testResult.getInstance();
-            knownTests.add(instance);
-        }
 
         ofNullable(reflectionMethod.getAnnotation(Test.class)).ifPresent(test -> {
             String name = isNotBlank(test.description()) ? test.description() : reflectionMethod.getName();
@@ -133,15 +123,5 @@ public class DefaultTestRunningListener implements IInvokedMethodListener, ISuit
             System.out.println();
             System.out.println();
         });
-    }
-
-    @Override
-    public void onStart(ISuite suite) {
-        addGroupingObjectForCurrentThread(suite);
-    }
-
-    @Override
-    public void onFinish(ISuite suite) {
-        knownTests.forEach(Stoppable::shutDown);
     }
 }

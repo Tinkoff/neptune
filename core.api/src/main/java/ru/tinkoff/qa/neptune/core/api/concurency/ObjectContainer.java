@@ -20,7 +20,6 @@ public class ObjectContainer<T> {
 
     private final T t;
     private Thread busyBy;
-    private Object groupBy;
 
     public ObjectContainer(T t) {
         checkNotNull(t);
@@ -30,12 +29,13 @@ public class ObjectContainer<T> {
                 "ru.tinkoff.qa.neptune.core.api.PerformActionStep.");
         this.t = t;
         synchronized (containers) {
+            this.setBusy(currentThread());
             containers.add(this);
         }
     }
 
-    private static <T> List<ObjectContainer<?>> getAllObjects(Class<T> tClass,
-                                                              Predicate<ObjectContainer<?>> predicate) {
+    public static <T> List<ObjectContainer<?>> getAllObjects(Class<T> tClass,
+                                                             Predicate<ObjectContainer<?>> predicate) {
         checkNotNull(tClass);
         checkNotNull(predicate);
         checkArgument(PerformActionStep.class.isAssignableFrom(tClass) ||
@@ -43,35 +43,9 @@ public class ObjectContainer<T> {
                 "assignable from ru.tinkoff.qa.neptune.core.api.GetStep and/or " +
                 "ru.tinkoff.qa.neptune.core.api.PerformActionStep.");
         synchronized (containers) {
-            return containers.stream().filter(predicate).collect(toList());
+            return containers.stream().filter(predicate
+                    .and(objectContainer -> tClass.isAssignableFrom(objectContainer.getWrappedObject().getClass()))).collect(toList());
         }
-    }
-
-    /**
-     * Gets all objects of {@link ObjectContainer}.
-     *
-     * @param tClass is a class of wrapped objects. {@link ObjectContainer#getWrappedObject()}
-     * @param <T> is a type of wrapped objects.
-     * @return filled or empty list of objects of {@link ObjectContainer}.
-     */
-    public static synchronized <T> List<ObjectContainer<?>> getAllObjects(Class<T> tClass) {
-        return getAllObjects(tClass, objectContainer ->
-                tClass.isAssignableFrom(objectContainer.getWrappedObject().getClass()));
-    }
-
-    /**
-     * Gets all objects of {@link ObjectContainer} grouped by some other object.
-     *
-     * @param tClass is a class of wrapped objects. {@link ObjectContainer#getWrappedObject()}
-     * @param groupingBy is the grouping object.
-     * @param <T> is a type of wrapped objects.
-     * @return filled or empty list of objects of {@link ObjectContainer} grouped by some other object.
-     */
-    public static synchronized <T> List<ObjectContainer<?>> getAllObjects(Class<T> tClass, Object groupingBy) {
-        checkNotNull(groupingBy);
-        return getAllObjects(tClass, objectContainer ->
-                tClass.isAssignableFrom(objectContainer.getWrappedObject().getClass())
-                        && groupingBy.equals(objectContainer.getGroupBy()));
     }
 
     /**
@@ -84,49 +58,20 @@ public class ObjectContainer<T> {
     @SuppressWarnings("unchecked")
     public static synchronized <T> ObjectContainer<T> setObjectBusy(Class<T> tClass) {
         List<ObjectContainer<?>> freeObjects = getAllObjects(tClass, objectContainer ->
-                !objectContainer.isBusy() && tClass.isAssignableFrom(objectContainer.getWrappedObject().getClass()));
+                !objectContainer.isBusy());
         if (freeObjects.size() == 0) {
             return null;
         }
         ObjectContainer<?> result = freeObjects.get(0);
         result.setBusy(currentThread());
         return (ObjectContainer<T>) result;
-    }
-
-    /**
-     * Sets any free object of {@link ObjectContainer} by current thread and returns it when any one is found.
-     *
-     * @param tClass is a class of wrapped objects. {@link ObjectContainer#getWrappedObject()}
-     * @param groupingBy is the grouping object.
-     * @param <T> is a type of wrapped objects.
-     * @return an object of {@link ObjectContainer} that has become busy if there is some objects free of threads.
-     */
-    @SuppressWarnings("unchecked")
-    public static synchronized  <T> ObjectContainer<T> setObjectBusy(Class<T> tClass, Object groupingBy) {
-        checkNotNull(groupingBy);
-        List<ObjectContainer<?>> freeObjects =  getAllObjects(tClass, objectContainer ->
-                !objectContainer.isBusy() && tClass.isAssignableFrom(objectContainer.getWrappedObject().getClass())
-                        && groupingBy.equals(objectContainer.getGroupBy()));
-        if (freeObjects.size() == 0) {
-            return null;
-        }
-        ObjectContainer<?> result = freeObjects.get(0);
-        result.setBusy(currentThread());
-        return (ObjectContainer<T>) result;
-    }
-
-    public static synchronized void remove(List<ObjectContainer<?>> objectContainers) {
-        checkNotNull(objectContainers);
-        synchronized (containers) {
-            containers.removeAll(objectContainers);
-        }
     }
 
     private synchronized boolean isBusy() {
         return busyBy != null;
     }
 
-    public synchronized void setBusy(Thread thread) {
+    private synchronized void setBusy(Thread thread) {
         this.busyBy = thread;
         new ThreadStateLoop(currentThread(), this).start();
     }
@@ -137,13 +82,5 @@ public class ObjectContainer<T> {
 
     public T getWrappedObject() {
         return t;
-    }
-
-    public void groupBy(Object groupBy) {
-        this.groupBy = groupBy;
-    }
-
-    private Object getGroupBy() {
-        return groupBy;
     }
 }

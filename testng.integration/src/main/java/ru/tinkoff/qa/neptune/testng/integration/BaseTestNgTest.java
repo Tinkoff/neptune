@@ -7,8 +7,10 @@ import org.testng.annotations.ObjectFactory;
 @Listeners(DefaultTestRunningListener.class)
 public abstract class BaseTestNgTest {
 
+    private static final IObjectFactory OBJECT_FACTORY = new DefaultObjectFactory();
+
     @ObjectFactory
     public static IObjectFactory setObjectFactory() {
-        return new DefaultObjectFactory();
+        return OBJECT_FACTORY;
     }
 }

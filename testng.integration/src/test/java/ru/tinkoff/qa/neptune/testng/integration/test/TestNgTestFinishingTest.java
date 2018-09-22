@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.testng.integration.test;
 
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeMethod;
 import ru.tinkoff.qa.neptune.testng.integration.properties.RefreshEachTimeBefore;
 import ru.tinkoff.qa.neptune.testng.integration.test.ignored.IgnoredStubTest;
@@ -16,8 +17,10 @@ import java.util.List;
 
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static ru.tinkoff.qa.neptune.core.api.concurency.ObjectContainer.getAllObjects;
 
 public class TestNgTestFinishingTest {
 
@@ -26,18 +29,21 @@ public class TestNgTestFinishingTest {
 
         List<XmlSuite> testSuites=new ArrayList<>();
 
-        XmlSuite suite=new XmlSuite();
+        XmlSuite suite = new XmlSuite();
+        XmlSuite parent = new XmlSuite();
+        suite.setParentSuite(parent);
         suite.setName("FinishSuite");
 
         XmlTest test = new XmlTest(suite);
 
-        List<XmlClass> testClasses=new ArrayList<>();
+        List<XmlClass> testClasses = new ArrayList<>();
         testClasses.add(new XmlClass(TestNgInstantiationTest.class.getName()));
         testClasses.add(new XmlClass(TestNgStubTest.class.getName()));
         testClasses.add(new XmlClass(IgnoredStubTest2.class.getName()));
         testClasses.add(new XmlClass(IgnoredStubTest.class.getName()));
 
         test.setXmlClasses(testClasses);
+        //testNG.setAnnotationTransformer();
         testSuites.add(suite);
 
         testNG.setXmlSuites(testSuites);
@@ -46,13 +52,7 @@ public class TestNgTestFinishingTest {
 
     @BeforeMethod
     public void refresh() {
-        StepClass2.countsToZero();
-    }
-
-    @Test
-    public void shuttingDownTest() {
-        runBeforeTheChecking();
-        assertThat(StepClass2.getStopCount(), is(1));
+        StepClass2.refreshCountToZero();
     }
 
     @Test
@@ -120,5 +120,11 @@ public class TestNgTestFinishingTest {
         finally {
             System.getProperties().remove(TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY.getPropertyName());
         }
+    }
+
+    @AfterClass
+    public void afterClass() {
+        assertThat(getAllObjects(StepClass2.class, objectContainer -> true), hasSize(6));
+        assertThat(getAllObjects(StepClass1.class, objectContainer -> true), hasSize(6));
     }
 }

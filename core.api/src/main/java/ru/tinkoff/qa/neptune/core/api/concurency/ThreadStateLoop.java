@@ -12,16 +12,12 @@ class ThreadStateLoop extends Thread {
 
     @Override
     public void run() {
-        boolean isAlive = true;
-         do {
-            isAlive = threadToListenTo.isAlive();
-            if (isAlive) {
-                try {
-                    sleep(1);
-                } catch (InterruptedException ignored) {
-                }
+        do {
+            try {
+                sleep(1);
+            } catch (InterruptedException ignored) {
             }
-         } while (isAlive);
+        } while (threadToListenTo.isAlive());
         container.setFree();
     }
 }
