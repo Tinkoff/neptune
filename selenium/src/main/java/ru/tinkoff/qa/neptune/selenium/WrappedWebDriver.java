@@ -2,7 +2,6 @@ package ru.tinkoff.qa.neptune.selenium;
 
 import org.openqa.selenium.WrapsDriver;
 import ru.tinkoff.qa.neptune.core.api.cleaning.Refreshable;
-import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
 import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import net.sf.cglib.proxy.Enhancer;
@@ -22,7 +21,7 @@ import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static org.openqa.selenium.net.PortProber.findFreePort;
 
-public class WrappedWebDriver implements WrapsDriver, Refreshable, Stoppable {
+public class WrappedWebDriver implements WrapsDriver, Refreshable, AutoCloseable {
 
     private final static String DEFAULT_LOCAL_HOST = "http://localhost:%s/wd/hub";
     private static SeleniumServer server;
@@ -153,7 +152,7 @@ public class WrappedWebDriver implements WrapsDriver, Refreshable, Stoppable {
     }
 
     @Override
-    public void shutDown() {
+    public void close() {
         ofNullable(driver).ifPresent(webDriver -> {
             try {
                 webDriver.quit();

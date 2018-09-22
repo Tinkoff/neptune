@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations;
 
-import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseSteps;
 
@@ -34,10 +33,5 @@ public abstract class BaseDbOperationTest {
         dataBaseSteps = getProxied(DataBaseSteps.class);
         testDB1.deleteOnExit();
         testDB2.deleteOnExit();
-    }
-
-    @AfterSuite
-    public void afterSuite() {
-        dataBaseSteps.shutDown();
     }
 }

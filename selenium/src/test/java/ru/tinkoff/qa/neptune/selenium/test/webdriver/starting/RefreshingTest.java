@@ -254,7 +254,7 @@ public class RefreshingTest {
 
     @AfterMethod
     public void afterTest() {
-        ofNullable(wrappedWebDriver).ifPresent(wrappedWebDriver1 -> wrappedWebDriver1.shutDown());
+        ofNullable(wrappedWebDriver).ifPresent(WrappedWebDriver::close);
     }
 
     @AfterClass

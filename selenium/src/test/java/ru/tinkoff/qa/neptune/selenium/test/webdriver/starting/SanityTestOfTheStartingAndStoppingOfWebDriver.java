@@ -125,7 +125,7 @@ public class SanityTestOfTheStartingAndStoppingOfWebDriver {
                         is(expectedBrowserType)));
             }
             finally {
-                wrappedWebDriver.shutDown();
+                wrappedWebDriver.close();
                 ofNullable(driver).ifPresent(webDriver ->
                         assertThat("Web driver is dead", !isDriverAlive(webDriver), is(true)));
             }
@@ -167,7 +167,7 @@ public class SanityTestOfTheStartingAndStoppingOfWebDriver {
                     is("data:,")));
         }
         finally {
-            ofNullable(wrappedWebDriver).ifPresent(wrappedDriver -> wrappedDriver.shutDown());
+            ofNullable(wrappedWebDriver).ifPresent(WrappedWebDriver::close);
             ofNullable(server).ifPresent(SeleniumServer::stop);
             properties.keySet().forEach(s -> System.getProperties().remove(s));
         }
@@ -187,7 +187,7 @@ public class SanityTestOfTheStartingAndStoppingOfWebDriver {
                     is("https://github.com/"));
         }
         finally {
-            wrappedWebDriver.shutDown();
+            wrappedWebDriver.close();
             properties.keySet().forEach(s -> System.getProperties().remove(s));
         }
     }

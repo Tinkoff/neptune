@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.core.api.proxy;
 
 import ru.tinkoff.qa.neptune.core.api.ConstructorParameters;
-import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
 import ru.tinkoff.qa.neptune.core.api.concurency.ObjectContainer;
 import net.bytebuddy.implementation.bind.annotation.AllArguments;
 import net.bytebuddy.implementation.bind.annotation.Origin;
@@ -11,14 +10,10 @@ import net.bytebuddy.implementation.bind.annotation.This;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
-import static ru.tinkoff.qa.neptune.core.api.concurency.GroupingObjects.getGroupingObject;
 import static ru.tinkoff.qa.neptune.core.api.concurency.ObjectContainer.*;
 import static ru.tinkoff.qa.neptune.core.api.utils.ConstructorUtil.findSuitableConstructor;
-import static java.lang.Thread.currentThread;
 import static java.util.Optional.ofNullable;
 
 public class MethodInterceptor<T> {
@@ -38,51 +33,13 @@ public class MethodInterceptor<T> {
         threadLocal = new ThreadLocal<>();
     }
 
-    private ObjectContainer<T> getTarget() {
-        return ofNullable(getGroupingObject())
-                .map(o -> setObjectBusy(originalClass, o)).orElseGet(() -> setObjectBusy(originalClass));
-    }
-
-    @SuppressWarnings("unchecked")
-    private List<ObjectContainer<T>> getAllInstancesToShutDown() {
-        return ofNullable(getGroupingObject()).map(o -> getAllObjects(originalClass, o))
-                .orElseGet(() -> getAllObjects(originalClass)).stream()
-                .map(objectContainer -> (ObjectContainer<T>) objectContainer)
-                .collect(Collectors.toList());
-    }
-
     @RuntimeType
     @SuppressWarnings("unused")
     public Object intercept(@This Object obj, @Origin Method method, @AllArguments Object[] args) throws Throwable {
         T target;
-
-        boolean toShutDown;
-
-        try {
-            toShutDown = Stoppable.class.getMethod(method.getName(), method.getParameterTypes()) != null;
-        }
-        catch (Exception e) {
-            toShutDown = false;
-        }
-
-        if (toShutDown) {
-            List<ObjectContainer<T>> containers = getAllInstancesToShutDown();
-            try {
-                for (ObjectContainer<T> objectContainer: containers) {
-                    method.setAccessible(true);
-                    method.invoke(objectContainer.getWrappedObject(), args);
-                }
-                return null;
-            }
-            finally {
-                List<ObjectContainer<?>> toBeRemoved = new ArrayList<>(containers);
-                remove(toBeRemoved);
-            }
-        }
-
         try {
             target = ofNullable(threadLocal.get()).map(ObjectContainer::getWrappedObject).orElseGet(() ->
-                    ofNullable(getTarget()).map(tObjectContainer -> {
+                    ofNullable(setObjectBusy(originalClass)).map(tObjectContainer -> {
                         threadLocal.set(tObjectContainer);
                         return tObjectContainer.getWrappedObject();
                     }).orElseGet(() -> {
@@ -100,9 +57,7 @@ public class MethodInterceptor<T> {
                         try {
                             t = manipulationWithObjectToReturn.apply(c.newInstance(constructorParameters.getParameterValues()));
                             ObjectContainer<T> container = new ObjectContainer<>(t);
-                            ofNullable(getGroupingObject()).ifPresent(container::groupBy);
                             threadLocal.set(container);
-                            container.setBusy(currentThread());
                         } catch (InstantiationException | IllegalAccessException e) {
                             throw new RuntimeException(e);
                         } catch (InvocationTargetException e) {

@@ -3,7 +3,6 @@ package ru.tinkoff.qa.neptune.selenium;
 import ru.tinkoff.qa.neptune.core.api.GetStep;
 import ru.tinkoff.qa.neptune.core.api.PerformActionStep;
 import ru.tinkoff.qa.neptune.core.api.cleaning.Refreshable;
-import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
 import ru.tinkoff.qa.neptune.core.api.CreateWith;
 import ru.tinkoff.qa.neptune.selenium.functions.navigation.NavigationActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier;
@@ -22,8 +21,7 @@ import java.util.List;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 
 @CreateWith(provider = SeleniumParameterProvider.class)
-public class SeleniumSteps implements PerformActionStep<SeleniumSteps>, GetStep<SeleniumSteps>, WrapsDriver, Refreshable,
-        Stoppable, TakesScreenshot {
+public class SeleniumSteps implements PerformActionStep<SeleniumSteps>, GetStep<SeleniumSteps>, WrapsDriver, Refreshable, TakesScreenshot {
 
     private final WrappedWebDriver wrappedWebDriver;
 
@@ -77,10 +75,6 @@ public class SeleniumSteps implements PerformActionStep<SeleniumSteps>, GetStep<
         wrappedWebDriver.refresh();
     }
 
-    @Override
-    public void shutDown() {
-        wrappedWebDriver.shutDown();
-    }
 
     @Override
     public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
