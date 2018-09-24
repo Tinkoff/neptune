@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.core.api.proxy;
 
 import ru.tinkoff.qa.neptune.core.api.ConstructorParameters;
+import ru.tinkoff.qa.neptune.core.api.cleaning.StoppableOnJVMShutdown;
 import ru.tinkoff.qa.neptune.core.api.concurency.ObjectContainer;
 import net.bytebuddy.implementation.bind.annotation.AllArguments;
 import net.bytebuddy.implementation.bind.annotation.Origin;
@@ -12,6 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.function.Function;
 
+import static java.lang.Runtime.getRuntime;
 import static ru.tinkoff.qa.neptune.core.api.concurency.ObjectContainer.*;
 import static ru.tinkoff.qa.neptune.core.api.utils.ConstructorUtil.findSuitableConstructor;
 import static java.util.Optional.ofNullable;
@@ -56,6 +58,9 @@ public class MethodInterceptor<T> {
                         T t;
                         try {
                             t = manipulationWithObjectToReturn.apply(c.newInstance(constructorParameters.getParameterValues()));
+                            if (StoppableOnJVMShutdown.class.isAssignableFrom(t.getClass())) {
+                                getRuntime().addShutdownHook(((StoppableOnJVMShutdown) t).getHookOnJvmStop());
+                            }
                             ObjectContainer<T> container = new ObjectContainer<>(t);
                             threadLocal.set(container);
                         } catch (InstantiationException | IllegalAccessException e) {

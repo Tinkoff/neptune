@@ -21,7 +21,7 @@ import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static org.openqa.selenium.net.PortProber.findFreePort;
 
-public class WrappedWebDriver implements WrapsDriver, Refreshable, AutoCloseable {
+public class WrappedWebDriver implements WrapsDriver, Refreshable {
 
     private final static String DEFAULT_LOCAL_HOST = "http://localhost:%s/wd/hub";
     private static SeleniumServer server;
@@ -151,8 +151,7 @@ public class WrappedWebDriver implements WrapsDriver, Refreshable, AutoCloseable
         return driver;
     }
 
-    @Override
-    public void close() {
+    public void shutDown() {
         ofNullable(driver).ifPresent(webDriver -> {
             try {
                 webDriver.quit();

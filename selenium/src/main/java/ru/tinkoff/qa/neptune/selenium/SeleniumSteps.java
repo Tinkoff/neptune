@@ -4,6 +4,7 @@ import ru.tinkoff.qa.neptune.core.api.GetStep;
 import ru.tinkoff.qa.neptune.core.api.PerformActionStep;
 import ru.tinkoff.qa.neptune.core.api.cleaning.Refreshable;
 import ru.tinkoff.qa.neptune.core.api.CreateWith;
+import ru.tinkoff.qa.neptune.core.api.cleaning.StoppableOnJVMShutdown;
 import ru.tinkoff.qa.neptune.selenium.functions.navigation.NavigationActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
@@ -21,7 +22,8 @@ import java.util.List;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 
 @CreateWith(provider = SeleniumParameterProvider.class)
-public class SeleniumSteps implements PerformActionStep<SeleniumSteps>, GetStep<SeleniumSteps>, WrapsDriver, Refreshable, TakesScreenshot {
+public class SeleniumSteps implements PerformActionStep<SeleniumSteps>, GetStep<SeleniumSteps>, WrapsDriver, Refreshable,
+        TakesScreenshot, StoppableOnJVMShutdown {
 
     private final WrappedWebDriver wrappedWebDriver;
 
@@ -79,5 +81,10 @@ public class SeleniumSteps implements PerformActionStep<SeleniumSteps>, GetStep<
     @Override
     public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
         return ((TakesScreenshot) getWrappedDriver()).getScreenshotAs(target);
+    }
+
+    @Override
+    public Thread getHookOnJvmStop() {
+        return new Thread(wrappedWebDriver::shutDown);
     }
 }

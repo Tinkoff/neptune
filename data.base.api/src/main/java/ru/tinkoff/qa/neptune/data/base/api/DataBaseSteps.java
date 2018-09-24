@@ -5,6 +5,8 @@ import org.datanucleus.api.jdo.JDOPersistenceManagerFactory;
 import ru.tinkoff.qa.neptune.core.api.CreateWith;
 import ru.tinkoff.qa.neptune.core.api.GetStep;
 import ru.tinkoff.qa.neptune.core.api.PerformActionStep;
+import ru.tinkoff.qa.neptune.core.api.cleaning.Refreshable;
+import ru.tinkoff.qa.neptune.core.api.cleaning.StoppableOnJVMShutdown;
 import ru.tinkoff.qa.neptune.data.base.api.persistence.data.PersistenceManagerFactorySupplier;
 
 import java.util.HashMap;
@@ -12,15 +14,21 @@ import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static ru.tinkoff.qa.neptune.data.base.api.persistence.data.PersistenceManagerFactoryStore.getPersistenceManagerFactory;
+import static ru.tinkoff.qa.neptune.data.base.api.properties.DefaultPersistenceManagerFactoryProperty.DEFAULT_JDO_PERSISTENCE_MANAGER_FACTORY_PROPERTY;
 
 @CreateWith(provider = DataBaseParameterProvider.class)
-public class DataBaseSteps implements GetStep<DataBaseSteps>, PerformActionStep<DataBaseSteps>, AutoCloseable {
+public class DataBaseSteps implements GetStep<DataBaseSteps>, PerformActionStep<DataBaseSteps>, StoppableOnJVMShutdown,
+        Refreshable {
 
-    private final JDOPersistenceManagerFactory defaultFactory;
+    private JDOPersistenceManagerFactory defaultFactory;
     private final Map<JDOPersistenceManagerFactory, JDOPersistenceManager> jdoPersistenceManagerMap = new HashMap<>();
     private JDOPersistenceManagerFactory currentFactory;
 
     public DataBaseSteps(JDOPersistenceManagerFactory defaultFactory) {
+        checkArgument(defaultFactory != null, "Value of default JDO persistence manager factory " +
+                "should differ from null");
+        checkArgument(!defaultFactory.isClosed(), "Default JDO persistence manager factory " +
+                "should not be closed");
         this.defaultFactory = defaultFactory;
         switchToDefault();
     }
@@ -51,10 +59,17 @@ public class DataBaseSteps implements GetStep<DataBaseSteps>, PerformActionStep<
      * @return self-reference
      */
     public DataBaseSteps switchTo(CharSequence persistenceUnitName) {
-        return switchTo(getPersistenceManagerFactory(persistenceUnitName, true));
+        return switchTo(jdoPersistenceManagerMap.keySet().stream().filter(jdoPersistenceManagerFactory ->
+                String.valueOf(persistenceUnitName).equals(jdoPersistenceManagerFactory.getName()) &&
+                        !jdoPersistenceManagerFactory.isClosed())
+                .findFirst()
+                .orElseGet(() -> getPersistenceManagerFactory(persistenceUnitName, true)));
     }
 
     public DataBaseSteps switchToDefault() {
+        if (defaultFactory.isClosed()) {
+            defaultFactory = DEFAULT_JDO_PERSISTENCE_MANAGER_FACTORY_PROPERTY.get();
+        }
         return switchTo(defaultFactory);
     }
 
@@ -68,7 +83,16 @@ public class DataBaseSteps implements GetStep<DataBaseSteps>, PerformActionStep<
     }
 
     @Override
-    public void close() {
-        jdoPersistenceManagerMap.keySet().forEach(JDOPersistenceManagerFactory::close);
+    public Thread getHookOnJvmStop() {
+        return new Thread(() -> jdoPersistenceManagerMap.forEach((key, value) -> {
+            jdoPersistenceManagerMap.keySet().forEach(JDOPersistenceManagerFactory::close);
+            value.close();
+            key.close();
+        }));
+    }
+
+    @Override
+    public void refresh() {
+        switchToDefault();
     }
 }
