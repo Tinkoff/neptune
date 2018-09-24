@@ -68,8 +68,11 @@ public class SeleniumImageCaptor extends ImageCaptor<TakesScreenshot> {
                                 return new ByteArrayInputStream(elementScreenshotTaker1
                                         .getScreenshotAs((Widget) caught, BYTES));
                             }
-                            return new ByteArrayInputStream(elementScreenshotTaker1
-                                    .getScreenshotAs((ElementList) caught, BYTES));
+                            if (ElementList.class.isAssignableFrom(clazz)) {
+                                return new ByteArrayInputStream(elementScreenshotTaker1
+                                        .getScreenshotAs((ElementList) caught, BYTES));
+                            }
+                            return new ByteArrayInputStream(caught.getScreenshotAs(BYTES));
                         }).orElseGet(() -> new ByteArrayInputStream(caught.getScreenshotAs(BYTES)));
             }
             return ImageIO.read(in);
