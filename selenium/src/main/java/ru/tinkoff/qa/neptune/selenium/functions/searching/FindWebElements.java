@@ -12,7 +12,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.lang.String.format;
 import static net.sf.cglib.proxy.Enhancer.registerCallbacks;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @SuppressWarnings("unchecked")
 final class FindWebElements implements Function<SearchContext, List<WebElement>> {
@@ -48,10 +50,18 @@ final class FindWebElements implements Function<SearchContext, List<WebElement>>
 
     @Override
     public List<WebElement> apply(SearchContext searchContext) {
-        List<WebElement> elements = searchContext.findElements(by)
+        return new ElementList<>(searchContext.findElements(by)
                 .stream().map(webElement -> createProxy(webElement.getClass(),
                         new WebElementInterceptor(webElement, by, conditionString)))
-                .collect(Collectors.toList());
-        return createProxy(elements.getClass(), new WebElementListInterceptor(elements, by, conditionString));
+                .collect(Collectors.toList())) {
+            @Override
+            public String toString() {
+                String stringDescription = format("%s web elements found %s", size(), by);
+                if (!isBlank(conditionString)) {
+                    stringDescription = format("%s on conditions '%s'", stringDescription, conditionString);
+                }
+                return stringDescription;
+            }
+        };
     }
 }

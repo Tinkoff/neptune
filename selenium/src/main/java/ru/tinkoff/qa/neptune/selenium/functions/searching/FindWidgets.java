@@ -16,6 +16,9 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static java.lang.String.format;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static ru.tinkoff.qa.neptune.selenium.api.widget.Widget.getWidgetName;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindByBuilder.getAnnotations;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.WidgetPriorityComparator.widgetPriorityComparator;
 import static com.google.common.base.Preconditions.checkArgument;
@@ -117,7 +120,15 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
                     .map(webElement -> createProxy(clazz, new WidgetInterceptor(webElement, clazz, conditionString)))
                     .collect(toList()));
         });
-        return (List<R>) createProxy(result.getClass(),
-                new WidgetListInterceptor(classOfAWidget, result, conditionString));
+        return new ElementList<>(result) {
+            @Override
+            public String toString() {
+                String stringDescription = String.format("%s elements of type %s", size(), getWidgetName(classOfAWidget));
+                if (!isBlank(conditionString)) {
+                    stringDescription = format("%s found on conditions '%s'", stringDescription, conditionString);
+                }
+                return stringDescription;
+            }
+        };
     }
 }
