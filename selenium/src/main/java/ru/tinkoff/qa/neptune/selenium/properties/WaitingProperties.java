@@ -41,7 +41,14 @@ public enum WaitingProperties implements Supplier<Duration> {
      * When {@code "waiting.frame.switching.time.unit"} or {@code "waiting.frame.switching.time"}
      * are not defined then it returns 1 minute. Otherwise it returns defined duration value.
      */
-    WAITING_FRAME_SWITCHING_DURATION(WAITING_FRAME_SWITCHING_TIME_UNIT, WAITING_FRAME_SWITCHING_TIME_VALUE);
+    WAITING_FRAME_SWITCHING_DURATION(WAITING_FRAME_SWITCHING_TIME_UNIT, WAITING_FRAME_SWITCHING_TIME_VALUE),
+
+    /**
+     * Returns duration of the waiting for waiting for a page is loaded.
+     * When {@code "waiting.for.page.loaded.time.unit"} or {@code "waiting.for.page.loaded.time"}
+     * are not defined then it returns 1 minute. Otherwise it returns defined duration value.
+     */
+    WAITING_FOR_PAGE_LOADED_DURATION(WAITING_FOR_PAGE_LOADED_TIME_UNIT, WAITING_FOR_PAGE_LOADED_TIME_VALUE);
 
     private final DurationSupplier durationSupplier;
 
@@ -91,7 +98,15 @@ public enum WaitingProperties implements Supplier<Duration> {
          * Returns read value or {@code null} when nothing is defined
          * @see ChronoUnit
          */
-        WAITING_FRAME_SWITCHING_TIME_UNIT("waiting.frame.switching.time.unit");
+        WAITING_FRAME_SWITCHING_TIME_UNIT("waiting.frame.switching.time.unit"),
+
+        /**
+         * Reads property {@code "waiting.for.page.loaded.time.unit"}.
+         * This property is needed to define time of the waiting for a page is loaded.
+         * Returns read value or {@code null} when nothing is defined
+         * @see ChronoUnit
+         */
+        WAITING_FOR_PAGE_LOADED_TIME_UNIT("waiting.for.page.loaded.time.unit");
 
         private final String propertyName;
 
@@ -133,7 +148,14 @@ public enum WaitingProperties implements Supplier<Duration> {
          * This property is needed to define time of the waiting for the switching to some frame succeeded.
          * Returns read value or {@code null} if nothing is defined.
          */
-        WAITING_FRAME_SWITCHING_TIME_VALUE("waiting.frame.switching.time");
+        WAITING_FRAME_SWITCHING_TIME_VALUE("waiting.frame.switching.time"),
+
+        /**
+         * Reads property {@code "waiting.for.page.loaded.time"}.
+         * This property is needed to define time of the waiting for  a page is loaded.
+         * Returns read value or {@code null} if nothing is defined.
+         */
+        WAITING_FOR_PAGE_LOADED_TIME_VALUE("waiting.for.page.loaded.time");
 
         private final String propertyName;
 

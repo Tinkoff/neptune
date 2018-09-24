@@ -13,13 +13,16 @@ import org.openqa.selenium.remote.server.SeleniumServer;
 
 import java.lang.reflect.Constructor;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static ru.tinkoff.qa.neptune.core.api.utils.ConstructorUtil.findSuitableConstructor;
 import static ru.tinkoff.qa.neptune.selenium.properties.FlagProperties.*;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static org.openqa.selenium.net.PortProber.findFreePort;
+import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITING_FOR_PAGE_LOADED_DURATION;
 
 public class WrappedWebDriver implements WrapsDriver, Refreshable {
 
@@ -102,6 +105,9 @@ public class WrappedWebDriver implements WrapsDriver, Refreshable {
                 if (FORCE_WINDOW_MAXIMIZING_ON_START.get()) {
                     driver.manage().window().maximize();
                 }
+
+                driver.manage().timeouts().pageLoadTimeout(WAITING_FOR_PAGE_LOADED_DURATION.get().toMillis(),
+                        MILLISECONDS);
                 return driver;
             } catch (Exception e) {
                 throw new RuntimeException(e);
