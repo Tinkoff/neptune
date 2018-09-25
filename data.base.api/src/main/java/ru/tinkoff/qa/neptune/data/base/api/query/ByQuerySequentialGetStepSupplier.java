@@ -11,14 +11,14 @@ import java.util.function.Predicate;
 import static com.google.common.base.Preconditions.checkArgument;
 
 @SuppressWarnings("unchecked")
-public abstract class ByQuerySequentialGetStepSupplier<T extends PersistableObject, S, Q extends ByQuerySequentialGetStepSupplier<T, S, Q>>
-        extends SelectSequentialGetStepSupplier<S, JDOQLTypedQuery<T>, Q> {
+public abstract class ByQuerySequentialGetStepSupplier<T, S, R, Q extends ByQuerySequentialGetStepSupplier<T, S, R, Q>>
+        extends SelectSequentialGetStepSupplier<S, R, Q> {
 
-    private final QueryBuilderFunction<T> queryBuilder;
+    private final Function<DataBaseSteps, R> query;
     Predicate<T> condition;
 
-    ByQuerySequentialGetStepSupplier(QueryBuilderFunction<T> queryBuilder) {
-        this.queryBuilder = queryBuilder;
+    ByQuerySequentialGetStepSupplier(Function<DataBaseSteps, R> query) {
+        this.query = query;
     }
 
     /**
@@ -36,7 +36,7 @@ public abstract class ByQuerySequentialGetStepSupplier<T extends PersistableObje
 
     @Override
     public Function<DataBaseSteps, S> get() {
-        super.from(queryBuilder);
+        super.from(query);
         return super.get();
     }
 }

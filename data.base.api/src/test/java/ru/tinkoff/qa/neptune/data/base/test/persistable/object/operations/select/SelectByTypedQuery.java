@@ -7,6 +7,7 @@ import ru.tinkoff.qa.neptune.data.base.api.query.SelectSingleObjectByQuerySuppli
 import ru.tinkoff.qa.neptune.data.base.api.test.*;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDbOperationTest;
 
+import javax.jdo.JDOQLTypedQuery;
 import java.time.Duration;
 import java.util.List;
 import java.util.function.Supplier;
@@ -576,7 +577,7 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
                 .where(qAuthor.firstName.eq("Alexander")
                         .and(qAuthor.lastName.eq("Pushkin")))));
 
-        SelectListByQuerySupplier<Catalog> query = listByQuery(ofType(Catalog.class)
+        SelectListByQuerySupplier<Catalog, JDOQLTypedQuery<Catalog>> query = listByQuery(ofType(Catalog.class)
                 .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(alexanderPushkin))));
 
@@ -602,7 +603,7 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
                 .where(qAuthor.firstName.eq("Alexander")
                         .and(qAuthor.lastName.eq("Pushkin")))));
 
-        SelectSingleObjectByQuerySupplier<Catalog> query = aSingleByQuery(ofType(Catalog.class)
+        SelectSingleObjectByQuerySupplier<Catalog, JDOQLTypedQuery<Catalog>> query = aSingleByQuery(ofType(Catalog.class)
                 .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(alexanderPushkin))));
 
@@ -628,7 +629,7 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
                 .where(qAuthor.firstName.eq("Alexander")
                         .and(qAuthor.lastName.eq("Pushkin")))));
 
-        SelectListByQuerySupplier<Catalog> query = listByQuery(ofType(Catalog.class)
+        SelectListByQuerySupplier<Catalog, JDOQLTypedQuery<Catalog>> query = listByQuery(ofType(Catalog.class)
                 .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(alexanderPushkin))));
 
@@ -655,7 +656,7 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
                 .where(qAuthor.firstName.eq("Alexander")
                         .and(qAuthor.lastName.eq("Pushkin")))));
 
-        SelectSingleObjectByQuerySupplier<Catalog> query = aSingleByQuery(ofType(Catalog.class)
+        SelectSingleObjectByQuerySupplier<Catalog, JDOQLTypedQuery<Catalog>> query = aSingleByQuery(ofType(Catalog.class)
                 .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(alexanderPushkin))));
 
