@@ -1,11 +1,11 @@
+group 'ru.tinkoff.qa.neptune'
+version '0.3.8-ALPHA'
+
 subprojects {
 
     apply plugin: 'java'
     apply plugin: 'maven'
     apply plugin: 'maven-publish'
-
-    group 'ru.tinkoff.qa.neptune'
-    version '0.3.8-ALPHA'
 
     sourceCompatibility = 1.9
     targetCompatibility = 1.9
@@ -45,5 +45,25 @@ subprojects {
 
     test {
         useTestNG()
+    }
+}
+
+task aggregatedJavadocs(type: Javadoc, description: 'Generate javadocs from all child projects as if it was a single project', group: 'Documentation') {
+    destinationDir = file("$buildDir/docs/javadoc")
+    title = "Neptune API Documentation. v$version"
+    options.author true
+    options.links 'http://download.oracle.com/javase/9/docs/api/'
+    options.addStringOption 'Xdoclint:none', '-quiet'
+    destinationDir  = file("${buildDir}/../../neptune.documentation/javadocs/")
+    options.memberLevel = JavadocMemberLevel.PROTECTED
+    options.bottom = "Copyright &copy; 2018 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
+
+    subprojects.each { proj ->
+        proj.tasks.withType(Javadoc).each { javadocTask ->
+            source += javadocTask.source
+            classpath += javadocTask.classpath
+            excludes += javadocTask.excludes
+            includes += javadocTask.includes
+        }
     }
 }
