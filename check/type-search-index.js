@@ -1,0 +1,1 @@
+typeSearchIndex = [{"p":"ru.tinkoff.qa.neptune.check","l":"Check"},{"p":"ru.tinkoff.qa.neptune.check","l":"ThatValue"}]

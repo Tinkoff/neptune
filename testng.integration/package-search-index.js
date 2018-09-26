@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"ru.tinkoff.qa.neptune.testng.integration"},{"l":"ru.tinkoff.qa.neptune.testng.integration.properties"}]

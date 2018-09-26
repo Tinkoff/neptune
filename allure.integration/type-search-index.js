@@ -1,0 +1,1 @@
+typeSearchIndex = [{"p":"ru.tinkoff.qa.neptune.allure","l":"AllureEventLogger"},{"p":"ru.tinkoff.qa.neptune.allure","l":"AllureFileInjector"},{"p":"ru.tinkoff.qa.neptune.allure","l":"AllureImageInjector"},{"p":"ru.tinkoff.qa.neptune.allure","l":"AllureStringInjector"}]

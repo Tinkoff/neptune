@@ -1,9 +1,0 @@
-rootProject.name = 'ru.tinkoff.qa.neptune'
-include 'core.api'
-include 'check'
-include 'selenium'
-include 'testng.integration'
-include 'allure.integration'
-include 'allure.testng.bridge'
-include 'data.base.api'
-
