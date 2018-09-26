@@ -1,7 +1,10 @@
-group 'ru.tinkoff.qa.neptune'
-version '0.3.8-ALPHA'
+ext {
+    globalVersion = '0.3.8-ALPHA'
+}
 
 subprojects {
+    group 'ru.tinkoff.qa.neptune'
+    version globalVersion
 
     apply plugin: 'java'
     apply plugin: 'maven'
@@ -27,6 +30,7 @@ subprojects {
         mavenDeployLogin =  REPO_USER_NAME
         mavenDeployPassword = REPO_USER_PASSWORD
         jaxbVersion = '2.3.0.1'
+        globalVersion = version
     }
 
     dependencies {
@@ -49,8 +53,7 @@ subprojects {
 }
 
 task aggregatedJavadocs(type: Javadoc, description: 'Generate javadocs from all child projects as if it was a single project', group: 'Documentation') {
-    destinationDir = file("$buildDir/docs/javadoc")
-    title = "Neptune API Documentation. v$version"
+    title = "Neptune API Documentation. v$globalVersion"
     options.author true
     options.links 'http://download.oracle.com/javase/9/docs/api/'
     options.addStringOption 'Xdoclint:none', '-quiet'
