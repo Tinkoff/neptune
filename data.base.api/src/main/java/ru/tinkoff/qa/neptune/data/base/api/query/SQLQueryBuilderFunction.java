@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.lang.ClassLoader.getSystemClassLoader;
+import static java.lang.String.format;
+import static java.lang.reflect.Proxy.newProxyInstance;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -57,10 +60,16 @@ public final class SQLQueryBuilderFunction<T> implements Function<DataBaseSteps,
     public Query<T> apply(DataBaseSteps dataBaseSteps) {
         JDOPersistenceManager manager = dataBaseSteps.getCurrentPersistenceManager();
         Query<T> query = manager.newQuery("javax.jdo.query.SQL", sql);
-        return ofNullable(type).map(aClass -> {
-            query.setClass(aClass);
-            return query;
-        }).orElse(query);
+        ofNullable(type).ifPresent(query::setClass);
+
+        return (Query<T>) newProxyInstance(getSystemClassLoader(),
+                new Class[] {Query.class},
+                (proxy, method, args) -> {
+                    if (method.getName().equals("toString") && method.getParameterTypes().length == 0) {
+                        return format("SQL query: %s", sql);
+                    }
+                    return method.invoke(query, args);
+                });
     }
 
     Class<?> getTypeOfRequiredValue() {
