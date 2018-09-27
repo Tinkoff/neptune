@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.selenium.functions.presence;
+package ru.tinkoff.qa.neptune.selenium.functions.searching.presence;
 
 import ru.tinkoff.qa.neptune.core.api.Presence;
 import ru.tinkoff.qa.neptune.selenium.SeleniumSteps;
@@ -11,9 +11,9 @@ import java.util.function.Function;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 import static java.util.List.of;
 
-public final class SeleniumPresence extends Presence<SeleniumSteps> {
+public final class ElementPresence extends Presence<SeleniumSteps> {
 
-    private SeleniumPresence(Function<SeleniumSteps, ?> toBePresent) {
+    private ElementPresence(Function<SeleniumSteps, ?> toBePresent) {
         super(toBePresent);
     }
 
@@ -24,7 +24,7 @@ public final class SeleniumPresence extends Presence<SeleniumSteps> {
      * @return an instance of {@link Presence}.
      */
     public static Presence<SeleniumSteps> presenceOfAnElement(SearchSupplier<?> supplier) {
-        return new SeleniumPresence(supplier.get().compose(currentContent()))
+        return new ElementPresence(supplier.get().compose(currentContent()))
                 .addIgnored(of(NoSuchElementException.class));
     }
 
@@ -35,7 +35,7 @@ public final class SeleniumPresence extends Presence<SeleniumSteps> {
      * @return an instance of {@link Presence}.
      */
     public static Presence<SeleniumSteps> presenceOfElements(MultipleSearchSupplier<?> supplier) {
-        return new SeleniumPresence(supplier.get().compose(currentContent()));
+        return new ElementPresence(supplier.get().compose(currentContent()));
     }
 
 
