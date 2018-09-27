@@ -5,7 +5,7 @@ import com.google.gson.Gson;
 /**
  * This abstract class is designed to mark persistable classes.
  */
-public abstract class PersistableObject implements Cloneable {
+public abstract class PersistableObject extends OrmObject implements Cloneable {
 
     @Override
     public String toString() {

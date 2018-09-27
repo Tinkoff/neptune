@@ -669,18 +669,4 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
             dataBaseSteps.switchToDefault();
         }
     }
-
-    @Test
-    public void equalityTest() {
-        Author pushkin = dataBaseSteps.get(aSingleByQuery(ofType(Author.class)
-                .where(QAuthor.candidate().lastName.eq("Pushkin"))));
-
-        QBook qBook = QBook.candidate();
-        Book ruslanAndLudmila = dataBaseSteps.get(aSingleByQuery(ofType(Book.class)
-                .where(qBook.author.eq(pushkin))));
-        Book ruslanAndLudmila2 = dataBaseSteps.get(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila"))));
-
-        assertThat(ruslanAndLudmila, is(ruslanAndLudmila2));
-    }
 }

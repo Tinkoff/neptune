@@ -19,6 +19,6 @@ public class ToStringTest {
                 .setObjectListField(List.of(1.5, 2.1, 3.2));
         String stringValue = p1.toString();
         PersistableObjectThree p2 = new Gson().fromJson(stringValue, PersistableObjectThree.class);
-        assertThat(p1.toString(), equalTo(p2.toString()));
+        assertThat(p1, equalTo(p2));
     }
 }
