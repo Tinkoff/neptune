@@ -9,9 +9,6 @@ import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 
 class OrmObject {
-
-    private static final String ORG_DATANUCLEUS = "org.datanucleus";
-
     private boolean equalsByFields(Object obj) {
         Class<?> clazz = this.getClass();
         while (!clazz.equals(Object.class)) {
@@ -19,12 +16,6 @@ class OrmObject {
                     .collect(Collectors.toList());
             for (Field f: fields) {
                 f.setAccessible(true);
-
-                Class<?> type = f.getType();
-                if (!type.isPrimitive() && type.getPackage().getName().startsWith(ORG_DATANUCLEUS)) {
-                    continue;
-                }
-
                 try {
                     Object v1 = f.get(this);
                     Object v2 = f.get(obj);
