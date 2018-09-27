@@ -26,8 +26,8 @@ ru.tinkoff.qa.neptune.selenium.functions.click
 ru.tinkoff.qa.neptune.selenium.functions.edit
 ru.tinkoff.qa.neptune.selenium.functions.java.script
 ru.tinkoff.qa.neptune.selenium.functions.navigation
-ru.tinkoff.qa.neptune.selenium.functions.presence
 ru.tinkoff.qa.neptune.selenium.functions.searching
+ru.tinkoff.qa.neptune.selenium.functions.searching.presence
 ru.tinkoff.qa.neptune.selenium.functions.target.locator
 ru.tinkoff.qa.neptune.selenium.functions.target.locator.active.element
 ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert
