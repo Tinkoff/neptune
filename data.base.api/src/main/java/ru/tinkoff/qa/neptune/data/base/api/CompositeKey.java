@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import static java.lang.String.format;
 import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Arrays.stream;
+import static java.util.Optional.ofNullable;
 
 /**
  * This class is designed to implement classes of composite key objects.
@@ -26,7 +27,7 @@ import static java.util.Arrays.stream;
  *            }'}
  * </p>
  */
-public abstract class CompositeKey extends OrmObject implements Serializable {
+public abstract class CompositeKey implements Serializable {
 
     @Override
     public int hashCode() {
@@ -52,6 +53,55 @@ public abstract class CompositeKey extends OrmObject implements Serializable {
         }
 
         return result;
+    }
+
+    private boolean equalsByFields(Object obj) {
+        Class<?> clazz = this.getClass();
+        while (!clazz.equals(Object.class)) {
+            List<Field> fields = stream(clazz.getDeclaredFields()).filter(field -> !isStatic(field.getModifiers()))
+                    .collect(Collectors.toList());
+            for (Field f: fields) {
+                f.setAccessible(true);
+
+                try {
+                    Object v1 = f.get(this);
+                    Object v2 = f.get(obj);
+
+                    if (v1 == null && v2 == null) {
+                        continue;
+                    }
+
+                    if ((v1 != null && v2 == null) || (v1 == null && v2 != null)) {
+                        return false;
+                    }
+
+                    if (v1.equals(v2)) {
+                        continue;
+                    }
+
+                    return false;
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e.getMessage(), e);
+                }
+            }
+            clazz = clazz.getSuperclass();
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        CompositeKey toCheck = this;
+        return ofNullable(obj)
+                .map(o -> {
+                    if (toCheck == o) {
+                        return true;
+                    }
+                    return toCheck.getClass().equals(obj.getClass()) &&
+                            toCheck.equalsByFields(obj);
+                })
+                .orElse(false);
     }
 
     @Override

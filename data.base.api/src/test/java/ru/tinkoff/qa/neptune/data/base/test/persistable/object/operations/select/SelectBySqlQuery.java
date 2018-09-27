@@ -56,9 +56,10 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
 
     @Test
     public void selectListByUnTypedSqlTest() {
-        List<List<Object>> booksAndAuthors = dataBaseSteps.get(listByQuery(bySQL(QUERY)));
-        List<Book> books = dataBaseSteps.get(listByQuery(ofType(Book.class).where(Q_BOOK.yearOfFinishing.gteq(1820))
-                .orderBy(Q_BOOK.yearOfFinishing.asc())));
+        List<List<Object>> booksAndAuthors = dataBaseSteps.get(listByQuery(bySQL(QUERY))).subList(0, 1);
+        List<Book> books = dataBaseSteps.get(listByQuery(ofType(Book.class)
+                .where(Q_BOOK.yearOfFinishing.gteq(1820))
+                .orderBy(Q_BOOK.yearOfFinishing.asc()).range(0, 1)));
         List<List<Object>> booksAndAuthors2 = books.stream()
                 .map(book -> {
                     List<Object> result = new ArrayList<>();
