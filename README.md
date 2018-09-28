@@ -7,7 +7,7 @@ Module documentatation:
 - [overview of all packages](https://tinkoffcreditsystems.github.io/neptune/overview-summary.html)
 - [overview of core API](https://tinkoffcreditsystems.github.io/neptune/core.api/overview-summary.html)
 - [overview of check API](https://tinkoffcreditsystems.github.io/neptune/check/ru/tinkoff/qa/neptune/check/package-summary.html)
-- [overview of intgaration with Selenium](https://tinkoffcreditsystems.github.io/neptune/selenium/overview-summary.html)
+- [overview of integration with Selenium](https://tinkoffcreditsystems.github.io/neptune/selenium/overview-summary.html)
 - [overview of integration with Datanucleus JDO](https://tinkoffcreditsystems.github.io/neptune/data.base.api/overview-summary.html)
 - [overview of integration with TestNg](https://tinkoffcreditsystems.github.io/neptune/testng.integration/overview-summary.html)
 - [overview of integration with Allure reporting framework](https://tinkoffcreditsystems.github.io/neptune/allure.integration/ru/tinkoff/qa/neptune/allure/package-summary.html)
