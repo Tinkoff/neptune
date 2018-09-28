@@ -1,7 +1,7 @@
 # neptune
 Test automation framework for automation of E2E tests.
 
-It is under ALPHA testing by developers/QA engineers of [Tinkoff.ru](https://www.tinkoff.ru/software/) for a while. Built jar are not available outside. For now source code and documentation is available for overview.
+It is under the ALPHA testing by developers/QA engineers of [Tinkoff.ru](https://www.tinkoff.ru/software/) for a while. Built jar are not available outside. For now source code and documentation is available for overview.
 
 Module documentatation:
 - [overview of all packages](https://tinkoffcreditsystems.github.io/neptune/overview-summary.html)
@@ -16,3 +16,5 @@ Module documentatation:
 [Change list](https://github.com/TinkoffCreditSystems/neptune/releases)
 
 Owners: [@TikhomirovSergey](https://github.com/ArisAgnew), [@ArisAgnew](https://github.com/ArisAgnew), [@AndrewCharykov](https://github.com/AndrewCharykov)
+
+First public BETA-version are coming soon 
