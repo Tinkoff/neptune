@@ -17,6 +17,6 @@ Module documentatation:
 
 Owners: [@TikhomirovSergey](https://github.com/ArisAgnew), [@ArisAgnew](https://github.com/ArisAgnew), [@AndrewCharykov](https://github.com/AndrewCharykov)
 
-First public BETA-version are coming soon 
+First public BETA-versions are coming soon 
 
 [How to setup and build the project](https://github.com/TinkoffCreditSystems/neptune/wiki/How-to-setup-and-build-the-project)
