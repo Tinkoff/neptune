@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.List.of;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
@@ -25,6 +26,7 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
 
     private static final String QUERY = "Select * from Books join Authors on Books.Author = Authors.Id " +
             "where Books.YearOfFinishing >= 1820 order by YearOfFinishing asc";
+    private static final String QUERY2 = "Select MIN(YearOfFinishing) from Books";
 
     private static final QBook Q_BOOK = QBook.candidate();
 
@@ -99,5 +101,17 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
         bookAndAuthor2.add(book.getAuthor().getBiography());
 
         assertThat(bookAndAuthor2, contains(bookAndAuthor.toArray()));
+    }
+
+    @Test
+    public void aggregatedListResultSelect() {
+        List<List<Object>> result = dataBaseSteps.get(listByQuery(bySQL(QUERY2)));
+        assertThat(result, contains(of(1820)));
+    }
+
+    @Test
+    public void aggregatedSingleResultSelect() {
+        List<Object> result = dataBaseSteps.get(aSingleByQuery(bySQL(QUERY2)));
+        assertThat(result, contains(1820));
     }
 }

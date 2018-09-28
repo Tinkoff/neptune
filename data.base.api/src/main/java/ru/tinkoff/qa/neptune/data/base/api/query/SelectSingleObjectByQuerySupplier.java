@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
+import static java.util.List.of;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetObjectFromIterable.getFromIterable;
 
@@ -57,7 +58,14 @@ public abstract class SelectSingleObjectByQuerySupplier<T, R>
                     }
                     PersistableList<List<Object>> toBeReturned = new PersistableList<>();
                     List<?> result = query.executeList();
-                    result.forEach(o -> toBeReturned.add(Arrays.asList(((Object[]) o))));
+                    result.forEach(o -> {
+                        if (o.getClass().isArray()) {
+                            toBeReturned.add(Arrays.asList(((Object[]) o)));
+                        }
+                        else {
+                            toBeReturned.add(of(o));
+                        }
+                    });
                     return (List<T>) toBeReturned;
                 });
             }
