@@ -75,9 +75,10 @@ class WidgetInterceptor implements MethodInterceptor {
         if ("getWrappedElement".equals(method.getName())
                 && method.getParameterTypes().length == 0
                 && WebElement.class.equals(method.getReturnType())) {
+            WebElement wrappedElement = widget.getWrappedElement();
             return newProxyInstance(getSystemClassLoader(),
-                    new Class[] {WebElement.class},
-                    getToStringDelegateInvocationHandler(widget.getWrappedElement(), getElementDescription()));
+                    wrappedElement.getClass().getInterfaces(),
+                    getToStringDelegateInvocationHandler(wrappedElement, getElementDescription()));
         }
 
         try {
