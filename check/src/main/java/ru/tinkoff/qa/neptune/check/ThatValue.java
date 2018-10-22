@@ -53,7 +53,7 @@ public final class ThatValue<T> extends SequentialActionSupplier<Check, Object, 
      * @return an instance of {@link ThatValue} with defined value to be verified.
      */
     public static <T> ThatValue<T> thatValue(T t) {
-        return new ThatValue<>("inspected value", t);
+        return new ThatValue<>(format("inspected value %s", t), t);
     }
 
     /**

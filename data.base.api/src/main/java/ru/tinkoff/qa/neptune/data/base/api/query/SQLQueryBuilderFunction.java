@@ -14,6 +14,7 @@ import static java.lang.String.format;
 import static java.lang.reflect.Proxy.newProxyInstance;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static ru.tinkoff.qa.neptune.core.api.proxy.ToStringDelegateInvocationHandler.getToStringDelegateInvocationHandler;
 
 /**
  * This function builds a typed SQL query.
@@ -64,12 +65,7 @@ public final class SQLQueryBuilderFunction<T> implements Function<DataBaseSteps,
 
         return (Query<T>) newProxyInstance(getSystemClassLoader(),
                 new Class[] {Query.class},
-                (proxy, method, args) -> {
-                    if (method.getName().equals("toString") && method.getParameterTypes().length == 0) {
-                        return format("SQL query: %s", sql);
-                    }
-                    return method.invoke(query, args);
-                });
+                getToStringDelegateInvocationHandler(query, format("SQL query: %s", sql)));
     }
 
     Class<?> getTypeOfRequiredValue() {
