@@ -10,6 +10,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import static java.lang.ClassLoader.getSystemClassLoader;
+import static java.lang.reflect.Proxy.newProxyInstance;
+import static ru.tinkoff.qa.neptune.core.api.proxy.ToStringDelegateInvocationHandler.getToStringDelegateInvocationHandler;
 import static ru.tinkoff.qa.neptune.selenium.api.widget.Widget.getWidgetName;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
@@ -29,16 +32,20 @@ class WidgetInterceptor implements MethodInterceptor {
         this.conditionString = conditionString;
     }
 
+    private String getElementDescription() {
+        String stringDescription = getWidgetName(widgetClass);
+        if (!isBlank(conditionString)) {
+            stringDescription = format("%s found on conditions '%s'", stringDescription, conditionString);
+        }
+        return stringDescription;
+    }
+
     @Override
     public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
         if ("toString".equals(method.getName()) &&
                 method.getParameterTypes().length == 0
                 && String.class.equals(method.getReturnType())) {
-            String stringDescription = getWidgetName(widgetClass);
-            if (!isBlank(conditionString)) {
-                stringDescription = format("%s found on conditions '%s'", stringDescription, conditionString);
-            }
-            return stringDescription;
+            return getElementDescription();
         }
 
         if (widget == null) {
@@ -63,6 +70,14 @@ class WidgetInterceptor implements MethodInterceptor {
                 result = (boolean) proxy.invokeSuper(obj, args);
             }
             return result;
+        }
+
+        if ("getWrappedElement".equals(method.getName())
+                && method.getParameterTypes().length == 0
+                && WebElement.class.equals(method.getReturnType())) {
+            return newProxyInstance(getSystemClassLoader(),
+                    new Class[] {WebElement.class},
+                    getToStringDelegateInvocationHandler(widget.getWrappedElement(), getElementDescription()));
         }
 
         try {

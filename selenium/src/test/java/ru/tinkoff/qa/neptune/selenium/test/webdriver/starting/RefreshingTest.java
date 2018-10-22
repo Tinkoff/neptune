@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.test.webdriver.starting;
 
+import org.openqa.selenium.Cookie;
 import ru.tinkoff.qa.neptune.core.api.properties.PropertySupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumParameterProvider;
 import ru.tinkoff.qa.neptune.selenium.WrappedWebDriver;
@@ -10,7 +11,9 @@ import org.testng.annotations.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.selenium.properties.FlagProperties.CLEAR_WEB_DRIVER_COOKIES;
 import static ru.tinkoff.qa.neptune.selenium.properties.FlagProperties.GET_BACK_TO_BASE_URL;
 import static ru.tinkoff.qa.neptune.selenium.properties.FlagProperties.KEEP_WEB_DRIVER_SESSION_OPENED;
@@ -22,9 +25,6 @@ import static java.lang.Thread.sleep;
 import static java.util.Map.entry;
 import static java.util.Optional.ofNullable;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.either;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
 
 /**
  * This is the integration test which is supposed to be run on some local environment.
@@ -180,6 +180,7 @@ public class RefreshingTest {
         setProperty(CLEAR_WEB_DRIVER_COOKIES.getPropertyName(), "true");
 
         WebDriver webDriver = prepareWrappedWebDriver();
+        Set<Cookie> cookies = webDriver.manage().getCookies();
         wrappedWebDriver.refresh();
         sleep(1000);
 
@@ -189,7 +190,7 @@ public class RefreshingTest {
                 is(SELENIUM));
         assertThat("Are cookies there",
                 webDriver.manage().getCookies().size(),
-                either(is(0)).or(is(1)));
+                lessThan(cookies.size()));
 
         setProperty(GET_BACK_TO_BASE_URL.getPropertyName(), "false");
         webDriver.get(SELENIUM);
@@ -202,7 +203,7 @@ public class RefreshingTest {
                 is(SELENIUM));
         assertThat("Are cookies there",
                 webDriver.manage().getCookies().size(),
-                either(is(0)).or(is(1)));
+                lessThan(cookies.size()));
     }
 
     @Test
@@ -210,6 +211,7 @@ public class RefreshingTest {
         setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getPropertyName(), "true");
 
         WebDriver webDriver = prepareWrappedWebDriver();
+        Set<Cookie> cookies = webDriver.manage().getCookies();
         wrappedWebDriver.refresh();
         sleep(1000);
 
@@ -219,9 +221,10 @@ public class RefreshingTest {
                 is(SELENIUM));
         assertThat("Are cookies there",
                 webDriver.manage().getCookies().size(),
-                greaterThan(0));
+                equalTo(cookies.size()));
 
         setProperty(GET_BACK_TO_BASE_URL.getPropertyName(), "true");
+        cookies = webDriver.manage().getCookies();
         wrappedWebDriver.refresh();
         sleep(1000);
 
@@ -231,11 +234,12 @@ public class RefreshingTest {
                 is(GITHUB));
         assertThat("Are cookies there",
                 webDriver.manage().getCookies().size(),
-                greaterThan(0));
+                equalTo(cookies.size()));
 
         webDriver.get(SELENIUM);
         setProperty(GET_BACK_TO_BASE_URL.getPropertyName(), "false");
         setProperty(CLEAR_WEB_DRIVER_COOKIES.getPropertyName(), "true");
+        cookies = webDriver.manage().getCookies();
         wrappedWebDriver.refresh();
         sleep(1000);
 
@@ -245,7 +249,7 @@ public class RefreshingTest {
                 is(SELENIUM));
         assertThat("Are cookies there",
                 webDriver.manage().getCookies().size(),
-                either(is(0)).or(is(1)));
+                lessThan(cookies.size()));
 
         setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getPropertyName(), "false");
         wrappedWebDriver.refresh();

@@ -1,5 +1,5 @@
 ext {
-    globalVersion = '0.3.12-ALPHA'
+    globalVersion = '0.4.0-ALPHA'
 }
 
 subprojects {
@@ -26,19 +26,18 @@ subprojects {
         hamcrestVersion = '2.0.0.0'
         seleniumVersion = '3.14.0'
         allureVersion = '2.7.0'
-        jacksonVersion = '2.9.6'
+        jacksonVersion = '2.9.7'
         mavenDeployLogin =  REPO_USER_NAME
         mavenDeployPassword = REPO_USER_PASSWORD
-        jaxbVersion = '2.3.0.1'
         globalVersion = version
     }
 
     dependencies {
-        compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8'
+        compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
         compile group: 'com.google.guava', name: 'guava', version: '26.0-jre'
         testCompile group: 'org.testng', name: 'testng', version: testNGVersion
         testCompile group: 'org.hamcrest', name: 'java-hamcrest', version: hamcrestVersion
-        compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
+        compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
         compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
         compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-jaxb-annotations', version: jacksonVersion
         compile (group: 'org.reflections', name: 'reflections', version: '0.9.11') {

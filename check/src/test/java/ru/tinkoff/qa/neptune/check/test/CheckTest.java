@@ -38,7 +38,7 @@ public class CheckTest {
     }
 
     private static final List<String> EXPECTED_LOGGER_MESSAGES1 =
-            of("Verify inspected value has started",
+            of("Verify inspected value 4 has started",
                     "Assertion. Target: Is integer. Action parameters: {is <true>} has started",
                     "Get Is integer has started",
                     "true has been returned",
@@ -54,7 +54,7 @@ public class CheckTest {
                     "Event finished",
                     "Event finished",
                     "Event finished",
-                    "Verify inspected value has started",
+                    "Verify inspected value 5 has started",
                     "Assertion. Target: Sqr value. Action parameters: {is <25.0>} has started",
                     "Get Sqr value has started",
                     "25.0 has been returned",
@@ -66,7 +66,7 @@ public class CheckTest {
 
     private static final List<String> EXPECTED_LOGGER_MESSAGES2 =
             of("Check numbers 4 and 5 has started",
-                    "Verify inspected value has started",
+                    "Verify inspected value 4 has started",
                     "Assertion. Target: Is integer. Action parameters: {is <true>} has started",
                     "Get Is integer has started",
                     "true has been returned",
@@ -82,7 +82,7 @@ public class CheckTest {
                     "Event finished",
                     "Event finished",
                     "Event finished",
-                    "Verify inspected value has started",
+                    "Verify inspected value 5 has started",
                     "Assertion. Target: Sqr value. Action parameters: {is <25.0>} has started",
                     "Get Sqr value has started",
                     "25.0 has been returned",
@@ -94,7 +94,7 @@ public class CheckTest {
                     "Event finished");
 
     private static final List<String> EXPECTED_LOGGER_MESSAGES3 =
-            of("Verify inspected value has started",
+            of("Verify inspected value 9 has started",
                     "Assertion. Target: Is integer. Action parameters: {is <true>} has started",
                     "Get Is integer has started",
                     "true has been returned",
@@ -116,7 +116,7 @@ public class CheckTest {
 
     private static final List<String> EXPECTED_LOGGER_MESSAGES4 =
             of("Check number 9 has started",
-                    "Verify inspected value has started",
+                    "Verify inspected value 9 has started",
                     "Assertion. Target: Is integer. Action parameters: {is <true>} has started",
                     "Get Is integer has started",
                     "true has been returned",
@@ -182,11 +182,11 @@ public class CheckTest {
                             "Getting of 'Sqrt value' succeed",
                             "Performing of 'Attempt to verify' succeed",
                             "Performing of 'Assertion. Target: Sqrt value. Action parameters: {is <2.0>}' succeed",
-                            "Performing of 'Verify inspected value' succeed",
+                            "Performing of 'Verify inspected value 4' succeed",
                             "Getting of 'Sqr value' succeed",
                             "Performing of 'Attempt to verify' succeed",
                             "Performing of 'Assertion. Target: Sqr value. Action parameters: {is <25.0>}' succeed",
-                            "Performing of 'Verify inspected value' succeed"));
+                            "Performing of 'Verify inspected value 5' succeed"));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES1.toArray()));
@@ -248,11 +248,11 @@ public class CheckTest {
                             "Getting of 'Sqrt value' succeed",
                             "Performing of 'Attempt to verify' succeed",
                             "Performing of 'Assertion. Target: Sqrt value. Action parameters: {is <2.0>}' succeed",
-                            "Performing of 'Verify inspected value' succeed",
+                            "Performing of 'Verify inspected value 4' succeed",
                             "Getting of 'Sqr value' succeed",
                             "Performing of 'Attempt to verify' succeed",
                             "Performing of 'Assertion. Target: Sqr value. Action parameters: {is <25.0>}' succeed",
-                            "Performing of 'Verify inspected value' succeed"));
+                            "Performing of 'Verify inspected value 5' succeed"));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES1.toArray()));
@@ -310,11 +310,11 @@ public class CheckTest {
                             "Getting of 'Sqrt value' succeed",
                             "Performing of 'Attempt to verify' succeed",
                             "Performing of 'Assertion. Target: Sqrt value. Action parameters: {is <2.0>}' succeed",
-                            "Performing of 'Verify inspected value' succeed",
+                            "Performing of 'Verify inspected value 4' succeed",
                             "Getting of 'Sqr value' succeed",
                             "Performing of 'Attempt to verify' succeed",
                             "Performing of 'Assertion. Target: Sqr value. Action parameters: {is <25.0>}' succeed",
-                            "Performing of 'Verify inspected value' succeed",
+                            "Performing of 'Verify inspected value 5' succeed",
                             "Performing of 'Check numbers 4 and 5' succeed"));
 
             assertThat(MESSAGES,
@@ -379,11 +379,11 @@ public class CheckTest {
                             "Getting of 'Sqrt value' succeed",
                             "Performing of 'Attempt to verify' succeed",
                             "Performing of 'Assertion. Target: Sqrt value. Action parameters: {is <2.0>}' succeed",
-                            "Performing of 'Verify inspected value' succeed",
+                            "Performing of 'Verify inspected value 4' succeed",
                             "Getting of 'Sqr value' succeed",
                             "Performing of 'Attempt to verify' succeed",
                             "Performing of 'Assertion. Target: Sqr value. Action parameters: {is <25.0>}' succeed",
-                            "Performing of 'Verify inspected value' succeed",
+                            "Performing of 'Verify inspected value 5' succeed",
                             "Performing of 'Check numbers 4 and 5' succeed"));
 
             assertThat(MESSAGES,
@@ -476,7 +476,7 @@ public class CheckTest {
             assertThat(DefaultListLogger.messages,
                     contains("Performing of 'Attempt to verify' failed",
                             "Performing of 'Assertion. Target: Sqrt value. Action parameters: {is <2.0>}' failed",
-                            "Performing of 'Verify inspected value' failed"));
+                            "Performing of 'Verify inspected value 9' failed"));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES3.toArray()));
@@ -510,7 +510,7 @@ public class CheckTest {
                             "Getting of 'Sqrt value' succeed",
                             "Performing of 'Attempt to verify' failed",
                             "Performing of 'Assertion. Target: Sqrt value. Action parameters: {is <2.0>}' failed",
-                            "Performing of 'Verify inspected value' failed"));
+                            "Performing of 'Verify inspected value 9' failed"));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES3.toArray()));
@@ -600,7 +600,7 @@ public class CheckTest {
             assertThat(DefaultListLogger.messages,
                     contains("Performing of 'Attempt to verify' failed",
                             "Performing of 'Assertion. Target: Sqrt value. Action parameters: {is <2.0>}' failed",
-                            "Performing of 'Verify inspected value' failed",
+                            "Performing of 'Verify inspected value 9' failed",
                             "Performing of 'Check number 9' failed"));
 
             assertThat(MESSAGES,
@@ -636,7 +636,7 @@ public class CheckTest {
                             "Getting of 'Sqrt value' succeed",
                             "Performing of 'Attempt to verify' failed",
                             "Performing of 'Assertion. Target: Sqrt value. Action parameters: {is <2.0>}' failed",
-                            "Performing of 'Verify inspected value' failed",
+                            "Performing of 'Verify inspected value 9' failed",
                             "Performing of 'Check number 9' failed"));
 
             assertThat(MESSAGES,
