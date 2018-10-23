@@ -10,34 +10,22 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import static java.lang.ClassLoader.getSystemClassLoader;
-import static java.lang.reflect.Proxy.newProxyInstance;
-import static ru.tinkoff.qa.neptune.core.api.proxy.ToStringDelegateInvocationHandler.getToStringDelegateInvocationHandler;
-import static ru.tinkoff.qa.neptune.selenium.api.widget.Widget.getWidgetName;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.openqa.selenium.support.PageFactory.initElements;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchingProxyBuilder.createProxy;
 
 class WidgetInterceptor implements MethodInterceptor {
 
     private final WebElement webElement;
     private final Class<? extends Widget> widgetClass;
-    private final String conditionString;
+    private final String description;
     private Widget widget;
 
-    WidgetInterceptor(WebElement webElement, Class<? extends Widget> widgetClass, String conditionString) {
+    WidgetInterceptor(WebElement webElement, Class<? extends Widget> widgetClass, String description) {
         this.webElement = webElement;
         this.widgetClass = widgetClass;
-        this.conditionString = conditionString;
-    }
-
-    private String getElementDescription() {
-        String stringDescription = getWidgetName(widgetClass);
-        if (!isBlank(conditionString)) {
-            stringDescription = format("%s found on conditions '%s'", stringDescription, conditionString);
-        }
-        return stringDescription;
+        this.description = description;
     }
 
     @Override
@@ -45,7 +33,13 @@ class WidgetInterceptor implements MethodInterceptor {
         if ("toString".equals(method.getName()) &&
                 method.getParameterTypes().length == 0
                 && String.class.equals(method.getReturnType())) {
-            return getElementDescription();
+            return description;
+        }
+
+        if ("getWrappedElement".equals(method.getName())
+                && method.getParameterTypes().length == 0
+                && WebElement.class.equals(method.getReturnType())) {
+            createProxy(webElement.getClass(), new WebElementInterceptor(webElement, description));
         }
 
         if (widget == null) {
@@ -70,15 +64,6 @@ class WidgetInterceptor implements MethodInterceptor {
                 result = (boolean) proxy.invokeSuper(obj, args);
             }
             return result;
-        }
-
-        if ("getWrappedElement".equals(method.getName())
-                && method.getParameterTypes().length == 0
-                && WebElement.class.equals(method.getReturnType())) {
-            WebElement wrappedElement = widget.getWrappedElement();
-            return newProxyInstance(getSystemClassLoader(),
-                    wrappedElement.getClass().getInterfaces(),
-                    getToStringDelegateInvocationHandler(wrappedElement, getElementDescription()));
         }
 
         try {
