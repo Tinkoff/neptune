@@ -1,10 +1,5 @@
 package ru.tinkoff.qa.neptune.selenium.functions.searching;
 
-import net.sf.cglib.proxy.Callback;
-import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.MethodInterceptor;
-import org.objenesis.Objenesis;
-import org.objenesis.ObjenesisStd;
 import org.openqa.selenium.*;
 
 import java.util.List;
@@ -13,8 +8,8 @@ import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
-import static net.sf.cglib.proxy.Enhancer.registerCallbacks;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchingProxyBuilder.createProxy;
 
 @SuppressWarnings("unchecked")
 final class FindWebElements implements Function<SearchContext, List<WebElement>> {
@@ -33,26 +28,16 @@ final class FindWebElements implements Function<SearchContext, List<WebElement>>
         return new FindWebElements(by, conditionString);
     }
 
-    private <T> T createProxy(Class<T> tClass, MethodInterceptor interceptor) {
-        Enhancer enhancer = new Enhancer();
-
-        enhancer.setUseCache(false);
-        enhancer.setCallbackType(interceptor.getClass());
-        enhancer.setSuperclass(tClass);
-        Class<?> proxyClass = enhancer.createClass();
-        registerCallbacks(proxyClass, new Callback[]{interceptor});
-        enhancer.setClassLoader(tClass.getClass().getClassLoader());
-
-        Objenesis objenesis = new ObjenesisStd();
-        Object proxy = objenesis.newInstance(proxyClass);
-        return (T) proxy;
-    }
-
     @Override
     public List<WebElement> apply(SearchContext searchContext) {
         return new ElementList<>(searchContext.findElements(by)
-                .stream().map(webElement -> createProxy(webElement.getClass(),
-                        new WebElementInterceptor(webElement, by, conditionString)))
+                .stream().map(webElement -> {
+                    String stringDescription = format("Web element found %s", by);
+                    if (!isBlank(conditionString)) {
+                        stringDescription = format("%s on conditions '%s'", stringDescription, conditionString);
+                    }
+                    return createProxy(webElement.getClass(), new WebElementInterceptor(webElement, stringDescription));
+                })
                 .collect(Collectors.toList())) {
             @Override
             public String toString() {

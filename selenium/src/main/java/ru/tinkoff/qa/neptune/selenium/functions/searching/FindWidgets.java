@@ -1,11 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.functions.searching;
 
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
-import net.sf.cglib.proxy.Callback;
-import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.MethodInterceptor;
-import org.objenesis.Objenesis;
-import org.objenesis.ObjenesisStd;
 import org.openqa.selenium.*;
 import org.reflections.Reflections;
 
@@ -20,11 +15,11 @@ import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.selenium.api.widget.Widget.getWidgetName;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindByBuilder.getAnnotations;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchingProxyBuilder.createProxy;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.WidgetPriorityComparator.widgetPriorityComparator;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
-import static net.sf.cglib.proxy.Enhancer.registerCallbacks;
 
 @SuppressWarnings("unchecked")
 class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> {
@@ -94,21 +89,6 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
                 Widget.getWidgetName(classOfAWidget), WebElement.class.getName()));
     }
 
-    private <T> T createProxy(Class<T> tClass, MethodInterceptor interceptor) {
-        Enhancer enhancer = new Enhancer();
-
-        enhancer.setUseCache(false);
-        enhancer.setCallbackType(interceptor.getClass());
-        enhancer.setSuperclass(tClass);
-        Class<?> proxyClass = enhancer.createClass();
-        registerCallbacks(proxyClass, new Callback[]{interceptor});
-        enhancer.setClassLoader(tClass.getClassLoader());
-
-        Objenesis objenesis = new ObjenesisStd();
-        Object proxy = objenesis.newInstance(proxyClass);
-        return (T) proxy;
-    }
-
     @Override
     public List<R> apply(SearchContext searchContext) {
         classesToInstantiate = ofNullable(classesToInstantiate)
@@ -117,7 +97,13 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
         classesToInstantiate.forEach(clazz -> {
             By by = builder.buildIt(clazz);
             result.addAll(searchContext.findElements(by).stream()
-                    .map(webElement -> createProxy(clazz, new WidgetInterceptor(webElement, clazz, conditionString)))
+                    .map(webElement -> {
+                        String stringDescription = getWidgetName(clazz);
+                        if (!isBlank(conditionString)) {
+                            stringDescription = format("%s found on conditions '%s'", stringDescription, conditionString);
+                        }
+                        return createProxy(clazz, new WidgetInterceptor(webElement, clazz, stringDescription));
+                    })
                     .collect(toList()));
         });
         return new ElementList<>(result) {
