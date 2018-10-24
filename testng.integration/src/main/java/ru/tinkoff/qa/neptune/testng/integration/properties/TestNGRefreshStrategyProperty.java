@@ -4,10 +4,11 @@ import ru.tinkoff.qa.neptune.core.api.cleaning.Refreshable;
 import ru.tinkoff.qa.neptune.core.api.properties.PropertySupplier;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
+import static java.util.List.of;
+import static java.util.stream.Collectors.toList;
 
 public final class TestNGRefreshStrategyProperty implements PropertySupplier<List<RefreshEachTimeBefore>> {
 
@@ -45,6 +46,6 @@ public final class TestNGRefreshStrategyProperty implements PropertySupplier<Lis
                         throw new IllegalArgumentException(format("Unknown refresh strategy %s. Use name " +
                                 "of an element of %s", s1, RefreshEachTimeBefore.class.getName()));
                     }
-                }).collect(Collectors.toList())).orElseGet(() -> List.of(RefreshEachTimeBefore.METHOD_STARTING));
+                }).collect(toList())).orElseGet(() -> of(RefreshEachTimeBefore.METHOD_STARTING));
     }
 }

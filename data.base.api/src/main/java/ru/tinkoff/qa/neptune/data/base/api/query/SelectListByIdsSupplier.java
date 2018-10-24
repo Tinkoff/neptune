@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.data.base.api.query;
 
-import org.datanucleus.api.jdo.JDOPersistenceManager;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseSteps;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableList;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
@@ -38,8 +37,8 @@ public final class SelectListByIdsSupplier<T extends PersistableObject>
     @Override
     protected Function<DataBaseSteps, List<T>> getEndFunction() {
         Function<DataBaseSteps, List<T>> listFunction = dataBaseSteps -> {
-            PersistableList<T> result = new PersistableList<>();
-            JDOPersistenceManager manager = dataBaseSteps.getCurrentPersistenceManager();
+            var result = new PersistableList<T>();
+            var manager = dataBaseSteps.getCurrentPersistenceManager();
 
             for (Object id : ids) {
                 try {
@@ -51,7 +50,7 @@ public final class SelectListByIdsSupplier<T extends PersistableObject>
             return result;
         };
 
-        String description = format(DESCRIPTION, ofType.getName(), Arrays.toString(ids));
+        var description = format(DESCRIPTION, ofType.getName(), Arrays.toString(ids));
 
         return ofNullable(condition).map(tPredicate ->
                 ofNullable(nothingIsSelectedExceptionSupplier).map(nothingIsSelectedExceptionSupplier1 ->

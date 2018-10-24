@@ -6,7 +6,6 @@ import net.sf.cglib.proxy.MethodProxy;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.pagefactory.DefaultElementLocatorFactory;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -39,11 +38,11 @@ class WidgetInterceptor implements MethodInterceptor {
         if ("getWrappedElement".equals(method.getName())
                 && method.getParameterTypes().length == 0
                 && WebElement.class.equals(method.getReturnType())) {
-            createProxy(webElement.getClass(), new WebElementInterceptor(webElement, description));
+            return createProxy(webElement.getClass(), new WebElementInterceptor(webElement, description));
         }
 
         if (widget == null) {
-            Constructor<?> widgetConstructor = stream(widgetClass.getDeclaredConstructors())
+            var widgetConstructor = stream(widgetClass.getDeclaredConstructors())
                     .filter(constructor -> {
                         Class<?>[] paramTypes = constructor.getParameterTypes();
                         return paramTypes.length == 1 &&
@@ -58,7 +57,7 @@ class WidgetInterceptor implements MethodInterceptor {
         Class<?>[] parameters;
         if ("equals".equals(method.getName()) && (parameters = method.getParameterTypes()).length == 1
                 && parameters[0].equals(Object.class)) {
-            boolean result = widget.equals(args[0]);
+            var result = widget.equals(args[0]);
             //it may be another proxy
             if (!result) {
                 result = (boolean) proxy.invokeSuper(obj, args);
@@ -72,6 +71,5 @@ class WidgetInterceptor implements MethodInterceptor {
         catch (InvocationTargetException e) {
             throw e.getCause();
         }
-
     }
 }

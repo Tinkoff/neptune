@@ -13,19 +13,19 @@ public class TestEventLogger implements EventLogger {
 
     @Override
     public void fireTheEventStarting(String message) {
-        String msg = format("%s has started", message);
+        var msg = format("%s has started", message);
         MESSAGES.add(msg);
     }
 
     @Override
     public void fireThrownException(Throwable throwable) {
-        String msg = format("%s has been thrown", throwable.getClass().getName());
+        var msg = format("%s has been thrown", throwable.getClass().getName());
         MESSAGES.add(msg);
     }
 
     @Override
     public void fireReturnedValue(Object returned) {
-        String msg = format("%s has been returned", returned);
+        var msg = format("%s has been returned", returned);
         MESSAGES.add(msg);
     }
 

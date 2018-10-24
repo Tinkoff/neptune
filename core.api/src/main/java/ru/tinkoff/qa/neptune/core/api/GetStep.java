@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.core.api;
 
-import com.google.common.base.Preconditions;
 import ru.tinkoff.qa.neptune.core.api.utils.IsDescribedUtil;
 
 import java.util.function.Function;
@@ -15,7 +14,7 @@ public interface GetStep<THIS extends GetStep<THIS>> {
     default  <T> T get(Function<THIS, T> function) {
         checkArgument(function != null,
                 "The function is not defined");
-        Preconditions.checkArgument(IsDescribedUtil.isDescribed(function),
+        checkArgument(IsDescribedUtil.isDescribed(function),
                 "The function which returns the goal value should be described " +
                         "by the StoryWriter.toGet method. Also you can override the toString method");
 

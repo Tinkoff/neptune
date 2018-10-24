@@ -45,7 +45,7 @@ public class MethodInterceptor<T> {
                         threadLocal.set(tObjectContainer);
                         return tObjectContainer.getWrappedObject();
                     }).orElseGet(() -> {
-                        Object[] params = constructorParameters.getParameterValues();
+                        var params = constructorParameters.getParameterValues();
                         Constructor<T> c;
 
                         try {
@@ -61,7 +61,7 @@ public class MethodInterceptor<T> {
                             if (StoppableOnJVMShutdown.class.isAssignableFrom(t.getClass())) {
                                 getRuntime().addShutdownHook(((StoppableOnJVMShutdown) t).getHookOnJvmStop());
                             }
-                            ObjectContainer<T> container = new ObjectContainer<>(t);
+                            var container = new ObjectContainer<>(t);
                             threadLocal.set(container);
                         } catch (InstantiationException | IllegalAccessException e) {
                             throw new RuntimeException(e);

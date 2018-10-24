@@ -119,7 +119,7 @@ public final class HasLocationMatcher<T extends SearchContext> extends TypeSafeD
 
     @Override
     protected boolean matchesSafely(T item, Description mismatchDescription) {
-        Class<? extends SearchContext> clazz = item.getClass();
+        var clazz = item.getClass();
         if (!WebElement.class.isAssignableFrom(clazz) && HasLocation.class.isAssignableFrom(clazz)
                 && WrapsElement.class.isAssignableFrom(clazz)) {
             mismatchDescription.appendText(format("It is not possible to get position from the instance of %s because " +
@@ -137,7 +137,7 @@ public final class HasLocationMatcher<T extends SearchContext> extends TypeSafeD
             point = HasLocation.class.cast(item).getLocation();
         }
         else {
-            WebElement e = WrapsElement.class.cast(item).getWrappedElement();
+            var e = WrapsElement.class.cast(item).getWrappedElement();
             if (e == null) {
                 mismatchDescription.appendText(format("Wrapped element is null. It is not possible to get position from an instance of %s.",
                         clazz.getName()));
@@ -146,12 +146,12 @@ public final class HasLocationMatcher<T extends SearchContext> extends TypeSafeD
             point = e.getLocation();
         }
 
-        Integer x = ofNullable(relativeTo).map(p -> point.getX() - p.getX()).orElseGet(point::getX);
-        Integer y = ofNullable(relativeTo).map(p -> point.getY() - p.getY()).orElseGet(point::getY);
-        boolean result = (xMatcher.matches(x) && yMatcher.matches(y));
+        var x = ofNullable(relativeTo).map(p -> point.getX() - p.getX()).orElseGet(point::getX);
+        var y = ofNullable(relativeTo).map(p -> point.getY() - p.getY()).orElseGet(point::getY);
+        var result = (xMatcher.matches(x) && yMatcher.matches(y));
 
         if (!result) {
-            Description description = new StringDescription();
+            var description = new StringDescription();
             if (!xMatcher.matches(x)) {
                 xMatcher.describeMismatch(x, description.appendText("x: "));
             }

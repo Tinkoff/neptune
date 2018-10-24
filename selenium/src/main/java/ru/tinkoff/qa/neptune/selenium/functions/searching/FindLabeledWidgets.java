@@ -23,14 +23,14 @@ class FindLabeledWidgets<R extends Widget> extends FindWidgets<R> {
 
                 && (Arrays.stream(clazz.getDeclaredConstructors())
                 .filter(constructor -> {
-                    Class<?>[] parameters = constructor.getParameterTypes();
+                    var parameters = constructor.getParameterTypes();
                     return parameters.length == 1 &&
                             WebElement.class.isAssignableFrom(parameters[0]);
                 }).collect(toList()).size() > 0));
     }
 
     List<Class<? extends R>> getSubclasses() {
-        List<Class<? extends R>> resultList = findSubclasses();
+        var resultList = findSubclasses();
 
         if (resultList.size() > 0) {
             return resultList;

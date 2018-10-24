@@ -85,11 +85,11 @@ public final class SequentialGetCSSValueSupplier extends
         return toGet(format("Value of the css property '%s'", property), searchContext -> {
             Class<? extends SearchContext> searchContextClass = searchContext.getClass();
             if (WebElement.class.isAssignableFrom(searchContextClass)) {
-                return WebElement.class.cast(searchContext).getCssValue(property);
+                return ((WebElement) searchContext).getCssValue(property);
             }
 
             if (HasCssValue.class.isAssignableFrom(searchContextClass)) {
-                return HasCssValue.class.cast(searchContext).getCssValue(property);
+                return ((HasCssValue) searchContext).getCssValue(property);
             }
 
             throw new UnsupportedOperationException(format("It is impossible to get value of thr css property %s from " +

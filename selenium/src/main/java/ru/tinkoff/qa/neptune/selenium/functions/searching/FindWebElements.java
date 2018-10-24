@@ -32,7 +32,7 @@ final class FindWebElements implements Function<SearchContext, List<WebElement>>
     public List<WebElement> apply(SearchContext searchContext) {
         return new ElementList<>(searchContext.findElements(by)
                 .stream().map(webElement -> {
-                    String stringDescription = format("Web element found %s", by);
+                    var stringDescription = format("Web element found %s", by);
                     if (!isBlank(conditionString)) {
                         stringDescription = format("%s on conditions '%s'", stringDescription, conditionString);
                     }
@@ -41,7 +41,7 @@ final class FindWebElements implements Function<SearchContext, List<WebElement>>
                 .collect(Collectors.toList())) {
             @Override
             public String toString() {
-                String stringDescription = format("%s web elements found %s", size(), by);
+                var stringDescription = format("%s web elements found %s", size(), by);
                 if (!isBlank(conditionString)) {
                     stringDescription = format("%s on conditions '%s'", stringDescription, conditionString);
                 }

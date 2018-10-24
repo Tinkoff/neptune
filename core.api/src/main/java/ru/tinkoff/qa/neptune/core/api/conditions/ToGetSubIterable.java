@@ -5,7 +5,6 @@ import ru.tinkoff.qa.neptune.core.api.AsIsCondition;
 
 import javax.annotation.Nullable;
 import java.time.Duration;
-import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -31,7 +30,7 @@ public final class ToGetSubIterable {
                                                                          @Nullable Supplier<? extends RuntimeException> exceptionSupplier) {
         return fluentWaitFunction(getDescription(checkDescription(description), condition), t ->
                         ofNullable(function.apply(t)).map(v -> {
-                            List<R> result = stream(v.spliterator(), checkConditionInParallel).filter(r -> {
+                            var result = stream(v.spliterator(), checkConditionInParallel).filter(r -> {
                                 try {
                                     return !notNullAnd(condition).test(r);
                                 } catch (Throwable t1) {

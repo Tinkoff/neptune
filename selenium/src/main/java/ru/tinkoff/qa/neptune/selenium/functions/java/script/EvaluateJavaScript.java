@@ -29,7 +29,7 @@ final class EvaluateJavaScript implements Function<WebDriver, Object> {
                     JavascriptExecutor.class.getName(), script));
         }
 
-        JavascriptExecutor executor = JavascriptExecutor.class.cast(driver);
+        var executor = (JavascriptExecutor) driver;
         return executor.executeScript(script, parameters);
     }
 }

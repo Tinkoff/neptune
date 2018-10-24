@@ -37,7 +37,7 @@ public enum SupportedWebDrivers implements Supplier<Object[]> {
                 return null;
             }
 
-            String browserName = ofNullable(CommonCapabilityProperties.BROWSER_NAME.get())
+            var browserName = ofNullable(CommonCapabilityProperties.BROWSER_NAME.get())
                     .map(Object::toString)
                     .orElse(null);
 
@@ -76,7 +76,7 @@ public enum SupportedWebDrivers implements Supplier<Object[]> {
         public Object[] get() {
             return ofNullable(REMOTE_WEB_DRIVER_URL_PROPERTY.get())
                     .map(url -> {
-                        Object[] result = new Object[]{url};
+                        var result = new Object[]{url};
                         return addAll(result, super.get());
                     }).orElseGet(super::get);
         }

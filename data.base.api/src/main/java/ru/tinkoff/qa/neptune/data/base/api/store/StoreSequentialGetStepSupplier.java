@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.data.base.api.store;
 
-import org.datanucleus.api.jdo.JDOPersistenceManager;
 import ru.tinkoff.qa.neptune.data.base.api.DBSequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseSteps;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
@@ -62,10 +61,10 @@ public final class StoreSequentialGetStepSupplier<T extends PersistableObject>
 
     @Override
     protected Function<DataBaseSteps, List<T>> getEndFunction() {
-        String description = format("Stored objects: \n %s", toBePersisted.toString());
+        var description = format("Stored objects: \n %s", toBePersisted.toString());
         return toGet(description, dataBaseSteps -> {
-            JDOPersistenceManager manager = dataBaseSteps.getCurrentPersistenceManager();
-            ArrayList<T> toBeStored = new ArrayList<>(toBePersisted);
+            var manager = dataBaseSteps.getCurrentPersistenceManager();
+            var toBeStored = new ArrayList<>(toBePersisted);
             toBePersisted.forEach(o -> {
                 if (isDeleted(o)) {
                     toBeStored.remove(o);

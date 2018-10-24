@@ -54,7 +54,7 @@ public final class SwitchActionSupplier extends SequentialActionSupplier<Seleniu
     @Override
     protected void performActionOn(Object value, Object... additionalArgument) {
         if (SwitchesToItself.class.isAssignableFrom(value.getClass())) {
-            SwitchesToItself.class.cast(value).switchToMe();
+            ((SwitchesToItself) value).switchToMe();
         }
     }
 }

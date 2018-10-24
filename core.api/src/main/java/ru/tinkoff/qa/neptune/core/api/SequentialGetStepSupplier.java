@@ -30,7 +30,7 @@ public abstract class SequentialGetStepSupplier<T, R, Q, THIS extends Sequential
         checkArgument(mediatorFunction != null,
                 "Function to get value from was not defined");
 
-        Function<Q, R> result = getEndFunction();
+        var result = getEndFunction();
         checkArgument(result != null,
                 "The result function to get value is not defined");
         checkArgument(isDescribed(result),
@@ -39,12 +39,10 @@ public abstract class SequentialGetStepSupplier<T, R, Q, THIS extends Sequential
 
         StepFunction<Q, R> stepFunction;
         if (StepFunction.class.isAssignableFrom(result.getClass())) {
-            stepFunction = StepFunction.class
-                    .cast(result);
+            stepFunction = (StepFunction) result;
         }
         else {
-            stepFunction = StepFunction.class
-                    .cast(toGet(result.toString(), result));
+            stepFunction = (StepFunction) toGet(result.toString(), result);
         }
 
         return set(stepFunction.compose(mediatorFunction));

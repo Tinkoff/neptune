@@ -44,7 +44,7 @@ class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<StepFunctio
                         "StoryWriter.toGet to describe this value or override the toString method");
 
 
-        StepFunction<T, R> resultFunction = new StepFunction<>(after.toString(), t -> {
+        var resultFunction = new StepFunction<T, R>(after.toString(), t -> {
             V result = before.apply(t);
             return ofNullable(result).map(after).orElse(null);
         });
@@ -53,7 +53,7 @@ class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<StepFunctio
     }
 
     private boolean shouldBeThrowableIgnored(Throwable toBeIgnored) {
-        for (Class<? extends Throwable> throwableClass: ignored) {
+        for (var throwableClass: ignored) {
             if (throwableClass.isAssignableFrom(toBeIgnored.getClass())) {
                 return true;
             }
@@ -70,7 +70,7 @@ class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<StepFunctio
             return;
         }
 
-        Class<?> valueClass = t.getClass();
+        var valueClass = t.getClass();
         if (!GetStep.class.isAssignableFrom(valueClass) &&
                 !PerformActionStep.class.isAssignableFrom(valueClass)) {
             fireEventStarting(format("From %s get %s", t, description));
@@ -100,7 +100,7 @@ class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<StepFunctio
 
     @Override
     public R apply(T t) {
-        boolean isComplex = isComplex();
+        var isComplex = isComplex();
         try {
             fireEventStartingIfNecessary(t, isComplex);
             R result = function.apply(t);
@@ -146,7 +146,7 @@ class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<StepFunctio
         ignored.addAll(toBeIgnored);
         ofNullable(functions).ifPresent(functionList -> functionList.forEach(function1 -> {
             if (StepFunction.class.isAssignableFrom(function1.getClass())) {
-                StepFunction.class.cast(function1).addIgnored(toBeIgnored);
+                ((StepFunction) function1).addIgnored(toBeIgnored);
             }
         }));
         return this;
@@ -157,7 +157,7 @@ class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<StepFunctio
         ignored.removeAll(toStopIgnore);
         ofNullable(functions).ifPresent(functionList -> functionList.forEach(function1 -> {
             if (StepFunction.class.isAssignableFrom(function1.getClass())) {
-                StepFunction.class.cast(function1).stopIgnore(toStopIgnore);
+                ((StepFunction) function1).stopIgnore(toStopIgnore);
             }
         }));
         return this;

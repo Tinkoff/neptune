@@ -27,15 +27,16 @@ public final class ConstructorUtil {
         super();
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> Constructor<T> findSuitableConstructor(Class<T> clazz, Object...params) throws Exception {
-        List<Constructor<?>> constructorList = asList(clazz.getDeclaredConstructors());
+        var constructorList = asList(clazz.getDeclaredConstructors());
         final List<Class<?>> paramTypes = Arrays.stream(params).map(o -> ofNullable(o)
                 .map(Object::getClass)
                 .orElse(null))
                 .collect(toList());
 
-        Constructor<?> foundConstructor = constructorList.stream().filter(constructor -> {
-            List<Class<?>> constructorTypes = asList(constructor.getParameterTypes());
+        var foundConstructor = constructorList.stream().filter(constructor -> {
+            var constructorTypes = asList(constructor.getParameterTypes());
             return constructorTypes.size() == paramTypes.size() && matches(constructorTypes, paramTypes);
         })
                 .findFirst().orElseThrow(() -> new NoSuchMethodException(
@@ -46,10 +47,10 @@ public final class ConstructorUtil {
 
     private static boolean matches(List<Class<?>> constructorTypes,
                                    List<Class<?>> paramTypes) {
-        int i = -1;
+        var i = -1;
         for (Class<?> parameter : constructorTypes) {
             i++;
-            Class<?> currentType = paramTypes.get(i);
+            var currentType = paramTypes.get(i);
             if (currentType == null && FOR_USED_SIMPLE_TYPES.get(parameter) != null) {
                 return false;
             }
@@ -67,8 +68,8 @@ public final class ConstructorUtil {
                 continue;
             }
 
-            Class<?> declaredArrayType = parameter.getComponentType();
-            Class<?> currentArrayType = currentType.getComponentType();
+            var declaredArrayType = parameter.getComponentType();
+            var currentArrayType = currentType.getComponentType();
             if (declaredArrayType != null && currentArrayType != null &&
                     declaredArrayType.isAssignableFrom(currentArrayType)) {
                 continue;

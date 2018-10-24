@@ -76,7 +76,7 @@ public final class HasAttributeMatcher<T extends SearchContext> extends TypeSafe
     @Override
     protected boolean matchesSafely(T item, Description mismatchDescription) {
         boolean result;
-        Class<? extends SearchContext> clazz = item.getClass();
+        var clazz = item.getClass();
         String attrValue;
 
         if (WebElement.class.isAssignableFrom(clazz)) {
@@ -86,7 +86,7 @@ public final class HasAttributeMatcher<T extends SearchContext> extends TypeSafe
             result = matcher.matches(attrValue = HasAttribute.class.cast(item).getAttribute(attribute));
         }
         else if (WrapsElement.class.isAssignableFrom(clazz)) {
-            WebElement e = WrapsElement.class.cast(item).getWrappedElement();
+            var e = WrapsElement.class.cast(item).getWrappedElement();
             if (e == null) {
                 mismatchDescription.appendText(format("Wrapped element is null. It is not possible to get attribute %s from an instance of %s.",
                         attribute, clazz.getName()));

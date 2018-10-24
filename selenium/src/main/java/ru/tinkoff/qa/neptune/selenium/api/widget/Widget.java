@@ -25,7 +25,7 @@ public abstract class Widget implements WrapsElement, SearchContext, TakesScreen
     public static String getWidgetName(Class<? extends Widget> classOfAWidget) {
         Class<?> clazz = classOfAWidget;
         while (!clazz.equals(Widget.class)) {
-            Name name =  clazz.getAnnotation(Name.class);
+            var name =  clazz.getAnnotation(Name.class);
             if (name != null) {
                 return name.value();
             }

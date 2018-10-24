@@ -43,7 +43,7 @@ public final class CommonConditions {
      */
     public static <T extends SearchContext> Predicate<T> shouldBeVisible() {
         return condition("visible", t -> {
-            Class<?> tClass = t.getClass();
+            var tClass = t.getClass();
             if (WebElement.class.isAssignableFrom(tClass)) {
                 return ((WebElement) t).isDisplayed();
             }
@@ -73,7 +73,7 @@ public final class CommonConditions {
      */
     public static <T extends SearchContext> Predicate<T> shouldBeEnabled() {
         return condition("enabled", t -> {
-            Class<?> tClass = t.getClass();
+            var tClass = t.getClass();
             if (WebElement.class.isAssignableFrom(tClass)) {
                 return ((WebElement) t).isEnabled();
             }
@@ -106,7 +106,7 @@ public final class CommonConditions {
         checkArgument(!isBlank(text), "String which is used to check text " +
                 "of an element should not be null or empty. ");
         return condition(format("has text '%s'", text), t -> {
-            Class<? extends SearchContext> clazz = t.getClass();
+            var clazz = t.getClass();
             if (WebElement.class.isAssignableFrom(clazz)) {
                 return text.equals(((WebElement) t).getText());
             }
@@ -131,7 +131,7 @@ public final class CommonConditions {
     public static <T extends SearchContext> Predicate<T> shouldHaveText(Pattern pattern) {
         checkArgument(pattern != null, "RegEx pattern should be defined");
         return condition(format("has text that meets regExp pattern '%s'", pattern), t -> {
-            Class<? extends SearchContext> clazz = t.getClass();
+            var clazz = t.getClass();
             if (WebElement.class.isAssignableFrom(clazz)) {
                 return pattern.matcher(((WebElement) t).getText()).find();
             }
@@ -157,7 +157,7 @@ public final class CommonConditions {
         checkArgument(!isBlank(attrValue), "Attribute value should not be empty or null.");
 
         return condition(format("has attribute '%s=\"%s\"'", attribute, attrValue), t -> {
-            Class<?> tClass = t.getClass();
+            var tClass = t.getClass();
             if (WebElement.class.isAssignableFrom(tClass)) {
                 return attrValue.equals(((WebElement) t).getAttribute(attribute));
             }
@@ -193,7 +193,7 @@ public final class CommonConditions {
         checkArgument(!isBlank(attrValue), "Attribute value should not be empty or null.");
 
         return condition(format("has attribute '%s' that contains string '%s'", attribute, attrValue), t -> {
-            Class<?> tClass = t.getClass();
+            var tClass = t.getClass();
             if (WebElement.class.isAssignableFrom(tClass)) {
                 return ofNullable(((WebElement) t).getAttribute(attribute))
                         .map(s -> s.contains(attrValue)).orElse(false);
@@ -234,7 +234,7 @@ public final class CommonConditions {
 
         return condition(format("has attribute '%s' that meets " +
                 "regExp pattern '%s'", attribute, pattern), t -> {
-            Class<?> tClass = t.getClass();
+            var tClass = t.getClass();
             if (WebElement.class.isAssignableFrom(tClass)) {
                 return ofNullable(((WebElement) t).getAttribute(attribute))
                         .map(s -> {
@@ -283,7 +283,7 @@ public final class CommonConditions {
         checkArgument(!isBlank(cssValue), "Css value should not be empty or null.");
 
         return condition(format("has css property '%s=\"%s\"'", cssProperty, cssValue), t -> {
-            Class<?> tClass = t.getClass();
+            var tClass = t.getClass();
             if (WebElement.class.isAssignableFrom(tClass)) {
                 return cssValue.equals(((WebElement) t).getCssValue(cssProperty));
             }
@@ -319,7 +319,7 @@ public final class CommonConditions {
         checkArgument(!isBlank(cssValue), "Css value should not be empty or null.");
 
         return condition(format("has css property '%s' that contains string '%s'", cssProperty, cssValue), t -> {
-            Class<?> tClass = t.getClass();
+            var tClass = t.getClass();
             if (WebElement.class.isAssignableFrom(tClass)) {
                 return ofNullable(((WebElement) t).getCssValue(cssProperty))
                         .map(s -> s.contains(cssValue)).orElse(false);

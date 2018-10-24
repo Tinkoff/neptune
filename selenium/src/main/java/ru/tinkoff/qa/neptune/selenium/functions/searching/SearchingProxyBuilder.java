@@ -10,17 +10,17 @@ import static net.sf.cglib.proxy.Enhancer.registerCallbacks;
 
 class SearchingProxyBuilder {
     static  <T> T createProxy(Class<T> tClass, MethodInterceptor interceptor) {
-        Enhancer enhancer = new Enhancer();
+        var enhancer = new Enhancer();
 
         enhancer.setUseCache(false);
         enhancer.setCallbackType(interceptor.getClass());
         enhancer.setSuperclass(tClass);
-        Class<?> proxyClass = enhancer.createClass();
+        var proxyClass = enhancer.createClass();
         registerCallbacks(proxyClass, new Callback[]{interceptor});
         enhancer.setClassLoader(tClass.getClassLoader());
 
-        Objenesis objenesis = new ObjenesisStd();
-        Object proxy = objenesis.newInstance(proxyClass);
+        var objenesis = new ObjenesisStd();
+        var proxy = objenesis.newInstance(proxyClass);
         return (T) proxy;
     }
 }

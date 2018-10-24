@@ -64,10 +64,10 @@ public final class GetDeletedSequentialSupplier<T extends PersistableObject>
 
     @Override
     protected Function<DataBaseSteps, List<T>> getEndFunction() {
-        String description = format("Deleted objects: \n %s", toBeDeleted.toString());
+        var description = format("Deleted objects: \n %s", toBeDeleted.toString());
         return toGet(description, dataBaseSteps -> {
             dataBaseSteps.getCurrentPersistenceManager().deletePersistentAll(toBeDeleted);
-            PersistableList<T> result = new PersistableList<>();
+            var result = new PersistableList<T>();
             toBeDeleted.forEach(o -> result.add((T) o.clone()));
             return result;
         });

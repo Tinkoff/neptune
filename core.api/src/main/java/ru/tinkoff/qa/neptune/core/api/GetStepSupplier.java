@@ -44,12 +44,10 @@ public abstract class GetStepSupplier<T, R, THIS extends GetStepSupplier<T, R, T
                         "StoryWriter.toGet to describe it or override the toString method");
         StepFunction stepFunction;
         if (StepFunction.class.isAssignableFrom(function.getClass())) {
-            stepFunction = StepFunction.class
-                    .cast(function);
+            stepFunction = (StepFunction) function;
         }
         else {
-            stepFunction = StepFunction.class
-                    .cast(toGet(function.toString(), function));
+            stepFunction = (StepFunction) toGet(function.toString(), function);
         }
         this.function = stepFunction
                 .addIgnored(new ArrayList<>(ignored));
@@ -65,7 +63,7 @@ public abstract class GetStepSupplier<T, R, THIS extends GetStepSupplier<T, R, T
     public final THIS addIgnored(List<Class<? extends Throwable>> toBeIgnored) {
         ignored.addAll(toBeIgnored);
         ofNullable(function).ifPresent(function1 ->
-                IgnoresThrowable.class.cast(function1).addIgnored(toBeIgnored));
+                ((IgnoresThrowable) function1).addIgnored(toBeIgnored));
         return (THIS) this;
     }
 

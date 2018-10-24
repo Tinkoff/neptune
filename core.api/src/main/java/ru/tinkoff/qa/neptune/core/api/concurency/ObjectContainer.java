@@ -57,12 +57,12 @@ public class ObjectContainer<T> {
      */
     @SuppressWarnings("unchecked")
     public static synchronized <T> ObjectContainer<T> setObjectBusy(Class<T> tClass) {
-        List<ObjectContainer<?>> freeObjects = getAllObjects(tClass, objectContainer ->
+        var freeObjects = getAllObjects(tClass, objectContainer ->
                 !objectContainer.isBusy());
         if (freeObjects.size() == 0) {
             return null;
         }
-        ObjectContainer<?> result = freeObjects.get(0);
+        var result = freeObjects.get(0);
         result.setBusy(currentThread());
         return (ObjectContainer<T>) result;
     }

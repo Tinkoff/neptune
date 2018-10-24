@@ -44,11 +44,11 @@ public final class SearchSupplier<R extends SearchContext>
 
     private static Supplier<NoSuchElementException> noSuchElementException(String description,
                                                                            Predicate<?> condition) {
-        String errorMessage = format("Nothing was found. Attempt to get a single item %s", description);
+        var errorMessage = format("Nothing was found. Attempt to get a single item %s", description);
         if (!AS_IS.equals(condition)) {
             errorMessage = format("%s. Condition: %s", errorMessage, condition);
         }
-        String messageToThrow = errorMessage;
+        var messageToThrow = errorMessage;
         return () -> new NoSuchElementException(messageToThrow);
     }
 
@@ -104,7 +104,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<WebElement> webElement(By by, Duration duration, Predicate<? super WebElement> predicate) {
-        String criteriaDescription = predicate == AS_IS? EMPTY: predicate.toString();
+        var criteriaDescription = predicate == AS_IS? EMPTY: predicate.toString();
         return item(format("Web element located %s", by), webElements(by, criteriaDescription), duration, predicate);
     }
 
@@ -207,7 +207,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<WebElement> webElement(By by, Predicate<? super WebElement> predicate) {
-        String criteriaDescription = predicate == AS_IS? EMPTY: predicate.toString();
+        var criteriaDescription = predicate == AS_IS? EMPTY: predicate.toString();
         return item(format("Web element located %s", by), webElements(by, criteriaDescription), predicate);
     }
 
@@ -320,7 +320,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @return an instance of {@link SearchSupplier}
      */
     public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, Duration duration, Predicate<? super T> predicate) {
-        String criteriaDescription = predicate == AS_IS? EMPTY: predicate.toString();
+        var criteriaDescription = predicate == AS_IS? EMPTY: predicate.toString();
         return item(getWidgetName(tClass), widgets(tClass, criteriaDescription), duration, predicate);
     }
 
@@ -341,8 +341,8 @@ public final class SearchSupplier<R extends SearchContext>
     public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, List<String> labels,
                                                               Duration duration, Predicate<? super T> predicate) {
         Predicate<? extends T> labeledBy = shouldBeLabeledBy(labels.toArray(new String[]{}));
-        Predicate<? super T> resultPredicate = (Predicate<? super T>) labeledBy.and(predicate);
-        String criteriaDescription = resultPredicate.toString();
+        var resultPredicate = (Predicate<? super T>) labeledBy.and(predicate);
+        var criteriaDescription = resultPredicate.toString();
         return item(getWidgetName(tClass), labeledWidgets(tClass, criteriaDescription), duration, resultPredicate);
     }
 
@@ -443,7 +443,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @return an instance of {@link SearchSupplier}
      */
     public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, Predicate<? super T> predicate) {
-        String criteriaDescription = predicate == AS_IS? EMPTY: predicate.toString();
+        var criteriaDescription = predicate == AS_IS? EMPTY: predicate.toString();
         return item(getWidgetName(tClass), widgets(tClass, criteriaDescription), predicate);
     }
 
@@ -464,8 +464,8 @@ public final class SearchSupplier<R extends SearchContext>
      */
     public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, List<String> labels, Predicate<? super T> predicate) {
         Predicate<? extends T> labeledBy = shouldBeLabeledBy(labels.toArray(new String[]{}));
-        Predicate<? super T> resultPredicate = (Predicate<? super T>) labeledBy.and(predicate);
-        String criteriaDescription = resultPredicate.toString();
+        var resultPredicate = (Predicate<? super T>) labeledBy.and(predicate);
+        var criteriaDescription = resultPredicate.toString();
         return item(getWidgetName(tClass), labeledWidgets(tClass, criteriaDescription), resultPredicate);
     }
 

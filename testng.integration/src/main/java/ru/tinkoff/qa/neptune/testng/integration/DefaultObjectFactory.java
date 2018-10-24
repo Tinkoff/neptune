@@ -7,9 +7,7 @@ import org.testng.annotations.ObjectFactory;
 import org.testng.internal.ObjectFactoryImpl;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static ru.tinkoff.qa.neptune.core.api.proxy.ProxyFactory.getProxied;
@@ -50,13 +48,13 @@ public class DefaultObjectFactory extends ObjectFactoryImpl {
     @Override
     public Object newInstance(Constructor constructor, Object... params) {
 
-        Object result = super.newInstance(constructor, params);
-        Class<?> clazz = result.getClass();
+        var result = super.newInstance(constructor, params);
+        var clazz = result.getClass();
         while (!clazz.equals(Object.class)) {
-            List<Field> fields = stream(clazz.getDeclaredFields())
+            var fields = stream(clazz.getDeclaredFields())
                     .filter(field -> {
-                        Class<?> type = field.getType();
-                        int modifiers = field.getModifiers();
+                        var type = field.getType();
+                        var modifiers = field.getModifiers();
                         return !isStatic(modifiers) && !isFinal(modifiers)
                                 && (GetStep.class.isAssignableFrom(type)
                                 || PerformActionStep.class.isAssignableFrom(type));
@@ -65,14 +63,14 @@ public class DefaultObjectFactory extends ObjectFactoryImpl {
             fields.forEach(field -> {
                 field.setAccessible(true);
                 try {
-                    Class<?> fieldType = field.getType();
-                    Object objectToSet = stepMap.entrySet().stream()
+                    var fieldType = field.getType();
+                    var objectToSet = stepMap.entrySet().stream()
                             .filter(entry -> entry.getKey().isAssignableFrom(fieldType)
                                     || fieldType.isAssignableFrom(entry.getKey()))
                             .findFirst().map(Map.Entry::getValue)
                             .orElseGet(() -> {
                                 try {
-                                    Object toBeReturned = getProxied(fieldType);
+                                    var toBeReturned = getProxied(fieldType);
                                     stepMap.put(fieldType, toBeReturned);
                                     return toBeReturned;
                                 } catch (Throwable t) {

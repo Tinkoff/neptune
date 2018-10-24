@@ -28,7 +28,7 @@ public final class SupportedWebDriverProperty implements PropertySupplier<Suppor
     @Override
     public SupportedWebDrivers get() {
         return returnOptionalFromEnvironment().map(s -> {
-            for (SupportedWebDrivers supportedWebDriver: SupportedWebDrivers.values()) {
+            for (var supportedWebDriver: SupportedWebDrivers.values()) {
                 if (supportedWebDriver.name().equalsIgnoreCase(s)) {
                     return supportedWebDriver;
                 }

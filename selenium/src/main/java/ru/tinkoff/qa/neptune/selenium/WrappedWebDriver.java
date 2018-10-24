@@ -11,9 +11,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.server.SeleniumServer;
 
-import java.lang.reflect.Constructor;
 import java.net.URL;
-import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static ru.tinkoff.qa.neptune.core.api.utils.ConstructorUtil.findSuitableConstructor;
@@ -44,8 +42,8 @@ public class WrappedWebDriver implements WrapsDriver, Refreshable {
             return;
         }
         serverStarted = false;
-        StandaloneConfiguration standAloneConfig = new StandaloneConfiguration();
-        int serverPort = findFreePort();
+        var standAloneConfig = new StandaloneConfiguration();
+        var serverPort = findFreePort();
         standAloneConfig.port = serverPort;
         server = new SeleniumServer(standAloneConfig);
         try {
@@ -76,7 +74,7 @@ public class WrappedWebDriver implements WrapsDriver, Refreshable {
     private void initDriverIfNecessary() {
         driver = ofNullable(driver).orElseGet(() -> {
             Object[] parameters;
-            Object[] arguments = supportedWebDriver.get();
+            var arguments = supportedWebDriver.get();
             if (supportedWebDriver.requiresRemoteUrl() && supportedWebDriver.getRemoteURL() == null) {
                 initServerLocally();
                 parameters = ArrayUtils.addAll(new Object[] {serverUrl}, arguments);
@@ -86,7 +84,7 @@ public class WrappedWebDriver implements WrapsDriver, Refreshable {
             }
 
             try {
-                Constructor<? extends WebDriver> c = findSuitableConstructor(supportedWebDriver.getWebDriverClass(),
+                var c = findSuitableConstructor(supportedWebDriver.getWebDriverClass(),
                         parameters);
 
                 if (!isWebDriverInstalled) {
@@ -95,11 +93,11 @@ public class WrappedWebDriver implements WrapsDriver, Refreshable {
                     isWebDriverInstalled = true;
                 }
 
-                Enhancer enhancer = new Enhancer();
+                var enhancer = new Enhancer();
                 enhancer.setSuperclass(supportedWebDriver.getWebDriverClass());
                 enhancer.setCallback(new WebDriverMethodInterceptor());
 
-                WebDriver driver = (WebDriver) enhancer.create(c.getParameterTypes(), parameters);
+                var driver = (WebDriver) enhancer.create(c.getParameterTypes(), parameters);
                 ofNullable(BASE_WEB_DRIVER_URL_PROPERTY.get())
                         .ifPresent(url -> driver.get(url.toString()));
                 if (FORCE_WINDOW_MAXIMIZING_ON_START.get()) {

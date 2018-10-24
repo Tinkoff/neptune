@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static java.lang.String.format;
+import static java.lang.String.valueOf;
 import static java.util.List.of;
 
 /**
@@ -23,7 +24,7 @@ public class DefaultConsoleCaptor extends Captor<Object, String> {
 
     @Override
     protected String getData(Object caught) {
-        return String.valueOf(caught);
+        return valueOf(caught);
     }
 
     @Override

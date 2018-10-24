@@ -2,10 +2,8 @@ package ru.tinkoff.qa.neptune.core.api.proxy;
 
 import ru.tinkoff.qa.neptune.core.api.*;
 import net.bytebuddy.ByteBuddy;
-import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
 import net.bytebuddy.dynamic.loading.InjectionClassLoader;
-import org.objenesis.Objenesis;
 import org.objenesis.ObjenesisStd;
 import ru.tinkoff.qa.neptune.core.api.ConstructorParameters;
 import ru.tinkoff.qa.neptune.core.api.ParameterProvider;
@@ -55,13 +53,9 @@ public final class ProxyFactory {
                 "assignable from ru.tinkoff.qa.neptune.core.api.GetStep and/or " +
                 "ru.tinkoff.qa.neptune.core.api.PerformActionStep.");
 
-        Class<? extends T> toInstantiate =
-                manipulationWithClassToInstantiate.apply(clazz);
-
-        DynamicType.Builder<? extends T> builder = new ByteBuddy().subclass(clazz);
-
-        MethodInterceptor<T> interceptor = new MethodInterceptor<>(clazz,
-                (Class<T>) toInstantiate, constructorParameters,
+        var toInstantiate = manipulationWithClassToInstantiate.apply(clazz);
+        var builder = new ByteBuddy().subclass(clazz);
+        var interceptor = new MethodInterceptor<>(clazz, (Class<T>) toInstantiate, constructorParameters,
                 manipulationWithObjectToReturn);
 
         Class<? extends T> proxyClass;
@@ -76,7 +70,7 @@ public final class ProxyFactory {
             throw new ProxyCreationFailureException(e.getMessage(), e);
         }
 
-        Objenesis objenesis = new ObjenesisStd();
+        var objenesis = new ObjenesisStd();
         return objenesis.newInstance(proxyClass);
     }
 
@@ -98,11 +92,11 @@ public final class ProxyFactory {
     public static <T> T getProxied(Class<T> clazz,
                                    Function<Class<? extends T>, Class<? extends T>> manipulationWithClassToInstantiate,
                                    Function<T, T> manipulationWithObjectToReturn) {
-        CreateWith createWith = ofNullable(clazz.getAnnotation(CreateWith.class))
+        var createWith = ofNullable(clazz.getAnnotation(CreateWith.class))
                 .orElseGet(() -> {
-                    Class<?> superClass = clazz.getSuperclass();
+                    var superClass = clazz.getSuperclass();
                     while (!superClass.equals(Object.class)) {
-                        CreateWith createWithA = superClass.getAnnotation(CreateWith.class);
+                        var createWithA = superClass.getAnnotation(CreateWith.class);
                         if (createWithA != null) {
                             return createWithA;
                         }
@@ -112,7 +106,7 @@ public final class ProxyFactory {
                             clazz.getName(), CreateWith.class.getName()));
                 });
 
-        Class<? extends ParameterProvider> providerClass = createWith.provider();
+        var providerClass = createWith.provider();
         Constructor<? extends ParameterProvider> defaultConstructor;
         try {
             defaultConstructor = providerClass.getDeclaredConstructor();

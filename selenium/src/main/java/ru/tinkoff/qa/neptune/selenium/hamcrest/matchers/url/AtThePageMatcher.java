@@ -48,7 +48,7 @@ public final class AtThePageMatcher extends TypeSafeDiagnosingMatcher<WrapsDrive
             return false;
         }
 
-        String currentUrl = driver.getCurrentUrl();
+        var currentUrl = driver.getCurrentUrl();
         result = urlMatcher.matches(currentUrl);
         if (!result) {
             urlMatcher.describeMismatch(currentUrl, mismatchDescription);

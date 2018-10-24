@@ -226,7 +226,7 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
          */
         @Override
         public Capabilities get() {
-            DesiredCapabilities capabilities = new DesiredCapabilities().merge(super.get());
+            var capabilities = new DesiredCapabilities().merge(super.get());
             capabilities.setCapability(BROWSER_NAME, BrowserType.PHANTOMJS);
             return capabilities;
         }
@@ -241,7 +241,7 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
 
     @Override
     public Capabilities get() {
-        DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
+        var desiredCapabilities = new DesiredCapabilities();
         ofNullable(CommonCapabilityProperties.BROWSER_NAME.get()).ifPresent(o ->
                 desiredCapabilities.setCapability(CapabilityType.BROWSER_NAME, o));
 

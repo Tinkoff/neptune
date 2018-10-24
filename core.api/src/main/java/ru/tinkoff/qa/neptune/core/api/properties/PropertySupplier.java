@@ -21,7 +21,7 @@ public interface PropertySupplier<T> extends Supplier<T>, Consumer<String> {
     }
 
     private String getPropertyValue() {
-        String property = getPropertyName();
+        var property = getPropertyName();
         return ofNullable(System.getenv(property))
                 .orElseGet(() -> System.getProperty(property));
     }
