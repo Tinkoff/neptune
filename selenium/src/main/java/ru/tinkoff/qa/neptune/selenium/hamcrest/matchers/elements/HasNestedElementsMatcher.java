@@ -56,7 +56,7 @@ public final class HasNestedElementsMatcher<T extends SearchContext> extends Typ
     @Override
     protected boolean matchesSafely(T item, Description mismatchDescription) {
         try {
-            int foundSize = search.get().apply(item).size();
+            var foundSize = search.get().apply(item).size();
 
             if (!expectedCount.matches(foundSize)) {
                 mismatchDescription.appendText(format("actual count %s of found items doesn't meet the criteria %s",

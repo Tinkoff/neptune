@@ -126,7 +126,7 @@ public final class ThatValue<T> extends SequentialActionSupplier<Check, Object, 
                     finally {
                         AssertionError assertionError = null;
                         if (caughtMismatches.size() > 0) {
-                            String sb = "List of mismatches:\n\t" + String.join(";\n\t\n\t",
+                            var sb = "List of mismatches:\n\t" + String.join(";\n\t\n\t",
                                     caughtMismatches.stream().map(Throwable::getMessage)
                                             .collect(toList()));
                             assertionError = new AssertionError(sb);
@@ -166,8 +166,8 @@ public final class ThatValue<T> extends SequentialActionSupplier<Check, Object, 
     @Override
     @SuppressWarnings("unchecked")
     protected void performActionOn(Object value, Object... parameters) {
-        Matcher matcher = Matcher.class.cast(parameters[0]);
-        Consumer<Object> assertStep = action("Attempt to verify", o -> assertThat(o, matcher));
+        var matcher = Matcher.class.cast(parameters[0]);
+        var assertStep = action("Attempt to verify", o -> assertThat(o, matcher));
         assertStep.accept(value);
     }
 }

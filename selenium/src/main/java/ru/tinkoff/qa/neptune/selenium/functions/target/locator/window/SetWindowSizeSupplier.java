@@ -68,6 +68,6 @@ public final class SetWindowSizeSupplier extends SequentialActionSupplier<Seleni
 
     @Override
     protected void performActionOn(Window value, Object... additionalArgument) {
-        value.setSize(Dimension.class.cast(additionalArgument[0]));
+        value.setSize((Dimension) additionalArgument[0]);
     }
 }

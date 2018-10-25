@@ -1,9 +1,6 @@
 package ru.tinkoff.qa.neptune.core.api.conditions;
 
-import com.google.common.base.Preconditions;
 import ru.tinkoff.qa.neptune.core.api.AsIsCondition;
-import ru.tinkoff.qa.neptune.core.api.StoryWriter;
-import ru.tinkoff.qa.neptune.core.api.utils.IsDescribedUtil;
 
 import javax.annotation.Nullable;
 import java.time.Duration;
@@ -13,10 +10,14 @@ import java.util.function.*;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
+import static java.lang.Thread.currentThread;
 import static java.lang.Thread.sleep;
 import static java.time.Duration.ofMillis;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static ru.tinkoff.qa.neptune.core.api.StoryWriter.condition;
+import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
+import static ru.tinkoff.qa.neptune.core.api.utils.IsDescribedUtil.isDescribed;
 
 /**
  * This is the util which helps to crate function with given conditions.
@@ -30,7 +31,7 @@ final class ToGetConditionalHelper {
 
     static <T> Predicate<T> checkCondition(Predicate<T> condition) {
         checkArgument(condition != null, "Predicate is not defined.");
-        Preconditions.checkArgument(IsDescribedUtil.isDescribed(condition),
+        checkArgument(isDescribed(condition),
                 "Condition is not described. " +
                         "Use StoryWriter.conditions to describe it.");
         return condition;
@@ -57,13 +58,13 @@ final class ToGetConditionalHelper {
         return duration;
     }
 
-    static <T> Predicate<T> notNullAnd(Predicate<T> condition) {
-        return ((Predicate<T>) StoryWriter.condition("is not null value", Objects::nonNull))
+    static <T> Predicate<T> notNullAnd(Predicate<? super T> condition) {
+        return ((Predicate<T>) condition("is not null value", Objects::nonNull))
                 .and(condition);
     }
 
     static boolean returnFalseOrThrowException(Throwable t, boolean ignoreExceptionOnConditionCheck) {
-        String message = format("%s was caught. Message: %s", t.getClass().getName(), t.getMessage());
+        var message = format("%s was caught. Message: %s", t.getClass().getName(), t.getMessage());
         if (!ignoreExceptionOnConditionCheck) {
             throw new CheckConditionException(message, t);
         }
@@ -79,7 +80,7 @@ final class ToGetConditionalHelper {
     }
 
     static String getDescription(String description, Predicate<?> condition) {
-        String resultDescription = description;
+        var resultDescription = description;
 
         if (!AsIsCondition.AS_IS.equals(condition)) {
             resultDescription = format("%s. Criteria: %s", resultDescription, condition).trim();
@@ -94,21 +95,20 @@ final class ToGetConditionalHelper {
                                                     @Nullable Duration sleepingTime,
                                                     Predicate<F> till,
                                                     @Nullable Supplier<? extends RuntimeException> exceptionOnTimeOut) {
-        Duration timeOut = ofNullable(waitingTime).orElseGet(() -> ofMillis(0));
-        Duration sleeping = ofNullable(sleepingTime).orElseGet(() -> ofMillis(50));
+        var timeOut = ofNullable(waitingTime).orElseGet(() -> ofMillis(0));
+        var sleeping = ofNullable(sleepingTime).orElseGet(() -> ofMillis(50));
 
-        return StoryWriter.toGet(description, t -> {
-
-            long currentMillis = currentTimeMillis();
-            long endMillis = currentMillis + timeOut.toMillis() + 100;
+        return toGet(description, t -> {
+            var currentMillis = currentTimeMillis();
+            var endMillis = currentMillis + timeOut.toMillis() + 100;
             F f = null;
-            boolean suitable = false;
+            var suitable = false;
             while (currentTimeMillis() < endMillis && !(suitable)) {
                 suitable = till.test(f = originalFunction.apply(t));
                 try {
                     sleep(sleeping.toMillis());
                 } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
+                    currentThread().interrupt();
                     throw new RuntimeException(e);
                 }
             }

@@ -40,8 +40,8 @@ public final class AlertHasTextMatcher extends TypeSafeDiagnosingMatcher<Alert> 
 
     @Override
     protected boolean matchesSafely(Alert item, Description mismatchDescription) {
-        String text = item.getText();
-        boolean result = textMatcher.matches(text);
+        var text = item.getText();
+        var result = textMatcher.matches(text);
 
         if (!result) {
             textMatcher.describeMismatch(text, mismatchDescription);

@@ -15,7 +15,7 @@ public final class PersistableEnhancer {
      * @param ignored ignored parameters
      */
     public static void main(String[] ignored) {
-        DataNucleusEnhancer enhancer = new DataNucleusEnhancer("JDO", null);
+        var enhancer = new DataNucleusEnhancer("JDO", null);
         enhancer.setVerbose(true);
 
         enhancer.addClasses(REFLECTIONS.getSubTypesOf(PersistableObject.class).stream()

@@ -70,9 +70,9 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
         return new InteractiveAction<SeleniumSteps>() {
             @Override
             protected void performActionOn(SeleniumSteps value, Object... additionalArgument) {
-                Actions actions = new Actions(currentContent().apply(value));
-                SearchContext result = value.find((SearchSupplier<?>) additionalArgument[0]);
-                Class<? extends SearchContext> clazz = result.getClass();
+                var actions = new Actions(currentContent().apply(value));
+                var result = value.find((SearchSupplier<?>) additionalArgument[0]);
+                var clazz = result.getClass();
                 if (WebElement.class.isAssignableFrom(clazz)) {
                     actionsFunction.apply(actions, (WebElement) result).perform();
                     return;
@@ -569,13 +569,8 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
     public static InteractiveAction<WebDriver> dragAndDrop(WebElement source, WebElement target) {
         checkArgument(source != null, "Source web element should be a not null value");
         checkArgument(target != null, "Target web element should be a not null value");
-
-        return new InteractiveAction<WebDriver>() {
-            @Override
-            protected void performActionOn(WebDriver value, Object... additionalArgument) {
-                new Actions(value).dragAndDrop(source, target).perform();
-            }
-        }.andThen(format("Drag and drop from %s to %s", source, target), currentContent());
+        return performActionOnWebdriverOnly(format("Drag and drop from %s to %s", source, target),
+                actions -> actions.dragAndDrop(source, target));
     }
 
     /**
@@ -710,11 +705,11 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
         return new InteractiveAction<SeleniumSteps>() {
             @Override
             protected void performActionOn(SeleniumSteps value, Object... additionalArgument) {
-                Actions actions = new Actions(currentContent().apply(value));
-                SearchContext source = value.find((SearchSupplier<?>) howToFindSourceElement);
-                SearchContext target = value.find((SearchSupplier<?>) howToFindTargetElement);
-                Class<? extends SearchContext> sourceClass = source.getClass();
-                Class<? extends SearchContext> targetClass = target.getClass();
+                var actions = new Actions(currentContent().apply(value));
+                var source = value.find((SearchSupplier<?>) howToFindSourceElement);
+                var target = value.find((SearchSupplier<?>) howToFindTargetElement);
+                var sourceClass = source.getClass();
+                var targetClass = target.getClass();
                 if (WebElement.class.isAssignableFrom(sourceClass) && WrapsElement.class.isAssignableFrom(sourceClass)) {
                     throw new IllegalArgumentException(format("It is impossible to perform drag & drop action on an object " +
                                     "of type %s as a source. It doesn't implement %s nor %s", sourceClass.getName(),

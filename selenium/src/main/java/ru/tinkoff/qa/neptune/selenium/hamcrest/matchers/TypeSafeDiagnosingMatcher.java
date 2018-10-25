@@ -51,7 +51,7 @@ public abstract class TypeSafeDiagnosingMatcher<T> extends BaseMatcher<T> {
     @SuppressWarnings("unchecked")
     public final boolean matches(Object item) {
         boolean result;
-        Description mismatchDescription = new StringDescription();
+        var mismatchDescription = new StringDescription();
         if (!expectedType.isInstance(item)) {
             result = false;
             super.describeMismatch(item, mismatchDescription);

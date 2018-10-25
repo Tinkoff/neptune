@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.data.base.api.query;
 
-import org.datanucleus.api.jdo.JDOPersistenceManager;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseSteps;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
@@ -86,8 +85,8 @@ public final class QueryBuilderFunction<T extends PersistableObject> implements 
 
     @Override
     public JDOQLTypedQuery<T> apply(DataBaseSteps dataBaseSteps) {
-        JDOPersistenceManager manager = dataBaseSteps.getCurrentPersistenceManager();
-        JDOQLTypedQuery<T> tq1 = manager.newJDOQLTypedQuery(toSelect);
+        var manager = dataBaseSteps.getCurrentPersistenceManager();
+        var tq1 = manager.newJDOQLTypedQuery(toSelect);
         ofNullable(constraintsExpression).ifPresent(tq1::filter);
         if (rangeStart != null && rangeEnd != null) {
             tq1.range(rangeStart, rangeEnd);

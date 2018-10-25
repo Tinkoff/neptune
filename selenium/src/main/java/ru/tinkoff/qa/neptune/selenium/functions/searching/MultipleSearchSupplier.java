@@ -91,7 +91,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<WebElement> webElements(By by, Duration duration, Predicate<? super WebElement> predicate) {
-        String criteriaDescription = predicate == AS_IS? EMPTY: predicate.toString();
+        var criteriaDescription = predicate == AS_IS? EMPTY: predicate.toString();
         return items(format("List of web elements located %s", by), FindWebElements.webElements(by, criteriaDescription),
                 duration, predicate);
     }
@@ -193,7 +193,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<WebElement> webElements(By by, Predicate<? super WebElement> predicate) {
-        String criteriaDescription = predicate == AS_IS? EMPTY: predicate.toString();
+        var criteriaDescription = predicate == AS_IS? EMPTY: predicate.toString();
         return items(format("List of web elements located %s", by),
                 FindWebElements.webElements(by, criteriaDescription), predicate);
     }
@@ -306,7 +306,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass, Duration duration, Predicate<? super T> predicate) {
-        String criteriaDescription = predicate == AS_IS? EMPTY: predicate.toString();
+        var criteriaDescription = predicate == AS_IS? EMPTY: predicate.toString();
         return items(String.format("List of %s", getWidgetName(tClass)),
                 FindWidgets.widgets(tClass, criteriaDescription), duration, predicate);
     }
@@ -328,7 +328,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
     public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass, List<String> labels, Duration duration,
                                                                        Predicate<? super T> predicate) {
         Predicate<? extends T> labeledBy = shouldBeLabeledBy(labels.toArray(new String[]{}));
-        Predicate<? super T> resultPredicate = (Predicate<? super T>) labeledBy.and(predicate);
+        var resultPredicate = (Predicate<? super T>) labeledBy.and(predicate);
         return items(String.format("List of %s", Widget.getWidgetName(tClass)),
                 labeledWidgets(tClass, resultPredicate.toString()), duration, resultPredicate);
     }
@@ -425,7 +425,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass, Predicate<? super T> predicate) {
-        String criteriaDescription = predicate == AS_IS? EMPTY: predicate.toString();
+        var criteriaDescription = predicate == AS_IS? EMPTY: predicate.toString();
         return items(String.format("List of %s", Widget.getWidgetName(tClass)),
                 FindWidgets.widgets(tClass, criteriaDescription), predicate);
     }
@@ -448,7 +448,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
     public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass, List<String> labels,
                                                                        Predicate<? super T> predicate) {
         Predicate<? extends T> labeledBy = shouldBeLabeledBy(labels.toArray(new String[]{}));
-        Predicate<? super T> resultPredicate = (Predicate<? super T>) labeledBy.and(predicate);
+        var resultPredicate = (Predicate<? super T>) labeledBy.and(predicate);
         return items(String.format("List of %s", Widget.getWidgetName(tClass)),
                 labeledWidgets(tClass, resultPredicate.toString()), resultPredicate);
     }

@@ -86,7 +86,7 @@ public abstract class DBSequentialGetStepSupplier<T, Q, R extends DBSequentialGe
         }
 
         return ofNullable(connectionDescription).map(o -> {
-            Class<?> objectClass = o.getClass();
+            var objectClass = o.getClass();
             if (CharSequence.class.isAssignableFrom(objectClass)) {
                 return changeConnectionAndGet(changeConnectionByName((CharSequence) o));
             }

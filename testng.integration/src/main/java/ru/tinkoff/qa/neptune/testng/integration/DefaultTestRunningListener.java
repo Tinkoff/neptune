@@ -36,7 +36,7 @@ public class DefaultTestRunningListener implements IInvokedMethodListener {
     }
 
     private static boolean isClassIgnored(Class<?> classToBeIgnored) {
-        Class<?> clazz = classToBeIgnored;
+        var clazz = classToBeIgnored;
         while (!clazz.equals(Object.class)) {
             if (clazz.getAnnotation(Ignore.class) != null) {
                 return true;
@@ -53,7 +53,7 @@ public class DefaultTestRunningListener implements IInvokedMethodListener {
 
         ofNullable(previouslyRefreshed.get())
                 .ifPresentOrElse(method1 -> {}, () -> {
-                    int methodModifiers = method.getModifiers();
+                    var methodModifiers = method.getModifiers();
                     if (!isStatic(methodModifiers) && stream(method.getAnnotations())
                             .filter(annotation -> refreshBeforeMethodsAnnotatedBy
                                     .contains(((Annotation) annotation).annotationType())).collect(toList())
@@ -66,7 +66,7 @@ public class DefaultTestRunningListener implements IInvokedMethodListener {
 
     @Override
     public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
-        Method reflectionMethod = method.getTestMethod().getConstructorOrMethod().getMethod();
+        var reflectionMethod = method.getTestMethod().getConstructorOrMethod().getMethod();
         ofNullable(testResult.getInstance()).ifPresent(o ->
                 refreshIfNecessary(o, reflectionMethod));
 
@@ -75,8 +75,8 @@ public class DefaultTestRunningListener implements IInvokedMethodListener {
         }
 
         ofNullable(reflectionMethod.getAnnotation(Test.class)).ifPresent(test -> {
-            String name = isNotBlank(test.description()) ? test.description() : reflectionMethod.getName();
-            Object[] params = testResult.getParameters();
+            var name = isNotBlank(test.description()) ? test.description() : reflectionMethod.getName();
+            var params = testResult.getParameters();
 
             System.out.println();
             System.out.println();
@@ -88,12 +88,12 @@ public class DefaultTestRunningListener implements IInvokedMethodListener {
 
     @Override
     public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
-        Method reflectionMethod = method.getTestMethod().getConstructorOrMethod().getMethod();
+        var reflectionMethod = method.getTestMethod().getConstructorOrMethod().getMethod();
 
         ofNullable(reflectionMethod.getAnnotation(Test.class)).ifPresent(test -> {
-            String name = isNotBlank(test.description()) ? test.description() : reflectionMethod.getName();
-            int status = method.getTestResult().getStatus();
-            Object[] params = testResult.getParameters();
+            var name = isNotBlank(test.description()) ? test.description() : reflectionMethod.getName();
+            var status = method.getTestResult().getStatus();
+            var params = testResult.getParameters();
 
             System.out.println();
             System.out.println();

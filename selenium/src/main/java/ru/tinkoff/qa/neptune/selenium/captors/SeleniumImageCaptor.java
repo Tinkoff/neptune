@@ -31,10 +31,10 @@ public class SeleniumImageCaptor extends ImageCaptor<TakesScreenshot> {
 
     /**
      * Sets a default instance of {@link ElementScreenshotTaker}
-     * @param defaultElementScreenshotTaker to set up.
+     * @param elementScreenshotTaker to set up.
      */
-    public static void setDefaultElementScreenshotTaker(ElementScreenshotTaker defaultElementScreenshotTaker) {
-        SeleniumImageCaptor.defaultElementScreenshotTaker = defaultElementScreenshotTaker;
+    public static void setDefaultElementScreenshotTaker(ElementScreenshotTaker elementScreenshotTaker) {
+        defaultElementScreenshotTaker = elementScreenshotTaker;
     }
 
     private ElementScreenshotTaker getDefaultElementScreenshotTaker() {
@@ -50,7 +50,7 @@ public class SeleniumImageCaptor extends ImageCaptor<TakesScreenshot> {
     @Override
     protected BufferedImage getData(TakesScreenshot caught) {
         try {
-            Class<? extends TakesScreenshot> clazz = caught.getClass();
+            var clazz = caught.getClass();
             InputStream in;
 
             if (!WebElement.class.isAssignableFrom(clazz) && !Widget.class.isAssignableFrom(clazz)

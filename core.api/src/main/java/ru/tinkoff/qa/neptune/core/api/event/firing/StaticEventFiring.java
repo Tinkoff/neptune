@@ -13,7 +13,7 @@ public class StaticEventFiring {
 
     private static List<Captor> getCaptors() {
         return  ofNullable(LIST_THREAD_LOCAL_CAPTORS.get()).orElseGet(() -> {
-            List<Captor> captors = loadSPI(Captor.class);
+            var captors = loadSPI(Captor.class);
             LIST_THREAD_LOCAL_CAPTORS.set(captors);
             return captors;
         });
@@ -39,7 +39,7 @@ public class StaticEventFiring {
     private static List<EventLogger> initEventLoggersIfNecessary() {
         return ofNullable(LIST_THREAD_LOCAL_EVENT_LOGGERS.get())
                 .orElseGet(() -> {
-                    List<EventLogger> loggers = loadSPI(EventLogger.class);
+                    var loggers = loadSPI(EventLogger.class);
                     LIST_THREAD_LOCAL_EVENT_LOGGERS.set(loggers);
                     return loggers;
                 });

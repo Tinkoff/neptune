@@ -84,13 +84,13 @@ public final class SequentialGetAttributeValueSupplier extends
     @Override
     protected Function<SearchContext, String> getEndFunction() {
         return toGet(format("Value of the attribute '%s'", attr), searchContext -> {
-            Class<? extends SearchContext> searchContextClass = searchContext.getClass();
+            var searchContextClass = searchContext.getClass();
             if (WebElement.class.isAssignableFrom(searchContextClass)) {
-                return WebElement.class.cast(searchContext).getAttribute(attr);
+                return ((WebElement) searchContext).getAttribute(attr);
             }
 
             if (HasAttribute.class.isAssignableFrom(searchContextClass)) {
-                return HasAttribute.class.cast(searchContext).getAttribute(attr);
+                return ((HasAttribute) searchContext).getAttribute(attr);
             }
 
             throw new UnsupportedOperationException(format("It is impossible to get value of the attribute %s from " +

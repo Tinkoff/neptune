@@ -25,7 +25,7 @@ public final class GetFrameFunction implements Function<WebDriver, Frame> {
 
     private GetFrameFunction(Object frame) {
         checkArgument(frame != null, "Frame object should be defined");
-        Class<?> clazz = frame.getClass();
+        var clazz = frame.getClass();
         checkArgument(String.class.isAssignableFrom(clazz) || Integer.class.isAssignableFrom(clazz)
                         || WebElement.class.isAssignableFrom(clazz) || WrapsElement.class.isAssignableFrom(clazz),
                 format("Frame to switch to should be an instance of %s, %s, %s or %s", String.class.getName(),

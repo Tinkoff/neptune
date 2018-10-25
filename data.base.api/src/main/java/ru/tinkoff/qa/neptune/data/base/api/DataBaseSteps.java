@@ -42,7 +42,7 @@ public class DataBaseSteps implements GetStep<DataBaseSteps>, PerformActionStep<
     public DataBaseSteps switchTo(JDOPersistenceManagerFactory jdoPersistenceManagerFactory) {
         checkArgument(!jdoPersistenceManagerFactory.isClosed(), "Persistence manager " +
                 "factory should be not closed");
-        JDOPersistenceManager manager = jdoPersistenceManagerMap.get(jdoPersistenceManagerFactory);
+        var manager = jdoPersistenceManagerMap.get(jdoPersistenceManagerFactory);
         if (manager == null || manager.isClosed()) {
             jdoPersistenceManagerMap.put(jdoPersistenceManagerFactory,
                     (JDOPersistenceManager) jdoPersistenceManagerFactory.getPersistenceManager());

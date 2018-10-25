@@ -20,7 +20,7 @@ public final class IsDescribedUtil {
             return false;
         }
 
-        String stringDescription = valueOf(toBeDescribed);
+        var stringDescription = valueOf(toBeDescribed);
         return !isBlank(stringDescription) && !valueOf(toBeDescribed).equals(format("%s@%s", toBeDescribed.getClass().getName(),
                 toHexString(toBeDescribed.hashCode())));
     }

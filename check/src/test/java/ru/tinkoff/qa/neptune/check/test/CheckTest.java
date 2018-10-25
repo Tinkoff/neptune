@@ -437,7 +437,6 @@ public class CheckTest {
                             is(2D)));
         }
         catch (AssertionError e) {
-            System.out.println(e.getMessage());
             throw e;
         }
         finally {

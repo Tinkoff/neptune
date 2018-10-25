@@ -46,7 +46,7 @@ public final class HasValueMatcher<Q, T extends SearchContext & HasValue<Q>> ext
     @Override
     protected boolean matchesSafely(T item, Description mismatchDescription) {
         Q value = item.getValue();
-        boolean result = criteria.matches(value);
+        var result = criteria.matches(value);
         if (!result) {
             criteria.describeMismatch(value, mismatchDescription);
         }

@@ -56,8 +56,8 @@ public abstract class SelectSingleObjectByQuerySupplier<T, R>
                     if (queryBuilder.getTypeOfRequiredValue() != null) {
                         return new PersistableList<>(query.executeList());
                     }
-                    PersistableList<List<Object>> toBeReturned = new PersistableList<>();
-                    List<?> result = query.executeList();
+                    var toBeReturned = new PersistableList<>();
+                    var result = query.executeList();
                     result.forEach(o -> {
                         if (o.getClass().isArray()) {
                             toBeReturned.add(Arrays.asList(((Object[]) o)));

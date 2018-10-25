@@ -40,7 +40,7 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
         String description;
         Function<T, ? extends R> function;
         if (Function.class.isAssignableFrom(functionOrObject.getClass())) {
-            function = Function.class.cast(functionOrObject);
+            function = (Function) functionOrObject;
             if (isDescribed(function)) {
                 description = format("%s. Target: %s", actionDescription, function);
             }
@@ -53,10 +53,10 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
             function = null;
         }
 
-        String fullDescription = additionalArguments.length == 0? description: format("%s. Action parameters: %s", description,
+        var fullDescription = additionalArguments.length == 0? description: format("%s. Action parameters: %s", description,
                 ArrayUtils.toString(additionalArguments));
 
-        Consumer<T> action = ofNullable(function).map(function1 ->
+        var action = ofNullable(function).map(function1 ->
                 action(fullDescription, (Consumer<T>) t -> {
                     R r = function1.apply(t);
                     performActionOn(r, additionalArguments);

@@ -1,8 +1,6 @@
 package ru.tinkoff.qa.neptune.data.base.api;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -30,15 +28,15 @@ public abstract class CompositeKey extends OrmObject implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = 0;
+        var result = 0;
         Class<?> clazz = this.getClass();
         while (!clazz.equals(Object.class)) {
-            List<Field> fields = stream(clazz.getDeclaredFields()).filter(field -> !isStatic(field.getModifiers()))
+            var fields = stream(clazz.getDeclaredFields()).filter(field -> !isStatic(field.getModifiers()))
                     .collect(Collectors.toList());
-            for (Field f : fields) {
+            for (var f : fields) {
                 f.setAccessible(true);
                 try {
-                    Object v = f.get(this);
+                    var v = f.get(this);
                     if (v == null) {
                         continue;
                     }

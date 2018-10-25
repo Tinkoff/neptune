@@ -21,8 +21,8 @@ public class DBObjectCaptor extends FileCaptor<PersistableObject> {
     @Override
     protected File getData(PersistableObject caught) {
         try {
-            File json = createTempFile("persistable", UUID.randomUUID().toString() + ".json");
-            JsonWriter writer = new JsonWriter(new FileWriter(json));
+            var json = createTempFile("persistable", UUID.randomUUID().toString() + ".json");
+            var writer = new JsonWriter(new FileWriter(json));
             writer.setHtmlSafe(true);
             writer.beginObject()
                     .name(caught.getClass().getSimpleName().toLowerCase())

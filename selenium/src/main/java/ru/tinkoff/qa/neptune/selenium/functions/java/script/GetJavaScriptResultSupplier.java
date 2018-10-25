@@ -33,7 +33,7 @@ public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumS
     }
 
     private static String getScriptDescription(String script, Object...parameters) {
-        String description = format("Evaluation of java script '%s'", script);
+        var description = format("Evaluation of java script '%s'", script);
         if (parameters != null && parameters.length > 0) {
             description = format("%s with parameters %s", description, Arrays.toString(parameters));
         }
@@ -41,7 +41,7 @@ public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumS
     }
 
     private static String getAsyncScriptDescription(String script, Object...parameters) {
-        String description = format("Evaluation of asynchronous java script '%s'", script);
+        var description = format("Evaluation of asynchronous java script '%s'", script);
         if (parameters != null && parameters.length > 0) {
             description = format("%s with parameters %s", description, Arrays.toString(parameters));
         }

@@ -39,7 +39,7 @@ public final class HasFrameMatcher extends TypeSafeDiagnosingMatcher<WrapsDriver
             return false;
         }
 
-        String currentHandle = driver.getWindowHandle();
+        var currentHandle = driver.getWindowHandle();
         boolean result;
         try {
             howToGetFrame.apply(driver);

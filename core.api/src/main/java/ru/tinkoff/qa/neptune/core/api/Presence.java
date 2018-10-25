@@ -3,7 +3,8 @@ package ru.tinkoff.qa.neptune.core.api;
 import com.google.common.collect.Iterables;
 
 import java.lang.reflect.Array;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.function.Function;
 
 import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
@@ -22,10 +23,10 @@ public class Presence<T extends GetStep<T>> extends GetStepSupplier<T, Boolean, 
                         "by the StoryWriter.toGet method.");
 
         set(toGet(format("Presence of %s", toBePresent), t -> {
-            StepFunction<T, ?> describedToBePresent = StepFunction.class.cast(toBePresent);
-            HashSet<Class<? extends Throwable>> toBeIgnored = new HashSet<>(ignored);
+            var describedToBePresent = (StepFunction) toBePresent;
+            var toBeIgnored = new HashSet<>(ignored);
             toBeIgnored.removeAll(describedToBePresent.getIgnored());
-            List<Class<? extends Throwable>> listOfThrowableClasses = new ArrayList<>(toBeIgnored);
+            var listOfThrowableClasses = new ArrayList<>(toBeIgnored);
             try {
                 return isPresent(t.get(describedToBePresent.addIgnored(listOfThrowableClasses)));
             }
@@ -41,11 +42,11 @@ public class Presence<T extends GetStep<T>> extends GetStepSupplier<T, Boolean, 
                     Class<?> clazz = o1.getClass();
 
                     if (Boolean.class.isAssignableFrom(clazz)) {
-                        return Boolean.class.cast(o);
+                        return (Boolean) o;
                     }
 
                     if (Iterable.class.isAssignableFrom(clazz)) {
-                        return Iterables.size(Iterable.class.cast(o1)) > 0;
+                        return Iterables.size((Iterable) o1) > 0;
                     }
 
                     if (clazz.isArray()) {

@@ -24,9 +24,9 @@ class FindByBuilder extends AbstractFindByBuilder {
             annotation -> annotation.annotationType().equals(FindAll.class);
 
     static Annotation[] getAnnotations(Class<?> clazz) {
-        Class<?> superClass = clazz;
+        var superClass = clazz;
         while (!superClass.equals(Widget.class)) {
-            Annotation[] result = superClass.getDeclaredAnnotations();
+            var result = superClass.getDeclaredAnnotations();
             if (result != null && result.length > 0 &&
                     stream(result).anyMatch(FILTER_FIND_BY.or(FILTER_FIND_BYS).or(FILTER_FIND_ALL))) {
                 return result;
@@ -48,8 +48,8 @@ class FindByBuilder extends AbstractFindByBuilder {
                 .map(findByChained -> {
                     assertValidFindBys(findByChained);
 
-                    FindBy[] findByArray = findByChained.value();
-                    By[] byArray = new By[findByArray.length];
+                    var findByArray = findByChained.value();
+                    var byArray = new By[findByArray.length];
                     for (int i = 0; i < findByArray.length; i++) {
                         byArray[i] = buildByFromFindBy(findByArray[i]);
                     }
@@ -61,8 +61,8 @@ class FindByBuilder extends AbstractFindByBuilder {
     private By getByAll(FindAll findAll) {
         return ofNullable(findAll).map(findByAll -> {
             assertValidFindAll(findByAll);
-            FindBy[] findByArray = findByAll.value();
-            By[] byArray = new By[findByArray.length];
+            var findByArray = findByAll.value();
+            var byArray = new By[findByArray.length];
             for (int i = 0; i < findByArray.length; i++) {
                 byArray[i] = buildByFromFindBy(findByArray[i]);
             }
@@ -73,9 +73,9 @@ class FindByBuilder extends AbstractFindByBuilder {
 
     private By buildIt(String descriptionOfAnnotatedElement, Annotation[] annotations) {
         return ofNullable(annotations).map(annotations1 -> {
-            boolean hasFindBy = stream(annotations1).anyMatch(FILTER_FIND_BY);
-            boolean hasFindBys = stream(annotations1).anyMatch(FILTER_FIND_BYS);
-            boolean hasFindAll = stream(annotations1).anyMatch(FILTER_FIND_ALL);
+            var hasFindBy = stream(annotations1).anyMatch(FILTER_FIND_BY);
+            var hasFindBys = stream(annotations1).anyMatch(FILTER_FIND_BYS);
+            var hasFindAll = stream(annotations1).anyMatch(FILTER_FIND_ALL);
 
             if ((hasFindBy && hasFindBys) || (hasFindBy && hasFindAll)
                     || (hasFindAll && hasFindBys)) {

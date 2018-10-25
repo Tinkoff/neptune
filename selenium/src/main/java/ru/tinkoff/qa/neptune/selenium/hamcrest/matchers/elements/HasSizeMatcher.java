@@ -91,7 +91,7 @@ public final class HasSizeMatcher<T extends SearchContext> extends TypeSafeDiagn
     @Override
     protected boolean matchesSafely(T item, Description mismatchDescription) {
         boolean result;
-        Class<? extends SearchContext> clazz = item.getClass();
+        var clazz = item.getClass();
         Dimension size;
 
         if (WebElement.class.isAssignableFrom(clazz)) {
@@ -103,7 +103,7 @@ public final class HasSizeMatcher<T extends SearchContext> extends TypeSafeDiagn
             result = (widthMatcher.matches(size.getWidth()) && heightMatcher.matches(size.getHeight()));
         }
         else if (WrapsElement.class.isAssignableFrom(clazz)) {
-            WebElement e = WrapsElement.class.cast(item).getWrappedElement();
+            var e = WrapsElement.class.cast(item).getWrappedElement();
             if (e == null) {
                 mismatchDescription.appendText(format("Wrapped element is null. It is not possible to get size from an instance of %s.",
                         clazz.getName()));
@@ -121,7 +121,7 @@ public final class HasSizeMatcher<T extends SearchContext> extends TypeSafeDiagn
         }
 
         if (!result) {
-            Description description = new StringDescription();
+            var description = new StringDescription();
             if (!widthMatcher.matches(size.getWidth())) {
                 widthMatcher.describeMismatch(size.getWidth(), description.appendText("width: "));
             }

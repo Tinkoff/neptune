@@ -36,16 +36,16 @@ public final class GetWindowSupplier extends GetStepSupplier<SeleniumSteps, Wind
     private static List<Window> getListOfWindows(WebDriver driver, String description) {
         return driver.getWindowHandles()
                 .stream().map(s -> {
-                    DefaultWindow window = new DefaultWindow(s, driver);
+                    var window = new DefaultWindow(s, driver);
                     window.setDescription(description);
                     return window;
                 }).collect(Collectors.toList());
     }
 
     private static Window getWindowByIndex(WebDriver driver,  String description, int index) {
-        List<Window> windows = getListOfWindows(driver, description);
+        var windows = getListOfWindows(driver, description);
         if (windows.size() >= index + 1) {
-            Window result = windows.get(index);
+            var result = windows.get(index);
             result.switchToMe();
             return result;
         }

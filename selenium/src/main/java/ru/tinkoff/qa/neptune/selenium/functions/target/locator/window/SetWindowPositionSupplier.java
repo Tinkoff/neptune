@@ -68,6 +68,6 @@ public final class SetWindowPositionSupplier extends SequentialActionSupplier<Se
 
     @Override
     protected void performActionOn(Window value, Object... additionalArgument) {
-        value.setPosition(Point.class.cast(additionalArgument[0]));
+        value.setPosition((Point) additionalArgument[0]);
     }
 }

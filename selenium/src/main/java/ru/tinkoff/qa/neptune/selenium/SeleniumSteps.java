@@ -68,7 +68,7 @@ public class SeleniumSteps implements PerformActionStep<SeleniumSteps>, GetStep<
         return perform(switchActionSupplier);
     }
 
-    public SeleniumSteps navigate(NavigationActionSupplier navigationActionSupplier) {
+    public SeleniumSteps navigate(NavigationActionSupplier<?> navigationActionSupplier) {
         return perform(navigationActionSupplier);
     }
 

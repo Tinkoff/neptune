@@ -16,7 +16,7 @@ interface Condition<T> extends Predicate<T> {
                 "It seems given predicate doesn't describe any condition. Use method " +
                         "StoryWriter.condition to describe the AND-condition or override the toString method");
 
-        Predicate<T> thisCondition = this;
+        var thisCondition = this;
         return new Condition<>() {
 
             @Override
@@ -35,7 +35,7 @@ interface Condition<T> extends Predicate<T> {
     }
 
     default Predicate<T> negate() {
-        Predicate<T> thisCondition = this;
+        var thisCondition = this;
 
         return new Condition<>() {
             @Override
@@ -56,7 +56,7 @@ interface Condition<T> extends Predicate<T> {
                 "It seems given predicate doesn't describe any condition. Use method " +
                         "StoryWriter.condition to describe the OR-condition or override the toString method");
 
-        Predicate<T> thisCondition = this;
+        var thisCondition = this;
         return new Condition<>() {
 
             @Override

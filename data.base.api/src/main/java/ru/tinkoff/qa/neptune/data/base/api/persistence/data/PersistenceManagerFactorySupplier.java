@@ -26,8 +26,8 @@ public abstract class PersistenceManagerFactorySupplier implements Supplier<JDOP
     private final PersistenceUnitMetaData persistenceUnitMetaData;
 
     public PersistenceManagerFactorySupplier() {
-        PersistenceUnit unit = this.getClass().getAnnotation(PersistenceUnit.class);
-        Class<? extends PersistenceManagerFactorySupplier> supplierClass = this.getClass();
+        var unit = this.getClass().getAnnotation(PersistenceUnit.class);
+        var supplierClass = this.getClass();
         persistenceUnitMetaData = fillPersistenceUnit(ofNullable(unit)
                 .map(persistenceUnit -> {
                     if (isBlank(persistenceUnit.uri())) {
@@ -36,7 +36,7 @@ public abstract class PersistenceManagerFactorySupplier implements Supplier<JDOP
                     }
 
                     try {
-                        URI uri = new URI(persistenceUnit.uri());
+                        var uri = new URI(persistenceUnit.uri());
                         return new PersistenceUnitMetaData(persistenceUnit.name(),
                                 persistenceUnit.transactionType().name(), uri);
                     } catch (URISyntaxException e) {
@@ -54,8 +54,8 @@ public abstract class PersistenceManagerFactorySupplier implements Supplier<JDOP
     }
 
     private static String getDynamicUnitName() {
-        String defaultPersistenceName = "dynamic-unit";
-        String unitName = defaultPersistenceName;
+        var defaultPersistenceName = "dynamic-unit";
+        var unitName = defaultPersistenceName;
         int index = 0;
         while (isPersistentManagerFactory(unitName)) {
             index ++;
@@ -83,8 +83,7 @@ public abstract class PersistenceManagerFactorySupplier implements Supplier<JDOP
 
     @Override
     public JDOPersistenceManagerFactory get() {
-        JDOPersistenceManagerFactory managerFactory =
-                new JDOPersistenceManagerFactory(persistenceUnitMetaData, null);
+        var managerFactory = new JDOPersistenceManagerFactory(persistenceUnitMetaData, null);
         managerFactory.setName(persistenceUnitMetaData.getName());
         return managerFactory;
     }

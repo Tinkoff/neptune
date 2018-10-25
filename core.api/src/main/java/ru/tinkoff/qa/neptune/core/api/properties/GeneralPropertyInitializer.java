@@ -24,17 +24,15 @@ public final class GeneralPropertyInitializer {
 
     private static File findPropertyFile(String startPath) {
         // attempt to find configuration in the specified directory
-        File defaultConfig = new File(startPath);
-        File list[] = defaultConfig
+        var defaultConfig = new File(startPath);
+        var list = defaultConfig
                 .listFiles((dir, name) -> name
                         .endsWith(GENERAL_PROPERTIES));
 
         if (list != null && list.length > 0) {
             return list[0];
-        }
-
-        if (list != null && list.length == 0) {
-            File inner[] = defaultConfig.listFiles();
+        } else if (list != null) {
+            var inner = defaultConfig.listFiles();
             File result = null;
             for (File element : inner) {
                 if (element.isDirectory()) {
@@ -66,7 +64,7 @@ public final class GeneralPropertyInitializer {
      * @param file is a file to read.
      */
     public static void refreshProperties(File file) {
-        Properties prop = new Properties();
+        var prop = new Properties();
         FileInputStream input;
         try {
             input = new FileInputStream(file);

@@ -58,3 +58,5 @@ gradle/
 */test-output
 */allure-results
 .allure/*
+data.base.api/src/generated/*
+allure-results/*

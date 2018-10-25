@@ -64,14 +64,14 @@ public final class HasTextMatcher<T extends SearchContext> extends TypeSafeDiagn
     @Override
     protected boolean matchesSafely(T item, Description mismatchDescription) {
         boolean result;
-        Class<? extends SearchContext> clazz = item.getClass();
+        var clazz = item.getClass();
         String text;
 
         if (WebElement.class.isAssignableFrom(clazz)) {
             result = matcher.matches(text = WebElement.class.cast(item).getText());
         }
         else if (WrapsElement.class.isAssignableFrom(clazz)) {
-            WebElement e = WrapsElement.class.cast(item).getWrappedElement();
+            var e = WrapsElement.class.cast(item).getWrappedElement();
             if (e == null) {
                 mismatchDescription.appendText(format("Wrapped element is null. It is not possible to get text from the instance of %s.",
                         clazz.getName()));

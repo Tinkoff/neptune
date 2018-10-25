@@ -1,7 +1,5 @@
 package ru.tinkoff.qa.neptune.core.api.cleaning;
 
-
-import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import static java.util.Arrays.stream;
@@ -15,18 +13,18 @@ public interface Refreshable {
      * @param toBeRefreshed is an object which is supposed to have fields of type which extends {@link Refreshable}.
      */
     static void refresh(Object toBeRefreshed) {
-        Class<?> clazz = toBeRefreshed.getClass();
+        var clazz = toBeRefreshed.getClass();
         while (!clazz.equals(Object.class)) {
-            Field[] fields = clazz.getDeclaredFields();
+            var fields = clazz.getDeclaredFields();
 
             stream(fields).forEach(field -> {
-                int modifiers = field.getModifiers();
+                var modifiers = field.getModifiers();
 
                 if (!Modifier.isStatic(modifiers)) {
                     if (Refreshable.class.isAssignableFrom(field.getType())) {
                         field.setAccessible(true);
                         try {
-                            Object value = field.get(toBeRefreshed);
+                            var value = field.get(toBeRefreshed);
                             ofNullable(value).ifPresent(o -> ((Refreshable) o).refresh());
                         } catch (IllegalAccessException e) {
                             e.printStackTrace();

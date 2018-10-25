@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator.window;
 
 import java.util.function.Predicate;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static ru.tinkoff.qa.neptune.core.api.StoryWriter.condition;
@@ -32,7 +31,7 @@ public final class WindowPredicates {
     public static Predicate<Window> hasTitle(Pattern titlePattern) {
         return condition(format("title meets regExp pattern '%s'", titlePattern),
                 window -> {
-                    Matcher m = titlePattern.matcher(window.getTitle());
+                    var m = titlePattern.matcher(window.getTitle());
                     return m.find();
                 });
     }
@@ -56,7 +55,7 @@ public final class WindowPredicates {
     public static Predicate<Window> hasUrl(Pattern urlPattern) {
         return condition(format("url meets regExp pattern '%s'", urlPattern),
                 window -> {
-                    Matcher m = urlPattern.matcher(window.getCurrentUrl());
+                    var m = urlPattern.matcher(window.getCurrentUrl());
                     return m.find();
                 });
     }

@@ -58,8 +58,8 @@ public final class SQLQueryBuilderFunction<T> implements Function<DataBaseSteps,
     @Override
     @SuppressWarnings("unchecked")
     public Query<T> apply(DataBaseSteps dataBaseSteps) {
-        JDOPersistenceManager manager = dataBaseSteps.getCurrentPersistenceManager();
-        Query<T> query = manager.newQuery("javax.jdo.query.SQL", sql);
+        var manager = dataBaseSteps.getCurrentPersistenceManager();
+        var query = manager.newQuery("javax.jdo.query.SQL", sql);
         ofNullable(type).ifPresent(query::setClass);
 
         return (Query<T>) newProxyInstance(getSystemClassLoader(),

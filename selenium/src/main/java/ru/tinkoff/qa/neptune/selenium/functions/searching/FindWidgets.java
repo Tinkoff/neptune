@@ -47,7 +47,7 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
 
                 && (Arrays.stream(clazz.getDeclaredConstructors())
                 .filter(constructor -> {
-                    Class<?>[] parameters = constructor.getParameterTypes();
+                    var parameters = constructor.getParameterTypes();
                     return parameters.length == 1 &&
                             WebElement.class.isAssignableFrom(parameters[0]);
                 }).collect(toList()).size() > 0));
@@ -78,7 +78,7 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
     }
 
     List<Class<? extends R>> getSubclasses() {
-        List<Class<? extends R>> resultList = findSubclasses();
+        var resultList = findSubclasses();
 
         if (resultList.size() > 0) {
             return resultList;
@@ -93,12 +93,12 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
     public List<R> apply(SearchContext searchContext) {
         classesToInstantiate = ofNullable(classesToInstantiate)
                 .orElseGet(this::getSubclasses);
-        List<R> result = new ArrayList<>();
+        var result = new ArrayList<R>();
         classesToInstantiate.forEach(clazz -> {
-            By by = builder.buildIt(clazz);
+            var by = builder.buildIt(clazz);
             result.addAll(searchContext.findElements(by).stream()
                     .map(webElement -> {
-                        String stringDescription = getWidgetName(clazz);
+                        var stringDescription = getWidgetName(clazz);
                         if (!isBlank(conditionString)) {
                             stringDescription = format("%s found on conditions '%s'", stringDescription, conditionString);
                         }
@@ -109,7 +109,7 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
         return new ElementList<>(result) {
             @Override
             public String toString() {
-                String stringDescription = String.format("%s elements of type %s", size(), getWidgetName(classOfAWidget));
+                var stringDescription = String.format("%s elements of type %s", size(), getWidgetName(classOfAWidget));
                 if (!isBlank(conditionString)) {
                     stringDescription = format("%s found on conditions '%s'", stringDescription, conditionString);
                 }

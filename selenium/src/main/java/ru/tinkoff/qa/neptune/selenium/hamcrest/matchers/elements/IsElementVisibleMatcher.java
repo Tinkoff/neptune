@@ -29,7 +29,7 @@ public final class IsElementVisibleMatcher extends TypeSafeDiagnosingMatcher<Sea
     @Override
     protected boolean matchesSafely(SearchContext item, Description mismatchDescription) {
         boolean result;
-        Class<? extends SearchContext> clazz = item.getClass();
+        var clazz = item.getClass();
 
         if (WebElement.class.isAssignableFrom(clazz)) {
             result = WebElement.class.cast(item).isDisplayed();
@@ -38,7 +38,7 @@ public final class IsElementVisibleMatcher extends TypeSafeDiagnosingMatcher<Sea
             result = IsVisible.class.cast(item).isVisible();
         }
         else if (WrapsElement.class.isAssignableFrom(clazz)) {
-            WebElement e = WrapsElement.class.cast(item).getWrappedElement();
+            var e = WrapsElement.class.cast(item).getWrappedElement();
             if (e == null) {
                 mismatchDescription.appendText(format("Wrapped element is null. It is not possible to get visibility from an instance of %s.",
                         clazz.getName()));
