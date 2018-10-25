@@ -4,6 +4,7 @@ ru.tinkoff.qa.neptune.selenium.api.widget.drafts
 ru.tinkoff.qa.neptune.selenium.captors
 ru.tinkoff.qa.neptune.selenium.functions.click
 ru.tinkoff.qa.neptune.selenium.functions.edit
+ru.tinkoff.qa.neptune.selenium.functions.intreraction
 ru.tinkoff.qa.neptune.selenium.functions.java.script
 ru.tinkoff.qa.neptune.selenium.functions.navigation
 ru.tinkoff.qa.neptune.selenium.functions.searching
