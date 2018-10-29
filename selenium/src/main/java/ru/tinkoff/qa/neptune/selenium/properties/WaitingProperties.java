@@ -6,65 +6,60 @@ import ru.tinkoff.qa.neptune.core.api.properties.waiting.time.DurationValuePrope
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.function.Supplier;
 
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeUnitProperties.*;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeValueProperties.*;
 import static java.time.Duration.of;
 import static java.time.temporal.ChronoUnit.MINUTES;
 
-public enum WaitingProperties implements Supplier<Duration> {
+public final class WaitingProperties extends DurationSupplier {
     /**
      * Returns duration of the waiting for some web elements
      * are present and suit some criteria. When {@code "waiting.for.elements.time.unit"} or
      * {@code "waiting.for.elements.time"} are not defined then it returns 1 minute.
      * Otherwise it returns defined duration value.
      */
-    ELEMENT_WAITING_DURATION(ELEMENT_WAITING_TIME_UNIT, ELEMENT_WAITING_TIME_VALUE),
+    public static final WaitingProperties ELEMENT_WAITING_DURATION = new WaitingProperties(ELEMENT_WAITING_TIME_UNIT,
+            ELEMENT_WAITING_TIME_VALUE, of(1, MINUTES));
 
     /**
      * Returns duration of the waiting for appearance of an alert.
      * When {@code "waiting.alert.time.unit"} or {@code "waiting.alert.time"}
      * are not defined then it returns 1 minute. Otherwise it returns defined duration value.
      */
-    WAITING_ALERT_TIME_DURATION(WAITING_ALERT_TIME_UNIT, WAITING_ALERT_TIME_VALUE),
+    public static final WaitingProperties WAITING_ALERT_TIME_DURATION = new WaitingProperties(WAITING_ALERT_TIME_UNIT,
+            WAITING_ALERT_TIME_VALUE, of(1, MINUTES));
 
     /**
      * Returns duration of the waiting for some window.
      * When {@code "waiting.window.time.unit"} or {@code "waiting.window..time"}
      * are not defined then it returns 1 minute. Otherwise it returns defined duration value.
      */
-    WAITING_WINDOW_TIME_DURATION(WAITING_WINDOW_TIME_UNIT, WAITING_WINDOW_TIME_VALUE),
+    public static final WaitingProperties WAITING_WINDOW_TIME_DURATION = new WaitingProperties(WAITING_WINDOW_TIME_UNIT,
+            WAITING_WINDOW_TIME_VALUE, of(1, MINUTES));
 
     /**
      * Returns duration of the waiting for the switching to some frame succeeded.
      * When {@code "waiting.frame.switching.time.unit"} or {@code "waiting.frame.switching.time"}
      * are not defined then it returns 1 minute. Otherwise it returns defined duration value.
      */
-    WAITING_FRAME_SWITCHING_DURATION(WAITING_FRAME_SWITCHING_TIME_UNIT, WAITING_FRAME_SWITCHING_TIME_VALUE),
+    public static final WaitingProperties WAITING_FRAME_SWITCHING_DURATION = new WaitingProperties(WAITING_FRAME_SWITCHING_TIME_UNIT,
+            WAITING_FRAME_SWITCHING_TIME_VALUE, of(1, MINUTES));
 
     /**
      * Returns duration of the waiting for waiting for a page is loaded.
      * When {@code "waiting.for.page.loaded.time.unit"} or {@code "waiting.for.page.loaded.time"}
      * are not defined then it returns 1 minute. Otherwise it returns defined duration value.
      */
-    WAITING_FOR_PAGE_LOADED_DURATION(WAITING_FOR_PAGE_LOADED_TIME_UNIT, WAITING_FOR_PAGE_LOADED_TIME_VALUE);
+    public static final WaitingProperties WAITING_FOR_PAGE_LOADED_DURATION = new WaitingProperties(WAITING_FOR_PAGE_LOADED_TIME_UNIT,
+            WAITING_FOR_PAGE_LOADED_TIME_VALUE, of(1, MINUTES));
 
-    private final DurationSupplier durationSupplier;
-
-    WaitingProperties(TimeUnitProperties timeUnit, TimeValueProperties timeValue) {
-        durationSupplier = new DurationSupplier(timeUnit, timeValue) {
-            @Override
-            public Duration get() {
-                return getDuration(of(1, MINUTES));
-            }
-        };
+    private WaitingProperties(TimeUnitProperties durationUnitPropertySupplier,
+                              TimeValueProperties durationValuePropertySupplier,
+                              Duration returnWhenNotDefined) {
+        super(durationUnitPropertySupplier, durationValuePropertySupplier, returnWhenNotDefined);
     }
 
-    @Override
-    public Duration get() {
-        return durationSupplier.get();
-    }
 
     public enum TimeUnitProperties implements DurationUnitPropertySupplier {
         /**

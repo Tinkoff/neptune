@@ -98,21 +98,10 @@ public class NullPropertiesTest {
                 nullValue());
 
 
-        assertThat(format("Duration item %s", ELEMENT_WAITING_DURATION.name()),
-                ELEMENT_WAITING_DURATION.get(),
-                is(ofMinutes(1)));
-
-        assertThat(format("Duration item %s", WAITING_ALERT_TIME_DURATION.name()),
-                WAITING_ALERT_TIME_DURATION.get(),
-                is(ofMinutes(1)));
-
-        assertThat(format("Duration item %s", WAITING_WINDOW_TIME_DURATION.name()),
-                WAITING_WINDOW_TIME_DURATION.get(),
-                is(ofMinutes(1)));
-
-        assertThat(format("Duration item %s", WAITING_FRAME_SWITCHING_DURATION.name()),
-                WAITING_FRAME_SWITCHING_DURATION.get(),
-                is(ofMinutes(1)));
+        assertThat("Web element waiting duration", ELEMENT_WAITING_DURATION.get(), is(ofMinutes(1)));
+        assertThat("Alert waiting duration", WAITING_ALERT_TIME_DURATION.get(), is(ofMinutes(1)));
+        assertThat("Window waiting duration", WAITING_WINDOW_TIME_DURATION.get(), is(ofMinutes(1)));
+        assertThat("Frame switching duration", WAITING_FRAME_SWITCHING_DURATION.get(), is(ofMinutes(1)));
     }
 
     @Test
