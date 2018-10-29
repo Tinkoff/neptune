@@ -1,1 +1,1 @@
-typeSearchIndex = [{"p":"ru.tinkoff.qa.neptune.check","l":"Check"},{"p":"ru.tinkoff.qa.neptune.check","l":"ThatValue"}]
+typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"ru.tinkoff.qa.neptune.check","l":"Check"},{"p":"ru.tinkoff.qa.neptune.check","l":"ThatValue"}]

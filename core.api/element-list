@@ -1,0 +1,11 @@
+ru.tinkoff.qa.neptune.core.api
+ru.tinkoff.qa.neptune.core.api.cleaning
+ru.tinkoff.qa.neptune.core.api.concurency
+ru.tinkoff.qa.neptune.core.api.conditions
+ru.tinkoff.qa.neptune.core.api.event.firing
+ru.tinkoff.qa.neptune.core.api.event.firing.captors
+ru.tinkoff.qa.neptune.core.api.exception.management
+ru.tinkoff.qa.neptune.core.api.properties
+ru.tinkoff.qa.neptune.core.api.properties.waiting.time
+ru.tinkoff.qa.neptune.core.api.proxy
+ru.tinkoff.qa.neptune.core.api.utils
