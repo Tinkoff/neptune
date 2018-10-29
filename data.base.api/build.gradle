@@ -39,7 +39,7 @@ tasks.withType(JavaCompile) {
 }
 
 compileJava.doLast {
-    enhanceJdoEntities.execute()
+    enhanceJdoEntities.exec()
 }
 
 task generateStaticMetamodel(type: JavaCompile, group: 'build', description: 'Generates JDO static metamodel') {
