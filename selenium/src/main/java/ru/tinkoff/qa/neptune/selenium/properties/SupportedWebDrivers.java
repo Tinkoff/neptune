@@ -7,7 +7,6 @@ import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.opera.OperaDriver;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
@@ -63,10 +62,6 @@ public enum SupportedWebDrivers implements Supplier<Object[]> {
 
             if (BrowserType.OPERA_BLINK.equalsIgnoreCase(browserName)) {
                 return operadriver();
-            }
-
-            if (BrowserType.PHANTOMJS.equalsIgnoreCase(browserName)) {
-                return phantomjs();
             }
 
             return null;
@@ -137,16 +132,6 @@ public enum SupportedWebDrivers implements Supplier<Object[]> {
         @Override
         public WebDriverManager getWebDriverManager() {
             return null;
-        }
-    },
-
-    /**
-     * This item describes instantiation of {@link PhantomJSDriver}
-     */
-    PHANTOM_JS_DRIVER(PhantomJSDriver.class, CapabilityTypes.PHANTOM_JS, false) {
-        @Override
-        public WebDriverManager getWebDriverManager() {
-            return phantomjs();
         }
     };
 

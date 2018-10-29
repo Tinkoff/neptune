@@ -148,21 +148,10 @@ public class DefaultPropertiesTest {
                 is(100L));
 
 
-        assertThat(format("Duration item %s", ELEMENT_WAITING_DURATION.name()),
-                ELEMENT_WAITING_DURATION.get(),
-                is(ofMinutes(3)));
-
-        assertThat(format("Duration item %s", WAITING_ALERT_TIME_DURATION.name()),
-                WAITING_ALERT_TIME_DURATION.get(),
-                is(ofSeconds(45)));
-
-        assertThat(format("Duration item %s", WAITING_WINDOW_TIME_DURATION.name()),
-                WAITING_WINDOW_TIME_DURATION.get(),
-                is(ofMillis(1500)));
-
-        assertThat(format("Duration item %s", WAITING_FRAME_SWITCHING_DURATION.name()),
-                WAITING_FRAME_SWITCHING_DURATION.get(),
-                is(ofSeconds(100)));
+        assertThat("Web element waiting duration", ELEMENT_WAITING_DURATION.get(), is(ofMinutes(3)));
+        assertThat("Alert waiting duration", WAITING_ALERT_TIME_DURATION.get(), is(ofSeconds(45)));
+        assertThat("Window waiting duration", WAITING_WINDOW_TIME_DURATION.get(), is(ofMillis(1500)));
+        assertThat("Frame switching duration", WAITING_FRAME_SWITCHING_DURATION.get(), is(ofSeconds(100)));
     }
 
     @Test

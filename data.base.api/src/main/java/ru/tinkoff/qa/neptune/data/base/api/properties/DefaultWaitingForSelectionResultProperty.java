@@ -25,11 +25,6 @@ public final class DefaultWaitingForSelectionResultProperty extends DurationSupp
 
     private DefaultWaitingForSelectionResultProperty(DurationUnitPropertySupplier durationUnitPropertySupplier,
                                                        DurationValuePropertySupplier durationValuePropertySupplier) {
-        super(durationUnitPropertySupplier, durationValuePropertySupplier);
-    }
-
-    @Override
-    public Duration get() {
-        return getDuration(ofSeconds(5));
+        super(durationUnitPropertySupplier, durationValuePropertySupplier, ofSeconds(5));
     }
 }

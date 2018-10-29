@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.properties;
 
+import org.openqa.selenium.MutableCapabilities;
 import ru.tinkoff.qa.neptune.core.api.properties.PropertySupplier;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -9,7 +10,6 @@ import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.opera.OperaOptions;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.safari.SafariOptions;
 
 import java.util.List;
@@ -19,9 +19,8 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.ArrayUtils.contains;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
-public enum CapabilityTypes implements PropertySupplier<Capabilities> {
+public enum CapabilityTypes implements PropertySupplier<MutableCapabilities> {
     /**
      * Capabilities for the starting of {@link org.openqa.selenium.remote.RemoteWebDriver}
      */
@@ -43,13 +42,16 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
          * @return built {@link Capabilities}
          */
         @Override
-        public Capabilities get() {
+        public MutableCapabilities get() {
+            var browser = CommonCapabilityProperties.BROWSER_NAME.get();
             if (CommonCapabilityProperties.BROWSER_NAME.get() == null ||
                     isBlank(String.valueOf(CommonCapabilityProperties.BROWSER_NAME.get()))) {
                 throw new IllegalArgumentException(format("The property %s should be defined",
                         CommonCapabilityProperties.BROWSER_NAME.getPropertyName()));
             }
-            return super.get();
+            var result =  super.get();
+            result.setCapability(CapabilityType.BROWSER_NAME, browser);
+            return result;
         }
     },
 
@@ -73,7 +75,7 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
          * @return built {@link ChromeOptions}
          */
         @Override
-        public Capabilities get() {
+        public MutableCapabilities get() {
             return new ChromeOptions().merge(super.get());
         }
     },
@@ -98,7 +100,7 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
          * @return built {@link EdgeOptions}
          */
         @Override
-        public Capabilities get() {
+        public MutableCapabilities get() {
             return new EdgeOptions().merge(super.get());
         }
     },
@@ -123,7 +125,7 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
          * @return built {@link FirefoxOptions}
          */
         @Override
-        public Capabilities get() {
+        public MutableCapabilities get() {
             return new FirefoxOptions().merge(super.get());
         }
     },
@@ -148,7 +150,7 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
          * @return built {@link InternetExplorerOptions}
          */
         @Override
-        public Capabilities get() {
+        public MutableCapabilities get() {
             return new InternetExplorerOptions().merge(super.get());
         }
     },
@@ -173,7 +175,7 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
          * @return built {@link OperaOptions}
          */
         @Override
-        public Capabilities get() {
+        public MutableCapabilities get() {
             return new OperaOptions().merge(super.get());
         }
     },
@@ -198,37 +200,8 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
          * @return built {@link SafariOptions}
          */
         @Override
-        public Capabilities get() {
+        public MutableCapabilities get() {
             return new SafariOptions().merge(super.get());
-        }
-    },
-
-    /**
-     * Capabilities for the starting of {@link org.openqa.selenium.phantomjs.PhantomJSDriver}
-     */
-    PHANTOM_JS("phantomJs") {
-
-        /**
-         * Creates {@link Capabilities} with following properties:
-         * <p>
-         *     <p>{@code web.driver.capability.platformName} to define name of a supported platform.
-         *     Windows, Linux etc. This is not the necessary property. @see org.openqa.selenium.Platform
-         *     <p>{@code web.driver.capability.javascriptEnabled} to enable or to disable js. Possible values are
-         *     {@code true} or {@code false}. By default js is enabled. This is not the necessary property.
-         *     <p>{@code web.driver.capability.browserVersion} to define a version of browser. This is not the necessary
-         *     property.
-         *     <p>{@code remote.capability.suppliers} to define additional capabilities. It is a string with name of a
-         *     supplier.
-         *     @see CapabilitySupplier
-         *     @see AdditionalCapabilitiesFor
-         *
-         * @return built {@link Capabilities} for {@link org.openqa.selenium.phantomjs.PhantomJSDriver}
-         */
-        @Override
-        public Capabilities get() {
-            var capabilities = new DesiredCapabilities().merge(super.get());
-            capabilities.setCapability(BROWSER_NAME, BrowserType.PHANTOMJS);
-            return capabilities;
         }
     };
 
@@ -240,11 +213,8 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
     }
 
     @Override
-    public Capabilities get() {
-        var desiredCapabilities = new DesiredCapabilities();
-        ofNullable(CommonCapabilityProperties.BROWSER_NAME.get()).ifPresent(o ->
-                desiredCapabilities.setCapability(CapabilityType.BROWSER_NAME, o));
-
+    public MutableCapabilities get() {
+        var desiredCapabilities = new MutableCapabilities();
         ofNullable(CommonCapabilityProperties.PLATFORM_NAME.get()).ifPresent(o ->
                 desiredCapabilities.setCapability(CapabilityType.PLATFORM_NAME, o));
 
@@ -283,8 +253,9 @@ public enum CapabilityTypes implements PropertySupplier<Capabilities> {
          *     <p>{@link BrowserType#IEXPLORE}
          *     <p>{@link BrowserType#OPERA_BLINK}
          *     <p>{@link BrowserType#SAFARI}
-         *     <p>{@link BrowserType#PHANTOMJS}
-         * 
+         *
+         * It has sense to define value of the property when value of the property {@link SupportedWebDriverProperty#SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY}
+         * is {@link SupportedWebDrivers#REMOTE_DRIVER}
          */
         BROWSER_NAME(format("web.driver.capability.%s", CapabilityType.BROWSER_NAME)),
 

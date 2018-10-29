@@ -8,7 +8,6 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.server.SeleniumServer;
 import org.testng.annotations.DataProvider;
@@ -18,13 +17,13 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import static io.github.bonigarcia.wdm.WebDriverManager.chromedriver;
 import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CommonCapabilityProperties.BROWSER_NAME;
 import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDriverProperty.SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDriverProperty.WEB_DRIVER_TO_LAUNCH;
 import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers.*;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.REMOTE_WEB_DRIVER_URL_PROPERTY;
-import static io.github.bonigarcia.wdm.WebDriverManager.phantomjs;
 import static java.lang.String.format;
 import static java.util.Map.entry;
 import static java.util.Optional.ofNullable;
@@ -86,15 +85,12 @@ public class SanityTestOfTheStartingAndStoppingOfWebDriver {
         return new Object[][]{
                 {ANY, Map.ofEntries(desiredDriver(CHROME_DRIVER)), ChromeDriver.class, null},
                 {ANY, Map.ofEntries(desiredDriver(FIREFOX_DRIVER)), FirefoxDriver.class, null},
-                {ANY, Map.ofEntries(desiredDriver(PHANTOM_JS_DRIVER)), PhantomJSDriver.class, null},
                 {WIN8, Map.ofEntries(desiredDriver(IE_DRIVER)), InternetExplorerDriver.class, null},
 
                 {ANY, Map.ofEntries(desiredDriver(REMOTE_DRIVER),
                         browserType(CHROME)), RemoteWebDriver.class, CHROME},
                 {ANY, Map.ofEntries(desiredDriver(REMOTE_DRIVER),
                         browserType(FIREFOX)), RemoteWebDriver.class, FIREFOX},
-                {ANY, Map.ofEntries(desiredDriver(REMOTE_DRIVER),
-                        browserType(PHANTOMJS)), RemoteWebDriver.class, PHANTOMJS},
                 {WIN8, Map.ofEntries(desiredDriver(REMOTE_DRIVER),
                         browserType(IEXPLORE)), RemoteWebDriver.class, IEXPLORE}
 
@@ -143,7 +139,7 @@ public class SanityTestOfTheStartingAndStoppingOfWebDriver {
         URL url = new URL(format(DEFAULT_LOCAL_HOST, port));
 
         Map<String, String> properties = new HashMap<>(Map.ofEntries(desiredDriver(REMOTE_DRIVER),
-                browserType(PHANTOMJS),
+                browserType(CHROME),
                 entry(REMOTE_WEB_DRIVER_URL_PROPERTY.getPropertyName(), url.toString())));
         properties.forEach(System::setProperty);
         server = startServer(port);
@@ -158,7 +154,7 @@ public class SanityTestOfTheStartingAndStoppingOfWebDriver {
                             "parameters should contain capabilities.",
                     parameters, arrayContaining(is(url), instanceOf(Capabilities.class)));
 
-            phantomjs().setup();
+            chromedriver().setup();
 
             wrappedWebDriver = new WrappedWebDriver(supportedWebDriver);
             WebDriver driver = wrappedWebDriver.getWrappedDriver();

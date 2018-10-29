@@ -10,24 +10,25 @@ public abstract class DurationSupplier implements Supplier<Duration> {
 
     private final DurationUnitPropertySupplier durationUnitPropertySupplier;
     private final DurationValuePropertySupplier durationValuePropertySupplier;
+    private final Duration returnWhenNotDefined;
 
     protected DurationSupplier(DurationUnitPropertySupplier durationUnitPropertySupplier,
-                               DurationValuePropertySupplier durationValuePropertySupplier) {
+                               DurationValuePropertySupplier durationValuePropertySupplier, Duration returnWhenNotDefined) {
+        checkArgument(returnWhenNotDefined != null, "Default duration value should be defined");
         checkArgument(durationUnitPropertySupplier != null, "A supplier of time unit should be defined");
         checkArgument(durationValuePropertySupplier != null, "A supplier of time value should be defined");
+        this.returnWhenNotDefined = returnWhenNotDefined;
         this.durationUnitPropertySupplier = durationUnitPropertySupplier;
         this.durationValuePropertySupplier = durationValuePropertySupplier;
     }
 
     /**
-     * This method creates supplied time unit value or returns given value when {@link DurationUnitPropertySupplier#get()}
+     * This method creates supplied time unit value or returns default value when {@link DurationUnitPropertySupplier#get()}
      * or {@link DurationValuePropertySupplier#get()} return {@code null}
      *
-     * @param returnWhenNotDefined a duration value that should be returned when {@link DurationUnitPropertySupplier#get()}
-     *      or {@link DurationValuePropertySupplier#get()} return {@code null}
      * @return built duration value.
      */
-    protected Duration getDuration(Duration returnWhenNotDefined) {
+    public Duration get() {
         if (durationUnitPropertySupplier.get() == null || durationValuePropertySupplier.get() == null) {
             return returnWhenNotDefined;
         }

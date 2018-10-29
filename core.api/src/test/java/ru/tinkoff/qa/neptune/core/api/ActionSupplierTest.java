@@ -64,13 +64,13 @@ public class ActionSupplierTest {
         //this method was added for the unit testing
         CleanStringAction andThen(Function<Object, String> function, String...strings) {
             return super.andThen("Clean string value of the object of given strings",
-                    function, strings);
+                    function, (Object[]) strings);
         }
 
         //this method was added for the unit testing
         CleanStringAction andThen(String string, String...strings) {
             return super.andThen("Clean string value " + string + " of given strings",
-                    string, strings);
+                    string, (Object[]) strings);
         }
 
         @Override
