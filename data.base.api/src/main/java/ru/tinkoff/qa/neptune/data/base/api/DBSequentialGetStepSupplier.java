@@ -8,7 +8,7 @@ import java.util.function.Function;
 
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
-import static ru.tinkoff.qa.neptune.data.base.api.ChangePersistenceManagerByNameFunction.changeConnectionByName;
+import static ru.tinkoff.qa.neptune.data.base.api.ChangePersistenceManagerByClassFunction.changeConnectionByClass;
 import static ru.tinkoff.qa.neptune.data.base.api.ChangePersistenceManagerByPersistenceManagerFactory.changeConnectionByPersistenceManagerFactory;
 import static ru.tinkoff.qa.neptune.data.base.api.ChangePersistenceManagerToDefault.changeConnectionToDefault;
 
@@ -25,15 +25,15 @@ public abstract class DBSequentialGetStepSupplier<T, Q, R extends DBSequentialGe
      * until another query is performed. This query should have another parameter set up by
      * {@link #usePersistenceUnit(JDOPersistenceManagerFactory)} or
      * {@link #useDefaultPersistenceUnit}. Also it is possible
-     * to invoke {@link DataBaseSteps#switchTo(CharSequence)} or {@link DataBaseSteps#switchTo(JDOPersistenceManagerFactory)}
+     * to invoke {@link DataBaseSteps#switchTo(Class)} or {@link DataBaseSteps#switchTo(JDOPersistenceManagerFactory)}
      * or {@link DataBaseSteps#switchToDefault()} for same purposes.
      *
-     * @param persistenceUnitName is a name of dynamic persistence unit described by any subclass of
-     *                            {@link PersistenceManagerFactorySupplier}
+     * @param factorySupplier is a name of dynamic persistence unit described by any subclass
+     *                        of {@link PersistenceManagerFactorySupplier}
      * @return self-reference
      */
-    public R usePersistenceUnit(CharSequence persistenceUnitName) {
-        connectionDescription = persistenceUnitName;
+    public R usePersistenceUnit(Class<? extends PersistenceManagerFactorySupplier> factorySupplier) {
+        connectionDescription = factorySupplier;
         toUseDefaultConnection = false;
         return (R) this;
     }
@@ -42,9 +42,9 @@ public abstract class DBSequentialGetStepSupplier<T, Q, R extends DBSequentialGe
      * This method defines where (on which data base) query should be performed.
      * WARNING!!! After the query performing the instance of {@link DataBaseSteps} keeps the given connection
      * until another query is performed. This query should have another parameter set up by
-     * {@link #usePersistenceUnit(CharSequence)} or
+     * {@link #usePersistenceUnit(Class)} or
      * {@link #useDefaultPersistenceUnit}. Also it is possible
-     * to invoke {@link DataBaseSteps#switchTo(CharSequence)} or {@link DataBaseSteps#switchTo(JDOPersistenceManagerFactory)}
+     * to invoke {@link DataBaseSteps#switchTo(Class)} or {@link DataBaseSteps#switchTo(JDOPersistenceManagerFactory)}
      * or {@link DataBaseSteps#switchToDefault()} for same purposes.
      *
      * @param persistenceManagerFactory is not closed instance of {@link JDOPersistenceManagerFactory}
@@ -61,9 +61,9 @@ public abstract class DBSequentialGetStepSupplier<T, Q, R extends DBSequentialGe
      * {@link PersistenceManagerFactorySupplier} and its name defined by the property {@code `default.persistence.unit.name`}.
      * WARNING!!! After the query performing the instance of {@link DataBaseSteps} keeps default connection
      * until another query is performed. This query should have another parameter set up by
-     * {@link #usePersistenceUnit(CharSequence)} or
+     * {@link #usePersistenceUnit(Class)} or
      * {@link #usePersistenceUnit(JDOPersistenceManagerFactory)}. Also it is possible
-     * to invoke {@link DataBaseSteps#switchTo(CharSequence)} or {@link DataBaseSteps#switchTo(JDOPersistenceManagerFactory)}
+     * to invoke {@link DataBaseSteps#switchTo(Class)} or {@link DataBaseSteps#switchTo(JDOPersistenceManagerFactory)}
      * for same purposes.
      *
      * @return self-reference
@@ -87,8 +87,8 @@ public abstract class DBSequentialGetStepSupplier<T, Q, R extends DBSequentialGe
 
         return ofNullable(connectionDescription).map(o -> {
             var objectClass = o.getClass();
-            if (CharSequence.class.isAssignableFrom(objectClass)) {
-                return changeConnectionAndGet(changeConnectionByName((CharSequence) o));
+            if (Class.class.isAssignableFrom(objectClass)) {
+                return changeConnectionAndGet(changeConnectionByClass((Class<? extends PersistenceManagerFactorySupplier>) o));
             }
 
             if (JDOPersistenceManagerFactory.class.isAssignableFrom(objectClass)) {

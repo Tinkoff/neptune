@@ -4,6 +4,7 @@ import org.openqa.selenium.Cookie;
 import ru.tinkoff.qa.neptune.core.api.properties.PropertySupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumParameterProvider;
 import ru.tinkoff.qa.neptune.selenium.WrappedWebDriver;
+import ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties;
 import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -14,9 +15,9 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.hamcrest.Matchers.*;
-import static ru.tinkoff.qa.neptune.selenium.properties.FlagProperties.CLEAR_WEB_DRIVER_COOKIES;
-import static ru.tinkoff.qa.neptune.selenium.properties.FlagProperties.GET_BACK_TO_BASE_URL;
-import static ru.tinkoff.qa.neptune.selenium.properties.FlagProperties.KEEP_WEB_DRIVER_SESSION_OPENED;
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.CLEAR_WEB_DRIVER_COOKIES;
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.GET_BACK_TO_BASE_URL;
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.KEEP_WEB_DRIVER_SESSION_OPENED;
 import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDriverProperty.WEB_DRIVER_TO_LAUNCH;
 import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers.CHROME_DRIVER;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
@@ -33,13 +34,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * to make sure that {@link WrappedWebDriver#refresh()} works as expected
  *
  * to make sure that {@link WrappedWebDriver} doesn't ignore
- * {@link ru.tinkoff.qa.neptune.selenium.properties.FlagProperties#KEEP_WEB_DRIVER_SESSION_OPENED}
+ * {@link SessionFlagProperties#KEEP_WEB_DRIVER_SESSION_OPENED}
  *
  * to make sure that {@link WrappedWebDriver} doesn't ignore
- * {@link ru.tinkoff.qa.neptune.selenium.properties.FlagProperties#CLEAR_WEB_DRIVER_COOKIES}
+ * {@link SessionFlagProperties#CLEAR_WEB_DRIVER_COOKIES}
  *
  * to make sure that {@link WrappedWebDriver} doesn't ignore
- * {@link ru.tinkoff.qa.neptune.selenium.properties.FlagProperties#GET_BACK_TO_BASE_URL}
+ * {@link SessionFlagProperties#GET_BACK_TO_BASE_URL}
  *
  * Requirements:
  * Installed Chrome

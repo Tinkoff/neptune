@@ -1,16 +1,17 @@
 package ru.tinkoff.qa.neptune.core.api.properties;
 
+import ru.tinkoff.qa.neptune.core.api.properties.enums.EnumPropertySuppler;
+
 import static ru.tinkoff.qa.neptune.core.api.properties.CapturedEvents.FAILURE;
 import static ru.tinkoff.qa.neptune.core.api.properties.CapturedEvents.SUCCESS;
 import static ru.tinkoff.qa.neptune.core.api.properties.CapturedEvents.SUCCESS_AND_FAILURE;
-import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 
 /**
  * This class is designed to read the property {@code "do.captures.of"} and to return
  * an element of {@link CapturedEvents}.
  */
-public final class DoCapturesOf implements PropertySupplier<CapturedEvents> {
+public final class DoCapturesOf implements EnumPropertySuppler<CapturedEvents> {
 
     private final static String DO_CAPTURES_OF = "do.captures.of";
     public final static DoCapturesOf DO_CAPTURES_OF_INSTANCE = new DoCapturesOf();
@@ -50,14 +51,5 @@ public final class DoCapturesOf implements PropertySupplier<CapturedEvents> {
     @Override
     public String getPropertyName() {
         return DO_CAPTURES_OF;
-    }
-
-    @Override
-    public CapturedEvents get() {
-        return returnOptionalFromEnvironment()
-                .map(s -> stream(CapturedEvents.values())
-                        .filter(capturedEvents -> s.trim().equals(capturedEvents.name()))
-                        .findFirst().orElse(null))
-                .orElse(null);
     }
 }

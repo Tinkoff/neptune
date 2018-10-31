@@ -1,16 +1,14 @@
 package ru.tinkoff.qa.neptune.testng.integration.properties;
 
 import ru.tinkoff.qa.neptune.core.api.cleaning.Refreshable;
-import ru.tinkoff.qa.neptune.core.api.properties.PropertySupplier;
+import ru.tinkoff.qa.neptune.core.api.properties.enums.MultipleEnumPropertySuppler;
 
 import java.util.List;
 
-import static java.lang.String.format;
-import static java.util.Arrays.stream;
 import static java.util.List.of;
-import static java.util.stream.Collectors.toList;
+import static java.util.Optional.ofNullable;
 
-public final class TestNGRefreshStrategyProperty implements PropertySupplier<List<RefreshEachTimeBefore>> {
+public final class TestNGRefreshStrategyProperty implements MultipleEnumPropertySuppler<RefreshEachTimeBefore> {
 
     private static final String PROPERTY_NAME = "testng.refresh.before";
     public static final TestNGRefreshStrategyProperty REFRESH_STRATEGY_PROPERTY = new TestNGRefreshStrategyProperty();
@@ -37,15 +35,6 @@ public final class TestNGRefreshStrategyProperty implements PropertySupplier<Lis
      */
     @Override
     public List<RefreshEachTimeBefore> get() {
-        return returnOptionalFromEnvironment().map(s ->
-                stream(s.split(",")).map(s1 -> {
-                    try {
-                        return RefreshEachTimeBefore.valueOf(s1.trim());
-                    }
-                    catch (Throwable e) {
-                        throw new IllegalArgumentException(format("Unknown refresh strategy %s. Use name " +
-                                "of an element of %s", s1, RefreshEachTimeBefore.class.getName()));
-                    }
-                }).collect(toList())).orElseGet(() -> of(RefreshEachTimeBefore.METHOD_STARTING));
+        return ofNullable(MultipleEnumPropertySuppler.super.get()).orElseGet(() -> of(RefreshEachTimeBefore.METHOD_STARTING));
     }
 }

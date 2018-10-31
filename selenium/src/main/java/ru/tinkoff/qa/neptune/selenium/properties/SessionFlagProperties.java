@@ -1,9 +1,9 @@
 package ru.tinkoff.qa.neptune.selenium.properties;
 
-import ru.tinkoff.qa.neptune.core.api.properties.PropertySupplier;
 import org.openqa.selenium.WebDriver;
+import ru.tinkoff.qa.neptune.core.api.properties.booleans.BooleanPropertySupplier;
 
-public enum FlagProperties implements PropertySupplier<Boolean> {
+public enum SessionFlagProperties implements BooleanPropertySupplier {
     /**
      * This enum item reads the property {@code 'find.only.visible.elements.when.no.conditions'}.
      * That means that the searching for some element finds only visible elements when the property
@@ -56,18 +56,12 @@ public enum FlagProperties implements PropertySupplier<Boolean> {
 
     private final String propertyName;
 
-    FlagProperties(String propertyName) {
+    SessionFlagProperties(String propertyName) {
         this.propertyName = propertyName;
     }
 
     @Override
     public String getPropertyName() {
         return propertyName;
-    }
-
-    @Override
-    public Boolean get() {
-        return returnOptionalFromEnvironment()
-                .map(Boolean::parseBoolean).orElse(false);
     }
 }

@@ -1,11 +1,11 @@
 package ru.tinkoff.qa.neptune.selenium.properties;
 
-import ru.tinkoff.qa.neptune.core.api.properties.PropertySupplier;
+import ru.tinkoff.qa.neptune.core.api.properties.enums.EnumPropertySuppler;
 
+import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers.CHROME_DRIVER;
-import static java.lang.String.format;
 
-public final class SupportedWebDriverProperty implements PropertySupplier<SupportedWebDrivers> {
+public final class SupportedWebDriverProperty implements EnumPropertySuppler<SupportedWebDrivers> {
 
     /**
      * The property {@code web.driver.to.launch}. It should be defined to launch the target browser.
@@ -27,13 +27,6 @@ public final class SupportedWebDriverProperty implements PropertySupplier<Suppor
 
     @Override
     public SupportedWebDrivers get() {
-        return returnOptionalFromEnvironment().map(s -> {
-            for (var supportedWebDriver: SupportedWebDrivers.values()) {
-                if (supportedWebDriver.name().equalsIgnoreCase(s)) {
-                    return supportedWebDriver;
-                }
-            }
-            throw new IllegalArgumentException(format("Unknown supported web driver %s", s));
-        }).orElse(CHROME_DRIVER);
+        return ofNullable(EnumPropertySuppler.super.get()).orElse(CHROME_DRIVER);
     }
 }

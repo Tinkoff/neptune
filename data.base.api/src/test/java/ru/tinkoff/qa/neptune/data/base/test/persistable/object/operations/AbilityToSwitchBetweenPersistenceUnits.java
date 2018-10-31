@@ -10,24 +10,28 @@ public class AbilityToSwitchBetweenPersistenceUnits extends BaseDbOperationTest 
 
     @Test
     public void checkDefaultPersistenceManager() {
-        assertThat(dataBaseSteps.getCurrentFactory().getName(), is(TEST_BASE));
+        assertThat(dataBaseSteps.getCurrentFactory().getName(),
+                is(PersistenceManagerFactorySupplierForTestBase1.class.getName()));
     }
 
     @Test(dependsOnMethods = "checkDefaultPersistenceManager")
-    public void checkAbilityToSwitchBetweenPersistenceManagersByName() {
+    public void checkAbilityToSwitchBetweenPersistenceManagersByClass() {
         try {
-            assertThat(dataBaseSteps.switchTo(TEST_BASE2).getCurrentFactory().getName(), is(TEST_BASE2));
+            assertThat(dataBaseSteps.switchTo(PersistenceManagerFactorySupplierForTestBase2.class)
+                    .getCurrentFactory().getName(),
+                    is(PersistenceManagerFactorySupplierForTestBase2.class.getName()));
         }
         finally {
             dataBaseSteps.switchToDefault();
         }
     }
 
-    @Test(dependsOnMethods = "checkAbilityToSwitchBetweenPersistenceManagersByName")
+    @Test(dependsOnMethods = "checkAbilityToSwitchBetweenPersistenceManagersByClass")
     public void checkAbilityToSwitchToDefaultPersistenceManager() {
         try {
-            dataBaseSteps.switchTo(TEST_BASE2);
-            assertThat(dataBaseSteps.switchToDefault().getCurrentFactory().getName(), is(TEST_BASE));
+            dataBaseSteps.switchTo(PersistenceManagerFactorySupplierForTestBase2.class);
+            assertThat(dataBaseSteps.switchToDefault().getCurrentFactory().getName(),
+                    is(PersistenceManagerFactorySupplierForTestBase1.class.getName()));
         }
         finally {
             dataBaseSteps.switchToDefault();
@@ -37,8 +41,10 @@ public class AbilityToSwitchBetweenPersistenceUnits extends BaseDbOperationTest 
     @Test(dependsOnMethods = "checkAbilityToSwitchToDefaultPersistenceManager")
     public void checkAbilityToSwitchToPersistenceManagersByItself() {
         try {
-            assertThat(dataBaseSteps.switchTo(getPersistenceManagerFactory(TEST_BASE2, true))
-                    .getCurrentFactory().getName(), is(TEST_BASE2));
+            assertThat(dataBaseSteps.switchTo(
+                    getPersistenceManagerFactory(PersistenceManagerFactorySupplierForTestBase2.class, true))
+                            .getCurrentFactory().getName(),
+                    is(PersistenceManagerFactorySupplierForTestBase2.class.getName()));
         }
         finally {
             dataBaseSteps.switchToDefault();

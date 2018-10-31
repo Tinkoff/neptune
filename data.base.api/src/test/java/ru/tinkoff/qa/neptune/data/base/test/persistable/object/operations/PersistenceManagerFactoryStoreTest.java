@@ -16,27 +16,24 @@ import static ru.tinkoff.qa.neptune.data.base.api.persistence.data.PersistenceMa
 public class PersistenceManagerFactoryStoreTest extends BaseDbOperationTest {
 
     @Test
-    public void getPersistenceManagerFactorySuppliersTest() {
-        List<PersistenceManagerFactorySupplier> suppliers = getPersistenceManagerFactorySuppliers();
-        assertThat(suppliers.stream()
-                .map(PersistenceManagerFactorySupplier::name).collect(toList()),
-                containsInAnyOrder(TEST_BASE, TEST_BASE2));
+    public void checkExistingPersistenceManagerFactoryNames() {
+        assertThat(getPersistenceManagerFactory(PersistenceManagerFactorySupplierForTestBase1.class, true).getName(),
+                is(PersistenceManagerFactorySupplierForTestBase1.class.getName()));
+        assertThat(getPersistenceManagerFactory(PersistenceManagerFactorySupplierForTestBase2.class, true).getName(),
+                is(PersistenceManagerFactorySupplierForTestBase2.class.getName()));
     }
 
     @Test
-    public void getExistingPersistenceManagerFactoryByName() {
-        assertThat(getPersistenceManagerFactory(TEST_BASE, true).getName(), is(TEST_BASE));
-        assertThat(getPersistenceManagerFactory(TEST_BASE2, true).getName(), is(TEST_BASE2));
-    }
-
-    @Test
-    public void getNotExistingPersistenceManagerFactoryByName() {
-        assertThat(getPersistenceManagerFactory("FakeName", false), nullValue());
+    public void getNotExistingPersistenceManagerFactoryByClass() {
+        assertThat(getPersistenceManagerFactory(PersistenceManagerFactorySupplier.class, false),
+                nullValue());
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class,
-            expectedExceptionsMessageRegExp = "A supplier of persistence manager factories named FakeName has not been found")
-    public void getNotExistingPersistenceManagerFactoryByNameWithThrowingException() {
-        assertThat(getPersistenceManagerFactory("FakeName", true), nullValue());
+            expectedExceptionsMessageRegExp = "A supplier of persistence manager factories has not been found. " +
+                    "Expected class: ru.tinkoff.qa.neptune.data.base.api.persistence.data.PersistenceManagerFactorySupplier")
+    public void getNotExistingPersistenceManagerFactoryByClassWithThrowingException() {
+        assertThat(getPersistenceManagerFactory(PersistenceManagerFactorySupplier.class, true),
+                nullValue());
     }
 }

@@ -7,7 +7,6 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.core.api.utils.SPIUtil.loadSPI;
 
 public final class PersistenceManagerFactoryStore {
@@ -31,33 +30,29 @@ public final class PersistenceManagerFactoryStore {
         return persistenceManagerFactorySuppliers;
     }
 
-    static boolean isPersistentManagerFactory(String name) {
-        checkArgument(!isBlank(name), "Persistence unit name is expected to be not a blank string.");
-        return getPersistenceManagerFactorySuppliers().stream()
-                .anyMatch(persistenceManagerFactorySupplier ->
-                        persistenceManagerFactorySupplier.name().equalsIgnoreCase(name));
-    }
-
     /**
-     * Finds some {@link PersistenceManagerFactorySupplier} by it's name and returns persistence manager.
+     * Finds some {@link PersistenceManagerFactorySupplier} and returns the persistence manager factory.
      *
-     * @param name is a name of {@link PersistenceManagerFactorySupplier} to get.
-     * @param throwExceptionIfNotPresent is what to do when nothing is found by name. When {@code true} then {@link IllegalArgumentException}
-     *                                   is thrown. {@code null} is returned otherwise.
-     * @return an instance of {@link PersistenceManagerFactorySupplier} found by name.
+     * @param supplierClass is a subclass of {@link PersistenceManagerFactorySupplier} to get the instance
+     *                      of {@link JDOPersistenceManagerFactory}.
+     * @param throwExceptionIfNotPresent is what to do when nothing is found. When {@code true}
+     *                                   then {@link IllegalArgumentException} is thrown. {@code null}
+     *                                   is returned otherwise.
+     * @return an instance of {@link JDOPersistenceManagerFactory}.
      */
-    public static JDOPersistenceManagerFactory getPersistenceManagerFactory(CharSequence name,
+    public static JDOPersistenceManagerFactory getPersistenceManagerFactory(Class<? extends PersistenceManagerFactorySupplier> supplierClass,
                                                                             boolean throwExceptionIfNotPresent) {
-        checkArgument(!isBlank(name), "Persistence unit name is expected to be not a blank string.");
+        checkArgument(supplierClass != null, "Class of persistence manager factory supplier " +
+                "is expected to be not a null value");
         return getPersistenceManagerFactorySuppliers().stream().filter(persistenceManagerFactorySupplier ->
-                persistenceManagerFactorySupplier.name().equalsIgnoreCase(name.toString()))
+                persistenceManagerFactorySupplier.getClass().equals(supplierClass))
                 .findFirst()
                 .map(PersistenceManagerFactorySupplier::get).orElseGet(() -> {
                     if (!throwExceptionIfNotPresent) {
                         return null;
                     }
-                    throw new IllegalArgumentException(format("A supplier of persistence manager factories named %s has not been found",
-                            name));
+                    throw new IllegalArgumentException(format("A supplier of persistence manager factories has not been found. Expected class: %s",
+                            supplierClass.getName()));
                 });
     }
 }

@@ -6,6 +6,8 @@ import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.data.base.api.store.StoreSequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.data.base.api.test.*;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDbOperationTest;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.PersistenceManagerFactorySupplierForTestBase1;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.PersistenceManagerFactorySupplierForTestBase2;
 
 import javax.jdo.JDOUserException;
 import java.util.Calendar;
@@ -273,7 +275,7 @@ public class StoreAndDeleteTest extends BaseDbOperationTest {
                 catalogItemTheDevils);
         try {
             try {
-                dataBaseSteps.get(storeOperation.usePersistenceUnit(TEST_BASE2));
+                dataBaseSteps.get(storeOperation.usePersistenceUnit(PersistenceManagerFactorySupplierForTestBase2.class));
             }
             catch (JDOUserException e) {
                 assertThat(e.getCause().getClass(), is(MissingTableException.class));
@@ -282,7 +284,7 @@ public class StoreAndDeleteTest extends BaseDbOperationTest {
             refreshDostoevsky();
             storeOperation = storedObjects(catalogCrimeAndPunishment, catalogItemTheDevils);
 
-            dataBaseSteps.get(storeOperation.usePersistenceUnit(TEST_BASE));
+            dataBaseSteps.get(storeOperation.usePersistenceUnit(PersistenceManagerFactorySupplierForTestBase1.class));
             assertThat(fyodorDostoevsky.getId(), greaterThan(0));
             assertThat(crimeAndPunishment.getId(), greaterThan(0));
             assertThat(theDevils.getId(), greaterThan(0));
@@ -302,7 +304,8 @@ public class StoreAndDeleteTest extends BaseDbOperationTest {
         try {
             try {
                 dataBaseSteps.get(storeOperation
-                        .usePersistenceUnit(getPersistenceManagerFactory(TEST_BASE2, true)));
+                        .usePersistenceUnit(getPersistenceManagerFactory(PersistenceManagerFactorySupplierForTestBase2.class,
+                                true)));
             } catch (JDOUserException e) {
                 assertThat(e.getCause().getClass(), is(MissingTableException.class));
             }
@@ -311,7 +314,8 @@ public class StoreAndDeleteTest extends BaseDbOperationTest {
             storeOperation = storedObjects(catalogItemPetSematary);
 
             dataBaseSteps.get(storeOperation
-                    .usePersistenceUnit(getPersistenceManagerFactory(TEST_BASE, true)));
+                    .usePersistenceUnit(getPersistenceManagerFactory(PersistenceManagerFactorySupplierForTestBase1.class,
+                            true)));
             assertThat(stephenKing.getId(), greaterThan(0));
             assertThat(petSematary.getId(), greaterThan(0));
             assertThat(doubleday.getId(), greaterThan(0));

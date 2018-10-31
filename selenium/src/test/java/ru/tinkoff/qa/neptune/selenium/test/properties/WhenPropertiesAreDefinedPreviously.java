@@ -7,6 +7,8 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.selenium.test.capability.suppliers.ChromeTestSupplierWithExperimentalOption;
+import ru.tinkoff.qa.neptune.selenium.test.capability.suppliers.FirefoxTestSupplierWithProfile;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -20,7 +22,7 @@ import java.util.Properties;
 import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CHROME;
 import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CommonCapabilityProperties.*;
 import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.FIREFOX;
-import static ru.tinkoff.qa.neptune.selenium.properties.FlagProperties.*;
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.*;
 import static ru.tinkoff.qa.neptune.core.api.properties.GeneralPropertyInitializer.GENERAL_PROPERTIES;
 import static ru.tinkoff.qa.neptune.core.api.properties.GeneralPropertyInitializer.refreshProperties;
 import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDriverProperty.WEB_DRIVER_TO_LAUNCH;
@@ -62,7 +64,7 @@ public class WhenPropertiesAreDefinedPreviously {
                     entry(PLATFORM_NAME.getPropertyName(), "Linux"),
                     entry(SUPPORTS_JAVASCRIPT.getPropertyName(), "false"),
                     entry(BROWSER_VERSION.getPropertyName(), "60"),
-                    entry(CHROME.getPropertyName(), "withExperimental"),
+                    entry(CHROME.getPropertyName(), ChromeTestSupplierWithExperimentalOption.class.getName()),
                     entry(CLEAR_WEB_DRIVER_COOKIES.getPropertyName(), "true"),
                     entry(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName(), "true"),
                     entry(GET_BACK_TO_BASE_URL.getPropertyName(), "true"),
@@ -90,7 +92,7 @@ public class WhenPropertiesAreDefinedPreviously {
         System.setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getPropertyName(), "false");
 
         System.setProperty(WEB_DRIVER_TO_LAUNCH, "FIREFOX_DRIVER");
-        System.setProperty(FIREFOX.getPropertyName(), "withProfile");
+        System.setProperty(FIREFOX.getPropertyName(), FirefoxTestSupplierWithProfile.class.getName());
 
         Properties prop = new Properties();
         try (OutputStream output = new FileOutputStream(GENERAL_PROPERTIES)) {

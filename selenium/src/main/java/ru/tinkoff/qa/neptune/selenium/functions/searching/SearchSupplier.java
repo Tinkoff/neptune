@@ -6,7 +6,7 @@ import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.*;
 import ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties;
 import org.openqa.selenium.*;
-import ru.tinkoff.qa.neptune.selenium.properties.FlagProperties;
+import ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties;
 
 import java.time.Duration;
 import java.util.List;
@@ -149,7 +149,7 @@ public final class SearchSupplier<R extends SearchContext>
      * result function will return the first found element if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found element which is displayed on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param by locator strategy to find an element
      * @param duration is the parameter of a time to find the element
@@ -166,7 +166,7 @@ public final class SearchSupplier<R extends SearchContext>
      * result function will return the first found element if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found element which is displayed on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param by locator strategy to find an element
      * @param text which the desired element should have
@@ -184,7 +184,7 @@ public final class SearchSupplier<R extends SearchContext>
      * result function will return the first found element if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found element which is displayed on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param by locator strategy to find an element
      * @param textPattern is a regExp to match text of the desired element
@@ -256,7 +256,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found element if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found element which is displayed on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param by locator strategy to find an element
      * @return an instance of {@link SearchSupplier}
@@ -276,7 +276,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found element if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found element which is displayed on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param by locator strategy to find an element
      * @param text which the desired element should have
@@ -298,7 +298,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found element if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found element which is displayed on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param by by locator strategy to find an element
      * @param textPattern is a regExp to match text of the desired element
@@ -374,7 +374,7 @@ public final class SearchSupplier<R extends SearchContext>
      * result function will return the first found widget if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found widget which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param tClass is a class of {@link Widget} which instance should be returned
      * @param duration is the parameter of a time to find the element
@@ -393,7 +393,7 @@ public final class SearchSupplier<R extends SearchContext>
      * result function will return the first found widget if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found widget which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param tClass is a class of {@link Widget} which instance should be returned. tClass should have at
      *               least one not abstract subclass which also implements {@link Labeled} or be that class.
@@ -415,7 +415,7 @@ public final class SearchSupplier<R extends SearchContext>
      * result function will return the first found widget if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found widget which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param tClass is a class of {@link Widget} which instance should be returned. tClass should have at
      *               least one not abstract subclass which also implements {@link Labeled} or be that class.
@@ -499,7 +499,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found widget if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found widget which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @param tClass is a class of {@link Widget} which instance should be returned
      * @param <T> the type of widget which should be found
@@ -520,7 +520,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found widget if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found widget which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @param tClass is a class of {@link Widget} which instance should be returned. tClass should have at
      *               least one not abstract subclass which also implements {@link Labeled} or be that class.
@@ -544,7 +544,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found widget if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found widget which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @param tClass is a class of {@link Widget} which instance should be returned. tClass should have at
      *               least one not abstract subclass which also implements {@link Labeled} or be that class.
@@ -606,7 +606,7 @@ public final class SearchSupplier<R extends SearchContext>
      * and returns some button. The result function will return the first found button if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found button which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param duration is the parameter of a time to find a button
      * @return an instance of {@link SearchSupplier}
@@ -621,7 +621,7 @@ public final class SearchSupplier<R extends SearchContext>
      * and returns some button. The result function will return the first found button if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found button which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param labels (texts of some elements or attributes inside or beside the button) which are used to
      *               find a button.
@@ -638,7 +638,7 @@ public final class SearchSupplier<R extends SearchContext>
      * and returns some button. The result function will return the first found button if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found button which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param label (text of some element or attribute inside or beside the button) which is used to
      *               find a button.
@@ -703,7 +703,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found button if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found button which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @return an instance of {@link SearchSupplier}
      */
@@ -722,7 +722,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found button if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found button which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @param labels (texts of some elements or attributes inside or beside the button) which are used to
      *               find a button.
@@ -743,7 +743,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found button if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found button which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @param label (text of some element or attribute inside or beside the widget) which is used to
      *              find a button.
@@ -802,7 +802,7 @@ public final class SearchSupplier<R extends SearchContext>
      * and returns some flag. The result function will return the first found flag if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found flag which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param duration is the parameter of a time to find a flag
      * @return an instance of {@link SearchSupplier}
@@ -817,7 +817,7 @@ public final class SearchSupplier<R extends SearchContext>
      * and returns some flag. The result function will return the first found flag if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found flag which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param labels (texts of some elements or attributes inside or beside the flag) which are used to
      *               find a flag.
@@ -834,7 +834,7 @@ public final class SearchSupplier<R extends SearchContext>
      * and returns some flag. The result function will return the first found flag if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found flag which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param label (text of some element or attribute inside or beside the flag) which is used to
      *               find a flag.
@@ -899,7 +899,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found flag if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found flag which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @return an instance of {@link SearchSupplier}
      */
@@ -918,7 +918,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found flag if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found flag which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
 
      *
      * @param labels (texts of some elements or attributes inside or beside the flag) which are used to
@@ -940,7 +940,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found flag if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found flag which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @param label (text of some element or attribute inside or beside the flag) which is used to
      *              find a flag.
@@ -1001,7 +1001,7 @@ public final class SearchSupplier<R extends SearchContext>
      * and returns some check box. The result function will return the first found check box if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found check box which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param duration is the parameter of a time to find a check box
      * @return an instance of {@link SearchSupplier}
@@ -1016,7 +1016,7 @@ public final class SearchSupplier<R extends SearchContext>
      * and returns some check box. The result function will return the first found check box if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found check box which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param labels (texts of some elements or attributes inside or beside the check box) which are used to
      *               find a check box.
@@ -1033,7 +1033,7 @@ public final class SearchSupplier<R extends SearchContext>
      * and returns some check box. The result function will return the first found check box if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found check box which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param label (text of some element or attribute inside or beside the check box) which is used to
      *               find a check box.
@@ -1098,7 +1098,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found checkbox if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found checkbox which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @return an instance of {@link SearchSupplier}
      */
@@ -1117,7 +1117,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found checkbox if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found checkbox which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
 
      *
      * @param labels (texts of some elements or attributes inside or beside the checkbox) which are used to
@@ -1139,7 +1139,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found checkbox if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found checkbox which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @param label (text of some element or attribute inside or beside the checkbox) which is used to
      *              find a checkbox.
@@ -1200,7 +1200,7 @@ public final class SearchSupplier<R extends SearchContext>
      * and returns some radio button. The result function will return the first found radio button if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found radio button which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param duration is the parameter of a time to find a radio button
      * @return an instance of {@link SearchSupplier}
@@ -1215,7 +1215,7 @@ public final class SearchSupplier<R extends SearchContext>
      * and returns some radio button. The result function will return the first found radio button if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found radio button which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param labels (texts of some elements or attributes inside or beside the radio button) which are used to
      *               find a radio button.
@@ -1232,7 +1232,7 @@ public final class SearchSupplier<R extends SearchContext>
      * and returns some radio button. The result function will return the first found radio button if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found radio button which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param label (text of some element or attribute inside or beside the radio button) which is used to
      *               find a radio button.
@@ -1297,7 +1297,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found radio button if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found radio button which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @return an instance of {@link SearchSupplier}
      */
@@ -1316,7 +1316,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found radio button if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found radio button which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
 
      *
      * @param labels (texts of some elements or attributes inside or beside the radio button) which are used to
@@ -1338,7 +1338,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found radio button if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found radio button which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @param label (text of some element or attribute inside or beside the radio button) which is used to
      *              find a radio button.
@@ -1397,7 +1397,7 @@ public final class SearchSupplier<R extends SearchContext>
      * and returns some link. The result function will return the first found link if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found link which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param duration is the parameter of a time to find a link
      * @return an instance of {@link SearchSupplier}
@@ -1412,7 +1412,7 @@ public final class SearchSupplier<R extends SearchContext>
      * and returns some link. The result function will return the first found link if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found link which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param labels (texts of some elements or attributes inside or beside the link) which are used to
      *               find a link.
@@ -1429,7 +1429,7 @@ public final class SearchSupplier<R extends SearchContext>
      * and returns some link. The result function will return the first found link if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found link which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param label (text of some element or attribute inside or beside the link) which is used to
      *               find a link.
@@ -1494,7 +1494,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found link if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found link which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @return an instance of {@link SearchSupplier}
      */
@@ -1513,7 +1513,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found link if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found link which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @param labels (texts of some elements or attributes inside or beside the link) which are used to
      *               find a link.
@@ -1534,7 +1534,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found link if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found link which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @param label (text of some element or attribute inside or beside the link) which is used to
      *              find a link.
@@ -1593,7 +1593,7 @@ public final class SearchSupplier<R extends SearchContext>
      * and returns some select. The result function will return the first found select if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found select which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param duration is the parameter of a time to find a select
      * @return an instance of {@link SearchSupplier}
@@ -1608,7 +1608,7 @@ public final class SearchSupplier<R extends SearchContext>
      * and returns some select. The result function will return the first found select if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found select which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param labels (texts of some elements or attributes inside or beside the select) which are used to
      *               find a select.
@@ -1625,7 +1625,7 @@ public final class SearchSupplier<R extends SearchContext>
      * and returns some select. The result function will return the first found select if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found select which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param label (text of some element or attribute inside or beside the select) which is used to
      *               find a select.
@@ -1690,7 +1690,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found select if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found select which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @return an instance of {@link SearchSupplier}
      */
@@ -1709,7 +1709,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found select if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found select which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @param labels (texts of some elements or attributes inside or beside the select) which are used to
      *               find a select.
@@ -1730,7 +1730,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found select if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found select which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @param label (text of some element or attribute inside or beside the select) which is used to
      *              find a select.
@@ -1789,7 +1789,7 @@ public final class SearchSupplier<R extends SearchContext>
      * and returns some tab. The result function will return the first found tab if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found tab which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param duration is the parameter of a time to find a tab
      * @return an instance of {@link SearchSupplier}
@@ -1804,7 +1804,7 @@ public final class SearchSupplier<R extends SearchContext>
      * and returns some tab. The result function will return the first found tab if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found tab which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param labels (texts of some elements or attributes inside or beside the tab) which are used to
      *               find a tab.
@@ -1821,7 +1821,7 @@ public final class SearchSupplier<R extends SearchContext>
      * and returns some tab. The result function will return the first found tab if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found tab which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param label (text of some element or attribute inside or beside the tab) which is used to
      *               find a tab.
@@ -1886,7 +1886,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found tab if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found tab which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @return an instance of {@link SearchSupplier}
      */
@@ -1905,7 +1905,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found tab if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found tab which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @param labels (texts of some elements or attributes inside or beside the tab) which are used to
      *               find a tab.
@@ -1926,7 +1926,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found tab if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found tab which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @param label (text of some element or attribute inside or beside the tab) which is used to
      *              find a tab.
@@ -1985,7 +1985,7 @@ public final class SearchSupplier<R extends SearchContext>
      * and returns some text field. The result function will return the first found text field if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found text field which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param duration is the parameter of a time to find a text field
      * @return an instance of {@link SearchSupplier}
@@ -2000,7 +2000,7 @@ public final class SearchSupplier<R extends SearchContext>
      * and returns some text field. The result function will return the first found text field if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found text field which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param labels (texts of some elements or attributes inside or beside the text field) which are used to
      *               find a text field.
@@ -2017,7 +2017,7 @@ public final class SearchSupplier<R extends SearchContext>
      * and returns some text field. The result function will return the first found text field if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found text field which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param label (text of some element or attribute inside or beside the text field) which is used to
      *               find a text field.
@@ -2082,7 +2082,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found table if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @return an instance of {@link SearchSupplier}
      */
@@ -2101,7 +2101,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found table if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @param labels (texts of some elements or attributes inside or beside the table) which are used to
      *               find a table.
@@ -2122,7 +2122,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found table if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @param label (text of some element or attribute inside or beside the table) which is used to
      *              find a table.
@@ -2181,7 +2181,7 @@ public final class SearchSupplier<R extends SearchContext>
      * and returns some table. The result function will return the first found table if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param duration is the parameter of a time to find a table
      * @return an instance of {@link SearchSupplier}
@@ -2196,7 +2196,7 @@ public final class SearchSupplier<R extends SearchContext>
      * and returns some table. The result function will return the first found table if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param labels (texts of some elements or attributes inside or beside the table) which are used to
      *               find a table.
@@ -2213,7 +2213,7 @@ public final class SearchSupplier<R extends SearchContext>
      * and returns some table. The result function will return the first found table if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param label (text of some element or attribute inside or beside the table) which is used to
      *               find a table.
@@ -2278,7 +2278,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found table if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @return an instance of {@link SearchSupplier}
      */
@@ -2297,7 +2297,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found table if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @param labels (texts of some elements or attributes inside or beside the table) which are used to
      *               find a table.
@@ -2318,7 +2318,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found table if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @param label (text of some element or attribute inside or beside the table) which is used to
      *              find a table.
@@ -2347,7 +2347,7 @@ public final class SearchSupplier<R extends SearchContext>
      * and returns the first found table row. The result function will return the first found table row if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table row which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param duration is the parameter of a time to find a table row
      * @return an instance of {@link SearchSupplier}
@@ -2381,7 +2381,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found table row if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table row which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @return an instance of {@link SearchSupplier}
      */
@@ -2408,7 +2408,7 @@ public final class SearchSupplier<R extends SearchContext>
      * and returns the first found  table header. The result function will return the first found table header if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table header which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param duration is the parameter of a time to find a table header
      * @return an instance of {@link SearchSupplier}
@@ -2442,7 +2442,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found table header if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table header which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @return an instance of {@link SearchSupplier}
      */
@@ -2469,7 +2469,7 @@ public final class SearchSupplier<R extends SearchContext>
      * and returns the first found table footer. The result function will return the first found table footer if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table footer which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param duration is the parameter of a time to find a table footer
      * @return an instance of {@link SearchSupplier}
@@ -2503,7 +2503,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found table footer if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table footer which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @return an instance of {@link SearchSupplier}
      */
@@ -2530,7 +2530,7 @@ public final class SearchSupplier<R extends SearchContext>
      * and returns the first found table cell. The result function will return the first found table cell if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table cell which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param duration is the parameter of a time to find a table cell
      * @return an instance of {@link SearchSupplier}
@@ -2564,7 +2564,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The result function will return the first found table cell if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return the first found table cell which is visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @return an instance of {@link SearchSupplier}
      */

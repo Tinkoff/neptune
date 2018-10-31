@@ -9,7 +9,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
-import ru.tinkoff.qa.neptune.selenium.properties.FlagProperties;
+import ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties;
 
 import java.time.Duration;
 import java.util.List;
@@ -135,7 +135,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * result function will return a list of any found elements if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found elements which are displayed on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param by locator strategy to find elements
      * @param duration is the parameter of a time to find elements
@@ -152,7 +152,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * result function will return a list of any found elements if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found elements which are displayed on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param by locator strategy to find elements
      * @param text which the desired elements should have
@@ -170,7 +170,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * result function will return a list of any found elements if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found elements which are displayed on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param by locator strategy to find elements
      * @param textPattern is a regExp to match text of desired elements
@@ -243,7 +243,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found elements if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found elements which are displayed on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param by locator strategy to find an element
      * @return an instance of {@link MultipleSearchSupplier}
@@ -263,7 +263,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found elements if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found elements which are displayed on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param by locator strategy to find an element
      * @param text which the desired elements should have
@@ -284,7 +284,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found elements if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found elements which are displayed on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param by locator strategy to find an element
      * @param textPattern is a regExp to match text of desired elements
@@ -359,7 +359,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * result function will return a list of any found widgets if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found widgets which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param tClass is a class of {@link Widget} which instances should be returned
      * @param duration is the parameter of a time to find elements
@@ -377,7 +377,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * result function will return a list of any found widgets if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found widgets which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param tClass is a class of {@link Widget} which instances should be returned. tClass should have at least one
      *               not abstract subclass which also implements {@link Labeled} or be that class.
@@ -398,7 +398,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * result function will return a list of any found widgets if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found widgets which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param tClass is a class of {@link Widget} which instances should be returned. tClass should have at least one
      *               not abstract subclass which also implements {@link Labeled} or be that class.
@@ -483,7 +483,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found widgets if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found widgets which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param tClass is a class of {@link Widget} which instances should be returned
      * @param <T> the type of widgets which should be found
@@ -504,7 +504,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found widgets if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found widgets which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param tClass is a class of {@link Widget} which instances should be returned. tClass should have at least one
      *               not abstract subclass which also implements {@link Labeled} or be that class.
@@ -528,7 +528,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found widgets if the property
      * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found widgets which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param tClass is a class of {@link Widget} which instances should be returned. tClass should have at least one
      *               not abstract subclass which also implements {@link Labeled} or be that class.
@@ -590,7 +590,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of found buttons. The result function will return a list of any found buttons
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found buttons which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param duration is the parameter of a time to find buttons
      * @return an instance of {@link MultipleSearchSupplier}
@@ -605,7 +605,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of found buttons. The result function will return a list of any found buttons
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found buttons which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param labels (texts of some elements or attributes inside or beside the button) which are used to
      *               find buttons.
@@ -622,7 +622,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of found buttons. The result function will return a list of any found buttons
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found buttons which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param label (text of some element or attribute inside or beside the button) which is used to
      *               find buttons.
@@ -687,7 +687,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found buttons
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found buttons which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @return an instance of {@link MultipleSearchSupplier}
      */
@@ -706,7 +706,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found buttons
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found buttons which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param labels (texts of some elements or attributes inside or beside the button) which are used to
      *               find buttons.
@@ -727,7 +727,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found buttons
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found buttons which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param label (text of some element or attribute inside or beside the button) which is used to
      *               find buttons.
@@ -786,7 +786,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of found flags. The result function will return a list of any found flags
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found flags which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param duration is the parameter of a time to find flags
      * @return an instance of {@link MultipleSearchSupplier}
@@ -801,7 +801,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of found flags. The result function will return a list of any found flags
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found flags which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param labels (texts of some elements or attributes inside or beside the flag) which are used to
      *               find flags.
@@ -818,7 +818,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of found flags. The result function will return a list of any found flags
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found flags which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param label (text of some element or attribute inside or beside the flag) which is used to
      *               find flags.
@@ -883,7 +883,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found flags
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found flags which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @return an instance of {@link MultipleSearchSupplier}
      */
@@ -902,7 +902,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found flags
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found flags which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param labels (texts of some elements or attributes inside or beside the flag) which are used to
      *               find flags.
@@ -923,7 +923,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found flags
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found flags which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param label (text of some element or attribute inside or beside the flag) which is used to
      *               find flags.
@@ -984,7 +984,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of found check boxes. The result function will return a list of any found check boxes
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found check boxes which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param duration is the parameter of a time to find check boxes
      * @return an instance of {@link MultipleSearchSupplier}
@@ -999,7 +999,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of found check boxes. The result function will return a list of any found check boxes
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found check boxes which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param labels (texts of some elements or attributes inside or beside the check box) which are used to
      *               find check boxes.
@@ -1016,7 +1016,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of found check boxes. The result function will return a list of any found check box
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found check boxes which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param label (text of some element or attribute inside or beside the check box) which is used to
      *               find check boxes.
@@ -1081,7 +1081,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found check boxes
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found check boxes which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @return an instance of {@link MultipleSearchSupplier}
      */
@@ -1100,7 +1100,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found check boxes
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found check boxes which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param labels (texts of some elements or attributes inside or beside the check box) which are used to
      *               find check boxes.
@@ -1121,7 +1121,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found check boxes
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found check boxes which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param label (text of some element or attribute inside or beside the check box) which is used to
      *               find check boxes.
@@ -1184,7 +1184,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of found radio buttons. The result function will return a list of any found radio buttons
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found radio buttons which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param duration is the parameter of a time to find radio buttons
      * @return an instance of {@link MultipleSearchSupplier}
@@ -1199,7 +1199,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of found radio buttons. The result function will return a list of any found radio buttons
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found radio buttons which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param labels (texts of some elements or attributes inside or beside the radio button) which are used to
      *               find radio buttons.
@@ -1217,7 +1217,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of found radio buttons. The result function will return a list of any found radio buttons
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found radio buttons which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param label (text of some element or attribute inside or beside the radio button) which is used to
      *               find radio buttons.
@@ -1285,7 +1285,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found radio buttons
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found radio buttons which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @return an instance of {@link MultipleSearchSupplier}
      */
@@ -1304,7 +1304,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found radio buttons
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found radio buttons which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param labels (texts of some elements or attributes inside or beside the radio button) which are used to
      *               find radio buttons.
@@ -1325,7 +1325,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found radio buttons
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found radio buttons which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param label (text of some element or attribute inside or beside the radio button) which is used to
      *               find radio buttons.
@@ -1390,7 +1390,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of found links. The result function will return a list of any found links
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found links which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param duration is the parameter of a time to find links
      * @return an instance of {@link MultipleSearchSupplier}
@@ -1405,7 +1405,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of found links. The result function will return a list of any found links
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found links which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param labels (texts of some elements or attributes inside or beside the links) which are used to
      *               find links.
@@ -1423,7 +1423,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of found links. The result function will return a list of any found links
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found links which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param label (text of some element or attribute inside or beside the link) which is used to
      *               find links.
@@ -1493,7 +1493,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found links
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found links which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @return an instance of {@link MultipleSearchSupplier}
      */
@@ -1512,7 +1512,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found links
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found links which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param labels (texts of some elements or attributes inside or beside the link) which are used to
      *               find links.
@@ -1533,7 +1533,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found links
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found links which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param label (text of some element or attribute inside or beside the link) which is used to
      *               find links.
@@ -1598,7 +1598,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of found selects. The result function will return a list of any found selects
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found selects which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param duration is the parameter of a time to find selects
      * @return an instance of {@link MultipleSearchSupplier}
@@ -1613,7 +1613,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of found selects. The result function will return a list of any found selects
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found selects which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param labels (texts of some elements or attributes inside or beside the select) which are used to
      *               find selects.
@@ -1631,7 +1631,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of found selects. The result function will return a list of any found selects
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found selects which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param label (text of some element or attribute inside or beside the select) which is used to
      *               find selects.
@@ -1701,7 +1701,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found selects
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found selects which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @return an instance of {@link MultipleSearchSupplier}
      */
@@ -1720,7 +1720,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found selects
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found selects which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param labels (texts of some elements or attributes inside or beside the select) which are used to
      *               find selects.
@@ -1741,7 +1741,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found selects
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found selects which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param label (text of some element or attribute inside or beside the select) which is used to
      *               find selects.
@@ -1805,7 +1805,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of found tabs. The result function will return a list of any found tabs
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found tabs which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param duration is the parameter of a time to find tabs
      * @return an instance of {@link MultipleSearchSupplier}
@@ -1820,7 +1820,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of found tabs. The result function will return a list of any found tabs
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found tabs which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param labels (texts of some elements or attributes inside or beside the tab) which are used to
      *               find tabs.
@@ -1838,7 +1838,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of found tabs. The result function will return a list of any found tabs
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found tabs which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param label (text of some element or attribute inside or beside the tab) which is used to
      *               find tabs.
@@ -1906,7 +1906,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found tabs
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found tabs which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @return an instance of {@link MultipleSearchSupplier}
      */
@@ -1925,7 +1925,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found tabs
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found tabs which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param labels (texts of some elements or attributes inside or beside the tab) which are used to
      *               find tabs.
@@ -1946,7 +1946,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found tabs
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found tabs which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param label (text of some element or attribute inside or beside the tab) which is used to
      *               find tabs.
@@ -2010,7 +2010,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of found text fields. The result function will return a list of any found text fields
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found text fields which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param duration is the parameter of a time to find text fields
      * @return an instance of {@link MultipleSearchSupplier}
@@ -2025,7 +2025,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of found text fields. The result function will return a list of any found text fields
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found text fields which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param labels (texts of some elements or attributes inside or beside the text field) which are used to
      *               find text fields.
@@ -2043,7 +2043,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of found text fields. The result function will return a list of any found text fields
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found text fields which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param label (text of some element or attribute inside or beside the text field) which is used to
      *               find text fields.
@@ -2110,7 +2110,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found text fields
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found text fields which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @return an instance of {@link MultipleSearchSupplier}
      */
@@ -2129,7 +2129,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found text fields
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found text fields which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param labels (texts of some elements or attributes inside or beside the text field) which are used to
      *               find text fields.
@@ -2150,7 +2150,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found text fields
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found text fields which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param label (text of some element or attribute inside or beside the text field) which is used to
      *               find text fields.
@@ -2214,7 +2214,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of found tables. The result function will return a list of any found tables
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found tables which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param duration is the parameter of a time to find tables
      * @return an instance of {@link MultipleSearchSupplier}
@@ -2229,7 +2229,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of found tables. The result function will return a list of any found tables
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found tables which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param labels (texts of some elements or attributes inside or beside the text field) which are used to
      *               find tables.
@@ -2247,7 +2247,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of found tables. The result function will return a list of any found tables
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found tables which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param label (text of some element or attribute inside or beside the text field) which is used to
      *               find tables.
@@ -2314,7 +2314,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found tables
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found tables which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @return an instance of {@link MultipleSearchSupplier}
      */
@@ -2333,7 +2333,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found tables
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found tables which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param labels (texts of some elements or attributes inside or beside the text field) which are used to
      *               find tables.
@@ -2354,7 +2354,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found tables
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found tables which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param label (text of some element or attribute inside or beside the text field) which is used to
      *               find tables.
@@ -2384,7 +2384,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of found table rows. The result function will return a list of any found table rows
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found table rows which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param duration is the parameter of a time to find table rows
      * @return an instance of {@link MultipleSearchSupplier}
@@ -2417,7 +2417,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found table rows
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found table rows which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @return an instance of {@link MultipleSearchSupplier}
      */
@@ -2445,7 +2445,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of found table headers. The result function will return a list of any found table headers
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found table headers which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param duration is the parameter of a time to find table headers
      * @return an instance of {@link MultipleSearchSupplier}
@@ -2478,7 +2478,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found table headers
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found table headers which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @return an instance of {@link MultipleSearchSupplier}
      */
@@ -2506,7 +2506,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of found table footers. The result function will return a list of any found table footers
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found table footers which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param duration is the parameter of a time to find table footers
      * @return an instance of {@link MultipleSearchSupplier}
@@ -2539,7 +2539,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found table footers
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found table footers which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @return an instance of {@link MultipleSearchSupplier}
      */
@@ -2567,7 +2567,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of found table cells. The result function will return a list of any found table cells
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found table cells which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @param duration is the parameter of a time to find table cells
      * @return an instance of {@link MultipleSearchSupplier}
@@ -2600,7 +2600,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The result function will return a list of any found table cells
      * if the property {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
      * Otherwise it will return a list of found table cells which are visible on a page.
-     * @see FlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
      *
      * @return an instance of {@link MultipleSearchSupplier}
      */

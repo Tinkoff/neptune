@@ -19,8 +19,8 @@ import static ru.tinkoff.qa.neptune.selenium.functions.navigation.GetCurrentUrlS
 import static ru.tinkoff.qa.neptune.selenium.functions.navigation.Refresh.refresh;
 import static ru.tinkoff.qa.neptune.selenium.functions.navigation.ToUrl.toUrl;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
-import static ru.tinkoff.qa.neptune.selenium.properties.FlagProperties.ENABLE_ABILITY_TO_USE_RELATIVE_URL;
-import static ru.tinkoff.qa.neptune.selenium.properties.FlagProperties.GET_BACK_TO_BASE_URL;
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.ENABLE_ABILITY_TO_USE_RELATIVE_URL;
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.GET_BACK_TO_BASE_URL;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeUnitProperties.WAITING_FOR_PAGE_LOADED_TIME_UNIT;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeValueProperties.WAITING_FOR_PAGE_LOADED_TIME_VALUE;

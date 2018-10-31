@@ -15,8 +15,8 @@ import static ru.tinkoff.qa.neptune.data.base.api.properties.DefaultPersistenceM
 
 public abstract class BaseDbOperationTest {
 
-    protected static final String TEST_BASE = "TestBase";
-    protected static final String TEST_BASE2 = "TestBase2";
+    private static final String TEST_BASE = "TestBase";
+    private static final String TEST_BASE2 = "TestBase2";
     static File testDB1;
     static File testDB2;
     protected static DataBaseSteps dataBaseSteps;
@@ -29,7 +29,7 @@ public abstract class BaseDbOperationTest {
         Files.copy(db1.toPath(), (testDB1 = new File(format("%s.db", TEST_BASE))).toPath(), REPLACE_EXISTING);
         Files.copy(db2.toPath(), (testDB2 = new File(format("%s.db", TEST_BASE2))).toPath(), REPLACE_EXISTING);
         System.setProperty(DEFAULT_JDO_PERSISTENCE_MANAGER_FACTORY_PROPERTY.getPropertyName(),
-                TEST_BASE);
+                PersistenceManagerFactorySupplierForTestBase1.class.getName());
         dataBaseSteps = getProxied(DataBaseSteps.class);
         testDB1.deleteOnExit();
         testDB2.deleteOnExit();
