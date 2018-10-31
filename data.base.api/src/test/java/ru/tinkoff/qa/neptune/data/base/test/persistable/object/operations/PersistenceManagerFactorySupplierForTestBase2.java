@@ -3,12 +3,10 @@ package ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations;
 import org.datanucleus.metadata.PersistenceUnitMetaData;
 import org.sqlite.JDBC;
 import ru.tinkoff.qa.neptune.data.base.api.persistence.data.PersistenceManagerFactorySupplier;
-import ru.tinkoff.qa.neptune.data.base.api.persistence.data.PersistenceUnit;
 
 import static java.lang.String.format;
 import static ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDbOperationTest.*;
 
-@PersistenceUnit(name = TEST_BASE2)
 public class PersistenceManagerFactorySupplierForTestBase2 extends PersistenceManagerFactorySupplier {
 
     @Override

@@ -17,7 +17,7 @@ import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonCondition
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldHaveAttribute;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.webElements;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.*;
-import static ru.tinkoff.qa.neptune.selenium.properties.FlagProperties.FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION;
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeUnitProperties.ELEMENT_WAITING_TIME_UNIT;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeValueProperties.ELEMENT_WAITING_TIME_VALUE;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;

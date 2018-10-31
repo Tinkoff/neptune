@@ -17,7 +17,7 @@ final class ChangePersistenceManagerByPersistenceManagerFactory implements Funct
 
     static Function<DataBaseSteps, DataBaseSteps> changeConnectionByPersistenceManagerFactory(
             JDOPersistenceManagerFactory persistenceManagerFactory) {
-        return toGet(format("Change connection by persistence manager factory %s", persistenceManagerFactory),
+        return toGet(format("Change connection by persistence manager factory %s", persistenceManagerFactory.getName()),
                 new ChangePersistenceManagerByPersistenceManagerFactory(persistenceManagerFactory));
     }
 

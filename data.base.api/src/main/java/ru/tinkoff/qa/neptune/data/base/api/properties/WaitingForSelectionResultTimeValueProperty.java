@@ -1,8 +1,8 @@
 package ru.tinkoff.qa.neptune.data.base.api.properties;
 
-import ru.tinkoff.qa.neptune.core.api.properties.waiting.time.DurationValuePropertySupplier;
+import ru.tinkoff.qa.neptune.core.api.properties.longs.LongValuePropertySupplier;
 
-public final class WaitingForSelectionResultTimeValueProperty implements DurationValuePropertySupplier {
+public final class WaitingForSelectionResultTimeValueProperty implements LongValuePropertySupplier {
 
     private static final String WAITING_FOR_SELECTION_RESULT_VALUE = "waiting.db.selection.result.time.value";
 

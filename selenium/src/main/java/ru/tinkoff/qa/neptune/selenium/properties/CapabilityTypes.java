@@ -11,13 +11,11 @@ import org.openqa.selenium.opera.OperaOptions;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.safari.SafariOptions;
+import ru.tinkoff.qa.neptune.core.api.properties.object.MultipleObjectPropertySupplier;
 
 import java.util.List;
-import static ru.tinkoff.qa.neptune.core.api.utils.SPIUtil.loadSPI;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.ArrayUtils.contains;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public enum CapabilityTypes implements PropertySupplier<MutableCapabilities> {
@@ -37,7 +35,6 @@ public enum CapabilityTypes implements PropertySupplier<MutableCapabilities> {
          *     <p>{@code remote.capability.suppliers} to define additional capabilities. It is a string with name of a
          *     supplier.
          *     @see CapabilitySupplier
-         *     @see AdditionalCapabilitiesFor
          *
          * @return built {@link Capabilities}
          */
@@ -70,7 +67,6 @@ public enum CapabilityTypes implements PropertySupplier<MutableCapabilities> {
          *     <p>{@code remote.capability.suppliers} to define additional capabilities. It is a string with name of a
          *     supplier.
          *     @see CapabilitySupplier
-         *     @see AdditionalCapabilitiesFor
          *
          * @return built {@link ChromeOptions}
          */
@@ -95,7 +91,6 @@ public enum CapabilityTypes implements PropertySupplier<MutableCapabilities> {
          *     <p>{@code remote.capability.suppliers} to define additional capabilities. It is a string with name of a
          *     supplier.
          *     @see CapabilitySupplier
-         *     @see AdditionalCapabilitiesFor
          *
          * @return built {@link EdgeOptions}
          */
@@ -120,7 +115,6 @@ public enum CapabilityTypes implements PropertySupplier<MutableCapabilities> {
          *     <p>{@code remote.capability.suppliers} to define additional capabilities. It is a string with name of a
          *     supplier.
          *     @see CapabilitySupplier
-         *     @see AdditionalCapabilitiesFor
          *
          * @return built {@link FirefoxOptions}
          */
@@ -145,7 +139,6 @@ public enum CapabilityTypes implements PropertySupplier<MutableCapabilities> {
          *     <p>{@code remote.capability.suppliers} to define additional capabilities. It is a string with name of a
          *     supplier.
          *     @see CapabilitySupplier
-         *     @see AdditionalCapabilitiesFor
          *
          * @return built {@link InternetExplorerOptions}
          */
@@ -170,7 +163,6 @@ public enum CapabilityTypes implements PropertySupplier<MutableCapabilities> {
          *     <p>{@code remote.capability.suppliers} to define additional capabilities. It is a string with name of a
          *     supplier.
          *     @see CapabilitySupplier
-         *     @see AdditionalCapabilitiesFor
          *
          * @return built {@link OperaOptions}
          */
@@ -195,7 +187,6 @@ public enum CapabilityTypes implements PropertySupplier<MutableCapabilities> {
          *     <p>{@code remote.capability.suppliers} to define additional capabilities. It is a string with name of a
          *     supplier.
          *     @see CapabilitySupplier
-         *     @see AdditionalCapabilitiesFor
          *
          * @return built {@link SafariOptions}
          */
@@ -207,9 +198,11 @@ public enum CapabilityTypes implements PropertySupplier<MutableCapabilities> {
 
     private static final String CAPABILITY_SUPPLIERS = "capability.suppliers";
     private final String name;
+    private final CapabilityReader capabilityReader;
 
     CapabilityTypes(String name) {
         this.name = format("%s.%s", name, CAPABILITY_SUPPLIERS);
+        capabilityReader = new CapabilityReader();
     }
 
     @Override
@@ -224,23 +217,23 @@ public enum CapabilityTypes implements PropertySupplier<MutableCapabilities> {
         ofNullable(CommonCapabilityProperties.BROWSER_VERSION.get()).ifPresent(o ->
                 desiredCapabilities.setCapability(CapabilityType.BROWSER_VERSION, o));
 
-        returnOptionalFromEnvironment()
-                .map(s -> loadSPI(CapabilitySupplier.class)
-                        .stream().filter(capabilitySupplier -> {
-                            AdditionalCapabilitiesFor additionalCapabilitiesFor;
-                            return ((additionalCapabilitiesFor =
-                                    capabilitySupplier.getClass().getAnnotation(AdditionalCapabilitiesFor.class)) != null
-                                    && contains(additionalCapabilitiesFor.type(), this)
-                                    && contains(s.split(","), additionalCapabilitiesFor.supplierName().trim())
-                            );
-                        }).collect(toList()))
-                .orElse(List.of()).forEach(capabilitySupplier -> desiredCapabilities.merge(capabilitySupplier.get()));
+        ofNullable(capabilityReader.get())
+                .orElse(List.of())
+                .forEach(capabilitySupplier -> desiredCapabilities.merge(capabilitySupplier.get()));
+
         return desiredCapabilities;
     }
 
     @Override
     public String getPropertyName() {
         return name;
+    }
+
+    private class CapabilityReader implements MultipleObjectPropertySupplier<CapabilitySupplier> {
+        @Override
+        public String getPropertyName() {
+            return name;
+        }
     }
 
     public enum CommonCapabilityProperties implements PropertySupplier<Object> {

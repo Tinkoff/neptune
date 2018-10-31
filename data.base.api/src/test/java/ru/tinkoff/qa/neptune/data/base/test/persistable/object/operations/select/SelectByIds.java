@@ -4,6 +4,7 @@ import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.data.base.api.query.*;
 import ru.tinkoff.qa.neptune.data.base.api.test.*;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDbOperationTest;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.PersistenceManagerFactorySupplierForTestBase2;
 
 import java.time.Duration;
 import java.util.List;
@@ -287,11 +288,12 @@ public class SelectByIds extends BaseDbOperationTest {
     }
 
     @Test
-    public void selectOfListWithConnectionChangeByName() {
+    public void selectOfListWithConnectionChangeByClass() {
         SelectListByIdsSupplier<Catalog> query = listOfTypeByIds(Catalog.class, 1);
 
         try {
-            assertThat(dataBaseSteps.get(query.usePersistenceUnit(TEST_BASE2)), hasSize(0));
+            assertThat(dataBaseSteps.get(query.usePersistenceUnit(PersistenceManagerFactorySupplierForTestBase2.class)),
+                    hasSize(0));
             assertThat(dataBaseSteps.get(query.useDefaultPersistenceUnit()), hasSize(1));
         }
         finally {
@@ -300,11 +302,12 @@ public class SelectByIds extends BaseDbOperationTest {
     }
 
     @Test
-    public void selectOfOneWithConnectionChangeByName() {
+    public void selectOfOneWithConnectionChangeByClass() {
         SelectSingleObjectByIdSupplier<Catalog> query = aSingleOfTypeById(Catalog.class, 1);
 
         try {
-            assertThat(dataBaseSteps.get(query.usePersistenceUnit(TEST_BASE2)), nullValue());
+            assertThat(dataBaseSteps.get(query.usePersistenceUnit(PersistenceManagerFactorySupplierForTestBase2.class)),
+                    nullValue());
             assertThat(dataBaseSteps.get(query.useDefaultPersistenceUnit()), not(nullValue()));
         }
         finally {
@@ -318,7 +321,9 @@ public class SelectByIds extends BaseDbOperationTest {
 
         try {
             assertThat(dataBaseSteps.get(query.
-                    usePersistenceUnit(getPersistenceManagerFactory(TEST_BASE2, true))), hasSize(0));
+                    usePersistenceUnit(getPersistenceManagerFactory(PersistenceManagerFactorySupplierForTestBase2.class,
+                            true))),
+                    hasSize(0));
             assertThat(dataBaseSteps.get(query.useDefaultPersistenceUnit()), hasSize(1));
         }
         finally {
@@ -332,7 +337,9 @@ public class SelectByIds extends BaseDbOperationTest {
 
         try {
             assertThat(dataBaseSteps.get(query
-                    .usePersistenceUnit(getPersistenceManagerFactory(TEST_BASE2, true))), nullValue());
+                    .usePersistenceUnit(getPersistenceManagerFactory(PersistenceManagerFactorySupplierForTestBase2.class,
+                            true))),
+                    nullValue());
             assertThat(dataBaseSteps.get(query.useDefaultPersistenceUnit()), not(nullValue()));
         }
         finally {

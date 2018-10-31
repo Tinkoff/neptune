@@ -12,7 +12,7 @@ import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Get
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static ru.tinkoff.qa.neptune.selenium.properties.FlagProperties.ENABLE_ABILITY_TO_USE_RELATIVE_URL;
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.ENABLE_ABILITY_TO_USE_RELATIVE_URL;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 
 public final class ToUrl extends NavigationActionSupplier<ToUrl> {

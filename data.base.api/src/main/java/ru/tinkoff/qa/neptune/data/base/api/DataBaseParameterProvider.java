@@ -10,6 +10,6 @@ import static ru.tinkoff.qa.neptune.data.base.api.properties.DefaultPersistenceM
 public class DataBaseParameterProvider implements ParameterProvider {
     @Override
     public ConstructorParameters provide() {
-        return params(DEFAULT_JDO_PERSISTENCE_MANAGER_FACTORY_PROPERTY.get());
+        return params(DEFAULT_JDO_PERSISTENCE_MANAGER_FACTORY_PROPERTY.get().get());
     }
 }

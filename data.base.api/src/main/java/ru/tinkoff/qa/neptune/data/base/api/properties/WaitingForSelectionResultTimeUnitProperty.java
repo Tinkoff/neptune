@@ -1,8 +1,10 @@
 package ru.tinkoff.qa.neptune.data.base.api.properties;
 
-import ru.tinkoff.qa.neptune.core.api.properties.waiting.time.DurationUnitPropertySupplier;
+import ru.tinkoff.qa.neptune.core.api.properties.enums.EnumPropertySuppler;
 
-public final class WaitingForSelectionResultTimeUnitProperty implements DurationUnitPropertySupplier {
+import java.time.temporal.ChronoUnit;
+
+public final class WaitingForSelectionResultTimeUnitProperty implements EnumPropertySuppler<ChronoUnit> {
 
     private static final String WAITING_FOR_SELECTION_RESULT_UNIT = "waiting.db.selection.result.time.unit";
 

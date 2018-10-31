@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.webElements;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
-import static ru.tinkoff.qa.neptune.selenium.properties.FlagProperties.FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION;
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeUnitProperties.ELEMENT_WAITING_TIME_UNIT;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeValueProperties.ELEMENT_WAITING_TIME_VALUE;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;

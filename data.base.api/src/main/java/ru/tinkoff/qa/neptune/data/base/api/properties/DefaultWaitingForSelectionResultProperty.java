@@ -1,10 +1,11 @@
 package ru.tinkoff.qa.neptune.data.base.api.properties;
 
+import ru.tinkoff.qa.neptune.core.api.properties.enums.EnumPropertySuppler;
+import ru.tinkoff.qa.neptune.core.api.properties.longs.LongValuePropertySupplier;
 import ru.tinkoff.qa.neptune.core.api.properties.waiting.time.DurationSupplier;
-import ru.tinkoff.qa.neptune.core.api.properties.waiting.time.DurationUnitPropertySupplier;
-import ru.tinkoff.qa.neptune.core.api.properties.waiting.time.DurationValuePropertySupplier;
 
 import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 
 import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForSelectionResultTimeUnitProperty
@@ -23,8 +24,8 @@ public final class DefaultWaitingForSelectionResultProperty extends DurationSupp
             new DefaultWaitingForSelectionResultProperty(DEFAULT_WAITING_FOR_SELECTION_RESULT_TIME_UNIT_PROPERTY,
                     DEFAULT_WAITING_FOR_SELECTION_RESULT_TIME_VALUE_PROPERTY);
 
-    private DefaultWaitingForSelectionResultProperty(DurationUnitPropertySupplier durationUnitPropertySupplier,
-                                                       DurationValuePropertySupplier durationValuePropertySupplier) {
+    private DefaultWaitingForSelectionResultProperty(EnumPropertySuppler<ChronoUnit> durationUnitPropertySupplier,
+                                                     LongValuePropertySupplier durationValuePropertySupplier) {
         super(durationUnitPropertySupplier, durationValuePropertySupplier, ofSeconds(5));
     }
 }

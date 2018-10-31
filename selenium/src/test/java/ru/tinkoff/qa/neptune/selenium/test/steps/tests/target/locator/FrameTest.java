@@ -53,7 +53,7 @@ public class FrameTest extends BaseWebDriverTest {
         assertThat(((MockWebDriver) frame2.getWrappedDriver()).getCurrentFrame(), is(index2.getIndex()));
     }
 
-    @Test(dependsOnMethods = "frameIndexPositiveTest")
+    @Test
     public void frameIndexWithDefinedTimePositiveTest() {
         FrameIndexes index1 = getRandomEnumItem(FrameIndexes.values());
 
@@ -65,7 +65,7 @@ public class FrameTest extends BaseWebDriverTest {
         assertThat(getTimeDifference(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
     }
 
-    @Test(dependsOnMethods = {"frameIndexPositiveTest", "frameIndexWithDefinedTimePositiveTest"})
+    @Test
     public void frameIndexWithTimeDefinedImplicitlyPositiveTest() {
         FrameIndexes index1 = getRandomEnumItem(FrameIndexes.values());
         setProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getPropertyName(), "SECONDS");
@@ -146,7 +146,7 @@ public class FrameTest extends BaseWebDriverTest {
         assertThat(((MockWebDriver) frame2.getWrappedDriver()).getCurrentFrame(), is(name2.getNameOrId()));
     }
 
-    @Test(dependsOnMethods = "frameNameOrIdPositiveTest")
+    @Test
     public void frameNameOrIdWithDefinedTimePositiveTest() {
         FrameNames name1 = getRandomEnumItem(FrameNames.values());
 
@@ -158,7 +158,7 @@ public class FrameTest extends BaseWebDriverTest {
         assertThat(getTimeDifference(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
     }
 
-    @Test(dependsOnMethods = {"frameNameOrIdPositiveTest", "frameNameOrIdWithDefinedTimePositiveTest"})
+    @Test
     public void frameNameOrIdWithTimeDefinedImplicitlyPositiveTest() {
         FrameNames name1 = getRandomEnumItem(FrameNames.values());
         setProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getPropertyName(), "SECONDS");
@@ -238,7 +238,7 @@ public class FrameTest extends BaseWebDriverTest {
         assertThat(((MockWebDriver) frame2.getWrappedDriver()).getCurrentFrame(), is(element2));
     }
 
-    @Test(dependsOnMethods = "frameWebElementPositiveTest")
+    @Test
     public void frameWebElementWithDefinedTimePositiveTest() {
         ValidFrameWebElement element1 = new ValidFrameWebElement();
 
@@ -250,7 +250,7 @@ public class FrameTest extends BaseWebDriverTest {
         assertThat(getTimeDifference(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
     }
 
-    @Test(dependsOnMethods = {"frameWebElementPositiveTest", "frameWebElementWithDefinedTimePositiveTest"})
+    @Test
     public void frameWebElementWithTimeDefinedImplicitlyPositiveTest() {
         ValidFrameWebElement element1 = new ValidFrameWebElement();
         setProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getPropertyName(), "SECONDS");
@@ -356,7 +356,7 @@ public class FrameTest extends BaseWebDriverTest {
     }
 
 
-    @Test(dependsOnMethods = "frameWrappedElementPositiveTest")
+    @Test
     public void frameWrappedElementWithDefinedTimePositiveTest() {
         ValidFrameWebElement element1 = new ValidFrameWebElement();
 
@@ -380,7 +380,7 @@ public class FrameTest extends BaseWebDriverTest {
         assertThat(getTimeDifference(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
     }
 
-    @Test(dependsOnMethods = {"frameWrappedElementWithDefinedTimePositiveTest", "frameWrappedElementPositiveTest"})
+    @Test
     public void frameWrappedElementWithTimeDefinedImplicitlyPositiveTest() {
         ValidFrameWebElement element1 = new ValidFrameWebElement();
         WrapsElement wrapsElement1 = new WrapsElement() {

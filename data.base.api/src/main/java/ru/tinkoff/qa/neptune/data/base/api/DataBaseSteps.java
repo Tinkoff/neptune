@@ -52,23 +52,23 @@ public class DataBaseSteps implements GetStep<DataBaseSteps>, PerformActionStep<
     }
 
     /**
-     * This method performs the switching to desired database by name of persistence. Such persistence unit should
-     * be properly described by {@link PersistenceManagerFactorySupplier}
+     * This method performs the switching to desired database by class of persistence manager factory supplier.
      *
-     * @param persistenceUnitName is a name of persistence.
+     * @param persistenceFactorySupplier is a class of persistence manager factory supplier.
      * @return self-reference
      */
-    public DataBaseSteps switchTo(CharSequence persistenceUnitName) {
+    public DataBaseSteps switchTo(Class<? extends PersistenceManagerFactorySupplier> persistenceFactorySupplier) {
         return switchTo(jdoPersistenceManagerMap.keySet().stream().filter(jdoPersistenceManagerFactory ->
-                String.valueOf(persistenceUnitName).equals(jdoPersistenceManagerFactory.getName()) &&
+                persistenceFactorySupplier.getName()
+                        .equals(jdoPersistenceManagerFactory.getName()) &&
                         !jdoPersistenceManagerFactory.isClosed())
                 .findFirst()
-                .orElseGet(() -> getPersistenceManagerFactory(persistenceUnitName, true)));
+                .orElseGet(() -> getPersistenceManagerFactory(persistenceFactorySupplier, true)));
     }
 
     public DataBaseSteps switchToDefault() {
         if (defaultFactory.isClosed()) {
-            defaultFactory = DEFAULT_JDO_PERSISTENCE_MANAGER_FACTORY_PROPERTY.get();
+            defaultFactory = DEFAULT_JDO_PERSISTENCE_MANAGER_FACTORY_PROPERTY.get().get();
         }
         return switchTo(defaultFactory);
     }

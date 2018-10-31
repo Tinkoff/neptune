@@ -1,8 +1,8 @@
 package ru.tinkoff.qa.neptune.selenium.properties;
 
+import ru.tinkoff.qa.neptune.core.api.properties.enums.EnumPropertySuppler;
+import ru.tinkoff.qa.neptune.core.api.properties.longs.LongValuePropertySupplier;
 import ru.tinkoff.qa.neptune.core.api.properties.waiting.time.DurationSupplier;
-import ru.tinkoff.qa.neptune.core.api.properties.waiting.time.DurationUnitPropertySupplier;
-import ru.tinkoff.qa.neptune.core.api.properties.waiting.time.DurationValuePropertySupplier;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -61,7 +61,7 @@ public final class WaitingProperties extends DurationSupplier {
     }
 
 
-    public enum TimeUnitProperties implements DurationUnitPropertySupplier {
+    public enum TimeUnitProperties implements EnumPropertySuppler<ChronoUnit> {
         /**
          * Reads property {@code "waiting.for.elements.time.unit"}.
          * This property is needed to define time of the waiting for some web elements
@@ -115,7 +115,7 @@ public final class WaitingProperties extends DurationSupplier {
         }
     }
 
-    public enum TimeValueProperties implements DurationValuePropertySupplier {
+    public enum TimeValueProperties implements LongValuePropertySupplier {
         /**
          * Reads property {@code "waiting.for.elements.time"}.
          * This property is needed to define time of the waiting for some web elements

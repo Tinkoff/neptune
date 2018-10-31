@@ -1,8 +1,11 @@
-package ru.tinkoff.qa.neptune.core.api.properties.waiting.time;
+package ru.tinkoff.qa.neptune.core.api.properties.longs;
 
 import ru.tinkoff.qa.neptune.core.api.properties.PropertySupplier;
 
-public interface DurationValuePropertySupplier extends PropertySupplier<Long> {
+/**
+ * This interface is designed to read properties and return long values.
+ */
+public interface LongValuePropertySupplier extends PropertySupplier<Long> {
     @Override
     default Long get() {
         return returnOptionalFromEnvironment()

@@ -15,7 +15,7 @@ import java.net.URL;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static ru.tinkoff.qa.neptune.core.api.utils.ConstructorUtil.findSuitableConstructor;
-import static ru.tinkoff.qa.neptune.selenium.properties.FlagProperties.*;
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.*;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
