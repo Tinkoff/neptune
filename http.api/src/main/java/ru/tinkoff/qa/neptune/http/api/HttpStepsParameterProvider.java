@@ -59,8 +59,7 @@ public class HttpStepsParameterProvider implements ParameterProvider {
                         .ifPresent(builder::proxy));
 
         ofNullable(DEFAULT_HTTP_REDIRECT_PROPERTY.get())
-                .ifPresent(redirectSupplier -> ofNullable(redirectSupplier.get())
-                        .ifPresent(builder::followRedirects));
+                .ifPresent(builder::followRedirects);
 
         ofNullable(DEFAULT_HTTP_SSL_CONTEXT_PROPERTY.get())
                 .ifPresent(sslContextSupplier -> ofNullable(sslContextSupplier.get())

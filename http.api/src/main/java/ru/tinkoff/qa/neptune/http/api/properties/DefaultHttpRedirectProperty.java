@@ -1,22 +1,20 @@
 package ru.tinkoff.qa.neptune.http.api.properties;
 
-import ru.tinkoff.qa.neptune.core.api.properties.object.ObjectPropertySupplier;
+import ru.tinkoff.qa.neptune.core.api.properties.enums.EnumPropertySuppler;
 
 import java.net.http.HttpClient;
-import java.util.function.Supplier;
 
 /**
- * This class is designed to read value of the property {@code 'default.http.redirect.policy'} and convert it to an instance of
- * {@link RedirectSupplier}
+ * This class is designed to read value of the property {@code 'default.http.redirect.policy'} and convert it to a constant of
+ * {@link HttpClient.Redirect}
  */
-public final class DefaultHttpRedirectProperty implements ObjectPropertySupplier<DefaultHttpRedirectProperty.RedirectSupplier> {
+public final class DefaultHttpRedirectProperty implements EnumPropertySuppler<HttpClient.Redirect> {
 
     private static final String PROPERTY = "default.http.redirect.policy";
 
     /**
-     * This instance reads value of the property {@code 'default.http.redirect.policy'} and returns a {@link Supplier}
-     * of {@link HttpClient.Redirect}. Invocation of the {@link Supplier#get()} returns actual value of the property.
-     * The value provided must be fully qualified name of a {@link RedirectSupplier} subclass.
+     * This instance reads value of the property {@code 'default.http.redirect.policy'} and returns a constant of
+     * {@link HttpClient.Redirect}. The value should be a name of one of the constant.
      */
     public static final DefaultHttpRedirectProperty DEFAULT_HTTP_REDIRECT_PROPERTY =
             new DefaultHttpRedirectProperty();
@@ -28,8 +26,5 @@ public final class DefaultHttpRedirectProperty implements ObjectPropertySupplier
     @Override
     public String getPropertyName() {
         return PROPERTY;
-    }
-
-    public static abstract class RedirectSupplier implements Supplier<HttpClient.Redirect> {
     }
 }

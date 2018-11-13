@@ -1,3 +1,5 @@
 dependencies {
     compile project(':core.api')
+    testCompile group: 'org.mock-server', name: 'mockserver-netty', version: '5.4.1'
+    testCompile group: 'org.mock-server', name: 'mockserver-client-java', version: '5.4.1'
 }

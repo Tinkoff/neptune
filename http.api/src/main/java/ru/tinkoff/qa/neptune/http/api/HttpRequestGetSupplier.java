@@ -16,17 +16,27 @@ import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
-import static java.net.http.HttpRequest.BodyPublishers.noBody;
 import static java.net.http.HttpRequest.newBuilder;
+import static java.util.Map.entry;
+import static java.util.Map.ofEntries;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
+import static ru.tinkoff.qa.neptune.http.api.CommonBodyPublishers.empty;
 
 /**
  * It builds a function that prepare a {@link HttpRequest} to get a response further.
  */
-public abstract class HttpRequestGetSupplier extends GetStepSupplier<HttpSteps,
+@SuppressWarnings("unchecked")
+public abstract class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>> extends GetStepSupplier<HttpSteps,
         HowToGetResponse,
-        HttpRequestGetSupplier> {
+        HttpRequestGetSupplier<T>> {
+
+    /**
+     * According to RFC 2965 3.2.2, request header field name must be 'Set-Cookie2'
+     * for the cookie setting.
+     */
+    private static final String SET_COOKIE = "Set-Cookie2";
 
     private final HttpRequest.Builder builder;
     final URI uri;
@@ -42,9 +52,9 @@ public abstract class HttpRequestGetSupplier extends GetStepSupplier<HttpSteps,
         try {
             builder = builderPreparing.apply(newBuilder().uri(this.uri = new URI(uri)));
         } catch (URISyntaxException e) {
-            throw new IllegalArgumentException(e);
+            throw new IllegalArgumentException(e.getMessage(), e);
         }
-        set(httpSteps -> {
+        set(toGet("Prepared request", httpSteps -> {
             if (toUseDefaultClient) {
                 httpSteps.resetHttpClient();
             }
@@ -62,7 +72,7 @@ public abstract class HttpRequestGetSupplier extends GetStepSupplier<HttpSteps,
             }));
 
             return new HowToGetResponse(client, builder.build());
-        });
+        }));
     }
 
     /**
@@ -82,7 +92,7 @@ public abstract class HttpRequestGetSupplier extends GetStepSupplier<HttpSteps,
      * @param publisher body publisher of the request
      * @return a new instance of {@link HttpRequestGetSupplier}
      */
-    public static HttpRequestGetSupplier POST(String uri, HttpRequest.BodyPublisher publisher) {
+    public static PostHttpRequestSupplier POST(String uri, HttpRequest.BodyPublisher publisher) {
         return new PostHttpRequestSupplier(uri, publisher);
     }
 
@@ -93,7 +103,7 @@ public abstract class HttpRequestGetSupplier extends GetStepSupplier<HttpSteps,
      * @param publisher body publisher of the request
      * @return a new instance of {@link HttpRequestGetSupplier}
      */
-    public static HttpRequestGetSupplier PUT(String uri, HttpRequest.BodyPublisher publisher) {
+    public static PutHttpRequestSupplier PUT(String uri, HttpRequest.BodyPublisher publisher) {
         return new PutHttpRequestSupplier(uri, publisher);
     }
 
@@ -103,7 +113,7 @@ public abstract class HttpRequestGetSupplier extends GetStepSupplier<HttpSteps,
      * @param uri to send a DELETE-request
      * @return a new instance of {@link HttpRequestGetSupplier}
      */
-    public static HttpRequestGetSupplier DELETE(String uri) {
+    public static DeleteHttpRequestSupplier DELETE(String uri) {
         return new DeleteHttpRequestSupplier(uri);
     }
 
@@ -115,7 +125,7 @@ public abstract class HttpRequestGetSupplier extends GetStepSupplier<HttpSteps,
      * @param publisher body publisher of the request
      * @return a new instance of {@link HttpRequestGetSupplier}
      */
-    public static HttpRequestGetSupplier methodRequest(String uri, String method, HttpRequest.BodyPublisher publisher) {
+    public static MethodHttpRequestSupplier methodRequest(String uri, String method, HttpRequest.BodyPublisher publisher) {
         return new MethodHttpRequestSupplier(uri, method, publisher);
     }
 
@@ -126,8 +136,8 @@ public abstract class HttpRequestGetSupplier extends GetStepSupplier<HttpSteps,
      * @param method a method to send
      * @return a new instance of {@link HttpRequestGetSupplier}
      */
-    public static HttpRequestGetSupplier methodRequest(String uri, String method) {
-        return methodRequest(uri, method, noBody());
+    public static MethodHttpRequestSupplier methodRequest(String uri, String method) {
+        return methodRequest(uri, method, empty());
     }
 
     /**
@@ -138,9 +148,9 @@ public abstract class HttpRequestGetSupplier extends GetStepSupplier<HttpSteps,
      * @param value the header value
      * @return self-reference
      */
-    public HttpRequestGetSupplier header(String name, String value) {
+    public T header(String name, String value) {
         builder.header(name, value);
-        return this;
+        return (T) this;
     }
 
     /**
@@ -153,9 +163,9 @@ public abstract class HttpRequestGetSupplier extends GetStepSupplier<HttpSteps,
      * @param headers the list of name value pairs
      * @return self-reference
      */
-    public HttpRequestGetSupplier headers(String... headers) {
+    public T headers(String... headers) {
         builder.headers(headers);
-        return this;
+        return (T) this;
     }
 
     /**
@@ -166,9 +176,9 @@ public abstract class HttpRequestGetSupplier extends GetStepSupplier<HttpSteps,
      * @param value the header value
      * @return self-reference
      */
-    public HttpRequestGetSupplier setHeader(String name, String value) {
+    public T setHeader(String name, String value) {
         builder.setHeader(name, value);
-        return this;
+        return (T) this;
     }
 
     /**
@@ -179,9 +189,9 @@ public abstract class HttpRequestGetSupplier extends GetStepSupplier<HttpSteps,
      * @param duration the timeout duration
      * @return self-reference
      */
-    public HttpRequestGetSupplier timeout(Duration duration) {
+    public T timeout(Duration duration) {
         builder.timeout(duration);
-        return this;
+        return (T) this;
     }
 
     /**
@@ -190,9 +200,9 @@ public abstract class HttpRequestGetSupplier extends GetStepSupplier<HttpSteps,
      * @param version the HTTP protocol version requested
      * @return self-reference
      */
-    public HttpRequestGetSupplier version(HttpClient.Version version) {
+    public T version(HttpClient.Version version) {
         builder.version(version);
-        return this;
+        return (T) this;
     }
 
     /**
@@ -206,9 +216,9 @@ public abstract class HttpRequestGetSupplier extends GetStepSupplier<HttpSteps,
      * @param enable {@code true} if Expect continue to be sent
      * @return self-reference
      */
-    public HttpRequestGetSupplier expectContinue(boolean enable) {
+    public T expectContinue(boolean enable) {
         builder.expectContinue(enable);
-        return this;
+        return (T) this;
     }
 
     /**
@@ -222,10 +232,10 @@ public abstract class HttpRequestGetSupplier extends GetStepSupplier<HttpSteps,
      * @param clientToBeUsed is a builder of {@link HttpClient} that is going to be used further.
      * @return self-reference
      */
-    public HttpRequestGetSupplier useHttpClient(HttpClient.Builder clientToBeUsed) {
+    public T useHttpClient(HttpClient.Builder clientToBeUsed) {
         this.clientToBeUsed = clientToBeUsed;
         toUseDefaultClient = false;
-        return this;
+        return (T) this;
     }
 
     /**
@@ -239,10 +249,10 @@ public abstract class HttpRequestGetSupplier extends GetStepSupplier<HttpSteps,
      *
      * @return self-reference
      */
-    public HttpRequestGetSupplier useDefaultHttpClient() {
+    public T useDefaultHttpClient() {
         this.clientToBeUsed = null;
         toUseDefaultClient = true;
-        return this;
+        return (T) this;
     }
 
     /**
@@ -251,20 +261,21 @@ public abstract class HttpRequestGetSupplier extends GetStepSupplier<HttpSteps,
      * headers into a cookie cache.
      *
      * @param uri a {@code URI} where the cookies come from
-     * @param responseHeaders an immutable map from field names to
-     *            lists of field values representing the response
-     *            header fields returned
+     * @param responseHeaders a list of field values representing response header fields returned
      *
      * @return self-reference
      */
-    public HttpRequestGetSupplier addCookies(URI uri, Map<String, List<String>> responseHeaders) {
-        ofNullable(cookieToAdd.get(uri)).ifPresentOrElse(
-                (map) -> responseHeaders.forEach((key, value) ->
-
-                        ofNullable(map.get(key)).ifPresentOrElse((strings) -> strings.addAll(value),
-                                () -> map.put(key, value))),
-                () -> cookieToAdd.put(uri, responseHeaders));
-        return this;
+    public T addCookies(String uri, List<String> responseHeaders) {
+        URI uriInstance;
+        try {
+            uriInstance = new URI(uri);
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException(e.getMessage(), e);
+        }
+        ofNullable(cookieToAdd.get(uriInstance)).ifPresentOrElse(
+                (map) -> map.get(SET_COOKIE).addAll(responseHeaders),
+                () -> cookieToAdd.put(uriInstance, ofEntries(entry(SET_COOKIE, responseHeaders))));
+        return (T) this;
     }
 
     /**
@@ -273,14 +284,12 @@ public abstract class HttpRequestGetSupplier extends GetStepSupplier<HttpSteps,
      * headers into a cookie cache.
      *
      * @param cookieMap is a map of cached cookies. Key is a {@code URI} where the cookies come from.
-     *                  Value is  an immutable map from field names to
-     *                  lists of field values representing the response
-     *                  header fields returned
+     *                  Value is a list of field values representing response header fields returned
      * @return self-reference
      */
-    public HttpRequestGetSupplier addCookies(Map<URI, Map<String, List<String>>> cookieMap) {
+    public T addCookies(Map<String, List<String>> cookieMap) {
         cookieMap.forEach(this::addCookies);
-        return this;
+        return (T) this;
     }
 
     /**
@@ -289,16 +298,20 @@ public abstract class HttpRequestGetSupplier extends GetStepSupplier<HttpSteps,
      * headers into a cookie cache.
      *
      * @param uri a {@code URI} where the cookies come from
-     * @param responseHeaders an immutable map from field names to
-     *            lists of field values representing the response
-     *            header fields returned
+     * @param responseHeaders a list of field values representing response header fields returned
      *
      * @return self-reference
      */
-    public HttpRequestGetSupplier setCookies(URI uri, Map<String, List<String>> responseHeaders) {
+    public T setCookies(String uri, List<String> responseHeaders) {
+        URI uriInstance;
+        try {
+            uriInstance = new URI(uri);
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException(e.getMessage(), e);
+        }
         cookieToAdd.clear();
-        cookieToAdd.put(uri, responseHeaders);
-        return this;
+        cookieToAdd.put(uriInstance, ofEntries(entry(SET_COOKIE, responseHeaders)));
+        return (T) this;
     }
 
     /**
@@ -307,18 +320,24 @@ public abstract class HttpRequestGetSupplier extends GetStepSupplier<HttpSteps,
      * headers into a cookie cache.
      *
      * @param cookieMap is a map of cached cookies. Key is a {@code URI} where the cookies come from.
-     *                  Value is  an immutable map from field names to
-     *                  lists of field values representing the response
-     *                  header fields returned
+     *                  Value is a list of field values representing response header fields returned
      * @return self-reference
      */
-    public HttpRequestGetSupplier setCookies(Map<URI, Map<String, List<String>>> cookieMap) {
+    public T setCookies(Map<String, List<String>> cookieMap) {
         cookieToAdd.clear();
-        cookieMap.putAll(cookieMap);
-        return this;
+        cookieMap.forEach((key, value) -> {
+            URI uriInstance;
+            try {
+                uriInstance = new URI(key);
+            } catch (URISyntaxException e) {
+                throw new IllegalArgumentException(e.getMessage(), e);
+            }
+            cookieToAdd.put(uriInstance, ofEntries(entry(SET_COOKIE, value)));
+        });
+        return (T) this;
     }
 
-    public static final class GetHttpRequestSupplier extends HttpRequestGetSupplier {
+    public static final class GetHttpRequestSupplier extends HttpRequestGetSupplier<GetHttpRequestSupplier> {
         private GetHttpRequestSupplier(String uri) {
             super(uri, HttpRequest.Builder::GET);
         }
@@ -328,7 +347,7 @@ public abstract class HttpRequestGetSupplier extends GetStepSupplier<HttpSteps,
         }
     }
 
-    public static final class PostHttpRequestSupplier extends HttpRequestGetSupplier {
+    public static final class PostHttpRequestSupplier extends HttpRequestGetSupplier<PostHttpRequestSupplier> {
         private PostHttpRequestSupplier(String uri, HttpRequest.BodyPublisher publisher) {
             super(uri, builder -> {
                 checkArgument(publisher != null, "Body publisher parameter should not be a null value");
@@ -341,7 +360,7 @@ public abstract class HttpRequestGetSupplier extends GetStepSupplier<HttpSteps,
         }
     }
 
-    public static final class PutHttpRequestSupplier extends HttpRequestGetSupplier {
+    public static final class PutHttpRequestSupplier extends HttpRequestGetSupplier<PutHttpRequestSupplier> {
         private PutHttpRequestSupplier(String uri, HttpRequest.BodyPublisher publisher) {
             super(uri, builder -> {
                 checkArgument(publisher != null, "Body publisher parameter should not be a null value");
@@ -354,7 +373,7 @@ public abstract class HttpRequestGetSupplier extends GetStepSupplier<HttpSteps,
         }
     }
 
-    public static final class DeleteHttpRequestSupplier extends HttpRequestGetSupplier {
+    public static final class DeleteHttpRequestSupplier extends HttpRequestGetSupplier<DeleteHttpRequestSupplier> {
         private DeleteHttpRequestSupplier(String uri) {
             super(uri, HttpRequest.Builder::DELETE);
         }
@@ -364,7 +383,7 @@ public abstract class HttpRequestGetSupplier extends GetStepSupplier<HttpSteps,
         }
     }
 
-    public static final class MethodHttpRequestSupplier extends HttpRequestGetSupplier {
+    public static final class MethodHttpRequestSupplier extends HttpRequestGetSupplier<MethodHttpRequestSupplier> {
 
         private final String method;
 
