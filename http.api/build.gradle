@@ -3,3 +3,67 @@ dependencies {
     testCompile group: 'org.mock-server', name: 'mockserver-netty', version: '5.4.1'
     testCompile group: 'org.mock-server', name: 'mockserver-client-java', version: '5.4.1'
 }
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives jar, javadocJar, sourcesJar
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: 'http://nexus.tcsbank.ru/content/repositories/tcs-qa') {
+                authentication(userName: mavenDeployLogin, password: mavenDeployPassword)
+            }
+
+
+            pom.project {
+                packaging 'jar'
+                name 'http.api'
+                version version
+                url 'https://github.com/TinkoffCreditSystems/neptune'
+                developers {
+                    developer {
+                        name 'Sergey Tikhomirov'
+                        email 'tichomirovsergey@gmail.com'
+                        url 'https://github.com/TikhomirovSergey'
+                        id 'TikhomirovSergey'
+                    }
+                }
+                licenses {
+                    license {
+                        name 'Apache License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution 'repo'
+                    }
+                }
+                scm {
+                    url 'https://github.com/TinkoffCreditSystems/neptune'
+                    connection 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
+                    developerConnection 'scm:git:ssh://git@github.com:TinkoffCreditSystems/neptune.git'
+                    tag 'HEAD'
+                }
+            }
+        }
+    }
+}
+
+javadoc {
+    destinationDir = file("${buildDir}/../../../neptune.documentation/javadocs/$project.name")
+
+    title = "Neptune Http interaction API. v$globalVersion"
+    options.author true
+    options.links 'http://download.oracle.com/javase/9/docs/api/'
+    options.addStringOption 'Xdoclint:none', '-quiet'
+    options.memberLevel = JavadocMemberLevel.PROTECTED
+    options.bottom = "Copyright &copy; 2018 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
+}
