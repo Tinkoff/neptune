@@ -1,9 +1,11 @@
 package ru.tinkoff.qa.neptune.http.api;
 
 import org.apache.commons.validator.routines.UrlValidator;
+import org.glassfish.jersey.uri.internal.JerseyUriBuilder;
 import ru.tinkoff.qa.neptune.core.api.GetStepSupplier;
 import ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpDomainToRespondProperty;
 
+import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -43,8 +45,9 @@ public abstract class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>
     private static final UrlValidator URL_VALIDATOR = new UrlValidator();
 
     private final HttpRequest.Builder builder;
-    final URI uri;
     private final Map<URI, Map<String, List<String>>> cookieToAdd = new HashMap<>();
+    private final UriBuilder uriBuilder = new JerseyUriBuilder();
+    private final Function<HttpRequest.Builder, HttpRequest.Builder> builderPreparing;
 
     private HttpClient.Builder clientToBeUsed;
     private boolean toUseDefaultClient = false;
@@ -55,10 +58,10 @@ public abstract class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>
         checkArgument(!isBlank(uri), "URI parameter should not be a null or empty value");
         try {
             if (URL_VALIDATOR.isValid(uri)) {
-                this.uri = new URI(uri);
+                uriBuilder.uri(new URI(uri));
             }
             else {
-                this.uri = ofNullable(DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY.get())
+                uriBuilder.uri(ofNullable(DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY.get())
                         .map(url -> {
                             try {
                                 return new URI(url.toString() + uri);
@@ -68,14 +71,17 @@ public abstract class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>
                         })
                         .orElseThrow(() -> new IllegalArgumentException(format("It is impossible to make a request by URI %s. " +
                                         "This value is not a valid URI and the property %s is not defined", uri,
-                                DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY.getPropertyName())));
+                                DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY.getPropertyName()))));
             }
 
-            builder = builderPreparing.apply(newBuilder().uri(this.uri));
+            builder = newBuilder();
+            uriBuilder.uri(uri);
+            this.builderPreparing = builderPreparing;
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException(e.getMessage(), e);
         }
         set(toGet("Prepared request", httpSteps -> {
+            builder.uri(uriBuilder.build());
             if (toUseDefaultClient) {
                 httpSteps.resetHttpClient();
             }
@@ -92,7 +98,8 @@ public abstract class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>
                 }
             }));
 
-            return new HowToGetResponse(client, builder.build());
+            return new HowToGetResponse(client, this.builderPreparing
+                    .apply(builder).build());
         }));
     }
 
@@ -364,13 +371,29 @@ public abstract class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>
         return (T) this;
     }
 
+    public String toString() {
+        return uriBuilder.build().toString();
+    }
+
+    /**
+     * Adds query parameter to the given URI
+     *
+     * @param name parameter name
+     * @param values values of the parameter
+     * @return self-reference
+     */
+    public T queryParam(String name, final Object... values) {
+        uriBuilder.queryParam(name, values);
+        return (T) this;
+    }
+
     public static final class GetHttpRequestSupplier extends HttpRequestGetSupplier<GetHttpRequestSupplier> {
         private GetHttpRequestSupplier(String uri) {
             super(uri, HttpRequest.Builder::GET);
         }
 
         public String toString() {
-            return format("GET request URI:%s", uri);
+            return format("GET request URI:%s", super.toString());
         }
     }
 
@@ -383,7 +406,7 @@ public abstract class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>
         }
 
         public String toString() {
-            return format("POST request URI:%s", uri);
+            return format("POST request URI:%s", super.toString());
         }
     }
 
@@ -396,7 +419,7 @@ public abstract class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>
         }
 
         public String toString() {
-            return format("PUT request URI:%s", uri);
+            return format("PUT request URI:%s", super.toString());
         }
     }
 
@@ -406,7 +429,7 @@ public abstract class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>
         }
 
         public String toString() {
-            return format("DELETE request URI:%s", uri);
+            return format("DELETE request URI:%s", super.toString());
         }
     }
 
@@ -424,7 +447,7 @@ public abstract class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>
         }
 
         public String toString() {
-            return format("Request method:%s URI:%s", method, uri);
+            return format("Request method:%s URI:%s", method, super.toString());
         }
     }
 }

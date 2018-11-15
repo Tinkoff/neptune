@@ -21,17 +21,20 @@ import static java.lang.String.format;
 import static java.lang.String.valueOf;
 import static java.lang.System.getProperties;
 import static java.lang.System.setProperty;
+import static java.net.URLEncoder.encode;
 import static java.net.http.HttpClient.Redirect.ALWAYS;
 import static java.net.http.HttpClient.Redirect.NEVER;
 import static java.net.http.HttpClient.Version.HTTP_1_1;
 import static java.net.http.HttpClient.Version.HTTP_2;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.time.Duration.of;
 import static java.time.Duration.ofSeconds;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockserver.model.HttpRequest.request;
+import static org.mockserver.model.Parameter.param;
 import static ru.tinkoff.qa.neptune.core.api.proxy.ProxyFactory.getProxied;
 import static ru.tinkoff.qa.neptune.http.api.HttpGetCachedCookiesSupplier.cookiesFrom;
 import static ru.tinkoff.qa.neptune.http.api.HttpRequestGetSupplier.GET;
@@ -235,6 +238,25 @@ public class HttpClientTest extends BaseHttpTest {
         var cookies = httpSteps.get(cookiesFrom(DOMAIN));
         assertThat(cookies, hasEntry(is("Cookie"), contains("TestSetUpCookieName=TestSetUpCookieValue",
                 "TestCookieName=TestCookieValue")));
+    }
+
+    @Test
+    public void queryParameterTest() throws Throwable {
+        clientAndServer.when(
+                request()
+                        .withMethod("GET")
+                        .withPath("/query"))
+                .respond(HttpResponse.response().withBody("Hello query"));
+
+        var httpSteps = getProxied(HttpSteps.class);
+        var response = httpSteps.get(responseOf(GET(format("%s/query", REQUEST_URI))
+                .queryParam("date", "01-01-1980")
+                .queryParam("some word", "Word and word again"), ofString()));
+
+        assertThat(response.body(),
+                equalTo("Hello query"));
+        assertThat(response.uri(), equalTo(new URI("http://127.0.0.1:1080/query?date=" + encode("01-01-1980", UTF_8) + "&"
+                + encode("some word", UTF_8) + "=" + encode("Word and word again", UTF_8))));
     }
 
     public static class TestAuthenticatorSupplier extends DefaultHttpAuthenticatorProperty.AuthenticatorSupplier {
