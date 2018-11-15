@@ -1,4 +1,3 @@
-org.datanucleus.enhancer.asm
 ru.tinkoff.qa.neptune.allure
 ru.tinkoff.qa.neptune.check
 ru.tinkoff.qa.neptune.core.api
@@ -9,6 +8,16 @@ ru.tinkoff.qa.neptune.core.api.event.firing
 ru.tinkoff.qa.neptune.core.api.event.firing.captors
 ru.tinkoff.qa.neptune.core.api.exception.management
 ru.tinkoff.qa.neptune.core.api.properties
+ru.tinkoff.qa.neptune.core.api.properties.booleans
+ru.tinkoff.qa.neptune.core.api.properties.bytes
+ru.tinkoff.qa.neptune.core.api.properties.doubles
+ru.tinkoff.qa.neptune.core.api.properties.enums
+ru.tinkoff.qa.neptune.core.api.properties.floats
+ru.tinkoff.qa.neptune.core.api.properties.integers
+ru.tinkoff.qa.neptune.core.api.properties.longs
+ru.tinkoff.qa.neptune.core.api.properties.object
+ru.tinkoff.qa.neptune.core.api.properties.shorts
+ru.tinkoff.qa.neptune.core.api.properties.url
 ru.tinkoff.qa.neptune.core.api.properties.waiting.time
 ru.tinkoff.qa.neptune.core.api.proxy
 ru.tinkoff.qa.neptune.core.api.utils
@@ -19,6 +28,9 @@ ru.tinkoff.qa.neptune.data.base.api.persistence.data
 ru.tinkoff.qa.neptune.data.base.api.properties
 ru.tinkoff.qa.neptune.data.base.api.query
 ru.tinkoff.qa.neptune.data.base.api.store
+ru.tinkoff.qa.neptune.http.api
+ru.tinkoff.qa.neptune.http.api.properties
+ru.tinkoff.qa.neptune.http.api.properties.time
 ru.tinkoff.qa.neptune.selenium
 ru.tinkoff.qa.neptune.selenium.api.widget
 ru.tinkoff.qa.neptune.selenium.api.widget.drafts

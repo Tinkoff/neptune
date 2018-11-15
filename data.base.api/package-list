@@ -1,7 +1,0 @@
-ru.tinkoff.qa.neptune.data.base.api
-ru.tinkoff.qa.neptune.data.base.api.captors
-ru.tinkoff.qa.neptune.data.base.api.delete
-ru.tinkoff.qa.neptune.data.base.api.persistence.data
-ru.tinkoff.qa.neptune.data.base.api.properties
-ru.tinkoff.qa.neptune.data.base.api.query
-ru.tinkoff.qa.neptune.data.base.api.store
