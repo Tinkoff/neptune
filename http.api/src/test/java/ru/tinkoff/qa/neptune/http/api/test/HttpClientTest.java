@@ -38,6 +38,7 @@ import static ru.tinkoff.qa.neptune.http.api.HttpRequestGetSupplier.GET;
 import static ru.tinkoff.qa.neptune.http.api.HttpResponseSequentialGetSupplier.responseOf;
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpAuthenticatorProperty.DEFAULT_HTTP_AUTHENTICATOR_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpCookieManagerProperty.DEFAULT_HTTP_COOKIE_MANAGER_PROPERTY;
+import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpDomainToRespondProperty.DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpExecutorProperty.DEFAULT_HTTP_EXECUTOR_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpPriorityProperty.DEFAULT_HTTP_PRIORITY_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpProtocolVersionProperty.DEFAULT_HTTP_PROTOCOL_VERSION_PROPERTY;
@@ -207,6 +208,20 @@ public class HttpClientTest extends BaseHttpTest {
         client = httpSteps.getCurrentClient();
 
         assertThat(client, equalTo(defaultClient));
+    }
+
+    @Test
+    public void abilityToUseRelativeURIPathTest() {
+        setProperty(DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY.getPropertyName(), REQUEST_URI);
+        var httpSteps = getProxied(HttpSteps.class);
+
+        try {
+            assertThat(httpSteps.get(responseOf(GET("/index.html"), ofString())).body(),
+                    equalTo("Hello"));
+        }
+        finally {
+            getProperties().remove(DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY.getPropertyName());
+        }
     }
 
     @Test

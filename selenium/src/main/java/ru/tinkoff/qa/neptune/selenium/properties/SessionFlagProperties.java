@@ -52,7 +52,7 @@ public enum SessionFlagProperties implements BooleanPropertySupplier {
      * <p>{@code seleniumSteps.navigate(toUrl("/relative/url/path.html")}</p>
      * <p>WARNING: it is necessary to define {@link URLProperties#BASE_WEB_DRIVER_URL_PROPERTY}</p>
      */
-    ENABLE_ABILITY_TO_USE_RELATIVE_URL("enable.ability.to.use.relative.url");
+    ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL("enable.ability.to.navigate.by.relative.url");
 
     private final String propertyName;
 

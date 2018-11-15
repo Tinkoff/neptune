@@ -1,5 +1,5 @@
 ext {
-    globalVersion = '0.6.1-ALPHA'
+    globalVersion = '0.6.2-ALPHA'
 }
 
 subprojects {
@@ -44,6 +44,7 @@ subprojects {
             exclude group: 'com.google.guava'
             exclude group: 'com.google.code.gson'
         }
+        compile group: 'commons-validator', name: 'commons-validator', version: '1.6'
     }
 
     test {

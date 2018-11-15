@@ -1,13 +1,8 @@
 package ru.tinkoff.qa.neptune.selenium.properties;
 
-import ru.tinkoff.qa.neptune.core.api.properties.PropertySupplier;
+import ru.tinkoff.qa.neptune.core.api.properties.url.URLValuePropertySupplier;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import static java.lang.String.format;
-
-public enum  URLProperties implements PropertySupplier<URL> {
+public enum URLProperties implements URLValuePropertySupplier {
     /**
      * This item read the property {@code 'remote.web.driver.url'} and returns URL to start
      * a new remote session of {@link org.openqa.selenium.WebDriver}
@@ -31,17 +26,5 @@ public enum  URLProperties implements PropertySupplier<URL> {
     @Override
     public String getPropertyName() {
         return propertyName;
-    }
-
-    @Override
-    public URL get() {
-        return returnOptionalFromEnvironment()
-                .map(s -> {
-                    try {
-                        return new URL(s);
-                    } catch (MalformedURLException e) {
-                        throw new RuntimeException(format("URL %s is malformed", s), e);
-                    }
-                }).orElse(null);
     }
 }

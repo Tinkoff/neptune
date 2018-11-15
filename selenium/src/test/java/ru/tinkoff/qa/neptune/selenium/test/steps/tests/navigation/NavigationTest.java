@@ -19,7 +19,7 @@ import static ru.tinkoff.qa.neptune.selenium.functions.navigation.GetCurrentUrlS
 import static ru.tinkoff.qa.neptune.selenium.functions.navigation.Refresh.refresh;
 import static ru.tinkoff.qa.neptune.selenium.functions.navigation.ToUrl.toUrl;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
-import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.ENABLE_ABILITY_TO_USE_RELATIVE_URL;
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.GET_BACK_TO_BASE_URL;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeUnitProperties.WAITING_FOR_PAGE_LOADED_TIME_UNIT;
@@ -69,7 +69,7 @@ public class NavigationTest extends BaseWebDriverTest {
             expectedExceptionsMessageRegExp = "It is impossible to navigate by URL /index.html. " +
                     "This value is not a valid URL and the property base.web.driver.url is not defined")
     public void invalidNavigationByRelativeUrl2() {
-        System.setProperty(ENABLE_ABILITY_TO_USE_RELATIVE_URL.getPropertyName(), "true");
+        System.setProperty(ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL.getPropertyName(), "true");
         try {
             seleniumSteps.navigate(toUrl("/index.html"));
             assertThat(seleniumSteps.get(currentUrl()), containsString("/index.html"));
@@ -82,7 +82,7 @@ public class NavigationTest extends BaseWebDriverTest {
     @Test
     public void validNavigationByRelativeUrl() {
         System.setProperty(BASE_WEB_DRIVER_URL_PROPERTY.getPropertyName(), GITHUB.getUrl());
-        System.setProperty(ENABLE_ABILITY_TO_USE_RELATIVE_URL.getPropertyName(), "true");
+        System.setProperty(ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL.getPropertyName(), "true");
         try {
             seleniumSteps.navigate(toUrl("/index.html"));
             assertThat(seleniumSteps.get(currentUrl()), containsString(GITHUB.getUrl()));
