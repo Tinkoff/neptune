@@ -49,12 +49,15 @@ final class ToGetConditionalHelper {
 
     static Duration checkSleepingTime(Duration duration) {
         checkArgument(duration != null, "Time of the sleeping is not defined");
+        checkArgument(!duration.isNegative(), "Time of the sleeping should be positive");
         return duration;
     }
 
     static Duration checkWaitingTime(Duration duration) {
         checkArgument(duration != null, "Time of the waiting for some " +
                 "valuable result is not defined");
+        checkArgument(!duration.isNegative(), "Time of the waiting for some " +
+                "valuable should be positive");
         return duration;
     }
 

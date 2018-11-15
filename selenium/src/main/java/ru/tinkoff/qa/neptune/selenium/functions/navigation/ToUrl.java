@@ -12,7 +12,7 @@ import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Get
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.ENABLE_ABILITY_TO_USE_RELATIVE_URL;
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 
 public final class ToUrl extends NavigationActionSupplier<ToUrl> {
@@ -30,7 +30,7 @@ public final class ToUrl extends NavigationActionSupplier<ToUrl> {
             toURL = url;
         }
         else {
-            if (ENABLE_ABILITY_TO_USE_RELATIVE_URL.get()) {
+            if (ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL.get()) {
                 toURL = ofNullable(BASE_WEB_DRIVER_URL_PROPERTY.get())
                         .map(url1 -> url1 + url)
                         .orElseThrow(() -> new IllegalArgumentException(format("It is impossible to navigate by URL %s. " +
@@ -40,7 +40,7 @@ public final class ToUrl extends NavigationActionSupplier<ToUrl> {
             else {
                 throw new IllegalArgumentException(format("It is impossible to navigate by URL %s. " +
                                 "This value is not a valid URL and the property %s is not defined or its value is %s", url,
-                        ENABLE_ABILITY_TO_USE_RELATIVE_URL.getPropertyName(), false));
+                        ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL.getPropertyName(), false));
             }
         }
 

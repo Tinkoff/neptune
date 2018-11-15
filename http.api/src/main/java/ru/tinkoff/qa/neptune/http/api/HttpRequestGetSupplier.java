@@ -1,6 +1,8 @@
 package ru.tinkoff.qa.neptune.http.api;
 
+import org.apache.commons.validator.routines.UrlValidator;
 import ru.tinkoff.qa.neptune.core.api.GetStepSupplier;
+import ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpDomainToRespondProperty;
 
 import java.io.IOException;
 import java.net.URI;
@@ -23,6 +25,7 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
 import static ru.tinkoff.qa.neptune.http.api.CommonBodyPublishers.empty;
+import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpDomainToRespondProperty.DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY;
 
 /**
  * It builds a function that prepare a {@link HttpRequest} to get a response further.
@@ -37,6 +40,7 @@ public abstract class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>
      * for the cookie setting.
      */
     private static final String SET_COOKIE = "Set-Cookie2";
+    private static final UrlValidator URL_VALIDATOR = new UrlValidator();
 
     private final HttpRequest.Builder builder;
     final URI uri;
@@ -50,7 +54,24 @@ public abstract class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>
                                    Function<HttpRequest.Builder, HttpRequest.Builder> builderPreparing) {
         checkArgument(!isBlank(uri), "URI parameter should not be a null or empty value");
         try {
-            builder = builderPreparing.apply(newBuilder().uri(this.uri = new URI(uri)));
+            if (URL_VALIDATOR.isValid(uri)) {
+                this.uri = new URI(uri);
+            }
+            else {
+                this.uri = ofNullable(DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY.get())
+                        .map(url -> {
+                            try {
+                                return new URI(url.toString() + uri);
+                            } catch (URISyntaxException e) {
+                                throw new IllegalArgumentException(e.getMessage(), e);
+                            }
+                        })
+                        .orElseThrow(() -> new IllegalArgumentException(format("It is impossible to make a request by URI %s. " +
+                                        "This value is not a valid URI and the property %s is not defined", uri,
+                                DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY.getPropertyName())));
+            }
+
+            builder = builderPreparing.apply(newBuilder().uri(this.uri));
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException(e.getMessage(), e);
         }
@@ -78,7 +99,8 @@ public abstract class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>
     /**
      * Makes preparation for the sending GET-request
      *
-     * @param uri to send a GET-request
+     * @param uri to send a GET-request. It is possible to define the fully qualified URI as well as a relative path
+     *            when the {@link DefaultHttpDomainToRespondProperty#DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY} is defined
      * @return a new instance of {@link HttpRequestGetSupplier}
      */
     public static GetHttpRequestSupplier GET(String uri) {
@@ -88,7 +110,8 @@ public abstract class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>
     /**
      * Makes preparation for the sending POST-request
      *
-     * @param uri to send a POST-request
+     * @param uri to send a POST-request. It is possible to define the fully qualified URI as well as a relative path
+     *            when the {@link DefaultHttpDomainToRespondProperty#DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY} is defined
      * @param publisher body publisher of the request
      * @return a new instance of {@link HttpRequestGetSupplier}
      */
@@ -99,7 +122,8 @@ public abstract class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>
     /**
      * Makes preparation for the sending PUT-request
      *
-     * @param uri to send a PUT-request
+     * @param uri to send a PUT-request. It is possible to define the fully qualified URI as well as a relative path
+     *            when the {@link DefaultHttpDomainToRespondProperty#DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY} is defined
      * @param publisher body publisher of the request
      * @return a new instance of {@link HttpRequestGetSupplier}
      */
@@ -110,7 +134,8 @@ public abstract class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>
     /**
      * Makes preparation for the sending DELETE-request
      *
-     * @param uri to send a DELETE-request
+     * @param uri to send a DELETE-request. It is possible to define the fully qualified URI as well as a relative path
+     *            when the {@link DefaultHttpDomainToRespondProperty#DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY} is defined
      * @return a new instance of {@link HttpRequestGetSupplier}
      */
     public static DeleteHttpRequestSupplier DELETE(String uri) {
@@ -120,7 +145,8 @@ public abstract class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>
     /**
      * Makes preparation for the sending a request. It sets the request method and request body to the given values.
      *
-     * @param uri to send a request
+     * @param uri to send a request. It is possible to define the fully qualified URI as well as a relative path
+     *            when the {@link DefaultHttpDomainToRespondProperty#DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY} is defined
      * @param method a method to send
      * @param publisher body publisher of the request
      * @return a new instance of {@link HttpRequestGetSupplier}
@@ -132,7 +158,8 @@ public abstract class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>
     /**
      * Makes preparation for the sending a request. It sets the request method to the given value.
      *
-     * @param uri to send a request
+     * @param uri to send a request. It is possible to define the fully qualified URI as well as a relative path
+     *            when the {@link DefaultHttpDomainToRespondProperty#DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY} is defined
      * @param method a method to send
      * @return a new instance of {@link HttpRequestGetSupplier}
      */
