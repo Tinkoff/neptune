@@ -232,48 +232,6 @@ public final class HttpResponseInfoSequentialGetSupplier<T> extends SequentialGe
                 .from(httpResponse);
     }
 
-    /**
-     * Builds a function to get data from the body of received response. It may be a body fully or partially converted
-     * to another object(s)
-     *
-     * @param dataDescription is a description of data to get
-     * @param howToGet is function that converts the body of received response to desired object
-     * @param httpResponseSequentialGetSupplier is a description of the response to get the data from
-     * @param <T> is a type of read body from received response
-     * @param <R> is a desired type of data to be returned from the body
-     * @return instance of {@link HttpResponseInfoSequentialGetSupplier}
-     */
-    public static <T, R> HttpResponseInfoSequentialGetSupplier<R> dataOf(String dataDescription,
-                                                                         Function<T, R> howToGet,
-                                                                         HttpResponseSequentialGetSupplier<?, ?> httpResponseSequentialGetSupplier) {
-        Function<HttpResponse<?>, T> getBody = toGet(format("Response body of %s", httpResponseSequentialGetSupplier),
-                bodyFunction());
-        return new HttpResponseInfoSequentialGetSupplier<>(getBody
-                .andThen(toGet(dataDescription, howToGet)))
-                .from(httpResponseSequentialGetSupplier);
-    }
-
-    /**
-     * Builds a function to get data from the body of received response. It may be a body fully or partially converted
-     * to another object(s)
-     *
-     * @param dataDescription is a description of data to get
-     * @param howToGet is function that converts the body of received response to desired object
-     * @param httpResponse response to get the data from
-     * @param <T> is a type of read body from received response
-     * @param <R> is a desired type of data to be returned from the body
-     * @return instance of {@link HttpResponseInfoSequentialGetSupplier}
-     */
-    public static <T, R> HttpResponseInfoSequentialGetSupplier<R> dataOf(String dataDescription,
-                                                                         Function<T, R> howToGet,
-                                                                         HttpResponse<?> httpResponse) {
-        Function<HttpResponse<?>, T> getBody = toGet(format("Response body of %s", httpResponse),
-                bodyFunction());
-        return new HttpResponseInfoSequentialGetSupplier<>(getBody
-                .andThen(toGet(dataDescription, howToGet)))
-                .from(httpResponse);
-    }
-
     @Override
     protected Function<HttpResponse<?>, T> getEndFunction() {
         return endFunction;

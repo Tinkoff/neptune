@@ -21,7 +21,7 @@ import static ru.tinkoff.qa.neptune.http.api.properties.TimeToGetDesiredResponse
  */
 @SuppressWarnings("unchecked")
 public abstract class HttpResponseSequentialGetSupplier<T, R extends HttpResponseSequentialGetSupplier<T, R>> extends SequentialGetStepSupplier<HttpSteps, HttpResponse<T>,
-        HowToGetResponse, R> {
+        HowToGetResponse, R> implements Cloneable {
 
     private final HttpRequestGetSupplier request;
     private final HttpResponse.BodyHandler<T> handler;
@@ -206,5 +206,17 @@ public abstract class HttpResponseSequentialGetSupplier<T, R extends HttpRespons
         private HttpResponseSimpleSequentialGetSupplier(HttpRequestGetSupplier request, HttpResponse.BodyHandler<T> handler) {
             super(request, handler);
         }
+    }
+
+    public HttpResponseSequentialGetSupplier<T, R> clone() {
+        try {
+            return (HttpResponseSequentialGetSupplier<T, R>) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    Predicate<HttpResponse<T>> getCondition() {
+        return condition;
     }
 }
