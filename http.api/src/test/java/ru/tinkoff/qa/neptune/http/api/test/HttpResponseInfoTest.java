@@ -190,35 +190,4 @@ public class HttpResponseInfoTest extends BaseHttpTest {
 
         assertThat(httpSteps.get(httpVersionOf(response)), equalTo(HTTP_1_1));
     }
-
-    /*@Test
-    public void dataSupplierTest() {
-        clientAndServer.when(
-                request()
-                        .withMethod("GET")
-                        .withPath("/data.html"), exactly(1))
-                .respond(response().withBody("<?xml version=\"1.0\" encoding=\"utf-8\"?><a><b></b><c></c></a>"));
-
-        assertThat(httpSteps.get(dataOf("XML document from response", TO_XML,
-                responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString())))
-                        .toString(),
-                equalTo(TO_XML.apply("<?xml version=\"1.0\" encoding=\"utf-8\"?><a><b></b><c></c></a>")
-                        .toString()));
-    }
-
-    @Test
-    public void datTest() {
-        clientAndServer.when(
-                request()
-                        .withMethod("GET")
-                        .withPath("/data2.html"), exactly(1))
-                .respond(response().withBody("<?xml version=\"1.0\" encoding=\"utf-8\"?><a><b></b><c></c></a>"));
-
-        var response = httpSteps.get(responseOf(GET(format("%s/data2.html", REQUEST_URI)), ofString()));
-
-        assertThat(httpSteps.get(dataOf("XML document from response", TO_XML, response))
-                        .toString(),
-                equalTo(TO_XML.apply("<?xml version=\"1.0\" encoding=\"utf-8\"?><a><b></b><c></c></a>")
-                        .toString()));
-    }*/
 }
