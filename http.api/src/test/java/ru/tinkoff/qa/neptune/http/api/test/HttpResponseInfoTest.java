@@ -1,14 +1,9 @@
 package ru.tinkoff.qa.neptune.http.api.test;
 
 import org.testng.annotations.Test;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 import ru.tinkoff.qa.neptune.http.api.HttpSteps;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.StringReader;
 import java.net.URI;
-import java.util.function.Function;
 
 import static java.lang.String.format;
 import static java.net.http.HttpClient.Version.HTTP_1_1;
@@ -196,7 +191,7 @@ public class HttpResponseInfoTest extends BaseHttpTest {
         assertThat(httpSteps.get(httpVersionOf(response)), equalTo(HTTP_1_1));
     }
 
-    @Test
+    /*@Test
     public void dataSupplierTest() {
         clientAndServer.when(
                 request()
@@ -225,16 +220,5 @@ public class HttpResponseInfoTest extends BaseHttpTest {
                         .toString(),
                 equalTo(TO_XML.apply("<?xml version=\"1.0\" encoding=\"utf-8\"?><a><b></b><c></c></a>")
                         .toString()));
-    }
-
-    private static final Function<String, Document> TO_XML = s -> {
-        var documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        try {
-            var documentBuilder = documentBuilderFactory.newDocumentBuilder();
-            var inputSource = new InputSource(new StringReader(s));
-            return documentBuilder.parse(inputSource);
-        } catch (Throwable e) {
-            throw new RuntimeException(e);
-        }
-    };
+    }*/
 }
