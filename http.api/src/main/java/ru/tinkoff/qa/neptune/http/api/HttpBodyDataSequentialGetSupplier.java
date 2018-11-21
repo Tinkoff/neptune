@@ -9,6 +9,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.StreamSupport.stream;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -19,6 +20,7 @@ import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetObjectFromIterable.
 import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSingleCheckedObject.getSingle;
 import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSubArray.getArray;
 import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSubIterable.getIterable;
+import static ru.tinkoff.qa.neptune.core.api.utils.IsDescribedUtil.isDescribed;
 import static ru.tinkoff.qa.neptune.http.api.HttpResponseInfoSequentialGetSupplier.bodyOf;
 
 /**
@@ -501,9 +503,14 @@ public abstract class HttpBodyDataSequentialGetSupplier<S, T, Q, R> extends Sequ
         ofNullable(howToGetResponseFrom)
                 .ifPresentOrElse(sHttpResponseSequentialGetSupplier -> ofNullable(conditionToGetData)
                                 .ifPresentOrElse(tPredicate -> {
-                                    Predicate<HttpResponse<S>> condition = condition(tPredicate.toString(),
-                                            sHttpResponse -> getConvenientPredicate()
-                                                    .test(transformingFunction.apply(sHttpResponse.body())));
+                                    checkArgument(isDescribed(tPredicate), "Condition to get data from the " +
+                                            "body of the response should be described");
+
+                                    Predicate<HttpResponse<S>> condition =
+                                            condition(format("Body of the response has data '%s' that meets the criteria '%s'",
+                                                    description, tPredicate.toString()), sHttpResponse ->
+                                                    getConvenientPredicate().test(transformingFunction
+                                                            .apply(sHttpResponse.body())));
 
                                     var definedCondition = sHttpResponseSequentialGetSupplier
                                             .getCondition();
