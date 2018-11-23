@@ -15,7 +15,7 @@ public final class IsDescribedUtil {
         super();
     }
 
-    private static boolean isDescribed(Object toBeDescribed) {
+    public static boolean isDescribed(Object toBeDescribed) {
         if (toBeDescribed == null) {
             return false;
         }

@@ -72,7 +72,8 @@ class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<StepFunctio
 
         var valueClass = t.getClass();
         if (!GetStep.class.isAssignableFrom(valueClass) &&
-                !PerformActionStep.class.isAssignableFrom(valueClass)) {
+                !PerformActionStep.class.isAssignableFrom(valueClass)
+                && isDescribed(t)) {
             fireEventStarting(format("From %s get %s", t, description));
         }
         else {
@@ -82,7 +83,9 @@ class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<StepFunctio
 
     private static <R> void fireReturnedValueIfNecessary(R r, boolean isComplex) {
         if (!isComplex) {
-            fireReturnedValue(r);
+            if (isDescribed(r) || r == null) {
+                fireReturnedValue(r);
+            }
         }
     }
 
