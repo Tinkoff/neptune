@@ -20,9 +20,4 @@ class HowToGetResponse {
     HttpRequest getRequest() {
         return request;
     }
-
-    @Override
-    public String toString() {
-        return request.toString();
-    }
 }

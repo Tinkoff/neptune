@@ -21,7 +21,6 @@ import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSingleCheckedObject
 import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSubArray.getArray;
 import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSubIterable.getIterable;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsDescribedUtil.isDescribed;
-import static ru.tinkoff.qa.neptune.http.api.HttpResponseInfoSequentialGetSupplier.bodyOf;
 
 /**
  * This class is designed to build chains of functions that get dody data from the response and convert it to the goal
@@ -526,17 +525,21 @@ public abstract class HttpBodyDataSequentialGetSupplier<S, T, Q, R> extends Sequ
                                                 return new DesiredResponseHasNotBeenReceivedException(exception.getMessage(), exception);
                                             }));
 
-                                    super.from(transformingFunction.compose(bodyOf(sHttpResponseSequentialGetSupplier).get()));
+                                    super.from(transformingFunction.compose(httpSteps ->
+                                            ofNullable(httpSteps.get(sHttpResponseSequentialGetSupplier)).map(HttpResponse::body)
+                                                    .orElse(null)));
                                 }, () -> {
                                     ofNullable(exceptionSupplier).ifPresent(errorSupplier ->
                                             sHttpResponseSequentialGetSupplier.toThrowIfNotReceived(() -> {
                                                 var exception = errorSupplier.get();
                                                 return new DesiredResponseHasNotBeenReceivedException(exception.getMessage(), exception);
                                             }));
-                                    super.from(transformingFunction.compose(bodyOf(sHttpResponseSequentialGetSupplier).get()));
+                                    super.from(transformingFunction.compose(httpSteps ->
+                                            ofNullable(httpSteps.get(sHttpResponseSequentialGetSupplier)).map(HttpResponse::body)
+                                                    .orElse(null)));
                                 }),
 
-                        () -> super.from(transformingFunction.compose(bodyOf(responseFrom).get())));
+                        () -> super.from(transformingFunction.compose(httpSteps -> responseFrom.body())));
         return super.get();
     }
 

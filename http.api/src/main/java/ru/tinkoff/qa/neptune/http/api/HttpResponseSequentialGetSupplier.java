@@ -168,7 +168,7 @@ public abstract class HttpResponseSequentialGetSupplier<T, R extends HttpRespons
     }
 
     public String toString() {
-        return format("Response of sent %s", request);
+        return format("Response of %s", request);
     }
 
     @Override
