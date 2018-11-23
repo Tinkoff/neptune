@@ -4,6 +4,8 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.logging.Logs;
 
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import static ru.tinkoff.qa.neptune.selenium.test.enums.InitialPositions.POSITION_1;
@@ -23,6 +25,16 @@ public class MockOptions implements WebDriver.Options {
 
     private final MockWebDriver driver;
 
+    private final Set<Cookie> cookieJar = new HashSet<>(){
+        {
+            add(new Cookie("key1", "value1", "youtube.com", "some/path", new Date(), true));
+            add(new Cookie("key2", "value2", "www.google.com", "some/path2", new Date(), false));
+            add(new Cookie("key3", "value3", "github.com", "some/path3", new Date(), false));
+            add(new Cookie("key4", "value4", "paypal.com", "some/path4", new Date(), true));
+            add(new Cookie("key5", "value5", "deezer.com", "some/path5", new Date(), false));
+        }
+    };
+
     MockOptions(MockWebDriver driver) {
         this.driver = driver;
         window1 = new MockWindow(SIZE1.getSize(), POSITION_1.getPosition());
@@ -32,7 +44,7 @@ public class MockOptions implements WebDriver.Options {
 
     @Override
     public void addCookie(Cookie cookie) {
-        //Todo Does nothing for now
+        cookieJar.add(cookie);
     }
 
     @Override
@@ -42,17 +54,17 @@ public class MockOptions implements WebDriver.Options {
 
     @Override
     public void deleteCookie(Cookie cookie) {
-        //Todo Does nothing for now
+        cookieJar.remove(cookie);
     }
 
     @Override
     public void deleteAllCookies() {
-        //Todo Does nothing for now
+        cookieJar.clear();
     }
 
     @Override
     public Set<Cookie> getCookies() {
-        return null;
+        return new HashSet<>(cookieJar);
     }
 
     @Override
