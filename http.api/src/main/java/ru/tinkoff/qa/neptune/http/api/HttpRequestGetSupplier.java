@@ -6,23 +6,20 @@ import ru.tinkoff.qa.neptune.core.api.GetStepSupplier;
 import ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpDomainToRespondProperty;
 
 import javax.ws.rs.core.UriBuilder;
-import java.io.IOException;
+import java.net.CookieManager;
+import java.net.HttpCookie;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpTimeoutException;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.net.http.HttpRequest.newBuilder;
-import static java.util.Map.entry;
-import static java.util.Map.ofEntries;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
@@ -37,15 +34,10 @@ public abstract class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>
         HowToGetResponse,
         HttpRequestGetSupplier<T>> {
 
-    /**
-     * According to RFC 2965 3.2.2, request header field name must be 'Set-Cookie2'
-     * for the cookie setting.
-     */
-    private static final String SET_COOKIE = "Set-Cookie2";
     private static final UrlValidator URL_VALIDATOR = new UrlValidator();
 
     private final HttpRequest.Builder builder;
-    private final Map<URI, Map<String, List<String>>> cookieToAdd = new HashMap<>();
+    private final Map<URI, List<HttpCookie>> cookieToAdd = new HashMap<>();
     private final UriBuilder uriBuilder = new JerseyUriBuilder();
     private final Function<HttpRequest.Builder, HttpRequest.Builder> builderPreparing;
 
@@ -90,13 +82,21 @@ public abstract class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>
             }
 
             var client = httpSteps.getCurrentClient();
-            client.cookieHandler().ifPresent((cookieHandler) -> cookieToAdd.forEach((key, value) -> {
-                try {
-                    cookieHandler.put(key, value);
-                } catch (IOException e) {
-                    throw new RuntimeException(e.getMessage(), e);
-                }
-            }));
+
+            if (cookieToAdd.size() > 0) {
+                client.cookieHandler()
+                        .ifPresentOrElse(cookieHandler ->
+                                {
+                                    if (!CookieManager.class.isAssignableFrom(cookieHandler.getClass())) {
+                                        throw new IllegalStateException(format("It is unknown how to add cookies. We support only %s " +
+                                                "as cookie handler for a while", CookieManager.class.getName()));
+                                    }
+                                    var cookieStore = ((CookieManager) cookieHandler).getCookieStore();
+                                    cookieToAdd.forEach((key, value) ->
+                                            value.forEach(cookie -> cookieStore.add(key, cookie)));
+                                },
+                                () -> {throw new IllegalStateException("Can't get access to a cookie store of the current http client");});
+            }
 
             return new HowToGetResponse(client, this.builderPreparing
                     .apply(builder).build());
@@ -290,85 +290,73 @@ public abstract class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>
     }
 
     /**
-     * Adds all the applicable cookies, examples are response header
-     * fields that are named Set-Cookie2, present in the response
-     * headers into a cookie cache.
+     * Adds all the cookies into cookie cache of the current http client.
      *
      * @param uri a {@code URI} where the cookies come from
-     * @param responseHeaders a list of field values representing response header fields returned
+     * @param cookiesToBeAdded cookies to be added
      *
      * @return self-reference
      */
-    public T addCookies(String uri, List<String> responseHeaders) {
-        URI uriInstance;
-        try {
-            uriInstance = new URI(uri);
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException(e.getMessage(), e);
-        }
+    public T addCookies(String uri, List<HttpCookie> cookiesToBeAdded) {
+        checkArgument(cookiesToBeAdded != null, "List of cookies to be added should not be a null value");
+        checkArgument(cookiesToBeAdded.size()  > 0 , "At least one cookie should be defined for the adding");
+        URI uriInstance = ofNullable(uri).map(s -> {
+            try {
+                return new URI(s);
+            } catch (URISyntaxException e) {
+                throw new IllegalArgumentException(e.getMessage(), e);
+            }
+        }).orElse(null);
+
         ofNullable(cookieToAdd.get(uriInstance)).ifPresentOrElse(
-                (map) -> map.get(SET_COOKIE).addAll(responseHeaders),
-                () -> cookieToAdd.put(uriInstance, ofEntries(entry(SET_COOKIE, responseHeaders))));
+                httpCookies -> {
+                    List<HttpCookie> toAdd = new ArrayList<>();
+                    cookiesToBeAdded.forEach(cookie -> {
+                        if (!httpCookies.contains(cookie)) {
+                            toAdd.add(cookie);
+                        }
+                    });
+                    httpCookies.addAll(toAdd);
+                },
+                () -> cookieToAdd.put(uriInstance, cookiesToBeAdded));
         return (T) this;
     }
 
     /**
-     * Adds all the applicable cookies, examples are response header
-     * fields that are named Set-Cookie2, present in the response
-     * headers into a cookie cache.
+     * Adds all the cookies into cookie cache of the current http client.
      *
      * @param cookieMap is a map of cached cookies. Key is a {@code URI} where the cookies come from.
-     *                  Value is a list of field values representing response header fields returned
+     *                  Value is a list of cookies to be added.
      * @return self-reference
      */
-    public T addCookies(Map<String, List<String>> cookieMap) {
+    public T addCookies(Map<String, List<HttpCookie>> cookieMap) {
         cookieMap.forEach(this::addCookies);
         return (T) this;
     }
 
     /**
-     * Sets all the applicable cookies, examples are response header
-     * fields that are named Set-Cookie2, present in the response
-     * headers into a cookie cache.
+     * Sets all the cookies into cookie cache of the current http client.
      *
      * @param uri a {@code URI} where the cookies come from
-     * @param responseHeaders a list of field values representing response header fields returned
+     * @param cookiesToBeSet cookies to be set
      *
      * @return self-reference
      */
-    public T setCookies(String uri, List<String> responseHeaders) {
-        URI uriInstance;
-        try {
-            uriInstance = new URI(uri);
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException(e.getMessage(), e);
-        }
+    public T setCookies(String uri, List<HttpCookie> cookiesToBeSet) {
         cookieToAdd.clear();
-        cookieToAdd.put(uriInstance, ofEntries(entry(SET_COOKIE, responseHeaders)));
-        return (T) this;
+        return addCookies(uri, cookiesToBeSet);
     }
 
     /**
-     * Sets all the applicable cookies, examples are response header
-     * fields that are named Set-Cookie2, present in the response
-     * headers into a cookie cache.
+     * Sets all the cookies into cookie cache of the current http client.
      *
      * @param cookieMap is a map of cached cookies. Key is a {@code URI} where the cookies come from.
-     *                  Value is a list of field values representing response header fields returned
+     *                  Value is a list of cookies to be set.
      * @return self-reference
      */
-    public T setCookies(Map<String, List<String>> cookieMap) {
+    public T setCookies(Map<String, List<HttpCookie>> cookieMap) {
         cookieToAdd.clear();
-        cookieMap.forEach((key, value) -> {
-            URI uriInstance;
-            try {
-                uriInstance = new URI(key);
-            } catch (URISyntaxException e) {
-                throw new IllegalArgumentException(e.getMessage(), e);
-            }
-            cookieToAdd.put(uriInstance, ofEntries(entry(SET_COOKIE, value)));
-        });
-        return (T) this;
+        return addCookies(cookieMap);
     }
 
     public String toString() {
