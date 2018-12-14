@@ -14,7 +14,8 @@ public class TestStringCaptor extends StringCaptor<Object> {
     }
 
     @Override
-    public Class<Object> getTypeToBeCaptured() {
-        return Object.class;
+    public Object getCaptured(Object toBeCaptured) {
+        return toBeCaptured;
     }
+
 }

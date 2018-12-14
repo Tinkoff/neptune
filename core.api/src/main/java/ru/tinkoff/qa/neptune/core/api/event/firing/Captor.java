@@ -36,5 +36,12 @@ public abstract class Captor<T, S> {
      */
     protected abstract S getData(T caught);
 
-    public abstract Class<T> getTypeToBeCaptured();
+    /**
+     * This method is supposed to be used to convert an object to a value that can be logged and reported.
+     * When it is not possible then it should return {@code null}.
+     *
+     * @param toBeCaptured is an object to get value that is supposed to be captured and logged.
+     * @return a value to be captured and logged or {@code null}
+     */
+    public abstract T getCaptured(Object toBeCaptured);
 }

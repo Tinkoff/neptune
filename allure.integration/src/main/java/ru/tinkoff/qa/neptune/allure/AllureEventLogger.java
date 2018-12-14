@@ -25,7 +25,7 @@ public class AllureEventLogger implements EventLogger {
     @Override
     public void fireTheEventStarting(String message) {
         var uuid = UUID.randomUUID().toString();
-        var result = new StepResult().withName(message).withParameters();
+        var result = new StepResult().setName(message).setParameters();
 
         if (stepUIIDs.size() == 0) {
             allureLifecycle.startStep(uuid, result);
@@ -45,8 +45,8 @@ public class AllureEventLogger implements EventLogger {
 
         var uuid = stepUIIDs.getLast();
         allureLifecycle.updateStep(uuid, s -> s
-                .withStatus(getStatus(throwable).orElse(BROKEN))
-                .withStatusDetails(getStatusDetails(throwable).orElse(null)));
+                .setStatus(getStatus(throwable).orElse(BROKEN))
+                .setStatusDetails(getStatusDetails(throwable).orElse(null)));
         results.put(uuid, getStatus(throwable).orElse(BROKEN));
     }
 
@@ -60,7 +60,7 @@ public class AllureEventLogger implements EventLogger {
         fireEventFinishing();
 
         var uuid = stepUIIDs.getLast();
-        allureLifecycle.updateStep(uuid, s -> s.withStatus(PASSED));
+        allureLifecycle.updateStep(uuid, s -> s.setStatus(PASSED));
         results.put(uuid, PASSED);
     }
 
@@ -73,7 +73,7 @@ public class AllureEventLogger implements EventLogger {
         var uuid = stepUIIDs.getLast();
         allureLifecycle.updateStep(uuid, stepResult -> {
             if (results.get(uuid) == null) {
-                stepResult.withStatus(PASSED);
+                stepResult.setStatus(PASSED);
             }
         });
         allureLifecycle.stopStep(uuid);

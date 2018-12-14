@@ -21,10 +21,26 @@ import static org.apache.commons.io.FileUtils.writeStringToFile;
  * This class is designed to convert some {@link String} and {@link Path} bodies of received responses
  * to files.
  */
-public class ResponseFileCaptor extends FileCaptor<HttpResponse> {
+public class ResponseFileCaptor extends FileCaptor<HttpResponse<?>> {
 
     public ResponseFileCaptor() {
         super();
+    }
+
+    @Override
+    public HttpResponse<?> getCaptured(Object toBeCaptured) {
+        if (!HttpResponse.class.isAssignableFrom(toBeCaptured.getClass())) {
+            return null;
+        }
+
+        HttpResponse<?> response = (HttpResponse<?>) toBeCaptured;
+        return ofNullable(response.body()).map(o -> {
+            var clazz = o.getClass();
+            if (Path.class.isAssignableFrom(clazz) || String.class.isAssignableFrom(clazz)) {
+                return response;
+            }
+            return null;
+        }).orElse(null);
     }
 
     public void capture(HttpResponse caught, String message) {
@@ -36,50 +52,37 @@ public class ResponseFileCaptor extends FileCaptor<HttpResponse> {
         var body = caught.body();
         var uuid = randomUUID().toString();
 
-        return ofNullable(body)
-                .map(o -> {
-                    Class<?> clazz = o.getClass();
-                    if (Path.class.isAssignableFrom(clazz)) {
-                        var path = (Path) o;
-                        File file = path.toFile();
+        var clazz = body.getClass();
+        if (Path.class.isAssignableFrom(clazz)) {
+            var path = (Path) body;
+            File file = path.toFile();
 
-                        if (file.exists()) {
-                            var absolutePath = file.getAbsolutePath();
-                            try {
-                                var tempFile = createTempFile(format("%s_%s", getNameWithoutExtension(absolutePath), uuid),
-                                        getFileExtension(absolutePath));
-                                tempFile.deleteOnExit();
-                                copyFile(file, tempFile);
-                                return tempFile;
-                            } catch (IOException e) {
-                                return null;
-                            }
-                        }
-                        else {
-                            return null;
-                        }
-                    }
-
-                    if (String.class.equals(o.getClass())) {
-                        var stringBody = (String.valueOf(o));
-                        try {
-                            var tempFile = createTempFile(format("StringBodyOfResponse_%s", uuid),
-                                    ".txt");
-                            tempFile.deleteOnExit();
-                            writeStringToFile(tempFile, stringBody, "UTF-8", true);
-                            return tempFile;
-                        } catch (IOException e) {
-                            return null;
-                        }
-                    }
-
+            if (file.exists()) {
+                var absolutePath = file.getAbsolutePath();
+                try {
+                    var tempFile = createTempFile(format("%s_%s", getNameWithoutExtension(absolutePath), uuid),
+                            getFileExtension(absolutePath));
+                    tempFile.deleteOnExit();
+                    copyFile(file, tempFile);
+                    return tempFile;
+                } catch (IOException e) {
                     return null;
-                })
-                .orElse(null);
-    }
+                }
+            }
+            else {
+                return null;
+            }
+        }
 
-    @Override
-    public Class<HttpResponse> getTypeToBeCaptured() {
-        return HttpResponse.class;
+        var stringBody = (String.valueOf(body));
+        try {
+            var tempFile = createTempFile(format("StringBodyOfResponse_%s", uuid),
+                    ".txt");
+            tempFile.deleteOnExit();
+            writeStringToFile(tempFile, stringBody, "UTF-8", true);
+            return tempFile;
+        } catch (IOException e) {
+            return null;
+        }
     }
 }
