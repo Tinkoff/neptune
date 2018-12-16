@@ -1,11 +1,11 @@
 package ru.tinkoff.qa.neptune.data.base.api.query;
 
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseSteps;
-import ru.tinkoff.qa.neptune.data.base.api.PersistableList;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
 import javax.jdo.JDOQLTypedQuery;
 import javax.jdo.Query;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -35,7 +35,7 @@ public abstract class SelectListByQuerySupplier<T, R>
             @Override
             protected Function<JDOQLTypedQuery<T>, List<T>> getEndFunction() {
                 return this.getResultFunction(jdoTypedQuery ->
-                        new PersistableList<>(jdoTypedQuery.executeList()));
+                        new ArrayList<>(jdoTypedQuery.executeList()));
             }
         };
     }
@@ -54,9 +54,9 @@ public abstract class SelectListByQuerySupplier<T, R>
             protected Function<Query<T>, List<T>> getEndFunction() {
                 return this.getResultFunction(query -> {
                     if (queryBuilder.getTypeOfRequiredValue() != null) {
-                        return new PersistableList<>(query.executeList());
+                        return new ArrayList<>(query.executeList());
                     }
-                    var toBeReturned = new PersistableList<>();
+                    var toBeReturned = new ArrayList<>();
                     var result = query.executeList();
                     result.forEach(o -> {
                         if (o.getClass().isArray()) {

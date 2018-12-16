@@ -15,71 +15,53 @@ import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static java.util.UUID.randomUUID;
 import static org.apache.commons.io.FileUtils.copyFile;
-import static org.apache.commons.io.FileUtils.writeStringToFile;
 
 /**
  * This class is designed to convert some {@link String} and {@link Path} bodies of received responses
  * to files.
  */
-public class ResponseFileCaptor extends FileCaptor<HttpResponse> {
+public class ResponseFileCaptor extends FileCaptor<HttpResponse<Path>> {
 
     public ResponseFileCaptor() {
         super();
     }
 
-    public void capture(HttpResponse caught, String message) {
+    @Override
+    @SuppressWarnings("unchecked")
+    public HttpResponse<Path> getCaptured(Object toBeCaptured) {
+        if (!HttpResponse.class.isAssignableFrom(toBeCaptured.getClass())) {
+            return null;
+        }
+
+        HttpResponse<?> response = (HttpResponse<?>) toBeCaptured;
+        return ofNullable(response.body()).map(o -> {
+            var clazz = o.getClass();
+            if (Path.class.isAssignableFrom(clazz) && ((Path) o).toFile().exists()) {
+                return (HttpResponse<Path>) response;
+            }
+            return null;
+        }).orElse(null);
+    }
+
+    public void capture(HttpResponse<Path> caught, String message) {
         super.capture(caught, format("Received response. %s", message));
     }
 
     @Override
-    protected File getData(HttpResponse caught) {
-        var body = caught.body();
+    protected File getData(HttpResponse<Path> caught) {
         var uuid = randomUUID().toString();
 
-        return ofNullable(body)
-                .map(o -> {
-                    Class<?> clazz = o.getClass();
-                    if (Path.class.isAssignableFrom(clazz)) {
-                        var path = (Path) o;
-                        File file = path.toFile();
+        File file = caught.body().toFile();
 
-                        if (file.exists()) {
-                            var absolutePath = file.getAbsolutePath();
-                            try {
-                                var tempFile = createTempFile(format("%s_%s", getNameWithoutExtension(absolutePath), uuid),
-                                        getFileExtension(absolutePath));
-                                tempFile.deleteOnExit();
-                                copyFile(file, tempFile);
-                                return tempFile;
-                            } catch (IOException e) {
-                                return null;
-                            }
-                        }
-                        else {
-                            return null;
-                        }
-                    }
-
-                    if (String.class.equals(o.getClass())) {
-                        var stringBody = (String.valueOf(o));
-                        try {
-                            var tempFile = createTempFile(format("StringBodyOfResponse_%s", uuid),
-                                    ".txt");
-                            tempFile.deleteOnExit();
-                            writeStringToFile(tempFile, stringBody, "UTF-8", true);
-                            return tempFile;
-                        } catch (IOException e) {
-                            return null;
-                        }
-                    }
-
-                    return null;
-                })
-                .orElse(null);
-    }
-
-    @Override
-    public Class<HttpResponse> getTypeToBeCaptured() {
-        return HttpResponse.class;
+        var absolutePath = file.getAbsolutePath();
+        try {
+            var tempFile = createTempFile(format("%s_%s", getNameWithoutExtension(absolutePath), uuid),
+                    getFileExtension(absolutePath));
+            tempFile.deleteOnExit();
+            copyFile(file, tempFile);
+            return tempFile;
+        } catch (IOException e) {
+            return null;
+        }
     }
 }

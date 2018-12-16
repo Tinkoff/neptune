@@ -3,7 +3,8 @@ package ru.tinkoff.qa.neptune.selenium.captors;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebElement;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
-import ru.tinkoff.qa.neptune.selenium.functions.searching.ElementList;
+
+import java.util.List;
 
 /**
  * Takes a picture of a certain element/list of elements on the page by algorithm designed by users.
@@ -38,5 +39,5 @@ public interface ElementScreenshotTaker {
      * @param <X> is a type if returned value
      * @return a taken screenshot
      */
-    <X> X getScreenshotAs(ElementList<?> toTakeAPicture, OutputType<X> target);
+    <X> X getScreenshotAs(List<WebElement> toTakeAPicture, OutputType<X> target);
 }

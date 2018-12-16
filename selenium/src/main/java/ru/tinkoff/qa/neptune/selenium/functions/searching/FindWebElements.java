@@ -2,12 +2,13 @@ package ru.tinkoff.qa.neptune.selenium.functions.searching;
 
 import org.openqa.selenium.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchingProxyBuilder.createProxy;
 
@@ -30,7 +31,7 @@ final class FindWebElements implements Function<SearchContext, List<WebElement>>
 
     @Override
     public List<WebElement> apply(SearchContext searchContext) {
-        return new ElementList<>(searchContext.findElements(by)
+        return new ArrayList<WebElement>(searchContext.findElements(by)
                 .stream().map(webElement -> {
                     var stringDescription = format("Web element found %s", by);
                     if (!isBlank(conditionString)) {
@@ -38,7 +39,7 @@ final class FindWebElements implements Function<SearchContext, List<WebElement>>
                     }
                     return createProxy(webElement.getClass(), new WebElementInterceptor(webElement, stringDescription));
                 })
-                .collect(Collectors.toList())) {
+                .collect(toList())) {
             @Override
             public String toString() {
                 var stringDescription = format("%s web elements found %s", size(), by);

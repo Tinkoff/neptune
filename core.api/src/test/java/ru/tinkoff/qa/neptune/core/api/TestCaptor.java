@@ -24,7 +24,11 @@ public class TestCaptor extends Captor<Number, String> {
     }
 
     @Override
-    public Class<Number> getTypeToBeCaptured() {
-        return Number.class;
+    public Number getCaptured(Object toBeCaptured) {
+        if (Number.class.isAssignableFrom(toBeCaptured.getClass())) {
+            return (Number) toBeCaptured;
+        }
+
+        return null;
     }
 }

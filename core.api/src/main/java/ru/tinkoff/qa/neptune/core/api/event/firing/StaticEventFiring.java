@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.core.api.event.firing;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 import static ru.tinkoff.qa.neptune.core.api.utils.SPIUtil.loadSPI;
 import static java.util.Optional.ofNullable;
@@ -19,11 +18,6 @@ public class StaticEventFiring {
         });
     }
 
-    private static <T> Stream<Captor> filter(T caught) {
-        return getCaptors().stream().filter(captor -> captor.getTypeToBeCaptured()
-                .isAssignableFrom(caught.getClass()));
-    }
-
     public static void addCaptors(List<Captor<?, ?>> captors) {
         getCaptors().addAll(captors);
     }
@@ -33,7 +27,8 @@ public class StaticEventFiring {
             return;
         }
 
-        filter(caught).forEach(captor -> captor.capture(caught, message));
+        getCaptors().forEach(captor -> ofNullable(captor.getCaptured(caught))
+                .ifPresent(o -> captor.capture(o, message)));
     }
 
     private static List<EventLogger> initEventLoggersIfNecessary() {

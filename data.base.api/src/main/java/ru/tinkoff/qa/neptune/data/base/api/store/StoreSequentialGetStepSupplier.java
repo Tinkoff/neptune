@@ -3,7 +3,6 @@ package ru.tinkoff.qa.neptune.data.base.api.store;
 import ru.tinkoff.qa.neptune.data.base.api.DBSequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseSteps;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
-import ru.tinkoff.qa.neptune.data.base.api.PersistableList;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -73,7 +72,7 @@ public final class StoreSequentialGetStepSupplier<T extends PersistableObject>
                 }
             });
 
-            return new PersistableList<>(manager.makePersistentAll(toBeStored));
+            return new ArrayList<>(manager.makePersistentAll(toBeStored));
         });
     }
 

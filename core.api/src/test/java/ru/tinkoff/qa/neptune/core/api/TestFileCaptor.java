@@ -16,7 +16,7 @@ public class TestFileCaptor extends FileCaptor<Object> {
     }
 
     @Override
-    public Class<Object> getTypeToBeCaptured() {
-        return Object.class;
+    public Object getCaptured(Object toBeCaptured) {
+        return toBeCaptured;
     }
 }

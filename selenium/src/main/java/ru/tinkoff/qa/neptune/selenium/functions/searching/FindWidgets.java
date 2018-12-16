@@ -21,7 +21,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
-@SuppressWarnings("unchecked")
 class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> {
 
     private static final FindByBuilder builder = new FindByBuilder();
@@ -106,7 +105,7 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
                     })
                     .collect(toList()));
         });
-        return new ElementList<>(result) {
+        return new ArrayList<>(result) {
             @Override
             public String toString() {
                 var stringDescription = String.format("%s elements of type %s", size(), getWidgetName(classOfAWidget));

@@ -2,9 +2,9 @@ package ru.tinkoff.qa.neptune.data.base.api.delete;
 
 import ru.tinkoff.qa.neptune.data.base.api.DBSequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseSteps;
-import ru.tinkoff.qa.neptune.data.base.api.PersistableList;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -67,7 +67,7 @@ public final class GetDeletedSequentialSupplier<T extends PersistableObject>
         var description = format("Deleted objects: \n %s", toBeDeleted.toString());
         return toGet(description, dataBaseSteps -> {
             dataBaseSteps.getCurrentPersistenceManager().deletePersistentAll(toBeDeleted);
-            var result = new PersistableList<T>();
+            var result = new ArrayList<T>();
             toBeDeleted.forEach(o -> result.add((T) o.clone()));
             return result;
         });

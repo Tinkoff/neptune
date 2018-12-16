@@ -28,7 +28,7 @@ public class DefaultConsoleCaptor extends Captor<Object, String> {
     }
 
     @Override
-    public Class<Object> getTypeToBeCaptured() {
-        return Object.class;
+    public Object getCaptured(Object toBeCaptured) {
+        return toBeCaptured;
     }
 }

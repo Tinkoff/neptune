@@ -1,9 +1,9 @@
 package ru.tinkoff.qa.neptune.data.base.api.query;
 
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseSteps;
-import ru.tinkoff.qa.neptune.data.base.api.PersistableList;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -12,7 +12,6 @@ import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSubIterable.getIterable;
 
-@SuppressWarnings("unchecked")
 public final class SelectListByIdsSupplier<T extends PersistableObject>
         extends ByIdsSequentialGetStepSupplier<T, List<T>, SelectListByIdsSupplier<T>> {
 
@@ -37,7 +36,7 @@ public final class SelectListByIdsSupplier<T extends PersistableObject>
     @Override
     protected Function<DataBaseSteps, List<T>> getEndFunction() {
         Function<DataBaseSteps, List<T>> listFunction = dataBaseSteps -> {
-            var result = new PersistableList<T>();
+            var result = new ArrayList<T>();
             var manager = dataBaseSteps.getCurrentPersistenceManager();
 
             for (Object id : ids) {
