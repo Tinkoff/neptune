@@ -7,7 +7,6 @@ import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -53,31 +52,23 @@ public class SeleniumImageCaptor extends ImageCaptor<TakesScreenshot> {
     @SuppressWarnings("unchecked")
     protected BufferedImage getData(TakesScreenshot caught) {
         try {
-            var clazz = caught.getClass();
-            InputStream in;
-
-            if (!WebElement.class.isAssignableFrom(clazz) && !Widget.class.isAssignableFrom(clazz)
-                    && List.class.isAssignableFrom(clazz)) {
-                in = new ByteArrayInputStream(caught.getScreenshotAs(BYTES));
-            }
-            else {
-                in = ofNullable(getDefaultElementScreenshotTaker())
-                        .map(elementScreenshotTaker1 -> {
-                            if (WebElement.class.isAssignableFrom(clazz)) {
-                                return new ByteArrayInputStream(elementScreenshotTaker1
-                                        .getScreenshotAs((WebElement) caught, BYTES));
-                            }
-                            if (Widget.class.isAssignableFrom(clazz)) {
-                                return new ByteArrayInputStream(elementScreenshotTaker1
-                                        .getScreenshotAs((Widget) caught, BYTES));
-                            }
-                            if (List.class.isAssignableFrom(clazz)) {
-                                return new ByteArrayInputStream(elementScreenshotTaker1
-                                        .getScreenshotAs((List<WebElement>) caught, BYTES));
-                            }
-                            return new ByteArrayInputStream(caught.getScreenshotAs(BYTES));
-                        }).orElseGet(() -> new ByteArrayInputStream(caught.getScreenshotAs(BYTES)));
-            }
+            var in = ofNullable(getDefaultElementScreenshotTaker())
+                    .map(elementScreenshotTaker1 -> {
+                        var clazz = caught.getClass();
+                        if (WebElement.class.isAssignableFrom(clazz)) {
+                            return new ByteArrayInputStream(elementScreenshotTaker1
+                                    .getScreenshotAs((WebElement) caught, BYTES));
+                        }
+                        WebElement webElement;
+                        if (Widget.class.isAssignableFrom(clazz) && (webElement = ((Widget) caught).getWrappedElement()) != null) {
+                            return new ByteArrayInputStream(elementScreenshotTaker1.getScreenshotAs(webElement, BYTES));
+                        }
+                        if (List.class.isAssignableFrom(clazz)) {
+                            return new ByteArrayInputStream(elementScreenshotTaker1
+                                    .getScreenshotAs((List<WebElement>) caught, BYTES));
+                        }
+                        return new ByteArrayInputStream(caught.getScreenshotAs(BYTES));
+                    }).orElseGet(() -> new ByteArrayInputStream(caught.getScreenshotAs(BYTES)));
             return ImageIO.read(in);
         } catch (Exception e) {
             return null;

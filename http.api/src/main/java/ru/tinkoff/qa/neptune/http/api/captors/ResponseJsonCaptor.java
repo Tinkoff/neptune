@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.http.api.captors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParser;
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.FileCaptor;
 
 import java.io.File;
@@ -26,11 +27,12 @@ public class ResponseJsonCaptor extends FileCaptor<HttpResponse<String>> {
         var uuid = randomUUID().toString();
         try {
             var json = createTempFile("json_response_body", uuid + ".json");
-            writeStringToFile(json, new GsonBuilder().setPrettyPrinting().create().toJson(caught.body()),
+            writeStringToFile(json, new GsonBuilder().setPrettyPrinting().create().toJson(new JsonParser().parse(caught.body())),
                     defaultCharset(), true);
             json.deleteOnExit();
             return json;
-        } catch (IOException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }

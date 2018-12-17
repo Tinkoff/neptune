@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.data.base.api.captors;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.FileCaptor;
 
@@ -17,7 +18,7 @@ abstract class DBCaptor<T> extends FileCaptor<T> {
     protected File getData(T caught) {
         try {
             var json = createTempFile("persistable", UUID.randomUUID().toString() + ".json");
-            writeStringToFile(json, new GsonBuilder().setPrettyPrinting().create().toJson(caught),
+            writeStringToFile(json, new GsonBuilder().setPrettyPrinting().create().toJson(new Gson().toJsonTree(caught)),
                     defaultCharset(), true);
             json.deleteOnExit();
             return json;
