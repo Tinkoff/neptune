@@ -8,6 +8,7 @@ import org.openqa.selenium.SearchContext;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 import static org.hamcrest.Matchers.equalTo;
 
 public final class HasValueMatcher<Q, T extends SearchContext & HasValue<Q>> extends TypeSafeDiagnosingMatcher<T> {
@@ -15,7 +16,7 @@ public final class HasValueMatcher<Q, T extends SearchContext & HasValue<Q>> ext
     private final Matcher<? super Q> criteria;
 
     private HasValueMatcher(Matcher<? super Q> criteria) {
-        checkArgument(criteria != null, "Matcher to check value should be defined.");
+        checkArgument(nonNull(criteria), "Matcher to check value should be defined.");
         this.criteria = criteria;
     }
 

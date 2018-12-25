@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static java.util.Objects.nonNull;
 import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
 import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSingleCheckedObject.getSingle;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
@@ -29,12 +30,12 @@ public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumS
     }
 
     private static void checkArguments(Object...arguments) {
-        checkArgument(arguments != null, "Arguments to be used by script evaluation should not be null");
+        checkArgument(nonNull(arguments), "Arguments to be used by script evaluation should not be null");
     }
 
     private static String getScriptDescription(String script, Object...parameters) {
         var description = format("Evaluation of java script '%s'", script);
-        if (parameters != null && parameters.length > 0) {
+        if (nonNull(parameters) && parameters.length > 0) {
             description = format("%s with parameters %s", description, Arrays.toString(parameters));
         }
         return description;
@@ -42,7 +43,7 @@ public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumS
 
     private static String getAsyncScriptDescription(String script, Object...parameters) {
         var description = format("Evaluation of asynchronous java script '%s'", script);
-        if (parameters != null && parameters.length > 0) {
+        if (nonNull(parameters) && parameters.length > 0) {
             description = format("%s with parameters %s", description, Arrays.toString(parameters));
         }
         return description;

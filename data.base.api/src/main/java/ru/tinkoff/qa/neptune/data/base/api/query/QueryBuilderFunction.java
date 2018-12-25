@@ -12,6 +12,7 @@ import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 
 /**
@@ -41,14 +42,14 @@ public final class QueryBuilderFunction<T extends PersistableObject> implements 
     }
 
     private QueryBuilderFunction(Class<T> toSelect) {
-        checkArgument(toSelect != null, "Class of persistable objects to select should be defined");
-        checkArgument(toSelect.getAnnotation(PersistenceCapable.class) != null, format("Class of persistable objects to select " +
-                "should be annotated by %s", PersistenceCapable.class.getClass()));
+        checkArgument(nonNull(toSelect), "Class of persistable objects to select should be defined");
+        checkArgument(nonNull(toSelect.getAnnotation(PersistenceCapable.class)), format("Class of persistable objects to select " +
+                "should be annotated by %s", PersistenceCapable.class.getName()));
         this.toSelect = toSelect;
     }
 
     public QueryBuilderFunction<T> where(BooleanExpression constraintsExpression) {
-        checkArgument(constraintsExpression != null, "Constraint expression should be defined");
+        checkArgument(nonNull(constraintsExpression), "Constraint expression should be defined");
         this.constraintsExpression = constraintsExpression;
         return this;
     }
@@ -64,23 +65,27 @@ public final class QueryBuilderFunction<T extends PersistableObject> implements 
     }
 
     public QueryBuilderFunction<T> groupBy(Expression<?>... groupByExpressions) {
-        checkArgument(groupByExpressions != null, "Grouping expression should be defined as not a null value");
+        checkArgument(nonNull(groupByExpressions), "Grouping expression should be defined as not a null value");
         checkArgument(groupByExpressions.length > 0, "At least one grouping expression is expected to be defined");
         this.groupByExpressions = groupByExpressions;
         return this;
     }
 
     public QueryBuilderFunction<T> having(Expression<?> havingExpression) {
-        checkArgument(havingExpression != null, "Having expression should be defined as not a null value");
+        checkArgument(nonNull(havingExpression), "Having expression should be defined as not a null value");
         this.havingExpression = havingExpression;
         return this;
     }
 
     public QueryBuilderFunction<T> orderBy(OrderExpression<?>... orderExpressions) {
-        checkArgument(orderExpressions != null, "Order expression should be defined as not a null value");
+        checkArgument(nonNull(orderExpressions), "Order expression should be defined as not a null value");
         checkArgument(orderExpressions.length > 0, "At least one order expression is expected to be defined");
         this.orderExpressions = orderExpressions;
         return this;
+    }
+
+    public Class<T> getTypeOfItemToSelect() {
+        return toSelect;
     }
 
     @Override
@@ -88,7 +93,7 @@ public final class QueryBuilderFunction<T extends PersistableObject> implements 
         var manager = dataBaseSteps.getCurrentPersistenceManager();
         var tq1 = manager.newJDOQLTypedQuery(toSelect);
         ofNullable(constraintsExpression).ifPresent(tq1::filter);
-        if (rangeStart != null && rangeEnd != null) {
+        if (nonNull(rangeStart) && nonNull(rangeEnd)) {
             tq1.range(rangeStart, rangeEnd);
         }
         ofNullable(orderExpressions).ifPresent(tq1::orderBy);

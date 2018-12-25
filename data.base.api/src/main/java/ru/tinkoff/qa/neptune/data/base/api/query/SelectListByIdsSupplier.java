@@ -3,7 +3,6 @@ package ru.tinkoff.qa.neptune.data.base.api.query;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseSteps;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -15,7 +14,7 @@ import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSubIterable.getIter
 public final class SelectListByIdsSupplier<T extends PersistableObject>
         extends ByIdsSequentialGetStepSupplier<T, List<T>, SelectListByIdsSupplier<T>> {
 
-    private static final String DESCRIPTION = "Result as a list of type %s by ids %s";
+    private static final String DESCRIPTION = "List of stored database objects. Type %s. By ids: %s";
 
     private SelectListByIdsSupplier(Class<T> ofType, Object... ids) {
         super(ofType, ids);
@@ -36,7 +35,11 @@ public final class SelectListByIdsSupplier<T extends PersistableObject>
     @Override
     protected Function<DataBaseSteps, List<T>> getEndFunction() {
         Function<DataBaseSteps, List<T>> listFunction = dataBaseSteps -> {
-            var result = new ArrayList<T>();
+            var result = new LoggableElementList<T>() {
+                public String toString() {
+                    return format("%s stored elements of type %s", size(), ofType.getName());
+                }
+            };
             var manager = dataBaseSteps.getCurrentPersistenceManager();
 
             for (Object id : ids) {

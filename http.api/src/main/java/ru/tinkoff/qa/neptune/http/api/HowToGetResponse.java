@@ -3,7 +3,7 @@ package ru.tinkoff.qa.neptune.http.api;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 
-class HowToGetResponse {
+public class HowToGetResponse {
 
     private final HttpClient client;
     private final HttpRequest request;
@@ -17,7 +17,7 @@ class HowToGetResponse {
         return client;
     }
 
-    HttpRequest getRequest() {
+    public HttpRequest getRequest() {
         return request;
     }
 }

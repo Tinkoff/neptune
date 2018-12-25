@@ -5,16 +5,50 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumSteps;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Editable;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 import org.openqa.selenium.SearchContext;
-import ru.tinkoff.qa.neptune.selenium.CurrentContentFunction;
+
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.lang.String.format;
+import static java.util.List.of;
+import static java.util.Objects.nonNull;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.StreamSupport.stream;
+import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 
 
 public final class EditActionSupplier extends
         SequentialActionSupplier<SeleniumSteps, Editable, EditActionSupplier> {
 
-    private EditActionSupplier() {
-        super();
+    private final Object toSet;
+
+    private EditActionSupplier(Object value) {
+        super(format("Edit element of the page. Set new value [%s]", addDescriptionOfTheSetValue(value)));
+        toSet = value;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> String addDescriptionOfTheSetValue(T toBeSet) {
+        checkArgument(nonNull(toBeSet), "The value to be used for the editing should not be null");
+        var clazz = toBeSet.getClass();
+
+        Stream<T> stream;
+        if (Iterable.class.isAssignableFrom(clazz)) {
+            stream = stream(((Iterable<T>) toBeSet).spliterator(), false);
+        } else if (clazz.isArray()) {
+            stream = Arrays.stream((T[]) toBeSet);
+        } else {
+            stream = of(toBeSet).stream();
+        }
+
+        return stream.map(t -> {
+            checkArgument(nonNull(t), "A null-value is defined to change value of an element");
+            if (t.getClass().isEnum()) {
+                return ((Enum) t).name();
+            }
+            return String.valueOf(t);
+        }).collect(joining(","));
     }
 
     /**
@@ -27,7 +61,7 @@ public final class EditActionSupplier extends
      */
     public static <R, S extends SearchContext & Editable<R>> EditActionSupplier valueOfThe(
             SearchSupplier<S> of, R value) {
-        return new EditActionSupplier().andValueOfThe(of, value);
+        return new EditActionSupplier(value).performOn(of.get().compose(currentContent()));
     }
 
     /**
@@ -39,24 +73,24 @@ public final class EditActionSupplier extends
      * @return built edit action
      */
     public static <R, S extends SearchContext & Editable<R>> EditActionSupplier valueOfThe(S of, R value) {
-        return new EditActionSupplier().andValueOfThe(of, value);
+        return new EditActionSupplier(value).performOn(of);
     }
 
     public <T, Q extends SearchContext & Editable<T>> EditActionSupplier andValueOfThe(SearchSupplier<Q> of, T value) {
-        checkArgument(of != null, "The searching for the editable element should be defined");
-        checkArgument(value != null, "The value which is used to edit the element should be defined");
-        return andThen("Edit",
-                of.get().compose(CurrentContentFunction.currentContent()), value);
+        checkArgument(nonNull(of), "The searching for the editable element should be defined");
+        checkArgument(nonNull(value), "The value which is used to edit the element should be defined");
+        return mergeActionSequenceFrom(valueOfThe(of, value));
     }
 
     public <T, Q extends SearchContext & Editable<T>> EditActionSupplier andValueOfThe(Q of, T value) {
-        checkArgument(of != null, "The editable element should be defined");
-        checkArgument(value != null, "The value which is used to edit the element should be defined");
-        return andThen("Edit", of, value);
+        checkArgument(nonNull(of), "The editable element should be defined");
+        checkArgument(nonNull(value), "The value which is used to edit the element should be defined");
+        return mergeActionSequenceFrom(valueOfThe(of, value));
     }
 
     @Override
-    protected void performActionOn(Editable value, Object... additionalArgument) {
-        value.edit(additionalArgument[0]);
+    @SuppressWarnings("unchecked")
+    protected void performActionOn(Editable value) {
+        value.edit(toSet);
     }
 }

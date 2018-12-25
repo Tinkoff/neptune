@@ -9,6 +9,7 @@ import org.openqa.selenium.Point;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -18,8 +19,8 @@ public final class WindowHasPositionMatcher extends TypeSafeDiagnosingMatcher<Wi
     private final Matcher<Integer> yMatcher;
 
     private WindowHasPositionMatcher(Matcher<Integer> xMatcher, Matcher<Integer> yMatcher) {
-        checkArgument(xMatcher != null, "Criteria to check x-value should be defined");
-        checkArgument(yMatcher != null, "Criteria to check y-value should be defined");
+        checkArgument(nonNull(xMatcher), "Criteria to check x-value should be defined");
+        checkArgument(nonNull(yMatcher), "Criteria to check y-value should be defined");
         this.xMatcher = xMatcher;
         this.yMatcher = yMatcher;
     }

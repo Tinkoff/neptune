@@ -5,7 +5,13 @@ import org.openqa.selenium.WebDriver;
 import ru.tinkoff.qa.neptune.core.api.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumSteps;
 
+import java.util.Arrays;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.lang.String.format;
 import static java.util.Arrays.stream;
+import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 
 /**
@@ -13,8 +19,8 @@ import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentConte
  */
 public abstract class RemoveCookiesActionSupplier<T> extends SequentialActionSupplier<SeleniumSteps, T, RemoveCookiesActionSupplier<T>> {
 
-    private RemoveCookiesActionSupplier() {
-        super();
+    private RemoveCookiesActionSupplier(String description) {
+        super(description);
     }
 
     /**
@@ -24,17 +30,18 @@ public abstract class RemoveCookiesActionSupplier<T> extends SequentialActionSup
      * @return an instance of {@link RemoveCookiesActionSupplier}
      */
     public static RemoveCookiesActionSupplier<SeleniumSteps> deleteCookies(GetSeleniumCookieSupplier getCookies) {
-        return new RemoveCookiesActionSupplier<SeleniumSteps>() {
+        checkArgument(nonNull(getCookies), "The way how to get cookies to delete is not defined");
+        var description = ofNullable(getCookies.getCondition())
+                .map(cookiePredicate -> format("Delete from browser's cookie jar. Cookies: %s", getCookies))
+                .orElse("Delete cookies from browser's cookie jar");
+
+        return new RemoveCookiesActionSupplier<SeleniumSteps>(description) {
             @Override
-            protected void performActionOn(SeleniumSteps value, Object... additionalArgument) {
-                stream(additionalArgument)
-                        .map(o -> (GetSeleniumCookieSupplier) o)
-                        .forEach(getSeleniumCookieSupplier -> {
-                            var toBeDeleted = value.get(getSeleniumCookieSupplier);
-                            toBeDeleted.forEach(cookie -> value.getWrappedDriver().manage().deleteCookie(cookie));
-                        });
+            protected void performActionOn(SeleniumSteps value) {
+                var toBeDeleted = value.get(getCookies);
+                toBeDeleted.forEach(cookie -> value.getWrappedDriver().manage().deleteCookie(cookie));
             }
-        }.andThen("The deleting from browser's cookie jar", seleniumSteps -> seleniumSteps, getCookies);
+        }.performOn(seleniumSteps -> seleniumSteps);
     }
 
     /**
@@ -44,13 +51,13 @@ public abstract class RemoveCookiesActionSupplier<T> extends SequentialActionSup
      * @return an instance of {@link RemoveCookiesActionSupplier}
      */
     public static RemoveCookiesActionSupplier<WebDriver> deleteCookies(Cookie...cookies) {
-        return new RemoveCookiesActionSupplier<WebDriver>() {
+        checkArgument(cookies.length > 0, "Should be defined at least one cookie to delete");
+        return new RemoveCookiesActionSupplier<WebDriver>(format("Delete from browser's cookie jar. Cookies: %s", Arrays.toString(cookies))) {
             @Override
-            protected void performActionOn(WebDriver value, Object... additionalArgument) {
-                stream(additionalArgument).map(o -> (Cookie) o)
-                        .forEach(cookie -> value.manage().deleteCookie(cookie));
+            protected void performActionOn(WebDriver value) {
+                stream(cookies).forEach(cookie -> value.manage().deleteCookie(cookie));
             }
-        }.andThen("The deleting from browser's cookie jar", currentContent(), (Object[]) cookies);
+        }.performOn(currentContent());
     }
 
     /**
@@ -59,11 +66,11 @@ public abstract class RemoveCookiesActionSupplier<T> extends SequentialActionSup
      * @return an instance of {@link RemoveCookiesActionSupplier}
      */
     public static RemoveCookiesActionSupplier<WebDriver> deleteAllCookies() {
-        return new RemoveCookiesActionSupplier<WebDriver>() {
+        return new RemoveCookiesActionSupplier<WebDriver>("Delete all the cookies from browser's cookie jar") {
             @Override
-            protected void performActionOn(WebDriver value, Object... additionalArgument) {
+            protected void performActionOn(WebDriver value) {
                 value.manage().deleteAllCookies();
             }
-        }.andThen("The deleting all the cookies from browser's cookie jar", currentContent());
+        }.performOn(currentContent());
     }
 }

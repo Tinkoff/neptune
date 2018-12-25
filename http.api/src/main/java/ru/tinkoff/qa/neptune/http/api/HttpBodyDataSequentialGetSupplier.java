@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.StreamSupport.stream;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -20,7 +21,7 @@ import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetObjectFromIterable.
 import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSingleCheckedObject.getSingle;
 import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSubArray.getArray;
 import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSubIterable.getIterable;
-import static ru.tinkoff.qa.neptune.core.api.utils.IsDescribedUtil.isDescribed;
+import static ru.tinkoff.qa.neptune.core.api.IsLoggableUtil.isLoggable;
 
 /**
  * This class is designed to build chains of functions that get dody data from the response and convert it to the goal
@@ -56,7 +57,7 @@ public abstract class HttpBodyDataSequentialGetSupplier<S, T, Q, R> extends Sequ
                                               HttpResponseSequentialGetSupplier<S, ?> howToGetResponseFrom,
                                               Function<S, Q> transformingFunction) {
         checkArgument(!isBlank(description), "Description of a value to get should not be a null or empty string");
-        checkArgument(howToGetResponseFrom != null, "The way how to get desired response to " +
+        checkArgument(nonNull(howToGetResponseFrom), "The way how to get desired response to " +
                 "get data from should not be a null value");
         this.description = description;
         this.transformingFunction = s -> ofNullable(s).map(transformingFunction).orElse(null);
@@ -68,7 +69,7 @@ public abstract class HttpBodyDataSequentialGetSupplier<S, T, Q, R> extends Sequ
                                               HttpResponse<S> responseFrom,
                                               Function<S, Q> transformingFunction) {
         checkArgument(!isBlank(description), "Description of a value to get should not be a null or empty string");
-        checkArgument(responseFrom != null, "Response to get data from should not be a null value");
+        checkArgument(nonNull(responseFrom), "Response to get data from should not be a null value");
         this.description = description;
         this.transformingFunction = s -> ofNullable(s).map(transformingFunction).orElse(null);
         this.responseFrom = responseFrom;
@@ -496,13 +497,13 @@ public abstract class HttpBodyDataSequentialGetSupplier<S, T, Q, R> extends Sequ
     }
 
     public Function<HttpSteps, T> get() {
-        checkArgument(howToGetResponseFrom != null || responseFrom != null,
+        checkArgument(nonNull(howToGetResponseFrom) || nonNull(responseFrom),
                 "Response to get data from or the way how to get receive to get data from is not defined");
 
         ofNullable(howToGetResponseFrom)
                 .ifPresentOrElse(sHttpResponseSequentialGetSupplier -> ofNullable(conditionToGetData)
                                 .ifPresentOrElse(tPredicate -> {
-                                    checkArgument(isDescribed(tPredicate), "Condition to get data from the " +
+                                    checkArgument(isLoggable(tPredicate), "Condition to get data from the " +
                                             "body of the response should be described");
 
                                     Predicate<HttpResponse<S>> condition =
@@ -571,7 +572,7 @@ public abstract class HttpBodyDataSequentialGetSupplier<S, T, Q, R> extends Sequ
      * @return self-reference
      */
     public HttpBodyDataSequentialGetSupplier<S, T, Q, R> toThrowIfNotReceived(Supplier<ResponseHasNoDesiredDataException> exceptionSupplier) {
-        checkArgument(exceptionSupplier != null, "Supplier of an exception should be defined");
+        checkArgument(nonNull(exceptionSupplier), "Supplier of an exception should be defined");
         this.exceptionSupplier = exceptionSupplier;
         return this;
     }

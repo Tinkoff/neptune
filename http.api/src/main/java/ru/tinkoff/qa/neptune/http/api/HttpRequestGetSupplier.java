@@ -20,6 +20,7 @@ import java.util.function.Function;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.net.http.HttpRequest.newBuilder;
+import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
@@ -30,7 +31,7 @@ import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpDomainToRespo
  * It builds a function that prepare a {@link HttpRequest} to get a response further.
  */
 @SuppressWarnings("unchecked")
-public abstract class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>> extends GetStepSupplier<HttpSteps,
+public class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>> extends GetStepSupplier<HttpSteps,
         HowToGetResponse,
         HttpRequestGetSupplier<T>> {
 
@@ -72,7 +73,7 @@ public abstract class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException(e.getMessage(), e);
         }
-        set(toGet("Prepared request", httpSteps -> {
+        set(toGet("Built HTTP request", httpSteps -> {
             builder.uri(uriBuilder.build());
             if (toUseDefaultClient) {
                 httpSteps.resetHttpClient();
@@ -298,7 +299,7 @@ public abstract class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>
      * @return self-reference
      */
     public T addCookies(String uri, List<HttpCookie> cookiesToBeAdded) {
-        checkArgument(cookiesToBeAdded != null, "List of cookies to be added should not be a null value");
+        checkArgument(nonNull(cookiesToBeAdded), "List of cookies to be added should not be a null value");
         checkArgument(cookiesToBeAdded.size()  > 0 , "At least one cookie should be defined for the adding");
         URI uriInstance = ofNullable(uri).map(s -> {
             try {
@@ -359,10 +360,6 @@ public abstract class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>
         return addCookies(cookieMap);
     }
 
-    public String toString() {
-        return uriBuilder.build().toString();
-    }
-
     /**
      * Adds query parameter to the given URI
      *
@@ -379,35 +376,23 @@ public abstract class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>
         private GetHttpRequestSupplier(String uri) {
             super(uri, HttpRequest.Builder::GET);
         }
-
-        public String toString() {
-            return format("GET request URI:%s", super.toString());
-        }
     }
 
     public static final class PostHttpRequestSupplier extends HttpRequestGetSupplier<PostHttpRequestSupplier> {
         private PostHttpRequestSupplier(String uri, HttpRequest.BodyPublisher publisher) {
             super(uri, builder -> {
-                checkArgument(publisher != null, "Body publisher parameter should not be a null value");
+                checkArgument(nonNull(publisher), "Body publisher parameter should not be a null value");
                 return builder.POST(publisher);
             });
-        }
-
-        public String toString() {
-            return format("POST request URI:%s", super.toString());
         }
     }
 
     public static final class PutHttpRequestSupplier extends HttpRequestGetSupplier<PutHttpRequestSupplier> {
         private PutHttpRequestSupplier(String uri, HttpRequest.BodyPublisher publisher) {
             super(uri, builder -> {
-                checkArgument(publisher != null, "Body publisher parameter should not be a null value");
+                checkArgument(nonNull(publisher), "Body publisher parameter should not be a null value");
                 return builder.PUT(publisher);
             });
-        }
-
-        public String toString() {
-            return format("PUT request URI:%s", super.toString());
         }
     }
 
@@ -415,27 +400,16 @@ public abstract class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>
         private DeleteHttpRequestSupplier(String uri) {
             super(uri, HttpRequest.Builder::DELETE);
         }
-
-        public String toString() {
-            return format("DELETE request URI:%s", super.toString());
-        }
     }
 
     public static final class MethodHttpRequestSupplier extends HttpRequestGetSupplier<MethodHttpRequestSupplier> {
 
-        private final String method;
-
         private MethodHttpRequestSupplier(String uri, String method, HttpRequest.BodyPublisher publisher) {
             super(uri, builder -> {
                 checkArgument(!isBlank(method), "Method name should not be a null or empty value");
-                checkArgument(publisher != null, "Body publisher parameter should not be a null value");
+                checkArgument(nonNull(publisher), "Body publisher parameter should not be a null value");
                 return builder.method(method, publisher);
             });
-            this.method = method;
-        }
-
-        public String toString() {
-            return format("Request method:%s URI:%s", method, super.toString());
         }
     }
 }

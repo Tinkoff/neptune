@@ -2,9 +2,11 @@ package ru.tinkoff.qa.neptune.selenium.api.widget;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.internal.WrapsElement;
+import ru.tinkoff.qa.neptune.core.api.LoggableObject;
 
 import java.util.List;
 
+import static java.util.Objects.nonNull;
 import static ru.tinkoff.qa.neptune.selenium.api.widget.Priority.LOWEST;
 
 /**
@@ -14,7 +16,7 @@ import static ru.tinkoff.qa.neptune.selenium.api.widget.Priority.LOWEST;
  */
 @Priority(LOWEST)
 public abstract class Widget implements WrapsElement, SearchContext, TakesScreenshot, HasAttribute,
-        IsEnabled, IsVisible, HasSize, HasRectangle, HasLocation, HasCssValue {
+        IsEnabled, IsVisible, HasSize, HasRectangle, HasLocation, HasCssValue, LoggableObject {
 
     private final SearchContext wrappedElement;
 
@@ -26,7 +28,7 @@ public abstract class Widget implements WrapsElement, SearchContext, TakesScreen
         Class<?> clazz = classOfAWidget;
         while (!clazz.equals(Widget.class)) {
             var name =  clazz.getAnnotation(Name.class);
-            if (name != null) {
+            if (nonNull(name)) {
                 return name.value();
             }
             clazz = clazz.getSuperclass();

@@ -4,6 +4,7 @@ import java.time.Duration;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.Thread.sleep;
+import static java.util.Objects.nonNull;
 
 /**
  * This class is designed to suspend thread execution for sometime instead of {@link Thread#sleep(long)}
@@ -30,7 +31,7 @@ public final class WaitABit {
      * @param duration is a time of thread suspending
      */
     public static void waitABit(Duration duration) {
-        checkArgument(duration != null, "Duration value should differ from null");
+        checkArgument(nonNull(duration), "Duration value should differ from null");
         waitABit(duration.toMillis());
     }
 }

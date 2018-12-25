@@ -54,6 +54,10 @@ public final class GetSeleniumCookieSupplier extends SequentialGetStepSupplier<S
         return this;
     }
 
+    Predicate<Cookie> getCondition() {
+        return cookiePredicate;
+    }
+
     @Override
     protected Function<WebDriver, Set<Cookie>> getEndFunction() {
         var func = (Function<WebDriver, Set<Cookie>>) driver -> driver.manage().getCookies();

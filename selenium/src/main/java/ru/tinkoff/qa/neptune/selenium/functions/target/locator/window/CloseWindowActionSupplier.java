@@ -8,7 +8,7 @@ import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Get
 public final class CloseWindowActionSupplier extends SequentialActionSupplier<SeleniumSteps, Window, CloseWindowActionSupplier> {
 
     private CloseWindowActionSupplier() {
-        super();
+        super("Close window/tab");
     }
 
     /**
@@ -47,7 +47,7 @@ public final class CloseWindowActionSupplier extends SequentialActionSupplier<Se
      * @return self-reference
      */
     public CloseWindowActionSupplier andThenCloseWindow(GetWindowSupplier supplier) {
-        return andThen("Close window/tab", supplier);
+        return performOn(supplier);
     }
 
     /**
@@ -57,11 +57,11 @@ public final class CloseWindowActionSupplier extends SequentialActionSupplier<Se
      * @return self-reference
      */
     public CloseWindowActionSupplier andThenCloseWindow(Window window) {
-        return andThen("Close window/tab", window);
+        return performOn(window);
     }
 
     @Override
-    protected void performActionOn(Window value, Object... ignored) {
+    protected void performActionOn(Window value) {
         value.close();
     }
 }

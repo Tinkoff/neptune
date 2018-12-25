@@ -10,13 +10,14 @@ import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 
 public final class HasFrameMatcher extends TypeSafeDiagnosingMatcher<WrapsDriver> {
 
     private final Function<WebDriver, Frame> howToGetFrame;
 
     private HasFrameMatcher(Function<WebDriver, Frame> howToGetFrame) {
-        checkArgument(howToGetFrame != null, "");
+        checkArgument(nonNull(howToGetFrame), "");
         this.howToGetFrame = howToGetFrame;
     }
 

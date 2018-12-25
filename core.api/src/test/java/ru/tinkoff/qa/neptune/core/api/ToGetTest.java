@@ -17,7 +17,7 @@ public class ToGetTest {
 
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "It seems given after-function doesn't describe any value to get. " +
-                    "Use method StoryWriter.toGet to describe this value or override the toString method")
+                    "Use method StoryWriter.toGet to describe the value to get")
     public void negativeTestWhenTheNextFunctionIsNotDescribed() {
         Function<Object, String> describedToString = StoryWriter.toGet("String value of the object",
                 GET_TO_STRING);
@@ -27,7 +27,7 @@ public class ToGetTest {
 
 
     @Test(expectedExceptions = IllegalArgumentException.class,
-            expectedExceptionsMessageRegExp = "Description should not be empty")
+            expectedExceptionsMessageRegExp = "Description should not be empty string or null value")
     public void negativeTestOfEmptyDescription() {
         StoryWriter.toGet("", GET_TO_STRING);
         fail("The exception throwing was expected");

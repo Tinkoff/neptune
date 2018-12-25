@@ -5,6 +5,7 @@ import ru.tinkoff.qa.neptune.core.api.CreateWith;
 import ru.tinkoff.qa.neptune.core.api.ProviderOfEmptyParameters;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.nonNull;
 
 @CreateWith(provider = ProviderOfEmptyParameters.class)
 public class Check implements PerformActionStep<Check> {
@@ -16,7 +17,7 @@ public class Check implements PerformActionStep<Check> {
      * @return self-reference
      */
     public <T> Check verify(ThatValue<T> that) {
-        checkArgument(that != null, "Verifying should be described");
+        checkArgument(nonNull(that), "Verifying should be described");
         return perform(that);
     }
 }

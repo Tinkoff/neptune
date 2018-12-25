@@ -39,27 +39,27 @@ public class CheckTest {
 
     private static final List<String> EXPECTED_LOGGER_MESSAGES1 =
             of("Verify inspected value 4 has started",
-                    "Assertion. Target: Is integer. Action parameters: {is <true>} has started",
-                    "Get Is integer has started",
+                    "Check Is integer. Assert: is <true>. Target: 4 has started",
+                    "From 4 get Is integer has started",
                     "true has been returned",
                     "Event finished",
-                    "Attempt to verify. Target: true has started",
+                    "Assert is <true>. Target: true has started",
                     "Event finished",
                     "Event finished",
-                    "Assertion. Target: Sqrt value. Action parameters: {is <2.0>} has started",
-                    "Get Sqrt value has started",
+                    "Check Sqrt value. Assert: is <2.0>. Target: 4 has started",
+                    "From 4 get Sqrt value has started",
                     "2.0 has been returned",
                     "Event finished",
-                    "Attempt to verify. Target: 2.0 has started",
+                    "Assert is <2.0>. Target: 2.0 has started",
                     "Event finished",
                     "Event finished",
                     "Event finished",
                     "Verify inspected value 5 has started",
-                    "Assertion. Target: Sqr value. Action parameters: {is <25.0>} has started",
-                    "Get Sqr value has started",
+                    "Check Sqr value. Assert: is <25.0>. Target: 5 has started",
+                    "From 5 get Sqr value has started",
                     "25.0 has been returned",
                     "Event finished",
-                    "Attempt to verify. Target: 25.0 has started",
+                    "Assert is <25.0>. Target: 25.0 has started",
                     "Event finished",
                     "Event finished",
                     "Event finished");
@@ -67,27 +67,27 @@ public class CheckTest {
     private static final List<String> EXPECTED_LOGGER_MESSAGES2 =
             of("Check numbers 4 and 5 has started",
                     "Verify inspected value 4 has started",
-                    "Assertion. Target: Is integer. Action parameters: {is <true>} has started",
-                    "Get Is integer has started",
+                    "Check Is integer. Assert: is <true>. Target: 4 has started",
+                    "From 4 get Is integer has started",
                     "true has been returned",
                     "Event finished",
-                    "Attempt to verify. Target: true has started",
+                    "Assert is <true>. Target: true has started",
                     "Event finished",
                     "Event finished",
-                    "Assertion. Target: Sqrt value. Action parameters: {is <2.0>} has started",
-                    "Get Sqrt value has started",
+                    "Check Sqrt value. Assert: is <2.0>. Target: 4 has started",
+                    "From 4 get Sqrt value has started",
                     "2.0 has been returned",
                     "Event finished",
-                    "Attempt to verify. Target: 2.0 has started",
+                    "Assert is <2.0>. Target: 2.0 has started",
                     "Event finished",
                     "Event finished",
                     "Event finished",
                     "Verify inspected value 5 has started",
-                    "Assertion. Target: Sqr value. Action parameters: {is <25.0>} has started",
-                    "Get Sqr value has started",
+                    "Check Sqr value. Assert: is <25.0>. Target: 5 has started",
+                    "From 5 get Sqr value has started",
                     "25.0 has been returned",
                     "Event finished",
-                    "Attempt to verify. Target: 25.0 has started",
+                    "Assert is <25.0>. Target: 25.0 has started",
                     "Event finished",
                     "Event finished",
                     "Event finished",
@@ -95,18 +95,18 @@ public class CheckTest {
 
     private static final List<String> EXPECTED_LOGGER_MESSAGES3 =
             of("Verify inspected value 9 has started",
-                    "Assertion. Target: Is integer. Action parameters: {is <true>} has started",
-                    "Get Is integer has started",
+                    "Check Is integer. Assert: is <true>. Target: 9 has started",
+                    "From 9 get Is integer has started",
                     "true has been returned",
                     "Event finished",
-                    "Attempt to verify. Target: true has started",
+                    "Assert is <true>. Target: true has started",
                     "Event finished",
                     "Event finished",
-                    "Assertion. Target: Sqrt value. Action parameters: {is <2.0>} has started",
-                    "Get Sqrt value has started",
+                    "Check Sqrt value. Assert: is <2.0>. Target: 9 has started",
+                    "From 9 get Sqrt value has started",
                     "3.0 has been returned",
                     "Event finished",
-                    "Attempt to verify. Target: 3.0 has started",
+                    "Assert is <2.0>. Target: 3.0 has started",
                     "java.lang.AssertionError has been thrown",
                     "Event finished",
                     "java.lang.AssertionError has been thrown",
@@ -117,18 +117,18 @@ public class CheckTest {
     private static final List<String> EXPECTED_LOGGER_MESSAGES4 =
             of("Check number 9 has started",
                     "Verify inspected value 9 has started",
-                    "Assertion. Target: Is integer. Action parameters: {is <true>} has started",
-                    "Get Is integer has started",
+                    "Check Is integer. Assert: is <true>. Target: 9 has started",
+                    "From 9 get Is integer has started",
                     "true has been returned",
                     "Event finished",
-                    "Attempt to verify. Target: true has started",
+                    "Assert is <true>. Target: true has started",
                     "Event finished",
                     "Event finished",
-                    "Assertion. Target: Sqrt value. Action parameters: {is <2.0>} has started",
-                    "Get Sqrt value has started",
+                    "Check Sqrt value. Assert: is <2.0>. Target: 9 has started",
+                    "From 9 get Sqrt value has started",
                     "3.0 has been returned",
                     "Event finished",
-                    "Attempt to verify. Target: 3.0 has started",
+                    "Assert is <2.0>. Target: 3.0 has started",
                     "java.lang.AssertionError has been thrown",
                     "Event finished",
                     "java.lang.AssertionError has been thrown",
@@ -176,16 +176,19 @@ public class CheckTest {
 
             assertThat("Logged messages",
                     DefaultListLogger.messages,
-                    contains("Getting of 'Is integer' succeed",
-                            "Performing of 'Attempt to verify' succeed",
-                            "Performing of 'Assertion. Target: Is integer. Action parameters: {is <true>}' succeed",
-                            "Getting of 'Sqrt value' succeed",
-                            "Performing of 'Attempt to verify' succeed",
-                            "Performing of 'Assertion. Target: Sqrt value. Action parameters: {is <2.0>}' succeed",
+                    contains("Getting of 'Is integer' succeed. The result",
+                            "Value that was used to get a result from",
+                            "Performing of 'Assert is <true>' succeed",
+                            "Performing of 'Check Is integer. Assert: is <true>' succeed",
+                            "Getting of 'Sqrt value' succeed. The result",
+                            "Value that was used to get a result from",
+                            "Performing of 'Assert is <2.0>' succeed",
+                            "Performing of 'Check Sqrt value. Assert: is <2.0>' succeed",
                             "Performing of 'Verify inspected value 4' succeed",
-                            "Getting of 'Sqr value' succeed",
-                            "Performing of 'Attempt to verify' succeed",
-                            "Performing of 'Assertion. Target: Sqr value. Action parameters: {is <25.0>}' succeed",
+                            "Getting of 'Sqr value' succeed. The result",
+                            "Value that was used to get a result from",
+                            "Performing of 'Assert is <25.0>' succeed",
+                            "Performing of 'Check Sqr value. Assert: is <25.0>' succeed",
                             "Performing of 'Verify inspected value 5' succeed"));
 
             assertThat(MESSAGES,
@@ -242,16 +245,19 @@ public class CheckTest {
 
             assertThat("Logged messages",
                     DefaultListLogger.messages,
-                    contains("Getting of 'Is integer' succeed",
-                            "Performing of 'Attempt to verify' succeed",
-                            "Performing of 'Assertion. Target: Is integer. Action parameters: {is <true>}' succeed",
-                            "Getting of 'Sqrt value' succeed",
-                            "Performing of 'Attempt to verify' succeed",
-                            "Performing of 'Assertion. Target: Sqrt value. Action parameters: {is <2.0>}' succeed",
+                    contains("Getting of 'Is integer' succeed. The result",
+                            "Value that was used to get a result from",
+                            "Performing of 'Assert is <true>' succeed",
+                            "Performing of 'Check Is integer. Assert: is <true>' succeed",
+                            "Getting of 'Sqrt value' succeed. The result",
+                            "Value that was used to get a result from",
+                            "Performing of 'Assert is <2.0>' succeed",
+                            "Performing of 'Check Sqrt value. Assert: is <2.0>' succeed",
                             "Performing of 'Verify inspected value 4' succeed",
-                            "Getting of 'Sqr value' succeed",
-                            "Performing of 'Attempt to verify' succeed",
-                            "Performing of 'Assertion. Target: Sqr value. Action parameters: {is <25.0>}' succeed",
+                            "Getting of 'Sqr value' succeed. The result",
+                            "Value that was used to get a result from",
+                            "Performing of 'Assert is <25.0>' succeed",
+                            "Performing of 'Check Sqr value. Assert: is <25.0>' succeed",
                             "Performing of 'Verify inspected value 5' succeed"));
 
             assertThat(MESSAGES,
@@ -304,16 +310,19 @@ public class CheckTest {
 
             assertThat("Logged messages",
                     DefaultListLogger.messages,
-                    contains("Getting of 'Is integer' succeed",
-                            "Performing of 'Attempt to verify' succeed",
-                            "Performing of 'Assertion. Target: Is integer. Action parameters: {is <true>}' succeed",
-                            "Getting of 'Sqrt value' succeed",
-                            "Performing of 'Attempt to verify' succeed",
-                            "Performing of 'Assertion. Target: Sqrt value. Action parameters: {is <2.0>}' succeed",
+                    contains("Getting of 'Is integer' succeed. The result",
+                            "Value that was used to get a result from",
+                            "Performing of 'Assert is <true>' succeed",
+                            "Performing of 'Check Is integer. Assert: is <true>' succeed",
+                            "Getting of 'Sqrt value' succeed. The result",
+                            "Value that was used to get a result from",
+                            "Performing of 'Assert is <2.0>' succeed",
+                            "Performing of 'Check Sqrt value. Assert: is <2.0>' succeed",
                             "Performing of 'Verify inspected value 4' succeed",
-                            "Getting of 'Sqr value' succeed",
-                            "Performing of 'Attempt to verify' succeed",
-                            "Performing of 'Assertion. Target: Sqr value. Action parameters: {is <25.0>}' succeed",
+                            "Getting of 'Sqr value' succeed. The result",
+                            "Value that was used to get a result from",
+                            "Performing of 'Assert is <25.0>' succeed",
+                            "Performing of 'Check Sqr value. Assert: is <25.0>' succeed",
                             "Performing of 'Verify inspected value 5' succeed",
                             "Performing of 'Check numbers 4 and 5' succeed"));
 
@@ -373,16 +382,19 @@ public class CheckTest {
 
             assertThat("Logged messages",
                     DefaultListLogger.messages,
-                    contains("Getting of 'Is integer' succeed",
-                            "Performing of 'Attempt to verify' succeed",
-                            "Performing of 'Assertion. Target: Is integer. Action parameters: {is <true>}' succeed",
-                            "Getting of 'Sqrt value' succeed",
-                            "Performing of 'Attempt to verify' succeed",
-                            "Performing of 'Assertion. Target: Sqrt value. Action parameters: {is <2.0>}' succeed",
+                    contains("Getting of 'Is integer' succeed. The result",
+                            "Value that was used to get a result from",
+                            "Performing of 'Assert is <true>' succeed",
+                            "Performing of 'Check Is integer. Assert: is <true>' succeed",
+                            "Getting of 'Sqrt value' succeed. The result",
+                            "Value that was used to get a result from",
+                            "Performing of 'Assert is <2.0>' succeed",
+                            "Performing of 'Check Sqrt value. Assert: is <2.0>' succeed",
                             "Performing of 'Verify inspected value 4' succeed",
-                            "Getting of 'Sqr value' succeed",
-                            "Performing of 'Attempt to verify' succeed",
-                            "Performing of 'Assertion. Target: Sqr value. Action parameters: {is <25.0>}' succeed",
+                            "Getting of 'Sqr value' succeed. The result",
+                            "Value that was used to get a result from",
+                            "Performing of 'Assert is <25.0>' succeed",
+                            "Performing of 'Check Sqr value. Assert: is <25.0>' succeed",
                             "Performing of 'Verify inspected value 5' succeed",
                             "Performing of 'Check numbers 4 and 5' succeed"));
 
@@ -436,16 +448,15 @@ public class CheckTest {
                             number -> sqrt(number.doubleValue()),
                             is(2D)));
         }
-        catch (AssertionError e) {
-            throw e;
-        }
         finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
             assertThat(DefaultListLogger.messages,
-                    contains("Getting of 'Is integer' succeed",
-                            "Performing of 'Attempt to verify' succeed",
-                            "Performing of 'Assertion. Target: Is integer. Action parameters: {is <true>}' succeed",
-                            "Getting of 'Sqrt value' succeed"));
+                    contains("Getting of 'Is integer' succeed. The result",
+                            "Value that was used to get a result from",
+                            "Performing of 'Assert is <true>' succeed",
+                            "Performing of 'Check Is integer. Assert: is <true>' succeed",
+                            "Getting of 'Sqrt value' succeed. The result",
+                            "Value that was used to get a result from"));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES3.toArray()));
@@ -473,8 +484,8 @@ public class CheckTest {
         finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
             assertThat(DefaultListLogger.messages,
-                    contains("Performing of 'Attempt to verify' failed",
-                            "Performing of 'Assertion. Target: Sqrt value. Action parameters: {is <2.0>}' failed",
+                    contains("Performing of 'Assert is <2.0>' failed",
+                            "Performing of 'Check Sqrt value. Assert: is <2.0>' failed",
                             "Performing of 'Verify inspected value 9' failed"));
 
             assertThat(MESSAGES,
@@ -503,12 +514,14 @@ public class CheckTest {
         finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
             assertThat(DefaultListLogger.messages,
-                    contains("Getting of 'Is integer' succeed",
-                            "Performing of 'Attempt to verify' succeed",
-                            "Performing of 'Assertion. Target: Is integer. Action parameters: {is <true>}' succeed",
-                            "Getting of 'Sqrt value' succeed",
-                            "Performing of 'Attempt to verify' failed",
-                            "Performing of 'Assertion. Target: Sqrt value. Action parameters: {is <2.0>}' failed",
+                    contains("Getting of 'Is integer' succeed. The result",
+                            "Value that was used to get a result from",
+                            "Performing of 'Assert is <true>' succeed",
+                            "Performing of 'Check Is integer. Assert: is <true>' succeed",
+                            "Getting of 'Sqrt value' succeed. The result",
+                            "Value that was used to get a result from",
+                            "Performing of 'Assert is <2.0>' failed",
+                            "Performing of 'Check Sqrt value. Assert: is <2.0>' failed",
                             "Performing of 'Verify inspected value 9' failed"));
 
             assertThat(MESSAGES,
@@ -565,10 +578,12 @@ public class CheckTest {
         finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
             assertThat(DefaultListLogger.messages,
-                    contains("Getting of 'Is integer' succeed",
-                            "Performing of 'Attempt to verify' succeed",
-                            "Performing of 'Assertion. Target: Is integer. Action parameters: {is <true>}' succeed",
-                            "Getting of 'Sqrt value' succeed"));
+                    contains("Getting of 'Is integer' succeed. The result",
+                            "Value that was used to get a result from",
+                            "Performing of 'Assert is <true>' succeed",
+                            "Performing of 'Check Is integer. Assert: is <true>' succeed",
+                            "Getting of 'Sqrt value' succeed. The result",
+                            "Value that was used to get a result from"));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES4.toArray()));
@@ -597,8 +612,8 @@ public class CheckTest {
         finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
             assertThat(DefaultListLogger.messages,
-                    contains("Performing of 'Attempt to verify' failed",
-                            "Performing of 'Assertion. Target: Sqrt value. Action parameters: {is <2.0>}' failed",
+                    contains("Performing of 'Assert is <2.0>' failed",
+                            "Performing of 'Check Sqrt value. Assert: is <2.0>' failed",
                             "Performing of 'Verify inspected value 9' failed",
                             "Performing of 'Check number 9' failed"));
 
@@ -629,17 +644,31 @@ public class CheckTest {
         finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
             assertThat(DefaultListLogger.messages,
-                    contains("Getting of 'Is integer' succeed",
-                            "Performing of 'Attempt to verify' succeed",
-                            "Performing of 'Assertion. Target: Is integer. Action parameters: {is <true>}' succeed",
-                            "Getting of 'Sqrt value' succeed",
-                            "Performing of 'Attempt to verify' failed",
-                            "Performing of 'Assertion. Target: Sqrt value. Action parameters: {is <2.0>}' failed",
+                    contains("Getting of 'Is integer' succeed. The result",
+                            "Value that was used to get a result from",
+                            "Performing of 'Assert is <true>' succeed",
+                            "Performing of 'Check Is integer. Assert: is <true>' succeed",
+                            "Getting of 'Sqrt value' succeed. The result",
+                            "Value that was used to get a result from",
+                            "Performing of 'Assert is <2.0>' failed",
+                            "Performing of 'Check Sqrt value. Assert: is <2.0>' failed",
                             "Performing of 'Verify inspected value 9' failed",
                             "Performing of 'Check number 9' failed"));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES4.toArray()));
         }
+    }
+
+    @Test
+    public void testOfNullValue() {
+        check.verify(thatValue("Given value", null)
+                .suitsCriteria(nullValue()));
+
+        assertThat(MESSAGES,
+                contains("Verify Given value has started",
+                        "Assert null. Target: null has started",
+                        "Event finished",
+                        "Event finished"));
     }
 }

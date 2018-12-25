@@ -3,8 +3,7 @@ package ru.tinkoff.qa.neptune.core.api;
 import java.util.function.Predicate;
 
 import static ru.tinkoff.qa.neptune.core.api.AsIsCondition.AS_IS;
-import static ru.tinkoff.qa.neptune.core.api.utils.IsDescribedUtil.isDescribed;
-import static com.google.common.base.Preconditions.checkArgument;
+import static ru.tinkoff.qa.neptune.core.api.IsLoggableUtil.isLoggable;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 
@@ -12,9 +11,6 @@ interface Condition<T> extends Predicate<T> {
 
     default Predicate<T> and(Predicate<? super T> other) {
         checkNotNull(other);
-        checkArgument(isDescribed(other),
-                "It seems given predicate doesn't describe any condition. Use method " +
-                        "StoryWriter.condition to describe the AND-condition or override the toString method");
 
         var thisCondition = this;
         return new Condition<>() {
@@ -26,7 +22,7 @@ interface Condition<T> extends Predicate<T> {
 
             @Override
             public String toString() {
-                if (!AS_IS.equals(other)) {
+                if (!AS_IS.equals(other) && isLoggable(other)) {
                     return format("%s, %s", thisCondition.toString(), other.toString());
                 }
                 return thisCondition.toString();
@@ -52,9 +48,6 @@ interface Condition<T> extends Predicate<T> {
 
     default Predicate<T> or(Predicate<? super T> other) {
         checkNotNull(other);
-        checkArgument(isDescribed(other),
-                "It seems given predicate doesn't describe any condition. Use method " +
-                        "StoryWriter.condition to describe the OR-condition or override the toString method");
 
         var thisCondition = this;
         return new Condition<>() {
@@ -69,7 +62,7 @@ interface Condition<T> extends Predicate<T> {
 
             @Override
             public String toString() {
-                if (!AS_IS.equals(other)) {
+                if (!AS_IS.equals(other) && isLoggable(other)) {
                     return format("(%s) or (%s)", thisCondition.toString(), other.toString());
                 }
                 return thisCondition.toString();

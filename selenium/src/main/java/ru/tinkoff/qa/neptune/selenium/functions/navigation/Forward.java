@@ -8,7 +8,7 @@ import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Get
 public final class Forward extends NavigationActionSupplier<Forward> {
 
     private Forward() {
-        super();
+        super("Navigate forward");
     }
 
     /**
@@ -56,7 +56,7 @@ public final class Forward extends NavigationActionSupplier<Forward> {
      * @return built navigation action
      */
     public Forward andThenForward(GetWindowSupplier windowSupplier) {
-        return andThen("Navigate forward", windowSupplier);
+        return performOn(windowSupplier);
     }
 
     /**
@@ -66,11 +66,11 @@ public final class Forward extends NavigationActionSupplier<Forward> {
      * @return built navigation action
      */
     public Forward andThenForward(Window window) {
-        return andThen("Navigate forward", window);
+        return performOn(window);
     }
 
     @Override
-    protected void performActionOn(Window value, Object... ignored) {
+    protected void performActionOn(Window value) {
         value.forward();
     }
 }

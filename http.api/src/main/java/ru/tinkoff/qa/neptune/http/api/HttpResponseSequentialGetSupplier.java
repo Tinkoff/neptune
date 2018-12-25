@@ -9,7 +9,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
 import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSingleCheckedObject.getSingle;
@@ -117,7 +117,7 @@ public abstract class HttpResponseSequentialGetSupplier<T, R extends HttpRespons
      * @return self-reference
      */
     protected R conditionToReceiveDesiredResponse(Predicate<HttpResponse<T>> condition) {
-        checkArgument(condition != null, "Condition should be defined");
+        checkArgument(nonNull(condition), "Condition should be defined");
         this.condition = condition;
         ofNullable(timeToWaitForCondition).ifPresentOrElse(duration -> {},
                 () -> timeToWaitForCondition = DEFAULT_TIME_TO_GET_DESIRED_RESPONSE_PROPERTY.get());
@@ -133,7 +133,7 @@ public abstract class HttpResponseSequentialGetSupplier<T, R extends HttpRespons
      * @return self-reference
      */
     protected R timeToReceiveDesiredResponse(Duration time) {
-        checkArgument(time != null, "Time to get desired response should be defined");
+        checkArgument(nonNull(time), "Time to get desired response should be defined");
         this.timeToWaitForCondition = time;
         return (R) this;
     }
@@ -147,7 +147,7 @@ public abstract class HttpResponseSequentialGetSupplier<T, R extends HttpRespons
      * @return self-reference
      */
     public R toThrowIfNotReceived(Supplier<DesiredResponseHasNotBeenReceivedException> exceptionSupplier) {
-        checkArgument(exceptionSupplier != null, "Supplier of an exception should be defined");
+        checkArgument(nonNull(exceptionSupplier), "Supplier of an exception should be defined");
         this.exceptionSupplier = exceptionSupplier;
         return (R) this;
     }
@@ -168,7 +168,7 @@ public abstract class HttpResponseSequentialGetSupplier<T, R extends HttpRespons
     }
 
     public String toString() {
-        return format("Response of %s", request);
+        return "HTTP response";
     }
 
     @Override

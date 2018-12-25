@@ -12,6 +12,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.nonNull;
 import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
 import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetObjectFromIterable.getFromIterable;
 import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSingleCheckedObject.getSingle;
@@ -112,7 +113,7 @@ public final class GetWindowSupplier extends GetStepSupplier<SeleniumSteps, Wind
      * @return self-reference.
      */
     public GetWindowSupplier onCondition(Predicate<Window> condition) {
-        checkArgument(condition != null, "Condition is not defined");
+        checkArgument(nonNull(condition), "Condition is not defined");
         this.condition = ofNullable(this.condition).map(predicate -> this.condition.and(predicate)).orElse(condition);
         return ofNullable(index).map(integer -> setFunctionWithIndexAndCondition())
                 .orElseGet(this::setFunctionWithCondition);

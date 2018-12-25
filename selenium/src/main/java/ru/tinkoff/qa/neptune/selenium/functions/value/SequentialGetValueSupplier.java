@@ -8,6 +8,7 @@ import org.openqa.selenium.SearchContext;
 
 import java.util.function.Function;
 
+import static java.util.Objects.nonNull;
 import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 import static com.google.common.base.Preconditions.checkArgument;
@@ -28,7 +29,7 @@ public final class SequentialGetValueSupplier<T> extends
      */
     public static <T, R extends SearchContext & HasValue<T>> SequentialGetValueSupplier<T> ofThe(
             SearchSupplier<R> from) {
-        checkArgument(from != null, "The searching for the element which has value should be defined");
+        checkArgument(nonNull(from), "The searching for the element which has value should be defined");
         return new SequentialGetValueSupplier<T>().from(from.get().compose(currentContent()));
     }
 
@@ -40,7 +41,7 @@ public final class SequentialGetValueSupplier<T> extends
      * @return the function which takes a value from some element and returns the value.
      */
     public static <T, R extends SearchContext & HasValue<T>> SequentialGetValueSupplier<T> ofThe(R from) {
-        checkArgument(from != null, "The element which has value should be defined");
+        checkArgument(nonNull(from), "The element which has value should be defined");
         return new SequentialGetValueSupplier<T>().from(from);
     }
 

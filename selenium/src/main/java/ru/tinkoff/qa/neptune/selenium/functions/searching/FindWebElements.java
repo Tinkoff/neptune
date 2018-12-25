@@ -2,12 +2,12 @@ package ru.tinkoff.qa.neptune.selenium.functions.searching;
 
 import org.openqa.selenium.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchingProxyBuilder.createProxy;
@@ -19,8 +19,8 @@ final class FindWebElements implements Function<SearchContext, List<WebElement>>
     private final String conditionString;
 
     private FindWebElements(By by, String conditionString) {
-        checkArgument(by != null, "Locator by-strategy should be defined.");
-        checkArgument(conditionString != null, "Description of the conditions should be defined.");
+        checkArgument(nonNull(by), "Locator by-strategy should be defined.");
+        checkArgument(nonNull(conditionString), "Description of the conditions should be defined.");
         this.by = by;
         this.conditionString = conditionString;
     }
@@ -31,7 +31,7 @@ final class FindWebElements implements Function<SearchContext, List<WebElement>>
 
     @Override
     public List<WebElement> apply(SearchContext searchContext) {
-        return new ArrayList<WebElement>(searchContext.findElements(by)
+        return new LoggableElementList<>(searchContext.findElements(by)
                 .stream().map(webElement -> {
                     var stringDescription = format("Web element found %s", by);
                     if (!isBlank(conditionString)) {

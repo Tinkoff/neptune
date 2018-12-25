@@ -8,6 +8,8 @@ import java.util.Map;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Map.entry;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
@@ -51,7 +53,7 @@ public final class ConstructorUtil {
         for (Class<?> parameter : constructorTypes) {
             i++;
             var currentType = paramTypes.get(i);
-            if (currentType == null && FOR_USED_SIMPLE_TYPES.get(parameter) != null) {
+            if (isNull(currentType) && nonNull(FOR_USED_SIMPLE_TYPES.get(parameter))) {
                 return false;
             }
             else if (currentType == null){
@@ -63,14 +65,14 @@ public final class ConstructorUtil {
             }
 
             Class<?> simple;
-            if ((simple = FOR_USED_SIMPLE_TYPES.get(currentType)) != null &&
+            if (nonNull(simple = FOR_USED_SIMPLE_TYPES.get(currentType)) &&
                     parameter.isAssignableFrom(simple)) {
                 continue;
             }
 
             var declaredArrayType = parameter.getComponentType();
             var currentArrayType = currentType.getComponentType();
-            if (declaredArrayType != null && currentArrayType != null &&
+            if (nonNull(declaredArrayType) && nonNull(currentArrayType) &&
                     declaredArrayType.isAssignableFrom(currentArrayType)) {
                 continue;
             }

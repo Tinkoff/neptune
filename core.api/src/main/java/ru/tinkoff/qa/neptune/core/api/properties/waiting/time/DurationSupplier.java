@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.time.Duration.of;
+import static java.util.Objects.nonNull;
 
 public abstract class DurationSupplier implements Supplier<Duration> {
 
@@ -18,9 +19,9 @@ public abstract class DurationSupplier implements Supplier<Duration> {
 
     protected DurationSupplier(EnumPropertySuppler<ChronoUnit> durationUnitPropertySupplier,
                                LongValuePropertySupplier durationValuePropertySupplier, Duration returnWhenNotDefined) {
-        checkArgument(returnWhenNotDefined != null, "Default duration value should be defined");
-        checkArgument(durationUnitPropertySupplier != null, "A supplier of time unit should be defined");
-        checkArgument(durationValuePropertySupplier != null, "A supplier of time value should be defined");
+        checkArgument(nonNull(returnWhenNotDefined), "Default duration value should be defined");
+        checkArgument(nonNull(durationUnitPropertySupplier), "A supplier of time unit should be defined");
+        checkArgument(nonNull(durationValuePropertySupplier), "A supplier of time value should be defined");
         this.returnWhenNotDefined = returnWhenNotDefined;
         this.durationUnitPropertySupplier = durationUnitPropertySupplier;
         this.durationValuePropertySupplier = durationValuePropertySupplier;

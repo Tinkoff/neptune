@@ -1,5 +1,5 @@
 ext {
-    globalVersion = '0.7.0-ALPHA'
+    globalVersion = '0.7.1-ALPHA'
 }
 
 subprojects {
@@ -26,7 +26,7 @@ subprojects {
         hamcrestVersion = '2.0.0.0'
         seleniumVersion = '3.141.59'
         allureVersion = '2.8.1'
-        jacksonVersion = '2.9.7'
+        jacksonVersion = '2.9.8'
         mavenDeployLogin =  REPO_USER_NAME
         mavenDeployPassword = REPO_USER_PASSWORD
         globalVersion = version

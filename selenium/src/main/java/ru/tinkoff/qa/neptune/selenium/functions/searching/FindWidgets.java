@@ -5,13 +5,13 @@ import org.openqa.selenium.*;
 import org.reflections.Reflections;
 
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.selenium.api.widget.Widget.getWidgetName;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindByBuilder.getAnnotations;
@@ -32,8 +32,8 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
     private List<Class<? extends R>> classesToInstantiate;
 
     FindWidgets(Class<R> classOfAWidget, String conditionString, Predicate<Class<? extends R>> classPredicate) {
-        checkArgument(classOfAWidget != null, "The class to be instantiated should be defined.");
-        checkArgument(conditionString != null, "Description of the conditions should be defined.");
+        checkArgument(nonNull(classOfAWidget), "The class to be instantiated should be defined.");
+        checkArgument(nonNull(conditionString), "Description of the conditions should be defined.");
         this.classOfAWidget = classOfAWidget;
         this.conditionString = conditionString;
         this.classPredicate = classPredicate;
@@ -42,7 +42,7 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
     private FindWidgets(Class<R> classOfAWidget, String conditionString) {
         this(classOfAWidget, conditionString, clazz -> !Modifier.isAbstract(clazz.getModifiers())
 
-                && (getAnnotations(clazz) != null)
+                && nonNull(getAnnotations(clazz))
 
                 && (Arrays.stream(clazz.getDeclaredConstructors())
                 .filter(constructor -> {
@@ -92,7 +92,18 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
     public List<R> apply(SearchContext searchContext) {
         classesToInstantiate = ofNullable(classesToInstantiate)
                 .orElseGet(this::getSubclasses);
-        var result = new ArrayList<R>();
+
+        var result = new LoggableElementList<R>() {
+            @Override
+            public String toString() {
+                var stringDescription = String.format("%s elements of type %s", size(), getWidgetName(classOfAWidget));
+                if (!isBlank(conditionString)) {
+                    stringDescription = format("%s found on conditions '%s'", stringDescription, conditionString);
+                }
+                return stringDescription;
+            }
+        };
+
         classesToInstantiate.forEach(clazz -> {
             var by = builder.buildIt(clazz);
             result.addAll(searchContext.findElements(by).stream()
@@ -105,15 +116,6 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
                     })
                     .collect(toList()));
         });
-        return new ArrayList<>(result) {
-            @Override
-            public String toString() {
-                var stringDescription = String.format("%s elements of type %s", size(), getWidgetName(classOfAWidget));
-                if (!isBlank(conditionString)) {
-                    stringDescription = format("%s found on conditions '%s'", stringDescription, conditionString);
-                }
-                return stringDescription;
-            }
-        };
+        return result;
     }
 }

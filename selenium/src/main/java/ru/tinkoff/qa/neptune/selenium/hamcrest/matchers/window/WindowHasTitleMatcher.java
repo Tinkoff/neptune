@@ -7,6 +7,7 @@ import org.hamcrest.Matcher;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 import static org.hamcrest.Matchers.equalTo;
 
 public final class WindowHasTitleMatcher extends TypeSafeDiagnosingMatcher<Window> {
@@ -14,7 +15,7 @@ public final class WindowHasTitleMatcher extends TypeSafeDiagnosingMatcher<Windo
     private final Matcher<String> titleMatcher;
 
     private WindowHasTitleMatcher(Matcher<String> titleMatcher) {
-        checkArgument(titleMatcher != null, "Criteria to match title of a window should be defined");
+        checkArgument(nonNull(titleMatcher), "Criteria to match title of a window should be defined");
         this.titleMatcher = titleMatcher;
     }
 

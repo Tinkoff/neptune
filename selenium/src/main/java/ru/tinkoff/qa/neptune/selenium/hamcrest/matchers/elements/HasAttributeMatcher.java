@@ -10,6 +10,7 @@ import org.openqa.selenium.internal.WrapsElement;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.equalTo;
@@ -22,7 +23,7 @@ public final class HasAttributeMatcher<T extends SearchContext> extends TypeSafe
 
     private HasAttributeMatcher(String attribute, Matcher<String> matcher) {
         checkArgument(!isBlank(attribute), "Attribute should not be blank");
-        checkArgument(matcher != null, "Criteria to match value of the attribute should be defined");
+        checkArgument(nonNull(matcher), "Criteria to match value of the attribute should be defined");
         this.attribute = attribute;
         this.matcher = matcher;
     }

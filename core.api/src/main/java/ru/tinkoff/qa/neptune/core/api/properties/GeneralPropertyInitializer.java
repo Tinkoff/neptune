@@ -6,6 +6,7 @@ import java.util.Properties;
 import static java.lang.String.valueOf;
 import static java.lang.System.getProperty;
 import static java.lang.System.setProperty;
+import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -29,16 +30,16 @@ public final class GeneralPropertyInitializer {
                 .listFiles((dir, name) -> name
                         .endsWith(GENERAL_PROPERTIES));
 
-        if (list != null && list.length > 0) {
+        if (nonNull(list) && list.length > 0) {
             return list[0];
-        } else if (list != null) {
+        } else if (nonNull(list)) {
             var inner = defaultConfig.listFiles();
             File result = null;
             for (File element : inner) {
                 if (element.isDirectory()) {
                     result = findPropertyFile(element.getPath());
                 }
-                if (result != null) {
+                if (nonNull(result)) {
                     return result;
                 }
             }
@@ -75,7 +76,7 @@ public final class GeneralPropertyInitializer {
         }
 
         prop.forEach((key, value) -> checkSystemPropertyAndFillIfNecessary(valueOf(key),
-                value != null ? valueOf(value) : EMPTY));
+                nonNull(value) ? valueOf(value) : EMPTY));
     }
 
     /**
@@ -84,7 +85,7 @@ public final class GeneralPropertyInitializer {
      */
     public static void refreshProperties() {
         File propertyFile = findPropertyFile();
-        if (propertyFile != null) {
+        if (nonNull(propertyFile)) {
             refreshProperties(propertyFile);
         }
     }

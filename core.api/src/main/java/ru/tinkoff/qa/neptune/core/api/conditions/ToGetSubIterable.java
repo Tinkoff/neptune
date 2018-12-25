@@ -9,6 +9,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static java.util.Objects.nonNull;
 import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetConditionalHelper.*;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -41,7 +42,7 @@ public final class ToGetSubIterable {
                             Iterables.removeAll(v, result);
                             return v;
                         }).orElse(null),
-                waitingTime, sleepingTime, v -> v != null && Iterables.size(v) > 0, exceptionSupplier);
+                waitingTime, sleepingTime, v -> nonNull(v) && Iterables.size(v) > 0, exceptionSupplier);
 
     }
 

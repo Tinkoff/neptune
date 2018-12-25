@@ -2,15 +2,26 @@ package ru.tinkoff.qa.neptune.data.base.api;
 
 import com.google.gson.Gson;
 import org.datanucleus.enhancement.Persistable;
+import ru.tinkoff.qa.neptune.core.api.LoggableObject;
+
+import static java.lang.String.format;
+import static java.util.Optional.ofNullable;
 
 /**
  * This abstract class is designed to mark persistable classes.
  */
-public abstract class PersistableObject extends OrmObject implements Cloneable {
+public abstract class PersistableObject extends OrmObject implements Cloneable, LoggableObject {
 
     @Override
     public String toString() {
-        return new Gson().toJson(this);
+        var name = this.getClass().getName();
+        if (!Persistable.class.isAssignableFrom(this.getClass())) {
+            return format("Not stored data base element of type %s", name);
+        }
+
+        return ofNullable(((Persistable) this).dnGetObjectId())
+                .map(o -> format("Stored data base element of type %s. Id = %s", name, o))
+                .orElseGet(() -> format("Stored data base element of type %s: %s", name, new Gson().toJson(this)));
     }
 
     public Object clone() {

@@ -10,6 +10,7 @@ import javax.jdo.annotations.PersistenceCapable;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.nonNull;
 import static org.datanucleus.metadata.TransactionType.RESOURCE_LOCAL;
 
 /**
@@ -29,7 +30,7 @@ public abstract class PersistenceManagerFactorySupplier implements Supplier<JDOP
                 null));
 
         REFLECTIONS.getSubTypesOf(PersistableObject.class).stream()
-                .filter(clazz -> clazz.getAnnotation(PersistenceCapable.class) != null)
+                .filter(clazz -> nonNull(clazz.getAnnotation(PersistenceCapable.class)))
                 .map(Class::getName).collect(Collectors.toList()).forEach(persistenceUnitMetaData::addClassName);
         persistenceUnitMetaData.setExcludeUnlistedClasses(true);
 

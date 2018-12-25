@@ -13,6 +13,7 @@ import org.openqa.selenium.remote.server.SeleniumServer;
 
 import java.net.URL;
 
+import static java.util.Objects.nonNull;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static ru.tinkoff.qa.neptune.core.api.utils.ConstructorUtil.findSuitableConstructor;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.*;
@@ -38,7 +39,7 @@ public class WrappedWebDriver implements WrapsDriver, Refreshable {
     }
 
     private static synchronized void initServerLocally() {
-        if (server != null && serverStarted) {
+        if (nonNull(server) && serverStarted) {
             return;
         }
         serverStarted = false;

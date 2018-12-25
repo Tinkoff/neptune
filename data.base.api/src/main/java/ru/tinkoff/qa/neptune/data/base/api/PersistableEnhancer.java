@@ -6,6 +6,8 @@ import org.reflections.Reflections;
 import javax.jdo.annotations.PersistenceCapable;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.nonNull;
+
 public final class PersistableEnhancer {
     private static final Reflections REFLECTIONS = new Reflections("");
 
@@ -19,7 +21,7 @@ public final class PersistableEnhancer {
         enhancer.setVerbose(true);
 
         enhancer.addClasses(REFLECTIONS.getSubTypesOf(PersistableObject.class).stream()
-                .filter(clazz -> clazz.getAnnotation(PersistenceCapable.class) != null)
+                .filter(clazz -> nonNull(clazz.getAnnotation(PersistenceCapable.class)))
                 .map(Class::getName).collect(Collectors.toList()).toArray(new String[]{}));
         enhancer.enhance();
     }

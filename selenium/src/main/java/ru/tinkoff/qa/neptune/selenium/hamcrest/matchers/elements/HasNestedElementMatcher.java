@@ -9,13 +9,14 @@ import org.openqa.selenium.SearchContext;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
+import static java.util.Objects.nonNull;
 
 public final class HasNestedElementMatcher<T extends SearchContext> extends TypeSafeDiagnosingMatcher<T> {
 
     private final SearchSupplier<?> search;
 
     private HasNestedElementMatcher(SearchSupplier<?> search) {
-        checkArgument(search != null, "The way to find nested element should be defined");
+        checkArgument(nonNull(search), "The way to find nested element should be defined");
         this.search = search;
     }
 

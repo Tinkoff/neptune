@@ -7,7 +7,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumSteps;
 public final class SwitchActionSupplier extends SequentialActionSupplier<SeleniumSteps, Object, SwitchActionSupplier> {
 
     private SwitchActionSupplier() {
-        super();
+        super("Switch to");
     }
 
     /**
@@ -27,7 +27,7 @@ public final class SwitchActionSupplier extends SequentialActionSupplier<Seleniu
      * @return built `switch to` action
      */
     public static SwitchActionSupplier to(SwitchesToItself to) {
-        return new SwitchActionSupplier().andThenSwitchTo(to);
+        return new SwitchActionSupplier().performOn(to);
     }
 
     /**
@@ -38,7 +38,7 @@ public final class SwitchActionSupplier extends SequentialActionSupplier<Seleniu
      */
     @SuppressWarnings("unchecked")
     public SwitchActionSupplier andThenSwitchTo(TargetLocatorSupplier<?> to) {
-        return andThen("Switch to", (GetStepSupplier) to);
+        return performOn((GetStepSupplier) to);
     }
 
     /**
@@ -48,11 +48,11 @@ public final class SwitchActionSupplier extends SequentialActionSupplier<Seleniu
      * @return built `switch to` action
      */
     public SwitchActionSupplier andThenSwitchTo(SwitchesToItself to) {
-        return andThen("Switch to", to);
+        return performOn(to);
     }
 
     @Override
-    protected void performActionOn(Object value, Object... additionalArgument) {
+    protected void performActionOn(Object value) {
         if (SwitchesToItself.class.isAssignableFrom(value.getClass())) {
             ((SwitchesToItself) value).switchToMe();
         }

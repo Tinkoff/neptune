@@ -169,9 +169,9 @@ public class NavigationTest extends BaseWebDriverTest {
     public void chainedNavigationTest() {
         Window window = seleniumSteps.get(window().byIndex(2));
 
-        seleniumSteps.navigate(toUrl(PAY_PAL.getUrl())
-                .andThenToUrl(window().byIndex(1), DEEZER.getUrl())
-                .andThenToUrl(window, YOUTUBE.getUrl()));
+        seleniumSteps.navigate(toUrl(PAY_PAL.getUrl()))
+                .navigate(toUrl(window().byIndex(1), DEEZER.getUrl()))
+                .navigate(toUrl(window, YOUTUBE.getUrl()));
 
         assertThat(seleniumSteps.get(currentUrl()), is(PAY_PAL.getUrl()));
         Window window2 = seleniumSteps.get(window().byIndex(1));
@@ -183,12 +183,12 @@ public class NavigationTest extends BaseWebDriverTest {
     @Test(dependsOnMethods = "navigationInTheFirstWindow")
     public void backForwardFirstWindowTest() {
         Window first = seleniumSteps.get(window());
-        seleniumSteps.navigate(toUrl(GOOGLE.getUrl())
-                .andThenToUrl(GITHUB.getUrl())
-                .andThenToUrl(FACEBOOK.getUrl())
-                .andThenToUrl(DEEZER.getUrl())
-                .andThenToUrl(PAY_PAL.getUrl())
-                .andThenToUrl(YOUTUBE.getUrl()));
+        seleniumSteps.navigate(toUrl(GOOGLE.getUrl()))
+                .navigate(toUrl(GITHUB.getUrl()))
+                .navigate(toUrl(FACEBOOK.getUrl()))
+                .navigate(toUrl(DEEZER.getUrl()))
+                .navigate(toUrl(PAY_PAL.getUrl()))
+                .navigate(toUrl(YOUTUBE.getUrl()));
 
         seleniumSteps.navigate(back());
         assertThat(seleniumSteps.get(currentUrl()), is(PAY_PAL.getUrl()));
@@ -242,12 +242,12 @@ public class NavigationTest extends BaseWebDriverTest {
     @Test(dependsOnMethods = "navigationInWindowBySearching")
     public void backForwardInWindowBySearchingTest() {
         Window second = seleniumSteps.get(window().byIndex(1));
-        seleniumSteps.navigate(toUrl(window().byIndex(1), GOOGLE.getUrl())
-                .andThenToUrl(window().byIndex(1), GITHUB.getUrl())
-                .andThenToUrl(window().byIndex(1), FACEBOOK.getUrl())
-                .andThenToUrl(window().byIndex(1), DEEZER.getUrl())
-                .andThenToUrl(window().byIndex(1), PAY_PAL.getUrl())
-                .andThenToUrl(window().byIndex(1), YOUTUBE.getUrl()));
+        seleniumSteps.navigate(toUrl(window().byIndex(1), GOOGLE.getUrl()))
+                .navigate(toUrl(window().byIndex(1), GITHUB.getUrl()))
+                .navigate(toUrl(window().byIndex(1), FACEBOOK.getUrl()))
+                .navigate(toUrl(window().byIndex(1), DEEZER.getUrl()))
+                .navigate(toUrl(window().byIndex(1), PAY_PAL.getUrl()))
+                .navigate(toUrl(window().byIndex(1), YOUTUBE.getUrl()));
 
         seleniumSteps.navigate(back(window().byIndex(1)));
         assertThat(seleniumSteps.get(currentUrlOf(window().byIndex(1))), is(PAY_PAL.getUrl()));
@@ -301,12 +301,12 @@ public class NavigationTest extends BaseWebDriverTest {
     @Test(dependsOnMethods = "navigationInWindowBySearching")
     public void backForwardInTheWindowTest() {
         Window third = seleniumSteps.get(window().byIndex(2));
-        seleniumSteps.navigate(toUrl(third, GOOGLE.getUrl())
-                .andThenToUrl(third, GITHUB.getUrl())
-                .andThenToUrl(third, FACEBOOK.getUrl())
-                .andThenToUrl(third, DEEZER.getUrl())
-                .andThenToUrl(third, PAY_PAL.getUrl())
-                .andThenToUrl(third, YOUTUBE.getUrl()));
+        seleniumSteps.navigate(toUrl(third, GOOGLE.getUrl()))
+                .navigate(toUrl(third, GITHUB.getUrl()))
+                .navigate(toUrl(third, FACEBOOK.getUrl()))
+                .navigate(toUrl(third, DEEZER.getUrl()))
+                .navigate(toUrl(third, PAY_PAL.getUrl()))
+                .navigate(toUrl(third, YOUTUBE.getUrl()));
 
         seleniumSteps.navigate(back(third));
         assertThat(seleniumSteps.get(currentUrlOf(window().byIndex(2))), is(PAY_PAL.getUrl()));
@@ -360,12 +360,12 @@ public class NavigationTest extends BaseWebDriverTest {
     @Test
     public void chainedBackForwardTest() {
         Window thirdWindow = seleniumSteps.get(window().byIndex(2));
-        seleniumSteps.navigate(toUrl(GOOGLE.getUrl())
-                .andThenToUrl(GITHUB.getUrl())
-                .andThenToUrl(window().byIndex(1), FACEBOOK.getUrl())
-                .andThenToUrl(window().byIndex(1), DEEZER.getUrl())
-                .andThenToUrl(window().byIndex(2), PAY_PAL.getUrl())
-                .andThenToUrl(window().byIndex(2), YOUTUBE.getUrl()));
+        seleniumSteps.navigate(toUrl(GOOGLE.getUrl()))
+                .navigate(toUrl(GITHUB.getUrl()))
+                .navigate(toUrl(window().byIndex(1), FACEBOOK.getUrl()))
+                .navigate(toUrl(window().byIndex(1), DEEZER.getUrl()))
+                .navigate(toUrl(window().byIndex(2), PAY_PAL.getUrl()))
+                .navigate(toUrl(window().byIndex(2), YOUTUBE.getUrl()));
 
         seleniumSteps.navigate(back().andThenBack(window().byIndex(1)).andThenBack(thirdWindow));
         assertThat(seleniumSteps.get(currentUrl()), is(GOOGLE.getUrl()));

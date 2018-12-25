@@ -13,7 +13,7 @@ public class TestCapturedStringInjector implements CapturedStringInjector {
 
     @Override
     public void inject(StringBuilder toBeInjected, String message) {
-        String msg = format("%s. Result: %s", message, toBeInjected);
+        String msg = format("%s %s", message, toBeInjected);
         messages.add(msg);
     }
 }

@@ -9,6 +9,7 @@ import org.openqa.selenium.SearchContext;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
+import static java.util.Objects.nonNull;
 import static org.hamcrest.Matchers.*;
 
 public final class HasNestedElementsMatcher<T extends SearchContext> extends TypeSafeDiagnosingMatcher<T> {
@@ -17,7 +18,7 @@ public final class HasNestedElementsMatcher<T extends SearchContext> extends Typ
     private Matcher<Integer> expectedCount = greaterThan(0);
 
     private HasNestedElementsMatcher(MultipleSearchSupplier<?> search) {
-        checkArgument(search != null, "The way to find nested elements should be defined");
+        checkArgument(nonNull(search), "The way to find nested elements should be defined");
         this.search = search;
     }
 
@@ -48,7 +49,7 @@ public final class HasNestedElementsMatcher<T extends SearchContext> extends Typ
      * @return self-reference.
      */
     public HasNestedElementsMatcher<T> withCount(Matcher<Integer> matcher) {
-        checkArgument(matcher != null,  "Criteria to check the count of found elements should be defined");
+        checkArgument(nonNull(matcher), "Criteria to check the count of found elements should be defined");
         this.expectedCount = matcher;
         return this;
     }

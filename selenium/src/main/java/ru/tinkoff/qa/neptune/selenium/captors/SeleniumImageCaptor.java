@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toCollection;
 import static org.openqa.selenium.OutputType.BYTES;
@@ -60,7 +61,7 @@ public class SeleniumImageCaptor extends ImageCaptor<TakesScreenshot> {
                                     .getScreenshotAs((WebElement) caught, BYTES));
                         }
                         WebElement webElement;
-                        if (Widget.class.isAssignableFrom(clazz) && (webElement = ((Widget) caught).getWrappedElement()) != null) {
+                        if (Widget.class.isAssignableFrom(clazz) && nonNull(webElement = ((Widget) caught).getWrappedElement())) {
                             return new ByteArrayInputStream(elementScreenshotTaker1.getScreenshotAs(webElement, BYTES));
                         }
                         if (List.class.isAssignableFrom(clazz)) {

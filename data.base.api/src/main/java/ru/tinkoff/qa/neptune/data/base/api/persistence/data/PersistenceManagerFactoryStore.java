@@ -7,6 +7,7 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 import static ru.tinkoff.qa.neptune.core.api.utils.SPIUtil.loadSPI;
 
 public final class PersistenceManagerFactoryStore {
@@ -42,7 +43,7 @@ public final class PersistenceManagerFactoryStore {
      */
     public static JDOPersistenceManagerFactory getPersistenceManagerFactory(Class<? extends PersistenceManagerFactorySupplier> supplierClass,
                                                                             boolean throwExceptionIfNotPresent) {
-        checkArgument(supplierClass != null, "Class of persistence manager factory supplier " +
+        checkArgument(nonNull(supplierClass), "Class of persistence manager factory supplier " +
                 "is expected to be not a null value");
         return getPersistenceManagerFactorySuppliers().stream().filter(persistenceManagerFactorySupplier ->
                 persistenceManagerFactorySupplier.getClass().equals(supplierClass))
