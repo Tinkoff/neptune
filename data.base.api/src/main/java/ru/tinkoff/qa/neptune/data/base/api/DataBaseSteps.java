@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.nonNull;
 import static ru.tinkoff.qa.neptune.data.base.api.persistence.data.PersistenceManagerFactoryStore.getPersistenceManagerFactory;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.DefaultPersistenceManagerFactoryProperty.DEFAULT_JDO_PERSISTENCE_MANAGER_FACTORY_PROPERTY;
 
@@ -25,7 +26,7 @@ public class DataBaseSteps implements GetStep<DataBaseSteps>, PerformActionStep<
     private JDOPersistenceManagerFactory currentFactory;
 
     public DataBaseSteps(JDOPersistenceManagerFactory defaultFactory) {
-        checkArgument(defaultFactory != null, "Value of default JDO persistence manager factory " +
+        checkArgument(nonNull(defaultFactory), "Value of default JDO persistence manager factory " +
                 "should differ from null");
         checkArgument(!defaultFactory.isClosed(), "Default JDO persistence manager factory " +
                 "should not be closed");

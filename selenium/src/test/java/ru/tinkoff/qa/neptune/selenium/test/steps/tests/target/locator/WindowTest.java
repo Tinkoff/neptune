@@ -14,13 +14,10 @@ import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Clo
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowPositionSupplier.positionOf;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowPositionSupplier.windowPosition;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSizeSupplier.sizeOf;
-import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSizeSupplier.windowSize;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowTitleSupplier.titleOf;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.SetWindowPositionSupplier.setPositionOf;
-import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.SetWindowPositionSupplier.setWindowPosition;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.SetWindowSizeSupplier.setSizeOf;
-import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.SetWindowSizeSupplier.setWindowSize;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.WindowPredicates.hasTitle;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.WindowPredicates.hasUrl;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeUnitProperties.WAITING_WINDOW_TIME_UNIT;
@@ -263,40 +260,6 @@ public class WindowTest extends BaseWebDriverTest {
     }
 
     @Test
-    public void sizeOfWindowBySearchingChainedTest() {
-        seleniumSteps.perform(setWindowSize(new Dimension(1001, 1002))
-                .andSetSizeOf(window().byIndex(1), new Dimension(1101, 1102))
-                .andSetSizeOf(window().byIndex(2), new Dimension(1201, 1202)));
-
-        assertThat(seleniumSteps.get(windowSize()), equalTo(new Dimension(1001, 1002)));
-        assertThat(seleniumSteps.get(sizeOf(window().byIndex(1))), equalTo(new Dimension(1101, 1102)));
-        assertThat(seleniumSteps.get(sizeOf(window().byIndex(2))), equalTo(new Dimension(1201, 1202)));
-
-        assertThat(seleniumSteps.get(window()).getSize(), equalTo(new Dimension(1001, 1002)));
-        assertThat(seleniumSteps.get(window().byIndex(1)).getSize(), equalTo(new Dimension(1101, 1102)));
-        assertThat(seleniumSteps.get(window().byIndex(2)).getSize(), equalTo(new Dimension(1201, 1202)));
-    }
-
-    @Test
-    public void sizeOfWindowChainedTest() {
-        Window window = seleniumSteps.get(window());
-        Window window2 = seleniumSteps.get(window().byIndex(1));
-        Window window3 = seleniumSteps.get(window().byIndex(2));
-
-        seleniumSteps.perform(setSizeOf(window, new Dimension(1001, 1002))
-                .andSetSizeOf(window2, new Dimension(1101, 1102))
-                .andSetSizeOf(window3, new Dimension(1201, 1202)));
-
-        assertThat(seleniumSteps.get(windowSize()), equalTo(new Dimension(1001, 1002)));
-        assertThat(seleniumSteps.get(sizeOf(window().byIndex(1))), equalTo(new Dimension(1101, 1102)));
-        assertThat(seleniumSteps.get(sizeOf(window().byIndex(2))), equalTo(new Dimension(1201, 1202)));
-
-        assertThat(seleniumSteps.get(window()).getSize(), equalTo(new Dimension(1001, 1002)));
-        assertThat(seleniumSteps.get(window().byIndex(1)).getSize(), equalTo(new Dimension(1101, 1102)));
-        assertThat(seleniumSteps.get(window().byIndex(2)).getSize(), equalTo(new Dimension(1201, 1202)));
-    }
-
-    @Test
     public void positionOfWindowBySearchingTest() {
         seleniumSteps.perform(setPositionOf(window().byIndex(1), new Point(1001, 1002)));
         assertThat(seleniumSteps.get(positionOf(window().byIndex(1))), equalTo(new Point(1001, 1002)));
@@ -316,40 +279,6 @@ public class WindowTest extends BaseWebDriverTest {
         seleniumSteps.perform(setPositionOf(window(), new Point(1001, 1002)));
         assertThat(window.getPosition(), equalTo(new Point(1001, 1002)));
         assertThat(seleniumSteps.get(windowPosition()), equalTo(new Point(1001, 1002)));
-    }
-
-    @Test
-    public void positionOfWindowBySearchingChainedTest() {
-        seleniumSteps.perform(setWindowPosition(new Point(1001, 1002))
-                .andSetPositionOf(window().byIndex(1), new Point(1101, 1102))
-                .andSetPositionOf(window().byIndex(2), new Point(1201, 1202)));
-
-        assertThat(seleniumSteps.get(windowPosition()), equalTo(new Point(1001, 1002)));
-        assertThat(seleniumSteps.get(positionOf(window().byIndex(1))), equalTo(new Point(1101, 1102)));
-        assertThat(seleniumSteps.get(positionOf(window().byIndex(2))), equalTo(new Point(1201, 1202)));
-
-        assertThat(seleniumSteps.get(window()).getPosition(), equalTo(new Point(1001, 1002)));
-        assertThat(seleniumSteps.get(window().byIndex(1)).getPosition(), equalTo(new Point(1101, 1102)));
-        assertThat(seleniumSteps.get(window().byIndex(2)).getPosition(), equalTo(new Point(1201, 1202)));
-    }
-
-    @Test
-    public void positionOfWindowChainedTest() {
-        Window window = seleniumSteps.get(window());
-        Window window2 = seleniumSteps.get(window().byIndex(1));
-        Window window3 = seleniumSteps.get(window().byIndex(2));
-
-        seleniumSteps.perform(setPositionOf(window, new Point(1001, 1002))
-                .andSetPositionOf(window2, new Point(1101, 1102))
-                .andSetPositionOf(window3, new Point(1201, 1202)));
-
-        assertThat(seleniumSteps.get(windowPosition()), equalTo(new Point(1001, 1002)));
-        assertThat(seleniumSteps.get(positionOf(window().byIndex(1))), equalTo(new Point(1101, 1102)));
-        assertThat(seleniumSteps.get(positionOf(window().byIndex(2))), equalTo(new Point(1201, 1202)));
-
-        assertThat(seleniumSteps.get(window()).getPosition(), equalTo(new Point(1001, 1002)));
-        assertThat(seleniumSteps.get(window().byIndex(1)).getPosition(), equalTo(new Point(1101, 1102)));
-        assertThat(seleniumSteps.get(window().byIndex(2)).getPosition(), equalTo(new Point(1201, 1202)));
     }
 
     @Test

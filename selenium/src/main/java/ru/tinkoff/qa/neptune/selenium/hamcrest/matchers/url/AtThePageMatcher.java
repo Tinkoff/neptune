@@ -8,6 +8,7 @@ import org.openqa.selenium.WebDriver;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 import static org.hamcrest.Matchers.equalTo;
 
 public final class AtThePageMatcher extends TypeSafeDiagnosingMatcher<WrapsDriver> {
@@ -15,7 +16,7 @@ public final class AtThePageMatcher extends TypeSafeDiagnosingMatcher<WrapsDrive
     private final Matcher<String> urlMatcher;
 
     private AtThePageMatcher(Matcher<String> urlMatcher) {
-        checkArgument(urlMatcher != null, "Criteria for the matching of an URL should be defined");
+        checkArgument(nonNull(urlMatcher), "Criteria for the matching of an URL should be defined");
         this.urlMatcher = urlMatcher;
     }
 

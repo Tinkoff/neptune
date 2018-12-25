@@ -11,6 +11,7 @@ import org.openqa.selenium.WebElement;
 
 import java.util.List;
 
+import static java.util.Objects.nonNull;
 import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 import static com.google.common.base.Preconditions.checkArgument;
@@ -18,7 +19,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 public final class ClickActionSupplier extends SequentialActionSupplier<SeleniumSteps, Clickable, ClickActionSupplier> {
 
     private ClickActionSupplier() {
-        super();
+        super("Click");
     }
 
     private static ClickableWrapper getClickableFromElement(WebElement element) {
@@ -90,8 +91,8 @@ public final class ClickActionSupplier extends SequentialActionSupplier<Selenium
      * @return built click action
      */
     public <R extends SearchContext & Clickable> ClickActionSupplier andOn(SearchSupplier<R> on) {
-        checkArgument(on != null, "The searching for the clickable element should be defined");
-        return andThen("Click", on.get().compose(currentContent()));
+        checkArgument(nonNull(on), "The searching for the clickable element should be defined");
+        return performOn(on.get().compose(currentContent()));
     }
 
     /**
@@ -100,8 +101,8 @@ public final class ClickActionSupplier extends SequentialActionSupplier<Selenium
      * @return built click action
      */
     public ClickActionSupplier andOn(GetStepSupplier<SearchContext, WebElement, ?> on) {
-        checkArgument(on != null, "The searching for the clickable element should be defined");
-        return andThen("Click", currentContent()
+        checkArgument(nonNull(on), "The searching for the clickable element should be defined");
+        return performOn(currentContent()
                 .andThen(toGet(on.toString(), webDriver -> getClickableFromElement(on.get().apply(webDriver)))));
     }
 
@@ -112,8 +113,8 @@ public final class ClickActionSupplier extends SequentialActionSupplier<Selenium
      * @return built click action
      */
     public <R extends SearchContext & Clickable> ClickActionSupplier andOn(R on) {
-        checkArgument(on != null, "The clickable element should be defined");
-        return andThen("Click", on);
+        checkArgument(nonNull(on), "The clickable element should be defined");
+        return performOn(on);
     }
 
     /**
@@ -122,12 +123,12 @@ public final class ClickActionSupplier extends SequentialActionSupplier<Selenium
      * @return built click action
      */
     public ClickActionSupplier andOn(WebElement on) {
-        checkArgument(on != null, "The element should be defined");
-        return andThen("Click", getClickableFromElement(on));
+        checkArgument(nonNull(on), "The element should be defined");
+        return performOn(getClickableFromElement(on));
     }
 
     @Override
-    protected void performActionOn(Clickable value, Object... ignored) {
+    protected void performActionOn(Clickable value) {
         value.click();
     }
 

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.function.Function;
 
+import static java.util.Objects.nonNull;
 import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
@@ -16,7 +17,7 @@ import static java.util.Optional.ofNullable;
 public class Presence<T extends GetStep<T>> extends GetStepSupplier<T, Boolean, Presence<T>> {
 
     protected Presence(Function<T, ?> toBePresent) {
-        checkArgument(toBePresent != null,
+        checkArgument(nonNull(toBePresent),
                 "The function is not defined");
         checkArgument(StepFunction.class.isAssignableFrom(toBePresent.getClass()),
                 "The function which returns the goal value should be described " +

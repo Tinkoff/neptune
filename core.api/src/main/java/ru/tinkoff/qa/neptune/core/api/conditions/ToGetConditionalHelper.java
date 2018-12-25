@@ -1,7 +1,5 @@
 package ru.tinkoff.qa.neptune.core.api.conditions;
 
-import ru.tinkoff.qa.neptune.core.api.AsIsCondition;
-
 import javax.annotation.Nullable;
 import java.time.Duration;
 import java.util.Objects;
@@ -13,11 +11,13 @@ import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.currentThread;
 import static java.lang.Thread.sleep;
 import static java.time.Duration.ofMillis;
+import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static ru.tinkoff.qa.neptune.core.api.AsIsCondition.AS_IS;
+import static ru.tinkoff.qa.neptune.core.api.IsLoggableUtil.isLoggable;
 import static ru.tinkoff.qa.neptune.core.api.StoryWriter.condition;
 import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
-import static ru.tinkoff.qa.neptune.core.api.utils.IsDescribedUtil.isDescribed;
 
 /**
  * This is the util which helps to crate function with given conditions.
@@ -30,10 +30,7 @@ final class ToGetConditionalHelper {
     }
 
     static <T> Predicate<T> checkCondition(Predicate<T> condition) {
-        checkArgument(condition != null, "Predicate is not defined.");
-        checkArgument(isDescribed(condition),
-                "Condition is not described. " +
-                        "Use StoryWriter.conditions to describe it.");
+        checkArgument(nonNull(condition), "Predicate is not defined.");
         return condition;
     }
 
@@ -43,18 +40,18 @@ final class ToGetConditionalHelper {
     }
 
     static <T, R>  Function<T, R> checkFunction(Function<T, R> function) {
-        checkArgument(function != null, "Function is not defined.");
+        checkArgument(nonNull(function), "Function is not defined.");
         return function;
     }
 
     static Duration checkSleepingTime(Duration duration) {
-        checkArgument(duration != null, "Time of the sleeping is not defined");
+        checkArgument(nonNull(duration), "Time of the sleeping is not defined");
         checkArgument(!duration.isNegative(), "Time of the sleeping should be positive");
         return duration;
     }
 
     static Duration checkWaitingTime(Duration duration) {
-        checkArgument(duration != null, "Time of the waiting for some " +
+        checkArgument(nonNull(duration), "Time of the waiting for some " +
                 "valuable result is not defined");
         checkArgument(!duration.isNegative(), "Time of the waiting for some " +
                 "valuable should be positive");
@@ -77,15 +74,14 @@ final class ToGetConditionalHelper {
     }
 
     static Supplier<? extends RuntimeException> checkExceptionSupplier(Supplier<? extends RuntimeException> exceptionSupplier) {
-        checkArgument(exceptionSupplier != null,
-                "Supplier of an exception to be thrown is not defined");
+        checkArgument(nonNull(exceptionSupplier), "Supplier of an exception to be thrown is not defined");
         return exceptionSupplier;
     }
 
     static String getDescription(String description, Predicate<?> condition) {
         var resultDescription = description;
 
-        if (!AsIsCondition.AS_IS.equals(condition)) {
+        if (!AS_IS.equals(condition) && isLoggable(condition)) {
             resultDescription = format("%s. Criteria: %s", resultDescription, condition).trim();
         }
 

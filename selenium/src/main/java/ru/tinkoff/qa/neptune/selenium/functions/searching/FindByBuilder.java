@@ -12,6 +12,7 @@ import java.util.function.Predicate;
 
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
+import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 
 class FindByBuilder extends AbstractFindByBuilder {
@@ -27,7 +28,7 @@ class FindByBuilder extends AbstractFindByBuilder {
         var superClass = clazz;
         while (!superClass.equals(Widget.class)) {
             var result = superClass.getDeclaredAnnotations();
-            if (result != null && result.length > 0 &&
+            if (nonNull(result) && result.length > 0 &&
                     stream(result).anyMatch(FILTER_FIND_BY.or(FILTER_FIND_BYS).or(FILTER_FIND_ALL))) {
                 return result;
             }

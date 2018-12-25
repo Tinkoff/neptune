@@ -12,7 +12,7 @@ import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSingleCheckedObject
 public final class SelectSingleObjectByIdSupplier<T extends PersistableObject>
         extends ByIdsSequentialGetStepSupplier<T, T, SelectSingleObjectByIdSupplier<T>> {
 
-    private static final String DESCRIPTION = "Result as a single item of type %s by id %s";
+    private static final String DESCRIPTION = "A single stored database object. Type %s. By id %s";
 
     private SelectSingleObjectByIdSupplier(Class<T> ofType, Object id) {
         super(ofType, id);

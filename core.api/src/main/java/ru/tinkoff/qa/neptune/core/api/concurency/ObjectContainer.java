@@ -12,6 +12,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.Thread.currentThread;
 import static java.util.Collections.synchronizedSet;
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
 public class ObjectContainer<T> {
@@ -68,7 +69,7 @@ public class ObjectContainer<T> {
     }
 
     private synchronized boolean isBusy() {
-        return busyBy != null;
+        return nonNull(busyBy);
     }
 
     private synchronized void setBusy(Thread thread) {

@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindByBuilder.getAnnotations;
 
@@ -19,7 +20,7 @@ class FindLabeledWidgets<R extends Widget> extends FindWidgets<R> {
         super(classOfAWidget, conditionString, clazz -> !Modifier.isAbstract(clazz.getModifiers())
                 && Labeled.class.isAssignableFrom(clazz)
 
-                && (getAnnotations(clazz) != null)
+                && nonNull(getAnnotations(clazz))
 
                 && (Arrays.stream(clazz.getDeclaredConstructors())
                 .filter(constructor -> {

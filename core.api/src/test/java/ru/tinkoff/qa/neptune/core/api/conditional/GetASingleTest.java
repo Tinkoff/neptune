@@ -2,8 +2,8 @@ package ru.tinkoff.qa.neptune.core.api.conditional;
 
 import org.hamcrest.Matchers;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.core.api.StoryWriter;
 
+import static ru.tinkoff.qa.neptune.core.api.StoryWriter.condition;
 import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSingleCheckedObject.getSingle;
 import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -17,7 +17,7 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test
     public void testOfDescriptionForFunctionWithSingleInputAndSingleOutput() {
         assertThat(getSingle(THE_FIRST_OBJECT_DESCRIPTION, GET_FIRST_OBJECT_FROM_LIST,
-                StoryWriter.condition("equals " + A_UPPER + " ignore case", VALUE_A),
+                condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS,
                 true, () -> NOTHING_WAS_FOUND).toString(),
                 is(format("%s. Criteria: %s", THE_FIRST_OBJECT_DESCRIPTION, "equals " + A_UPPER + " ignore case")));
@@ -26,16 +26,16 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutput() {
         assertThat(getSingle(THE_FIRST_OBJECT_DESCRIPTION, GET_FIRST_OBJECT_FROM_LIST,
-                StoryWriter.condition("equals " + A_UPPER + " ignore case", VALUE_ONE_NUMBER),
+                condition("equals " + A_UPPER + " ignore case", VALUE_ONE_NUMBER),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS,
                 true, () -> NOTHING_WAS_FOUND).apply(LITERAL_LIST),
-                Matchers.is(ONE_NUM));
+                is(ONE_NUM));
     }
 
     @Test
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutput2() {
         assertThat(getSingle(THE_FIRST_OBJECT_DESCRIPTION, GET_FIRST_OBJECT_FROM_LIST,
-                StoryWriter.condition("equals " + A_UPPER + " ignore case", VALUE_ONE_NUMBER),
+                condition("equals " + A_UPPER + " ignore case", VALUE_ONE_NUMBER),
                 FIVE_SECONDS, true, () -> NOTHING_WAS_FOUND)
                         .apply(LITERAL_LIST),
                 Matchers.is(ONE_NUM));
@@ -44,7 +44,7 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutput3() {
         assertThat(getSingle(THE_FIRST_OBJECT_DESCRIPTION, GET_FIRST_OBJECT_FROM_LIST,
-                StoryWriter.condition("equals " + A_UPPER + " ignore case", VALUE_ONE_NUMBER),
+                condition("equals " + A_UPPER + " ignore case", VALUE_ONE_NUMBER),
                 true, () -> NOTHING_WAS_FOUND)
                         .apply(LITERAL_LIST),
                 Matchers.is(ONE_NUM));
@@ -53,7 +53,7 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutput4() {
         assertThat(getSingle(THE_FIRST_OBJECT_DESCRIPTION, GET_FIRST_OBJECT_FROM_LIST,
-                StoryWriter.condition("equals " + A_UPPER + " ignore case", VALUE_ONE_NUMBER),
+                condition("equals " + A_UPPER + " ignore case", VALUE_ONE_NUMBER),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true)
                         .apply(LITERAL_LIST),
                 Matchers.is(ONE_NUM));
@@ -62,7 +62,7 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutput5() {
         assertThat(getSingle(THE_FIRST_OBJECT_DESCRIPTION, GET_FIRST_OBJECT_FROM_LIST,
-                StoryWriter.condition("equals " + A_UPPER + " ignore case", VALUE_ONE_NUMBER),
+                condition("equals " + A_UPPER + " ignore case", VALUE_ONE_NUMBER),
                 FIVE_SECONDS, true)
                         .apply(LITERAL_LIST),
                 Matchers.is(ONE_NUM));
@@ -71,7 +71,7 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutput6() {
         assertThat(getSingle(THE_FIRST_OBJECT_DESCRIPTION, GET_FIRST_OBJECT_FROM_LIST,
-                StoryWriter.condition("equals " + A_UPPER + " ignore case", VALUE_ONE_NUMBER),
+                condition("equals " + A_UPPER + " ignore case", VALUE_ONE_NUMBER),
                 true).apply(LITERAL_LIST),
                 Matchers.is(ONE_NUM));
     }
@@ -114,7 +114,7 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutputIgnoringException() {
         assertThat(getSingle("Value", GET_FIRST_OBJECT_FROM_LIST,
-                StoryWriter.condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
+                condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS,
                 true).apply(LITERAL_LIST),
                 nullValue());
@@ -123,7 +123,7 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutputIgnoringException2() {
         assertThat(getSingle(THE_FIRST_OBJECT_DESCRIPTION, GET_FIRST_OBJECT_FROM_LIST,
-                StoryWriter.condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
+                condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
                 FIVE_SECONDS, true).apply(LITERAL_LIST),
                 nullValue());
     }
@@ -131,7 +131,7 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutputIgnoringException3() {
         assertThat(getSingle(THE_FIRST_OBJECT_DESCRIPTION, GET_FIRST_OBJECT_FROM_LIST,
-                StoryWriter.condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
+                condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
                 true).apply(LITERAL_LIST),
                 nullValue());
     }
@@ -140,7 +140,7 @@ public class GetASingleTest extends BaseConditionalTest {
             expectedExceptionsMessageRegExp = "java.lang.RuntimeException was caught. Message: Exception for the unit testing!")
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutputWithoutIgnoringException() {
         assertThat(getSingle(THE_FIRST_OBJECT_DESCRIPTION, GET_FIRST_OBJECT_FROM_LIST,
-                StoryWriter.condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
+                condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS,
                 false).apply(LITERAL_LIST),
                 nullValue());
@@ -151,7 +151,7 @@ public class GetASingleTest extends BaseConditionalTest {
             expectedExceptionsMessageRegExp = "java.lang.RuntimeException was caught. Message: Exception for the unit testing!")
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutputWithoutIgnoringException2() {
         assertThat(getSingle(THE_FIRST_OBJECT_DESCRIPTION, GET_FIRST_OBJECT_FROM_LIST,
-                StoryWriter.condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
+                condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
                 FIVE_SECONDS, false).apply(LITERAL_LIST),
                 nullValue());
         fail("The exception throwing was expected");
@@ -161,7 +161,7 @@ public class GetASingleTest extends BaseConditionalTest {
             expectedExceptionsMessageRegExp = "java.lang.RuntimeException was caught. Message: Exception for the unit testing!")
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutputWithoutIgnoringException3() {
         assertThat(getSingle(THE_FIRST_OBJECT_DESCRIPTION, GET_FIRST_OBJECT_FROM_LIST,
-                StoryWriter.condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
+                condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
                 false).apply(LITERAL_LIST),
                 nullValue());
         fail("The exception throwing was expected");
@@ -170,7 +170,7 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutputWithNullResult() {
         assertThat(getSingle(THE_FIRST_OBJECT_DESCRIPTION, s -> "X",
-                StoryWriter.condition("equals W ignore case", VALUE_W),
+                condition("equals W ignore case", VALUE_W),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS,
                 true).apply(EMPTY_LIST),
                 nullValue());
@@ -179,7 +179,7 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutputWithNullResult2() {
         assertThat(getSingle(THE_FIRST_OBJECT_DESCRIPTION, s -> "X",
-                StoryWriter.condition("equals W ignore case", VALUE_W),
+                condition("equals W ignore case", VALUE_W),
                 FIVE_SECONDS, true).apply(EMPTY_LIST),
                 nullValue());
     }
@@ -187,7 +187,7 @@ public class GetASingleTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutputWithNullResult3() {
         assertThat(getSingle(THE_FIRST_OBJECT_DESCRIPTION, s -> "X",
-                StoryWriter.condition("equals W ignore case", VALUE_W), true).apply(EMPTY_LIST),
+                condition("equals W ignore case", VALUE_W), true).apply(EMPTY_LIST),
                 nullValue());
     }
 
@@ -209,7 +209,7 @@ public class GetASingleTest extends BaseConditionalTest {
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutputToCheckTimeOut() {
         long start = System.currentTimeMillis();
         assertThat(getSingle(THE_FIRST_OBJECT_DESCRIPTION, GET_FIRST_OBJECT_FROM_LIST,
-                StoryWriter.condition("equals W ignore case", VALUE_W),
+                condition("equals W ignore case", VALUE_W),
                 FIVE_SECONDS, true).apply(LITERAL_LIST),
                 nullValue());
         long end = System.currentTimeMillis();
@@ -223,7 +223,7 @@ public class GetASingleTest extends BaseConditionalTest {
     public void testOfApplyingOfFunctionWithSingleInputAndSingleOutputToCheckSleeping() {
         long start = System.currentTimeMillis();
         assertThat(getSingle(THE_FIRST_OBJECT_DESCRIPTION, GET_FIRST_OBJECT_FROM_LIST,
-                StoryWriter.condition("equals W ignore case", VALUE_W),
+                condition("equals W ignore case", VALUE_W),
                 ONE_MILLISECOND,
                 FIVE_HUNDRED_MILLIS,
                 true).apply(LITERAL_LIST),
@@ -267,7 +267,7 @@ public class GetASingleTest extends BaseConditionalTest {
         long start = System.currentTimeMillis();
         try {
             getSingle("Value", GET_FIRST_OBJECT_FROM_LIST,
-                    StoryWriter.condition("equals W ignore case", VALUE_W),
+                    condition("equals W ignore case", VALUE_W),
                     FIVE_SECONDS,
                     true,
                     () -> NOTHING_WAS_FOUND).apply(LITERAL_LIST);
@@ -307,7 +307,7 @@ public class GetASingleTest extends BaseConditionalTest {
         long start = System.currentTimeMillis();
         try {
             getSingle(THE_FIRST_OBJECT_DESCRIPTION, GET_FIRST_OBJECT_FROM_LIST,
-                    StoryWriter.condition("equals W ignore case", VALUE_W),
+                    condition("equals W ignore case", VALUE_W),
                     FIVE_SECONDS,
                     FIVE_HUNDRED_MILLIS,
                     true,

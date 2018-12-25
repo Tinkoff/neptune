@@ -8,7 +8,7 @@ import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Get
 public final class Refresh extends NavigationActionSupplier<Refresh> {
 
     private Refresh() {
-        super();
+        super("Refresh");
     }
 
     /**
@@ -41,7 +41,7 @@ public final class Refresh extends NavigationActionSupplier<Refresh> {
     }
 
     @Override
-    protected void performActionOn(Window value, Object... ignored) {
+    protected void performActionOn(Window value) {
         value.refresh();
     }
 
@@ -61,7 +61,7 @@ public final class Refresh extends NavigationActionSupplier<Refresh> {
      * @return built refreshing action
      */
     public Refresh andThenRefresh(GetWindowSupplier windowSupplier) {
-        return andThen("Refresh", windowSupplier);
+        return performOn(windowSupplier);
     }
 
     /**
@@ -71,6 +71,6 @@ public final class Refresh extends NavigationActionSupplier<Refresh> {
      * @return built navigation action
      */
     public Refresh andThenRefresh(Window window) {
-        return andThen("Refresh", window);
+        return performOn(window);
     }
 }

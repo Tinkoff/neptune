@@ -5,8 +5,14 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumSteps;
 import org.openqa.selenium.Alert;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 
 public abstract class AlertActionSupplier extends SequentialActionSupplier<SeleniumSteps, Alert, AlertActionSupplier> {
+
+    private AlertActionSupplier(String description) {
+        super(description);
+    }
 
     /**
      * Builds the dismiss action on some alert that is supposed to be appeared.
@@ -15,12 +21,12 @@ public abstract class AlertActionSupplier extends SequentialActionSupplier<Selen
      * @return built dismiss action
      */
     public static AlertActionSupplier dismiss(GetAlertSupplier supplier) {
-        return new AlertActionSupplier() {
+        return new AlertActionSupplier("Dismiss alert") {
             @Override
-            protected void performActionOn(Alert value, Object... ignored) {
+            protected void performActionOn(Alert value) {
                 value.dismiss();
             }
-        }.andThen("Dismiss", supplier);
+        }.performOn(supplier);
     }
 
     /**
@@ -30,13 +36,13 @@ public abstract class AlertActionSupplier extends SequentialActionSupplier<Selen
      * @return built dismiss action
      */
     public static AlertActionSupplier dismiss(Alert alert) {
-        checkArgument(alert != null, "The alert which appeared previously should not be null value");
-        return new AlertActionSupplier() {
+        checkArgument(nonNull(alert), "The alert which appeared previously should not be null value");
+        return new AlertActionSupplier("Dismiss alert") {
             @Override
-            protected void performActionOn(Alert value, Object... ignored) {
+            protected void performActionOn(Alert value) {
                 value.dismiss();
             }
-        }.andThen("Dismiss", alert);
+        }.performOn(alert);
     }
 
     /**
@@ -46,12 +52,12 @@ public abstract class AlertActionSupplier extends SequentialActionSupplier<Selen
      * @return built accept action
      */
     public static AlertActionSupplier accept(GetAlertSupplier supplier) {
-        return new AlertActionSupplier() {
+        return new AlertActionSupplier("Accept alert") {
             @Override
-            protected void performActionOn(Alert value, Object... ignored) {
+            protected void performActionOn(Alert value) {
                 value.accept();
             }
-        }.andThen("Accept", supplier);
+        }.performOn(supplier);
     }
 
     /**
@@ -61,13 +67,13 @@ public abstract class AlertActionSupplier extends SequentialActionSupplier<Selen
      * @return built accept action
      */
     public static AlertActionSupplier accept(Alert alert) {
-        checkArgument(alert != null, "The alert which appeared previously should not be null value");
-        return new AlertActionSupplier() {
+        checkArgument(nonNull(alert), "The alert which appeared previously should not be null value");
+        return new AlertActionSupplier("Accept alert") {
             @Override
-            protected void performActionOn(Alert value, Object... ignored) {
+            protected void performActionOn(Alert value) {
                 value.accept();
             }
-        }.andThen("Accept", alert);
+        }.performOn(alert);
     }
 
     /**
@@ -79,13 +85,13 @@ public abstract class AlertActionSupplier extends SequentialActionSupplier<Selen
      * @return built send keys action
      */
     public static AlertActionSupplier sendKeys(GetAlertSupplier supplier, String keysToSend) {
-        checkArgument(keysToSend != null, "Keys to send value should not be null");
-        return new AlertActionSupplier() {
+        checkArgument(nonNull(keysToSend), "Keys to send value should not be null");
+        return new AlertActionSupplier(format("Send keys %s to alert", keysToSend)) {
             @Override
-            protected void performActionOn(Alert value, Object... keys) {
-                value.sendKeys(keys[0].toString());
+            protected void performActionOn(Alert value) {
+                value.sendKeys(keysToSend);
             }
-        }.andThen("Send keys", supplier, keysToSend);
+        }.performOn(supplier);
     }
 
     /**
@@ -97,13 +103,13 @@ public abstract class AlertActionSupplier extends SequentialActionSupplier<Selen
      * @return built send keys action
      */
     public static AlertActionSupplier sendKeys(Alert alert, String keysToSend) {
-        checkArgument(alert != null, "The alert which was taken previously should not be null value");
-        checkArgument(keysToSend != null, "Keys to send value should not be null");
-        return new AlertActionSupplier() {
+        checkArgument(nonNull(alert), "The alert which was taken previously should not be null value");
+        checkArgument(nonNull(keysToSend), "Keys to send value should not be null");
+        return new AlertActionSupplier(format("Send keys %s to alert", keysToSend)) {
             @Override
-            protected void performActionOn(Alert value, Object... keys) {
-                value.sendKeys(keys[0].toString());
+            protected void performActionOn(Alert value) {
+                value.sendKeys(keysToSend);
             }
-        }.andThen("Send keys", alert, keysToSend);
+        }.performOn(alert);
     }
 }

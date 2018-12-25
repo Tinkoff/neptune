@@ -8,6 +8,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static java.util.Objects.nonNull;
 import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetConditionalHelper.*;
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
@@ -44,7 +45,7 @@ public final class ToGetSubArray {
                             }
                             return result;
                         }).orElse(null),
-                waitingTime, sleepingTime, rs -> rs != null && rs.length > 0, exceptionSupplier);
+                waitingTime, sleepingTime, rs -> nonNull(rs) && rs.length > 0, exceptionSupplier);
     }
 
     /**

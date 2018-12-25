@@ -8,7 +8,7 @@ import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Get
 public final class Back extends NavigationActionSupplier<Back> {
 
     private Back() {
-        super();
+        super("Navigate back");
     }
 
     /**
@@ -41,7 +41,7 @@ public final class Back extends NavigationActionSupplier<Back> {
     }
 
     @Override
-    protected void performActionOn(Window value, Object... ignored) {
+    protected void performActionOn(Window value) {
         value.back();
     }
 
@@ -61,7 +61,7 @@ public final class Back extends NavigationActionSupplier<Back> {
      * @return built navigation action
      */
     public Back andThenBack(GetWindowSupplier windowSupplier) {
-        return andThen("Navigate back", windowSupplier);
+        return performOn(windowSupplier);
     }
 
     /**
@@ -71,6 +71,6 @@ public final class Back extends NavigationActionSupplier<Back> {
      * @return built navigation action
      */
     public Back andThenBack(Window window) {
-        return andThen("Navigate back", window);
+        return performOn(window);
     }
 }

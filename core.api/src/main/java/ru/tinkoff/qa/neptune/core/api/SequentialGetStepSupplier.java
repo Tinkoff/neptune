@@ -2,8 +2,9 @@ package ru.tinkoff.qa.neptune.core.api;
 
 import java.util.function.Function;
 
+import static java.util.Objects.nonNull;
+import static ru.tinkoff.qa.neptune.core.api.IsLoggableUtil.isLoggable;
 import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
-import static ru.tinkoff.qa.neptune.core.api.utils.IsDescribedUtil.isDescribed;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
@@ -27,14 +28,11 @@ public abstract class SequentialGetStepSupplier<T, R, Q, THIS extends Sequential
      * @return self-reference.
      */
     protected THIS from(Function<T, ? extends Q> mediatorFunction) {
-        checkArgument(mediatorFunction != null,
-                "Function to get value from was not defined");
+        checkArgument(nonNull(mediatorFunction), "Function to get value from was not defined");
 
         var result = getEndFunction();
-        checkArgument(result != null,
-                "The result function to get value is not defined");
-        checkArgument(isDescribed(result),
-                "The result function should be described. Use method " +
+        checkArgument(nonNull(result), "The result function to get value is not defined");
+        checkArgument(isLoggable(result), "The result function should be described. Use method " +
                         "StoryWriter.toGet to describe it or override the toString method");
 
         StepFunction<Q, R> stepFunction;
@@ -56,7 +54,7 @@ public abstract class SequentialGetStepSupplier<T, R, Q, THIS extends Sequential
      * @return self-reference.
      */
     protected THIS from(GetStepSupplier<T, ? extends Q, ?> supplier) {
-        checkArgument(supplier != null, "The supplier of the function is not defined");
+        checkArgument(nonNull(supplier), "The supplier of the function is not defined");
         return from(supplier.get());
     }
 
@@ -69,7 +67,7 @@ public abstract class SequentialGetStepSupplier<T, R, Q, THIS extends Sequential
      * @return self-reference.
      */
     protected THIS from(Q value) {
-        checkArgument(value != null, "The object to get value from is not defined");
+        checkArgument(nonNull(value), "The object to get value from is not defined");
         return from(t -> value);
     }
 

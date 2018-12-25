@@ -9,6 +9,7 @@ import org.openqa.selenium.internal.WrapsElement;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 import static org.hamcrest.Matchers.*;
 
 public final class HasTextMatcher<T extends SearchContext> extends TypeSafeDiagnosingMatcher<T> {
@@ -16,7 +17,7 @@ public final class HasTextMatcher<T extends SearchContext> extends TypeSafeDiagn
     private final Matcher<String> matcher;
 
     private HasTextMatcher(Matcher<String> matcher) {
-        checkArgument(matcher != null, "Criteria to match text of the element should be defined");
+        checkArgument(nonNull(matcher), "Criteria to match text of the element should be defined");
         this.matcher = matcher;
     }
 

@@ -11,6 +11,7 @@ import java.util.function.Function;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
+import static java.util.Objects.nonNull;
 import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
 
 /**
@@ -26,7 +27,7 @@ public final class GetDeletedSequentialSupplier<T extends PersistableObject>
     private final List<T> toBeDeleted;
 
     private GetDeletedSequentialSupplier(List<T> toBeDeleted) {
-        checkArgument(toBeDeleted != null, "Objects to be deleted should not be defined as a null-value");
+        checkArgument(nonNull(toBeDeleted), "Objects to be deleted should not be defined as a null-value");
         checkArgument(toBeDeleted.size() > 0, "Should be defined at least one object to delete");
         this.toBeDeleted = toBeDeleted;
     }

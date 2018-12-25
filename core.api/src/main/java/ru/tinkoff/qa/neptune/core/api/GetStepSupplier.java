@@ -10,7 +10,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
-import static ru.tinkoff.qa.neptune.core.api.utils.IsDescribedUtil.isDescribed;
+import static ru.tinkoff.qa.neptune.core.api.IsLoggableUtil.isLoggable;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Optional.ofNullable;
@@ -39,7 +39,7 @@ public abstract class GetStepSupplier<T, R, THIS extends GetStepSupplier<T, R, T
      */
     protected THIS set(Function<T, R> function) {
         checkNotNull(function);
-        checkArgument(isDescribed(function),
+        checkArgument(isLoggable(function),
                 "It seems given function doesn't describe any value to get. Use method " +
                         "StoryWriter.toGet to describe it or override the toString method");
         StepFunction stepFunction;

@@ -13,24 +13,26 @@ import java.util.function.Function;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toList;
+import static java.util.Objects.nonNull;
+import static java.util.stream.Collectors.joining;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 
-public abstract class InteractiveAction<T> extends SequentialActionSupplier<SeleniumSteps, T, InteractiveAction<T>> {
+public abstract class InteractiveAction extends SequentialActionSupplier<SeleniumSteps, WebDriver, InteractiveAction> {
 
-    InteractiveAction() {
-        super();
+    InteractiveAction(String actionName) {
+        super(actionName);
     }
 
     private static String getKeyNameDescription(String description, CharSequence... keys) {
-        return format("%s. Key(s) %s", description, String.join(",", stream(keys).map(charSequence -> {
+        return format("%s. Key(s) %s", description, stream(keys).map(charSequence -> {
+            checkArgument(nonNull(charSequence), "Null value is defined as a char sequence");
             if (charSequence.getClass().equals(Keys.class)) {
                 return ((Keys) charSequence).name();
             }
             else {
                 return String.valueOf(charSequence);
             }
-        }).collect(toList())));
+        }).collect(joining(",")));
     }
 
     private static String getOffsetDescription(String actionDescription, int xOffset, int yOffset) {
@@ -40,38 +42,38 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
         return actionDescription;
     }
 
-    private static InteractiveAction<WebDriver> performActionOnWebdriverOnly(String actionName,
-                                                                             Function<Actions, Actions> actionsFunction) {
-        return new InteractiveAction<WebDriver>() {
+    private static InteractiveAction performActionOnWebDriverOnly(String actionName,
+                                                                  Function<Actions, Actions> actionsFunction) {
+        return new InteractiveAction(actionName) {
             @Override
-            protected void performActionOn(WebDriver value, Object... additionalArgument) {
+            protected void performActionOn(WebDriver value) {
                 actionsFunction.apply(new Actions(value)).perform();
             }
-        }.andThen(actionName, currentContent());
+        }.performOn(currentContent());
     }
 
-    private static InteractiveAction<WebDriver> performActionOnWebElement(String actionName,
-                                                                          WebElement target,
-                                                                          BiFunction<Actions, WebElement,  Actions> actionsFunction) {
-        checkArgument(target != null, "Web element should be a not null value");
-        return new InteractiveAction<WebDriver>() {
+    private static InteractiveAction performActionOnWebElement(String actionName,
+                                                               WebElement target,
+                                                               BiFunction<Actions, WebElement,  Actions> actionsFunction) {
+        checkArgument(nonNull(target), "Web element should be a not null value");
+        return new InteractiveAction(actionName) {
             @Override
-            protected void performActionOn(WebDriver value, Object... additionalArgument) {
+            protected void performActionOn(WebDriver value) {
                 actionsFunction.apply(new Actions(value), target).perform();
             }
-        }.andThen(actionName, currentContent());
+        }.performOn(currentContent());
     }
 
-    private static InteractiveAction<SeleniumSteps> performActionWithDefinitionHowToFindElement(String actionName,
-                                                                                                SearchSupplier<?> howToFind,
-                                                                                                BiFunction<Actions, WebElement, Actions> actionsFunction) {
-        checkArgument(howToFind != null, "The definition how to find the " +
+    private static InteractiveAction performActionWithDefinitionHowToFindElement(String actionName,
+                                                                                 SearchSupplier<?> howToFind,
+                                                                                 BiFunction<Actions, WebElement, Actions> actionsFunction) {
+        checkArgument(nonNull(howToFind), "The definition how to find the " +
                 "element should be a not null value");
-        return new InteractiveAction<SeleniumSteps>() {
+        return new InteractiveAction(actionName) {
             @Override
-            protected void performActionOn(SeleniumSteps value, Object... additionalArgument) {
-                var actions = new Actions(currentContent().apply(value));
-                var result = value.find((SearchSupplier<?>) additionalArgument[0]);
+            protected void performActionOn(WebDriver value) {
+                var actions = new Actions(value);
+                var result = howToFind.get().apply(value);
                 var clazz = result.getClass();
                 if (WebElement.class.isAssignableFrom(clazz)) {
                     actionsFunction.apply(actions, (WebElement) result).perform();
@@ -88,7 +90,7 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
                         WebElement.class.getName(),
                         WrapsElement.class.getName()));
             }
-        }.andThen(actionName, seleniumSteps -> seleniumSteps, howToFind);
+        }.performOn(currentContent());
     }
 
     /**
@@ -103,9 +105,9 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      *            provided key is none of those, {@link IllegalArgumentException} is thrown.
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<WebDriver> keyDown(CharSequence key) {
-        checkArgument(key != null, "Key should be a not null value");
-        return performActionOnWebdriverOnly(getKeyNameDescription("The pressing of the modifier key", key),
+    public static InteractiveAction keyDown(CharSequence key) {
+        checkArgument(nonNull(key), "Key should be a not null value");
+        return performActionOnWebDriverOnly(getKeyNameDescription("The pressing of the modifier key", key),
                 actions -> actions.keyDown(key));
     }
 
@@ -120,8 +122,8 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      * @param target WebElement to perform the action
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<WebDriver> keyDown(WebElement target, CharSequence key) {
-        checkArgument(key != null, "Key should be a not null value");
+    public static InteractiveAction keyDown(WebElement target, CharSequence key) {
+        checkArgument(nonNull(key), "Key should be a not null value");
         return performActionOnWebElement(getKeyNameDescription(format("The pressing of the modifier key on %s", target), key),
                 target, (actions, webElement) -> actions.keyDown(webElement, key));
     }
@@ -135,8 +137,8 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      * @param target widget to perform the action
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<WebDriver> keyDown(Widget target, CharSequence key) {
-        checkArgument(target != null, "Target widget should be a not null value");
+    public static InteractiveAction keyDown(Widget target, CharSequence key) {
+        checkArgument(nonNull(target), "Target widget should be a not null value");
         return keyDown(target.getWrappedElement(), key);
     }
 
@@ -150,9 +152,9 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      *           provided key is none of those, {@link IllegalArgumentException} is thrown.
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<SeleniumSteps> keyDown(SearchSupplier<?> howToFind, CharSequence key) {
-        checkArgument(key != null, "Key should be a not null value");
-        return performActionWithDefinitionHowToFindElement(getKeyNameDescription("The pressing of the modifier key", key),
+    public static InteractiveAction keyDown(SearchSupplier<?> howToFind, CharSequence key) {
+        checkArgument(nonNull(key), "Key should be a not null value");
+        return performActionWithDefinitionHowToFindElement(getKeyNameDescription(format("The pressing of the modifier key on %s", howToFind), key),
                 howToFind, (actions, webElement) -> actions.keyDown(webElement, key));
     }
 
@@ -164,9 +166,9 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      * @param key Either {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}.
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<WebDriver> keyUp(CharSequence key) {
-        checkArgument(key != null, "Key should be a not null value");
-        return performActionOnWebdriverOnly(getKeyNameDescription("The releasing of the modifier key", key),
+    public static InteractiveAction keyUp(CharSequence key) {
+        checkArgument(nonNull(key), "Key should be a not null value");
+        return performActionOnWebDriverOnly(getKeyNameDescription("The releasing of the modifier key", key),
                 actions -> actions.keyUp(key));
     }
 
@@ -180,8 +182,8 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      * @param target WebElement to perform the action on
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<WebDriver> keyUp(WebElement target, CharSequence key) {
-        checkArgument(key != null, "Key should be a not null value");
+    public static InteractiveAction keyUp(WebElement target, CharSequence key) {
+        checkArgument(nonNull(key), "Key should be a not null value");
         return performActionOnWebElement(getKeyNameDescription(format("The releasing of the modifier key on %s", target), key), target,
                 (actions, webElement) -> actions.keyUp(webElement, key));
     }
@@ -194,8 +196,8 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      * @param target widget to perform the action
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<WebDriver> keyUp(Widget target, CharSequence key) {
-        checkArgument(target != null, "Target widget should be a not null value");
+    public static InteractiveAction keyUp(Widget target, CharSequence key) {
+        checkArgument(nonNull(target), "Target widget should be a not null value");
         return keyUp(target.getWrappedElement(), key);
     }
 
@@ -209,9 +211,10 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      *           provided key is none of those, {@link IllegalArgumentException} is thrown.
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<SeleniumSteps> keyUp(SearchSupplier<?> howToFind, CharSequence key) {
-        checkArgument(key != null, "Key should be a not null value");
-        return performActionWithDefinitionHowToFindElement(getKeyNameDescription("The releasing of the modifier key", key),
+    public static InteractiveAction keyUp(SearchSupplier<?> howToFind, CharSequence key) {
+        checkArgument(nonNull(key), "Key should be a not null value");
+        return performActionWithDefinitionHowToFindElement(
+                getKeyNameDescription(format("The releasing of the modifier key on %s", howToFind), key),
                 howToFind, (actions, webElement) -> actions.keyUp(webElement, key));
     }
 
@@ -229,10 +232,10 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      * @param keys to be sent.
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<WebDriver> sendKeys(CharSequence... keys) {
-        checkArgument(keys != null, "Keys to send should be a not null value");
+    public static InteractiveAction sendKeys(CharSequence... keys) {
+        checkArgument(nonNull(keys), "Keys to send should be a not null value");
         checkArgument(keys.length > 0, "Should be defined at least one key");
-        return performActionOnWebdriverOnly(getKeyNameDescription("The sending keys to the active element", keys),
+        return performActionOnWebDriverOnly(getKeyNameDescription("The sending keys to the active element", keys),
                 actions -> actions.sendKeys(keys));
     }
 
@@ -246,8 +249,8 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      * @param keys to be sent.
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<WebDriver> sendKeys(WebElement target, CharSequence... keys) {
-        checkArgument(keys != null, "Keys to send should be a not null value");
+    public static InteractiveAction sendKeys(WebElement target, CharSequence... keys) {
+        checkArgument(nonNull(keys), "Keys to send should be a not null value");
         checkArgument(keys.length > 0, "Should be defined at least one key");
         return performActionOnWebElement(getKeyNameDescription(format("The sending keys to %s", target), keys),
                 target, (actions, webElement) -> actions.sendKeys(webElement, keys));
@@ -261,8 +264,8 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      * @param target widget to perform the action
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<WebDriver> sendKeys(Widget target, CharSequence... keys) {
-        checkArgument(target != null, "Target widget should be a not null value");
+    public static InteractiveAction sendKeys(Widget target, CharSequence... keys) {
+        checkArgument(nonNull(target), "Target widget should be a not null value");
         return sendKeys(target.getWrappedElement(), keys);
     }
 
@@ -275,10 +278,10 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      * @param keys to be sent.
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<SeleniumSteps> sendKeys(SearchSupplier<?> howToFind, CharSequence... keys) {
-        checkArgument(keys != null, "Keys to send should be a not null value");
+    public static InteractiveAction sendKeys(SearchSupplier<?> howToFind, CharSequence... keys) {
+        checkArgument(nonNull(keys), "Keys to send should be a not null value");
         checkArgument(keys.length > 0, "Should be defined at least one key");
-        return performActionWithDefinitionHowToFindElement(getKeyNameDescription("The sending keys", keys),
+        return performActionWithDefinitionHowToFindElement(getKeyNameDescription(format("The sending keys to %s", howToFind), keys),
                 howToFind, (actions, webElement) -> actions.sendKeys(webElement, keys));
     }
 
@@ -287,8 +290,8 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      *
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<WebDriver> clickAndHold() {
-        return performActionOnWebdriverOnly("Clicking and hold", Actions::clickAndHold);
+    public static InteractiveAction clickAndHold() {
+        return performActionOnWebDriverOnly("Clicking and hold", Actions::clickAndHold);
     }
 
     /**
@@ -297,7 +300,7 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      * @param target element to be clicked and held.
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<WebDriver> clickAndHold(WebElement target) {
+    public static InteractiveAction clickAndHold(WebElement target) {
         return performActionOnWebElement(format("Clicking and hold %s", target), target, Actions::clickAndHold);
     }
 
@@ -308,8 +311,8 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      * @param target widget to be clicked and held.
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<WebDriver> clickAndHold(Widget target) {
-        checkArgument(target != null, "Target widget should be a not null value");
+    public static InteractiveAction clickAndHold(Widget target) {
+        checkArgument(nonNull(target), "Target widget should be a not null value");
         return clickAndHold(target.getWrappedElement());
     }
 
@@ -321,8 +324,8 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      * @param howToFind is the definition of a way how to find the target element
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<SeleniumSteps> clickAndHold(SearchSupplier<?> howToFind) {
-        return performActionWithDefinitionHowToFindElement("Clicking and hold",
+    public static InteractiveAction clickAndHold(SearchSupplier<?> howToFind) {
+        return performActionWithDefinitionHowToFindElement(format("Clicking and hold %s", howToFind),
                 howToFind, Actions::clickAndHold);
     }
 
@@ -331,8 +334,8 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      *
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<WebDriver> release() {
-        return performActionOnWebdriverOnly("Releasing of left mouse button", Actions::release);
+    public static InteractiveAction release() {
+        return performActionOnWebDriverOnly("Releasing of left mouse button", Actions::release);
     }
 
     /**
@@ -341,7 +344,7 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      * @param target to release the mouse button above.
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<WebDriver> release(WebElement target) {
+    public static InteractiveAction release(WebElement target) {
         return performActionOnWebElement(format("Releasing of left mouse button on %s", target), target, Actions::release);
     }
 
@@ -352,8 +355,8 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      * @param target to release the mouse button above.
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<WebDriver> release(Widget target) {
-        checkArgument(target != null, "Target widget should be a not null value");
+    public static InteractiveAction release(Widget target) {
+        checkArgument(nonNull(target), "Target widget should be a not null value");
         return release(target.getWrappedElement());
     }
 
@@ -365,8 +368,8 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      * @param howToFind is the definition of a way how to find the target element
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<SeleniumSteps> release(SearchSupplier<?> howToFind) {
-        return performActionWithDefinitionHowToFindElement("Releasing of left mouse button",
+    public static InteractiveAction release(SearchSupplier<?> howToFind) {
+        return performActionWithDefinitionHowToFindElement(format("Releasing of left mouse button on %s", howToFind),
                 howToFind, Actions::release);
     }
 
@@ -375,8 +378,8 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      *
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<WebDriver> click() {
-        return performActionOnWebdriverOnly("Left mouse button click on current mouse location", Actions::click);
+    public static InteractiveAction click() {
+        return performActionOnWebDriverOnly("Left mouse button click on current mouse location", Actions::click);
     }
 
     /**
@@ -385,7 +388,7 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      * @param target is the element to be clicked.
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<WebDriver> click(WebElement target) {
+    public static InteractiveAction click(WebElement target) {
         return performActionOnWebElement(format("Left mouse button click on %s", target), target, Actions::click);
     }
 
@@ -396,8 +399,8 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      * @param target is the element to be clicked.
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<WebDriver> click(Widget target) {
-        checkArgument(target != null, "Target widget should be a not null value");
+    public static InteractiveAction click(Widget target) {
+        checkArgument(nonNull(target), "Target widget should be a not null value");
         return click(target.getWrappedElement());
     }
 
@@ -409,8 +412,8 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      * @param howToFind is the definition of a way how to find the target element
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<SeleniumSteps> click(SearchSupplier<?> howToFind) {
-        return performActionWithDefinitionHowToFindElement("Left mouse button click",
+    public static InteractiveAction click(SearchSupplier<?> howToFind) {
+        return performActionWithDefinitionHowToFindElement(format("Left mouse button click on %s", howToFind),
                 howToFind, Actions::click);
     }
 
@@ -424,7 +427,7 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      * the element.
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<WebDriver> moveToElement(WebElement target, int xOffset, int yOffset) {
+    public static InteractiveAction moveToElement(WebElement target, int xOffset, int yOffset) {
         return performActionOnWebElement(getOffsetDescription(format("Moving mouse to the %s", target),  xOffset, yOffset), target,
                 (actions, webElement) -> actions.moveToElement(webElement, xOffset, yOffset));
     }
@@ -436,7 +439,7 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      * @param target element to move to.
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<WebDriver> moveToElement(WebElement target) {
+    public static InteractiveAction moveToElement(WebElement target) {
         return moveToElement(target, 0, 0);
     }
 
@@ -452,8 +455,8 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      * the element.
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<WebDriver> moveToElement(Widget target, int xOffset, int yOffset) {
-        checkArgument(target != null, "Target widget should be a not null value");
+    public static InteractiveAction moveToElement(Widget target, int xOffset, int yOffset) {
+        checkArgument(nonNull(target), "Target widget should be a not null value");
         return moveToElement(target.getWrappedElement(), xOffset, yOffset);
     }
 
@@ -466,7 +469,7 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      * @param target element to move to.
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<WebDriver> moveToElement(Widget target) {
+    public static InteractiveAction moveToElement(Widget target) {
         return moveToElement(target, 0, 0);
     }
 
@@ -484,8 +487,8 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      * the element.
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<SeleniumSteps> moveToElement(SearchSupplier<?> howToFind, int xOffset, int yOffset) {
-        return performActionWithDefinitionHowToFindElement(getOffsetDescription("Moving mouse to the element", xOffset, yOffset),
+    public static InteractiveAction moveToElement(SearchSupplier<?> howToFind, int xOffset, int yOffset) {
+        return performActionWithDefinitionHowToFindElement(getOffsetDescription(format("Moving mouse to the %s", howToFind), xOffset, yOffset),
                 howToFind, (actions, webElement) -> actions.moveToElement(webElement, xOffset, yOffset));
     }
 
@@ -495,7 +498,7 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      * @param howToFind is the definition of a way how to find the target element
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<SeleniumSteps> moveToElement(SearchSupplier<?> howToFind) {
+    public static InteractiveAction moveToElement(SearchSupplier<?> howToFind) {
         return moveToElement(howToFind, 0, 0);
     }
 
@@ -508,8 +511,8 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      * @param yOffset vertical offset. A negative value means moving the mouse up.
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<WebDriver> moveByOffset(int xOffset, int yOffset) {
-        return performActionOnWebdriverOnly(getOffsetDescription("Moving mouse", xOffset, yOffset),
+    public static InteractiveAction moveByOffset(int xOffset, int yOffset) {
+        return performActionOnWebDriverOnly(getOffsetDescription("Moving mouse", xOffset, yOffset),
                 actions -> actions.moveByOffset(xOffset, yOffset));
     }
 
@@ -518,8 +521,8 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      *
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<WebDriver> contextClick() {
-        return performActionOnWebdriverOnly("Context click on current mouse location", Actions::contextClick);
+    public static InteractiveAction contextClick() {
+        return performActionOnWebDriverOnly("Context click on current mouse location", Actions::contextClick);
     }
 
     /**
@@ -528,7 +531,7 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      * @param target element to move to.
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<WebDriver> contextClick(WebElement target) {
+    public static InteractiveAction contextClick(WebElement target) {
         return performActionOnWebElement(format("Context click on %s", target), target, Actions::contextClick);
     }
 
@@ -539,8 +542,8 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      * @param target element to move to.
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<WebDriver> contextClick(Widget target) {
-        checkArgument(target != null, "Target widget should be a not null value");
+    public static InteractiveAction contextClick(Widget target) {
+        checkArgument(nonNull(target), "Target widget should be a not null value");
         return contextClick(target.getWrappedElement());
     }
 
@@ -552,8 +555,8 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      * @param howToFind is the definition of a way how to find the target element
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<SeleniumSteps> contextClick(SearchSupplier<?> howToFind) {
-        return performActionWithDefinitionHowToFindElement("Context click",
+    public static InteractiveAction contextClick(SearchSupplier<?> howToFind) {
+        return performActionWithDefinitionHowToFindElement(format("Context click on %s", howToFind),
                 howToFind, Actions::contextClick);
     }
 
@@ -566,10 +569,10 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      *
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<WebDriver> dragAndDrop(WebElement source, WebElement target) {
-        checkArgument(source != null, "Source web element should be a not null value");
-        checkArgument(target != null, "Target web element should be a not null value");
-        return performActionOnWebdriverOnly(format("Drag and drop from %s to %s", source, target),
+    public static InteractiveAction dragAndDrop(WebElement source, WebElement target) {
+        checkArgument(nonNull(source), "Source web element should be a not null value");
+        checkArgument(nonNull(target), "Target web element should be a not null value");
+        return performActionOnWebDriverOnly(format("Drag and drop from %s to %s", source, target),
                 actions -> actions.dragAndDrop(source, target));
     }
 
@@ -583,8 +586,8 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      *
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<WebDriver> dragAndDrop(Widget source, WebElement target) {
-        checkArgument(source != null, "Source widget element should be a not null value");
+    public static InteractiveAction dragAndDrop(Widget source, WebElement target) {
+        checkArgument(nonNull(source), "Source widget element should be a not null value");
         return dragAndDrop(source.getWrappedElement(), target);
     }
 
@@ -598,8 +601,8 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      *
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<WebDriver> dragAndDrop(WebElement source, Widget target) {
-        checkArgument(target != null, "Target widget element should be a not null value");
+    public static InteractiveAction dragAndDrop(WebElement source, Widget target) {
+        checkArgument(nonNull(target), "Target widget element should be a not null value");
         return dragAndDrop(source, target.getWrappedElement());
     }
 
@@ -613,9 +616,9 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      *
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<WebDriver> dragAndDrop(Widget source, Widget target) {
-        checkArgument(source != null, "Source widget element should be a not null value");
-        checkArgument(target != null, "Target widget element should be a not null value");
+    public static InteractiveAction dragAndDrop(Widget source, Widget target) {
+        checkArgument(nonNull(source), "Source widget element should be a not null value");
+        checkArgument(nonNull(target), "Target widget element should be a not null value");
         return dragAndDrop(source.getWrappedElement(), target.getWrappedElement());
     }
 
@@ -630,9 +633,9 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      *
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<SeleniumSteps> dragAndDrop(SearchSupplier<?> howToFindSourceElement, WebElement target) {
-        checkArgument(target != null, "Target web element should be a not null value");
-        return performActionWithDefinitionHowToFindElement(format("Drag and drop from element to %s", target),
+    public static InteractiveAction dragAndDrop(SearchSupplier<?> howToFindSourceElement, WebElement target) {
+        checkArgument(nonNull(target), "Target web element should be a not null value");
+        return performActionWithDefinitionHowToFindElement(format("Drag and drop from %s to %s", howToFindSourceElement, target),
                 howToFindSourceElement, (actions, webElement) -> actions.dragAndDrop(webElement, target));
     }
 
@@ -647,8 +650,8 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      *
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<SeleniumSteps> dragAndDrop(SearchSupplier<?> howToFindSourceElement, Widget target) {
-        checkArgument(target != null, "Target widget element should be a not null value");
+    public static InteractiveAction dragAndDrop(SearchSupplier<?> howToFindSourceElement, Widget target) {
+        checkArgument(nonNull(target), "Target widget element should be a not null value");
         return dragAndDrop(howToFindSourceElement, target.getWrappedElement());
     }
 
@@ -663,9 +666,9 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      *
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<SeleniumSteps> dragAndDrop(WebElement source, SearchSupplier<?> howToFindTargetElement) {
-        checkArgument(source != null, "Source web element should be a not null value");
-        return performActionWithDefinitionHowToFindElement(format("Drag and drop from %s to element", source),
+    public static InteractiveAction dragAndDrop(WebElement source, SearchSupplier<?> howToFindTargetElement) {
+        checkArgument(nonNull(source), "Source web element should be a not null value");
+        return performActionWithDefinitionHowToFindElement(format("Drag and drop from %s to %s", source, howToFindTargetElement),
                 howToFindTargetElement, (actions, webElement) -> actions.dragAndDrop(source, webElement));
     }
 
@@ -680,8 +683,8 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      *
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<SeleniumSteps> dragAndDrop(Widget source, SearchSupplier<?> howToFindTargetElement) {
-        checkArgument(source != null, "Target widget element should be a not null value");
+    public static InteractiveAction dragAndDrop(Widget source, SearchSupplier<?> howToFindTargetElement) {
+        checkArgument(nonNull(source), "Target widget element should be a not null value");
         return dragAndDrop(source.getWrappedElement(), howToFindTargetElement);
     }
 
@@ -696,18 +699,18 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      *
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<SeleniumSteps> dragAndDrop(SearchSupplier<?> howToFindSourceElement,
-                                                               SearchSupplier<?> howToFindTargetElement) {
-        checkArgument(howToFindSourceElement != null, "The definition how to find the source " +
+    public static InteractiveAction dragAndDrop(SearchSupplier<?> howToFindSourceElement,
+                                                SearchSupplier<?> howToFindTargetElement) {
+        checkArgument(nonNull(howToFindSourceElement), "The definition how to find the source " +
                 "element should be a not null value");
-        checkArgument(howToFindSourceElement != null, "The definition how to find the target " +
+        checkArgument(nonNull(howToFindTargetElement), "The definition how to find the target " +
                 "element should be a not null value");
-        return new InteractiveAction<SeleniumSteps>() {
+        return new InteractiveAction(format("Drag and drop. From: %s. To: %s", howToFindSourceElement, howToFindTargetElement)) {
             @Override
-            protected void performActionOn(SeleniumSteps value, Object... additionalArgument) {
-                var actions = new Actions(currentContent().apply(value));
-                var source = value.find((SearchSupplier<?>) howToFindSourceElement);
-                var target = value.find((SearchSupplier<?>) howToFindTargetElement);
+            protected void performActionOn(WebDriver value) {
+                var actions = new Actions(value);
+                var source = howToFindSourceElement.get().apply(value);
+                var target = howToFindTargetElement.get().apply(value);
                 var sourceClass = source.getClass();
                 var targetClass = target.getClass();
                 if (WebElement.class.isAssignableFrom(sourceClass) && WrapsElement.class.isAssignableFrom(sourceClass)) {
@@ -734,7 +737,7 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
 
                 actions.dragAndDrop((WebElement) source, (WebElement) target).perform();
             }
-        }.andThen(format("Drag and drop. From: %s. To: %s", howToFindSourceElement, howToFindTargetElement), seleniumSteps -> seleniumSteps);
+        }.performOn(currentContent());
     }
 
     /**
@@ -746,8 +749,8 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      * @param yOffset vertical move offset.
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<WebDriver> dragAndDropBy(WebElement source, int xOffset, int yOffset) {
-        return performActionOnWebElement(getOffsetDescription("Drag and drop from %s", xOffset, yOffset), source,
+    public static InteractiveAction dragAndDropBy(WebElement source, int xOffset, int yOffset) {
+        return performActionOnWebElement(getOffsetDescription(format("Drag and drop from %s", source), xOffset, yOffset), source,
                 (actions, webElement) -> actions.dragAndDropBy(webElement, xOffset, yOffset));
     }
 
@@ -761,8 +764,8 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      * @param yOffset vertical move offset.
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<WebDriver> dragAndDropBy(Widget source, int xOffset, int yOffset) {
-        checkArgument(source != null, "Source widget element should be a not null value");
+    public static InteractiveAction dragAndDropBy(Widget source, int xOffset, int yOffset) {
+        checkArgument(nonNull(source), "Source widget element should be a not null value");
         return dragAndDropBy(source.getWrappedElement(), xOffset, yOffset);
     }
 
@@ -776,8 +779,9 @@ public abstract class InteractiveAction<T> extends SequentialActionSupplier<Sele
      * @param yOffset vertical move offset.
      * @return an anonymous instance of {@link InteractiveAction}
      */
-    public static InteractiveAction<SeleniumSteps> dragAndDropBy(SearchSupplier<?> howToFindSourceElement, int xOffset, int yOffset) {
-        return performActionWithDefinitionHowToFindElement(getOffsetDescription("Drag and drop", xOffset, yOffset),
+    public static InteractiveAction dragAndDropBy(SearchSupplier<?> howToFindSourceElement, int xOffset, int yOffset) {
+        return performActionWithDefinitionHowToFindElement(getOffsetDescription(format("Drag and drop from %s", howToFindSourceElement),
+                xOffset, yOffset),
                 howToFindSourceElement, (actions, webElement) -> actions.dragAndDropBy(webElement, xOffset, yOffset));
     }
 }

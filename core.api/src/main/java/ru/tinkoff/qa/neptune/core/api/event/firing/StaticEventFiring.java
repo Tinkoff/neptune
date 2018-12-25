@@ -22,7 +22,7 @@ public class StaticEventFiring {
         getCaptors().addAll(captors);
     }
 
-    public static <T> void catchResult(T caught, String message) {
+    public static <T> void catchValue(T caught, String message) {
         if (caught == null) {
             return;
         }

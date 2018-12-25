@@ -4,6 +4,8 @@ import java.util.stream.Collectors;
 
 import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Arrays.stream;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 
 class OrmObject {
@@ -22,7 +24,7 @@ class OrmObject {
                         continue;
                     }
 
-                    if ((v1 != null && v2 == null) || (v1 == null && v2 != null)) {
+                    if ((nonNull(v1) && isNull(v2) || isNull(v1) && nonNull(v2))) {
                         return false;
                     }
 

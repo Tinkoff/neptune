@@ -12,6 +12,7 @@ import java.util.function.Function;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
+import static java.util.Objects.nonNull;
 import static javax.jdo.JDOHelper.isDeleted;
 import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
 
@@ -28,7 +29,7 @@ public final class StoreSequentialGetStepSupplier<T extends PersistableObject>
     private final Collection<T> toBePersisted;
 
     private StoreSequentialGetStepSupplier(Collection<T> toBePersisted) {
-        checkArgument(toBePersisted != null, "Collection of persistable objects to be stored should not be null");
+        checkArgument(nonNull(toBePersisted), "Collection of persistable objects to be stored should not be null");
         checkArgument(toBePersisted.size() > 0, "Should be defined at least one persistable object to be stored");
         this.toBePersisted = toBePersisted;
     }

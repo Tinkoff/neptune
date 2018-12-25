@@ -17,9 +17,11 @@ import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_D
 
 public final class ToUrl extends NavigationActionSupplier<ToUrl> {
     private static final UrlValidator URL_VALIDATOR = new UrlValidator();
+    private final String url;
 
-    private ToUrl() {
-        super();
+    private ToUrl(String url) {
+        super(format("Navigate to URL %s", url));
+        this.url = checkUrl(url);
     }
 
     private static String checkUrl(String url) {
@@ -58,7 +60,7 @@ public final class ToUrl extends NavigationActionSupplier<ToUrl> {
      * @return built navigation action
      */
     public static ToUrl toUrl(String url) {
-        return new ToUrl().andThenToUrl(url);
+        return toUrl(window(), url);
     }
 
     /**
@@ -69,7 +71,7 @@ public final class ToUrl extends NavigationActionSupplier<ToUrl> {
      * @return built navigation action
      */
     public static ToUrl toUrl(GetWindowSupplier windowSupplier, String url) {
-        return new ToUrl().andThenToUrl(windowSupplier, url);
+        return new ToUrl(url).performOn(windowSupplier);
     }
 
     /**
@@ -80,43 +82,12 @@ public final class ToUrl extends NavigationActionSupplier<ToUrl> {
      * @return built navigation action
      */
     public static ToUrl toUrl(Window window, String url) {
-        return new ToUrl().andThenToUrl(window, url);
+        return new ToUrl(url).performOn(window);
     }
 
-    /**
-     * Adds another navigation to some URL in the first window.
-     *
-     * @param url the url to navigate to.
-     * @return built navigation action
-     */
-    public ToUrl andThenToUrl(String url) {
-        return andThenToUrl(window(), url);
-    }
-
-    /**
-     * Adds another navigation to some URL in some window which should be found.
-     *
-     * @param windowSupplier is how to get the window where navigation should be performed
-     * @param url the url to navigate to.
-     * @return built navigation action
-     */
-    public ToUrl andThenToUrl(GetWindowSupplier windowSupplier, String url) {
-        return andThen("Navigate to URL", windowSupplier, url);
-    }
-
-    /**
-     * Adds another navigation to some URL in the window.
-     *
-     * @param window is the window where navigation should be performed
-     * @param url the url to navigate to.
-     * @return built navigation action
-     */
-    public ToUrl andThenToUrl(Window window, String url) {
-        return andThen("Navigate to URL", window, url);
-    }
 
     @Override
-    protected void performActionOn(Window value, Object... additionalArgument) {
-        value.to(checkUrl(String.valueOf(additionalArgument[0])));
+    protected void performActionOn(Window value) {
+        value.to(url);
     }
 }

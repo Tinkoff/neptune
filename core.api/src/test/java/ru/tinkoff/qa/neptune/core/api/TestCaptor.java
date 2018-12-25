@@ -13,7 +13,7 @@ public class TestCaptor extends Captor<Number, String> {
 
     public TestCaptor() {
         super(List.of((toBeInjected, message) -> {
-            String msg = format("%s. Result: %s", message, toBeInjected);
+            String msg = format("%s %s", message, toBeInjected);
             messages.add(msg);
         }));
     }

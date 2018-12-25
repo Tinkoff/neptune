@@ -13,6 +13,7 @@ import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
 import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSingleCheckedObject.getSingle;
@@ -30,7 +31,7 @@ public final class GetCurrentUrlSupplier extends SequentialGetStepSupplier<Selen
     private Duration waitFor = WAITING_FOR_PAGE_LOADED_DURATION.get();
 
     private GetCurrentUrlSupplier(Object from) {
-        checkArgument(from != null, "It is not defined how to to get current URL, " +
+        checkArgument(nonNull(from), "It is not defined how to to get current URL, " +
                 "from taken window or function that searches for a window");
         this.from = from;
     }

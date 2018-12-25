@@ -1,3 +1,5 @@
 ru.tinkoff.qa.neptune.http.api.captors.ResponseFileCaptor
 ru.tinkoff.qa.neptune.http.api.captors.ResponseJsonCaptor
 ru.tinkoff.qa.neptune.http.api.captors.ResponseXmlCaptor
+ru.tinkoff.qa.neptune.http.api.captors.RequestStringCaptor
+ru.tinkoff.qa.neptune.http.api.captors.ResponseCaptor

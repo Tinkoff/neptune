@@ -7,7 +7,7 @@ import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 public abstract class NavigationActionSupplier<T extends NavigationActionSupplier<T>>
         extends SequentialActionSupplier<SeleniumSteps, Window, T> {
 
-    NavigationActionSupplier() {
-        super();
+    NavigationActionSupplier(String description) {
+        super(description);
     }
 }

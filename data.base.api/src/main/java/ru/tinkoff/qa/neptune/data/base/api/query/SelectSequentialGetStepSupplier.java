@@ -6,6 +6,7 @@ import java.time.Duration;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.nonNull;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.DefaultWaitingForSelectionResultProperty.DEFAULT_WAITING_FOR_SELECTION_RESULT_PROPERTY;
 
 @SuppressWarnings("unchecked")
@@ -22,7 +23,7 @@ public abstract class SelectSequentialGetStepSupplier<T, Q, R extends SelectSequ
      * @return self-reference
      */
     public R withTimeToGetValue(Duration timeToGetValue) {
-        checkArgument(timeToGetValue != null, "Time to get value should be defined");
+        checkArgument(nonNull(timeToGetValue), "Time to get value should be defined");
         this.timeToGetResult = timeToGetValue;
         return (R) this;
     }
@@ -34,7 +35,7 @@ public abstract class SelectSequentialGetStepSupplier<T, Q, R extends SelectSequ
      * @return self-reference.
      */
     public R toThrowOnEmptyResult(Supplier<NothingIsSelectedException> nothingIsSelectedExceptionSupplier) {
-        checkArgument(nothingIsSelectedExceptionSupplier != null, "Supplier of an exception should be defined");
+        checkArgument(nonNull(nothingIsSelectedExceptionSupplier), "Supplier of an exception should be defined");
         this.nothingIsSelectedExceptionSupplier = nothingIsSelectedExceptionSupplier;
         return (R) this;
     }

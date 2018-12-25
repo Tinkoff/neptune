@@ -16,6 +16,7 @@ import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static net.bytebuddy.implementation.MethodDelegation.to;
 import static net.bytebuddy.matcher.ElementMatchers.any;
@@ -97,7 +98,7 @@ public final class ProxyFactory {
                     var superClass = clazz.getSuperclass();
                     while (!superClass.equals(Object.class)) {
                         var createWithA = superClass.getAnnotation(CreateWith.class);
-                        if (createWithA != null) {
+                        if (nonNull(createWithA)) {
                             return createWithA;
                         }
                         superClass = superClass.getSuperclass();

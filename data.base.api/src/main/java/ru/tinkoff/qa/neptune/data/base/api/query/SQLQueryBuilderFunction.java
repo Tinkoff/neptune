@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.data.base.api.query;
 
-import org.datanucleus.api.jdo.JDOPersistenceManager;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseSteps;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 

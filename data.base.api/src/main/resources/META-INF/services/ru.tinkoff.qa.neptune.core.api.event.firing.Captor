@@ -1,2 +1,4 @@
 ru.tinkoff.qa.neptune.data.base.api.captors.DBObjectCaptor
 ru.tinkoff.qa.neptune.data.base.api.captors.DBObjectsCaptor
+ru.tinkoff.qa.neptune.data.base.api.captors.TypedQueryCaptor
+ru.tinkoff.qa.neptune.data.base.api.captors.QueryCaptor

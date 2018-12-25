@@ -9,6 +9,7 @@ import java.time.Duration;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static java.util.Objects.nonNull;
 import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSingleCheckedObject.getSingle;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITING_FRAME_SWITCHING_DURATION;
 import static com.google.common.base.Preconditions.checkArgument;
@@ -24,7 +25,7 @@ public final class GetFrameFunction implements Function<WebDriver, Frame> {
     private final Object frame;
 
     private GetFrameFunction(Object frame) {
-        checkArgument(frame != null, "Frame object should be defined");
+        checkArgument(nonNull(frame), "Frame object should be defined");
         var clazz = frame.getClass();
         checkArgument(String.class.isAssignableFrom(clazz) || Integer.class.isAssignableFrom(clazz)
                         || WebElement.class.isAssignableFrom(clazz) || WrapsElement.class.isAssignableFrom(clazz),

@@ -14,6 +14,7 @@ import org.openqa.selenium.safari.SafariDriver;
 import java.net.URL;
 import java.util.function.Supplier;
 
+import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.ArrayUtils.addAll;
 import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.*;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.REMOTE_WEB_DRIVER_URL_PROPERTY;
@@ -32,7 +33,7 @@ public enum SupportedWebDrivers implements Supplier<Object[]> {
         @Override
         public WebDriverManager getWebDriverManager() {
 
-            if (REMOTE_WEB_DRIVER_URL_PROPERTY.get() != null) {
+            if (nonNull(REMOTE_WEB_DRIVER_URL_PROPERTY.get())) {
                 return null;
             }
 

@@ -22,6 +22,7 @@ import java.net.http.HttpResponse;
 import static java.io.File.createTempFile;
 import static java.lang.String.format;
 import static java.nio.charset.Charset.defaultCharset;
+import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.UUID.randomUUID;
 import static javax.xml.transform.OutputKeys.INDENT;
@@ -54,7 +55,7 @@ public class ResponseXmlCaptor extends FileCaptor<HttpResponse<String>> {
             }
 
             String stringBody = String.valueOf(o);
-            if (parse(stringBody) != null) {
+            if (nonNull(parse(stringBody))) {
                 return (HttpResponse<String>) response;
             }
 
@@ -72,7 +73,7 @@ public class ResponseXmlCaptor extends FileCaptor<HttpResponse<String>> {
 
 
         Document xmlDocument;
-        if ((xmlDocument = parse(caught.body())) != null) {
+        if (nonNull(xmlDocument = parse(caught.body()))) {
             var stringWriter = new StringWriter();
             var xmlOutput = new StreamResult(stringWriter);
 

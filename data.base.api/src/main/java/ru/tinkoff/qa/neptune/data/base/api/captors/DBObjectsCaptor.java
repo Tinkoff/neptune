@@ -5,6 +5,7 @@ import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 import java.util.List;
 
 import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
 public class DBObjectsCaptor extends DBCaptor<List<PersistableObject>> {
@@ -21,7 +22,7 @@ public class DBObjectsCaptor extends DBCaptor<List<PersistableObject>> {
         }
 
         List<PersistableObject> result = ((List<Object>) toBeCaptured).stream()
-                .filter(o -> o != null && PersistableObject.class.isAssignableFrom(o.getClass()))
+                .filter(o -> nonNull(o) && PersistableObject.class.isAssignableFrom(o.getClass()))
                 .map(o -> (PersistableObject) o)
                 .collect(toList());
 

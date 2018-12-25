@@ -7,6 +7,7 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.util.Objects.nonNull;
 import static ru.tinkoff.qa.neptune.core.api.AsIsCondition.AS_IS;
 import static ru.tinkoff.qa.neptune.core.api.StoryWriter.condition;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION;
@@ -129,7 +130,7 @@ public final class CommonConditions {
      * @return predicate that checks element by text and reg exp pattern
      */
     public static <T extends SearchContext> Predicate<T> shouldHaveText(Pattern pattern) {
-        checkArgument(pattern != null, "RegEx pattern should be defined");
+        checkArgument(nonNull(pattern), "RegEx pattern should be defined");
         return condition(format("has text that meets regExp pattern '%s'", pattern), t -> {
             var clazz = t.getClass();
             if (WebElement.class.isAssignableFrom(clazz)) {
@@ -229,7 +230,7 @@ public final class CommonConditions {
      */
     public static <T extends SearchContext> Predicate<T> shouldHaveAttributeContains(String attribute, Pattern pattern) {
         checkArgument(!isBlank(attribute), "Attribute name should not be empty or null.");
-        checkArgument(pattern != null, "RegEx pattern of the desired " +
+        checkArgument(nonNull(pattern), "RegEx pattern of the desired " +
                 "attribute value should be defined.");
 
         return condition(format("has attribute '%s' that meets " +
@@ -356,7 +357,7 @@ public final class CommonConditions {
      */
     public static <T extends SearchContext> Predicate<T> shouldHaveCssValueContains(String cssProperty, Pattern pattern) {
         checkArgument(!isBlank(cssProperty), "Css property should not be empty or null.");
-        checkArgument(pattern != null, "RegEx pattern of the desired " +
+        checkArgument(nonNull(pattern), "RegEx pattern of the desired " +
                 "css value should be defined.");
 
         return condition(format("has css property '%s' that meets " +
@@ -402,7 +403,7 @@ public final class CommonConditions {
      * @return predicate that checks presence of child elements inside an element.
      */
     public static <T extends SearchContext> Predicate<T> shouldContainElements(MultipleSearchSupplier<?> howToFind) {
-        checkArgument(howToFind != null, "The way how to find nested elements should be defined");
+        checkArgument(nonNull(howToFind), "The way how to find nested elements should be defined");
         return condition(format("has nested %s", howToFind), t -> howToFind.get().apply(t).size() > 0);
     }
 
@@ -413,7 +414,7 @@ public final class CommonConditions {
      * @return predicate that checks presence of child elements inside an element.
      */
     public static <T extends SearchContext> Predicate<T> shouldContainElements(MultipleSearchSupplier<?> howToFind, int expected) {
-        checkArgument(howToFind != null, "The way how to find nested elements should be defined");
+        checkArgument(nonNull(howToFind), "The way how to find nested elements should be defined");
         checkArgument(expected >=0 , "Count of expected nested elements can't be a negative value.");
         return condition(format("has %s nested %s", expected, howToFind),
                 t -> howToFind.get().apply(t).size() == expected);

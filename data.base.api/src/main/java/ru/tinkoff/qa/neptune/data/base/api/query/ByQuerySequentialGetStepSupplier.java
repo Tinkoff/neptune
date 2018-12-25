@@ -9,6 +9,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.nonNull;
 
 @SuppressWarnings("unchecked")
 public abstract class ByQuerySequentialGetStepSupplier<T, S, R, Q extends ByQuerySequentialGetStepSupplier<T, S, R, Q>>
@@ -29,7 +30,7 @@ public abstract class ByQuerySequentialGetStepSupplier<T, S, R, Q extends ByQuer
      * @return self-reference
      */
     public Q withCondition(Predicate<T> condition) {
-        checkArgument(condition != null, "Condition should be defined");
+        checkArgument(nonNull(condition), "Condition should be defined");
         this.condition = condition;
         return (Q) this;
     }

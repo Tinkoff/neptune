@@ -7,6 +7,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.nonNull;
 
 @SuppressWarnings("unchecked")
 public abstract class ByIdsSequentialGetStepSupplier<T extends PersistableObject, S, Q extends ByIdsSequentialGetStepSupplier<T, S, Q>>
@@ -17,8 +18,8 @@ public abstract class ByIdsSequentialGetStepSupplier<T extends PersistableObject
     Predicate<T> condition;
 
     ByIdsSequentialGetStepSupplier(Class<T> ofType, Object... ids) {
-        checkArgument(ofType != null, "A class of objects to be selected by ids should be defined");
-        checkArgument(ids != null, "Ids of objects to be selected should not be passed as a null-value");
+        checkArgument(nonNull(ofType), "A class of objects to be selected by ids should be defined");
+        checkArgument(nonNull(ids), "Ids of objects to be selected should not be passed as a null-value");
         checkArgument(ids.length > 0, "At least one id to be found should be defined");
         this.ofType = ofType;
         this.ids = ids;
@@ -31,7 +32,7 @@ public abstract class ByIdsSequentialGetStepSupplier<T extends PersistableObject
      * @return self-reference
      */
     public Q withCondition(Predicate<T> condition) {
-        checkArgument(condition != null, "Condition should be defined");
+        checkArgument(nonNull(condition), "Condition should be defined");
         this.condition = condition;
         return (Q) this;
     }
