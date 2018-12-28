@@ -33,7 +33,7 @@ public abstract class RemoveCookiesActionSupplier<T> extends SequentialActionSup
         checkArgument(nonNull(getCookies), "The way how to get cookies to delete is not defined");
         var description = ofNullable(getCookies.getCondition())
                 .map(cookiePredicate -> format("Delete from browser's cookie jar. Cookies: %s", getCookies))
-                .orElse("Delete cookies from browser's cookie jar");
+                .orElse("Delete all the cookies from browser's cookie jar");
 
         return new RemoveCookiesActionSupplier<SeleniumSteps>(description) {
             @Override

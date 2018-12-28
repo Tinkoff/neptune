@@ -1,6 +1,9 @@
 package ru.tinkoff.qa.neptune.core.api.event.firing;
 
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.CaptorFilterByProducedType;
+
 import java.util.List;
+import java.util.Set;
 
 import static ru.tinkoff.qa.neptune.core.api.utils.SPIUtil.loadSPI;
 import static java.util.Optional.ofNullable;
@@ -11,7 +14,7 @@ public class StaticEventFiring {
     private static final ThreadLocal<List<EventLogger>> LIST_THREAD_LOCAL_EVENT_LOGGERS = new ThreadLocal<>();
 
     private static List<Captor> getCaptors() {
-        return  ofNullable(LIST_THREAD_LOCAL_CAPTORS.get()).orElseGet(() -> {
+        return ofNullable(LIST_THREAD_LOCAL_CAPTORS.get()).orElseGet(() -> {
             var captors = loadSPI(Captor.class);
             LIST_THREAD_LOCAL_CAPTORS.set(captors);
             return captors;
@@ -22,13 +25,20 @@ public class StaticEventFiring {
         getCaptors().addAll(captors);
     }
 
-    public static <T> void catchValue(T caught, String message) {
+    public static <T> void catchValue(T caught,
+                                      Set<CaptorFilterByProducedType> captorFilters) {
         if (caught == null) {
             return;
         }
 
-        getCaptors().forEach(captor -> ofNullable(captor.getCaptured(caught))
-                .ifPresent(o -> captor.capture(o, message)));
+        getCaptors().stream().filter(captor -> {
+            for (CaptorFilterByProducedType captorFilterByProducedType : captorFilters) {
+                if (captorFilterByProducedType.matches(captor)) {
+                    return true;
+                }
+            }
+            return false;
+        }).forEach(captor -> ofNullable(captor.getCaptured(caught)).ifPresent(captor::capture));
     }
 
     private static List<EventLogger> initEventLoggersIfNecessary() {

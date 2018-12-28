@@ -176,20 +176,20 @@ public class CheckTest {
 
             assertThat("Logged messages",
                     DefaultListLogger.messages,
-                    contains("Getting of 'Is integer' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <true>' succeed",
-                            "Performing of 'Check Is integer. Assert: is <true>' succeed",
-                            "Getting of 'Sqrt value' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <2.0>' succeed",
-                            "Performing of 'Check Sqrt value. Assert: is <2.0>' succeed",
-                            "Performing of 'Verify inspected value 4' succeed",
-                            "Getting of 'Sqr value' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <25.0>' succeed",
-                            "Performing of 'Check Sqr value. Assert: is <25.0>' succeed",
-                            "Performing of 'Verify inspected value 5' succeed"));
+                    contains(equalTo("The result true"),
+                            equalTo("The result is from 4"),
+                            equalTo("Action was successfully performed on true"),
+                            equalTo("Action was successfully performed on 4"),
+                            equalTo("The result 2.0"),
+                            equalTo("The result is from 4"),
+                            equalTo("Action was successfully performed on 2.0"),
+                            equalTo("Action was successfully performed on 4"),
+                            containsString("Action was successfully performed on ru.tinkoff.qa.neptune.check.Check"),
+                            equalTo("The result 25.0"),
+                            equalTo("The result is from 5"),
+                            equalTo("Action was successfully performed on 25.0"),
+                            equalTo("Action was successfully performed on 5"),
+                            containsString("Action was successfully performed on ru.tinkoff.qa.neptune.check.Check")));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES1.toArray()));
@@ -245,20 +245,20 @@ public class CheckTest {
 
             assertThat("Logged messages",
                     DefaultListLogger.messages,
-                    contains("Getting of 'Is integer' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <true>' succeed",
-                            "Performing of 'Check Is integer. Assert: is <true>' succeed",
-                            "Getting of 'Sqrt value' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <2.0>' succeed",
-                            "Performing of 'Check Sqrt value. Assert: is <2.0>' succeed",
-                            "Performing of 'Verify inspected value 4' succeed",
-                            "Getting of 'Sqr value' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <25.0>' succeed",
-                            "Performing of 'Check Sqr value. Assert: is <25.0>' succeed",
-                            "Performing of 'Verify inspected value 5' succeed"));
+                    contains(equalTo("The result true"),
+                            equalTo("The result is from 4"),
+                            equalTo("Action was successfully performed on true"),
+                            equalTo("Action was successfully performed on 4"),
+                            equalTo("The result 2.0"),
+                            equalTo("The result is from 4"),
+                            equalTo("Action was successfully performed on 2.0"),
+                            equalTo("Action was successfully performed on 4"),
+                            containsString("Action was successfully performed on ru.tinkoff.qa.neptune.check.Check"),
+                            equalTo("The result 25.0"),
+                            equalTo("The result is from 5"),
+                            equalTo("Action was successfully performed on 25.0"),
+                            equalTo("Action was successfully performed on 5"),
+                            containsString("Action was successfully performed on ru.tinkoff.qa.neptune.check.Check")));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES1.toArray()));
@@ -310,21 +310,21 @@ public class CheckTest {
 
             assertThat("Logged messages",
                     DefaultListLogger.messages,
-                    contains("Getting of 'Is integer' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <true>' succeed",
-                            "Performing of 'Check Is integer. Assert: is <true>' succeed",
-                            "Getting of 'Sqrt value' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <2.0>' succeed",
-                            "Performing of 'Check Sqrt value. Assert: is <2.0>' succeed",
-                            "Performing of 'Verify inspected value 4' succeed",
-                            "Getting of 'Sqr value' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <25.0>' succeed",
-                            "Performing of 'Check Sqr value. Assert: is <25.0>' succeed",
-                            "Performing of 'Verify inspected value 5' succeed",
-                            "Performing of 'Check numbers 4 and 5' succeed"));
+                    contains(equalTo("The result true"),
+                            equalTo("The result is from 4"),
+                            equalTo("Action was successfully performed on true"),
+                            equalTo("Action was successfully performed on 4"),
+                            equalTo("The result 2.0"),
+                            equalTo("The result is from 4"),
+                            equalTo("Action was successfully performed on 2.0"),
+                            equalTo("Action was successfully performed on 4"),
+                            containsString("Action was successfully performed on ru.tinkoff.qa.neptune.check.Check"),
+                            equalTo("The result 25.0"),
+                            equalTo("The result is from 5"),
+                            equalTo("Action was successfully performed on 25.0"),
+                            equalTo("Action was successfully performed on 5"),
+                            containsString("Action was successfully performed on ru.tinkoff.qa.neptune.check.Check"),
+                            containsString("Action was successfully performed on ru.tinkoff.qa.neptune.check.Check")));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES2.toArray()));
@@ -382,21 +382,21 @@ public class CheckTest {
 
             assertThat("Logged messages",
                     DefaultListLogger.messages,
-                    contains("Getting of 'Is integer' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <true>' succeed",
-                            "Performing of 'Check Is integer. Assert: is <true>' succeed",
-                            "Getting of 'Sqrt value' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <2.0>' succeed",
-                            "Performing of 'Check Sqrt value. Assert: is <2.0>' succeed",
-                            "Performing of 'Verify inspected value 4' succeed",
-                            "Getting of 'Sqr value' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <25.0>' succeed",
-                            "Performing of 'Check Sqr value. Assert: is <25.0>' succeed",
-                            "Performing of 'Verify inspected value 5' succeed",
-                            "Performing of 'Check numbers 4 and 5' succeed"));
+                    contains(equalTo("The result true"),
+                            equalTo("The result is from 4"),
+                            equalTo("Action was successfully performed on true"),
+                            equalTo("Action was successfully performed on 4"),
+                            equalTo("The result 2.0"),
+                            equalTo("The result is from 4"),
+                            equalTo("Action was successfully performed on 2.0"),
+                            equalTo("Action was successfully performed on 4"),
+                            containsString("Action was successfully performed on ru.tinkoff.qa.neptune.check.Check"),
+                            equalTo("The result 25.0"),
+                            equalTo("The result is from 5"),
+                            equalTo("Action was successfully performed on 25.0"),
+                            equalTo("Action was successfully performed on 5"),
+                            containsString("Action was successfully performed on ru.tinkoff.qa.neptune.check.Check"),
+                            containsString("Action was successfully performed on ru.tinkoff.qa.neptune.check.Check")));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES2.toArray()));
@@ -451,12 +451,12 @@ public class CheckTest {
         finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
             assertThat(DefaultListLogger.messages,
-                    contains("Getting of 'Is integer' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <true>' succeed",
-                            "Performing of 'Check Is integer. Assert: is <true>' succeed",
-                            "Getting of 'Sqrt value' succeed. The result",
-                            "Value that was used to get a result from"));
+                    contains("The result true",
+                            "The result is from 9",
+                            "Action was successfully performed on true",
+                            "Action was successfully performed on 9",
+                            "The result 3.0",
+                            "The result is from 9"));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES3.toArray()));
@@ -484,9 +484,9 @@ public class CheckTest {
         finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
             assertThat(DefaultListLogger.messages,
-                    contains("Performing of 'Assert is <2.0>' failed",
-                            "Performing of 'Check Sqrt value. Assert: is <2.0>' failed",
-                            "Performing of 'Verify inspected value 9' failed"));
+                    contains(equalTo("Attempt to perform action on 3.0"),
+                            equalTo("Attempt to perform action on 9"),
+                            containsString("Attempt to perform action on ru.tinkoff.qa.neptune.check.Check")));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES3.toArray()));
@@ -514,15 +514,15 @@ public class CheckTest {
         finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
             assertThat(DefaultListLogger.messages,
-                    contains("Getting of 'Is integer' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <true>' succeed",
-                            "Performing of 'Check Is integer. Assert: is <true>' succeed",
-                            "Getting of 'Sqrt value' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <2.0>' failed",
-                            "Performing of 'Check Sqrt value. Assert: is <2.0>' failed",
-                            "Performing of 'Verify inspected value 9' failed"));
+                    contains(equalTo("The result true"),
+                            equalTo("The result is from 9"),
+                            equalTo("Action was successfully performed on true"),
+                            equalTo("Action was successfully performed on 9"),
+                            equalTo("The result 3.0"),
+                            equalTo("The result is from 9"),
+                            equalTo("Attempt to perform action on 3.0"),
+                            equalTo("Attempt to perform action on 9"),
+                            containsString("Attempt to perform action on ru.tinkoff.qa.neptune.check.Check")));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES3.toArray()));
@@ -578,12 +578,12 @@ public class CheckTest {
         finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
             assertThat(DefaultListLogger.messages,
-                    contains("Getting of 'Is integer' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <true>' succeed",
-                            "Performing of 'Check Is integer. Assert: is <true>' succeed",
-                            "Getting of 'Sqrt value' succeed. The result",
-                            "Value that was used to get a result from"));
+                    contains(equalTo("The result true"),
+                            equalTo("The result is from 9"),
+                            equalTo("Action was successfully performed on true"),
+                            equalTo("Action was successfully performed on 9"),
+                            equalTo("The result 3.0"),
+                            equalTo("The result is from 9")));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES4.toArray()));
@@ -612,10 +612,10 @@ public class CheckTest {
         finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
             assertThat(DefaultListLogger.messages,
-                    contains("Performing of 'Assert is <2.0>' failed",
-                            "Performing of 'Check Sqrt value. Assert: is <2.0>' failed",
-                            "Performing of 'Verify inspected value 9' failed",
-                            "Performing of 'Check number 9' failed"));
+                    contains(equalTo("Attempt to perform action on 3.0"),
+                            equalTo("Attempt to perform action on 9"),
+                            containsString("Attempt to perform action on ru.tinkoff.qa.neptune.check.Check"),
+                            containsString("Attempt to perform action on ru.tinkoff.qa.neptune.check.Check")));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES4.toArray()));
@@ -644,16 +644,16 @@ public class CheckTest {
         finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
             assertThat(DefaultListLogger.messages,
-                    contains("Getting of 'Is integer' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <true>' succeed",
-                            "Performing of 'Check Is integer. Assert: is <true>' succeed",
-                            "Getting of 'Sqrt value' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <2.0>' failed",
-                            "Performing of 'Check Sqrt value. Assert: is <2.0>' failed",
-                            "Performing of 'Verify inspected value 9' failed",
-                            "Performing of 'Check number 9' failed"));
+                    contains(equalTo("The result true"),
+                            equalTo("The result is from 9"),
+                            equalTo("Action was successfully performed on true"),
+                            equalTo("Action was successfully performed on 9"),
+                            equalTo("The result 3.0"),
+                            equalTo("The result is from 9"),
+                            equalTo("Attempt to perform action on 3.0"),
+                            equalTo("Attempt to perform action on 9"),
+                            containsString("Attempt to perform action on ru.tinkoff.qa.neptune.check.Check"),
+                            containsString("Attempt to perform action on ru.tinkoff.qa.neptune.check.Check")));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES4.toArray()));

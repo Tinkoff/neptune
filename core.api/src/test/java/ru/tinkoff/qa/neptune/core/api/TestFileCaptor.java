@@ -7,11 +7,11 @@ import java.io.File;
 public class TestFileCaptor extends FileCaptor<Object> {
 
     public TestFileCaptor() {
-        super();
+        super("Saved to file");
     }
 
     @Override
-    protected File getData(Object caught) {
+    public File getData(Object caught) {
         return null;
     }
 

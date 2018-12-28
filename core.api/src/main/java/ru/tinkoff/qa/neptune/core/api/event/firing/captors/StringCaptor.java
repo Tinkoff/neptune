@@ -8,14 +8,14 @@ import static ru.tinkoff.qa.neptune.core.api.utils.SPIUtil.loadSPI;
 
 public abstract class StringCaptor<T> extends Captor<T, StringBuilder> {
 
-    public StringCaptor(List<CapturedStringInjector> injectors) {
-        super(injectors);
+    public StringCaptor(String message, List<CapturedStringInjector> injectors) {
+        super(message, injectors);
     }
 
-    public StringCaptor() {
-        this(loadSPI(CapturedStringInjector.class));
+    public StringCaptor(String message) {
+        this(message, loadSPI(CapturedStringInjector.class));
     }
 
     @Override
-    protected abstract StringBuilder getData(T caught);
+    public abstract StringBuilder getData(T caught);
 }

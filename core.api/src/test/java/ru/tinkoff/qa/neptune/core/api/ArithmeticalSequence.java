@@ -1,9 +1,16 @@
 package ru.tinkoff.qa.neptune.core.api;
 
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeCaptureOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
+
 import java.util.function.Function;
 
 import static java.lang.String.format;
 
+@MakeStringCapturesOnFinishing
+@MakeCaptureOnFinishing(typeOfCapture = String.class)
+@MakeFileCapturesOnFinishing
 abstract class ArithmeticalSequence extends SequentialGetStepSupplier<CalculatorSteps, Number, Number, ArithmeticalSequence> {
 
     private static ArithmeticalSequence getResulted(ArithmeticalSequence sequence,

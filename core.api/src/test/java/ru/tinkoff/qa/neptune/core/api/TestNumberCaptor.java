@@ -7,20 +7,20 @@ import java.util.List;
 
 import static java.lang.String.format;
 
-public class TestCaptor extends Captor<Number, String> {
+public class TestNumberCaptor extends Captor<Number, Number> {
 
-    static final List<String> messages = new ArrayList<>();
+    static final List<Number> numbers = new ArrayList<>();
 
-    public TestCaptor() {
-        super("Value ", List.of((toBeInjected, message) -> {
-            String msg = format("%s %s", message, toBeInjected);
-            messages.add(msg);
+    public TestNumberCaptor() {
+        super("Number", List.of((toBeInjected, message) -> {
+            System.out.println(format("%s %s", message, toBeInjected));
+            numbers.add(toBeInjected);
         }));
     }
 
     @Override
-    public String getData(Number caught) {
-        return caught.toString();
+    public Number getData(Number caught) {
+        return caught;
     }
 
     @Override

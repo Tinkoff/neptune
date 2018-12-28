@@ -6,6 +6,9 @@ import ru.tinkoff.qa.neptune.core.api.properties.CapturedEvents;
 import ru.tinkoff.qa.neptune.core.api.properties.DoCapturesOf;
 import ru.tinkoff.qa.neptune.core.api.proxy.ProxyFactory;
 
+import java.util.function.Function;
+
+import static ru.tinkoff.qa.neptune.core.api.Arithmetical.number;
 import static ru.tinkoff.qa.neptune.core.api.ArithmeticalSequence.divideByResultOf;
 import static ru.tinkoff.qa.neptune.core.api.ArithmeticalSequence.multiplyByResultOf;
 import static ru.tinkoff.qa.neptune.core.api.ArithmeticalSequence.subtractFromResultOf;
@@ -13,6 +16,7 @@ import static java.lang.System.getProperties;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.emptyIterable;
+import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
 
 public class EventFiringTest {
 
@@ -23,7 +27,7 @@ public class EventFiringTest {
                             divideByResultOf(0.5,
                                     multiplyByResultOf(11,
                                             divideByResultOf(-6,
-                                                    Arithmetical.number(9)))));
+                                                    number(9)))));
 
     @BeforeClass
     public void beforeAll() {
@@ -34,11 +38,16 @@ public class EventFiringTest {
         TestCaptor.messages.clear();
         TestCapturedStringInjector.messages.clear();
         TestCapturedFileInjector.messages.clear();
+        TestNumberCaptor.numbers.clear();
         TestEventLogger.MESSAGES.clear();
 
+        Function<CalculatorSteps, Number> func = toGet("Calculation",
+                (Function<CalculatorSteps, Number>) calculatorSteps -> calculator.get(calculation).floatValue() + 5F)
+
+                .onFinishMakeCaptureOfType(Number.class);
+
         calculator.reset();
-        calculator.get(StoryWriter.toGet("Calculation",
-                calculator1 -> calculator1.get(calculation).floatValue() + 5F));
+        calculator.get(func);
         try {
             calculator.get(Arithmetical.divide(0F));
         }
@@ -70,32 +79,23 @@ public class EventFiringTest {
         try {
             assertThat("Check messages logged by SPI logger",
                     TestCaptor.messages,
-                    contains("Getting of 'Entering number 9' succeed. The result 9.0",
-                            "Getting of 'Divide by number -6' succeed. The result -1.5",
-                            "Value that was used to get a result from 9.0",
-                            "Getting of 'Multiplying by number 11' succeed. The result -16.5",
-                            "Value that was used to get a result from -1.5",
-                            "Getting of 'Divide by number 0.5' succeed. The result -33.0",
-                            "Value that was used to get a result from -16.5",
-                            "Getting of 'Subtract number 100' succeed. The result -133.0",
-                            "Value that was used to get a result from -33.0",
-                            "Getting of 'Calculation' succeed. The result -128.0"));
+                    contains("Value  9.0",
+                            "Value  -1.5",
+                            "Value  -16.5",
+                            "Value  -33.0",
+                            "Value  -133.0"));
+
+            assertThat("Check messages logged by SPI Number logger",
+                    TestNumberCaptor.numbers,
+                    contains(-128F));
 
             assertThat("Check messages logged by SPI String logger",
                     TestCapturedStringInjector.messages,
-                    contains("Performing of 'Reset calculated value to 0' succeed Calculator",
-                            "Getting of 'Entering number 9' succeed. The result 9.0",
-                            "Value that was used to get a result from Calculator",
-                            "Getting of 'Divide by number -6' succeed. The result -1.5",
-                            "Value that was used to get a result from 9.0",
-                            "Getting of 'Multiplying by number 11' succeed. The result -16.5",
-                            "Value that was used to get a result from -1.5",
-                            "Getting of 'Divide by number 0.5' succeed. The result -33.0",
-                            "Value that was used to get a result from -16.5",
-                            "Getting of 'Subtract number 100' succeed. The result -133.0",
-                            "Value that was used to get a result from -33.0",
-                            "Getting of 'Calculation' succeed. The result -128.0",
-                            "Value that was used to get a result from Calculator"));
+                    contains("Saved to string 9.0",
+                            "Saved to string -1.5",
+                            "Saved to string -16.5",
+                            "Saved to string -33.0",
+                            "Saved to string -133.0"));
 
             assertThat("Check messages logged by SPI File logger",
                     TestCapturedFileInjector.messages,
@@ -115,9 +115,13 @@ public class EventFiringTest {
                     TestCaptor.messages,
                     emptyIterable());
 
+            assertThat("Check messages logged by SPI Number logger",
+                    TestNumberCaptor.numbers,
+                    emptyIterable());
+
             assertThat("Check messages logged by SPI String logger",
                     TestCapturedStringInjector.messages,
-                    contains("Getting of 'Divide by number 0.0' failed. Value that was used to get a result from Calculator"));
+                    contains("Saved to string Calculator"));
 
             assertThat("Check messages logged by SPI File logger",
                     TestCapturedFileInjector.messages,
@@ -135,33 +139,24 @@ public class EventFiringTest {
         try {
             assertThat("Check messages logged by SPI logger",
                     TestCaptor.messages,
-                    contains("Getting of 'Entering number 9' succeed. The result 9.0",
-                            "Getting of 'Divide by number -6' succeed. The result -1.5",
-                            "Value that was used to get a result from 9.0",
-                            "Getting of 'Multiplying by number 11' succeed. The result -16.5",
-                            "Value that was used to get a result from -1.5",
-                            "Getting of 'Divide by number 0.5' succeed. The result -33.0",
-                            "Value that was used to get a result from -16.5",
-                            "Getting of 'Subtract number 100' succeed. The result -133.0",
-                            "Value that was used to get a result from -33.0",
-                            "Getting of 'Calculation' succeed. The result -128.0"));
+                    contains("Value  9.0",
+                            "Value  -1.5",
+                            "Value  -16.5",
+                            "Value  -33.0",
+                            "Value  -133.0"));
+
+            assertThat("Check messages logged by SPI Number logger",
+                    TestNumberCaptor.numbers,
+                    contains(-128F));
 
             assertThat("Check messages logged by SPI String logger",
                     TestCapturedStringInjector.messages,
-                    contains("Performing of 'Reset calculated value to 0' succeed Calculator",
-                            "Getting of 'Entering number 9' succeed. The result 9.0",
-                            "Value that was used to get a result from Calculator",
-                            "Getting of 'Divide by number -6' succeed. The result -1.5",
-                            "Value that was used to get a result from 9.0",
-                            "Getting of 'Multiplying by number 11' succeed. The result -16.5",
-                            "Value that was used to get a result from -1.5",
-                            "Getting of 'Divide by number 0.5' succeed. The result -33.0",
-                            "Value that was used to get a result from -16.5",
-                            "Getting of 'Subtract number 100' succeed. The result -133.0",
-                            "Value that was used to get a result from -33.0",
-                            "Getting of 'Calculation' succeed. The result -128.0",
-                            "Value that was used to get a result from Calculator",
-                            "Getting of 'Divide by number 0.0' failed. Value that was used to get a result from Calculator"));
+                    contains("Saved to string 9.0",
+                            "Saved to string -1.5",
+                            "Saved to string -16.5",
+                            "Saved to string -33.0",
+                            "Saved to string -133.0",
+                            "Saved to string Calculator"));
 
             assertThat("Check messages logged by SPI File logger",
                     TestCapturedFileInjector.messages,

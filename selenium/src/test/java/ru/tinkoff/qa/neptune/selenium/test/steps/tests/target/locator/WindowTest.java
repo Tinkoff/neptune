@@ -188,9 +188,9 @@ public class WindowTest extends BaseWebDriverTest {
     @Test(dependsOnMethods = "switchToWindowBySearchCriteriaTest")
     public void switchToWindowBySearchCriteriaChainedTest() {
         seleniumSteps.performSwitch(to(window().byIndex(2)
-                .onCondition(hasTitle(compile("^.*\\b(Github)\\b.*$")).and(hasUrl(compile("^.*\\b(github)\\b.*$")))))
-                .andThenSwitchTo(window().byIndex(1))
-                .andThenSwitchTo(window().byIndex(0)));
+                .onCondition(hasTitle(compile("^.*\\b(Github)\\b.*$")).and(hasUrl(compile("^.*\\b(github)\\b.*$"))))))
+                .performSwitch(to(window().byIndex(1)))
+                .performSwitch(to(window().byIndex(0)));
 
         assertThat(seleniumSteps.getWrappedDriver().getWindowHandle(), is(HANDLE1.getHandle()));
         assertThat(seleniumSteps.getWrappedDriver().getCurrentUrl(), is(GOOGLE.getUrl()));
@@ -228,9 +228,9 @@ public class WindowTest extends BaseWebDriverTest {
         Window window2 = seleniumSteps.get(window().byIndex(0));
         Window window3 = seleniumSteps.get(window().byIndex(1));
 
-        seleniumSteps.performSwitch(to(window)
-                .andThenSwitchTo(window3)
-                .andThenSwitchTo(window2));
+        seleniumSteps.performSwitch(to(window))
+                .performSwitch(to(window3))
+                .performSwitch(to(window2));
 
         assertThat(seleniumSteps.getWrappedDriver().getWindowHandle(), is(HANDLE1.getHandle()));
         assertThat(seleniumSteps.getWrappedDriver().getCurrentUrl(), is(GOOGLE.getUrl()));

@@ -9,14 +9,14 @@ import static ru.tinkoff.qa.neptune.core.api.utils.SPIUtil.loadSPI;
 
 public abstract class FileCaptor<T> extends Captor<T, File> {
 
-    public FileCaptor(List<CapturedFileInjector> injectors) {
-        super(injectors);
+    public FileCaptor(String message, List<CapturedFileInjector> injectors) {
+        super(message, injectors);
     }
 
-    public FileCaptor() {
-        this(loadSPI(CapturedFileInjector.class));
+    public FileCaptor(String message) {
+        this(message, loadSPI(CapturedFileInjector.class));
     }
 
     @Override
-    protected abstract File getData(T caught);
+    public abstract File getData(T caught);
 }
