@@ -7,21 +7,21 @@ import java.util.List;
 
 import static java.lang.String.format;
 
-public class DefaultListLogger extends Captor<Object, String> {
+public class DefaultListLogger extends Captor<Object, StringBuilder> {
 
     static final List<String> messages = new ArrayList<>();
 
     public DefaultListLogger() {
         super("Result is", List.of((toBeInjected, message) -> {
-            var toBeLogged = format("%s %s", message, toBeInjected);
+            var toBeLogged = format("%s %s", message, toBeInjected.toString());
             System.out.println(toBeLogged);
             messages.add(toBeLogged);
         }));
     }
 
     @Override
-    public String getData(Object caught) {
-        return caught.toString();
+    public StringBuilder getData(Object caught) {
+        return new StringBuilder(caught.toString());
     }
 
     @Override
