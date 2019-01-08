@@ -4,6 +4,8 @@ import ru.tinkoff.qa.neptune.core.api.SequentialActionSupplier;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import ru.tinkoff.qa.neptune.core.api.StepAction;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakesCapturesOnFinishing;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +57,10 @@ public final class ThatValue<T> extends SequentialActionSupplier<Check, T, ThatV
         return new ThatValue<T>(format("inspected value %s", t)).performOn(t);
     }
 
+    private <S extends MakesCapturesOnFinishing<S>> S makeCaptureOmFinishing(S s) {
+        return s.onFinishMakeCaptureOfType(Object.class);
+    }
+
     /**
      * Adds more criteria to check the value.
      *
@@ -71,12 +77,18 @@ public final class ThatValue<T> extends SequentialActionSupplier<Check, T, ThatV
         checkArgument(!isBlank(description), "Description of a value to be inspected should not be null");
         checkArgument(nonNull(criteria), "Criteria matcher should not be null");
         checkArgument(nonNull(function), "Function to get value to check should not be null");
-        checkList.add(action(format("Check %s. Assert: %s", description, criteria),
+        var describedFunction = makeCaptureOmFinishing(toGet(description, function));
+
+        StepAction<T> action = makeCaptureOmFinishing(action(format("Check %s. Assert: %s", description, criteria),
                 t -> {
-                    var toBeChecked = toGet(description, function).apply(t); //for logging
-                    action(format("Assert %s", criteria),
-                            r -> assertThat((R) r, new InnerMatcher<>(description, criteria))).accept(toBeChecked); //for logging
+                    var toBeChecked = describedFunction.apply(t); //for logging
+                    makeCaptureOmFinishing(action(format("Assert %s", criteria),
+                            r -> assertThat((R) r, new InnerMatcher<>(description, criteria))))
+
+                            .accept(toBeChecked); //for logging
                 }));
+
+        checkList.add(action);
         return this;
     }
 
@@ -88,8 +100,9 @@ public final class ThatValue<T> extends SequentialActionSupplier<Check, T, ThatV
      */
     public ThatValue<T> suitsCriteria(Matcher<? super T> criteria) {
         checkArgument(nonNull(criteria), "Criteria matcher should not be null");
-        checkList.add(action(format("Assert %s", criteria),
+        StepAction<T> action = makeCaptureOmFinishing(action(format("Assert %s", criteria),
                 t -> assertThat(t, new InnerMatcher<>(description, criteria))));
+        checkList.add(action);
         return this;
     }
 

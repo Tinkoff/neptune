@@ -119,7 +119,7 @@ class DefaultWindow implements Window, TakesScreenshot {
 
     @Override
     public String toString() {
-        return format("Window: url %s, title %s", getCurrentUrl(), getTitle());
+        return format("Window url %s title %s", getCurrentUrl(), getTitle());
     }
 
     @Override

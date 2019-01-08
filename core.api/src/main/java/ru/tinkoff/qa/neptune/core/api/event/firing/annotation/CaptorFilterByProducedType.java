@@ -34,7 +34,7 @@ public final class CaptorFilterByProducedType {
         }
 
         var parameter = (Class<?>) args[1];
-        return parameter.isAssignableFrom(classOfProducedValue);
+        return classOfProducedValue.isAssignableFrom(parameter);
     }
 
 
