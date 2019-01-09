@@ -55,7 +55,7 @@ public abstract class GetStepSupplier<T, R, THIS extends GetStepSupplier<T, R, T
             stepFunction = (StepFunction) function;
         }
         else {
-            stepFunction = (StepFunction) toGet(function.toString(), function);
+            stepFunction = toGet(function.toString(), function);
         }
         this.function = stepFunction
                 .addIgnored(new ArrayList<>(ignored));

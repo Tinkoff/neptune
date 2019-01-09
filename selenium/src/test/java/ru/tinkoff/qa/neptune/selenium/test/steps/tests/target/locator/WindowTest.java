@@ -58,7 +58,7 @@ public class WindowTest extends BaseWebDriverTest {
         assertThat(firstWindow.getPosition(), is(POSITION_1.getPosition()));
         assertThat(firstWindow.getSize(), is(SIZE1.getSize()));
         assertThat(firstWindow.isPresent(), is(true));
-        assertThat(firstWindow.toString(), is("Window: url https://www.google.com/, title Google"));
+        assertThat(firstWindow.toString(), is("Window[url https://www.google.com/ title Google]"));
     }
 
     @Test
@@ -69,7 +69,7 @@ public class WindowTest extends BaseWebDriverTest {
         assertThat(foundWindow.getPosition(), is(POSITION_2.getPosition()));
         assertThat(foundWindow.getSize(), is(SIZE2.getSize()));
         assertThat(foundWindow.isPresent(), is(true));
-        assertThat(foundWindow.toString(), is("Window: url https://www.facebook.com/, title Facebook"));
+        assertThat(foundWindow.toString(), is("Window[url https://www.facebook.com/ title Facebook]"));
     }
 
     @Test
@@ -81,7 +81,7 @@ public class WindowTest extends BaseWebDriverTest {
         assertThat(foundWindow.getPosition(), is(POSITION_3.getPosition()));
         assertThat(foundWindow.getSize(), is(SIZE3.getSize()));
         assertThat(foundWindow.isPresent(), is(true));
-        assertThat(foundWindow.toString(), is("Window: url https://github.com/, title Github Inc"));
+        assertThat(foundWindow.toString(), is("Window[url https://github.com/ title Github Inc]"));
     }
 
     @Test
@@ -93,7 +93,7 @@ public class WindowTest extends BaseWebDriverTest {
         assertThat(foundWindow.getPosition(), is(POSITION_3.getPosition()));
         assertThat(foundWindow.getSize(), is(SIZE3.getSize()));
         assertThat(foundWindow.isPresent(), is(true));
-        assertThat(foundWindow.toString(), is("Window: url https://github.com/, title Github Inc"));
+        assertThat(foundWindow.toString(), is("Window[url https://github.com/ title Github Inc]"));
     }
 
     @Test(expectedExceptions = NoSuchWindowException.class)

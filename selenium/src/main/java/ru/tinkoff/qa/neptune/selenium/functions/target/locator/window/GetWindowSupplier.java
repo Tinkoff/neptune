@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator.window;
 
 import ru.tinkoff.qa.neptune.core.api.GetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.selenium.SeleniumSteps;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
 import org.openqa.selenium.NoSuchWindowException;
@@ -23,6 +24,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 
+@MakeImageCapturesOnFinishing
 public final class GetWindowSupplier extends GetStepSupplier<SeleniumSteps, Window, GetWindowSupplier>
         implements TargetLocatorSupplier<Window> {
 

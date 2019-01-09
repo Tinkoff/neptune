@@ -98,7 +98,7 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
             public String toString() {
                 var stringDescription = String.format("%s elements of type %s", size(), getWidgetName(classOfAWidget));
                 if (!isBlank(conditionString)) {
-                    stringDescription = format("%s found on conditions '%s'", stringDescription, conditionString);
+                    stringDescription = format("%s and meet criteria ['%s']", stringDescription, conditionString);
                 }
                 return stringDescription;
             }
@@ -110,7 +110,7 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
                     .map(webElement -> {
                         var stringDescription = getWidgetName(clazz);
                         if (!isBlank(conditionString)) {
-                            stringDescription = format("%s found on conditions '%s'", stringDescription, conditionString);
+                            stringDescription = format("%s ['%s']", stringDescription, conditionString);
                         }
                         return createProxy(clazz, new WidgetInterceptor(webElement, clazz, stringDescription));
                     })

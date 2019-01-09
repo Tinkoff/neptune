@@ -82,7 +82,7 @@ final class ToGetConditionalHelper {
         var resultDescription = description;
 
         if (!AS_IS.equals(condition) && isLoggable(condition)) {
-            resultDescription = format("%s. Criteria: %s", resultDescription, condition).trim();
+            resultDescription = format("%s [Criteria: %s]", resultDescription, condition).trim();
         }
 
         return resultDescription;

@@ -41,7 +41,7 @@ public class SeleniumSteps implements PerformActionStep<SeleniumSteps>, GetStep<
     }
 
     public <R extends SearchContext> List<R> find(MultipleSearchSupplier<R> what) {
-        return get(what.get().compose(CurrentContentFunction.currentContent()));
+        return get(what.get().compose(currentContent()));
     }
 
     public SeleniumSteps click(ClickActionSupplier clickActionSupplier) {

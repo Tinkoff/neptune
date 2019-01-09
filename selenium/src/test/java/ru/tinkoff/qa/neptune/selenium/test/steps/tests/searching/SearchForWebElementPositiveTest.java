@@ -31,7 +31,7 @@ import static org.openqa.selenium.By.*;
 public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
 
     private static final String FOUND_BY_PATTERN = "Web element found %s";
-    private static final String FOUND_ON_CONDITION = FOUND_BY_PATTERN + " on conditions '%s'";
+    private static final String FOUND_ON_CONDITION = FOUND_BY_PATTERN + " ['%s']";
 
     private static String expectedDescriptionOfTheFoundElement(By by, Predicate<? extends SearchContext> condition) {
         return format(FOUND_ON_CONDITION, by, condition);

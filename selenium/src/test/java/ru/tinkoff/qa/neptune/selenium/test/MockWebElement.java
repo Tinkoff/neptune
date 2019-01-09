@@ -6,15 +6,18 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.VALUE;
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
 import static java.util.Arrays.stream;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
-public class MockWebElement implements WebElement {
+public class MockWebElement implements WebElement, WrapsDriver {
 
+    private WebDriver driver;
     final By foundBy;
     private final Map<String, String> attributes;
     private final Map<String, String> css;
@@ -109,7 +112,8 @@ public class MockWebElement implements WebElement {
             if (mockWebElement.foundBy.equals(by)) {
                 elements.add(mockWebElement);
             }
-            elements.addAll(mockWebElement.findElements(by));
+            elements.addAll(mockWebElement.findElements(by).stream().map(webElement -> ((MockWebElement) webElement)
+                    .setDriver(driver)).collect(toList()));
         });
         return elements;
     }
@@ -156,5 +160,15 @@ public class MockWebElement implements WebElement {
 
     public int getClickCount() {
         return clickCount;
+    }
+
+    MockWebElement setDriver(WebDriver driver) {
+        this.driver = driver;
+        return this;
+    }
+
+    @Override
+    public WebDriver getWrappedDriver() {
+        return driver;
     }
 }

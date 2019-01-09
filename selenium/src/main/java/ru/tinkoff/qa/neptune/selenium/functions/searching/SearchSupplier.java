@@ -48,7 +48,7 @@ public final class SearchSupplier<R extends SearchContext>
                                                                            Predicate<?> condition) {
         var errorMessage = format("Nothing was found. Attempt to get a single item %s", description);
         if (!AS_IS.equals(condition)) {
-            errorMessage = format("%s. Condition: %s", errorMessage, condition);
+            errorMessage = format("%s. Criteria: %s", errorMessage, condition);
         }
         var messageToThrow = errorMessage;
         return () -> new NoSuchElementException(messageToThrow);

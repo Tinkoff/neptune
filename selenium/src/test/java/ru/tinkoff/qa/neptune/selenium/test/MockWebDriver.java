@@ -8,7 +8,9 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.NoSuchElementException;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.getFakeDOM;
 import static ru.tinkoff.qa.neptune.selenium.test.enums.URLs.*;
 import static java.lang.String.format;
@@ -44,6 +46,7 @@ public class MockWebDriver implements WebDriver, JavascriptExecutor {
 
     private MockWebDriver(List<MockWebElement> children) {
         this.children = children;
+        children.forEach(mockWebElement -> mockWebElement.setDriver(this));
     }
 
     public MockWebDriver() {

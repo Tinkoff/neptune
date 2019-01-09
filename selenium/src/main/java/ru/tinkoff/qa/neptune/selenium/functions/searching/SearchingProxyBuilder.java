@@ -3,12 +3,12 @@ package ru.tinkoff.qa.neptune.selenium.functions.searching;
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
-import org.objenesis.Objenesis;
 import org.objenesis.ObjenesisStd;
 import ru.tinkoff.qa.neptune.core.api.LoggableObject;
 
 import static net.sf.cglib.proxy.Enhancer.registerCallbacks;
 
+@SuppressWarnings("unchecked")
 class SearchingProxyBuilder {
     static  <T> T createProxy(Class<T> tClass, MethodInterceptor interceptor) {
         var enhancer = new Enhancer();

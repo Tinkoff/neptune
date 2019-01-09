@@ -12,7 +12,7 @@ public final class SwitchActionSupplier extends SequentialActionSupplier<Seleniu
     private static final String DESCRIPTION = "Switch to %s";
 
     private SwitchActionSupplier(String description) {
-        super(description);
+        super(format(DESCRIPTION, description));
     }
 
     /**
@@ -22,7 +22,7 @@ public final class SwitchActionSupplier extends SequentialActionSupplier<Seleniu
      * @return built `switch to` action
      */
     public static SwitchActionSupplier to(TargetLocatorSupplier<?> to) {
-        return new SwitchActionSupplier(format(DESCRIPTION, to)).performOn((GetStepSupplier) to);
+        return new SwitchActionSupplier(to.toString()).performOn((GetStepSupplier) to);
     }
 
     /**
@@ -32,7 +32,7 @@ public final class SwitchActionSupplier extends SequentialActionSupplier<Seleniu
      * @return built `switch to` action
      */
     public static SwitchActionSupplier to(SwitchesToItself to) {
-        return new SwitchActionSupplier(format(DESCRIPTION, to)).performOn(to);
+        return new SwitchActionSupplier(to.toString()).performOn(to);
     }
 
     @Override

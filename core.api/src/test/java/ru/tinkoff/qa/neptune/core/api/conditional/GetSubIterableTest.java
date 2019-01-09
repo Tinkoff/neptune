@@ -24,7 +24,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
                 StoryWriter.condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true,
                 () -> NOTHING_WAS_FOUND).toString(),
-                is(format("%s. Criteria: %s", SET_CONVERTED_FROM_LIST, "equals " + A_UPPER + " ignore case")));
+                is(format("%s [Criteria: %s", SET_CONVERTED_FROM_LIST, "equals " + A_UPPER + " ignore case]")));
     }
 
     @Test
