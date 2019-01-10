@@ -84,15 +84,8 @@ public class SanityTestOfTheStartingAndStoppingOfWebDriver {
     public Object[][] testData() {
         return new Object[][]{
                 {ANY, Map.ofEntries(desiredDriver(CHROME_DRIVER)), ChromeDriver.class, null},
-                {ANY, Map.ofEntries(desiredDriver(FIREFOX_DRIVER)), FirefoxDriver.class, null},
-                {WIN8, Map.ofEntries(desiredDriver(IE_DRIVER)), InternetExplorerDriver.class, null},
-
                 {ANY, Map.ofEntries(desiredDriver(REMOTE_DRIVER),
                         browserType(CHROME)), RemoteWebDriver.class, CHROME},
-                {ANY, Map.ofEntries(desiredDriver(REMOTE_DRIVER),
-                        browserType(FIREFOX)), RemoteWebDriver.class, FIREFOX},
-                {WIN8, Map.ofEntries(desiredDriver(REMOTE_DRIVER),
-                        browserType(IEXPLORE)), RemoteWebDriver.class, IEXPLORE}
 
         };
     }

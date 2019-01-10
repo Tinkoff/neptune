@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.core.api.utils;
+package ru.tinkoff.qa.neptune.selenium.functions.searching;
 
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.Enhancer;
@@ -8,18 +8,18 @@ import ru.tinkoff.qa.neptune.core.api.LoggableObject;
 
 import static net.sf.cglib.proxy.Enhancer.registerCallbacks;
 
-public class CGLibProxyBuilder {
+class CGLibProxyBuilder {
 
     /**
      * Creates a proxy object using the binding of CGLIB and Objenesis
      *
      * @param tClass is a class of a proxy
      * @param interceptor is an instance of {@link MethodInterceptor}
-     * @param additionalInterfacesToImplement is an array of interfaces to be implemented by a proxy
      * @param <T> is a type of a proxy
      * @return the resulted object
      */
-    public static  <T> T createProxy(Class<T> tClass, MethodInterceptor interceptor, Class<?>... additionalInterfacesToImplement) {
+    @SuppressWarnings("unchecked")
+    static  <T> T createProxy(Class<T> tClass, MethodInterceptor interceptor) {
         var enhancer = new Enhancer();
 
         enhancer.setUseCache(false);
@@ -27,7 +27,7 @@ public class CGLibProxyBuilder {
         enhancer.setSuperclass(tClass);
 
         if (!LoggableObject.class.isAssignableFrom(tClass)) {
-            enhancer.setInterfaces(additionalInterfacesToImplement);
+            enhancer.setInterfaces(new Class[] {LoggableObject.class});
         }
 
         var proxyClass = enhancer.createClass();

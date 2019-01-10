@@ -12,7 +12,7 @@ import java.lang.reflect.Method;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static org.openqa.selenium.support.PageFactory.initElements;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchingProxyBuilder.createProxy;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CGLibProxyBuilder.createProxy;
 
 class WidgetInterceptor implements MethodInterceptor {
 
