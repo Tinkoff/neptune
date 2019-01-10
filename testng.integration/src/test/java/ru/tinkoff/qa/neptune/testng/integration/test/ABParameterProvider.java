@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.testng.integration.test;
 
 import ru.tinkoff.qa.neptune.core.api.ConstructorParameters;
-import ru.tinkoff.qa.neptune.core.api.ParameterProvider;
+import ru.tinkoff.qa.neptune.core.api.steps.performer.ParameterProvider;
 
 import static ru.tinkoff.qa.neptune.core.api.ConstructorParameters.params;
 

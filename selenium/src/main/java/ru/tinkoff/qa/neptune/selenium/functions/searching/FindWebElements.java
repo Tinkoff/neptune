@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.functions.searching;
 
 import org.openqa.selenium.*;
+import ru.tinkoff.qa.neptune.core.api.LoggableObject;
 
 import java.util.List;
 import java.util.function.Function;
@@ -10,7 +11,7 @@ import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchingProxyBuilder.createProxy;
+import static ru.tinkoff.qa.neptune.core.api.utils.CGLibProxyBuilder.createProxy;
 
 @SuppressWarnings("unchecked")
 final class FindWebElements implements Function<SearchContext, List<WebElement>> {
@@ -37,7 +38,7 @@ final class FindWebElements implements Function<SearchContext, List<WebElement>>
                     if (!isBlank(conditionString)) {
                         stringDescription = format("%s ['%s']", stringDescription, conditionString);
                     }
-                    return createProxy(webElement.getClass(), new WebElementInterceptor(webElement, stringDescription));
+                    return createProxy(webElement.getClass(), new WebElementInterceptor(webElement, stringDescription), LoggableObject.class);
                 })
                 .collect(toList())) {
             @Override

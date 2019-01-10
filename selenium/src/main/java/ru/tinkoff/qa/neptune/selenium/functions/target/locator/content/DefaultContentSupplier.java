@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator.content;
 
 import ru.tinkoff.qa.neptune.core.api.GetStepSupplier;
-import ru.tinkoff.qa.neptune.selenium.SeleniumSteps;
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepPerformer;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSingleCheckedObject.getSingle;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 
-public final class DefaultContentSupplier extends GetStepSupplier<SeleniumSteps, WebDriver, DefaultContentSupplier>
+public final class DefaultContentSupplier extends GetStepSupplier<SeleniumStepPerformer, WebDriver, DefaultContentSupplier>
         implements TargetLocatorSupplier<WebDriver> {
 
     private static final Function<WebDriver, WebDriver> GET_DEFAULT_CONTENT =

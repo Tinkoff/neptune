@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.test;
 
-import ru.tinkoff.qa.neptune.selenium.SeleniumSteps;
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepPerformer;
 import ru.tinkoff.qa.neptune.selenium.WebDriverMethodInterceptor;
 import ru.tinkoff.qa.neptune.selenium.WrappedWebDriver;
 import net.sf.cglib.proxy.Enhancer;
@@ -26,7 +26,7 @@ public abstract class BaseWebDriverTest {
     @Mock
     private WrappedWebDriver wrappedWebDriver;
 
-    protected SeleniumSteps seleniumSteps;
+    protected SeleniumStepPerformer seleniumSteps;
 
 
     private long start;
@@ -67,7 +67,7 @@ public abstract class BaseWebDriverTest {
         enhancer.setCallback(new WebDriverMethodInterceptor());
         WebDriver driver = (WebDriver) enhancer.create();
         when(wrappedWebDriver.getWrappedDriver()).thenReturn(driver);
-        seleniumSteps = new SeleniumSteps(CHROME_DRIVER) {
+        seleniumSteps = new SeleniumStepPerformer(CHROME_DRIVER) {
             @Override
             public WebDriver getWrappedDriver() {
                 return wrappedWebDriver.getWrappedDriver();

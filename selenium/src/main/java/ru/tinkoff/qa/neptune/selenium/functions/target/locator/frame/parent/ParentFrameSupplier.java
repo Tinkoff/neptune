@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.parent;
 
 import ru.tinkoff.qa.neptune.core.api.GetStepSupplier;
-import ru.tinkoff.qa.neptune.selenium.SeleniumSteps;
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepPerformer;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.WebDriver;
@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSingleCheckedObject.getSingle;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 
-public final class ParentFrameSupplier extends GetStepSupplier<SeleniumSteps, WebDriver, ParentFrameSupplier>
+public final class ParentFrameSupplier extends GetStepSupplier<SeleniumStepPerformer, WebDriver, ParentFrameSupplier>
         implements TargetLocatorSupplier<WebDriver> {
 
     private static final Function<WebDriver, WebDriver> GET_PARENT_FRAME =

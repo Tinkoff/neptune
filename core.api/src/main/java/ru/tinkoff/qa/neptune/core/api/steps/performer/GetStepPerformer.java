@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.core.api;
+package ru.tinkoff.qa.neptune.core.api.steps.performer;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -10,7 +10,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
 
 @SuppressWarnings("unchecked")
-public interface GetStep<THIS extends GetStep<THIS>> {
+public interface GetStepPerformer<THIS extends GetStepPerformer<THIS>> {
 
     default <T> T get(Function<THIS, T> function) {
         checkArgument(nonNull(function), "The function is not defined");

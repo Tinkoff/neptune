@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.data.base.api.query;
 
-import ru.tinkoff.qa.neptune.data.base.api.DataBaseSteps;
+import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepPerformer;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
 import javax.jdo.Query;
@@ -19,7 +19,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
  *
  * @param <T> type of objects to be selected.
  */
-public final class SQLQueryBuilderFunction<T> implements Function<DataBaseSteps, Query<T>> {
+public final class SQLQueryBuilderFunction<T> implements Function<DataBaseStepPerformer, Query<T>> {
 
     private final String sql;
     private final Class<T> type;
@@ -56,7 +56,7 @@ public final class SQLQueryBuilderFunction<T> implements Function<DataBaseSteps,
 
     @Override
     @SuppressWarnings("unchecked")
-    public Query<T> apply(DataBaseSteps dataBaseSteps) {
+    public Query<T> apply(DataBaseStepPerformer dataBaseSteps) {
         var manager = dataBaseSteps.getCurrentPersistenceManager();
         var query = manager.newQuery("javax.jdo.query.SQL", sql);
         ofNullable(type).ifPresent(query::setClass);

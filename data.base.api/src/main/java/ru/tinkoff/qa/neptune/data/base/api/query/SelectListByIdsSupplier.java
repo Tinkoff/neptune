@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.data.base.api.query;
 
-import ru.tinkoff.qa.neptune.data.base.api.DataBaseSteps;
+import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepPerformer;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
 import java.util.Arrays;
@@ -33,8 +33,8 @@ public final class SelectListByIdsSupplier<T extends PersistableObject>
     }
 
     @Override
-    protected Function<DataBaseSteps, List<T>> getEndFunction() {
-        Function<DataBaseSteps, List<T>> listFunction = dataBaseSteps -> {
+    protected Function<DataBaseStepPerformer, List<T>> getEndFunction() {
+        Function<DataBaseStepPerformer, List<T>> listFunction = dataBaseSteps -> {
             var result = new LoggableElementList<T>() {
                 public String toString() {
                     return format("%s stored elements of type %s", size(), ofType.getName());

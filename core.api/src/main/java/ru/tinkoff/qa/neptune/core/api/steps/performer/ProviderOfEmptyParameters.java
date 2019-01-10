@@ -1,4 +1,7 @@
-package ru.tinkoff.qa.neptune.core.api;
+package ru.tinkoff.qa.neptune.core.api.steps.performer;
+
+import ru.tinkoff.qa.neptune.core.api.ConstructorParameters;
+import ru.tinkoff.qa.neptune.core.api.steps.performer.ParameterProvider;
 
 import static ru.tinkoff.qa.neptune.core.api.ConstructorParameters.params;
 

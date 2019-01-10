@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.data.base.api.query;
 
 import org.datanucleus.api.jdo.query.AbstractJDOQLTypedQuery;
-import ru.tinkoff.qa.neptune.data.base.api.DataBaseSteps;
+import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepPerformer;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
 import javax.jdo.JDOQLTypedQuery;
@@ -19,7 +19,7 @@ import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSubIterable.getIter
 public abstract class SelectListByQuerySupplier<T, R>
         extends ByQuerySequentialGetStepSupplier<T, List<T>, R, SelectListByQuerySupplier<T, R>> {
 
-    private SelectListByQuerySupplier(Function<DataBaseSteps, R> query) {
+    private SelectListByQuerySupplier(Function<DataBaseStepPerformer, R> query) {
         super(query);
     }
 

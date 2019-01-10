@@ -1,9 +1,9 @@
 package ru.tinkoff.qa.neptune.selenium;
 
-import ru.tinkoff.qa.neptune.core.api.GetStep;
-import ru.tinkoff.qa.neptune.core.api.PerformActionStep;
+import ru.tinkoff.qa.neptune.core.api.steps.performer.ActionStepPerformer;
+import ru.tinkoff.qa.neptune.core.api.steps.performer.GetStepPerformer;
 import ru.tinkoff.qa.neptune.core.api.cleaning.Refreshable;
-import ru.tinkoff.qa.neptune.core.api.CreateWith;
+import ru.tinkoff.qa.neptune.core.api.steps.performer.CreateWith;
 import ru.tinkoff.qa.neptune.core.api.cleaning.StoppableOnJVMShutdown;
 import ru.tinkoff.qa.neptune.selenium.functions.navigation.NavigationActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier;
@@ -22,12 +22,12 @@ import java.util.List;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 
 @CreateWith(provider = SeleniumParameterProvider.class)
-public class SeleniumSteps implements PerformActionStep<SeleniumSteps>, GetStep<SeleniumSteps>, WrapsDriver, Refreshable,
+public class SeleniumStepPerformer implements ActionStepPerformer<SeleniumStepPerformer>, GetStepPerformer<SeleniumStepPerformer>, WrapsDriver, Refreshable,
         TakesScreenshot, StoppableOnJVMShutdown {
 
     private final WrappedWebDriver wrappedWebDriver;
 
-    public SeleniumSteps(SupportedWebDrivers supportedWebDriver) {
+    public SeleniumStepPerformer(SupportedWebDrivers supportedWebDriver) {
         this.wrappedWebDriver = new WrappedWebDriver(supportedWebDriver);
     }
 
@@ -44,7 +44,7 @@ public class SeleniumSteps implements PerformActionStep<SeleniumSteps>, GetStep<
         return get(what.get().compose(currentContent()));
     }
 
-    public SeleniumSteps click(ClickActionSupplier clickActionSupplier) {
+    public SeleniumStepPerformer click(ClickActionSupplier clickActionSupplier) {
         return perform(clickActionSupplier);
     }
 
@@ -52,7 +52,7 @@ public class SeleniumSteps implements PerformActionStep<SeleniumSteps>, GetStep<
         return get(getValueSupplier);
     }
 
-    public SeleniumSteps edit(EditActionSupplier editActionSupplier) {
+    public SeleniumStepPerformer edit(EditActionSupplier editActionSupplier) {
         return perform(editActionSupplier);
     }
 
@@ -60,15 +60,15 @@ public class SeleniumSteps implements PerformActionStep<SeleniumSteps>, GetStep<
         return get(javaScriptResultSupplier);
     }
 
-    public SeleniumSteps alert(AlertActionSupplier alertActionSupplier) {
+    public SeleniumStepPerformer alert(AlertActionSupplier alertActionSupplier) {
         return perform(alertActionSupplier);
     }
 
-    public SeleniumSteps performSwitch(SwitchActionSupplier switchActionSupplier) {
+    public SeleniumStepPerformer performSwitch(SwitchActionSupplier switchActionSupplier) {
         return perform(switchActionSupplier);
     }
 
-    public SeleniumSteps navigate(NavigationActionSupplier<?> navigationActionSupplier) {
+    public SeleniumStepPerformer navigate(NavigationActionSupplier<?> navigationActionSupplier) {
         return perform(navigationActionSupplier);
     }
 

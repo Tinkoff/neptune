@@ -1,7 +1,8 @@
 package ru.tinkoff.qa.neptune.core.api;
 
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.core.api.proxy.ProxyFactory;
+import ru.tinkoff.qa.neptune.core.api.steps.performer.*;
+import ru.tinkoff.qa.neptune.core.api.steps.proxy.ProxyFactory;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -25,7 +26,7 @@ public class ParameterProviderTest {
     }
 
     @CreateWith(provider = ProviderOfEmptyParameters.class)
-    private static class EmptyStepClass implements PerformActionStep<EmptyStepClass> {
+    private static class EmptyStepClass implements ActionStepPerformer<EmptyStepClass> {
         protected EmptyStepClass() {
             super();
         }
@@ -39,7 +40,7 @@ public class ParameterProviderTest {
     }
 
     @CreateWith(provider = ParameterizedParameterProvider.class)
-    private static class ParameterizedSuperStep implements GetStep<ParameterizedStep> {
+    private static class ParameterizedSuperStep implements GetStepPerformer<ParameterizedStep> {
         private final int number;
 
         protected ParameterizedSuperStep(int number) {

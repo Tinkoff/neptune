@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.data.base.api;
 
 import ru.tinkoff.qa.neptune.core.api.ConstructorParameters;
-import ru.tinkoff.qa.neptune.core.api.ParameterProvider;
+import ru.tinkoff.qa.neptune.core.api.steps.performer.ParameterProvider;
 
 import static ru.tinkoff.qa.neptune.core.api.ConstructorParameters.params;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.DefaultPersistenceManagerFactoryProperty

@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.core.api.proxy;
+package ru.tinkoff.qa.neptune.core.api.steps.proxy;
 
 class ProxyCreationFailureException extends RuntimeException {
 

@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations;
 
 import org.testng.annotations.BeforeSuite;
-import ru.tinkoff.qa.neptune.data.base.api.DataBaseSteps;
+import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepPerformer;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,7 +10,7 @@ import java.nio.file.Files;
 import static java.lang.String.format;
 import static java.lang.Thread.currentThread;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
-import static ru.tinkoff.qa.neptune.core.api.proxy.ProxyFactory.getProxied;
+import static ru.tinkoff.qa.neptune.core.api.steps.proxy.ProxyFactory.getProxied;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.DefaultPersistenceManagerFactoryProperty.DEFAULT_JDO_PERSISTENCE_MANAGER_FACTORY_PROPERTY;
 
 public abstract class BaseDbOperationTest {
@@ -19,7 +19,7 @@ public abstract class BaseDbOperationTest {
     private static final String TEST_BASE2 = "TestBase2";
     static File testDB1;
     static File testDB2;
-    protected static DataBaseSteps dataBaseSteps;
+    protected static DataBaseStepPerformer dataBaseSteps;
 
     @BeforeSuite
     public void copyDB() throws IOException {
@@ -30,7 +30,7 @@ public abstract class BaseDbOperationTest {
         Files.copy(db2.toPath(), (testDB2 = new File(format("%s.db", TEST_BASE2))).toPath(), REPLACE_EXISTING);
         System.setProperty(DEFAULT_JDO_PERSISTENCE_MANAGER_FACTORY_PROPERTY.getPropertyName(),
                 PersistenceManagerFactorySupplierForTestBase1.class.getName());
-        dataBaseSteps = getProxied(DataBaseSteps.class);
+        dataBaseSteps = getProxied(DataBaseStepPerformer.class);
         testDB1.deleteOnExit();
         testDB2.deleteOnExit();
     }

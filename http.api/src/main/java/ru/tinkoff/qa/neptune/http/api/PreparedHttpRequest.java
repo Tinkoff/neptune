@@ -2,8 +2,6 @@ package ru.tinkoff.qa.neptune.http.api;
 
 import org.apache.commons.validator.routines.UrlValidator;
 import org.glassfish.jersey.uri.internal.JerseyUriBuilder;
-import ru.tinkoff.qa.neptune.core.api.GetStepSupplier;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpDomainToRespondProperty;
 
 import javax.ws.rs.core.UriBuilder;
@@ -24,7 +22,6 @@ import static java.net.http.HttpRequest.newBuilder;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
 import static ru.tinkoff.qa.neptune.http.api.CommonBodyPublishers.empty;
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpDomainToRespondProperty.DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY;
 
@@ -32,10 +29,8 @@ import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpDomainToRespo
  * It builds a function that prepare a {@link HttpRequest} to get a response further.
  */
 @SuppressWarnings("unchecked")
-@MakeStringCapturesOnFinishing
-public class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>> extends GetStepSupplier<HttpSteps,
-        HowToGetResponse,
-        HttpRequestGetSupplier<T>> {
+public class PreparedHttpRequest<T extends PreparedHttpRequest<T>> implements Function<HttpStepPerformer,
+        HowToGetResponse> {
 
     private static final UrlValidator URL_VALIDATOR = new UrlValidator();
 
@@ -48,14 +43,12 @@ public class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>> extends
     private boolean toUseDefaultClient = false;
 
 
-    private HttpRequestGetSupplier(String uri,
-                                   Function<HttpRequest.Builder, HttpRequest.Builder> builderPreparing) {
+    private PreparedHttpRequest(String uri, Function<HttpRequest.Builder, HttpRequest.Builder> builderPreparing) {
         checkArgument(!isBlank(uri), "URI parameter should not be a null or empty value");
         try {
             if (URL_VALIDATOR.isValid(uri)) {
                 uriBuilder.uri(new URI(uri));
-            }
-            else {
+            } else {
                 uriBuilder.uri(ofNullable(DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY.get())
                         .map(url -> {
                             try {
@@ -75,35 +68,6 @@ public class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>> extends
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException(e.getMessage(), e);
         }
-        set(toGet("Built HTTP request", httpSteps -> {
-            builder.uri(uriBuilder.build());
-            if (toUseDefaultClient) {
-                httpSteps.resetHttpClient();
-            }
-            else {
-                ofNullable(clientToBeUsed).ifPresent(httpSteps::changeCurrentHttpClientSettings);
-            }
-
-            var client = httpSteps.getCurrentClient();
-
-            if (cookieToAdd.size() > 0) {
-                client.cookieHandler()
-                        .ifPresentOrElse(cookieHandler ->
-                                {
-                                    if (!CookieManager.class.isAssignableFrom(cookieHandler.getClass())) {
-                                        throw new IllegalStateException(format("It is unknown how to add cookies. We support only %s " +
-                                                "as cookie handler for a while", CookieManager.class.getName()));
-                                    }
-                                    var cookieStore = ((CookieManager) cookieHandler).getCookieStore();
-                                    cookieToAdd.forEach((key, value) ->
-                                            value.forEach(cookie -> cookieStore.add(key, cookie)));
-                                },
-                                () -> {throw new IllegalStateException("Can't get access to a cookie store of the current http client");});
-            }
-
-            return new HowToGetResponse(client, this.builderPreparing
-                    .apply(builder).build());
-        }));
     }
 
     /**
@@ -111,34 +75,34 @@ public class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>> extends
      *
      * @param uri to send a GET-request. It is possible to define the fully qualified URI as well as a relative path
      *            when the {@link DefaultHttpDomainToRespondProperty#DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY} is defined
-     * @return a new instance of {@link HttpRequestGetSupplier}
+     * @return a new instance of {@link PreparedHttpRequest}
      */
-    public static GetHttpRequestSupplier GET(String uri) {
-        return new GetHttpRequestSupplier(uri);
+    public static PreparedGetHttpRequest GET(String uri) {
+        return new PreparedGetHttpRequest(uri);
     }
 
     /**
      * Makes preparation for the sending POST-request
      *
-     * @param uri to send a POST-request. It is possible to define the fully qualified URI as well as a relative path
-     *            when the {@link DefaultHttpDomainToRespondProperty#DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY} is defined
+     * @param uri       to send a POST-request. It is possible to define the fully qualified URI as well as a relative path
+     *                  when the {@link DefaultHttpDomainToRespondProperty#DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY} is defined
      * @param publisher body publisher of the request
-     * @return a new instance of {@link HttpRequestGetSupplier}
+     * @return a new instance of {@link PreparedHttpRequest}
      */
-    public static PostHttpRequestSupplier POST(String uri, HttpRequest.BodyPublisher publisher) {
-        return new PostHttpRequestSupplier(uri, publisher);
+    public static PreparedPostHttpRequest POST(String uri, HttpRequest.BodyPublisher publisher) {
+        return new PreparedPostHttpRequest(uri, publisher);
     }
 
     /**
      * Makes preparation for the sending PUT-request
      *
-     * @param uri to send a PUT-request. It is possible to define the fully qualified URI as well as a relative path
-     *            when the {@link DefaultHttpDomainToRespondProperty#DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY} is defined
+     * @param uri       to send a PUT-request. It is possible to define the fully qualified URI as well as a relative path
+     *                  when the {@link DefaultHttpDomainToRespondProperty#DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY} is defined
      * @param publisher body publisher of the request
-     * @return a new instance of {@link HttpRequestGetSupplier}
+     * @return a new instance of {@link PreparedHttpRequest}
      */
-    public static PutHttpRequestSupplier PUT(String uri, HttpRequest.BodyPublisher publisher) {
-        return new PutHttpRequestSupplier(uri, publisher);
+    public static PreparedPutHttpRequest PUT(String uri, HttpRequest.BodyPublisher publisher) {
+        return new PreparedPutHttpRequest(uri, publisher);
     }
 
     /**
@@ -146,34 +110,34 @@ public class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>> extends
      *
      * @param uri to send a DELETE-request. It is possible to define the fully qualified URI as well as a relative path
      *            when the {@link DefaultHttpDomainToRespondProperty#DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY} is defined
-     * @return a new instance of {@link HttpRequestGetSupplier}
+     * @return a new instance of {@link PreparedHttpRequest}
      */
-    public static DeleteHttpRequestSupplier DELETE(String uri) {
-        return new DeleteHttpRequestSupplier(uri);
+    public static PreparedDeleteHttpRequest DELETE(String uri) {
+        return new PreparedDeleteHttpRequest(uri);
     }
 
     /**
      * Makes preparation for the sending a request. It sets the request method and request body to the given values.
      *
-     * @param uri to send a request. It is possible to define the fully qualified URI as well as a relative path
-     *            when the {@link DefaultHttpDomainToRespondProperty#DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY} is defined
-     * @param method a method to send
+     * @param uri       to send a request. It is possible to define the fully qualified URI as well as a relative path
+     *                  when the {@link DefaultHttpDomainToRespondProperty#DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY} is defined
+     * @param method    a method to send
      * @param publisher body publisher of the request
-     * @return a new instance of {@link HttpRequestGetSupplier}
+     * @return a new instance of {@link PreparedHttpRequest}
      */
-    public static MethodHttpRequestSupplier methodRequest(String uri, String method, HttpRequest.BodyPublisher publisher) {
-        return new MethodHttpRequestSupplier(uri, method, publisher);
+    public static PreparedMethodHttpRequest methodRequest(String uri, String method, HttpRequest.BodyPublisher publisher) {
+        return new PreparedMethodHttpRequest(uri, method, publisher);
     }
 
     /**
      * Makes preparation for the sending a request. It sets the request method to the given value.
      *
-     * @param uri to send a request. It is possible to define the fully qualified URI as well as a relative path
-     *            when the {@link DefaultHttpDomainToRespondProperty#DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY} is defined
+     * @param uri    to send a request. It is possible to define the fully qualified URI as well as a relative path
+     *               when the {@link DefaultHttpDomainToRespondProperty#DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY} is defined
      * @param method a method to send
-     * @return a new instance of {@link HttpRequestGetSupplier}
+     * @return a new instance of {@link PreparedHttpRequest}
      */
-    public static MethodHttpRequestSupplier methodRequest(String uri, String method) {
+    public static PreparedMethodHttpRequest methodRequest(String uri, String method) {
         return methodRequest(uri, method, empty());
     }
 
@@ -181,7 +145,7 @@ public class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>> extends
      * Adds the given name value pair to the set of headers for this request.
      * The given value is added to the list of values for that name.
      *
-     * @param name the header name
+     * @param name  the header name
      * @param value the header value
      * @return self-reference
      */
@@ -209,7 +173,7 @@ public class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>> extends
      * Sets the given name value pair to the set of headers for this
      * request. This overwrites any previously set values for name.
      *
-     * @param name the header name
+     * @param name  the header name
      * @param value the header value
      * @return self-reference
      */
@@ -259,12 +223,12 @@ public class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>> extends
     }
 
     /**
-     * This method defines a new client to be used until another request built by {@link HttpRequestGetSupplier}
+     * This method defines a new client to be used until another request built by {@link PreparedHttpRequest}
      * is sent. This request supplier should be configured by invocation of
      * {@link #useHttpClient(HttpClient.Builder)} or
      * {@link #useDefaultHttpClient()}. Also it is possible to invoke
-     * {@link HttpSteps#changeCurrentHttpClientSettings(HttpClient.Builder)} or
-     * {@link HttpSteps#resetHttpClient()} for same purposes.
+     * {@link HttpStepPerformer#changeCurrentHttpClientSettings(HttpClient.Builder)} or
+     * {@link HttpStepPerformer#resetHttpClient()} for same purposes.
      *
      * @param clientToBeUsed is a builder of {@link HttpClient} that is going to be used further.
      * @return self-reference
@@ -277,12 +241,12 @@ public class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>> extends
 
     /**
      * This method says that default http client is used further. This client is described by properties.
-     * Default http client is used until another request built by {@link HttpRequestGetSupplier}
+     * Default http client is used until another request built by {@link PreparedHttpRequest}
      * is sent. This request supplier should be configured by invocation of
      * {@link #useHttpClient(HttpClient.Builder)} or
      * {@link #useDefaultHttpClient()}. Also it is possible to invoke
-     * {@link HttpSteps#changeCurrentHttpClientSettings(HttpClient.Builder)} or
-     * {@link HttpSteps#resetHttpClient()} for same purposes.
+     * {@link HttpStepPerformer#changeCurrentHttpClientSettings(HttpClient.Builder)} or
+     * {@link HttpStepPerformer#resetHttpClient()} for same purposes.
      *
      * @return self-reference
      */
@@ -295,14 +259,13 @@ public class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>> extends
     /**
      * Adds all the cookies into cookie cache of the current http client.
      *
-     * @param uri a {@code URI} where the cookies come from
+     * @param uri              a {@code URI} where the cookies come from
      * @param cookiesToBeAdded cookies to be added
-     *
      * @return self-reference
      */
     public T addCookies(String uri, List<HttpCookie> cookiesToBeAdded) {
         checkArgument(nonNull(cookiesToBeAdded), "List of cookies to be added should not be a null value");
-        checkArgument(cookiesToBeAdded.size()  > 0 , "At least one cookie should be defined for the adding");
+        checkArgument(cookiesToBeAdded.size() > 0, "At least one cookie should be defined for the adding");
         URI uriInstance = ofNullable(uri).map(s -> {
             try {
                 return new URI(s);
@@ -340,9 +303,8 @@ public class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>> extends
     /**
      * Sets all the cookies into cookie cache of the current http client.
      *
-     * @param uri a {@code URI} where the cookies come from
+     * @param uri            a {@code URI} where the cookies come from
      * @param cookiesToBeSet cookies to be set
-     *
      * @return self-reference
      */
     public T setCookies(String uri, List<HttpCookie> cookiesToBeSet) {
@@ -365,7 +327,7 @@ public class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>> extends
     /**
      * Adds query parameter to the given URI
      *
-     * @param name parameter name
+     * @param name   parameter name
      * @param values values of the parameter
      * @return self-reference
      */
@@ -374,14 +336,46 @@ public class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>> extends
         return (T) this;
     }
 
-    public static final class GetHttpRequestSupplier extends HttpRequestGetSupplier<GetHttpRequestSupplier> {
-        private GetHttpRequestSupplier(String uri) {
+    @Override
+    public HowToGetResponse apply(HttpStepPerformer httpSteps) {
+        builder.uri(uriBuilder.build());
+        if (toUseDefaultClient) {
+            httpSteps.resetHttpClient();
+        } else {
+            ofNullable(clientToBeUsed).ifPresent(httpSteps::changeCurrentHttpClientSettings);
+        }
+
+        var client = httpSteps.getCurrentClient();
+
+        if (cookieToAdd.size() > 0) {
+            client.cookieHandler()
+                    .ifPresentOrElse(cookieHandler ->
+                            {
+                                if (!CookieManager.class.isAssignableFrom(cookieHandler.getClass())) {
+                                    throw new IllegalStateException(format("It is unknown how to add cookies. We support only %s " +
+                                            "as cookie handler for a while", CookieManager.class.getName()));
+                                }
+                                var cookieStore = ((CookieManager) cookieHandler).getCookieStore();
+                                cookieToAdd.forEach((key, value) ->
+                                        value.forEach(cookie -> cookieStore.add(key, cookie)));
+                            },
+                            () -> {
+                                throw new IllegalStateException("Can't get access to a cookie store of the current http client");
+                            });
+        }
+
+        return new HowToGetResponse(client, this.builderPreparing
+                .apply(builder).build());
+    }
+
+    public static final class PreparedGetHttpRequest extends PreparedHttpRequest<PreparedGetHttpRequest> {
+        private PreparedGetHttpRequest(String uri) {
             super(uri, HttpRequest.Builder::GET);
         }
     }
 
-    public static final class PostHttpRequestSupplier extends HttpRequestGetSupplier<PostHttpRequestSupplier> {
-        private PostHttpRequestSupplier(String uri, HttpRequest.BodyPublisher publisher) {
+    public static final class PreparedPostHttpRequest extends PreparedHttpRequest<PreparedPostHttpRequest> {
+        private PreparedPostHttpRequest(String uri, HttpRequest.BodyPublisher publisher) {
             super(uri, builder -> {
                 checkArgument(nonNull(publisher), "Body publisher parameter should not be a null value");
                 return builder.POST(publisher);
@@ -389,8 +383,8 @@ public class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>> extends
         }
     }
 
-    public static final class PutHttpRequestSupplier extends HttpRequestGetSupplier<PutHttpRequestSupplier> {
-        private PutHttpRequestSupplier(String uri, HttpRequest.BodyPublisher publisher) {
+    public static final class PreparedPutHttpRequest extends PreparedHttpRequest<PreparedPutHttpRequest> {
+        private PreparedPutHttpRequest(String uri, HttpRequest.BodyPublisher publisher) {
             super(uri, builder -> {
                 checkArgument(nonNull(publisher), "Body publisher parameter should not be a null value");
                 return builder.PUT(publisher);
@@ -398,15 +392,15 @@ public class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>> extends
         }
     }
 
-    public static final class DeleteHttpRequestSupplier extends HttpRequestGetSupplier<DeleteHttpRequestSupplier> {
-        private DeleteHttpRequestSupplier(String uri) {
+    public static final class PreparedDeleteHttpRequest extends PreparedHttpRequest<PreparedDeleteHttpRequest> {
+        private PreparedDeleteHttpRequest(String uri) {
             super(uri, HttpRequest.Builder::DELETE);
         }
     }
 
-    public static final class MethodHttpRequestSupplier extends HttpRequestGetSupplier<MethodHttpRequestSupplier> {
+    public static final class PreparedMethodHttpRequest extends PreparedHttpRequest<PreparedMethodHttpRequest> {
 
-        private MethodHttpRequestSupplier(String uri, String method, HttpRequest.BodyPublisher publisher) {
+        private PreparedMethodHttpRequest(String uri, String method, HttpRequest.BodyPublisher publisher) {
             super(uri, builder -> {
                 checkArgument(!isBlank(method), "Method name should not be a null or empty value");
                 checkArgument(nonNull(publisher), "Body publisher parameter should not be a null value");

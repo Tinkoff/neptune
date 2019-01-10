@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.data.base.api;
 
-import com.google.gson.Gson;
 import org.datanucleus.enhancement.Persistable;
 import ru.tinkoff.qa.neptune.core.api.LoggableObject;
 
@@ -20,8 +19,8 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
         }
 
         return ofNullable(((Persistable) this).dnGetObjectId())
-                .map(o -> format("Stored data base element of type %s. Id = %s", name, o))
-                .orElseGet(() -> format("Stored data base element of type %s: %s", name, new Gson().toJson(this)));
+                .map(o -> format("Stored item of type %s Id = %s", name, o))
+                .orElseGet(() -> format("Stored item of type %s without id", name));
     }
 
     public Object clone() {

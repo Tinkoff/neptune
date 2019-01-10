@@ -1,19 +1,19 @@
 package ru.tinkoff.qa.neptune.http.api.properties;
 
 import ru.tinkoff.qa.neptune.core.api.properties.url.URLValuePropertySupplier;
-import ru.tinkoff.qa.neptune.http.api.HttpRequestGetSupplier;
+import ru.tinkoff.qa.neptune.http.api.PreparedHttpRequest;
 
 import java.net.http.HttpRequest;
 
 /**
  * This class is designed to read value of the property {@code 'default.http.domain.to.respond'} and convert it to
  * {@link java.net.URL}. This is the frequently uses domain of the service to respond. It makes possible to use
- * relative (part of the) URI by {@link HttpRequestGetSupplier#GET(java.lang.String)},
- * {@link HttpRequestGetSupplier#POST(String, HttpRequest.BodyPublisher)},
- * {@link HttpRequestGetSupplier#PUT(String, HttpRequest.BodyPublisher)},
- * {@link HttpRequestGetSupplier#DELETE(String)},
- * {@link HttpRequestGetSupplier#methodRequest(String, String)} and
- * {@link HttpRequestGetSupplier#methodRequest(String, String, HttpRequest.BodyPublisher)}
+ * relative (part of the) URI by {@link PreparedHttpRequest#GET(java.lang.String)},
+ * {@link PreparedHttpRequest#POST(String, HttpRequest.BodyPublisher)},
+ * {@link PreparedHttpRequest#PUT(String, HttpRequest.BodyPublisher)},
+ * {@link PreparedHttpRequest#DELETE(String)},
+ * {@link PreparedHttpRequest#methodRequest(String, String)} and
+ * {@link PreparedHttpRequest#methodRequest(String, String, HttpRequest.BodyPublisher)}
  */
 public final class DefaultHttpDomainToRespondProperty implements URLValuePropertySupplier {
 

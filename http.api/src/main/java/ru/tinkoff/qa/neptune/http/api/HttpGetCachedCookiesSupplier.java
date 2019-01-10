@@ -19,10 +19,10 @@ import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSubIterable.getIter
  * This class is designed to build functions that get applicable cookies from a cookie cache
  */
 @MakeStringCapturesOnFinishing
-public final class HttpGetCachedCookiesSupplier extends GetStepSupplier<HttpSteps, List<HttpCookie>, HttpGetCachedCookiesSupplier> {
+public final class HttpGetCachedCookiesSupplier extends GetStepSupplier<HttpStepPerformer, List<HttpCookie>, HttpGetCachedCookiesSupplier> {
 
     private Predicate<HttpCookie> criteria;
-    private static final Function<HttpSteps, List<HttpCookie>> GET_COOKIES = httpSteps ->
+    private static final Function<HttpStepPerformer, List<HttpCookie>> GET_COOKIES = httpSteps ->
             httpSteps.getCurrentClient().cookieHandler()
                     .map(cookieHandler -> {
                         if (!CookieManager.class.isAssignableFrom(cookieHandler.getClass())) {
@@ -58,7 +58,7 @@ public final class HttpGetCachedCookiesSupplier extends GetStepSupplier<HttpStep
         return this;
     }
 
-    public Function<HttpSteps, List<HttpCookie>> get() {
+    public Function<HttpStepPerformer, List<HttpCookie>> get() {
         return ofNullable(super.get()).orElseGet(() -> {
             ofNullable(criteria)
                     .ifPresentOrElse(httpCookiePredicate ->

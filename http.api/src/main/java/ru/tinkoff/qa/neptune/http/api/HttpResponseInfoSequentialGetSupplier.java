@@ -18,7 +18,7 @@ import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
  * @param <T> is a type of data to get from a http response
  */
 @MakeCaptureOnFinishing(typeOfCapture = Object.class)
-public final class HttpResponseInfoSequentialGetSupplier<T> extends SequentialGetStepSupplier<HttpSteps, T,
+public final class HttpResponseInfoSequentialGetSupplier<T> extends SequentialGetStepSupplier<HttpStepPerformer, T,
         HttpResponse<?>, HttpResponseInfoSequentialGetSupplier<T>> {
 
     private static final Function<HttpResponse<?>, Integer> STATUS_CODE = HttpResponse::statusCode;

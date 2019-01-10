@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.functions.searching;
 
+import ru.tinkoff.qa.neptune.core.api.LoggableObject;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import org.openqa.selenium.*;
 import org.reflections.Reflections;
@@ -13,9 +14,9 @@ import java.util.function.Predicate;
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static ru.tinkoff.qa.neptune.core.api.utils.CGLibProxyBuilder.createProxy;
 import static ru.tinkoff.qa.neptune.selenium.api.widget.Widget.getWidgetName;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindByBuilder.getAnnotations;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchingProxyBuilder.createProxy;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.WidgetPriorityComparator.widgetPriorityComparator;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Optional.ofNullable;
@@ -112,7 +113,7 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
                         if (!isBlank(conditionString)) {
                             stringDescription = format("%s ['%s']", stringDescription, conditionString);
                         }
-                        return createProxy(clazz, new WidgetInterceptor(webElement, clazz, stringDescription));
+                        return createProxy(clazz, new WidgetInterceptor(webElement, clazz, stringDescription), LoggableObject.class);
                     })
                     .collect(toList()));
         });

@@ -1,14 +1,14 @@
 package ru.tinkoff.qa.neptune.check;
 
-import ru.tinkoff.qa.neptune.core.api.PerformActionStep;
-import ru.tinkoff.qa.neptune.core.api.CreateWith;
-import ru.tinkoff.qa.neptune.core.api.ProviderOfEmptyParameters;
+import ru.tinkoff.qa.neptune.core.api.steps.performer.ActionStepPerformer;
+import ru.tinkoff.qa.neptune.core.api.steps.performer.CreateWith;
+import ru.tinkoff.qa.neptune.core.api.steps.performer.ProviderOfEmptyParameters;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.nonNull;
 
 @CreateWith(provider = ProviderOfEmptyParameters.class)
-public class Check implements PerformActionStep<Check> {
+public class CheckStepPerformer implements ActionStepPerformer<CheckStepPerformer> {
 
     /**
      * This method performs the checking of some value by criteria.
@@ -16,7 +16,7 @@ public class Check implements PerformActionStep<Check> {
      * @param <T> the type of the value to check
      * @return self-reference
      */
-    public <T> Check verify(ThatValue<T> that) {
+    public <T> CheckStepPerformer verify(ThatValue<T> that) {
         checkArgument(nonNull(that), "Verifying should be described");
         return perform(that);
     }

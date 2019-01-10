@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.functions.navigation;
 
 import ru.tinkoff.qa.neptune.core.api.SequentialGetStepSupplier;
-import ru.tinkoff.qa.neptune.selenium.SeleniumSteps;
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepPerformer;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 
@@ -20,7 +20,7 @@ import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSingleCheckedObject
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITING_FOR_PAGE_LOADED_DURATION;
 
-public final class GetCurrentUrlSupplier extends SequentialGetStepSupplier<SeleniumSteps, String, Window, GetCurrentUrlSupplier> {
+public final class GetCurrentUrlSupplier extends SequentialGetStepSupplier<SeleniumStepPerformer, String, Window, GetCurrentUrlSupplier> {
 
     private final Function<Window, String> GET_URL = Window::getCurrentUrl;
     private final String DESCRIPTION = "URL of the loaded page";
@@ -96,7 +96,7 @@ public final class GetCurrentUrlSupplier extends SequentialGetStepSupplier<Selen
     }
 
     @Override
-    public Function<SeleniumSteps, String> get() {
+    public Function<SeleniumStepPerformer, String> get() {
         if (GetWindowSupplier.class.isAssignableFrom(from.getClass())) {
             super.from((GetWindowSupplier) from);
         }

@@ -3,7 +3,7 @@ package ru.tinkoff.qa.neptune.selenium.functions.cookies;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import ru.tinkoff.qa.neptune.core.api.SequentialActionSupplier;
-import ru.tinkoff.qa.neptune.selenium.SeleniumSteps;
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepPerformer;
 
 import java.util.Arrays;
 
@@ -17,7 +17,7 @@ import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentConte
 /**
  * This class is designed to build an action that removes cookies from browser's "cookie jar".
  */
-public abstract class RemoveCookiesActionSupplier<T> extends SequentialActionSupplier<SeleniumSteps, T, RemoveCookiesActionSupplier<T>> {
+public abstract class RemoveCookiesActionSupplier<T> extends SequentialActionSupplier<SeleniumStepPerformer, T, RemoveCookiesActionSupplier<T>> {
 
     private RemoveCookiesActionSupplier(String description) {
         super(description);
@@ -29,15 +29,15 @@ public abstract class RemoveCookiesActionSupplier<T> extends SequentialActionSup
      * @param getCookies is the way how to get browser cookies to be removed from the jar
      * @return an instance of {@link RemoveCookiesActionSupplier}
      */
-    public static RemoveCookiesActionSupplier<SeleniumSteps> deleteCookies(GetSeleniumCookieSupplier getCookies) {
+    public static RemoveCookiesActionSupplier<SeleniumStepPerformer> deleteCookies(GetSeleniumCookieSupplier getCookies) {
         checkArgument(nonNull(getCookies), "The way how to get cookies to delete is not defined");
         var description = ofNullable(getCookies.getCondition())
                 .map(cookiePredicate -> format("Delete from browser's cookie jar. Cookies: %s", getCookies))
                 .orElse("Delete all the cookies from browser's cookie jar");
 
-        return new RemoveCookiesActionSupplier<SeleniumSteps>(description) {
+        return new RemoveCookiesActionSupplier<SeleniumStepPerformer>(description) {
             @Override
-            protected void performActionOn(SeleniumSteps value) {
+            protected void performActionOn(SeleniumStepPerformer value) {
                 var toBeDeleted = value.get(getCookies);
                 toBeDeleted.forEach(cookie -> value.getWrappedDriver().manage().deleteCookie(cookie));
             }

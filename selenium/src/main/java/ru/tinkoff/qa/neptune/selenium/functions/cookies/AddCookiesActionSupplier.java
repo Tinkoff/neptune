@@ -3,7 +3,7 @@ package ru.tinkoff.qa.neptune.selenium.functions.cookies;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import ru.tinkoff.qa.neptune.core.api.SequentialActionSupplier;
-import ru.tinkoff.qa.neptune.selenium.SeleniumSteps;
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepPerformer;
 
 import java.util.Arrays;
 
@@ -16,7 +16,7 @@ import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentConte
 /**
  * This class is designed to build an action that adds cookies to browser's "cookie jar".
  */
-public final class AddCookiesActionSupplier extends SequentialActionSupplier<SeleniumSteps, WebDriver, AddCookiesActionSupplier> {
+public final class AddCookiesActionSupplier extends SequentialActionSupplier<SeleniumStepPerformer, WebDriver, AddCookiesActionSupplier> {
 
     private final Cookie[] cookies;
 

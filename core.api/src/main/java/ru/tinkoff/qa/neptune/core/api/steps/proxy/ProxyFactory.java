@@ -1,13 +1,14 @@
-package ru.tinkoff.qa.neptune.core.api.proxy;
+package ru.tinkoff.qa.neptune.core.api.steps.proxy;
 
-import ru.tinkoff.qa.neptune.core.api.*;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
 import net.bytebuddy.dynamic.loading.InjectionClassLoader;
 import org.objenesis.ObjenesisStd;
 import ru.tinkoff.qa.neptune.core.api.ConstructorParameters;
-import ru.tinkoff.qa.neptune.core.api.ParameterProvider;
-import ru.tinkoff.qa.neptune.core.api.PerformActionStep;
+import ru.tinkoff.qa.neptune.core.api.steps.performer.CreateWith;
+import ru.tinkoff.qa.neptune.core.api.steps.performer.ParameterProvider;
+import ru.tinkoff.qa.neptune.core.api.steps.performer.ActionStepPerformer;
+import ru.tinkoff.qa.neptune.core.api.steps.performer.GetStepPerformer;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
@@ -30,18 +31,18 @@ public final class ProxyFactory {
 
     /**
      * This is the service method which creates an instance of the given implementor of
-     * {@link ru.tinkoff.qa.neptune.core.api.GetStep} and/or {@link PerformActionStep}.
+     * {@link GetStepPerformer} and/or {@link ActionStepPerformer}.
      *
-     * @param clazz to substitute. It should be the implementor of {@link ru.tinkoff.qa.neptune.core.api.GetStep}
-     *                    and/or {@link PerformActionStep}.
+     * @param clazz to substitute. It should be the implementor of {@link GetStepPerformer}
+     *                    and/or {@link ActionStepPerformer}.
      *
      * @param constructorParameters is a POJO with wrapped parameters of required constructor.
      * @param manipulationWithClassToInstantiate is a function which transforms class to be instantiated, e.g bytecode
      *                                           operations by CGLIB or Byte Buddy etc.
      * @param manipulationWithObjectToReturn is a function which transforms created object, e.g creating proxy,
      *                                       changing some attributes etc.
-     * @param <T> type of the implementor of {@link ru.tinkoff.qa.neptune.core.api.GetStep} and/or
-     * {@link PerformActionStep}.
+     * @param <T> type of the implementor of {@link GetStepPerformer} and/or
+     * {@link ActionStepPerformer}.
      * @return an instance.
      */
     public static <T> T getProxied(Class<T> clazz,
@@ -49,10 +50,10 @@ public final class ProxyFactory {
                                    Function<Class<? extends T>, Class<? extends T>> manipulationWithClassToInstantiate,
                                    Function<T, T> manipulationWithObjectToReturn) {
 
-        checkArgument(PerformActionStep.class.isAssignableFrom(clazz) ||
-                GetStep.class.isAssignableFrom(clazz), "Class to substitute should be " +
-                "assignable from ru.tinkoff.qa.neptune.core.api.GetStep and/or " +
-                "ru.tinkoff.qa.neptune.core.api.PerformActionStep.");
+        checkArgument(ActionStepPerformer.class.isAssignableFrom(clazz) ||
+                GetStepPerformer.class.isAssignableFrom(clazz), "Class to substitute should be " +
+                "assignable from ru.tinkoff.qa.neptune.core.api.steps.performer.GetStepPerformer and/or " +
+                "ru.tinkoff.qa.neptune.core.api.steps.performer.ActionStepPerformer.");
 
         var toInstantiate = manipulationWithClassToInstantiate.apply(clazz);
         var builder = new ByteBuddy().subclass(clazz);
@@ -77,17 +78,17 @@ public final class ProxyFactory {
 
     /**
      * This is the service method which creates an instance of the given implementor of
-     * {@link ru.tinkoff.qa.neptune.core.api.GetStep} and/or {@link PerformActionStep}.
+     * {@link GetStepPerformer} and/or {@link ActionStepPerformer}.
      *
-     * @param clazz to substitute. It should be the implementor of {@link ru.tinkoff.qa.neptune.core.api.GetStep}
-     *              and/or {@link PerformActionStep}. WARNING!!! It is important!!! Class or super-classes
+     * @param clazz to substitute. It should be the implementor of {@link GetStepPerformer}
+     *              and/or {@link ActionStepPerformer}. WARNING!!! It is important!!! Class or super-classes
      *              to get substituted instance should be annotated by {@link CreateWith}.
      * @param manipulationWithClassToInstantiate is a function which transforms class to be instantiated, e.g bytecode
      *                                            operations by CGLIB or Byte Buddy etc.
      * @param manipulationWithObjectToReturn is a function which transforms created object, e.g creating proxy,
      *                                        changing some attributes etc.
-     * @param <T> type of the implementor of {@link ru.tinkoff.qa.neptune.core.api.GetStep} and/or
-     * {@link PerformActionStep}.
+     * @param <T> type of the implementor of {@link GetStepPerformer} and/or
+     * {@link ActionStepPerformer}.
      * @return an instance.
      */
     public static <T> T getProxied(Class<T> clazz,
@@ -132,14 +133,14 @@ public final class ProxyFactory {
 
     /**
      * This is the service method which creates an instance of the given implementor of
-     * {@link ru.tinkoff.qa.neptune.core.api.GetStep} and/or {@link PerformActionStep}.
+     * {@link GetStepPerformer} and/or {@link ActionStepPerformer}.
      *
-     * @param clazz to substitute. It should be the implementor of {@link ru.tinkoff.qa.neptune.core.api.GetStep}
-     *                    and/or {@link PerformActionStep}.
+     * @param clazz to substitute. It should be the implementor of {@link GetStepPerformer}
+     *                    and/or {@link ActionStepPerformer}.
      *
      * @param constructorParameters is a POJO with wrapped parameters of required constructor.
-     * @param <T> type of the implementor of {@link ru.tinkoff.qa.neptune.core.api.GetStep} and/or
-     * {@link PerformActionStep}.
+     * @param <T> type of the implementor of {@link GetStepPerformer} and/or
+     * {@link ActionStepPerformer}.
      * @return an instance.
      */
     public static <T> T getProxied(Class<T> clazz,
@@ -149,13 +150,13 @@ public final class ProxyFactory {
 
     /**
      * This is the service method which creates an instance of the given implementor of
-     * {@link ru.tinkoff.qa.neptune.core.api.GetStep} and/or {@link PerformActionStep}.
+     * {@link GetStepPerformer} and/or {@link ActionStepPerformer}.
      *
-     * @param clazz to substitute. It should be the implementor of {@link ru.tinkoff.qa.neptune.core.api.GetStep}
-     *                    and/or {@link PerformActionStep}. WARNING!!! It is important!!! Class or super-classes
+     * @param clazz to substitute. It should be the implementor of {@link GetStepPerformer}
+     *                    and/or {@link ActionStepPerformer}. WARNING!!! It is important!!! Class or super-classes
      *                    to get substituted instance should be annotated by {@link CreateWith}.
-     * @param <T> type of the implementor of {@link ru.tinkoff.qa.neptune.core.api.GetStep} and/or
-     * {@link PerformActionStep}.
+     * @param <T> type of the implementor of {@link GetStepPerformer} and/or
+     * {@link ActionStepPerformer}.
      * @return an instance.
      */
     public static <T> T getProxied(Class<T> clazz) {

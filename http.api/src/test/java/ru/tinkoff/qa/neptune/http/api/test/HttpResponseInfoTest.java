@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.http.api.test;
 
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.http.api.HttpSteps;
+import ru.tinkoff.qa.neptune.http.api.HttpStepPerformer;
 
 import java.net.URI;
 
@@ -13,16 +13,16 @@ import static org.hamcrest.Matchers.*;
 import static org.mockserver.matchers.Times.exactly;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
-import static ru.tinkoff.qa.neptune.core.api.proxy.ProxyFactory.getProxied;
+import static ru.tinkoff.qa.neptune.core.api.steps.proxy.ProxyFactory.getProxied;
 import static ru.tinkoff.qa.neptune.http.api.CommonBodyPublishers.stringBody;
-import static ru.tinkoff.qa.neptune.http.api.HttpRequestGetSupplier.GET;
-import static ru.tinkoff.qa.neptune.http.api.HttpRequestGetSupplier.POST;
+import static ru.tinkoff.qa.neptune.http.api.PreparedHttpRequest.GET;
+import static ru.tinkoff.qa.neptune.http.api.PreparedHttpRequest.POST;
 import static ru.tinkoff.qa.neptune.http.api.HttpResponseInfoSequentialGetSupplier.*;
 import static ru.tinkoff.qa.neptune.http.api.HttpResponseSequentialGetSupplier.responseOf;
 
 public class HttpResponseInfoTest extends BaseHttpTest {
 
-    private HttpSteps httpSteps = getProxied(HttpSteps.class);
+    private HttpStepPerformer httpSteps = getProxied(HttpStepPerformer.class);
 
     @Test
     public void statusCodeResponseSupplierTest() {

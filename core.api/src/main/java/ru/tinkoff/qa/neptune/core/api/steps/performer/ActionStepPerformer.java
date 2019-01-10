@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.core.api;
+package ru.tinkoff.qa.neptune.core.api.steps.performer;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -10,7 +10,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 @SuppressWarnings("unchecked")
-public interface PerformActionStep<THIS extends PerformActionStep<THIS>> {
+public interface ActionStepPerformer<THIS extends ActionStepPerformer<THIS>> {
 
     default THIS perform(Consumer<THIS> actionConsumer) {
         checkArgument(nonNull(actionConsumer), "Action is not defined");

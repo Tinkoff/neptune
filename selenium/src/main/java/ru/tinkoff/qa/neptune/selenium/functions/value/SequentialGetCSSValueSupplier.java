@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.functions.value;
 
 import ru.tinkoff.qa.neptune.core.api.SequentialGetStepSupplier;
-import ru.tinkoff.qa.neptune.selenium.SeleniumSteps;
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepPerformer;
 import ru.tinkoff.qa.neptune.selenium.api.widget.HasCssValue;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
@@ -16,7 +16,7 @@ import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 
 public final class SequentialGetCSSValueSupplier extends
-        SequentialGetStepSupplier<SeleniumSteps, String, SearchContext, SequentialGetCSSValueSupplier> {
+        SequentialGetStepSupplier<SeleniumStepPerformer, String, SearchContext, SequentialGetCSSValueSupplier> {
     private final String property;
 
     private SequentialGetCSSValueSupplier(String property) {
@@ -75,7 +75,7 @@ public final class SequentialGetCSSValueSupplier extends
     }
 
     @Override
-    public Function<SeleniumSteps, String> get() {
+    public Function<SeleniumStepPerformer, String> get() {
         return ofNullable(super.get())
                 .orElseThrow(() -> new IllegalArgumentException("It is necessary to define element to get css property"));
     }

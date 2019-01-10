@@ -1,20 +1,20 @@
 package ru.tinkoff.qa.neptune.http.api;
 
-import ru.tinkoff.qa.neptune.core.api.CreateWith;
-import ru.tinkoff.qa.neptune.core.api.GetStep;
-import ru.tinkoff.qa.neptune.core.api.PerformActionStep;
+import ru.tinkoff.qa.neptune.core.api.steps.performer.ActionStepPerformer;
+import ru.tinkoff.qa.neptune.core.api.steps.performer.CreateWith;
+import ru.tinkoff.qa.neptune.core.api.steps.performer.GetStepPerformer;
 import ru.tinkoff.qa.neptune.core.api.cleaning.Refreshable;
 
 import java.net.CookieManager;
 import java.net.http.HttpClient;
 
 @CreateWith(provider = HttpStepsParameterProvider.class)
-public class HttpSteps implements GetStep<HttpSteps>, PerformActionStep<HttpSteps>, Refreshable {
+public class HttpStepPerformer implements GetStepPerformer<HttpStepPerformer>, ActionStepPerformer<HttpStepPerformer>, Refreshable {
 
     private final HttpClient defaultClient;
     private HttpClient currentClient;
 
-    public HttpSteps(HttpClient.Builder clientBuilder) {
+    public HttpStepPerformer(HttpClient.Builder clientBuilder) {
         this.defaultClient = clientBuilder.build();
         currentClient = defaultClient;
     }
@@ -23,12 +23,12 @@ public class HttpSteps implements GetStep<HttpSteps>, PerformActionStep<HttpStep
         return currentClient;
     }
 
-    public HttpSteps changeCurrentHttpClientSettings(HttpClient.Builder clientBuilder) {
+    public HttpStepPerformer changeCurrentHttpClientSettings(HttpClient.Builder clientBuilder) {
         currentClient = clientBuilder.build();
         return this;
     }
 
-    public HttpSteps resetHttpClient() {
+    public HttpStepPerformer resetHttpClient() {
         currentClient = defaultClient;
         return this;
     }

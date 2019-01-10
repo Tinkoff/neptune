@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.check.test;
 
-import ru.tinkoff.qa.neptune.check.Check;
+import ru.tinkoff.qa.neptune.check.CheckStepPerformer;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -9,7 +9,7 @@ import java.util.List;
 
 import static ru.tinkoff.qa.neptune.check.ThatValue.thatValue;
 import static ru.tinkoff.qa.neptune.check.test.TestEventLogger.MESSAGES;
-import static ru.tinkoff.qa.neptune.core.api.proxy.ProxyFactory.getProxied;
+import static ru.tinkoff.qa.neptune.core.api.steps.proxy.ProxyFactory.getProxied;
 import static ru.tinkoff.qa.neptune.core.api.properties.CapturedEvents.FAILURE;
 import static ru.tinkoff.qa.neptune.core.api.properties.CapturedEvents.SUCCESS;
 import static ru.tinkoff.qa.neptune.core.api.properties.CapturedEvents.SUCCESS_AND_FAILURE;
@@ -23,11 +23,11 @@ import static org.hamcrest.Matchers.*;
 
 public class CheckTest {
 
-    private Check check;
+    private CheckStepPerformer check;
 
     @BeforeTest
     public void beforeTest() {
-        check = getProxied(Check.class);
+        check = getProxied(CheckStepPerformer.class);
     }
 
     @BeforeMethod
