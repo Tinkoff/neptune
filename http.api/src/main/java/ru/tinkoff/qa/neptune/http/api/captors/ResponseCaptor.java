@@ -9,14 +9,16 @@ import static org.apache.commons.lang3.time.DurationFormatUtils.formatDuration;
 
 public class ResponseCaptor extends StringCaptor<HttpResponse<?>> {
 
+    public ResponseCaptor() {
+        super("Response");
+    }
+
     @Override
-    protected StringBuilder getData(HttpResponse<?> caught) {
-        var stringBuilder = new StringBuilder("Response: \n");
-        stringBuilder.append(format("Status code: %s\n", caught.statusCode()));
-
+    public StringBuilder getData(HttpResponse<?> caught) {
         var request = caught.request();
-
-        stringBuilder.append("Request data: \n")
+        var stringBuilder = new StringBuilder()
+                .append(format("Status code: %s\n", caught.statusCode()))
+                .append("Request data: \n")
                 .append(format(" - URI: %s \n", request.uri()))
                 .append(format(" - Method: %s \n", request.method()))
                 .append(format(" - Headers: %s \n", request.headers()))

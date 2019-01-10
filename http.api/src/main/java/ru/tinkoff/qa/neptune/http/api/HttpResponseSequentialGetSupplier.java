@@ -1,6 +1,9 @@
 package ru.tinkoff.qa.neptune.http.api;
 
 import ru.tinkoff.qa.neptune.core.api.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeCaptureOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
 
 import java.net.http.HttpResponse;
 import java.time.Duration;
@@ -20,6 +23,8 @@ import static ru.tinkoff.qa.neptune.http.api.properties.TimeToGetDesiredResponse
  * @param <T> is a type of body of the received response
  */
 @SuppressWarnings("unchecked")
+@MakeStringCapturesOnFinishing
+@MakeFileCapturesOnFinishing
 public abstract class HttpResponseSequentialGetSupplier<T, R extends HttpResponseSequentialGetSupplier<T, R>> extends SequentialGetStepSupplier<HttpSteps, HttpResponse<T>,
         HowToGetResponse, R> implements Cloneable {
 

@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.http.api;
 
 import ru.tinkoff.qa.neptune.core.api.GetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
 
 import java.net.CookieManager;
 import java.net.HttpCookie;
@@ -17,6 +18,7 @@ import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSubIterable.getIter
 /**
  * This class is designed to build functions that get applicable cookies from a cookie cache
  */
+@MakeStringCapturesOnFinishing
 public final class HttpGetCachedCookiesSupplier extends GetStepSupplier<HttpSteps, List<HttpCookie>, HttpGetCachedCookiesSupplier> {
 
     private Predicate<HttpCookie> criteria;

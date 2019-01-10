@@ -20,7 +20,6 @@ import java.io.StringWriter;
 import java.net.http.HttpResponse;
 
 import static java.io.File.createTempFile;
-import static java.lang.String.format;
 import static java.nio.charset.Charset.defaultCharset;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
@@ -29,6 +28,10 @@ import static javax.xml.transform.OutputKeys.INDENT;
 import static org.apache.commons.io.FileUtils.writeStringToFile;
 
 public class ResponseXmlCaptor extends FileCaptor<HttpResponse<String>> {
+
+    public ResponseXmlCaptor() {
+        super("Response. XML");
+    }
 
     private static Document parse(String xmlString) {
         try {
@@ -63,12 +66,8 @@ public class ResponseXmlCaptor extends FileCaptor<HttpResponse<String>> {
         }).orElse(null);
     }
 
-    public void capture(HttpResponse<String> caught, String message) {
-        super.capture(caught, format("Received response. %s", message));
-    }
-
     @Override
-    protected File getData(HttpResponse<String> caught) {
+    public File getData(HttpResponse<String> caught) {
         var uuid = randomUUID().toString();
 
 
@@ -94,7 +93,7 @@ public class ResponseXmlCaptor extends FileCaptor<HttpResponse<String>> {
             }
 
             try {
-                var xml = createTempFile("json_response_body", uuid + ".xml");
+                var xml = createTempFile("xml_response_body", uuid + ".xml");
                 writeStringToFile(xml, xmlOutput.getWriter().toString(),
                         defaultCharset(), true);
                 xml.deleteOnExit();

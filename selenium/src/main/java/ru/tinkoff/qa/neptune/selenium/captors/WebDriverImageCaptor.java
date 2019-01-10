@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.captors;
 
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrapsDriver;
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.ImageCaptor;
@@ -14,15 +15,15 @@ import java.io.IOException;
 import static java.util.Optional.ofNullable;
 import static org.openqa.selenium.OutputType.BYTES;
 
-public class WebDriverImageCaptor extends ImageCaptor<WrapsDriver> {
+public class WebDriverImageCaptor extends ImageCaptor<WebDriver> {
 
     public WebDriverImageCaptor() {
         super("Browser screenshot");
     }
 
     @Override
-    public BufferedImage getData(WrapsDriver caught) {
-        var in = new ByteArrayInputStream(((TakesScreenshot) caught.getWrappedDriver()).getScreenshotAs(BYTES));
+    public BufferedImage getData(WebDriver caught) {
+        var in = new ByteArrayInputStream(((TakesScreenshot) caught).getScreenshotAs(BYTES));
         try {
             return ImageIO.read(in);
         } catch (IOException e) {
@@ -31,9 +32,9 @@ public class WebDriverImageCaptor extends ImageCaptor<WrapsDriver> {
     }
 
     @Override
-    public WrapsDriver getCaptured(Object toBeCaptured) {
+    public WebDriver getCaptured(Object toBeCaptured) {
         var clazz = toBeCaptured.getClass();
-        if (!WrapsDriver.class.isAssignableFrom(clazz)) {
+        if (!WrapsDriver.class.isAssignableFrom(clazz) && !WebDriver.class.isAssignableFrom(clazz)) {
             return null;
         }
 
@@ -41,10 +42,14 @@ public class WebDriverImageCaptor extends ImageCaptor<WrapsDriver> {
             return null;
         }
 
+        if (WebDriver.class.isAssignableFrom(clazz)) {
+            return (WebDriver) toBeCaptured;
+        }
+
         return ofNullable(((WrapsDriver) toBeCaptured).getWrappedDriver())
                 .map(webDriver -> {
                     if (TakesScreenshot.class.isAssignableFrom(webDriver.getClass())) {
-                        return (WrapsDriver) toBeCaptured;
+                        return webDriver;
                     }
                     return null;
                 })

@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.http.api;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.glassfish.jersey.uri.internal.JerseyUriBuilder;
 import ru.tinkoff.qa.neptune.core.api.GetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpDomainToRespondProperty;
 
 import javax.ws.rs.core.UriBuilder;
@@ -31,6 +32,7 @@ import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpDomainToRespo
  * It builds a function that prepare a {@link HttpRequest} to get a response further.
  */
 @SuppressWarnings("unchecked")
+@MakeStringCapturesOnFinishing
 public class HttpRequestGetSupplier<T extends HttpRequestGetSupplier<T>> extends GetStepSupplier<HttpSteps,
         HowToGetResponse,
         HttpRequestGetSupplier<T>> {
