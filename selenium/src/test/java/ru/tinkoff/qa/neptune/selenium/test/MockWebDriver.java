@@ -17,7 +17,7 @@ import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 
-public class MockWebDriver implements WebDriver, JavascriptExecutor {
+public class MockWebDriver implements WebDriver, JavascriptExecutor, TakesScreenshot {
 
     private final MockTargetLocator targetLocator = new MockTargetLocator(this);
     private final MockNavigation navigation = new MockNavigation(this);
@@ -207,5 +207,11 @@ public class MockWebDriver implements WebDriver, JavascriptExecutor {
     WebDriver setFrame(Object frame) {
         this.currentFrame = frame;
         return this;
+    }
+
+    @Override
+    public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
+        String base64EncodedPng = new String(new byte[] {1,2,3,4,5,6,7,8});
+        return target.convertFromBase64Png(base64EncodedPng);
     }
 }

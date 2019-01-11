@@ -20,7 +20,7 @@ abstract class AbstractQueryCaptor<T> extends StringCaptor<T> {
     <T> T tryToExtractQuery(Object containsQuery, Class<T> expectedClass) {
         Object query = null;
         GotByQuery gotByQuery;
-        IsQueryCaptured isQueryCaptured =  null;
+        IsQueryCaptured isQueryCaptured = null;
 
         var containsQueryClass = containsQuery.getClass();
         if (GotByQuery.class.isAssignableFrom(containsQueryClass)) {
@@ -46,19 +46,17 @@ abstract class AbstractQueryCaptor<T> extends StringCaptor<T> {
             return null;
         }
 
-        var queryToReturn = (T) query;
-
-        return ofNullable(isQueryCaptured).map(isQueryCaptured1 -> {
-            if (isQueryCaptured1.isCaptured()) {
+        if (isQueryCaptured != null) {
+            if (isQueryCaptured.isCaptured()) {
                 return null;
             }
+        }
 
-            if (expectedClass.isAssignableFrom(queryToReturn.getClass())) {
-                isQueryCaptured1.setCaptured();
-                return queryToReturn;
-            }
+        if (expectedClass.isAssignableFrom(query.getClass())) {
+            ofNullable(isQueryCaptured).ifPresent(IsQueryCaptured::setCaptured);
+            return (T) query;
+        }
 
-            return null;
-        }).orElse(queryToReturn);
+        return null;
     }
 }

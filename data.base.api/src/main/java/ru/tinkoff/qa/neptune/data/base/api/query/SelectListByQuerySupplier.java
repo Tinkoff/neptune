@@ -80,7 +80,7 @@ public abstract class SelectListByQuerySupplier<T, R>
                     var toBeReturned = new LoggableElementList<>() {
                         @Override
                         public String toString() {
-                            return format("%s records from the data base", size());
+                            return format("%s records/values from the data base", size());
                         }
                     }.setQuery(query);
                     var result = query.executeList();

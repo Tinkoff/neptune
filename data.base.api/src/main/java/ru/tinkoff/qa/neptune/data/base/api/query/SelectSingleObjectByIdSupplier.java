@@ -35,7 +35,8 @@ public final class SelectSingleObjectByIdSupplier<T extends PersistableObject>
         Function<DataBaseStepContext, T> singleFunction = dataBaseSteps -> {
             try {
                 var id = ids[0];
-                return dataBaseSteps.getCurrentPersistenceManager().getObjectById(ofType, id);
+                return setQuery(dataBaseSteps.getCurrentPersistenceManager().getObjectById(ofType, id),
+                        format("Known Id: %s", id));
             }
             catch (RuntimeException e) {
                 return null;

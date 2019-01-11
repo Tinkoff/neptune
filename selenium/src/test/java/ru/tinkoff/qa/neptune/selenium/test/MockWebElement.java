@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.VALUE;
@@ -155,7 +154,8 @@ public class MockWebElement implements WebElement, WrapsDriver {
 
     @Override
     public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
-        return target.convertFromPngBytes(new byte[]{1,2});
+        String base64EncodedPng = new String(new byte[] {1,2,3,4,5,6,7,8});
+        return target.convertFromBase64Png(base64EncodedPng);
     }
 
     public int getClickCount() {

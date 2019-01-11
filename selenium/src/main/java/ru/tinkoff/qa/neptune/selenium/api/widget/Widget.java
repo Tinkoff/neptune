@@ -15,7 +15,7 @@ import static ru.tinkoff.qa.neptune.selenium.api.widget.Priority.LOWEST;
  * element from which other elements can be found.
  */
 @Priority(LOWEST)
-public abstract class Widget implements WrapsElement, SearchContext, TakesScreenshot, HasAttribute,
+public abstract class Widget implements WrapsElement, SearchContext, HasAttribute,
         IsEnabled, IsVisible, HasSize, HasRectangle, HasLocation, HasCssValue, LoggableObject {
 
     private final SearchContext wrappedElement;
@@ -49,11 +49,6 @@ public abstract class Widget implements WrapsElement, SearchContext, TakesScreen
     @Override
     public WebElement getWrappedElement() {
         return (WebElement) wrappedElement;
-    }
-
-    @Override
-    public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
-        return ((WebElement) wrappedElement).getScreenshotAs(target);
     }
 
     @Override

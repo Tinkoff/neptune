@@ -2,6 +2,8 @@ package ru.tinkoff.qa.neptune.data.base.api;
 
 import org.datanucleus.api.jdo.JDOPersistenceManagerFactory;
 import ru.tinkoff.qa.neptune.core.api.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.data.base.api.persistence.data.PersistenceManagerFactorySupplier;
 
 import java.util.function.Function;
@@ -13,11 +15,17 @@ import static ru.tinkoff.qa.neptune.data.base.api.ChangePersistenceManagerByPers
 import static ru.tinkoff.qa.neptune.data.base.api.ChangePersistenceManagerToDefault.changeConnectionToDefault;
 
 @SuppressWarnings("unchecked")
+@MakeStringCapturesOnFinishing
+@MakeFileCapturesOnFinishing
 public abstract class DBSequentialGetStepSupplier<T, Q, R extends DBSequentialGetStepSupplier<T, Q, R>>
         extends SequentialGetStepSupplier<DataBaseStepContext, T, Q, R> {
 
     private Object connectionDescription;
     private boolean toUseDefaultConnection = false;
+
+    protected static <T extends PersistableObject> T setQuery(T persistable, Object query) {
+        return (T) persistable.setQuery(query);
+    }
 
     /**
      * This method defines where (on which data base) query should be performed.

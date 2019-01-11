@@ -6,9 +6,8 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.captors.ImageCaptor;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
-import static java.util.Optional.ofNullable;
+import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
 
 public abstract class ListOfWebElementImageCaptor extends ImageCaptor<List<WebElement>> {
@@ -26,7 +25,7 @@ public abstract class ListOfWebElementImageCaptor extends ImageCaptor<List<WebEl
         }
 
         return ((List<?>) toBeCaptured).stream().filter(o -> {
-            if (o == null) {
+            if (isNull(o)) {
                 return false;
             }
 

@@ -14,6 +14,7 @@ import static java.lang.String.format;
 import static java.util.List.of;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetObjectFromIterable.getFromIterable;
 
 public abstract class SelectSingleObjectByQuerySupplier<T, R>
@@ -37,7 +38,9 @@ public abstract class SelectSingleObjectByQuerySupplier<T, R>
             @Override
             protected Function<JDOQLTypedQuery<T>, T> getEndFunction() {
                 return getResultFunction(format("A single stored database object. Type %s", className),
-                        jdoTypedQuery -> new ArrayList<>(jdoTypedQuery.executeList()));
+                        jdoTypedQuery -> new ArrayList<>(jdoTypedQuery.executeList())
+                                .stream().map(t -> setQuery(t, jdoTypedQuery))
+                                .collect(toList()));
             }
         };
     }
@@ -60,17 +63,29 @@ public abstract class SelectSingleObjectByQuerySupplier<T, R>
             protected Function<Query<T>, T> getEndFunction() {
                 return getResultFunction(description, query -> {
                     if (nonNull(queryBuilder.getTypeOfRequiredValue())) {
-                        return new ArrayList<>(query.executeList());
+                        return new ArrayList<>(query.executeList())
+                                .stream()
+                                .map(t -> (T) setQuery((PersistableObject) t, query))
+                                .collect(toList());
                     }
                     var toBeReturned = new ArrayList<>();
                     var result = query.executeList();
+
                     result.forEach(o -> {
+                        var loggable = new LoggableElementList<>() {
+                            @Override
+                            public String toString() {
+                                return "1 record/value from the data base";
+                            }
+                        }.setQuery(query);
+
                         if (o.getClass().isArray()) {
-                            toBeReturned.add(Arrays.asList(((Object[]) o)));
+                            loggable.addAll(Arrays.asList(((Object[]) o)));
                         }
                         else {
-                            toBeReturned.add(of(o));
+                            loggable.addAll(of(o));
                         }
+                        toBeReturned.add(loggable);
                     });
                     return (List<T>) toBeReturned;
                 });

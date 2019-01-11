@@ -1,6 +1,8 @@
 package ru.tinkoff.qa.neptune.core.api.event.firing.collections;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
@@ -21,7 +23,15 @@ public class ArrayCaptor extends IterableCaptor<List<?>> {
         }
 
         var result = stream(((Object[]) toBeCaptured))
-                .filter(o -> isLoggable(o) || hasReadableDescription(o)).collect(toList());
+                .filter(o -> {
+                    var clazz = o.getClass();
+                    return isLoggable(o)
+                            || hasReadableDescription(o)
+                            || clazz.isArray()
+                            || Iterable.class.isAssignableFrom(clazz)
+                            || Map.class.isAssignableFrom(clazz);
+                })
+                .collect(toList());
 
         if (result.size() == 0) {
             return null;
