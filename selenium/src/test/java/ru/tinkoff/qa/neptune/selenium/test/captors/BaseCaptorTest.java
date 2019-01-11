@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.selenium.test.captors;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
+import ru.tinkoff.qa.neptune.selenium.test.ActiveWebElement;
 import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 
 import static java.lang.System.getProperties;
@@ -18,6 +19,7 @@ public class BaseCaptorTest extends BaseWebDriverTest {
 
     @BeforeMethod
     public void beforeEachTest() {
+        ActiveWebElement.activeWebElement = null;
         INJECTED.clear();
     }
 
