@@ -1,9 +1,9 @@
 package ru.tinkoff.qa.neptune.selenium;
 
-import ru.tinkoff.qa.neptune.core.api.steps.performer.ActionStepPerformer;
-import ru.tinkoff.qa.neptune.core.api.steps.performer.GetStepPerformer;
+import ru.tinkoff.qa.neptune.core.api.steps.context.ActionStepContext;
+import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
 import ru.tinkoff.qa.neptune.core.api.cleaning.Refreshable;
-import ru.tinkoff.qa.neptune.core.api.steps.performer.CreateWith;
+import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
 import ru.tinkoff.qa.neptune.core.api.cleaning.StoppableOnJVMShutdown;
 import ru.tinkoff.qa.neptune.selenium.functions.navigation.NavigationActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier;
@@ -22,12 +22,12 @@ import java.util.List;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 
 @CreateWith(provider = SeleniumParameterProvider.class)
-public class SeleniumStepPerformer implements ActionStepPerformer<SeleniumStepPerformer>, GetStepPerformer<SeleniumStepPerformer>, WrapsDriver, Refreshable,
+public class SeleniumStepContext implements ActionStepContext<SeleniumStepContext>, GetStepContext<SeleniumStepContext>, WrapsDriver, Refreshable,
         TakesScreenshot, StoppableOnJVMShutdown {
 
     private final WrappedWebDriver wrappedWebDriver;
 
-    public SeleniumStepPerformer(SupportedWebDrivers supportedWebDriver) {
+    public SeleniumStepContext(SupportedWebDrivers supportedWebDriver) {
         this.wrappedWebDriver = new WrappedWebDriver(supportedWebDriver);
     }
 
@@ -44,7 +44,7 @@ public class SeleniumStepPerformer implements ActionStepPerformer<SeleniumStepPe
         return get(what.get().compose(currentContent()));
     }
 
-    public SeleniumStepPerformer click(ClickActionSupplier clickActionSupplier) {
+    public SeleniumStepContext click(ClickActionSupplier clickActionSupplier) {
         return perform(clickActionSupplier);
     }
 
@@ -52,7 +52,7 @@ public class SeleniumStepPerformer implements ActionStepPerformer<SeleniumStepPe
         return get(getValueSupplier);
     }
 
-    public SeleniumStepPerformer edit(EditActionSupplier editActionSupplier) {
+    public SeleniumStepContext edit(EditActionSupplier editActionSupplier) {
         return perform(editActionSupplier);
     }
 
@@ -60,15 +60,15 @@ public class SeleniumStepPerformer implements ActionStepPerformer<SeleniumStepPe
         return get(javaScriptResultSupplier);
     }
 
-    public SeleniumStepPerformer alert(AlertActionSupplier alertActionSupplier) {
+    public SeleniumStepContext alert(AlertActionSupplier alertActionSupplier) {
         return perform(alertActionSupplier);
     }
 
-    public SeleniumStepPerformer performSwitch(SwitchActionSupplier switchActionSupplier) {
+    public SeleniumStepContext performSwitch(SwitchActionSupplier switchActionSupplier) {
         return perform(switchActionSupplier);
     }
 
-    public SeleniumStepPerformer navigate(NavigationActionSupplier<?> navigationActionSupplier) {
+    public SeleniumStepContext navigate(NavigationActionSupplier<?> navigationActionSupplier) {
         return perform(navigationActionSupplier);
     }
 

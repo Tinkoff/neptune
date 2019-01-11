@@ -2,7 +2,7 @@ package ru.tinkoff.qa.neptune.selenium.functions.target.locator.window;
 
 import ru.tinkoff.qa.neptune.core.api.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.selenium.SeleniumStepPerformer;
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import org.openqa.selenium.Point;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -11,7 +11,7 @@ import static java.util.Objects.nonNull;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
 
 @MakeImageCapturesOnFinishing
-public final class SetWindowPositionSupplier extends SequentialActionSupplier<SeleniumStepPerformer, Window, SetWindowPositionSupplier> {
+public final class SetWindowPositionSupplier extends SequentialActionSupplier<SeleniumStepContext, Window, SetWindowPositionSupplier> {
 
     private final Point position;
 

@@ -2,7 +2,7 @@ package ru.tinkoff.qa.neptune.selenium.functions.target.locator.active.element;
 
 import ru.tinkoff.qa.neptune.core.api.GetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.selenium.SeleniumStepPerformer;
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -17,7 +17,7 @@ import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSingleCheckedObject
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 
 @MakeImageCapturesOnFinishing
-public final class GetActiveElementSupplier extends GetStepSupplier<SeleniumStepPerformer, WebElement, GetActiveElementSupplier>
+public final class GetActiveElementSupplier extends GetStepSupplier<SeleniumStepContext, WebElement, GetActiveElementSupplier>
         implements TargetLocatorSupplier<WebElement> {
 
     private static final Function<WebDriver, WebElement> GET_ACTIVE_ELEMENT =

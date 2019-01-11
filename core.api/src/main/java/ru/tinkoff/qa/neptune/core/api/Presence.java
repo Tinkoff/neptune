@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.core.api;
 
 import com.google.common.collect.Iterables;
-import ru.tinkoff.qa.neptune.core.api.steps.performer.GetStepPerformer;
+import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 
 @SuppressWarnings("unchecked")
-public class Presence<T extends GetStepPerformer<T>> extends GetStepSupplier<T, Boolean, Presence<T>> {
+public class Presence<T extends GetStepContext<T>> extends GetStepSupplier<T, Boolean, Presence<T>> {
 
     protected Presence(Function<T, ?> toBePresent) {
         checkArgument(nonNull(toBePresent),
@@ -64,10 +64,10 @@ public class Presence<T extends GetStepPerformer<T>> extends GetStepSupplier<T, 
      *
      * @param function that should return something. If the result of {@link Function#apply(Object)} is not {@code null}
      *                 and not the empty iterable/array the this is considered present.
-     * @param <T> is a type of a {@link GetStepPerformer} subclass.
+     * @param <T> is a type of a {@link GetStepContext} subclass.
      * @return an instance of {@link Presence}.
      */
-    public static <T extends GetStepPerformer<T>> Presence<T> presenceOf(Function<T, ?> function) {
+    public static <T extends GetStepContext<T>> Presence<T> presenceOf(Function<T, ?> function) {
         return new Presence(function);
     }
 
@@ -76,10 +76,10 @@ public class Presence<T extends GetStepPerformer<T>> extends GetStepSupplier<T, 
      *
      * @param supplier of a function. If the result of {@link Function#apply(Object)} is not
      *                 {@code null} and not the empty iterable/array the this is considered present.
-     * @param <T> is a type of a {@link GetStepPerformer} subclass.
+     * @param <T> is a type of a {@link GetStepContext} subclass.
      * @return an instance of {@link Presence}.
      */
-    public static <T extends GetStepPerformer<T>> Presence<T> presenceOf(GetStepSupplier<T, ?, ?> supplier) {
+    public static <T extends GetStepContext<T>> Presence<T> presenceOf(GetStepSupplier<T, ?, ?> supplier) {
         return presenceOf(supplier.get());
     }
 }

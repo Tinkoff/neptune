@@ -2,9 +2,9 @@ package ru.tinkoff.qa.neptune.data.base.api;
 
 import org.datanucleus.api.jdo.JDOPersistenceManager;
 import org.datanucleus.api.jdo.JDOPersistenceManagerFactory;
-import ru.tinkoff.qa.neptune.core.api.steps.performer.CreateWith;
-import ru.tinkoff.qa.neptune.core.api.steps.performer.GetStepPerformer;
-import ru.tinkoff.qa.neptune.core.api.steps.performer.ActionStepPerformer;
+import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
+import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
+import ru.tinkoff.qa.neptune.core.api.steps.context.ActionStepContext;
 import ru.tinkoff.qa.neptune.core.api.cleaning.Refreshable;
 import ru.tinkoff.qa.neptune.core.api.cleaning.StoppableOnJVMShutdown;
 import ru.tinkoff.qa.neptune.data.base.api.persistence.data.PersistenceManagerFactorySupplier;
@@ -18,14 +18,14 @@ import static ru.tinkoff.qa.neptune.data.base.api.persistence.data.PersistenceMa
 import static ru.tinkoff.qa.neptune.data.base.api.properties.DefaultPersistenceManagerFactoryProperty.DEFAULT_JDO_PERSISTENCE_MANAGER_FACTORY_PROPERTY;
 
 @CreateWith(provider = DataBaseParameterProvider.class)
-public class DataBaseStepPerformer implements GetStepPerformer<DataBaseStepPerformer>, ActionStepPerformer<DataBaseStepPerformer>, StoppableOnJVMShutdown,
+public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>, ActionStepContext<DataBaseStepContext>, StoppableOnJVMShutdown,
         Refreshable {
 
     private JDOPersistenceManagerFactory defaultFactory;
     private final Map<JDOPersistenceManagerFactory, JDOPersistenceManager> jdoPersistenceManagerMap = new HashMap<>();
     private JDOPersistenceManagerFactory currentFactory;
 
-    public DataBaseStepPerformer(JDOPersistenceManagerFactory defaultFactory) {
+    public DataBaseStepContext(JDOPersistenceManagerFactory defaultFactory) {
         checkArgument(nonNull(defaultFactory), "Value of default JDO persistence manager factory " +
                 "should differ from null");
         checkArgument(!defaultFactory.isClosed(), "Default JDO persistence manager factory " +
@@ -40,7 +40,7 @@ public class DataBaseStepPerformer implements GetStepPerformer<DataBaseStepPerfo
      * @param jdoPersistenceManagerFactory is persistence manager factory which is opened and ready to use.
      * @return self-reference
      */
-    public DataBaseStepPerformer switchTo(JDOPersistenceManagerFactory jdoPersistenceManagerFactory) {
+    public DataBaseStepContext switchTo(JDOPersistenceManagerFactory jdoPersistenceManagerFactory) {
         checkArgument(!jdoPersistenceManagerFactory.isClosed(), "Persistence manager " +
                 "factory should be not closed");
         var manager = jdoPersistenceManagerMap.get(jdoPersistenceManagerFactory);
@@ -58,7 +58,7 @@ public class DataBaseStepPerformer implements GetStepPerformer<DataBaseStepPerfo
      * @param persistenceFactorySupplier is a class of persistence manager factory supplier.
      * @return self-reference
      */
-    public DataBaseStepPerformer switchTo(Class<? extends PersistenceManagerFactorySupplier> persistenceFactorySupplier) {
+    public DataBaseStepContext switchTo(Class<? extends PersistenceManagerFactorySupplier> persistenceFactorySupplier) {
         return switchTo(jdoPersistenceManagerMap.keySet().stream().filter(jdoPersistenceManagerFactory ->
                 persistenceFactorySupplier.getName()
                         .equals(jdoPersistenceManagerFactory.getName()) &&
@@ -67,7 +67,7 @@ public class DataBaseStepPerformer implements GetStepPerformer<DataBaseStepPerfo
                 .orElseGet(() -> getPersistenceManagerFactory(persistenceFactorySupplier, true)));
     }
 
-    public DataBaseStepPerformer switchToDefault() {
+    public DataBaseStepContext switchToDefault() {
         if (defaultFactory.isClosed()) {
             defaultFactory = DEFAULT_JDO_PERSISTENCE_MANAGER_FACTORY_PROPERTY.get().get();
         }

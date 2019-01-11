@@ -2,14 +2,14 @@ package ru.tinkoff.qa.neptune.selenium.functions.target.locator.window;
 
 import ru.tinkoff.qa.neptune.core.api.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.selenium.SeleniumStepPerformer;
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import org.openqa.selenium.Dimension;
 
 import static java.lang.String.format;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
 
 @MakeImageCapturesOnFinishing
-public final class SetWindowSizeSupplier extends SequentialActionSupplier<SeleniumStepPerformer, Window, SetWindowSizeSupplier> {
+public final class SetWindowSizeSupplier extends SequentialActionSupplier<SeleniumStepContext, Window, SetWindowSizeSupplier> {
 
     private final Dimension size;
 

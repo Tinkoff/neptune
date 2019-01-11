@@ -2,12 +2,12 @@ package ru.tinkoff.qa.neptune.selenium.functions.target.locator;
 
 import ru.tinkoff.qa.neptune.core.api.GetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.SequentialActionSupplier;
-import ru.tinkoff.qa.neptune.selenium.SeleniumStepPerformer;
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import static java.lang.String.format;
 
 @SuppressWarnings("unchecked")
-public final class SwitchActionSupplier extends SequentialActionSupplier<SeleniumStepPerformer, Object, SwitchActionSupplier> {
+public final class SwitchActionSupplier extends SequentialActionSupplier<SeleniumStepContext, Object, SwitchActionSupplier> {
 
     private static final String DESCRIPTION = "Switch to %s";
 

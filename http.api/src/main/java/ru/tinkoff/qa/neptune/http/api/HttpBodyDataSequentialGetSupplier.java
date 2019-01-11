@@ -44,7 +44,7 @@ import static ru.tinkoff.qa.neptune.core.api.IsLoggableUtil.isLoggable;
  *           {@code T} and {@code Q} and {@code R} could be declared by the same type.
  */
 @MakeCaptureOnFinishing(typeOfCapture = Object.class)
-public abstract class HttpBodyDataSequentialGetSupplier<S, T, Q, R> extends SequentialGetStepSupplier<HttpStepPerformer, T, Q,
+public abstract class HttpBodyDataSequentialGetSupplier<S, T, Q, R> extends SequentialGetStepSupplier<HttpStepContext, T, Q,
         HttpBodyDataSequentialGetSupplier<S, T, Q, R>> {
 
     private final Function<S, Q> transformingFunction;
@@ -498,7 +498,7 @@ public abstract class HttpBodyDataSequentialGetSupplier<S, T, Q, R> extends Sequ
         };
     }
 
-    public Function<HttpStepPerformer, T> get() {
+    public Function<HttpStepContext, T> get() {
         checkArgument(nonNull(howToGetResponseFrom) || nonNull(responseFrom),
                 "Response to get data from or the way how to get receive to get data from is not defined");
 

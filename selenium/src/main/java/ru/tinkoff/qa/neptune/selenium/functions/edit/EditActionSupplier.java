@@ -2,7 +2,7 @@ package ru.tinkoff.qa.neptune.selenium.functions.edit;
 
 import ru.tinkoff.qa.neptune.core.api.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.selenium.SeleniumStepPerformer;
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Editable;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 import org.openqa.selenium.SearchContext;
@@ -20,7 +20,7 @@ import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentConte
 
 @MakeImageCapturesOnFinishing
 public final class EditActionSupplier extends
-        SequentialActionSupplier<SeleniumStepPerformer, Editable, EditActionSupplier> {
+        SequentialActionSupplier<SeleniumStepContext, Editable, EditActionSupplier> {
 
     private static final String DESCRIPTION = "Edit element %s. Change value with [%s]";
 

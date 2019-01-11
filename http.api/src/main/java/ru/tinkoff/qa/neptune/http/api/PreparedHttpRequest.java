@@ -29,7 +29,7 @@ import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpDomainToRespo
  * It builds a function that prepare a {@link HttpRequest} to get a response further.
  */
 @SuppressWarnings("unchecked")
-public class PreparedHttpRequest<T extends PreparedHttpRequest<T>> implements Function<HttpStepPerformer,
+public class PreparedHttpRequest<T extends PreparedHttpRequest<T>> implements Function<HttpStepContext,
         HowToGetResponse> {
 
     private static final UrlValidator URL_VALIDATOR = new UrlValidator();
@@ -227,8 +227,8 @@ public class PreparedHttpRequest<T extends PreparedHttpRequest<T>> implements Fu
      * is sent. This request supplier should be configured by invocation of
      * {@link #useHttpClient(HttpClient.Builder)} or
      * {@link #useDefaultHttpClient()}. Also it is possible to invoke
-     * {@link HttpStepPerformer#changeCurrentHttpClientSettings(HttpClient.Builder)} or
-     * {@link HttpStepPerformer#resetHttpClient()} for same purposes.
+     * {@link HttpStepContext#changeCurrentHttpClientSettings(HttpClient.Builder)} or
+     * {@link HttpStepContext#resetHttpClient()} for same purposes.
      *
      * @param clientToBeUsed is a builder of {@link HttpClient} that is going to be used further.
      * @return self-reference
@@ -245,8 +245,8 @@ public class PreparedHttpRequest<T extends PreparedHttpRequest<T>> implements Fu
      * is sent. This request supplier should be configured by invocation of
      * {@link #useHttpClient(HttpClient.Builder)} or
      * {@link #useDefaultHttpClient()}. Also it is possible to invoke
-     * {@link HttpStepPerformer#changeCurrentHttpClientSettings(HttpClient.Builder)} or
-     * {@link HttpStepPerformer#resetHttpClient()} for same purposes.
+     * {@link HttpStepContext#changeCurrentHttpClientSettings(HttpClient.Builder)} or
+     * {@link HttpStepContext#resetHttpClient()} for same purposes.
      *
      * @return self-reference
      */
@@ -337,7 +337,7 @@ public class PreparedHttpRequest<T extends PreparedHttpRequest<T>> implements Fu
     }
 
     @Override
-    public HowToGetResponse apply(HttpStepPerformer httpSteps) {
+    public HowToGetResponse apply(HttpStepContext httpSteps) {
         builder.uri(uriBuilder.build());
         if (toUseDefaultClient) {
             httpSteps.resetHttpClient();

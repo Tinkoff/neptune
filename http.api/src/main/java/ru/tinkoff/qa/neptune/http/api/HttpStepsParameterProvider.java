@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.http.api;
 
 import ru.tinkoff.qa.neptune.core.api.ConstructorParameters;
-import ru.tinkoff.qa.neptune.core.api.steps.performer.ParameterProvider;
+import ru.tinkoff.qa.neptune.core.api.steps.context.ParameterProvider;
 
 import java.net.CookieHandler;
 import java.net.CookieManager;

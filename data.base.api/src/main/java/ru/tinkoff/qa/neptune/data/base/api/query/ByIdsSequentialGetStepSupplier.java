@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.data.base.api.query;
 
-import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepPerformer;
+import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
 import java.util.function.Function;
@@ -11,7 +11,7 @@ import static java.util.Objects.nonNull;
 
 @SuppressWarnings("unchecked")
 public abstract class ByIdsSequentialGetStepSupplier<T extends PersistableObject, S, Q extends ByIdsSequentialGetStepSupplier<T, S, Q>>
-        extends SelectSequentialGetStepSupplier<S, DataBaseStepPerformer, Q> {
+        extends SelectSequentialGetStepSupplier<S, DataBaseStepContext, Q> {
 
     final Class<T> ofType;
     final Object[] ids;
@@ -38,7 +38,7 @@ public abstract class ByIdsSequentialGetStepSupplier<T extends PersistableObject
     }
 
     @Override
-    public Function<DataBaseStepPerformer, S> get() {
+    public Function<DataBaseStepContext, S> get() {
         super.from(dataBaseSteps -> dataBaseSteps);
         return super.get();
     }

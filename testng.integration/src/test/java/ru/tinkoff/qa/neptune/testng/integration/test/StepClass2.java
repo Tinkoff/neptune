@@ -1,12 +1,12 @@
 package ru.tinkoff.qa.neptune.testng.integration.test;
 
 import ru.tinkoff.qa.neptune.core.api.cleaning.Refreshable;
-import ru.tinkoff.qa.neptune.core.api.steps.performer.ActionStepPerformer;
-import ru.tinkoff.qa.neptune.core.api.steps.performer.CreateWith;
-import ru.tinkoff.qa.neptune.core.api.steps.performer.GetStepPerformer;
+import ru.tinkoff.qa.neptune.core.api.steps.context.ActionStepContext;
+import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
+import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
 
 @CreateWith(provider = ABParameterProvider.class)
-public class StepClass2 implements GetStepPerformer<StepClass2>, ActionStepPerformer<StepClass2>, Refreshable {
+public class StepClass2 implements GetStepContext<StepClass2>, ActionStepContext<StepClass2>, Refreshable {
 
     private final int a;
     private final int b;

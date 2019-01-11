@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations;
 
 import org.testng.annotations.BeforeSuite;
-import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepPerformer;
+import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +19,7 @@ public abstract class BaseDbOperationTest {
     private static final String TEST_BASE2 = "TestBase2";
     static File testDB1;
     static File testDB2;
-    protected static DataBaseStepPerformer dataBaseSteps;
+    protected static DataBaseStepContext dataBaseSteps;
 
     @BeforeSuite
     public void copyDB() throws IOException {
@@ -30,7 +30,7 @@ public abstract class BaseDbOperationTest {
         Files.copy(db2.toPath(), (testDB2 = new File(format("%s.db", TEST_BASE2))).toPath(), REPLACE_EXISTING);
         System.setProperty(DEFAULT_JDO_PERSISTENCE_MANAGER_FACTORY_PROPERTY.getPropertyName(),
                 PersistenceManagerFactorySupplierForTestBase1.class.getName());
-        dataBaseSteps = getProxied(DataBaseStepPerformer.class);
+        dataBaseSteps = getProxied(DataBaseStepContext.class);
         testDB1.deleteOnExit();
         testDB2.deleteOnExit();
     }

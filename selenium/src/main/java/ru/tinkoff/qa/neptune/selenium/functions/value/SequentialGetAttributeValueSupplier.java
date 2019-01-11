@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.functions.value;
 
 import ru.tinkoff.qa.neptune.core.api.SequentialGetStepSupplier;
-import ru.tinkoff.qa.neptune.selenium.SeleniumStepPerformer;
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.api.widget.HasAttribute;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
@@ -16,7 +16,7 @@ import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 
 public final class SequentialGetAttributeValueSupplier extends
-        SequentialGetStepSupplier<SeleniumStepPerformer, String, SearchContext, SequentialGetAttributeValueSupplier> {
+        SequentialGetStepSupplier<SeleniumStepContext, String, SearchContext, SequentialGetAttributeValueSupplier> {
     private final String attr;
 
     private SequentialGetAttributeValueSupplier(String attr) {
@@ -76,7 +76,7 @@ public final class SequentialGetAttributeValueSupplier extends
     }
 
     @Override
-    public Function<SeleniumStepPerformer, String> get() {
+    public Function<SeleniumStepContext, String> get() {
         return ofNullable(super.get())
                 .orElseThrow(() -> new IllegalArgumentException("It is necessary to define element to get attribute"));
     }

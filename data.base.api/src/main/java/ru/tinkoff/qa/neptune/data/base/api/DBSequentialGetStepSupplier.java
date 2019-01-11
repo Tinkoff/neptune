@@ -14,19 +14,19 @@ import static ru.tinkoff.qa.neptune.data.base.api.ChangePersistenceManagerToDefa
 
 @SuppressWarnings("unchecked")
 public abstract class DBSequentialGetStepSupplier<T, Q, R extends DBSequentialGetStepSupplier<T, Q, R>>
-        extends SequentialGetStepSupplier<DataBaseStepPerformer, T, Q, R> {
+        extends SequentialGetStepSupplier<DataBaseStepContext, T, Q, R> {
 
     private Object connectionDescription;
     private boolean toUseDefaultConnection = false;
 
     /**
      * This method defines where (on which data base) query should be performed.
-     * WARNING!!! After the query performing the instance of {@link DataBaseStepPerformer} keeps the given connection
+     * WARNING!!! After the query performing the instance of {@link DataBaseStepContext} keeps the given connection
      * until another query is performed. This query should have another parameter set up by
      * {@link #usePersistenceUnit(JDOPersistenceManagerFactory)} or
      * {@link #useDefaultPersistenceUnit}. Also it is possible
-     * to invoke {@link DataBaseStepPerformer#switchTo(Class)} or {@link DataBaseStepPerformer#switchTo(JDOPersistenceManagerFactory)}
-     * or {@link DataBaseStepPerformer#switchToDefault()} for same purposes.
+     * to invoke {@link DataBaseStepContext#switchTo(Class)} or {@link DataBaseStepContext#switchTo(JDOPersistenceManagerFactory)}
+     * or {@link DataBaseStepContext#switchToDefault()} for same purposes.
      *
      * @param factorySupplier is a name of dynamic persistence unit described by any subclass
      *                        of {@link PersistenceManagerFactorySupplier}
@@ -40,12 +40,12 @@ public abstract class DBSequentialGetStepSupplier<T, Q, R extends DBSequentialGe
 
     /**
      * This method defines where (on which data base) query should be performed.
-     * WARNING!!! After the query performing the instance of {@link DataBaseStepPerformer} keeps the given connection
+     * WARNING!!! After the query performing the instance of {@link DataBaseStepContext} keeps the given connection
      * until another query is performed. This query should have another parameter set up by
      * {@link #usePersistenceUnit(Class)} or
      * {@link #useDefaultPersistenceUnit}. Also it is possible
-     * to invoke {@link DataBaseStepPerformer#switchTo(Class)} or {@link DataBaseStepPerformer#switchTo(JDOPersistenceManagerFactory)}
-     * or {@link DataBaseStepPerformer#switchToDefault()} for same purposes.
+     * to invoke {@link DataBaseStepContext#switchTo(Class)} or {@link DataBaseStepContext#switchTo(JDOPersistenceManagerFactory)}
+     * or {@link DataBaseStepContext#switchToDefault()} for same purposes.
      *
      * @param persistenceManagerFactory is not closed instance of {@link JDOPersistenceManagerFactory}
      * @return self-reference
@@ -59,11 +59,11 @@ public abstract class DBSequentialGetStepSupplier<T, Q, R extends DBSequentialGe
     /**
      * This method says that query should be performed on some default connection described by any subclass of
      * {@link PersistenceManagerFactorySupplier} and its name defined by the property {@code `default.persistence.unit.name`}.
-     * WARNING!!! After the query performing the instance of {@link DataBaseStepPerformer} keeps default connection
+     * WARNING!!! After the query performing the instance of {@link DataBaseStepContext} keeps default connection
      * until another query is performed. This query should have another parameter set up by
      * {@link #usePersistenceUnit(Class)} or
      * {@link #usePersistenceUnit(JDOPersistenceManagerFactory)}. Also it is possible
-     * to invoke {@link DataBaseStepPerformer#switchTo(Class)} or {@link DataBaseStepPerformer#switchTo(JDOPersistenceManagerFactory)}
+     * to invoke {@link DataBaseStepContext#switchTo(Class)} or {@link DataBaseStepContext#switchTo(JDOPersistenceManagerFactory)}
      * for same purposes.
      *
      * @return self-reference
@@ -74,13 +74,13 @@ public abstract class DBSequentialGetStepSupplier<T, Q, R extends DBSequentialGe
         return (R) this;
     }
 
-    private Function<DataBaseStepPerformer, T> changeConnectionAndGet(Function<DataBaseStepPerformer, DataBaseStepPerformer> changeConnection) {
+    private Function<DataBaseStepContext, T> changeConnectionAndGet(Function<DataBaseStepContext, DataBaseStepContext> changeConnection) {
         return ofNullable(super.get()).map(f -> f.compose(changeConnection))
                 .orElseThrow(() -> new IllegalStateException("Supplied function has null value"));
     }
 
     @Override
-    public Function<DataBaseStepPerformer, T> get() {
+    public Function<DataBaseStepContext, T> get() {
         if (toUseDefaultConnection) {
             return changeConnectionAndGet(changeConnectionToDefault());
         }

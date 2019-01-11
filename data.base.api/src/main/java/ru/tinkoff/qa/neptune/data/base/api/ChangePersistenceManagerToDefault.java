@@ -4,18 +4,18 @@ import java.util.function.Function;
 
 import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
 
-final class ChangePersistenceManagerToDefault implements Function<DataBaseStepPerformer, DataBaseStepPerformer> {
+final class ChangePersistenceManagerToDefault implements Function<DataBaseStepContext, DataBaseStepContext> {
 
     private ChangePersistenceManagerToDefault() {
         super();
     }
 
-    static Function<DataBaseStepPerformer, DataBaseStepPerformer> changeConnectionToDefault() {
+    static Function<DataBaseStepContext, DataBaseStepContext> changeConnectionToDefault() {
         return toGet("Use default connection", new ChangePersistenceManagerToDefault());
     }
 
     @Override
-    public DataBaseStepPerformer apply(DataBaseStepPerformer dataBaseSteps) {
+    public DataBaseStepContext apply(DataBaseStepContext dataBaseSteps) {
         return dataBaseSteps.switchToDefault();
     }
 }

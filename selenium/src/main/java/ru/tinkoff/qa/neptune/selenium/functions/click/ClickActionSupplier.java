@@ -3,7 +3,7 @@ package ru.tinkoff.qa.neptune.selenium.functions.click;
 import ru.tinkoff.qa.neptune.core.api.GetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.selenium.SeleniumStepPerformer;
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Clickable;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 import org.openqa.selenium.By;
@@ -18,7 +18,7 @@ import static java.lang.String.format;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 
 @MakeImageCapturesOnFinishing
-public final class ClickActionSupplier extends SequentialActionSupplier<SeleniumStepPerformer, Clickable, ClickActionSupplier> {
+public final class ClickActionSupplier extends SequentialActionSupplier<SeleniumStepContext, Clickable, ClickActionSupplier> {
 
     private static final String DESCRIPTION = "Click on %s";
 

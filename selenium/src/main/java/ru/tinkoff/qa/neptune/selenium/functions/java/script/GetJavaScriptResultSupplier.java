@@ -3,7 +3,7 @@ package ru.tinkoff.qa.neptune.selenium.functions.java.script;
 import ru.tinkoff.qa.neptune.core.api.GetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.selenium.SeleniumStepPerformer;
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import org.openqa.selenium.WebDriver;
 
 import java.time.Duration;
@@ -23,7 +23,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @MakeImageCapturesOnFinishing
 @MakeStringCapturesOnFinishing
-public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumStepPerformer, Object, GetJavaScriptResultSupplier> {
+public final class GetJavaScriptResultSupplier extends GetStepSupplier<SeleniumStepContext, Object, GetJavaScriptResultSupplier> {
 
     private GetJavaScriptResultSupplier() {
         super();

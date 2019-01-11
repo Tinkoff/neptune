@@ -3,7 +3,7 @@ package ru.tinkoff.qa.neptune.http.api.test;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.http.api.DesiredResponseHasNotBeenReceivedException;
-import ru.tinkoff.qa.neptune.http.api.HttpStepPerformer;
+import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
 import ru.tinkoff.qa.neptune.http.api.ResponseHasNoDesiredDataException;
 
 import java.util.function.Supplier;
@@ -31,7 +31,7 @@ import static ru.tinkoff.qa.neptune.http.api.test.FunctionToGetXMLTagArray.toNod
 import static ru.tinkoff.qa.neptune.http.api.test.FunctionToGetXMLTagList.toNodeList;
 
 public class HttpBodyDataTest extends BaseHttpTest {
-    private HttpStepPerformer httpSteps = getProxied(HttpStepPerformer.class);
+    private HttpStepContext httpSteps = getProxied(HttpStepContext.class);
 
     @BeforeClass
     public static void beforeClass() {

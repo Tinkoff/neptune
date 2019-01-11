@@ -2,10 +2,10 @@ package ru.tinkoff.qa.neptune.core.api;
 
 import ru.tinkoff.qa.neptune.core.api.cleaning.Refreshable;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.core.api.steps.performer.ActionStepPerformer;
-import ru.tinkoff.qa.neptune.core.api.steps.performer.CreateWith;
-import ru.tinkoff.qa.neptune.core.api.steps.performer.GetStepPerformer;
-import ru.tinkoff.qa.neptune.core.api.steps.performer.ProviderOfEmptyParameters;
+import ru.tinkoff.qa.neptune.core.api.steps.context.ActionStepContext;
+import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
+import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
+import ru.tinkoff.qa.neptune.core.api.steps.context.ProviderOfEmptyParameters;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,7 @@ public class RefreshTest {
     }
 
     @CreateWith(provider = ProviderOfEmptyParameters.class)
-    private static class RefreshableStep implements ActionStepPerformer<RefreshableStep>, GetStepPerformer<RefreshableStep>, Refreshable {
+    private static class RefreshableStep implements ActionStepContext<RefreshableStep>, GetStepContext<RefreshableStep>, Refreshable {
 
         private final List<Object> listToRefresh = new ArrayList<>();
 

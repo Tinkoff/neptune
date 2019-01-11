@@ -24,7 +24,7 @@ import static ru.tinkoff.qa.neptune.http.api.properties.TimeToGetDesiredResponse
 @SuppressWarnings("unchecked")
 @MakeStringCapturesOnFinishing
 @MakeFileCapturesOnFinishing
-public abstract class HttpResponseSequentialGetSupplier<T, R extends HttpResponseSequentialGetSupplier<T, R>> extends SequentialGetStepSupplier<HttpStepPerformer, HttpResponse<T>,
+public abstract class HttpResponseSequentialGetSupplier<T, R extends HttpResponseSequentialGetSupplier<T, R>> extends SequentialGetStepSupplier<HttpStepContext, HttpResponse<T>,
         HowToGetResponse, R> implements Cloneable {
 
     private final PreparedHttpRequest request;
@@ -176,7 +176,7 @@ public abstract class HttpResponseSequentialGetSupplier<T, R extends HttpRespons
     }
 
     @Override
-    public Function<HttpStepPerformer, HttpResponse<T>> get() {
+    public Function<HttpStepContext, HttpResponse<T>> get() {
         return ofNullable(super.get()).orElseGet(() -> {
             from(request);
             return super.get();

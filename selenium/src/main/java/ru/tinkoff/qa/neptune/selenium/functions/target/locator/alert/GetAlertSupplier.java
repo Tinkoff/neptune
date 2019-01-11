@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert;
 
 import ru.tinkoff.qa.neptune.core.api.GetStepSupplier;
-import ru.tinkoff.qa.neptune.selenium.SeleniumStepPerformer;
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.NoAlertPresentException;
@@ -17,7 +17,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITIN
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 
-public final class GetAlertSupplier extends GetStepSupplier<SeleniumStepPerformer, Alert, GetAlertSupplier>
+public final class GetAlertSupplier extends GetStepSupplier<SeleniumStepContext, Alert, GetAlertSupplier>
         implements TargetLocatorSupplier<Alert> {
 
     private static final String GET_ALERT_DESCRIPTION = "Present alert";

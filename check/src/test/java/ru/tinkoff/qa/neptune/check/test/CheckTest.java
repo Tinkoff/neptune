@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.check.test;
 
-import ru.tinkoff.qa.neptune.check.CheckStepPerformer;
+import ru.tinkoff.qa.neptune.check.CheckStepContext;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -23,11 +23,11 @@ import static org.hamcrest.Matchers.*;
 
 public class CheckTest {
 
-    private CheckStepPerformer check;
+    private CheckStepContext check;
 
     @BeforeTest
     public void beforeTest() {
-        check = getProxied(CheckStepPerformer.class);
+        check = getProxied(CheckStepContext.class);
     }
 
     @BeforeMethod

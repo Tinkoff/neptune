@@ -2,7 +2,7 @@ package ru.tinkoff.qa.neptune.selenium.functions.value;
 
 import ru.tinkoff.qa.neptune.core.api.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeCaptureOnFinishing;
-import ru.tinkoff.qa.neptune.selenium.SeleniumStepPerformer;
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.api.widget.HasValue;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 import org.openqa.selenium.SearchContext;
@@ -16,7 +16,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 @MakeCaptureOnFinishing(typeOfCapture = Object.class)
 public final class SequentialGetValueSupplier<T> extends
-        SequentialGetStepSupplier<SeleniumStepPerformer, T, HasValue<T>, SequentialGetValueSupplier<T>> {
+        SequentialGetStepSupplier<SeleniumStepContext, T, HasValue<T>, SequentialGetValueSupplier<T>> {
 
     private SequentialGetValueSupplier() {
         super();

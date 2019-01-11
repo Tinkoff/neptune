@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.data.base.api.query;
 
 import ru.tinkoff.qa.neptune.core.api.StoryWriter;
-import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepPerformer;
+import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -13,10 +13,10 @@ import static java.util.Objects.nonNull;
 public abstract class ByQuerySequentialGetStepSupplier<T, S, R, Q extends ByQuerySequentialGetStepSupplier<T, S, R, Q>>
         extends SelectSequentialGetStepSupplier<S, R, Q> {
 
-    private final Function<DataBaseStepPerformer, R> query;
+    private final Function<DataBaseStepContext, R> query;
     Predicate<T> condition;
 
-    ByQuerySequentialGetStepSupplier(Function<DataBaseStepPerformer, R> query) {
+    ByQuerySequentialGetStepSupplier(Function<DataBaseStepContext, R> query) {
         this.query = query;
     }
 
@@ -34,7 +34,7 @@ public abstract class ByQuerySequentialGetStepSupplier<T, S, R, Q extends ByQuer
     }
 
     @Override
-    public Function<DataBaseStepPerformer, S> get() {
+    public Function<DataBaseStepContext, S> get() {
         super.from(query);
         return super.get();
     }

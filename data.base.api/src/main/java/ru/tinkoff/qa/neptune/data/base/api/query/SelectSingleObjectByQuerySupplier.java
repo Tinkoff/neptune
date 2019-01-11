@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.data.base.api.query;
 
-import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepPerformer;
+import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
 import javax.jdo.JDOQLTypedQuery;
@@ -19,7 +19,7 @@ import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetObjectFromIterable.
 public abstract class SelectSingleObjectByQuerySupplier<T, R>
         extends ByQuerySequentialGetStepSupplier<T, T, R, SelectSingleObjectByQuerySupplier<T, R>>  {
 
-    private SelectSingleObjectByQuerySupplier(Function<DataBaseStepPerformer, R> query) {
+    private SelectSingleObjectByQuerySupplier(Function<DataBaseStepContext, R> query) {
         super(query);
     }
 

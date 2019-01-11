@@ -1,8 +1,8 @@
 package ru.tinkoff.qa.neptune.testng.integration;
 
-import ru.tinkoff.qa.neptune.core.api.steps.performer.ActionStepPerformer;
-import ru.tinkoff.qa.neptune.core.api.steps.performer.CreateWith;
-import ru.tinkoff.qa.neptune.core.api.steps.performer.GetStepPerformer;
+import ru.tinkoff.qa.neptune.core.api.steps.context.ActionStepContext;
+import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
+import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
 import org.testng.TestNGException;
 import org.testng.annotations.ObjectFactory;
 import org.testng.internal.ObjectFactoryImpl;
@@ -33,7 +33,7 @@ public class DefaultObjectFactory extends ObjectFactoryImpl {
 
     /**
      * This factory method does the same as {@link ObjectFactoryImpl#newInstance(Constructor, Object...)} does
-     * and fills fields of type that extend {@link GetStepPerformer} and/or {@link ActionStepPerformer}.
+     * and fills fields of type that extend {@link GetStepContext} and/or {@link ActionStepContext}.
      * <p>
      *     WARNING!!!!
      *     It is supposed that every class (or super-classes) whose instance is supposed be set as a field value should be annotated
@@ -57,8 +57,8 @@ public class DefaultObjectFactory extends ObjectFactoryImpl {
                         var type = field.getType();
                         var modifiers = field.getModifiers();
                         return !isStatic(modifiers) && !isFinal(modifiers)
-                                && (GetStepPerformer.class.isAssignableFrom(type)
-                                || ActionStepPerformer.class.isAssignableFrom(type));
+                                && (GetStepContext.class.isAssignableFrom(type)
+                                || ActionStepContext.class.isAssignableFrom(type));
                     }).collect(toList());
 
             fields.forEach(field -> {

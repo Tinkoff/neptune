@@ -22,7 +22,7 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public final class ThatValue<T> extends SequentialActionSupplier<CheckStepPerformer, T, ThatValue<T>> {
+public final class ThatValue<T> extends SequentialActionSupplier<CheckStepContext, T, ThatValue<T>> {
 
     private final List<AssertionError> caughtMismatches = new ArrayList<>();
     private final List<Consumer<T>> checkList = new ArrayList<>();

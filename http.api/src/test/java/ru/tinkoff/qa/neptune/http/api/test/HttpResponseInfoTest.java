@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.http.api.test;
 
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.http.api.HttpStepPerformer;
+import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
 
 import java.net.URI;
 
@@ -22,7 +22,7 @@ import static ru.tinkoff.qa.neptune.http.api.HttpResponseSequentialGetSupplier.r
 
 public class HttpResponseInfoTest extends BaseHttpTest {
 
-    private HttpStepPerformer httpSteps = getProxied(HttpStepPerformer.class);
+    private HttpStepContext httpSteps = getProxied(HttpStepContext.class);
 
     @Test
     public void statusCodeResponseSupplierTest() {

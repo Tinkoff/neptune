@@ -3,7 +3,7 @@ package ru.tinkoff.qa.neptune.http.api.test;
 import org.mockserver.model.HttpResponse;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.http.api.DesiredResponseHasNotBeenReceivedException;
-import ru.tinkoff.qa.neptune.http.api.HttpStepPerformer;
+import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
 
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
@@ -28,7 +28,7 @@ import static ru.tinkoff.qa.neptune.http.api.properties.time.TimeValueToGetDesir
 public class HttpResponseTest extends BaseHttpTest {
 
     private static final String URI = format("%s/testResponse.html", REQUEST_URI);
-    private HttpStepPerformer httpSteps = getProxied(HttpStepPerformer.class);
+    private HttpStepContext httpSteps = getProxied(HttpStepContext.class);
 
     private static void prepareResponse(String method, String bodyText) {
         clientAndServer.when(

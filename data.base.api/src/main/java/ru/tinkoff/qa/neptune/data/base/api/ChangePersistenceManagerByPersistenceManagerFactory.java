@@ -7,7 +7,7 @@ import java.util.function.Function;
 import static java.lang.String.format;
 import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
 
-final class ChangePersistenceManagerByPersistenceManagerFactory implements Function<DataBaseStepPerformer, DataBaseStepPerformer> {
+final class ChangePersistenceManagerByPersistenceManagerFactory implements Function<DataBaseStepContext, DataBaseStepContext> {
 
     private final JDOPersistenceManagerFactory persistenceManagerFactory;
 
@@ -15,14 +15,14 @@ final class ChangePersistenceManagerByPersistenceManagerFactory implements Funct
         this.persistenceManagerFactory = persistenceManagerFactory;
     }
 
-    static Function<DataBaseStepPerformer, DataBaseStepPerformer> changeConnectionByPersistenceManagerFactory(
+    static Function<DataBaseStepContext, DataBaseStepContext> changeConnectionByPersistenceManagerFactory(
             JDOPersistenceManagerFactory persistenceManagerFactory) {
         return toGet(format("Change connection by persistence manager factory %s", persistenceManagerFactory.getName()),
                 new ChangePersistenceManagerByPersistenceManagerFactory(persistenceManagerFactory));
     }
 
     @Override
-    public DataBaseStepPerformer apply(DataBaseStepPerformer dataBaseSteps) {
+    public DataBaseStepContext apply(DataBaseStepContext dataBaseSteps) {
         return dataBaseSteps.switchTo(persistenceManagerFactory);
     }
 }

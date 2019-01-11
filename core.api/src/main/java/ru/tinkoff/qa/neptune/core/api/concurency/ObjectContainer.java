@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.core.api.concurency;
 
-import ru.tinkoff.qa.neptune.core.api.steps.performer.GetStepPerformer;
-import ru.tinkoff.qa.neptune.core.api.steps.performer.ActionStepPerformer;
+import ru.tinkoff.qa.neptune.core.api.steps.context.ActionStepContext;
+import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
 
 import java.util.HashSet;
 import java.util.List;
@@ -24,10 +24,10 @@ public class ObjectContainer<T> {
 
     public ObjectContainer(T t) {
         checkNotNull(t);
-        checkArgument(ActionStepPerformer.class.isAssignableFrom(t.getClass()) ||
-                GetStepPerformer.class.isAssignableFrom(t.getClass()), "Class of an object should be " +
-                "assignable from ru.tinkoff.qa.neptune.core.api.steps.performer.GetStepPerformer and/or " +
-                "ru.tinkoff.qa.neptune.core.api.steps.performer.ActionStepPerformer.");
+        checkArgument(ActionStepContext.class.isAssignableFrom(t.getClass()) ||
+                GetStepContext.class.isAssignableFrom(t.getClass()), "Class of an object should be " +
+                "assignable from ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext and/or " +
+                "ru.tinkoff.qa.neptune.core.api.steps.context.ActionStepContext.");
         this.t = t;
         synchronized (containers) {
             this.setBusy(currentThread());
@@ -39,10 +39,10 @@ public class ObjectContainer<T> {
                                                              Predicate<ObjectContainer<?>> predicate) {
         checkNotNull(tClass);
         checkNotNull(predicate);
-        checkArgument(ActionStepPerformer.class.isAssignableFrom(tClass) ||
-                GetStepPerformer.class.isAssignableFrom(tClass), "Class of an object should be " +
-                "assignable from ru.tinkoff.qa.neptune.core.api.steps.performer.GetStepPerformer and/or " +
-                "ru.tinkoff.qa.neptune.core.api.steps.performer.ActionStepPerformer.");
+        checkArgument(ActionStepContext.class.isAssignableFrom(tClass) ||
+                GetStepContext.class.isAssignableFrom(tClass), "Class of an object should be " +
+                "assignable from ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext and/or " +
+                "ru.tinkoff.qa.neptune.core.api.steps.context.ActionStepContext.");
         synchronized (containers) {
             return containers.stream().filter(predicate
                     .and(objectContainer -> tClass.isAssignableFrom(objectContainer.getWrappedObject().getClass()))).collect(toList());

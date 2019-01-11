@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame;
 
 import ru.tinkoff.qa.neptune.core.api.SequentialGetStepSupplier;
-import ru.tinkoff.qa.neptune.selenium.SeleniumStepPerformer;
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
 import org.openqa.selenium.WebDriver;
 
@@ -9,7 +9,7 @@ import java.util.function.Function;
 
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 
-public final class GetFrameSupplier extends SequentialGetStepSupplier<SeleniumStepPerformer, Frame, WebDriver, GetFrameSupplier>
+public final class GetFrameSupplier extends SequentialGetStepSupplier<SeleniumStepContext, Frame, WebDriver, GetFrameSupplier>
         implements TargetLocatorSupplier<Frame> {
 
     private final Function<WebDriver, Frame> getFrame;

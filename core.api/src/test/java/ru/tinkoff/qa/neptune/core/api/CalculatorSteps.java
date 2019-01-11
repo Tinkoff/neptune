@@ -1,13 +1,13 @@
 package ru.tinkoff.qa.neptune.core.api;
 
-import ru.tinkoff.qa.neptune.core.api.steps.performer.ActionStepPerformer;
-import ru.tinkoff.qa.neptune.core.api.steps.performer.GetStepPerformer;
+import ru.tinkoff.qa.neptune.core.api.steps.context.ActionStepContext;
+import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
 
 import java.util.function.Supplier;
 
 import static java.util.Optional.ofNullable;
 
-public class CalculatorSteps implements ActionStepPerformer<CalculatorSteps>, GetStepPerformer<CalculatorSteps>, Supplier<Double> {
+public class CalculatorSteps implements ActionStepContext<CalculatorSteps>, GetStepContext<CalculatorSteps>, Supplier<Double> {
     private Double calculated = 0D;
 
     void reset() {

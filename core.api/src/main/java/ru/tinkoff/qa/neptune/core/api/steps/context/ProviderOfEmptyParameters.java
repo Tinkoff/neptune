@@ -1,7 +1,6 @@
-package ru.tinkoff.qa.neptune.core.api.steps.performer;
+package ru.tinkoff.qa.neptune.core.api.steps.context;
 
 import ru.tinkoff.qa.neptune.core.api.ConstructorParameters;
-import ru.tinkoff.qa.neptune.core.api.steps.performer.ParameterProvider;
 
 import static ru.tinkoff.qa.neptune.core.api.ConstructorParameters.params;
 
