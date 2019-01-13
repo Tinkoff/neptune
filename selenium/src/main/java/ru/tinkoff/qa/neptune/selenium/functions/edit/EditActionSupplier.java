@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.functions.edit;
 
 import ru.tinkoff.qa.neptune.core.api.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Editable;
@@ -19,6 +20,7 @@ import static java.util.stream.StreamSupport.stream;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 
 @MakeImageCapturesOnFinishing
+@MakeFileCapturesOnFinishing
 public final class EditActionSupplier extends
         SequentialActionSupplier<SeleniumStepContext, Editable, EditActionSupplier> {
 
