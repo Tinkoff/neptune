@@ -23,40 +23,40 @@ public class WebElementCaptorTest extends BaseCaptorTest {
     public void positiveTestOfScreenshotFromElement() {
         seleniumSteps.find(webElement(tagName(BUTTON_TAG)));
         assertThat(INJECTED.size(), is(1));
-        assertThat(INJECTED, hasEntry(equalTo("Screenshot taken from the element"),
-                isA(BufferedImage.class)));
+        assertThat(INJECTED, hasEntry(isA(BufferedImage.class),
+                equalTo("Screenshot taken from the element")));
     }
 
     @Test
     public void positiveTestOfScreenshotFromElements() {
         seleniumSteps.find(webElements(tagName(BUTTON_TAG)));
         assertThat(INJECTED.size(), is(1));
-        assertThat(INJECTED, hasEntry(equalTo("Screenshot taken from the list of elements"),
-                isA(BufferedImage.class)));
+        assertThat(INJECTED, hasEntry(isA(BufferedImage.class),
+                equalTo("Screenshot taken from the list of elements")));
     }
 
     @Test
     public void positiveTestOfScreenshotFromWidget() {
         seleniumSteps.find(link());
         assertThat(INJECTED.size(), is(1));
-        assertThat(INJECTED, hasEntry(equalTo("Screenshot taken from the element"),
-                isA(BufferedImage.class)));
+        assertThat(INJECTED, hasEntry(isA(BufferedImage.class),
+                equalTo("Screenshot taken from the element")));
     }
 
     @Test
     public void positiveTestOfScreenshotFromWidgets() {
         seleniumSteps.find(links());
         assertThat(INJECTED.size(), is(1));
-        assertThat(INJECTED, hasEntry(equalTo("Screenshot taken from the list of elements"),
-                isA(BufferedImage.class)));
+        assertThat(INJECTED, hasEntry(isA(BufferedImage.class),
+                equalTo("Screenshot taken from the list of elements")));
     }
 
     @Test
     public void positiveTestOfScreenshotFromActiveElement() {
         seleniumSteps.get(activeElement());
         assertThat(INJECTED.size(), is(1));
-        assertThat(INJECTED, hasEntry(equalTo("Screenshot taken from the element"),
-                isA(BufferedImage.class)));
+        assertThat(INJECTED, hasEntry(isA(BufferedImage.class),
+                equalTo("Screenshot taken from the element")));
     }
 
     @Test
@@ -67,8 +67,8 @@ public class WebElementCaptorTest extends BaseCaptorTest {
         catch (NoSuchElementException ignored) {
         }
         assertThat(INJECTED.size(), is(1));
-        assertThat(INJECTED, hasEntry(equalTo("Browser screenshot"),
-                isA(BufferedImage.class)));
+        assertThat(INJECTED, hasEntry(isA(BufferedImage.class),
+                equalTo("Browser screenshot")));
     }
 
     @Test
@@ -86,8 +86,7 @@ public class WebElementCaptorTest extends BaseCaptorTest {
         }
 
         assertThat(INJECTED.size(), is(1));
-        assertThat(INJECTED, hasEntry(equalTo("Browser screenshot"),
-                isA(BufferedImage.class)));
+        assertThat(INJECTED, hasEntry(isA(BufferedImage.class), equalTo("Browser screenshot")));
     }
 
     @Test
@@ -108,7 +107,7 @@ public class WebElementCaptorTest extends BaseCaptorTest {
         }
 
         assertThat(INJECTED.size(), is(1));
-        assertThat(INJECTED, hasEntry(equalTo("Browser screenshot"),
-                isA(BufferedImage.class)));
+        assertThat(INJECTED, hasEntry(isA(BufferedImage.class),
+                equalTo("Browser screenshot")));
     }
 }

@@ -8,10 +8,10 @@ import java.util.Map;
 
 public class TestImageInjector implements CapturedImageInjector {
 
-    static final Map<String, BufferedImage> INJECTED = new HashMap<>();
+    static final Map<BufferedImage, String> INJECTED = new HashMap<>();
 
     @Override
     public void inject(BufferedImage toBeInjected, String message) {
-        INJECTED.put(message, toBeInjected);
+        INJECTED.put(toBeInjected, message);
     }
 }
