@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.functions.searching;
 
 import ru.tinkoff.qa.neptune.core.api.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Labeled;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
@@ -32,6 +33,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 @SuppressWarnings({"unchecked", "unused"})
 @MakeImageCapturesOnFinishing
+@MakeFileCapturesOnFinishing
 public final class MultipleSearchSupplier<R extends SearchContext> extends
         SequentialGetStepSupplier<SearchContext, List<R>, SearchContext, MultipleSearchSupplier<R>> {
 

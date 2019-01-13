@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator.window;
 
 import ru.tinkoff.qa.neptune.core.api.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import org.openqa.selenium.Point;
@@ -11,6 +12,7 @@ import static java.util.Objects.nonNull;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
 
 @MakeImageCapturesOnFinishing
+@MakeFileCapturesOnFinishing
 public final class SetWindowPositionSupplier extends SequentialActionSupplier<SeleniumStepContext, Window, SetWindowPositionSupplier> {
 
     private final Point position;

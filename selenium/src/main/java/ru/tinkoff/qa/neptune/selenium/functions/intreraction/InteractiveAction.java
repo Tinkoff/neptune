@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.selenium.functions.intreraction;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import ru.tinkoff.qa.neptune.core.api.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
@@ -19,6 +20,7 @@ import static java.util.stream.Collectors.joining;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 
 @MakeImageCapturesOnFinishing
+@MakeFileCapturesOnFinishing
 public abstract class InteractiveAction extends SequentialActionSupplier<SeleniumStepContext, WebDriver, InteractiveAction> {
 
     InteractiveAction(String actionName) {
