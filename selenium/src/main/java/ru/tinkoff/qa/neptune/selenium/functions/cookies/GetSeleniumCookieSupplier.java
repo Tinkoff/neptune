@@ -3,7 +3,8 @@ package ru.tinkoff.qa.neptune.selenium.functions.cookies;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import ru.tinkoff.qa.neptune.core.api.SequentialGetStepSupplier;
-import ru.tinkoff.qa.neptune.selenium.SeleniumSteps;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import java.util.Set;
 import java.util.function.Function;
@@ -17,7 +18,8 @@ import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentConte
 /**
  * This class is designed to build chain of functions that get cookies of a browser.
  */
-public final class GetSeleniumCookieSupplier extends SequentialGetStepSupplier<SeleniumSteps, Set<Cookie>, WebDriver, GetSeleniumCookieSupplier> {
+@MakeStringCapturesOnFinishing
+public final class GetSeleniumCookieSupplier extends SequentialGetStepSupplier<SeleniumStepContext, Set<Cookie>, WebDriver, GetSeleniumCookieSupplier> {
 
     private Predicate<Cookie> cookiePredicate;
 
@@ -36,7 +38,7 @@ public final class GetSeleniumCookieSupplier extends SequentialGetStepSupplier<S
     }
 
     @Override
-    public Function<SeleniumSteps, Set<Cookie>> get() {
+    public Function<SeleniumStepContext, Set<Cookie>> get() {
         return ofNullable(super.get()).orElseGet(() -> {
             super.from(currentContent());
             return super.get();

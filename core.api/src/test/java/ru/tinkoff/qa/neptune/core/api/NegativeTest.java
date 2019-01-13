@@ -1,7 +1,9 @@
 package ru.tinkoff.qa.neptune.core.api;
 
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.core.api.proxy.ProxyFactory;
+import ru.tinkoff.qa.neptune.core.api.steps.context.ActionStepContext;
+import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
+import ru.tinkoff.qa.neptune.core.api.steps.proxy.ProxyFactory;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.not;
@@ -12,8 +14,8 @@ public class NegativeTest {
 
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Class to substitute should be assignable from " +
-                    "ru.tinkoff.qa.neptune.core.api.GetStep " +
-                    "and/or ru.tinkoff.qa.neptune.core.api.PerformActionStep.")
+                    "ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext " +
+                    "and/or ru.tinkoff.qa.neptune.core.api.steps.context.ActionStepContext.")
     public void testOfIllegalClass() {
         ProxyFactory.getProxied(Object.class, ConstructorParameters.params());
         fail("The exception throwing was expected");
@@ -41,7 +43,7 @@ public class NegativeTest {
                 .get(StoryWriter.toGet("Something", getStep -> new Object())), not(nullValue()));
     }
 
-    static class GetStepStub implements GetStep<GetStepStub>, PerformActionStep<GetStepStub> {
+    static class GetStepStub implements GetStepContext<GetStepStub>, ActionStepContext<GetStepStub> {
         private final CharSequence sequence;
         private final Integer integer2;
         private final int integer1;

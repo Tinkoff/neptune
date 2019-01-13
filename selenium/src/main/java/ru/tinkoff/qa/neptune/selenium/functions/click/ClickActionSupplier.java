@@ -2,7 +2,8 @@ package ru.tinkoff.qa.neptune.selenium.functions.click;
 
 import ru.tinkoff.qa.neptune.core.api.GetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.SequentialActionSupplier;
-import ru.tinkoff.qa.neptune.selenium.SeleniumSteps;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Clickable;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 import org.openqa.selenium.By;
@@ -10,16 +11,22 @@ import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
+import java.util.function.Function;
 
-import static java.util.Objects.nonNull;
-import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
-import static com.google.common.base.Preconditions.checkArgument;
 
-public final class ClickActionSupplier extends SequentialActionSupplier<SeleniumSteps, Clickable, ClickActionSupplier> {
+@MakeImageCapturesOnFinishing
+public final class ClickActionSupplier extends SequentialActionSupplier<SeleniumStepContext, Clickable, ClickActionSupplier> {
 
-    private ClickActionSupplier() {
-        super("Click");
+    private static final String DESCRIPTION = "Click on %s";
+
+    private static Function<WebElement, ClickableWrapper> GET_CLICKABLE_WRAPPER =
+            ClickActionSupplier::getClickableFromElement;
+
+    private ClickActionSupplier(String description) {
+        super(description);
     }
 
     private static ClickableWrapper getClickableFromElement(WebElement element) {
@@ -53,7 +60,9 @@ public final class ClickActionSupplier extends SequentialActionSupplier<Selenium
      * @return built click action
      */
     public static <R extends SearchContext & Clickable> ClickActionSupplier on(SearchSupplier<R> on) {
-        return new ClickActionSupplier().andOn(on);
+        checkNotNull(on);
+        return new ClickActionSupplier(format(DESCRIPTION, on))
+                .performOn(on.get().compose(currentContent()));
     }
 
     /**
@@ -62,7 +71,9 @@ public final class ClickActionSupplier extends SequentialActionSupplier<Selenium
      * @return built click action
      */
     public static ClickActionSupplier on(GetStepSupplier<SearchContext, WebElement, ?> on) {
-        return new ClickActionSupplier().andOn(on);
+        checkNotNull(on);
+        return new ClickActionSupplier(format(DESCRIPTION, on))
+                .performOn(GET_CLICKABLE_WRAPPER.compose(on.get().compose(currentContent())));
     }
 
     /**
@@ -72,7 +83,8 @@ public final class ClickActionSupplier extends SequentialActionSupplier<Selenium
      * @return built click action
      */
     public static <R extends SearchContext & Clickable> ClickActionSupplier on(R on) {
-        return new ClickActionSupplier().andOn(on);
+        checkNotNull(on);
+        return new ClickActionSupplier(format(DESCRIPTION, on)).performOn(on);
     }
 
     /**
@@ -81,7 +93,9 @@ public final class ClickActionSupplier extends SequentialActionSupplier<Selenium
      * @return built click action
      */
     public static ClickActionSupplier on(WebElement on) {
-        return new ClickActionSupplier().andOn(on);
+        checkNotNull(on);
+        return new ClickActionSupplier(format(DESCRIPTION, on))
+                .performOn(getClickableFromElement(on));
     }
 
     /**
@@ -91,8 +105,7 @@ public final class ClickActionSupplier extends SequentialActionSupplier<Selenium
      * @return built click action
      */
     public <R extends SearchContext & Clickable> ClickActionSupplier andOn(SearchSupplier<R> on) {
-        checkArgument(nonNull(on), "The searching for the clickable element should be defined");
-        return performOn(on.get().compose(currentContent()));
+        return mergeActionSequenceFrom(on(on));
     }
 
     /**
@@ -101,9 +114,7 @@ public final class ClickActionSupplier extends SequentialActionSupplier<Selenium
      * @return built click action
      */
     public ClickActionSupplier andOn(GetStepSupplier<SearchContext, WebElement, ?> on) {
-        checkArgument(nonNull(on), "The searching for the clickable element should be defined");
-        return performOn(currentContent()
-                .andThen(toGet(on.toString(), webDriver -> getClickableFromElement(on.get().apply(webDriver)))));
+        return mergeActionSequenceFrom(on(on));
     }
 
     /**
@@ -113,8 +124,7 @@ public final class ClickActionSupplier extends SequentialActionSupplier<Selenium
      * @return built click action
      */
     public <R extends SearchContext & Clickable> ClickActionSupplier andOn(R on) {
-        checkArgument(nonNull(on), "The clickable element should be defined");
-        return performOn(on);
+        return mergeActionSequenceFrom(on(on));
     }
 
     /**
@@ -123,8 +133,7 @@ public final class ClickActionSupplier extends SequentialActionSupplier<Selenium
      * @return built click action
      */
     public ClickActionSupplier andOn(WebElement on) {
-        checkArgument(nonNull(on), "The element should be defined");
-        return performOn(getClickableFromElement(on));
+        return mergeActionSequenceFrom(on(on));
     }
 
     @Override

@@ -16,11 +16,13 @@ import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.EN
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 
 public final class ToUrl extends NavigationActionSupplier<ToUrl> {
+
+    private static final String DESCRIPTION = "Navigate to URL %s in %s";
     private static final UrlValidator URL_VALIDATOR = new UrlValidator();
     private final String url;
 
-    private ToUrl(String url) {
-        super(format("Navigate to URL %s", url));
+    private ToUrl(String description, String url) {
+        super(description);
         this.url = checkUrl(url);
     }
 
@@ -71,7 +73,7 @@ public final class ToUrl extends NavigationActionSupplier<ToUrl> {
      * @return built navigation action
      */
     public static ToUrl toUrl(GetWindowSupplier windowSupplier, String url) {
-        return new ToUrl(url).performOn(windowSupplier);
+        return new ToUrl(format(DESCRIPTION, url, windowSupplier), url).performOn(windowSupplier);
     }
 
     /**
@@ -82,7 +84,7 @@ public final class ToUrl extends NavigationActionSupplier<ToUrl> {
      * @return built navigation action
      */
     public static ToUrl toUrl(Window window, String url) {
-        return new ToUrl(url).performOn(window);
+        return new ToUrl(format(DESCRIPTION, url, window), url).performOn(window);
     }
 
 

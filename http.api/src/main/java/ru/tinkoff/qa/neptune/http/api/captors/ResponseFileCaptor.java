@@ -23,7 +23,7 @@ import static org.apache.commons.io.FileUtils.copyFile;
 public class ResponseFileCaptor extends FileCaptor<HttpResponse<Path>> {
 
     public ResponseFileCaptor() {
-        super();
+        super("Response. File");
     }
 
     @Override
@@ -43,12 +43,8 @@ public class ResponseFileCaptor extends FileCaptor<HttpResponse<Path>> {
         }).orElse(null);
     }
 
-    public void capture(HttpResponse<Path> caught, String message) {
-        super.capture(caught, format("Received response. %s", message));
-    }
-
     @Override
-    protected File getData(HttpResponse<Path> caught) {
+    public File getData(HttpResponse<Path> caught) {
         var uuid = randomUUID().toString();
 
         File file = caught.body().toFile();

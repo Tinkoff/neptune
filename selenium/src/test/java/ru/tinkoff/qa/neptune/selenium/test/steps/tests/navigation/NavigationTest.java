@@ -367,12 +367,14 @@ public class NavigationTest extends BaseWebDriverTest {
                 .navigate(toUrl(window().byIndex(2), PAY_PAL.getUrl()))
                 .navigate(toUrl(window().byIndex(2), YOUTUBE.getUrl()));
 
-        seleniumSteps.navigate(back().andThenBack(window().byIndex(1)).andThenBack(thirdWindow));
+        seleniumSteps.navigate(back())
+                .navigate(back(window().byIndex(1)))
+                .navigate(back(thirdWindow));
         assertThat(seleniumSteps.get(currentUrl()), is(GOOGLE.getUrl()));
         assertThat(seleniumSteps.get(currentUrlOf(window().byIndex(1))), is(FACEBOOK.getUrl()));
         assertThat(seleniumSteps.get(currentUrlOf(window().byIndex(2))), is(PAY_PAL.getUrl()));
 
-        seleniumSteps.navigate(forward().andThenForward(window().byIndex(1)).andThenForward(thirdWindow));
+        seleniumSteps.navigate(forward()).navigate(forward(window().byIndex(1))).navigate(forward(thirdWindow));
         assertThat(seleniumSteps.get(currentUrl()), is(GITHUB.getUrl()));
         assertThat(seleniumSteps.get(currentUrlOf(window().byIndex(1))), is(DEEZER.getUrl()));
         assertThat(seleniumSteps.get(currentUrlOf(window().byIndex(2))), is(YOUTUBE.getUrl()));
@@ -408,7 +410,7 @@ public class NavigationTest extends BaseWebDriverTest {
     @Test
     public void chainedRefreshTest() {
         Window window = seleniumSteps.get(window().byIndex(2));
-        seleniumSteps.navigate(refresh(window().byIndex(1)).andThenRefresh(window));
+        seleniumSteps.navigate(refresh(window().byIndex(1))).navigate(refresh(window));
 
         seleniumSteps.getWrappedDriver().switchTo().window(HANDLE1.getHandle());
         assertThat(((MockWindow) seleniumSteps.getWrappedDriver().manage().window()).isRefreshed(),

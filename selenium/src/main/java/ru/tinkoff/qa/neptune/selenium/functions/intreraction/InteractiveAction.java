@@ -3,7 +3,8 @@ package ru.tinkoff.qa.neptune.selenium.functions.intreraction;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import ru.tinkoff.qa.neptune.core.api.SequentialActionSupplier;
-import ru.tinkoff.qa.neptune.selenium.SeleniumSteps;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 
@@ -17,7 +18,8 @@ import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.joining;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 
-public abstract class InteractiveAction extends SequentialActionSupplier<SeleniumSteps, WebDriver, InteractiveAction> {
+@MakeImageCapturesOnFinishing
+public abstract class InteractiveAction extends SequentialActionSupplier<SeleniumStepContext, WebDriver, InteractiveAction> {
 
     InteractiveAction(String actionName) {
         super(actionName);

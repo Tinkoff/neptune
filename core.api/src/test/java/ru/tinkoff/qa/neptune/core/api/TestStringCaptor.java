@@ -5,11 +5,11 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.captors.StringCaptor;
 public class TestStringCaptor extends StringCaptor<Object> {
 
     public TestStringCaptor() {
-        super();
+        super("Saved to string");
     }
 
     @Override
-    protected StringBuilder getData(Object caught) {
+    public StringBuilder getData(Object caught) {
         return new StringBuilder(caught.toString());
     }
 

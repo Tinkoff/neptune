@@ -4,14 +4,13 @@ import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
 import java.util.List;
 
-import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
 public class DBObjectsCaptor extends DBCaptor<List<PersistableObject>> {
 
-    public void capture(List<PersistableObject> caught, String message) {
-        super.capture(caught, format("Received objects from the DB. Step: '%s'", message));
+    public DBObjectsCaptor() {
+        super("Persistable DB objects");
     }
 
     @Override

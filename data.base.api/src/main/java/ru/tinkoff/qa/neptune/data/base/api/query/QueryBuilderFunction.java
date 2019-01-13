@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.data.base.api.query;
 
-import ru.tinkoff.qa.neptune.data.base.api.DataBaseSteps;
+import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
 import javax.jdo.JDOQLTypedQuery;
@@ -20,7 +20,7 @@ import static java.util.Optional.ofNullable;
  *
  * @param <T> type of objects to be selected.
  */
-public final class QueryBuilderFunction<T extends PersistableObject> implements Function<DataBaseSteps, JDOQLTypedQuery<T>> {
+public final class QueryBuilderFunction<T extends PersistableObject> implements Function<DataBaseStepContext, JDOQLTypedQuery<T>> {
 
     private final Class<T> toSelect;
     private BooleanExpression constraintsExpression;
@@ -89,7 +89,7 @@ public final class QueryBuilderFunction<T extends PersistableObject> implements 
     }
 
     @Override
-    public JDOQLTypedQuery<T> apply(DataBaseSteps dataBaseSteps) {
+    public JDOQLTypedQuery<T> apply(DataBaseStepContext dataBaseSteps) {
         var manager = dataBaseSteps.getCurrentPersistenceManager();
         var tq1 = manager.newJDOQLTypedQuery(toSelect);
         ofNullable(constraintsExpression).ifPresent(tq1::filter);

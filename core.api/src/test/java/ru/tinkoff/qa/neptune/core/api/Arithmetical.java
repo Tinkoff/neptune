@@ -1,9 +1,16 @@
 package ru.tinkoff.qa.neptune.core.api;
 
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeCaptureOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
+
 import java.math.BigDecimal;
 
 import static java.lang.String.format;
 
+@MakeStringCapturesOnFinishing
+@MakeCaptureOnFinishing(typeOfCapture = String.class)
+@MakeFileCapturesOnFinishing
 class Arithmetical extends GetStepSupplier<CalculatorSteps, Number, Arithmetical> {
 
     static Arithmetical number(Number number) {

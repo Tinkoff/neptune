@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.data.base.api.query;
 
 import org.datanucleus.api.jdo.query.AbstractJDOQLTypedQuery;
-import ru.tinkoff.qa.neptune.data.base.api.DataBaseSteps;
+import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
 import javax.jdo.JDOQLTypedQuery;
@@ -19,7 +19,7 @@ import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSubIterable.getIter
 public abstract class SelectListByQuerySupplier<T, R>
         extends ByQuerySequentialGetStepSupplier<T, List<T>, R, SelectListByQuerySupplier<T, R>> {
 
-    private SelectListByQuerySupplier(Function<DataBaseSteps, R> query) {
+    private SelectListByQuerySupplier(Function<DataBaseStepContext, R> query) {
         super(query);
     }
 
@@ -44,7 +44,7 @@ public abstract class SelectListByQuerySupplier<T, R>
                                         ((AbstractJDOQLTypedQuery) jdoTypedQuery).getCompilation().getCandidateClass()
                                                 .getName());
                             }
-                        });
+                        }.setQuery(jdoTypedQuery));
             }
         };
     }
@@ -74,15 +74,15 @@ public abstract class SelectListByQuerySupplier<T, R>
                                         .getTypeOfRequiredValue()
                                         .getName());
                             }
-                        };
+                        }.setQuery(query);
                     }
 
                     var toBeReturned = new LoggableElementList<>() {
                         @Override
                         public String toString() {
-                            return format("%s records from the data base", size());
+                            return format("%s records/values from the data base", size());
                         }
-                    };
+                    }.setQuery(query);
                     var result = query.executeList();
 
                     result.forEach(o -> {

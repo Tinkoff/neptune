@@ -1,6 +1,8 @@
 package ru.tinkoff.qa.neptune.http.api;
 
 import ru.tinkoff.qa.neptune.core.api.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
 
 import java.net.http.HttpResponse;
 import java.time.Duration;
@@ -20,10 +22,12 @@ import static ru.tinkoff.qa.neptune.http.api.properties.TimeToGetDesiredResponse
  * @param <T> is a type of body of the received response
  */
 @SuppressWarnings("unchecked")
-public abstract class HttpResponseSequentialGetSupplier<T, R extends HttpResponseSequentialGetSupplier<T, R>> extends SequentialGetStepSupplier<HttpSteps, HttpResponse<T>,
+@MakeStringCapturesOnFinishing
+@MakeFileCapturesOnFinishing
+public abstract class HttpResponseSequentialGetSupplier<T, R extends HttpResponseSequentialGetSupplier<T, R>> extends SequentialGetStepSupplier<HttpStepContext, HttpResponse<T>,
         HowToGetResponse, R> implements Cloneable {
 
-    private final HttpRequestGetSupplier request;
+    private final PreparedHttpRequest request;
     private final HttpResponse.BodyHandler<T> handler;
     private final Function<HowToGetResponse, HttpResponse<T>> getResponse = new Function<>() {
         @Override
@@ -40,7 +44,7 @@ public abstract class HttpResponseSequentialGetSupplier<T, R extends HttpRespons
     private Duration timeToWaitForCondition;
     private Supplier<DesiredResponseHasNotBeenReceivedException> exceptionSupplier;
 
-    private HttpResponseSequentialGetSupplier(HttpRequestGetSupplier request, HttpResponse.BodyHandler<T> handler) {
+    private HttpResponseSequentialGetSupplier(PreparedHttpRequest request, HttpResponse.BodyHandler<T> handler) {
         this.request = request;
         this.handler = handler;
     }
@@ -53,7 +57,7 @@ public abstract class HttpResponseSequentialGetSupplier<T, R extends HttpRespons
      * @param <T>     is a type of the read body of resulted response
      * @return an instance of {@link HttpResponseOnConditionSequentialGetSupplier}
      */
-    public static <T> HttpResponseOnConditionSequentialGetSupplier<T> responseOf(HttpRequestGetSupplier.GetHttpRequestSupplier request,
+    public static <T> HttpResponseOnConditionSequentialGetSupplier<T> responseOf(PreparedHttpRequest.PreparedGetHttpRequest request,
                                                                                  HttpResponse.BodyHandler<T> handler) {
         return new HttpResponseOnConditionSequentialGetSupplier<>(request, handler);
     }
@@ -66,7 +70,7 @@ public abstract class HttpResponseSequentialGetSupplier<T, R extends HttpRespons
      * @param <T>     is a type of the read body of resulted response
      * @return an instance of {@link HttpResponseSimpleSequentialGetSupplier}
      */
-    public static <T> HttpResponseSimpleSequentialGetSupplier<T> responseOf(HttpRequestGetSupplier.PostHttpRequestSupplier request,
+    public static <T> HttpResponseSimpleSequentialGetSupplier<T> responseOf(PreparedHttpRequest.PreparedPostHttpRequest request,
                                                                             HttpResponse.BodyHandler<T> handler) {
         return new HttpResponseSimpleSequentialGetSupplier<>(request, handler);
     }
@@ -79,7 +83,7 @@ public abstract class HttpResponseSequentialGetSupplier<T, R extends HttpRespons
      * @param <T>     is a type of the read body of resulted response
      * @return an instance of {@link HttpResponseSimpleSequentialGetSupplier}
      */
-    public static <T> HttpResponseSimpleSequentialGetSupplier<T> responseOf(HttpRequestGetSupplier.PutHttpRequestSupplier request,
+    public static <T> HttpResponseSimpleSequentialGetSupplier<T> responseOf(PreparedHttpRequest.PreparedPutHttpRequest request,
                                                                             HttpResponse.BodyHandler<T> handler) {
         return new HttpResponseSimpleSequentialGetSupplier<>(request, handler);
     }
@@ -92,7 +96,7 @@ public abstract class HttpResponseSequentialGetSupplier<T, R extends HttpRespons
      * @param <T>     is a type of the read body of resulted response
      * @return an instance of {@link HttpResponseSimpleSequentialGetSupplier}
      */
-    public static <T> HttpResponseSimpleSequentialGetSupplier<T> responseOf(HttpRequestGetSupplier.DeleteHttpRequestSupplier request,
+    public static <T> HttpResponseSimpleSequentialGetSupplier<T> responseOf(PreparedHttpRequest.PreparedDeleteHttpRequest request,
                                                                             HttpResponse.BodyHandler<T> handler) {
         return new HttpResponseSimpleSequentialGetSupplier<>(request, handler);
     }
@@ -105,7 +109,7 @@ public abstract class HttpResponseSequentialGetSupplier<T, R extends HttpRespons
      * @param <T>     is a type of the read body of resulted response
      * @return an instance of {@link HttpResponseOnConditionSequentialGetSupplier}
      */
-    public static <T> HttpResponseOnConditionSequentialGetSupplier<T> responseOf(HttpRequestGetSupplier.MethodHttpRequestSupplier request,
+    public static <T> HttpResponseOnConditionSequentialGetSupplier<T> responseOf(PreparedHttpRequest.PreparedMethodHttpRequest request,
                                                                                  HttpResponse.BodyHandler<T> handler) {
         return new HttpResponseOnConditionSequentialGetSupplier<>(request, handler);
     }
@@ -172,7 +176,7 @@ public abstract class HttpResponseSequentialGetSupplier<T, R extends HttpRespons
     }
 
     @Override
-    public Function<HttpSteps, HttpResponse<T>> get() {
+    public Function<HttpStepContext, HttpResponse<T>> get() {
         return ofNullable(super.get()).orElseGet(() -> {
             from(request);
             return super.get();
@@ -187,7 +191,7 @@ public abstract class HttpResponseSequentialGetSupplier<T, R extends HttpRespons
      */
     public static final class HttpResponseOnConditionSequentialGetSupplier<T> extends HttpResponseSequentialGetSupplier<T, HttpResponseOnConditionSequentialGetSupplier<T>> {
 
-        private HttpResponseOnConditionSequentialGetSupplier(HttpRequestGetSupplier request, HttpResponse.BodyHandler<T> handler) {
+        private HttpResponseOnConditionSequentialGetSupplier(PreparedHttpRequest request, HttpResponse.BodyHandler<T> handler) {
             super(request, handler);
         }
 
@@ -203,7 +207,7 @@ public abstract class HttpResponseSequentialGetSupplier<T, R extends HttpRespons
     }
 
     public static final class HttpResponseSimpleSequentialGetSupplier<T> extends HttpResponseSequentialGetSupplier<T, HttpResponseSimpleSequentialGetSupplier<T>> {
-        private HttpResponseSimpleSequentialGetSupplier(HttpRequestGetSupplier request, HttpResponse.BodyHandler<T> handler) {
+        private HttpResponseSimpleSequentialGetSupplier(PreparedHttpRequest request, HttpResponse.BodyHandler<T> handler) {
             super(request, handler);
         }
     }

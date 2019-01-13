@@ -7,7 +7,7 @@ import java.util.function.Function;
 import static java.lang.String.format;
 import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
 
-final class ChangePersistenceManagerByClassFunction implements Function<DataBaseSteps, DataBaseSteps> {
+final class ChangePersistenceManagerByClassFunction implements Function<DataBaseStepContext, DataBaseStepContext> {
 
     private final Class<? extends PersistenceManagerFactorySupplier> supplierClass;
 
@@ -15,14 +15,14 @@ final class ChangePersistenceManagerByClassFunction implements Function<DataBase
         this.supplierClass = supplierClass;
     }
 
-    static Function<DataBaseSteps, DataBaseSteps> changeConnectionByClass(Class<? extends PersistenceManagerFactorySupplier> supplierClass) {
+    static Function<DataBaseStepContext, DataBaseStepContext> changeConnectionByClass(Class<? extends PersistenceManagerFactorySupplier> supplierClass) {
         return toGet(format("Change connection by class of persistence manager factory supplier %s",
                 supplierClass.getSimpleName()),
                 new ChangePersistenceManagerByClassFunction(supplierClass));
     }
 
     @Override
-    public DataBaseSteps apply(DataBaseSteps dataBaseSteps) {
+    public DataBaseStepContext apply(DataBaseStepContext dataBaseSteps) {
         return dataBaseSteps.switchTo(supplierClass);
     }
 }

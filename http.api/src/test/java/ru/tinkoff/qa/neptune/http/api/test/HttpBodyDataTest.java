@@ -3,7 +3,7 @@ package ru.tinkoff.qa.neptune.http.api.test;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.http.api.DesiredResponseHasNotBeenReceivedException;
-import ru.tinkoff.qa.neptune.http.api.HttpSteps;
+import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
 import ru.tinkoff.qa.neptune.http.api.ResponseHasNoDesiredDataException;
 
 import java.util.function.Supplier;
@@ -20,9 +20,9 @@ import static org.hamcrest.Matchers.*;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 import static ru.tinkoff.qa.neptune.core.api.StoryWriter.condition;
-import static ru.tinkoff.qa.neptune.core.api.proxy.ProxyFactory.getProxied;
+import static ru.tinkoff.qa.neptune.core.api.steps.proxy.ProxyFactory.getProxied;
 import static ru.tinkoff.qa.neptune.http.api.HttpBodyDataSequentialGetSupplier.*;
-import static ru.tinkoff.qa.neptune.http.api.HttpRequestGetSupplier.GET;
+import static ru.tinkoff.qa.neptune.http.api.PreparedHttpRequest.GET;
 import static ru.tinkoff.qa.neptune.http.api.HttpResponseSequentialGetSupplier.responseOf;
 import static ru.tinkoff.qa.neptune.http.api.properties.TimeToGetDesiredResponseProperty.DEFAULT_TIME_TO_GET_DESIRED_RESPONSE_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.time.TimeUnitToGetDesiredResponseProperty.TIME_UNIT_TO_GET_DESIRED_RESPONSE_PROPERTY;
@@ -31,7 +31,7 @@ import static ru.tinkoff.qa.neptune.http.api.test.FunctionToGetXMLTagArray.toNod
 import static ru.tinkoff.qa.neptune.http.api.test.FunctionToGetXMLTagList.toNodeList;
 
 public class HttpBodyDataTest extends BaseHttpTest {
-    private HttpSteps httpSteps = getProxied(HttpSteps.class);
+    private HttpStepContext httpSteps = getProxied(HttpStepContext.class);
 
     @BeforeClass
     public static void beforeClass() {

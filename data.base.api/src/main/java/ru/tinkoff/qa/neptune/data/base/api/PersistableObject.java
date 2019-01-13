@@ -1,8 +1,10 @@
 package ru.tinkoff.qa.neptune.data.base.api;
 
-import com.google.gson.Gson;
 import org.datanucleus.enhancement.Persistable;
 import ru.tinkoff.qa.neptune.core.api.LoggableObject;
+import ru.tinkoff.qa.neptune.data.base.api.captors.IsQueryCaptured;
+
+import javax.jdo.annotations.NotPersistent;
 
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
@@ -10,7 +12,10 @@ import static java.util.Optional.ofNullable;
 /**
  * This abstract class is designed to mark persistable classes.
  */
-public abstract class PersistableObject extends OrmObject implements Cloneable, LoggableObject {
+public abstract class PersistableObject extends OrmObject implements Cloneable, LoggableObject, GotByQuery {
+
+    @NotPersistent
+    private transient Object query;
 
     @Override
     public String toString() {
@@ -20,8 +25,8 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
         }
 
         return ofNullable(((Persistable) this).dnGetObjectId())
-                .map(o -> format("Stored data base element of type %s. Id = %s", name, o))
-                .orElseGet(() -> format("Stored data base element of type %s: %s", name, new Gson().toJson(this)));
+                .map(o -> format("Stored item of type %s Id = %s", name, o))
+                .orElseGet(() -> format("Stored item of type %s without id", name));
     }
 
     public Object clone() {
@@ -59,5 +64,43 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
         }
 
         return ((Persistable) this).dnGetObjectId().equals(((Persistable) obj).dnGetObjectId());
+    }
+
+    public Object getQuery() {
+        return query;
+    }
+
+    PersistableObject setQuery(Object query) {
+        this.query = ofNullable(query).map(QueryInfo::new).orElse(null);
+        return this;
+    }
+
+    private static class QueryInfo implements IsQueryCaptured, GotByQuery {
+        private final Object query;
+        private boolean isCaptured;
+
+        private QueryInfo(Object query) {
+            this.query = query;
+        }
+
+        @Override
+        public Object getQuery() {
+            return query;
+        }
+
+        @Override
+        public boolean isCaptured() {
+            return isCaptured;
+        }
+
+        @Override
+        public void setCaptured() {
+            isCaptured = true;
+        }
+
+        @Override
+        public String toString() {
+            return query.toString();
+        }
     }
 }

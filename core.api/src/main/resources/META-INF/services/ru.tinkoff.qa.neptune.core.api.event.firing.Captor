@@ -1,1 +1,3 @@
-ru.tinkoff.qa.neptune.core.api.event.firing.DefaultConsoleCaptor
+ru.tinkoff.qa.neptune.core.api.event.firing.collections.CollectionCaptor
+ru.tinkoff.qa.neptune.core.api.event.firing.collections.ArrayCaptor
+ru.tinkoff.qa.neptune.core.api.event.firing.collections.MapCaptor

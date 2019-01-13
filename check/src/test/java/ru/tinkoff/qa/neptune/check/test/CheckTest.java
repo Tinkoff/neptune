@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.check.test;
 
-import ru.tinkoff.qa.neptune.check.Check;
+import ru.tinkoff.qa.neptune.check.CheckStepContext;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -9,8 +9,7 @@ import java.util.List;
 
 import static ru.tinkoff.qa.neptune.check.ThatValue.thatValue;
 import static ru.tinkoff.qa.neptune.check.test.TestEventLogger.MESSAGES;
-import static ru.tinkoff.qa.neptune.core.api.StoryWriter.action;
-import static ru.tinkoff.qa.neptune.core.api.proxy.ProxyFactory.getProxied;
+import static ru.tinkoff.qa.neptune.core.api.steps.proxy.ProxyFactory.getProxied;
 import static ru.tinkoff.qa.neptune.core.api.properties.CapturedEvents.FAILURE;
 import static ru.tinkoff.qa.neptune.core.api.properties.CapturedEvents.SUCCESS;
 import static ru.tinkoff.qa.neptune.core.api.properties.CapturedEvents.SUCCESS_AND_FAILURE;
@@ -24,11 +23,11 @@ import static org.hamcrest.Matchers.*;
 
 public class CheckTest {
 
-    private Check check;
+    private CheckStepContext check;
 
     @BeforeTest
     public void beforeTest() {
-        check = getProxied(Check.class);
+        check = getProxied(CheckStepContext.class);
     }
 
     @BeforeMethod
@@ -142,7 +141,7 @@ public class CheckTest {
     public void testOfLinearPositiveCaseWhenEventIsNotDefined() {
         check.verify(thatValue(4)
                 .suitsCriteria("Is integer", number ->
-                        Integer.class.isAssignableFrom(number.getClass()),
+                                Integer.class.isAssignableFrom(number.getClass()),
                         is(true))
                 .suitsCriteria("Sqrt value", number -> sqrt(number.doubleValue()), is(2D)))
 
@@ -164,7 +163,7 @@ public class CheckTest {
         try {
             check.verify(thatValue(4)
                     .suitsCriteria("Is integer", number ->
-                            Integer.class.isAssignableFrom(number.getClass()),
+                                    Integer.class.isAssignableFrom(number.getClass()),
                             is(true))
 
                     .suitsCriteria("Sqrt value", number -> sqrt(number.doubleValue()),
@@ -176,25 +175,19 @@ public class CheckTest {
 
             assertThat("Logged messages",
                     DefaultListLogger.messages,
-                    contains("Getting of 'Is integer' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <true>' succeed",
-                            "Performing of 'Check Is integer. Assert: is <true>' succeed",
-                            "Getting of 'Sqrt value' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <2.0>' succeed",
-                            "Performing of 'Check Sqrt value. Assert: is <2.0>' succeed",
-                            "Performing of 'Verify inspected value 4' succeed",
-                            "Getting of 'Sqr value' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <25.0>' succeed",
-                            "Performing of 'Check Sqr value. Assert: is <25.0>' succeed",
-                            "Performing of 'Verify inspected value 5' succeed"));
+                    contains("Value true",
+                            "Value true",
+                            "Value 4",
+                            "Value 2.0",
+                            "Value 2.0",
+                            "Value 4",
+                            "Value 25.0",
+                            "Value 25.0",
+                            "Value 5"));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES1.toArray()));
-        }
-        finally {
+        } finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
         }
     }
@@ -221,8 +214,7 @@ public class CheckTest {
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES1.toArray()));
-        }
-        finally {
+        } finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
         }
     }
@@ -245,32 +237,26 @@ public class CheckTest {
 
             assertThat("Logged messages",
                     DefaultListLogger.messages,
-                    contains("Getting of 'Is integer' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <true>' succeed",
-                            "Performing of 'Check Is integer. Assert: is <true>' succeed",
-                            "Getting of 'Sqrt value' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <2.0>' succeed",
-                            "Performing of 'Check Sqrt value. Assert: is <2.0>' succeed",
-                            "Performing of 'Verify inspected value 4' succeed",
-                            "Getting of 'Sqr value' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <25.0>' succeed",
-                            "Performing of 'Check Sqr value. Assert: is <25.0>' succeed",
-                            "Performing of 'Verify inspected value 5' succeed"));
+                    contains("Value true",
+                            "Value true",
+                            "Value 4",
+                            "Value 2.0",
+                            "Value 2.0",
+                            "Value 4",
+                            "Value 25.0",
+                            "Value 25.0",
+                            "Value 5"));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES1.toArray()));
-        }
-        finally {
+        } finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
         }
     }
 
     @Test
     public void testOfPositivePerformCaseWhenEventIsNotDefined() {
-        check.perform(action("Check numbers 4 and 5",
+        check.perform("Check numbers 4 and 5",
                 check -> check.verify(thatValue(4)
                         .suitsCriteria("Is integer", number ->
                                         Integer.class.isAssignableFrom(number.getClass()),
@@ -281,7 +267,7 @@ public class CheckTest {
 
                         .verify(thatValue(5).suitsCriteria("Sqr value",
                                 number -> pow(number.doubleValue(), 2),
-                                is(25D)))));
+                                is(25D))));
 
         assertThat("Logged messages",
                 DefaultListLogger.messages,
@@ -295,7 +281,7 @@ public class CheckTest {
     public void testOfPositivePerformCaseWhenEventIsSuccess() {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS.name());
         try {
-            check.perform(action("Check numbers 4 and 5",
+            check.perform("Check numbers 4 and 5",
                     check -> check.verify(thatValue(4)
                             .suitsCriteria("Is integer", number ->
                                             Integer.class.isAssignableFrom(number.getClass()),
@@ -306,30 +292,23 @@ public class CheckTest {
 
                             .verify(thatValue(5).suitsCriteria("Sqr value",
                                     number -> pow(number.doubleValue(), 2),
-                                    is(25D)))));
+                                    is(25D))));
 
             assertThat("Logged messages",
                     DefaultListLogger.messages,
-                    contains("Getting of 'Is integer' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <true>' succeed",
-                            "Performing of 'Check Is integer. Assert: is <true>' succeed",
-                            "Getting of 'Sqrt value' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <2.0>' succeed",
-                            "Performing of 'Check Sqrt value. Assert: is <2.0>' succeed",
-                            "Performing of 'Verify inspected value 4' succeed",
-                            "Getting of 'Sqr value' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <25.0>' succeed",
-                            "Performing of 'Check Sqr value. Assert: is <25.0>' succeed",
-                            "Performing of 'Verify inspected value 5' succeed",
-                            "Performing of 'Check numbers 4 and 5' succeed"));
+                    contains("Value true",
+                            "Value true",
+                            "Value 4",
+                            "Value 2.0",
+                            "Value 2.0",
+                            "Value 4",
+                            "Value 25.0",
+                            "Value 25.0",
+                            "Value 5"));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES2.toArray()));
-        }
-        finally {
+        } finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
         }
     }
@@ -338,7 +317,7 @@ public class CheckTest {
     public void testOfPositivePerformCaseWhenEventIsFailure() {
         DO_CAPTURES_OF_INSTANCE.accept(FAILURE.name());
         try {
-            check.perform(action("Check numbers 4 and 5",
+            check.perform("Check numbers 4 and 5",
                     check -> check.verify(thatValue(4)
                             .suitsCriteria("Is integer", number ->
                                             Integer.class.isAssignableFrom(number.getClass()),
@@ -349,7 +328,7 @@ public class CheckTest {
 
                             .verify(thatValue(5).suitsCriteria("Sqr value",
                                     number -> pow(number.doubleValue(), 2),
-                                    is(25D)))));
+                                    is(25D))));
 
             assertThat("Logged messages",
                     DefaultListLogger.messages,
@@ -357,8 +336,7 @@ public class CheckTest {
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES2.toArray()));
-        }
-        finally {
+        } finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
         }
     }
@@ -367,7 +345,7 @@ public class CheckTest {
     public void testOfPositivePerformCaseWhenEventIsAll() {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE.name());
         try {
-            check.perform(action("Check numbers 4 and 5",
+            check.perform("Check numbers 4 and 5",
                     check -> check.verify(thatValue(4)
                             .suitsCriteria("Is integer", number ->
                                             Integer.class.isAssignableFrom(number.getClass()),
@@ -378,30 +356,23 @@ public class CheckTest {
 
                             .verify(thatValue(5).suitsCriteria("Sqr value",
                                     number -> pow(number.doubleValue(), 2),
-                                    is(25D)))));
+                                    is(25D))));
 
             assertThat("Logged messages",
                     DefaultListLogger.messages,
-                    contains("Getting of 'Is integer' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <true>' succeed",
-                            "Performing of 'Check Is integer. Assert: is <true>' succeed",
-                            "Getting of 'Sqrt value' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <2.0>' succeed",
-                            "Performing of 'Check Sqrt value. Assert: is <2.0>' succeed",
-                            "Performing of 'Verify inspected value 4' succeed",
-                            "Getting of 'Sqr value' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <25.0>' succeed",
-                            "Performing of 'Check Sqr value. Assert: is <25.0>' succeed",
-                            "Performing of 'Verify inspected value 5' succeed",
-                            "Performing of 'Check numbers 4 and 5' succeed"));
+                    contains("Value true",
+                            "Value true",
+                            "Value 4",
+                            "Value 2.0",
+                            "Value 2.0",
+                            "Value 4",
+                            "Value 25.0",
+                            "Value 25.0",
+                            "Value 5"));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES2.toArray()));
-        }
-        finally {
+        } finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
         }
     }
@@ -419,10 +390,9 @@ public class CheckTest {
                             is(true))
 
                     .suitsCriteria("Sqrt value",
-                                    number -> sqrt(number.doubleValue()),
-                                    is(2D)));
-        }
-        finally {
+                            number -> sqrt(number.doubleValue()),
+                            is(2D)));
+        } finally {
             assertThat(DefaultListLogger.messages,
                     emptyIterable());
 
@@ -447,16 +417,13 @@ public class CheckTest {
                     .suitsCriteria("Sqrt value",
                             number -> sqrt(number.doubleValue()),
                             is(2D)));
-        }
-        finally {
+        } finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
             assertThat(DefaultListLogger.messages,
-                    contains("Getting of 'Is integer' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <true>' succeed",
-                            "Performing of 'Check Is integer. Assert: is <true>' succeed",
-                            "Getting of 'Sqrt value' succeed. The result",
-                            "Value that was used to get a result from"));
+                    contains("Value true",
+                            "Value true",
+                            "Value 9",
+                            "Value 3.0"));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES3.toArray()));
@@ -480,13 +447,11 @@ public class CheckTest {
                     .suitsCriteria("Sqrt value",
                             number -> sqrt(number.doubleValue()),
                             is(2D)));
-        }
-        finally {
+        } finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
             assertThat(DefaultListLogger.messages,
-                    contains("Performing of 'Assert is <2.0>' failed",
-                            "Performing of 'Check Sqrt value. Assert: is <2.0>' failed",
-                            "Performing of 'Verify inspected value 9' failed"));
+                    contains("Value 3.0",
+                            "Value 9"));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES3.toArray()));
@@ -510,19 +475,15 @@ public class CheckTest {
                     .suitsCriteria("Sqrt value",
                             number -> sqrt(number.doubleValue()),
                             is(2D)));
-        }
-        finally {
+        } finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
             assertThat(DefaultListLogger.messages,
-                    contains("Getting of 'Is integer' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <true>' succeed",
-                            "Performing of 'Check Is integer. Assert: is <true>' succeed",
-                            "Getting of 'Sqrt value' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <2.0>' failed",
-                            "Performing of 'Check Sqrt value. Assert: is <2.0>' failed",
-                            "Performing of 'Verify inspected value 9' failed"));
+                    contains("Value true",
+                            "Value true",
+                            "Value 9",
+                            "Value 3.0",
+                            "Value 3.0",
+                            "Value 9"));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES3.toArray()));
@@ -537,7 +498,7 @@ public class CheckTest {
                     "\twas <3.0>")
     public void testOfPerformNegativeCaseWhenEventIsNotDefined() {
         try {
-            check.perform(action("Check number 9", check ->
+            check.perform("Check number 9", check ->
                     check.verify(thatValue(9)
                             .suitsCriteria("Is integer",
                                     number -> Integer.class.isAssignableFrom(number.getClass()),
@@ -545,9 +506,8 @@ public class CheckTest {
 
                             .suitsCriteria("Sqrt value",
                                     number -> sqrt(number.doubleValue()),
-                                    is(2D)))));
-        }
-        finally {
+                                    is(2D))));
+        } finally {
             assertThat(DefaultListLogger.messages,
                     emptyIterable());
 
@@ -565,7 +525,7 @@ public class CheckTest {
     public void testOfPerformNegativeCaseWhenEventIsSuccess() {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS.name());
         try {
-            check.perform(action("Check number 9", check ->
+            check.perform("Check number 9", check ->
                     check.verify(thatValue(9)
                             .suitsCriteria("Is integer",
                                     number -> Integer.class.isAssignableFrom(number.getClass()),
@@ -573,17 +533,14 @@ public class CheckTest {
 
                             .suitsCriteria("Sqrt value",
                                     number -> sqrt(number.doubleValue()),
-                                    is(2D)))));
-        }
-        finally {
+                                    is(2D))));
+        } finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
             assertThat(DefaultListLogger.messages,
-                    contains("Getting of 'Is integer' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <true>' succeed",
-                            "Performing of 'Check Is integer. Assert: is <true>' succeed",
-                            "Getting of 'Sqrt value' succeed. The result",
-                            "Value that was used to get a result from"));
+                    contains("Value true",
+                            "Value true",
+                            "Value 9",
+                            "Value 3.0"));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES4.toArray()));
@@ -599,7 +556,7 @@ public class CheckTest {
     public void testOfPerformNegativeCaseWhenEventIsFailure() {
         DO_CAPTURES_OF_INSTANCE.accept(FAILURE.name());
         try {
-            check.perform(action("Check number 9", check ->
+            check.perform("Check number 9", check ->
                     check.verify(thatValue(9)
                             .suitsCriteria("Is integer",
                                     number -> Integer.class.isAssignableFrom(number.getClass()),
@@ -607,15 +564,12 @@ public class CheckTest {
 
                             .suitsCriteria("Sqrt value",
                                     number -> sqrt(number.doubleValue()),
-                                    is(2D)))));
-        }
-        finally {
+                                    is(2D))));
+        } finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
             assertThat(DefaultListLogger.messages,
-                    contains("Performing of 'Assert is <2.0>' failed",
-                            "Performing of 'Check Sqrt value. Assert: is <2.0>' failed",
-                            "Performing of 'Verify inspected value 9' failed",
-                            "Performing of 'Check number 9' failed"));
+                    contains("Value 3.0",
+                            "Value 9"));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES4.toArray()));
@@ -631,7 +585,7 @@ public class CheckTest {
     public void testOfPerformNegativeCaseWhenEventIsAll() {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE.name());
         try {
-            check.perform(action("Check number 9", check ->
+            check.perform("Check number 9", check ->
                     check.verify(thatValue(9)
                             .suitsCriteria("Is integer",
                                     number -> Integer.class.isAssignableFrom(number.getClass()),
@@ -639,21 +593,16 @@ public class CheckTest {
 
                             .suitsCriteria("Sqrt value",
                                     number -> sqrt(number.doubleValue()),
-                                    is(2D)))));
-        }
-        finally {
+                                    is(2D))));
+        } finally {
             getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
             assertThat(DefaultListLogger.messages,
-                    contains("Getting of 'Is integer' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <true>' succeed",
-                            "Performing of 'Check Is integer. Assert: is <true>' succeed",
-                            "Getting of 'Sqrt value' succeed. The result",
-                            "Value that was used to get a result from",
-                            "Performing of 'Assert is <2.0>' failed",
-                            "Performing of 'Check Sqrt value. Assert: is <2.0>' failed",
-                            "Performing of 'Verify inspected value 9' failed",
-                            "Performing of 'Check number 9' failed"));
+                    contains("Value true",
+                            "Value true",
+                            "Value 9",
+                            "Value 3.0",
+                            "Value 3.0",
+                            "Value 9"));
 
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES4.toArray()));
@@ -662,6 +611,7 @@ public class CheckTest {
 
     @Test
     public void testOfNullValue() {
+        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE.name());
         check.verify(thatValue("Given value", null)
                 .suitsCriteria(nullValue()));
 

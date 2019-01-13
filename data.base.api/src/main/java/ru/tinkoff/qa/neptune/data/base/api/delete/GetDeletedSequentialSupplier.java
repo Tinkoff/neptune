@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.data.base.api.delete;
 
 import ru.tinkoff.qa.neptune.data.base.api.DBSequentialGetStepSupplier;
-import ru.tinkoff.qa.neptune.data.base.api.DataBaseSteps;
+import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
  */
 @SuppressWarnings("unchecked")
 public final class GetDeletedSequentialSupplier<T extends PersistableObject>
-        extends DBSequentialGetStepSupplier<List<T>, DataBaseSteps, GetDeletedSequentialSupplier<T>> {
+        extends DBSequentialGetStepSupplier<List<T>, DataBaseStepContext, GetDeletedSequentialSupplier<T>> {
 
     private final List<T> toBeDeleted;
 
@@ -58,13 +58,13 @@ public final class GetDeletedSequentialSupplier<T extends PersistableObject>
     }
 
     @Override
-    public Function<DataBaseSteps, List<T>> get() {
+    public Function<DataBaseStepContext, List<T>> get() {
         super.from(dataBaseSteps -> dataBaseSteps);
         return super.get();
     }
 
     @Override
-    protected Function<DataBaseSteps, List<T>> getEndFunction() {
+    protected Function<DataBaseStepContext, List<T>> getEndFunction() {
         var description = format("Deleted objects: \n %s", toBeDeleted.toString());
         return toGet(description, dataBaseSteps -> {
             dataBaseSteps.getCurrentPersistenceManager().deletePersistentAll(toBeDeleted);

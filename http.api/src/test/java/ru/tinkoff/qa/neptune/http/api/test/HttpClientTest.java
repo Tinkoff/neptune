@@ -4,7 +4,7 @@ import org.mockserver.model.Cookie;
 import org.mockserver.model.HttpResponse;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.http.api.HttpSteps;
+import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
 import ru.tinkoff.qa.neptune.http.api.properties.*;
 
 import javax.net.ssl.SSLContext;
@@ -35,9 +35,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockserver.model.HttpRequest.request;
 import static ru.tinkoff.qa.neptune.core.api.StoryWriter.condition;
-import static ru.tinkoff.qa.neptune.core.api.proxy.ProxyFactory.getProxied;
+import static ru.tinkoff.qa.neptune.core.api.steps.proxy.ProxyFactory.getProxied;
 import static ru.tinkoff.qa.neptune.http.api.HttpGetCachedCookiesSupplier.cachedCookies;
-import static ru.tinkoff.qa.neptune.http.api.HttpRequestGetSupplier.GET;
+import static ru.tinkoff.qa.neptune.http.api.PreparedHttpRequest.GET;
 import static ru.tinkoff.qa.neptune.http.api.HttpResponseSequentialGetSupplier.responseOf;
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpAuthenticatorProperty.DEFAULT_HTTP_AUTHENTICATOR_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpCookieManagerProperty.DEFAULT_HTTP_COOKIE_MANAGER_PROPERTY;
@@ -95,7 +95,7 @@ public class HttpClientTest extends BaseHttpTest {
 
     @Test
     public void useHttpClientWithoutProperties() throws Exception {
-        var httpSteps = getProxied(HttpSteps.class);
+        var httpSteps = getProxied(HttpStepContext.class);
         var client = httpSteps.getCurrentClient();
 
         assertThat(client.authenticator().orElse(null), nullValue());
@@ -124,7 +124,7 @@ public class HttpClientTest extends BaseHttpTest {
         setProperty(DEFAULT_HTTP_SSL_PARAMETERS_PROPERTY.getPropertyName(), TestSslParametersSupplier.class.getName());
 
         try {
-            var httpSteps = getProxied(HttpSteps.class);
+            var httpSteps = getProxied(HttpStepContext.class);
             var client = httpSteps.getCurrentClient();
 
             assertThat(client.authenticator().orElse(null), equalTo(DEFAULT_AUTHENTICATOR));
@@ -167,7 +167,7 @@ public class HttpClientTest extends BaseHttpTest {
         setProperty(DEFAULT_HTTP_SSL_PARAMETERS_PROPERTY.getPropertyName(), TestSslParametersSupplier.class.getName());
 
         try {
-            var httpSteps = getProxied(HttpSteps.class);
+            var httpSteps = getProxied(HttpStepContext.class);
             httpSteps.get(responseOf(GET(format("%s/index.html", REQUEST_URI))
                     .useHttpClient(HttpClient.newBuilder()), ofString()));
             var client = httpSteps.getCurrentClient();
@@ -199,7 +199,7 @@ public class HttpClientTest extends BaseHttpTest {
 
     @Test
     public void switchToDefaultClientWithRequest() {
-        var httpSteps = getProxied(HttpSteps.class);
+        var httpSteps = getProxied(HttpStepContext.class);
         var defaultClient = httpSteps.getCurrentClient();
         httpSteps.changeCurrentHttpClientSettings(HttpClient.newBuilder());
         var client = httpSteps.getCurrentClient();
@@ -216,7 +216,7 @@ public class HttpClientTest extends BaseHttpTest {
     @Test
     public void abilityToUseRelativeURIPathTest() {
         setProperty(DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY.getPropertyName(), REQUEST_URI);
-        var httpSteps = getProxied(HttpSteps.class);
+        var httpSteps = getProxied(HttpStepContext.class);
 
         try {
             assertThat(httpSteps.get(responseOf(GET("/index.html"), ofString())).body(),
@@ -232,7 +232,7 @@ public class HttpClientTest extends BaseHttpTest {
         var httpCookie = new HttpCookie("TestSetUpCookieName",
                 "TestSetUpCookieValue");
 
-        var httpSteps = getProxied(HttpSteps.class);
+        var httpSteps = getProxied(HttpStepContext.class);
         httpSteps.get(responseOf(GET(format("%s/index.html", REQUEST_URI))
                         .addCookies(null, List.of(httpCookie))
                         .useDefaultHttpClient(),
@@ -252,7 +252,7 @@ public class HttpClientTest extends BaseHttpTest {
                         .withPath("/query"))
                 .respond(HttpResponse.response().withBody("Hello query"));
 
-        var httpSteps = getProxied(HttpSteps.class);
+        var httpSteps = getProxied(HttpStepContext.class);
         var response = httpSteps.get(responseOf(GET(format("%s/query", REQUEST_URI))
                 .queryParam("date", "01-01-1980")
                 .queryParam("some word", "Word and word again"), ofString()));

@@ -1,8 +1,8 @@
 dependencies {
     compile project(':core.api')
     compile group: 'org.glassfish.jersey.core', name: 'jersey-common', version: '2.27'
-    testCompile group: 'org.mock-server', name: 'mockserver-netty', version: '5.5.0'
-    testCompile group: 'org.mock-server', name: 'mockserver-client-java', version: '5.5.0'
+    testCompile group: 'org.mock-server', name: 'mockserver-netty', version: '5.5.1'
+    testCompile group: 'org.mock-server', name: 'mockserver-client-java', version: '5.5.1'
 }
 
 task javadocJar(type: Jar) {

@@ -4,9 +4,9 @@ import org.openqa.selenium.WebDriver;
 
 import java.util.function.Function;
 
-public final class CurrentContentFunction implements Function<SeleniumSteps, WebDriver> {
+public final class CurrentContentFunction implements Function<SeleniumStepContext, WebDriver> {
 
-    public static Function<SeleniumSteps, WebDriver> currentContent() {
+    public static Function<SeleniumStepContext, WebDriver> currentContent() {
         return new CurrentContentFunction();
     }
 
@@ -15,7 +15,7 @@ public final class CurrentContentFunction implements Function<SeleniumSteps, Web
     }
 
     @Override
-    public WebDriver apply(SeleniumSteps seleniumSteps) {
+    public WebDriver apply(SeleniumStepContext seleniumSteps) {
         return seleniumSteps.getWrappedDriver();
     }
 }

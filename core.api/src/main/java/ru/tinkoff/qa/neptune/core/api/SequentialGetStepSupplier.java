@@ -43,6 +43,7 @@ public abstract class SequentialGetStepSupplier<T, R, Q, THIS extends Sequential
             stepFunction = (StepFunction) toGet(result.toString(), result);
         }
 
+        stepFunction.addCaptorFilters(captorFilters);
         return set(stepFunction.compose(mediatorFunction));
     }
 

@@ -2,12 +2,17 @@ package ru.tinkoff.qa.neptune.selenium.functions.target.locator;
 
 import ru.tinkoff.qa.neptune.core.api.GetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.SequentialActionSupplier;
-import ru.tinkoff.qa.neptune.selenium.SeleniumSteps;
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
-public final class SwitchActionSupplier extends SequentialActionSupplier<SeleniumSteps, Object, SwitchActionSupplier> {
+import static java.lang.String.format;
 
-    private SwitchActionSupplier() {
-        super("Switch to");
+@SuppressWarnings("unchecked")
+public final class SwitchActionSupplier extends SequentialActionSupplier<SeleniumStepContext, Object, SwitchActionSupplier> {
+
+    private static final String DESCRIPTION = "Switch to %s";
+
+    private SwitchActionSupplier(String description) {
+        super(format(DESCRIPTION, description));
     }
 
     /**
@@ -17,7 +22,7 @@ public final class SwitchActionSupplier extends SequentialActionSupplier<Seleniu
      * @return built `switch to` action
      */
     public static SwitchActionSupplier to(TargetLocatorSupplier<?> to) {
-        return new SwitchActionSupplier().andThenSwitchTo(to);
+        return new SwitchActionSupplier(to.toString()).performOn((GetStepSupplier) to);
     }
 
     /**
@@ -27,28 +32,7 @@ public final class SwitchActionSupplier extends SequentialActionSupplier<Seleniu
      * @return built `switch to` action
      */
     public static SwitchActionSupplier to(SwitchesToItself to) {
-        return new SwitchActionSupplier().performOn(to);
-    }
-
-    /**
-     * Adds the next action which performs the switching to some target locator: window, alert, frame etc.
-     *
-     * @param to is how to get some target locator
-     * @return built `switch to` action
-     */
-    @SuppressWarnings("unchecked")
-    public SwitchActionSupplier andThenSwitchTo(TargetLocatorSupplier<?> to) {
-        return performOn((GetStepSupplier) to);
-    }
-
-    /**
-     * Adds the next action which performs the switching to some target locator: window or frame.
-     *
-     * @param to is the target locator to be switched
-     * @return built `switch to` action
-     */
-    public SwitchActionSupplier andThenSwitchTo(SwitchesToItself to) {
-        return performOn(to);
+        return new SwitchActionSupplier(to.toString()).performOn(to);
     }
 
     @Override

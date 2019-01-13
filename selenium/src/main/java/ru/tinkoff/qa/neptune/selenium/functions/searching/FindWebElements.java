@@ -10,7 +10,7 @@ import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchingProxyBuilder.createProxy;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CGLibProxyBuilder.createProxy;
 
 @SuppressWarnings("unchecked")
 final class FindWebElements implements Function<SearchContext, List<WebElement>> {
@@ -35,7 +35,7 @@ final class FindWebElements implements Function<SearchContext, List<WebElement>>
                 .stream().map(webElement -> {
                     var stringDescription = format("Web element found %s", by);
                     if (!isBlank(conditionString)) {
-                        stringDescription = format("%s on conditions '%s'", stringDescription, conditionString);
+                        stringDescription = format("%s ['%s']", stringDescription, conditionString);
                     }
                     return createProxy(webElement.getClass(), new WebElementInterceptor(webElement, stringDescription));
                 })
@@ -44,7 +44,7 @@ final class FindWebElements implements Function<SearchContext, List<WebElement>>
             public String toString() {
                 var stringDescription = format("%s web elements found %s", size(), by);
                 if (!isBlank(conditionString)) {
-                    stringDescription = format("%s on conditions '%s'", stringDescription, conditionString);
+                    stringDescription = format("%s and meet criteria ['%s']", stringDescription, conditionString);
                 }
                 return stringDescription;
             }

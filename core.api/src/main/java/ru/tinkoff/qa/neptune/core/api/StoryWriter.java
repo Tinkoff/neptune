@@ -19,7 +19,7 @@ public final class StoryWriter {
      * @return a new consumer with the given string description. Description is returned
      * by the {@link #toString()} method.
      */
-    public static <T> Consumer<T> action(String description, Consumer<T> consumer) {
+    public static <T> StepAction<T> action(String description, Consumer<T> consumer) {
         return new StepAction<>(description, consumer);
     }
 
@@ -34,7 +34,7 @@ public final class StoryWriter {
      * @return a new function with the given string description. Description is returned
      * by the {@link #toString()} method.
      */
-    public static <T, R> Function<T, R> toGet(String description, Function<T, R> function) {
+    public static <T, R> StepFunction<T, R> toGet(String description, Function<T, R> function) {
         return new StepFunction<>(description, function);
     }
 

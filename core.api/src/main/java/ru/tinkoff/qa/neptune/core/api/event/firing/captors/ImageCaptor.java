@@ -9,14 +9,14 @@ import static ru.tinkoff.qa.neptune.core.api.utils.SPIUtil.loadSPI;
 
 public abstract class ImageCaptor<T> extends Captor<T, BufferedImage> {
 
-    public ImageCaptor(List<CapturedImageInjector> injectors) {
-        super(injectors);
+    public ImageCaptor(String message, List<CapturedImageInjector> injectors) {
+        super(message, injectors);
     }
 
-    public ImageCaptor() {
-        this(loadSPI(CapturedImageInjector.class));
+    public ImageCaptor(String message) {
+        this(message, loadSPI(CapturedImageInjector.class));
     }
 
     @Override
-    protected abstract BufferedImage getData(T caught);
+    public abstract BufferedImage getData(T caught);
 }

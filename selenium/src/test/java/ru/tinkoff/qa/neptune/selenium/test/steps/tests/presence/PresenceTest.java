@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.test.steps.tests.presence;
 
 import ru.tinkoff.qa.neptune.core.api.GetStepSupplier;
-import ru.tinkoff.qa.neptune.selenium.SeleniumSteps;
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 import org.openqa.selenium.NoSuchElementException;
 import org.testng.annotations.Test;
@@ -35,37 +35,37 @@ public class PresenceTest extends BaseWebDriverTest {
     private static final IndexOutOfBoundsException EXPECTED_EXCEPTION_TO_BE_THROWN =
             new IndexOutOfBoundsException("Expected exception to be thrown");
 
-    private static final Function<SeleniumSteps, Object> RETURNS_OBJECT = toGet("Object",
+    private static final Function<SeleniumStepContext, Object> RETURNS_OBJECT = toGet("Object",
             seleniumSteps -> new Object());
 
-    private static final Function<SeleniumSteps, Object> RETURNS_NULL = toGet("Null value",
+    private static final Function<SeleniumStepContext, Object> RETURNS_NULL = toGet("Null value",
             seleniumSteps -> null);
 
-    private static final Function<SeleniumSteps, Object> RETURNS_OBJECT_ARRAY = toGet("Object array",
+    private static final Function<SeleniumStepContext, Object> RETURNS_OBJECT_ARRAY = toGet("Object array",
             seleniumSteps -> new Object[] {1, "String"});
 
-    private static final Function<SeleniumSteps, Object> RETURNS_EMPTY_ARRAY = toGet("Empty array",
+    private static final Function<SeleniumStepContext, Object> RETURNS_EMPTY_ARRAY = toGet("Empty array",
             seleniumSteps -> new String[] {});
 
-    private static final Function<SeleniumSteps, Object> RETURNS_OBJECT_ITERABLE = toGet("Object iterable",
+    private static final Function<SeleniumStepContext, Object> RETURNS_OBJECT_ITERABLE = toGet("Object iterable",
             seleniumSteps -> of(1, "String"));
 
-    private static final Function<SeleniumSteps, Object> RETURNS_EMPTY_ITERABLE = toGet("Object iterable",
+    private static final Function<SeleniumStepContext, Object> RETURNS_EMPTY_ITERABLE = toGet("Object iterable",
             seleniumSteps -> of());
 
-    private static final Function<SeleniumSteps, Object> RETURNS_TRUE = toGet("True value",
+    private static final Function<SeleniumStepContext, Object> RETURNS_TRUE = toGet("True value",
             seleniumSteps -> true);
 
-    private static final Function<SeleniumSteps, Object> RETURNS_FALSE = toGet("False value",
+    private static final Function<SeleniumStepContext, Object> RETURNS_FALSE = toGet("False value",
             seleniumSteps -> false);
 
-    private static final Function<SeleniumSteps, Object> PRODUCES_IGNORED_EXCEPTIONS = toGet("Ignored exception",
+    private static final Function<SeleniumStepContext, Object> PRODUCES_IGNORED_EXCEPTIONS = toGet("Ignored exception",
             seleniumSteps -> {
         List<RuntimeException> exceptions = of(IGNORED_EXCEPTION, IGNORED_EXCEPTION2);
         throw exceptions.get(new Random().nextInt(exceptions.size()));
     });
 
-    private static final Function<SeleniumSteps, Object> PRODUCES_EXPECTED_EXCEPTIONS = toGet("Expected exception",
+    private static final Function<SeleniumStepContext, Object> PRODUCES_EXPECTED_EXCEPTIONS = toGet("Expected exception",
             seleniumSteps -> { throw EXPECTED_EXCEPTION_TO_BE_THROWN;});
 
     @Test
@@ -208,8 +208,8 @@ public class PresenceTest extends BaseWebDriverTest {
                 is(false));
     }
 
-    private static class TestGetSupplier extends GetStepSupplier<SeleniumSteps, Object, TestGetSupplier> {
-        public TestGetSupplier set(Function<SeleniumSteps, Object> function) {
+    private static class TestGetSupplier extends GetStepSupplier<SeleniumStepContext, Object, TestGetSupplier> {
+        public TestGetSupplier set(Function<SeleniumStepContext, Object> function) {
             return super.set(function);
         }
     }

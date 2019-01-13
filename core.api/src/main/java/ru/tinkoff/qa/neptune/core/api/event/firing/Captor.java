@@ -2,7 +2,6 @@ package ru.tinkoff.qa.neptune.core.api.event.firing;
 
 import java.util.List;
 
-import static java.util.List.of;
 import static java.util.Optional.ofNullable;
 
 /**
@@ -13,28 +12,26 @@ import static java.util.Optional.ofNullable;
  */
 public abstract class Captor<T, S> {
 
+    private final String message;
     protected final List<? extends CapturedDataInjector<S>> injectors;
 
-    public Captor(List<? extends CapturedDataInjector<S>> injectors) {
+    public Captor(String message, List<? extends CapturedDataInjector<S>> injectors) {
+        this.message = message;
         this.injectors = injectors;
     }
 
-    public Captor() {
-        this(of());
-    }
-
-    public void capture(T caught, String message) {
+    public void capture(T caught) {
         S s = getData(caught);
         ofNullable(s).ifPresent(s1 -> injectors.forEach(injector -> injector.inject(s1, message)));
     }
 
     /**
-     * Gets/transforms data from a caught object to inject to a log/report.
+     * Gets/transforms data from a caught object to inject into log/report.
      *
      * @param caught is a caught object to get data for the injecting.
      * @return S produced data to be injected to a log/report
      */
-    protected abstract S getData(T caught);
+    public abstract S getData(T caught);
 
     /**
      * This method is supposed to be used to convert an object to a value that can be logged and reported.

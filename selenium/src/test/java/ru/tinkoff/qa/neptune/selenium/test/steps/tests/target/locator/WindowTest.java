@@ -58,7 +58,7 @@ public class WindowTest extends BaseWebDriverTest {
         assertThat(firstWindow.getPosition(), is(POSITION_1.getPosition()));
         assertThat(firstWindow.getSize(), is(SIZE1.getSize()));
         assertThat(firstWindow.isPresent(), is(true));
-        assertThat(firstWindow.toString(), is("The first window"));
+        assertThat(firstWindow.toString(), is("Window[url https://www.google.com/ title Google]"));
     }
 
     @Test
@@ -69,7 +69,7 @@ public class WindowTest extends BaseWebDriverTest {
         assertThat(foundWindow.getPosition(), is(POSITION_2.getPosition()));
         assertThat(foundWindow.getSize(), is(SIZE2.getSize()));
         assertThat(foundWindow.isPresent(), is(true));
-        assertThat(foundWindow.toString(), is("Window/tab found by index 1"));
+        assertThat(foundWindow.toString(), is("Window[url https://www.facebook.com/ title Facebook]"));
     }
 
     @Test
@@ -81,8 +81,7 @@ public class WindowTest extends BaseWebDriverTest {
         assertThat(foundWindow.getPosition(), is(POSITION_3.getPosition()));
         assertThat(foundWindow.getSize(), is(SIZE3.getSize()));
         assertThat(foundWindow.isPresent(), is(true));
-        assertThat(foundWindow.toString(), is("Window/tab found by conditions: title meets regExp pattern " +
-                "'^.*\\b(Github)\\b.*$', url meets regExp pattern '^.*\\b(github)\\b.*$'"));
+        assertThat(foundWindow.toString(), is("Window[url https://github.com/ title Github Inc]"));
     }
 
     @Test
@@ -94,8 +93,7 @@ public class WindowTest extends BaseWebDriverTest {
         assertThat(foundWindow.getPosition(), is(POSITION_3.getPosition()));
         assertThat(foundWindow.getSize(), is(SIZE3.getSize()));
         assertThat(foundWindow.isPresent(), is(true));
-        assertThat(foundWindow.toString(), is("Window/tab found by index 2 and by conditions: title meets regExp " +
-                "pattern '^.*\\b(Github)\\b.*$', url meets regExp pattern '^.*\\b(github)\\b.*$'"));
+        assertThat(foundWindow.toString(), is("Window[url https://github.com/ title Github Inc]"));
     }
 
     @Test(expectedExceptions = NoSuchWindowException.class)
@@ -188,9 +186,9 @@ public class WindowTest extends BaseWebDriverTest {
     @Test(dependsOnMethods = "switchToWindowBySearchCriteriaTest")
     public void switchToWindowBySearchCriteriaChainedTest() {
         seleniumSteps.performSwitch(to(window().byIndex(2)
-                .onCondition(hasTitle(compile("^.*\\b(Github)\\b.*$")).and(hasUrl(compile("^.*\\b(github)\\b.*$")))))
-                .andThenSwitchTo(window().byIndex(1))
-                .andThenSwitchTo(window().byIndex(0)));
+                .onCondition(hasTitle(compile("^.*\\b(Github)\\b.*$")).and(hasUrl(compile("^.*\\b(github)\\b.*$"))))))
+                .performSwitch(to(window().byIndex(1)))
+                .performSwitch(to(window().byIndex(0)));
 
         assertThat(seleniumSteps.getWrappedDriver().getWindowHandle(), is(HANDLE1.getHandle()));
         assertThat(seleniumSteps.getWrappedDriver().getCurrentUrl(), is(GOOGLE.getUrl()));
@@ -228,9 +226,9 @@ public class WindowTest extends BaseWebDriverTest {
         Window window2 = seleniumSteps.get(window().byIndex(0));
         Window window3 = seleniumSteps.get(window().byIndex(1));
 
-        seleniumSteps.performSwitch(to(window)
-                .andThenSwitchTo(window3)
-                .andThenSwitchTo(window2));
+        seleniumSteps.performSwitch(to(window))
+                .performSwitch(to(window3))
+                .performSwitch(to(window2));
 
         assertThat(seleniumSteps.getWrappedDriver().getWindowHandle(), is(HANDLE1.getHandle()));
         assertThat(seleniumSteps.getWrappedDriver().getCurrentUrl(), is(GOOGLE.getUrl()));

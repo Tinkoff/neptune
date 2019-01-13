@@ -1,14 +1,16 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert;
 
 import ru.tinkoff.qa.neptune.core.api.SequentialActionSupplier;
-import ru.tinkoff.qa.neptune.selenium.SeleniumSteps;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import org.openqa.selenium.Alert;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 
-public abstract class AlertActionSupplier extends SequentialActionSupplier<SeleniumSteps, Alert, AlertActionSupplier> {
+@MakeImageCapturesOnFinishing
+public abstract class AlertActionSupplier extends SequentialActionSupplier<SeleniumStepContext, Alert, AlertActionSupplier> {
 
     private AlertActionSupplier(String description) {
         super(description);

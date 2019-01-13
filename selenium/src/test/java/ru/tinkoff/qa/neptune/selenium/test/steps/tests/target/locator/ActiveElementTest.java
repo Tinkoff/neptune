@@ -5,7 +5,6 @@ import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 import org.openqa.selenium.WebDriverException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.selenium.functions.target.locator.active.element.GetActiveElementSupplier;
 
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.active.element.GetActiveElementSupplier.activeElement;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -38,10 +37,10 @@ public class ActiveElementTest extends BaseWebDriverTest {
 
     @Test(expectedExceptions = WebDriverException.class)
     public void activeElementInSituationOfThrownExceptionWhenTimeIsNotDefined() {
-        seleniumSteps.get(GetActiveElementSupplier.activeElement());
+        seleniumSteps.get(activeElement());
         setStartBenchMark();
         try {
-            seleniumSteps.get(GetActiveElementSupplier.activeElement()); //mock is designed the special way
+            seleniumSteps.get(activeElement()); //mock is designed the special way
             //when it tries to switch to active element more than one time per session
             //then it throws the exception
         }
@@ -53,10 +52,10 @@ public class ActiveElementTest extends BaseWebDriverTest {
 
     @Test(expectedExceptions = WebDriverException.class)
     public void activeElementInSituationOfThrownExceptionWhenTimeIsDefined() {
-        seleniumSteps.get(GetActiveElementSupplier.activeElement());
+        seleniumSteps.get(activeElement());
         setStartBenchMark();
         try {
-            seleniumSteps.get(GetActiveElementSupplier.activeElement(FIVE_SECONDS)); //mock is designed the special way
+            seleniumSteps.get(activeElement(FIVE_SECONDS)); //mock is designed the special way
             //when it tries to switch to active element more than one time per session
             //then it throws the exception
         }

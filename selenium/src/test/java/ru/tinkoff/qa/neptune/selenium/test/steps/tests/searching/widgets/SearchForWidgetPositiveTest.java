@@ -48,7 +48,7 @@ import static org.openqa.selenium.By.tagName;
 public class SearchForWidgetPositiveTest extends BaseWebDriverTest {
 
     private static String getWidgetDescription(String name, Predicate<?> condition) {
-        return format("%s found on conditions '%s'", name, condition);
+        return format("%s ['%s']", name, condition);
     }
 
     @DataProvider(name = "search without criteria")
@@ -1287,7 +1287,6 @@ public class SearchForWidgetPositiveTest extends BaseWebDriverTest {
         setStartBenchMark();
         T t = seleniumSteps.find(search);
         setEndBenchMark();
-        System.out.println(t.getClass().getName());
         assertThat(widgetClass.isAssignableFrom(t.getClass()), is(true));
         ofNullable(element).ifPresent(element1 -> assertThat(t.getWrappedElement(), equalTo(element1)));
         assertThat(t.toString(), is(expectedDescription));

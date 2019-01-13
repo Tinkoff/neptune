@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.data.base.api.query;
 
-import ru.tinkoff.qa.neptune.data.base.api.DataBaseSteps;
+import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
 import java.util.function.Function;
@@ -31,10 +31,12 @@ public final class SelectSingleObjectByIdSupplier<T extends PersistableObject>
     }
 
     @Override
-    protected Function<DataBaseSteps, T> getEndFunction() {
-        Function<DataBaseSteps, T> singleFunction = dataBaseSteps -> {
+    protected Function<DataBaseStepContext, T> getEndFunction() {
+        Function<DataBaseStepContext, T> singleFunction = dataBaseSteps -> {
             try {
-                return dataBaseSteps.getCurrentPersistenceManager().getObjectById(ofType, ids[0]);
+                var id = ids[0];
+                return setQuery(dataBaseSteps.getCurrentPersistenceManager().getObjectById(ofType, id),
+                        format("Known Id: %s", id));
             }
             catch (RuntimeException e) {
                 return null;

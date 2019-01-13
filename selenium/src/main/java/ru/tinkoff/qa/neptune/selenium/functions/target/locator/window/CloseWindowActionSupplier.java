@@ -1,14 +1,15 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator.window;
 
 import ru.tinkoff.qa.neptune.core.api.SequentialActionSupplier;
-import ru.tinkoff.qa.neptune.selenium.SeleniumSteps;
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
+import static java.lang.String.format;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
 
-public final class CloseWindowActionSupplier extends SequentialActionSupplier<SeleniumSteps, Window, CloseWindowActionSupplier> {
+public final class CloseWindowActionSupplier extends SequentialActionSupplier<SeleniumStepContext, Window, CloseWindowActionSupplier> {
 
-    private CloseWindowActionSupplier() {
-        super("Close window/tab");
+    private CloseWindowActionSupplier(String description) {
+        super(format("Close %s", description));
     }
 
     /**
@@ -27,7 +28,7 @@ public final class CloseWindowActionSupplier extends SequentialActionSupplier<Se
      * @return Supplier of an action which closes the window.
      */
     public static CloseWindowActionSupplier closeWindow(GetWindowSupplier supplier) {
-        return new CloseWindowActionSupplier().andThenCloseWindow(supplier);
+        return new CloseWindowActionSupplier(supplier.toString()).performOn(supplier);
     }
 
     /**
@@ -37,27 +38,7 @@ public final class CloseWindowActionSupplier extends SequentialActionSupplier<Se
      * @return Supplier of an action which closes the window.
      */
     public static CloseWindowActionSupplier closeWindow(Window window) {
-        return new CloseWindowActionSupplier().andThenCloseWindow(window);
-    }
-
-    /**
-     * Adds another action which closes some window.
-     *
-     * @param supplier is how to get the window to close
-     * @return self-reference
-     */
-    public CloseWindowActionSupplier andThenCloseWindow(GetWindowSupplier supplier) {
-        return performOn(supplier);
-    }
-
-    /**
-     * Adds another action which closes the window.
-     *
-     * @param window to close
-     * @return self-reference
-     */
-    public CloseWindowActionSupplier andThenCloseWindow(Window window) {
-        return performOn(window);
+        return new CloseWindowActionSupplier(window.toString()).performOn(window);
     }
 
     @Override

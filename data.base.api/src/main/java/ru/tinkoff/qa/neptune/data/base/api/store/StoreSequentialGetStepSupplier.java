@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.data.base.api.store;
 
 import ru.tinkoff.qa.neptune.data.base.api.DBSequentialGetStepSupplier;
-import ru.tinkoff.qa.neptune.data.base.api.DataBaseSteps;
+import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
  */
 @SuppressWarnings("unchecked")
 public final class StoreSequentialGetStepSupplier<T extends PersistableObject>
-        extends DBSequentialGetStepSupplier<List<T>, DataBaseSteps, StoreSequentialGetStepSupplier<T>> {
+        extends DBSequentialGetStepSupplier<List<T>, DataBaseStepContext, StoreSequentialGetStepSupplier<T>> {
 
     private final Collection<T> toBePersisted;
 
@@ -60,7 +60,7 @@ public final class StoreSequentialGetStepSupplier<T extends PersistableObject>
     }
 
     @Override
-    protected Function<DataBaseSteps, List<T>> getEndFunction() {
+    protected Function<DataBaseStepContext, List<T>> getEndFunction() {
         var description = format("Stored objects: \n %s", toBePersisted.toString());
         return toGet(description, dataBaseSteps -> {
             var manager = dataBaseSteps.getCurrentPersistenceManager();
@@ -78,7 +78,7 @@ public final class StoreSequentialGetStepSupplier<T extends PersistableObject>
     }
 
     @Override
-    public Function<DataBaseSteps, List<T>> get() {
+    public Function<DataBaseStepContext, List<T>> get() {
         super.from(dataBaseSteps -> dataBaseSteps);
         return super.get();
     }

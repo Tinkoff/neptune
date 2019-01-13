@@ -5,14 +5,11 @@ import org.openqa.selenium.*;
 import java.net.URL;
 
 import static java.lang.String.format;
-import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 class DefaultWindow implements Window, TakesScreenshot {
 
     private final String handle;
     private final WebDriver driver;
-    private String description;
 
     DefaultWindow(String handle, WebDriver driver) {
         this.handle = handle;
@@ -122,11 +119,7 @@ class DefaultWindow implements Window, TakesScreenshot {
 
     @Override
     public String toString() {
-        return ofNullable(description).orElse(EMPTY);
-    }
-
-    void setDescription(String description) {
-        this.description = description;
+        return format("Window[url %s title %s]", getCurrentUrl(), getTitle());
     }
 
     @Override

@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator.window;
 
 import ru.tinkoff.qa.neptune.core.api.SequentialGetStepSupplier;
-import ru.tinkoff.qa.neptune.selenium.SeleniumSteps;
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 
@@ -10,7 +10,7 @@ import java.util.function.Function;
 import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
 
-public final class GetWindowPositionSupplier extends SequentialGetStepSupplier<SeleniumSteps, Point, Window, GetWindowPositionSupplier> {
+public final class GetWindowPositionSupplier extends SequentialGetStepSupplier<SeleniumStepContext, Point, Window, GetWindowPositionSupplier> {
 
     private GetWindowPositionSupplier() {
         super();

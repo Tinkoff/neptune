@@ -14,8 +14,12 @@ import static org.apache.commons.io.FileUtils.writeStringToFile;
 
 abstract class DBCaptor<T> extends FileCaptor<T> {
 
+    public DBCaptor(String message) {
+        super(message);
+    }
+
     @Override
-    protected File getData(T caught) {
+    public File getData(T caught) {
         try {
             var json = createTempFile("persistable", UUID.randomUUID().toString() + ".json");
             writeStringToFile(json, new GsonBuilder().setPrettyPrinting().create().toJson(new Gson().toJsonTree(caught)),

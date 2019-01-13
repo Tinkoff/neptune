@@ -38,7 +38,7 @@ public final class IsLoggableUtil {
         return false;
     }
 
-    private static boolean hasReadableDescription(Object toBeDescribed) {
+    public static boolean hasReadableDescription(Object toBeDescribed) {
         var stringDescription = valueOf(toBeDescribed);
         return !isBlank(stringDescription) && !valueOf(toBeDescribed).equals(format("%s@%s", toBeDescribed.getClass().getName(),
                 toHexString(toBeDescribed.hashCode())));

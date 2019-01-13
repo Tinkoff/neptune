@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.http.api;
 
 import ru.tinkoff.qa.neptune.core.api.GetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
 
 import java.net.CookieManager;
 import java.net.HttpCookie;
@@ -17,10 +18,11 @@ import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSubIterable.getIter
 /**
  * This class is designed to build functions that get applicable cookies from a cookie cache
  */
-public final class HttpGetCachedCookiesSupplier extends GetStepSupplier<HttpSteps, List<HttpCookie>, HttpGetCachedCookiesSupplier> {
+@MakeStringCapturesOnFinishing
+public final class HttpGetCachedCookiesSupplier extends GetStepSupplier<HttpStepContext, List<HttpCookie>, HttpGetCachedCookiesSupplier> {
 
     private Predicate<HttpCookie> criteria;
-    private static final Function<HttpSteps, List<HttpCookie>> GET_COOKIES = httpSteps ->
+    private static final Function<HttpStepContext, List<HttpCookie>> GET_COOKIES = httpSteps ->
             httpSteps.getCurrentClient().cookieHandler()
                     .map(cookieHandler -> {
                         if (!CookieManager.class.isAssignableFrom(cookieHandler.getClass())) {
@@ -56,7 +58,7 @@ public final class HttpGetCachedCookiesSupplier extends GetStepSupplier<HttpStep
         return this;
     }
 
-    public Function<HttpSteps, List<HttpCookie>> get() {
+    public Function<HttpStepContext, List<HttpCookie>> get() {
         return ofNullable(super.get()).orElseGet(() -> {
             ofNullable(criteria)
                     .ifPresentOrElse(httpCookiePredicate ->

@@ -4,16 +4,21 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.captors.StringCaptor;
 import ru.tinkoff.qa.neptune.http.api.HowToGetResponse;
 
 import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 import static java.lang.String.format;
 import static org.apache.commons.lang3.time.DurationFormatUtils.formatDuration;
 
 public class RequestStringCaptor extends StringCaptor<HttpRequest> {
 
+    public RequestStringCaptor() {
+        super("Request");
+    }
+
     @Override
-    protected StringBuilder getData(HttpRequest caught) {
-        var stringBuilder = new StringBuilder("Request: \n");
-        stringBuilder.append(format("URI: %s \n", caught.uri()))
+    public StringBuilder getData(HttpRequest caught) {
+        var stringBuilder = new StringBuilder()
+                .append(format("URI: %s \n", caught.uri()))
                 .append(format("Method: %s \n", caught.method()))
                 .append(format("Headers: %s \n", caught.headers()))
                 .append(format("Expect continue: %s \n", caught.expectContinue()));
@@ -33,6 +38,10 @@ public class RequestStringCaptor extends StringCaptor<HttpRequest> {
 
         if (HowToGetResponse.class.isAssignableFrom(clazz)) {
             return ((HowToGetResponse) toBeCaptured).getRequest();
+        }
+
+        if (HttpResponse.class.isAssignableFrom(clazz)) {
+            return ((HttpResponse) toBeCaptured).request();
         }
 
         return null;

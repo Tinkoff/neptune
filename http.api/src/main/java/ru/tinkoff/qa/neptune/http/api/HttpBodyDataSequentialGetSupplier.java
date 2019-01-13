@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.http.api;
 
 import ru.tinkoff.qa.neptune.core.api.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeCaptureOnFinishing;
 
 import java.net.http.HttpResponse;
 import java.util.Arrays;
@@ -42,7 +43,8 @@ import static ru.tinkoff.qa.neptune.core.api.IsLoggableUtil.isLoggable;
  *           It can be the object of types {@code Q} or even {@code T} as well. Then {@code Q} and {@code R},
  *           {@code T} and {@code Q} and {@code R} could be declared by the same type.
  */
-public abstract class HttpBodyDataSequentialGetSupplier<S, T, Q, R> extends SequentialGetStepSupplier<HttpSteps, T, Q,
+@MakeCaptureOnFinishing(typeOfCapture = Object.class)
+public abstract class HttpBodyDataSequentialGetSupplier<S, T, Q, R> extends SequentialGetStepSupplier<HttpStepContext, T, Q,
         HttpBodyDataSequentialGetSupplier<S, T, Q, R>> {
 
     private final Function<S, Q> transformingFunction;
@@ -496,7 +498,7 @@ public abstract class HttpBodyDataSequentialGetSupplier<S, T, Q, R> extends Sequ
         };
     }
 
-    public Function<HttpSteps, T> get() {
+    public Function<HttpStepContext, T> get() {
         checkArgument(nonNull(howToGetResponseFrom) || nonNull(responseFrom),
                 "Response to get data from or the way how to get receive to get data from is not defined");
 

@@ -20,7 +20,7 @@ public class GetASingleTest extends BaseConditionalTest {
                 condition("equals " + A_UPPER + " ignore case", VALUE_A),
                 FIVE_SECONDS, FIVE_HUNDRED_MILLIS,
                 true, () -> NOTHING_WAS_FOUND).toString(),
-                is(format("%s. Criteria: %s", THE_FIRST_OBJECT_DESCRIPTION, "equals " + A_UPPER + " ignore case")));
+                is(format("%s [Criteria: %s", THE_FIRST_OBJECT_DESCRIPTION, "equals " + A_UPPER + " ignore case]")));
     }
 
     @Test

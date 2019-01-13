@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.net.http.HttpResponse;
 
 import static java.io.File.createTempFile;
-import static java.lang.String.format;
 import static java.nio.charset.Charset.defaultCharset;
 import static java.util.Optional.ofNullable;
 import static java.util.UUID.randomUUID;
@@ -18,12 +17,13 @@ import static org.apache.commons.io.FileUtils.writeStringToFile;
 
 public class ResponseJsonCaptor extends FileCaptor<HttpResponse<String>> {
 
-    public void capture(HttpResponse<String> caught, String message) {
-        super.capture(caught, format("Received response. %s", message));
+
+    public ResponseJsonCaptor() {
+        super("Response. Json");
     }
 
     @Override
-    protected File getData(HttpResponse<String> caught) {
+    public File getData(HttpResponse<String> caught) {
         var uuid = randomUUID().toString();
         try {
             var json = createTempFile("json_response_body", uuid + ".json");

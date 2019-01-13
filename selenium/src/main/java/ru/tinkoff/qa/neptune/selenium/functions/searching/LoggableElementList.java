@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 class LoggableElementList<T extends SearchContext> extends ArrayList<T> implements LoggableObject {
-
     LoggableElementList() {
         super();
     }

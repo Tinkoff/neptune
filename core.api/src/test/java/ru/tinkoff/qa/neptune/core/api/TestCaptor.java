@@ -12,14 +12,14 @@ public class TestCaptor extends Captor<Number, String> {
     static final List<String> messages = new ArrayList<>();
 
     public TestCaptor() {
-        super(List.of((toBeInjected, message) -> {
+        super("Value ", List.of((toBeInjected, message) -> {
             String msg = format("%s %s", message, toBeInjected);
             messages.add(msg);
         }));
     }
 
     @Override
-    protected String getData(Number caught) {
+    public String getData(Number caught) {
         return caught.toString();
     }
 

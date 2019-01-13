@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.http.api;
 
 import ru.tinkoff.qa.neptune.core.api.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeCaptureOnFinishing;
 
 import javax.net.ssl.SSLSession;
 import java.net.URI;
@@ -16,7 +17,8 @@ import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
  * This class is designed to build chains of functions that get needed data from a http response.
  * @param <T> is a type of data to get from a http response
  */
-public final class HttpResponseInfoSequentialGetSupplier<T> extends SequentialGetStepSupplier<HttpSteps, T,
+@MakeCaptureOnFinishing(typeOfCapture = Object.class)
+public final class HttpResponseInfoSequentialGetSupplier<T> extends SequentialGetStepSupplier<HttpStepContext, T,
         HttpResponse<?>, HttpResponseInfoSequentialGetSupplier<T>> {
 
     private static final Function<HttpResponse<?>, Integer> STATUS_CODE = HttpResponse::statusCode;
