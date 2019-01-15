@@ -67,7 +67,7 @@ public final class EditActionSupplier extends
      */
     public static <R, S extends SearchContext & Editable<R>> EditActionSupplier valueOfThe(
             SearchSupplier<S> of, R value) {
-        return new EditActionSupplier(format(DESCRIPTION, addDescriptionOfTheSetValue(value), of), value)
+        return new EditActionSupplier(format(DESCRIPTION, of, addDescriptionOfTheSetValue(value)), value)
                 .performOn(of.get().compose(currentContent()));
     }
 
@@ -81,7 +81,7 @@ public final class EditActionSupplier extends
      * @return built edit action
      */
     public static <R, S extends SearchContext & Editable<R>> EditActionSupplier valueOfThe(S of, R value) {
-        return new EditActionSupplier(format(DESCRIPTION, addDescriptionOfTheSetValue(value), of), value).performOn(of);
+        return new EditActionSupplier(format(DESCRIPTION, of, addDescriptionOfTheSetValue(value)), value).performOn(of);
     }
 
     public <T, Q extends SearchContext & Editable<T>> EditActionSupplier andValueOfThe(SearchSupplier<Q> of, T value) {

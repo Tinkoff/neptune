@@ -25,7 +25,7 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
         }
 
         return ofNullable(((Persistable) this).dnGetObjectId())
-                .map(o -> format("Stored item of type %s Id = %s", name, o))
+                .map(o -> format("Stored item of type %s Id = [%s]", name, o))
                 .orElseGet(() -> format("Stored item of type %s without id", name));
     }
 
