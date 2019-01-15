@@ -12,6 +12,7 @@ import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.List.of;
 import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
 
 public final class HasNestedElementMatcher<T extends SearchContext> extends TypeSafeDiagnosingMatcher<T> {
 
@@ -36,13 +37,13 @@ public final class HasNestedElementMatcher<T extends SearchContext> extends Type
     @SuppressWarnings("unchecked")
     protected boolean matchesSafely(T item, Description mismatchDescription) {
         try {
-            ((StepFunction<SearchContext, ?>) search.get())
-                    .addIgnored(of(NoSuchElementException.class)).apply(item);
-            return true;
-        }
-        catch (NoSuchElementException e) {
-            mismatchDescription.appendText("no such element was found");
-            return false;
+            return ofNullable(((StepFunction<SearchContext, ?>) search.get())
+                    .addIgnored(of(NoSuchElementException.class)).apply(item))
+                    .map(o -> true)
+                    .orElseGet(() -> {
+                        mismatchDescription.appendText("no such element was found");
+                        return false;
+                    });
         }
         catch (Throwable e) {
             mismatchDescription.appendText("The attempt to find nested element was failed. Something went wrong.\n")
