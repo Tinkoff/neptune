@@ -97,15 +97,15 @@ public abstract class SelectSingleObjectByQuerySupplier<T, R>
         return ofNullable(condition).map(tPredicate ->
                 ofNullable(nothingIsSelectedExceptionSupplier).map(nothingIsSelectedExceptionSupplier1 ->
                         getFromIterable(description, function, tPredicate,
-                                timeToGetResult, false, true, nothingIsSelectedExceptionSupplier1))
+                                timeToGetResult, sleepTime, false, true, nothingIsSelectedExceptionSupplier1))
                         .orElseGet(() -> getFromIterable(description, function, tPredicate,
-                                timeToGetResult, false, true)))
+                                timeToGetResult, sleepTime, false, true)))
 
                 .orElseGet(() -> ofNullable(nothingIsSelectedExceptionSupplier)
                         .map(nothingIsSelectedExceptionSupplier1 -> getFromIterable(description,
-                                function, timeToGetResult,  nothingIsSelectedExceptionSupplier1)
+                                function, timeToGetResult, sleepTime,  nothingIsSelectedExceptionSupplier1)
                         ).orElseGet(() ->
-                                getFromIterable(description, function, timeToGetResult)
+                                getFromIterable(description, function, timeToGetResult, sleepTime)
                         ));
     }
 }

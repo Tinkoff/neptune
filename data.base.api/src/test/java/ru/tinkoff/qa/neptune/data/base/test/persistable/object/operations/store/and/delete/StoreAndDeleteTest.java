@@ -6,8 +6,8 @@ import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.data.base.api.store.StoreSequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.data.base.api.test.*;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDbOperationTest;
-import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.PersistenceManagerFactorySupplierForTestBase1;
-import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.PersistenceManagerFactorySupplierForTestBase2;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.ConnectionDataSupplierForTestBase1;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.ConnectionDataSupplierForTestBase2;
 
 import javax.jdo.JDOUserException;
 import java.util.Calendar;
@@ -21,7 +21,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.core.api.StoryWriter.condition;
 import static ru.tinkoff.qa.neptune.data.base.api.delete.GetDeletedSequentialSupplier.deleted;
-import static ru.tinkoff.qa.neptune.data.base.api.persistence.data.PersistenceManagerFactoryStore.getPersistenceManagerFactory;
+import static ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionStore.getKnownConnection;
 import static ru.tinkoff.qa.neptune.data.base.api.query.QueryBuilderFunction.ofType;
 import static ru.tinkoff.qa.neptune.data.base.api.query.SelectListByQuerySupplier.listByQuery;
 import static ru.tinkoff.qa.neptune.data.base.api.query.SelectSingleObjectByQuerySupplier.aSingleByQuery;
@@ -274,56 +274,46 @@ public class StoreAndDeleteTest extends BaseDbOperationTest {
         StoreSequentialGetStepSupplier<Catalog> storeOperation = storedObjects(catalogCrimeAndPunishment,
                 catalogItemTheDevils);
         try {
-            try {
-                dataBaseSteps.get(storeOperation.usePersistenceUnit(PersistenceManagerFactorySupplierForTestBase2.class));
-            }
-            catch (JDOUserException e) {
-                assertThat(e.getCause().getClass(), is(MissingTableException.class));
-            }
-
-            refreshDostoevsky();
-            storeOperation = storedObjects(catalogCrimeAndPunishment, catalogItemTheDevils);
-
-            dataBaseSteps.get(storeOperation.usePersistenceUnit(PersistenceManagerFactorySupplierForTestBase1.class));
-            assertThat(fyodorDostoevsky.getId(), greaterThan(0));
-            assertThat(crimeAndPunishment.getId(), greaterThan(0));
-            assertThat(theDevils.getId(), greaterThan(0));
-            assertThat(doverPublications.getId(), greaterThan(0));
-            assertThat(wordsworthEditions.getId(), greaterThan(0));
-            assertThat(catalogCrimeAndPunishment.getRecordId(), greaterThan(0));
-            assertThat(catalogItemTheDevils.getRecordId(), greaterThan(0));
+            dataBaseSteps.get(storeOperation.useConnection(ConnectionDataSupplierForTestBase2.class));
         }
-        finally {
-            dataBaseSteps.switchToDefault();
+        catch (JDOUserException e) {
+            assertThat(e.getCause().getClass(), is(MissingTableException.class));
         }
+
+        refreshDostoevsky();
+        storeOperation = storedObjects(catalogCrimeAndPunishment, catalogItemTheDevils);
+
+        dataBaseSteps.get(storeOperation.useConnection(ConnectionDataSupplierForTestBase1.class));
+        assertThat(fyodorDostoevsky.getId(), greaterThan(0));
+        assertThat(crimeAndPunishment.getId(), greaterThan(0));
+        assertThat(theDevils.getId(), greaterThan(0));
+        assertThat(doverPublications.getId(), greaterThan(0));
+        assertThat(wordsworthEditions.getId(), greaterThan(0));
+        assertThat(catalogCrimeAndPunishment.getRecordId(), greaterThan(0));
+        assertThat(catalogItemTheDevils.getRecordId(), greaterThan(0));
     }
 
     @Test(dependsOnMethods = "storeWithConnectionChangeByPersistenceUnitName")
     public void storeWithConnectionChangeByPersistenceManagerFactory() {
         StoreSequentialGetStepSupplier<Catalog> storeOperation = storedObjects(catalogItemPetSematary);
         try {
-            try {
-                dataBaseSteps.get(storeOperation
-                        .usePersistenceUnit(getPersistenceManagerFactory(PersistenceManagerFactorySupplierForTestBase2.class,
-                                true)));
-            } catch (JDOUserException e) {
-                assertThat(e.getCause().getClass(), is(MissingTableException.class));
-            }
-
-            refreshKing();
-            storeOperation = storedObjects(catalogItemPetSematary);
-
             dataBaseSteps.get(storeOperation
-                    .usePersistenceUnit(getPersistenceManagerFactory(PersistenceManagerFactorySupplierForTestBase1.class,
+                    .useConnection(getKnownConnection(ConnectionDataSupplierForTestBase2.class,
                             true)));
-            assertThat(stephenKing.getId(), greaterThan(0));
-            assertThat(petSematary.getId(), greaterThan(0));
-            assertThat(doubleday.getId(), greaterThan(0));
-            assertThat(catalogItemPetSematary.getRecordId(), greaterThan(0));
+        } catch (JDOUserException e) {
+            assertThat(e.getCause().getClass(), is(MissingTableException.class));
         }
-        finally {
-            dataBaseSteps.switchToDefault();
-        }
+
+        refreshKing();
+        storeOperation = storedObjects(catalogItemPetSematary);
+
+        dataBaseSteps.get(storeOperation
+                .useConnection(getKnownConnection(ConnectionDataSupplierForTestBase1.class,
+                        true)));
+        assertThat(stephenKing.getId(), greaterThan(0));
+        assertThat(petSematary.getId(), greaterThan(0));
+        assertThat(doubleday.getId(), greaterThan(0));
+        assertThat(catalogItemPetSematary.getRecordId(), greaterThan(0));
     }
 
     @Test(dependsOnMethods = "storeANewObject")

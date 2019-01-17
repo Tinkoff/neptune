@@ -11,7 +11,7 @@ import static java.lang.String.format;
 import static java.lang.Thread.currentThread;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static ru.tinkoff.qa.neptune.core.api.steps.proxy.ProxyFactory.getProxied;
-import static ru.tinkoff.qa.neptune.data.base.api.properties.DefaultPersistenceManagerFactoryProperty.DEFAULT_JDO_PERSISTENCE_MANAGER_FACTORY_PROPERTY;
+import static ru.tinkoff.qa.neptune.data.base.api.properties.DefaultConnectionProperty.DEFAULT_JDO_PERSISTENCE_MANAGER_FACTORY_PROPERTY;
 
 public abstract class BaseDbOperationTest {
 
@@ -29,7 +29,7 @@ public abstract class BaseDbOperationTest {
         Files.copy(db1.toPath(), (testDB1 = new File(format("%s.db", TEST_BASE))).toPath(), REPLACE_EXISTING);
         Files.copy(db2.toPath(), (testDB2 = new File(format("%s.db", TEST_BASE2))).toPath(), REPLACE_EXISTING);
         System.setProperty(DEFAULT_JDO_PERSISTENCE_MANAGER_FACTORY_PROPERTY.getPropertyName(),
-                PersistenceManagerFactorySupplierForTestBase1.class.getName());
+                ConnectionDataSupplierForTestBase1.class.getName());
         dataBaseSteps = getProxied(DataBaseStepContext.class);
         testDB1.deleteOnExit();
         testDB2.deleteOnExit();

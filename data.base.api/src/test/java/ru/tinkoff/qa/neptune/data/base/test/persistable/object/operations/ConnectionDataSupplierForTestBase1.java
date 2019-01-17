@@ -2,12 +2,12 @@ package ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations;
 
 import org.datanucleus.metadata.PersistenceUnitMetaData;
 import org.sqlite.JDBC;
-import ru.tinkoff.qa.neptune.data.base.api.persistence.data.PersistenceManagerFactorySupplier;
+import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionSupplier;
 
 import static java.lang.String.format;
 import static ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDbOperationTest.testDB1;
 
-public class PersistenceManagerFactorySupplierForTestBase1 extends PersistenceManagerFactorySupplier {
+public class ConnectionDataSupplierForTestBase1 extends DBConnectionSupplier {
 
     @Override
     protected PersistenceUnitMetaData fillPersistenceUnit(PersistenceUnitMetaData toBeFilled) {

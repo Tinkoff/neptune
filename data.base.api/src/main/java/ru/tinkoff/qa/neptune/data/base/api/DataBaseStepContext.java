@@ -1,94 +1,96 @@
 package ru.tinkoff.qa.neptune.data.base.api;
 
 import org.datanucleus.api.jdo.JDOPersistenceManager;
-import org.datanucleus.api.jdo.JDOPersistenceManagerFactory;
 import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
 import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
 import ru.tinkoff.qa.neptune.core.api.steps.context.ActionStepContext;
 import ru.tinkoff.qa.neptune.core.api.cleaning.Refreshable;
 import ru.tinkoff.qa.neptune.core.api.cleaning.StoppableOnJVMShutdown;
-import ru.tinkoff.qa.neptune.data.base.api.persistence.data.PersistenceManagerFactorySupplier;
+import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnection;
+import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionSupplier;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.lang.String.format;
 import static java.util.Objects.nonNull;
-import static ru.tinkoff.qa.neptune.data.base.api.persistence.data.PersistenceManagerFactoryStore.getPersistenceManagerFactory;
-import static ru.tinkoff.qa.neptune.data.base.api.properties.DefaultPersistenceManagerFactoryProperty.DEFAULT_JDO_PERSISTENCE_MANAGER_FACTORY_PROPERTY;
+import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionStore.getKnownConnection;
 
 @CreateWith(provider = DataBaseParameterProvider.class)
 public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>, ActionStepContext<DataBaseStepContext>, StoppableOnJVMShutdown,
         Refreshable {
 
-    private JDOPersistenceManagerFactory defaultFactory;
-    private final Map<JDOPersistenceManagerFactory, JDOPersistenceManager> jdoPersistenceManagerMap = new HashMap<>();
-    private JDOPersistenceManagerFactory currentFactory;
+    private final DBConnection defaultConnection;
+    private final Set<JDOPersistenceManager> jdoPersistenceManagerSet = new HashSet<>();
+    private JDOPersistenceManager currentManager;
 
-    public DataBaseStepContext(JDOPersistenceManagerFactory defaultFactory) {
-        checkArgument(nonNull(defaultFactory), "Value of default JDO persistence manager factory " +
-                "should differ from null");
-        checkArgument(!defaultFactory.isClosed(), "Default JDO persistence manager factory " +
-                "should not be closed");
-        this.defaultFactory = defaultFactory;
-        switchToDefault();
+    public DataBaseStepContext(DBConnection defaultConnection) {
+        checkArgument(nonNull(defaultConnection), "Value of the default DB connection should differ from null");
+        this.defaultConnection = defaultConnection;
     }
 
     /**
-     * This method performs the switching to desired database by created persistence manager factory.
+     * This method performs the switching to desired database by created {@link DBConnection}.
      *
-     * @param jdoPersistenceManagerFactory is persistence manager factory which is opened and ready to use.
+     * @param dbConnection is data of a connection to the desired DB.
      * @return self-reference
      */
-    public DataBaseStepContext switchTo(JDOPersistenceManagerFactory jdoPersistenceManagerFactory) {
-        checkArgument(!jdoPersistenceManagerFactory.isClosed(), "Persistence manager " +
-                "factory should be not closed");
-        var manager = jdoPersistenceManagerMap.get(jdoPersistenceManagerFactory);
-        if (manager == null || manager.isClosed()) {
-            jdoPersistenceManagerMap.put(jdoPersistenceManagerFactory,
-                    (JDOPersistenceManager) jdoPersistenceManagerFactory.getPersistenceManager());
-        }
-        currentFactory = jdoPersistenceManagerFactory;
+    DataBaseStepContext switchTo(DBConnection dbConnection) {
+        checkArgument(nonNull(dbConnection), "DB connection should not be null-value");
+        var factory = dbConnection.getConnectionFactory();
+        checkArgument(!factory.isClosed(), "Persistence manager factory should not be closed");
+        var manager = jdoPersistenceManagerSet
+                .stream()
+                .filter(jdoPersistenceManager -> !jdoPersistenceManager.isClosed()
+                        && jdoPersistenceManager.getPersistenceManagerFactory()
+                        .equals(factory))
+                .findFirst()
+                .orElse(null);
+
+        currentManager = ofNullable(manager).orElseGet(() -> {
+            var newManager = (JDOPersistenceManager) factory.getPersistenceManager();
+            jdoPersistenceManagerSet.add(newManager);
+            return newManager;
+        });
+
         return this;
     }
 
     /**
-     * This method performs the switching to desired database by class of persistence manager factory supplier.
+     * This method performs the switching to desired database by class of DB connection supplier.
+     * <p>NOTE!</p>
+     * It is expected that all instances of {@link DBConnectionSupplier} to find and use are loaded by SPI firstly.
+     * @see <a href="https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html">
+     *     Introduction to the Service Provider Interfaces</a>
      *
-     * @param persistenceFactorySupplier is a class of persistence manager factory supplier.
+     * @param dbConnectionSupplierClass is a class of DB connection supplier.
      * @return self-reference
      */
-    public DataBaseStepContext switchTo(Class<? extends PersistenceManagerFactorySupplier> persistenceFactorySupplier) {
-        return switchTo(jdoPersistenceManagerMap.keySet().stream().filter(jdoPersistenceManagerFactory ->
-                persistenceFactorySupplier.getName()
-                        .equals(jdoPersistenceManagerFactory.getName()) &&
-                        !jdoPersistenceManagerFactory.isClosed())
-                .findFirst()
-                .orElseGet(() -> getPersistenceManagerFactory(persistenceFactorySupplier, true)));
+    DataBaseStepContext switchTo(Class<? extends DBConnectionSupplier> dbConnectionSupplierClass) {
+        checkArgument(nonNull(dbConnectionSupplierClass),
+                format("Subclass of %s should be defined", DBConnectionSupplier.class.getName()));
+        return switchTo(getKnownConnection(dbConnectionSupplierClass, true));
     }
 
-    public DataBaseStepContext switchToDefault() {
-        if (defaultFactory.isClosed()) {
-            defaultFactory = DEFAULT_JDO_PERSISTENCE_MANAGER_FACTORY_PROPERTY.get().get();
-        }
-        return switchTo(defaultFactory);
-    }
-
-    public JDOPersistenceManagerFactory getCurrentFactory() {
-        return currentFactory;
+    void switchToDefault() {
+        switchTo(defaultConnection);
     }
 
     public JDOPersistenceManager getCurrentPersistenceManager() {
-        switchTo(getCurrentFactory());
-        return jdoPersistenceManagerMap.get(currentFactory);
+        return ofNullable(currentManager)
+                .orElseGet(() -> {
+                    switchToDefault();
+                    return currentManager;
+                });
     }
 
     @Override
     public Thread getHookOnJvmStop() {
-        return new Thread(() -> jdoPersistenceManagerMap.forEach((key, value) -> {
-            jdoPersistenceManagerMap.keySet().forEach(JDOPersistenceManagerFactory::close);
-            value.close();
-            key.close();
+        return new Thread(() -> jdoPersistenceManagerSet.forEach(jdoPersistenceManager -> {
+            jdoPersistenceManager.getPersistenceManagerFactory().close();
+            jdoPersistenceManager.close();
         }));
     }
 
