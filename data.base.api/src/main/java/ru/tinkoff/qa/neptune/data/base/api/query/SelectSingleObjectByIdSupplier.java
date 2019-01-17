@@ -48,15 +48,15 @@ public final class SelectSingleObjectByIdSupplier<T extends PersistableObject>
         return ofNullable(condition).map(tPredicate ->
                 ofNullable(nothingIsSelectedExceptionSupplier).map(nothingIsSelectedExceptionSupplier1 ->
                         getSingle(description, singleFunction, tPredicate,
-                                timeToGetResult, true, nothingIsSelectedExceptionSupplier1))
+                                timeToGetResult, sleepTime,true, nothingIsSelectedExceptionSupplier1))
                         .orElseGet(() -> getSingle(description, singleFunction, tPredicate,
-                                timeToGetResult, true)))
+                                timeToGetResult, sleepTime, true)))
 
                 .orElseGet(() -> ofNullable(nothingIsSelectedExceptionSupplier)
                         .map(nothingIsSelectedExceptionSupplier1 -> getSingle(description,
-                                singleFunction, timeToGetResult,  nothingIsSelectedExceptionSupplier1)
+                                singleFunction, timeToGetResult, sleepTime,  nothingIsSelectedExceptionSupplier1)
                         ).orElseGet(() ->
-                                getSingle(description, singleFunction, timeToGetResult)
+                                getSingle(description, singleFunction, timeToGetResult, sleepTime)
                         ));
     }
 }

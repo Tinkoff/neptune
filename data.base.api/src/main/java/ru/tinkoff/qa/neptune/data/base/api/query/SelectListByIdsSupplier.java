@@ -57,15 +57,15 @@ public final class SelectListByIdsSupplier<T extends PersistableObject>
         return ofNullable(condition).map(tPredicate ->
                 ofNullable(nothingIsSelectedExceptionSupplier).map(nothingIsSelectedExceptionSupplier1 ->
                         getIterable(description, listFunction, tPredicate,
-                                timeToGetResult, false, true, nothingIsSelectedExceptionSupplier1))
+                                timeToGetResult, sleepTime, false, true, nothingIsSelectedExceptionSupplier1))
                         .orElseGet(() -> getIterable(description, listFunction, tPredicate,
-                                timeToGetResult, false, true)))
+                                timeToGetResult, sleepTime, false, true)))
 
                 .orElseGet(() -> ofNullable(nothingIsSelectedExceptionSupplier)
                         .map(nothingIsSelectedExceptionSupplier1 -> getIterable(description,
-                                listFunction, timeToGetResult,  nothingIsSelectedExceptionSupplier1)
+                                listFunction, timeToGetResult, sleepTime,  nothingIsSelectedExceptionSupplier1)
                         ).orElseGet(() ->
-                                getIterable(description, listFunction, timeToGetResult)
+                                getIterable(description, listFunction, timeToGetResult, sleepTime)
                         ));
     }
 }
