@@ -34,8 +34,6 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
     private List<Object> toBePerformedOn = new ArrayList<>();
     private List<THIS> mergeFrom = new ArrayList<>();
 
-    //Consumer<T> wrappedConsumer;
-
     protected SequentialActionSupplier(String description) {
         checkArgument(!isBlank(description), "Description of the action should not be blank or null string value");
         this.actionDescription = description;
