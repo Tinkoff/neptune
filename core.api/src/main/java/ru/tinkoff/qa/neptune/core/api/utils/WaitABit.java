@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.core.api;
+package ru.tinkoff.qa.neptune.core.api.utils;
 
 import java.time.Duration;
 

@@ -3,7 +3,7 @@ package ru.tinkoff.qa.neptune.selenium.functions.target.locator.window;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import static ru.tinkoff.qa.neptune.core.api.StoryWriter.condition;
+import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.condition;
 import static java.lang.String.format;
 
 public final class WindowPredicates {

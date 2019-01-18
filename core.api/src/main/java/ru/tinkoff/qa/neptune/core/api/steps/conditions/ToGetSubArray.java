@@ -1,7 +1,7 @@
-package ru.tinkoff.qa.neptune.core.api.conditions;
+package ru.tinkoff.qa.neptune.core.api.steps.conditions;
 
 import org.apache.commons.lang3.ArrayUtils;
-import ru.tinkoff.qa.neptune.core.api.AsIsCondition;
+import ru.tinkoff.qa.neptune.core.api.steps.AsIsCondition;
 
 import java.time.Duration;
 import java.util.function.Function;
@@ -9,7 +9,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static java.util.Objects.nonNull;
-import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetConditionalHelper.*;
+import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetConditionalHelper.*;
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;

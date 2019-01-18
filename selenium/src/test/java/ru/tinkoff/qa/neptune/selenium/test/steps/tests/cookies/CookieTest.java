@@ -13,7 +13,7 @@ import static org.hamcrest.Matchers.emptyCollectionOf;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static ru.tinkoff.qa.neptune.core.api.StoryWriter.condition;
+import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.condition;
 import static ru.tinkoff.qa.neptune.selenium.functions.cookies.AddCookiesActionSupplier.addCookies;
 import static ru.tinkoff.qa.neptune.selenium.functions.cookies.GetSeleniumCookieSupplier.cookies;
 import static ru.tinkoff.qa.neptune.selenium.functions.cookies.RemoveCookiesActionSupplier.deleteAllCookies;

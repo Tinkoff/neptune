@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.functions.java.script;
 
-import ru.tinkoff.qa.neptune.core.api.GetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.GetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
@@ -12,8 +12,8 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static java.util.Objects.nonNull;
-import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
-import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSingleCheckedObject.getSingle;
+import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
+import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 import static ru.tinkoff.qa.neptune.selenium.functions.java.script.EvaluateAsyncJavaScript.evalAsyncJS;
 import static ru.tinkoff.qa.neptune.selenium.functions.java.script.EvaluateJavaScript.evalJS;

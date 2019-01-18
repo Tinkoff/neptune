@@ -7,7 +7,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
+import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
 
 @SuppressWarnings("unchecked")
 public interface GetStepContext<THIS extends GetStepContext<THIS>> {

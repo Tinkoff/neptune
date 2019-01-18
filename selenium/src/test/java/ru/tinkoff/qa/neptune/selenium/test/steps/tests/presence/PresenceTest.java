@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.test.steps.tests.presence;
 
-import ru.tinkoff.qa.neptune.core.api.GetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.GetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 import org.openqa.selenium.NoSuchElementException;
@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
 
-import static ru.tinkoff.qa.neptune.core.api.Presence.presenceOf;
-import static ru.tinkoff.qa.neptune.core.api.StoryWriter.condition;
-import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
+import static ru.tinkoff.qa.neptune.core.api.steps.Presence.presenceOf;
+import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.condition;
+import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.presence.ElementPresence.presenceOfAnElement;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.presence.ElementPresence.presenceOfElements;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.textFields;

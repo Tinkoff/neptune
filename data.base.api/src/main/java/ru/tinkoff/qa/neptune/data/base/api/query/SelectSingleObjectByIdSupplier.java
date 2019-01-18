@@ -7,7 +7,7 @@ import java.util.function.Function;
 
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
-import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSingleCheckedObject.getSingle;
+import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
 
 public final class SelectSingleObjectByIdSupplier<T extends PersistableObject>
         extends ByIdsSequentialGetStepSupplier<T, T, SelectSingleObjectByIdSupplier<T>> {

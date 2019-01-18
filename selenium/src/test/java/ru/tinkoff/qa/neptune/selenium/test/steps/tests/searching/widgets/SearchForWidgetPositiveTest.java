@@ -28,7 +28,7 @@ import org.testng.annotations.Test;
 
 import java.util.function.Predicate;
 
-import static ru.tinkoff.qa.neptune.core.api.StoryWriter.condition;
+import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.condition;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldHaveAttribute;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.webElements;

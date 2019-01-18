@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.core.api;
+package ru.tinkoff.qa.neptune.core.api.steps;
 
 import com.google.common.collect.Iterables;
 import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.function.Function;
 
 import static java.util.Objects.nonNull;
-import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
+import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;

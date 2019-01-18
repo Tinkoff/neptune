@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.elements;
 
-import ru.tinkoff.qa.neptune.core.api.StepFunction;
+import ru.tinkoff.qa.neptune.core.api.steps.StepFunction;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
 import org.hamcrest.Description;

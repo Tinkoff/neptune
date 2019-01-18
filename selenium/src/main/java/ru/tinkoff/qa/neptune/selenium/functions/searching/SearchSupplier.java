@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.functions.searching;
 
-import ru.tinkoff.qa.neptune.core.api.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Labeled;
@@ -17,8 +17,8 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
-import static ru.tinkoff.qa.neptune.core.api.AsIsCondition.AS_IS;
-import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetObjectFromIterable.getFromIterable;
+import static ru.tinkoff.qa.neptune.core.api.steps.AsIsCondition.AS_IS;
+import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromIterable.getFromIterable;
 import static ru.tinkoff.qa.neptune.selenium.api.widget.Widget.getWidgetName;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.defaultPredicate;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeLabeledBy;

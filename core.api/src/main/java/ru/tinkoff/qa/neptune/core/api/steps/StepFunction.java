@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.core.api;
+package ru.tinkoff.qa.neptune.core.api.steps;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.CaptorFilterByProducedType;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakesCapturesOnFinishing;
@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 import static java.util.Objects.nonNull;
-import static ru.tinkoff.qa.neptune.core.api.IsLoggableUtil.isLoggable;
+import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.*;
 import static ru.tinkoff.qa.neptune.core.api.properties.DoCapturesOf.catchFailureEvent;
 import static ru.tinkoff.qa.neptune.core.api.properties.DoCapturesOf.catchSuccessEvent;

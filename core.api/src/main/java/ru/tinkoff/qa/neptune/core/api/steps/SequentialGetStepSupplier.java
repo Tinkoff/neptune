@@ -1,10 +1,10 @@
-package ru.tinkoff.qa.neptune.core.api;
+package ru.tinkoff.qa.neptune.core.api.steps;
 
 import java.util.function.Function;
 
 import static java.util.Objects.nonNull;
-import static ru.tinkoff.qa.neptune.core.api.IsLoggableUtil.isLoggable;
-import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
+import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
+import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**

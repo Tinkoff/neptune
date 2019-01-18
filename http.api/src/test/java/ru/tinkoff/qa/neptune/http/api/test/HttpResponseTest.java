@@ -16,7 +16,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockserver.matchers.Times.exactly;
 import static org.mockserver.model.HttpRequest.request;
-import static ru.tinkoff.qa.neptune.core.api.StoryWriter.condition;
+import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.condition;
 import static ru.tinkoff.qa.neptune.core.api.steps.proxy.ProxyFactory.getProxied;
 import static ru.tinkoff.qa.neptune.http.api.CommonBodyPublishers.stringBody;
 import static ru.tinkoff.qa.neptune.http.api.PreparedHttpRequest.*;

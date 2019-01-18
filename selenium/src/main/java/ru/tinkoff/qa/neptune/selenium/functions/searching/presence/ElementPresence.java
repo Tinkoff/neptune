@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.functions.searching.presence;
 
-import ru.tinkoff.qa.neptune.core.api.Presence;
+import ru.tinkoff.qa.neptune.core.api.steps.Presence;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;

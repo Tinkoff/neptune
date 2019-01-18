@@ -9,7 +9,7 @@ import java.util.function.Function;
 
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
-import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSubIterable.getIterable;
+import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSubIterable.getIterable;
 
 public final class SelectListByIdsSupplier<T extends PersistableObject>
         extends ByIdsSequentialGetStepSupplier<T, List<T>, SelectListByIdsSupplier<T>> {

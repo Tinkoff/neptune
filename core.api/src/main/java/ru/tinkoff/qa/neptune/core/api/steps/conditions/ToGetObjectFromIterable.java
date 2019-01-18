@@ -1,6 +1,6 @@
-package ru.tinkoff.qa.neptune.core.api.conditions;
+package ru.tinkoff.qa.neptune.core.api.steps.conditions;
 
-import ru.tinkoff.qa.neptune.core.api.AsIsCondition;
+import ru.tinkoff.qa.neptune.core.api.steps.AsIsCondition;
 
 import javax.annotation.Nullable;
 import java.time.Duration;
@@ -9,7 +9,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetConditionalHelper.*;
+import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetConditionalHelper.*;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.StreamSupport.stream;
 

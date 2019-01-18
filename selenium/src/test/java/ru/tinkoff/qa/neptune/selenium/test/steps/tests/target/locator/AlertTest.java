@@ -7,7 +7,7 @@ import org.openqa.selenium.NoAlertPresentException;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert.GetAlertSupplier;
 
-import static ru.tinkoff.qa.neptune.core.api.StoryWriter.condition;
+import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.condition;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert.AlertActionSupplier.accept;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert.AlertActionSupplier.dismiss;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert.AlertActionSupplier.sendKeys;

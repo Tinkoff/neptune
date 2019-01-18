@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.core.api;
+package ru.tinkoff.qa.neptune.core.api.steps;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.*;
 import ru.tinkoff.qa.neptune.core.api.exception.management.IgnoresThrowable;
@@ -12,8 +12,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
-import static ru.tinkoff.qa.neptune.core.api.IsLoggableUtil.isLoggable;
+import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
+import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Optional.ofNullable;

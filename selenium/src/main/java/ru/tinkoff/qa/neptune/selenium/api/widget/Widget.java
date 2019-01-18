@@ -2,7 +2,7 @@ package ru.tinkoff.qa.neptune.selenium.api.widget;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.internal.WrapsElement;
-import ru.tinkoff.qa.neptune.core.api.LoggableObject;
+import ru.tinkoff.qa.neptune.core.api.steps.LoggableObject;
 
 import java.util.List;
 

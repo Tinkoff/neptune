@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.http.api;
 
-import ru.tinkoff.qa.neptune.core.api.ConstructorParameters;
+import ru.tinkoff.qa.neptune.core.api.steps.context.ConstructorParameters;
 import ru.tinkoff.qa.neptune.core.api.steps.context.ParameterProvider;
 
 import java.net.CookieHandler;
@@ -8,7 +8,7 @@ import java.net.CookieManager;
 import java.net.http.HttpClient;
 
 import static java.util.Optional.ofNullable;
-import static ru.tinkoff.qa.neptune.core.api.ConstructorParameters.params;
+import static ru.tinkoff.qa.neptune.core.api.steps.context.ConstructorParameters.params;
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultConnectTimeOutProperty.DEFAULT_CONNECT_TIME_OUT_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpAuthenticatorProperty.DEFAULT_HTTP_AUTHENTICATOR_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpCookieManagerProperty.DEFAULT_HTTP_COOKIE_MANAGER_PROPERTY;

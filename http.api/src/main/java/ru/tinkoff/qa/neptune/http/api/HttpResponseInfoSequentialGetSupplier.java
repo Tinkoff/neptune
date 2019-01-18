@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.http.api;
 
-import ru.tinkoff.qa.neptune.core.api.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeCaptureOnFinishing;
 
 import javax.net.ssl.SSLSession;
@@ -11,7 +11,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.function.Function;
 
-import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
+import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
 
 /**
  * This class is designed to build chains of functions that get needed data from a http response.

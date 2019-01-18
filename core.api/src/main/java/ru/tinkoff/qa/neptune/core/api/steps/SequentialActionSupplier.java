@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.core.api;
+package ru.tinkoff.qa.neptune.core.api.steps;
 
 import com.google.common.annotations.Beta;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.*;
@@ -15,7 +15,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static ru.tinkoff.qa.neptune.core.api.StoryWriter.action;
+import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.action;
 
 /**
  * This class is designed to build actions to be performed on different objects.

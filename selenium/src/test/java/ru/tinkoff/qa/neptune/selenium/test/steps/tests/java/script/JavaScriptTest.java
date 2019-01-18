@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 import java.util.function.Predicate;
 
-import static ru.tinkoff.qa.neptune.core.api.StoryWriter.condition;
+import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.condition;
 import static ru.tinkoff.qa.neptune.selenium.functions.java.script.GetJavaScriptResultSupplier.asynchronousJavaScript;
 import static ru.tinkoff.qa.neptune.selenium.functions.java.script.GetJavaScriptResultSupplier.javaScript;
 import static ru.tinkoff.qa.neptune.selenium.test.enums.Scripts.SCRIPT_1;

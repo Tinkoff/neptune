@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.core.api.steps.proxy;
 
-import ru.tinkoff.qa.neptune.core.api.ConstructorParameters;
+import ru.tinkoff.qa.neptune.core.api.steps.context.ConstructorParameters;
 import ru.tinkoff.qa.neptune.core.api.cleaning.StoppableOnJVMShutdown;
 import ru.tinkoff.qa.neptune.core.api.concurency.ObjectContainer;
 import net.bytebuddy.implementation.bind.annotation.AllArguments;

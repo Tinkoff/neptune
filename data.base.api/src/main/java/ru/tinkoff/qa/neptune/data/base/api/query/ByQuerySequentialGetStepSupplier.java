@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.data.base.api.query;
 
-import ru.tinkoff.qa.neptune.core.api.StoryWriter;
+import ru.tinkoff.qa.neptune.core.api.steps.StoryWriter;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 
 import java.util.function.Function;

@@ -1,6 +1,9 @@
 package ru.tinkoff.qa.neptune.core.api;
 
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.core.api.steps.StoryWriter;
+import ru.tinkoff.qa.neptune.core.api.steps.GetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 
 import java.util.function.Function;
 

@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.functions.click;
 
-import ru.tinkoff.qa.neptune.core.api.GetStepSupplier;
-import ru.tinkoff.qa.neptune.core.api.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.GetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;

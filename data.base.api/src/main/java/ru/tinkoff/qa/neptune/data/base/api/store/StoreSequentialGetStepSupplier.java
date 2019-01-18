@@ -14,7 +14,7 @@ import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Objects.nonNull;
 import static javax.jdo.JDOHelper.isDeleted;
-import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
+import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
 
 /**
  * This class is designed to perform insert/update operations. A built function performs an operation and returns
