@@ -51,17 +51,25 @@ public abstract class DBSequentialGetStepSupplier<T, Q, R extends DBSequentialGe
 
     @Override
     public Function<DataBaseStepContext, T> get() {
-        return dataBaseStepContext -> {
-            try {
-                return super.get().apply(ofNullable(connection).map(o -> {
-                    if (DBConnection.class.equals(o.getClass())) {
-                        return dataBaseStepContext.switchTo((DBConnection) o);
-                    }
+        var result = super.get();
+        return new Function<>() {
+            @Override
+            public T apply(DataBaseStepContext dataBaseStepContext) {
+                try {
+                    return result.apply(ofNullable(connection).map(o -> {
+                        if (DBConnection.class.equals(o.getClass())) {
+                            return dataBaseStepContext.switchTo((DBConnection) o);
+                        }
 
-                    return dataBaseStepContext.switchTo((Class<? extends DBConnectionSupplier>) o);
-                }).orElse(dataBaseStepContext));
-            } finally {
-                dataBaseStepContext.switchToDefault();
+                        return dataBaseStepContext.switchTo((Class<? extends DBConnectionSupplier>) o);
+                    }).orElse(dataBaseStepContext));
+                } finally {
+                    dataBaseStepContext.switchToDefault();
+                }
+            }
+
+            public String toString() {
+                return result.toString();
             }
         };
     }

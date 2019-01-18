@@ -13,6 +13,7 @@ import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 @SuppressWarnings("unchecked")
 public class Presence<T extends GetStepContext<T>> extends GetStepSupplier<T, Boolean, Presence<T>> {
@@ -20,9 +21,9 @@ public class Presence<T extends GetStepContext<T>> extends GetStepSupplier<T, Bo
     protected Presence(Function<T, ?> toBePresent) {
         checkArgument(nonNull(toBePresent),
                 "The function is not defined");
-        checkArgument(StepFunction.class.isAssignableFrom(toBePresent.getClass()),
-                "The function which returns the goal value should be described " +
-                        "by the StoryWriter.toGet method.");
+        checkArgument(isLoggable(toBePresent),
+                "The function which returns the goal value should describe the value to get. Use method " +
+                        "StoryWriter.toGet method or override toString method");
 
         set(toGet(format("Presence of %s", toBePresent), t -> {
             var describedToBePresent = (StepFunction) toBePresent;
