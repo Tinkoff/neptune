@@ -18,6 +18,7 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 @SuppressWarnings("unchecked")
 public class Presence<T extends GetStepContext<T>> extends GetStepSupplier<T, Boolean, Presence<T>> {
 
+    //TODO needs for refactoring
     protected Presence(Function<T, ?> toBePresent) {
         checkArgument(nonNull(toBePresent),
                 "The function is not defined");
@@ -26,15 +27,31 @@ public class Presence<T extends GetStepContext<T>> extends GetStepSupplier<T, Bo
                         "StoryWriter.toGet method or override toString method");
 
         set(toGet(format("Presence of %s", toBePresent), t -> {
-            var describedToBePresent = (StepFunction) toBePresent;
-            var toBeIgnored = new HashSet<>(ignored);
-            toBeIgnored.removeAll(describedToBePresent.getIgnored());
-            var listOfThrowableClasses = new ArrayList<>(toBeIgnored);
-            try {
-                return isPresent(t.get(describedToBePresent.addIgnored(listOfThrowableClasses)));
+            if (StepFunction.class.isAssignableFrom(toBePresent.getClass())) {
+                var describedToBePresent = (StepFunction) toBePresent;
+                var toBeIgnored = new HashSet<>(ignored);
+                toBeIgnored.removeAll(describedToBePresent.getIgnored());
+                var listOfThrowableClasses = new ArrayList<>(toBeIgnored);
+                try {
+                    return isPresent(t.get(describedToBePresent.addIgnored(listOfThrowableClasses)));
+                }
+                finally {
+                    describedToBePresent.stopIgnore(listOfThrowableClasses);
+                }
             }
-            finally {
-                describedToBePresent.stopIgnore(listOfThrowableClasses);
+            else {
+                try {
+                    return isPresent(t.get(toBePresent));
+                }
+                catch (Throwable throwable) {
+                    var clazz = throwable.getClass();
+                    for (Class<? extends Throwable> c: ignored) {
+                        if (c.isAssignableFrom(clazz)) {
+                            return false;
+                        }
+                    }
+                    throw throwable;
+                }
             }
         }));
     }
