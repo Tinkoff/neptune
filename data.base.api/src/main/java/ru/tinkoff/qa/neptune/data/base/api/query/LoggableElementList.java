@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.data.base.api.query;
 
-import ru.tinkoff.qa.neptune.core.api.LoggableObject;
+import ru.tinkoff.qa.neptune.core.api.steps.LoggableObject;
 import ru.tinkoff.qa.neptune.data.base.api.GotByQuery;
 import ru.tinkoff.qa.neptune.data.base.api.captors.IsQueryCaptured;
 

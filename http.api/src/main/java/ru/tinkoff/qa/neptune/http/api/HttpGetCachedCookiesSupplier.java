@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.http.api;
 
-import ru.tinkoff.qa.neptune.core.api.GetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.GetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
 
 import java.net.CookieManager;
@@ -12,8 +12,8 @@ import java.util.function.Predicate;
 
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
-import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
-import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetSubIterable.getIterable;
+import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
+import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSubIterable.getIterable;
 
 /**
  * This class is designed to build functions that get applicable cookies from a cookie cache

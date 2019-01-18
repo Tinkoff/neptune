@@ -4,6 +4,8 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.core.api.properties.CapturedEvents;
 import ru.tinkoff.qa.neptune.core.api.properties.DoCapturesOf;
+import ru.tinkoff.qa.neptune.core.api.steps.context.ConstructorParameters;
+import ru.tinkoff.qa.neptune.core.api.steps.GetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.proxy.ProxyFactory;
 
 import java.util.function.Function;
@@ -16,7 +18,7 @@ import static java.lang.System.getProperties;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.emptyIterable;
-import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
+import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
 
 public class EventFiringTest {
 

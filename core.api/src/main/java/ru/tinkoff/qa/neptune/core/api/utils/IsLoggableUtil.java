@@ -1,4 +1,6 @@
-package ru.tinkoff.qa.neptune.core.api;
+package ru.tinkoff.qa.neptune.core.api.utils;
+
+import ru.tinkoff.qa.neptune.core.api.steps.LoggableObject;
 
 import java.util.function.*;
 

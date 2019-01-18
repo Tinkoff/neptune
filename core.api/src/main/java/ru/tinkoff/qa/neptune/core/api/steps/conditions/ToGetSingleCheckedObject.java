@@ -1,6 +1,6 @@
-package ru.tinkoff.qa.neptune.core.api.conditions;
+package ru.tinkoff.qa.neptune.core.api.steps.conditions;
 
-import ru.tinkoff.qa.neptune.core.api.AsIsCondition;
+import ru.tinkoff.qa.neptune.core.api.steps.AsIsCondition;
 
 import javax.annotation.Nullable;
 import java.time.Duration;

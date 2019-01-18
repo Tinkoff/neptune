@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.functions.value;
 
-import ru.tinkoff.qa.neptune.core.api.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.api.widget.HasAttribute;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
@@ -10,7 +10,7 @@ import org.openqa.selenium.WebElement;
 
 import java.util.function.Function;
 
-import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
+import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;

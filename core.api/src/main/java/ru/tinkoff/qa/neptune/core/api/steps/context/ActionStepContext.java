@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static ru.tinkoff.qa.neptune.core.api.StoryWriter.action;
+import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.action;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 

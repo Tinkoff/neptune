@@ -27,6 +27,10 @@ abstract class AbstractQueryCaptor<T> extends StringCaptor<T> {
             gotByQuery = (GotByQuery) containsQuery;
             query = gotByQuery.getQuery();
 
+            if (query == null) {
+                return null;
+            }
+
             if (IsQueryCaptured.class.isAssignableFrom(containsQueryClass)) {
                 isQueryCaptured = (IsQueryCaptured) gotByQuery;
             }

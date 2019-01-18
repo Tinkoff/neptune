@@ -1,12 +1,12 @@
-package ru.tinkoff.qa.neptune.core.api.conditions;
+package ru.tinkoff.qa.neptune.core.api.steps.conditions;
 
 import java.time.Duration;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetConditionalHelper.*;
-import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetObjectFromIterable.getFromIterable;
+import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetConditionalHelper.*;
+import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromIterable.getFromIterable;
 import static java.util.Arrays.asList;
 
 public final class ToGetObjectFromArray {

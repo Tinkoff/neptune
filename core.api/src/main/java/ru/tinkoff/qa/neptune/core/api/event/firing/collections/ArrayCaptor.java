@@ -1,13 +1,12 @@
 package ru.tinkoff.qa.neptune.core.api.event.firing.collections;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
-import static ru.tinkoff.qa.neptune.core.api.IsLoggableUtil.hasReadableDescription;
-import static ru.tinkoff.qa.neptune.core.api.IsLoggableUtil.isLoggable;
+import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.hasReadableDescription;
+import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 public class ArrayCaptor extends IterableCaptor<List<?>> {
 

@@ -1,9 +1,9 @@
 package ru.tinkoff.qa.neptune.testng.integration.test;
 
-import ru.tinkoff.qa.neptune.core.api.ConstructorParameters;
+import ru.tinkoff.qa.neptune.core.api.steps.context.ConstructorParameters;
 import ru.tinkoff.qa.neptune.core.api.steps.context.ParameterProvider;
 
-import static ru.tinkoff.qa.neptune.core.api.ConstructorParameters.params;
+import static ru.tinkoff.qa.neptune.core.api.steps.context.ConstructorParameters.params;
 
 public class ABParameterProvider implements ParameterProvider {
     @Override

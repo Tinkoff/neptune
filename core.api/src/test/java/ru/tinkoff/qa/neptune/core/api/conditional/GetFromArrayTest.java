@@ -3,10 +3,10 @@ package ru.tinkoff.qa.neptune.core.api.conditional;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.core.api.StoryWriter;
-import ru.tinkoff.qa.neptune.core.api.conditions.ToGetObjectFromArray;
+import ru.tinkoff.qa.neptune.core.api.steps.StoryWriter;
+import ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromArray;
 
-import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetObjectFromArray.getFromArray;
+import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromArray.getFromArray;
 import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;

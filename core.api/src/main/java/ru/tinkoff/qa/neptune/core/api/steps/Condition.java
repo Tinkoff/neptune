@@ -1,9 +1,9 @@
-package ru.tinkoff.qa.neptune.core.api;
+package ru.tinkoff.qa.neptune.core.api.steps;
 
 import java.util.function.Predicate;
 
-import static ru.tinkoff.qa.neptune.core.api.AsIsCondition.AS_IS;
-import static ru.tinkoff.qa.neptune.core.api.IsLoggableUtil.isLoggable;
+import static ru.tinkoff.qa.neptune.core.api.steps.AsIsCondition.AS_IS;
+import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 

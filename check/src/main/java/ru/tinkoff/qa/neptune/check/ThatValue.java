@@ -1,10 +1,10 @@
 package ru.tinkoff.qa.neptune.check;
 
-import ru.tinkoff.qa.neptune.core.api.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import ru.tinkoff.qa.neptune.core.api.StepAction;
+import ru.tinkoff.qa.neptune.core.api.steps.StepAction;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakesCapturesOnFinishing;
 
 import java.util.ArrayList;
@@ -14,8 +14,8 @@ import java.util.function.Function;
 
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.joining;
-import static ru.tinkoff.qa.neptune.core.api.StoryWriter.action;
-import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
+import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.action;
+import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;

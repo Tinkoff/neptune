@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.data.base.api;
 
 import org.datanucleus.enhancement.Persistable;
-import ru.tinkoff.qa.neptune.core.api.LoggableObject;
+import ru.tinkoff.qa.neptune.core.api.steps.LoggableObject;
 import ru.tinkoff.qa.neptune.data.base.api.captors.IsQueryCaptured;
 
 import javax.jdo.annotations.NotPersistent;

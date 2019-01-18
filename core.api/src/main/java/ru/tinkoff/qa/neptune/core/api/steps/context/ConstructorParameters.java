@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.core.api;
+package ru.tinkoff.qa.neptune.core.api.steps.context;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

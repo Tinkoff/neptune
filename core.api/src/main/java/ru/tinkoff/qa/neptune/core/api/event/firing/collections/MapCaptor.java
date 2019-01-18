@@ -10,8 +10,8 @@ import static java.lang.String.format;
 import static java.lang.String.valueOf;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
-import static ru.tinkoff.qa.neptune.core.api.IsLoggableUtil.hasReadableDescription;
-import static ru.tinkoff.qa.neptune.core.api.IsLoggableUtil.isLoggable;
+import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.hasReadableDescription;
+import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 public class MapCaptor extends StringCaptor<Map<?, ?>> {
 

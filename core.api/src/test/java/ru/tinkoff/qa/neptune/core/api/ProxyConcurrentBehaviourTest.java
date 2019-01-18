@@ -3,6 +3,8 @@ package ru.tinkoff.qa.neptune.core.api;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.core.api.steps.context.ConstructorParameters;
+import ru.tinkoff.qa.neptune.core.api.steps.GetStepSupplier;
 
 import static java.util.Optional.ofNullable;
 import static org.hamcrest.MatcherAssert.assertThat;

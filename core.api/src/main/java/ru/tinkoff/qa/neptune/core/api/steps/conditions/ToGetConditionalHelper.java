@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.core.api.conditions;
+package ru.tinkoff.qa.neptune.core.api.steps.conditions;
 
 import javax.annotation.Nullable;
 import java.time.Duration;
@@ -14,10 +14,10 @@ import static java.time.Duration.ofMillis;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static ru.tinkoff.qa.neptune.core.api.AsIsCondition.AS_IS;
-import static ru.tinkoff.qa.neptune.core.api.IsLoggableUtil.isLoggable;
-import static ru.tinkoff.qa.neptune.core.api.StoryWriter.condition;
-import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
+import static ru.tinkoff.qa.neptune.core.api.steps.AsIsCondition.AS_IS;
+import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
+import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.condition;
+import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
 
 /**
  * This is the util which helps to crate function with given conditions.

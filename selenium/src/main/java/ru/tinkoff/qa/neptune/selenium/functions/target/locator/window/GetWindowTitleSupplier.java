@@ -1,11 +1,11 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator.window;
 
-import ru.tinkoff.qa.neptune.core.api.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import java.util.function.Function;
 
-import static ru.tinkoff.qa.neptune.core.api.StoryWriter.toGet;
+import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
 
 public final class GetWindowTitleSupplier extends SequentialGetStepSupplier<SeleniumStepContext, String, Window, GetWindowTitleSupplier> {

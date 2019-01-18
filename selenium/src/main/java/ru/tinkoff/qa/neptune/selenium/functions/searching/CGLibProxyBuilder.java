@@ -4,7 +4,7 @@ import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import org.objenesis.ObjenesisStd;
-import ru.tinkoff.qa.neptune.core.api.LoggableObject;
+import ru.tinkoff.qa.neptune.core.api.steps.LoggableObject;
 
 import static net.sf.cglib.proxy.Enhancer.registerCallbacks;
 

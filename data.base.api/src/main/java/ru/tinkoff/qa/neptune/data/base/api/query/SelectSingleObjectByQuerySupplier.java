@@ -15,7 +15,7 @@ import static java.util.List.of;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
-import static ru.tinkoff.qa.neptune.core.api.conditions.ToGetObjectFromIterable.getFromIterable;
+import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromIterable.getFromIterable;
 
 public abstract class SelectSingleObjectByQuerySupplier<T, R>
         extends ByQuerySequentialGetStepSupplier<T, T, R, SelectSingleObjectByQuerySupplier<T, R>>  {

@@ -5,7 +5,7 @@ import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.selenium.functions.value.SequentialGetValueSupplier;
 
-import static ru.tinkoff.qa.neptune.core.api.StoryWriter.condition;
+import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.condition;
 import static ru.tinkoff.qa.neptune.selenium.functions.edit.EditActionSupplier.valueOfThe;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.*;

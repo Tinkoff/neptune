@@ -3,8 +3,8 @@ package ru.tinkoff.qa.neptune.core.api.conditional;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.core.api.StoryWriter;
-import ru.tinkoff.qa.neptune.core.api.conditions.ToGetSubArray;
+import ru.tinkoff.qa.neptune.core.api.steps.StoryWriter;
+import ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSubArray;
 
 import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
