@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.functions.searching;
 
+import ru.tinkoff.qa.neptune.selenium.api.widget.ScrollsIntoView;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
@@ -66,6 +67,9 @@ class WidgetInterceptor implements MethodInterceptor {
         }
 
         try {
+            if (ScrollsIntoView.class.isAssignableFrom(widgetClass)) {
+                ((ScrollsIntoView) widget).scrollsIntoView();
+            }
             return method.invoke(widget, args);
         }
         catch (InvocationTargetException e) {
