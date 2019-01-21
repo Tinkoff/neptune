@@ -1,5 +1,5 @@
 ext {
-    globalVersion = '0.8.8-ALPHA'
+    globalVersion = '0.8.9-ALPHA'
 }
 
 subprojects {
@@ -9,6 +9,7 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'maven'
     apply plugin: 'maven-publish'
+    apply plugin: 'project-report'
 
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
@@ -23,9 +24,9 @@ subprojects {
 
     ext {
         testNGVersion = '6.14.3'
-        hamcrestVersion = '2.0.0.0'
+        hamcrestVersion = '2.1'
         seleniumVersion = '3.141.59'
-        allureVersion = '2.8.1'
+        allureVersion = '2.9.0'
         jacksonVersion = '2.9.8'
         mavenDeployLogin =  REPO_USER_NAME
         mavenDeployPassword = REPO_USER_PASSWORD
@@ -36,7 +37,7 @@ subprojects {
         compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
         compile group: 'com.google.guava', name: 'guava', version: '27.0.1-jre'
         testCompile group: 'org.testng', name: 'testng', version: testNGVersion
-        testCompile group: 'org.hamcrest', name: 'java-hamcrest', version: hamcrestVersion
+        testCompile group: 'org.hamcrest', name: 'hamcrest', version: hamcrestVersion
         compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
         compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
         compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-jaxb-annotations', version: jacksonVersion
