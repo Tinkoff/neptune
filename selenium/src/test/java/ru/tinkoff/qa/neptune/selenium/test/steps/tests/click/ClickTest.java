@@ -4,7 +4,6 @@ import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Button;
 import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.selenium.functions.click.ClickActionSupplier;
 
 import static ru.tinkoff.qa.neptune.selenium.functions.click.ClickActionSupplier.on;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldContainElements;
@@ -42,12 +41,12 @@ public class ClickTest extends BaseWebDriverTest {
     @Test
     public void clickOnWidgetDirectlyTest() {
         Button button = seleniumSteps.find(button(BUTTON_LABEL_TEXT5));
-        seleniumSteps.click(ClickActionSupplier.on(button));
+        seleniumSteps.click(on(button));
         assertThat(CUSTOM_LABELED_BUTTON1.getClickCount(), is(1));
 
         button = seleniumSteps.find(button(BUTTON_LABEL_TEXT5)
                 .foundFrom(webElement(className(CELL_CLASS), CELL_TEXT73, shouldContainElements(buttons(ofMillis(5))))));
-        seleniumSteps.click(ClickActionSupplier.on(button));
+        seleniumSteps.click(on(button));
         assertThat(CUSTOM_LABELED_BUTTON1.getClickCount(), is(2));
     }
 
@@ -69,7 +68,7 @@ public class ClickTest extends BaseWebDriverTest {
         WebElement webElement = seleniumSteps.find(webElement(className(TAB_CLASS),
                 shouldHaveAttribute(ATTR20, VALUE1)
                         .and(shouldContainElements(webElements(CUSTOM_LABEL_BY, TAB_TEXT10, ofMillis(5))))));
-        seleniumSteps.click(ClickActionSupplier.on(webElement));
+        seleniumSteps.click(on(webElement));
         assertThat(CUSTOM_LABELED_TAB2.getClickCount(), is(1));
     }
 }

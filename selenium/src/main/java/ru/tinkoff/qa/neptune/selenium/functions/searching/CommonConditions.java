@@ -20,7 +20,6 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-@SuppressWarnings("unchecked")
 public final class CommonConditions {
 
     private CommonConditions() {

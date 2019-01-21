@@ -30,6 +30,7 @@ public class MockWebElement implements WebElement, WrapsDriver {
     private final String text;
     private final List<MockWebElement> children;
     private int clickCount;
+    private int scrollCount;
 
     MockWebElement(By foundBy, Map<String, String> attributes, Map<String, String> css, Point location,
                    Dimension size, boolean isDisplayed, boolean isEnabled, boolean isFlag, String tagName, String text,
@@ -186,5 +187,13 @@ public class MockWebElement implements WebElement, WrapsDriver {
     @Override
     public WebDriver getWrappedDriver() {
         return driver;
+    }
+
+    public int getScrollCount() {
+        return scrollCount;
+    }
+
+    public void scroll() {
+        this.scrollCount++;
     }
 }
