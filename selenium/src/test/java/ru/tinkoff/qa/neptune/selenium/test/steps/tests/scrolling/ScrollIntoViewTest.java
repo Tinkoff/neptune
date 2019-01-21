@@ -12,25 +12,24 @@ import static ru.tinkoff.qa.neptune.selenium.functions.click.ClickActionSupplier
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldContainElements;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.buttons;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.*;
-import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.OPTION;
-import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.SELECT;
+import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
 
 public class ScrollIntoViewTest extends BaseWebDriverTest {
 
     @Test
     public void scrollWebElementIntoView() {
-        var select = seleniumSteps.find(webElement(tagName(SELECT)));
+        var table = seleniumSteps.find(webElement(tagName(TABLE)));
 
-        var selectScrollCount = ((MockWebElement) select).getScrollCount();
-        select.getClass();
-        assertThat(((MockWebElement) select).getScrollCount(), is(selectScrollCount + 1)); //+1 for invocation of getScrollCount
+        var tableScrollCount = ((MockWebElement) table).getScrollCount();
+        table.getClass();
+        assertThat(((MockWebElement) table).getScrollCount(), is(tableScrollCount + 1)); //+1 for invocation of getScrollCount
 
-        var option = seleniumSteps.find(webElement(tagName(OPTION)).foundFrom(webElement(tagName(SELECT))));
-        assertThat(((MockWebElement) select).getScrollCount(), is(selectScrollCount + 2)); //+1 for invocation of getScrollCount
+        var th = seleniumSteps.find(webElement(tagName(TH)).foundFrom(table));
+        assertThat(((MockWebElement) table).getScrollCount(), is(tableScrollCount + 2)); //+1 for invocation of getScrollCount
 
-        var optionScrollCount = ((MockWebElement) option).getScrollCount();
-        seleniumSteps.click(on(option));
-        assertThat(((MockWebElement) option).getScrollCount(), is(optionScrollCount + 2)); //+1 for invocation of getScrollCount
+        var thScrollCount = ((MockWebElement) th).getScrollCount();
+        seleniumSteps.click(on(th));
+        assertThat(((MockWebElement) th).getScrollCount(), is(thScrollCount + 2)); //+1 for invocation of getScrollCount
     }
 
     @Test
