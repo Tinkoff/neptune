@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.selenium.test.steps.tests.searching.widgets.text.f
 
 import ru.tinkoff.qa.neptune.selenium.api.widget.Labeled;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Name;
+import ru.tinkoff.qa.neptune.selenium.api.widget.ScrollsIntoView;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.TextField;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -18,10 +19,11 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 @Name(TEXT_AREA)
 @FindBy(tagName = TEXT_AREA_TAG)
-public class TextArea extends TextField implements Labeled {
+public class TextArea extends TextField implements Labeled, ScrollsIntoView {
 
     @FindBy(tagName = LABEL_TAG)
     private List<WebElement> labels;
+    private int scrollCount = 0;
 
     public TextArea(WebElement wrappedElement) {
         super(wrappedElement);
@@ -41,5 +43,14 @@ public class TextArea extends TextField implements Labeled {
     @Override
     public List<String> labels() {
         return labels.stream().map(WebElement::getText).collect(toList());
+    }
+
+    @Override
+    public void scrollIntoView() {
+        scrollCount++;
+    }
+
+    public int getScrollCount() {
+        return scrollCount;
     }
 }
