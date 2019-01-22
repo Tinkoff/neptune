@@ -7,5 +7,6 @@ public interface Clickable extends SearchContext {
     /**
      * Performs click on some element (button, link etc.)
      */
+    @NeedToScrollIntoView
     void click();
 }

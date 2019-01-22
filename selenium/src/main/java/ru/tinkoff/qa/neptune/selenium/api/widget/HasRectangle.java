@@ -6,5 +6,6 @@ public interface HasRectangle {
     /**
      * @return The location and size of the rendered element
      */
+    @NeedToScrollIntoView
     Rectangle getRect();
 }

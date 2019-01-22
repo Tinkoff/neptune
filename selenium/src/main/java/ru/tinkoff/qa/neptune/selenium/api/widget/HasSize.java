@@ -8,5 +8,6 @@ public interface HasSize {
      *
      * @return The size of the element on the page.
      */
+    @NeedToScrollIntoView
     Dimension getSize();
 }

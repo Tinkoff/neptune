@@ -8,5 +8,6 @@ public interface HasValue<T> extends SearchContext {
      * @return value of some element (something like text in a text input field,
      * is some checkbox/radiobutton selected or not etc.)
      */
+    @NeedToScrollIntoView
     T getValue();
 }

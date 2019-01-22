@@ -8,5 +8,6 @@ public interface HasLocation {
      *
      * @return A point, containing the location of the top left-hand corner of the element
      */
+    @NeedToScrollIntoView
     Point getLocation();
 }

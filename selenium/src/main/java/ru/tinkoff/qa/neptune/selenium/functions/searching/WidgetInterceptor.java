@@ -1,15 +1,18 @@
 package ru.tinkoff.qa.neptune.selenium.functions.searching;
 
+import ru.tinkoff.qa.neptune.selenium.api.widget.NeedToScrollIntoView;
+import ru.tinkoff.qa.neptune.selenium.api.widget.ScrollsIntoView;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import net.sf.cglib.proxy.MethodProxy;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.pagefactory.DefaultElementLocatorFactory;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.HashSet;
 
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
-import static java.util.Optional.ofNullable;
 import static org.openqa.selenium.support.PageFactory.initElements;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CGLibProxyBuilder.createProxy;
 
@@ -34,39 +37,64 @@ class WidgetInterceptor extends AbstractElementInterceptor {
         return super.intercept(obj, method, args, proxy);
     }
 
+    @Override
     void setScroller() {
-        scrollsIntoView = ofNullable(scrollsIntoView).orElseGet(() -> {
-            if (ScrollsIntoView.class.isAssignableFrom(widgetClass)) {
-                return (ScrollsIntoView) realObject;
-            }
-            else {
-                super.setScroller();
-                return scrollsIntoView;
-            }
-        });
+        if (ScrollsIntoView.class.isAssignableFrom(widgetClass)) {
+            scrollsIntoView = (ScrollsIntoView) realObject;
+        }
     }
 
     @Override
     Object createRealObject() {
-        return ofNullable(realObject).orElseGet(() -> {
-            var widgetConstructor = stream(widgetClass.getDeclaredConstructors())
-                    .filter(constructor -> {
-                        Class<?>[] paramTypes = constructor.getParameterTypes();
-                        return paramTypes.length == 1 &&
-                                paramTypes[0].isAssignableFrom(element.getClass());
-                    }).findFirst()
-                    .orElseThrow(() -> new RuntimeException(new NoSuchMethodException(format("Can't create instance of %s because " +
-                            "it has no convenient constructor", widgetClass.getName()))));
-            widgetConstructor.setAccessible(true);
+        var widgetConstructor = stream(widgetClass.getDeclaredConstructors())
+                .filter(constructor -> {
+                    Class<?>[] paramTypes = constructor.getParameterTypes();
+                    return paramTypes.length == 1 &&
+                            paramTypes[0].isAssignableFrom(element.getClass());
+                }).findFirst()
+                .orElseThrow(() -> new RuntimeException(new NoSuchMethodException(format("Can't create instance of %s because " +
+                        "it has no convenient constructor", widgetClass.getName()))));
+        widgetConstructor.setAccessible(true);
 
+        try {
+            var result = widgetConstructor.newInstance(element);
+            initElements(new DefaultElementLocatorFactory(element), result);
+            return result;
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
+    }
+
+    private static boolean toPerformTheScrolling(Method m, Class<?> from) {
+        var plainClassSet = new HashSet<Class<?>>();
+        var clazz = from;
+        while (!clazz.equals(Object.class)) {
+            plainClassSet.add(clazz);
+            plainClassSet.addAll(Arrays.asList(clazz.getInterfaces()));
+            clazz = clazz.getSuperclass();
+        }
+
+        for (Class<?> c: plainClassSet) {
+            Method found;
             try {
-                var result = widgetConstructor.newInstance(element);
-                initElements(new DefaultElementLocatorFactory(element), result);
-                setScroller();
-                return result;
-            } catch (Throwable throwable) {
-               throw new RuntimeException(throwable);
+                found = c.getMethod(m.getName(), m.getParameterTypes());
+            } catch (NoSuchMethodException e) {
+                continue;
             }
-        });
+
+            if (found.isAnnotationPresent(NeedToScrollIntoView.class)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    boolean toPerformTheScrolling(Method method) {
+        if (method.isAnnotationPresent(NeedToScrollIntoView.class)) {
+            return true;
+        }
+        return toPerformTheScrolling(method, method.getDeclaringClass());
     }
 }
