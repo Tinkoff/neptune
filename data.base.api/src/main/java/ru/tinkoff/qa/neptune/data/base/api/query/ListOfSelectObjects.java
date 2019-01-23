@@ -1,23 +1,24 @@
 package ru.tinkoff.qa.neptune.data.base.api.query;
 
-import ru.tinkoff.qa.neptune.core.api.steps.LoggableObject;
 import ru.tinkoff.qa.neptune.data.base.api.GotByQuery;
+import ru.tinkoff.qa.neptune.data.base.api.ListOfStoredObjects;
 import ru.tinkoff.qa.neptune.data.base.api.captors.IsQueryCaptured;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.function.Function;
 
-class LoggableElementList<T> extends ArrayList<T> implements LoggableObject, GotByQuery, IsQueryCaptured {
+class ListOfSelectObjects<T> extends ListOfStoredObjects<T> implements GotByQuery, IsQueryCaptured {
 
     private transient Object query;
     private boolean isCaptured;
 
-    LoggableElementList() {
-        super();
+    ListOfSelectObjects(Collection<T> toAdd, Function<List<T>, String> functionToCreateDescription) {
+        super("List of selected objects", toAdd, functionToCreateDescription);
     }
 
-    LoggableElementList(Collection<T> toAdd) {
-        super(toAdd);
+    ListOfSelectObjects(String description, Collection<T> toAdd) {
+        super(description, toAdd);
     }
 
     @Override
@@ -25,7 +26,7 @@ class LoggableElementList<T> extends ArrayList<T> implements LoggableObject, Got
         return query;
     }
 
-    LoggableElementList<T> setQuery(Object query) {
+    ListOfSelectObjects<T> setQuery(Object query) {
         this.query = query;
         return this;
     }
