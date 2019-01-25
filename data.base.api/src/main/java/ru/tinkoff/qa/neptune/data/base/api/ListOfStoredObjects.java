@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.data.base.api;
 
-import org.datanucleus.enhancement.Persistable;
 import ru.tinkoff.qa.neptune.core.api.steps.LoggableObject;
 
 import java.util.*;
@@ -10,6 +9,7 @@ import static java.lang.String.format;
 import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static javax.jdo.JDOHelper.isPersistent;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -22,7 +22,7 @@ public class ListOfStoredObjects<T> implements LoggableObject, List<T> {
                     if (isNull(persistableObject)) {
                         return null;
                     }
-                    if (Persistable.class.isAssignableFrom(persistableObject.getClass())) {
+                    if (isPersistent(persistableObject)) {
                         return format("from table %s", persistableObject.fromTable());
                     }
                     return format("not stored mapped by %s", persistableObject.fromTable());

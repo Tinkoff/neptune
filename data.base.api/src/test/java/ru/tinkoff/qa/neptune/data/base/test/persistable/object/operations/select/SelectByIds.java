@@ -28,22 +28,22 @@ public class SelectByIds extends BaseDbOperationTest {
 
     @Test
     public void selectListTest() {
-        var catalogItems = dataBaseSteps.get(listOfTypeByIds(Catalog.class, -3, 1, 2));
+        var catalogItems = dataBaseSteps.get(listOfTypeByIds(Catalog.class, -3, "0-930267-39-7", "0-671-73246-3"));
         assertThat(catalogItems, hasSize(2));
-        assertThat(catalogItems.stream().map(Catalog::getRecordId).collect(toList()),
-                contains(1, 2));
+        assertThat(catalogItems.stream().map(Catalog::getIsbn).collect(toList()),
+                contains("0-930267-39-7", "0-671-73246-3"));
     }
 
     @Test
     public void selectOneTest() {
-        var catalogItem = dataBaseSteps.get(aSingleOfTypeById(Catalog.class, 2));
-        assertThat(catalogItem.getRecordId(), is(2));
+        var catalogItem = dataBaseSteps.get(aSingleOfTypeById(Catalog.class, "0-671-73246-3"));
+        assertThat(catalogItem.getIsbn(), is("0-671-73246-3"));
         assertThat(catalogItem.getPublisher().getName(), is("Simon & Schuster"));
     }
 
     @Test
     public void selectListTestByCondition() {
-        var catalogItems = dataBaseSteps.get(listOfTypeByIds(Catalog.class, -3, 1, 2)
+        var catalogItems = dataBaseSteps.get(listOfTypeByIds(Catalog.class, -3, "0-671-73246-3", "0-930267-39-7")
                 .withCondition(condition("A book with title `Ruslan and Ludmila`",
                         catalog -> catalog.getBook().getName().equalsIgnoreCase("ruslan and ludmila"))));
         assertThat(catalogItems, hasSize(1));
@@ -287,9 +287,9 @@ public class SelectByIds extends BaseDbOperationTest {
 
     @Test
     public void selectOfListWithConnectionDataSupplier() {
-        var query = listOfTypeByIds(Catalog.class, 1)
+        var query = listOfTypeByIds(Catalog.class, "0-930267-39-7")
                 .useConnection(ConnectionDataSupplierForTestBase2.class);
-        var query2 = listOfTypeByIds(Catalog.class, 1);
+        var query2 = listOfTypeByIds(Catalog.class, "0-930267-39-7");
 
         assertThat(dataBaseSteps.get(query), hasSize(0));
         assertThat(dataBaseSteps.get(query2), hasSize(1));
@@ -297,9 +297,9 @@ public class SelectByIds extends BaseDbOperationTest {
 
     @Test
     public void selectOfOneWithConnectionDataSupplier() {
-        var query = aSingleOfTypeById(Catalog.class, 1)
+        var query = aSingleOfTypeById(Catalog.class, "0-930267-39-7")
                 .useConnection(ConnectionDataSupplierForTestBase2.class);
-        var query2 = aSingleOfTypeById(Catalog.class, 1);
+        var query2 = aSingleOfTypeById(Catalog.class, "0-930267-39-7");
 
         assertThat(dataBaseSteps.get(query), nullValue());
         assertThat(dataBaseSteps.get(query2), not(nullValue()));
@@ -307,9 +307,9 @@ public class SelectByIds extends BaseDbOperationTest {
 
     @Test
     public void selectOfListWithConnection() {
-        var query = listOfTypeByIds(Catalog.class, 1).
+        var query = listOfTypeByIds(Catalog.class, "0-930267-39-7").
                 useConnection(getKnownConnection(ConnectionDataSupplierForTestBase2.class, true));
-        var query2 = listOfTypeByIds(Catalog.class, 1);
+        var query2 = listOfTypeByIds(Catalog.class, "0-930267-39-7");
 
         assertThat(dataBaseSteps.get(query), hasSize(0));
         assertThat(dataBaseSteps.get(query2), hasSize(1));
@@ -317,9 +317,9 @@ public class SelectByIds extends BaseDbOperationTest {
 
     @Test
     public void selectOfOneWithConnectionChangeByPersistenceManagerFactory() {
-        var query = aSingleOfTypeById(Catalog.class, 1)
+        var query = aSingleOfTypeById(Catalog.class, "0-930267-39-7")
                 .useConnection(getKnownConnection(ConnectionDataSupplierForTestBase2.class,true));
-        var query2 = aSingleOfTypeById(Catalog.class, 1);
+        var query2 = aSingleOfTypeById(Catalog.class, "0-930267-39-7");
 
         assertThat(dataBaseSteps.get(query), nullValue());
         assertThat(dataBaseSteps.get(query2), not(nullValue()));

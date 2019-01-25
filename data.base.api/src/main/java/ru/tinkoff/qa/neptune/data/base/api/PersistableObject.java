@@ -57,12 +57,12 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
             return false;
         }
 
-        if (!Persistable.class.isAssignableFrom(thisClass) && !Persistable.class.isAssignableFrom(otherClass)) {
+        if (!isPersistent(this) && !isPersistent(obj)) {
             return super.equals(obj);
         }
 
-        if ((!Persistable.class.isAssignableFrom(thisClass) && Persistable.class.isAssignableFrom(otherClass)) ||
-                (Persistable.class.isAssignableFrom(thisClass) && !Persistable.class.isAssignableFrom(otherClass))) {
+        if ((!isPersistent(this) && isPersistent(obj)) ||
+                (isPersistent(this) && !isPersistent(obj))) {
             return false;
         }
 

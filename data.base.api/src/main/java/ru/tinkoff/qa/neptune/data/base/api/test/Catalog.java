@@ -8,10 +8,6 @@ import javax.jdo.annotations.*;
 public class Catalog extends PersistableObject {
 
     @PrimaryKey
-    @Persistent(valueStrategy=IdGeneratorStrategy.INCREMENT)
-    @Column(name = "RecordID")
-    private int recordId;
-
     @Column(name = "ISBN")
     private String isbn;
 
@@ -23,10 +19,6 @@ public class Catalog extends PersistableObject {
 
     @Persistent(column = "PublisherId")
     private Publisher publisher;
-
-    public int getRecordId() {
-        return recordId;
-    }
 
     public String getIsbn() {
         return isbn;

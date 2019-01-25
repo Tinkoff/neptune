@@ -56,7 +56,7 @@ public class MultiThreadTest extends BaseDbOperationTest {
                 {aSingleByQuery(ofType(Catalog.class).where(qCatalog.book.name.eq("Ruslan and Ludmila")
                         .or(qCatalog.isbn.eq("0-671-73246-3")) //<Journey to Ixtlan
                         .or(qCatalog.book.author.lastName.eq("Pushkin")))
-                        .orderBy(qCatalog.recordId.desc()))},
+                        .orderBy(qCatalog.isbn.desc()))},
 
                 {aSingleByQuery(ofType(Book.class)
                         .where(qBook.name.eq("Ruslan and Ludmila")))},
@@ -84,7 +84,7 @@ public class MultiThreadTest extends BaseDbOperationTest {
                 {aSingleByQuery(ofType(Catalog.class).where(qCatalog.book.name.eq("Ruslan and Ludmila")
                         .or(qCatalog.isbn.eq("0-671-73246-3")) //<Journey to Ixtlan
                         .or(qCatalog.book.author.lastName.eq("Pushkin")))
-                        .orderBy(qCatalog.recordId.desc()))}
+                        .orderBy(qCatalog.isbn.desc()))}
         };
     }
 

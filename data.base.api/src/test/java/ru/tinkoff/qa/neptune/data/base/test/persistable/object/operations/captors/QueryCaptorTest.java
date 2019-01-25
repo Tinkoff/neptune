@@ -49,7 +49,7 @@ public class QueryCaptorTest extends BaseDbOperationTest {
         var querySpec = ofType(Catalog.class).where(c.book.name.eq("Ruslan and Ludmila")
                 .or(c.isbn.eq("0-671-73246-3")) //<Journey to Ixtlan
                 .or(c.book.author.lastName.eq("Pushkin")))
-                .orderBy(c.recordId.desc());
+                .orderBy(c.isbn.desc());
         var query = querySpec.apply(dataBaseSteps);
 
 
@@ -70,7 +70,7 @@ public class QueryCaptorTest extends BaseDbOperationTest {
         var querySpec = ofType(Catalog.class).where(c.book.name.eq("Ruslan and Ludmila")
                 .or(c.isbn.eq("0-671-73246-3")) //<Journey to Ixtlan
                 .or(c.book.author.lastName.eq("Pushkin")))
-                .orderBy(c.recordId.desc());
+                .orderBy(c.isbn.desc());
         var query = querySpec.apply(dataBaseSteps);
 
 

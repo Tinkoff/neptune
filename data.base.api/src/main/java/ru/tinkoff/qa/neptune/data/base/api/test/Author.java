@@ -85,4 +85,8 @@ public class Author extends PersistableObject {
     public Collection<Book> getBooks() {
         return books;
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }
