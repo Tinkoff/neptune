@@ -353,7 +353,7 @@ public class InsertAndDeleteTest extends BaseDbOperationTest {
     }
 
     @Test(dependsOnMethods = "deleteByQueryPositiveTest")
-    public void deleteNotStoredObjectTestTest() {
+    public void deleteNotStoredObjectTest() {
         catalogItemOfNotreDame = new Catalog().setBook(theHunchbackOfNotreDame)
                 .setIsbn("978-1853260681")
                 .setPublisher(signet).setYearOfPublishing(1998);
@@ -376,5 +376,22 @@ public class InsertAndDeleteTest extends BaseDbOperationTest {
         assertThat(deleted, hasSize(2));
         assertThat(isPersistent(riaChristieCollections), is(false));
         assertThat(isPersistent(catalogItemOfNotreDame2), is(false));
+    }
+
+    @Test(dependsOnMethods = "deleteNotStoredObjectTest")
+    public void insertPreviouslyDeletedObjectTest() {
+        var riaChristieCollections = new Publisher().setName("Ria Christie Collections");
+        var catalogItemOfNotreDame2 = new Catalog().setBook(theHunchbackOfNotreDame)
+                .setIsbn("1906230692")
+                .setPublisher(riaChristieCollections)
+                .setYearOfPublishing(2011);
+
+        dataBaseSteps.get(inserted(catalogItemOfNotreDame2));
+        var deleted = dataBaseSteps.get(deleted(catalogItemOfNotreDame2));
+
+        var insertedAgain = dataBaseSteps.get(inserted(deleted));
+
+
+        assertThat(isPersistent(insertedAgain.get(0)), is(true));
     }
 }
