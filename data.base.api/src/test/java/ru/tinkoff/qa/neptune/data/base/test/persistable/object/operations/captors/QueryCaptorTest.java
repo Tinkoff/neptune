@@ -167,21 +167,21 @@ public class QueryCaptorTest extends BaseDbOperationTest {
 
     @Test
     public void testOfSelectSingleItemById() {
-        Catalog catalogItem = dataBaseSteps.get(aSingleOfTypeById(Catalog.class, 2));
-        assertThat(INJECTED, contains("Query:Known Id: 2"));
+        Catalog catalogItem = dataBaseSteps.get(aSingleOfTypeById(Catalog.class, "0-671-73246-3"));
+        assertThat(INJECTED, contains("Query:Known Id: 0-671-73246-3"));
 
         var secondaryReturned = toGet("Stored value", (Function<DataBaseStepContext, Catalog>)
                 dataBaseStepContext -> catalogItem)
                 .makeStringCaptureOnFinish();
 
         dataBaseSteps.get(secondaryReturned);
-        assertThat(INJECTED,contains("Query:Known Id: 2"));
+        assertThat(INJECTED,contains("Query:Known Id: 0-671-73246-3"));
     }
 
     @Test
     public void testOfSelectMultipleItemsByIds() {
-        List<Catalog> catalogItems = dataBaseSteps.get(listOfTypeByIds(Catalog.class, 1, 2));
-        assertThat(INJECTED, contains(equalTo("Query:Known Ids: [1, 2]"),
+        List<Catalog> catalogItems = dataBaseSteps.get(listOfTypeByIds(Catalog.class, "0-930267-39-7", "0-671-73246-3"));
+        assertThat(INJECTED, contains(equalTo("Query:Known Ids: [0-930267-39-7, 0-671-73246-3]"),
                 containsString("Resulted collection:")));
 
         var secondaryReturned = toGet("Stored value", (Function<DataBaseStepContext, List<Catalog>>)
@@ -189,7 +189,7 @@ public class QueryCaptorTest extends BaseDbOperationTest {
                 .makeStringCaptureOnFinish();
 
         dataBaseSteps.get(secondaryReturned);
-        assertThat(INJECTED, contains(equalTo("Query:Known Ids: [1, 2]"),
+        assertThat(INJECTED, contains(equalTo("Query:Known Ids: [0-930267-39-7, 0-671-73246-3]"),
                 containsString("Resulted collection:"),
                 containsString("Resulted collection:")));
     }
