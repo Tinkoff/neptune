@@ -47,11 +47,11 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         var catalogItems = dataBaseSteps.get(listByQuery(ofType(Catalog.class).where(c.book.name.eq("Ruslan and Ludmila")
                 .or(c.isbn.eq("0-671-73246-3")) //<Journey to Ixtlan
                 .or(c.book.author.lastName.eq("Pushkin")))
-                .orderBy(c.recordId.desc())));
+                .orderBy(c.isbn.desc())));
 
         assertThat(catalogItems, hasSize(2));
-        assertThat(catalogItems.stream().map(Catalog::getRecordId).collect(toList()),
-                contains(2, 1));
+        assertThat(catalogItems.stream().map(Catalog::getIsbn).collect(toList()),
+                contains("0-930267-39-7", "0-671-73246-3"));
     }
 
     @Test
@@ -60,9 +60,9 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         var catalogItem = dataBaseSteps.get(aSingleByQuery(ofType(Catalog.class).where(c.book.name.eq("Ruslan and Ludmila")
                 .or(c.isbn.eq("0-671-73246-3")) //<Journey to Ixtlan
                 .or(c.book.author.lastName.eq("Pushkin")))
-                .orderBy(c.recordId.desc())));
+                .orderBy(c.isbn.desc())));
 
-        assertThat(catalogItem.getRecordId(), is(2));
+        assertThat(catalogItem.getIsbn(), is("0-930267-39-7"));
     }
 
     @Test

@@ -1,11 +1,11 @@
 package ru.tinkoff.qa.neptune.data.base.api.query;
 
-import org.datanucleus.api.jdo.query.AbstractJDOQLTypedQuery;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
 import javax.jdo.JDOQLTypedQuery;
 import javax.jdo.Query;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -15,6 +15,7 @@ import static java.util.List.of;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSubIterable.getIterable;
+import static ru.tinkoff.qa.neptune.data.base.api.ListOfStoredObjects.INFO_PERSISTABLE_INFO;
 
 public abstract class SelectListByQuerySupplier<T, R>
         extends ByQuerySequentialGetStepSupplier<T, List<T>, R, SelectListByQuerySupplier<T, R>> {
@@ -37,14 +38,9 @@ public abstract class SelectListByQuerySupplier<T, R>
             @Override
             protected Function<JDOQLTypedQuery<T>, List<T>> getEndFunction() {
                 return this.getResultFunction(format("List of stored database objects. Type %s", className),
-                        jdoTypedQuery -> new LoggableElementList<>(jdoTypedQuery.executeList()) {
-                            @Override
-                            public String toString() {
-                                return format("%s stored elements of type %s", size(),
-                                        ((AbstractJDOQLTypedQuery) jdoTypedQuery).getCompilation().getCandidateClass()
-                                                .getName());
-                            }
-                        }.setQuery(jdoTypedQuery));
+                        jdoTypedQuery ->
+                                new ListOfSelectObjects<>(jdoTypedQuery.executeList(), INFO_PERSISTABLE_INFO::apply)
+                                .setQuery(jdoTypedQuery));
             }
         };
     }
@@ -67,22 +63,12 @@ public abstract class SelectListByQuerySupplier<T, R>
             protected Function<Query<T>, List<T>> getEndFunction() {
                 return this.getResultFunction(description, query -> {
                     if (nonNull(queryBuilder.getTypeOfRequiredValue())) {
-                        return new LoggableElementList<>(query.executeList()) {
-                            @Override
-                            public String toString() {
-                                return format("%s stored elements of type %s", size(), queryBuilder
-                                        .getTypeOfRequiredValue()
-                                        .getName());
-                            }
-                        }.setQuery(query);
+                        return new ListOfSelectObjects<>(query.executeList(),
+                                ts -> INFO_PERSISTABLE_INFO.apply((List<PersistableObject>) ts))
+                                .setQuery(query);
                     }
 
-                    var toBeReturned = new LoggableElementList<>() {
-                        @Override
-                        public String toString() {
-                            return format("%s records/values from the data base", size());
-                        }
-                    }.setQuery(query);
+                    var toBeReturned = new ArrayList<>();
                     var result = query.executeList();
 
                     result.forEach(o -> {
@@ -92,7 +78,8 @@ public abstract class SelectListByQuerySupplier<T, R>
                             toBeReturned.add(of(o));
                         }
                     });
-                    return (List<T>) toBeReturned;
+                    return new ListOfSelectObjects("List of records/values from the data base",
+                            toBeReturned).setQuery(query);
                 });
             }
         };

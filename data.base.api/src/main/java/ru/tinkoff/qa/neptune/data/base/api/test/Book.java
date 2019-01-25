@@ -51,4 +51,8 @@ public class Book extends PersistableObject {
         this.yearOfFinishing = yearOfFinishing;
         return this;
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }

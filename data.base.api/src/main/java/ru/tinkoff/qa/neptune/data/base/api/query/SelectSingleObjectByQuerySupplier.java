@@ -6,11 +6,11 @@ import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 import javax.jdo.JDOQLTypedQuery;
 import javax.jdo.Query;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
 import static java.lang.String.format;
+import static java.util.Arrays.asList;
 import static java.util.List.of;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
@@ -72,20 +72,15 @@ public abstract class SelectSingleObjectByQuerySupplier<T, R>
                     var result = query.executeList();
 
                     result.forEach(o -> {
-                        var loggable = new LoggableElementList<>() {
-                            @Override
-                            public String toString() {
-                                return "1 record/value from the data base";
-                            }
-                        }.setQuery(query);
-
+                        ListOfSelectObjects<Object> loggable ;
                         if (o.getClass().isArray()) {
-                            loggable.addAll(Arrays.asList(((Object[]) o)));
+                            loggable = new ListOfSelectObjects<>("1 record/value from the data base",
+                                    asList(((Object[]) o)));
                         }
                         else {
-                            loggable.addAll(of(o));
+                            loggable = new ListOfSelectObjects<>("1 record/value from the data base", of(o));
                         }
-                        toBeReturned.add(loggable);
+                        toBeReturned.add(loggable.setQuery(query));
                     });
                     return (List<T>) toBeReturned;
                 });

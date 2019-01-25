@@ -1,6 +1,6 @@
 dependencies {
     compile group: 'org.objenesis', name: 'objenesis', version: '3.0.1'
-    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.9.6'
+    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.9.8'
 }
 
 task javadocJar(type: Jar) {

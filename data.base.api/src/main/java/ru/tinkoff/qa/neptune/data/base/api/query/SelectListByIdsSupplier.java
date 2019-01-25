@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.data.base.api.query;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -10,6 +11,7 @@ import java.util.function.Function;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSubIterable.getIterable;
+import static ru.tinkoff.qa.neptune.data.base.api.ListOfStoredObjects.INFO_PERSISTABLE_INFO;
 
 public final class SelectListByIdsSupplier<T extends PersistableObject>
         extends ByIdsSequentialGetStepSupplier<T, List<T>, SelectListByIdsSupplier<T>> {
@@ -35,21 +37,19 @@ public final class SelectListByIdsSupplier<T extends PersistableObject>
     @Override
     protected Function<DataBaseStepContext, List<T>> getEndFunction() {
         Function<DataBaseStepContext, List<T>> listFunction = dataBaseSteps -> {
-            var result = new LoggableElementList<T>() {
-                public String toString() {
-                    return format("%s stored elements of type %s", size(), ofType.getName());
-                }
-            }.setQuery(format("Known Ids: %s", Arrays.toString(ids)));
             var manager = dataBaseSteps.getCurrentPersistenceManager();
 
+            var found = new ArrayList<T>();
             for (Object id : ids) {
                 try {
-                    result.add(manager.getObjectById(ofType, id));
+                    found.add(manager.getObjectById(ofType, id));
                 }
                 catch (RuntimeException ignored) {
                 }
             }
-            return result;
+
+            return new ListOfSelectObjects<>(found, INFO_PERSISTABLE_INFO::apply)
+                    .setQuery(format("Known Ids: %s", Arrays.toString(ids)));
         };
 
         var description = format(DESCRIPTION, ofType.getName(), Arrays.toString(ids));
