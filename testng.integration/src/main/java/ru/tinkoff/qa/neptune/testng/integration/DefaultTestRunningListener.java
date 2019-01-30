@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.testng.integration;
 
+import com.google.common.collect.Iterables;
 import ru.tinkoff.qa.neptune.testng.integration.properties.RefreshEachTimeBefore;
 import org.testng.*;
 import org.testng.annotations.Ignore;
@@ -10,7 +11,9 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 import static java.lang.String.format;
+import static java.lang.String.valueOf;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.joining;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.testng.ITestResult.*;
 import static ru.tinkoff.qa.neptune.core.api.cleaning.Refreshable.refresh;
@@ -94,10 +97,26 @@ public class DefaultTestRunningListener implements IInvokedMethodListener {
             var name = isNotBlank(test.description()) ? test.description() : reflectionMethod.getName();
             var status = method.getTestResult().getStatus();
             var params = testResult.getParameters();
+            var stringParams =stream(params).map(o -> {
+                if (o == null) {
+                    return valueOf(o);
+                }
+
+                var clazz = o.getClass();
+                if (clazz.isArray()) {
+                    return Arrays.toString((Object[]) o);
+                }
+
+                if (Iterable.class.isAssignableFrom(clazz)) {
+                    return Iterables.toString((Iterable<?>) o);
+                }
+
+                return valueOf(o);
+            }).collect(joining(","));
 
             System.out.println();
             System.out.println();
-            System.out.println(format("TEST '%s' HAS FINISHED WITH PARAMETERS: %s", name, Arrays.toString(params)));
+            System.out.println(format("TEST '%s' HAS FINISHED WITH PARAMETERS: %s", name, stringParams));
             switch (status) {
                 case FAILURE:
                     System.err.println("STATUS: FAILED. Exception:");

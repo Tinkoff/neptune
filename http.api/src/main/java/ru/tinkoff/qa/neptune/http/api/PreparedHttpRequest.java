@@ -39,9 +39,6 @@ public class PreparedHttpRequest<T extends PreparedHttpRequest<T>> implements Fu
     private final UriBuilder uriBuilder = new JerseyUriBuilder();
     private final Function<HttpRequest.Builder, HttpRequest.Builder> builderPreparing;
 
-    private HttpClient.Builder clientToBeUsed;
-    private boolean toUseDefaultClient = false;
-
 
     private PreparedHttpRequest(String uri, Function<HttpRequest.Builder, HttpRequest.Builder> builderPreparing) {
         checkArgument(!isBlank(uri), "URI parameter should not be a null or empty value");
@@ -223,40 +220,6 @@ public class PreparedHttpRequest<T extends PreparedHttpRequest<T>> implements Fu
     }
 
     /**
-     * This method defines a new client to be used until another request built by {@link PreparedHttpRequest}
-     * is sent. This request supplier should be configured by invocation of
-     * {@link #useHttpClient(HttpClient.Builder)} or
-     * {@link #useDefaultHttpClient()}. Also it is possible to invoke
-     * {@link HttpStepContext#changeCurrentHttpClientSettings(HttpClient.Builder)} or
-     * {@link HttpStepContext#resetHttpClient()} for same purposes.
-     *
-     * @param clientToBeUsed is a builder of {@link HttpClient} that is going to be used further.
-     * @return self-reference
-     */
-    public T useHttpClient(HttpClient.Builder clientToBeUsed) {
-        this.clientToBeUsed = clientToBeUsed;
-        toUseDefaultClient = false;
-        return (T) this;
-    }
-
-    /**
-     * This method says that default http client is used further. This client is described by properties.
-     * Default http client is used until another request built by {@link PreparedHttpRequest}
-     * is sent. This request supplier should be configured by invocation of
-     * {@link #useHttpClient(HttpClient.Builder)} or
-     * {@link #useDefaultHttpClient()}. Also it is possible to invoke
-     * {@link HttpStepContext#changeCurrentHttpClientSettings(HttpClient.Builder)} or
-     * {@link HttpStepContext#resetHttpClient()} for same purposes.
-     *
-     * @return self-reference
-     */
-    public T useDefaultHttpClient() {
-        this.clientToBeUsed = null;
-        toUseDefaultClient = true;
-        return (T) this;
-    }
-
-    /**
      * Adds all the cookies into cookie cache of the current http client.
      *
      * @param uri              a {@code URI} where the cookies come from
@@ -339,12 +302,6 @@ public class PreparedHttpRequest<T extends PreparedHttpRequest<T>> implements Fu
     @Override
     public HowToGetResponse apply(HttpStepContext httpSteps) {
         builder.uri(uriBuilder.build());
-        if (toUseDefaultClient) {
-            httpSteps.resetHttpClient();
-        } else {
-            ofNullable(clientToBeUsed).ifPresent(httpSteps::changeCurrentHttpClientSettings);
-        }
-
         var client = httpSteps.getCurrentClient();
 
         if (cookieToAdd.size() > 0) {

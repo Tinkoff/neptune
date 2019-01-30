@@ -5,6 +5,7 @@ import net.sf.cglib.proxy.MethodProxy;
 import org.openqa.selenium.WebElement;
 import ru.tinkoff.qa.neptune.selenium.api.widget.ScrollsIntoView;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import static java.util.Optional.ofNullable;
@@ -53,7 +54,16 @@ abstract class AbstractElementInterceptor implements MethodInterceptor {
                         .ifPresent(ScrollsIntoView::scrollIntoView);
             }
 
-            return method.invoke(realObject, args);
+            try {
+                return method.invoke(realObject, args);
+            }
+            catch (InvocationTargetException e) {
+                var cause = e.getCause();
+                if (cause != null) {
+                    throw e;
+                }
+                throw e;
+            }
         }
     }
 

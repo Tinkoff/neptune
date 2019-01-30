@@ -1,6 +1,6 @@
 dependencies {
     compile project(':core.api')
-    compile group: 'org.glassfish.jersey.core', name: 'jersey-common', version: '2.27'
+    compile group: 'org.glassfish.jersey.core', name: 'jersey-common', version: '2.28'
     testCompile group: 'org.mock-server', name: 'mockserver-netty', version: '5.5.1'
     testCompile group: 'org.mock-server', name: 'mockserver-client-java', version: '5.5.1'
 }
@@ -66,5 +66,5 @@ javadoc {
     options.links 'http://download.oracle.com/javase/9/docs/api/'
     options.addStringOption 'Xdoclint:none', '-quiet'
     options.memberLevel = JavadocMemberLevel.PROTECTED
-    options.bottom = "Copyright &copy; 2018 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
+    options.bottom = "Copyright &copy; 2019 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
 }

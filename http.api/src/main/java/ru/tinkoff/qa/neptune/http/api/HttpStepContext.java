@@ -11,32 +11,19 @@ import java.net.http.HttpClient;
 @CreateWith(provider = HttpStepsParameterProvider.class)
 public class HttpStepContext implements GetStepContext<HttpStepContext>, ActionStepContext<HttpStepContext>, Refreshable {
 
-    private final HttpClient defaultClient;
-    private HttpClient currentClient;
+    private final HttpClient client;
 
     public HttpStepContext(HttpClient.Builder clientBuilder) {
-        this.defaultClient = clientBuilder.build();
-        currentClient = defaultClient;
+        this.client = clientBuilder.build();
     }
 
     public HttpClient getCurrentClient() {
-        return currentClient;
-    }
-
-    public HttpStepContext changeCurrentHttpClientSettings(HttpClient.Builder clientBuilder) {
-        currentClient = clientBuilder.build();
-        return this;
-    }
-
-    public HttpStepContext resetHttpClient() {
-        currentClient = defaultClient;
-        return this;
+        return client;
     }
 
     @Override
     public void refresh() {
-        resetHttpClient();
-        currentClient.cookieHandler().ifPresent(cookieHandler ->
+        client.cookieHandler().ifPresent(cookieHandler ->
                 ((CookieManager) cookieHandler).getCookieStore().removeAll());
     }
 }
