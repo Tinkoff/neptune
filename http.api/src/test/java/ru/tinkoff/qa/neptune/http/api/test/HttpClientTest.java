@@ -153,67 +153,6 @@ public class HttpClientTest extends BaseHttpTest {
     }
 
     @Test
-    public void changeClientWithRequest() {
-        setProperty(DEFAULT_CONNECT_TIME_UNIT_PROPERTY.getPropertyName(), DEFAULT_CONNECT_CHRONO_UNIT.name());
-        setProperty(DEFAULT_CONNECT_TIME_VALUE_PROPERTY.getPropertyName(), valueOf(DEFAULT_CONNECT_TIME_VALUE));
-        setProperty(DEFAULT_HTTP_AUTHENTICATOR_PROPERTY.getPropertyName(), TestAuthenticatorSupplier.class.getName());
-        setProperty(DEFAULT_HTTP_COOKIE_MANAGER_PROPERTY.getPropertyName(), TestCookieHandlerSupplier.class.getName());
-        setProperty(DEFAULT_HTTP_EXECUTOR_PROPERTY.getPropertyName(), TestExecutorSupplier.class.getName());
-        setProperty(DEFAULT_HTTP_PRIORITY_PROPERTY.getPropertyName(), valueOf(DEFAULT_PRIORITY));
-        setProperty(DEFAULT_HTTP_PROTOCOL_VERSION_PROPERTY.getPropertyName(), DEFAULT_VERSION.name());
-        setProperty(DEFAULT_HTTP_PROXY_SELECTOR_PROPERTY.getPropertyName(), TestProxySelectorSupplier.class.getName());
-        setProperty(DEFAULT_HTTP_REDIRECT_PROPERTY.getPropertyName(), DEFAULT_REDIRECT.name());
-        setProperty(DEFAULT_HTTP_SSL_CONTEXT_PROPERTY.getPropertyName(), TestSslContextSupplier.class.getName());
-        setProperty(DEFAULT_HTTP_SSL_PARAMETERS_PROPERTY.getPropertyName(), TestSslParametersSupplier.class.getName());
-
-        try {
-            var httpSteps = getProxied(HttpStepContext.class);
-            httpSteps.get(responseOf(GET(format("%s/index.html", REQUEST_URI))
-                    .useHttpClient(HttpClient.newBuilder()), ofString()));
-            var client = httpSteps.getCurrentClient();
-
-            assertThat(client.authenticator().orElse(null), not(equalTo(DEFAULT_AUTHENTICATOR)));
-            assertThat(client.connectTimeout().orElse(null), not(equalTo(of(DEFAULT_CONNECT_TIME_VALUE, DEFAULT_CONNECT_CHRONO_UNIT))));
-            assertThat(client.cookieHandler().orElse(null), not(equalTo(DEFAULT_COOKIE_HANDLER)));
-            assertThat(client.executor().orElse(null), not(equalTo(DEFAULT_EXECUTOR)));
-            assertThat(client.followRedirects(), not(is(DEFAULT_REDIRECT)));
-            assertThat(client.proxy().orElse(null), not(equalTo(DEFAULT_PROXY_SELECTOR)));
-            assertThat(client.sslContext(), not(equalTo(DEFAULT_SSL_CONTEXT)));
-            assertThat(client.sslParameters().getCipherSuites(), not(arrayContaining("1", "2", "3")));
-            assertThat(client.version(), not(is(DEFAULT_VERSION)));
-        }
-        finally {
-            getProperties().remove(DEFAULT_CONNECT_TIME_UNIT_PROPERTY.getPropertyName());
-            getProperties().remove(DEFAULT_CONNECT_TIME_VALUE_PROPERTY.getPropertyName());
-            getProperties().remove(DEFAULT_HTTP_AUTHENTICATOR_PROPERTY.getPropertyName());
-            getProperties().remove(DEFAULT_HTTP_COOKIE_MANAGER_PROPERTY.getPropertyName());
-            getProperties().remove(DEFAULT_HTTP_EXECUTOR_PROPERTY.getPropertyName());
-            getProperties().remove(DEFAULT_HTTP_PRIORITY_PROPERTY.getPropertyName());
-            getProperties().remove(DEFAULT_HTTP_PROTOCOL_VERSION_PROPERTY.getPropertyName());
-            getProperties().remove(DEFAULT_HTTP_PROXY_SELECTOR_PROPERTY.getPropertyName());
-            getProperties().remove(DEFAULT_HTTP_REDIRECT_PROPERTY.getPropertyName());
-            getProperties().remove(DEFAULT_HTTP_SSL_CONTEXT_PROPERTY.getPropertyName());
-            getProperties().remove(DEFAULT_HTTP_SSL_PARAMETERS_PROPERTY.getPropertyName());
-        }
-    }
-
-    @Test
-    public void switchToDefaultClientWithRequest() {
-        var httpSteps = getProxied(HttpStepContext.class);
-        var defaultClient = httpSteps.getCurrentClient();
-        httpSteps.changeCurrentHttpClientSettings(HttpClient.newBuilder());
-        var client = httpSteps.getCurrentClient();
-
-        assertThat(client, not(equalTo(defaultClient)));
-
-        httpSteps.get(responseOf(GET(format("%s/index.html", REQUEST_URI)).useDefaultHttpClient(),
-                ofString()));
-        client = httpSteps.getCurrentClient();
-
-        assertThat(client, equalTo(defaultClient));
-    }
-
-    @Test
     public void abilityToUseRelativeURIPathTest() {
         setProperty(DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY.getPropertyName(), REQUEST_URI);
         var httpSteps = getProxied(HttpStepContext.class);
@@ -234,8 +173,7 @@ public class HttpClientTest extends BaseHttpTest {
 
         var httpSteps = getProxied(HttpStepContext.class);
         httpSteps.get(responseOf(GET(format("%s/index.html", REQUEST_URI))
-                        .addCookies(null, List.of(httpCookie))
-                        .useDefaultHttpClient(),
+                        .addCookies(null, List.of(httpCookie)),
                 ofString()));
         assertThat(httpSteps.get(cachedCookies()), hasItem(httpCookie));
         assertThat(httpSteps.get(cachedCookies()

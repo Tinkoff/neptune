@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.data.base.api;
 
 import org.datanucleus.enhancement.Persistable;
+import org.datanucleus.identity.ObjectId;
 import org.datanucleus.state.ObjectProvider;
 import ru.tinkoff.qa.neptune.core.api.steps.LoggableObject;
 import ru.tinkoff.qa.neptune.data.base.api.captors.IsQueryCaptured;
@@ -28,7 +29,16 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
         }
 
         return ofNullable(((Persistable) this).dnGetObjectId())
-                .map(o -> format("Stored item Id=[%s] table [%s]", o, name))
+                .map(o -> {
+                    Object key;
+                    if (ObjectId.class.isAssignableFrom(o.getClass())) {
+                        key = ((ObjectId) o).getKey();
+                    }
+                    else {
+                        key = o;
+                    }
+                    return format("Stored item Id=[%s] table [%s]", key, name);
+                })
                 .orElseGet(() -> format("Stored item without id table [%s]", name));
     }
 

@@ -7,7 +7,6 @@ import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 import ru.tinkoff.qa.neptune.data.base.api.query.SelectSequentialGetStepSupplier;
 
 import javax.jdo.PersistenceManager;
-import javax.jdo.Transaction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -34,30 +33,45 @@ import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
  *           specification. It is needed for the chaining.
  */
 abstract class OperationSequentialGetSupplier<T extends PersistableObject, R extends OperationSequentialGetSupplier<T, R>>
-        extends DBSequentialGetStepSupplier<List<T>, Transaction, R> {
+        extends DBSequentialGetStepSupplier<List<T>, List<T>, R> {
+
+    private final Function<DataBaseStepContext, DataBaseStepContext> precondition = new Function<>() {
+        @Override
+        public DataBaseStepContext apply(DataBaseStepContext dataBaseStepContext) {
+            manager = dataBaseStepContext.getCurrentPersistenceManager();
+            return dataBaseStepContext;
+        }
+    };
 
     private final String description;
-    private final Object forTransaction;
-    private DataBaseStepContext context;
+    PersistenceManager manager;
 
-    private OperationSequentialGetSupplier(String description, Object forTransaction) {
+    OperationSequentialGetSupplier(String description, List<T> toBeOperated) {
         this.description = description;
-        this.forTransaction = forTransaction;
-        from(dataBaseStepContext -> {
-            context = dataBaseStepContext;
-            return dataBaseStepContext.getCurrentPersistenceManager().currentTransaction();
-        });
-    }
-
-    OperationSequentialGetSupplier(String description, List<T> toBeTransacted) {
-        this(description, (Object) toBeTransacted);
-    }
-
-    OperationSequentialGetSupplier(String description, SelectSequentialGetStepSupplier<?,?,?> select) {
-        this(description, (Object) select);
+        from(precondition.andThen(dataBaseStepContext -> toBeOperated));
     }
 
     @SuppressWarnings("unchecked")
+    OperationSequentialGetSupplier(String description, SelectSequentialGetStepSupplier<?,?,?> select) {
+        this.description = description;
+        from(precondition.andThen(dataBaseStepContext -> {
+            var result = dataBaseStepContext.get(select);
+            return ofNullable(result)
+                    .map(resulted -> {
+                        var resultClazz = resulted.getClass();
+                        if (List.class.isAssignableFrom(resultClazz)) {
+                            return (List<T>) resulted;
+                        }
+
+                        return of(resulted)
+                                .stream()
+                                .map(o1 -> (T) o1)
+                                .collect(toList());
+                    })
+                    .orElse(of());
+        }));
+    }
+
     static <T extends PersistableObject> List<T> getOperationObjects(Collection<T> toBeOperated) {
         checkArgument(nonNull(toBeOperated), "Collection of db objects  should not be null");
         checkArgument(toBeOperated
@@ -78,44 +92,13 @@ abstract class OperationSequentialGetSupplier<T extends PersistableObject, R ext
     abstract List<T> getResult(PersistenceManager persistenceManager, List<T> listOfObjectsForTransaction);
 
     @Override
-    @SuppressWarnings("unchecked")
-    protected Function<Transaction, List<T>> getEndFunction() {
-        return toGet(description, transaction -> {
+    protected Function<List<T>, List<T>> getEndFunction() {
+        return toGet(description, list -> {
+            var transaction = manager.currentTransaction();
             try {
-                List<T> transactionList = ofNullable(forTransaction)
-                        .map(o -> {
-                            var clazz = o.getClass();
-                            if (SelectSequentialGetStepSupplier.class.isAssignableFrom(clazz)) {
-                                var result = context.get((SelectSequentialGetStepSupplier) o);
-                                return ofNullable(result)
-                                        .map(resulted -> {
-                                            var resultClazz = resulted.getClass();
-                                            if (List.class.isAssignableFrom(resultClazz)) {
-                                                return (List<T>) resulted;
-                                            }
-
-                                            return of(resulted)
-                                                    .stream()
-                                                    .map(o1 -> (T) o1)
-                                                    .collect(toList());
-                                        })
-                                        .orElse(of());
-                            }
-
-                            if (List.class.isAssignableFrom(clazz)) {
-                                return (List<T>) o;
-                            }
-
-                            return of()
-                                    .stream()
-                                    .map(o1 -> (T) o1)
-                                    .collect(toList());
-                        })
-                        .orElse(of());
-
                 transaction.setOptimistic(true);
                 transaction.begin();
-                var toBeReturned = getResult(context.getCurrentPersistenceManager(), transactionList);
+                var toBeReturned = getResult(manager, list);
                 transaction.commit();
                 return toBeReturned;
             }

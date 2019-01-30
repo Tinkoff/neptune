@@ -1,5 +1,5 @@
 ext {
-    globalVersion = '0.8.11-ALPHA'
+    globalVersion = '0.8.12-ALPHA'
 }
 
 subprojects {
@@ -62,7 +62,7 @@ task aggregatedJavadocs(type: Javadoc, description: 'Generate javadocs from all 
     options.addStringOption 'Xdoclint:none', '-quiet'
     destinationDir  = file("${buildDir}/../../neptune.documentation/javadocs/")
     options.memberLevel = JavadocMemberLevel.PROTECTED
-    options.bottom = "Copyright &copy; 2018 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
+    options.bottom = "Copyright &copy; 2019 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
 
     subprojects.each { proj ->
         proj.tasks.withType(Javadoc).each { javadocTask ->

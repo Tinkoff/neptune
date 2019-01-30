@@ -55,6 +55,7 @@ public class DeletedSequentialGetStepSupplier<T extends PersistableObject>
      * @param <T> is a subclass of {@link PersistableObject}. It defines the type of an item of a resulted list
      * @return is an instance of {@link DeletedSequentialGetStepSupplier}
      */
+    @SafeVarargs
     public static <T extends PersistableObject> DeletedSequentialGetStepSupplier<T> deleted(T... toBeDeleted) {
         return new DeletedSequentialGetStepSupplier<>(asList(toBeDeleted));
     }
