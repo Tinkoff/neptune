@@ -17,7 +17,7 @@ public class ToGetTest {
 
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "It seems given after-function doesn't describe any value to get. " +
-                    "Use method StoryWriter.toGet to describe the value to get")
+                    "Use method StoryWriter.toGet")
     public void negativeTestWhenTheNextFunctionIsNotDescribed() {
         Function<Object, String> describedToString = StoryWriter.toGet("String value of the object",
                 GET_TO_STRING);

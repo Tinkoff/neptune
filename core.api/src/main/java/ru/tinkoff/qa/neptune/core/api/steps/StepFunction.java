@@ -22,8 +22,8 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<StepFunction<T, R>>,
         MakesCapturesOnFinishing<StepFunction<T, R>> {
 
-    private final String description;
-    final Function<T, R> function;
+    String description;
+    Function<T, R> function;
     private final Set<Class<? extends Throwable>> ignored = new HashSet<>();
     private final Set<CaptorFilterByProducedType> captorFilters = new HashSet<>();
 
@@ -33,6 +33,11 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
         this.description = description;
         this.function = function;
     }
+
+    StepFunction() {
+        super();
+    }
+
 
     private boolean shouldBeThrowableIgnored(Throwable toBeIgnored) {
         for (var throwableClass: ignored) {
@@ -83,11 +88,11 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
         return description;
     }
 
-    public <V> Function<V, R> compose(Function<? super V, ? extends T> before) {
+    public <V> StepFunction<V, R> compose(Function<? super V, ? extends T> before) {
         return new SequentialStepFunction<>(before, this);
     }
 
-    public <V> Function<T, V> andThen(Function<? super R, ? extends V> after) {
+    public <V> StepFunction<T, V> andThen(Function<? super R, ? extends V> after) {
         return new SequentialStepFunction<>(this, after);
     }
 
@@ -194,16 +199,30 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
         return this;
     }
 
-    static final class SequentialStepFunction<T, R> implements Function<T, R>, IgnoresThrowable<SequentialStepFunction<T, R>> {
+    static final class SequentialStepFunction<T, R> extends StepFunction<T, R> {
 
         private final LinkedList<Function<Object, Object>> sequence = new LinkedList<>();
-        private final Set<Class<? extends Throwable>> ignored = new HashSet<>();
 
         @SuppressWarnings("unchecked")
         <V> SequentialStepFunction(Function<? super T, ? extends V> before,
                                    Function<? super V, ? extends R> after) {
             checkNotNull(before);
             checkNotNull(after);
+            checkArgument(isLoggable(after), "It seems given after-function doesn't describe any value to get. " +
+                    "Use method StoryWriter.toGet");
+
+            description = after.toString();
+            function = t -> {
+                Object result = t;
+                for (Function<Object, Object> f: sequence) {
+                    result = f.apply(result);
+                    if (result == null) {
+                        return null;
+                    }
+                }
+                return (R) result;
+            };
+
             if (SequentialStepFunction.class.isAssignableFrom(before.getClass())) {
                 sequence.addAll(((SequentialStepFunction<?, ?>) before).sequence);
             }
@@ -219,49 +238,12 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
             }
         }
 
-        @Override
-        public SequentialStepFunction<T, R> addIgnored(List<Class<? extends Throwable>> toBeIgnored) {
-            ignored.addAll(toBeIgnored);
-            return this;
-        }
-
-        @Override
-        @SuppressWarnings("unchecked")
-        public R apply(T t) {
-            Object result = t;
-            for (Function<Object, Object> f: sequence) {
-                try {
-                    result = f.apply(result);
-                }
-                catch (Throwable throwable) {
-                    for (Class<? extends Throwable> c: ignored) {
-                        if (c.isAssignableFrom(throwable.getClass())) {
-                            return null;
-                        }
-                    }
-                    throw throwable;
-                }
-                if (result == null) {
-                    return null;
-                }
-            }
-            return (R) result;
-        }
-
-        public <V> Function<V, R> compose(Function<? super V, ? extends T> before) {
+        public <V> StepFunction<V, R> compose(Function<? super V, ? extends T> before) {
             return new SequentialStepFunction<>(before, this);
         }
 
-        public <V> Function<T, V> andThen(Function<? super R, ? extends V> after) {
+        public <V> StepFunction<T, V> andThen(Function<? super R, ? extends V> after) {
             return new SequentialStepFunction<>(this, after);
-        }
-
-        public String toString() {
-            if (sequence.size() == 0) {
-                return super.toString();
-            }
-
-            return sequence.getLast().toString();
         }
     }
 }
