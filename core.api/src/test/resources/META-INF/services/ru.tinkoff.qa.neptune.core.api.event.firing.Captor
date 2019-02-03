@@ -1,4 +1,4 @@
-ru.tinkoff.qa.neptune.core.api.TestCaptor
-ru.tinkoff.qa.neptune.core.api.TestStringCaptor
-ru.tinkoff.qa.neptune.core.api.TestFileCaptor
-ru.tinkoff.qa.neptune.core.api.TestNumberCaptor
+ru.tinkoff.qa.neptune.core.api.steps.TestCaptor
+ru.tinkoff.qa.neptune.core.api.steps.TestStringCaptor
+ru.tinkoff.qa.neptune.core.api.steps.TestFileCaptor
+ru.tinkoff.qa.neptune.core.api.steps.TestNumberCaptor

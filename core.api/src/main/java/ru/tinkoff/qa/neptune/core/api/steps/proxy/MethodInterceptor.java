@@ -1,12 +1,13 @@
 package ru.tinkoff.qa.neptune.core.api.steps.proxy;
 
-import ru.tinkoff.qa.neptune.core.api.steps.context.ConstructorParameters;
 import ru.tinkoff.qa.neptune.core.api.cleaning.StoppableOnJVMShutdown;
 import ru.tinkoff.qa.neptune.core.api.concurency.ObjectContainer;
+import ru.tinkoff.qa.neptune.core.api.steps.context.ConstructorParameters;
 import net.bytebuddy.implementation.bind.annotation.AllArguments;
 import net.bytebuddy.implementation.bind.annotation.Origin;
 import net.bytebuddy.implementation.bind.annotation.RuntimeType;
 import net.bytebuddy.implementation.bind.annotation.This;
+import ru.tinkoff.qa.neptune.core.api.utils.ConstructorUtil;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -14,8 +15,6 @@ import java.lang.reflect.Method;
 import java.util.function.Function;
 
 import static java.lang.Runtime.getRuntime;
-import static ru.tinkoff.qa.neptune.core.api.concurency.ObjectContainer.*;
-import static ru.tinkoff.qa.neptune.core.api.utils.ConstructorUtil.findSuitableConstructor;
 import static java.util.Optional.ofNullable;
 
 public class MethodInterceptor<T> {
@@ -41,7 +40,7 @@ public class MethodInterceptor<T> {
         T target;
         try {
             target = ofNullable(threadLocal.get()).map(ObjectContainer::getWrappedObject).orElseGet(() ->
-                    ofNullable(setObjectBusy(originalClass)).map(tObjectContainer -> {
+                    ofNullable(ObjectContainer.setObjectBusy(originalClass)).map(tObjectContainer -> {
                         threadLocal.set(tObjectContainer);
                         return tObjectContainer.getWrappedObject();
                     }).orElseGet(() -> {
@@ -49,7 +48,7 @@ public class MethodInterceptor<T> {
                         Constructor<T> c;
 
                         try {
-                            c = findSuitableConstructor(classToInstantiate, params);
+                            c = ConstructorUtil.findSuitableConstructor(classToInstantiate, params);
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }

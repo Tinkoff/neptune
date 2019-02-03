@@ -1,7 +1,6 @@
-package ru.tinkoff.qa.neptune.core.api;
+package ru.tinkoff.qa.neptune.core.api.steps;
 
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.core.api.steps.StoryWriter;
 import ru.tinkoff.qa.neptune.core.api.steps.context.ActionStepContext;
 import ru.tinkoff.qa.neptune.core.api.steps.context.ConstructorParameters;
 import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
@@ -16,8 +15,8 @@ public class NegativeTest {
 
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Class to substitute should be assignable from " +
-                    "ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext " +
-                    "and/or ru.tinkoff.qa.neptune.core.api.steps.context.ActionStepContext.")
+                    "GetStepContext " +
+                    "and/or ActionStepContext.")
     public void testOfIllegalClass() {
         ProxyFactory.getProxied(Object.class, ConstructorParameters.params());
         fail("The exception throwing was expected");

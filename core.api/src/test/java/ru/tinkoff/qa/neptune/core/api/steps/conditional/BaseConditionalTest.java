@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.core.api.conditional;
+package ru.tinkoff.qa.neptune.core.api.steps.conditional;
 
 import java.time.Duration;
 import java.util.HashSet;
@@ -11,7 +11,7 @@ import static java.time.Duration.ofMillis;
 import static java.time.Duration.ofSeconds;
 import static java.util.List.of;
 
-public abstract class BaseConditionalTest {
+abstract class BaseConditionalTest {
     static Duration FIVE_SECONDS = ofSeconds(5);
     static Duration FIVE_HUNDRED_MILLIS = ofMillis(500);
     static Duration ONE_MILLISECOND = ofMillis(1);

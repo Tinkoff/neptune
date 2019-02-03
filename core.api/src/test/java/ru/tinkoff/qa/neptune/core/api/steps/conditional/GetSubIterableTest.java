@@ -1,40 +1,23 @@
-package ru.tinkoff.qa.neptune.core.api.conditional;
+package ru.tinkoff.qa.neptune.core.api.steps.conditional;
 
-import org.hamcrest.Matchers;
+import org.hamcrest.MatcherAssert;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.core.api.steps.StoryWriter;
 import ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSubIterable;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSubIterable.getIterable;
-import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.fail;
 
 public class GetSubIterableTest extends BaseConditionalTest {
 
-    private static final String SET_CONVERTED_FROM_LIST = "Set converted from list";
-
-    @Test
-    public void testOfDescriptionForFunctionWithIterableInputAndIterableOutput() {
-        assertThat(ToGetSubIterable.getIterable(SET_CONVERTED_FROM_LIST, CONVERT_LIST_TO_SET,
-                StoryWriter.condition("equals " + A_UPPER + " ignore case", VALUE_A),
-                FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true,
-                () -> NOTHING_WAS_FOUND).toString(),
-                is(format("%s [Criteria: %s", SET_CONVERTED_FROM_LIST, "equals " + A_UPPER + " ignore case]")));
-    }
-
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutput() {
         Set<String> result;
-        assertThat(result = ToGetSubIterable.getIterable(SET_CONVERTED_FROM_LIST, CONVERT_LIST_TO_SET,
-                StoryWriter.condition("equals " + A_UPPER + " ignore case", VALUE_A),
-                FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true,
-                () -> NOTHING_WAS_FOUND).apply(LITERAL_LIST),
-                Matchers.contains(A_LOWER, A_UPPER));
+        assertThat(result = ToGetSubIterable.getIterable(CONVERT_LIST_TO_SET, VALUE_A, FIVE_SECONDS, FIVE_HUNDRED_MILLIS, () -> NOTHING_WAS_FOUND).apply(LITERAL_LIST),
+                contains(A_LOWER, A_UPPER));
         assertThat("Class of the resulted iterable",
                 result.getClass(),
                 is(HashSet.class));
@@ -43,11 +26,8 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutput2() {
         Set<String> result;
-        assertThat(result = ToGetSubIterable.getIterable(SET_CONVERTED_FROM_LIST, CONVERT_LIST_TO_SET,
-                StoryWriter.condition("equals " + A_UPPER + " ignore case", VALUE_A),
-                FIVE_SECONDS, true, true,
-                () -> NOTHING_WAS_FOUND).apply(LITERAL_LIST),
-                Matchers.contains(A_LOWER, A_UPPER));
+        assertThat(result = ToGetSubIterable.getIterable(CONVERT_LIST_TO_SET, VALUE_A, FIVE_SECONDS, () -> NOTHING_WAS_FOUND).apply(LITERAL_LIST),
+                contains(A_LOWER, A_UPPER));
         assertThat("Class of the resulted iterable",
                 result.getClass(),
                 is(HashSet.class));
@@ -56,10 +36,8 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutput3() {
         Set<String> result;
-        assertThat(result = ToGetSubIterable.getIterable(SET_CONVERTED_FROM_LIST, CONVERT_LIST_TO_SET,
-                StoryWriter.condition("equals " + A_UPPER + " ignore case", VALUE_A),
-                true, true, () -> NOTHING_WAS_FOUND).apply(LITERAL_LIST),
-                Matchers.contains(A_LOWER, A_UPPER));
+        assertThat(result = ToGetSubIterable.getIterable(CONVERT_LIST_TO_SET, VALUE_A, () -> NOTHING_WAS_FOUND).apply(LITERAL_LIST),
+                contains(A_LOWER, A_UPPER));
         assertThat("Class of the resulted iterable",
                 result.getClass(),
                 is(HashSet.class));
@@ -68,10 +46,8 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutput4() {
         Set<String> result;
-        assertThat(result = ToGetSubIterable.getIterable(SET_CONVERTED_FROM_LIST, CONVERT_LIST_TO_SET,
-                StoryWriter.condition("equals " + A_UPPER + " ignore case", VALUE_A),
-                FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true).apply(LITERAL_LIST),
-                Matchers.contains(A_LOWER, A_UPPER));
+        assertThat(result = ToGetSubIterable.getIterable(CONVERT_LIST_TO_SET, VALUE_A, FIVE_SECONDS, FIVE_HUNDRED_MILLIS).apply(LITERAL_LIST),
+                contains(A_LOWER, A_UPPER));
         assertThat("Class of the resulted iterable",
                 result.getClass(),
                 is(HashSet.class));
@@ -80,10 +56,8 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutput5() {
         Set<String> result;
-        assertThat(result = ToGetSubIterable.getIterable(SET_CONVERTED_FROM_LIST, CONVERT_LIST_TO_SET,
-                StoryWriter.condition("equals " + A_UPPER + " ignore case", VALUE_A),
-                FIVE_SECONDS, true, true).apply(LITERAL_LIST),
-                Matchers.contains(A_LOWER, A_UPPER));
+        assertThat(result = ToGetSubIterable.getIterable(CONVERT_LIST_TO_SET, VALUE_A, FIVE_SECONDS).apply(LITERAL_LIST),
+                contains(A_LOWER, A_UPPER));
         assertThat("Class of the resulted iterable",
                 result.getClass(),
                 is(HashSet.class));
@@ -92,10 +66,8 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutput6() {
         Set<String> result;
-        assertThat(result = ToGetSubIterable.getIterable(SET_CONVERTED_FROM_LIST, CONVERT_LIST_TO_SET,
-                StoryWriter.condition("equals " + A_UPPER + " ignore case", VALUE_A),
-                true, true).apply(LITERAL_LIST),
-                Matchers.contains(A_LOWER, A_UPPER));
+        assertThat(result = ToGetSubIterable.getIterable(CONVERT_LIST_TO_SET, VALUE_A).apply(LITERAL_LIST),
+                contains(A_LOWER, A_UPPER));
         assertThat("Class of the resulted iterable",
                 result.getClass(),
                 is(HashSet.class));
@@ -104,8 +76,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutput7() {
         Set<String> result;
-        assertThat(result = ToGetSubIterable.getIterable(SET_CONVERTED_FROM_LIST, CONVERT_LIST_TO_SET,
-                FIVE_SECONDS, FIVE_HUNDRED_MILLIS, () -> NOTHING_WAS_FOUND).apply(LITERAL_LIST),
+        assertThat(result = ToGetSubIterable.getIterable(CONVERT_LIST_TO_SET, FIVE_SECONDS, FIVE_HUNDRED_MILLIS, () -> NOTHING_WAS_FOUND).apply(LITERAL_LIST),
                 contains(LITERAL_LIST.toArray()));
         assertThat("Class of the resulted iterable",
                 result.getClass(),
@@ -115,8 +86,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutput8() {
         Set<String> result;
-        assertThat(result = ToGetSubIterable.getIterable(SET_CONVERTED_FROM_LIST, CONVERT_LIST_TO_SET,
-                FIVE_SECONDS, () -> NOTHING_WAS_FOUND).apply(LITERAL_LIST),
+        assertThat(result = ToGetSubIterable.getIterable(CONVERT_LIST_TO_SET, FIVE_SECONDS, () -> NOTHING_WAS_FOUND).apply(LITERAL_LIST),
                 contains(LITERAL_LIST.toArray()));
         assertThat("Class of the resulted iterable",
                 result.getClass(),
@@ -126,8 +96,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutput9() {
         Set<String> result;
-        assertThat(result = ToGetSubIterable.getIterable(SET_CONVERTED_FROM_LIST, CONVERT_LIST_TO_SET,
-                () -> NOTHING_WAS_FOUND).apply(LITERAL_LIST),
+        assertThat(result = ToGetSubIterable.getIterable(CONVERT_LIST_TO_SET, () -> NOTHING_WAS_FOUND).apply(LITERAL_LIST),
                 contains(LITERAL_LIST.toArray()));
         assertThat("Class of the resulted iterable",
                 result.getClass(),
@@ -137,8 +106,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutput10() {
         Set<String> result;
-        assertThat(result = getIterable(SET_CONVERTED_FROM_LIST, CONVERT_LIST_TO_SET,
-                FIVE_SECONDS, FIVE_HUNDRED_MILLIS).apply(LITERAL_LIST),
+        assertThat(result = ToGetSubIterable.getIterable(CONVERT_LIST_TO_SET, FIVE_SECONDS, FIVE_HUNDRED_MILLIS).apply(LITERAL_LIST),
                 contains(LITERAL_LIST.toArray()));
         assertThat("Class of the resulted iterable",
                 result.getClass(),
@@ -148,8 +116,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutput11() {
         Set<String> result;
-        assertThat(result = getIterable(SET_CONVERTED_FROM_LIST, CONVERT_LIST_TO_SET,
-                FIVE_SECONDS).apply(LITERAL_LIST),
+        assertThat(result = ToGetSubIterable.getIterable(CONVERT_LIST_TO_SET, FIVE_SECONDS).apply(LITERAL_LIST),
                 contains(LITERAL_LIST.toArray()));
         assertThat("Class of the resulted iterable",
                 result.getClass(),
@@ -158,104 +125,56 @@ public class GetSubIterableTest extends BaseConditionalTest {
 
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputIgnoringException() {
-        assertThat(ToGetSubIterable.getIterable(SET_CONVERTED_FROM_LIST, CONVERT_LIST_TO_SET,
-                StoryWriter.condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
-                FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true).apply(LITERAL_LIST),
+        MatcherAssert.assertThat(ToGetSubIterable.getIterable(CONVERT_LIST_TO_SET, MALFORMED_PREDICATE, FIVE_SECONDS, FIVE_HUNDRED_MILLIS).apply(LITERAL_LIST),
                 emptyCollectionOf(String.class));
     }
 
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputIgnoringException2() {
-        assertThat(ToGetSubIterable.getIterable(SET_CONVERTED_FROM_LIST, CONVERT_LIST_TO_SET,
-                StoryWriter.condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
-                FIVE_SECONDS, true, true).apply(LITERAL_LIST),
+        MatcherAssert.assertThat(ToGetSubIterable.getIterable(CONVERT_LIST_TO_SET, MALFORMED_PREDICATE, FIVE_SECONDS).apply(LITERAL_LIST),
                 emptyCollectionOf(String.class));
     }
 
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputIgnoringException3() {
-        assertThat(ToGetSubIterable.getIterable(SET_CONVERTED_FROM_LIST, CONVERT_LIST_TO_SET,
-                StoryWriter.condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
-                true, true).apply(LITERAL_LIST),
+        MatcherAssert.assertThat(ToGetSubIterable.getIterable(CONVERT_LIST_TO_SET, MALFORMED_PREDICATE).apply(LITERAL_LIST),
                 emptyCollectionOf(String.class));
-    }
-
-    @Test(expectedExceptions = RuntimeException.class,
-            expectedExceptionsMessageRegExp = "java.lang.RuntimeException was caught. Message: Exception for the unit testing!")
-    public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputWithoutIgnoringException() {
-        assertThat(ToGetSubIterable.getIterable(SET_CONVERTED_FROM_LIST, CONVERT_LIST_TO_SET,
-                StoryWriter.condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
-                FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, false).apply(LITERAL_LIST),
-                emptyCollectionOf(String.class));
-        fail("The exception throwing was expected");
-    }
-
-    @Test(expectedExceptions = RuntimeException.class,
-            expectedExceptionsMessageRegExp = "java.lang.RuntimeException was caught. Message: Exception for the unit testing!")
-    public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputWithoutIgnoringException2() {
-        assertThat(ToGetSubIterable.getIterable(SET_CONVERTED_FROM_LIST, CONVERT_LIST_TO_SET,
-                StoryWriter.condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
-                FIVE_SECONDS, true, false).apply(LITERAL_LIST),
-                emptyCollectionOf(String.class));
-        fail("The exception throwing was expected");
-    }
-
-    @Test(expectedExceptions = RuntimeException.class,
-            expectedExceptionsMessageRegExp = "java.lang.RuntimeException was caught. Message: Exception for the unit testing!")
-    public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputWithoutIgnoringException3() {
-        assertThat(ToGetSubIterable.getIterable(SET_CONVERTED_FROM_LIST, CONVERT_LIST_TO_SET,
-                StoryWriter.condition("equals " + A_UPPER + " ignore case", MALFORMED_PREDICATE),
-                true, false).apply(LITERAL_LIST),
-                emptyCollectionOf(String.class));
-        fail("The exception throwing was expected");
     }
 
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputWithEmptyResult() {
-        assertThat(ToGetSubIterable.getIterable(SET_CONVERTED_FROM_LIST, CONVERT_LIST_TO_SET,
-                StoryWriter.condition("equals W ignore case", VALUE_W),
-                FIVE_SECONDS, FIVE_HUNDRED_MILLIS, true, true).apply(LITERAL_LIST),
+        MatcherAssert.assertThat(ToGetSubIterable.getIterable(CONVERT_LIST_TO_SET, VALUE_W, FIVE_SECONDS, FIVE_HUNDRED_MILLIS).apply(LITERAL_LIST),
                 emptyCollectionOf(String.class));
     }
 
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputWithEmptyResult2() {
-        assertThat(ToGetSubIterable.getIterable(SET_CONVERTED_FROM_LIST, CONVERT_LIST_TO_SET,
-                StoryWriter.condition("equals W ignore case", VALUE_W),
-                FIVE_SECONDS, true, true).apply(LITERAL_LIST),
+        MatcherAssert.assertThat(ToGetSubIterable.getIterable(CONVERT_LIST_TO_SET, VALUE_W, FIVE_SECONDS).apply(LITERAL_LIST),
                 emptyCollectionOf(String.class));
     }
 
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputWithEmptyResult3() {
-        assertThat(ToGetSubIterable.getIterable(SET_CONVERTED_FROM_LIST, CONVERT_LIST_TO_SET,
-                StoryWriter.condition("equals W ignore case", VALUE_W),
-                true, true).apply(LITERAL_LIST),
+        MatcherAssert.assertThat(ToGetSubIterable.getIterable(CONVERT_LIST_TO_SET, VALUE_W).apply(LITERAL_LIST),
                 emptyCollectionOf(String.class));
     }
 
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputWithEmptyResult4() {
-        assertThat(getIterable(SET_CONVERTED_FROM_LIST, CONVERT_LIST_TO_SET,
-                FIVE_SECONDS, FIVE_HUNDRED_MILLIS).apply(EMPTY_LIST),
+        MatcherAssert.assertThat(ToGetSubIterable.getIterable(CONVERT_LIST_TO_SET, FIVE_SECONDS, FIVE_HUNDRED_MILLIS).apply(EMPTY_LIST),
                 emptyCollectionOf(String.class));
     }
 
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputWithEmptyResult5() {
-        assertThat(getIterable(SET_CONVERTED_FROM_LIST, CONVERT_LIST_TO_SET,
-                FIVE_SECONDS).apply(EMPTY_LIST),
+        MatcherAssert.assertThat(ToGetSubIterable.getIterable(CONVERT_LIST_TO_SET, FIVE_SECONDS).apply(EMPTY_LIST),
                 emptyCollectionOf(String.class));
     }
 
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputToCheckTimeOut() {
         long start = System.currentTimeMillis();
-        assertThat(ToGetSubIterable.getIterable(SET_CONVERTED_FROM_LIST, CONVERT_LIST_TO_SET,
-                StoryWriter.condition("equals W ignore case", VALUE_W),
-                FIVE_SECONDS,
-                true,
-                true).apply(LITERAL_LIST),
+        MatcherAssert.assertThat(ToGetSubIterable.getIterable(CONVERT_LIST_TO_SET, VALUE_W, FIVE_SECONDS).apply(LITERAL_LIST),
                 emptyCollectionOf(String.class));
         long end = System.currentTimeMillis();
         assertThat("Spent time in millis", end - start,
@@ -267,12 +186,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputToCheckSleeping() {
         long start = System.currentTimeMillis();
-        assertThat(ToGetSubIterable.getIterable(SET_CONVERTED_FROM_LIST, CONVERT_LIST_TO_SET,
-                StoryWriter.condition("equals W ignore case", VALUE_W),
-                ONE_MILLISECOND,
-                FIVE_HUNDRED_MILLIS,
-                true,
-                true).apply(LITERAL_LIST),
+        MatcherAssert.assertThat(ToGetSubIterable.getIterable(CONVERT_LIST_TO_SET, VALUE_W, ONE_MILLISECOND, FIVE_HUNDRED_MILLIS).apply(LITERAL_LIST),
                 emptyCollectionOf(String.class));
         long end = System.currentTimeMillis();
         assertThat("Spent time in millis", end - start,
@@ -284,9 +198,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputToCheckTimeOut2() {
         long start = System.currentTimeMillis();
-        assertThat(getIterable(SET_CONVERTED_FROM_LIST, CONVERT_LIST_TO_SET,
-                FIVE_SECONDS).apply(EMPTY_LIST),
-                emptyCollectionOf(String.class));
+        MatcherAssert.assertThat(ToGetSubIterable.getIterable(CONVERT_LIST_TO_SET, FIVE_SECONDS).apply(EMPTY_LIST), emptyCollectionOf(String.class));
         long end = System.currentTimeMillis();
         assertThat("Spent time in millis", end - start,
                 greaterThanOrEqualTo(FIVE_SECONDS.toMillis()));
@@ -297,9 +209,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
     @Test
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputToCheckSleeping2() {
         long start = System.currentTimeMillis();
-        assertThat(getIterable(SET_CONVERTED_FROM_LIST, CONVERT_LIST_TO_SET,
-                ONE_MILLISECOND,
-                FIVE_HUNDRED_MILLIS).apply(EMPTY_LIST),
+        MatcherAssert.assertThat(ToGetSubIterable.getIterable(CONVERT_LIST_TO_SET, ONE_MILLISECOND, FIVE_HUNDRED_MILLIS).apply(EMPTY_LIST),
                 emptyCollectionOf(String.class));
         long end = System.currentTimeMillis();
         assertThat("Spent time in millis", end - start,
@@ -312,14 +222,8 @@ public class GetSubIterableTest extends BaseConditionalTest {
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputToCheckTimeOutAndException() {
         long start = System.currentTimeMillis();
         try {
-            ToGetSubIterable.getIterable(SET_CONVERTED_FROM_LIST, CONVERT_LIST_TO_SET,
-                    StoryWriter.condition("equals W ignore case", VALUE_W),
-                    FIVE_SECONDS,
-                    true,
-                    true,
-                    () -> NOTHING_WAS_FOUND).apply(LITERAL_LIST);
-        }
-        catch (Exception e) {
+            ToGetSubIterable.getIterable(CONVERT_LIST_TO_SET, VALUE_W, FIVE_SECONDS, () -> NOTHING_WAS_FOUND).apply(LITERAL_LIST);
+        } catch (Exception e) {
             long end = System.currentTimeMillis();
             assertThat("Spent time in millis", end - start,
                     greaterThanOrEqualTo(FIVE_SECONDS.toMillis()));
@@ -334,11 +238,8 @@ public class GetSubIterableTest extends BaseConditionalTest {
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputToCheckTimeOutAndException2() {
         long start = System.currentTimeMillis();
         try {
-            ToGetSubIterable.getIterable(SET_CONVERTED_FROM_LIST, CONVERT_LIST_TO_SET,
-                    FIVE_SECONDS,
-                    () -> NOTHING_WAS_FOUND).apply(EMPTY_LIST);
-        }
-        catch (Exception e) {
+            ToGetSubIterable.getIterable(CONVERT_LIST_TO_SET, FIVE_SECONDS, () -> NOTHING_WAS_FOUND).apply(EMPTY_LIST);
+        } catch (Exception e) {
             long end = System.currentTimeMillis();
             assertThat("Spent time in millis", end - start,
                     greaterThanOrEqualTo(FIVE_SECONDS.toMillis()));
@@ -353,15 +254,8 @@ public class GetSubIterableTest extends BaseConditionalTest {
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputToCheckTimeOutWithSleepAndException() {
         long start = System.currentTimeMillis();
         try {
-            ToGetSubIterable.getIterable(SET_CONVERTED_FROM_LIST, CONVERT_LIST_TO_SET,
-                    StoryWriter.condition("equals W ignore case", VALUE_W),
-                    FIVE_SECONDS,
-                    FIVE_HUNDRED_MILLIS,
-                    true,
-                    true,
-                    () -> NOTHING_WAS_FOUND).apply(LITERAL_LIST);
-        }
-        catch (Exception e) {
+            ToGetSubIterable.getIterable(CONVERT_LIST_TO_SET, VALUE_W, FIVE_SECONDS, FIVE_HUNDRED_MILLIS, () -> NOTHING_WAS_FOUND).apply(LITERAL_LIST);
+        } catch (Exception e) {
             long end = System.currentTimeMillis();
             assertThat("Spent time in millis", end - start,
                     greaterThan(FIVE_SECONDS.toMillis()));
@@ -376,12 +270,8 @@ public class GetSubIterableTest extends BaseConditionalTest {
     public void testOfApplyingOfFunctionWithIterableInputAndIterableOutputToCheckTimeOutWithSleepAndException2() {
         long start = System.currentTimeMillis();
         try {
-            ToGetSubIterable.getIterable(SET_CONVERTED_FROM_LIST, CONVERT_LIST_TO_SET,
-                    FIVE_SECONDS,
-                    FIVE_HUNDRED_MILLIS,
-                    () -> NOTHING_WAS_FOUND).apply(EMPTY_LIST);
-        }
-        catch (Exception e) {
+            ToGetSubIterable.getIterable(CONVERT_LIST_TO_SET, FIVE_SECONDS, FIVE_HUNDRED_MILLIS, () -> NOTHING_WAS_FOUND).apply(EMPTY_LIST);
+        } catch (Exception e) {
             long end = System.currentTimeMillis();
             assertThat("Spent time in millis", end - start,
                     greaterThan(FIVE_SECONDS.toMillis()));

@@ -1,10 +1,9 @@
-package ru.tinkoff.qa.neptune.core.api;
+package ru.tinkoff.qa.neptune.core.api.steps;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.core.api.steps.context.ConstructorParameters;
-import ru.tinkoff.qa.neptune.core.api.steps.GetStepSupplier;
 
 import static java.util.Optional.ofNullable;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -114,7 +113,7 @@ public class ProxyConcurrentBehaviourTest {
     }
 
     @Test(threadPoolSize = 4, dataProvider = "getData")
-    public void threadSafetyTest(GetStepSupplier<CalculatorSteps, Number, ?> calculation, Number number) {
+    public void threadSafetyTest(SequentialGetStepSupplier<CalculatorSteps, Number, ?, ?, ?> calculation, Number number) {
         assertThat("Result of calculation", calculator.get(calculation), is(number.doubleValue()));
     }
 }

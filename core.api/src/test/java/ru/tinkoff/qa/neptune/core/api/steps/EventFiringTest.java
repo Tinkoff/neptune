@@ -1,30 +1,28 @@
-package ru.tinkoff.qa.neptune.core.api;
+package ru.tinkoff.qa.neptune.core.api.steps;
 
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.core.api.properties.CapturedEvents;
 import ru.tinkoff.qa.neptune.core.api.properties.DoCapturesOf;
 import ru.tinkoff.qa.neptune.core.api.steps.context.ConstructorParameters;
-import ru.tinkoff.qa.neptune.core.api.steps.GetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.proxy.ProxyFactory;
 
 import java.util.function.Function;
 
-import static ru.tinkoff.qa.neptune.core.api.Arithmetical.number;
-import static ru.tinkoff.qa.neptune.core.api.ArithmeticalSequence.divideByResultOf;
-import static ru.tinkoff.qa.neptune.core.api.ArithmeticalSequence.multiplyByResultOf;
-import static ru.tinkoff.qa.neptune.core.api.ArithmeticalSequence.subtractFromResultOf;
+import static org.hamcrest.Matchers.*;
+import static ru.tinkoff.qa.neptune.core.api.steps.Arithmetical.number;
+import static ru.tinkoff.qa.neptune.core.api.steps.ArithmeticalSequence.divideByResultOf;
+import static ru.tinkoff.qa.neptune.core.api.steps.ArithmeticalSequence.multiplyByResultOf;
+import static ru.tinkoff.qa.neptune.core.api.steps.ArithmeticalSequence.subtractFromResultOf;
 import static java.lang.System.getProperties;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.emptyIterable;
 import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
 
 public class EventFiringTest {
 
     private CalculatorSteps calculator;
 
-    private final GetStepSupplier<CalculatorSteps, Number, ?> calculation =
+    private final SequentialGetStepSupplier<CalculatorSteps, Number, ?, ?, ?> calculation =
             subtractFromResultOf(100,
                             divideByResultOf(0.5,
                                     multiplyByResultOf(11,
@@ -123,7 +121,7 @@ public class EventFiringTest {
 
             assertThat("Check messages logged by SPI String logger",
                     TestCapturedStringInjector.messages,
-                    contains("Saved to string Calculator"));
+                    contains(containsString("Saved to string ru.tinkoff.qa.neptune.core.api.steps.CalculatorSteps")));
 
             assertThat("Check messages logged by SPI File logger",
                     TestCapturedFileInjector.messages,
@@ -153,12 +151,12 @@ public class EventFiringTest {
 
             assertThat("Check messages logged by SPI String logger",
                     TestCapturedStringInjector.messages,
-                    contains("Saved to string 9.0",
-                            "Saved to string -1.5",
-                            "Saved to string -16.5",
-                            "Saved to string -33.0",
-                            "Saved to string -133.0",
-                            "Saved to string Calculator"));
+                    contains(equalTo("Saved to string 9.0"),
+                            equalTo("Saved to string -1.5"),
+                            equalTo("Saved to string -16.5"),
+                            equalTo("Saved to string -33.0"),
+                            equalTo("Saved to string -133.0"),
+                            containsString("Saved to string ru.tinkoff.qa.neptune.core.api.steps.CalculatorSteps")));
 
             assertThat("Check messages logged by SPI File logger",
                     TestCapturedFileInjector.messages,
@@ -178,16 +176,16 @@ public class EventFiringTest {
                 "Get Entering number 9 has started",
                 "9.0 has been returned",
                 "Event finished",
-                "From 9.0 get Divide by number -6 has started",
+                "Get Divide by number -6. From Entering number 9 has started",
                 "-1.5 has been returned",
                 "Event finished",
-                "From -1.5 get Multiplying by number 11 has started",
+                "Get Multiplying by number 11. From Divide by number -6 has started",
                 "-16.5 has been returned",
                 "Event finished",
-                "From -16.5 get Divide by number 0.5 has started",
+                "Get Divide by number 0.5. From Multiplying by number 11 has started",
                 "-33.0 has been returned",
                 "Event finished",
-                "From -33.0 get Subtract number 100 has started",
+                "Get Subtraction of number 100. From Divide by number 0.5 has started",
                 "-133.0 has been returned",
                 "Event finished",
                 "-128.0 has been returned",

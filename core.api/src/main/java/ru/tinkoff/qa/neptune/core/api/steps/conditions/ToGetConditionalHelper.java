@@ -6,24 +6,21 @@ import java.util.Objects;
 import java.util.function.*;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.currentThread;
 import static java.lang.Thread.sleep;
 import static java.time.Duration.ofMillis;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-import static ru.tinkoff.qa.neptune.core.api.steps.AsIsCondition.AS_IS;
-import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
-import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.condition;
-import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
 
 /**
  * This is the util which helps to crate function with given conditions.
  */
 @SuppressWarnings("unchecked")
 final class ToGetConditionalHelper {
+
+    static final Predicate<?> AS_IS = t -> true;
+    private static final Predicate<?> NON_NULL = Objects::nonNull;
 
     private ToGetConditionalHelper() {
         super();
@@ -32,11 +29,6 @@ final class ToGetConditionalHelper {
     static <T> Predicate<T> checkCondition(Predicate<T> condition) {
         checkArgument(nonNull(condition), "Predicate is not defined.");
         return condition;
-    }
-
-    static String checkDescription(String description) {
-        checkArgument(!isBlank(description), "Description should not be empty or null value");
-        return description;
     }
 
     static <T, R>  Function<T, R> checkFunction(Function<T, R> function) {
@@ -59,17 +51,11 @@ final class ToGetConditionalHelper {
     }
 
     static <T> Predicate<T> notNullAnd(Predicate<? super T> condition) {
-        return ((Predicate<T>) condition("is not null value", Objects::nonNull))
-                .and(condition);
+        return ((Predicate<T>) NON_NULL).and(condition);
     }
 
-    static boolean returnFalseOrThrowException(Throwable t, boolean ignoreExceptionOnConditionCheck) {
-        var message = format("%s was caught. Message: %s", t.getClass().getName(), t.getMessage());
-        if (!ignoreExceptionOnConditionCheck) {
-            throw new CheckConditionException(message, t);
-        }
-
-        System.err.println(message);
+    static boolean printErrorAndFalse(Throwable t) {
+        System.err.println(t.getMessage());
         return false;
     }
 
@@ -78,18 +64,7 @@ final class ToGetConditionalHelper {
         return exceptionSupplier;
     }
 
-    static String getDescription(String description, Predicate<?> condition) {
-        var resultDescription = description;
-
-        if (!AS_IS.equals(condition) && isLoggable(condition)) {
-            resultDescription = format("%s [Criteria: %s]", resultDescription, condition).trim();
-        }
-
-        return resultDescription;
-    }
-
-    static <T, F> Function<T, F> fluentWaitFunction(String description,
-                                                    Function<T, F> originalFunction,
+    static <T, F> Function<T, F> fluentWaitFunction(Function<T, F> originalFunction,
                                                     @Nullable Duration waitingTime,
                                                     @Nullable Duration sleepingTime,
                                                     Predicate<F> till,
@@ -97,7 +72,7 @@ final class ToGetConditionalHelper {
         var timeOut = ofNullable(waitingTime).orElseGet(() -> ofMillis(0));
         var sleeping = ofNullable(sleepingTime).orElseGet(() -> ofMillis(50));
 
-        return toGet(description, t -> {
+        return t -> {
             var currentMillis = currentTimeMillis();
             var endMillis = currentMillis + timeOut.toMillis() + 100;
             F f = null;
@@ -119,13 +94,6 @@ final class ToGetConditionalHelper {
             return (F) ofNullable(exceptionOnTimeOut).map(exceptionSupplier1 -> {
                 throw exceptionOnTimeOut.get();
             }).orElse(f);
-        });
-    }
-
-
-    private static class CheckConditionException extends RuntimeException {
-        CheckConditionException(String message, Throwable cause) {
-            super(message, cause);
-        }
+        };
     }
 }

@@ -29,7 +29,7 @@ public final class IsLoggableUtil {
 
         if (Function.class.isAssignableFrom(clazz) || BiFunction.class.isAssignableFrom(clazz) ||
                 Consumer.class.isAssignableFrom(clazz) || BiConsumer.class.isAssignableFrom(clazz)
-                || Predicate.class.isAssignableFrom(clazz)) {
+                || Predicate.class.isAssignableFrom(clazz) || Supplier.class.isAssignableFrom(clazz)) {
             return hasReadableDescription(toBeDescribed);
         }
 

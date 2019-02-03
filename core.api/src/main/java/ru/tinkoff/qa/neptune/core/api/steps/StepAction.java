@@ -11,12 +11,10 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import static java.util.Objects.nonNull;
-import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.*;
 import static ru.tinkoff.qa.neptune.core.api.properties.DoCapturesOf.catchFailureEvent;
 import static ru.tinkoff.qa.neptune.core.api.properties.DoCapturesOf.catchSuccessEvent;
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class StepAction<T> implements Consumer<T>, MakesCapturesOnFinishing<StepAction<T>> {
@@ -32,27 +30,14 @@ public class StepAction<T> implements Consumer<T>, MakesCapturesOnFinishing<Step
         this.consumer = consumer;
     }
 
-    private void fireEventStartingIfNecessary(T t) {
-        if (isLoggable(t)) {
-            fireEventStarting(format("%s. Target: %s", description, t));
-        }
-        else {
-            fireEventStarting(format("%s", description));
-        }
-    }
-
     private void fireThrownExceptionIfNecessary(Throwable thrown) {
         fireThrownException(thrown);
-    }
-
-    private void fireEventFinishingIfNecessary() {
-        fireEventFinishing();
     }
 
     @Override
     public void accept(T t) {
         try {
-            fireEventStartingIfNecessary(t);
+            fireEventStarting(description);
             consumer.accept(t);
             if (catchSuccessEvent() && !StepAction.class.isAssignableFrom(consumer.getClass())) {
                 catchValue(t, captorFilters);
@@ -66,7 +51,7 @@ public class StepAction<T> implements Consumer<T>, MakesCapturesOnFinishing<Step
             throw thrown;
         }
         finally {
-            fireEventFinishingIfNecessary();
+            fireEventFinishing();
         }
     }
 

@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.core.api;
+package ru.tinkoff.qa.neptune.core.api.steps;
 
 import org.testng.annotations.Test;
 
@@ -17,21 +17,6 @@ public class ConditionTest {
     private static Predicate<Number> LOWER_THAN_TWENTY = number -> number.intValue() < 20;
     private static Predicate<Number> GREATER_THAN_FIFTEEN = number -> number.intValue() > 15;
 
-    @Test
-    public void testWhenPredicateANDIsNotDescribed() {
-        Predicate<Number> describedIsPositive = condition("Number should be positive", IS_POSITIVE);
-        assertThat("Description of the resulted predicate",
-                describedIsPositive.and(IS_NOT_FRACTION).toString(),
-                is("Number should be positive"));
-    }
-
-    @Test
-    public void negativeTestWhenPredicateORIsNotDescribed() {
-        Predicate<Number> describedIsPositive = condition("Number should be positive", IS_POSITIVE);
-        assertThat("Description of the resulted predicate",
-                describedIsPositive.or(IS_NOT_FRACTION).toString(),
-                is("Number should be positive"));
-    }
 
     @Test(expectedExceptions = IllegalArgumentException.class, expectedExceptionsMessageRegExp =
             "Description should not be empty")
@@ -61,11 +46,21 @@ public class ConditionTest {
     }
 
     @Test
+    public void checkPredicateDescriptionXor() {
+        Predicate<Number> describedIsPositive = condition("Number should be positive", IS_POSITIVE);
+        Predicate<Number> describedIsNotFraction = condition("Number shoid not have decimal value", IS_NOT_FRACTION);
+
+        assertThat("String value of the predicate",
+                ((Condition<Number>) describedIsPositive).xor(describedIsNotFraction).toString(),
+                is("(Number should be positive) xor (Number shoid not have decimal value)"));
+    }
+
+    @Test
     public void checkPredicateDescriptionNot() {
         Predicate<Number> describedIsPositive = condition("Number should be positive", IS_POSITIVE);
         assertThat("String value of the predicate",
                 describedIsPositive.negate().toString(),
-                is("not (Number should be positive)"));
+                is("not [Number should be positive]"));
     }
 
     @Test
@@ -83,7 +78,7 @@ public class ConditionTest {
                         .or(describedGreaterThan15))
                         .or(describedLowerThan20.negate()).toString(),
                 is("(Number should be positive, Number shoid not have decimal value, " +
-                        "(Number should be greater than 10) or (Number should be greater than 15)) or " +
-                        "(not (Number should be lower than 20))"));
+                        "(Number should be greater than 10) or (Number should be greater than 15)) " +
+                        "or (not [Number should be lower than 20])"));
     }
 }

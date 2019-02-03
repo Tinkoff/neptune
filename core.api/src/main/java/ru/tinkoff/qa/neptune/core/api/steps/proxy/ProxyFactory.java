@@ -52,8 +52,8 @@ public final class ProxyFactory {
 
         checkArgument(ActionStepContext.class.isAssignableFrom(clazz) ||
                 GetStepContext.class.isAssignableFrom(clazz), "Class to substitute should be " +
-                "assignable from ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext and/or " +
-                "ru.tinkoff.qa.neptune.core.api.steps.context.ActionStepContext.");
+                "assignable from GetStepContext and/or " +
+                "ActionStepContext.");
 
         var toInstantiate = manipulationWithClassToInstantiate.apply(clazz);
         var builder = new ByteBuddy().subclass(clazz);

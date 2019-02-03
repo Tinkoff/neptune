@@ -1,7 +1,6 @@
-package ru.tinkoff.qa.neptune.core.api;
+package ru.tinkoff.qa.neptune.core.api.steps;
 
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.core.api.steps.StoryWriter;
 
 import java.util.function.Function;
 

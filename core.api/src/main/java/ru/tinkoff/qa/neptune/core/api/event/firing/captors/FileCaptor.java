@@ -1,11 +1,10 @@
 package ru.tinkoff.qa.neptune.core.api.event.firing.captors;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
+import ru.tinkoff.qa.neptune.core.api.utils.SPIUtil;
 
 import java.io.File;
 import java.util.List;
-
-import static ru.tinkoff.qa.neptune.core.api.utils.SPIUtil.loadSPI;
 
 public abstract class FileCaptor<T> extends Captor<T, File> {
 
@@ -14,7 +13,7 @@ public abstract class FileCaptor<T> extends Captor<T, File> {
     }
 
     public FileCaptor(String message) {
-        this(message, loadSPI(CapturedFileInjector.class));
+        this(message, SPIUtil.loadSPI(CapturedFileInjector.class));
     }
 
     @Override
