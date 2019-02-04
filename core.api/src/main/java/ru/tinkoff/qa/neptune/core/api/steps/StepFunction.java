@@ -20,7 +20,7 @@ import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<StepFunction<T, R>>,
-        MakesCapturesOnFinishing<StepFunction<T, R>> {
+        MakesCapturesOnFinishing<StepFunction<T, R>>, TurnsRetortingOff<StepFunction<T, R>> {
 
     String description;
     Function<T, R> function;

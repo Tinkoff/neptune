@@ -7,6 +7,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
@@ -17,10 +18,11 @@ interface Condition<T> extends Predicate<T> {
         return (t) -> test(t) ^ other.test(t);
     }
 
-    class DescribedCondition<T> implements Condition<T> {
+    class DescribedCondition<T> implements Condition<T>, TurnsRetortingOff<DescribedCondition<T>> {
 
         private final String description;
         private final Predicate<T> predicate;
+        private boolean toNotReport = false;
 
         DescribedCondition(String description, Predicate<T> predicate) {
             checkArgument(nonNull(predicate), "Predicate should be defined");
@@ -33,6 +35,10 @@ interface Condition<T> extends Predicate<T> {
         private static String getOtherDescription(Predicate<?> other) {
             String otherDescription;
             if (isLoggable(other)) {
+                if (DescribedCondition.class.isAssignableFrom(other.getClass()) &&
+                        ((DescribedCondition<?>) other).toNotReport) {
+                    return EMPTY;
+                }
                 otherDescription = other.toString();
             }
             else {
@@ -53,8 +59,14 @@ interface Condition<T> extends Predicate<T> {
         @Override
         public Predicate<T> and(Predicate<? super T> other) {
             checkNotNull(other);
-            return new DescribedCondition<>(format("%s, %s", toString(), getOtherDescription(other)),
-                    t -> test(t) && other.test(t));
+            var otherDescription = getOtherDescription(other);
+            String description;
+            if (!isBlank(otherDescription)) {
+                description = format("%s, %s", toString(), otherDescription);
+            } else {
+                description = toString();
+            }
+            return new DescribedCondition<>(description, t -> test(t) && other.test(t));
         }
 
         @Override
@@ -64,15 +76,35 @@ interface Condition<T> extends Predicate<T> {
 
         public Predicate<T> or(Predicate<? super T> other) {
             checkNotNull(other);
-            return new DescribedCondition<>(format("(%s) or (%s)", toString(), getOtherDescription(other)),
-                    t -> test(t) || other.test(t));
+            var otherDescription = getOtherDescription(other);
+            String description;
+            if (!isBlank(otherDescription)) {
+                description = format("(%s) or (%s)", toString(), otherDescription);
+            } else {
+                description = toString();
+            }
+            return new DescribedCondition<>(description, t -> test(t) || other.test(t));
         }
 
         @Override
         public Predicate<T> xor(Predicate<? super T> other) {
             checkNotNull(other);
-            return new DescribedCondition<>(format("(%s) xor (%s)", toString(), getOtherDescription(other)),
-                    t -> test(t) ^ other.test(t));
+
+            var otherDescription = getOtherDescription(other);
+            String description;
+            if (!isBlank(otherDescription)) {
+                description = format("(%s) xor (%s)", toString(), otherDescription);
+            } else {
+                description = toString();
+            }
+
+            return new DescribedCondition<>(description, t -> test(t) ^ other.test(t));
+        }
+
+        @Override
+        public DescribedCondition<T> turnReportingOff() {
+            toNotReport = true;
+            return this;
         }
     }
 }
