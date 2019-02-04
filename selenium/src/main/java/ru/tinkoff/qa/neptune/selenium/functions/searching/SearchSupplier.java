@@ -63,7 +63,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<WebElement> webElement(By by, String text) {
-        return webElement(format("Web element located %s with the text '%s", by, text), by)
+        return webElement(format("Web element located %s with the text '%s'", by, text), by)
                 .criteria(AND, shouldHaveText(text));
     }
 
@@ -120,7 +120,7 @@ public final class SearchSupplier<R extends SearchContext>
     public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, List<String> labels) {
         Predicate<? extends T> labeledBy = shouldBeLabeledBy(labels.toArray(new String[]{}));
         var labeledWidgets = labeledWidgets(tClass);
-        var search =  new SearchSupplier<>(format("%s %s", getWidgetName(tClass), join(",", labels)), labeledWidgets);
+        var search =  new SearchSupplier<>(format("%s '%s'", getWidgetName(tClass), join(",", labels)), labeledWidgets);
         labeledWidgets.setCriteriaDescription(() -> ofNullable(search.condition).map(predicate -> {
             if (isLoggable(predicate)) {
                 return predicate.toString();
