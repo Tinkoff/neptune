@@ -10,6 +10,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.proxy.ProxyFactory;
 import java.util.function.Function;
 
 import static org.hamcrest.Matchers.*;
+import static ru.tinkoff.qa.neptune.core.api.steps.Arithmetical.divide;
 import static ru.tinkoff.qa.neptune.core.api.steps.Arithmetical.number;
 import static ru.tinkoff.qa.neptune.core.api.steps.ArithmeticalSequence.divideByResultOf;
 import static ru.tinkoff.qa.neptune.core.api.steps.ArithmeticalSequence.multiplyByResultOf;
@@ -22,12 +23,26 @@ public class EventFiringTest {
 
     private CalculatorSteps calculator;
 
-    private final SequentialGetStepSupplier<CalculatorSteps, Number, ?, ?, ?> calculation =
+    private static final SequentialGetStepSupplier<CalculatorSteps, Number, ?, ?, ?> calculation =
             subtractFromResultOf(100,
-                            divideByResultOf(0.5,
-                                    multiplyByResultOf(11,
-                                            divideByResultOf(-6,
-                                                    number(9)))));
+                    divideByResultOf(0.5,
+                            multiplyByResultOf(11,
+                                    divideByResultOf(-6,
+                                            number(9)))));
+    private static boolean toReport = true;
+
+    private static final StepFunction<CalculatorSteps, Number> CALCULATION = toGet("Calculation",
+            (Function<CalculatorSteps, Number>) calculatorSteps -> {
+                var f = ((StepFunction<CalculatorSteps, Number>) calculation.get());
+                if (toReport) {
+                f = f.turnReportingOn();
+                } else {
+                    f = f.turnReportingOff();
+                }
+                return calculatorSteps.get(f).floatValue() + 5F;
+            })
+
+            .onFinishMakeCaptureOfType(Number.class);
 
     @BeforeClass
     public void beforeAll() {
@@ -41,17 +56,17 @@ public class EventFiringTest {
         TestNumberCaptor.numbers.clear();
         TestEventLogger.MESSAGES.clear();
 
-        Function<CalculatorSteps, Number> func = toGet("Calculation",
-                (Function<CalculatorSteps, Number>) calculatorSteps -> calculator.get(calculation).floatValue() + 5F)
-
-                .onFinishMakeCaptureOfType(Number.class);
-
         calculator.reset();
-        calculator.get(func);
+        calculator.get(CALCULATION);
         try {
-            calculator.get(Arithmetical.divide(0F));
-        }
-        catch (Throwable t) {
+            var divideByZero = (StepFunction<CalculatorSteps, Number>) divide(0F).get();
+            if (toReport) {
+                divideByZero = divideByZero.turnReportingOn();
+            } else {
+                divideByZero = divideByZero.turnReportingOff();
+            }
+            calculator.get(divideByZero);
+        } catch (Throwable t) {
             t.printStackTrace();
         }
     }
@@ -83,6 +98,7 @@ public class EventFiringTest {
                             "Value  -1.5",
                             "Value  -16.5",
                             "Value  -33.0",
+                            "Value  -133.0",
                             "Value  -133.0"));
 
             assertThat("Check messages logged by SPI Number logger",
@@ -95,13 +111,13 @@ public class EventFiringTest {
                             "Saved to string -1.5",
                             "Saved to string -16.5",
                             "Saved to string -33.0",
+                            "Saved to string -133.0",
                             "Saved to string -133.0"));
 
             assertThat("Check messages logged by SPI File logger",
                     TestCapturedFileInjector.messages,
                     emptyIterable());
-        }
-        finally {
+        } finally {
             getProperties().remove(DoCapturesOf.DO_CAPTURES_OF_INSTANCE.getPropertyName());
         }
     }
@@ -126,8 +142,7 @@ public class EventFiringTest {
             assertThat("Check messages logged by SPI File logger",
                     TestCapturedFileInjector.messages,
                     emptyIterable());
-        }
-        finally {
+        } finally {
             getProperties().remove(DoCapturesOf.DO_CAPTURES_OF_INSTANCE.getPropertyName());
         }
     }
@@ -143,6 +158,7 @@ public class EventFiringTest {
                             "Value  -1.5",
                             "Value  -16.5",
                             "Value  -33.0",
+                            "Value  -133.0",
                             "Value  -133.0"));
 
             assertThat("Check messages logged by SPI Number logger",
@@ -156,13 +172,13 @@ public class EventFiringTest {
                             equalTo("Saved to string -16.5"),
                             equalTo("Saved to string -33.0"),
                             equalTo("Saved to string -133.0"),
+                            equalTo("Saved to string -133.0"),
                             containsString("Saved to string ru.tinkoff.qa.neptune.core.api.steps.CalculatorSteps")));
 
             assertThat("Check messages logged by SPI File logger",
                     TestCapturedFileInjector.messages,
                     emptyIterable());
-        }
-        finally {
+        } finally {
             getProperties().remove(DoCapturesOf.DO_CAPTURES_OF_INSTANCE.getPropertyName());
         }
     }
@@ -170,7 +186,7 @@ public class EventFiringTest {
     @Test
     public void eventFiringTest() {
         prepare();
-        assertThat(TestEventLogger.MESSAGES, contains( "Reset calculated value to 0 has started",
+        assertThat(TestEventLogger.MESSAGES, contains("Reset calculated value to 0 has started",
                 "Event finished",
                 "Get Calculation has started",
                 "Get Subtraction of number 100. From Divide by number 0.5 has started",
@@ -194,10 +210,23 @@ public class EventFiringTest {
                 "-128.0 has been returned",
                 "Event finished",
                 "Get Divide by number 0.0 has started",
-                "Get Divide by number 0.0 has started",
-                "java.lang.ArithmeticException has been thrown",
-                "Event finished",
                 "java.lang.ArithmeticException has been thrown",
                 "Event finished"));
+    }
+
+    @Test()
+    public void turnOffReportingTest() {
+        toReport = false;
+        try {
+            prepare();
+            assertThat(TestEventLogger.MESSAGES, contains("Reset calculated value to 0 has started",
+                    "Event finished",
+                    "Get Calculation has started",
+                    "-128.0 has been returned",
+                    "Event finished"));
+        }
+        finally {
+            toReport = true;
+        }
     }
 }

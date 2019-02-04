@@ -309,12 +309,19 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         var endFunction = getEndFunction();
         checkNotNull(endFunction);
 
-        var endFunctionStep  = toGet(resultedDescription, endFunction);
-        endFunctionStep.addIgnored(copyOf(ignored));
-        endFunctionStep.addCaptorFilters(captorFilters);
+        StepFunction<T, R> toBeReturned;
+        if (StepFunction.class.isAssignableFrom(composeWith.getClass())) {
+            var endFunctionStep  = toGet(resultedDescription, endFunction);
+            endFunctionStep.addIgnored(copyOf(ignored));
+            endFunctionStep.addCaptorFilters(captorFilters);
+            toBeReturned = endFunctionStep.compose(composeWith);
+        }
+        else {
+            toBeReturned = toGet(resultedDescription, endFunction.compose(composeWith));
+        }
 
-        StepFunction<T, R> toBeReturned = endFunctionStep.compose(composeWith);
         toBeReturned.addIgnored(copyOf(ignored));
+        toBeReturned.addCaptorFilters(captorFilters);
         return toBeReturned;
     }
 

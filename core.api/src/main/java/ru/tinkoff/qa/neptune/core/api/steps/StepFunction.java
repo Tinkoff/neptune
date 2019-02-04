@@ -24,6 +24,7 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
 
     String description;
     Function<T, R> function;
+    boolean toReport = true;
     private final Set<Class<? extends Throwable>> ignored = new HashSet<>();
     private final Set<CaptorFilterByProducedType> captorFilters = new HashSet<>();
 
@@ -57,29 +58,39 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
     @Override
     public R apply(T t) {
         try {
-            fireEventStarting(format("Get %s", description));
+            if (toReport) {
+                fireEventStarting(format("Get %s", description));
+            }
             R result = function.apply(t);
-            fireReturnedValueIfNecessary(result);
-            if (catchSuccessEvent() && !StepFunction.class.isAssignableFrom(function.getClass())) {
+            if (toReport) {
+                fireReturnedValueIfNecessary(result);
+            }
+            if (catchSuccessEvent() && toReport && !StepFunction.class.isAssignableFrom(function.getClass())) {
                 catchValue(result, captorFilters);
             }
             return result;
         }
         catch (Throwable thrown) {
             if (!shouldBeThrowableIgnored(thrown)) {
-                fireThrownException(thrown);
-                if (catchFailureEvent() && !StepFunction.class.isAssignableFrom(function.getClass())) {
+                if (toReport) {
+                    fireThrownException(thrown);
+                }
+                if (catchFailureEvent() && toReport && !StepFunction.class.isAssignableFrom(function.getClass())) {
                     catchValue(t, captorFilters);
                 }
                 throw thrown;
             }
             else {
-                fireReturnedValueIfNecessary(null);
+                if (toReport) {
+                    fireReturnedValueIfNecessary(null);
+                }
                 return null;
             }
         }
         finally {
-            fireEventFinishing();
+            if (toReport) {
+                fireEventFinishing();
+            }
         }
     }
 
@@ -199,6 +210,26 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
         return this;
     }
 
+    /**
+     * Means that the starting/ending/result of the function applying won't be reported
+     *
+     * @return self-reference
+     */
+    public StepFunction<T, R> turnReportingOff() {
+        toReport = false;
+        return this;
+    }
+
+    /**
+     * Means that the starting/ending/result of the function applying won't be reported
+     *
+     * @return self-reference
+     */
+    public StepFunction<T, R> turnReportingOn() {
+        toReport = true;
+        return this;
+    }
+
     static final class SequentialStepFunction<T, R> extends StepFunction<T, R> {
 
         private final LinkedList<Function<Object, Object>> sequence = new LinkedList<>();
@@ -236,6 +267,13 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
             else {
                 sequence.addLast((Function<Object, Object>) after);
             }
+
+            if (toReport) {
+                turnReportingOn();
+            }
+            else {
+                turnReportingOff();
+            }
         }
 
         public <V> StepFunction<V, R> compose(Function<? super V, ? extends T> before) {
@@ -244,6 +282,26 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
 
         public <V> StepFunction<T, V> andThen(Function<? super R, ? extends V> after) {
             return new SequentialStepFunction<>(this, after);
+        }
+
+        public StepFunction<T, R> turnReportingOff() {
+            super.turnReportingOff();
+            sequence.forEach(objectObjectFunction -> {
+                if (StepFunction.class.isAssignableFrom(objectObjectFunction.getClass())) {
+                    ((StepFunction<?, ?>) objectObjectFunction).turnReportingOff();
+                }
+            });
+            return this;
+        }
+
+        public StepFunction<T, R> turnReportingOn() {
+            super.turnReportingOn();
+            sequence.forEach(objectObjectFunction -> {
+                if (StepFunction.class.isAssignableFrom(objectObjectFunction.getClass())) {
+                    ((StepFunction<?, ?>) objectObjectFunction).turnReportingOn();
+                }
+            });
+            return this;
         }
     }
 }
