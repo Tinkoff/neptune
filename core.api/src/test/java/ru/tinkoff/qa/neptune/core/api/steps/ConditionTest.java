@@ -36,6 +36,16 @@ public class ConditionTest {
     }
 
     @Test
+    public void checkPredicateNotDescribedAnd() {
+        Predicate<Number> describedIsPositive = condition("Number should be positive", IS_POSITIVE);
+        Predicate<Number> describedIsNotFraction = IS_NOT_FRACTION;
+
+        assertThat("String value of the predicate",
+                describedIsPositive.and(describedIsNotFraction).toString(),
+                is("Number should be positive, <not described condition>"));
+    }
+
+    @Test
     public void checkPredicateDescriptionOr() {
         Predicate<Number> describedIsPositive = condition("Number should be positive", IS_POSITIVE);
         Predicate<Number> describedIsNotFraction = condition("Number shoid not have decimal value", IS_NOT_FRACTION);
@@ -46,6 +56,16 @@ public class ConditionTest {
     }
 
     @Test
+    public void checkPredicateNotDescribedOr() {
+        Predicate<Number> describedIsPositive = condition("Number should be positive", IS_POSITIVE);
+        Predicate<Number> describedIsNotFraction = IS_NOT_FRACTION;
+
+        assertThat("String value of the predicate",
+                describedIsPositive.or(describedIsNotFraction).toString(),
+                is("(Number should be positive) or (<not described condition>)"));
+    }
+
+    @Test
     public void checkPredicateDescriptionXor() {
         Predicate<Number> describedIsPositive = condition("Number should be positive", IS_POSITIVE);
         Predicate<Number> describedIsNotFraction = condition("Number shoid not have decimal value", IS_NOT_FRACTION);
@@ -53,6 +73,16 @@ public class ConditionTest {
         assertThat("String value of the predicate",
                 ((Condition<Number>) describedIsPositive).xor(describedIsNotFraction).toString(),
                 is("(Number should be positive) xor (Number shoid not have decimal value)"));
+    }
+
+    @Test
+    public void checkPredicateNotDescribedXor() {
+        Predicate<Number> describedIsPositive = condition("Number should be positive", IS_POSITIVE);
+        Predicate<Number> describedIsNotFraction = IS_NOT_FRACTION;
+
+        assertThat("String value of the predicate",
+                ((Condition<Number>) describedIsPositive).xor(describedIsNotFraction).toString(),
+                is("(Number should be positive) xor (<not described condition>)"));
     }
 
     @Test
