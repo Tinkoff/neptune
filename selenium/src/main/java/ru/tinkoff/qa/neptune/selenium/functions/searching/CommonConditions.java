@@ -8,31 +8,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.util.Objects.nonNull;
-import static ru.tinkoff.qa.neptune.core.api.steps.AsIsCondition.AS_IS;
 import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.condition;
-import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
-import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public final class CommonConditions {
 
     private CommonConditions() {
         super();
-    }
-
-    static Predicate defaultPredicate() {
-        if (FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.get()) {
-            return shouldBeVisible();
-        }
-        else {
-            return AS_IS;
-        }
     }
 
     /**
@@ -427,7 +414,7 @@ public final class CommonConditions {
     public static  <T extends SearchContext & Labeled> Predicate<T> shouldBeLabeledBy(String...labels) {
         checkNotNull(labels);
         checkArgument(labels.length > 0, "At least one label should be defined");
-        return condition(format("has label(s) %s", String.join("and ", stream(labels).collect(toList()))),
+        return condition(format("has label(s) %s", String.join("and ", labels)),
                 t -> t.labels().containsAll(asList(labels)));
     }
 }

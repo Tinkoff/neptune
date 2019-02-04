@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.functions.searching;
 
+import ru.tinkoff.qa.neptune.core.api.steps.ConditionConcatenation;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
@@ -19,13 +20,10 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import static ru.tinkoff.qa.neptune.core.api.steps.AsIsCondition.AS_IS;
-import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSubIterable.getIterable;
 import static ru.tinkoff.qa.neptune.selenium.api.widget.Widget.getWidgetName;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.defaultPredicate;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeLabeledBy;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldHaveText;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindLabeledWidgets.labeledWidgets;
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMENT_WAITING_DURATION;
 import static java.lang.String.format;
 import static java.util.List.of;
@@ -35,12 +33,16 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 @MakeImageCapturesOnFinishing
 @MakeFileCapturesOnFinishing
 public final class MultipleSearchSupplier<R extends SearchContext> extends
-        SequentialGetStepSupplier<SearchContext, List<R>, SearchContext, MultipleSearchSupplier<R>> {
+        SequentialGetStepSupplier.GetIterableChainedStepSupplier<SearchContext, List<R>, SearchContext, R, MultipleSearchSupplier<R>> {
 
 
-    private MultipleSearchSupplier(Function<SearchContext, List<R>> function) {
-        set(function);
+    private MultipleSearchSupplier(String description, Function<SearchContext, List<R>> originalFunction) {
+        super(description, originalFunction);
+        timeOut(ELEMENT_WAITING_DURATION.get());
         addIgnored(of(StaleElementReferenceException.class));
+        if (FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.get()) {
+            criteria(shouldBeVisible());
+        }
     }
 
     /**
@@ -2648,7 +2650,31 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
     }
 
     @Override
-    protected Function<SearchContext, List<R>> getEndFunction() {
-        return get();
+    public SearchSupplier<R> timeOut(Duration timeOut) {
+        return super.timeOut(timeOut);
+    }
+
+    @Override
+    public SearchSupplier<R> criteria(Predicate<R> condition) {
+        return super.criteria(condition);
+    }
+
+    @Override
+    public SearchSupplier<R> criteria(String description, Predicate<R> condition) {
+        return super.criteria(description, condition);
+    }
+
+    @Override
+    public SearchSupplier<R> criteria(ConditionConcatenation concat, Predicate<R> condition) {
+        return super.criteria(concat, condition);
+    }
+
+    @Override
+    public SearchSupplier<R> criteria(ConditionConcatenation concat, String description, Predicate<R> condition) {
+        return super.criteria(concat, description, condition);
+    }
+
+    protected SearchSupplier<R> clone() {
+        return super.clone();
     }
 }

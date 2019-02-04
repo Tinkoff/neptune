@@ -9,9 +9,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CGLibProxyBuilder.createProxy;
 import static ru.tinkoff.qa.neptune.selenium.api.widget.Widget.getWidgetName;
@@ -28,19 +31,17 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
 
     final Class<? extends R> classOfAWidget;
     private final Predicate<Class<? extends R>> classPredicate;
-    private final String conditionString;
     private List<Class<? extends R>> classesToInstantiate;
+    private Supplier<String> criteriaDescription;
 
-    FindWidgets(Class<R> classOfAWidget, String conditionString, Predicate<Class<? extends R>> classPredicate) {
+    FindWidgets(Class<R> classOfAWidget, Predicate<Class<? extends R>> classPredicate) {
         checkArgument(nonNull(classOfAWidget), "The class to be instantiated should be defined.");
-        checkArgument(nonNull(conditionString), "Description of the conditions should be defined.");
         this.classOfAWidget = classOfAWidget;
-        this.conditionString = conditionString;
         this.classPredicate = classPredicate;
     }
 
-    private FindWidgets(Class<R> classOfAWidget, String conditionString) {
-        this(classOfAWidget, conditionString, clazz -> !Modifier.isAbstract(clazz.getModifiers())
+    private FindWidgets(Class<R> classOfAWidget) {
+        this(classOfAWidget, clazz -> !Modifier.isAbstract(clazz.getModifiers())
 
                 && nonNull(getAnnotations(clazz))
 
@@ -54,9 +55,8 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
 
 
 
-    static <R extends Widget> Function<SearchContext, List<R>> widgets(Class<R> classOfAWidget,
-                                                                       String conditionString) {
-        return new FindWidgets<>(classOfAWidget, conditionString);
+    static <R extends Widget> FindWidgets<R> widgets(Class<R> classOfAWidget) {
+        return new FindWidgets<>(classOfAWidget);
     }
 
     private static <R extends Widget> List<Class<? extends R>> findSubclasses(Class<? extends R> classOfAWidget,
@@ -97,8 +97,12 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
             @Override
             public String toString() {
                 var stringDescription = String.format("%s elements of type %s", size(), getWidgetName(classOfAWidget));
-                if (!isBlank(conditionString)) {
-                    stringDescription = format("%s and meet criteria ['%s']", stringDescription, conditionString);
+                var criteria = ofNullable(criteriaDescription)
+                        .map(Supplier::get)
+                        .orElse(EMPTY);
+
+                if (!isBlank(criteria)) {
+                    stringDescription = format("%s and meet criteria ['%s']", stringDescription, criteria);
                 }
                 return stringDescription;
             }
@@ -109,13 +113,22 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
             result.addAll(searchContext.findElements(by).stream()
                     .map(webElement -> {
                         var stringDescription = getWidgetName(clazz);
-                        if (!isBlank(conditionString)) {
-                            stringDescription = format("%s ['%s']", stringDescription, conditionString);
+                        var criteria = ofNullable(criteriaDescription)
+                                .map(Supplier::get)
+                                .orElse(EMPTY);
+
+                        if (!isBlank(criteria)) {
+                            stringDescription = format("%s ['%s']", stringDescription, criteria);
                         }
                         return createProxy(clazz, new WidgetInterceptor(webElement, clazz, stringDescription));
                     })
                     .collect(toList()));
         });
         return result;
+    }
+
+    void setCriteriaDescription(Supplier<String> criteriaDescription) {
+        checkNotNull(criteriaDescription);
+        this.criteriaDescription = criteriaDescription;
     }
 }
