@@ -1,9 +1,9 @@
 package ru.tinkoff.qa.neptune.selenium.functions.click;
 
-import ru.tinkoff.qa.neptune.core.api.steps.GetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Clickable;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
@@ -72,7 +72,7 @@ public final class ClickActionSupplier extends SequentialActionSupplier<Selenium
      * @param on is how to find the web element
      * @return built click action
      */
-    public static ClickActionSupplier on(GetStepSupplier<SearchContext, WebElement, ?> on) {
+    public static ClickActionSupplier on(SequentialGetStepSupplier<SearchContext, WebElement, ?, ?, ?> on) {
         checkNotNull(on);
         return new ClickActionSupplier(format(DESCRIPTION, on))
                 .performOn(GET_CLICKABLE_WRAPPER.compose(on.get().compose(currentContent())));
@@ -115,7 +115,7 @@ public final class ClickActionSupplier extends SequentialActionSupplier<Selenium
      * @param on is how to find the web element
      * @return built click action
      */
-    public ClickActionSupplier andOn(GetStepSupplier<SearchContext, WebElement, ?> on) {
+    public ClickActionSupplier andOn(SequentialGetStepSupplier<SearchContext, WebElement, ?, ?, ?> on) {
         return mergeActionSequenceFrom(on(on));
     }
 

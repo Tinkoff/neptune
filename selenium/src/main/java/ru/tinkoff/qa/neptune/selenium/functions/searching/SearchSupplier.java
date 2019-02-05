@@ -1,9 +1,9 @@
 package ru.tinkoff.qa.neptune.selenium.functions.searching;
 
-import ru.tinkoff.qa.neptune.core.api.steps.ConditionConcatenation;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.TurnsRetortingOff;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Labeled;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.*;
@@ -19,7 +19,6 @@ import java.util.regex.Pattern;
 import static java.lang.String.join;
 import static java.util.List.of;
 import static java.util.Optional.ofNullable;
-import static ru.tinkoff.qa.neptune.core.api.steps.ConditionConcatenation.AND;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 import static ru.tinkoff.qa.neptune.selenium.api.widget.Widget.getWidgetName;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.*;
@@ -63,8 +62,18 @@ public final class SearchSupplier<R extends SearchContext>
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<WebElement> webElement(By by, String text) {
-        return webElement(format("Web element located %s with the text '%s'", by, text), by)
-                .criteria(AND, shouldHaveText(text));
+        Predicate<WebElement> shouldHaveText = shouldHaveText(text);
+        ((TurnsRetortingOff<?>) shouldHaveText).turnReportingOff();
+
+        var webElements = webElements(by);
+        var search = new SearchSupplier<>(format("Web element located %s with the text '%s'", by, text), webElements);
+        webElements.setCriteriaDescription(() -> ofNullable(search.condition).map(predicate -> {
+            if (isLoggable(predicate)) {
+                return format("%s, %s", predicate.toString(), shouldHaveText.toString());
+            }
+            return shouldHaveText.toString();
+        }).orElse(shouldHaveText.toString()));
+        return search.criteria(shouldHaveText);
     }
 
     /**
@@ -77,8 +86,18 @@ public final class SearchSupplier<R extends SearchContext>
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<WebElement> webElement(By by, Pattern textPattern) {
-        return webElement(format("Web element located %s with text that matches the pattern '%s'", by, textPattern), by)
-                .criteria(AND, shouldHaveText(textPattern));
+        Predicate<WebElement> shouldHaveText = shouldHaveText(textPattern);
+        ((TurnsRetortingOff<?>) shouldHaveText).turnReportingOff();
+
+        var webElements = webElements(by);
+        var search = new SearchSupplier<>(format("Web element located %s with text that matches the pattern '%s'", by, textPattern), webElements);
+        webElements.setCriteriaDescription(() -> ofNullable(search.condition).map(predicate -> {
+            if (isLoggable(predicate)) {
+                return format("%s, %s", predicate.toString(), shouldHaveText.toString());
+            }
+            return shouldHaveText.toString();
+        }).orElse(shouldHaveText.toString()));
+        return search.criteria(shouldHaveText);
     }
 
     /**
@@ -90,12 +109,8 @@ public final class SearchSupplier<R extends SearchContext>
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<WebElement> webElement(By by) {
-        return webElement(format("Web element located %s", by), by);
-    }
-
-    private static SearchSupplier<WebElement> webElement(String description, By by) {
         var webElements = webElements(by);
-        var search = new SearchSupplier<>(description, webElements);
+        var search = new SearchSupplier<>(format("Web element located %s", by), webElements);
         webElements.setCriteriaDescription(() -> ofNullable(search.condition).map(predicate -> {
             if (isLoggable(predicate)) {
                 return predicate.toString();
@@ -118,16 +133,17 @@ public final class SearchSupplier<R extends SearchContext>
      * @return an instance of {@link SearchSupplier}
      */
     public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, List<String> labels) {
-        Predicate<? extends T> labeledBy = shouldBeLabeledBy(labels.toArray(new String[]{}));
+        Predicate<T> labeledBy = shouldBeLabeledBy(labels.toArray(new String[]{}));
+        ((TurnsRetortingOff<?>) labeledBy).turnReportingOff();
         var labeledWidgets = labeledWidgets(tClass);
         var search =  new SearchSupplier<>(format("%s '%s'", getWidgetName(tClass), join(",", labels)), labeledWidgets);
         labeledWidgets.setCriteriaDescription(() -> ofNullable(search.condition).map(predicate -> {
             if (isLoggable(predicate)) {
-                return predicate.toString();
+                return format("%s, %s", predicate.toString(), labeledBy.toString());
             }
-            return EMPTY;
-        }).orElse(EMPTY));
-        return search;
+            return labeledBy.toString();
+        }).orElse(labeledBy.toString()));
+        return search.criteria(labeledBy);
     }
 
     /**
@@ -137,7 +153,7 @@ public final class SearchSupplier<R extends SearchContext>
      *
      * @param tClass is a class of an object to be returned. tClass should have at
      *               least one not abstract subclass that implements {@link Labeled} or be that class.
-     * @param label (text of some element or attribute inside or beside the widget) that is used to
+     * @param label (text of some element or attribute inside or beside the widget) is used to
      *               find the widget.
      * @param <T> the type of widget that should be found
      * @return an instance of {@link SearchSupplier}
@@ -585,23 +601,13 @@ public final class SearchSupplier<R extends SearchContext>
     }
 
     @Override
-    public SearchSupplier<R> criteria(Predicate<R> condition) {
+    public SearchSupplier<R> criteria(Predicate<? super R> condition) {
         return super.criteria(condition);
     }
 
     @Override
-    public SearchSupplier<R> criteria(String description, Predicate<R> condition) {
+    public SearchSupplier<R> criteria(String description, Predicate<? super R> condition) {
         return super.criteria(description, condition);
-    }
-
-    @Override
-    public SearchSupplier<R> criteria(ConditionConcatenation concat, Predicate<R> condition) {
-        return super.criteria(concat, condition);
-    }
-
-    @Override
-    public SearchSupplier<R> criteria(ConditionConcatenation concat, String description, Predicate<R> condition) {
-        return super.criteria(concat, description, condition);
     }
 
     protected SearchSupplier<R> clone() {

@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.selenium.functions.target.locator.window;
 import ru.tinkoff.qa.neptune.core.api.steps.GetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
 import org.openqa.selenium.NoSuchWindowException;
@@ -27,7 +28,8 @@ import static java.util.Optional.ofNullable;
 
 @MakeImageCapturesOnFinishing
 @MakeFileCapturesOnFinishing
-public final class GetWindowSupplier extends GetStepSupplier<SeleniumStepContext, Window, GetWindowSupplier>
+public final class GetWindowSupplier extends SequentialGetStepSupplier
+        .GetObjectChainedStepSupplier<SeleniumStepContext, Window, WebDriver, GetWindowSupplier>
         implements TargetLocatorSupplier<Window> {
 
     private Predicate<Window> condition;

@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert;
 
-import ru.tinkoff.qa.neptune.core.api.steps.GetStepSupplier;
+import org.openqa.selenium.WebDriver;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
 import org.openqa.selenium.Alert;
@@ -10,178 +11,53 @@ import java.time.Duration;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
-import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert.GetAlert.getAlert;
-import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITING_ALERT_TIME_DURATION;
 import static java.lang.String.format;
+import static java.util.List.of;
 import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITING_ALERT_TIME_DURATION;
 
-public final class GetAlertSupplier extends GetStepSupplier<SeleniumStepContext, Alert, GetAlertSupplier>
+public final class GetAlertSupplier extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<SeleniumStepContext, Alert, WebDriver, GetAlertSupplier>
         implements TargetLocatorSupplier<Alert> {
 
-    private static final String GET_ALERT_DESCRIPTION = "Present alert";
+    private GetAlertSupplier() {
+        super("Present alert", webDriver -> webDriver.switchTo().alert());
+        addIgnored(of(NoAlertPresentException.class));
+        throwOnEmptyResult(noSuchAlert());
+        timeOut(WAITING_ALERT_TIME_DURATION.get());
+    }
 
-    private static Supplier<NoAlertPresentException> noSuchAlert(Predicate<Alert> predicate) {
-        return ofNullable(predicate)
-                .map(condition ->
+    private Supplier<NoAlertPresentException> noSuchAlert() {
+        return ofNullable(condition)
+                .map(predicate ->
                         (Supplier<NoAlertPresentException>) () ->
                                 new NoAlertPresentException(
-                                        format("No alert which suits criteria '%s' has been found", condition)))
+                                        format("No alert which suits criteria '%s' has been found", predicate)))
                 .orElseGet(() -> () -> new NoAlertPresentException("No alert has been found"));
     }
 
-    private GetAlertSupplier() {
-        super();
+    @Override
+    public GetAlertSupplier criteria(Predicate<? super Alert> condition) {
+        return super.criteria(condition);
+    }
+
+    @Override
+    public GetAlertSupplier criteria(String description, Predicate<? super Alert> condition) {
+        return super.criteria(description, condition);
+    }
+
+    @Override
+    public GetAlertSupplier timeOut(Duration timeOut) {
+        return super.timeOut(timeOut);
     }
 
     /**
-     * This method builds a function which waits for alert, checks the result by criteria and returns it.
-     *
-     * @param criteria used to check the found alert
-     * @param duration of the waiting for alert
-     * @param sleeping time for the sleeping between attempts to get the desired result.
-     * @param supplier which returns the exception to be thrown when alert that suits criteria is not found
-     *                 and time is expired.
-     * @return a function which waits for alert, checks the result by criteria and returns it or throws
-     * {@link NoAlertPresentException} when alert is not appear or it doesn't suit the criteria.
-     */
-    public static GetAlertSupplier alert(Predicate<Alert> criteria,
-                                         Duration duration,
-                                         Duration sleeping,
-                                         Supplier<? extends NoAlertPresentException> supplier) {
-        return new GetAlertSupplier().set(getSingle(GET_ALERT_DESCRIPTION, currentContent().andThen(getAlert()),
-                criteria, duration, sleeping, true, supplier));
-    }
-
-    /**
-     * This method builds a function which waits for any alert.
-     *
-     * @param duration of the waiting for alert
-     * @param sleeping time for the sleeping between attempts to get the desired result.
-     * @param supplier which returns the exception to be thrown when alert that suits criteria is not found
-     *                 and time is expired.
-     * @return a function which waits for any alert and returns it or throws {@link NoAlertPresentException} when alert
-     * is not appear.
-     */
-    public static GetAlertSupplier alert(Duration duration,
-                                         Duration sleeping,
-                                         Supplier<? extends NoAlertPresentException> supplier) {
-        return new GetAlertSupplier().set(getSingle(GET_ALERT_DESCRIPTION, currentContent().andThen(getAlert()),
-                duration, sleeping, supplier));
-    }
-
-    /**
-     * This method builds a function which waits for alert, checks the result by criteria and returns it.
-     *
-     * @param criteria used to check the found alert
-     * @param duration of the waiting for alert
-     * @param sleeping time for the sleeping between attempts to get the desired result.
-     * @return a function which waits for alert, checks the result by criteria and returns it or throws
-     * {@link NoAlertPresentException} when alert is not appear or it doesn't suit the criteria.
-     */
-    public static GetAlertSupplier alert(Predicate<Alert> criteria,
-                                         Duration duration,
-                                         Duration sleeping) {
-        return new GetAlertSupplier().set(getSingle(GET_ALERT_DESCRIPTION, currentContent().andThen(getAlert()),
-                criteria, duration, sleeping, true, noSuchAlert(criteria)));
-    }
-
-    /**
-     * This method builds a function which waits for any alert.
-     *
-     * @param duration of the waiting for alert
-     * @param sleeping time for the sleeping between attempts to get the desired result.
-     * @return a function which waits for any alert and returns it or throws {@link NoAlertPresentException}
-     * when alert is not appear.
-     */
-    public static GetAlertSupplier alert(Duration duration,
-                                         Duration sleeping) {
-        return new GetAlertSupplier().set(getSingle(GET_ALERT_DESCRIPTION, currentContent().andThen(getAlert()),
-                duration, sleeping, noSuchAlert(null)));
-    }
-
-    /**
-     * This method builds a function which waits for alert, checks the result by criteria and returns it. About time of
-     * the waiting for alert
-     * @see ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties#WAITING_ALERT_TIME_DURATION
-     *
-     * @param criteria used to check the found alert
-     * @param supplier which returns the exception to be thrown when alert that suits criteria is not found
-     *                 and time is expired.
-     * @return a function which waits for alert, checks the result by criteria and returns it or throws
-     * {@link NoAlertPresentException} when alert is not appear or it doesn't suit the criteria.
-     */
-    public static GetAlertSupplier alert(Predicate<Alert> criteria,
-                                         Supplier<? extends NoAlertPresentException> supplier) {
-        return new GetAlertSupplier()
-                .set(getSingle(GET_ALERT_DESCRIPTION, currentContent().andThen(getAlert()), criteria,
-                        WAITING_ALERT_TIME_DURATION.get(), true, supplier));
-    }
-
-    /**
-     * This method builds a function which waits for any alert. About time of the waiting for alert
-     * @see ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties#WAITING_ALERT_TIME_DURATION
-     *
-     * @param supplier which returns the exception to be thrown when alert is not found and time is expired.
-     * @return a function which waits for any alert and returns it or throws {@link NoAlertPresentException}
-     * when alert is not appear.
-     */
-    public static GetAlertSupplier alert(Supplier<? extends NoAlertPresentException> supplier) {
-        return new GetAlertSupplier().set(getSingle(GET_ALERT_DESCRIPTION, currentContent().andThen(getAlert()),
-                WAITING_ALERT_TIME_DURATION.get(), supplier));
-    }
-
-    /**
-     * This method builds a function which waits for alert, checks the result by criteria and returns it.
-     *
-     * @param criteria used to check the found alert
-     * @param duration of the waiting for alert
-     * @return a function which waits for alert, checks the result by criteria and returns it or throws
-     * {@link NoAlertPresentException} when alert is not appear or it doesn't suit the criteria.
-     */
-    public static GetAlertSupplier alert(Predicate<Alert> criteria,
-                                         Duration duration) {
-        return new GetAlertSupplier().set(getSingle(GET_ALERT_DESCRIPTION, currentContent().andThen(getAlert()),
-                criteria, duration, true, noSuchAlert(criteria)));
-    }
-
-    /**
-     * This method builds a function which waits for any alert.
-     *
-     * @param duration of the waiting for alert
-     * @return a function which waits for any alert and returns it or throws {@link NoAlertPresentException}
-     * when alert is not appear.
-     */
-    public static GetAlertSupplier alert(Duration duration) {
-        return new GetAlertSupplier().set(getSingle(GET_ALERT_DESCRIPTION, currentContent().andThen(getAlert()),
-                duration, noSuchAlert(null)));
-    }
-
-    /**
-     * This method builds a function which waits for alert, checks the result by criteria and returns it. About time of
-     * the waiting for alert
-     * @see ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties#WAITING_ALERT_TIME_DURATION
-     *
-     * @param criteria used to check the found alert
-     * @return a function which waits for alert, checks the result by criteria and returns it or throws
-     * {@link NoAlertPresentException} when alert is not appear or it doesn't suit the criteria.
-     */
-    public static GetAlertSupplier alert(Predicate<Alert> criteria) {
-        return new GetAlertSupplier().set(getSingle(GET_ALERT_DESCRIPTION, currentContent().andThen(getAlert()),
-                criteria, WAITING_ALERT_TIME_DURATION.get(), true, noSuchAlert(criteria)));
-    }
-
-    /**
-     * This method builds a function which waits for alert any alert. About time of
-     * the waiting for alert
-     * @see ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties#WAITING_ALERT_TIME_DURATION
+     * This method builds a function which waits for alert any alert.
      *
      * @return a function which waits for any alert and returns it or throws {@link NoAlertPresentException}
      * when alert is not appear.
      */
     public static GetAlertSupplier alert() {
-        return new GetAlertSupplier().set(getSingle(GET_ALERT_DESCRIPTION, currentContent().andThen(getAlert()),
-                WAITING_ALERT_TIME_DURATION.get(), noSuchAlert(null)));
+        return new GetAlertSupplier().from(currentContent());
     }
 }

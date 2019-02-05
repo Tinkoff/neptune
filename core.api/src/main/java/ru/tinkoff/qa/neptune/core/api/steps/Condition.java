@@ -9,6 +9,7 @@ import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static ru.tinkoff.qa.neptune.core.api.steps.ConditionConcatenation.*;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 interface Condition<T> extends Predicate<T> {
@@ -32,19 +33,38 @@ interface Condition<T> extends Predicate<T> {
             this.predicate = predicate;
         }
 
-        private static String getOtherDescription(Predicate<?> other) {
-            String otherDescription;
-            if (isLoggable(other)) {
-                if (DescribedCondition.class.isAssignableFrom(other.getClass()) &&
-                        ((DescribedCondition<?>) other).toNotReport) {
+        private static String getDescription(Predicate<?> toBeDescribed) {
+            String description;
+            if (isLoggable(toBeDescribed)) {
+                if (DescribedCondition.class.isAssignableFrom(toBeDescribed.getClass()) &&
+                        ((DescribedCondition<?>) toBeDescribed).toNotReport) {
                     return EMPTY;
                 }
-                otherDescription = other.toString();
+                description = toBeDescribed.toString();
             }
             else {
-                otherDescription = "<not described condition>";
+                description = "<not described condition>";
             }
-            return otherDescription;
+            return description;
+        }
+
+        private static String getDescription(Predicate<?> p1, Predicate<?> p2,
+                                             ConditionConcatenation conditionConcatenation) {
+            var description1 = getDescription(p1);
+            var description2 = getDescription(p2);
+            if (isBlank(description1) && isBlank(description2)) {
+                return EMPTY;
+            }
+
+            if (isBlank(description1) ^ isBlank(description2)) {
+                return format("%s%s", description1, description2).trim();
+            }
+
+            if (AND.equals(conditionConcatenation)) {
+                return format("%s%s %s", description1, AND, description2).trim();
+            }
+
+            return format("(%s) %s (%s)", description1, conditionConcatenation, description2).trim();
         }
 
         @Override
@@ -59,12 +79,9 @@ interface Condition<T> extends Predicate<T> {
         @Override
         public Predicate<T> and(Predicate<? super T> other) {
             checkNotNull(other);
-            var otherDescription = getOtherDescription(other);
-            String description;
-            if (!isBlank(otherDescription)) {
-                description = format("%s, %s", toString(), otherDescription);
-            } else {
-                description = toString();
+            var description = getDescription(this, other, AND);
+            if (isBlank(description)) {
+                return t -> test(t) && other.test(t);
             }
             return new DescribedCondition<>(description, t -> test(t) && other.test(t));
         }
@@ -76,12 +93,9 @@ interface Condition<T> extends Predicate<T> {
 
         public Predicate<T> or(Predicate<? super T> other) {
             checkNotNull(other);
-            var otherDescription = getOtherDescription(other);
-            String description;
-            if (!isBlank(otherDescription)) {
-                description = format("(%s) or (%s)", toString(), otherDescription);
-            } else {
-                description = toString();
+            var description = getDescription(this, other, OR);
+            if (isBlank(description)) {
+                return t -> test(t) || other.test(t);
             }
             return new DescribedCondition<>(description, t -> test(t) || other.test(t));
         }
@@ -89,15 +103,10 @@ interface Condition<T> extends Predicate<T> {
         @Override
         public Predicate<T> xor(Predicate<? super T> other) {
             checkNotNull(other);
-
-            var otherDescription = getOtherDescription(other);
-            String description;
-            if (!isBlank(otherDescription)) {
-                description = format("(%s) xor (%s)", toString(), otherDescription);
-            } else {
-                description = toString();
+            var description = getDescription(this, other, XOR);
+            if (isBlank(description)) {
+                return t -> test(t) ^ other.test(t);
             }
-
             return new DescribedCondition<>(description, t -> test(t) ^ other.test(t));
         }
 

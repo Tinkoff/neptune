@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.parent;
 
-import ru.tinkoff.qa.neptune.core.api.steps.GetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
 import org.openqa.selenium.NoSuchFrameException;
@@ -8,30 +8,24 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 
 import java.time.Duration;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
-import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 
-public final class ParentFrameSupplier extends GetStepSupplier<SeleniumStepContext, WebDriver, ParentFrameSupplier>
+public final class ParentFrameSupplier extends SequentialGetStepSupplier
+        .GetObjectChainedStepSupplier<SeleniumStepContext, WebDriver, WebDriver, ParentFrameSupplier>
         implements TargetLocatorSupplier<WebDriver> {
 
-    private static final Function<WebDriver, WebDriver> GET_PARENT_FRAME =
-            driver -> {
-                try {
-                    return driver.switchTo().parentFrame();
-                }
-                catch (WebDriverException e) {
-                    return null;
-                }
-            };
-
-    private static final Supplier<WebDriverException> CAN_NOT_SWITCH_TO_PARENT_FRAME =
-            () -> new NoSuchFrameException("It was impossible to switch to the parent frame for some reason");
 
     private ParentFrameSupplier() {
-        super();
+        super("Parent frame", driver -> {
+            try {
+                return driver.switchTo().parentFrame();
+            }
+            catch (WebDriverException e) {
+                return null;
+            }
+        });
+        throwOnEmptyResult(() -> new NoSuchFrameException("It was impossible to switch to the parent frame for some reason"));
     }
 
     /**
@@ -46,25 +40,11 @@ public final class ParentFrameSupplier extends GetStepSupplier<SeleniumStepConte
      *      performs the switching to the parent frame and returns it.
      */
     public static ParentFrameSupplier parentFrame() {
-        return new ParentFrameSupplier().set(getSingle("Parent frame",
-                currentContent().andThen(GET_PARENT_FRAME), CAN_NOT_SWITCH_TO_PARENT_FRAME));
+        return new ParentFrameSupplier().from(currentContent());
     }
 
-    /**
-     * Builds a function which performs the switching to the parent frame and returns it.
-     * Taken from Selenium documentation:
-     * <p>
-     *     Change focus to the parent context. If the current context is the top level browsing context,
-     *     the context remains unchanged.
-     * </p>
-     *
-     * @param duration is the time value of the waiting for the switching to the parent frame is succeeded.
-     *
-     * @return an instance of {@link ParentFrameSupplier} which wraps a function. This function
-     *      performs the switching to the parent frame and returns it.
-     */
-    public static ParentFrameSupplier parentFrame(Duration duration) {
-        return new ParentFrameSupplier().set(getSingle("Parent frame", currentContent().andThen(GET_PARENT_FRAME),
-                duration, CAN_NOT_SWITCH_TO_PARENT_FRAME));
+    @Override
+    public ParentFrameSupplier timeOut(Duration timeOut) {
+        return super.timeOut(timeOut);
     }
 }

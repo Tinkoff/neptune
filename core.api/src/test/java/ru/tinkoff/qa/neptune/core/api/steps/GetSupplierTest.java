@@ -130,7 +130,7 @@ public class GetSupplierTest {
             return new Cube().from(from);
         }
 
-        protected Cube criteria(String description, Predicate<Number> numberPredicate) {
+        protected Cube criteria(String description, Predicate<? super Number> numberPredicate) {
             return super.criteria(description, numberPredicate);
         }
     }
@@ -177,7 +177,7 @@ public class GetSupplierTest {
             return super.from(function);
         }
 
-        protected SqrtFromSomeNumericOperation criteria(String description, Predicate<Number> numberPredicate) {
+        protected SqrtFromSomeNumericOperation criteria(String description, Predicate<? super Number> numberPredicate) {
             return super.criteria(description, numberPredicate);
         }
     }

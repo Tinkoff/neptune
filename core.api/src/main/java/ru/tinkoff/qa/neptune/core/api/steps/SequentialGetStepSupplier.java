@@ -48,7 +48,7 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends SequentialGetStepSupplier<T, R, M, P, THIS>> implements Cloneable,
         Supplier<Function<T, R>>, IgnoresThrowable<THIS>, MakesCapturesOnFinishing<THIS> {
 
-    private final String description;
+    protected final StringBuilder description;
     private final Set<Class<? extends Throwable>> ignored = new HashSet<>();
     private final List<CaptorFilterByProducedType> captorFilters = new ArrayList<>();
 
@@ -59,7 +59,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     Supplier<? extends RuntimeException> exceptionSupplier;
 
     protected SequentialGetStepSupplier(String description) {
-        this.description = description;
+        this.description = new StringBuilder(description);
         MakesCapturesOnFinishing.makeCaptureSettings(this);
     }
 
@@ -74,11 +74,11 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * @param condition a condition to get desired value
      * @return self-reference
      */
-    protected THIS criteria(ConditionConcatenation concat, Predicate<P> condition) {
+    protected THIS criteria(ConditionConcatenation concat, Predicate<? super P> condition) {
         checkNotNull(concat);
         this.condition = ofNullable(this.condition)
                 .map(pPredicate -> concat.concat(pPredicate, condition))
-                .orElse(condition);
+                .orElse((Predicate<P>) condition);
         return (THIS) this;
     }
 
@@ -94,7 +94,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * @param condition            a condition to get desired value
      * @return self-reference
      */
-    protected THIS criteria(ConditionConcatenation concat, String conditionDescription, Predicate<P> condition) {
+    protected THIS criteria(ConditionConcatenation concat, String conditionDescription, Predicate<? super P> condition) {
         return criteria(concat, StoryWriter.condition(conditionDescription, condition));
     }
 
@@ -108,7 +108,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * @see #criteria(ConditionConcatenation, Predicate)
      * @see #criteria(ConditionConcatenation, String, Predicate)
      */
-    protected THIS criteria(Predicate<P> condition) {
+    protected THIS criteria(Predicate<? super P> condition) {
         return criteria(ConditionConcatenation.AND, condition);
     }
 
@@ -123,7 +123,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * @see #criteria(ConditionConcatenation, Predicate)
      * @see #criteria(ConditionConcatenation, String, Predicate)
      */
-    protected THIS criteria(String conditionDescription, Predicate<P> condition) {
+    protected THIS criteria(String conditionDescription, Predicate<? super P> condition) {
         return criteria(ConditionConcatenation.AND, conditionDescription, condition);
     }
 
@@ -357,9 +357,9 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     @Override
     public String toString() {
         if (nonNull(condition) && isLoggable(condition)) {
-            return format("%s [Criteria: %s]", description, condition).trim();
+            return format("%s [Criteria: %s]", description.toString(), condition).trim();
         }
-        return description;
+        return description.toString();
     }
 
     @Override

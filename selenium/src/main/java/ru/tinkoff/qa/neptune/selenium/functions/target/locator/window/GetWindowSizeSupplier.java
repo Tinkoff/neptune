@@ -5,15 +5,13 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 
-import java.util.function.Function;
-
-import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
 
-public final class GetWindowSizeSupplier extends SequentialGetStepSupplier<SeleniumStepContext, Dimension, Window, GetWindowSizeSupplier> {
+public final class GetWindowSizeSupplier extends SequentialGetStepSupplier
+        .GetObjectChainedStepSupplier<SeleniumStepContext, Dimension, Window, GetWindowSizeSupplier> {
 
     private GetWindowSizeSupplier() {
-        super();
+        super("Size of the window", WebDriver.Window::getSize);
     }
 
     /**
@@ -43,10 +41,5 @@ public final class GetWindowSizeSupplier extends SequentialGetStepSupplier<Selen
      */
     public static GetWindowSizeSupplier sizeOf(Window window) {
         return new GetWindowSizeSupplier().from(window);
-    }
-
-    @Override
-    protected Function<Window, Dimension> getEndFunction() {
-        return toGet("Size of the window", WebDriver.Window::getSize);
     }
 }

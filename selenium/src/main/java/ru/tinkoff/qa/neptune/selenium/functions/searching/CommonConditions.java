@@ -1,5 +1,8 @@
 package ru.tinkoff.qa.neptune.selenium.functions.searching;
 
+import ru.tinkoff.qa.neptune.core.api.exception.management.IgnoresThrowable;
+import ru.tinkoff.qa.neptune.core.api.steps.StepFunction;
+import ru.tinkoff.qa.neptune.core.api.steps.TurnsRetortingOff;
 import ru.tinkoff.qa.neptune.selenium.api.widget.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.internal.WrapsElement;
@@ -7,6 +10,7 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.util.List.of;
 import static java.util.Objects.nonNull;
 import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.condition;
 import static com.google.common.base.Preconditions.checkArgument;
@@ -23,10 +27,10 @@ public final class CommonConditions {
     }
 
     /**
-     * @param <T> is type of elements under the test. It is expected to extend {@link WebElement}
-     *           or {@link IsVisible} or {@link WrapsElement}. The {@link Predicate#test(Object)} method throws
-     *           {@link UnsupportedOperationException} otherwise.
-     * @return predicate that checks is some element visible or not
+     * The checking of an element/widget visibility.
+     *
+     * @param <T> is a type of element/widget to be visible
+     * @return predicate that checks/filters an element/widget
      */
     public static <T extends SearchContext> Predicate<T> shouldBeVisible() {
         return condition("visible", t -> {
@@ -42,21 +46,18 @@ public final class CommonConditions {
             if (WrapsElement.class.isAssignableFrom(tClass)) {
                 return ofNullable(((WrapsElement) t).getWrappedElement())
                         .map(WebElement::isDisplayed)
-                        .orElseThrow(() -> new NullPointerException("It was expected that wrapped element differs from null. " +
-                                "It is impossible to get visibility."));
+                        .orElse(false);
             }
 
-            throw new UnsupportedOperationException(format("It is impossible to get visibility of the instance of %s. Instance of " +
-                            "%s or subclass of %s and %s is expected.", tClass.getName(), WebElement.class.getName(),
-                    SearchContext.class.getName(), IsVisible.class.getName()));
+            return false;
         });
     }
 
     /**
-     * @param <T> is type of elements under the test. It is expected to extend {@link WebElement}
-     *           or {@link IsEnabled} or {@link WrapsElement}. The {@link Predicate#test(Object)} method throws
-     *           {@link UnsupportedOperationException} otherwise.
-     * @return predicate that checks is some element enabled or not
+     * The checking of an element/widget is enabled or not.
+     *
+     * @param <T> is a type of element/widget to be enabled
+     * @return predicate that checks/filters an element/widget
      */
     public static <T extends SearchContext> Predicate<T> shouldBeEnabled() {
         return condition("enabled", t -> {
@@ -71,27 +72,24 @@ public final class CommonConditions {
 
             if (WrapsElement.class.isAssignableFrom(tClass)) {
                 return ofNullable(((WrapsElement) t).getWrappedElement())
-                        .map(WebElement::isEnabled)
-                        .orElseThrow(() -> new NullPointerException("It was expected that wrapped element differs from null. " +
-                                "It is impossible to check is it enable or not."));
+                        .map(WebElement::isDisplayed)
+                        .orElse(false);
             }
 
-            throw new UnsupportedOperationException(format("It is impossible to check is instance of %s enable or not. Instance of " +
-                            "%s or subclass of %s and %s is expected.", tClass.getName(), WebElement.class.getName(),
-                    SearchContext.class.getName(), IsEnabled.class.getName()));
+            return false;
         });
     }
 
     /**
-     * @param text which element should have
-     * @param <T> is type of elements under the test. It is expected to extend {@link WebElement}
-     *           or {@link WrapsElement}. The {@link Predicate#test(Object)} method returns {@code false}
-     *           otherwise.
-     * @return predicate that checks element by text
+     * The checking of an element/widget text.
+     *
+     * @param text that an element/widget is supposed to have
+     * @param <T> is a type of element/widget
+     * @return predicate that checks/filters an element/widget
      */
     public static <T extends SearchContext> Predicate<T>  shouldHaveText(String text) {
-        checkArgument(!isBlank(text), "String which is used to check text " +
-                "of an element should not be null or empty. ");
+        checkArgument(!isBlank(text), "String is used to check text " +
+                "of an element should not be null or empty.");
         return condition(format("has text '%s'", text), t -> {
             var clazz = t.getClass();
             if (WebElement.class.isAssignableFrom(clazz)) {
@@ -109,11 +107,11 @@ public final class CommonConditions {
     }
 
     /**
-     * @param pattern is a regExp pattern to check text of an element
-     * @param <T> is type of elements under the test. It is expected to extend {@link WebElement}
-     *           or {@link WrapsElement}. The {@link Predicate#test(Object)} method returns {@code false}
-     *           otherwise.
-     * @return predicate that checks element by text and reg exp pattern
+     * The checking of an element/widget text.
+     *
+     * @param pattern is a regExp pattern to check text of an element/widget
+     * @param <T> is a type of element/widget
+     * @return predicate that checks/filters an element/widget
      */
     public static <T extends SearchContext> Predicate<T> shouldHaveText(Pattern pattern) {
         checkArgument(nonNull(pattern), "RegEx pattern should be defined");
@@ -132,12 +130,12 @@ public final class CommonConditions {
     }
 
     /**
-     * @param <T> is type of elements under the test. It is expected to extend {@link WebElement}
-     *      or {@link HasAttribute} or {@link WrapsElement}. The {@link Predicate#test(Object)} method throws
-     *      {@link UnsupportedOperationException} otherwise.
-     * @param attribute of an element to check
+     * The checking of an element/widget by attribute value.
+     *
+     * @param <T> is a type of element/widget
+     * @param attribute that an element/widget is supposed to have
      * @param attrValue desired value of the attribute
-     * @return predicate that checks value of the attribute.
+     * @return predicate that checks/filters an element/widget
      */
     public static <T extends SearchContext> Predicate<T> shouldHaveAttribute(String attribute, String attrValue) {
         checkArgument(!isBlank(attribute), "Attribute name should not be empty or null.");
@@ -156,24 +154,20 @@ public final class CommonConditions {
             if (WrapsElement.class.isAssignableFrom(tClass)) {
                 return ofNullable(((WrapsElement) t).getWrappedElement())
                         .map(webElement -> attrValue.equals(webElement.getAttribute(attribute)))
-                        .orElseThrow(() -> new NullPointerException(format("It was expected that wrapped element differs from null. " +
-                                "It was impossible to value of the attribute %s from the instance of %s", attribute, tClass)));
+                        .orElse(false);
             }
 
-            throw new UnsupportedOperationException(format("It is impossible to get value of thr attribute %s from " +
-                            "the instance of %s. Instance of " +
-                            "%s or subclass of %s and %s is expected.", attribute, tClass.getName(), WebElement.class.getName(),
-                    SearchContext.class.getName(), HasAttribute.class.getName()));
+            return false;
         });
     }
 
     /**
-     * @param <T> is type of elements under the test. It is expected to extend {@link WebElement}
-     *      or {@link HasAttribute} or {@link WrapsElement}. The {@link Predicate#test(Object)} method throws
-     *      {@link UnsupportedOperationException} otherwise.
-     * @param attribute of an element to check
-     * @param attrValue substring that should be contained by value of the attribute
-     * @return predicate that checks value of the attribute.
+     * The checking of an element/widget by attribute value.
+     * 
+     * @param <T> is a type of element/widget
+     * @param attribute that an element/widget is supposed to have
+     * @param attrValue substring that supposed to be contained by value of the attribute
+     * @return predicate that checks/filters an element/widget
      */
     public static <T extends SearchContext> Predicate<T> shouldHaveAttributeContains(String attribute, String attrValue) {
         checkArgument(!isBlank(attribute), "Attribute name should not be empty or null.");
@@ -196,23 +190,19 @@ public final class CommonConditions {
                         .map(webElement -> ofNullable(webElement.getAttribute(attribute))
                                 .map(s -> s.contains(attrValue))
                                 .orElse(false))
-                        .orElseThrow(() -> new NullPointerException(format("It was expected that wrapped element differs from null. " +
-                                "It was impossible to value of the attribute %s from the instance of %s", attribute, tClass)));
+                        .orElse(false);
             }
-            throw new UnsupportedOperationException(format("It is impossible to get value of thr attribute %s from " +
-                            "the instance of %s. Instance of " +
-                            "%s or subclass of %s and %s is expected.", attribute, tClass.getName(), WebElement.class.getName(),
-                    SearchContext.class.getName(), HasAttribute.class.getName()));
+            return false;
         });
     }
 
     /**
-     * @param <T> is type of elements under the test. It is expected to extend {@link WebElement}
-     *      or {@link HasAttribute} or {@link WrapsElement}. The {@link Predicate#test(Object)} method throws
-     *      {@link UnsupportedOperationException} otherwise.
-     * @param attribute of an element to check
+     * The checking of an element/widget by attribute value.
+     *
+     * @param <T> is a type of element/widget
+     * @param attribute that an element/widget is supposed to have
      * @param pattern is a regex pattern to check the attribute value
-     * @return predicate that checks value of the attribute.
+     * @return predicate that checks/filters an element/widget
      */
     public static <T extends SearchContext> Predicate<T> shouldHaveAttributeContains(String attribute, Pattern pattern) {
         checkArgument(!isBlank(attribute), "Attribute name should not be empty or null.");
@@ -246,24 +236,20 @@ public final class CommonConditions {
                                     return m.find();
                                 })
                                 .orElse(false))
-                        .orElseThrow(() -> new NullPointerException(format("It was expected that wrapped element differs from null. " +
-                                "It was impossible to value of the attribute %s from the instance of %s", attribute, tClass)));
+                        .orElse(false);
             }
 
-            throw new UnsupportedOperationException(format("It is impossible to get value of thr attribute %s from " +
-                            "the instance of %s. Instance of " +
-                            "%s or subclass of %s and %s is expected.", attribute, tClass.getName(), WebElement.class.getName(),
-                    SearchContext.class.getName(), HasAttribute.class.getName()));
+            return false;
         });
     }
 
     /**
-     * @param <T> is type of elements under the test. It is expected to extend {@link WebElement}
-     *      or {@link HasCssValue} or {@link WrapsElement}. The {@link Predicate#test(Object)} method throws
-     *      {@link UnsupportedOperationException} otherwise.
-     * @param cssProperty of an element to check
+     * The checking of an element/widget by css value.
+     *
+     * @param <T> is a type of element/widget
+     * @param cssProperty that an element/widget is supposed to have
      * @param cssValue desired value of the css property
-     * @return predicate that checks value of the css property.
+     * @return predicate that checks/filters an element/widget
      */
     public static <T extends SearchContext> Predicate<T> shouldHaveCssValue(String cssProperty, String cssValue) {
         checkArgument(!isBlank(cssProperty), "Css property should not be empty or null.");
@@ -282,24 +268,20 @@ public final class CommonConditions {
             if (WrapsElement.class.isAssignableFrom(tClass)) {
                 return ofNullable(((WrapsElement) t).getWrappedElement())
                         .map(webElement -> cssValue.equals(webElement.getCssValue(cssProperty)))
-                        .orElseThrow(() -> new NullPointerException(format("It was expected that wrapped element differs from null. " +
-                                "It was impossible to value of the css property %s from the instance of %s", cssProperty, tClass)));
+                        .orElse(false);
             }
 
-            throw new UnsupportedOperationException(format("It is impossible to get value of thr css property %s from " +
-                            "the instance of %s. Instance of " +
-                            "%s or subclass of %s and %s is expected.", cssProperty, tClass.getName(), WebElement.class.getName(),
-                    SearchContext.class.getName(), HasCssValue.class.getName()));
+            return false;
         });
     }
 
     /**
-     * @param <T> is type of elements under the test. It is expected to extend {@link WebElement}
-     *      or {@link HasCssValue} or {@link WrapsElement}. The {@link Predicate#test(Object)} method throws
-     *      {@link UnsupportedOperationException} otherwise.
-     * @param cssProperty of an element to check
-     * @param cssValue substring that should be contained by value of the css property
-     * @return predicate that checks value of the css property.
+     * The checking of an element/widget by css value.
+     *
+     * @param <T> is a type of element/widget
+     * @param cssProperty that an element/widget is supposed to have
+     * @param cssValue substring that supposed to be contained by value of the css property
+     * @return predicate that checks/filters an element/widget
      */
     public static <T extends SearchContext> Predicate<T> shouldHaveCssValueContains(String cssProperty, String cssValue) {
         checkArgument(!isBlank(cssProperty), "Css property should not be empty or null.");
@@ -322,24 +304,20 @@ public final class CommonConditions {
                         .map(webElement -> ofNullable(webElement.getCssValue(cssProperty))
                                 .map(s -> s.contains(cssValue))
                                 .orElse(false))
-                        .orElseThrow(() -> new NullPointerException(format("It was expected that wrapped element differs from null. " +
-                                "It was impossible to value of the css property %s from the instance of %s", cssProperty, tClass)));
+                        .orElse(false);
             }
 
-            throw new UnsupportedOperationException(format("It is impossible to get value of thr css property %s from " +
-                            "the instance of %s. Instance of " +
-                            "%s or subclass of %s and %s is expected.", cssProperty, tClass.getName(), WebElement.class.getName(),
-                    SearchContext.class.getName(), HasCssValue.class.getName()));
+            return false;
         });
     }
 
     /**
-     * @param <T> is type of elements under the test. It is expected to extend {@link WebElement}
-     *      or {@link HasCssValue} or {@link WrapsElement}. The {@link Predicate#test(Object)} method throws
-     *      {@link UnsupportedOperationException} otherwise.
-     * @param cssProperty of an element to check
+     * The checking of an element/widget by css value.
+     *
+     * @param <T> is a type of element/widget
+     * @param cssProperty that an element/widget is supposed to have
      * @param pattern is a regex pattern to check the css value
-     * @return predicate that checks value of the css property.
+     * @return predicate that checks/filters an element/widget
      */
     public static <T extends SearchContext> Predicate<T> shouldHaveCssValueContains(String cssProperty, Pattern pattern) {
         checkArgument(!isBlank(cssProperty), "Css property should not be empty or null.");
@@ -373,48 +351,68 @@ public final class CommonConditions {
                                     return m.find();
                                 })
                                 .orElse(false))
-                        .orElseThrow(() -> new NullPointerException(format("It was expected that wrapped element differs from null. " +
-                                "It was impossible to value of the css property %s from the instance of %s", cssProperty, tClass)));
+                        .orElse(false);
             }
-            throw new UnsupportedOperationException(format("It is impossible to get value of thr css property %s from " +
-                            "the instance of %s. Instance of " +
-                            "%s or subclass of %s and %s is expected.", cssProperty, tClass.getName(), WebElement.class.getName(),
-                    SearchContext.class.getName(), HasCssValue.class.getName()));
+
+            return false;
         });
     }
 
     /**
-     * @param <T> is type of elements under the test.
-     * @param howToFind is the way to find nested elements.
-     * @return predicate that checks presence of child elements inside an element.
+     * The checking of an element/widget by presence of nested elements
+     *
+     * @param <T> is a type of element/widget
+     * @param howToFind is the way to find nested elements
+     * @return predicate that checks/filters an element/widget
      */
     public static <T extends SearchContext> Predicate<T> shouldContainElements(MultipleSearchSupplier<?> howToFind) {
         checkArgument(nonNull(howToFind), "The way how to find nested elements should be defined");
-        return condition(format("has nested %s", howToFind), t -> howToFind.get().apply(t).size() > 0);
+        var func = howToFind.get();
+        if (TurnsRetortingOff.class.isAssignableFrom(func.getClass())) {
+            ((TurnsRetortingOff) func).turnReportingOff();
+        }
+        return condition(format("has nested %s", howToFind), t -> func.apply(t).size() > 0);
     }
 
     /**
-     * @param <T> is type of elements under the test.
-     * @param howToFind is the way to find nested elements.
-     * @param expected is the count of expected nested elements.
-     * @return predicate that checks presence of child elements inside an element.
+     * The checking of an element/widget by presence of nested elements
+     *
+     * @param <T> is a type of element/widget
+     * @param howToFind is the way to find nested elements
+     * @param expected is the count of expected nested elements
+     * @return predicate that checks/filters an element/widget
      */
     public static <T extends SearchContext> Predicate<T> shouldContainElements(MultipleSearchSupplier<?> howToFind, int expected) {
         checkArgument(nonNull(howToFind), "The way how to find nested elements should be defined");
-        checkArgument(expected >=0 , "Count of expected nested elements can't be a negative value.");
+        checkArgument(expected >=0 , "Count of expected nested elements can't be a negative or zero value.");
+        var func = howToFind.get();
+        if (TurnsRetortingOff.class.isAssignableFrom(func.getClass())) {
+            ((TurnsRetortingOff) func).turnReportingOff();
+        }
         return condition(format("has %s nested %s", expected, howToFind),
-                t -> howToFind.get().apply(t).size() == expected);
+                t -> func.apply(t).size() == expected);
     }
 
     /**
-     * @param <T> is type of elements under the test.
-     * @param labels which can be used for the seeking element
-     * @return predicate that checks labels of a complex element
+     * The checking of an element/widget by presence of a nested element
+     *
+     * @param <T> is a type of element/widget
+     * @param howToFind is the way to find a nested element
+     * @return predicate that checks/filters an element/widget
      */
-    public static  <T extends SearchContext & Labeled> Predicate<T> shouldBeLabeledBy(String...labels) {
+    @SuppressWarnings("unchecked")
+    public static <T extends SearchContext> Predicate<T> shouldContainElement(SearchSupplier<?> howToFind) {
+        checkArgument(nonNull(howToFind), "The way how to find nested elements should be defined");
+        var func = ((IgnoresThrowable<StepFunction<SearchContext, SearchContext>>) howToFind.get())
+                .addIgnored(of(NoSuchElementException.class));
+        func.turnReportingOff();
+        return condition(format("has nested %s", howToFind), t -> func.apply(t) != null);
+    }
+
+    static  <T extends SearchContext> Predicate<T> shouldBeLabeledBy(String...labels) {
         checkNotNull(labels);
         checkArgument(labels.length > 0, "At least one label should be defined");
         return condition(format("has label(s) %s", String.join("and ", labels)),
-                t -> t.labels().containsAll(asList(labels)));
+                t -> Labeled.class.isAssignableFrom(t.getClass()) && ((Labeled) t).labels().containsAll(asList(labels)));
     }
 }
