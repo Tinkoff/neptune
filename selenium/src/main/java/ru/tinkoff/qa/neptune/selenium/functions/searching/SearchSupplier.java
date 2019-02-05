@@ -609,8 +609,4 @@ public final class SearchSupplier<R extends SearchContext>
     public SearchSupplier<R> criteria(String description, Predicate<? super R> condition) {
         return super.criteria(description, condition);
     }
-
-    protected SearchSupplier<R> clone() {
-        return super.clone();
-    }
 }
