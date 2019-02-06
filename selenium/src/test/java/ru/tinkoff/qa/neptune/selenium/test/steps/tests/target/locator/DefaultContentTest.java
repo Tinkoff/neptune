@@ -25,7 +25,8 @@ public class DefaultContentTest extends BaseWebDriverTest {
     @Test
     public void defaultContentWithDefinedTimeTest() {
         setStartBenchMark();
-        assertThat(((MockWebDriver) seleniumSteps.get(defaultContent(FIVE_SECONDS))).isSwitchedToDefaultContent(),
+        assertThat(((MockWebDriver) seleniumSteps.get(defaultContent()
+                        .timeOut(FIVE_SECONDS))).isSwitchedToDefaultContent(),
                 is(true));
         setEndBenchMark();
         assertThat(getTimeDifference(), lessThan(HALF_SECOND.toMillis()));
@@ -51,7 +52,8 @@ public class DefaultContentTest extends BaseWebDriverTest {
         seleniumSteps.get(defaultContent());
         setStartBenchMark();
         try {
-            seleniumSteps.get(defaultContent(FIVE_SECONDS)); //mock is designed the special way
+            seleniumSteps.get(defaultContent()
+                    .timeOut(FIVE_SECONDS)); //mock is designed the special way
             //when it tries to switch to default content more than one time per session
             //then it throws the exception
         }

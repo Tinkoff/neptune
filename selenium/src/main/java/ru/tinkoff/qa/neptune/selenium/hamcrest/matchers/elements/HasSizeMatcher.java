@@ -96,15 +96,15 @@ public final class HasSizeMatcher<T extends SearchContext> extends TypeSafeDiagn
         Dimension size;
 
         if (WebElement.class.isAssignableFrom(clazz)) {
-            size = WebElement.class.cast(item).getSize();
+            size = ((WebElement) item).getSize();
             result = (widthMatcher.matches(size.getWidth()) && heightMatcher.matches(size.getHeight()));
         }
         else if (HasSize.class.isAssignableFrom(clazz)){
-            size = HasSize.class.cast(item).getSize();
+            size = ((HasSize) item).getSize();
             result = (widthMatcher.matches(size.getWidth()) && heightMatcher.matches(size.getHeight()));
         }
         else if (WrapsElement.class.isAssignableFrom(clazz)) {
-            var e = WrapsElement.class.cast(item).getWrappedElement();
+            var e = ((WrapsElement) item).getWrappedElement();
             if (e == null) {
                 mismatchDescription.appendText(format("Wrapped element is null. It is not possible to get size from an instance of %s.",
                         clazz.getName()));

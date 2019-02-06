@@ -73,7 +73,10 @@ interface Condition<T> extends Predicate<T> {
         }
 
         public String toString() {
-            return description;
+            if (!toNotReport) {
+                return description;
+            }
+            return EMPTY;
         }
 
         @Override

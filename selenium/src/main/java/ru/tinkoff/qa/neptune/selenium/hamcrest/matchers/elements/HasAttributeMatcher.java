@@ -81,13 +81,13 @@ public final class HasAttributeMatcher<T extends SearchContext> extends TypeSafe
         String attrValue;
 
         if (WebElement.class.isAssignableFrom(clazz)) {
-            result = matcher.matches(attrValue = WebElement.class.cast(item).getAttribute(attribute));
+            result = matcher.matches(attrValue = ((WebElement) item).getAttribute(attribute));
         }
         else if (HasAttribute.class.isAssignableFrom(clazz)){
-            result = matcher.matches(attrValue = HasAttribute.class.cast(item).getAttribute(attribute));
+            result = matcher.matches(attrValue = ((HasAttribute) item).getAttribute(attribute));
         }
         else if (WrapsElement.class.isAssignableFrom(clazz)) {
-            var e = WrapsElement.class.cast(item).getWrappedElement();
+            var e = ((WrapsElement) item).getWrappedElement();
             if (e == null) {
                 mismatchDescription.appendText(format("Wrapped element is null. It is not possible to get attribute %s from an instance of %s.",
                         attribute, clazz.getName()));

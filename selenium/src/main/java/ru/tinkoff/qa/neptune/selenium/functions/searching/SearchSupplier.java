@@ -18,8 +18,7 @@ import java.util.regex.Pattern;
 
 import static java.lang.String.join;
 import static java.util.List.of;
-import static java.util.Optional.ofNullable;
-import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.selenium.api.widget.Widget.getWidgetName;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindLabeledWidgets.labeledWidgets;
@@ -51,6 +50,16 @@ public final class SearchSupplier<R extends SearchContext>
         return () -> new NoSuchElementException(errorMessage);
     }
 
+    private static Supplier<String> criteriaDescription(SearchSupplier<?> search) {
+        return () -> {
+            var criteria = search.getCriteriaDescription();
+            if (!isBlank(criteria)) {
+                return criteria;
+            }
+            return EMPTY;
+        };
+    }
+
 
     /**
      * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
@@ -64,15 +73,9 @@ public final class SearchSupplier<R extends SearchContext>
     public static SearchSupplier<WebElement> webElement(By by, String text) {
         Predicate<WebElement> shouldHaveText = shouldHaveText(text);
         ((TurnsRetortingOff<?>) shouldHaveText).turnReportingOff();
-
         var webElements = webElements(by);
         var search = new SearchSupplier<>(format("Web element located %s with the text '%s'", by, text), webElements);
-        webElements.setCriteriaDescription(() -> ofNullable(search.condition).map(predicate -> {
-            if (isLoggable(predicate)) {
-                return format("%s, %s", predicate.toString(), shouldHaveText.toString());
-            }
-            return shouldHaveText.toString();
-        }).orElse(shouldHaveText.toString()));
+        webElements.setCriteriaDescription(criteriaDescription(search));
         return search.criteria(shouldHaveText);
     }
 
@@ -88,15 +91,9 @@ public final class SearchSupplier<R extends SearchContext>
     public static SearchSupplier<WebElement> webElement(By by, Pattern textPattern) {
         Predicate<WebElement> shouldHaveText = shouldHaveText(textPattern);
         ((TurnsRetortingOff<?>) shouldHaveText).turnReportingOff();
-
         var webElements = webElements(by);
         var search = new SearchSupplier<>(format("Web element located %s with text that matches the pattern '%s'", by, textPattern), webElements);
-        webElements.setCriteriaDescription(() -> ofNullable(search.condition).map(predicate -> {
-            if (isLoggable(predicate)) {
-                return format("%s, %s", predicate.toString(), shouldHaveText.toString());
-            }
-            return shouldHaveText.toString();
-        }).orElse(shouldHaveText.toString()));
+        webElements.setCriteriaDescription(criteriaDescription(search));
         return search.criteria(shouldHaveText);
     }
 
@@ -111,12 +108,7 @@ public final class SearchSupplier<R extends SearchContext>
     public static SearchSupplier<WebElement> webElement(By by) {
         var webElements = webElements(by);
         var search = new SearchSupplier<>(format("Web element located %s", by), webElements);
-        webElements.setCriteriaDescription(() -> ofNullable(search.condition).map(predicate -> {
-            if (isLoggable(predicate)) {
-                return predicate.toString();
-            }
-            return EMPTY;
-        }).orElse(EMPTY));
+        webElements.setCriteriaDescription(criteriaDescription(search));
         return search;
     }
 
@@ -137,12 +129,7 @@ public final class SearchSupplier<R extends SearchContext>
         ((TurnsRetortingOff<?>) labeledBy).turnReportingOff();
         var labeledWidgets = labeledWidgets(tClass);
         var search =  new SearchSupplier<>(format("%s '%s'", getWidgetName(tClass), join(",", labels)), labeledWidgets);
-        labeledWidgets.setCriteriaDescription(() -> ofNullable(search.condition).map(predicate -> {
-            if (isLoggable(predicate)) {
-                return format("%s, %s", predicate.toString(), labeledBy.toString());
-            }
-            return labeledBy.toString();
-        }).orElse(labeledBy.toString()));
+        labeledWidgets.setCriteriaDescription(criteriaDescription(search));
         return search.criteria(labeledBy);
     }
 
@@ -174,12 +161,7 @@ public final class SearchSupplier<R extends SearchContext>
     public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass) {
         var widgets = widgets(tClass);
         var search = new SearchSupplier<>(getWidgetName(tClass), widgets);
-        widgets.setCriteriaDescription(() -> ofNullable(search.condition).map(predicate -> {
-            if (isLoggable(predicate)) {
-                return predicate.toString();
-            }
-            return EMPTY;
-        }).orElse(EMPTY));
+        widgets.setCriteriaDescription(criteriaDescription(search));
         return search;
     }
 

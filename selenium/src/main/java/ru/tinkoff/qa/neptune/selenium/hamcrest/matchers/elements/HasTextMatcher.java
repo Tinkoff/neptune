@@ -69,10 +69,10 @@ public final class HasTextMatcher<T extends SearchContext> extends TypeSafeDiagn
         String text;
 
         if (WebElement.class.isAssignableFrom(clazz)) {
-            result = matcher.matches(text = WebElement.class.cast(item).getText());
+            result = matcher.matches(text = ((WebElement) item).getText());
         }
         else if (WrapsElement.class.isAssignableFrom(clazz)) {
-            var e = WrapsElement.class.cast(item).getWrappedElement();
+            var e = ((WrapsElement) item).getWrappedElement();
             if (e == null) {
                 mismatchDescription.appendText(format("Wrapped element is null. It is not possible to get text from the instance of %s.",
                         clazz.getName()));

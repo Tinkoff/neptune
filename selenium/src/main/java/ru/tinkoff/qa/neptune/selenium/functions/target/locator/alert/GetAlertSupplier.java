@@ -11,10 +11,10 @@ import java.time.Duration;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 import static java.lang.String.format;
 import static java.util.List.of;
-import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITING_ALERT_TIME_DURATION;
 
 public final class GetAlertSupplier extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<SeleniumStepContext, Alert, WebDriver, GetAlertSupplier>
@@ -28,12 +28,13 @@ public final class GetAlertSupplier extends SequentialGetStepSupplier.GetObjectC
     }
 
     private Supplier<NoAlertPresentException> noSuchAlert() {
-        return ofNullable(condition)
-                .map(predicate ->
-                        (Supplier<NoAlertPresentException>) () ->
-                                new NoAlertPresentException(
-                                        format("No alert which suits criteria '%s' has been found", predicate)))
-                .orElseGet(() -> () -> new NoAlertPresentException("No alert has been found"));
+        return () -> {
+            String description = getCriteriaDescription();
+            if (!isBlank(description)) {
+                return new NoAlertPresentException(format("No alert which suits criteria '%s' has been found", description));
+            }
+            return new NoAlertPresentException("No alert has been found");
+        };
     }
 
     @Override

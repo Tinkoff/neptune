@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.selenium.test.steps.tests.presence;
 
-import ru.tinkoff.qa.neptune.core.api.steps.GetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 import org.openqa.selenium.NoSuchElementException;

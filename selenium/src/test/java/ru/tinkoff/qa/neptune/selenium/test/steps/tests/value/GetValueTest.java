@@ -32,7 +32,8 @@ public class GetValueTest extends BaseWebDriverTest {
                         .getValue(ofThe(textField(INPUT_LABEL_TEXT1))),
                 is(INPUT_TEXT4));
 
-        assertThat(seleniumSteps.getValue(ofThe(textField(shouldHaveAttribute(ATTR8, VALUE4)))),
+        assertThat(seleniumSteps.getValue(ofThe(textField()
+                        .criteria(shouldHaveAttribute(ATTR8, VALUE4)))),
                 emptyOrNullString());
 
         assertThat(seleniumSteps

@@ -16,11 +16,11 @@ import java.time.Duration;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import static java.lang.String.join;
-import static java.util.Optional.ofNullable;
-import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.selenium.api.widget.Widget.getWidgetName;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindLabeledWidgets.labeledWidgets;
@@ -45,6 +45,16 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
         }
     }
 
+    private static Supplier<String> criteriaDescription(MultipleSearchSupplier<?> search) {
+        return () -> {
+            var criteria = search.getCriteriaDescription();
+            if (!isBlank(criteria)) {
+                return criteria;
+            }
+            return EMPTY;
+        };
+    }
+
     /**
      * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
      * The built function takes an instance of {@link SearchContext} for the searching
@@ -57,15 +67,9 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
     public static MultipleSearchSupplier<WebElement> webElements(By by, String text) {
         Predicate<WebElement> shouldHaveText = shouldHaveText(text);
         ((TurnsRetortingOff<?>) shouldHaveText).turnReportingOff();
-
         var webElements = FindWebElements.webElements(by);
         var search = new MultipleSearchSupplier<>(format("Web element located %s with the text '%s'", by, text), webElements);
-        webElements.setCriteriaDescription(() -> ofNullable(search.condition).map(predicate -> {
-            if (isLoggable(predicate)) {
-                return format("%s, %s", predicate.toString(), shouldHaveText.toString());
-            }
-            return shouldHaveText.toString();
-        }).orElse(shouldHaveText.toString()));
+        webElements.setCriteriaDescription(criteriaDescription(search));
         return search.criteria(shouldHaveText);
     }
 
@@ -81,15 +85,9 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
     public static MultipleSearchSupplier<WebElement> webElements(By by, Pattern textPattern) {
         Predicate<WebElement> shouldHaveText = shouldHaveText(textPattern);
         ((TurnsRetortingOff<?>) shouldHaveText).turnReportingOff();
-
         var webElements = FindWebElements.webElements(by);
         var search = new MultipleSearchSupplier<>(format("Web element located %s with text that matches the pattern '%s'", by, textPattern), webElements);
-        webElements.setCriteriaDescription(() -> ofNullable(search.condition).map(predicate -> {
-            if (isLoggable(predicate)) {
-                return format("%s, %s", predicate.toString(), shouldHaveText.toString());
-            }
-            return shouldHaveText.toString();
-        }).orElse(shouldHaveText.toString()));
+        webElements.setCriteriaDescription(criteriaDescription(search));
         return search.criteria(shouldHaveText);
     }
 
@@ -104,12 +102,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
     public static MultipleSearchSupplier<WebElement> webElements(By by) {
         var webElements = FindWebElements.webElements(by);
         var search = new MultipleSearchSupplier<>(format("List of web elements located %s", by), webElements);
-        webElements.setCriteriaDescription(() -> ofNullable(search.condition).map(predicate -> {
-            if (isLoggable(predicate)) {
-                return predicate.toString();
-            }
-            return EMPTY;
-        }).orElse(EMPTY));
+        webElements.setCriteriaDescription(criteriaDescription(search));
         return search;
     }
 
@@ -130,12 +123,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
         ((TurnsRetortingOff<?>) labeledBy).turnReportingOff();
         var labeledWidgets = labeledWidgets(tClass);
         var search =  new MultipleSearchSupplier<>(format("%s '%s'", getWidgetName(tClass), join(",", labels)), labeledWidgets);
-        labeledWidgets.setCriteriaDescription(() -> ofNullable(search.condition).map(predicate -> {
-            if (isLoggable(predicate)) {
-                return format("%s, %s", predicate.toString(), labeledBy.toString());
-            }
-            return labeledBy.toString();
-        }).orElse(labeledBy.toString()));
+        labeledWidgets.setCriteriaDescription(criteriaDescription(search));
         return search.criteria(labeledBy);
     }
 
@@ -167,12 +155,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
     public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass) {
         var widgets = FindWidgets.widgets(tClass);
         var search = new MultipleSearchSupplier<>(getWidgetName(tClass), widgets);
-        widgets.setCriteriaDescription(() -> ofNullable(search.condition).map(predicate -> {
-            if (isLoggable(predicate)) {
-                return predicate.toString();
-            }
-            return EMPTY;
-        }).orElse(EMPTY));
+        widgets.setCriteriaDescription(criteriaDescription(search));
         return search;
     }
 

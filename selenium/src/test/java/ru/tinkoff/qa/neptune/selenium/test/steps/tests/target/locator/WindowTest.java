@@ -63,7 +63,7 @@ public class WindowTest extends BaseWebDriverTest {
 
     @Test
     public void searchingWindowByIndexTest() {
-        Window foundWindow = seleniumSteps.get(window().byIndex(1));
+        Window foundWindow = seleniumSteps.get(window(1));
         assertThat(foundWindow.getCurrentUrl(), is(FACEBOOK.getUrl()));
         assertThat(foundWindow.getTitle(), is(FACEBOOK.getTitle()));
         assertThat(foundWindow.getPosition(), is(POSITION_2.getPosition()));
@@ -75,7 +75,8 @@ public class WindowTest extends BaseWebDriverTest {
     @Test
     public void searchingWindowByCriteriaTest() {
         Window foundWindow = seleniumSteps.get(window()
-                .onCondition(hasTitle(compile("^.*\\b(Github)\\b.*$")).and(hasUrl(compile("^.*\\b(github)\\b.*$")))));
+                .criteria(hasTitle(compile("^.*\\b(Github)\\b.*$")))
+                .criteria(hasUrl(compile("^.*\\b(github)\\b.*$"))));
         assertThat(foundWindow.getCurrentUrl(), is(GITHUB.getUrl()));
         assertThat(foundWindow.getTitle(), is(GITHUB.getTitle()));
         assertThat(foundWindow.getPosition(), is(POSITION_3.getPosition()));
@@ -86,8 +87,9 @@ public class WindowTest extends BaseWebDriverTest {
 
     @Test
     public void searchingWindowByIndexAndCriteriaTest() {
-        Window foundWindow = seleniumSteps.get(window().byIndex(2)
-                .onCondition(hasTitle(compile("^.*\\b(Github)\\b.*$")).and(hasUrl(compile("^.*\\b(github)\\b.*$")))));
+        Window foundWindow = seleniumSteps.get(window(2)
+                .criteria(hasTitle(compile("^.*\\b(Github)\\b.*$")))
+                .criteria(hasUrl(compile("^.*\\b(github)\\b.*$"))));
         assertThat(foundWindow.getCurrentUrl(), is(GITHUB.getUrl()));
         assertThat(foundWindow.getTitle(), is(GITHUB.getTitle()));
         assertThat(foundWindow.getPosition(), is(POSITION_3.getPosition()));
@@ -100,8 +102,10 @@ public class WindowTest extends BaseWebDriverTest {
     public void negativeTestWithTimeDefining() {
         try {
             setStartBenchMark();
-            seleniumSteps.get(window().byIndex(1).withTimeToGetWindow(FIVE_SECONDS)
-                    .onCondition(hasTitle(compile("^.*\\b(Github)\\b.*$")).and(hasUrl(compile("^.*\\b(github)\\b.*$")))));
+            seleniumSteps.get(window(1)
+                    .timeOut(FIVE_SECONDS)
+                    .criteria(hasTitle(compile("^.*\\b(Github)\\b.*$")))
+                    .criteria(hasUrl(compile("^.*\\b(github)\\b.*$"))));
         }
         catch (Exception e) {
             assertThat(e.getMessage(), containsString("Window/tab was not found by index 1 and by conditions " +
@@ -122,8 +126,9 @@ public class WindowTest extends BaseWebDriverTest {
             setProperty(WAITING_WINDOW_TIME_UNIT.getPropertyName(), "SECONDS");
             setProperty(WAITING_WINDOW_TIME_VALUE.getPropertyName(), "5");
             setStartBenchMark();
-            seleniumSteps.get(window().byIndex(1)
-                    .onCondition(hasTitle(compile("^.*\\b(Github)\\b.*$")).and(hasUrl(compile("^.*\\b(github)\\b.*$")))));
+            seleniumSteps.get(window(1)
+                    .criteria(hasTitle(compile("^.*\\b(Github)\\b.*$")))
+                    .criteria(hasUrl(compile("^.*\\b(github)\\b.*$"))));
         }
         catch (Exception e) {
             assertThat(e.getMessage(), containsString("Window/tab was not found by index 1 and by conditions " +
@@ -143,41 +148,45 @@ public class WindowTest extends BaseWebDriverTest {
 
     @Test(expectedExceptions = NoSuchWindowException.class)
     public void closeWindowBySearchCriteriaTest() {
-        seleniumSteps.perform(closeWindow(window().byIndex(2)
-                .onCondition(hasTitle(compile("^.*\\b(Github)\\b.*$")).and(hasUrl(compile("^.*\\b(github)\\b.*$"))))));
-        assertThat(seleniumSteps.get(window().byIndex(0)).isPresent(), is(true));
-        assertThat(seleniumSteps.get(window().byIndex(1)).isPresent(), is(true));
-        seleniumSteps.get(window().byIndex(2).withTimeToGetWindow(ofSeconds(1)));
+        seleniumSteps.perform(closeWindow(window(2)
+                .criteria(hasTitle(compile("^.*\\b(Github)\\b.*$")))
+                .criteria(hasUrl(compile("^.*\\b(github)\\b.*$")))));
+        assertThat(seleniumSteps.get(window(0)).isPresent(), is(true));
+        assertThat(seleniumSteps.get(window(1)).isPresent(), is(true));
+        seleniumSteps.get(window(2)
+                .timeOut(ofSeconds(1)));
         fail("Failure was expected");
     }
 
     @Test(expectedExceptions = NoSuchWindowException.class)
     public void closeFoundWindowTest() {
-        Window foundWindow = seleniumSteps.get(window().byIndex(2)
-                .onCondition(hasTitle(compile("^.*\\b(Github)\\b.*$")).and(hasUrl(compile("^.*\\b(github)\\b.*$")))));
+        Window foundWindow = seleniumSteps.get(window(2)
+                .criteria(hasTitle(compile("^.*\\b(Github)\\b.*$")))
+                .criteria(hasUrl(compile("^.*\\b(github)\\b.*$"))));
         seleniumSteps.perform(closeWindow(foundWindow));
 
         assertThat(foundWindow.isPresent(), is(false));
-        assertThat(seleniumSteps.get(window().byIndex(0)).isPresent(), is(true));
-        assertThat(seleniumSteps.get(window().byIndex(1)).isPresent(), is(true));
-        seleniumSteps.get(window().byIndex(2).withTimeToGetWindow(ofSeconds(1)));
+        assertThat(seleniumSteps.get(window(0)).isPresent(), is(true));
+        assertThat(seleniumSteps.get(window(1)).isPresent(), is(true));
+        seleniumSteps.get(window(2).timeOut(ofSeconds(1)));
         fail("Failure was expected");
     }
 
     @Test
     public void switchToWindowBySearchCriteriaTest() {
-        seleniumSteps.performSwitch(to(window().byIndex(2)
-                .onCondition(hasTitle(compile("^.*\\b(Github)\\b.*$")).and(hasUrl(compile("^.*\\b(github)\\b.*$"))))));
+        seleniumSteps.performSwitch(to(window(2)
+                .criteria(hasTitle(compile("^.*\\b(Github)\\b.*$")))
+                .criteria(hasUrl(compile("^.*\\b(github)\\b.*$")))));
         assertThat(seleniumSteps.getWrappedDriver().getWindowHandle(), is(HANDLE3.getHandle()));
         assertThat(seleniumSteps.getWrappedDriver().getCurrentUrl(), is(GITHUB.getUrl()));
         assertThat(seleniumSteps.getWrappedDriver().getTitle(), is(GITHUB.getTitle()));
 
-        seleniumSteps.performSwitch(to(window().byIndex(0)));
+        seleniumSteps.performSwitch(to(window(0)));
         assertThat(seleniumSteps.getWrappedDriver().getWindowHandle(), is(HANDLE1.getHandle()));
         assertThat(seleniumSteps.getWrappedDriver().getCurrentUrl(), is(GOOGLE.getUrl()));
         assertThat(seleniumSteps.getWrappedDriver().getTitle(), is(GOOGLE.getTitle()));
 
-        seleniumSteps.performSwitch(to(window().byIndex(1)));
+        seleniumSteps.performSwitch(to(window(1)));
         assertThat(seleniumSteps.getWrappedDriver().getWindowHandle(), is(HANDLE2.getHandle()));
         assertThat(seleniumSteps.getWrappedDriver().getCurrentUrl(), is(FACEBOOK.getUrl()));
         assertThat(seleniumSteps.getWrappedDriver().getTitle(), is(FACEBOOK.getTitle()));
@@ -185,10 +194,12 @@ public class WindowTest extends BaseWebDriverTest {
 
     @Test(dependsOnMethods = "switchToWindowBySearchCriteriaTest")
     public void switchToWindowBySearchCriteriaChainedTest() {
-        seleniumSteps.performSwitch(to(window().byIndex(2)
-                .onCondition(hasTitle(compile("^.*\\b(Github)\\b.*$")).and(hasUrl(compile("^.*\\b(github)\\b.*$"))))))
-                .performSwitch(to(window().byIndex(1)))
-                .performSwitch(to(window().byIndex(0)));
+        seleniumSteps.performSwitch(to(window(2)
+                .criteria(hasTitle(compile("^.*\\b(Github)\\b.*$")))
+                .criteria(hasUrl(compile("^.*\\b(github)\\b.*$")))))
+
+                .performSwitch(to(window(1)))
+                .performSwitch(to(window(0)));
 
         assertThat(seleniumSteps.getWrappedDriver().getWindowHandle(), is(HANDLE1.getHandle()));
         assertThat(seleniumSteps.getWrappedDriver().getCurrentUrl(), is(GOOGLE.getUrl()));
@@ -198,10 +209,11 @@ public class WindowTest extends BaseWebDriverTest {
     @Test
     public void switchToWindowTest() {
 
-        Window window = seleniumSteps.get(window().byIndex(2)
-                .onCondition(hasTitle(compile("^.*\\b(Github)\\b.*$")).and(hasUrl(compile("^.*\\b(github)\\b.*$")))));
-        Window window2 = seleniumSteps.get(window().byIndex(0));
-        Window window3 = seleniumSteps.get(window().byIndex(1));
+        Window window = seleniumSteps.get(window(2)
+                .criteria(hasTitle(compile("^.*\\b(Github)\\b.*$")))
+                .criteria(hasUrl(compile("^.*\\b(github)\\b.*$"))));
+        Window window2 = seleniumSteps.get(window(0));
+        Window window3 = seleniumSteps.get(window(1));
 
         seleniumSteps.performSwitch(to(window));
         assertThat(seleniumSteps.getWrappedDriver().getWindowHandle(), is(HANDLE3.getHandle()));
@@ -221,10 +233,11 @@ public class WindowTest extends BaseWebDriverTest {
 
     @Test(dependsOnMethods = "switchToWindowTest")
     public void switchToChainedTest() {
-        Window window = seleniumSteps.get(window().byIndex(2)
-                .onCondition(hasTitle(compile("^.*\\b(Github)\\b.*$")).and(hasUrl(compile("^.*\\b(github)\\b.*$")))));
-        Window window2 = seleniumSteps.get(window().byIndex(0));
-        Window window3 = seleniumSteps.get(window().byIndex(1));
+        Window window = seleniumSteps.get(window(2)
+                .criteria(hasTitle(compile("^.*\\b(Github)\\b.*$")))
+                .criteria(hasUrl(compile("^.*\\b(github)\\b.*$"))));
+        Window window2 = seleniumSteps.get(window(0));
+        Window window3 = seleniumSteps.get(window(1));
 
         seleniumSteps.performSwitch(to(window))
                 .performSwitch(to(window3))
@@ -237,16 +250,16 @@ public class WindowTest extends BaseWebDriverTest {
 
     @Test
     public void sizeOfWindowBySearchingTest() {
-        seleniumSteps.perform(setSizeOf(window().byIndex(1), new Dimension(1001, 1002)));
-        assertThat(seleniumSteps.get(sizeOf(window().byIndex(1))), equalTo(new Dimension(1001, 1002)));
+        seleniumSteps.perform(setSizeOf(window(1), new Dimension(1001, 1002)));
+        assertThat(seleniumSteps.get(sizeOf(window(1))), equalTo(new Dimension(1001, 1002)));
     }
 
     @Test
     public void sizeOfWindowTest() {
-        Window window = seleniumSteps.get(window().byIndex(2));
+        Window window = seleniumSteps.get(window(2));
         seleniumSteps.perform(setSizeOf(window, new Dimension(1001, 1002)));
         assertThat(window.getSize(), equalTo(new Dimension(1001, 1002)));
-        assertThat(seleniumSteps.get(sizeOf(window().byIndex(2))), equalTo(new Dimension(1001, 1002)));
+        assertThat(seleniumSteps.get(sizeOf(window(2))), equalTo(new Dimension(1001, 1002)));
     }
 
     @Test
@@ -259,16 +272,16 @@ public class WindowTest extends BaseWebDriverTest {
 
     @Test
     public void positionOfWindowBySearchingTest() {
-        seleniumSteps.perform(setPositionOf(window().byIndex(1), new Point(1001, 1002)));
-        assertThat(seleniumSteps.get(positionOf(window().byIndex(1))), equalTo(new Point(1001, 1002)));
+        seleniumSteps.perform(setPositionOf(window(1), new Point(1001, 1002)));
+        assertThat(seleniumSteps.get(positionOf(window(1))), equalTo(new Point(1001, 1002)));
     }
 
     @Test
     public void positionOfWindowTest() {
-        Window window = seleniumSteps.get(window().byIndex(2));
+        Window window = seleniumSteps.get(window(2));
         seleniumSteps.perform(setPositionOf(window, new Point(1001, 1002)));
         assertThat(window.getPosition(), equalTo(new Point(1001, 1002)));
-        assertThat(seleniumSteps.get(positionOf(window().byIndex(2))), equalTo(new Point(1001, 1002)));
+        assertThat(seleniumSteps.get(positionOf(window(2))), equalTo(new Point(1001, 1002)));
     }
 
     @Test
@@ -282,15 +295,15 @@ public class WindowTest extends BaseWebDriverTest {
     @Test
     public void getWindowTitleBySearchingTest() {
         assertThat(seleniumSteps.get(titleOf(window())), is(GOOGLE.getTitle()));
-        assertThat(seleniumSteps.get(titleOf(window().byIndex(1))), is(FACEBOOK.getTitle()));
-        assertThat(seleniumSteps.get(titleOf(window().byIndex(2))), is(GITHUB.getTitle()));
+        assertThat(seleniumSteps.get(titleOf(window(1))), is(FACEBOOK.getTitle()));
+        assertThat(seleniumSteps.get(titleOf(window(2))), is(GITHUB.getTitle()));
     }
 
     @Test
     public void getWindowTitleTest() {
         Window window = seleniumSteps.get(window());
-        Window window2 = seleniumSteps.get(window().byIndex(1));
-        Window window3 = seleniumSteps.get(window().byIndex(2));
+        Window window2 = seleniumSteps.get(window(1));
+        Window window3 = seleniumSteps.get(window(2));
 
         assertThat(seleniumSteps.get(titleOf(window)), is(GOOGLE.getTitle()));
         assertThat(seleniumSteps.get(titleOf(window2)), is(FACEBOOK.getTitle()));

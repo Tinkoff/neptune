@@ -47,15 +47,16 @@ public final class GetSeleniumCookieSupplier extends SequentialGetStepSupplier
     }
 
     @Override
-    protected GetSeleniumCookieSupplier criteria(Predicate<? super Cookie> condition) {
+    public GetSeleniumCookieSupplier criteria(Predicate<? super Cookie> condition) {
         return super.criteria(condition);
     }
 
-    protected GetSeleniumCookieSupplier criteria(String conditionDescription, Predicate<? super Cookie> condition) {
+    public GetSeleniumCookieSupplier criteria(String conditionDescription, Predicate<? super Cookie> condition) {
         return super.criteria(conditionDescription, condition);
     }
 
-    Predicate<Cookie> getCondition() {
-        return condition;
+    @Override
+    protected String getCriteriaDescription() {
+        return super.getCriteriaDescription();
     }
 }

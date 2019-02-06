@@ -11,7 +11,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.Objects.nonNull;
-import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 
 /**
@@ -31,9 +31,13 @@ public abstract class RemoveCookiesActionSupplier<T> extends SequentialActionSup
      */
     public static RemoveCookiesActionSupplier<SeleniumStepContext> deleteCookies(GetSeleniumCookieSupplier getCookies) {
         checkArgument(nonNull(getCookies), "The way how to get cookies to delete is not defined");
-        var description = ofNullable(getCookies.getCondition())
-                .map(cookiePredicate -> format("Delete from browser's cookie jar. Cookies: %s", getCookies))
-                .orElse("Delete all the cookies from browser's cookie jar");
+        String description;
+        if (!isBlank(getCookies.getCriteriaDescription())) {
+            description = format("Delete %s from browser's cookie jar", getCookies);
+        }
+        else {
+            description = "Delete all the cookies from browser's cookie jar";
+        }
 
         return new RemoveCookiesActionSupplier<SeleniumStepContext>(description) {
             @Override

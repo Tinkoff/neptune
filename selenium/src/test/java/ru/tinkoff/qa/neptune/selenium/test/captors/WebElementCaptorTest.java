@@ -62,7 +62,8 @@ public class WebElementCaptorTest extends BaseCaptorTest {
     @Test
     public void negativeTestOfScreenshotFromElement() {
         try {
-            seleniumSteps.find(webElement(tagName("fakeTag"), ofSeconds(1)));
+            seleniumSteps.find(webElement(tagName("fakeTag"))
+                    .timeOut(ofSeconds(1)));
         }
         catch (NoSuchElementException ignored) {
         }
@@ -73,14 +74,16 @@ public class WebElementCaptorTest extends BaseCaptorTest {
 
     @Test
     public void negativeTestOfScreenshotFromElements() {
-        seleniumSteps.find(webElements(tagName("fakeTag"), ofSeconds(1)));
+        seleniumSteps.find(webElements(tagName("fakeTag"))
+                .timeOut(ofSeconds(1)));
         assertThat(INJECTED.size(), is(0));
     }
 
     @Test
     public void negativeTestOfScreenshotFromWidget() {
         try {
-            seleniumSteps.find(link("fake link", ofSeconds(1)));
+            seleniumSteps.find(link("fake link")
+                    .timeOut(ofSeconds(1)));
         }
         catch (NoSuchElementException ignored) {
         }
@@ -91,7 +94,8 @@ public class WebElementCaptorTest extends BaseCaptorTest {
 
     @Test
     public void negativeTestOfScreenshotFromWidgets() {
-        seleniumSteps.find(links("fake link", ofSeconds(1)));
+        seleniumSteps.find(links("fake link")
+                .timeOut(ofSeconds(1)));
         assertThat(INJECTED.size(), is(0));
     }
 

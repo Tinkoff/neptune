@@ -26,6 +26,8 @@ import static java.lang.String.valueOf;
 import static java.util.List.copyOf;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromArray.getFromArray;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromIterable.getFromIterable;
@@ -48,18 +50,18 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends SequentialGetStepSupplier<T, R, M, P, THIS>> implements Cloneable,
         Supplier<Function<T, R>>, IgnoresThrowable<THIS>, MakesCapturesOnFinishing<THIS> {
 
-    protected final StringBuilder description;
+    private final String description;
     private final Set<Class<? extends Throwable>> ignored = new HashSet<>();
     private final List<CaptorFilterByProducedType> captorFilters = new ArrayList<>();
 
-    protected Predicate<P> condition;
+    Predicate<P> condition;
     private Object from;
     Duration timeToGet;
     Duration sleepingTime;
     Supplier<? extends RuntimeException> exceptionSupplier;
 
     protected SequentialGetStepSupplier(String description) {
-        this.description = new StringBuilder(description);
+        this.description = description;
         MakesCapturesOnFinishing.makeCaptureSettings(this);
     }
 
@@ -356,10 +358,11 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
     @Override
     public String toString() {
-        if (nonNull(condition) && isLoggable(condition)) {
-            return format("%s [Criteria: %s]", description.toString(), condition).trim();
+        var criteriaDescription = getCriteriaDescription();
+        if (!isBlank(criteriaDescription)) {
+            return format("%s [Criteria: %s]", description, criteriaDescription).trim();
         }
-        return description.toString();
+        return description;
     }
 
     @Override
@@ -372,6 +375,33 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     }
 
     abstract Function<M, R> getEndFunction();
+
+    /**
+     * Returns string description of the defined criteria. If there is some description and {@link Predicate#toString()}
+     * returns some human-readable value then method returns this value. When criteria is defined then it returns
+     * {@code '<not described condition>'}. When criteria is not defined then an empty string is returned.
+     * @see StoryWriter#condition(String, Predicate)
+     * @see #criteria(Predicate)
+     * @see #criteria(String, Predicate)
+     * @see #criteria(ConditionConcatenation, Predicate)
+     * @see #criteria(ConditionConcatenation, String, Predicate)
+     *
+     * @return string description of the defined criteria
+     */
+    protected String getCriteriaDescription() {
+        return ofNullable(condition)
+                .map(pPredicate -> {
+                    if (Condition.DescribedCondition.DescribedCondition.class.isAssignableFrom(pPredicate.getClass())) {
+                        return pPredicate.toString();
+                    }
+
+                    if (isLoggable(pPredicate)) {
+                        return pPredicate.toString();
+                    }
+
+                    return "<not described condition>";
+                }).orElse(EMPTY);
+    }
 
     private static abstract class PrivateGetObjectStepSupplier<T, R, M, THIS extends PrivateGetObjectStepSupplier<T, R, M, THIS>>
             extends SequentialGetStepSupplier<T, R, M, R, THIS> {

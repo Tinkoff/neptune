@@ -32,13 +32,13 @@ public final class IsElementVisibleMatcher extends TypeSafeDiagnosingMatcher<Sea
         var clazz = item.getClass();
 
         if (WebElement.class.isAssignableFrom(clazz)) {
-            result = WebElement.class.cast(item).isDisplayed();
+            result = ((WebElement) item).isDisplayed();
         }
         else if (IsVisible.class.isAssignableFrom(clazz)){
-            result = IsVisible.class.cast(item).isVisible();
+            result = ((IsVisible) item).isVisible();
         }
         else if (WrapsElement.class.isAssignableFrom(clazz)) {
-            var e = WrapsElement.class.cast(item).getWrappedElement();
+            var e = ((WrapsElement) item).getWrappedElement();
             if (e == null) {
                 mismatchDescription.appendText(format("Wrapped element is null. It is not possible to get visibility from an instance of %s.",
                         clazz.getName()));

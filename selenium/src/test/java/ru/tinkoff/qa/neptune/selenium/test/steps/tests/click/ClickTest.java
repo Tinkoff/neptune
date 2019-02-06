@@ -29,12 +29,13 @@ public class ClickTest extends BaseWebDriverTest {
         seleniumSteps.click(on(button()));
         assertThat(COMMON_BUTTON1.getClickCount(), is(1));
 
-        seleniumSteps.click(on(button(of(BUTTON_LABEL_TEXT8, BUTTON_LABEL_TEXT12),
-                shouldHaveAttribute(ATTR6, VALUE14))));
+        seleniumSteps.click(on(button(of(BUTTON_LABEL_TEXT8, BUTTON_LABEL_TEXT12))
+                .criteria(shouldHaveAttribute(ATTR6, VALUE14))));
         assertThat(CUSTOM_LABELED_BUTTON4.getClickCount(), is(1));
 
         seleniumSteps.click(on(button(BUTTON_LABEL_TEXT6)
-                .foundFrom(webElement(className(CELL_CLASS), CELL_TEXT81, shouldContainElements(buttons(ofMillis(5)))))));
+                .foundFrom(webElement(className(CELL_CLASS), CELL_TEXT81)
+                        .criteria(shouldContainElements(buttons().timeOut(ofMillis(5)))))));
         assertThat(CUSTOM_LABELED_BUTTON2.getClickCount(), is(1));
     }
 
@@ -45,7 +46,9 @@ public class ClickTest extends BaseWebDriverTest {
         assertThat(CUSTOM_LABELED_BUTTON1.getClickCount(), is(1));
 
         button = seleniumSteps.find(button(BUTTON_LABEL_TEXT5)
-                .foundFrom(webElement(className(CELL_CLASS), CELL_TEXT73, shouldContainElements(buttons(ofMillis(5))))));
+                .foundFrom(webElement(className(CELL_CLASS), CELL_TEXT73)
+                        .criteria(shouldContainElements(buttons()
+                        .timeOut(ofMillis(5))))));
         seleniumSteps.click(on(button));
         assertThat(CUSTOM_LABELED_BUTTON1.getClickCount(), is(2));
     }
@@ -55,8 +58,10 @@ public class ClickTest extends BaseWebDriverTest {
         seleniumSteps.click(on(webElement(CHAINED_FIND_TAB)));
         assertThat(COMMON_LABELED_TAB1.getClickCount(), is(1));
 
-        seleniumSteps.click(on(webElement(className(TAB_CLASS), shouldHaveAttribute(ATTR20, VALUE20)
-                .and(shouldContainElements(webElements(CUSTOM_LABEL_BY, TAB_TEXT9, ofMillis(5)))))));
+        seleniumSteps.click(on(webElement(className(TAB_CLASS))
+                .criteria(shouldHaveAttribute(ATTR20, VALUE20))
+                .criteria(shouldContainElements(webElements(CUSTOM_LABEL_BY, TAB_TEXT9)
+                        .timeOut(ofMillis(5))))));
         assertThat(CUSTOM_LABELED_TAB1.getClickCount(), is(1));
 
         seleniumSteps.click(on(webElement(tagName(TEXT_AREA_TAG)).foundFrom(table(TABLE_LABEL_TEXT10))));
@@ -65,9 +70,10 @@ public class ClickTest extends BaseWebDriverTest {
 
     @Test
     public void clickOnWebElementDirectlyTest() {
-        WebElement webElement = seleniumSteps.find(webElement(className(TAB_CLASS),
-                shouldHaveAttribute(ATTR20, VALUE1)
-                        .and(shouldContainElements(webElements(CUSTOM_LABEL_BY, TAB_TEXT10, ofMillis(5))))));
+        WebElement webElement = seleniumSteps.find(webElement(className(TAB_CLASS))
+                .criteria(shouldHaveAttribute(ATTR20, VALUE1))
+                .criteria(shouldContainElements(webElements(CUSTOM_LABEL_BY, TAB_TEXT10)
+                        .timeOut(ofMillis(5)))));
         seleniumSteps.click(on(webElement));
         assertThat(CUSTOM_LABELED_TAB2.getClickCount(), is(1));
     }

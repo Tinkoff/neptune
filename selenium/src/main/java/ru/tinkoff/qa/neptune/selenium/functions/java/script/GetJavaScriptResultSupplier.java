@@ -206,11 +206,11 @@ public final class GetJavaScriptResultSupplier extends SequentialGetStepSupplier
     }
 
     @Override
-    protected GetJavaScriptResultSupplier criteria(Predicate<? super Object> condition) {
+    public GetJavaScriptResultSupplier criteria(Predicate<? super Object> condition) {
         return super.criteria(condition);
     }
 
-    protected GetJavaScriptResultSupplier criteria(String conditionDescription, Predicate<? super Object> condition) {
+    public GetJavaScriptResultSupplier criteria(String conditionDescription, Predicate<? super Object> condition) {
         return super.criteria(conditionDescription, condition);
     }
 

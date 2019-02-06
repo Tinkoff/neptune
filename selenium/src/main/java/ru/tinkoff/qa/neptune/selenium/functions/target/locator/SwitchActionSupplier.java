@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator;
 
-import ru.tinkoff.qa.neptune.core.api.steps.GetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import static java.lang.String.format;
@@ -21,8 +21,8 @@ public final class SwitchActionSupplier extends SequentialActionSupplier<Seleniu
      * @param to is how to get some target locator
      * @return built `switch to` action
      */
-    public static SwitchActionSupplier to(TargetLocatorSupplier<?> to) {
-        return new SwitchActionSupplier(to.toString()).performOn((GetStepSupplier) to);
+    public static SwitchActionSupplier to(TargetLocatorSupplier<? extends Object> to) {
+        return new SwitchActionSupplier(to.toString()).performOn((SequentialGetStepSupplier<SeleniumStepContext, Object, ?, ?, ?>) to);
     }
 
     /**

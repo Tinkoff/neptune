@@ -31,9 +31,9 @@ public class WebDriverCaptorTest extends BaseCaptorTest {
     @Test
     public void clickOnElementNegativeTest() {
         try {
-            seleniumSteps.click(on(webElement(tagName("fakeTag"), ofSeconds(1))));
-        }
-        catch (NoSuchElementException ignored) {
+            seleniumSteps.click(on(webElement(tagName("fakeTag"))
+                    .timeOut(ofSeconds(1))));
+        } catch (NoSuchElementException ignored) {
 
         }
         assertThat(INJECTED.size(), is(2));
@@ -54,7 +54,8 @@ public class WebDriverCaptorTest extends BaseCaptorTest {
     @Test
     public void clickOnOWidgetNegativeTest() {
         try {
-            seleniumSteps.click(on(link("Fake link", ofSeconds(1))));
+            seleniumSteps.click(on(link("Fake link")
+                    .timeOut(ofSeconds(1))));
         } catch (NoSuchElementException ignored) {
 
         }
@@ -76,9 +77,10 @@ public class WebDriverCaptorTest extends BaseCaptorTest {
     @Test
     public void editOnOWidgetNegativeTest() {
         try {
-            seleniumSteps.edit(valueOfThe(flag("Fake flag", ofSeconds(1)), true));
-        }
-        catch (NoSuchElementException ignored) {
+            seleniumSteps.edit(valueOfThe(flag("Fake flag")
+                            .timeOut(ofSeconds(1)),
+                    true));
+        } catch (NoSuchElementException ignored) {
 
         }
         assertThat(INJECTED.size(), is(2));
