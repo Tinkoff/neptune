@@ -233,8 +233,8 @@ public class GetValueTest extends BaseWebDriverTest {
 
         TableRow row = seleniumSteps.find(tableRow()
                 .criteria(shouldContainElements(textFields()
-                        .timeOut(ofMillis(5))
-                        .foundFrom(table(TABLE_LABEL_TEXT5, TABLE_LABEL_TEXT9)))));
+                        .timeOut(ofMillis(5))))
+                .foundFrom(table(TABLE_LABEL_TEXT5, TABLE_LABEL_TEXT9)));
 
         assertThat(seleniumSteps.getValue(ofThe(row)),
                 contains(CELL_TEXT76, CELL_TEXT77, CELL_TEXT78));
