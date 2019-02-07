@@ -6,37 +6,36 @@ import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
 import java.lang.reflect.Array;
 import java.util.function.Function;
 
-import static java.util.List.of;
+import static java.util.List.copyOf;
 import static java.util.Objects.nonNull;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 @SuppressWarnings("unchecked")
 public class Presence<T extends GetStepContext<T>> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<T, Boolean, Object, Presence<T>> {
 
-    private static final Function<Object, Boolean> PRESENCE = o -> ofNullable(o)
-            .map(o1 -> {
-                Class<?> clazz = o1.getClass();
-
-                if (Boolean.class.isAssignableFrom(clazz)) {
-                    return (Boolean) o;
-                }
-
-                if (Iterable.class.isAssignableFrom(clazz)) {
-                    return Iterables.size((Iterable) o1) > 0;
-                }
-
-                if (clazz.isArray()) {
-                    return Array.getLength(o1) > 0;
-                }
-                return true;
-            })
-            .orElse(false);
-
     protected Presence(Function<T, ?> toBePresent) {
-        super(format("Presence of %s", toBePresent), PRESENCE);
+        super(format("Presence of [%s]", toBePresent), o -> ofNullable(o)
+                .map(o1 -> {
+                    Class<?> clazz = o1.getClass();
+
+                    if (Boolean.class.isAssignableFrom(clazz)) {
+                        return (Boolean) o;
+                    }
+
+                    if (Iterable.class.isAssignableFrom(clazz)) {
+                        return Iterables.size((Iterable) o1) > 0;
+                    }
+
+                    if (clazz.isArray()) {
+                        return Array.getLength(o1) > 0;
+                    }
+                    return true;
+                })
+                .orElse(false));
         from(checkFunction(toBePresent));
     }
 
@@ -54,7 +53,20 @@ public class Presence<T extends GetStepContext<T>> extends SequentialGetStepSupp
         if (StepFunction.class.isAssignableFrom(toBePresent.getClass())) {
             return toBePresent;
         }
-        return StoryWriter.toGet(toBePresent.toString(), toBePresent).addIgnored(of(RuntimeException.class));
+        return toGet(toBePresent.toString(), toBePresent);
+    }
+
+    protected Function<T, Object> preparePreFunction() {
+        var preFunction = super.preparePreFunction();
+        if (StepFunction.class.isAssignableFrom(preFunction.getClass())) {
+            ((StepFunction) preFunction).addIgnored(copyOf(ignored));
+        }
+        return ((Function<Object, Object>) o -> ofNullable(o).orElse(false))
+                .compose(preFunction);
+    }
+
+    protected String prepareStepDescription() {
+        return toString();
     }
 
     /**

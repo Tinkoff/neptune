@@ -51,7 +51,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         Supplier<Function<T, R>>, IgnoresThrowable<THIS>, MakesCapturesOnFinishing<THIS> {
 
     private final String description;
-    private final Set<Class<? extends Throwable>> ignored = new HashSet<>();
+    final Set<Class<? extends Throwable>> ignored = new HashSet<>();
     private final List<CaptorFilterByProducedType> captorFilters = new ArrayList<>();
 
     Predicate<P> condition;
@@ -307,7 +307,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     public Function<T, R> get() {
         checkArgument(nonNull(from), "FROM-object is not defined");
         var composeWith = preparePreFunction();
-        String resultedDescription = prepareDescription();
+        String resultedDescription = prepareStepDescription();
         var endFunction = getEndFunction();
         checkNotNull(endFunction);
 
@@ -327,7 +327,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         return toBeReturned;
     }
 
-    private String prepareDescription() {
+    protected String prepareStepDescription() {
         var fromClazz = from.getClass();
         if (isLoggable(from)) {
             if (Function.class.isAssignableFrom(fromClazz)) {
@@ -343,7 +343,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         return toString();
     }
 
-    private Function<T, M> preparePreFunction() {
+    protected Function<T, M> preparePreFunction() {
         var fromClazz = from.getClass();
         if (Function.class.isAssignableFrom(fromClazz)) {
             return (Function<T, M>) from;

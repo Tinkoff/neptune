@@ -93,7 +93,7 @@ public class FrameTest extends BaseWebDriverTest {
                     .timeOut(FIVE_SECONDS));
         }
         catch (Exception e) {
-            assertThat(e.getMessage(), containsString("Can't find/switch to the frame index 100"));
+            assertThat(e.getMessage(), containsString("Can't find/switch to the frame by index 100"));
             throw e;
         }
         finally {
@@ -112,7 +112,7 @@ public class FrameTest extends BaseWebDriverTest {
             seleniumSteps.get(frame(index(100)));
         }
         catch (Exception e) {
-            assertThat(e.getMessage(), containsString("Can't find/switch to the frame index 100"));
+            assertThat(e.getMessage(), containsString("Can't find/switch to the frame by index 100"));
             throw e;
         }
         finally {
@@ -188,7 +188,7 @@ public class FrameTest extends BaseWebDriverTest {
                     .timeOut(FIVE_SECONDS));
         }
         catch (Exception e) {
-            assertThat(e.getMessage(), containsString("Can't find/switch to the frame name or id some name"));
+            assertThat(e.getMessage(), containsString("Can't find/switch to the frame by name or id some name"));
             throw e;
         }
         finally {
@@ -207,7 +207,7 @@ public class FrameTest extends BaseWebDriverTest {
             seleniumSteps.get(frame(nameOrId("some name")));
         }
         catch (Exception e) {
-            assertThat(e.getMessage(), containsString("Can't find/switch to the frame name or id some name"));
+            assertThat(e.getMessage(), containsString("Can't find/switch to the frame by name or id some name"));
             throw e;
         }
         finally {

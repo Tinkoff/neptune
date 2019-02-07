@@ -10,7 +10,6 @@ import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.*;
 import org.openqa.selenium.*;
 
 import java.time.Duration;
-import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -37,6 +36,7 @@ public final class SearchSupplier<R extends SearchContext>
 
     private <S extends Iterable<R>> SearchSupplier(String description, Function<SearchContext, S> originalFunction) {
         super(description, originalFunction);
+        from(searchContext -> searchContext);
         timeOut(ELEMENT_WAITING_DURATION.get());
         addIgnored(of(StaleElementReferenceException.class));
         if (FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.get()) {
@@ -124,29 +124,12 @@ public final class SearchSupplier<R extends SearchContext>
      * @param <T> the type of widget that should be found
      * @return an instance of {@link SearchSupplier}
      */
-    public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, List<String> labels) {
-        Predicate<T> labeledBy = shouldBeLabeledBy(labels.toArray(new String[]{}));
-        ((TurnsRetortingOff<?>) labeledBy).turnReportingOff();
+    public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, String... labels) {
+        Predicate<T> labeledBy = shouldBeLabeledBy(labels);
         var labeledWidgets = labeledWidgets(tClass);
         var search =  new SearchSupplier<>(format("%s '%s'", getWidgetName(tClass), join(",", labels)), labeledWidgets);
         labeledWidgets.setCriteriaDescription(criteriaDescription(search));
         return search.criteria(labeledBy);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
-     * The built function takes an instance of {@link SearchContext} for the searching
-     * and returns some {@link Widget} found from the input value.
-     *
-     * @param tClass is a class of an object to be returned. tClass should have at
-     *               least one not abstract subclass that implements {@link Labeled} or be that class.
-     * @param label (text of some element or attribute inside or beside the widget) is used to
-     *               find the widget.
-     * @param <T> the type of widget that should be found
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, String label) {
-        return widget(tClass, of(label));
     }
 
     /**
@@ -185,21 +168,8 @@ public final class SearchSupplier<R extends SearchContext>
      *               find a button.
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Button> button(List<String> labels) {
+    public static SearchSupplier<Button> button(String... labels) {
         return widget(Button.class, labels);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
-     * The built function takes an instance of {@link SearchContext} for the searching
-     * and returns some button.
-     *
-     * @param label (text of some element or attribute inside or beside the button) is used to
-     *               find a button.
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Button> button(String label) {
-        return widget(Button.class, label);
     }
 
     /**
@@ -222,21 +192,8 @@ public final class SearchSupplier<R extends SearchContext>
      *               find a flag.
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Flag> flag(List<String> labels) {
+    public static SearchSupplier<Flag> flag(String... labels) {
         return widget(Flag.class, labels);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
-     * The built function takes an instance of {@link SearchContext} for the searching
-     * and returns some flag.
-     *
-     * @param label (text of some element or attribute inside or beside the flag) is used to
-     *               find a flag.
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag> flag(String label) {
-        return widget(Flag.class, label);
     }
 
     /**
@@ -259,21 +216,8 @@ public final class SearchSupplier<R extends SearchContext>
      *               find a check box.
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Flag.CheckBox> checkbox(List<String> labels) {
+    public static SearchSupplier<Flag.CheckBox> checkbox(String... labels) {
         return widget(Flag.CheckBox.class, labels);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
-     * The built function takes an instance of {@link SearchContext} for the searching
-     * and returns some check box.
-     *
-     * @param label (text of some element or attribute inside or beside the check box) is used to
-     *               find a check box.
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag.CheckBox> checkbox(String label) {
-        return widget(Flag.CheckBox.class, label);
     }
 
     /**
@@ -296,21 +240,8 @@ public final class SearchSupplier<R extends SearchContext>
      *               find a radio button.
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Flag.RadioButton> radioButton(List<String> labels) {
+    public static SearchSupplier<Flag.RadioButton> radioButton(String... labels) {
         return widget(Flag.RadioButton.class, labels);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
-     * The built function takes an instance of {@link SearchContext} for the searching
-     * and returns some radio button.
-     *
-     * @param label (text of some element or attribute inside or beside the radio button) is used to
-     *               find a radio button.
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag.RadioButton> radioButton(String label) {
-        return widget(Flag.RadioButton.class, label);
     }
 
     /**
@@ -333,21 +264,8 @@ public final class SearchSupplier<R extends SearchContext>
      *               find a link.
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Link> link(List<String> labels) {
+    public static SearchSupplier<Link> link(String... labels) {
         return widget(Link.class, labels);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
-     * The built function takes an instance of {@link SearchContext} for the searching
-     * and returns some link.
-     *
-     * @param label (text of some element or attribute inside or beside the link) is used to
-     *               find a link.
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Link> link(String label) {
-        return widget(Link.class, label);
     }
 
     /**
@@ -370,21 +288,8 @@ public final class SearchSupplier<R extends SearchContext>
      *               find a select.
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Select> select(List<String> labels) {
+    public static SearchSupplier<Select> select(String... labels) {
         return widget(Select.class, labels);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
-     * The built function takes an instance of {@link SearchContext} for the searching
-     * and returns some select.
-     *
-     * @param label (text of some element or attribute inside or beside the select) is used to
-     *               find a select.
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Select> select(String label) {
-        return widget(Select.class, label);
     }
 
     /**
@@ -407,21 +312,8 @@ public final class SearchSupplier<R extends SearchContext>
      *               find a tab.
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Tab> tab(List<String> labels) {
+    public static SearchSupplier<Tab> tab(String... labels) {
         return widget(Tab.class, labels);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
-     * The built function takes an instance of {@link SearchContext} for the searching
-     * and returns some tab.
-     *
-     * @param label (text of some element or attribute inside or beside the tab) is used to
-     *               find a tab.
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Tab> tab(String label) {
-        return widget(Tab.class, label);
     }
 
     /**
@@ -444,21 +336,8 @@ public final class SearchSupplier<R extends SearchContext>
      *               find a text field.
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<TextField> textField(List<String> labels) {
+    public static SearchSupplier<TextField> textField(String... labels) {
         return widget(TextField.class, labels);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
-     * The built function takes an instance of {@link SearchContext} for the searching
-     * and returns some text field.
-     *
-     * @param label (text of some element or attribute inside or beside the text field) is used to
-     *               find a text field.
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<TextField> textField(String label) {
-        return widget(TextField.class, label);
     }
 
     /**
@@ -470,21 +349,8 @@ public final class SearchSupplier<R extends SearchContext>
      *               find a table.
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Table> table(List<String> labels) {
+    public static SearchSupplier<Table> table(String... labels) {
         return widget(Table.class, labels);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
-     * The built function takes an instance of {@link SearchContext} for the searching
-     * and returns some table.
-     *
-     * @param label (text of some element or attribute inside or beside the table) is used to
-     *               find a table.
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Table> table(String label) {
-        return widget(Table.class, label);
     }
 
     /**
@@ -554,7 +420,7 @@ public final class SearchSupplier<R extends SearchContext>
     }
 
     /**
-     * Constructs the chained searching from some instance of {@link SearchContext} that is already found.
+     * Constructs the chained searching for some element.
      *
      * @param from is a parent element.
      * @param <Q> is a type of the parent element.

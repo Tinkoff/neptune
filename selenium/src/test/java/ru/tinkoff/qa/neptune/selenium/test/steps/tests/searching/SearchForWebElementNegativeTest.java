@@ -23,6 +23,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeVa
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
 import static java.lang.String.format;
 import static java.time.Duration.ofMillis;
+import static java.util.function.Predicate.not;
 import static java.util.regex.Pattern.compile;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -30,7 +31,6 @@ import static org.openqa.selenium.By.className;
 import static org.openqa.selenium.By.tagName;
 import static org.openqa.selenium.By.xpath;
 
-@SuppressWarnings("unchecked")
 public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
 
     private static final String FOUND_BY_PATTERN_ERROR = "Nothing was found. Attempt to get a single item Web element located %s";
@@ -49,7 +49,8 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
     public void findWebElementFirstLevelWithoutConditionWithDefinedTimeTest() {
         setStartBenchMark();
         try {
-            seleniumSteps.find(webElement(CLASS_THAT_DOES_NOT_EXIST, ONE_SECOND));
+            seleniumSteps.find(webElement(CLASS_THAT_DOES_NOT_EXIST)
+                    .timeOut(ONE_SECOND));
         }
         catch (Exception e) {
             setEndBenchMark();
@@ -88,7 +89,8 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
         setProperty(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName(), "true");
         setStartBenchMark();
         try {
-            seleniumSteps.find(webElement(INVISIBLE_SPAN_BY, ONE_SECOND));
+            seleniumSteps.find(webElement(INVISIBLE_SPAN_BY)
+                    .timeOut(ONE_SECOND));
         }
         catch (Exception e) {
             setEndBenchMark();
@@ -134,7 +136,8 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
         setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "5");
         setStartBenchMark();
         try {
-            seleniumSteps.find(webElement(INVISIBLE_SPAN_BY, ONE_SECOND));
+            seleniumSteps.find(webElement(INVISIBLE_SPAN_BY)
+                    .timeOut(ONE_SECOND));
         }
         catch (Exception e) {
             setEndBenchMark();
@@ -155,7 +158,8 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
     public void findWebElementChainedWithoutConditionWithDefinedTimeTest() {
         setStartBenchMark();
         try {
-            seleniumSteps.find(webElement(CLASS_THAT_DOES_NOT_EXIST, ONE_SECOND)
+            seleniumSteps.find(webElement(CLASS_THAT_DOES_NOT_EXIST)
+                    .timeOut(ONE_SECOND)
                     .foundFrom(webElement(tagName(BUTTON_TAG))));
         }
         catch (Exception e) {
@@ -196,7 +200,8 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
         setProperty(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName(), "true");
         setStartBenchMark();
         try {
-            seleniumSteps.find(webElement(INVISIBLE_SPAN_BY, ONE_SECOND)
+            seleniumSteps.find(webElement(INVISIBLE_SPAN_BY)
+                    .timeOut(ONE_SECOND)
                     .foundFrom(webElement(className(SPREAD_SHEET_CLASS))));
         }
         catch (Exception e) {
@@ -244,7 +249,8 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
         setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "5");
         setStartBenchMark();
         try {
-            seleniumSteps.find(webElement(INVISIBLE_SPAN_BY, ONE_SECOND)
+            seleniumSteps.find(webElement(INVISIBLE_SPAN_BY)
+                    .timeOut(ONE_SECOND)
                     .foundFrom(webElement(className(SPREAD_SHEET_CLASS))));
         }
         catch (Exception e) {
@@ -267,7 +273,8 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
         WebElement parent = seleniumSteps.find(webElement(tagName(BUTTON_TAG)));
         setStartBenchMark();
         try {
-            seleniumSteps.find(webElement(CLASS_THAT_DOES_NOT_EXIST, ONE_SECOND)
+            seleniumSteps.find(webElement(CLASS_THAT_DOES_NOT_EXIST)
+                    .timeOut(ONE_SECOND)
                     .foundFrom(parent));
         }
         catch (Exception e) {
@@ -310,7 +317,8 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
         WebElement parent = seleniumSteps.find(webElement(className(SPREAD_SHEET_CLASS)));
         setStartBenchMark();
         try {
-            seleniumSteps.find(webElement(INVISIBLE_SPAN_BY, ONE_SECOND)
+            seleniumSteps.find(webElement(INVISIBLE_SPAN_BY)
+                    .timeOut(ONE_SECOND)
                     .foundFrom(parent));
         }
         catch (Exception e) {
@@ -360,7 +368,8 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
         WebElement parent = seleniumSteps.find(webElement(className(SPREAD_SHEET_CLASS)));
         setStartBenchMark();
         try {
-            seleniumSteps.find(webElement(INVISIBLE_SPAN_BY, ONE_SECOND)
+            seleniumSteps.find(webElement(INVISIBLE_SPAN_BY)
+                    .timeOut(ONE_SECOND)
                     .foundFrom(parent));
         }
         catch (Exception e) {
@@ -384,85 +393,93 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
                 {INVISIBLE_SPAN_BY, shouldBeEnabled(),
                         expectedDescriptionOfNotFoundElementError(INVISIBLE_SPAN_BY, shouldBeEnabled())},
 
-                {VISIBLE_DIV_BY, shouldBeEnabled().negate(),
-                        expectedDescriptionOfNotFoundElementError(VISIBLE_DIV_BY, shouldBeEnabled().negate())},
+                {VISIBLE_DIV_BY, not(shouldBeEnabled()),
+                        expectedDescriptionOfNotFoundElementError(VISIBLE_DIV_BY,
+                                not(shouldBeEnabled()))},
 
                 {INVISIBLE_SPAN_BY, shouldBeVisible(),
                         expectedDescriptionOfNotFoundElementError(INVISIBLE_SPAN_BY, shouldBeVisible())},
 
-                {VISIBLE_DIV_BY, shouldBeVisible().negate(),
-                        expectedDescriptionOfNotFoundElementError(VISIBLE_DIV_BY,  shouldBeVisible().negate())},
+                {VISIBLE_DIV_BY, not(shouldBeVisible()),
+                        expectedDescriptionOfNotFoundElementError(VISIBLE_DIV_BY,
+                                not(shouldBeVisible()))},
 
-                {className(MULTI_SELECT_CLASS), shouldContainElements(webElements(className(ITEM_OPTION_CLASS), ofMillis(10)), 4),
+                {className(MULTI_SELECT_CLASS), shouldContainElements(webElements(className(ITEM_OPTION_CLASS)).timeOut(ofMillis(10)), 4),
                         expectedDescriptionOfNotFoundElementError(className(MULTI_SELECT_CLASS),
-                                shouldContainElements(webElements(className(ITEM_OPTION_CLASS), ofMillis(10)), 4))},
+                                shouldContainElements(webElements(className(ITEM_OPTION_CLASS)).timeOut(ofMillis(10)), 4))},
 
                 {className(MULTI_SELECT_CLASS),
-                        shouldContainElements(webElements(className(ITEM_OPTION_CLASS), ofMillis(10)), 3)
-                                .or(shouldContainElements(webElements(className(ITEM_OPTION_CLASS), ofMillis(10)), 2))
-                                .negate(),
+                        not(shouldContainElements(webElements(className(ITEM_OPTION_CLASS)).timeOut(ofMillis(10)), 3)
+                                .or(shouldContainElements(webElements(className(ITEM_OPTION_CLASS)).timeOut(ofMillis(10)), 2))),
+
                         expectedDescriptionOfNotFoundElementError(className(MULTI_SELECT_CLASS),
-                                shouldContainElements(webElements(className(ITEM_OPTION_CLASS), ofMillis(10)), 3)
-                                        .or(shouldContainElements(webElements(className(ITEM_OPTION_CLASS), ofMillis(10)), 2))
-                                        .negate())},
+                                not(shouldContainElements(webElements(className(ITEM_OPTION_CLASS))
+                                        .timeOut(ofMillis(10)), 3)
+                                        .or(shouldContainElements(webElements(className(ITEM_OPTION_CLASS))
+                                                .timeOut(ofMillis(10)), 2))))},
 
                 {className(MULTI_SELECT_CLASS),
-                        shouldContainElements(webElements(tagName(OPTION), ofMillis(50))),
-                        expectedDescriptionOfNotFoundElementError(className(MULTI_SELECT_CLASS),
-                                shouldContainElements(webElements(tagName(OPTION), ofMillis(50))))},
+                        shouldContainElements(webElements(tagName(OPTION)).timeOut(ofMillis(50))),
 
-                {tagName(SELECT), shouldContainElements(webElements(tagName(OPTION), ofMillis(50))).negate(),
+                        expectedDescriptionOfNotFoundElementError(className(MULTI_SELECT_CLASS),
+                                shouldContainElements(webElements(tagName(OPTION)).timeOut(ofMillis(50))))},
+
+                {tagName(SELECT), not(shouldContainElements(webElements(tagName(OPTION)).timeOut(ofMillis(50)))),
+
                         expectedDescriptionOfNotFoundElementError(tagName(SELECT),
-                                shouldContainElements(webElements(tagName(OPTION), ofMillis(50))).negate())},
+                                not(shouldContainElements(webElements(tagName(OPTION)).timeOut(ofMillis(50)))))},
 
                 {tagName(TEXT_AREA_TAG), shouldHaveAttribute(ATTR11, VALUE10),
                         expectedDescriptionOfNotFoundElementError(tagName(TEXT_AREA_TAG),
                                 shouldHaveAttribute(ATTR11, VALUE10))},
 
-                {tagName(TEXT_AREA_TAG), shouldHaveAttribute(ATTR11, VALUE12)
+                {tagName(TEXT_AREA_TAG), not(shouldHaveAttribute(ATTR11, VALUE12)
                         .or(shouldHaveAttribute(ATTR11, VALUE13))
                         .or(shouldHaveAttribute(ATTR11, VALUE14))
-                        .or(shouldHaveAttribute(ATTR11, VALUE15)).negate(),
+                        .or(shouldHaveAttribute(ATTR11, VALUE15))),
+
                         expectedDescriptionOfNotFoundElementError(tagName(TEXT_AREA_TAG),
-                                shouldHaveAttribute(ATTR11, VALUE12)
+                                not(shouldHaveAttribute(ATTR11, VALUE12)
                                         .or(shouldHaveAttribute(ATTR11, VALUE13))
                                         .or(shouldHaveAttribute(ATTR11, VALUE14))
-                                        .or(shouldHaveAttribute(ATTR11, VALUE15)).negate())},
+                                        .or(shouldHaveAttribute(ATTR11, VALUE15))))},
 
                 {tagName(TEXT_AREA_TAG), shouldHaveAttributeContains(ATTR11, "10"),
                         expectedDescriptionOfNotFoundElementError(tagName(TEXT_AREA_TAG),
                                 shouldHaveAttributeContains(ATTR11, "10"))},
 
-                {tagName(TEXT_AREA_TAG), shouldHaveAttributeContains(ATTR11, "12")
+                {tagName(TEXT_AREA_TAG), not(shouldHaveAttributeContains(ATTR11, "12")
                         .or(shouldHaveAttributeContains(ATTR11, "13"))
                         .or(shouldHaveAttributeContains(ATTR11, VALUE14))
-                        .or(shouldHaveAttributeContains(ATTR11, VALUE15)).negate(),
+                        .or(shouldHaveAttributeContains(ATTR11, VALUE15))),
+
                         expectedDescriptionOfNotFoundElementError(tagName(TEXT_AREA_TAG),
-                                shouldHaveAttributeContains(ATTR11, "12")
+                                not(shouldHaveAttributeContains(ATTR11, "12")
                                         .or(shouldHaveAttributeContains(ATTR11, "13"))
                                         .or(shouldHaveAttributeContains(ATTR11, VALUE14))
-                                        .or(shouldHaveAttributeContains(ATTR11, VALUE15)).negate())},
+                                        .or(shouldHaveAttributeContains(ATTR11, VALUE15))))},
 
                 {tagName(TEXT_AREA_TAG), shouldHaveAttributeContains(ATTR11, compile("10")),
                         expectedDescriptionOfNotFoundElementError(tagName(TEXT_AREA_TAG),
                                 shouldHaveAttributeContains(ATTR11, compile("10")))},
 
-                {tagName(TEXT_AREA_TAG), shouldHaveAttributeContains(ATTR11, compile("12"))
+                {tagName(TEXT_AREA_TAG), not(shouldHaveAttributeContains(ATTR11, compile("12"))
                         .or(shouldHaveAttributeContains(ATTR11, compile("13")))
                         .or(shouldHaveAttributeContains(ATTR11, compile(VALUE14)))
-                        .or(shouldHaveAttributeContains(ATTR11, compile(VALUE15))).negate(),
+                        .or(shouldHaveAttributeContains(ATTR11, compile(VALUE15)))),
+
                         expectedDescriptionOfNotFoundElementError(tagName(TEXT_AREA_TAG),
-                                shouldHaveAttributeContains(ATTR11, compile("12"))
+                                not(shouldHaveAttributeContains(ATTR11, compile("12"))
                                         .or(shouldHaveAttributeContains(ATTR11, compile("13")))
                                         .or(shouldHaveAttributeContains(ATTR11, compile(VALUE14)))
-                                        .or(shouldHaveAttributeContains(ATTR11, compile(VALUE15))).negate())},
+                                        .or(shouldHaveAttributeContains(ATTR11, compile(VALUE15)))))},
 
                 {xpath(RADIO_BUTTON_XPATH), shouldHaveCssValue(CSS18, CSS_VALUE6),
                         expectedDescriptionOfNotFoundElementError(xpath(RADIO_BUTTON_XPATH),
                                 shouldHaveCssValue(CSS18, CSS_VALUE6))},
 
                 {xpath(RADIO_BUTTON_XPATH),
-                        shouldHaveCssValue(CSS18, CSS_VALUE7)
+                        not(shouldHaveCssValue(CSS18, CSS_VALUE7)
                                 .or(shouldHaveCssValue(CSS18, CSS_VALUE8))
                                 .or(shouldHaveCssValue(CSS18, CSS_VALUE9))
                                 .or(shouldHaveCssValue(CSS18, CSS_VALUE10))
@@ -474,9 +491,10 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
                                 .or(shouldHaveCssValue(CSS18, CSS_VALUE16))
                                 .or(shouldHaveCssValue(CSS18, CSS_VALUE17))
                                 .or(shouldHaveCssValue(CSS18, CSS_VALUE18))
-                                .or(shouldHaveCssValue(CSS18, CSS_VALUE19)).negate(),
+                                .or(shouldHaveCssValue(CSS18, CSS_VALUE19))),
+
                         expectedDescriptionOfNotFoundElementError(xpath(RADIO_BUTTON_XPATH),
-                                shouldHaveCssValue(CSS18, CSS_VALUE7)
+                                not(shouldHaveCssValue(CSS18, CSS_VALUE7)
                                         .or(shouldHaveCssValue(CSS18, CSS_VALUE8))
                                         .or(shouldHaveCssValue(CSS18, CSS_VALUE9))
                                         .or(shouldHaveCssValue(CSS18, CSS_VALUE10))
@@ -488,51 +506,53 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
                                         .or(shouldHaveCssValue(CSS18, CSS_VALUE16))
                                         .or(shouldHaveCssValue(CSS18, CSS_VALUE17))
                                         .or(shouldHaveCssValue(CSS18, CSS_VALUE18))
-                                        .or(shouldHaveCssValue(CSS18, CSS_VALUE19)).negate())},
+                                        .or(shouldHaveCssValue(CSS18, CSS_VALUE19))))},
 
                 {xpath(RADIO_BUTTON_XPATH), shouldHaveCssValueContains(CSS18, "value6"),
                         expectedDescriptionOfNotFoundElementError(xpath(RADIO_BUTTON_XPATH),
                                 shouldHaveCssValueContains(CSS18, "value6"))},
 
                 {xpath(RADIO_BUTTON_XPATH),
-                        shouldHaveCssValueContains(CSS18, "value").negate(),
+                        not(shouldHaveCssValueContains(CSS18, "value")),
                         expectedDescriptionOfNotFoundElementError(xpath(RADIO_BUTTON_XPATH),
-                                shouldHaveCssValueContains(CSS18, "value").negate())},
+                                not(shouldHaveCssValueContains(CSS18, "value")))},
 
                 {xpath(RADIO_BUTTON_XPATH), shouldHaveCssValueContains(CSS18, compile("value6")),
                         expectedDescriptionOfNotFoundElementError(xpath(RADIO_BUTTON_XPATH),
                                 shouldHaveCssValueContains(CSS18, compile("value6")))},
 
                 {xpath(RADIO_BUTTON_XPATH),
-                        shouldHaveCssValueContains(CSS18, compile("value")).negate(),
+                        not(shouldHaveCssValueContains(CSS18, compile("value"))),
                         expectedDescriptionOfNotFoundElementError(xpath(RADIO_BUTTON_XPATH),
-                                shouldHaveCssValueContains(CSS18, compile("value")).negate())},
+                                not(shouldHaveCssValueContains(CSS18, compile("value"))))},
 
                 {INVISIBLE_SPAN_BY, shouldHaveText(VISIBLE_DIV),
                         expectedDescriptionOfNotFoundElementError(INVISIBLE_SPAN_BY,
                                 shouldHaveText(VISIBLE_DIV))},
 
-                {VISIBLE_DIV_BY, shouldHaveText(VISIBLE_DIV).negate(),
+                {VISIBLE_DIV_BY, not(shouldHaveText(VISIBLE_DIV)),
                         expectedDescriptionOfNotFoundElementError(VISIBLE_DIV_BY,
-                                shouldHaveText(VISIBLE_DIV).negate())},
+                                not(shouldHaveText(VISIBLE_DIV)))},
 
                 {INVISIBLE_SPAN_BY, shouldHaveText(compile("div")),
                         expectedDescriptionOfNotFoundElementError(INVISIBLE_SPAN_BY,
                                 shouldHaveText(compile("div")))},
 
-                {VISIBLE_DIV_BY, shouldHaveText(compile("div")).negate(),
+                {VISIBLE_DIV_BY, not(shouldHaveText(compile("div"))),
                         expectedDescriptionOfNotFoundElementError(VISIBLE_DIV_BY,
-                                shouldHaveText(compile("div")).negate())}
+                                not(shouldHaveText(compile("div"))))}
         };
     }
 
     @Test(dataProvider = "search criteria1", expectedExceptions = NoSuchElementException.class, retryAnalyzer = RetryAnalyzer.class)
     public void findElementByCriteriaWithDefinedTimeTest(By by,
-                                                         Predicate<? extends SearchContext> criteria,
+                                                         Predicate<WebElement> criteria,
                                                          String expectedErrorMessage) {
         setStartBenchMark();
         try {
-            seleniumSteps.find(webElement(by, ONE_SECOND, (Predicate<? super WebElement>) criteria));
+            seleniumSteps.find(webElement(by)
+                    .timeOut(ONE_SECOND)
+                    .criteria(criteria));
         }
         catch (Exception e) {
             setEndBenchMark();
@@ -549,13 +569,14 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
 
     @Test(dataProvider = "search criteria1", expectedExceptions = NoSuchElementException.class, retryAnalyzer = RetryAnalyzer.class)
     public void findElementByCriteriaWithTimeDefinedImplicitlyTest(By by,
-                                                                   Predicate<? extends SearchContext> criteria,
+                                                                   Predicate<WebElement> criteria,
                                                                    String expectedErrorMessage) {
         setProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName(), "SECONDS");
         setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "1");
         setStartBenchMark();
         try {
-            seleniumSteps.find(webElement(by, (Predicate<? super WebElement>) criteria));
+            seleniumSteps.find(webElement(by)
+                    .criteria(criteria));
         }
         catch (Exception e) {
             setEndBenchMark();
@@ -575,118 +596,147 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
     public static Object[][] searchCriteriaForText() {
         return new Object[][]{
                 {tagName(BUTTON_TAG), BUTTON_TEXT1, shouldBeEnabled(),
+
                         expectedDescriptionOfNotFoundElementError(tagName(BUTTON_TAG),
                                 shouldHaveText(BUTTON_TEXT1).and(shouldBeEnabled()))},
 
-                {tagName(BUTTON_TAG), BUTTON_TEXT3, shouldBeEnabled().negate(),
+                {tagName(BUTTON_TAG), BUTTON_TEXT3, not(shouldBeEnabled()),
+
                         expectedDescriptionOfNotFoundElementError(tagName(BUTTON_TAG),
-                                shouldHaveText(BUTTON_TEXT3).and(shouldBeEnabled().negate()))},
+                                not(shouldHaveText(BUTTON_TEXT3).and(shouldBeEnabled())))},
 
                 {tagName(LINK_TAG), LINK_TEXT1, shouldBeVisible(),
+
                         expectedDescriptionOfNotFoundElementError(tagName(LINK_TAG),
                                 shouldHaveText(LINK_TEXT1).and(shouldBeVisible()))},
 
-                {tagName(LINK_TAG), LINK_TEXT2,  shouldBeVisible().negate(),
+                {tagName(LINK_TAG), LINK_TEXT2,  not(shouldBeVisible()),
+
                         expectedDescriptionOfNotFoundElementError(tagName(LINK_TAG),
-                                shouldHaveText(LINK_TEXT2).and(shouldBeVisible().negate()))},
+                                not(shouldHaveText(LINK_TEXT2).and(shouldBeVisible())))},
 
                 {tagName(SELECT), OPTION_TEXT23,
-                        shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT22, ofMillis(10)), 3),
+                        shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT22)
+                                .timeOut(ofMillis(10)), 3),
+
                         expectedDescriptionOfNotFoundElementError(tagName(SELECT), shouldHaveText(OPTION_TEXT23)
-                                .and(shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT22, ofMillis(10)), 3)))},
+                                .and(shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT22)
+                                        .timeOut(ofMillis(10)), 3)))},
 
                 {tagName(SELECT), OPTION_TEXT20,
-                        shouldContainElements(webElements(tagName(OPTION), ofMillis(10)), 3).negate(),
+                        not(shouldContainElements(webElements(tagName(OPTION))
+                                .timeOut(ofMillis(10)), 3)),
+
                         expectedDescriptionOfNotFoundElementError(tagName(SELECT),
-                                shouldHaveText(OPTION_TEXT20)
-                                        .and(shouldContainElements(webElements(tagName(OPTION), ofMillis(10)), 3).negate()))},
+                                not(shouldHaveText(OPTION_TEXT20)
+                                        .and(shouldContainElements(webElements(tagName(OPTION))
+                                                .timeOut(ofMillis(10)), 3))))},
 
                 {tagName(BUTTON_TAG), BUTTON_TEXT4,
-                        shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1, ofMillis(10))),
+                        shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1)
+                                .timeOut(ofMillis(10))),
+
                         expectedDescriptionOfNotFoundElementError(tagName(BUTTON_TAG),
                                 shouldHaveText(BUTTON_TEXT4)
-                                        .and(shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1, ofMillis(10)))))},
+                                        .and(shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1)
+                                                .timeOut(ofMillis(10)))))},
 
                 {tagName(BUTTON_TAG), BUTTON_TEXT5,
-                        shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1, ofMillis(10))).negate(),
+                        not(shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1)
+                                .timeOut(ofMillis(10)))),
+
                         expectedDescriptionOfNotFoundElementError(tagName(BUTTON_TAG),
-                                shouldHaveText(BUTTON_TEXT5)
+                                not(shouldHaveText(BUTTON_TEXT5)
                                         .and(shouldContainElements(webElements(tagName(LABEL_TAG),
-                                                BUTTON_LABEL_TEXT1, ofMillis(10))).negate()))},
+                                                BUTTON_LABEL_TEXT1)
+                                                .timeOut(ofMillis(10))))))},
 
                 {CHAINED_FIND_TAB, TAB_TEXT3, shouldHaveAttribute(ATTR19, VALUE12),
+
                         expectedDescriptionOfNotFoundElementError(CHAINED_FIND_TAB,
                                 shouldHaveText(TAB_TEXT3)
                                         .and(shouldHaveAttribute(ATTR19, VALUE12)))},
 
-                {CHAINED_FIND_TAB, TAB_TEXT2, shouldHaveAttribute(ATTR19, VALUE12).negate(),
+                {CHAINED_FIND_TAB, TAB_TEXT2, not(shouldHaveAttribute(ATTR19, VALUE12)),
+
                         expectedDescriptionOfNotFoundElementError(CHAINED_FIND_TAB,
-                                shouldHaveText(TAB_TEXT2)
-                                        .and(shouldHaveAttribute(ATTR19, VALUE12).negate()))},
+                                not(shouldHaveText(TAB_TEXT2)
+                                        .and(shouldHaveAttribute(ATTR19, VALUE12))))},
 
                 {CHAINED_FIND_TAB, TAB_TEXT4, shouldHaveAttributeContains(ATTR20, VALUE14),
+
                         expectedDescriptionOfNotFoundElementError(CHAINED_FIND_TAB,
                                 shouldHaveText(TAB_TEXT4).and(shouldHaveAttributeContains(ATTR20, VALUE14)))},
 
-                {CHAINED_FIND_TAB, TAB_TEXT3, shouldHaveAttributeContains(ATTR20, VALUE14).negate(),
+                {CHAINED_FIND_TAB, TAB_TEXT3, not(shouldHaveAttributeContains(ATTR20, VALUE14)),
+
                         expectedDescriptionOfNotFoundElementError(CHAINED_FIND_TAB,
-                                shouldHaveText(TAB_TEXT3)
-                                        .and(shouldHaveAttributeContains(ATTR20, VALUE14).negate()))},
+                                not(shouldHaveText(TAB_TEXT3)
+                                        .and(shouldHaveAttributeContains(ATTR20, VALUE14))))},
 
                 {CHAINED_FIND_TAB, TAB_TEXT3, shouldHaveAttributeContains(ATTR20, compile(VALUE12)),
                         expectedDescriptionOfNotFoundElementError(CHAINED_FIND_TAB,
                                 shouldHaveText(TAB_TEXT3)
                                         .and(shouldHaveAttributeContains(ATTR20, compile(VALUE12))))},
 
-                {CHAINED_FIND_TAB, TAB_TEXT1, shouldHaveAttributeContains(ATTR20, compile(VALUE12)).negate(),
+                {CHAINED_FIND_TAB, TAB_TEXT1, not(shouldHaveAttributeContains(ATTR20, compile(VALUE12))),
+
                         expectedDescriptionOfNotFoundElementError(CHAINED_FIND_TAB,
-                                shouldHaveText(TAB_TEXT1)
-                                        .and(shouldHaveAttributeContains(ATTR20, compile(VALUE12)).negate()))},
+                                not(shouldHaveText(TAB_TEXT1)
+                                        .and(shouldHaveAttributeContains(ATTR20, compile(VALUE12)))))},
 
                 {xpath(TEXT_FIELD_XPATH), INPUT_TEXT4, shouldHaveCssValue(CSS8, CSS_VALUE6),
+
                         expectedDescriptionOfNotFoundElementError(xpath(TEXT_FIELD_XPATH),
                                 shouldHaveText(INPUT_TEXT4)
                                         .and(shouldHaveCssValue(CSS8, CSS_VALUE6)))},
 
-                {xpath(TEXT_FIELD_XPATH), INPUT_TEXT3, shouldHaveCssValue(CSS8, CSS_VALUE6).negate(),
+                {xpath(TEXT_FIELD_XPATH), INPUT_TEXT3, not(shouldHaveCssValue(CSS8, CSS_VALUE6)),
+
                         expectedDescriptionOfNotFoundElementError(xpath(TEXT_FIELD_XPATH),
-                                shouldHaveText(INPUT_TEXT3)
-                                        .and(shouldHaveCssValue(CSS8, CSS_VALUE6).negate()))},
+                                not(shouldHaveText(INPUT_TEXT3)
+                                        .and(shouldHaveCssValue(CSS8, CSS_VALUE6))))},
 
                 {xpath(TEXT_FIELD_XPATH), INPUT_TEXT4, shouldHaveCssValueContains(CSS8, "4")
                         .and(shouldHaveCssValueContains(CSS9, "5")),
+
                         expectedDescriptionOfNotFoundElementError(xpath(TEXT_FIELD_XPATH),
                                 shouldHaveText(INPUT_TEXT4).and(shouldHaveCssValueContains(CSS8, "4")
                                         .and(shouldHaveCssValueContains(CSS9, "5"))))},
 
-                {xpath(TEXT_FIELD_XPATH), INPUT_TEXT1, shouldHaveCssValueContains(CSS8, "4")
-                        .and(shouldHaveCssValueContains(CSS9, "5")).negate(),
+                {xpath(TEXT_FIELD_XPATH), INPUT_TEXT1, not(shouldHaveCssValueContains(CSS8, "4")
+                        .and(shouldHaveCssValueContains(CSS9, "5"))),
+
                         expectedDescriptionOfNotFoundElementError(xpath(TEXT_FIELD_XPATH),
-                                shouldHaveText(INPUT_TEXT1).and(shouldHaveCssValueContains(CSS8, "4")
-                                        .and(shouldHaveCssValueContains(CSS9, "5")).negate()))},
+                                not(shouldHaveText(INPUT_TEXT1).and(shouldHaveCssValueContains(CSS8, "4")
+                                        .and(shouldHaveCssValueContains(CSS9, "5")))))},
 
                 {xpath(TEXT_FIELD_XPATH), INPUT_TEXT4, shouldHaveCssValueContains(CSS8, compile("4"))
                         .and(shouldHaveCssValueContains(CSS9, compile("5"))),
+
                         expectedDescriptionOfNotFoundElementError(xpath(TEXT_FIELD_XPATH),
                                 shouldHaveText(INPUT_TEXT4).and(shouldHaveCssValueContains(CSS8, compile("4"))
                                         .and(shouldHaveCssValueContains(CSS9, compile("5")))))},
 
-                {xpath(TEXT_FIELD_XPATH), INPUT_TEXT1, shouldHaveCssValueContains(CSS8, compile("4"))
-                        .and(shouldHaveCssValueContains(CSS9, compile("5"))).negate(),
+                {xpath(TEXT_FIELD_XPATH), INPUT_TEXT1, not(shouldHaveCssValueContains(CSS8, compile("4"))
+                        .and(shouldHaveCssValueContains(CSS9, compile("5")))),
+
                         expectedDescriptionOfNotFoundElementError(xpath(TEXT_FIELD_XPATH),
-                                shouldHaveText(INPUT_TEXT1).and(shouldHaveCssValueContains(CSS8, compile("4"))
-                                        .and(shouldHaveCssValueContains(CSS9, compile("5"))).negate()))},
+                                not(shouldHaveText(INPUT_TEXT1).and(shouldHaveCssValueContains(CSS8, compile("4"))
+                                        .and(shouldHaveCssValueContains(CSS9, compile("5"))))))},
         };
     }
 
     @Test(dataProvider = "search criteria2", expectedExceptions = NoSuchElementException.class, retryAnalyzer = RetryAnalyzer.class)
     public void findElementByCriteriaAndTextWithDefinedTimeTest(By by,
                                                                 String text,
-                                                                Predicate<? extends SearchContext> criteria,
+                                                                Predicate<WebElement> criteria,
                                                                 String expectedErrorMessage) {
         setStartBenchMark();
         try {
-            seleniumSteps.find(webElement(by, text, ONE_SECOND, (Predicate<? super WebElement>) criteria));
+            seleniumSteps.find(webElement(by, text)
+                    .timeOut(ONE_SECOND)
+                    .criteria(criteria));
         }
         catch (Exception e) {
             setEndBenchMark();
@@ -703,13 +753,14 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
     @Test(dataProvider = "search criteria2", expectedExceptions = NoSuchElementException.class, retryAnalyzer = RetryAnalyzer.class)
     public void findElementByCriteriaAndTextWithTimeDefinedImplicitlyTest(By by,
                                                                           String text,
-                                                                          Predicate<? extends SearchContext> criteria,
+                                                                          Predicate<WebElement> criteria,
                                                                           String expectedErrorMessage) {
         setProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName(), "SECONDS");
         setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "1");
         setStartBenchMark();
         try {
-            seleniumSteps.find(webElement(by, text, (Predicate<? super WebElement>) criteria));
+            seleniumSteps.find(webElement(by, text)
+                    .criteria(criteria));
         }
         catch (Exception e) {
             setEndBenchMark();
@@ -732,115 +783,140 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
                         expectedDescriptionOfNotFoundElementError(tagName(BUTTON_TAG),
                                 shouldHaveText(compile("Text1")).and(shouldBeEnabled()))},
 
-                {tagName(BUTTON_TAG), compile("Text3"), shouldBeEnabled().negate(),
+                {tagName(BUTTON_TAG), compile("Text3"), not(shouldBeEnabled()),
                         expectedDescriptionOfNotFoundElementError(tagName(BUTTON_TAG),
-                                shouldHaveText(compile("Text3")).and(shouldBeEnabled().negate()))},
+                                not(shouldHaveText(compile("Text3")).and(shouldBeEnabled())))},
 
                 {tagName(LINK_TAG), compile("Text1"), shouldBeVisible(),
                         expectedDescriptionOfNotFoundElementError(tagName(LINK_TAG),
                                 shouldHaveText(compile("Text1")).and(shouldBeVisible()))},
 
-                {tagName(LINK_TAG), compile("Text2"),  shouldBeVisible().negate(),
+                {tagName(LINK_TAG), compile("Text2"),  not(shouldBeVisible()),
                         expectedDescriptionOfNotFoundElementError(tagName(LINK_TAG),
-                                shouldHaveText(compile("Text2")).and(shouldBeVisible().negate()))},
+                                shouldHaveText(compile("Text2")).and(not(shouldBeVisible())))},
 
                 {tagName(SELECT), compile("Text23"),
-                        shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT22, ofMillis(10)), 3),
+                        shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT22)
+                                .timeOut(ofMillis(10)), 3),
+
                         expectedDescriptionOfNotFoundElementError(tagName(SELECT), shouldHaveText(compile("Text23"))
-                                .and(shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT22, ofMillis(10)), 3)))},
+                                .and(shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT22)
+                                        .timeOut(ofMillis(10)), 3)))},
 
                 {tagName(SELECT), compile(OPTION_TEXT20),
-                        shouldContainElements(webElements(tagName(OPTION), ofMillis(10)), 3).negate(),
+                        not(shouldContainElements(webElements(tagName(OPTION))
+                                .timeOut(ofMillis(10)), 3)),
+
                         expectedDescriptionOfNotFoundElementError(tagName(SELECT),
                                 shouldHaveText(compile(OPTION_TEXT20))
-                                        .and(shouldContainElements(webElements(tagName(OPTION), ofMillis(10)), 3).negate()))},
+                                        .and(not(shouldContainElements(webElements(tagName(OPTION))
+                                                .timeOut(ofMillis(10)), 3))))},
 
                 {tagName(BUTTON_TAG), compile("Text4"),
-                        shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1, ofMillis(10))),
+                        shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1).timeOut(ofMillis(10))),
+
                         expectedDescriptionOfNotFoundElementError(tagName(BUTTON_TAG),
                                 shouldHaveText(compile("Text4"))
-                                        .and(shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1, ofMillis(10)))))},
+                                        .and(shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1)
+                                                .timeOut(ofMillis(10)))))},
 
                 {tagName(BUTTON_TAG), compile("Text5"),
-                        shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1, ofMillis(10))).negate(),
+                        not(shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1)
+                                .timeOut(ofMillis(10)))),
+
                         expectedDescriptionOfNotFoundElementError(tagName(BUTTON_TAG),
                                 shouldHaveText(compile("Text5"))
-                                        .and(shouldContainElements(webElements(tagName(LABEL_TAG),
-                                                BUTTON_LABEL_TEXT1, ofMillis(10))).negate()))},
+                                        .and(not(shouldContainElements(webElements(tagName(LABEL_TAG),
+                                                BUTTON_LABEL_TEXT1)
+                                                .timeOut(ofMillis(10))))))},
 
                 {CHAINED_FIND_TAB, compile("Text3"), shouldHaveAttribute(ATTR19, VALUE12),
+
                         expectedDescriptionOfNotFoundElementError(CHAINED_FIND_TAB,
                                 shouldHaveText(compile("Text3"))
                                         .and(shouldHaveAttribute(ATTR19, VALUE12)))},
 
-                {CHAINED_FIND_TAB, compile("Text2"), shouldHaveAttribute(ATTR19, VALUE12).negate(),
+                {CHAINED_FIND_TAB, compile("Text2"), not(shouldHaveAttribute(ATTR19, VALUE12)),
+
                         expectedDescriptionOfNotFoundElementError(CHAINED_FIND_TAB,
                                 shouldHaveText(compile("Text2"))
-                                        .and(shouldHaveAttribute(ATTR19, VALUE12).negate()))},
+                                        .and(not(shouldHaveAttribute(ATTR19, VALUE12))))},
 
                 {CHAINED_FIND_TAB, compile("Text4"), shouldHaveAttributeContains(ATTR20, VALUE14),
+
                         expectedDescriptionOfNotFoundElementError(CHAINED_FIND_TAB,
                                 shouldHaveText(compile("Text4")).and(shouldHaveAttributeContains(ATTR20, VALUE14)))},
 
-                {CHAINED_FIND_TAB, compile("Text3"), shouldHaveAttributeContains(ATTR20, VALUE14).negate(),
+                {CHAINED_FIND_TAB, compile("Text3"), not(shouldHaveAttributeContains(ATTR20, VALUE14)),
+
                         expectedDescriptionOfNotFoundElementError(CHAINED_FIND_TAB,
                                 shouldHaveText(compile("Text3"))
-                                        .and(shouldHaveAttributeContains(ATTR20, VALUE14).negate()))},
+                                        .and(not(shouldHaveAttributeContains(ATTR20, VALUE14))))},
 
                 {CHAINED_FIND_TAB, compile("Text3"), shouldHaveAttributeContains(ATTR20, compile(VALUE12)),
+
                         expectedDescriptionOfNotFoundElementError(CHAINED_FIND_TAB,
                                 shouldHaveText(compile("Text3"))
                                         .and(shouldHaveAttributeContains(ATTR20, compile(VALUE12))))},
 
-                {CHAINED_FIND_TAB, compile(TAB_TEXT1), shouldHaveAttributeContains(ATTR20, compile(VALUE12)).negate(),
+                {CHAINED_FIND_TAB, compile(TAB_TEXT1), not(shouldHaveAttributeContains(ATTR20, compile(VALUE12))),
+
                         expectedDescriptionOfNotFoundElementError(CHAINED_FIND_TAB,
                                 shouldHaveText(compile(TAB_TEXT1))
-                                        .and(shouldHaveAttributeContains(ATTR20, compile(VALUE12)).negate()))},
+                                        .and(not(shouldHaveAttributeContains(ATTR20, compile(VALUE12)))))},
 
                 {xpath(TEXT_FIELD_XPATH), compile(INPUT_TEXT4), shouldHaveCssValue(CSS8, CSS_VALUE6),
+
                         expectedDescriptionOfNotFoundElementError(xpath(TEXT_FIELD_XPATH),
                                 shouldHaveText(compile(INPUT_TEXT4))
                                         .and(shouldHaveCssValue(CSS8, CSS_VALUE6)))},
 
-                {xpath(TEXT_FIELD_XPATH), compile(INPUT_TEXT3), shouldHaveCssValue(CSS8, CSS_VALUE6).negate(),
+                {xpath(TEXT_FIELD_XPATH), compile(INPUT_TEXT3), not(shouldHaveCssValue(CSS8, CSS_VALUE6)),
+
                         expectedDescriptionOfNotFoundElementError(xpath(TEXT_FIELD_XPATH),
                                 shouldHaveText(compile(INPUT_TEXT3))
-                                        .and(shouldHaveCssValue(CSS8, CSS_VALUE6).negate()))},
+                                        .and(not(shouldHaveCssValue(CSS8, CSS_VALUE6))))},
 
                 {xpath(TEXT_FIELD_XPATH), compile(INPUT_TEXT4), shouldHaveCssValueContains(CSS8, "4")
                         .and(shouldHaveCssValueContains(CSS9, "5")),
+
                         expectedDescriptionOfNotFoundElementError(xpath(TEXT_FIELD_XPATH),
                                 shouldHaveText(compile(INPUT_TEXT4)).and(shouldHaveCssValueContains(CSS8, "4")
                                         .and(shouldHaveCssValueContains(CSS9, "5"))))},
 
                 {xpath(TEXT_FIELD_XPATH), compile(INPUT_TEXT1), shouldHaveCssValueContains(CSS8, "4")
-                        .and(shouldHaveCssValueContains(CSS9, "5")).negate(),
+                        .and(not(shouldHaveCssValueContains(CSS9, "5"))),
+
                         expectedDescriptionOfNotFoundElementError(xpath(TEXT_FIELD_XPATH),
                                 shouldHaveText(compile(INPUT_TEXT1)).and(shouldHaveCssValueContains(CSS8, "4")
-                                        .and(shouldHaveCssValueContains(CSS9, "5")).negate()))},
+                                        .and(not(shouldHaveCssValueContains(CSS9, "5")))))},
 
                 {xpath(TEXT_FIELD_XPATH), compile(INPUT_TEXT4), shouldHaveCssValueContains(CSS8, compile("4"))
                         .and(shouldHaveCssValueContains(CSS9, compile("5"))),
+
                         expectedDescriptionOfNotFoundElementError(xpath(TEXT_FIELD_XPATH),
                                 shouldHaveText(compile(INPUT_TEXT4)).and(shouldHaveCssValueContains(CSS8, compile("4"))
                                         .and(shouldHaveCssValueContains(CSS9, compile("5")))))},
 
                 {xpath(TEXT_FIELD_XPATH), compile(INPUT_TEXT1), shouldHaveCssValueContains(CSS8, compile("4"))
-                        .and(shouldHaveCssValueContains(CSS9, compile("5"))).negate(),
+                        .and(not(shouldHaveCssValueContains(CSS9, compile("5")))),
+
                         expectedDescriptionOfNotFoundElementError(xpath(TEXT_FIELD_XPATH),
                                 shouldHaveText(compile(INPUT_TEXT1)).and(shouldHaveCssValueContains(CSS8, compile("4"))
-                                        .and(shouldHaveCssValueContains(CSS9, compile("5"))).negate()))},
+                                        .and(not(shouldHaveCssValueContains(CSS9, compile("5"))))))},
         };
     }
 
     @Test(dataProvider = "search criteria3", expectedExceptions = NoSuchElementException.class, retryAnalyzer = RetryAnalyzer.class)
     public void findElementByCriteriaAndTexPatternWithDefinedTimeTest(By by,
                                                                       Pattern pattern,
-                                                                      Predicate<? extends SearchContext> criteria,
+                                                                      Predicate<WebElement> criteria,
                                                                       String expectedErrorMessage) {
         setStartBenchMark();
         try {
-            seleniumSteps.find(webElement(by, pattern, ONE_SECOND, (Predicate<? super WebElement>) criteria));
+            seleniumSteps.find(webElement(by, pattern)
+                    .timeOut(ONE_SECOND)
+                    .criteria(criteria));
         }
         catch (Exception e) {
             setEndBenchMark();
@@ -857,13 +933,13 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
     @Test(dataProvider = "search criteria3", expectedExceptions = NoSuchElementException.class, retryAnalyzer = RetryAnalyzer.class)
     public void findElementByCriteriaAndTexPatternWithTimeDefinedImplicitlyTest(By by,
                                                                                 Pattern pattern,
-                                                                                Predicate<? extends SearchContext> criteria,
+                                                                                Predicate<WebElement> criteria,
                                                                                 String expectedErrorMessage) {
         setProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName(), "SECONDS");
         setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "1");
         setStartBenchMark();
         try {
-            seleniumSteps.find(webElement(by, pattern, (Predicate<? super WebElement>) criteria));
+            seleniumSteps.find(webElement(by, pattern).criteria(criteria));
         }
         catch (Exception e) {
             setEndBenchMark();

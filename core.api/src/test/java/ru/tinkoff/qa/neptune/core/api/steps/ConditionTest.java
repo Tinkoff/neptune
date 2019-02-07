@@ -255,7 +255,7 @@ public class ConditionTest {
         Predicate<Number> describedIsNotFraction = IS_NOT_FRACTION;
 
         assertThat("String value of the predicate",
-                AND.concat(describedIsPositive, describedIsNotFraction).toString(),
+                AND.concat(describedIsPositive, describedIsNotFraction),
                 is("<not described condition>, <not described condition>"));
     }
 

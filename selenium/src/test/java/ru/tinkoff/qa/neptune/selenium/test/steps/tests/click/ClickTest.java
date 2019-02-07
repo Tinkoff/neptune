@@ -18,7 +18,6 @@ import static java.time.Duration.ofMillis;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import static java.util.List.of;
 import static org.openqa.selenium.By.className;
 import static org.openqa.selenium.By.tagName;
 
@@ -29,7 +28,7 @@ public class ClickTest extends BaseWebDriverTest {
         seleniumSteps.click(on(button()));
         assertThat(COMMON_BUTTON1.getClickCount(), is(1));
 
-        seleniumSteps.click(on(button(of(BUTTON_LABEL_TEXT8, BUTTON_LABEL_TEXT12))
+        seleniumSteps.click(on(button(BUTTON_LABEL_TEXT8, BUTTON_LABEL_TEXT12)
                 .criteria(shouldHaveAttribute(ATTR6, VALUE14))));
         assertThat(CUSTOM_LABELED_BUTTON4.getClickCount(), is(1));
 

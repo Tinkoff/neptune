@@ -57,28 +57,28 @@ public class SearchForWidgetPositiveTest extends BaseWebDriverTest {
                 {button(), COMMON_BUTTON1,
                         SimpleButton.class, SIMPLE_BUTTON},
 
-                {button(FIVE_SECONDS), COMMON_BUTTON1,
+                {button().timeOut(FIVE_SECONDS), COMMON_BUTTON1,
                         SimpleButton.class, SIMPLE_BUTTON},
 
-                {button(of(BUTTON_LABEL_TEXT1)), COMMON_LABELED_BUTTON1,
+                {button(BUTTON_LABEL_TEXT1), COMMON_LABELED_BUTTON1,
                         LabeledButton.class,
-                        getWidgetDescription(LABELED_BUTTON, shouldBeLabeledBy(BUTTON_LABEL_TEXT1))},
+                        LABELED_BUTTON},
 
-                {button(of(BUTTON_LABEL_TEXT1), FIVE_SECONDS), COMMON_LABELED_BUTTON1,
+                {button(BUTTON_LABEL_TEXT1)
+                        .timeOut(FIVE_SECONDS), COMMON_LABELED_BUTTON1,
                         LabeledButton.class,
-                        getWidgetDescription(LABELED_BUTTON, shouldBeLabeledBy(BUTTON_LABEL_TEXT1))},
+                        LABELED_BUTTON},
 
-                {button(of(BUTTON_LABEL_TEXT10, BUTTON_LABEL_TEXT6)), CUSTOM_LABELED_BUTTON2,
+                {button(BUTTON_LABEL_TEXT10, BUTTON_LABEL_TEXT6), CUSTOM_LABELED_BUTTON2,
                         CustomizedButton.class,
-                        getWidgetDescription(CUSTOM_BUTTON,
-                                shouldBeLabeledBy(BUTTON_LABEL_TEXT10, BUTTON_LABEL_TEXT6))},
+                        CUSTOM_BUTTON},
 
-                {button(of(BUTTON_LABEL_TEXT10, BUTTON_LABEL_TEXT6), FIVE_SECONDS), CUSTOM_LABELED_BUTTON2,
+                {button(BUTTON_LABEL_TEXT10, BUTTON_LABEL_TEXT6)
+                        .timeOut(FIVE_SECONDS), CUSTOM_LABELED_BUTTON2,
                         CustomizedButton.class,
-                        getWidgetDescription(CUSTOM_BUTTON,
-                                shouldBeLabeledBy(BUTTON_LABEL_TEXT10, BUTTON_LABEL_TEXT6))},
+                        CUSTOM_BUTTON},
 
-                {button(BUTTON_LABEL_TEXT10), CUSTOM_LABELED_BUTTON2,
+                /*{button(BUTTON_LABEL_TEXT10), CUSTOM_LABELED_BUTTON2,
                         CustomizedButton.class,
                         getWidgetDescription(CUSTOM_BUTTON,
                                 shouldBeLabeledBy(BUTTON_LABEL_TEXT10))},
@@ -1275,7 +1275,7 @@ public class SearchForWidgetPositiveTest extends BaseWebDriverTest {
                         CUSTOM_LABELED_BUTTON1,
                         CustomizedButton.class,
                         getWidgetDescription(CUSTOM_BUTTON,
-                                shouldBeLabeledBy(BUTTON_LABEL_TEXT5))},
+                                shouldBeLabeledBy(BUTTON_LABEL_TEXT5))},*/
         };
     }
 

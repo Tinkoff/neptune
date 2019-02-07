@@ -14,7 +14,6 @@ import static ru.tinkoff.qa.neptune.selenium.functions.value.SequentialGetAttrib
 import static ru.tinkoff.qa.neptune.selenium.functions.value.SequentialGetCSSValueSupplier.cssValue;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
 import static java.time.Duration.ofMillis;
-import static java.util.List.of;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
@@ -65,7 +64,7 @@ public class AttributeAndCSSValue extends BaseWebDriverTest {
     @Test
     public void getAttributeNullValueFromWidget() {
         Select select = seleniumSteps
-                .find(select(of(SELECT_LABEL_TEXT8, SELECT_LABEL_TEXT12))
+                .find(select(SELECT_LABEL_TEXT8, SELECT_LABEL_TEXT12)
                         .criteria(shouldContainElements(webElements(className(ITEM_OPTION_CLASS), OPTION_TEXT34))));
         assertThat(seleniumSteps.get(attributeValue(ATTR4).of(select)),
                 nullValue());
@@ -120,7 +119,7 @@ public class AttributeAndCSSValue extends BaseWebDriverTest {
     @Test
     public void getCSSNullValueFromWidget() {
         TextField textField = seleniumSteps
-                .find(textField(of(INPUT_LABEL_TEXT7, INPUT_LABEL_TEXT11))
+                .find(textField(INPUT_LABEL_TEXT7, INPUT_LABEL_TEXT11)
                         .timeOut(FIVE_SECONDS));
         assertThat(seleniumSteps.get(cssValue(CSS12).of(textField)),
                 nullValue());

@@ -22,12 +22,12 @@ import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
 import static java.lang.String.format;
 import static java.time.Duration.ofMillis;
 import static java.util.regex.Pattern.compile;
+import static java.util.function.Predicate.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.closeTo;
 import static org.openqa.selenium.By.*;
 
-@SuppressWarnings("unchecked")
 public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
 
     private static final String FOUND_BY_PATTERN = "Web element found %s";
@@ -65,7 +65,8 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
     @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findWebElementFirstLevelOnlyWhenTimeIsDefinedTest() {
         setStartBenchMark();
-        WebElement webElement = seleniumSteps.find(webElement(tagName(TABLE), FIVE_SECONDS));
+        WebElement webElement = seleniumSteps.find(webElement(tagName(TABLE))
+                .timeOut(FIVE_SECONDS));
         setEndBenchMark();
         assertThat(getTimeDifference(), lessThan(HALF_SECOND.toMillis()));
         assertThat(webElement, equalTo(COMMON_LABELED_TABLE1));
@@ -116,8 +117,10 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
     @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findWebElementChainedOnlyWhenTimeIsDefinedTest() {
         setStartBenchMark();
-        WebElement webElement = seleniumSteps.find(webElement(className(CUSTOM_BUTTON_CLASS), FIVE_SECONDS)
-                .foundFrom(webElement(className(SPREAD_SHEET_CLASS), FIVE_SECONDS)));
+        WebElement webElement = seleniumSteps.find(webElement(className(CUSTOM_BUTTON_CLASS))
+                .timeOut(FIVE_SECONDS)
+                .foundFrom(webElement(className(SPREAD_SHEET_CLASS))
+                        .timeOut(FIVE_SECONDS)));
         setEndBenchMark();
         assertThat(getTimeDifference(), lessThan(HALF_SECOND.toMillis()));
         assertThat(webElement, equalTo(CUSTOM_LABELED_BUTTON1));
@@ -173,7 +176,8 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
     public void findWebElementFromAnotherOnlyWhenTimeIsDefinedTest() {
         WebElement spreadSheet = seleniumSteps.find(webElement(className(SPREAD_SHEET_CLASS)));
         setStartBenchMark();
-        WebElement webElement = seleniumSteps.find(webElement(className(CUSTOM_BUTTON_CLASS), FIVE_SECONDS)
+        WebElement webElement = seleniumSteps.find(webElement(className(CUSTOM_BUTTON_CLASS))
+                .timeOut(FIVE_SECONDS)
                 .foundFrom(spreadSheet));
         setEndBenchMark();
         assertThat(getTimeDifference(), lessThan(HALF_SECOND.toMillis()));
@@ -207,54 +211,66 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
                 {tagName(BUTTON_TAG), shouldBeEnabled(), COMMON_BUTTON3,
                         expectedDescriptionOfTheFoundElement(tagName(BUTTON_TAG), shouldBeEnabled())},
 
-                {xpath(RADIO_BUTTON_XPATH), shouldBeEnabled().negate(), COMMON_RADIOBUTTON2,
-                        expectedDescriptionOfTheFoundElement(xpath(RADIO_BUTTON_XPATH), shouldBeEnabled().negate())},
+                {xpath(RADIO_BUTTON_XPATH), not(shouldBeEnabled()), COMMON_RADIOBUTTON2,
+                        expectedDescriptionOfTheFoundElement(xpath(RADIO_BUTTON_XPATH), not(shouldBeEnabled()))},
 
                 {tagName(LINK_TAG), shouldBeVisible(), COMMON_LABELED_LINK1,
                         expectedDescriptionOfTheFoundElement(tagName(LINK_TAG), shouldBeVisible())},
 
-                {tagName(LINK_TAG), shouldBeVisible().negate(), COMMON_LABELED_LINK2,
-                        expectedDescriptionOfTheFoundElement(tagName(LINK_TAG), shouldBeVisible().negate())},
+                {tagName(LINK_TAG), not(shouldBeVisible()), COMMON_LABELED_LINK2,
+                        expectedDescriptionOfTheFoundElement(tagName(LINK_TAG), not(shouldBeVisible()))},
 
-                {className(MULTI_SELECT_CLASS), shouldContainElements(webElements(className(ITEM_OPTION_CLASS), FIVE_SECONDS), 2), MULTI_SELECT4,
+                {className(MULTI_SELECT_CLASS), shouldContainElements(webElements(className(ITEM_OPTION_CLASS))
+                        .timeOut(FIVE_SECONDS), 2), MULTI_SELECT4,
+
                         expectedDescriptionOfTheFoundElement(className(MULTI_SELECT_CLASS),
-                                shouldContainElements(webElements(className(ITEM_OPTION_CLASS), FIVE_SECONDS), 2))},
+                                shouldContainElements(webElements(className(ITEM_OPTION_CLASS))
+                                        .timeOut(FIVE_SECONDS), 2))},
 
-                {className(MULTI_SELECT_CLASS), shouldContainElements(webElements(className(ITEM_OPTION_CLASS), FIVE_SECONDS), 2).negate(), MULTI_SELECT1,
+                {className(MULTI_SELECT_CLASS), not(shouldContainElements(webElements(className(ITEM_OPTION_CLASS))
+                        .timeOut(FIVE_SECONDS), 2)), MULTI_SELECT1,
+
                         expectedDescriptionOfTheFoundElement(className(MULTI_SELECT_CLASS),
-                                shouldContainElements(webElements(className(ITEM_OPTION_CLASS), FIVE_SECONDS), 2).negate())},
+                                not(shouldContainElements(webElements(className(ITEM_OPTION_CLASS))
+                                        .timeOut(FIVE_SECONDS), 2)))},
 
-                {className(MULTI_SELECT_CLASS), shouldContainElements(webElements(className(ITEM_OPTION_CLASS), FIVE_SECONDS)), MULTI_SELECT1,
+                {className(MULTI_SELECT_CLASS), shouldContainElements(webElements(className(ITEM_OPTION_CLASS))
+                        .timeOut(FIVE_SECONDS)), MULTI_SELECT1,
+
                         expectedDescriptionOfTheFoundElement(className(MULTI_SELECT_CLASS),
-                                shouldContainElements(webElements(className(ITEM_OPTION_CLASS), FIVE_SECONDS)))},
+                                shouldContainElements(webElements(className(ITEM_OPTION_CLASS))
+                                        .timeOut(FIVE_SECONDS)))},
 
-                {tagName(SELECT), shouldContainElements(webElements(className(ITEM_OPTION_CLASS), ofMillis(50))).negate(), COMMON_LABELED_SELECT1,
+                {tagName(SELECT), not(shouldContainElements(webElements(className(ITEM_OPTION_CLASS))
+                        .timeOut(ofMillis(50)))), COMMON_LABELED_SELECT1,
+
                         expectedDescriptionOfTheFoundElement(tagName(SELECT),
-                                shouldContainElements(webElements(className(ITEM_OPTION_CLASS), ofMillis(50))).negate())},
+                                not(shouldContainElements(webElements(className(ITEM_OPTION_CLASS))
+                                        .timeOut(ofMillis(50)))))},
 
                 {tagName(TEXT_AREA_TAG), shouldHaveAttribute(ATTR11, VALUE13), TEXT_AREA2,
                         expectedDescriptionOfTheFoundElement(tagName(TEXT_AREA_TAG),
                                 shouldHaveAttribute(ATTR11, VALUE13))},
 
-                {tagName(TEXT_AREA_TAG), shouldHaveAttribute(ATTR11, VALUE13).negate(), TEXT_AREA1,
+                {tagName(TEXT_AREA_TAG), not(shouldHaveAttribute(ATTR11, VALUE13)), TEXT_AREA1,
                         expectedDescriptionOfTheFoundElement(tagName(TEXT_AREA_TAG),
-                                shouldHaveAttribute(ATTR11, VALUE13).negate())},
+                                not(shouldHaveAttribute(ATTR11, VALUE13)))},
 
                 {tagName(TEXT_AREA_TAG), shouldHaveAttributeContains(ATTR11, VALUE13), TEXT_AREA2,
                         expectedDescriptionOfTheFoundElement(tagName(TEXT_AREA_TAG),
                                 shouldHaveAttributeContains(ATTR11, VALUE13))},
 
-                {tagName(TEXT_AREA_TAG), shouldHaveAttributeContains(ATTR11, VALUE13).negate(), TEXT_AREA1,
+                {tagName(TEXT_AREA_TAG), not(shouldHaveAttributeContains(ATTR11, VALUE13)), TEXT_AREA1,
                         expectedDescriptionOfTheFoundElement(tagName(TEXT_AREA_TAG),
-                                shouldHaveAttributeContains(ATTR11, VALUE13).negate())},
+                                not(shouldHaveAttributeContains(ATTR11, VALUE13)))},
 
                 {tagName(TEXT_AREA_TAG), shouldHaveAttributeContains(ATTR11, compile(VALUE13)), TEXT_AREA2,
                         expectedDescriptionOfTheFoundElement(tagName(TEXT_AREA_TAG),
                                 shouldHaveAttributeContains(ATTR11, compile(VALUE13)))},
 
-                {tagName(TEXT_AREA_TAG), shouldHaveAttributeContains(ATTR11, compile(VALUE13)).negate(), TEXT_AREA1,
+                {tagName(TEXT_AREA_TAG), not(shouldHaveAttributeContains(ATTR11, compile(VALUE13))), TEXT_AREA1,
                         expectedDescriptionOfTheFoundElement(tagName(TEXT_AREA_TAG),
-                                shouldHaveAttributeContains(ATTR11, compile(VALUE13)).negate())},
+                                not(shouldHaveAttributeContains(ATTR11, compile(VALUE13))))},
 
                 {xpath(RADIO_BUTTON_XPATH), shouldHaveCssValue(CSS18, CSS_VALUE9), COMMON_RADIOBUTTON3,
                         expectedDescriptionOfTheFoundElement(xpath(RADIO_BUTTON_XPATH), shouldHaveCssValue(CSS18, CSS_VALUE9))},
@@ -293,11 +309,11 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
 
     @Test(dataProvider = "search criteria1", retryAnalyzer = RetryAnalyzer.class)
     public void findElementByCriteriaTest(By by,
-                                          Predicate<? extends SearchContext> criteria,
+                                          Predicate<WebElement> criteria,
                                           WebElement expected,
                                           String expectedElementDescription) {
         setStartBenchMark();
-        WebElement webElement = seleniumSteps.find(webElement(by, (Predicate<? super WebElement>) criteria));
+        WebElement webElement = seleniumSteps.find(webElement(by).criteria(criteria));
         setEndBenchMark();
         assertThat(new BigDecimal(getTimeDifference()),
                 either(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(450)))
@@ -308,11 +324,13 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
 
     @Test(dataProvider = "search criteria1", retryAnalyzer = RetryAnalyzer.class)
     public void findElementByCriteriaWithDefinedTimeTest(By by,
-                                                         Predicate<? extends SearchContext> criteria,
+                                                         Predicate<WebElement> criteria,
                                                          WebElement expected,
                                                          String expectedElementDescription) {
         setStartBenchMark();
-        WebElement webElement = seleniumSteps.find(webElement(by, FIVE_SECONDS, (Predicate<? super WebElement>) criteria));
+        WebElement webElement = seleniumSteps.find(webElement(by)
+                .timeOut(FIVE_SECONDS)
+                .criteria(criteria));
         setEndBenchMark();
         assertThat(new BigDecimal(getTimeDifference()),
                 either(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(450)))
@@ -323,14 +341,14 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
 
     @Test(dataProvider = "search criteria1", retryAnalyzer = RetryAnalyzer.class)
     public void findElementByCriteriaWithTimeDefinedImplicitlyTest(By by,
-                                                                   Predicate<? extends SearchContext> criteria,
+                                                                   Predicate<WebElement> criteria,
                                                                    WebElement expected,
                                                                    String expectedElementDescription) {
         setProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName(), "SECONDS");
         setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "5");
         try {
             setStartBenchMark();
-            WebElement webElement = seleniumSteps.find(webElement(by, (Predicate<? super WebElement>) criteria));
+            WebElement webElement = seleniumSteps.find(webElement(by).criteria(criteria));
             setEndBenchMark();
             assertThat(new BigDecimal(getTimeDifference()),
                     either(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(450)))
@@ -364,26 +382,31 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
                                 shouldHaveText(LINK_TEXT4).and(shouldBeVisible().negate()))},
 
                 {tagName(SELECT), OPTION_TEXT23,
-                        shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT22, FIVE_SECONDS), 2), COMMON_LABELED_SELECT4,
+                        shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT22).timeOut(FIVE_SECONDS), 2), COMMON_LABELED_SELECT4,
+
                         expectedDescriptionOfTheFoundElement(tagName(SELECT), shouldHaveText(OPTION_TEXT23)
-                                .and(shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT22, FIVE_SECONDS), 2)))},
+                                .and(shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT22).timeOut(FIVE_SECONDS), 2)))},
 
                 {tagName(SELECT), OPTION_TEXT19,
-                        shouldContainElements(webElements(tagName(OPTION), FIVE_SECONDS), 3).negate(), COMMON_LABELED_SELECT3,
+                        not(shouldContainElements(webElements(tagName(OPTION)).timeOut(FIVE_SECONDS), 3)), COMMON_LABELED_SELECT3,
                         expectedDescriptionOfTheFoundElement(tagName(SELECT),
-                                shouldHaveText(OPTION_TEXT19).and(shouldContainElements(webElements(tagName(OPTION), FIVE_SECONDS), 3).negate()))},
+                                shouldHaveText(OPTION_TEXT19)
+                                        .and(not(shouldContainElements(webElements(tagName(OPTION)).timeOut(FIVE_SECONDS), 3))))},
 
                 {tagName(BUTTON_TAG), BUTTON_TEXT5,
-                        shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1, FIVE_SECONDS)),
-                        COMMON_LABELED_BUTTON1,
+                        shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1)
+                                .timeOut(FIVE_SECONDS)), COMMON_LABELED_BUTTON1,
+
                         expectedDescriptionOfTheFoundElement(tagName(BUTTON_TAG),
-                                shouldHaveText(BUTTON_TEXT5).and(shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1, FIVE_SECONDS))))},
+                                shouldHaveText(BUTTON_TEXT5)
+                                        .and(shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1).timeOut(FIVE_SECONDS))))},
 
                 {tagName(BUTTON_TAG), BUTTON_TEXT3,
-                        shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1, ofMillis(50))).negate(),
+                        not(shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1).timeOut(ofMillis(50)))),
                         COMMON_BUTTON3,
                         expectedDescriptionOfTheFoundElement(tagName(BUTTON_TAG),
-                                shouldHaveText(BUTTON_TEXT3).and(shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1, ofMillis(50))).negate()))},
+                                shouldHaveText(BUTTON_TEXT3).and(not(shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1)
+                                        .timeOut(ofMillis(50))))))},
 
                 {CHAINED_FIND_TAB, TAB_TEXT2, shouldHaveAttribute(ATTR19, VALUE12), COMMON_TAB2,
                         expectedDescriptionOfTheFoundElement(CHAINED_FIND_TAB,
@@ -446,11 +469,12 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
     @Test(dataProvider = "search criteria2", retryAnalyzer = RetryAnalyzer.class)
     public void findElementByCriteriaAndTextTest(By by,
                                                  String text,
-                                                 Predicate<? extends SearchContext> criteria,
+                                                 Predicate<WebElement> criteria,
                                                  WebElement expected,
                                                  String expectedElementDescription) {
         setStartBenchMark();
-        WebElement webElement = seleniumSteps.find(webElement(by, text, (Predicate<? super WebElement>) criteria));
+        WebElement webElement = seleniumSteps.find(webElement(by, text)
+                .criteria(criteria));
         setEndBenchMark();
         assertThat(new BigDecimal(getTimeDifference()),
                 either(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(450)))
@@ -462,11 +486,13 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
     @Test(dataProvider = "search criteria2", retryAnalyzer = RetryAnalyzer.class)
     public void findElementByCriteriaAndTextWithDefinedTimeTest(By by,
                                                                 String text,
-                                                                Predicate<? extends SearchContext> criteria,
+                                                                Predicate<WebElement> criteria,
                                                                 WebElement expected,
                                                                 String expectedElementDescription) {
         setStartBenchMark();
-        WebElement webElement = seleniumSteps.find(webElement(by, text, FIVE_SECONDS, (Predicate<? super WebElement>) criteria));
+        WebElement webElement = seleniumSteps.find(webElement(by, text)
+                .timeOut(FIVE_SECONDS)
+                .criteria(criteria));
         setEndBenchMark();
         assertThat(new BigDecimal(getTimeDifference()),
                 either(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(450)))
@@ -478,14 +504,15 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
     @Test(dataProvider = "search criteria2", retryAnalyzer = RetryAnalyzer.class)
     public void findElementByCriteriaAndTextWithTimeDefinedImplicitlyTest(By by,
                                                                           String text,
-                                                                          Predicate<? extends SearchContext> criteria,
+                                                                          Predicate<WebElement> criteria,
                                                                           WebElement expected,
                                                                           String expectedElementDescription) {
         setProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName(), "SECONDS");
         setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "5");
         try {
             setStartBenchMark();
-            WebElement webElement = seleniumSteps.find(webElement(by, text, (Predicate<? super WebElement>) criteria));
+            WebElement webElement = seleniumSteps.find(webElement(by, text)
+                    .criteria(criteria));
             setEndBenchMark();
             assertThat(new BigDecimal(getTimeDifference()),
                     either(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(450)))
@@ -519,30 +546,32 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
                                 shouldHaveText(compile("4")).and(shouldBeVisible().negate()))},
 
                 {tagName(SELECT), compile(OPTION_TEXT23),
-                        shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT22, FIVE_SECONDS), 2), COMMON_LABELED_SELECT4,
+                        shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT22).timeOut(FIVE_SECONDS), 2), COMMON_LABELED_SELECT4,
+
                         expectedDescriptionOfTheFoundElement(tagName(SELECT),
                                 shouldHaveText(compile(OPTION_TEXT23))
-                                        .and(shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT22, FIVE_SECONDS), 2)))},
+                                        .and(shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT22).timeOut(FIVE_SECONDS), 2)))},
 
                 {tagName(SELECT), compile("19"),
-                        shouldContainElements(webElements(tagName(OPTION), FIVE_SECONDS), 3).negate(), COMMON_LABELED_SELECT3,
+                        not(shouldContainElements(webElements(tagName(OPTION)).timeOut(FIVE_SECONDS), 3)), COMMON_LABELED_SELECT3,
+
                         expectedDescriptionOfTheFoundElement(tagName(SELECT),
                                 shouldHaveText(compile("19"))
-                                        .and(shouldContainElements(webElements(tagName(OPTION), FIVE_SECONDS), 3).negate()))},
+                                        .and(not(shouldContainElements(webElements(tagName(OPTION)).timeOut(FIVE_SECONDS), 3))))},
 
                 {tagName(BUTTON_TAG), compile("Text5"),
-                        shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1, FIVE_SECONDS)),
+                        shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1).timeOut(FIVE_SECONDS)),
                         COMMON_LABELED_BUTTON1,
                         expectedDescriptionOfTheFoundElement(tagName(BUTTON_TAG),
                                 shouldHaveText(compile("Text5"))
-                                        .and(shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1, FIVE_SECONDS))))},
+                                        .and(shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1).timeOut(FIVE_SECONDS))))},
 
                 {tagName(BUTTON_TAG), compile("Text3"),
-                        shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1, ofMillis(50))).negate(),
+                        not(shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1).timeOut(ofMillis(50)))),
                         COMMON_BUTTON3,
                         expectedDescriptionOfTheFoundElement(tagName(BUTTON_TAG),
                                 shouldHaveText(compile("Text3"))
-                                        .and(shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1, ofMillis(50))).negate()))},
+                                        .and(not(shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1).timeOut(ofMillis(50))))))},
 
                 {CHAINED_FIND_TAB, compile(TAB_TEXT2), shouldHaveAttribute(ATTR19, VALUE12), COMMON_TAB2,
                         expectedDescriptionOfTheFoundElement(CHAINED_FIND_TAB,
@@ -617,11 +646,12 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
     @Test(dataProvider = "search criteria3", retryAnalyzer = RetryAnalyzer.class)
     public void findElementByCriteriaAndTextPatternTest(By by,
                                                         Pattern pattern,
-                                                        Predicate<? extends SearchContext> criteria,
+                                                        Predicate<WebElement> criteria,
                                                         WebElement expected,
                                                         String expectedElementDescription) {
         setStartBenchMark();
-        WebElement webElement = seleniumSteps.find(webElement(by, pattern, (Predicate<? super WebElement>) criteria));
+        WebElement webElement = seleniumSteps.find(webElement(by, pattern)
+                .criteria(criteria));
         setEndBenchMark();
         assertThat(new BigDecimal(getTimeDifference()), either(lessThan(new BigDecimal(HALF_SECOND.toMillis())))
                 .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(600))));
@@ -632,11 +662,13 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
     @Test(dataProvider = "search criteria3", retryAnalyzer = RetryAnalyzer.class)
     public void findElementByCriteriaAndTextPatternWithDefinedTimeTest(By by,
                                                                        Pattern pattern,
-                                                                       Predicate<? extends SearchContext> criteria,
+                                                                       Predicate<WebElement> criteria,
                                                                        WebElement expected,
                                                                        String expectedElementDescription) {
         setStartBenchMark();
-        WebElement webElement = seleniumSteps.find(webElement(by, pattern, FIVE_SECONDS, (Predicate<? super WebElement>) criteria));
+        WebElement webElement = seleniumSteps.find(webElement(by, pattern)
+                .timeOut(FIVE_SECONDS)
+                .criteria(criteria));
         setEndBenchMark();
         assertThat(new BigDecimal(getTimeDifference()), either(lessThan(new BigDecimal(HALF_SECOND.toMillis())))
                 .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(600))));
@@ -647,14 +679,14 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
     @Test(dataProvider = "search criteria3", retryAnalyzer = RetryAnalyzer.class)
     public void findElementByCriteriaAndTexPatterntWithTimeDefinedImplicitlyTest(By by,
                                                                                  Pattern pattern,
-                                                                                 Predicate<? extends SearchContext> criteria,
+                                                                                 Predicate<WebElement> criteria,
                                                                                  WebElement expected,
                                                                                  String expectedElementDescription) {
         setProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName(), "SECONDS");
         setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "5");
         try {
             setStartBenchMark();
-            WebElement webElement = seleniumSteps.find(webElement(by, pattern, (Predicate<? super WebElement>) criteria));
+            WebElement webElement = seleniumSteps.find(webElement(by, pattern).criteria(criteria));
             setEndBenchMark();
             assertThat(new BigDecimal(getTimeDifference()), either(lessThan(new BigDecimal(HALF_SECOND.toMillis())))
                     .or(closeTo(new BigDecimal(HALF_SECOND.toMillis()), new BigDecimal(600))));

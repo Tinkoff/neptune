@@ -412,7 +412,9 @@ public final class CommonConditions {
     static  <T extends SearchContext> Predicate<T> shouldBeLabeledBy(String...labels) {
         checkNotNull(labels);
         checkArgument(labels.length > 0, "At least one label should be defined");
-        return condition(format("has label(s) %s", String.join("and ", labels)),
+        Predicate<T> condition =  condition(format("has label(s) %s", String.join("and ", labels)),
                 t -> Labeled.class.isAssignableFrom(t.getClass()) && ((Labeled) t).labels().containsAll(asList(labels)));
+        ((TurnsRetortingOff<?>) condition).turnReportingOff();
+        return condition;
     }
 }

@@ -108,8 +108,8 @@ public class WindowTest extends BaseWebDriverTest {
                     .criteria(hasUrl(compile("^.*\\b(github)\\b.*$"))));
         }
         catch (Exception e) {
-            assertThat(e.getMessage(), containsString("Window/tab was not found by index 1 and by conditions " +
-                    "title meets regExp pattern '^.*\\b(Github)\\b.*$', url meets regExp pattern '^.*\\b(github)\\b.*$'"));
+            assertThat(e.getMessage(), containsString("Window/tab was not found. By index 1. " +
+                    "Criteria:title meets regExp pattern '^.*\\b(Github)\\b.*$', url meets regExp pattern '^.*\\b(github)\\b.*$'"));
             throw e;
         }
         finally {
@@ -131,8 +131,8 @@ public class WindowTest extends BaseWebDriverTest {
                     .criteria(hasUrl(compile("^.*\\b(github)\\b.*$"))));
         }
         catch (Exception e) {
-            assertThat(e.getMessage(), containsString("Window/tab was not found by index 1 and by conditions " +
-                    "title meets regExp pattern '^.*\\b(Github)\\b.*$', url meets regExp pattern '^.*\\b(github)\\b.*$'"));
+            assertThat(e.getMessage(), containsString("Window/tab was not found. By index 1. " +
+                    "Criteria:title meets regExp pattern '^.*\\b(Github)\\b.*$', url meets regExp pattern '^.*\\b(github)\\b.*$'"));
             throw e;
         }
         finally {

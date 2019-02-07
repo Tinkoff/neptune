@@ -21,7 +21,7 @@ public final class SwitchActionSupplier extends SequentialActionSupplier<Seleniu
      * @param to is how to get some target locator
      * @return built `switch to` action
      */
-    public static SwitchActionSupplier to(TargetLocatorSupplier<? extends Object> to) {
+    public static SwitchActionSupplier to(TargetLocatorSupplier to) {
         return new SwitchActionSupplier(to.toString()).performOn((SequentialGetStepSupplier<SeleniumStepContext, Object, ?, ?, ?>) to);
     }
 

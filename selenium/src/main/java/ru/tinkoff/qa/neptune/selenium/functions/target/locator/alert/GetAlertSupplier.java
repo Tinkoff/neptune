@@ -14,7 +14,6 @@ import java.util.function.Supplier;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 import static java.lang.String.format;
-import static java.util.List.of;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITING_ALERT_TIME_DURATION;
 
 public final class GetAlertSupplier extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<SeleniumStepContext, Alert, WebDriver, GetAlertSupplier>
@@ -22,7 +21,6 @@ public final class GetAlertSupplier extends SequentialGetStepSupplier.GetObjectC
 
     private GetAlertSupplier() {
         super("Present alert", webDriver -> webDriver.switchTo().alert());
-        addIgnored(of(NoAlertPresentException.class));
         throwOnEmptyResult(noSuchAlert());
         timeOut(WAITING_ALERT_TIME_DURATION.get());
     }
@@ -31,7 +29,7 @@ public final class GetAlertSupplier extends SequentialGetStepSupplier.GetObjectC
         return () -> {
             String description = getCriteriaDescription();
             if (!isBlank(description)) {
-                return new NoAlertPresentException(format("No alert which suits criteria '%s' has been found", description));
+                return new NoAlertPresentException(format("No alert that suits criteria '%s' has been found", description));
             }
             return new NoAlertPresentException("No alert has been found");
         };
@@ -50,6 +48,11 @@ public final class GetAlertSupplier extends SequentialGetStepSupplier.GetObjectC
     @Override
     public GetAlertSupplier timeOut(Duration timeOut) {
         return super.timeOut(timeOut);
+    }
+
+    @Override
+    public GetAlertSupplier timeOut(Duration timeOut, Duration sleepingTime) {
+        return super.timeOut(timeOut, sleepingTime);
     }
 
     /**

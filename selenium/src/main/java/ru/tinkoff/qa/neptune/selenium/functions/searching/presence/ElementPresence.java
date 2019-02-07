@@ -1,6 +1,8 @@
 package ru.tinkoff.qa.neptune.selenium.functions.searching.presence;
 
+import org.openqa.selenium.SearchContext;
 import ru.tinkoff.qa.neptune.core.api.steps.Presence;
+import ru.tinkoff.qa.neptune.core.api.steps.StepFunction;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
@@ -24,8 +26,9 @@ public final class ElementPresence extends Presence<SeleniumStepContext> {
      * @return an instance of {@link Presence}.
      */
     public static Presence<SeleniumStepContext> presenceOfAnElement(SearchSupplier<?> supplier) {
-        return new ElementPresence(supplier.get().compose(currentContent()))
-                .addIgnored(of(NoSuchElementException.class));
+        StepFunction<SearchContext, ?> f = (StepFunction<SearchContext, ?>) supplier.get();
+        f.addIgnored(of(NoSuchElementException.class));
+        return new ElementPresence(f.compose(currentContent()));
     }
 
     /**

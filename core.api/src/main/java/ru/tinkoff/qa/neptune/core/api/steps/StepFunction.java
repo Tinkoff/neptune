@@ -9,6 +9,7 @@ import java.io.File;
 import java.util.*;
 import java.util.function.Function;
 
+import static java.util.List.copyOf;
 import static java.util.Objects.nonNull;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.*;
@@ -254,18 +255,26 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
                 return (R) result;
             };
 
-            if (SequentialStepFunction.class.isAssignableFrom(before.getClass())) {
-                sequence.addAll(((SequentialStepFunction<?, ?>) before).sequence);
-            }
-            else {
-                sequence.addFirst((Function<Object, Object>) before);
-            }
+            StepFunction<? super V, ? extends R> stepAfter = getStepFunction(after);
+            if (isLoggable(before)) {
+                StepFunction<? super T, ? extends V> stepBefore = getStepFunction(before);
 
-            if (SequentialStepFunction.class.isAssignableFrom(after.getClass())) {
-                sequence.addAll(((SequentialStepFunction<?, ?>) after).sequence);
-            }
-            else {
-                sequence.addLast((Function<Object, Object>) after);
+                if (SequentialStepFunction.class.isAssignableFrom(stepBefore.getClass())) {
+                    sequence.addAll(((SequentialStepFunction<?, ?>) stepBefore).sequence);
+                }
+                else {
+                    sequence.addFirst((Function<Object, Object>) stepBefore);
+                }
+
+                if (SequentialStepFunction.class.isAssignableFrom(stepAfter.getClass())) {
+                    sequence.addAll(((SequentialStepFunction<?, ?>) stepAfter).sequence);
+                }
+                else {
+                    sequence.addLast((Function<Object, Object>) stepAfter);
+                }
+            } else {
+                sequence.add((Function<Object, Object>) stepAfter.function.compose(before));
+                addIgnored(copyOf(stepAfter.ignored));
             }
 
             if (toReport) {
@@ -273,6 +282,14 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
             }
             else {
                 turnReportingOff();
+            }
+        }
+
+        private static <T, R> StepFunction<T, R> getStepFunction(Function<T, R> function) {
+            if (StepFunction.class.isAssignableFrom(function.getClass())) {
+                return  (StepFunction<T, R>) function;
+            } else {
+                return new StepFunction<>(function.toString(), function);
             }
         }
 
@@ -299,6 +316,17 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
             sequence.forEach(objectObjectFunction -> {
                 if (StepFunction.class.isAssignableFrom(objectObjectFunction.getClass())) {
                     ((StepFunction<?, ?>) objectObjectFunction).turnReportingOn();
+                }
+            });
+            return this;
+        }
+
+        @Override
+        public StepFunction<T, R> addIgnored(List<Class<? extends Throwable>> toBeIgnored) {
+            super.addIgnored(toBeIgnored);
+            sequence.forEach(f -> {
+                if (IgnoresThrowable.class.isAssignableFrom(f.getClass())) {
+                    ((IgnoresThrowable<?>) f).addIgnored(toBeIgnored);
                 }
             });
             return this;

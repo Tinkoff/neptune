@@ -38,6 +38,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
 
     private MultipleSearchSupplier(String description, Function<SearchContext, List<R>> originalFunction) {
         super(description, originalFunction);
+        from(searchContext -> searchContext);
         timeOut(ELEMENT_WAITING_DURATION.get());
         addIgnored(of(StaleElementReferenceException.class));
         if (FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.get()) {
@@ -118,29 +119,12 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param <T> the type of widgets which should be found
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass, List<String> labels) {
-        var labeledBy = shouldBeLabeledBy(labels.toArray(new String[]{}));
-        ((TurnsRetortingOff<?>) labeledBy).turnReportingOff();
+    public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass, String... labels) {
+        var labeledBy = shouldBeLabeledBy(labels);
         var labeledWidgets = labeledWidgets(tClass);
-        var search =  new MultipleSearchSupplier<>(format("%s '%s'", getWidgetName(tClass), join(",", labels)), labeledWidgets);
+        var search =  new MultipleSearchSupplier<>(format("List of %s '%s'", getWidgetName(tClass), join(",", labels)), labeledWidgets);
         labeledWidgets.setCriteriaDescription(criteriaDescription(search));
         return search.criteria(labeledBy);
-    }
-
-    /**
-     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
-     * The built function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of {@link Widget} found from the input value.
-     *
-     * @param tClass is a class of objects to be returned. tClass should have at least one
-     *               not abstract subclass that implements {@link Labeled} or be that class.
-     * @param label (text of some element or attribute inside or beside the widget) is used to
-     *               find widgets.
-     * @param <T> the type of widgets which should be found
-     * @return an instance of {@link MultipleSearchSupplier}
-     */
-    public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass, String label) {
-        return widgets(tClass, List.of(label));
     }
 
     /**
@@ -154,7 +138,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      */
     public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass) {
         var widgets = FindWidgets.widgets(tClass);
-        var search = new MultipleSearchSupplier<>(getWidgetName(tClass), widgets);
+        var search = new MultipleSearchSupplier<>(format("List of %s", getWidgetName(tClass)), widgets);
         widgets.setCriteriaDescription(criteriaDescription(search));
         return search;
     }
@@ -178,20 +162,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param labels (texts of some elements or attributes inside or beside the button) are used to find buttons.
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Button> buttons(List<String> labels) {
+    public static MultipleSearchSupplier<Button> buttons(String... labels) {
         return widgets(Button.class, labels);
-    }
-
-    /**
-     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
-     * The built function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of found buttons.
-     *
-     * @param label (text of some element or attribute inside or beside the button) is used to find buttons.
-     * @return an instance of {@link MultipleSearchSupplier}
-     */
-    public static MultipleSearchSupplier<Button> buttons(String label) {
-        return widgets(Button.class, label);
     }
 
     /**
@@ -214,21 +186,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      *               find flags.
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Flag> flags(List<String> labels) {
+    public static MultipleSearchSupplier<Flag> flags(String... labels) {
         return widgets(Flag.class, labels);
-    }
-
-    /**
-     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
-     * The built function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of found flags.
-     *
-     * @param label (text of some element or attribute inside or beside the flag) is used to
-     *               find flags.
-     * @return an instance of {@link MultipleSearchSupplier}
-     */
-    public static MultipleSearchSupplier<Flag> flags(String label) {
-        return widgets(Flag.class, label);
     }
 
     /**
@@ -251,21 +210,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      *               find check boxes.
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Flag.CheckBox> checkBoxes(List<String> labels) {
+    public static MultipleSearchSupplier<Flag.CheckBox> checkBoxes(String... labels) {
         return widgets(Flag.CheckBox.class, labels);
-    }
-
-    /**
-     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
-     * The built function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of found check boxes.
-     *
-     * @param label (text of some element or attribute inside or beside the check box) is used to
-     *               find check boxes.
-     * @return an instance of {@link MultipleSearchSupplier}
-     */
-    public static MultipleSearchSupplier<Flag.CheckBox> checkBoxes(String label) {
-        return widgets(Flag.CheckBox.class, label);
     }
 
     /**
@@ -288,21 +234,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      *               find radio buttons.
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Flag.RadioButton> radioButtons(List<String> labels) {
+    public static MultipleSearchSupplier<Flag.RadioButton> radioButtons(String... labels) {
         return widgets(Flag.RadioButton.class, labels);
-    }
-
-    /**
-     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
-     * The built function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of found radio buttons.
-     *
-     * @param label (text of some element or attribute inside or beside the radio button) is used to
-     *               find radio buttons.
-     * @return an instance of {@link MultipleSearchSupplier}
-     */
-    public static MultipleSearchSupplier<Flag.RadioButton> radioButtons(String label) {
-        return widgets(Flag.RadioButton.class, label);
     }
 
     /**
@@ -325,21 +258,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      *               find links.
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Link> links(List<String> labels) {
+    public static MultipleSearchSupplier<Link> links(String... labels) {
         return widgets(Link.class, labels);
-    }
-
-    /**
-     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
-     * The built function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of found links.
-     *
-     * @param label (text of some element or attribute inside or beside the link) is used to
-     *               find links.
-     * @return an instance of {@link MultipleSearchSupplier}
-     */
-    public static MultipleSearchSupplier<Link> links(String label) {
-        return widgets(Link.class, label);
     }
 
     /**
@@ -362,21 +282,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      *               find selects.
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Select> selects(List<String> labels) {
+    public static MultipleSearchSupplier<Select> selects(String... labels) {
         return widgets(Select.class, labels);
-    }
-
-    /**
-     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
-     * The built function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of found selects.
-     *
-     * @param label (text of some element or attribute inside or beside the select) is used to
-     *               find selects.
-     * @return an instance of {@link MultipleSearchSupplier}
-     */
-    public static MultipleSearchSupplier<Select> selects(String label) {
-        return widgets(Select.class, label);
     }
 
     /**
@@ -399,21 +306,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      *               find tabs.
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Tab> tabs(List<String> labels) {
+    public static MultipleSearchSupplier<Tab> tabs(String... labels) {
         return widgets(Tab.class, labels);
-    }
-
-    /**
-     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
-     * The built function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of found tabs.
-     *
-     * @param label (text of some element or attribute inside or beside the tab) is used to
-     *               find tabs.
-     * @return an instance of {@link MultipleSearchSupplier}
-     */
-    public static MultipleSearchSupplier<Tab> tabs(String label) {
-        return widgets(Tab.class, label);
     }
 
     /**
@@ -436,21 +330,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      *               find text fields.
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<TextField> textFields(List<String> labels) {
+    public static MultipleSearchSupplier<TextField> textFields(String... labels) {
         return widgets(TextField.class, labels);
-    }
-
-    /**
-     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
-     * The built function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of found text fields.
-     *
-     * @param label (text of some element or attribute inside or beside the text field) is used to
-     *               find text fields.
-     * @return an instance of {@link MultipleSearchSupplier}
-     */
-    public static MultipleSearchSupplier<TextField> textFields(String label) {
-        return widgets(TextField.class, label);
     }
 
     /**
@@ -473,21 +354,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      *               find tables.
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<Table> tables(List<String> labels) {
+    public static MultipleSearchSupplier<Table> tables(String... labels) {
         return widgets(Table.class, labels);
-    }
-
-    /**
-     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
-     * The built function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of found tables.
-     *
-     * @param label (text of some element or attribute inside or beside the text field) is used to
-     *               find tables.
-     * @return an instance of {@link MultipleSearchSupplier}
-     */
-    public static MultipleSearchSupplier<Table> tables(String label) {
-        return widgets(Table.class, label);
     }
 
     /**

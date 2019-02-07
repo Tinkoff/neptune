@@ -124,9 +124,5 @@ public enum ConditionConcatenation {
         }
     };
 
-    public static <T> Predicate<T> not(Predicate<T> p) {
-        return p.negate();
-    }
-
     abstract <T> Predicate<T> concat(Predicate<T> p1, Predicate<? super T> p2);
 }
