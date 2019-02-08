@@ -3,7 +3,6 @@ package ru.tinkoff.qa.neptune.selenium.functions.searching;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.steps.TurnsRetortingOff;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Labeled;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.*;
@@ -46,8 +45,7 @@ public final class SearchSupplier<R extends SearchContext>
     }
 
     private static Supplier<NoSuchElementException> noSuchElementException(SearchSupplier<?> supplier) {
-        var errorMessage = format("Nothing was found. Attempt to get %s", supplier.toString());
-        return () -> new NoSuchElementException(errorMessage);
+        return () -> new NoSuchElementException(format("Nothing was found. Attempt to get %s", supplier.toString()));
     }
 
     private static Supplier<String> criteriaDescription(SearchSupplier<?> search) {
@@ -72,9 +70,8 @@ public final class SearchSupplier<R extends SearchContext>
      */
     public static SearchSupplier<WebElement> webElement(By by, String text) {
         Predicate<WebElement> shouldHaveText = shouldHaveText(text);
-        ((TurnsRetortingOff<?>) shouldHaveText).turnReportingOff();
         var webElements = webElements(by);
-        var search = new SearchSupplier<>(format("Web element located %s with the text '%s'", by, text), webElements);
+        var search = new SearchSupplier<>(format("Web element located %s", by), webElements);
         webElements.setCriteriaDescription(criteriaDescription(search));
         return search.criteria(shouldHaveText);
     }
@@ -90,9 +87,8 @@ public final class SearchSupplier<R extends SearchContext>
      */
     public static SearchSupplier<WebElement> webElement(By by, Pattern textPattern) {
         Predicate<WebElement> shouldHaveText = shouldHaveText(textPattern);
-        ((TurnsRetortingOff<?>) shouldHaveText).turnReportingOff();
         var webElements = webElements(by);
-        var search = new SearchSupplier<>(format("Web element located %s with text that matches the pattern '%s'", by, textPattern), webElements);
+        var search = new SearchSupplier<>(format("Web element located %s", by), webElements);
         webElements.setCriteriaDescription(criteriaDescription(search));
         return search.criteria(shouldHaveText);
     }
@@ -127,8 +123,10 @@ public final class SearchSupplier<R extends SearchContext>
     public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, String... labels) {
         Predicate<T> labeledBy = shouldBeLabeledBy(labels);
         var labeledWidgets = labeledWidgets(tClass);
-        var search =  new SearchSupplier<>(format("%s '%s'", getWidgetName(tClass), join(",", labels)), labeledWidgets);
+        var stringLabels = join(",", labels);
+        var search =  new SearchSupplier<>(format("%s '%s'", getWidgetName(tClass), join(", ", labels)), labeledWidgets);
         labeledWidgets.setCriteriaDescription(criteriaDescription(search));
+        labeledWidgets.setLabels(stringLabels);
         return search.criteria(labeledBy);
     }
 

@@ -33,6 +33,7 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
     private final Predicate<Class<? extends R>> classPredicate;
     private List<Class<? extends R>> classesToInstantiate;
     private Supplier<String> criteriaDescription;
+    private String labels;
 
     FindWidgets(Class<R> classOfAWidget, Predicate<Class<? extends R>> classPredicate) {
         checkArgument(nonNull(classOfAWidget), "The class to be instantiated should be defined.");
@@ -117,6 +118,10 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
                                 .map(Supplier::get)
                                 .orElse(EMPTY);
 
+                        if (!isBlank(labels)) {
+                            stringDescription = format("%s '%s'", stringDescription, labels);
+                        }
+
                         if (!isBlank(criteria)) {
                             stringDescription = format("%s ['%s']", stringDescription, criteria);
                         }
@@ -130,5 +135,9 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
     void setCriteriaDescription(Supplier<String> criteriaDescription) {
         checkNotNull(criteriaDescription);
         this.criteriaDescription = criteriaDescription;
+    }
+
+    void setLabels(String labels) {
+        this.labels = labels;
     }
 }

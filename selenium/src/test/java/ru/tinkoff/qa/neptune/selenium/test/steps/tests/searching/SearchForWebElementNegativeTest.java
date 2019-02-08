@@ -33,8 +33,8 @@ import static org.openqa.selenium.By.xpath;
 
 public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
 
-    private static final String FOUND_BY_PATTERN_ERROR = "Nothing was found. Attempt to get a single item Web element located %s";
-    private static final String FOUND_ON_CONDITION_ERROR = FOUND_BY_PATTERN_ERROR + ". Criteria: %s";
+    private static final String FOUND_BY_PATTERN_ERROR = "Nothing was found. Attempt to get Web element located %s";
+    private static final String FOUND_ON_CONDITION_ERROR = FOUND_BY_PATTERN_ERROR + " [Criteria: %s]";
     private static final By CLASS_THAT_DOES_NOT_EXIST = className("fakeClass");
 
     private static String expectedDescriptionOfNotFoundElementError(By by, Predicate<? extends SearchContext> condition) {
@@ -603,7 +603,7 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
                 {tagName(BUTTON_TAG), BUTTON_TEXT3, not(shouldBeEnabled()),
 
                         expectedDescriptionOfNotFoundElementError(tagName(BUTTON_TAG),
-                                not(shouldHaveText(BUTTON_TEXT3).and(shouldBeEnabled())))},
+                                shouldHaveText(BUTTON_TEXT3).and(not(shouldBeEnabled())))},
 
                 {tagName(LINK_TAG), LINK_TEXT1, shouldBeVisible(),
 
@@ -613,7 +613,7 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
                 {tagName(LINK_TAG), LINK_TEXT2,  not(shouldBeVisible()),
 
                         expectedDescriptionOfNotFoundElementError(tagName(LINK_TAG),
-                                not(shouldHaveText(LINK_TEXT2).and(shouldBeVisible())))},
+                                shouldHaveText(LINK_TEXT2).and(not(shouldBeVisible())))},
 
                 {tagName(SELECT), OPTION_TEXT23,
                         shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT22)
@@ -628,8 +628,8 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
                                 .timeOut(ofMillis(10)), 3)),
 
                         expectedDescriptionOfNotFoundElementError(tagName(SELECT),
-                                not(shouldHaveText(OPTION_TEXT20)
-                                        .and(shouldContainElements(webElements(tagName(OPTION))
+                                shouldHaveText(OPTION_TEXT20)
+                                        .and(not(shouldContainElements(webElements(tagName(OPTION))
                                                 .timeOut(ofMillis(10)), 3))))},
 
                 {tagName(BUTTON_TAG), BUTTON_TEXT4,
@@ -646,8 +646,8 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
                                 .timeOut(ofMillis(10)))),
 
                         expectedDescriptionOfNotFoundElementError(tagName(BUTTON_TAG),
-                                not(shouldHaveText(BUTTON_TEXT5)
-                                        .and(shouldContainElements(webElements(tagName(LABEL_TAG),
+                                shouldHaveText(BUTTON_TEXT5)
+                                        .and(not(shouldContainElements(webElements(tagName(LABEL_TAG),
                                                 BUTTON_LABEL_TEXT1)
                                                 .timeOut(ofMillis(10))))))},
 
@@ -660,8 +660,8 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
                 {CHAINED_FIND_TAB, TAB_TEXT2, not(shouldHaveAttribute(ATTR19, VALUE12)),
 
                         expectedDescriptionOfNotFoundElementError(CHAINED_FIND_TAB,
-                                not(shouldHaveText(TAB_TEXT2)
-                                        .and(shouldHaveAttribute(ATTR19, VALUE12))))},
+                                shouldHaveText(TAB_TEXT2)
+                                        .and(not(shouldHaveAttribute(ATTR19, VALUE12))))},
 
                 {CHAINED_FIND_TAB, TAB_TEXT4, shouldHaveAttributeContains(ATTR20, VALUE14),
 
@@ -671,8 +671,8 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
                 {CHAINED_FIND_TAB, TAB_TEXT3, not(shouldHaveAttributeContains(ATTR20, VALUE14)),
 
                         expectedDescriptionOfNotFoundElementError(CHAINED_FIND_TAB,
-                                not(shouldHaveText(TAB_TEXT3)
-                                        .and(shouldHaveAttributeContains(ATTR20, VALUE14))))},
+                                shouldHaveText(TAB_TEXT3)
+                                        .and(not(shouldHaveAttributeContains(ATTR20, VALUE14))))},
 
                 {CHAINED_FIND_TAB, TAB_TEXT3, shouldHaveAttributeContains(ATTR20, compile(VALUE12)),
                         expectedDescriptionOfNotFoundElementError(CHAINED_FIND_TAB,
@@ -682,8 +682,8 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
                 {CHAINED_FIND_TAB, TAB_TEXT1, not(shouldHaveAttributeContains(ATTR20, compile(VALUE12))),
 
                         expectedDescriptionOfNotFoundElementError(CHAINED_FIND_TAB,
-                                not(shouldHaveText(TAB_TEXT1)
-                                        .and(shouldHaveAttributeContains(ATTR20, compile(VALUE12)))))},
+                                shouldHaveText(TAB_TEXT1)
+                                        .and(not(shouldHaveAttributeContains(ATTR20, compile(VALUE12)))))},
 
                 {xpath(TEXT_FIELD_XPATH), INPUT_TEXT4, shouldHaveCssValue(CSS8, CSS_VALUE6),
 
@@ -694,8 +694,8 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
                 {xpath(TEXT_FIELD_XPATH), INPUT_TEXT3, not(shouldHaveCssValue(CSS8, CSS_VALUE6)),
 
                         expectedDescriptionOfNotFoundElementError(xpath(TEXT_FIELD_XPATH),
-                                not(shouldHaveText(INPUT_TEXT3)
-                                        .and(shouldHaveCssValue(CSS8, CSS_VALUE6))))},
+                                shouldHaveText(INPUT_TEXT3)
+                                        .and(not(shouldHaveCssValue(CSS8, CSS_VALUE6))))},
 
                 {xpath(TEXT_FIELD_XPATH), INPUT_TEXT4, shouldHaveCssValueContains(CSS8, "4")
                         .and(shouldHaveCssValueContains(CSS9, "5")),
@@ -708,7 +708,7 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
                         .and(shouldHaveCssValueContains(CSS9, "5"))),
 
                         expectedDescriptionOfNotFoundElementError(xpath(TEXT_FIELD_XPATH),
-                                not(shouldHaveText(INPUT_TEXT1).and(shouldHaveCssValueContains(CSS8, "4")
+                                shouldHaveText(INPUT_TEXT1).and(not(shouldHaveCssValueContains(CSS8, "4")
                                         .and(shouldHaveCssValueContains(CSS9, "5")))))},
 
                 {xpath(TEXT_FIELD_XPATH), INPUT_TEXT4, shouldHaveCssValueContains(CSS8, compile("4"))
@@ -722,7 +722,7 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
                         .and(shouldHaveCssValueContains(CSS9, compile("5")))),
 
                         expectedDescriptionOfNotFoundElementError(xpath(TEXT_FIELD_XPATH),
-                                not(shouldHaveText(INPUT_TEXT1).and(shouldHaveCssValueContains(CSS8, compile("4"))
+                                shouldHaveText(INPUT_TEXT1).and(not(shouldHaveCssValueContains(CSS8, compile("4"))
                                         .and(shouldHaveCssValueContains(CSS9, compile("5"))))))},
         };
     }
@@ -785,7 +785,7 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
 
                 {tagName(BUTTON_TAG), compile("Text3"), not(shouldBeEnabled()),
                         expectedDescriptionOfNotFoundElementError(tagName(BUTTON_TAG),
-                                not(shouldHaveText(compile("Text3")).and(shouldBeEnabled())))},
+                                shouldHaveText(compile("Text3")).and(not(shouldBeEnabled())))},
 
                 {tagName(LINK_TAG), compile("Text1"), shouldBeVisible(),
                         expectedDescriptionOfNotFoundElementError(tagName(LINK_TAG),
