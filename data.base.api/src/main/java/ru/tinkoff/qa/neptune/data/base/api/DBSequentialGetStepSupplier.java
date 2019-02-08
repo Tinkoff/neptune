@@ -13,10 +13,17 @@ import static java.util.Optional.ofNullable;
 @SuppressWarnings("unchecked")
 @MakeStringCapturesOnFinishing
 @MakeFileCapturesOnFinishing
-public abstract class DBSequentialGetStepSupplier<T, Q, R extends DBSequentialGetStepSupplier<T, Q, R>>
-        extends SequentialGetStepSupplier<DataBaseStepContext, T, Q, R> {
+public abstract class DBSequentialGetStepSupplier<T, M, P, R extends DBSequentialGetStepSupplier<T, M, P, R>>
+        extends SequentialGetStepSupplier<DataBaseStepContext, T, M, P, R> {
 
     private Object connection;
+    private final SequentialGetStepSupplier<DataBaseStepContext, T, M, P, ?> innerSupplier;
+
+    protected DBSequentialGetStepSupplier(String description,
+                                          SequentialGetStepSupplier<DataBaseStepContext, T, M, P, ?> innerSupplier) {
+        super(description);
+        this.innerSupplier = innerSupplier;
+    }
 
     protected static <T extends PersistableObject> T setQuery(T persistable, Object query) {
         return (T) persistable.setQuery(query);
@@ -51,7 +58,7 @@ public abstract class DBSequentialGetStepSupplier<T, Q, R extends DBSequentialGe
 
     @Override
     public Function<DataBaseStepContext, T> get() {
-        var result = super.get();
+        var result = innerSupplier.get();
         return new Function<>() {
             @Override
             public T apply(DataBaseStepContext dataBaseStepContext) {
@@ -72,6 +79,11 @@ public abstract class DBSequentialGetStepSupplier<T, Q, R extends DBSequentialGe
                 return result.toString();
             }
         };
+    }
+
+    @Override
+    public Function<M, T> getEndFunction() {
+        return innerSupplier.getEndFunction();
     }
 }
 

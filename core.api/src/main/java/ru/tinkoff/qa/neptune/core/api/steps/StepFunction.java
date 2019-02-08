@@ -58,6 +58,9 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
 
     @Override
     public R apply(T t) {
+        var thisClass = this.getClass();
+        var isComplex = (SequentialStepFunction.class.isAssignableFrom(thisClass)
+                && ((SequentialStepFunction) this).sequence.size() > 1);
         try {
             if (toReport) {
                 fireEventStarting(format("Get %s", description));
@@ -66,8 +69,8 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
             if (toReport) {
                 fireReturnedValueIfNecessary(result);
             }
-            if (catchSuccessEvent() && toReport && !SequentialStepFunction.class.isAssignableFrom(this.getClass())
-                    && !StepFunction.class.isAssignableFrom(function.getClass())) {
+            if (catchSuccessEvent() && toReport && !isComplex &&
+                    !StepFunction.class.isAssignableFrom(function.getClass())) {
                 catchValue(result, captorFilters);
             }
             return result;
@@ -77,8 +80,8 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
                 if (toReport) {
                     fireThrownException(thrown);
                 }
-                if (catchFailureEvent() && toReport && !SequentialStepFunction.class.isAssignableFrom(this.getClass())
-                        && !StepFunction.class.isAssignableFrom(function.getClass())) {
+                if (catchFailureEvent() && toReport && !isComplex &&
+                        !StepFunction.class.isAssignableFrom(function.getClass())) {
                     catchValue(t, captorFilters);
                 }
                 throw thrown;
@@ -235,7 +238,7 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
 
     static final class SequentialStepFunction<T, R> extends StepFunction<T, R> {
 
-        private final LinkedList<Function<Object, Object>> sequence = new LinkedList<>();
+        final LinkedList<Function<Object, Object>> sequence = new LinkedList<>();
 
         @SuppressWarnings("unchecked")
         <V> SequentialStepFunction(Function<? super T, ? extends V> before,
@@ -277,6 +280,7 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
             } else {
                 sequence.add((Function<Object, Object>) stepAfter.function.compose(before));
                 addIgnored(copyOf(stepAfter.ignored));
+                addCaptorFilters(copyOf(stepAfter.captorFilters));
             }
 
             if (toReport) {

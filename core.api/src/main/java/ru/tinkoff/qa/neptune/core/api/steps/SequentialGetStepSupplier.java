@@ -375,7 +375,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
     }
 
-    abstract Function<M, R> getEndFunction();
+    public abstract Function<M, R> getEndFunction();
 
     /**
      * Returns string description of the defined criteria. If there is some description and {@link Predicate#toString()}
@@ -415,7 +415,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
 
         @Override
-        Function<M, R> getEndFunction() {
+        public Function<M, R> getEndFunction() {
             return ofNullable(condition)
                     .map(rPredicate -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime).map(sleep ->
@@ -505,7 +505,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
 
         @Override
-        Function<M, R> getEndFunction() {
+        public Function<M, R> getEndFunction() {
             return ofNullable(condition)
                     .map(rPredicate -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime).map(sleep ->
@@ -595,7 +595,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
 
         @Override
-        Function<M, R> getEndFunction() {
+        public Function<M, R> getEndFunction() {
             return ofNullable(condition)
                     .map(rPredicate -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime).map(sleep ->
@@ -685,7 +685,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
 
         @Override
-        Function<M, S> getEndFunction() {
+        public Function<M, S> getEndFunction() {
             return ofNullable(condition)
                     .map(rPredicate -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime).map(sleep ->
@@ -777,7 +777,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
 
         @Override
-        Function<M, R[]> getEndFunction() {
+        public Function<M, R[]> getEndFunction() {
             return ofNullable(condition)
                     .map(rPredicate -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime).map(sleep ->
