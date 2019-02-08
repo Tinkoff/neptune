@@ -28,6 +28,7 @@ import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static ru.tinkoff.qa.neptune.core.api.steps.Condition.NOT_DESCRIBED;
 import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromArray.getFromArray;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromIterable.getFromIterable;
@@ -399,7 +400,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
                         return pPredicate.toString();
                     }
 
-                    return "<not described condition>";
+                    return NOT_DESCRIBED;
                 }).orElse(EMPTY);
     }
 

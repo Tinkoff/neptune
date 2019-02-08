@@ -43,11 +43,6 @@ public enum ConditionConcatenation {
             return condition("<not described condition>", p1)
                     .and(condition("<not described condition>", p2));
         }
-
-        @Override
-        public String toString() {
-            return ",";
-        }
     },
     OR {
         @Override
@@ -80,11 +75,6 @@ public enum ConditionConcatenation {
             return condition("<not described condition>", p1)
                     .or(condition("<not described condition>",  p2));
         }
-
-        @Override
-        public String toString() {
-            return "or";
-        }
     },
     XOR {
         @Override
@@ -116,11 +106,6 @@ public enum ConditionConcatenation {
 
             return ((Condition<T>) condition("<not described condition>", p1))
                     .xor(condition("<not described condition>", p2));
-        }
-
-        @Override
-        public String toString() {
-            return "xor";
         }
     };
 

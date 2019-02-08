@@ -66,7 +66,8 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
             if (toReport) {
                 fireReturnedValueIfNecessary(result);
             }
-            if (catchSuccessEvent() && toReport && !StepFunction.class.isAssignableFrom(function.getClass())) {
+            if (catchSuccessEvent() && toReport && !SequentialStepFunction.class.isAssignableFrom(this.getClass())
+                    && !StepFunction.class.isAssignableFrom(function.getClass())) {
                 catchValue(result, captorFilters);
             }
             return result;
@@ -76,7 +77,8 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
                 if (toReport) {
                     fireThrownException(thrown);
                 }
-                if (catchFailureEvent() && toReport && !StepFunction.class.isAssignableFrom(function.getClass())) {
+                if (catchFailureEvent() && toReport && !SequentialStepFunction.class.isAssignableFrom(this.getClass())
+                        && !StepFunction.class.isAssignableFrom(function.getClass())) {
                     catchValue(t, captorFilters);
                 }
                 throw thrown;

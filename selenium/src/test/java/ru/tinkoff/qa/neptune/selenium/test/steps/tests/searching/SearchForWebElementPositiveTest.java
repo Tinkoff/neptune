@@ -677,7 +677,7 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
     }
 
     @Test(dataProvider = "search criteria3", retryAnalyzer = RetryAnalyzer.class)
-    public void findElementByCriteriaAndTexPatterntWithTimeDefinedImplicitlyTest(By by,
+    public void findElementByCriteriaAndTexPatternWithTimeDefinedImplicitlyTest(By by,
                                                                                  Pattern pattern,
                                                                                  Predicate<WebElement> criteria,
                                                                                  WebElement expected,

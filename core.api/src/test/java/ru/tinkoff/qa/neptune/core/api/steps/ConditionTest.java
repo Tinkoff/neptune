@@ -5,6 +5,7 @@ import org.testng.annotations.Test;
 import java.util.function.Predicate;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.testng.Assert.fail;
 import static ru.tinkoff.qa.neptune.core.api.steps.ConditionConcatenation.*;
@@ -255,7 +256,7 @@ public class ConditionTest {
         Predicate<Number> describedIsNotFraction = IS_NOT_FRACTION;
 
         assertThat("String value of the predicate",
-                AND.concat(describedIsPositive, describedIsNotFraction),
+                AND.concat(describedIsPositive, describedIsNotFraction).toString(),
                 is("<not described condition>, <not described condition>"));
     }
 

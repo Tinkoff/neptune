@@ -98,7 +98,6 @@ public class EventFiringTest {
                             "Value  -1.5",
                             "Value  -16.5",
                             "Value  -33.0",
-                            "Value  -133.0",
                             "Value  -133.0"));
 
             assertThat("Check messages logged by SPI Number logger",
@@ -111,7 +110,6 @@ public class EventFiringTest {
                             "Saved to string -1.5",
                             "Saved to string -16.5",
                             "Saved to string -33.0",
-                            "Saved to string -133.0",
                             "Saved to string -133.0"));
 
             assertThat("Check messages logged by SPI File logger",
@@ -158,7 +156,6 @@ public class EventFiringTest {
                             "Value  -1.5",
                             "Value  -16.5",
                             "Value  -33.0",
-                            "Value  -133.0",
                             "Value  -133.0"));
 
             assertThat("Check messages logged by SPI Number logger",
@@ -171,7 +168,6 @@ public class EventFiringTest {
                             equalTo("Saved to string -1.5"),
                             equalTo("Saved to string -16.5"),
                             equalTo("Saved to string -33.0"),
-                            equalTo("Saved to string -133.0"),
                             equalTo("Saved to string -133.0"),
                             containsString("Saved to string ru.tinkoff.qa.neptune.core.api.steps.CalculatorSteps")));
 
