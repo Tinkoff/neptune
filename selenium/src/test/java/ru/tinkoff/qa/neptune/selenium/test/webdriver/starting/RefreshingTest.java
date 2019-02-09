@@ -97,14 +97,14 @@ public class RefreshingTest {
         FLAGS.forEach(s -> System.getProperties().remove(s.getPropertyName()));
     }
 
-    @Test
+    @Test(priority = 1)
     public void nothingIsDefinedTest() {
         WebDriver webDriver = prepareWrappedWebDriver();
         wrappedWebDriver.refresh();
         assertThat("Is driver dead", !isDriverAlive(webDriver), is(true));
     }
 
-    @Test
+    @Test(priority = 1)
     public void toNotKeepSessionOpenedTest() {
         setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getPropertyName(), "false");
         setProperty(CLEAR_WEB_DRIVER_COOKIES.getPropertyName(), "true");
@@ -115,7 +115,7 @@ public class RefreshingTest {
         assertThat("Is driver dead", !isDriverAlive(webDriver), is(true));
     }
 
-    @Test
+    @Test(priority = 1)
     public void toKeepSessionAliveWithNoOtherOptionTest() throws InterruptedException {
         setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getPropertyName(), "true");
 
@@ -145,7 +145,7 @@ public class RefreshingTest {
                 greaterThan(0));
     }
 
-    @Test
+    @Test(priority = 1)
     public void toKeepSessionAliveWithGettingBackToBaseUrlTest() throws InterruptedException {
         setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getPropertyName(), "true");
         setProperty(GET_BACK_TO_BASE_URL.getPropertyName(), "true");
@@ -175,7 +175,7 @@ public class RefreshingTest {
                 greaterThan(0));
     }
 
-    @Test
+    @Test(priority = 1)
     public void toKeepSessionAliveWithCookieRemovalTest() throws InterruptedException {
         setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getPropertyName(), "true");
         setProperty(CLEAR_WEB_DRIVER_COOKIES.getPropertyName(), "true");
@@ -207,7 +207,7 @@ public class RefreshingTest {
                 lessThan(cookies.size()));
     }
 
-    @Test
+    @Test(priority = 1)
     public void dynamicalChangeOfOptionsTest() throws InterruptedException {
         setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getPropertyName(), "true");
 

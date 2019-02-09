@@ -1,7 +1,0 @@
-<suite name="Property suite">
-    <test name="Property tests">
-        <packages>
-            <package name="ru.tinkoff.qa.neptune.selenium.test.steps.tests.*"/>
-        </packages>
-    </test>
-</suite>

@@ -16,9 +16,7 @@ dependencies {
 
 test {
     useTestNG()
-    options.suites("property.suite.xml")
-    options.suites("step.suite.xml")
-    options.suites("webdriver.suite.xml")
+    jvmArgs '-Xmx20484m', '-XX:MaxPermSize=1024m', '-XX:+HeapDumpOnOutOfMemoryError'
 }
 
 task javadocJar(type: Jar) {

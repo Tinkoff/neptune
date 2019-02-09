@@ -404,7 +404,7 @@ public final class CommonConditions {
     public static <T extends SearchContext> Predicate<T> shouldContainElement(SearchSupplier<?> howToFind) {
         checkArgument(nonNull(howToFind), "The way how to find nested elements should be defined");
         var func = ((IgnoresThrowable<StepFunction<SearchContext, SearchContext>>) howToFind.get())
-                .addIgnored(of(NoSuchElementException.class));
+                .addIgnored(NoSuchElementException.class);
         func.turnReportingOff();
         return condition(format("has nested %s", howToFind), t -> func.apply(t) != null);
     }

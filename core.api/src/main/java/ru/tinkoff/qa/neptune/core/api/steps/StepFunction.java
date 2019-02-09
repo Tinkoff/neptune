@@ -7,9 +7,9 @@ import ru.tinkoff.qa.neptune.core.api.exception.management.IgnoresThrowable;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static java.util.List.copyOf;
 import static java.util.Objects.nonNull;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.*;
@@ -20,12 +20,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
+@SuppressWarnings("unchecked")
 public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<StepFunction<T, R>>,
         MakesCapturesOnFinishing<StepFunction<T, R>>, TurnsRetortingOff<StepFunction<T, R>> {
 
     String description;
-    Function<T, R> function;
-    boolean toReport = true;
+    Function<Object, Object> function;
+    private boolean toReport = true;
     private final Set<Class<? extends Throwable>> ignored = new HashSet<>();
     private final Set<CaptorFilterByProducedType> captorFilters = new HashSet<>();
 
@@ -33,7 +34,7 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
         checkArgument(nonNull(function), "Function should be defined");
         checkArgument(!isBlank(description), "Description should not be empty string or null value");
         this.description = description;
-        this.function = function;
+        this.function = (Function<Object, Object>) function;
     }
 
     StepFunction() {
@@ -65,7 +66,7 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
             if (toReport) {
                 fireEventStarting(format("Get %s", description));
             }
-            R result = function.apply(t);
+            R result = (R) function.apply(t);
             if (toReport) {
                 fireReturnedValueIfNecessary(result);
             }
@@ -106,7 +107,12 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
     }
 
     public <V> StepFunction<V, R> compose(Function<? super V, ? extends T> before) {
-        return new SequentialStepFunction<>(before, this);
+        checkNotNull(before);
+        if (isLoggable(before)) {
+            return new SequentialStepFunction<>(before, this);
+        }
+        this.function = this.function.compose((Function<? super Object, ?>) before);
+        return (StepFunction<V, R>) this;
     }
 
     public <V> StepFunction<T, V> andThen(Function<? super R, ? extends V> after) {
@@ -114,8 +120,14 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
     }
 
     @Override
-    public StepFunction<T, R> addIgnored(List<Class<? extends Throwable>> toBeIgnored) {
+    public StepFunction<T, R> addIgnored(Collection<Class<? extends Throwable>> toBeIgnored) {
         ignored.addAll(toBeIgnored);
+        return this;
+    }
+
+    @Override
+    public StepFunction<T, R> addIgnored(Class<? extends Throwable> toBeIgnored) {
+        ignored.add(toBeIgnored);
         return this;
     }
 
@@ -123,7 +135,7 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
         return new HashSet<>(ignored);
     }
 
-    void addCaptorFilters(List<CaptorFilterByProducedType> captorFilters) {
+    void addCaptorFilters(Collection<CaptorFilterByProducedType> captorFilters) {
         this.captorFilters.addAll(captorFilters);
     }
 
@@ -239,16 +251,22 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
     static final class SequentialStepFunction<T, R> extends StepFunction<T, R> {
 
         final LinkedList<Function<Object, Object>> sequence = new LinkedList<>();
+        private static final Consumer<StepFunction<?, ?>> REPORT_TURN_ON = StepFunction::turnReportingOn;
+        private static final Consumer<StepFunction<?, ?>> REPORT_TURN_OFF = StepFunction::turnReportingOff;
+        private static final String NOT_DESCRIBED = "<not described value>";
 
-        @SuppressWarnings("unchecked")
         <V> SequentialStepFunction(Function<? super T, ? extends V> before,
                                    Function<? super V, ? extends R> after) {
             checkNotNull(before);
             checkNotNull(after);
-            checkArgument(isLoggable(after), "It seems given after-function doesn't describe any value to get. " +
-                    "Use method StoryWriter.toGet");
 
-            description = after.toString();
+            if (isLoggable(after)) {
+                description = after.toString();
+            }
+            else {
+                description = NOT_DESCRIBED;
+            }
+
             function = t -> {
                 Object result = t;
                 for (Function<Object, Object> f: sequence) {
@@ -261,46 +279,39 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
             };
 
             StepFunction<? super V, ? extends R> stepAfter = getStepFunction(after);
-            if (isLoggable(before)) {
-                StepFunction<? super T, ? extends V> stepBefore = getStepFunction(before);
+            StepFunction<? super T, ? extends V> stepBefore = getStepFunction(before);
 
-                if (SequentialStepFunction.class.isAssignableFrom(stepBefore.getClass())) {
-                    sequence.addAll(((SequentialStepFunction<?, ?>) stepBefore).sequence);
-                }
-                else {
-                    sequence.addFirst((Function<Object, Object>) stepBefore);
-                }
-
-                if (SequentialStepFunction.class.isAssignableFrom(stepAfter.getClass())) {
-                    sequence.addAll(((SequentialStepFunction<?, ?>) stepAfter).sequence);
-                }
-                else {
-                    sequence.addLast((Function<Object, Object>) stepAfter);
-                }
-            } else {
-                sequence.add((Function<Object, Object>) stepAfter.function.compose(before));
-                addIgnored(copyOf(stepAfter.ignored));
-                addCaptorFilters(copyOf(stepAfter.captorFilters));
-            }
-
-            if (toReport) {
-                turnReportingOn();
+            if (SequentialStepFunction.class.isAssignableFrom(stepBefore.getClass())) {
+                sequence.addAll(((SequentialStepFunction<?, ?>) stepBefore).sequence);
             }
             else {
-                turnReportingOff();
+                sequence.addFirst((Function<Object, Object>) stepBefore);
+            }
+
+            if (SequentialStepFunction.class.isAssignableFrom(stepAfter.getClass())) {
+                sequence.addAll(((SequentialStepFunction<?, ?>) stepAfter).sequence);
+            }
+            else {
+                sequence.addLast((Function<Object, Object>) stepAfter);
             }
         }
 
         private static <T, R> StepFunction<T, R> getStepFunction(Function<T, R> function) {
             if (StepFunction.class.isAssignableFrom(function.getClass())) {
                 return  (StepFunction<T, R>) function;
-            } else {
+            } else if (isLoggable(function)) {
                 return new StepFunction<>(function.toString(), function);
             }
+            return new StepFunction<>(NOT_DESCRIBED, function);
         }
 
         public <V> StepFunction<V, R> compose(Function<? super V, ? extends T> before) {
-            return new SequentialStepFunction<>(before, this);
+            checkNotNull(before);
+            if (isLoggable(before)) {
+                return new SequentialStepFunction<>(before, this);
+            }
+            this.sequence.addFirst((Function<Object, Object>) before);
+            return (StepFunction<V, R>) this;
         }
 
         public <V> StepFunction<T, V> andThen(Function<? super R, ? extends V> after) {
@@ -309,32 +320,43 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
 
         public StepFunction<T, R> turnReportingOff() {
             super.turnReportingOff();
-            sequence.forEach(objectObjectFunction -> {
-                if (StepFunction.class.isAssignableFrom(objectObjectFunction.getClass())) {
-                    ((StepFunction<?, ?>) objectObjectFunction).turnReportingOff();
-                }
-            });
+            syncReportTurnOn(REPORT_TURN_OFF);
             return this;
         }
 
         public StepFunction<T, R> turnReportingOn() {
             super.turnReportingOn();
+            syncReportTurnOn(REPORT_TURN_ON);
+            return this;
+        }
+
+        private void syncReportTurnOn(Consumer<StepFunction<?, ?>> reportTurnOnOff) {
             sequence.forEach(objectObjectFunction -> {
                 if (StepFunction.class.isAssignableFrom(objectObjectFunction.getClass())) {
-                    ((StepFunction<?, ?>) objectObjectFunction).turnReportingOn();
+                    reportTurnOnOff.accept((StepFunction<?, ?>) objectObjectFunction);
                 }
             });
+        }
+
+        private void syncIgnoredExceptions() {
+            sequence.forEach(f -> {
+                if (IgnoresThrowable.class.isAssignableFrom(f.getClass())) {
+                    ((IgnoresThrowable<?>) f).addIgnored(getIgnored());
+                }
+            });
+        }
+
+        @Override
+        public StepFunction<T, R> addIgnored(Collection<Class<? extends Throwable>> toBeIgnored) {
+            super.addIgnored(toBeIgnored);
+            syncIgnoredExceptions();
             return this;
         }
 
         @Override
-        public StepFunction<T, R> addIgnored(List<Class<? extends Throwable>> toBeIgnored) {
+        public StepFunction<T, R> addIgnored(Class<? extends Throwable> toBeIgnored) {
             super.addIgnored(toBeIgnored);
-            sequence.forEach(f -> {
-                if (IgnoresThrowable.class.isAssignableFrom(f.getClass())) {
-                    ((IgnoresThrowable<?>) f).addIgnored(toBeIgnored);
-                }
-            });
+            syncIgnoredExceptions();
             return this;
         }
     }

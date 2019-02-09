@@ -6,7 +6,6 @@ import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
 import java.lang.reflect.Array;
 import java.util.function.Function;
 
-import static java.util.List.copyOf;
 import static java.util.Objects.nonNull;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
@@ -59,7 +58,7 @@ public class Presence<T extends GetStepContext<T>> extends SequentialGetStepSupp
     protected Function<T, Object> preparePreFunction() {
         var preFunction = super.preparePreFunction();
         if (StepFunction.class.isAssignableFrom(preFunction.getClass())) {
-            ((StepFunction) preFunction).addIgnored(copyOf(ignored));
+            ((StepFunction) preFunction).addIgnored(ignored);
         }
         return ((Function<Object, Object>) o -> ofNullable(o).orElse(false))
                 .compose(preFunction);

@@ -40,16 +40,17 @@ public class ClickTest extends BaseWebDriverTest {
 
     @Test
     public void clickOnWidgetDirectlyTest() {
+        int clickCount = CUSTOM_LABELED_BUTTON1.getClickCount();
         Button button = seleniumSteps.find(button(BUTTON_LABEL_TEXT5));
         seleniumSteps.click(on(button));
-        assertThat(CUSTOM_LABELED_BUTTON1.getClickCount(), is(1));
+        assertThat(CUSTOM_LABELED_BUTTON1.getClickCount(), is(clickCount + 1));
 
         button = seleniumSteps.find(button(BUTTON_LABEL_TEXT5)
                 .foundFrom(webElement(className(CELL_CLASS), CELL_TEXT73)
                         .criteria(shouldContainElements(buttons()
                         .timeOut(ofMillis(5))))));
         seleniumSteps.click(on(button));
-        assertThat(CUSTOM_LABELED_BUTTON1.getClickCount(), is(2));
+        assertThat(CUSTOM_LABELED_BUTTON1.getClickCount(), is(clickCount + 2));
     }
 
     @Test

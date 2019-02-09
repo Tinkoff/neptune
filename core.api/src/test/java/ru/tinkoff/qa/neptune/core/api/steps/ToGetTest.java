@@ -2,11 +2,11 @@ package ru.tinkoff.qa.neptune.core.api.steps;
 
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.function.Function;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.fail;
 
 public class ToGetTest {
@@ -15,14 +15,12 @@ public class ToGetTest {
     private static final Function<String, Integer> GET_STRING_LENGTH = String::length;
     private static final Function<Integer, Boolean> GET_POSITIVITY = integer -> integer.compareTo(0) > 0;
 
-    @Test(expectedExceptions = IllegalArgumentException.class,
-            expectedExceptionsMessageRegExp = "It seems given after-function doesn't describe any value to get. " +
-                    "Use method StoryWriter.toGet")
-    public void negativeTestWhenTheNextFunctionIsNotDescribed() {
+    @Test
+    public void testWhenTheNextFunctionIsNotDescribed() {
         Function<Object, String> describedToString = StoryWriter.toGet("String value of the object",
                 GET_TO_STRING);
-        describedToString.andThen(GET_STRING_LENGTH);
-        fail("The exception throwing was expected");
+        assertThat(describedToString.andThen(GET_STRING_LENGTH).toString(),
+                is("<not described value>"));
     }
 
 
@@ -43,6 +41,54 @@ public class ToGetTest {
         assertThat("Sting value of the function",
                 describedToString.andThen(describedStringLength).toString(),
                 is("Length of the given string"));
+    }
+
+    @Test
+    public void checkDescriptionOfAFunctionComposeBeforeIsNotDescribed() {
+        Function<String, Integer> describedStringLength = StoryWriter.toGet("Length of the given string",
+                GET_STRING_LENGTH);
+
+        var result = describedStringLength.compose(GET_TO_STRING);
+
+        assertThat("Sting value of the function",
+                result.toString(),
+                is("Length of the given string"));
+        assertThat(result.getClass(), is(StepFunction.class));
+    }
+
+    @Test
+    public void checkDescriptionOfAFunctionChainedComposeBeforeIsNotDescribed() {
+        Function<Object, String> describedToString = StoryWriter.toGet("String value of the object",
+                GET_TO_STRING);
+        Function<String, Integer> describedStringLength = StoryWriter.toGet("Length of the given string",
+                GET_STRING_LENGTH);
+
+        var result = describedStringLength.compose(describedToString).compose(s -> s);
+
+        assertThat("Sting value of the function",
+                result.toString(),
+                is("Length of the given string"));
+        assertThat(result.getClass(), is(StepFunction.SequentialStepFunction.class));
+        assertThat(((StepFunction.SequentialStepFunction) result).sequence.size(), is(3));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void checkDescriptionOfAFunctionChainedAndThenAfterIsNotDescribed() {
+        Function<Object, String> describedToString = StoryWriter.toGet("String value of the object",
+                GET_TO_STRING);
+        Function<String, Integer> describedStringLength = StoryWriter.toGet("Length of the given string",
+                GET_STRING_LENGTH);
+
+        var result = describedStringLength.compose(describedToString).andThen(s -> s);
+
+        assertThat("Sting value of the function",
+                result.toString(),
+                is("<not described value>"));
+        assertThat(result.getClass(), is(StepFunction.SequentialStepFunction.class));
+        assertThat(((StepFunction.SequentialStepFunction) result).sequence.size(), is(3));
+        assertThat(new ArrayList<>(((StepFunction.SequentialStepFunction) result).sequence).get(2).toString(),
+                is("<not described value>"));
     }
 
     @Test

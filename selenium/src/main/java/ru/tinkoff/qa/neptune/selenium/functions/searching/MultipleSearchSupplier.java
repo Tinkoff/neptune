@@ -26,7 +26,6 @@ import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindLabeledWidg
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMENT_WAITING_DURATION;
 import static java.lang.String.format;
-import static java.util.List.of;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 @SuppressWarnings({"unused"})
@@ -39,7 +38,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
         super(description, originalFunction);
         from(searchContext -> searchContext);
         timeOut(ELEMENT_WAITING_DURATION.get());
-        addIgnored(of(StaleElementReferenceException.class));
+        addIgnored(StaleElementReferenceException.class);
         if (FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.get()) {
             criteria(shouldBeVisible());
         }

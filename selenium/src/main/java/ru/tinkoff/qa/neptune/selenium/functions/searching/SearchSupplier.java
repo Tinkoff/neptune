@@ -15,7 +15,6 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import static java.lang.String.join;
-import static java.util.List.of;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.selenium.api.widget.Widget.getWidgetName;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.*;
@@ -37,7 +36,7 @@ public final class SearchSupplier<R extends SearchContext>
         super(description, originalFunction);
         from(searchContext -> searchContext);
         timeOut(ELEMENT_WAITING_DURATION.get());
-        addIgnored(of(StaleElementReferenceException.class));
+        addIgnored(StaleElementReferenceException.class);
         if (FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.get()) {
             criteria(shouldBeVisible());
         }

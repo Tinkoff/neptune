@@ -11,7 +11,6 @@ import org.openqa.selenium.NoSuchElementException;
 import java.util.function.Function;
 
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
-import static java.util.List.of;
 
 public final class ElementPresence extends Presence<SeleniumStepContext> {
 
@@ -25,9 +24,10 @@ public final class ElementPresence extends Presence<SeleniumStepContext> {
      * @param supplier supplier of a search criteria to find a single element.
      * @return an instance of {@link Presence}.
      */
+    @SuppressWarnings("unchecked")
     public static Presence<SeleniumStepContext> presenceOfAnElement(SearchSupplier<?> supplier) {
         StepFunction<SearchContext, ?> f = (StepFunction<SearchContext, ?>) supplier.get();
-        f.addIgnored(of(NoSuchElementException.class));
+        f.addIgnored(NoSuchElementException.class);
         return new ElementPresence(f.compose(currentContent()));
     }
 

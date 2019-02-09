@@ -11,10 +11,7 @@ import ru.tinkoff.qa.neptune.core.api.exception.management.IgnoresThrowable;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -23,7 +20,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
-import static java.util.List.copyOf;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
@@ -210,8 +206,14 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     }
 
     @Override
-    public final THIS addIgnored(List<Class<? extends Throwable>> toBeIgnored) {
+    public final THIS addIgnored(Collection<Class<? extends Throwable>> toBeIgnored) {
         ignored.addAll(toBeIgnored);
+        return (THIS) this;
+    }
+
+    @Override
+    public final THIS addIgnored(Class<? extends Throwable> toBeIgnored) {
+        ignored.add(toBeIgnored);
         return (THIS) this;
     }
 
@@ -315,7 +317,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         StepFunction<T, R> toBeReturned;
         if (StepFunction.class.isAssignableFrom(composeWith.getClass())) {
             var endFunctionStep  = toGet(resultedDescription, endFunction);
-            endFunctionStep.addIgnored(copyOf(ignored));
+            endFunctionStep.addIgnored(ignored);
             endFunctionStep.addCaptorFilters(captorFilters);
             toBeReturned = endFunctionStep.compose(composeWith);
         }
@@ -323,7 +325,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
             toBeReturned = toGet(resultedDescription, endFunction.compose(composeWith));
         }
 
-        toBeReturned.addIgnored(copyOf(ignored));
+        toBeReturned.addIgnored(ignored);
         toBeReturned.addCaptorFilters(captorFilters);
         return toBeReturned;
     }
