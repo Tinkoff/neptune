@@ -1,6 +1,8 @@
 package ru.tinkoff.qa.neptune.data.base.api.query;
 
 import org.datanucleus.api.jdo.JDOPersistenceManager;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.ConditionConcatenation;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
@@ -16,6 +18,8 @@ import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.SLEEPING_TIME;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.WAITING_FOR_SELECTION_RESULT_TIME;
 
+@MakeFileCapturesOnFinishing
+@MakeStringCapturesOnFinishing
 public class SelectOneGetSupplier<T, M> extends SequentialGetStepSupplier
         .GetObjectFromIterableChainedStepSupplier<JDOPersistenceManager, T, M, SelectOneGetSupplier<T, M>> {
 
@@ -36,7 +40,7 @@ public class SelectOneGetSupplier<T, M> extends SequentialGetStepSupplier
 
     @Override
     public SelectOneGetSupplier<T, M> criteria(ConditionConcatenation concat, Predicate<? super T> condition) {
-        return super.criteria(condition);
+        return super.criteria(concat, condition);
     }
 
     @Override

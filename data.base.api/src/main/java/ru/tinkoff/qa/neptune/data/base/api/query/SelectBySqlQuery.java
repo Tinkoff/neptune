@@ -23,7 +23,7 @@ class SelectBySqlQuery<T> implements Function<SQLQuery<T>, List<T>> {
             if (PersistableObject.class.isAssignableFrom(tClass)) {
                 return new ListOfSelectObjects<>(query.executeList(),
                         ts -> INFO_PERSISTABLE_INFO.apply((List<PersistableObject>) ts))
-                        .setQuery(query);
+                        .setQuery(sqlQuery);
             }
 
             return (List<T>) getUntypedResult(sqlQuery);

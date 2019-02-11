@@ -110,7 +110,7 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
     @Test
     public void aggregatedListResultSelect() {
         List<List<Object>> result = dataBaseSteps.get(selected(listByQuery(bySQL(QUERY2))));
-        assertThat(result, contains(of(1820)));
+        assertThat(result, contains(contains(1820)));
     }
 
     @Test

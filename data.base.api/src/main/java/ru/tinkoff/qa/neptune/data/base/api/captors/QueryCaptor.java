@@ -1,14 +1,14 @@
 package ru.tinkoff.qa.neptune.data.base.api.captors;
 
-import javax.jdo.Query;
+import ru.tinkoff.qa.neptune.data.base.api.query.SQLQuery;
 
-public class QueryCaptor extends AbstractQueryCaptor<Query<?>> {
+public class QueryCaptor extends AbstractQueryCaptor<SQLQuery<?>> {
 
     @Override
-    public Query<?> getCaptured(Object toBeCaptured) {
-        if (Query.class.isAssignableFrom(toBeCaptured.getClass())) {
-            return (Query<?>) toBeCaptured;
+    public SQLQuery<?> getCaptured(Object toBeCaptured) {
+        if (SQLQuery.class.isAssignableFrom(toBeCaptured.getClass())) {
+            return (SQLQuery<?>) toBeCaptured;
         }
-        return tryToExtractQuery(toBeCaptured, Query.class);
+        return tryToExtractQuery(toBeCaptured, SQLQuery.class);
     }
 }

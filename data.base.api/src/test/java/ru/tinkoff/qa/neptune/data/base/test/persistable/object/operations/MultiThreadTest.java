@@ -91,7 +91,7 @@ public class MultiThreadTest extends BaseDbOperationTest {
 
 
     @Test(threadPoolSize = 4, dataProvider = "query")
-    public <T> void multiThreadTest(GetSelectedFunction<?> selectedFunction) {
+    public void multiThreadTest(GetSelectedFunction<?> selectedFunction) {
         assertThat(dataBaseSteps.get(selectedFunction), not(nullValue()));
     }
 }

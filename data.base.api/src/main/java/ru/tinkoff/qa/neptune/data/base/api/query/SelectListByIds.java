@@ -29,7 +29,7 @@ class SelectListByIds<T extends PersistableObject> implements Function<JDOPersis
         for (Object id : ids) {
             try {
                 var p = jdoPersistenceManager.getObjectById(ofType, id);
-                p.setQuery(format("Known Id: %s", id));
+                p.setQuery(format(" Known Id: %s", id));
                 found.add(p);
             }
             catch (RuntimeException ignored) {
@@ -37,6 +37,6 @@ class SelectListByIds<T extends PersistableObject> implements Function<JDOPersis
         }
 
         return new ListOfSelectObjects<>(found, INFO_PERSISTABLE_INFO::apply)
-                .setQuery(format("Known Ids: %s", found.stream().map(t -> valueOf(t.getIdValue())).collect(joining(","))));
+                .setQuery(format(" Known Ids: %s", found.stream().map(t -> valueOf(t.getIdValue())).collect(joining(", "))));
     }
 }

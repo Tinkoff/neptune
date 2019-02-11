@@ -16,12 +16,13 @@ import static javax.jdo.JDOHelper.isPersistent;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.fail;
+import static ru.tinkoff.qa.neptune.data.base.api.operations.DBGetInsertedFunction.inserted;
+import static ru.tinkoff.qa.neptune.data.base.api.query.GetSelectedFunction.selected;
 import static ru.tinkoff.qa.neptune.data.base.api.query.QueryBuilderFunction.ofType;
-import static ru.tinkoff.qa.neptune.data.base.api.query.SelectListByQuerySupplier.listByQuery;
-import static ru.tinkoff.qa.neptune.data.base.api.query.SelectSingleObjectByIdSupplier.aSingleOfTypeById;
-import static ru.tinkoff.qa.neptune.data.base.api.query.SelectSingleObjectByQuerySupplier.aSingleByQuery;
-import static ru.tinkoff.qa.neptune.data.base.api.operations.InsertedSequentialGetStepSupplier.inserted;
-import static ru.tinkoff.qa.neptune.data.base.api.operations.UpdatedSequentialGetStepSupplier.updated;
+import static ru.tinkoff.qa.neptune.data.base.api.operations.DBGetUpdatedFunction.updated;
+import static ru.tinkoff.qa.neptune.data.base.api.query.SelectListGetSupplier.listByQuery;
+import static ru.tinkoff.qa.neptune.data.base.api.query.SelectOneGetSupplier.aSingleByQuery;
+import static ru.tinkoff.qa.neptune.data.base.api.query.SelectOneGetSupplier.aSingleOfTypeById;
 
 public class UpdateTest extends BaseDbOperationTest {
 
@@ -101,7 +102,7 @@ public class UpdateTest extends BaseDbOperationTest {
         assertThat(updated, hasSize(1));
         assertThat(updated.get(0).getBiography(),
                 equalTo(improvedBiography));
-        assertThat(dataBaseSteps.get(aSingleOfTypeById(Author.class, fyodorDostoevsky.getId())).getBiography(),
+        assertThat(dataBaseSteps.get(selected(aSingleOfTypeById(Author.class, fyodorDostoevsky.getId()))).getBiography(),
                 equalTo(improvedBiography));
     }
 
@@ -116,7 +117,7 @@ public class UpdateTest extends BaseDbOperationTest {
         assertThat(updated, hasSize(1));
         assertThat(updated.get(0).getYearOfPublishing(),
                 equalTo(2002));
-        assertThat(dataBaseSteps.get(aSingleOfTypeById(Catalog.class, catalogCrimeAndPunishment.getIsbn())).getYearOfPublishing(),
+        assertThat(dataBaseSteps.get(selected(aSingleOfTypeById(Catalog.class, catalogCrimeAndPunishment.getIsbn()))).getYearOfPublishing(),
                 equalTo(2002));
     }
 
@@ -133,7 +134,8 @@ public class UpdateTest extends BaseDbOperationTest {
                     .set("Change dates of the finishing to 1870", book -> book.setYearOfFinishing(1870)));
         } catch (Exception e) {
             assertThat(updated, hasSize(0));
-            assertThat(dataBaseSteps.get(aSingleOfTypeById(Book.class, crimeAndPunishment.getId())), not(equalTo(1870)));
+            assertThat(dataBaseSteps.get(selected(aSingleOfTypeById(Book.class, crimeAndPunishment.getId()))).getYearOfFinishing(),
+                    not(equalTo(1870)));
             assertThat(isPersistent(theDevils), is(false));
             assertThat(e.getMessage(),
                     equalTo("There are objects that are not stored in DB: " +
@@ -163,7 +165,8 @@ public class UpdateTest extends BaseDbOperationTest {
                     }));
         } catch (Exception e) {
             assertThat(updated, hasSize(0));
-            assertThat(dataBaseSteps.get(aSingleOfTypeById(Book.class, crimeAndPunishment.getId())), not(equalTo(1870)));
+            assertThat(dataBaseSteps.get(selected(aSingleOfTypeById(Book.class, crimeAndPunishment.getId()))).getYearOfFinishing(),
+                    not(equalTo(1870)));
             throw e;
         }
         fail("Exception was expected");
@@ -190,6 +193,7 @@ public class UpdateTest extends BaseDbOperationTest {
                 .set("Change dates of the finishing to 1870", book -> book.setYearOfFinishing(1870)));
 
         assertThat(updated.size(), is(0));
-        assertThat(dataBaseSteps.get(aSingleOfTypeById(Book.class, crimeAndPunishment.getId())), not(equalTo(1870)));
+        assertThat(dataBaseSteps.get(selected(aSingleOfTypeById(Book.class, crimeAndPunishment.getId()))).getYearOfFinishing(),
+                not(equalTo(1870)));
     }
 }

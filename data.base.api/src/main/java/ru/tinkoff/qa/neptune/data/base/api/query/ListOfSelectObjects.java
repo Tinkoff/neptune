@@ -31,11 +31,14 @@ class ListOfSelectObjects<T> extends ListOfStoredObjects<T> implements GotByQuer
 
     ListOfSelectObjects<T> setQuery(Object query) {
         this.query = query;
-        forEach(t -> ofNullable(t).ifPresent(t1 -> {
-            if (PersistableObject.class.isAssignableFrom(t1.getClass())) {
-                ((PersistableObject) t1).setQuery(query);
-            }
-        }));
+
+        if (!String.class.isAssignableFrom(query.getClass())) {
+            forEach(t -> ofNullable(t).ifPresent(t1 -> {
+                if (PersistableObject.class.isAssignableFrom(t1.getClass())) {
+                    ((PersistableObject) t1).setQuery(query);
+                }
+            }));
+        }
         return this;
     }
 

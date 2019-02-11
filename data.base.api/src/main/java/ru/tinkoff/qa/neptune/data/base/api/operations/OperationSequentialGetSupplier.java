@@ -4,6 +4,8 @@ import javax.jdo.PersistenceManager;
 import javax.jdo.Transaction;
 
 import org.datanucleus.api.jdo.JDOPersistenceManager;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 import ru.tinkoff.qa.neptune.data.base.api.query.SelectListGetSupplier;
@@ -15,6 +17,8 @@ import java.util.function.BiFunction;
 
 import static java.util.Optional.ofNullable;
 
+@MakeFileCapturesOnFinishing
+@MakeStringCapturesOnFinishing
 class OperationSequentialGetSupplier<T extends PersistableObject> extends SequentialGetStepSupplier
         .GetIterableChainedStepSupplier<JDOPersistenceManager, List<T>, Transaction, T, OperationSequentialGetSupplier<T>> {
 
@@ -23,15 +27,21 @@ class OperationSequentialGetSupplier<T extends PersistableObject> extends Sequen
         super(description, transaction -> {
             var manager = transaction.getPersistenceManager();
             try {
-                transaction.setOptimistic(true);
                 transaction.begin();
-                return getResult.apply(toBeOperated, manager);
+                var toReturn =  getResult.apply(toBeOperated, manager);
+                transaction.commit();
+                return toReturn;
             } catch (Throwable t) {
                 if (transaction.isActive()) {
                     transaction.rollback();
                 }
                 throw t;
             }
+        });
+        from(jdoPersistenceManager -> {
+            var transaction = jdoPersistenceManager.currentTransaction();
+            transaction.setOptimistic(true);
+            return transaction;
         });
     }
 
@@ -40,18 +50,24 @@ class OperationSequentialGetSupplier<T extends PersistableObject> extends Sequen
         super(description, transaction -> {
             var manager = (JDOPersistenceManager) transaction.getPersistenceManager();
             try {
-                transaction.setOptimistic(true);
                 transaction.begin();
                 var result = toBeOperated.get().apply(manager);
-                return getResult.apply(ofNullable(result)
+                var toReturn = getResult.apply(ofNullable(result)
                         .map(List::of).orElseGet(List::of),
                         manager);
+                transaction.commit();
+                return toReturn;
             } catch (Throwable t) {
                 if (transaction.isActive()) {
                     transaction.rollback();
                 }
                 throw t;
             }
+        });
+        from(jdoPersistenceManager -> {
+            var transaction = jdoPersistenceManager.currentTransaction();
+            transaction.setOptimistic(true);
+            return transaction;
         });
     }
 
@@ -60,16 +76,22 @@ class OperationSequentialGetSupplier<T extends PersistableObject> extends Sequen
         super(description, transaction -> {
             var manager = (JDOPersistenceManager) transaction.getPersistenceManager();
             try {
-                transaction.setOptimistic(true);
                 transaction.begin();
                 var result = toBeOperated.get().apply(manager);
-                return getResult.apply(result, manager);
+                var toReturn =  getResult.apply(result, manager);
+                transaction.commit();
+                return toReturn;
             } catch (Throwable t) {
                 if (transaction.isActive()) {
                     transaction.rollback();
                 }
                 throw t;
             }
+        });
+        from(jdoPersistenceManager -> {
+            var transaction = jdoPersistenceManager.currentTransaction();
+            transaction.setOptimistic(true);
+            return transaction;
         });
     }
 }

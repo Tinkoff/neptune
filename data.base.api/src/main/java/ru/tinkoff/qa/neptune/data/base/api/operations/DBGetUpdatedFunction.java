@@ -127,6 +127,18 @@ public class DBGetUpdatedFunction<T extends PersistableObject> extends DBGetOper
         return toBeUpdated;
     }
 
+    /**
+     * Defines the update-action to be performed
+     *
+     * @param descriptionOfTheChange is a description of update-action
+     * @param updateAction is a {@link Consumer} that contains an algorithm of an update-action
+     * @return self-reference
+     */
+    public DBGetUpdatedFunction<T> set(String descriptionOfTheChange, Consumer<T> updateAction) {
+        updateActions.add(action(descriptionOfTheChange, updateAction));
+        return this;
+    }
+
     private static class GetUpdatedBiFunction<T extends PersistableObject>
             implements BiFunction<Collection<T>, PersistenceManager, List<T>> {
 
