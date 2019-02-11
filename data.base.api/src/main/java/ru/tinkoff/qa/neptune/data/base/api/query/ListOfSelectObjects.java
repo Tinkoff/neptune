@@ -2,11 +2,14 @@ package ru.tinkoff.qa.neptune.data.base.api.query;
 
 import ru.tinkoff.qa.neptune.data.base.api.GotByQuery;
 import ru.tinkoff.qa.neptune.data.base.api.ListOfStoredObjects;
+import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 import ru.tinkoff.qa.neptune.data.base.api.captors.IsQueryCaptured;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
+
+import static java.util.Optional.ofNullable;
 
 class ListOfSelectObjects<T> extends ListOfStoredObjects<T> implements GotByQuery, IsQueryCaptured {
 
@@ -28,6 +31,11 @@ class ListOfSelectObjects<T> extends ListOfStoredObjects<T> implements GotByQuer
 
     ListOfSelectObjects<T> setQuery(Object query) {
         this.query = query;
+        forEach(t -> ofNullable(t).ifPresent(t1 -> {
+            if (PersistableObject.class.isAssignableFrom(t1.getClass())) {
+                ((PersistableObject) t1).setQuery(query);
+            }
+        }));
         return this;
     }
 

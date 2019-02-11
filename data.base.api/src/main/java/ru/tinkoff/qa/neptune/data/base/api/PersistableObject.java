@@ -28,18 +28,29 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
             return format("Not stored data base element mapped by %s", name);
         }
 
+        return ofNullable(getIdValue())
+                .map(o -> format("Stored item Id=[%s] table [%s]", o, name))
+                .orElseGet(() -> format("Stored item without id table [%s]", name));
+    }
+
+    /**
+     * Returns object id
+     *
+     * @return the value of id.
+     */
+    public Object getIdValue() {
+        if (!isPersistent(this)) {
+            return null;
+        }
+
         return ofNullable(((Persistable) this).dnGetObjectId())
                 .map(o -> {
-                    Object key;
                     if (ObjectId.class.isAssignableFrom(o.getClass())) {
-                        key = ((ObjectId) o).getKey();
+                        return ((ObjectId) o).getKey();
                     }
-                    else {
-                        key = o;
-                    }
-                    return format("Stored item Id=[%s] table [%s]", key, name);
-                })
-                .orElseGet(() -> format("Stored item without id table [%s]", name));
+
+                    return o;
+                }).orElse(null);
     }
 
     public Object clone() {
@@ -84,11 +95,11 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
     }
 
     /**
-     * Returns table name from the object is taken.
+     * Returns table name
      *
-     * @return name of the table or name of the class when this object is not been received from the data store.
+     * @return name of the table or name of the class when this object is not received from the data store
      */
-    String fromTable() {
+    public String fromTable() {
         String tableName = this.getClass().getName();
         if (!isPersistent(this)) {
             return tableName;
@@ -113,7 +124,7 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
         }).orElse(tableName);
     }
 
-    PersistableObject setQuery(Object query) {
+    public PersistableObject setQuery(Object query) {
         this.query = ofNullable(query).map(QueryInfo::new).orElse(null);
         return this;
     }
