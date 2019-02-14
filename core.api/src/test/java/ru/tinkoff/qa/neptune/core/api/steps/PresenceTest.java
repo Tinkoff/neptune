@@ -162,6 +162,21 @@ public class PresenceTest {
         assertThat(presenceTestContext.get(presenceOf(new TestGetSupplier(PRODUCES_EXPECTED_EXCEPTIONS))), is(false));
     }
 
+    @Test(expectedExceptions = IllegalStateException.class,
+            expectedExceptionsMessageRegExp = "Test exception")
+    public void testOfThrowingExceptionIfNotPresentFunction() {
+        var errorToThrow = new IllegalStateException("Test exception");
+        assertThat(presenceTestContext.get(presenceOf(RETURNS_NULL)
+                .throwIfNotPresent(() -> errorToThrow)), is(false));
+    }
+
+    @Test(expectedExceptions = IllegalStateException.class,
+            expectedExceptionsMessageRegExp = "Test exception")
+    public void testOfThrowingExceptionIfNotPresentSupplier() {
+        var errorToThrow = new IllegalStateException("Test exception");
+        assertThat(presenceTestContext.get(presenceOf(new TestGetSupplier(RETURNS_NULL))
+                .throwIfNotPresent(() -> errorToThrow)), is(false));
+    }
 
     private static class TestGetSupplier extends SequentialGetStepSupplier.GetObjectStepSupplier<PresenceTestContext, Object, TestGetSupplier> {
         TestGetSupplier(Function<PresenceTestContext, Object> originalFunction) {

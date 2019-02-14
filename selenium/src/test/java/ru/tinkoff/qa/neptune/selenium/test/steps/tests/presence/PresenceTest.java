@@ -37,6 +37,18 @@ public class PresenceTest extends BaseWebDriverTest {
                 is(false));
     }
 
+    @Test(expectedExceptions = IllegalStateException.class, expectedExceptionsMessageRegExp = "Test exception")
+    public void negativeTestOfSearchSupplierWithExceptionThrowing() {
+        var errorToThrow = new IllegalStateException("Test exception");
+        assertThat(seleniumSteps.get(presenceOfAnElement(flag()
+                        .timeOut(FIVE_SECONDS)
+                        .foundFrom(tableRow().timeOut(FIVE_SECONDS)
+                                .criteria(condition(format("Contains %s, %s and %s", CELL_TEXT49, CELL_TEXT50, CELL_TEXT51),
+                                        tableRow -> tableRow.getValue().containsAll(of(CELL_TEXT49, CELL_TEXT50, CELL_TEXT51))))))
+                        .throwIfNotPresent(() -> errorToThrow)),
+                is(false));
+    }
+
     @Test
     public void positiveTestOfMultiSearchSupplier() {
         assertThat(seleniumSteps
@@ -57,6 +69,20 @@ public class PresenceTest extends BaseWebDriverTest {
                                         .timeOut(FIVE_SECONDS)
                                         .criteria(condition(format("Contains %s, %s and %s", CELL_TEXT22, CELL_TEXT23, CELL_TEXT24), tableRow ->
                                                 tableRow.getValue().containsAll(of(CELL_TEXT22, CELL_TEXT23, CELL_TEXT24))))))),
+                is(false));
+    }
+
+    @Test(expectedExceptions = IllegalStateException.class, expectedExceptionsMessageRegExp = "Test exception")
+    public void negativeTestOfMultiSearchSupplierWithExceptionThrowing() {
+        var errorToThrow = new IllegalStateException("Test exception");
+        assertThat(seleniumSteps
+                        .get(presenceOfElements(textFields()
+                                .timeOut(FIVE_SECONDS)
+                                .foundFrom(tableRow()
+                                        .timeOut(FIVE_SECONDS)
+                                        .criteria(condition(format("Contains %s, %s and %s", CELL_TEXT22, CELL_TEXT23, CELL_TEXT24), tableRow ->
+                                                tableRow.getValue().containsAll(of(CELL_TEXT22, CELL_TEXT23, CELL_TEXT24))))))
+                                .throwIfNotPresent(() -> errorToThrow)),
                 is(false));
     }
 }

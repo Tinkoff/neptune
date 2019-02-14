@@ -420,7 +420,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
 
         @Override
-        public Function<M, R> getEndFunction() {
+        protected Function<M, R> getEndFunction() {
             return ofNullable(condition)
                     .map(rPredicate -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime).map(sleep ->
@@ -510,7 +510,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
 
         @Override
-        public Function<M, R> getEndFunction() {
+        protected Function<M, R> getEndFunction() {
             return ofNullable(condition)
                     .map(rPredicate -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime).map(sleep ->
@@ -600,7 +600,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
 
         @Override
-        public Function<M, R> getEndFunction() {
+        protected Function<M, R> getEndFunction() {
             return ofNullable(condition)
                     .map(rPredicate -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime).map(sleep ->
@@ -690,7 +690,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
 
         @Override
-        public Function<M, S> getEndFunction() {
+        protected Function<M, S> getEndFunction() {
             return ofNullable(condition)
                     .map(rPredicate -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime).map(sleep ->
@@ -782,7 +782,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
 
         @Override
-        public Function<M, R[]> getEndFunction() {
+        protected Function<M, R[]> getEndFunction() {
             return ofNullable(condition)
                     .map(rPredicate -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime).map(sleep ->

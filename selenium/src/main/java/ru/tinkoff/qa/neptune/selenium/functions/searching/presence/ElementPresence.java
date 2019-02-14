@@ -9,6 +9,7 @@ import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 import org.openqa.selenium.NoSuchElementException;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 
@@ -25,7 +26,7 @@ public final class ElementPresence extends Presence<SeleniumStepContext> {
      * @return an instance of {@link Presence}.
      */
     @SuppressWarnings("unchecked")
-    public static Presence<SeleniumStepContext> presenceOfAnElement(SearchSupplier<?> supplier) {
+    public static ElementPresence presenceOfAnElement(SearchSupplier<?> supplier) {
         StepFunction<SearchContext, ?> f = (StepFunction<SearchContext, ?>) supplier.get();
         f.addIgnored(NoSuchElementException.class);
         return new ElementPresence(f.compose(currentContent()));
@@ -37,10 +38,11 @@ public final class ElementPresence extends Presence<SeleniumStepContext> {
      * @param supplier supplier of a search criteria to find a list of elements.
      * @return an instance of {@link Presence}.
      */
-    public static Presence<SeleniumStepContext> presenceOfElements(MultipleSearchSupplier<?> supplier) {
+    public static ElementPresence presenceOfElements(MultipleSearchSupplier<?> supplier) {
         return new ElementPresence(supplier.get().compose(currentContent()));
     }
 
-
-
+    public ElementPresence throwIfNotPresent(Supplier<? extends RuntimeException> exceptionSupplier) {
+        return (ElementPresence) super.throwOnEmptyResult(exceptionSupplier);
+    }
 }

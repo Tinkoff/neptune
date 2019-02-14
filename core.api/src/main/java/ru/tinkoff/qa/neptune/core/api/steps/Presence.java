@@ -5,6 +5,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
 
 import java.lang.reflect.Array;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static java.util.Objects.nonNull;
 import static com.google.common.base.Preconditions.checkArgument;
@@ -73,7 +74,7 @@ public class Presence<T extends GetStepContext<T>> extends SequentialGetStepSupp
      *
      * @param function that should return something. If the result of {@link Function#apply(Object)} is not {@code null}
      *                 and not the empty iterable/array the this is considered present.
-     * @param <T> is a type of a {@link GetStepContext} subclass.
+     * @param <T>      is a type of a {@link GetStepContext} subclass.
      * @return an instance of {@link Presence}.
      */
     public static <T extends GetStepContext<T>> Presence<T> presenceOf(Function<T, Object> function) {
@@ -84,11 +85,34 @@ public class Presence<T extends GetStepContext<T>> extends SequentialGetStepSupp
      * Creates an instance of {@link Presence}.
      *
      * @param toBePresent as a supplier of a function. If the result of {@link Function#apply(Object)} is not
-     *                 {@code null} and not the empty iterable/array the this is considered present.
-     * @param <T> is a type of a {@link GetStepContext} subclass.
+     *                    {@code null} and not the empty iterable/array the this is considered present.
+     * @param <T>         is a type of a {@link GetStepContext} subclass.
      * @return an instance of {@link Presence}.
      */
     public static <T extends GetStepContext<T>> Presence<T> presenceOf(SequentialGetStepSupplier<T, ?, ?, ?, ?> toBePresent) {
         return new Presence(toBePresent);
+    }
+
+    protected Function<Object, Boolean> getEndFunction() {
+        return o -> {
+            var result = super.getEndFunction().apply(o);
+            if (!result) {
+                return ofNullable(exceptionSupplier)
+                        .map((Function<Supplier<? extends RuntimeException>, Boolean>) supplier -> {
+                            throw supplier.get();
+                        }).orElse(result);
+            }
+            return true;
+        };
+    }
+
+    /**
+     * This method defines an exception to be thrown when the expected value is not present.
+     *
+     * @param exceptionSupplier is a supplier of exception to be thrown when the expected value is not present.
+     * @return self-reference
+     */
+    public Presence<T> throwIfNotPresent(Supplier<? extends RuntimeException> exceptionSupplier) {
+        return throwOnEmptyResult(exceptionSupplier);
     }
 }
