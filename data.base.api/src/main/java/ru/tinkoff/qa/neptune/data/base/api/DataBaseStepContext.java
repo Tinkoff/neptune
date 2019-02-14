@@ -4,7 +4,7 @@ import org.datanucleus.api.jdo.JDOPersistenceManager;
 import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
 import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
 import ru.tinkoff.qa.neptune.core.api.steps.context.ActionStepContext;
-import ru.tinkoff.qa.neptune.core.api.cleaning.Refreshable;
+import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import ru.tinkoff.qa.neptune.core.api.cleaning.StoppableOnJVMShutdown;
 import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnection;
 import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionSupplier;
@@ -20,7 +20,7 @@ import static ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionSt
 
 @CreateWith(provider = DataBaseParameterProvider.class)
 public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>, ActionStepContext<DataBaseStepContext>, StoppableOnJVMShutdown,
-        Refreshable {
+        ContextRefreshable {
 
     private final DBConnection defaultConnection;
     private final Set<JDOPersistenceManager> jdoPersistenceManagerSet = new HashSet<>();
@@ -95,7 +95,7 @@ public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>,
     }
 
     @Override
-    public void refresh() {
+    public void refreshContext() {
         switchToDefault();
     }
 }

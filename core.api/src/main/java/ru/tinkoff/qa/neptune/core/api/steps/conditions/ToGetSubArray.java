@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetConditionalHelper.fluentWaitFunction;
 
 @SuppressWarnings("unchecked")
 public final class ToGetSubArray {
@@ -24,7 +25,7 @@ public final class ToGetSubArray {
                                                  Duration waitingTime,
                                                  Duration sleepingTime,
                                                  Supplier<? extends RuntimeException> exceptionSupplier) {
-        return ToGetConditionalHelper.fluentWaitFunction(t ->
+        return fluentWaitFunction(t ->
                         ofNullable(function.apply(t)).map(rs -> {
                             var subResult = Arrays.stream(rs).filter(r -> {
                                 try {
@@ -35,7 +36,7 @@ public final class ToGetSubArray {
                             }).collect(toList());
 
                             R[] result = rs;
-                            for (R r: subResult) {
+                            for (R r : subResult) {
                                 result = ArrayUtils.removeElement(result, r);
                             }
                             return result;
@@ -47,15 +48,15 @@ public final class ToGetSubArray {
      * This method returns a function. The result function returns an array of elements which differ from null
      * and suit the criteria.
      *
-     * @param function function which should return an array
-     * @param condition predicate which is used to find some target value
-     * @param waitingTime is a duration of the waiting for valuable result
-     * @param sleepingTime is a duration of the sleeping between attempts to get
-     *                     expected valuable result
+     * @param function          function which should return an array
+     * @param condition         predicate which is used to find some target value
+     * @param waitingTime       is a duration of the waiting for valuable result
+     * @param sleepingTime      is a duration of the sleeping between attempts to get
+     *                          expected valuable result
      * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
-     *                           expiration
-     * @param <T> is a type of input value
-     * @param <R> is a type of target values
+     *                          expiration
+     * @param <T>               is a type of input value
+     * @param <R>               is a type of target values
      * @return a function. The result function returns an array of elements which differ from null
      * and suit the criteria. It returns not empty array when there are such elements. Some exception is thrown if result
      * array is null or has no elements which suit the criteria.
@@ -72,14 +73,14 @@ public final class ToGetSubArray {
     /**
      * This method returns a function. The result function returns an array of elements which differ from null.
      *
-     * @param function function which should return an array
-     * @param waitingTime is a duration of the waiting for valuable result
-     * @param sleepingTime is a duration of the sleeping between attempts to get
-     *                     expected valuable result
+     * @param function          function which should return an array
+     * @param waitingTime       is a duration of the waiting for valuable result
+     * @param sleepingTime      is a duration of the sleeping between attempts to get
+     *                          expected valuable result
      * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
-     *                           expiration
-     * @param <T> is a type of input value
-     * @param <R> is a type of target values
+     *                          expiration
+     * @param <T>               is a type of input value
+     * @param <R>               is a type of target values
      * @return a function. The result function returns an array of elements which differ from null.
      * It returns not empty array when there are such elements. Some exception is thrown if result
      * array is null or has no elements or all elements are {@code null}.
@@ -96,13 +97,13 @@ public final class ToGetSubArray {
      * This method returns a function. The result function returns an array of elements which differ from null
      * and suit the criteria.
      *
-     * @param function function which should return an array
-     * @param condition predicate which is used to find some target value
-     * @param waitingTime is a duration of the waiting for valuable result
+     * @param function          function which should return an array
+     * @param condition         predicate which is used to find some target value
+     * @param waitingTime       is a duration of the waiting for valuable result
      * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
-     *                           expiration
-     * @param <T> is a type of input value
-     * @param <R> is a type of target values
+     *                          expiration
+     * @param <T>               is a type of input value
+     * @param <R>               is a type of target values
      * @return a function. The result function returns an array of elements which differ from null
      * and suit the criteria. It returns not empty array when there are such elements. Some exception is thrown if result
      * array is null or has no elements which suit the criteria.
@@ -118,12 +119,12 @@ public final class ToGetSubArray {
     /**
      * This method returns a function. The result function returns an array of elements which differ from null.
      *
-     * @param function function which should return an array
-     * @param waitingTime is a duration of the waiting for valuable result
+     * @param function          function which should return an array
+     * @param waitingTime       is a duration of the waiting for valuable result
      * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
-     *                           expiration
-     * @param <T> is a type of input value
-     * @param <R> is a type of target values
+     *                          expiration
+     * @param <T>               is a type of input value
+     * @param <R>               is a type of target values
      * @return a function. The result function returns an array of elements which differ from null.
      * It returns not empty array when there are such elements. Some exception is thrown if result
      * array is null or has no elements or all elements are {@code null}.
@@ -139,12 +140,12 @@ public final class ToGetSubArray {
      * This method returns a function. The result function returns an array of elements which differ from null
      * and suit the criteria.
      *
-     * @param function function which should return an array
-     * @param condition predicate which is used to find some target value
+     * @param function          function which should return an array
+     * @param condition         predicate which is used to find some target value
      * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
-     *                           expiration
-     * @param <T> is a type of input value
-     * @param <R> is a type of target values
+     *                          expiration
+     * @param <T>               is a type of input value
+     * @param <R>               is a type of target values
      * @return a function. The result function returns an array of elements which differ from null
      * and suit the criteria. It returns not empty array when there are such elements. Some exception is thrown if result
      * array is null or has no elements which suit the criteria.
@@ -159,11 +160,11 @@ public final class ToGetSubArray {
     /**
      * This method returns a function. The result function returns an array of elements which differ from null.
      *
-     * @param function function which should return an array
+     * @param function          function which should return an array
      * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
-     *                           expiration
-     * @param <T> is a type of input value
-     * @param <R> is a type of target values
+     *                          expiration
+     * @param <T>               is a type of input value
+     * @param <R>               is a type of target values
      * @return a function. The result function returns an array of elements which differ from null.
      * It returns not empty array when there are such elements. Some exception is thrown if result
      * array is null or has no elements or all elements are {@code null}.
@@ -178,13 +179,13 @@ public final class ToGetSubArray {
      * This method returns a function. The result function returns an array of elements which differ from null
      * and suit the criteria.
      *
-     * @param function function which should return {@link Iterable}
-     * @param condition predicate which is used to find some target value
-     * @param waitingTime is a duration of the waiting for valuable result
+     * @param function     function which should return {@link Iterable}
+     * @param condition    predicate which is used to find some target value
+     * @param waitingTime  is a duration of the waiting for valuable result
      * @param sleepingTime is a duration of the sleeping between attempts to get
      *                     expected valuable result
-     * @param <T> is a type of input value
-     * @param <R> is a type of target values
+     * @param <T>          is a type of input value
+     * @param <R>          is a type of target values
      * @return a function. The result function returns an array of elements which differ from null
      * and suit the criteria. It returns not empty array when there are such elements. Empty array is returned if result
      * array is null or has no elements which suit the criteria.
@@ -200,12 +201,12 @@ public final class ToGetSubArray {
     /**
      * This method returns a function. The result function returns an array of elements which differ from null.
      *
-     * @param function function which should return {@link Iterable}
-     * @param waitingTime is a duration of the waiting for valuable result
+     * @param function     function which should return {@link Iterable}
+     * @param waitingTime  is a duration of the waiting for valuable result
      * @param sleepingTime is a duration of the sleeping between attempts to get
      *                     expected valuable result
-     * @param <T> is a type of input value
-     * @param <R> is a type of target values
+     * @param <T>          is a type of input value
+     * @param <R>          is a type of target values
      * @return a function. The result function returns an array of elements which differ from null.
      * It returns not empty array when there are such elements. Empty array is returned if result
      * array is null or has no elements or all elements are {@code null}.
@@ -221,11 +222,11 @@ public final class ToGetSubArray {
      * This method returns a function. The result function returns an array of elements which differ from null
      * and suit the criteria.
      *
-     * @param function function which should return {@link Iterable}
-     * @param condition predicate which is used to find some target value
+     * @param function    function which should return {@link Iterable}
+     * @param condition   predicate which is used to find some target value
      * @param waitingTime is a duration of the waiting for valuable result
-     * @param <T> is a type of input value
-     * @param <R> is a type of target values
+     * @param <T>         is a type of input value
+     * @param <R>         is a type of target values
      * @return a function. The result function returns an array of elements which differ from null
      * and suit the criteria. It returns not empty array when there are such elements. Empty array is returned if result
      * array is null or has no elements which suit the criteria.
@@ -240,11 +241,10 @@ public final class ToGetSubArray {
     /**
      * This method returns a function. The result function returns an array of elements which differ from null.
      *
-
-     * @param function function which should return {@link Iterable}
+     * @param function    function which should return {@link Iterable}
      * @param waitingTime is a duration of the waiting for valuable result
-     * @param <T> is a type of input value
-     * @param <R> is a type of target values
+     * @param <T>         is a type of input value
+     * @param <R>         is a type of target values
      * @return a function. The result function returns an array of elements which differ from null.
      * It returns not empty array when there are such elements. Empty array is returned if result
      * array is null or has no elements or all elements are {@code null}.
@@ -258,11 +258,10 @@ public final class ToGetSubArray {
      * This method returns a function. The result function returns sub-array of found values from array.
      * The original function should return array to match.
      *
-
-     * @param function which should return an array.
+     * @param function  which should return an array.
      * @param condition which is used to find target values.
-     * @param <T> is a type of input value
-     * @param <R> is a type of target values
+     * @param <T>       is a type of input value
+     * @param <R>       is a type of target values
      * @return a function. The result function returns sub-array of found values from array.
      * The result function will return values if something is found. Empty array or {@code null} are
      * returned otherwise. It depends on result of the {@link Function#apply(Object)}

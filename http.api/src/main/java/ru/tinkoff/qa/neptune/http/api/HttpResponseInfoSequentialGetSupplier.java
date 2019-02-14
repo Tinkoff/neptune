@@ -11,15 +11,13 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.function.Function;
 
-import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
-
 /**
  * This class is designed to build chains of functions that get needed data from a http response.
  * @param <T> is a type of data to get from a http response
  */
 @MakeCaptureOnFinishing(typeOfCapture = Object.class)
-public final class HttpResponseInfoSequentialGetSupplier<T> extends SequentialGetStepSupplier<HttpStepContext, T,
-        HttpResponse<?>, HttpResponseInfoSequentialGetSupplier<T>> {
+public final class HttpResponseInfoSequentialGetSupplier<T> extends SequentialGetStepSupplier
+        .GetObjectChainedStepSupplier<HttpStepContext, T, HttpResponse<?>, HttpResponseInfoSequentialGetSupplier<T>> {
 
     private static final Function<HttpResponse<?>, Integer> STATUS_CODE = HttpResponse::statusCode;
     private static final Function<HttpResponse<?>, HttpRequest> REQUEST = HttpResponse::request;
@@ -32,11 +30,10 @@ public final class HttpResponseInfoSequentialGetSupplier<T> extends SequentialGe
     private static final Function<HttpResponse<?>, URI> URI = HttpResponse::uri;
     private static final Function<HttpResponse<?>, HttpClient.Version> VERSION = HttpResponse::version;
 
-    private final Function<HttpResponse<?>, T> endFunction;
-
-    private HttpResponseInfoSequentialGetSupplier(Function<HttpResponse<?>, T> endFunction) {
-        this.endFunction = endFunction;
+    private HttpResponseInfoSequentialGetSupplier(String description, Function<HttpResponse<?>, T> originalFunction) {
+        super(description, originalFunction);
     }
+
 
     @SuppressWarnings("unchecked")
     private static <T> Function<HttpResponse<?>, T> bodyFunction() {
@@ -49,8 +46,8 @@ public final class HttpResponseInfoSequentialGetSupplier<T> extends SequentialGe
      * @param httpResponseSequentialGetSupplier is a description of the response to get a status code
      * @return instance of {@link HttpResponseInfoSequentialGetSupplier}
      */
-    public static HttpResponseInfoSequentialGetSupplier<Integer> statusCodeOf(HttpResponseSequentialGetSupplier<?, ?> httpResponseSequentialGetSupplier) {
-        return new HttpResponseInfoSequentialGetSupplier<>(toGet("Status code of the response", STATUS_CODE))
+    public static HttpResponseInfoSequentialGetSupplier<Integer> statusCodeOf(HttpResponseSequentialGetSupplier<?> httpResponseSequentialGetSupplier) {
+        return new HttpResponseInfoSequentialGetSupplier<>("Status code of the response", STATUS_CODE)
                 .from(httpResponseSequentialGetSupplier);
     }
 
@@ -61,7 +58,7 @@ public final class HttpResponseInfoSequentialGetSupplier<T> extends SequentialGe
      * @return instance of {@link HttpResponseInfoSequentialGetSupplier}
      */
     public static HttpResponseInfoSequentialGetSupplier<Integer> statusCodeOf(HttpResponse<?> httpResponse) {
-        return new HttpResponseInfoSequentialGetSupplier<>(toGet("Status code of the response", STATUS_CODE))
+        return new HttpResponseInfoSequentialGetSupplier<>("Status code of the response", STATUS_CODE)
                 .from(httpResponse);
     }
 
@@ -71,8 +68,8 @@ public final class HttpResponseInfoSequentialGetSupplier<T> extends SequentialGe
      * @param httpResponseSequentialGetSupplier is a description of the response to get the request
      * @return instance of {@link HttpResponseInfoSequentialGetSupplier}
      */
-    public static HttpResponseInfoSequentialGetSupplier<HttpRequest> correspondingRequestOf(HttpResponseSequentialGetSupplier<?, ?> httpResponseSequentialGetSupplier) {
-        return new HttpResponseInfoSequentialGetSupplier<>(toGet("Corresponding request of the response", REQUEST))
+    public static HttpResponseInfoSequentialGetSupplier<HttpRequest> correspondingRequestOf(HttpResponseSequentialGetSupplier<?> httpResponseSequentialGetSupplier) {
+        return new HttpResponseInfoSequentialGetSupplier<>("Corresponding request of the response", REQUEST)
                 .from(httpResponseSequentialGetSupplier);
     }
 
@@ -83,7 +80,7 @@ public final class HttpResponseInfoSequentialGetSupplier<T> extends SequentialGe
      * @return instance of {@link HttpResponseInfoSequentialGetSupplier}
      */
     public static HttpResponseInfoSequentialGetSupplier<HttpRequest> correspondingRequestOf(HttpResponse<?> httpResponse) {
-        return new HttpResponseInfoSequentialGetSupplier<>(toGet("Corresponding request of the response", REQUEST))
+        return new HttpResponseInfoSequentialGetSupplier<>("Corresponding request of the response", REQUEST)
                 .from(httpResponse);
     }
 
@@ -94,8 +91,8 @@ public final class HttpResponseInfoSequentialGetSupplier<T> extends SequentialGe
      * @param httpResponseSequentialGetSupplier is a description of the response to get the previous response from
      * @return instance of {@link HttpResponseInfoSequentialGetSupplier}
      */
-    public static HttpResponseInfoSequentialGetSupplier<HttpResponse<?>> previousResponseOf(HttpResponseSequentialGetSupplier<?, ?> httpResponseSequentialGetSupplier) {
-        return new HttpResponseInfoSequentialGetSupplier<>(toGet("Previous response", PREVIOUS_RESPONSE))
+    public static HttpResponseInfoSequentialGetSupplier<HttpResponse<?>> previousResponseOf(HttpResponseSequentialGetSupplier<?> httpResponseSequentialGetSupplier) {
+        return new HttpResponseInfoSequentialGetSupplier<>("Previous response", PREVIOUS_RESPONSE)
                 .from(httpResponseSequentialGetSupplier);
     }
 
@@ -107,7 +104,7 @@ public final class HttpResponseInfoSequentialGetSupplier<T> extends SequentialGe
      * @return instance of {@link HttpResponseInfoSequentialGetSupplier}
      */
     public static HttpResponseInfoSequentialGetSupplier<HttpResponse<?>> previousResponseOf(HttpResponse<?> httpResponse) {
-        return new HttpResponseInfoSequentialGetSupplier<>(toGet("Previous response", PREVIOUS_RESPONSE))
+        return new HttpResponseInfoSequentialGetSupplier<>("Previous response", PREVIOUS_RESPONSE)
                 .from(httpResponse);
     }
 
@@ -117,8 +114,8 @@ public final class HttpResponseInfoSequentialGetSupplier<T> extends SequentialGe
      * @param httpResponseSequentialGetSupplier is a description of the response to get headers
      * @return instance of {@link HttpResponseInfoSequentialGetSupplier}
      */
-    public static HttpResponseInfoSequentialGetSupplier<HttpHeaders> headersOf(HttpResponseSequentialGetSupplier<?, ?> httpResponseSequentialGetSupplier) {
-        return new HttpResponseInfoSequentialGetSupplier<>(toGet("Response headers of the response", HEADERS))
+    public static HttpResponseInfoSequentialGetSupplier<HttpHeaders> headersOf(HttpResponseSequentialGetSupplier<?> httpResponseSequentialGetSupplier) {
+        return new HttpResponseInfoSequentialGetSupplier<>("Response headers of the response", HEADERS)
                 .from(httpResponseSequentialGetSupplier);
     }
 
@@ -129,7 +126,7 @@ public final class HttpResponseInfoSequentialGetSupplier<T> extends SequentialGe
      * @return instance of {@link HttpResponseInfoSequentialGetSupplier}
      */
     public static HttpResponseInfoSequentialGetSupplier<HttpHeaders> headersOf(HttpResponse<?> httpResponse) {
-        return new HttpResponseInfoSequentialGetSupplier<>(toGet("Response headers of the response", HEADERS))
+        return new HttpResponseInfoSequentialGetSupplier<>("Response headers of the response", HEADERS)
                 .from(httpResponse);
     }
 
@@ -142,8 +139,8 @@ public final class HttpResponseInfoSequentialGetSupplier<T> extends SequentialGe
      * @param <T> type of body to be returned
      * @return instance of {@link HttpResponseInfoSequentialGetSupplier}
      */
-    public static <T> HttpResponseInfoSequentialGetSupplier<T> bodyOf(HttpResponseSequentialGetSupplier<T, ?> httpResponseSequentialGetSupplier) {
-        return new HttpResponseInfoSequentialGetSupplier<T>(toGet("Body of the response", bodyFunction()))
+    public static <T> HttpResponseInfoSequentialGetSupplier<T> bodyOf(HttpResponseSequentialGetSupplier<T> httpResponseSequentialGetSupplier) {
+        return new HttpResponseInfoSequentialGetSupplier<T>("Body of the response", bodyFunction())
                 .from(httpResponseSequentialGetSupplier);
     }
 
@@ -157,7 +154,7 @@ public final class HttpResponseInfoSequentialGetSupplier<T> extends SequentialGe
      * @return instance of {@link HttpResponseInfoSequentialGetSupplier}
      */
     public static <T> HttpResponseInfoSequentialGetSupplier<T> bodyOf(HttpResponse<T> httpResponse) {
-        return new HttpResponseInfoSequentialGetSupplier<T>(toGet("Body of the response", bodyFunction()))
+        return new HttpResponseInfoSequentialGetSupplier<T>("Body of the response", bodyFunction())
                 .from(httpResponse);
     }
 
@@ -167,8 +164,8 @@ public final class HttpResponseInfoSequentialGetSupplier<T> extends SequentialGe
      * @param httpResponseSequentialGetSupplier is a description of the response to get the {@link SSLSession}
      * @return instance of {@link HttpResponseInfoSequentialGetSupplier}
      */
-    public static HttpResponseInfoSequentialGetSupplier<SSLSession> sslSessionOf(HttpResponseSequentialGetSupplier<?, ?> httpResponseSequentialGetSupplier) {
-        return new HttpResponseInfoSequentialGetSupplier<>(toGet("Ssl session of the response", SSL_SESSION))
+    public static HttpResponseInfoSequentialGetSupplier<SSLSession> sslSessionOf(HttpResponseSequentialGetSupplier<?> httpResponseSequentialGetSupplier) {
+        return new HttpResponseInfoSequentialGetSupplier<>("Ssl session of the response", SSL_SESSION)
                 .from(httpResponseSequentialGetSupplier);
     }
 
@@ -179,7 +176,7 @@ public final class HttpResponseInfoSequentialGetSupplier<T> extends SequentialGe
      * @return instance of {@link HttpResponseInfoSequentialGetSupplier}
      */
     public static HttpResponseInfoSequentialGetSupplier<SSLSession> sslSessionOf(HttpResponse<?> httpResponse) {
-        return new HttpResponseInfoSequentialGetSupplier<>(toGet("Ssl session of the response", SSL_SESSION))
+        return new HttpResponseInfoSequentialGetSupplier<>("Ssl session of the response", SSL_SESSION)
                 .from(httpResponse);
     }
 
@@ -190,8 +187,8 @@ public final class HttpResponseInfoSequentialGetSupplier<T> extends SequentialGe
      * @param httpResponseSequentialGetSupplier is a description of the response to get the {@link URI}
      * @return instance of {@link HttpResponseInfoSequentialGetSupplier}
      */
-    public static HttpResponseInfoSequentialGetSupplier<URI> uriOf(HttpResponseSequentialGetSupplier<?, ?> httpResponseSequentialGetSupplier) {
-        return new HttpResponseInfoSequentialGetSupplier<>(toGet("URI of the response", URI))
+    public static HttpResponseInfoSequentialGetSupplier<URI> uriOf(HttpResponseSequentialGetSupplier<?> httpResponseSequentialGetSupplier) {
+        return new HttpResponseInfoSequentialGetSupplier<>("URI of the response", URI)
                 .from(httpResponseSequentialGetSupplier);
     }
 
@@ -203,7 +200,7 @@ public final class HttpResponseInfoSequentialGetSupplier<T> extends SequentialGe
      * @return instance of {@link HttpResponseInfoSequentialGetSupplier}
      */
     public static HttpResponseInfoSequentialGetSupplier<URI> uriOf(HttpResponse<?> httpResponse) {
-        return new HttpResponseInfoSequentialGetSupplier<>(toGet("URI of the response", URI))
+        return new HttpResponseInfoSequentialGetSupplier<>("URI of the response", URI)
                 .from(httpResponse);
     }
 
@@ -213,8 +210,8 @@ public final class HttpResponseInfoSequentialGetSupplier<T> extends SequentialGe
      * @param httpResponseSequentialGetSupplier is a description of the response to get the HTTP protocol version
      * @return instance of {@link HttpResponseInfoSequentialGetSupplier}
      */
-    public static HttpResponseInfoSequentialGetSupplier<HttpClient.Version> httpVersionOf(HttpResponseSequentialGetSupplier<?, ?> httpResponseSequentialGetSupplier) {
-        return new HttpResponseInfoSequentialGetSupplier<>(toGet("Http version of the response", VERSION))
+    public static HttpResponseInfoSequentialGetSupplier<HttpClient.Version> httpVersionOf(HttpResponseSequentialGetSupplier<?> httpResponseSequentialGetSupplier) {
+        return new HttpResponseInfoSequentialGetSupplier<>("Http version of the response", VERSION)
                 .from(httpResponseSequentialGetSupplier);
     }
 
@@ -225,12 +222,7 @@ public final class HttpResponseInfoSequentialGetSupplier<T> extends SequentialGe
      * @return instance of {@link HttpResponseInfoSequentialGetSupplier}
      */
     public static HttpResponseInfoSequentialGetSupplier<HttpClient.Version> httpVersionOf(HttpResponse<?> httpResponse) {
-        return new HttpResponseInfoSequentialGetSupplier<>(toGet("Http version of the response", VERSION))
+        return new HttpResponseInfoSequentialGetSupplier<>("Http version of the response", VERSION)
                 .from(httpResponse);
-    }
-
-    @Override
-    protected Function<HttpResponse<?>, T> getEndFunction() {
-        return endFunction;
     }
 }

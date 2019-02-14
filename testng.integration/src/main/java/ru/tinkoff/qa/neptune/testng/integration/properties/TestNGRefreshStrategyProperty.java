@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.testng.integration.properties;
 
-import ru.tinkoff.qa.neptune.core.api.cleaning.Refreshable;
+import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import ru.tinkoff.qa.neptune.core.api.properties.enums.MultipleEnumPropertySuppler;
 
 import java.util.List;
@@ -30,7 +30,7 @@ public final class TestNGRefreshStrategyProperty implements MultipleEnumProperty
      * returned.
      *
      * @return list of defined strategies how to invoke the
-     * {@link Refreshable#refresh()}. Each strategy is described by
+     * {@link ContextRefreshable#refreshContext()}. Each strategy is described by
      * elements of the {@link RefreshEachTimeBefore}.
      */
     @Override

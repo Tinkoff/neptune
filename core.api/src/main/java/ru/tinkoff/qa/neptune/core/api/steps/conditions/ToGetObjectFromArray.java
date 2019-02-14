@@ -1,12 +1,13 @@
 package ru.tinkoff.qa.neptune.core.api.steps.conditions;
 
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromIterable.getFromIterable;
-import static java.util.Arrays.asList;
 
 public final class ToGetObjectFromArray {
 
@@ -37,7 +38,10 @@ public final class ToGetObjectFromArray {
                                                      Duration sleepingTime,
                                                      Supplier<? extends RuntimeException> exceptionSupplier) {
         ToGetConditionalHelper.checkFunction(function);
-        return getFromIterable(t -> asList(function.apply(t)), ToGetConditionalHelper.checkCondition(condition), waitingTime, sleepingTime,
+        return getFromIterable(t -> {
+                    var array = function.apply(t);
+                    return ofNullable(array).map(Arrays::asList).orElse(null);
+                }, ToGetConditionalHelper.checkCondition(condition), waitingTime, sleepingTime,
                 exceptionSupplier);
     }
 
@@ -60,7 +64,10 @@ public final class ToGetObjectFromArray {
                                                      Duration sleepingTime,
                                                      Supplier<? extends RuntimeException> exceptionSupplier) {
         ToGetConditionalHelper.checkFunction(function);
-        return getFromIterable(t -> asList(function.apply(t)), waitingTime, sleepingTime, exceptionSupplier);
+        return getFromIterable(t -> {
+            var array = function.apply(t);
+            return ofNullable(array).map(Arrays::asList).orElse(null);
+        }, waitingTime, sleepingTime, exceptionSupplier);
     }
 
     /**
@@ -83,7 +90,10 @@ public final class ToGetObjectFromArray {
                                                      Duration waitingTime,
                                                      Supplier<? extends RuntimeException> exceptionSupplier) {
         ToGetConditionalHelper.checkFunction(function);
-        return getFromIterable(t -> asList(function.apply(t)), condition, waitingTime, exceptionSupplier);
+        return getFromIterable(t -> {
+            var array = function.apply(t);
+            return ofNullable(array).map(Arrays::asList).orElse(null);
+        }, condition, waitingTime, exceptionSupplier);
     }
 
     /**
@@ -102,7 +112,10 @@ public final class ToGetObjectFromArray {
                                                      Duration waitingTime,
                                                      Supplier<? extends RuntimeException> exceptionSupplier) {
         ToGetConditionalHelper.checkFunction(function);
-        return getFromIterable(t -> asList(function.apply(t)), waitingTime, exceptionSupplier);
+        return getFromIterable(t -> {
+            var array = function.apply(t);
+            return ofNullable(array).map(Arrays::asList).orElse(null);
+        }, waitingTime, exceptionSupplier);
     }
 
     /**
@@ -123,7 +136,10 @@ public final class ToGetObjectFromArray {
                                                      Predicate<? super R> condition,
                                                      Supplier<? extends RuntimeException> exceptionSupplier) {
         ToGetConditionalHelper.checkFunction(function);
-        return getFromIterable(t -> asList(function.apply(t)), condition, exceptionSupplier);
+        return getFromIterable(t -> {
+            var array = function.apply(t);
+            return ofNullable(array).map(Arrays::asList).orElse(null);
+        }, condition, exceptionSupplier);
     }
 
     /**
@@ -140,7 +156,10 @@ public final class ToGetObjectFromArray {
     public static <T, R> Function<T, R> getFromArray(Function<T, R[]> function,
                                                      Supplier<? extends RuntimeException> exceptionSupplier) {
         ToGetConditionalHelper.checkFunction(function);
-        return getFromIterable(t -> asList(function.apply(t)), ToGetConditionalHelper.checkExceptionSupplier(exceptionSupplier));
+        return getFromIterable(t -> {
+            var array = function.apply(t);
+            return ofNullable(array).map(Arrays::asList).orElse(null);
+        }, ToGetConditionalHelper.checkExceptionSupplier(exceptionSupplier));
     }
 
     /**
@@ -163,7 +182,10 @@ public final class ToGetObjectFromArray {
                                                      Duration waitingTime,
                                                      Duration sleepingTime) {
         ToGetConditionalHelper.checkFunction(function);
-        return getFromIterable(t -> asList(function.apply(t)), condition, waitingTime, sleepingTime);
+        return getFromIterable(t -> {
+            var array = function.apply(t);
+            return ofNullable(array).map(Arrays::asList).orElse(null);
+        }, condition, waitingTime, sleepingTime);
     }
 
     /**
@@ -182,7 +204,10 @@ public final class ToGetObjectFromArray {
                                                      Duration waitingTime,
                                                      Duration sleepingTime) {
         ToGetConditionalHelper.checkFunction(function);
-        return getFromIterable(t -> asList(function.apply(t)), waitingTime, sleepingTime);
+        return getFromIterable(t -> {
+            var array = function.apply(t);
+            return ofNullable(array).map(Arrays::asList).orElse(null);
+        }, waitingTime, sleepingTime);
     }
 
     /**
@@ -202,7 +227,10 @@ public final class ToGetObjectFromArray {
                                                      Predicate<? super R> condition,
                                                      Duration waitingTime) {
         ToGetConditionalHelper.checkFunction(function);
-        return getFromIterable(t -> asList(function.apply(t)), condition, waitingTime);
+        return getFromIterable(t -> {
+            var array = function.apply(t);
+            return ofNullable(array).map(Arrays::asList).orElse(null);
+        }, condition, waitingTime);
     }
 
     /**
@@ -218,7 +246,10 @@ public final class ToGetObjectFromArray {
     public static <T, R> Function<T, R> getFromArray(Function<T, R[]> function,
                                                      Duration waitingTime) {
         ToGetConditionalHelper.checkFunction(function);
-        return getFromIterable(t -> asList(function.apply(t)), waitingTime);
+        return getFromIterable(t -> {
+            var array = function.apply(t);
+            return ofNullable(array).map(Arrays::asList).orElse(null);
+        }, waitingTime);
     }
 
     /**
@@ -235,7 +266,10 @@ public final class ToGetObjectFromArray {
     public static <T, R> Function<T, R> getFromArray(Function<T, R[]> function,
                                                      Predicate<? super R> condition) {
         ToGetConditionalHelper.checkFunction(function);
-        return getFromIterable(t -> asList(function.apply(t)), condition);
+        return getFromIterable(t -> {
+            var array = function.apply(t);
+            return ofNullable(array).map(Arrays::asList).orElse(null);
+        }, condition);
     }
 
     /**
@@ -249,6 +283,9 @@ public final class ToGetObjectFromArray {
      */
     public static <T, R> Function<T, R> getFromArray(Function<T, R[]> function) {
         ToGetConditionalHelper.checkFunction(function);
-        return getFromIterable(t -> asList(function.apply(t)));
+        return getFromIterable(t -> {
+            var array = function.apply(t);
+            return ofNullable(array).map(Arrays::asList).orElse(null);
+        });
     }
 }

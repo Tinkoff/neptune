@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium;
 
 import org.openqa.selenium.WrapsDriver;
-import ru.tinkoff.qa.neptune.core.api.cleaning.Refreshable;
+import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import net.sf.cglib.proxy.Enhancer;
@@ -23,7 +23,7 @@ import static java.util.Optional.ofNullable;
 import static org.openqa.selenium.net.PortProber.findFreePort;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITING_FOR_PAGE_LOADED_DURATION;
 
-public class WrappedWebDriver implements WrapsDriver, Refreshable {
+public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
 
     private final static String DEFAULT_LOCAL_HOST = "http://localhost:%s/wd/hub";
     private static SeleniumServer server;
@@ -115,7 +115,7 @@ public class WrappedWebDriver implements WrapsDriver, Refreshable {
     }
 
     @Override
-    public void refresh() {
+    public void refreshContext() {
         if (driver == null) {
             return;
         }

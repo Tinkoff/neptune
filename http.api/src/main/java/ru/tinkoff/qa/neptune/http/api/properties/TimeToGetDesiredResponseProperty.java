@@ -19,7 +19,7 @@ public final class TimeToGetDesiredResponseProperty extends DurationSupplier {
 
     /**
      * Reads properties {@code 'waiting.for.desired.response.time.unit'} and {@code 'waiting.for.desired.response.time.value'}
-     * and builds an instance of {@link Duration}. When any of properties is not defined then in builds a duration of
+     * and builds an instance of {@link Duration}. When any of properties is not defined then it builds a duration of
      * 25 seconds. This is the duration of the waiting for desired http response.
      */
     public static final TimeToGetDesiredResponseProperty DEFAULT_TIME_TO_GET_DESIRED_RESPONSE_PROPERTY =

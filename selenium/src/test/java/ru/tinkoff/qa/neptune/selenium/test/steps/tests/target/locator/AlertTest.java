@@ -36,7 +36,8 @@ public class AlertTest extends BaseWebDriverTest {
         setStartBenchMark();
         Alert alert = seleniumSteps.get(alert()
                 .criteria(condition(format("Alert with the text %s", TEXT_OF_ALERT), alert1 -> TEXT_OF_ALERT.equals(alert1.getText())))
-                .timeOut(FIVE_SECONDS, HALF_SECOND));
+                .timeOut(FIVE_SECONDS)
+                .pollingInterval(HALF_SECOND));
         setEndBenchMark();
         assertThat(alert, not(nullValue()));
         assertThat(getTimeDifference(), lessThan(ONE_SECOND.toMillis()));
@@ -49,7 +50,8 @@ public class AlertTest extends BaseWebDriverTest {
             seleniumSteps.get(alert()
                     .criteria(condition("Alert with the text 'some not existing text'", alert1 ->
                             "some not existing text".equals(alert1.getText())))
-                    .timeOut(FIVE_SECONDS, HALF_SECOND));
+                    .timeOut(FIVE_SECONDS)
+                    .pollingInterval(HALF_SECOND));
         }
         catch (Exception e) {
             assertThat(e.getMessage(), containsString("No alert that suits criteria 'Alert with the text 'some not existing text'' has been found"));

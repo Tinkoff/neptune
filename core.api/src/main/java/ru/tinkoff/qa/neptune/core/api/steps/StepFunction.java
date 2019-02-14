@@ -11,6 +11,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.*;
 import static ru.tinkoff.qa.neptune.core.api.properties.DoCapturesOf.catchFailureEvent;
@@ -111,7 +112,12 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
         if (isLoggable(before)) {
             return new SequentialStepFunction<>(before, this);
         }
-        this.function = this.function.compose((Function<? super Object, ?>) before);
+
+        var after = this.function;
+        this.function = o -> {
+            var result = before.apply((V) o);
+            return ofNullable(result).map(after).orElse(null);
+        };
         return (StepFunction<V, R>) this;
     }
 

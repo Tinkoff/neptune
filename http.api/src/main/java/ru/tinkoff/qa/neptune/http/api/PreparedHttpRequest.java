@@ -5,17 +5,13 @@ import org.glassfish.jersey.uri.internal.JerseyUriBuilder;
 import ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpDomainToRespondProperty;
 
 import javax.ws.rs.core.UriBuilder;
-import java.net.CookieManager;
-import java.net.HttpCookie;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpTimeoutException;
 import java.time.Duration;
-import java.util.*;
-import java.util.function.Function;
-
+import java.util.function.Consumer;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.net.http.HttpRequest.newBuilder;
@@ -28,19 +24,15 @@ import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpDomainToRespo
 /**
  * It builds a function that prepare a {@link HttpRequest} to get a response further.
  */
-@SuppressWarnings("unchecked")
-public class PreparedHttpRequest<T extends PreparedHttpRequest<T>> implements Function<HttpStepContext,
-        HowToGetResponse> {
+public class PreparedHttpRequest {
 
     private static final UrlValidator URL_VALIDATOR = new UrlValidator();
 
     private final HttpRequest.Builder builder;
-    private final Map<URI, List<HttpCookie>> cookieToAdd = new HashMap<>();
     private final UriBuilder uriBuilder = new JerseyUriBuilder();
-    private final Function<HttpRequest.Builder, HttpRequest.Builder> builderPreparing;
 
 
-    private PreparedHttpRequest(String uri, Function<HttpRequest.Builder, HttpRequest.Builder> builderPreparing) {
+    private PreparedHttpRequest(String uri, Consumer<HttpRequest.Builder> builderPreparing) {
         checkArgument(!isBlank(uri), "URI parameter should not be a null or empty value");
         try {
             if (URL_VALIDATOR.isValid(uri)) {
@@ -61,7 +53,7 @@ public class PreparedHttpRequest<T extends PreparedHttpRequest<T>> implements Fu
 
             builder = newBuilder();
             uriBuilder.uri(uri);
-            this.builderPreparing = builderPreparing;
+            builderPreparing.accept(builder);
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException(e.getMessage(), e);
         }
@@ -74,8 +66,8 @@ public class PreparedHttpRequest<T extends PreparedHttpRequest<T>> implements Fu
      *            when the {@link DefaultHttpDomainToRespondProperty#DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY} is defined
      * @return a new instance of {@link PreparedHttpRequest}
      */
-    public static PreparedGetHttpRequest GET(String uri) {
-        return new PreparedGetHttpRequest(uri);
+    public static PreparedHttpRequest GET(String uri) {
+        return new PreparedHttpRequest(uri, HttpRequest.Builder::GET);
     }
 
     /**
@@ -86,8 +78,11 @@ public class PreparedHttpRequest<T extends PreparedHttpRequest<T>> implements Fu
      * @param publisher body publisher of the request
      * @return a new instance of {@link PreparedHttpRequest}
      */
-    public static PreparedPostHttpRequest POST(String uri, HttpRequest.BodyPublisher publisher) {
-        return new PreparedPostHttpRequest(uri, publisher);
+    public static PreparedHttpRequest POST(String uri, HttpRequest.BodyPublisher publisher) {
+        return new PreparedHttpRequest(uri, builder -> {
+            checkArgument(nonNull(publisher), "Body publisher parameter should not be a null value");
+            builder.POST(publisher);
+        });
     }
 
     /**
@@ -98,8 +93,11 @@ public class PreparedHttpRequest<T extends PreparedHttpRequest<T>> implements Fu
      * @param publisher body publisher of the request
      * @return a new instance of {@link PreparedHttpRequest}
      */
-    public static PreparedPutHttpRequest PUT(String uri, HttpRequest.BodyPublisher publisher) {
-        return new PreparedPutHttpRequest(uri, publisher);
+    public static PreparedHttpRequest PUT(String uri, HttpRequest.BodyPublisher publisher) {
+        return new PreparedHttpRequest(uri, builder -> {
+            checkArgument(nonNull(publisher), "Body publisher parameter should not be a null value");
+            builder.PUT(publisher);
+        });
     }
 
     /**
@@ -109,8 +107,8 @@ public class PreparedHttpRequest<T extends PreparedHttpRequest<T>> implements Fu
      *            when the {@link DefaultHttpDomainToRespondProperty#DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY} is defined
      * @return a new instance of {@link PreparedHttpRequest}
      */
-    public static PreparedDeleteHttpRequest DELETE(String uri) {
-        return new PreparedDeleteHttpRequest(uri);
+    public static PreparedHttpRequest DELETE(String uri) {
+        return new PreparedHttpRequest(uri, HttpRequest.Builder::DELETE);
     }
 
     /**
@@ -122,8 +120,12 @@ public class PreparedHttpRequest<T extends PreparedHttpRequest<T>> implements Fu
      * @param publisher body publisher of the request
      * @return a new instance of {@link PreparedHttpRequest}
      */
-    public static PreparedMethodHttpRequest methodRequest(String uri, String method, HttpRequest.BodyPublisher publisher) {
-        return new PreparedMethodHttpRequest(uri, method, publisher);
+    public static PreparedHttpRequest methodRequest(String uri, String method, HttpRequest.BodyPublisher publisher) {
+        return new PreparedHttpRequest(uri, builder -> {
+            checkArgument(!isBlank(method), "Method name should not be a null or empty value");
+            checkArgument(nonNull(publisher), "Body publisher parameter should not be a null value");
+            builder.method(method, publisher);
+        });
     }
 
     /**
@@ -134,7 +136,7 @@ public class PreparedHttpRequest<T extends PreparedHttpRequest<T>> implements Fu
      * @param method a method to send
      * @return a new instance of {@link PreparedHttpRequest}
      */
-    public static PreparedMethodHttpRequest methodRequest(String uri, String method) {
+    public static PreparedHttpRequest methodRequest(String uri, String method) {
         return methodRequest(uri, method, empty());
     }
 
@@ -146,9 +148,9 @@ public class PreparedHttpRequest<T extends PreparedHttpRequest<T>> implements Fu
      * @param value the header value
      * @return self-reference
      */
-    public T header(String name, String value) {
+    public PreparedHttpRequest header(String name, String value) {
         builder.header(name, value);
-        return (T) this;
+        return this;
     }
 
     /**
@@ -161,9 +163,9 @@ public class PreparedHttpRequest<T extends PreparedHttpRequest<T>> implements Fu
      * @param headers the list of name value pairs
      * @return self-reference
      */
-    public T headers(String... headers) {
+    public PreparedHttpRequest headers(String... headers) {
         builder.headers(headers);
-        return (T) this;
+        return this;
     }
 
     /**
@@ -174,9 +176,9 @@ public class PreparedHttpRequest<T extends PreparedHttpRequest<T>> implements Fu
      * @param value the header value
      * @return self-reference
      */
-    public T setHeader(String name, String value) {
+    public PreparedHttpRequest setHeader(String name, String value) {
         builder.setHeader(name, value);
-        return (T) this;
+        return this;
     }
 
     /**
@@ -187,9 +189,9 @@ public class PreparedHttpRequest<T extends PreparedHttpRequest<T>> implements Fu
      * @param duration the timeout duration
      * @return self-reference
      */
-    public T timeout(Duration duration) {
+    public PreparedHttpRequest timeout(Duration duration) {
         builder.timeout(duration);
-        return (T) this;
+        return this;
     }
 
     /**
@@ -198,9 +200,9 @@ public class PreparedHttpRequest<T extends PreparedHttpRequest<T>> implements Fu
      * @param version the HTTP protocol version requested
      * @return self-reference
      */
-    public T version(HttpClient.Version version) {
+    public PreparedHttpRequest version(HttpClient.Version version) {
         builder.version(version);
-        return (T) this;
+        return this;
     }
 
     /**
@@ -214,77 +216,9 @@ public class PreparedHttpRequest<T extends PreparedHttpRequest<T>> implements Fu
      * @param enable {@code true} if Expect continue to be sent
      * @return self-reference
      */
-    public T expectContinue(boolean enable) {
+    public PreparedHttpRequest expectContinue(boolean enable) {
         builder.expectContinue(enable);
-        return (T) this;
-    }
-
-    /**
-     * Adds all the cookies into cookie cache of the current http client.
-     *
-     * @param uri              a {@code URI} where the cookies come from
-     * @param cookiesToBeAdded cookies to be added
-     * @return self-reference
-     */
-    public T addCookies(String uri, List<HttpCookie> cookiesToBeAdded) {
-        checkArgument(nonNull(cookiesToBeAdded), "List of cookies to be added should not be a null value");
-        checkArgument(cookiesToBeAdded.size() > 0, "At least one cookie should be defined for the adding");
-        URI uriInstance = ofNullable(uri).map(s -> {
-            try {
-                return new URI(s);
-            } catch (URISyntaxException e) {
-                throw new IllegalArgumentException(e.getMessage(), e);
-            }
-        }).orElse(null);
-
-        ofNullable(cookieToAdd.get(uriInstance)).ifPresentOrElse(
-                httpCookies -> {
-                    List<HttpCookie> toAdd = new ArrayList<>();
-                    cookiesToBeAdded.forEach(cookie -> {
-                        if (!httpCookies.contains(cookie)) {
-                            toAdd.add(cookie);
-                        }
-                    });
-                    httpCookies.addAll(toAdd);
-                },
-                () -> cookieToAdd.put(uriInstance, cookiesToBeAdded));
-        return (T) this;
-    }
-
-    /**
-     * Adds all the cookies into cookie cache of the current http client.
-     *
-     * @param cookieMap is a map of cached cookies. Key is a {@code URI} where the cookies come from.
-     *                  Value is a list of cookies to be added.
-     * @return self-reference
-     */
-    public T addCookies(Map<String, List<HttpCookie>> cookieMap) {
-        cookieMap.forEach(this::addCookies);
-        return (T) this;
-    }
-
-    /**
-     * Sets all the cookies into cookie cache of the current http client.
-     *
-     * @param uri            a {@code URI} where the cookies come from
-     * @param cookiesToBeSet cookies to be set
-     * @return self-reference
-     */
-    public T setCookies(String uri, List<HttpCookie> cookiesToBeSet) {
-        cookieToAdd.clear();
-        return addCookies(uri, cookiesToBeSet);
-    }
-
-    /**
-     * Sets all the cookies into cookie cache of the current http client.
-     *
-     * @param cookieMap is a map of cached cookies. Key is a {@code URI} where the cookies come from.
-     *                  Value is a list of cookies to be set.
-     * @return self-reference
-     */
-    public T setCookies(Map<String, List<HttpCookie>> cookieMap) {
-        cookieToAdd.clear();
-        return addCookies(cookieMap);
+        return this;
     }
 
     /**
@@ -294,75 +228,13 @@ public class PreparedHttpRequest<T extends PreparedHttpRequest<T>> implements Fu
      * @param values values of the parameter
      * @return self-reference
      */
-    public T queryParam(String name, final Object... values) {
+    public PreparedHttpRequest queryParam(String name, final Object... values) {
         uriBuilder.queryParam(name, values);
-        return (T) this;
+        return this;
     }
 
-    @Override
-    public HowToGetResponse apply(HttpStepContext httpSteps) {
+    public HttpRequest build() {
         builder.uri(uriBuilder.build());
-        var client = httpSteps.getCurrentClient();
-
-        if (cookieToAdd.size() > 0) {
-            client.cookieHandler()
-                    .ifPresentOrElse(cookieHandler ->
-                            {
-                                if (!CookieManager.class.isAssignableFrom(cookieHandler.getClass())) {
-                                    throw new IllegalStateException(format("It is unknown how to add cookies. We support only %s " +
-                                            "as cookie handler for a while", CookieManager.class.getName()));
-                                }
-                                var cookieStore = ((CookieManager) cookieHandler).getCookieStore();
-                                cookieToAdd.forEach((key, value) ->
-                                        value.forEach(cookie -> cookieStore.add(key, cookie)));
-                            },
-                            () -> {
-                                throw new IllegalStateException("Can't get access to a cookie store of the current http client");
-                            });
-        }
-
-        return new HowToGetResponse(client, this.builderPreparing
-                .apply(builder).build());
-    }
-
-    public static final class PreparedGetHttpRequest extends PreparedHttpRequest<PreparedGetHttpRequest> {
-        private PreparedGetHttpRequest(String uri) {
-            super(uri, HttpRequest.Builder::GET);
-        }
-    }
-
-    public static final class PreparedPostHttpRequest extends PreparedHttpRequest<PreparedPostHttpRequest> {
-        private PreparedPostHttpRequest(String uri, HttpRequest.BodyPublisher publisher) {
-            super(uri, builder -> {
-                checkArgument(nonNull(publisher), "Body publisher parameter should not be a null value");
-                return builder.POST(publisher);
-            });
-        }
-    }
-
-    public static final class PreparedPutHttpRequest extends PreparedHttpRequest<PreparedPutHttpRequest> {
-        private PreparedPutHttpRequest(String uri, HttpRequest.BodyPublisher publisher) {
-            super(uri, builder -> {
-                checkArgument(nonNull(publisher), "Body publisher parameter should not be a null value");
-                return builder.PUT(publisher);
-            });
-        }
-    }
-
-    public static final class PreparedDeleteHttpRequest extends PreparedHttpRequest<PreparedDeleteHttpRequest> {
-        private PreparedDeleteHttpRequest(String uri) {
-            super(uri, HttpRequest.Builder::DELETE);
-        }
-    }
-
-    public static final class PreparedMethodHttpRequest extends PreparedHttpRequest<PreparedMethodHttpRequest> {
-
-        private PreparedMethodHttpRequest(String uri, String method, HttpRequest.BodyPublisher publisher) {
-            super(uri, builder -> {
-                checkArgument(!isBlank(method), "Method name should not be a null or empty value");
-                checkArgument(nonNull(publisher), "Body publisher parameter should not be a null value");
-                return builder.method(method, publisher);
-            });
-        }
+        return builder.build();
     }
 }

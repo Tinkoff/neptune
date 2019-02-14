@@ -25,7 +25,8 @@ public class SelectOneGetSupplier<T, M> extends SequentialGetStepSupplier
 
     private  <S extends Iterable<T>> SelectOneGetSupplier(String description, Function<M, S> originalFunction) {
         super(description, originalFunction);
-        timeOut(WAITING_FOR_SELECTION_RESULT_TIME.get(), SLEEPING_TIME.get());
+        timeOut(WAITING_FOR_SELECTION_RESULT_TIME.get());
+        pollingInterval(SLEEPING_TIME.get());
     }
 
     @Override
@@ -34,8 +35,8 @@ public class SelectOneGetSupplier<T, M> extends SequentialGetStepSupplier
     }
 
     @Override
-    public SelectOneGetSupplier<T, M> timeOut(Duration timeOut, Duration sleepingTime) {
-        return super.timeOut(timeOut, sleepingTime);
+    public SelectOneGetSupplier<T, M> pollingInterval(Duration pollingTime) {
+        return super.pollingInterval(pollingTime);
     }
 
     @Override

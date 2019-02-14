@@ -32,7 +32,8 @@ public class JavaScriptTest extends BaseWebDriverTest {
         setStartBenchMark();
         Object result = seleniumSteps.evaluate(javaScript(SCRIPT_1.getScript(), ARGUMENTS)
                 .criteria(CONTAINS_ARGUMENT_1)
-                .timeOut(FIVE_SECONDS, HALF_SECOND)
+                .timeOut(FIVE_SECONDS)
+                .pollingInterval(HALF_SECOND)
                 .throwOnEmptyResult(() -> new WebDriverException(format(EXCEPTION_MESSAGE_PATTERN,
                         EXCEPTION_MESSAGE, SCRIPT_1.getScript()))));
         setEndBenchMark();
@@ -46,7 +47,8 @@ public class JavaScriptTest extends BaseWebDriverTest {
         try {
             seleniumSteps.evaluate(javaScript(SCRIPT_1.getScript(), ARGUMENTS)
                     .criteria(CONTAINS_ARGUMENT_5)
-                    .timeOut(FIVE_SECONDS, HALF_SECOND)
+                    .timeOut(FIVE_SECONDS)
+                    .pollingInterval(HALF_SECOND)
                     .throwOnEmptyResult(() -> new WebDriverException(format(EXCEPTION_MESSAGE_PATTERN,
                             EXCEPTION_MESSAGE, SCRIPT_1.getScript()))));
         } catch (Exception e) {
@@ -65,7 +67,8 @@ public class JavaScriptTest extends BaseWebDriverTest {
         setStartBenchMark();
         Object result = seleniumSteps.evaluate(javaScript(SCRIPT_1.getScript(), ARGUMENTS)
                 .criteria(CONTAINS_ARGUMENT_5)
-                .timeOut(FIVE_SECONDS, HALF_SECOND));
+                .timeOut(FIVE_SECONDS)
+                .pollingInterval(HALF_SECOND));
         setEndBenchMark();
         assertThat(result, nullValue());
         assertThat(getTimeDifference(), greaterThanOrEqualTo(FIVE_SECONDS.toMillis()));
@@ -77,7 +80,8 @@ public class JavaScriptTest extends BaseWebDriverTest {
         try {
             seleniumSteps.evaluate(javaScript(SCRIPT_2.getScript(), ARGUMENTS)
                     .criteria(CONTAINS_ARGUMENT_1)
-                    .timeOut(FIVE_SECONDS, HALF_SECOND)
+                    .timeOut(FIVE_SECONDS)
+                    .pollingInterval(HALF_SECOND)
                     .throwOnEmptyResult(() -> new WebDriverException(format(EXCEPTION_MESSAGE_PATTERN,
                             EXCEPTION_MESSAGE, SCRIPT_2.getScript()))));
         } catch (Exception e) {

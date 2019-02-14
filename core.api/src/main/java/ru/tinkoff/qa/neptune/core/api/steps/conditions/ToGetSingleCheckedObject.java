@@ -8,6 +8,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetConditionalHelper.fluentWaitFunction;
 
 @SuppressWarnings("unchecked")
 public final class ToGetSingleCheckedObject {
@@ -20,14 +21,13 @@ public final class ToGetSingleCheckedObject {
                                                        @Nullable Duration waitingTime,
                                                        @Nullable Duration sleepingTime,
                                                        @Nullable Supplier<? extends RuntimeException> exceptionSupplier) {
-        return ToGetConditionalHelper.fluentWaitFunction(t ->
+        return fluentWaitFunction(t ->
                         ofNullable(function.apply(t)).map(r -> {
                             try {
                                 if (ToGetConditionalHelper.notNullAnd(condition).test(r)) {
                                     return r;
                                 }
-                            }
-                            catch (Throwable t1) {
+                            } catch (Throwable t1) {
                                 ToGetConditionalHelper.printErrorAndFalse(t1);
                             }
                             return null;
@@ -39,15 +39,15 @@ public final class ToGetSingleCheckedObject {
      * This method returns a function. The result function returns a single value which
      * suits criteria.
      *
-     * @param function function which should return some object
-     * @param condition predicate which is used to find some target value
-     * @param waitingTime is a duration of the waiting for valuable result
-     * @param sleepingTime is a duration of the sleeping between attempts to get
-     *                     expected valuable result
+     * @param function          function which should return some object
+     * @param condition         predicate which is used to find some target value
+     * @param waitingTime       is a duration of the waiting for valuable result
+     * @param sleepingTime      is a duration of the sleeping between attempts to get
+     *                          expected valuable result
      * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
-     *                           expiration
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
+     *                          expiration
+     * @param <T>               is a type of input value
+     * @param <R>               is a type of the target value
      * @return a function. The result function returns a single value.
      * It returns a value if it suits criteria. Some exception is thrown if value is null or doesn't suit criteria.
      */
@@ -63,14 +63,14 @@ public final class ToGetSingleCheckedObject {
     /**
      * This method returns a function. The result function returns a single value which differs from null.
      *
-     * @param function function which should return some object
-     * @param waitingTime is a duration of the waiting for valuable result
-     * @param sleepingTime is a duration of the sleeping between attempts to get
-     *                     expected valuable result
+     * @param function          function which should return some object
+     * @param waitingTime       is a duration of the waiting for valuable result
+     * @param sleepingTime      is a duration of the sleeping between attempts to get
+     *                          expected valuable result
      * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
-     *                           expiration
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
+     *                          expiration
+     * @param <T>               is a type of input value
+     * @param <R>               is a type of the target value
      * @return a function. The result function returns a single value.
      * It returns a value if it differs from null. Some exception is thrown if value is null.
      */
@@ -85,13 +85,13 @@ public final class ToGetSingleCheckedObject {
      * This method returns a function. The result function returns a single value which
      * suits criteria.
      *
-     * @param function function which should return some object
-     * @param condition predicate which is used to find some target value
-     * @param waitingTime is a duration of the waiting for valuable result
+     * @param function          function which should return some object
+     * @param condition         predicate which is used to find some target value
+     * @param waitingTime       is a duration of the waiting for valuable result
      * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
-     *                           expiration
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
+     *                          expiration
+     * @param <T>               is a type of input value
+     * @param <R>               is a type of the target value
      * @return a function. The result function returns a single value.
      * It returns a value if it suits criteria. Some exception is thrown if value is null or doesn't suit criteria.
      */
@@ -106,12 +106,12 @@ public final class ToGetSingleCheckedObject {
     /**
      * This method returns a function. The result function returns a single value which differs from null.
      *
-     * @param function function which should return some object
-     * @param waitingTime is a duration of the waiting for valuable result
+     * @param function          function which should return some object
+     * @param waitingTime       is a duration of the waiting for valuable result
      * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
-     *                           expiration
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
+     *                          expiration
+     * @param <T>               is a type of input value
+     * @param <R>               is a type of the target value
      * @return a function. The result function returns a single value.
      * It returns a value if it differs from null. Some exception is thrown if value is null.
      */
@@ -126,12 +126,12 @@ public final class ToGetSingleCheckedObject {
      * This method returns a function. The result function returns a single value which
      * suits criteria.
      *
-     * @param function function which should return some object
-     * @param condition predicate which is used to find some target value
+     * @param function          function which should return some object
+     * @param condition         predicate which is used to find some target value
      * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
-     *                           expiration
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
+     *                          expiration
+     * @param <T>               is a type of input value
+     * @param <R>               is a type of the target value
      * @return a function. The result function returns a single value.
      * It returns a value if it suits criteria. Some exception is thrown if value is null or doesn't suit criteria.
      */
@@ -145,11 +145,11 @@ public final class ToGetSingleCheckedObject {
     /**
      * This method returns a function. The result function returns a single value which differs from null.
      *
-     * @param function function which should return some object
+     * @param function          function which should return some object
      * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
-     *                           expiration
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
+     *                          expiration
+     * @param <T>               is a type of input value
+     * @param <R>               is a type of the target value
      * @return a function. The result function returns a single value.
      * It returns a value if it differs from null. Some exception is thrown if value is null.
      */
@@ -163,13 +163,13 @@ public final class ToGetSingleCheckedObject {
      * This method returns a function. The result function returns a single value which
      * suits criteria.
      *
-     * @param function function which should return some object
-     * @param condition predicate which is used to find some target value
-     * @param waitingTime is a duration of the waiting for valuable result
+     * @param function     function which should return some object
+     * @param condition    predicate which is used to find some target value
+     * @param waitingTime  is a duration of the waiting for valuable result
      * @param sleepingTime is a duration of the sleeping between attempts to get
      *                     expected valuable result
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
+     * @param <T>          is a type of input value
+     * @param <R>          is a type of the target value
      * @return a function. The result function returns a single value.
      * It returns a value if it suits criteria. {@code null} is returned if value is null or doesn't suit criteria.
      */
@@ -184,12 +184,12 @@ public final class ToGetSingleCheckedObject {
     /**
      * This method returns a function. The result function returns a single value which differs from null.
      *
-     * @param function function which should return some object
-     * @param waitingTime is a duration of the waiting for valuable result
+     * @param function     function which should return some object
+     * @param waitingTime  is a duration of the waiting for valuable result
      * @param sleepingTime is a duration of the sleeping between attempts to get
      *                     expected valuable result
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
+     * @param <T>          is a type of input value
+     * @param <R>          is a type of the target value
      * @return a function. The result function returns a single value.
      * It returns a value if it differs from null. {@code null} is returned if value is null.
      */
@@ -204,11 +204,11 @@ public final class ToGetSingleCheckedObject {
      * This method returns a function. The result function returns a single value which
      * suits criteria.
      *
-     * @param function function which should return some object
-     * @param condition predicate which is used to find some target value
+     * @param function    function which should return some object
+     * @param condition   predicate which is used to find some target value
      * @param waitingTime is a duration of the waiting for valuable result
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
+     * @param <T>         is a type of input value
+     * @param <R>         is a type of the target value
      * @return a function. The result function returns a single value.
      * It returns a value if it suits criteria. {@code null} is returned if value is null or doesn't suit criteria.
      */
@@ -222,27 +222,27 @@ public final class ToGetSingleCheckedObject {
     /**
      * TThis method returns a function. The result function returns a single value which differs from null.
      *
-     * @param function function which should return some object
+     * @param function    function which should return some object
      * @param waitingTime is a duration of the waiting for valuable result
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
+     * @param <T>         is a type of input value
+     * @param <R>         is a type of the target value
      * @return a function. The result function returns a single value.
      * It returns a value if it differs from null. {@code null} is returned if value is null.
      */
     public static <T, R> Function<T, R> getSingle(Function<T, R> function,
                                                   Duration waitingTime) {
         return checkedSingle(ToGetConditionalHelper.checkFunction(function), (Predicate<? super R>) ToGetConditionalHelper.AS_IS, ToGetConditionalHelper.checkWaitingTime(waitingTime),
-                null,  null);
+                null, null);
     }
 
     /**
      * This method returns a function. The result function returns a single value which
      * suits criteria.
      *
-     * @param function which should return a value to check.
+     * @param function  which should return a value to check.
      * @param condition which is used to check the target value.
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
+     * @param <T>       is a type of input value
+     * @param <R>       is a type of the target value
      * @return a function. The result function returns a single value.
      * It returns a value if it suits criteria. {@code null} is returned if value is null or doesn't suit criteria.
      */

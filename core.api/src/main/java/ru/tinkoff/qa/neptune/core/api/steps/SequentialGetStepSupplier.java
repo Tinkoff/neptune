@@ -141,17 +141,16 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     }
 
     /**
-     * Sometimes it is necessary to wait until some result that may be considered valuable is returned. This method
-     * is for defining the waiting time.
+     * Sometimes it is necessary to wait until some result that may be considered valuable is returned.
+     * It sets how often the function should be evaluated.
      *
-     * @param timeOut      is a time duration to get desired value
-     * @param sleepingTime is a time duration between attempts to get desired value
-     * @return self-reference
+     * @param pollingTime The timeout duration.
+     * @return A self reference.
      */
-    protected THIS timeOut(Duration timeOut, Duration sleepingTime) {
-        checkArgument(nonNull(sleepingTime), "Sleeping time should not be a null value");
-        checkArgument(!sleepingTime.isNegative(), "Sleeping time should be a positive value");
-        this.timeOut(timeOut).sleepingTime = sleepingTime;
+    protected THIS pollingInterval(Duration pollingTime) {
+        checkArgument(nonNull(pollingTime), "Sleeping time should not be a null value");
+        checkArgument(!pollingTime.isNegative(), "Sleeping time should be a positive value");
+        this.sleepingTime = pollingTime;
         return (THIS) this;
     }
 
@@ -377,7 +376,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
     }
 
-    public abstract Function<M, R> getEndFunction();
+    protected abstract Function<M, R> getEndFunction();
 
     /**
      * Returns string description of the defined criteria. If there is some description and {@link Predicate#toString()}
@@ -404,6 +403,10 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
                     return NOT_DESCRIBED;
                 }).orElse(EMPTY);
+    }
+
+    protected Predicate<P> getCriteria() {
+        return condition;
     }
 
     private static abstract class PrivateGetObjectStepSupplier<T, R, M, THIS extends PrivateGetObjectStepSupplier<T, R, M, THIS>>
@@ -639,7 +642,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     public static abstract class GetObjectFromArrayStepSupplier<T, R, THIS extends GetObjectFromArrayStepSupplier<T, R, THIS>>
             extends PrivateGetObjectFromArrayStepSupplier<T, R, T, THIS> {
 
-        GetObjectFromArrayStepSupplier(String description, Function<T, R[]> originalFunction) {
+        protected GetObjectFromArrayStepSupplier(String description, Function<T, R[]> originalFunction) {
             super(description, originalFunction);
             from(t -> t);
         }
@@ -730,7 +733,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     public static abstract class GetIterableStepSupplier<T, S extends Iterable<R>, R, THIS extends GetIterableStepSupplier<T, S, R, THIS>>
             extends PrivateGetIterableStepSupplier<T, S, T, R, THIS> {
 
-        GetIterableStepSupplier(String description, Function<T, S> originalFunction) {
+        protected GetIterableStepSupplier(String description, Function<T, S> originalFunction) {
             super(description, originalFunction);
             from(t -> t);
         }
@@ -822,7 +825,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
             extends PrivateGetArrayStepSupplier<T, T, R, THIS> {
 
 
-        GetArrayStepSupplier(String description, Function<T, R[]> originalFunction) {
+        protected GetArrayStepSupplier(String description, Function<T, R[]> originalFunction) {
             super(description, originalFunction);
             from(t -> t);
         }
@@ -839,7 +842,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     public static abstract class GetArrayChainedStepSupplier<T, M, R, THIS extends GetArrayChainedStepSupplier<T, M, R, THIS>>
             extends PrivateGetArrayStepSupplier<T, M, R, THIS> {
 
-        GetArrayChainedStepSupplier(String description, Function<M, R[]> originalFunction) {
+        protected GetArrayChainedStepSupplier(String description, Function<M, R[]> originalFunction) {
             super(description, originalFunction);
         }
 

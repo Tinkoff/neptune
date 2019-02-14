@@ -51,8 +51,8 @@ public final class GetAlertSupplier extends SequentialGetStepSupplier.GetObjectC
     }
 
     @Override
-    public GetAlertSupplier timeOut(Duration timeOut, Duration sleepingTime) {
-        return super.timeOut(timeOut, sleepingTime);
+    public GetAlertSupplier pollingInterval(Duration pollingTime) {
+        return super.pollingInterval(pollingTime);
     }
 
     /**

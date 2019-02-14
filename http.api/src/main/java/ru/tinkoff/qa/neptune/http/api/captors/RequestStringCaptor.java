@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.http.api.captors;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.StringCaptor;
-import ru.tinkoff.qa.neptune.http.api.HowToGetResponse;
 
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -12,7 +11,11 @@ import static org.apache.commons.lang3.time.DurationFormatUtils.formatDuration;
 public class RequestStringCaptor extends StringCaptor<HttpRequest> {
 
     public RequestStringCaptor() {
-        super("Request");
+        this("Request");
+    }
+
+    public RequestStringCaptor(String desciption) {
+        super(desciption);
     }
 
     @Override
@@ -34,10 +37,6 @@ public class RequestStringCaptor extends StringCaptor<HttpRequest> {
         var clazz = toBeCaptured.getClass();
         if (HttpRequest.class.isAssignableFrom(clazz)) {
             return (HttpRequest) toBeCaptured;
-        }
-
-        if (HowToGetResponse.class.isAssignableFrom(clazz)) {
-            return ((HowToGetResponse) toBeCaptured).getRequest();
         }
 
         if (HttpResponse.class.isAssignableFrom(clazz)) {

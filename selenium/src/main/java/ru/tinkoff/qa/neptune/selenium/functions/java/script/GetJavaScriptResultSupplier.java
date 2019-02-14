@@ -220,8 +220,8 @@ public final class GetJavaScriptResultSupplier extends SequentialGetStepSupplier
     }
 
     @Override
-    public GetJavaScriptResultSupplier timeOut(Duration timeOut, Duration sleepingTime) {
-        return super.timeOut(timeOut, sleepingTime);
+    public GetJavaScriptResultSupplier pollingInterval(Duration pollingTime) {
+        return super.pollingInterval(pollingTime);
     }
 
     @Override

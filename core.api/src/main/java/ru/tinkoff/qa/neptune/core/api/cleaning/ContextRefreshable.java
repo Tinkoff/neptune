@@ -5,14 +5,14 @@ import java.lang.reflect.Modifier;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 
-public interface Refreshable {
+public interface ContextRefreshable {
     /**
-     * Reads fields of some object. If it has some not empty field of type which extends {@link Refreshable}
-     * then method invokes {@link Refreshable#refresh()}.
+     * Reads fields of some object. If it has some not empty field of type which extends {@link ContextRefreshable}
+     * then method invokes {@link ContextRefreshable#refreshContext()}.
      *
-     * @param toBeRefreshed is an object which is supposed to have fields of type which extends {@link Refreshable}.
+     * @param toBeRefreshed is an object which is supposed to have fields of type which extends {@link ContextRefreshable}.
      */
-    static void refresh(Object toBeRefreshed) {
+    static void refreshContext(Object toBeRefreshed) {
         var clazz = toBeRefreshed.getClass();
         while (!clazz.equals(Object.class)) {
             var fields = clazz.getDeclaredFields();
@@ -21,11 +21,11 @@ public interface Refreshable {
                 var modifiers = field.getModifiers();
 
                 if (!Modifier.isStatic(modifiers)) {
-                    if (Refreshable.class.isAssignableFrom(field.getType())) {
+                    if (ContextRefreshable.class.isAssignableFrom(field.getType())) {
                         field.setAccessible(true);
                         try {
                             var value = field.get(toBeRefreshed);
-                            ofNullable(value).ifPresent(o -> ((Refreshable) o).refresh());
+                            ofNullable(value).ifPresent(o -> ((ContextRefreshable) o).refreshContext());
                         } catch (IllegalAccessException e) {
                             e.printStackTrace();
                         }
@@ -36,5 +36,5 @@ public interface Refreshable {
         }
     }
 
-    void refresh();
+    void refreshContext();
 }

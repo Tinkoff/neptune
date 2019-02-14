@@ -1,41 +1,25 @@
 package ru.tinkoff.qa.neptune.http.api;
 
-import ru.tinkoff.qa.neptune.core.api.steps.GetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.ConditionConcatenation;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 
 import java.net.CookieManager;
 import java.net.HttpCookie;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static java.lang.String.format;
-import static java.util.Optional.ofNullable;
-import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
-import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSubIterable.getIterable;
+import static ru.tinkoff.qa.neptune.http.api.GetCookieManager.getCookieManager;
 
 /**
  * This class is designed to build functions that get applicable cookies from a cookie cache
  */
 @MakeStringCapturesOnFinishing
-public final class HttpGetCachedCookiesSupplier extends GetStepSupplier<HttpStepContext, List<HttpCookie>, HttpGetCachedCookiesSupplier> {
-
-    private Predicate<HttpCookie> criteria;
-    private static final Function<HttpStepContext, List<HttpCookie>> GET_COOKIES = httpSteps ->
-            httpSteps.getCurrentClient().cookieHandler()
-                    .map(cookieHandler -> {
-                        if (!CookieManager.class.isAssignableFrom(cookieHandler.getClass())) {
-                            throw new IllegalStateException(format("We support only %s as cookie handler for a while", CookieManager.class.getName()));
-                        }
-                        return new ArrayList<>(((CookieManager) cookieHandler).getCookieStore().getCookies());
-                    })
-                    .orElseThrow(() -> {
-                        throw new IllegalStateException("Can't get access to a cookie store of the current http client");
-                    });
+public final class HttpGetCachedCookiesSupplier extends SequentialGetStepSupplier
+        .GetIterableChainedStepSupplier<HttpStepContext, List<HttpCookie>, CookieManager, HttpCookie, HttpGetCachedCookiesSupplier> {
 
     private HttpGetCachedCookiesSupplier() {
-        super();
+        super("Cached cookies", cookieManager -> cookieManager.getCookieStore().getCookies());
     }
 
     /**
@@ -44,28 +28,26 @@ public final class HttpGetCachedCookiesSupplier extends GetStepSupplier<HttpStep
      * @return an instance of {@link HttpGetCachedCookiesSupplier}
      */
     public static HttpGetCachedCookiesSupplier cachedCookies() {
-        return new HttpGetCachedCookiesSupplier();
+        return new HttpGetCachedCookiesSupplier().from(getCookieManager());
     }
 
-    /**
-     * Sets a criteria to get cached cookies. It is supposed that cookies to be returned should meet this criteria.
-     *
-     * @param criteria is a criteria that cached cookie should meet to be returned
-     * @return self-reference
-     */
-    public HttpGetCachedCookiesSupplier criteriaToGetCookies(Predicate<HttpCookie> criteria) {
-        this.criteria = criteria;
-        return this;
+    @Override
+    public HttpGetCachedCookiesSupplier criteria(ConditionConcatenation concat, Predicate<? super HttpCookie> condition) {
+        return super.criteria(concat, condition);
     }
 
-    public Function<HttpStepContext, List<HttpCookie>> get() {
-        return ofNullable(super.get()).orElseGet(() -> {
-            ofNullable(criteria)
-                    .ifPresentOrElse(httpCookiePredicate ->
-                                    super.set(getIterable("Cached cookies", GET_COOKIES,
-                                            httpCookiePredicate, true, true)),
-                            () -> super.set(toGet("Cached cookies", GET_COOKIES)));
-            return super.get();
-        });
+    @Override
+    public HttpGetCachedCookiesSupplier criteria(ConditionConcatenation concat, String conditionDescription, Predicate<? super HttpCookie> condition) {
+        return super.criteria(concat, conditionDescription, condition);
+    }
+
+    @Override
+    public HttpGetCachedCookiesSupplier criteria(Predicate<? super HttpCookie> condition) {
+        return super.criteria(condition);
+    }
+
+    @Override
+    public HttpGetCachedCookiesSupplier criteria(String conditionDescription, Predicate<? super HttpCookie> condition) {
+        return super.criteria(conditionDescription, condition);
     }
 }

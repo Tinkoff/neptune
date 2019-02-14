@@ -27,7 +27,8 @@ public final class SelectListGetSupplier<T, M> extends SequentialGetStepSupplier
 
     private SelectListGetSupplier(String description, Function<M, List<T>> originalFunction) {
         super(description, originalFunction);
-        timeOut(WAITING_FOR_SELECTION_RESULT_TIME.get(), SLEEPING_TIME.get());
+        timeOut(WAITING_FOR_SELECTION_RESULT_TIME.get());
+        pollingInterval(SLEEPING_TIME.get());
     }
 
     @Override
@@ -36,8 +37,8 @@ public final class SelectListGetSupplier<T, M> extends SequentialGetStepSupplier
     }
 
     @Override
-    public SelectListGetSupplier<T, M> timeOut(Duration timeOut, Duration sleepingTime) {
-        return super.timeOut(timeOut, sleepingTime);
+    public SelectListGetSupplier<T, M> pollingInterval(Duration pollingTime) {
+        return super.pollingInterval(pollingTime);
     }
 
     @Override

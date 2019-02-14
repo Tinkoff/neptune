@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 
 import static java.util.Optional.ofNullable;
 import static java.util.stream.StreamSupport.stream;
+import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetConditionalHelper.fluentWaitFunction;
 
 @SuppressWarnings("unchecked")
 public final class ToGetObjectFromIterable {
@@ -22,7 +23,7 @@ public final class ToGetObjectFromIterable {
                                                                                    @Nullable Duration waitingTime,
                                                                                    @Nullable Duration sleepingTime,
                                                                                    @Nullable Supplier<? extends RuntimeException> exceptionSupplier) {
-        return ToGetConditionalHelper.fluentWaitFunction(t ->
+        return fluentWaitFunction(t ->
                         ofNullable(function.apply(t))
                                 .map(v -> stream(v.spliterator(), false).filter(r -> {
                                     try {
@@ -39,16 +40,16 @@ public final class ToGetObjectFromIterable {
      * This method returns a function. The result function returns a single first found value which
      * suits criteria from {@link Iterable}.
      *
-     * @param function function which should return {@link Iterable}
-     * @param condition predicate which is used to find some target value
-     * @param waitingTime is a duration of the waiting for valuable result
-     * @param sleepingTime is a duration of the sleeping between attempts to get
-     *                     expected valuable result
+     * @param function          function which should return {@link Iterable}
+     * @param condition         predicate which is used to find some target value
+     * @param waitingTime       is a duration of the waiting for valuable result
+     * @param sleepingTime      is a duration of the sleeping between attempts to get
+     *                          expected valuable result
      * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
-     *                           expiration
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
-     * @param <V> is a type of {@link Iterable} of {@code R}
+     *                          expiration
+     * @param <T>               is a type of input value
+     * @param <R>               is a type of the target value
+     * @param <V>               is a type of {@link Iterable} of {@code R}
      * @return a function. The result function returns a single first found value from {@link Iterable}.
      * It returns a value if something that suits criteria is found. Some exception is thrown if
      * result iterable to get value from is null or has zero-size or it has no item which suits criteria.
@@ -65,15 +66,15 @@ public final class ToGetObjectFromIterable {
     /**
      * This method returns a function. The result function returns a single first found value from {@link Iterable}.
      *
-     * @param function function which should return {@link Iterable}
-     * @param waitingTime is a duration of the waiting for valuable result
-     * @param sleepingTime is a duration of the sleeping between attempts to get
-     *                     expected valuable result
+     * @param function          function which should return {@link Iterable}
+     * @param waitingTime       is a duration of the waiting for valuable result
+     * @param sleepingTime      is a duration of the sleeping between attempts to get
+     *                          expected valuable result
      * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
-     *                           expiration
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
-     * @param <V> is a type of {@link Iterable} of {@code R}
+     *                          expiration
+     * @param <T>               is a type of input value
+     * @param <R>               is a type of the target value
+     * @param <V>               is a type of {@link Iterable} of {@code R}
      * @return a function. The result function returns a single first found non-null value from {@link Iterable}.
      * Some exception is thrown if result iterable to get value from is null or has zero-size.
      */
@@ -90,20 +91,20 @@ public final class ToGetObjectFromIterable {
      * This method returns a function. The result function returns a single first found value which
      * suits criteria from {@link Iterable}.
      *
-     * @param function function which should return {@link Iterable}
-     * @param condition predicate which is used to find some target value
-     * @param waitingTime is a duration of the waiting for valuable result
+     * @param function          function which should return {@link Iterable}
+     * @param condition         predicate which is used to find some target value
+     * @param waitingTime       is a duration of the waiting for valuable result
      * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
-     *                           expiration
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
-     * @param <V> is a type of {@link Iterable} of {@code R}
+     *                          expiration
+     * @param <T>               is a type of input value
+     * @param <R>               is a type of the target value
+     * @param <V>               is a type of {@link Iterable} of {@code R}
      * @return a function. The result function returns a single first found value from {@link Iterable}.
      * It returns a value if something that suits criteria is found. Some exception is thrown if
      * result iterable to get value from is null or has zero-size or it has no item which suits criteria.
      */
     public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(Function<T, V> function,
-                                                                               Predicate<? super  R> condition,
+                                                                               Predicate<? super R> condition,
                                                                                Duration waitingTime,
                                                                                Supplier<? extends RuntimeException> exceptionSupplier) {
         return singleFromIterable(ToGetConditionalHelper.checkFunction(function), ToGetConditionalHelper.checkCondition(condition), ToGetConditionalHelper.checkWaitingTime(waitingTime),
@@ -113,13 +114,13 @@ public final class ToGetObjectFromIterable {
     /**
      * This method returns a function. The result function returns a single first found value from {@link Iterable}.
      *
-     * @param function function which should return {@link Iterable}
-     * @param waitingTime is a duration of the waiting for valuable result
+     * @param function          function which should return {@link Iterable}
+     * @param waitingTime       is a duration of the waiting for valuable result
      * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
-     *                           expiration
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
-     * @param <V> is a type of {@link Iterable} of {@code R}
+     *                          expiration
+     * @param <T>               is a type of input value
+     * @param <R>               is a type of the target value
+     * @param <V>               is a type of {@link Iterable} of {@code R}
      * @return a function. The result function returns a single first found non-null value from {@link Iterable}.
      * Some exception is thrown if result iterable to get value from is null or has zero-size.
      */
@@ -134,13 +135,13 @@ public final class ToGetObjectFromIterable {
      * This method returns a function. The result function returns a single first found value which
      * suits criteria from {@link Iterable}.
      *
-     * @param function function which should return {@link Iterable}
-     * @param condition predicate which is used to find some target value
+     * @param function          function which should return {@link Iterable}
+     * @param condition         predicate which is used to find some target value
      * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
-     *                           expiration
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
-     * @param <V> is a type of {@link Iterable} of {@code R}
+     *                          expiration
+     * @param <T>               is a type of input value
+     * @param <R>               is a type of the target value
+     * @param <V>               is a type of {@link Iterable} of {@code R}
      * @return a function. The result function returns a single first found value from {@link Iterable}.
      * It returns a value if something that suits criteria is found. Some exception is thrown if
      * result iterable to get value from is null or has zero-size or it has no item which suits criteria.
@@ -155,12 +156,12 @@ public final class ToGetObjectFromIterable {
     /**
      * This method returns a function. The result function returns a single first found value from {@link Iterable}.
      *
-     * @param function function which should return {@link Iterable}
+     * @param function          function which should return {@link Iterable}
      * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
-     *                           expiration
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
-     * @param <V> is a type of {@link Iterable} of {@code R}
+     *                          expiration
+     * @param <T>               is a type of input value
+     * @param <R>               is a type of the target value
+     * @param <V>               is a type of {@link Iterable} of {@code R}
      * @return a function. The result function returns a single first found non-null value from {@link Iterable}.
      * Some exception is thrown if result iterable to get value from is null or has zero-size.
      */
@@ -174,14 +175,14 @@ public final class ToGetObjectFromIterable {
      * This method returns a function. The result function returns a single first found value which
      * suits criteria from {@link Iterable}.
      *
-     * @param function function which should return {@link Iterable}
-     * @param condition predicate which is used to find some target value
-     * @param waitingTime is a duration of the waiting for valuable result
+     * @param function     function which should return {@link Iterable}
+     * @param condition    predicate which is used to find some target value
+     * @param waitingTime  is a duration of the waiting for valuable result
      * @param sleepingTime is a duration of the sleeping between attempts to get
      *                     expected valuable result
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
-     * @param <V> is a type of {@link Iterable} of {@code R}
+     * @param <T>          is a type of input value
+     * @param <R>          is a type of the target value
+     * @param <V>          is a type of {@link Iterable} of {@code R}
      * @return a function. The result function returns a single first found value from {@link Iterable}.
      * It returns a value if something that suits criteria is found. {@code null} is returned if
      * result iterable to get value from is null or has zero-size or it has no item which suits criteria.
@@ -197,13 +198,13 @@ public final class ToGetObjectFromIterable {
     /**
      * This method returns a function. The result function returns a single first found value from {@link Iterable}.
      *
-     * @param function function which should return {@link Iterable}
-     * @param waitingTime is a duration of the waiting for valuable result
+     * @param function     function which should return {@link Iterable}
+     * @param waitingTime  is a duration of the waiting for valuable result
      * @param sleepingTime is a duration of the sleeping between attempts to get
      *                     expected valuable result
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
-     * @param <V> is a type of {@link Iterable} of {@code R}
+     * @param <T>          is a type of input value
+     * @param <R>          is a type of the target value
+     * @param <V>          is a type of {@link Iterable} of {@code R}
      * @return a function. The result function returns a single first found non-null value from {@link Iterable}.
      * {@code null} is returned if result iterable to get value from is null or has zero-size.
      */
@@ -218,12 +219,12 @@ public final class ToGetObjectFromIterable {
      * This method returns a function. The result function returns a single first found value which
      * suits criteria from {@link Iterable}.
      *
-     * @param function function which should return {@link Iterable}
-     * @param condition predicate which is used to find some target value
+     * @param function    function which should return {@link Iterable}
+     * @param condition   predicate which is used to find some target value
      * @param waitingTime is a duration of the waiting for valuable result
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
-     * @param <V> is a type of {@link Iterable} of {@code R}
+     * @param <T>         is a type of input value
+     * @param <R>         is a type of the target value
+     * @param <V>         is a type of {@link Iterable} of {@code R}
      * @return a function. The result function returns a single first found value from {@link Iterable}.
      * It returns a value if something that suits criteria is found. {@code null} is returned if
      * result iterable to get value from is null or has zero-size or it has no item which suits criteria.
@@ -232,17 +233,17 @@ public final class ToGetObjectFromIterable {
                                                                                Predicate<? super R> condition,
                                                                                Duration waitingTime) {
         return singleFromIterable(ToGetConditionalHelper.checkFunction(function), ToGetConditionalHelper.checkCondition(condition), ToGetConditionalHelper.checkWaitingTime(waitingTime),
-                null,  null);
+                null, null);
     }
 
     /**
      * This method returns a function. The result function returns a single first found value from {@link Iterable}.
      *
-     * @param function function which should return {@link Iterable}
+     * @param function    function which should return {@link Iterable}
      * @param waitingTime is a duration of the waiting for valuable result
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
-     * @param <V> is a type of {@link Iterable} of {@code R}
+     * @param <T>         is a type of input value
+     * @param <R>         is a type of the target value
+     * @param <V>         is a type of {@link Iterable} of {@code R}
      * @return a function. The result function returns a single first found non-null value from {@link Iterable}.
      * {@code null} is returned if result iterable to get value from is null or has zero-size.
      */
@@ -256,11 +257,11 @@ public final class ToGetObjectFromIterable {
      * This method returns a function. The result function returns a single first found value which
      * suits criteria from {@link Iterable}.
      *
-     * @param function function which should return {@link Iterable}
+     * @param function  function which should return {@link Iterable}
      * @param condition predicate which is used to find some target value
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
-     * @param <V> is a type of {@link Iterable} of {@code R}
+     * @param <T>       is a type of input value
+     * @param <R>       is a type of the target value
+     * @param <V>       is a type of {@link Iterable} of {@code R}
      * @return a function. The result function returns a single first found value from {@link Iterable}.
      * It returns a value if something that suits criteria is found. {@code null} is returned if
      * result iterable to get value from is null or has zero-size or it has no item which suits criteria.
@@ -275,9 +276,9 @@ public final class ToGetObjectFromIterable {
      * This method returns a function. The result function returns a single first found value from {@link Iterable}.
      *
      * @param function function which should return {@link Iterable}
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
-     * @param <V> is a type of {@link Iterable} of {@code R}
+     * @param <T>      is a type of input value
+     * @param <R>      is a type of the target value
+     * @param <V>      is a type of {@link Iterable} of {@code R}
      * @return a function. The result function returns a single first found non-null value from {@link Iterable}.
      * {@code null} is returned if result iterable to get value from is null or has zero-size.
      */

@@ -31,7 +31,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * This is the integration test which is supposed to be run on some local environment.
  * Goals:
  *
- * to make sure that {@link WrappedWebDriver#refresh()} works as expected
+ * to make sure that {@link WrappedWebDriver#refreshContext()} works as expected
  *
  * to make sure that {@link WrappedWebDriver} doesn't ignore
  * {@link SessionFlagProperties#KEEP_WEB_DRIVER_SESSION_OPENED}
@@ -100,7 +100,7 @@ public class RefreshingTest {
     @Test(priority = 1)
     public void nothingIsDefinedTest() {
         WebDriver webDriver = prepareWrappedWebDriver();
-        wrappedWebDriver.refresh();
+        wrappedWebDriver.refreshContext();
         assertThat("Is driver dead", !isDriverAlive(webDriver), is(true));
     }
 
@@ -111,7 +111,7 @@ public class RefreshingTest {
         setProperty(GET_BACK_TO_BASE_URL.getPropertyName(), "true");
 
         WebDriver webDriver = prepareWrappedWebDriver();
-        wrappedWebDriver.refresh();
+        wrappedWebDriver.refreshContext();
         assertThat("Is driver dead", !isDriverAlive(webDriver), is(true));
     }
 
@@ -120,7 +120,7 @@ public class RefreshingTest {
         setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getPropertyName(), "true");
 
         WebDriver webDriver = prepareWrappedWebDriver();
-        wrappedWebDriver.refresh();
+        wrappedWebDriver.refreshContext();
         sleep(1000);
 
         assertThat("Is driver alive", isDriverAlive(webDriver), is(true));
@@ -133,7 +133,7 @@ public class RefreshingTest {
 
         setProperty(CLEAR_WEB_DRIVER_COOKIES.getPropertyName(), "false");
         setProperty(GET_BACK_TO_BASE_URL.getPropertyName(), "false");
-        wrappedWebDriver.refresh();
+        wrappedWebDriver.refreshContext();
         sleep(1000);
 
         assertThat("Is driver alive", isDriverAlive(webDriver), is(true));
@@ -151,7 +151,7 @@ public class RefreshingTest {
         setProperty(GET_BACK_TO_BASE_URL.getPropertyName(), "true");
 
         WebDriver webDriver = prepareWrappedWebDriver();
-        wrappedWebDriver.refresh();
+        wrappedWebDriver.refreshContext();
         sleep(1000);
 
         assertThat("Is driver alive", isDriverAlive(webDriver), is(true));
@@ -163,7 +163,7 @@ public class RefreshingTest {
                 greaterThan(0));
 
         setProperty(CLEAR_WEB_DRIVER_COOKIES.getPropertyName(), "false");
-        wrappedWebDriver.refresh();
+        wrappedWebDriver.refreshContext();
         sleep(1000);
 
         assertThat("Is driver alive", isDriverAlive(webDriver), is(true));
@@ -182,7 +182,7 @@ public class RefreshingTest {
 
         WebDriver webDriver = prepareWrappedWebDriver();
         Set<Cookie> cookies = webDriver.manage().getCookies();
-        wrappedWebDriver.refresh();
+        wrappedWebDriver.refreshContext();
         sleep(1000);
 
         assertThat("Is driver alive", isDriverAlive(webDriver), is(true));
@@ -195,7 +195,7 @@ public class RefreshingTest {
 
         setProperty(GET_BACK_TO_BASE_URL.getPropertyName(), "false");
         webDriver.get(SELENIUM);
-        wrappedWebDriver.refresh();
+        wrappedWebDriver.refreshContext();
         sleep(1000);
 
         assertThat("Is driver alive", isDriverAlive(webDriver), is(true));
@@ -213,7 +213,7 @@ public class RefreshingTest {
 
         WebDriver webDriver = prepareWrappedWebDriver();
         Set<Cookie> cookies = webDriver.manage().getCookies();
-        wrappedWebDriver.refresh();
+        wrappedWebDriver.refreshContext();
         sleep(1000);
 
         assertThat("Is driver alive", isDriverAlive(webDriver), is(true));
@@ -226,7 +226,7 @@ public class RefreshingTest {
 
         setProperty(GET_BACK_TO_BASE_URL.getPropertyName(), "true");
         cookies = webDriver.manage().getCookies();
-        wrappedWebDriver.refresh();
+        wrappedWebDriver.refreshContext();
         sleep(1000);
 
         assertThat("Is driver alive", isDriverAlive(webDriver), is(true));
@@ -241,7 +241,7 @@ public class RefreshingTest {
         setProperty(GET_BACK_TO_BASE_URL.getPropertyName(), "false");
         setProperty(CLEAR_WEB_DRIVER_COOKIES.getPropertyName(), "true");
         cookies = webDriver.manage().getCookies();
-        wrappedWebDriver.refresh();
+        wrappedWebDriver.refreshContext();
         sleep(1000);
 
         assertThat("Is driver alive", isDriverAlive(webDriver), is(true));
@@ -253,7 +253,7 @@ public class RefreshingTest {
                 lessThan(cookies.size()));
 
         setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getPropertyName(), "false");
-        wrappedWebDriver.refresh();
+        wrappedWebDriver.refreshContext();
         assertThat("Is driver dead", !isDriverAlive(webDriver), is(true));
     }
 
