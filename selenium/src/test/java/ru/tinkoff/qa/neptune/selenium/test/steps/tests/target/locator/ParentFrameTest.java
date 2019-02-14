@@ -23,7 +23,9 @@ public class ParentFrameTest extends BaseWebDriverTest {
     @Test
     public void parentFrameWithDefinedTimeTest() {
         setStartBenchMark();
-        assertThat(((MockWebDriver) seleniumSteps.get(parentFrame(FIVE_SECONDS))).isSwitchedToParentFrame(),
+        assertThat(((MockWebDriver) seleniumSteps.get(parentFrame()
+                        .timeOut(FIVE_SECONDS)))
+                        .isSwitchedToParentFrame(),
                 is(true));
         setEndBenchMark();
         assertThat(getTimeDifference(), lessThan(HALF_SECOND.toMillis()));
@@ -49,7 +51,8 @@ public class ParentFrameTest extends BaseWebDriverTest {
         seleniumSteps.get(parentFrame());
         setStartBenchMark();
         try {
-            seleniumSteps.get(parentFrame(FIVE_SECONDS));
+            seleniumSteps.get(parentFrame()
+                    .timeOut(FIVE_SECONDS));
         }
         finally {
             setEndBenchMark();

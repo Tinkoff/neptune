@@ -20,22 +20,22 @@ public class Frame implements SwitchesToItself, TakesScreenshot {
     public void switchToMe() {
         Class<?> clazz = frame.getClass();
         if (Integer.class.isAssignableFrom(clazz)) {
-            webDriver.switchTo().frame(Integer.class.cast(frame));
+            webDriver.switchTo().frame((Integer) frame);
             return;
         }
 
         if (String.class.isAssignableFrom(clazz)) {
-            webDriver.switchTo().frame(String.class.cast(frame));
+            webDriver.switchTo().frame((String) frame);
             return;
         }
 
         if (WebElement.class.isAssignableFrom(clazz)) {
-            webDriver.switchTo().frame(WebElement.class.cast(frame));
+            webDriver.switchTo().frame((WebElement) frame);
             return;
         }
 
         if (WrapsElement.class.isAssignableFrom(clazz)) {
-            webDriver.switchTo().frame(WrapsElement.class.cast(frame).getWrappedElement());
+            webDriver.switchTo().frame(((WrapsElement) frame).getWrappedElement());
         }
     }
 

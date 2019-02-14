@@ -6,8 +6,6 @@ import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
 import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.server.SeleniumServer;
 import org.testng.annotations.DataProvider;
@@ -90,7 +88,7 @@ public class SanityTestOfTheStartingAndStoppingOfWebDriver {
         };
     }
 
-    @Test(dataProvider = "testData")
+    @Test(dataProvider = "testData", priority = 1)
     public void testOfTheStarting(Platform targetPlatform, Map<String, String> propertiesToSet,
                                   Class<? extends WebDriver> expectedWebDriver, String expectedBrowserType) {
         if (!getCurrent().is(targetPlatform)) {
@@ -124,7 +122,7 @@ public class SanityTestOfTheStartingAndStoppingOfWebDriver {
         }
     }
 
-    @Test
+    @Test(priority = 1)
     public void testOfTheRemoteStartingWithRemoteURL() throws Exception {
         SeleniumServer server;
         WrappedWebDriver wrappedWebDriver = null;
@@ -162,7 +160,7 @@ public class SanityTestOfTheStartingAndStoppingOfWebDriver {
         }
     }
 
-    @Test
+    @Test(priority = 1)
     public void startSessionWithBaseURL() {
         Map<String, String> properties = new HashMap<>(Map.ofEntries(desiredDriver(CHROME_DRIVER),
                 entry(BASE_WEB_DRIVER_URL_PROPERTY.getPropertyName(), "https://github.com/")));

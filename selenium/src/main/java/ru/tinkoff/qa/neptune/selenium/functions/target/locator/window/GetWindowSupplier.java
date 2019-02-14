@@ -1,8 +1,8 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator.window;
 
-import ru.tinkoff.qa.neptune.core.api.steps.GetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
 import org.openqa.selenium.NoSuchWindowException;
@@ -11,13 +11,10 @@ import org.openqa.selenium.WebDriver;
 import java.time.Duration;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.nonNull;
-import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
-import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromIterable.getFromIterable;
-import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITING_WINDOW_TIME_DURATION;
 import static com.google.common.base.Preconditions.checkArgument;
@@ -27,15 +24,36 @@ import static java.util.Optional.ofNullable;
 
 @MakeImageCapturesOnFinishing
 @MakeFileCapturesOnFinishing
-public final class GetWindowSupplier extends GetStepSupplier<SeleniumStepContext, Window, GetWindowSupplier>
+public final class GetWindowSupplier extends SequentialGetStepSupplier
+        .GetObjectFromIterableChainedStepSupplier<SeleniumStepContext, Window, WebDriver, GetWindowSupplier>
         implements TargetLocatorSupplier<Window> {
 
-    private Predicate<Window> condition;
-    private Duration timeOut = WAITING_WINDOW_TIME_DURATION.get();
-    private Integer index;
+    private GetWindowSupplier(Integer index) {
+        super(buildDescription(index), driver -> ofNullable(index)
+                .map(intIndex -> ofNullable(getWindowByIndex(driver, intIndex))
+                        .map(List::of)
+                        .orElseGet(List::of))
+                .orElseGet(() -> getListOfWindows(driver)));
+        timeOut(WAITING_WINDOW_TIME_DURATION.get());
+        throwOnEmptyResult(() -> {
+            String errorDescription = "Window/tab was not found";
+            errorDescription = format("%s%s", errorDescription, ofNullable(index)
+                    .map(integer -> format(". By index %s", integer)).orElse(EMPTY)).trim();
 
-    private GetWindowSupplier() {
-        super();
+            var description = getCriteriaDescription();
+            if (!isBlank(description)) {
+                errorDescription = format("%s. Criteria:%s", errorDescription, description);
+            }
+
+            return new NoSuchWindowException(errorDescription);
+        });
+    }
+
+
+    private static String buildDescription(Integer index) {
+        return ofNullable(index)
+                .map(integer -> format("Window/Tab by index %s", index))
+                .orElse("Window/Tab");
     }
 
     private static List<Window> getListOfWindows(WebDriver driver) {
@@ -53,89 +71,41 @@ public final class GetWindowSupplier extends GetStepSupplier<SeleniumStepContext
         return null;
     }
 
-    private static Supplier<NoSuchWindowException> noSuchWindowException(String message) {
-        return () -> new NoSuchWindowException(message);
-    }
-
     /**
-     * Creates an instance of {@link GetStepSupplier}
+     * Creates an instance of {@link GetWindowSupplier} to get a browser window/tab
      *
-     * @return reference to a new instance of {@link GetStepSupplier}
+     * @return an instance of {@link GetWindowSupplier}
      */
     public static GetWindowSupplier window() {
-        return new GetWindowSupplier().set(toGet("The first window/tab",
-                currentContent().andThen(webDriver -> getWindowByIndex(webDriver, 0))));
-    }
-
-    private GetWindowSupplier setFunctionWithIndexAndCondition() {
-        return set(getSingle(format("Window/tab by index %s", index),
-                currentContent().andThen(webDriver -> getWindowByIndex(webDriver, index)),
-                condition,
-                timeOut, true,
-                noSuchWindowException(format("Window/tab was not found by index %s and by conditions %s", index, condition))));
-    }
-
-    private GetWindowSupplier setFunctionWithCondition() {
-        return set(getFromIterable("Window/tab",
-                currentContent().andThen(GetWindowSupplier::getListOfWindows),
-                condition, timeOut,
-                false, true,
-                noSuchWindowException(format("Window was not found by conditions %s",  condition))));
-    }
-
-    private GetWindowSupplier setFunctionWithIndex() {
-        return set(getSingle(format("Window/tab by index %s", index),
-                currentContent().andThen(webDriver -> getWindowByIndex(webDriver, index)),
-                timeOut,
-                noSuchWindowException(format("Window/tab was not found by index %s", index))));
+        return window(null);
     }
 
     /**
-     * Sets the index of required window to get.
+     * Creates an instance of {@link GetWindowSupplier} to get a browser window/tab
      *
-     * @param index of required window.
-     * @return self-reference.
+     * @param index an index of the window/tab to get. Starts from 0.
+     * @return an instance of {@link GetWindowSupplier}
      */
-    public GetWindowSupplier byIndex(int index) {
-        checkArgument(index >= 0, "Index of a window/tab should be greater than zero");
-        this.index = index;
-        return ofNullable(condition).map(windowPredicate -> setFunctionWithIndexAndCondition())
-                .orElseGet(this::setFunctionWithIndex);
+    public static GetWindowSupplier window(Integer index) {
+        checkArgument(ofNullable(index)
+                .map(integer -> integer >=0)
+                .orElse(true), "Index should not be a negative value");
+        return new GetWindowSupplier(index).from(currentContent());
     }
 
-    /**
-     * Adds a criteria to find the desired window.
-     *
-     * @param condition criteria to be used to find the desired window.
-     * @return self-reference.
-     */
-    public GetWindowSupplier onCondition(Predicate<Window> condition) {
-        checkArgument(nonNull(condition), "Condition is not defined");
-        this.condition = ofNullable(this.condition).map(predicate -> this.condition.and(predicate)).orElse(condition);
-        return ofNullable(index).map(integer -> setFunctionWithIndexAndCondition())
-                .orElseGet(this::setFunctionWithCondition);
 
+    @Override
+    public GetWindowSupplier criteria(Predicate<? super Window> condition) {
+        return super.criteria(condition);
     }
 
-    /**
-     * Sets the time to get desired window. If this time has no been set up and {@link #byIndex(int)} or/and
-     * {@link #onCondition(Predicate)} had been invoked then the searching for the window takes time defined at
-     * {@link ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties#WAITING_WINDOW_TIME_DURATION}.
-     *
-     * @param timeOut time of the searching for the desired window/tab.
-     * @return self-reference.
-     */
-    public GetWindowSupplier withTimeToGetWindow(Duration timeOut) {
-        this.timeOut = timeOut;
-        return ofNullable(index).map(integer ->
-                ofNullable(condition)
-                        .map(windowPredicate -> setFunctionWithIndexAndCondition())
-                        .orElseGet(this::setFunctionWithIndex))
+    @Override
+    public GetWindowSupplier criteria(String description, Predicate<? super Window> condition) {
+        return super.criteria(description, condition);
+    }
 
-                .orElseGet(() -> ofNullable(condition)
-                        .map(windowPredicate -> setFunctionWithCondition())
-                        .orElseGet(() -> set(toGet("The first window/tab",
-                                currentContent().andThen(webDriver ->
-                                        getWindowByIndex(webDriver, 0))))));
+    @Override
+    public GetWindowSupplier timeOut(Duration timeOut) {
+        return super.timeOut(timeOut);
     }
 }

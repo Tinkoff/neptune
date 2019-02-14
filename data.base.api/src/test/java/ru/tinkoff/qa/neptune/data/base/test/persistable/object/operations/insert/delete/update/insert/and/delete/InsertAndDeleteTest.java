@@ -17,12 +17,12 @@ import static javax.jdo.JDOHelper.isPersistent;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.fail;
-import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.condition;
+import static ru.tinkoff.qa.neptune.data.base.api.operations.DBGetDeletedFunction.deleted;
+import static ru.tinkoff.qa.neptune.data.base.api.operations.DBGetInsertedFunction.inserted;
+import static ru.tinkoff.qa.neptune.data.base.api.query.GetSelectedFunction.selected;
 import static ru.tinkoff.qa.neptune.data.base.api.query.QueryBuilderFunction.ofType;
-import static ru.tinkoff.qa.neptune.data.base.api.query.SelectListByIdsSupplier.listOfTypeByIds;
-import static ru.tinkoff.qa.neptune.data.base.api.query.SelectListByQuerySupplier.listByQuery;
-import static ru.tinkoff.qa.neptune.data.base.api.operations.DeletedSequentialGetStepSupplier.deleted;
-import static ru.tinkoff.qa.neptune.data.base.api.operations.InsertedSequentialGetStepSupplier.inserted;
+import static ru.tinkoff.qa.neptune.data.base.api.query.SelectListGetSupplier.listByQuery;
+import static ru.tinkoff.qa.neptune.data.base.api.query.SelectListGetSupplier.listOfTypeByIds;
 
 public class InsertAndDeleteTest extends BaseDbOperationTest {
 
@@ -119,7 +119,7 @@ public class InsertAndDeleteTest extends BaseDbOperationTest {
 
         QCatalog qCatalog = QCatalog.candidate();
 
-        assertThat(dataBaseSteps.get(listByQuery(ofType(Catalog.class)
+        assertThat(dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class)
                         .where(qCatalog.book.author.books.contains(theHunchbackOfNotreDame)
                                 .and(qCatalog.book.author.books.contains(theLegendOfTheAges))
                                 .and(qCatalog.book.author.firstName.eq(victorHugo.getFirstName()))
@@ -127,7 +127,7 @@ public class InsertAndDeleteTest extends BaseDbOperationTest {
                                 .and(qCatalog.book.author.biography.eq(HUGO_BIOGRAPHY))
                                 .and(qCatalog.publisher.eq(signet).or(qCatalog.publisher.eq(createSpaceIndependent)))
                         ))
-                        .withCondition(condition("Author was born in 1802 and died in 1885", catalog -> {
+                        .criteria("Author was born in 1802 and died in 1885", catalog -> {
                             Author author = catalog.getBook().getAuthor();
                             return author.getBirthDate().equals(birthDateHugo) && author.getDeathDate().equals(deathDateHugo);
                         }))),
@@ -212,23 +212,22 @@ public class InsertAndDeleteTest extends BaseDbOperationTest {
         assertThat(isPersistent(catalogItemOfNotreDame), is(true));
         assertThat(isPersistent(catalogItemOfLegendOfTheAges), is(true));
 
-        List<Catalog> catalogItems = dataBaseSteps.get(listOfTypeByIds(Catalog.class,
+        List<Catalog> catalogItems = dataBaseSteps.get(selected(listOfTypeByIds(Catalog.class,
                 catalogItemOfNotreDame.getIsbn(),
-                catalogItemOfLegendOfTheAges.getIsbn()));
+                catalogItemOfLegendOfTheAges.getIsbn())));
 
         assertThat(catalogItems, containsInAnyOrder(catalogItemOfNotreDame, catalogItemOfLegendOfTheAges));
 
         QCatalog qCatalog = QCatalog.candidate();
 
-        assertThat(dataBaseSteps.get(listByQuery(ofType(Catalog.class)
+        assertThat(dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class)
                         .where(qCatalog.book.author.books.contains(theHunchbackOfNotreDame)
                                 .and(qCatalog.book.author.books.contains(theLegendOfTheAges))
                                 .and(qCatalog.book.author.firstName.eq(victorHugo.getFirstName()))
                                 .and(qCatalog.book.author.lastName.eq(victorHugo.getLastName()))
                                 .and(qCatalog.book.author.biography.eq(HUGO_BIOGRAPHY))
-                                .and(qCatalog.publisher.eq(signet).or(qCatalog.publisher.eq(createSpaceIndependent)))
-                        ))
-                        .withCondition(condition("Author was born in 1802 and died in 1885", catalog -> {
+                                .and(qCatalog.publisher.eq(signet).or(qCatalog.publisher.eq(createSpaceIndependent)))))
+                        .criteria("Author was born in 1802 and died in 1885", catalog -> {
                             Author author = catalog.getBook().getAuthor();
                             return author.getBirthDate().equals(birthDateHugo) && author.getDeathDate().equals(deathDateHugo);
                         }))),
@@ -250,15 +249,14 @@ public class InsertAndDeleteTest extends BaseDbOperationTest {
         assertThat(isPersistent(catalogItemOfLegendOfTheAges), is(false));
 
         QCatalog qCatalog = QCatalog.candidate();
-        assertThat(dataBaseSteps.get(listByQuery(ofType(Catalog.class)
+        assertThat(dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class)
                         .where(qCatalog.book.author.books.contains(theHunchbackOfNotreDame)
                                 .and(qCatalog.book.author.books.contains(theLegendOfTheAges))
                                 .and(qCatalog.book.author.firstName.eq(victorHugo.getFirstName()))
                                 .and(qCatalog.book.author.lastName.eq(victorHugo.getLastName()))
                                 .and(qCatalog.book.author.biography.eq(HUGO_BIOGRAPHY))
-                                .and(qCatalog.publisher.eq(signet).or(qCatalog.publisher.eq(createSpaceIndependent)))
-                        ))
-                        .withCondition(condition("Author was born in 1802 and died in 1885", catalog -> {
+                                .and(qCatalog.publisher.eq(signet).or(qCatalog.publisher.eq(createSpaceIndependent)))))
+                        .criteria("Author was born in 1802 and died in 1885", catalog -> {
                             Author author = catalog.getBook().getAuthor();
                             return author.getBirthDate().equals(birthDateHugo) && author.getDeathDate().equals(deathDateHugo);
                         }))),
@@ -283,12 +281,11 @@ public class InsertAndDeleteTest extends BaseDbOperationTest {
                         .and(qCatalog.book.author.firstName.eq(victorHugo.getFirstName()))
                         .and(qCatalog.book.author.lastName.eq(victorHugo.getLastName()))
                         .and(qCatalog.book.author.biography.eq(HUGO_BIOGRAPHY))
-                        .and(qCatalog.publisher.eq(signet).or(qCatalog.publisher.eq(createSpaceIndependent)))
-                ))
-                .withCondition(condition("Author was born in 1802 and died in 1885", catalog -> {
+                        .and(qCatalog.publisher.eq(signet).or(qCatalog.publisher.eq(createSpaceIndependent)))))
+                .criteria("Author was born in 1802 and died in 1885", catalog -> {
                     Author author = catalog.getBook().getAuthor();
                     return author.getBirthDate().equals(birthDateHugo) && author.getDeathDate().equals(deathDateHugo);
-                }))));
+                })));
 
         assertThat(deleted, hasSize(2));
         assertThat(isPersistent(victorHugo), is(true));
@@ -300,15 +297,14 @@ public class InsertAndDeleteTest extends BaseDbOperationTest {
         assertThat(isPersistent(catalogItemOfNotreDame), is(false));
         assertThat(isPersistent(catalogItemOfLegendOfTheAges), is(false));
 
-        assertThat(dataBaseSteps.get(listByQuery(ofType(Catalog.class).where(
+        assertThat(dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class).where(
                 qCatalog.book.author.books.contains(theHunchbackOfNotreDame)
                         .and(qCatalog.book.author.books.contains(theLegendOfTheAges))
                         .and(qCatalog.book.author.firstName.eq(victorHugo.getFirstName()))
                         .and(qCatalog.book.author.lastName.eq(victorHugo.getLastName()))
                         .and(qCatalog.book.author.biography.eq(HUGO_BIOGRAPHY))
-                        .and(qCatalog.publisher.eq(signet).or(qCatalog.publisher.eq(createSpaceIndependent)))
-                ))
-                        .withCondition(condition("Author was born in 1802 and died in 1885", catalog -> {
+                        .and(qCatalog.publisher.eq(signet).or(qCatalog.publisher.eq(createSpaceIndependent)))))
+                        .criteria("Author was born in 1802 and died in 1885", catalog -> {
                             Author author = catalog.getBook().getAuthor();
                             return author.getBirthDate().equals(birthDateHugo) && author.getDeathDate().equals(deathDateHugo);
                         }))),
@@ -334,12 +330,11 @@ public class InsertAndDeleteTest extends BaseDbOperationTest {
                         .and(qCatalog.book.author.lastName.eq(victorHugo.getLastName()))
                         .and(qCatalog.book.author.biography.eq(HUGO_BIOGRAPHY))
                         .and(qCatalog.publisher.eq(signet).or(qCatalog.publisher.eq(createSpaceIndependent)))
-                        .and(qCatalog.yearOfPublishing.gt(3000))
-                ))
-                .withCondition(condition("Author was born in 1802 and died in 1885", catalog -> {
+                        .and(qCatalog.yearOfPublishing.gt(3000))))
+                .criteria("Author was born in 1802 and died in 1885", catalog -> {
                     Author author = catalog.getBook().getAuthor();
                     return author.getBirthDate().equals(birthDateHugo) && author.getDeathDate().equals(deathDateHugo);
-                }))));
+                })));
 
         assertThat(deleted, hasSize(0));
         assertThat(isPersistent(victorHugo), is(true));

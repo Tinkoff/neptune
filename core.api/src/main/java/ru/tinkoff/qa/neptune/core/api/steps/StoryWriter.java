@@ -4,9 +4,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-
 public final class StoryWriter {
 
     /**
@@ -49,17 +46,6 @@ public final class StoryWriter {
      * by the {@link #toString()} method.
      */
     public static <T> Predicate<T> condition(String description, Predicate<T> predicate) {
-        checkArgument(!isBlank(description), "Description should not be empty");
-        return new Condition<>() {
-            @Override
-            public boolean test(T t) {
-                return predicate.test(t);
-            }
-
-            @Override
-            public String toString() {
-                return description;
-            }
-        };
+        return new Condition.DescribedCondition<>(description, predicate);
     }
 }

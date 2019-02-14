@@ -82,7 +82,7 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
      * @param supplier that supplies a function to get a target object
      * @return self-reference.
      */
-    protected THIS performOn(GetStepSupplier<T, ? extends R, ?> supplier) {
+    protected THIS performOn(SequentialGetStepSupplier<T, ? extends R, ?, ?, ?> supplier) {
         checkArgument(nonNull(supplier), "Supplier of a function that gets value " +
                 "to perform action is not defined");
         return performOn(supplier.get());

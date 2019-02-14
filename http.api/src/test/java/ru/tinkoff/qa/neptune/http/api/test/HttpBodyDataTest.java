@@ -19,12 +19,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
-import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.condition;
+import static org.testng.Assert.fail;
 import static ru.tinkoff.qa.neptune.core.api.steps.proxy.ProxyFactory.getProxied;
-import static ru.tinkoff.qa.neptune.http.api.HttpBodyDataSequentialGetSupplier.*;
+import static ru.tinkoff.qa.neptune.http.api.HttpGetObjectFromResponseBody.*;
+import static ru.tinkoff.qa.neptune.http.api.HttpGetObjectsFromResponseBody.bodyArrayDataOf;
+import static ru.tinkoff.qa.neptune.http.api.HttpGetObjectsFromResponseBody.bodyIterableDataOf;
 import static ru.tinkoff.qa.neptune.http.api.PreparedHttpRequest.GET;
 import static ru.tinkoff.qa.neptune.http.api.HttpResponseSequentialGetSupplier.responseOf;
 import static ru.tinkoff.qa.neptune.http.api.properties.TimeToGetDesiredResponseProperty.DEFAULT_TIME_TO_GET_DESIRED_RESPONSE_PROPERTY;
+import static ru.tinkoff.qa.neptune.http.api.properties.TimeToSleepProperty.SLEEP_RESPONSE_TIME_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.time.TimeUnitToGetDesiredResponseProperty.TIME_UNIT_TO_GET_DESIRED_RESPONSE_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.time.TimeValueToGetDesiredResponseProperty.TIME_VALUE_TO_GET_DESIRED_RESPONSE_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.test.FunctionToGetXMLTagArray.toNodeArray;
@@ -52,11 +55,9 @@ public class HttpBodyDataTest extends BaseHttpTest {
     @Test
     public void getAnObjectFromBodyPositiveTest1() {
         var result = httpSteps.get(bodyDataOf(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
-                "List of tags <a>",
-                toNodeList("a"))
+                "List of tags <a>", toNodeList("a"))
 
-                .withConditionToGetData(condition("Has 1 tag <a>",
-                        nodeList -> nodeList.size() == 1)));
+                .criteria("Has 1 tag <a>", nodeList -> nodeList.size() == 1));
 
         assertThat(result, hasSize(1));
     }
@@ -66,11 +67,9 @@ public class HttpBodyDataTest extends BaseHttpTest {
         var response = httpSteps.get(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()));
 
         var result = httpSteps.get(bodyDataOf(response,
-                "List of tags <a>",
-                toNodeList("a"))
+                "List of tags <a>", toNodeList("a"))
 
-                .withConditionToGetData(condition("Has 1 tag <a>",
-                        nodeList -> nodeList.size() == 1)));
+                .criteria("Has 1 tag <a>", nodeList -> nodeList.size() == 1));
 
         assertThat(result, hasSize(1));
     }
@@ -78,11 +77,9 @@ public class HttpBodyDataTest extends BaseHttpTest {
     @Test
     public void getAnObjectFromBodyNegativeTestWithNullResult1() {
         var result = httpSteps.get(bodyDataOf(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
-                "List of tags <a>",
-                toNodeList("a"))
+                "List of tags <a>", toNodeList("a"))
 
-                .withConditionToGetData(condition("Has 2 tags <a>",
-                        nodeList -> nodeList.size() == 2)));
+                .criteria("Has 2 tags <a>", nodeList -> nodeList.size() == 2));
 
         assertThat(result, nullValue());
     }
@@ -92,33 +89,23 @@ public class HttpBodyDataTest extends BaseHttpTest {
         var response = httpSteps.get(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()));
 
         var result = httpSteps.get(bodyDataOf(response,
-                "List of tags <a>",
-                toNodeList("a"))
+                "List of tags <a>", toNodeList("a"))
 
-                .withConditionToGetData(condition("Has 2 tags <a>",
-                        nodeList -> nodeList.size() == 2)));
+                .criteria("Has 2 tags <a>", nodeList -> nodeList.size() == 2));
 
         assertThat(result, nullValue());
     }
 
     @Test(expectedExceptions = DesiredResponseHasNotBeenReceivedException.class, expectedExceptionsMessageRegExp = "Test exception")
     public void getAnObjectFromBodyNegativeTestWithExceptionThrowing1() {
-        var exceptionToBeThrown = new ResponseHasNoDesiredDataException("Test exception");
-        Supplier<ResponseHasNoDesiredDataException> supplier = () -> exceptionToBeThrown;
+        var exceptionToBeThrown = new DesiredResponseHasNotBeenReceivedException("Test exception");
+        Supplier<DesiredResponseHasNotBeenReceivedException> supplier = () -> exceptionToBeThrown;
 
-        try {
-            httpSteps.get(bodyDataOf(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
-                    "List of tags <a>",
-                    toNodeList("a"))
-
-                    .withConditionToGetData(condition("Has 2 tags <a>",
-                            nodeList -> nodeList.size() == 2))
-                    .toThrowIfNotReceived(supplier));
-        } catch (Throwable e) {
-            assertThat(e.getCause(), not(nullValue()));
-            assertThat(e.getCause(), equalTo(exceptionToBeThrown));
-            throw e;
-        }
+        httpSteps.get(bodyDataOf(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
+                "List of tags <a>", toNodeList("a"))
+                .criteria("Has 2 tags <a>", nodeList -> nodeList.size() == 2)
+                .throwWhenResultEmpty(supplier));
+        fail("Exception was expected");
     }
 
     @Test(expectedExceptions = ResponseHasNoDesiredDataException.class, expectedExceptionsMessageRegExp = "Test exception")
@@ -129,26 +116,23 @@ public class HttpBodyDataTest extends BaseHttpTest {
         var response = httpSteps.get(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()));
 
         httpSteps.get(bodyDataOf(response,
-                "List of tags <a>",
-                toNodeList("a"))
-
-                .withConditionToGetData(condition("Has 2 tags <a>",
-                        nodeList -> nodeList.size() == 2))
-                .toThrowIfNotReceived(supplier));
+                "List of tags <a>", toNodeList("a"))
+                .criteria("Has 2 tags <a>", nodeList -> nodeList.size() == 2)
+                .throwWhenResultEmpty(supplier));
+        fail("Exception was expected");
     }
 
     @Test
     public void getAnObjectFromBodyNegativeTestWithDefaultTimeOut1() {
         var start = currentTimeMillis();
         httpSteps.get(bodyDataOf(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
-                "List of tags <a>",
-                toNodeList("a"))
-                .withConditionToGetData(condition("Has 2 tags <a>",
-                        nodeList -> nodeList.size() == 2)));
+                "List of tags <a>", toNodeList("a"))
+                .criteria("Has 2 tags <a>", nodeList -> nodeList.size() == 2));
 
         var stop = currentTimeMillis();
         var time = stop - start;
-        assertThat(time, lessThanOrEqualTo(DEFAULT_TIME_TO_GET_DESIRED_RESPONSE_PROPERTY.get().toMillis() + 500));
+        assertThat(time, lessThanOrEqualTo(DEFAULT_TIME_TO_GET_DESIRED_RESPONSE_PROPERTY.get().toMillis()
+                + SLEEP_RESPONSE_TIME_PROPERTY.get().toMillis() + 500));
         assertThat(time, greaterThanOrEqualTo(DEFAULT_TIME_TO_GET_DESIRED_RESPONSE_PROPERTY.get().toMillis()));
     }
 
@@ -157,16 +141,13 @@ public class HttpBodyDataTest extends BaseHttpTest {
         var start = currentTimeMillis();
 
         var response = httpSteps.get(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()));
-        httpSteps.get(bodyDataOf(response,
-                "List of tags <a>",
-                toNodeList("a"))
-
-                .withConditionToGetData(condition("Has 2 tags <a>",
-                        nodeList -> nodeList.size() == 2)));
+        httpSteps.get(bodyDataOf(response, "List of tags <a>", toNodeList("a"))
+                .criteria("Has 2 tags <a>", nodeList -> nodeList.size() == 2));
 
         var stop = currentTimeMillis();
         var time = stop - start;
-        assertThat(time, lessThanOrEqualTo(ofSeconds(1).toMillis() + 500));
+        assertThat(time, lessThanOrEqualTo(ofSeconds(1).toMillis()
+                + SLEEP_RESPONSE_TIME_PROPERTY.get().toMillis() + 500));
     }
 
     @Test
@@ -177,13 +158,13 @@ public class HttpBodyDataTest extends BaseHttpTest {
         try {
             var start = currentTimeMillis();
             httpSteps.get(bodyDataOf(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
-                    "List of tags <a>",
-                    toNodeList("a"))
-                    .withConditionToGetData(condition("Has 2 tags <a>", nodeList -> nodeList.size() == 2)));
+                    "List of tags <a>", toNodeList("a"))
+                    .criteria("Has 2 tags <a>", nodeList -> nodeList.size() == 2));
 
             var stop = currentTimeMillis();
             var time = stop - start;
-            assertThat(time, lessThanOrEqualTo(ofSeconds(10).toMillis() + 500));
+            assertThat(time, lessThanOrEqualTo(ofSeconds(10).toMillis()
+                    + SLEEP_RESPONSE_TIME_PROPERTY.get().toMillis() + 500));
             assertThat(time, greaterThanOrEqualTo(ofSeconds(10).toMillis()));
         } finally {
             getProperties().remove(TIME_UNIT_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName());
@@ -200,16 +181,13 @@ public class HttpBodyDataTest extends BaseHttpTest {
             var start = currentTimeMillis();
 
             var response = httpSteps.get(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()));
-            httpSteps.get(bodyDataOf(response,
-                    "List of tags <a>",
-                    toNodeList("a"))
-
-                    .withConditionToGetData(condition("Has 2 tags <a>",
-                            nodeList -> nodeList.size() == 2)));
+            httpSteps.get(bodyDataOf(response, "List of tags <a>", toNodeList("a"))
+                    .criteria("Has 2 tags <a>", nodeList -> nodeList.size() == 2));
 
             var stop = currentTimeMillis();
             var time = stop - start;
-            assertThat(time, lessThanOrEqualTo(ofSeconds(1).toMillis() + 500));
+            assertThat(time, lessThanOrEqualTo(ofSeconds(1).toMillis()
+                    + SLEEP_RESPONSE_TIME_PROPERTY.get().toMillis() + 500));
         } finally {
             getProperties().remove(TIME_UNIT_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName());
             getProperties().remove(TIME_VALUE_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName());
@@ -223,17 +201,15 @@ public class HttpBodyDataTest extends BaseHttpTest {
 
         try {
             var start = currentTimeMillis();
-            httpSteps.get(bodyDataOf(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString())
-                            .timeToReceiveDesiredResponse(ofSeconds(5)),
-                    "List of tags <a>",
-                    toNodeList("a"))
-
-                    .withConditionToGetData(condition("Has 2 tags <a>",
-                            nodeList -> nodeList.size() == 2)));
+            httpSteps.get(bodyDataOf(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
+                    "List of tags <a>", toNodeList("a"))
+                    .timeOut(ofSeconds(5))
+                    .criteria("Has 2 tags <a>", nodeList -> nodeList.size() == 2));
 
             var stop = currentTimeMillis();
             var time = stop - start;
-            assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 500));
+            assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis()
+                    + SLEEP_RESPONSE_TIME_PROPERTY.get().toMillis() + 500));
             assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
         } finally {
             getProperties().remove(TIME_UNIT_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName());
@@ -244,11 +220,8 @@ public class HttpBodyDataTest extends BaseHttpTest {
     @Test
     public void getSubIterableFromBodyPositiveTest1() {
         var result = httpSteps.get(bodyIterableDataOf(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
-                "List of tags <a>",
-                toNodeList("a"))
-
-                .withConditionToGetData(condition("Node has children",
-                        node -> node.getChildNodes().getLength() > 0)));
+                "List of tags <a>", toNodeList("a"))
+                .criteria("Node has children", node -> node.getChildNodes().getLength() > 0));
 
         assertThat(result, hasSize(1));
     }
@@ -257,12 +230,8 @@ public class HttpBodyDataTest extends BaseHttpTest {
     public void getSubIterableFromBodyPositiveTest2() {
         var response = httpSteps.get(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()));
 
-        var result = httpSteps.get(bodyIterableDataOf(response,
-                "List of tags <a>",
-                toNodeList("a"))
-
-                .withConditionToGetData(condition("Node has children",
-                        node -> node.getChildNodes().getLength() > 0)));
+        var result = httpSteps.get(bodyIterableDataOf(response, "List of tags <a>", toNodeList("a"))
+                .criteria("Node has children", node -> node.getChildNodes().getLength() > 0));
 
         assertThat(result, hasSize(1));
     }
@@ -270,11 +239,8 @@ public class HttpBodyDataTest extends BaseHttpTest {
     @Test
     public void getSubIterableFromBodyNegativeTestWithEmptyCollectionResult1() {
         var result = httpSteps.get(bodyIterableDataOf(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
-                "List of tags <a>",
-                toNodeList("a"))
-
-                .withConditionToGetData(condition("Has no children",
-                        node -> node.getChildNodes().getLength() == 0)));
+                "List of tags <a>", toNodeList("a"))
+                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
         assertThat(result, nullValue());
     }
@@ -283,12 +249,8 @@ public class HttpBodyDataTest extends BaseHttpTest {
     public void getSubIterableFromBodyNegativeTestWithEmptyCollectionResult2() {
         var response = httpSteps.get(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()));
 
-        var result = httpSteps.get(bodyIterableDataOf(response,
-                "List of tags <a>",
-                toNodeList("a"))
-
-                .withConditionToGetData(condition("Has no children",
-                        node -> node.getChildNodes().getLength() == 0)));
+        var result = httpSteps.get(bodyIterableDataOf(response, "List of tags <a>", toNodeList("a"))
+                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
         assertThat(result, emptyIterable());
     }
@@ -298,31 +260,23 @@ public class HttpBodyDataTest extends BaseHttpTest {
         var result = httpSteps.get(bodyIterableDataOf(responseOf(GET(format("%s/badData.html", REQUEST_URI)), ofString()),
                 "List of tags <a>",
                 toNodeList("a"))
-
-                .withConditionToGetData(condition("Has children",
-                        node -> node.getChildNodes().getLength() > 0)));
+                .criteria("Has children", node -> node.getChildNodes().getLength() > 0));
 
         assertThat(result, nullValue());
     }
 
     @Test(expectedExceptions = DesiredResponseHasNotBeenReceivedException.class, expectedExceptionsMessageRegExp = "Test exception")
     public void getSubIterableFromBodyNegativeTestWithExceptionThrowing1() {
-        var exceptionToBeThrown = new ResponseHasNoDesiredDataException("Test exception");
-        Supplier<ResponseHasNoDesiredDataException> supplier = () -> exceptionToBeThrown;
+        var exceptionToBeThrown = new DesiredResponseHasNotBeenReceivedException("Test exception");
+        Supplier<DesiredResponseHasNotBeenReceivedException> supplier = () -> exceptionToBeThrown;
 
-        try {
-            httpSteps.get(bodyIterableDataOf(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
-                    "List of tags <a>",
-                    toNodeList("a"))
+        httpSteps.get(bodyIterableDataOf(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
+                "List of tags <a>",
+                toNodeList("a"))
 
-                    .withConditionToGetData(condition("Has no children",
-                            node -> node.getChildNodes().getLength() == 0))
-                    .toThrowIfNotReceived(supplier));
-        } catch (Throwable e) {
-            assertThat(e.getCause(), not(nullValue()));
-            assertThat(e.getCause(), equalTo(exceptionToBeThrown));
-            throw e;
-        }
+                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
+                .throwWhenResultEmpty(supplier));
+        fail("Exception was expected");
     }
 
     @Test(expectedExceptions = ResponseHasNoDesiredDataException.class, expectedExceptionsMessageRegExp = "Test exception")
@@ -332,29 +286,22 @@ public class HttpBodyDataTest extends BaseHttpTest {
 
         var response = httpSteps.get(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()));
 
-        httpSteps.get(bodyIterableDataOf(response,
-                "List of tags <a>",
-                toNodeList("a"))
-
-                .withConditionToGetData(condition("Has no children",
-                        node -> node.getChildNodes().getLength() == 0))
-                .toThrowIfNotReceived(supplier));
+        httpSteps.get(bodyIterableDataOf(response, "List of tags <a>", toNodeList("a"))
+                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
+                .throwWhenResultEmpty(supplier));
     }
 
     @Test
     public void getSubIterableFromBodyNegativeTestWithDefaultTimeOut1() {
         var start = currentTimeMillis();
-        httpSteps.get(bodyIterableDataOf(
-                responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
-                "List of tags <a>",
-                toNodeList("a"))
-
-                .withConditionToGetData(condition("Has no children",
-                        node -> node.getChildNodes().getLength() == 0)));
+        httpSteps.get(bodyIterableDataOf(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
+                "List of tags <a>", toNodeList("a"))
+                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
         var stop = currentTimeMillis();
         var time = stop - start;
-        assertThat(time, lessThanOrEqualTo(DEFAULT_TIME_TO_GET_DESIRED_RESPONSE_PROPERTY.get().toMillis() + 500));
+        assertThat(time, lessThanOrEqualTo(DEFAULT_TIME_TO_GET_DESIRED_RESPONSE_PROPERTY.get().toMillis()
+                + SLEEP_RESPONSE_TIME_PROPERTY.get().toMillis() + 500));
         assertThat(time, greaterThanOrEqualTo(DEFAULT_TIME_TO_GET_DESIRED_RESPONSE_PROPERTY.get().toMillis()));
     }
 
@@ -363,16 +310,13 @@ public class HttpBodyDataTest extends BaseHttpTest {
         var start = currentTimeMillis();
 
         var response = httpSteps.get(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()));
-        httpSteps.get(bodyIterableDataOf(response,
-                "List of tags <a>",
-                toNodeList("a"))
-
-                .withConditionToGetData(condition("Has no children",
-                        node -> node.getChildNodes().getLength() == 0)));
+        httpSteps.get(bodyIterableDataOf(response, "List of tags <a>", toNodeList("a"))
+                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
         var stop = currentTimeMillis();
         var time = stop - start;
-        assertThat(time, lessThanOrEqualTo(ofSeconds(1).toMillis() + 500));
+        assertThat(time, lessThanOrEqualTo(ofSeconds(1).toMillis()
+                + SLEEP_RESPONSE_TIME_PROPERTY.get().toMillis() + 500));
     }
 
     @Test
@@ -382,17 +326,14 @@ public class HttpBodyDataTest extends BaseHttpTest {
 
         try {
             var start = currentTimeMillis();
-            httpSteps.get(bodyIterableDataOf(
-                    responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
-                    "List of tags <a>",
-                    toNodeList("a"))
-
-                    .withConditionToGetData(condition("Has no children",
-                            node -> node.getChildNodes().getLength() == 0)));
+            httpSteps.get(bodyIterableDataOf(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
+                    "List of tags <a>", toNodeList("a"))
+                    .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
             var stop = currentTimeMillis();
             var time = stop - start;
-            assertThat(time, lessThanOrEqualTo(ofSeconds(10).toMillis() + 500));
+            assertThat(time, lessThanOrEqualTo(ofSeconds(10).toMillis()
+                    + SLEEP_RESPONSE_TIME_PROPERTY.get().toMillis() + 500));
             assertThat(time, greaterThanOrEqualTo(ofSeconds(10).toMillis()));
         }
         finally {
@@ -410,16 +351,13 @@ public class HttpBodyDataTest extends BaseHttpTest {
             var start = currentTimeMillis();
 
             var response = httpSteps.get(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()));
-            httpSteps.get(bodyIterableDataOf(response,
-                    "List of tags <a>",
-                    toNodeList("a"))
-
-                    .withConditionToGetData(condition("Has no children",
-                            node -> node.getChildNodes().getLength() == 0)));
+            httpSteps.get(bodyIterableDataOf(response, "List of tags <a>", toNodeList("a"))
+                    .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
             var stop = currentTimeMillis();
             var time = stop - start;
-            assertThat(time, lessThanOrEqualTo(ofSeconds(1).toMillis() + 500));
+            assertThat(time, lessThanOrEqualTo(ofSeconds(1).toMillis()
+                    + SLEEP_RESPONSE_TIME_PROPERTY.get().toMillis() + 500));
         }
         finally {
             getProperties().remove(TIME_UNIT_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName());
@@ -434,17 +372,15 @@ public class HttpBodyDataTest extends BaseHttpTest {
 
         try {
             var start = currentTimeMillis();
-            httpSteps.get(bodyIterableDataOf(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString())
-                            .timeToReceiveDesiredResponse(ofSeconds(5)),
-                    "List of tags <a>",
-                    toNodeList("a"))
-
-                    .withConditionToGetData(condition("Has no children",
-                            node -> node.getChildNodes().getLength() == 0)));
+            httpSteps.get(bodyIterableDataOf(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
+                    "List of tags <a>", toNodeList("a"))
+                    .timeOut(ofSeconds(5))
+                    .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
             var stop = currentTimeMillis();
             var time = stop - start;
-            assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 500));
+            assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis()
+                    + SLEEP_RESPONSE_TIME_PROPERTY.get().toMillis() + 500));
             assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
         } finally {
             getProperties().remove(TIME_UNIT_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName());
@@ -455,11 +391,8 @@ public class HttpBodyDataTest extends BaseHttpTest {
     @Test
     public void getArrayFromBodyPositiveTest1() {
         var result = httpSteps.get(bodyArrayDataOf(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
-                "Array of tags <a>",
-                toNodeArray("a"))
-
-                .withConditionToGetData(condition("Node has children",
-                        node -> node.getChildNodes().getLength() > 0)));
+                "Array of tags <a>", toNodeArray("a"))
+                .criteria("Node has children", node -> node.getChildNodes().getLength() > 0));
 
         assertThat(result, arrayWithSize(1));
     }
@@ -468,12 +401,8 @@ public class HttpBodyDataTest extends BaseHttpTest {
     public void getArrayFromBodyPositiveTest2() {
         var response = httpSteps.get(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()));
 
-        var result = httpSteps.get(bodyArrayDataOf(response,
-                "Array of tags <a>",
-                toNodeArray("a"))
-
-                .withConditionToGetData(condition("Node has children",
-                        node -> node.getChildNodes().getLength() > 0)));
+        var result = httpSteps.get(bodyArrayDataOf(response, "Array of tags <a>", toNodeArray("a"))
+                .criteria("Node has children", node -> node.getChildNodes().getLength() > 0));
 
         assertThat(result, arrayWithSize(1));
     }
@@ -481,11 +410,8 @@ public class HttpBodyDataTest extends BaseHttpTest {
     @Test
     public void getArrayFromBodyNegativeTestWithEmptyCollectionResult1() {
         var result = httpSteps.get(bodyArrayDataOf(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
-                "Array of tags <a>",
-                toNodeArray("a"))
-
-                .withConditionToGetData(condition("Has no children",
-                        node -> node.getChildNodes().getLength() == 0)));
+                "Array of tags <a>", toNodeArray("a"))
+                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
         assertThat(result, nullValue());
     }
@@ -494,12 +420,9 @@ public class HttpBodyDataTest extends BaseHttpTest {
     public void getArrayFromBodyNegativeTestWithEmptyCollectionResult2() {
         var response = httpSteps.get(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()));
 
-        var result = httpSteps.get(bodyArrayDataOf(response,
-                "Array of tags <a>",
+        var result = httpSteps.get(bodyArrayDataOf(response, "Array of tags <a>",
                 toNodeArray("a"))
-
-                .withConditionToGetData(condition("Has no children",
-                        node -> node.getChildNodes().getLength() == 0)));
+                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
         assertThat(result, emptyArray());
     }
@@ -509,32 +432,23 @@ public class HttpBodyDataTest extends BaseHttpTest {
         var result = httpSteps.get(bodyArrayDataOf(responseOf(GET(format("%s/badData.html", REQUEST_URI)), ofString()),
                 "Array of tags <a>",
                 toNodeArray("a"))
-
-                .withConditionToGetData(condition("Has children",
-                        node -> node.getChildNodes().getLength() > 0)));
+                .criteria("Has children", node -> node.getChildNodes().getLength() > 0));
 
         assertThat(result, nullValue());
     }
 
     @Test(expectedExceptions = DesiredResponseHasNotBeenReceivedException.class, expectedExceptionsMessageRegExp = "Test exception")
     public void getArrayFromBodyNegativeTestWithExceptionThrowing1() {
-        var exceptionToBeThrown = new ResponseHasNoDesiredDataException("Test exception");
-        Supplier<ResponseHasNoDesiredDataException> supplier = () -> exceptionToBeThrown;
+        var exceptionToBeThrown = new DesiredResponseHasNotBeenReceivedException("Test exception");
+        Supplier<DesiredResponseHasNotBeenReceivedException> supplier = () -> exceptionToBeThrown;
 
-        try {
-            httpSteps.get(bodyArrayDataOf(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
-                    "Array of tags <a>",
-                    toNodeArray("a"))
+        httpSteps.get(bodyArrayDataOf(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
+                "Array of tags <a>",
+                toNodeArray("a"))
+                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
+                .throwWhenResultEmpty(supplier));
 
-                    .withConditionToGetData(condition("Has no children",
-                            node -> node.getChildNodes().getLength() == 0))
-                    .toThrowIfNotReceived(supplier));
-
-        } catch (Throwable e) {
-            assertThat(e.getCause(), not(nullValue()));
-            assertThat(e.getCause(), equalTo(exceptionToBeThrown));
-            throw e;
-        }
+        fail("Exception was expected");
     }
 
     @Test(expectedExceptions = ResponseHasNoDesiredDataException.class, expectedExceptionsMessageRegExp = "Test exception")
@@ -544,28 +458,22 @@ public class HttpBodyDataTest extends BaseHttpTest {
 
         var response = httpSteps.get(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()));
 
-        httpSteps.get(bodyArrayDataOf(response,
-                "Array of tags <a>",
-                toNodeArray("a"))
-
-                .withConditionToGetData(condition("Has no children",
-                        node -> node.getChildNodes().getLength() == 0))
-                .toThrowIfNotReceived(supplier));
+        httpSteps.get(bodyArrayDataOf(response, "Array of tags <a>", toNodeArray("a"))
+                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
+                .throwWhenResultEmpty(supplier));
     }
 
     @Test
     public void getArrayFromBodyNegativeTestWithDefaultTimeOut1() {
         var start = currentTimeMillis();
         httpSteps.get(bodyArrayDataOf(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
-                "Array of tags <a>",
-                toNodeArray("a"))
-
-                .withConditionToGetData(condition("Has no children",
-                        node -> node.getChildNodes().getLength() == 0)));
+                "Array of tags <a>", toNodeArray("a"))
+                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
         var stop = currentTimeMillis();
         var time = stop - start;
-        assertThat(time, lessThanOrEqualTo(DEFAULT_TIME_TO_GET_DESIRED_RESPONSE_PROPERTY.get().toMillis() + 500));
+        assertThat(time, lessThanOrEqualTo(DEFAULT_TIME_TO_GET_DESIRED_RESPONSE_PROPERTY.get().toMillis()
+                + SLEEP_RESPONSE_TIME_PROPERTY.get().toMillis() + 500));
         assertThat(time, greaterThanOrEqualTo(DEFAULT_TIME_TO_GET_DESIRED_RESPONSE_PROPERTY.get().toMillis()));
     }
 
@@ -574,16 +482,13 @@ public class HttpBodyDataTest extends BaseHttpTest {
         var start = currentTimeMillis();
 
         var response = httpSteps.get(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()));
-        httpSteps.get(bodyArrayDataOf(response,
-                "Array of tags <a>",
-                toNodeArray("a"))
-
-                .withConditionToGetData(condition("Has no children",
-                        node -> node.getChildNodes().getLength() == 0)));
+        httpSteps.get(bodyArrayDataOf(response, "Array of tags <a>", toNodeArray("a"))
+                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
         var stop = currentTimeMillis();
         var time = stop - start;
-        assertThat(time, lessThanOrEqualTo(ofSeconds(1).toMillis() + 500));
+        assertThat(time, lessThanOrEqualTo(ofSeconds(1).toMillis()
+                + SLEEP_RESPONSE_TIME_PROPERTY.get().toMillis() + 500));
     }
 
     @Test
@@ -594,15 +499,13 @@ public class HttpBodyDataTest extends BaseHttpTest {
         try {
             var start = currentTimeMillis();
             httpSteps.get(bodyArrayDataOf(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
-                    "Array of tags <a>",
-                    toNodeArray("a"))
-
-                    .withConditionToGetData(condition("Has no children",
-                            node -> node.getChildNodes().getLength() == 0)));
+                    "Array of tags <a>", toNodeArray("a"))
+                    .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
             var stop = currentTimeMillis();
             var time = stop - start;
-            assertThat(time, lessThanOrEqualTo(ofSeconds(10).toMillis() + 500));
+            assertThat(time, lessThanOrEqualTo(ofSeconds(10).toMillis()
+                    + SLEEP_RESPONSE_TIME_PROPERTY.get().toMillis() + 500));
             assertThat(time, greaterThanOrEqualTo(ofSeconds(10).toMillis()));
         }
         finally {
@@ -620,16 +523,13 @@ public class HttpBodyDataTest extends BaseHttpTest {
             var start = currentTimeMillis();
 
             var response = httpSteps.get(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()));
-            httpSteps.get(bodyArrayDataOf(response,
-                    "Array of tags <a>",
-                    toNodeArray("a"))
-
-                    .withConditionToGetData(condition("Has no children",
-                            node -> node.getChildNodes().getLength() == 0)));
+            httpSteps.get(bodyArrayDataOf(response, "Array of tags <a>", toNodeArray("a"))
+                    .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
             var stop = currentTimeMillis();
             var time = stop - start;
-            assertThat(time, lessThanOrEqualTo(ofSeconds(1).toMillis() + 500));
+            assertThat(time, lessThanOrEqualTo(ofSeconds(1).toMillis()
+                    + SLEEP_RESPONSE_TIME_PROPERTY.get().toMillis() + 500));
         }
         finally {
             getProperties().remove(TIME_UNIT_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName());
@@ -644,17 +544,15 @@ public class HttpBodyDataTest extends BaseHttpTest {
 
         try {
             var start = currentTimeMillis();
-            httpSteps.get(bodyArrayDataOf(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString())
-                            .timeToReceiveDesiredResponse(ofSeconds(5)),
-                    "Array of tags <a>",
-                    toNodeArray("a"))
-
-                    .withConditionToGetData(condition("Has no children",
-                            node -> node.getChildNodes().getLength() == 0)));
+            httpSteps.get(bodyArrayDataOf(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
+                    "Array of tags <a>", toNodeArray("a"))
+                    .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
+                    .timeOut(ofSeconds(5)));
 
             var stop = currentTimeMillis();
             var time = stop - start;
-            assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 500));
+            assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis()
+                    + SLEEP_RESPONSE_TIME_PROPERTY.get().toMillis() + 500));
             assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
         } finally {
             getProperties().remove(TIME_UNIT_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName());
@@ -665,11 +563,8 @@ public class HttpBodyDataTest extends BaseHttpTest {
     @Test
     public void getObjectFromIterableBodyPositiveTest1() {
         var result = httpSteps.get(bodyDataFromIterable(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
-                "Tag <a>",
-                toNodeList("a"))
-
-                .withConditionToGetData(condition("Node has children",
-                        node -> node.getChildNodes().getLength() > 0)));
+                "Tag <a>", toNodeList("a"))
+                .criteria("Node has children", node -> node.getChildNodes().getLength() > 0));
 
         assertThat(result, not(nullValue()));
     }
@@ -678,12 +573,8 @@ public class HttpBodyDataTest extends BaseHttpTest {
     public void getObjectFromIterableBodyPositiveTest2() {
         var response = httpSteps.get(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()));
 
-        var result = httpSteps.get(bodyDataFromIterable(response,
-                "Tag <a>",
-                toNodeList("a"))
-
-                .withConditionToGetData(condition("Node has children",
-                        node -> node.getChildNodes().getLength() > 0)));
+        var result = httpSteps.get(bodyDataFromIterable(response, "Tag <a>", toNodeList("a"))
+                .criteria("Node has children", node -> node.getChildNodes().getLength() > 0));
 
         assertThat(result, not(nullValue()));
     }
@@ -691,11 +582,8 @@ public class HttpBodyDataTest extends BaseHttpTest {
     @Test
     public void getObjectFromIterableBodyNegativeTestWithEmptyCollectionResult1() {
         var result = httpSteps.get(bodyDataFromIterable(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
-                "Tag <a>",
-                toNodeList("a"))
-
-                .withConditionToGetData(condition("Has no children",
-                        node -> node.getChildNodes().getLength() == 0)));
+                "Tag <a>", toNodeList("a"))
+                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
         assertThat(result, nullValue());
     }
@@ -704,12 +592,8 @@ public class HttpBodyDataTest extends BaseHttpTest {
     public void getObjectFromIterableBodyNegativeTestWithEmptyCollectionResult2() {
         var response = httpSteps.get(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()));
 
-        var result = httpSteps.get(bodyDataFromIterable(response,
-                "Tag <a>",
-                toNodeList("a"))
-
-                .withConditionToGetData(condition("Has no children",
-                        node -> node.getChildNodes().getLength() == 0)));
+        var result = httpSteps.get(bodyDataFromIterable(response, "Tag <a>", toNodeList("a"))
+                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
         assertThat(result, nullValue());
     }
@@ -717,33 +601,22 @@ public class HttpBodyDataTest extends BaseHttpTest {
     @Test
     public void getObjectFromIterableBodyNegativeTestWithEmptyCollectionResult3() {
         var result = httpSteps.get(bodyDataFromIterable(responseOf(GET(format("%s/badData.html", REQUEST_URI)), ofString()),
-                "Tag <a>",
-                toNodeList("a"))
-
-                .withConditionToGetData(condition("Has children",
-                        node -> node.getChildNodes().getLength() > 0)));
+                "Tag <a>", toNodeList("a"))
+                .criteria("Has children", node -> node.getChildNodes().getLength() > 0));
 
         assertThat(result, nullValue());
     }
 
     @Test(expectedExceptions = DesiredResponseHasNotBeenReceivedException.class, expectedExceptionsMessageRegExp = "Test exception")
     public void getObjectFromIterableBodyNegativeTestWithExceptionThrowing1() {
-        var exceptionToBeThrown = new ResponseHasNoDesiredDataException("Test exception");
-        Supplier<ResponseHasNoDesiredDataException> supplier = () -> exceptionToBeThrown;
+        var exceptionToBeThrown = new DesiredResponseHasNotBeenReceivedException("Test exception");
+        Supplier<DesiredResponseHasNotBeenReceivedException> supplier = () -> exceptionToBeThrown;
 
-        try {
-            httpSteps.get(bodyDataFromIterable(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
-                    "Tag <a>",
-                    toNodeList("a"))
-
-                    .withConditionToGetData(condition("Has no children",
-                            node -> node.getChildNodes().getLength() == 0))
-                    .toThrowIfNotReceived(supplier));
-        } catch (Throwable e) {
-            assertThat(e.getCause(), not(nullValue()));
-            assertThat(e.getCause(), equalTo(exceptionToBeThrown));
-            throw e;
-        }
+        httpSteps.get(bodyDataFromIterable(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
+                "Tag <a>", toNodeList("a"))
+                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
+                .throwWhenResultEmpty(supplier));
+        fail("Exception was expected");
     }
 
     @Test(expectedExceptions = ResponseHasNoDesiredDataException.class, expectedExceptionsMessageRegExp = "Test exception")
@@ -753,28 +626,22 @@ public class HttpBodyDataTest extends BaseHttpTest {
 
         var response = httpSteps.get(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()));
 
-        httpSteps.get(bodyDataFromIterable(response,
-                "Tag <a>",
-                toNodeList("a"))
-
-                .withConditionToGetData(condition("Has no children",
-                        node -> node.getChildNodes().getLength() == 0))
-                .toThrowIfNotReceived(supplier));
+        httpSteps.get(bodyDataFromIterable(response, "Tag <a>", toNodeList("a"))
+                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
+                .throwWhenResultEmpty(supplier));
     }
 
     @Test
     public void getObjectFromIterableBodyNegativeTestWithDefaultTimeOut1() {
         var start = currentTimeMillis();
         httpSteps.get(bodyDataFromIterable(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
-                "Tag <a>",
-                toNodeList("a"))
-
-                .withConditionToGetData(condition("Has no children",
-                        node -> node.getChildNodes().getLength() == 0)));
+                "Tag <a>", toNodeList("a"))
+                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
         var stop = currentTimeMillis();
         var time = stop - start;
-        assertThat(time, lessThanOrEqualTo(DEFAULT_TIME_TO_GET_DESIRED_RESPONSE_PROPERTY.get().toMillis() + 500));
+        assertThat(time, lessThanOrEqualTo(DEFAULT_TIME_TO_GET_DESIRED_RESPONSE_PROPERTY.get().toMillis()
+                + SLEEP_RESPONSE_TIME_PROPERTY.get().toMillis() + 500));
         assertThat(time, greaterThanOrEqualTo(DEFAULT_TIME_TO_GET_DESIRED_RESPONSE_PROPERTY.get().toMillis()));
     }
 
@@ -784,15 +651,13 @@ public class HttpBodyDataTest extends BaseHttpTest {
 
         var response = httpSteps.get(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()));
         httpSteps.get(bodyDataFromIterable(response,
-                "Tag <a>",
-                toNodeList("a"))
-
-                .withConditionToGetData(condition("Has no children",
-                        node -> node.getChildNodes().getLength() == 0)));
+                "Tag <a>", toNodeList("a"))
+                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
         var stop = currentTimeMillis();
         var time = stop - start;
-        assertThat(time, lessThanOrEqualTo(ofSeconds(1).toMillis() + 500));
+        assertThat(time, lessThanOrEqualTo(ofSeconds(1).toMillis()
+                + SLEEP_RESPONSE_TIME_PROPERTY.get().toMillis() + 500));
     }
 
     @Test
@@ -803,15 +668,13 @@ public class HttpBodyDataTest extends BaseHttpTest {
         try {
             var start = currentTimeMillis();
             httpSteps.get(bodyDataFromIterable(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
-                    "Tag <a>",
-                    toNodeList("a"))
-
-                    .withConditionToGetData(condition("Has no children",
-                            node -> node.getChildNodes().getLength() == 0)));
+                    "Tag <a>", toNodeList("a"))
+                    .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
             var stop = currentTimeMillis();
             var time = stop - start;
-            assertThat(time, lessThanOrEqualTo(ofSeconds(10).toMillis() + 500));
+            assertThat(time, lessThanOrEqualTo(ofSeconds(10).toMillis()
+                    + SLEEP_RESPONSE_TIME_PROPERTY.get().toMillis() + 500));
             assertThat(time, greaterThanOrEqualTo(ofSeconds(10).toMillis()));
         }
         finally {
@@ -830,15 +693,13 @@ public class HttpBodyDataTest extends BaseHttpTest {
 
             var response = httpSteps.get(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()));
             httpSteps.get(bodyDataFromIterable(response,
-                    "Tag <a>",
-                    toNodeList("a"))
-
-                    .withConditionToGetData(condition("Has no children",
-                            node -> node.getChildNodes().getLength() == 0)));
+                    "Tag <a>", toNodeList("a"))
+                    .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
             var stop = currentTimeMillis();
             var time = stop - start;
-            assertThat(time, lessThanOrEqualTo(ofSeconds(1).toMillis() + 500));
+            assertThat(time, lessThanOrEqualTo(ofSeconds(1).toMillis()
+                    + SLEEP_RESPONSE_TIME_PROPERTY.get().toMillis() + 500));
         }
         finally {
             getProperties().remove(TIME_UNIT_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName());
@@ -853,17 +714,15 @@ public class HttpBodyDataTest extends BaseHttpTest {
 
         try {
             var start = currentTimeMillis();
-            httpSteps.get(bodyDataFromIterable(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString())
-                            .timeToReceiveDesiredResponse(ofSeconds(5)),
-                    "Tag <a>",
-                    toNodeList("a"))
-
-                    .withConditionToGetData(condition("Has no children",
-                            node -> node.getChildNodes().getLength() == 0)));
+            httpSteps.get(bodyDataFromIterable(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
+                    "Tag <a>", toNodeList("a"))
+                    .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
+                    .timeOut(ofSeconds(5)));
 
             var stop = currentTimeMillis();
             var time = stop - start;
-            assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 500));
+            assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis()
+                    + SLEEP_RESPONSE_TIME_PROPERTY.get().toMillis() + 500));
             assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
         } finally {
             getProperties().remove(TIME_UNIT_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName());
@@ -874,11 +733,8 @@ public class HttpBodyDataTest extends BaseHttpTest {
     @Test
     public void getObjectFromArrayBodyPositiveTest1() {
         var result = httpSteps.get(bodyDataFromArray(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
-                "Tag <a>",
-                toNodeArray("a"))
-
-                .withConditionToGetData(condition("Node has children",
-                        node -> node.getChildNodes().getLength() > 0)));
+                "Tag <a>", toNodeArray("a"))
+                .criteria("Node has children", node -> node.getChildNodes().getLength() > 0));
 
         assertThat(result, not(nullValue()));
     }
@@ -887,12 +743,8 @@ public class HttpBodyDataTest extends BaseHttpTest {
     public void getObjectFromArrayBodyPositiveTest2() {
         var response = httpSteps.get(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()));
 
-        var result = httpSteps.get(bodyDataFromArray(response,
-                "Tag <a>",
-                toNodeArray("a"))
-
-                .withConditionToGetData(condition("Node has children",
-                        node -> node.getChildNodes().getLength() > 0)));
+        var result = httpSteps.get(bodyDataFromArray(response, "Tag <a>", toNodeArray("a"))
+                .criteria("Node has children", node -> node.getChildNodes().getLength() > 0));
 
         assertThat(result, not(nullValue()));
     }
@@ -900,11 +752,8 @@ public class HttpBodyDataTest extends BaseHttpTest {
     @Test
     public void getObjectFromArrayBodyNegativeTestWithEmptyCollectionResult1() {
         var result = httpSteps.get(bodyArrayDataOf(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
-                "Array of tags <a>",
-                toNodeArray("a"))
-
-                .withConditionToGetData(condition("Has no children",
-                        node -> node.getChildNodes().getLength() == 0)));
+                "Array of tags <a>", toNodeArray("a"))
+                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
         assertThat(result, nullValue());
     }
@@ -913,12 +762,8 @@ public class HttpBodyDataTest extends BaseHttpTest {
     public void getObjectFromArrayBodyNegativeTestWithEmptyCollectionResult2() {
         var response = httpSteps.get(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()));
 
-        var result = httpSteps.get(bodyDataFromArray(response,
-                "Tag <a>",
-                toNodeArray("a"))
-
-                .withConditionToGetData(condition("Has no children",
-                        node -> node.getChildNodes().getLength() == 0)));
+        var result = httpSteps.get(bodyDataFromArray(response, "Tag <a>", toNodeArray("a"))
+                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
         assertThat(result, nullValue());
     }
@@ -926,33 +771,22 @@ public class HttpBodyDataTest extends BaseHttpTest {
     @Test
     public void getObjectFromArrayBodyNegativeTestWithEmptyCollectionResult3() {
         var result = httpSteps.get(bodyDataFromArray(responseOf(GET(format("%s/badData.html", REQUEST_URI)), ofString()),
-                "Tag <a>",
-                toNodeArray("a"))
-
-                .withConditionToGetData(condition("Has children",
-                        node -> node.getChildNodes().getLength() > 0)));
+                "Tag <a>", toNodeArray("a"))
+                .criteria("Has children", node -> node.getChildNodes().getLength() > 0));
 
         assertThat(result, nullValue());
     }
 
     @Test(expectedExceptions = DesiredResponseHasNotBeenReceivedException.class, expectedExceptionsMessageRegExp = "Test exception")
     public void getObjectFromArrayBodyNegativeTestWithExceptionThrowing1() {
-        var exceptionToBeThrown = new ResponseHasNoDesiredDataException("Test exception");
-        Supplier<ResponseHasNoDesiredDataException> supplier = () -> exceptionToBeThrown;
+        var exceptionToBeThrown = new DesiredResponseHasNotBeenReceivedException("Test exception");
+        Supplier<DesiredResponseHasNotBeenReceivedException> supplier = () -> exceptionToBeThrown;
 
-        try {
-            httpSteps.get(bodyDataFromArray(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
-                    "Tag <a>",
-                    toNodeArray("a"))
-
-                    .withConditionToGetData(condition("Has no children",
-                            node -> node.getChildNodes().getLength() == 0))
-                    .toThrowIfNotReceived(supplier));
-        } catch (Throwable e) {
-            assertThat(e.getCause(), not(nullValue()));
-            assertThat(e.getCause(), equalTo(exceptionToBeThrown));
-            throw e;
-        }
+        httpSteps.get(bodyDataFromArray(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
+                "Tag <a>", toNodeArray("a"))
+                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
+                .throwWhenResultEmpty(supplier));
+        fail("Exception was expected");
     }
 
     @Test(expectedExceptions = ResponseHasNoDesiredDataException.class, expectedExceptionsMessageRegExp = "Test exception")
@@ -962,28 +796,23 @@ public class HttpBodyDataTest extends BaseHttpTest {
 
         var response = httpSteps.get(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()));
 
-        httpSteps.get(bodyDataFromArray(response,
-                "Tag <a>",
-                toNodeArray("a"))
-
-                .withConditionToGetData(condition("Has no children",
-                        node -> node.getChildNodes().getLength() == 0))
-                .toThrowIfNotReceived(supplier));
+        httpSteps.get(bodyDataFromArray(response, "Tag <a>", toNodeArray("a"))
+                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
+                .throwWhenResultEmpty(supplier));
+        fail("Exception was expected");
     }
 
     @Test
     public void getObjectFromArrayBodyNegativeTestWithDefaultTimeOut1() {
         var start = currentTimeMillis();
         httpSteps.get(bodyDataFromArray(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
-                "Tag <a>",
-                toNodeArray("a"))
-
-                .withConditionToGetData(condition("Has no children",
-                        node -> node.getChildNodes().getLength() == 0)));
+                "Tag <a>", toNodeArray("a"))
+                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
         var stop = currentTimeMillis();
         var time = stop - start;
-        assertThat(time, lessThanOrEqualTo(DEFAULT_TIME_TO_GET_DESIRED_RESPONSE_PROPERTY.get().toMillis() + 500));
+        assertThat(time, lessThanOrEqualTo(DEFAULT_TIME_TO_GET_DESIRED_RESPONSE_PROPERTY.get().toMillis()
+                + SLEEP_RESPONSE_TIME_PROPERTY.get().toMillis() + 500));
         assertThat(time, greaterThanOrEqualTo(DEFAULT_TIME_TO_GET_DESIRED_RESPONSE_PROPERTY.get().toMillis()));
     }
 
@@ -992,16 +821,13 @@ public class HttpBodyDataTest extends BaseHttpTest {
         var start = currentTimeMillis();
 
         var response = httpSteps.get(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()));
-        httpSteps.get(bodyDataFromArray(response,
-                "Tag <a>",
-                toNodeArray("a"))
-
-                .withConditionToGetData(condition("Has no children",
-                        node -> node.getChildNodes().getLength() == 0)));
+        httpSteps.get(bodyDataFromArray(response, "Tag <a>", toNodeArray("a"))
+                .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
         var stop = currentTimeMillis();
         var time = stop - start;
-        assertThat(time, lessThanOrEqualTo(ofSeconds(1).toMillis() + 500));
+        assertThat(time, lessThanOrEqualTo(ofSeconds(1).toMillis()
+                + SLEEP_RESPONSE_TIME_PROPERTY.get().toMillis() + 500));
     }
 
     @Test
@@ -1012,15 +838,13 @@ public class HttpBodyDataTest extends BaseHttpTest {
         try {
             var start = currentTimeMillis();
             httpSteps.get(bodyDataFromArray(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
-                    "Tag <a>",
-                    toNodeArray("a"))
-
-                    .withConditionToGetData(condition("Has no children",
-                            node -> node.getChildNodes().getLength() == 0)));
+                    "Tag <a>", toNodeArray("a"))
+                    .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
             var stop = currentTimeMillis();
             var time = stop - start;
-            assertThat(time, lessThanOrEqualTo(ofSeconds(10).toMillis() + 500));
+            assertThat(time, lessThanOrEqualTo(ofSeconds(10).toMillis()
+                    + SLEEP_RESPONSE_TIME_PROPERTY.get().toMillis() + 500));
             assertThat(time, greaterThanOrEqualTo(ofSeconds(10).toMillis()));
         }
         finally {
@@ -1038,16 +862,13 @@ public class HttpBodyDataTest extends BaseHttpTest {
             var start = currentTimeMillis();
 
             var response = httpSteps.get(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()));
-            httpSteps.get(bodyDataFromArray(response,
-                    "Tag <a>",
-                    toNodeArray("a"))
-
-                    .withConditionToGetData(condition("Has no children",
-                            node -> node.getChildNodes().getLength() == 0)));
+            httpSteps.get(bodyDataFromArray(response, "Tag <a>", toNodeArray("a"))
+                    .criteria("Has no children", node -> node.getChildNodes().getLength() == 0));
 
             var stop = currentTimeMillis();
             var time = stop - start;
-            assertThat(time, lessThanOrEqualTo(ofSeconds(1).toMillis() + 500));
+            assertThat(time, lessThanOrEqualTo(ofSeconds(1).toMillis()
+                    + SLEEP_RESPONSE_TIME_PROPERTY.get().toMillis() + 500));
         }
         finally {
             getProperties().remove(TIME_UNIT_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName());
@@ -1062,19 +883,164 @@ public class HttpBodyDataTest extends BaseHttpTest {
 
         try {
             var start = currentTimeMillis();
-            httpSteps.get(bodyDataFromArray(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString())
-                            .timeToReceiveDesiredResponse(ofSeconds(5)),
-                    "Tag <a>",
-                    toNodeArray("a"))
-
-                    .withConditionToGetData(condition("Has no children",
-                            node -> node.getChildNodes().getLength() == 0)));
+            httpSteps.get(bodyDataFromArray(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
+                    "Tag <a>", toNodeArray("a"))
+                    .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
+                    .timeOut(ofSeconds(5)));
 
             var stop = currentTimeMillis();
             var time = stop - start;
-            assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 500));
+            assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis()
+                    + SLEEP_RESPONSE_TIME_PROPERTY.get().toMillis() + 500));
             assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
         } finally {
+            getProperties().remove(TIME_UNIT_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName());
+            getProperties().remove(TIME_VALUE_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName());
+        }
+    }
+
+    @Test
+    public void immutabilityOfRequestGettingObjectTest() {
+        setProperty(TIME_UNIT_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName(), SECONDS.name());
+        setProperty(TIME_VALUE_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName(), "10");
+        try {
+            var start = currentTimeMillis();
+
+            var responseSpec = responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString());
+            httpSteps.get(bodyDataOf(responseSpec, "Tag <a>", toNodeList("a"))
+                    .criteria("Has no children", nodes -> nodes.stream()
+                            .anyMatch(node -> node.getChildNodes().getLength() == 0))
+                    .criteriaOfResponse("Has status code 404",
+                            stringHttpResponse -> stringHttpResponse.statusCode() == 404));
+
+            var stop = currentTimeMillis();
+            var time = stop - start;
+            assertThat(time, greaterThan(ofSeconds(10).toMillis()));
+
+            start = currentTimeMillis();
+            var response = httpSteps.get(responseSpec);
+            stop = currentTimeMillis();
+            assertThat(response, not(nullValue()));
+            time = stop - start;
+            assertThat(time, lessThan(ofSeconds(1).toMillis()));
+        } finally {
+            getProperties().remove(TIME_UNIT_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName());
+            getProperties().remove(TIME_VALUE_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName());
+        }
+    }
+
+    @Test
+    public void immutabilityOfRequestGettingIterableTest() {
+        setProperty(TIME_UNIT_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName(), SECONDS.name());
+        setProperty(TIME_VALUE_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName(), "10");
+        try {
+            var start = currentTimeMillis();
+
+            var responseSpec = responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString());
+            httpSteps.get(bodyIterableDataOf(responseSpec, "Tag <a>", toNodeList("a"))
+                    .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
+                    .criteriaOfResponse("Has status code 404",
+                            stringHttpResponse -> stringHttpResponse.statusCode() == 404));
+
+            var stop = currentTimeMillis();
+            var time = stop - start;
+            assertThat(time, greaterThan(ofSeconds(10).toMillis()));
+
+            start = currentTimeMillis();
+            var response = httpSteps.get(responseSpec);
+            stop = currentTimeMillis();
+            assertThat(response, not(nullValue()));
+            time = stop - start;
+            assertThat(time, lessThan(ofSeconds(1).toMillis()));
+        } finally {
+            getProperties().remove(TIME_UNIT_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName());
+            getProperties().remove(TIME_VALUE_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName());
+        }
+    }
+
+    @Test
+    public void immutabilityOfRequestGettingObjectFromIterableTest() {
+        setProperty(TIME_UNIT_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName(), SECONDS.name());
+        setProperty(TIME_VALUE_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName(), "10");
+        try {
+            var start = currentTimeMillis();
+
+            var responseSpec = responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString());
+            httpSteps.get(bodyDataFromIterable(responseSpec, "Tag <a>", toNodeList("a"))
+                    .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
+                    .criteriaOfResponse("Has status code 404",
+                            stringHttpResponse -> stringHttpResponse.statusCode() == 404));
+
+            var stop = currentTimeMillis();
+            var time = stop - start;
+            assertThat(time, greaterThan(ofSeconds(10).toMillis()));
+
+            start = currentTimeMillis();
+            var response = httpSteps.get(responseSpec);
+            stop = currentTimeMillis();
+            assertThat(response, not(nullValue()));
+            time = stop - start;
+            assertThat(time, lessThan(ofSeconds(1).toMillis()));
+        } finally {
+            getProperties().remove(TIME_UNIT_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName());
+            getProperties().remove(TIME_VALUE_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName());
+        }
+    }
+
+    @Test
+    public void immutabilityOfRequestGettingArrayTest() {
+        setProperty(TIME_UNIT_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName(), SECONDS.name());
+        setProperty(TIME_VALUE_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName(), "10");
+        try {
+            var start = currentTimeMillis();
+
+            var responseSpec = responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString());
+            httpSteps.get(bodyArrayDataOf(responseSpec, "Tag <a>", toNodeArray("a"))
+                    .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
+                    .criteriaOfResponse("Has status code 404",
+                            stringHttpResponse -> stringHttpResponse.statusCode() == 404));
+
+            var stop = currentTimeMillis();
+            var time = stop - start;
+            assertThat(time, greaterThan(ofSeconds(10).toMillis()));
+
+            start = currentTimeMillis();
+            var response = httpSteps.get(responseSpec);
+            stop = currentTimeMillis();
+            assertThat(response, not(nullValue()));
+            time = stop - start;
+            assertThat(time, lessThan(ofSeconds(1).toMillis()));
+        } finally {
+            getProperties().remove(TIME_UNIT_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName());
+            getProperties().remove(TIME_VALUE_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName());
+        }
+    }
+
+    @Test
+    public void immutabilityOfRequestGettingObjectFromArrayTest() {
+        setProperty(TIME_UNIT_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName(), SECONDS.name());
+        setProperty(TIME_VALUE_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName(), "10");
+        try {
+            var start = currentTimeMillis();
+
+            var responseSpec = responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString());
+            httpSteps.get(bodyDataFromArray(responseSpec, "Tag <a>", toNodeArray("a"))
+                    .criteria("Has no children", node -> node.getChildNodes().getLength() == 0)
+                    .criteriaOfResponse("Has status code 404",
+                            stringHttpResponse -> stringHttpResponse.statusCode() == 404));
+
+            var stop = currentTimeMillis();
+            var time = stop - start;
+            assertThat(time, greaterThan(ofSeconds(10).toMillis()));
+
+            start = currentTimeMillis();
+            var response = httpSteps.get(responseSpec);
+            stop = currentTimeMillis();
+            assertThat(response, not(nullValue()));
+            time = stop - start;
+            assertThat(time, lessThan(ofSeconds(1).toMillis()));
+        }
+        finally {
             getProperties().remove(TIME_UNIT_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName());
             getProperties().remove(TIME_VALUE_TO_GET_DESIRED_RESPONSE_PROPERTY.getPropertyName());
         }

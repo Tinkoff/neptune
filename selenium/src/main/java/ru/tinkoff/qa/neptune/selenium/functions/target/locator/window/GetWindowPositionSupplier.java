@@ -5,15 +5,13 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 
-import java.util.function.Function;
-
-import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
 
-public final class GetWindowPositionSupplier extends SequentialGetStepSupplier<SeleniumStepContext, Point, Window, GetWindowPositionSupplier> {
+public final class GetWindowPositionSupplier extends SequentialGetStepSupplier
+        .GetObjectChainedStepSupplier<SeleniumStepContext, Point, Window, GetWindowPositionSupplier> {
 
     private GetWindowPositionSupplier() {
-        super();
+        super("Position of the window", WebDriver.Window::getPosition);
     }
 
     /**
@@ -43,10 +41,5 @@ public final class GetWindowPositionSupplier extends SequentialGetStepSupplier<S
      */
     public static GetWindowPositionSupplier positionOf(Window window) {
         return new GetWindowPositionSupplier().from(window);
-    }
-
-    @Override
-    protected Function<Window, Point> getEndFunction() {
-        return toGet("Position of the window", WebDriver.Window::getPosition);
     }
 }

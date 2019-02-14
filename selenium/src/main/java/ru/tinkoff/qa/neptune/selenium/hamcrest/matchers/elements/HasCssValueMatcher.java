@@ -79,13 +79,13 @@ public final class HasCssValueMatcher<T extends SearchContext> extends TypeSafeD
         String cssValue;
 
         if (WebElement.class.isAssignableFrom(clazz)) {
-            result = matcher.matches(cssValue = WebElement.class.cast(item).getCssValue(cssProperty));
+            result = matcher.matches(cssValue = ((WebElement) item).getCssValue(cssProperty));
         }
         else if (HasCssValue.class.isAssignableFrom(clazz)){
-            result = matcher.matches(cssValue = HasCssValue.class.cast(item).getCssValue(cssProperty));
+            result = matcher.matches(cssValue = ((HasCssValue) item).getCssValue(cssProperty));
         }
         else if (WrapsElement.class.isAssignableFrom(clazz)) {
-            var e = WrapsElement.class.cast(item).getWrappedElement();
+            var e = ((WrapsElement) item).getWrappedElement();
             if (e == null) {
                 mismatchDescription.appendText(format("Wrapped element is null. It is not possible to get css property %s from an instance of %s.",
                         cssProperty, clazz.getName()));

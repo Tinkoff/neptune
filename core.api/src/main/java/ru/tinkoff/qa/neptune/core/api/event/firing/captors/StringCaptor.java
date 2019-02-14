@@ -1,10 +1,9 @@
 package ru.tinkoff.qa.neptune.core.api.event.firing.captors;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
+import ru.tinkoff.qa.neptune.core.api.utils.SPIUtil;
 
 import java.util.List;
-
-import static ru.tinkoff.qa.neptune.core.api.utils.SPIUtil.loadSPI;
 
 public abstract class StringCaptor<T> extends Captor<T, StringBuilder> {
 
@@ -13,7 +12,7 @@ public abstract class StringCaptor<T> extends Captor<T, StringBuilder> {
     }
 
     public StringCaptor(String message) {
-        this(message, loadSPI(CapturedStringInjector.class));
+        this(message, SPIUtil.loadSPI(CapturedStringInjector.class));
     }
 
     @Override

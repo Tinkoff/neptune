@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.data.base.api.query;
 
-import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
+import org.datanucleus.api.jdo.JDOPersistenceManager;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
 import javax.jdo.JDOQLTypedQuery;
@@ -20,7 +20,7 @@ import static java.util.Optional.ofNullable;
  *
  * @param <T> type of objects to be selected.
  */
-public final class QueryBuilderFunction<T extends PersistableObject> implements Function<DataBaseStepContext, JDOQLTypedQuery<T>> {
+public final class QueryBuilderFunction<T extends PersistableObject> implements Function<JDOPersistenceManager, JDOQLTypedQuery<T>> {
 
     private final Class<T> toSelect;
     private BooleanExpression constraintsExpression;
@@ -29,6 +29,13 @@ public final class QueryBuilderFunction<T extends PersistableObject> implements 
     private Expression<?> havingExpression;
     private Integer rangeStart;
     private Integer rangeEnd;
+
+    private QueryBuilderFunction(Class<T> toSelect) {
+        checkArgument(nonNull(toSelect), "Class of persistable objects to select should be defined");
+        checkArgument(nonNull(toSelect.getAnnotation(PersistenceCapable.class)), format("Class of persistable objects to select " +
+                "should be annotated by %s", PersistenceCapable.class.getName()));
+        this.toSelect = toSelect;
+    }
 
     /**
      * Creates an instance of function that builds a typed JDO query.
@@ -39,13 +46,6 @@ public final class QueryBuilderFunction<T extends PersistableObject> implements 
      */
     public static <T extends PersistableObject> QueryBuilderFunction<T> ofType(Class<T> toSelect) {
         return new QueryBuilderFunction<>(toSelect);
-    }
-
-    private QueryBuilderFunction(Class<T> toSelect) {
-        checkArgument(nonNull(toSelect), "Class of persistable objects to select should be defined");
-        checkArgument(nonNull(toSelect.getAnnotation(PersistenceCapable.class)), format("Class of persistable objects to select " +
-                "should be annotated by %s", PersistenceCapable.class.getName()));
-        this.toSelect = toSelect;
     }
 
     public QueryBuilderFunction<T> where(BooleanExpression constraintsExpression) {
@@ -89,9 +89,8 @@ public final class QueryBuilderFunction<T extends PersistableObject> implements 
     }
 
     @Override
-    public JDOQLTypedQuery<T> apply(DataBaseStepContext dataBaseSteps) {
-        var manager = dataBaseSteps.getCurrentPersistenceManager();
-        var tq1 = manager.newJDOQLTypedQuery(toSelect);
+    public JDOQLTypedQuery<T> apply(JDOPersistenceManager jdoPersistenceManager) {
+        var tq1 = jdoPersistenceManager.newJDOQLTypedQuery(toSelect);
         ofNullable(constraintsExpression).ifPresent(tq1::filter);
         if (nonNull(rangeStart) && nonNull(rangeEnd)) {
             tq1.range(rangeStart, rangeEnd);

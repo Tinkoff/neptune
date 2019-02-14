@@ -6,708 +6,149 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesO
 import ru.tinkoff.qa.neptune.selenium.api.widget.Labeled;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.*;
-import ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties;
 import org.openqa.selenium.*;
-import ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties;
 
 import java.time.Duration;
-import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
-import static ru.tinkoff.qa.neptune.core.api.steps.AsIsCondition.AS_IS;
-import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromIterable.getFromIterable;
+import static java.lang.String.join;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.selenium.api.widget.Widget.getWidgetName;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.defaultPredicate;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeLabeledBy;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldHaveText;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindLabeledWidgets.labeledWidgets;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindWebElements.webElements;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindWidgets.widgets;
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMENT_WAITING_DURATION;
 import static java.lang.String.format;
-import static java.util.List.of;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
-@SuppressWarnings({"unused", "unchecked"})
+@SuppressWarnings({"unused"})
 @MakeImageCapturesOnFinishing
 @MakeFileCapturesOnFinishing
 public final class SearchSupplier<R extends SearchContext>
-        extends SequentialGetStepSupplier<SearchContext, R, SearchContext, SearchSupplier<R>> {
+        extends SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier<SearchContext, R, SearchContext, SearchSupplier<R>> {
 
-    private SearchSupplier(Function<SearchContext, R> function) {
-        set(function);
-        addIgnored(of(StaleElementReferenceException.class));
-    }
-
-    private static String getDescriptionOfPredicate(Predicate<?> predicate) {
-        return predicate == AS_IS? EMPTY: predicate.toString();
-    }
-
-    private static Supplier<NoSuchElementException> noSuchElementException(String description,
-                                                                           Predicate<?> condition) {
-        var errorMessage = format("Nothing was found. Attempt to get a single item %s", description);
-        if (!AS_IS.equals(condition)) {
-            errorMessage = format("%s. Criteria: %s", errorMessage, condition);
+    private <S extends Iterable<R>> SearchSupplier(String description, Function<SearchContext, S> originalFunction) {
+        super(description, originalFunction);
+        from(searchContext -> searchContext);
+        timeOut(ELEMENT_WAITING_DURATION.get());
+        addIgnored(StaleElementReferenceException.class);
+        if (FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.get()) {
+            criteria(shouldBeVisible());
         }
-        var messageToThrow = errorMessage;
-        return () -> new NoSuchElementException(messageToThrow);
+        throwOnEmptyResult(noSuchElementException(this));
     }
 
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link SearchContext} found from the input value.
-     *
-     * @param description is a description of an element to find.
-     * @param transformation is a function which performs the searching from some {@link SearchContext}
-     *                       and transform a found item to another instance of {@link SearchContext}
-     * @param duration       is the parameter of a time to find desired item
-     * @param condition      to specify the searching criteria
-     * @param <T>            is a type of a value to be returned by resulted function
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static <T extends SearchContext> SearchSupplier<T> item(String description,
-                                                                   Function<SearchContext, List<T>> transformation,
-                                                                   Duration duration, Predicate<? super T> condition) {
-        return new SearchSupplier<>(getFromIterable(description,
-                transformation, condition, duration, false, true,
-                noSuchElementException(description, condition)));
+    private static Supplier<NoSuchElementException> noSuchElementException(SearchSupplier<?> supplier) {
+        return () -> new NoSuchElementException(format("Nothing was found. Attempt to get %s", supplier.toString()));
     }
 
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link SearchContext} found from the input value. About
-     * time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param description is a description of an element to find.
-     * @param transformation is a function which performs the searching from some {@link SearchContext}
-     *                       and transform a found item to another instance of {@link SearchContext}
-     * @param condition      to specify the searching criteria
-     * @param <T>            is a type of a value to be returned by resulted function
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static <T extends SearchContext> SearchSupplier<T> item(String description,
-                                                                   Function<SearchContext, List<T>> transformation,
-                                                                   Predicate<? super T> condition) {
-        return item(description, transformation, ELEMENT_WAITING_DURATION.get(), condition);
+    private static Supplier<String> criteriaDescription(SearchSupplier<?> search) {
+        return () -> {
+            var criteria = search.getCriteriaDescription();
+            if (!isBlank(criteria)) {
+                return criteria;
+            }
+            return EMPTY;
+        };
     }
 
+
     /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link WebElement} found from the input value.
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some {@link WebElement} found from the input value.
      *
      * @param by locator strategy to find an element
-     * @param duration is the parameter of a time to find the element
-     * @param predicate to specify the searching criteria
+     * @param text that the desired element should have
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<WebElement> webElement(By by, Duration duration, Predicate<? super WebElement> predicate) {
-        var criteriaDescription = predicate == AS_IS? EMPTY: predicate.toString();
-        return item(format("Web element located %s", by), webElements(by, criteriaDescription), duration, predicate);
+    public static SearchSupplier<WebElement> webElement(By by, String text) {
+        Predicate<WebElement> shouldHaveText = shouldHaveText(text);
+        var webElements = webElements(by);
+        var search = new SearchSupplier<>(format("Web element located %s", by), webElements);
+        webElements.setCriteriaDescription(criteriaDescription(search));
+        return search.criteria(shouldHaveText);
     }
 
     /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link WebElement} found from the input value.
-     *
-     * @param by locator strategy to find an element
-     * @param text which the desired element should have
-     * @param duration is the parameter of a time to find the element
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<WebElement> webElement(By by, String text, Duration duration,
-                                                        Predicate<? super WebElement> predicate) {
-        Predicate<WebElement> textPredicate = shouldHaveText(text);
-        return webElement(by, duration, textPredicate.and(predicate));
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link WebElement} found from the input value.
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some {@link WebElement} found from the input value.
      *
      * @param by locator strategy to find an element
      * @param textPattern is a regExp to match text of the desired element
-     * @param duration is the parameter of a time to find the element
-     * @param predicate to specify the searching criteria
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<WebElement> webElement(By by, Pattern textPattern, Duration duration,
-                                                        Predicate<? super WebElement> predicate) {
-        Predicate<WebElement> textPredicate = shouldHaveText(textPattern);
-        return webElement(by, duration, textPredicate.and(predicate));
+    public static SearchSupplier<WebElement> webElement(By by, Pattern textPattern) {
+        Predicate<WebElement> shouldHaveText = shouldHaveText(textPattern);
+        var webElements = webElements(by);
+        var search = new SearchSupplier<>(format("Web element located %s", by), webElements);
+        webElements.setCriteriaDescription(criteriaDescription(search));
+        return search.criteria(shouldHaveText);
     }
 
     /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link WebElement} found from the input value. The
-     * result function will return the first found element if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found element which is displayed on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param by locator strategy to find an element
-     * @param duration is the parameter of a time to find the element
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<WebElement> webElement(By by, Duration duration) {
-        return webElement(by, duration, defaultPredicate());
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link WebElement} found from the input value. The
-     * result function will return the first found element if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found element which is displayed on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param by locator strategy to find an element
-     * @param text which the desired element should have
-     * @param duration is the parameter of a time to find the element
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<WebElement> webElement(By by, String text, Duration duration) {
-        return webElement(by, text, duration, defaultPredicate());
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link WebElement} found from the input value. The
-     * result function will return the first found element if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found element which is displayed on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param by locator strategy to find an element
-     * @param textPattern is a regExp to match text of the desired element
-     * @param duration is the parameter of a time to find the element
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<WebElement> webElement(By by, Pattern textPattern, Duration duration) {
-        return webElement(by, textPattern, duration, defaultPredicate());
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link WebElement} found from the input value. About
-     * time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param by locator strategy to find an element
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<WebElement> webElement(By by, Predicate<? super WebElement> predicate) {
-        var criteriaDescription = predicate == AS_IS? EMPTY: predicate.toString();
-        return item(format("Web element located %s", by), webElements(by, criteriaDescription), predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link WebElement} found from the input value. About
-     * time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param by locator strategy to find an element
-     * @param text which the desired element should have
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<WebElement> webElement(By by, String text, Predicate<? super WebElement> predicate) {
-        Predicate<WebElement> textPredicate = shouldHaveText(text);
-        return webElement(by, textPredicate.and(predicate));
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link WebElement} found from the input value. About
-     * time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param by locator strategy to find an element
-     * @param textPattern is a regExp to match text of the desired element
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<WebElement> webElement(By by, Pattern textPattern, Predicate<? super WebElement> predicate) {
-        Predicate<WebElement> textPredicate = shouldHaveText(textPattern);
-        return webElement(by, textPredicate.and(predicate));
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link WebElement} found from the input value.
-     *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found element if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found element which is displayed on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some {@link WebElement} found from the input value.
      *
      * @param by locator strategy to find an element
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<WebElement> webElement(By by) {
-        return webElement(by, defaultPredicate());
+        var webElements = webElements(by);
+        var search = new SearchSupplier<>(format("Web element located %s", by), webElements);
+        webElements.setCriteriaDescription(criteriaDescription(search));
+        return search;
     }
 
     /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link WebElement} found from the input value.
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some {@link Widget} found from the input value.
      *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found element if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found element which is displayed on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param by locator strategy to find an element
-     * @param text which the desired element should have
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<WebElement> webElement(By by,
-                                                        String text) {
-        return webElement(by, text, defaultPredicate());
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link WebElement} found from the input value.
-     *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found element if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found element which is displayed on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param by by locator strategy to find an element
-     * @param textPattern is a regExp to match text of the desired element
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<WebElement> webElement(By by, Pattern textPattern) {
-        return webElement(by, textPattern, defaultPredicate());
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link Widget} found from the input value.
-     *
-     * @param tClass is a class of {@link Widget} which instance should be returned
-     * @param duration is the parameter of a time to find the element
-     * @param predicate to specify the searching criteria
-     * @param <T> the type of widget which should be found
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, Duration duration, Predicate<? super T> predicate) {
-        var criteriaDescription = predicate == AS_IS? EMPTY: predicate.toString();
-        return item(getWidgetName(tClass), widgets(tClass, criteriaDescription), duration, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link Widget} found from the input value.
-     *
-     * @param tClass is a class of {@link Widget} which instance should be returned. tClass should have at
-     *               least one not abstract subclass which also implements {@link Labeled} or be that class.
-     * @param labels (texts of some elements or attributes inside or beside the widget) which are used to
+     * @param tClass is a class of an object to be returned. tClass should have at
+     *               least one not abstract subclass that implements {@link Labeled} or be that class.
+     * @param labels (texts of some elements or attributes inside or beside the widget) are used to
      *               find the widget.
-     * @param duration is the parameter of a time to find the element
-     * @param predicate to specify the searching criteria
-     * @param <T> the type of widget which should be found
+     * @param <T> the type of widget that should be found
      * @return an instance of {@link SearchSupplier}
      */
-    public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, List<String> labels,
-                                                              Duration duration, Predicate<? super T> predicate) {
-        Predicate<? extends T> labeledBy = shouldBeLabeledBy(labels.toArray(new String[]{}));
-        var resultPredicate = (Predicate<? super T>) labeledBy.and(predicate);
-        var criteriaDescription = resultPredicate.toString();
-        return item(getWidgetName(tClass), labeledWidgets(tClass, criteriaDescription), duration, resultPredicate);
+    public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, String... labels) {
+        Predicate<T> labeledBy = shouldBeLabeledBy(labels);
+        var labeledWidgets = labeledWidgets(tClass);
+        var stringLabels = join(",", labels);
+        var search =  new SearchSupplier<>(format("%s '%s'", getWidgetName(tClass), join(", ", labels)), labeledWidgets);
+        labeledWidgets.setCriteriaDescription(criteriaDescription(search));
+        labeledWidgets.setLabels(stringLabels);
+        return search.criteria(labeledBy);
     }
 
     /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link Widget} found from the input value.
-     *
-     * @param tClass is a class of {@link Widget} which instance should be returned. tClass should have at
-     *               least one not abstract subclass which also implements {@link Labeled} or be that class.
-     * @param label (text of some element or attribute inside or beside the widget) which is used to
-     *               find the widget.
-     * @param duration is the parameter of a time to find the element
-     * @param predicate to specify the searching criteria
-     * @param <T> the type of widget which should be found
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass,
-                                                                        String label,
-                                                                        Duration duration,
-                                                                        Predicate<? super T> predicate) {
-        return widget(tClass, List.of(label), duration, predicate);
-    }
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some {@link Widget} found from the input value.
 
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link Widget} found from the input value. The
-     * result function will return the first found widget if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found widget which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param tClass is a class of {@link Widget} which instance should be returned
-     * @param duration is the parameter of a time to find the element
-     * @param <T> the type of widget which should be found
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass,
-                                                                        Duration duration) {
-        return widget(tClass, duration, defaultPredicate());
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link Widget} found from the input value. The
-     * result function will return the first found widget if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found widget which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param tClass is a class of {@link Widget} which instance should be returned. tClass should have at
-     *               least one not abstract subclass which also implements {@link Labeled} or be that class.
-     * @param labels (texts of some elements or attributes inside or beside the widget) which are used to
-     *               find the widget.
-     * @param duration is the parameter of a time to find the element
-     * @param <T> the type of widget which should be found
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass,
-                                                              List<String> labels, Duration duration) {
-        return widget(tClass, labels, duration, defaultPredicate());
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link Widget} found from the input value. The
-     * result function will return the first found widget if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found widget which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param tClass is a class of {@link Widget} which instance should be returned. tClass should have at
-     *               least one not abstract subclass which also implements {@link Labeled} or be that class.
-     * @param label (text of some element or attribute inside or beside the widget) which is used to
-     *               find the widget.
-     * @param duration is the parameter of a time to find the element
-     * @param <T> the type of widget which should be found
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, String label,
-                                                              Duration duration) {
-        return widget(tClass, label, duration, defaultPredicate());
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link Widget} found from the input value.
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param tClass is a class of {@link Widget} which instance should be returned
-     * @param predicate to specify the searching criteria
-     * @param <T> the type of widget which should be found
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, Predicate<? super T> predicate) {
-        var criteriaDescription = predicate == AS_IS? EMPTY: predicate.toString();
-        return item(getWidgetName(tClass), widgets(tClass, criteriaDescription), predicate);
-    }
-
-    /**return item(widgets(tClass, predicate.toString()), duration, predicate);
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link Widget} found from the input value.
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param tClass is a class of {@link Widget} which instance should be returned. tClass should have at
-     *               least one not abstract subclass which also implements {@link Labeled} or be that class.
-     * @param labels (texts of some elements or attributes inside or beside the widget) which are used to
-     *               find the widget.
-     * @param predicate to specify the searching criteria
-     * @param <T> the type of widget which should be found
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, List<String> labels, Predicate<? super T> predicate) {
-        Predicate<? extends T> labeledBy = shouldBeLabeledBy(labels.toArray(new String[]{}));
-        var resultPredicate = (Predicate<? super T>) labeledBy.and(predicate);
-        var criteriaDescription = resultPredicate.toString();
-        return item(getWidgetName(tClass), labeledWidgets(tClass, criteriaDescription), resultPredicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link Widget} found from the input value.
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param tClass is a class of {@link Widget} which instance should be returned. tClass should have at
-     *               least one not abstract subclass which also implements {@link Labeled} or be that class.
-     * @param label (text of some element or attribute inside or beside the widget) which is used to
-     *               find the widget.
-     * @param predicate to specify the searching criteria
-     * @param <T> the type of widget which should be found
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, String label, Predicate<? super T> predicate) {
-        return widget(tClass, List.of(label), predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link Widget} found from the input value.
-     *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found widget if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found widget which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     *
-     * @param tClass is a class of {@link Widget} which instance should be returned
-     * @param <T> the type of widget which should be found
+     * @param tClass is a class of an object to be returned
+     * @param <T> the type of widget to find
      * @return an instance of {@link SearchSupplier}
      */
     public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass) {
-        return widget(tClass, defaultPredicate());
+        var widgets = widgets(tClass);
+        var search = new SearchSupplier<>(getWidgetName(tClass), widgets);
+        widgets.setCriteriaDescription(criteriaDescription(search));
+        return search;
     }
 
     /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link Widget} found from the input value.
-     *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found widget if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found widget which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     *
-     * @param tClass is a class of {@link Widget} which instance should be returned. tClass should have at
-     *               least one not abstract subclass which also implements {@link Labeled} or be that class.
-     * @param labels (texts of some elements or attributes inside or beside the widget) which are used to
-     *               find the widget.
-     * @param <T> the type of widget which should be found
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, List<String> labels) {
-        return widget(tClass, labels, defaultPredicate());
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some instance of {@link Widget} found from the input value.
-     *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found widget if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found widget which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     *
-     * @param tClass is a class of {@link Widget} which instance should be returned. tClass should have at
-     *               least one not abstract subclass which also implements {@link Labeled} or be that class.
-     * @param label (text of some element or attribute inside or beside the widget) which is used to
-     *              find the widget.
-     * @param <T> the type of widget which should be found
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, String label) {
-        return widget(tClass, label, defaultPredicate());
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some button.
-     *
-     * @param duration is the parameter of a time to find a button
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Button> button(Duration duration, Predicate<? super Button> predicate) {
-        return widget(Button.class, duration, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some button.
-     *
-     * @param labels (texts of some elements or attributes inside or beside the button) which are used to
-     *               find a button.
-     * @param duration is the parameter of a time to find a button
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Button> button(List<String> labels, Duration duration, Predicate<? super Button> predicate) {
-        return widget(Button.class, labels, duration, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some button.
-     *
-     * @param label (text of some element or attribute inside or beside the button) which is used to
-     *               find a button.
-     * @param duration is the parameter of a time to find a button
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Button> button(String label, Duration duration, Predicate<? super Button> predicate) {
-        return widget(Button.class, label, duration, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some button. The result function will return the first found button if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found button which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param duration is the parameter of a time to find a button
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Button> button(Duration duration) {
-        return widget(Button.class, duration);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some button. The result function will return the first found button if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found button which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param labels (texts of some elements or attributes inside or beside the button) which are used to
-     *               find a button.
-     * @param duration is the parameter of a time to find a button
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Button> button(List<String> labels, Duration duration) {
-        return widget(Button.class, labels, duration);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some button. The result function will return the first found button if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found button which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param label (text of some element or attribute inside or beside the button) which is used to
-     *               find a button.
-     * @param duration is the parameter of a time to find a button
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Button> button(String label, Duration duration) {
-        return widget(Button.class, label, duration);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some button. About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Button> button(Predicate<? super Button> predicate) {
-        return widget(Button.class, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some button. About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param labels (texts of some elements or attributes inside or beside the button) which are used to
-     *               find a button.
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Button> button(List<String> labels, Predicate<? super Button> predicate) {
-        return widget(Button.class, labels, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some button. About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param label (text of some element or attribute inside or beside the button) which is used to
-     *               find a button.
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Button> button(String label, Predicate<? super Button> predicate) {
-        return widget(Button.class, label, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some button.
-     *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found button if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found button which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @return an instance of {@link SearchSupplier}
      */
@@ -716,194 +157,22 @@ public final class SearchSupplier<R extends SearchContext>
     }
 
     /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some button.
      *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found button if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found button which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     *
-     * @param labels (texts of some elements or attributes inside or beside the button) which are used to
+     * @param labels (texts of some elements or attributes inside or beside the button) are used to
      *               find a button.
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Button> button(List<String> labels) {
+    public static SearchSupplier<Button> button(String... labels) {
         return widget(Button.class, labels);
     }
 
     /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some button.
-     *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found button if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found button which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     *
-     * @param label (text of some element or attribute inside or beside the widget) which is used to
-     *              find a button.
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Button> button(String label) {
-        return widget(Button.class, label);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some flag.
-     *
-     * @param duration is the parameter of a time to find a flag
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag> flag(Duration duration, Predicate<? super Flag> predicate) {
-        return widget(Flag.class, duration, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some flag.
-     *
-     * @param labels (texts of some elements or attributes inside or beside the flag) which are used to
-     *               find a flag.
-     * @param duration is the parameter of a time to find a flag
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag> flag(List<String> labels, Duration duration, Predicate<? super Flag> predicate) {
-        return widget(Flag.class, labels, duration, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some flag.
-     *
-     * @param label (text of some element or attribute inside or beside the flag) which is used to
-     *               find a flag.
-     * @param duration is the parameter of a time to find a flag
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag> flag(String label, Duration duration, Predicate<? super Flag> predicate) {
-        return widget(Flag.class, label, duration, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some flag. The result function will return the first found flag if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found flag which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param duration is the parameter of a time to find a flag
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag> flag(Duration duration) {
-        return widget(Flag.class, duration);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some flag. The result function will return the first found flag if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found flag which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param labels (texts of some elements or attributes inside or beside the flag) which are used to
-     *               find a flag.
-     * @param duration is the parameter of a time to find a flag
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag> flag(List<String> labels, Duration duration) {
-        return widget(Flag.class, labels, duration);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some flag. The result function will return the first found flag if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found flag which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param label (text of some element or attribute inside or beside the flag) which is used to
-     *               find a flag.
-     * @param duration is the parameter of a time to find a flag
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag> flag(String label, Duration duration) {
-        return widget(Flag.class, label, duration);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some flag. About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag> flag(Predicate<? super Flag> predicate) {
-        return widget(Flag.class, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some flag. About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param labels (texts of some elements or attributes inside or beside the flag) which are used to
-     *               find a flag.
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag> flag(List<String> labels, Predicate<? super Flag> predicate) {
-        return widget(Flag.class, labels, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some flag. About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param label (text of some element or attribute inside or beside the flag) which is used to
-     *               find a flag.
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag> flag(String label, Predicate<? super Flag> predicate) {
-        return widget(Flag.class, label, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some flag.
-     *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found flag if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found flag which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @return an instance of {@link SearchSupplier}
      */
@@ -912,197 +181,22 @@ public final class SearchSupplier<R extends SearchContext>
     }
 
     /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some flag.
      *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found flag if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found flag which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-
-     *
-     * @param labels (texts of some elements or attributes inside or beside the flag) which are used to
+     * @param labels (texts of some elements or attributes inside or beside the flag) are used to
      *               find a flag.
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Flag> flag(List<String> labels) {
+    public static SearchSupplier<Flag> flag(String... labels) {
         return widget(Flag.class, labels);
     }
 
     /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some flag.
-     *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found flag if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found flag which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     *
-     * @param label (text of some element or attribute inside or beside the flag) which is used to
-     *              find a flag.
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag> flag(String label) {
-        return widget(Flag.class, label);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some check box.
-     *
-     * @param duration is the parameter of a time to find a check box
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag.CheckBox> checkbox(Duration duration, Predicate<? super Flag.CheckBox> predicate) {
-        return widget(Flag.CheckBox.class, duration, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some check box.
-     *
-     * @param labels (texts of some elements or attributes inside or beside the check box) which are used to
-     *               find a check box.
-     * @param duration is the parameter of a time to find a check box
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag.CheckBox> checkbox(List<String> labels, Duration duration,
-                                                         Predicate<? super Flag.CheckBox> predicate) {
-        return widget(Flag.CheckBox.class, labels, duration, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some check box.
-     *
-     * @param label (text of some element or attribute inside or beside the check box) which is used to
-     *               find a check box.
-     * @param duration is the parameter of a time to find a check box
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag.CheckBox> checkbox(String label, Duration duration,
-                                                         Predicate<? super Flag.CheckBox> predicate) {
-        return widget(Flag.CheckBox.class, label, duration, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some check box. The result function will return the first found check box if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found check box which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param duration is the parameter of a time to find a check box
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag.CheckBox> checkbox(Duration duration) {
-        return widget(Flag.CheckBox.class, duration);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some check box. The result function will return the first found check box if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found check box which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param labels (texts of some elements or attributes inside or beside the check box) which are used to
-     *               find a check box.
-     * @param duration is the parameter of a time to find a check box
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag.CheckBox> checkbox(List<String> labels, Duration duration) {
-        return widget(Flag.CheckBox.class, labels, duration);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some check box. The result function will return the first found check box if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found check box which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param label (text of some element or attribute inside or beside the check box) which is used to
-     *               find a check box.
-     * @param duration is the parameter of a time to find a check box
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag.CheckBox> checkbox(String label, Duration duration) {
-        return widget(Flag.CheckBox.class, label, duration);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some check box. About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag.CheckBox> checkbox(Predicate<? super Flag.CheckBox> predicate) {
-        return widget(Flag.CheckBox.class, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some check box. About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param labels (texts of some elements or attributes inside or beside the check box) which are used to
-     *               find a check box.
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag.CheckBox> checkbox(List<String> labels, Predicate<? super Flag.CheckBox> predicate) {
-        return widget(Flag.CheckBox.class, labels, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some check box. About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param label (text of some element or attribute inside or beside the check box) which is used to
-     *               find a check box.
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag.CheckBox> checkbox(String label, Predicate<? super Flag.CheckBox> predicate) {
-        return widget(Flag.CheckBox.class, label, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some checkbox.
-     *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found checkbox if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found checkbox which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @return an instance of {@link SearchSupplier}
      */
@@ -1111,197 +205,22 @@ public final class SearchSupplier<R extends SearchContext>
     }
 
     /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some checkbox.
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some check box.
      *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found checkbox if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found checkbox which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-
-     *
-     * @param labels (texts of some elements or attributes inside or beside the checkbox) which are used to
-     *               find a checkbox.
+     * @param labels (texts of some elements or attributes inside or beside the check box) are used to
+     *               find a check box.
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Flag.CheckBox> checkbox(List<String> labels) {
+    public static SearchSupplier<Flag.CheckBox> checkbox(String... labels) {
         return widget(Flag.CheckBox.class, labels);
     }
 
     /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some checkbox.
-     *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found checkbox if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found checkbox which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     *
-     * @param label (text of some element or attribute inside or beside the checkbox) which is used to
-     *              find a checkbox.
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag.CheckBox> checkbox(String label) {
-        return widget(Flag.CheckBox.class, label);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some radio button.
-     *
-     * @param duration is the parameter of a time to find a radio button
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag.RadioButton> radioButton(Duration duration, Predicate<? super Flag.RadioButton> predicate) {
-        return widget(Flag.RadioButton.class, duration, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some radio button.
-     *
-     * @param labels (texts of some elements or attributes inside or beside the radio button) which are used to
-     *               find a radio button.
-     * @param duration is the parameter of a time to find a radio button
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag.RadioButton> radioButton(List<String> labels, Duration duration,
-                                                               Predicate<? super Flag.RadioButton> predicate) {
-        return widget(Flag.RadioButton.class, labels, duration, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some radio button.
-     *
-     * @param label (text of some element or attribute inside or beside the radio button) which is used to
-     *               find a radio button.
-     * @param duration is the parameter of a time to find a radio button
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag.RadioButton> radioButton(String label, Duration duration,
-                                                               Predicate<? super Flag.RadioButton> predicate) {
-        return widget(Flag.RadioButton.class, label, duration, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some radio button. The result function will return the first found radio button if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found radio button which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param duration is the parameter of a time to find a radio button
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag.RadioButton> radioButton(Duration duration) {
-        return widget(Flag.RadioButton.class, duration);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some radio button. The result function will return the first found radio button if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found radio button which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param labels (texts of some elements or attributes inside or beside the radio button) which are used to
-     *               find a radio button.
-     * @param duration is the parameter of a time to find a radio button
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag.RadioButton> radioButton(List<String> labels, Duration duration) {
-        return widget(Flag.RadioButton.class, labels, duration);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some radio button. The result function will return the first found radio button if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found radio button which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param label (text of some element or attribute inside or beside the radio button) which is used to
-     *               find a radio button.
-     * @param duration is the parameter of a time to find a radio button
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag.RadioButton> radioButton(String label, Duration duration) {
-        return widget(Flag.RadioButton.class, label, duration);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some radio button. About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag.RadioButton> radioButton(Predicate<? super Flag.RadioButton> predicate) {
-        return widget(Flag.RadioButton.class, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some radio button. About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param labels (texts of some elements or attributes inside or beside the radio button) which are used to
-     *               find a radio button.
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag.RadioButton> radioButton(List<String> labels, Predicate<? super Flag.RadioButton> predicate) {
-        return widget(Flag.RadioButton.class, labels, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some radio button. About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param label (text of some element or attribute inside or beside the radio button) which is used to
-     *               find a radio button.
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag.RadioButton> radioButton(String label, Predicate<? super Flag.RadioButton> predicate) {
-        return widget(Flag.RadioButton.class, label, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some radio button.
-     *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found radio button if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found radio button which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @return an instance of {@link SearchSupplier}
      */
@@ -1310,195 +229,22 @@ public final class SearchSupplier<R extends SearchContext>
     }
 
     /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some radio button.
      *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found radio button if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found radio button which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-
-     *
-     * @param labels (texts of some elements or attributes inside or beside the radio button) which are used to
+     * @param labels (texts of some elements or attributes inside or beside the radio button) are used to
      *               find a radio button.
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Flag.RadioButton> radioButton(List<String> labels) {
+    public static SearchSupplier<Flag.RadioButton> radioButton(String... labels) {
         return widget(Flag.RadioButton.class, labels);
     }
 
     /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some radio button.
-     *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found radio button if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found radio button which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     *
-     * @param label (text of some element or attribute inside or beside the radio button) which is used to
-     *              find a radio button.
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Flag.RadioButton> radioButton(String label) {
-        return widget(Flag.RadioButton.class, label);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some link.
-     *
-     * @param duration is the parameter of a time to find a link
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Link> link(Duration duration, Predicate<? super Link> predicate) {
-        return widget(Link.class, duration, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some link.
-     *
-     * @param labels (texts of some elements or attributes inside or beside the link) which are used to
-     *               find a link.
-     * @param duration is the parameter of a time to find a link
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Link> link(List<String> labels, Duration duration, Predicate<? super Link> predicate) {
-        return widget(Link.class, labels, duration, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some link.
-     *
-     * @param label (text of some element or attribute inside or beside the link) which is used to
-     *               find a link.
-     * @param duration is the parameter of a time to find a link
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Link> link(String label, Duration duration, Predicate<? super Link> predicate) {
-        return widget(Link.class, label, duration, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some link. The result function will return the first found link if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found link which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param duration is the parameter of a time to find a link
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Link> link(Duration duration) {
-        return widget(Link.class, duration);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some link. The result function will return the first found link if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found link which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param labels (texts of some elements or attributes inside or beside the link) which are used to
-     *               find a link.
-     * @param duration is the parameter of a time to find a link
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Link> link(List<String> labels, Duration duration) {
-        return widget(Link.class, labels, duration);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some link. The result function will return the first found link if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found link which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param label (text of some element or attribute inside or beside the link) which is used to
-     *               find a link.
-     * @param duration is the parameter of a time to find a link
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Link> link(String label, Duration duration) {
-        return widget(Link.class, label, duration);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some link. About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Link> link(Predicate<? super Link> predicate) {
-        return widget(Link.class, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some link. About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param labels (texts of some elements or attributes inside or beside the link) which are used to
-     *               find a link.
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Link> link(List<String> labels, Predicate<? super Link> predicate) {
-        return widget(Link.class, labels, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some link. About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param label (text of some element or attribute inside or beside the link) which is used to
-     *               find a link.
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Link> link(String label, Predicate<? super Link> predicate) {
-        return widget(Link.class, label, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some link.
-     *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found link if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found link which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @return an instance of {@link SearchSupplier}
      */
@@ -1507,194 +253,22 @@ public final class SearchSupplier<R extends SearchContext>
     }
 
     /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some link.
      *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found link if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found link which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     *
-     * @param labels (texts of some elements or attributes inside or beside the link) which are used to
+     * @param labels (texts of some elements or attributes inside or beside the link) are used to
      *               find a link.
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Link> link(List<String> labels) {
+    public static SearchSupplier<Link> link(String... labels) {
         return widget(Link.class, labels);
     }
 
     /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some link.
-     *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found link if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found link which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     *
-     * @param label (text of some element or attribute inside or beside the link) which is used to
-     *              find a link.
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Link> link(String label) {
-        return widget(Link.class, label);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some select.
-     *
-     * @param duration is the parameter of a time to find a select
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Select> select(Duration duration, Predicate<? super Select> predicate) {
-        return widget(Select.class, duration, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some select.
-     *
-     * @param labels (texts of some elements or attributes inside or beside the select) which are used to
-     *               find a select.
-     * @param duration is the parameter of a time to find a select
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Select> select(List<String> labels, Duration duration, Predicate<? super Select> predicate) {
-        return widget(Select.class, labels, duration, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some select.
-     *
-     * @param label (text of some element or attribute inside or beside the select) which is used to
-     *               find a select.
-     * @param duration is the parameter of a time to find a select
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Select> select(String label, Duration duration, Predicate<? super Select> predicate) {
-        return widget(Select.class, label, duration, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some select. The result function will return the first found select if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found select which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param duration is the parameter of a time to find a select
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Select> select(Duration duration) {
-        return widget(Select.class, duration);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some select. The result function will return the first found select if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found select which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param labels (texts of some elements or attributes inside or beside the select) which are used to
-     *               find a select.
-     * @param duration is the parameter of a time to find a select
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Select> select(List<String> labels, Duration duration) {
-        return widget(Select.class, labels, duration);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some select. The result function will return the first found select if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found select which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param label (text of some element or attribute inside or beside the select) which is used to
-     *               find a select.
-     * @param duration is the parameter of a time to find a select
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Select> select(String label, Duration duration) {
-        return widget(Select.class, label, duration);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some select. About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Select> select(Predicate<? super Select> predicate) {
-        return widget(Select.class, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some select. About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param labels (texts of some elements or attributes inside or beside the select) which are used to
-     *               find a select.
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Select> select(List<String> labels, Predicate<? super Select> predicate) {
-        return widget(Select.class, labels, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some select. About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param label (text of some element or attribute inside or beside the select) which is used to
-     *               find a select.
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Select> select(String label, Predicate<? super Select> predicate) {
-        return widget(Select.class, label, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some select.
-     *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found select if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found select which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @return an instance of {@link SearchSupplier}
      */
@@ -1703,194 +277,22 @@ public final class SearchSupplier<R extends SearchContext>
     }
 
     /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some select.
      *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found select if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found select which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     *
-     * @param labels (texts of some elements or attributes inside or beside the select) which are used to
+     * @param labels (texts of some elements or attributes inside or beside the select) are used to
      *               find a select.
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Select> select(List<String> labels) {
+    public static SearchSupplier<Select> select(String... labels) {
         return widget(Select.class, labels);
     }
 
     /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some select.
-     *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found select if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found select which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     *
-     * @param label (text of some element or attribute inside or beside the select) which is used to
-     *              find a select.
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Select> select(String label) {
-        return widget(Select.class, label);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some tab.
-     *
-     * @param duration is the parameter of a time to find a tab
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Tab> tab(Duration duration, Predicate<? super Tab> predicate) {
-        return widget(Tab.class, duration, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some tab.
-     *
-     * @param labels (texts of some elements or attributes inside or beside the tab) which are used to
-     *               find a tab.
-     * @param duration is the parameter of a time to find a tab
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Tab> tab(List<String> labels, Duration duration, Predicate<? super Tab> predicate) {
-        return widget(Tab.class, labels, duration, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some tab.
-     *
-     * @param label (text of some element or attribute inside or beside the tab) which is used to
-     *               find a tab.
-     * @param duration is the parameter of a time to find a tab
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Tab> tab(String label, Duration duration, Predicate<? super Tab> predicate) {
-        return widget(Tab.class, label, duration, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some tab. The result function will return the first found tab if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found tab which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param duration is the parameter of a time to find a tab
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Tab> tab(Duration duration) {
-        return widget(Tab.class, duration);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some tab. The result function will return the first found tab if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found tab which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param labels (texts of some elements or attributes inside or beside the tab) which are used to
-     *               find a tab.
-     * @param duration is the parameter of a time to find a tab
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Tab> tab(List<String> labels, Duration duration) {
-        return widget(Tab.class, labels, duration);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some tab. The result function will return the first found tab if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found tab which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param label (text of some element or attribute inside or beside the tab) which is used to
-     *               find a tab.
-     * @param duration is the parameter of a time to find a tab
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Tab> tab(String label, Duration duration) {
-        return widget(Tab.class, label, duration);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some tab. About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Tab> tab(Predicate<? super Tab> predicate) {
-        return widget(Tab.class, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some tab. About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param labels (texts of some elements or attributes inside or beside the tab) which are used to
-     *               find a tab.
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Tab> tab(List<String> labels, Predicate<? super Tab> predicate) {
-        return widget(Tab.class, labels, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some tab. About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param label (text of some element or attribute inside or beside the tab) which is used to
-     *               find a tab.
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Tab> tab(String label, Predicate<? super Tab> predicate) {
-        return widget(Tab.class, label, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some tab.
-     *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found tab if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found tab which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @return an instance of {@link SearchSupplier}
      */
@@ -1899,194 +301,22 @@ public final class SearchSupplier<R extends SearchContext>
     }
 
     /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some tab.
      *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found tab if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found tab which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     *
-     * @param labels (texts of some elements or attributes inside or beside the tab) which are used to
+     * @param labels (texts of some elements or attributes inside or beside the tab) are used to
      *               find a tab.
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Tab> tab(List<String> labels) {
+    public static SearchSupplier<Tab> tab(String... labels) {
         return widget(Tab.class, labels);
     }
 
     /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some tab.
-     *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found tab if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found tab which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     *
-     * @param label (text of some element or attribute inside or beside the tab) which is used to
-     *              find a tab.
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Tab> tab(String label) {
-        return widget(Tab.class, label);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some text field.
-     *
-     * @param duration is the parameter of a time to find a text field
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<TextField> textField(Duration duration, Predicate<? super TextField> predicate) {
-        return widget(TextField.class, duration, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some text field.
-     *
-     * @param labels (texts of some elements or attributes inside or beside the text field) which are used to
-     *               find a text field.
-     * @param duration is the parameter of a time to find a text field
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<TextField> textField(List<String> labels, Duration duration, Predicate<? super TextField> predicate) {
-        return widget(TextField.class, labels, duration, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some text field.
-     *
-     * @param label (text of some element or attribute inside or beside the text field) which is used to
-     *               find a text field.
-     * @param duration is the parameter of a time to find a text field
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<TextField> textField(String label, Duration duration, Predicate<? super TextField> predicate) {
-        return widget(TextField.class, label, duration, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some text field. The result function will return the first found text field if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found text field which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param duration is the parameter of a time to find a text field
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<TextField> textField(Duration duration) {
-        return widget(TextField.class, duration);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some text field. The result function will return the first found text field if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found text field which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param labels (texts of some elements or attributes inside or beside the text field) which are used to
-     *               find a text field.
-     * @param duration is the parameter of a time to find a text field
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<TextField> textField(List<String> labels, Duration duration) {
-        return widget(TextField.class, labels, duration);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some text field. The result function will return the first found text field if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found text field which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param label (text of some element or attribute inside or beside the text field) which is used to
-     *               find a text field.
-     * @param duration is the parameter of a time to find a text field
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<TextField> textField(String label, Duration duration) {
-        return widget(TextField.class, label, duration);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some text field. About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<TextField> textField(Predicate<? super TextField> predicate) {
-        return widget(TextField.class, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some text field. About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param labels (texts of some elements or attributes inside or beside the text field) which are used to
-     *               find a text field.
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<TextField> textField(List<String> labels, Predicate<? super TextField> predicate) {
-        return widget(TextField.class, labels, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some text field. About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param label (text of some element or attribute inside or beside the text field) which is used to
-     *               find a table.
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<TextField> textField(String label, Predicate<? super TextField> predicate) {
-        return widget(TextField.class, label, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some table.
-     *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found table if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found table which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @return an instance of {@link SearchSupplier}
      */
@@ -2095,194 +325,35 @@ public final class SearchSupplier<R extends SearchContext>
     }
 
     /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some table.
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some text field.
      *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found table if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found table which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     *
-     * @param labels (texts of some elements or attributes inside or beside the table) which are used to
-     *               find a table.
+     * @param labels (texts of some elements or attributes inside or beside the text field) are used to
+     *               find a text field.
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<TextField> textField(List<String> labels) {
+    public static SearchSupplier<TextField> textField(String... labels) {
         return widget(TextField.class, labels);
     }
 
     /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some table.
      *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found table if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found table which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     *
-     * @param label (text of some element or attribute inside or beside the table) which is used to
-     *              find a table.
+     * @param labels (texts of some elements or attributes inside or beside the table) are used to
+     *               find a table.
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<TextField> textField(String label) {
-        return widget(TextField.class, label);
+    public static SearchSupplier<Table> table(String... labels) {
+        return widget(Table.class, labels);
     }
 
     /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some table.
-     *
-     * @param duration is the parameter of a time to find a table
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Table> table(Duration duration, Predicate<? super Table> predicate) {
-        return widget(Table.class, duration, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some table.
-     *
-     * @param labels (texts of some elements or attributes inside or beside the table) which are used to
-     *               find a table.
-     * @param duration is the parameter of a time to find a table
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Table> table(List<String> labels, Duration duration, Predicate<? super Table> predicate) {
-        return widget(Table.class, labels, duration, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some table.
-     *
-     * @param label (text of some element or attribute inside or beside the table) which is used to
-     *               find a table.
-     * @param duration is the parameter of a time to find a table
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Table> table(String label, Duration duration, Predicate<? super Table> predicate) {
-        return widget(Table.class, label, duration, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some table. The result function will return the first found table if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found table which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param duration is the parameter of a time to find a table
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Table> table(Duration duration) {
-        return widget(Table.class, duration);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some table. The result function will return the first found table if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found table which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param labels (texts of some elements or attributes inside or beside the table) which are used to
-     *               find a table.
-     * @param duration is the parameter of a time to find a table
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Table> table(List<String> labels, Duration duration) {
-        return widget(Table.class, labels, duration);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some table. The result function will return the first found table if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found table which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param label (text of some element or attribute inside or beside the table) which is used to
-     *               find a table.
-     * @param duration is the parameter of a time to find a table
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Table> table(String label, Duration duration) {
-        return widget(Table.class, label, duration);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some table. About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Table> table(Predicate<? super Table> predicate) {
-        return widget(Table.class, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some table. About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param labels (texts of some elements or attributes inside or beside the table) which are used to
-     *               find a table.
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Table> table(List<String> labels, Predicate<? super Table> predicate) {
-        return widget(Table.class, labels, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some table. About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param label (text of some element or attribute inside or beside the table) which is used to
-     *               find a table.
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Table> table(String label, Predicate<? super Table> predicate) {
-        return widget(Table.class, label, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some table.
-     *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found table if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found table which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @return an instance of {@link SearchSupplier}
      */
@@ -2291,101 +362,9 @@ public final class SearchSupplier<R extends SearchContext>
     }
 
     /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some table.
-     *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found table if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found table which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     *
-     * @param labels (texts of some elements or attributes inside or beside the table) which are used to
-     *               find a table.
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Table> table(List<String> labels) {
-        return widget(Table.class, labels);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some table.
-     *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found table if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found table which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
-     *
-     * @param label (text of some element or attribute inside or beside the table) which is used to
-     *              find a table.
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<Table> table(String label) {
-        return widget(Table.class, label);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some table row.
-     *
-     * @param duration is the parameter of a time to find a table row
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<TableRow> tableRow(Duration duration, Predicate<? super TableRow> predicate) {
-        return widget(TableRow.class, duration, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns the first found table row. The result function will return the first found table row if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found table row which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param duration is the parameter of a time to find a table row
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<TableRow> tableRow(Duration duration) {
-        return widget(TableRow.class, duration);
-    }
-
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some table row. About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<TableRow> tableRow(Predicate<? super TableRow> predicate) {
-        return widget(TableRow.class, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns the first found table row.
-     *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found table row if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found table row which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @return an instance of {@link SearchSupplier}
      */
@@ -2394,59 +373,9 @@ public final class SearchSupplier<R extends SearchContext>
     }
 
     /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some table header.
-     *
-     * @param duration is the parameter of a time to find a table header
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<TableHeader> tableHeader(Duration duration, Predicate<? super TableHeader> predicate) {
-        return widget(TableHeader.class, duration, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns the first found  table header. The result function will return the first found table header if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found table header which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param duration is the parameter of a time to find a table header
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<TableHeader> tableHeader(Duration duration) {
-        return widget(TableHeader.class, duration);
-    }
-
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some table header. About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<TableHeader> tableHeader(Predicate<? super TableHeader> predicate) {
-        return widget(TableHeader.class, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns the first found  table header.
-     *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found table header if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found table header which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @return an instance of {@link SearchSupplier}
      */
@@ -2455,59 +384,9 @@ public final class SearchSupplier<R extends SearchContext>
     }
 
     /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some table footer.
-     *
-     * @param duration is the parameter of a time to find a table footer
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<TableFooter> tableFooter(Duration duration, Predicate<? super TableFooter> predicate) {
-        return widget(TableFooter.class, duration, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns the first found table footer. The result function will return the first found table footer if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found table footer which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param duration is the parameter of a time to find a table footer
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<TableFooter> tableFooter(Duration duration) {
-        return widget(TableFooter.class, duration);
-    }
-
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some table footer. About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<TableFooter> tableFooter(Predicate<? super TableFooter> predicate) {
-        return widget(TableFooter.class, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns the first found table footer.
-     *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found table footer if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found table footer which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @return an instance of {@link SearchSupplier}
      */
@@ -2516,69 +395,14 @@ public final class SearchSupplier<R extends SearchContext>
     }
 
     /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some table cell.
-     *
-     * @param duration is the parameter of a time to find a table cell
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<TableCell> tableCell(Duration duration, Predicate<? super TableCell> predicate) {
-        return widget(TableCell.class, duration, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns the first found table cell. The result function will return the first found table cell if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found table cell which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION
-     *
-     * @param duration is the parameter of a time to find a table cell
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<TableCell> tableCell(Duration duration) {
-        return widget(TableCell.class, duration);
-    }
-
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns some table cell. About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * @param predicate to specify the searching criteria
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<TableCell> tableCell(Predicate<? super TableCell> predicate) {
-        return widget(TableCell.class, predicate);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} which wraps a function.
-     * The wrapped function takes an instance of {@link SearchContext} for the searching
-     * and returns the first found table cell.
-     *
-     * About time which the searching takes
-     * @see WaitingProperties#ELEMENT_WAITING_DURATION
-     *
-     * The result function will return the first found table cell if the property
-     * {@code find.only.visible.elements.when.no.conditions} is not defined or has value {@code "false"}.
-     * Otherwise it will return the first found table cell which is visible on a page.
-     * @see SessionFlagProperties#FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION     *
      *
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<TableCell> tableCell() {
         return widget(TableCell.class);
-    }
-
-    @Override
-    protected Function<SearchContext, R> getEndFunction() {
-        return get();
     }
 
     /**
@@ -2593,7 +417,7 @@ public final class SearchSupplier<R extends SearchContext>
     }
 
     /**
-     * Constructs the chained searching from some instance of {@link SearchContext} which is already found.
+     * Constructs the chained searching for some element.
      *
      * @param from is a parent element.
      * @param <Q> is a type of the parent element.
@@ -2607,12 +431,27 @@ public final class SearchSupplier<R extends SearchContext>
      * Constructs the chained searching from result of some function applying. This function should take some
      * {@link SearchContext} as the input parameter and return some found instance of {@link SearchContext}.
      *
-     * @param from is a function which takes some {@link SearchContext} as the input parameter and returns some
+     * @param from is a function that takes some {@link SearchContext} as the input parameter and returns some
      *             found instance of {@link SearchContext}.
      * @param <Q> is a type of the parent element.
      * @return self-reference
      */
     public <Q extends SearchContext>  SearchSupplier<R> foundFrom(Function<SearchContext, Q> from) {
         return super.from(from);
+    }
+
+    @Override
+    public SearchSupplier<R> timeOut(Duration timeOut) {
+        return super.timeOut(timeOut);
+    }
+
+    @Override
+    public SearchSupplier<R> criteria(Predicate<? super R> condition) {
+        return super.criteria(condition);
+    }
+
+    @Override
+    public SearchSupplier<R> criteria(String description, Predicate<? super R> condition) {
+        return super.criteria(description, condition);
     }
 }

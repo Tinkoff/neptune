@@ -1,14 +1,14 @@
 package ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.select;
 
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.data.base.api.query.GetSelectedFunction;
 import ru.tinkoff.qa.neptune.data.base.api.query.NothingIsSelectedException;
-import ru.tinkoff.qa.neptune.data.base.api.query.SelectListByQuerySupplier;
 import ru.tinkoff.qa.neptune.data.base.api.test.*;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDbOperationTest;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.ConnectionDataSupplierForTestBase2;
 
-import javax.jdo.JDOQLTypedQuery;
 import java.time.Duration;
+import java.util.List;
 import java.util.function.Supplier;
 
 import static java.lang.System.currentTimeMillis;
@@ -16,13 +16,13 @@ import static java.time.Duration.ofSeconds;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.condition;
 import static ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionStore.getKnownConnection;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.QueryTimeUnitProperties.WAITING_FOR_SELECTION_RESULT_TIME_UNIT;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.QueryTimeValueProperties.WAITING_FOR_SELECTION_RESULT_TIME_VALUE;
+import static ru.tinkoff.qa.neptune.data.base.api.query.GetSelectedFunction.selected;
 import static ru.tinkoff.qa.neptune.data.base.api.query.QueryBuilderFunction.ofType;
-import static ru.tinkoff.qa.neptune.data.base.api.query.SelectListByQuerySupplier.listByQuery;
-import static ru.tinkoff.qa.neptune.data.base.api.query.SelectSingleObjectByQuerySupplier.aSingleByQuery;
+import static ru.tinkoff.qa.neptune.data.base.api.query.SelectListGetSupplier.listByQuery;
+import static ru.tinkoff.qa.neptune.data.base.api.query.SelectOneGetSupplier.aSingleByQuery;
 
 @SuppressWarnings("ConstantConditions")
 public class SelectByTypedQuery extends BaseDbOperationTest {
@@ -32,22 +32,24 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
 
     @Test
     public void selectListTestWithoutAnyCondition() {
-        assertThat(dataBaseSteps.get(listByQuery(ofType(Author.class))), hasSize(greaterThanOrEqualTo(2)));
+        assertThat(dataBaseSteps.get(selected(listByQuery(ofType(Author.class)))),
+                hasSize(greaterThanOrEqualTo(2)));
     }
 
     @Test
     public void selectOneTestWithoutCondition() {
-        var a = dataBaseSteps.get(aSingleByQuery(ofType(Author.class)));
+        var a = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class))));
         assertThat(a.getId(), is(1));
     }
 
     @Test
     public void selectListTestWithQuery() {
         var c = QCatalog.candidate();
-        var catalogItems = dataBaseSteps.get(listByQuery(ofType(Catalog.class).where(c.book.name.eq("Ruslan and Ludmila")
-                .or(c.isbn.eq("0-671-73246-3")) //<Journey to Ixtlan
-                .or(c.book.author.lastName.eq("Pushkin")))
-                .orderBy(c.isbn.desc())));
+        var catalogItems = dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class)
+                .where(c.book.name.eq("Ruslan and Ludmila")
+                        .or(c.isbn.eq("0-671-73246-3")) //<Journey to Ixtlan
+                        .or(c.book.author.lastName.eq("Pushkin")))
+                .orderBy(c.isbn.desc()))));
 
         assertThat(catalogItems, hasSize(2));
         assertThat(catalogItems.stream().map(Catalog::getIsbn).collect(toList()),
@@ -57,19 +59,20 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
     @Test
     public void selectOneTestWithQuery() {
         var c = QCatalog.candidate();
-        var catalogItem = dataBaseSteps.get(aSingleByQuery(ofType(Catalog.class).where(c.book.name.eq("Ruslan and Ludmila")
-                .or(c.isbn.eq("0-671-73246-3")) //<Journey to Ixtlan
-                .or(c.book.author.lastName.eq("Pushkin")))
-                .orderBy(c.isbn.desc())));
+        var catalogItem = dataBaseSteps.get(selected(aSingleByQuery(ofType(Catalog.class)
+                .where(c.book.name.eq("Ruslan and Ludmila")
+                        .or(c.isbn.eq("0-671-73246-3")) //<Journey to Ixtlan
+                        .or(c.book.author.lastName.eq("Pushkin")))
+                .orderBy(c.isbn.desc()))));
 
         assertThat(catalogItem.getIsbn(), is("0-930267-39-7"));
     }
 
     @Test
     public void selectListTestByCondition() {
-        var catalogItems = dataBaseSteps.get(listByQuery(ofType(Catalog.class))
-                .withCondition(condition("A book with title `Ruslan and Ludmila`",
-                        catalog -> catalog.getBook().getName().equalsIgnoreCase("ruslan and ludmila"))));
+        var catalogItems = dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class))
+                .criteria("A book with title `Ruslan and Ludmila`", catalog -> catalog
+                        .getBook().getName().equalsIgnoreCase("ruslan and ludmila"))));
         assertThat(catalogItems, hasSize(1));
         var catalogItem = catalogItems.get(0);
         assertThat(catalogItem.getBook().getName(), equalTo("Ruslan and Ludmila"));
@@ -77,11 +80,11 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
 
     @Test
     public void selectOneTestByCondition() {
-        var author = dataBaseSteps.get(aSingleByQuery(ofType(Author.class))
-                .withCondition(condition("Wrote `Ruslan and Ludmila`", author1 ->
-                        null != author1.getBooks().stream()
-                                .filter(book -> "ruslan and ludmila".equalsIgnoreCase(book.getName()))
-                                .findFirst().orElse(null))));
+        var author = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class))
+                .criteria("Wrote `Ruslan and Ludmila`", author1 -> null != author1.getBooks().stream()
+                        .filter(book -> "ruslan and ludmila".equalsIgnoreCase(book.getName()))
+                        .findFirst()
+                        .orElse(null))));
         assertThat(author.getLastName(), equalTo("Pushkin"));
     }
 
@@ -91,16 +94,17 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         var qBook = QBook.candidate();
         var qCatalog = QCatalog.candidate();
 
-        var journeyToIxtlan = dataBaseSteps.get(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Journey to Ixtlan"))));
+        var journeyToIxtlan = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
+                .where(qBook.name.eq("Journey to Ixtlan")))));
 
-        var carlosCastaneda = dataBaseSteps.get(aSingleByQuery(ofType(Author.class)
+        var carlosCastaneda = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
                 .where(qAuthor.firstName.eq("Carlos")
-                        .and(qAuthor.lastName.eq("Castaneda")))));
+                        .and(qAuthor.lastName.eq("Castaneda"))))));
 
-        var catalogItems = dataBaseSteps.get(listByQuery(ofType(Catalog.class)
+        var catalogItems = dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class)
                 .where(qCatalog.book.eq(journeyToIxtlan)))
-                .withCondition(condition("Publisher is 'Simon & Schuster'",
+
+                .criteria("Publisher is 'Simon & Schuster'",
                         catalog -> "Simon & Schuster".equals(catalog.getPublisher().getName()))));
 
         assertThat(catalogItems, hasSize(1));
@@ -114,17 +118,16 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         var qBook = QBook.candidate();
         var qCatalog = QCatalog.candidate();
 
-        var journeyToIxtlan = dataBaseSteps.get(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Journey to Ixtlan"))));
+        var journeyToIxtlan = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
+                .where(qBook.name.eq("Journey to Ixtlan")))));
 
-        var carlosCastaneda = dataBaseSteps.get(aSingleByQuery(ofType(Author.class)
-                .where(qAuthor.firstName.eq("Carlos")
-                        .and(qAuthor.lastName.eq("Castaneda")))));
+        var carlosCastaneda = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
+                .where(qAuthor.firstName.eq("Carlos").and(qAuthor.lastName.eq("Castaneda"))))));
 
-        var catalogItem = dataBaseSteps.get(aSingleByQuery(ofType(Catalog.class)
+        var catalogItem = dataBaseSteps.get(selected(aSingleByQuery(ofType(Catalog.class)
                 .where(qCatalog.book.eq(journeyToIxtlan)
                         .and(qCatalog.book.author.eq(carlosCastaneda))))
-                .withCondition(condition("Publisher is 'Simon & Schuster'",
+                .criteria("Publisher is 'Simon & Schuster'",
                         catalog -> "Simon & Schuster".equals(catalog.getPublisher().getName()))));
 
         assertThat(catalogItem.getIsbn(), equalTo("0-671-73246-3"));
@@ -137,17 +140,16 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         var qBook = QBook.candidate();
         var qCatalog = QCatalog.candidate();
 
-        var ruslanAndLudmila = dataBaseSteps.get(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila"))));
+        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
+                .where(qBook.name.eq("Ruslan and Ludmila")))));
 
-        var carlosCastaneda = dataBaseSteps.get(aSingleByQuery(ofType(Author.class)
+        var carlosCastaneda = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
                 .where(qAuthor.firstName.eq("Carlos")
-                        .and(qAuthor.lastName.eq("Castaneda")))));
+                        .and(qAuthor.lastName.eq("Castaneda"))))));
 
         long start = currentTimeMillis();
-        var catalogItems = dataBaseSteps.get(listByQuery(ofType(Catalog.class)
-                .where(qCatalog.book.eq(ruslanAndLudmila)
-                        .and(qCatalog.book.author.eq(carlosCastaneda)))));
+        var catalogItems = dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class)
+                .where(qCatalog.book.eq(ruslanAndLudmila).and(qCatalog.book.author.eq(carlosCastaneda))))));
         long end = currentTimeMillis();
 
         Duration fiveSeconds = ofSeconds(5);
@@ -162,17 +164,16 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         var qBook = QBook.candidate();
         var qCatalog = QCatalog.candidate();
 
-        var ruslanAndLudmila = dataBaseSteps.get(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila"))));
+        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
+                .where(qBook.name.eq("Ruslan and Ludmila")))));
 
-        var carlosCastaneda = dataBaseSteps.get(aSingleByQuery(ofType(Author.class)
+        var carlosCastaneda = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
                 .where(qAuthor.firstName.eq("Carlos")
-                        .and(qAuthor.lastName.eq("Castaneda")))));
+                        .and(qAuthor.lastName.eq("Castaneda"))))));
 
         long start = currentTimeMillis();
-        var catalogItem = dataBaseSteps.get(aSingleByQuery(ofType(Catalog.class)
-                .where(qCatalog.book.eq(ruslanAndLudmila)
-                        .and(qCatalog.book.author.eq(carlosCastaneda)))));
+        var catalogItem = dataBaseSteps.get(selected(aSingleByQuery(ofType(Catalog.class)
+                .where(qCatalog.book.eq(ruslanAndLudmila).and(qCatalog.book.author.eq(carlosCastaneda))))));
         long end = currentTimeMillis();
 
         Duration fiveSeconds = ofSeconds(5);
@@ -187,19 +188,18 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         var qBook = QBook.candidate();
         var qCatalog = QCatalog.candidate();
 
-        var ruslanAndLudmila = dataBaseSteps.get(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila"))));
+        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
+                .where(qBook.name.eq("Ruslan and Ludmila")))));
 
-        var carlosCastaneda = dataBaseSteps.get(aSingleByQuery(ofType(Author.class)
+        var carlosCastaneda = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
                 .where(qAuthor.firstName.eq("Carlos")
-                        .and(qAuthor.lastName.eq("Castaneda")))));
+                        .and(qAuthor.lastName.eq("Castaneda"))))));
 
         Duration sixSeconds = ofSeconds(6);
         long start = currentTimeMillis();
-        var catalogItems = dataBaseSteps.get(listByQuery(ofType(Catalog.class)
-                .where(qCatalog.book.eq(ruslanAndLudmila)
-                        .and(qCatalog.book.author.eq(carlosCastaneda))))
-                .withTimeToGetValue(sixSeconds));
+        var catalogItems = dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class)
+                .where(qCatalog.book.eq(ruslanAndLudmila).and(qCatalog.book.author.eq(carlosCastaneda))))
+                .timeOut(sixSeconds)));
         long end = currentTimeMillis();
 
         assertThat(catalogItems, hasSize(0));
@@ -213,19 +213,17 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         var qBook = QBook.candidate();
         var qCatalog = QCatalog.candidate();
 
-        var ruslanAndLudmila = dataBaseSteps.get(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila"))));
+        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
+                .where(qBook.name.eq("Ruslan and Ludmila")))));
 
-        var carlosCastaneda = dataBaseSteps.get(aSingleByQuery(ofType(Author.class)
-                .where(qAuthor.firstName.eq("Carlos")
-                        .and(qAuthor.lastName.eq("Castaneda")))));
+        var carlosCastaneda = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
+                .where(qAuthor.firstName.eq("Carlos").and(qAuthor.lastName.eq("Castaneda"))))));
 
         Duration sixSeconds = ofSeconds(6);
         long start = currentTimeMillis();
-        var catalogItem = dataBaseSteps.get(aSingleByQuery(ofType(Catalog.class)
-                .where(qCatalog.book.eq(ruslanAndLudmila)
-                        .and(qCatalog.book.author.eq(carlosCastaneda))))
-                .withTimeToGetValue(sixSeconds));
+        var catalogItem = dataBaseSteps.get(selected(aSingleByQuery(ofType(Catalog.class)
+                .where(qCatalog.book.eq(ruslanAndLudmila).and(qCatalog.book.author.eq(carlosCastaneda))))
+                .timeOut(sixSeconds)));
         long end = currentTimeMillis();
 
         assertThat(catalogItem, nullValue());
@@ -242,18 +240,16 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         var qBook = QBook.candidate();
         var qCatalog = QCatalog.candidate();
 
-        var ruslanAndLudmila = dataBaseSteps.get(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila"))));
+        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
+                .where(qBook.name.eq("Ruslan and Ludmila")))));
 
-        var carlosCastaneda = dataBaseSteps.get(aSingleByQuery(ofType(Author.class)
-                .where(qAuthor.firstName.eq("Carlos")
-                        .and(qAuthor.lastName.eq("Castaneda")))));
+        var carlosCastaneda = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
+                .where(qAuthor.firstName.eq("Carlos").and(qAuthor.lastName.eq("Castaneda"))))));
 
         Duration twoSeconds = ofSeconds(2);
         long start = currentTimeMillis();
-        var catalogItems = dataBaseSteps.get(listByQuery(ofType(Catalog.class)
-                .where(qCatalog.book.eq(ruslanAndLudmila)
-                        .and(qCatalog.book.author.eq(carlosCastaneda)))));
+        var catalogItems = dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class)
+                .where(qCatalog.book.eq(ruslanAndLudmila).and(qCatalog.book.author.eq(carlosCastaneda))))));
         long end = currentTimeMillis();
 
         try {
@@ -275,18 +271,18 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         var qBook = QBook.candidate();
         var qCatalog = QCatalog.candidate();
 
-        var ruslanAndLudmila = dataBaseSteps.get(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila"))));
+        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
+                .where(qBook.name.eq("Ruslan and Ludmila")))));
 
-        var carlosCastaneda = dataBaseSteps.get(aSingleByQuery(ofType(Author.class)
+        var carlosCastaneda = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
                 .where(qAuthor.firstName.eq("Carlos")
-                        .and(qAuthor.lastName.eq("Castaneda")))));
+                        .and(qAuthor.lastName.eq("Castaneda"))))));
 
         Duration twoSeconds = ofSeconds(2);
         long start = currentTimeMillis();
-        var catalogItem = dataBaseSteps.get(aSingleByQuery(ofType(Catalog.class)
+        var catalogItem = dataBaseSteps.get(selected(aSingleByQuery(ofType(Catalog.class)
                 .where(qCatalog.book.eq(ruslanAndLudmila)
-                        .and(qCatalog.book.author.eq(carlosCastaneda)))));
+                        .and(qCatalog.book.author.eq(carlosCastaneda))))));
         long end = currentTimeMillis();
 
         try {
@@ -305,18 +301,18 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         var qBook = QBook.candidate();
         var qCatalog = QCatalog.candidate();
 
-        var ruslanAndLudmila = dataBaseSteps.get(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila"))));
+        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
+                .where(qBook.name.eq("Ruslan and Ludmila")))));
 
-        var alexanderPushkin = dataBaseSteps.get(aSingleByQuery(ofType(Author.class)
+        var alexanderPushkin = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
                 .where(qAuthor.firstName.eq("Alexander")
-                        .and(qAuthor.lastName.eq("Pushkin")))));
+                        .and(qAuthor.lastName.eq("Pushkin"))))));
 
         long start = currentTimeMillis();
-        var catalogItems = dataBaseSteps.get(listByQuery(ofType(Catalog.class)
+        var catalogItems = dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class)
                 .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(alexanderPushkin))))
-                .withCondition(condition("ISBN is 0-671-73246-3",
+                .criteria("ISBN is 0-671-73246-3",
                         catalog -> catalog.getIsbn().equals("0-671-73246-3"))));
         long end = currentTimeMillis();
 
@@ -332,18 +328,18 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         var qBook = QBook.candidate();
         var qCatalog = QCatalog.candidate();
 
-        var ruslanAndLudmila = dataBaseSteps.get(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila"))));
+        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
+                .where(qBook.name.eq("Ruslan and Ludmila")))));
 
-        var alexanderPushkin = dataBaseSteps.get(aSingleByQuery(ofType(Author.class)
+        var alexanderPushkin = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
                 .where(qAuthor.firstName.eq("Alexander")
-                        .and(qAuthor.lastName.eq("Pushkin")))));
+                        .and(qAuthor.lastName.eq("Pushkin"))))));
 
         long start = currentTimeMillis();
-        var catalogItem = dataBaseSteps.get(aSingleByQuery(ofType(Catalog.class)
+        var catalogItem = dataBaseSteps.get(selected(aSingleByQuery(ofType(Catalog.class)
                 .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(alexanderPushkin))))
-                .withCondition(condition("ISBN is 0-671-73246-3",
+                .criteria("ISBN is 0-671-73246-3",
                         catalog -> catalog.getIsbn().equals("0-671-73246-3"))));
         long end = currentTimeMillis();
 
@@ -359,21 +355,21 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         var qBook = QBook.candidate();
         var qCatalog = QCatalog.candidate();
 
-        var ruslanAndLudmila = dataBaseSteps.get(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila"))));
+        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
+                .where(qBook.name.eq("Ruslan and Ludmila")))));
 
-        var alexanderPushkin = dataBaseSteps.get(aSingleByQuery(ofType(Author.class)
+        var alexanderPushkin = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
                 .where(qAuthor.firstName.eq("Alexander")
-                        .and(qAuthor.lastName.eq("Pushkin")))));
+                        .and(qAuthor.lastName.eq("Pushkin"))))));
 
         Duration sixSeconds = ofSeconds(6);
         long start = currentTimeMillis();
-        var catalogItems = dataBaseSteps.get(listByQuery(ofType(Catalog.class)
+        var catalogItems = dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class)
                 .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(alexanderPushkin))))
-                .withCondition(condition("ISBN is 0-671-73246-3",
-                        catalog -> catalog.getIsbn().equals("0-671-73246-3")))
-                .withTimeToGetValue(sixSeconds));
+                .criteria("ISBN is 0-671-73246-3",
+                        catalog -> catalog.getIsbn().equals("0-671-73246-3"))
+                .timeOut(sixSeconds)));
         long end = currentTimeMillis();
 
         assertThat(catalogItems, hasSize(0));
@@ -387,21 +383,21 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         var qBook = QBook.candidate();
         var qCatalog = QCatalog.candidate();
 
-        var ruslanAndLudmila = dataBaseSteps.get(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila"))));
+        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
+                .where(qBook.name.eq("Ruslan and Ludmila")))));
 
-        var alexanderPushkin = dataBaseSteps.get(aSingleByQuery(ofType(Author.class)
+        var alexanderPushkin = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
                 .where(qAuthor.firstName.eq("Alexander")
-                        .and(qAuthor.lastName.eq("Pushkin")))));
+                        .and(qAuthor.lastName.eq("Pushkin"))))));
 
         Duration sixSeconds = ofSeconds(6);
         long start = currentTimeMillis();
-        var catalogItem = dataBaseSteps.get(aSingleByQuery(ofType(Catalog.class)
+        var catalogItem = dataBaseSteps.get(selected(aSingleByQuery(ofType(Catalog.class)
                 .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(alexanderPushkin))))
-                .withCondition(condition("ISBN is 0-671-73246-3",
-                        catalog -> catalog.getIsbn().equals("0-671-73246-3")))
-                .withTimeToGetValue(sixSeconds));
+                .criteria("ISBN is 0-671-73246-3",
+                        catalog -> catalog.getIsbn().equals("0-671-73246-3"))
+                .timeOut(sixSeconds)));
         long end = currentTimeMillis();
 
         assertThat(catalogItem, nullValue());
@@ -418,19 +414,19 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         var qBook = QBook.candidate();
         var qCatalog = QCatalog.candidate();
 
-        var ruslanAndLudmila = dataBaseSteps.get(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila"))));
+        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
+                .where(qBook.name.eq("Ruslan and Ludmila")))));
 
-        var alexanderPushkin = dataBaseSteps.get(aSingleByQuery(ofType(Author.class)
+        var alexanderPushkin = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
                 .where(qAuthor.firstName.eq("Alexander")
-                        .and(qAuthor.lastName.eq("Pushkin")))));
+                        .and(qAuthor.lastName.eq("Pushkin"))))));
 
         Duration twoSeconds = ofSeconds(2);
         long start = currentTimeMillis();
-        var catalogItems = dataBaseSteps.get(listByQuery(ofType(Catalog.class)
+        var catalogItems = dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class)
                 .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(alexanderPushkin))))
-                .withCondition(condition("ISBN is 0-671-73246-3",
+                .criteria("ISBN is 0-671-73246-3",
                         catalog -> catalog.getIsbn().equals("0-671-73246-3"))));
         long end = currentTimeMillis();
 
@@ -453,19 +449,19 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         var qBook = QBook.candidate();
         var qCatalog = QCatalog.candidate();
 
-        var ruslanAndLudmila = dataBaseSteps.get(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila"))));
+        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
+                .where(qBook.name.eq("Ruslan and Ludmila")))));
 
-        var alexanderPushkin = dataBaseSteps.get(aSingleByQuery(ofType(Author.class)
+        var alexanderPushkin = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
                 .where(qAuthor.firstName.eq("Alexander")
-                        .and(qAuthor.lastName.eq("Pushkin")))));
+                        .and(qAuthor.lastName.eq("Pushkin"))))));
 
         Duration twoSeconds = ofSeconds(2);
         long start = currentTimeMillis();
-        var catalogItem = dataBaseSteps.get(aSingleByQuery(ofType(Catalog.class)
+        var catalogItem = dataBaseSteps.get(selected(aSingleByQuery(ofType(Catalog.class)
                 .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(alexanderPushkin))))
-                .withCondition(condition("ISBN is 0-671-73246-3",
+                .criteria("ISBN is 0-671-73246-3",
                         catalog -> catalog.getIsbn().equals("0-671-73246-3"))));
         long end = currentTimeMillis();
 
@@ -485,17 +481,17 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         var qBook = QBook.candidate();
         var qCatalog = QCatalog.candidate();
 
-        var ruslanAndLudmila = dataBaseSteps.get(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila"))));
+        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
+                .where(qBook.name.eq("Ruslan and Ludmila")))));
 
-        var carlosCastaneda = dataBaseSteps.get(aSingleByQuery(ofType(Author.class)
+        var carlosCastaneda = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
                 .where(qAuthor.firstName.eq("Carlos")
-                        .and(qAuthor.lastName.eq("Castaneda")))));
+                        .and(qAuthor.lastName.eq("Castaneda"))))));
 
-        dataBaseSteps.get(listByQuery(ofType(Catalog.class)
+        dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class)
                 .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(carlosCastaneda))))
-                .toThrowOnEmptyResult(TEST_SUPPLIER));
+                .throwWhenResultEmpty(TEST_SUPPLIER)));
     }
 
     @Test(expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = "Test exception")
@@ -504,17 +500,17 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         var qBook = QBook.candidate();
         var qCatalog = QCatalog.candidate();
 
-        var ruslanAndLudmila = dataBaseSteps.get(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila"))));
+        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
+                .where(qBook.name.eq("Ruslan and Ludmila")))));
 
-        var carlosCastaneda = dataBaseSteps.get(aSingleByQuery(ofType(Author.class)
+        var carlosCastaneda = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
                 .where(qAuthor.firstName.eq("Carlos")
-                        .and(qAuthor.lastName.eq("Castaneda")))));
+                        .and(qAuthor.lastName.eq("Castaneda"))))));
 
-        dataBaseSteps.get(aSingleByQuery(ofType(Catalog.class)
+        dataBaseSteps.get(selected(aSingleByQuery(ofType(Catalog.class)
                 .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(carlosCastaneda))))
-                .toThrowOnEmptyResult(TEST_SUPPLIER));
+                .throwWhenResultEmpty(TEST_SUPPLIER)));
     }
 
     @Test(expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = "Test exception")
@@ -523,19 +519,19 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         var qBook = QBook.candidate();
         var qCatalog = QCatalog.candidate();
 
-        var ruslanAndLudmila = dataBaseSteps.get(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila"))));
+        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
+                .where(qBook.name.eq("Ruslan and Ludmila")))));
 
-        var alexanderPushkin = dataBaseSteps.get(aSingleByQuery(ofType(Author.class)
+        var alexanderPushkin = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
                 .where(qAuthor.firstName.eq("Alexander")
-                        .and(qAuthor.lastName.eq("Pushkin")))));
+                        .and(qAuthor.lastName.eq("Pushkin"))))));
 
-        dataBaseSteps.get(listByQuery(ofType(Catalog.class)
+        dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class)
                 .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(alexanderPushkin))))
-                .withCondition(condition("ISBN is 0-671-73246-3",
-                        catalog -> catalog.getIsbn().equals("0-671-73246-3")))
-                .toThrowOnEmptyResult(TEST_SUPPLIER));
+                .criteria("ISBN is 0-671-73246-3",
+                        catalog -> catalog.getIsbn().equals("0-671-73246-3"))
+                .throwWhenResultEmpty(TEST_SUPPLIER)));
     }
 
     @Test(expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = "Test exception")
@@ -544,19 +540,19 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         var qBook = QBook.candidate();
         var qCatalog = QCatalog.candidate();
 
-        var ruslanAndLudmila = dataBaseSteps.get(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila"))));
+        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
+                .where(qBook.name.eq("Ruslan and Ludmila")))));
 
-        var alexanderPushkin = dataBaseSteps.get(aSingleByQuery(ofType(Author.class)
+        var alexanderPushkin = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
                 .where(qAuthor.firstName.eq("Alexander")
-                        .and(qAuthor.lastName.eq("Pushkin")))));
+                        .and(qAuthor.lastName.eq("Pushkin"))))));
 
-        dataBaseSteps.get(aSingleByQuery(ofType(Catalog.class)
+        dataBaseSteps.get(selected(aSingleByQuery(ofType(Catalog.class)
                 .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(alexanderPushkin))))
-                .withCondition(condition("ISBN is 0-671-73246-3",
-                        catalog -> catalog.getIsbn().equals("0-671-73246-3")))
-                .toThrowOnEmptyResult(TEST_SUPPLIER));
+                .criteria("ISBN is 0-671-73246-3",
+                        catalog -> catalog.getIsbn().equals("0-671-73246-3"))
+                .throwWhenResultEmpty(TEST_SUPPLIER)));
     }
 
     @Test
@@ -565,21 +561,21 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         var qBook = QBook.candidate();
         var qCatalog = QCatalog.candidate();
 
-        var ruslanAndLudmila = dataBaseSteps.get(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila"))));
+        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
+                .where(qBook.name.eq("Ruslan and Ludmila")))));
 
-        var alexanderPushkin = dataBaseSteps.get(aSingleByQuery(ofType(Author.class)
+        var alexanderPushkin = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
                 .where(qAuthor.firstName.eq("Alexander")
-                        .and(qAuthor.lastName.eq("Pushkin")))));
+                        .and(qAuthor.lastName.eq("Pushkin"))))));
 
-        SelectListByQuerySupplier<Catalog, JDOQLTypedQuery<Catalog>> query = listByQuery(ofType(Catalog.class)
+        GetSelectedFunction<List<Catalog>> query = selected(listByQuery(ofType(Catalog.class)
                 .where(qCatalog.book.eq(ruslanAndLudmila)
-                        .and(qCatalog.book.author.eq(alexanderPushkin))))
+                        .and(qCatalog.book.author.eq(alexanderPushkin)))))
                 .useConnection(ConnectionDataSupplierForTestBase2.class);
 
-        SelectListByQuerySupplier<Catalog, JDOQLTypedQuery<Catalog>> query2 = listByQuery(ofType(Catalog.class)
+        GetSelectedFunction<List<Catalog>> query2 = selected(listByQuery(ofType(Catalog.class)
                 .where(qCatalog.book.eq(ruslanAndLudmila)
-                        .and(qCatalog.book.author.eq(alexanderPushkin))));
+                        .and(qCatalog.book.author.eq(alexanderPushkin)))));
 
         assertThat(dataBaseSteps.get(query), hasSize(0));
         assertThat(dataBaseSteps.get(query2), hasSize(1));
@@ -591,19 +587,19 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         var qBook = QBook.candidate();
         var qCatalog = QCatalog.candidate();
 
-        var ruslanAndLudmila = dataBaseSteps.get(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila"))));
+        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
+                .where(qBook.name.eq("Ruslan and Ludmila")))));
 
-        var alexanderPushkin = dataBaseSteps.get(aSingleByQuery(ofType(Author.class)
+        var alexanderPushkin = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
                 .where(qAuthor.firstName.eq("Alexander")
-                        .and(qAuthor.lastName.eq("Pushkin")))));
+                        .and(qAuthor.lastName.eq("Pushkin"))))));
 
-        var query = aSingleByQuery(ofType(Catalog.class).where(qCatalog.book.eq(ruslanAndLudmila)
-                .and(qCatalog.book.author.eq(alexanderPushkin))))
+        var query = selected(aSingleByQuery(ofType(Catalog.class).where(qCatalog.book.eq(ruslanAndLudmila)
+                .and(qCatalog.book.author.eq(alexanderPushkin)))))
                 .useConnection(ConnectionDataSupplierForTestBase2.class);
 
-        var query2 = aSingleByQuery(ofType(Catalog.class).where(qCatalog.book.eq(ruslanAndLudmila)
-                .and(qCatalog.book.author.eq(alexanderPushkin))));
+        var query2 = selected(aSingleByQuery(ofType(Catalog.class).where(qCatalog.book.eq(ruslanAndLudmila)
+                .and(qCatalog.book.author.eq(alexanderPushkin)))));
 
         assertThat(dataBaseSteps.get(query), nullValue());
         assertThat(dataBaseSteps.get(query2), not(nullValue()));
@@ -615,19 +611,19 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         var qBook = QBook.candidate();
         var qCatalog = QCatalog.candidate();
 
-        var ruslanAndLudmila = dataBaseSteps.get(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila"))));
+        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
+                .where(qBook.name.eq("Ruslan and Ludmila")))));
 
-        var alexanderPushkin = dataBaseSteps.get(aSingleByQuery(ofType(Author.class)
+        var alexanderPushkin = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
                 .where(qAuthor.firstName.eq("Alexander")
-                        .and(qAuthor.lastName.eq("Pushkin")))));
+                        .and(qAuthor.lastName.eq("Pushkin"))))));
 
-        var query = listByQuery(ofType(Catalog.class).where(qCatalog.book.eq(ruslanAndLudmila)
-                .and(qCatalog.book.author.eq(alexanderPushkin))))
+        var query = selected(listByQuery(ofType(Catalog.class).where(qCatalog.book.eq(ruslanAndLudmila)
+                .and(qCatalog.book.author.eq(alexanderPushkin)))))
                 .useConnection(getKnownConnection(ConnectionDataSupplierForTestBase2.class, true));
 
-        var query2 = listByQuery(ofType(Catalog.class).where(qCatalog.book.eq(ruslanAndLudmila)
-                .and(qCatalog.book.author.eq(alexanderPushkin))));
+        var query2 = selected(listByQuery(ofType(Catalog.class).where(qCatalog.book.eq(ruslanAndLudmila)
+                .and(qCatalog.book.author.eq(alexanderPushkin)))));
 
         assertThat(dataBaseSteps.get(query), hasSize(0));
         assertThat(dataBaseSteps.get(query2), hasSize(1));
@@ -639,19 +635,19 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         var qBook = QBook.candidate();
         var qCatalog = QCatalog.candidate();
 
-        var ruslanAndLudmila = dataBaseSteps.get(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila"))));
+        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
+                .where(qBook.name.eq("Ruslan and Ludmila")))));
 
-        var alexanderPushkin = dataBaseSteps.get(aSingleByQuery(ofType(Author.class)
+        var alexanderPushkin = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
                 .where(qAuthor.firstName.eq("Alexander")
-                        .and(qAuthor.lastName.eq("Pushkin")))));
+                        .and(qAuthor.lastName.eq("Pushkin"))))));
 
-        var query = aSingleByQuery(ofType(Catalog.class).where(qCatalog.book.eq(ruslanAndLudmila)
-                .and(qCatalog.book.author.eq(alexanderPushkin))))
+        var query = selected(aSingleByQuery(ofType(Catalog.class).where(qCatalog.book.eq(ruslanAndLudmila)
+                .and(qCatalog.book.author.eq(alexanderPushkin)))))
                 .useConnection(getKnownConnection(ConnectionDataSupplierForTestBase2.class, true));
 
-        var query2 = aSingleByQuery(ofType(Catalog.class).where(qCatalog.book.eq(ruslanAndLudmila)
-                .and(qCatalog.book.author.eq(alexanderPushkin))));
+        var query2 = selected(aSingleByQuery(ofType(Catalog.class).where(qCatalog.book.eq(ruslanAndLudmila)
+                .and(qCatalog.book.author.eq(alexanderPushkin)))));
 
         assertThat(dataBaseSteps.get(query), nullValue());
         assertThat(dataBaseSteps.get(query2), not(nullValue()));
@@ -659,14 +655,14 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
 
     @Test
     public void equalityTest() {
-        var pushkin = dataBaseSteps.get(aSingleByQuery(ofType(Author.class)
-                .where(QAuthor.candidate().lastName.eq("Pushkin"))));
+        var pushkin = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
+                .where(QAuthor.candidate().lastName.eq("Pushkin")))));
 
         var qBook = QBook.candidate();
-        var ruslanAndLudmila = dataBaseSteps.get(aSingleByQuery(ofType(Book.class)
-                .where(qBook.author.eq(pushkin))));
-        var ruslanAndLudmila2 = dataBaseSteps.get(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila"))));
+        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
+                .where(qBook.author.eq(pushkin)))));
+        var ruslanAndLudmila2 = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
+                .where(qBook.name.eq("Ruslan and Ludmila")))));
 
         assertThat(ruslanAndLudmila, is(ruslanAndLudmila2));
     }

@@ -58,7 +58,8 @@ public class FrameTest extends BaseWebDriverTest {
         FrameIndexes index1 = getRandomEnumItem(FrameIndexes.values());
 
         setStartBenchMark();
-        Frame frame1 = seleniumSteps.get(frame(index(FIVE_SECONDS, index1.getIndex())));
+        Frame frame1 = seleniumSteps.get(frame(index(index1.getIndex()))
+                .timeOut(FIVE_SECONDS));
         setEndBenchMark();
 
         assertThat(((MockWebDriver) frame1.getWrappedDriver()).getCurrentFrame(), is(index1.getIndex()));
@@ -88,10 +89,11 @@ public class FrameTest extends BaseWebDriverTest {
     public void frameIndexNegativeWithDefinedTimeTest() {
         try {
             setStartBenchMark();
-            seleniumSteps.get(frame(index(FIVE_SECONDS, 100)));
+            seleniumSteps.get(frame(index(100))
+                    .timeOut(FIVE_SECONDS));
         }
         catch (Exception e) {
-            assertThat(e.getMessage(), containsString("Can't find/switch to the frame index 100"));
+            assertThat(e.getMessage(), containsString("Can't find/switch to the frame by index 100"));
             throw e;
         }
         finally {
@@ -110,7 +112,7 @@ public class FrameTest extends BaseWebDriverTest {
             seleniumSteps.get(frame(index(100)));
         }
         catch (Exception e) {
-            assertThat(e.getMessage(), containsString("Can't find/switch to the frame index 100"));
+            assertThat(e.getMessage(), containsString("Can't find/switch to the frame by index 100"));
             throw e;
         }
         finally {
@@ -151,7 +153,8 @@ public class FrameTest extends BaseWebDriverTest {
         FrameNames name1 = getRandomEnumItem(FrameNames.values());
 
         setStartBenchMark();
-        Frame frame1 = seleniumSteps.get(frame(nameOrId(FIVE_SECONDS, name1.getNameOrId())));
+        Frame frame1 = seleniumSteps.get(frame(nameOrId(name1.getNameOrId()))
+                .timeOut(FIVE_SECONDS));
         setEndBenchMark();
 
         assertThat(((MockWebDriver) frame1.getWrappedDriver()).getCurrentFrame(), is(name1.getNameOrId()));
@@ -181,10 +184,11 @@ public class FrameTest extends BaseWebDriverTest {
     public void frameNameOrIdNegativeWithDefinedTimeTest() {
         try {
             setStartBenchMark();
-            seleniumSteps.get(frame(nameOrId(FIVE_SECONDS, "some name")));
+            seleniumSteps.get(frame(nameOrId("some name"))
+                    .timeOut(FIVE_SECONDS));
         }
         catch (Exception e) {
-            assertThat(e.getMessage(), containsString("Can't find/switch to the frame name or id some name"));
+            assertThat(e.getMessage(), containsString("Can't find/switch to the frame by name or id some name"));
             throw e;
         }
         finally {
@@ -203,7 +207,7 @@ public class FrameTest extends BaseWebDriverTest {
             seleniumSteps.get(frame(nameOrId("some name")));
         }
         catch (Exception e) {
-            assertThat(e.getMessage(), containsString("Can't find/switch to the frame name or id some name"));
+            assertThat(e.getMessage(), containsString("Can't find/switch to the frame by name or id some name"));
             throw e;
         }
         finally {
@@ -243,7 +247,8 @@ public class FrameTest extends BaseWebDriverTest {
         ValidFrameWebElement element1 = new ValidFrameWebElement();
 
         setStartBenchMark();
-        Frame frame1 = seleniumSteps.get(frame(insideElement(FIVE_SECONDS, element1)));
+        Frame frame1 = seleniumSteps.get(frame(insideElement(element1))
+                .timeOut(FIVE_SECONDS));
         setEndBenchMark();
 
         assertThat(((MockWebDriver) frame1.getWrappedDriver()).getCurrentFrame(), is(element1));
@@ -273,7 +278,8 @@ public class FrameTest extends BaseWebDriverTest {
     public void frameWebElementNegativeWithDefinedTimeTest() {
         try {
             setStartBenchMark();
-            seleniumSteps.get(frame(insideElement(FIVE_SECONDS, new InvalidFrameWebElement())));
+            seleniumSteps.get(frame(insideElement(new InvalidFrameWebElement()))
+                    .timeOut(FIVE_SECONDS));
         }
         catch (Exception e) {
             assertThat(e.getMessage(), containsString("Can't find/switch to the frame inside element Invalid frame web element"));
@@ -373,7 +379,8 @@ public class FrameTest extends BaseWebDriverTest {
         };
 
         setStartBenchMark();
-        Frame frame1 = seleniumSteps.get(frame(wrappedBy(FIVE_SECONDS, wrapsElement1)));
+        Frame frame1 = seleniumSteps.get(frame(wrappedBy(wrapsElement1))
+                .timeOut(FIVE_SECONDS));
         setEndBenchMark();
 
         assertThat(((MockWebDriver) frame1.getWrappedDriver()).getCurrentFrame(), is(element1));
@@ -415,7 +422,7 @@ public class FrameTest extends BaseWebDriverTest {
     public void frameWrappedElementNegativeWithDefinedTimeTest() {
         try {
             setStartBenchMark();
-            seleniumSteps.get(frame(wrappedBy(FIVE_SECONDS, new WrapsElement() {
+            seleniumSteps.get(frame(wrappedBy(new WrapsElement() {
                 @Override
                 public WebElement getWrappedElement() {
                     return new InvalidFrameWebElement();
@@ -425,7 +432,7 @@ public class FrameTest extends BaseWebDriverTest {
                 public String toString() {
                     return "Wrapper of invalid frame";
                 }
-            })));
+            })).timeOut(FIVE_SECONDS));
         }
         catch (Exception e) {
             assertThat(e.getMessage(), containsString("Can't find/switch to the frame inside " +

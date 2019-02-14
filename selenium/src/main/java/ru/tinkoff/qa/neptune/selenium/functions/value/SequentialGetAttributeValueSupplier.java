@@ -10,18 +10,33 @@ import org.openqa.selenium.WebElement;
 
 import java.util.function.Function;
 
-import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
+import static com.google.common.base.Preconditions.checkArgument;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 import static java.lang.String.format;
-import static java.util.Optional.ofNullable;
 
-public final class SequentialGetAttributeValueSupplier extends
-        SequentialGetStepSupplier<SeleniumStepContext, String, SearchContext, SequentialGetAttributeValueSupplier> {
-    private final String attr;
+public final class SequentialGetAttributeValueSupplier extends SequentialGetStepSupplier
+        .GetObjectChainedStepSupplier<SeleniumStepContext, String, SearchContext, SequentialGetAttributeValueSupplier> {
+
+    private boolean isElementDefined;
 
     private SequentialGetAttributeValueSupplier(String attr) {
-        this.attr = attr;
+        super("Value of the attribute '%s'", searchContext -> {
+            var searchContextClass = searchContext.getClass();
+            if (WebElement.class.isAssignableFrom(searchContextClass)) {
+                return ((WebElement) searchContext).getAttribute(attr);
+            }
+
+            if (HasAttribute.class.isAssignableFrom(searchContextClass)) {
+                return ((HasAttribute) searchContext).getAttribute(attr);
+            }
+
+            throw new UnsupportedOperationException(format("It is impossible to get value of the attribute %s from the " +
+                            "%s instance. Instance of " +
+                            "%s or %s or %s is expected.", attr, searchContextClass.getName(), WebElement.class.getName(),
+                    SearchContext.class.getName(), HasAttribute.class.getName()));
+        });
     }
+
 
     /**
      * Creates an instance of {@link SequentialGetAttributeValueSupplier} for the taking of value of the attribute.
@@ -39,6 +54,7 @@ public final class SequentialGetAttributeValueSupplier extends
      * @return self-reference
      */
     public SequentialGetAttributeValueSupplier of(WebElement e) {
+        isElementDefined = true;
         return super.from(e);
     }
 
@@ -48,6 +64,7 @@ public final class SequentialGetAttributeValueSupplier extends
      * @return self-reference
      */
     public SequentialGetAttributeValueSupplier of(Widget widget) {
+        isElementDefined = true;
         return super.from(widget);
     }
 
@@ -58,6 +75,7 @@ public final class SequentialGetAttributeValueSupplier extends
      * @return self-reference
      */
     public <T extends SearchContext & HasAttribute> SequentialGetAttributeValueSupplier of(T t) {
+        isElementDefined = true;
         return super.from(t);
     }
 
@@ -72,31 +90,13 @@ public final class SequentialGetAttributeValueSupplier extends
      * @return self-reference
      */
     public <T extends SearchContext> SequentialGetAttributeValueSupplier of(SearchSupplier<T> searchSupplier) {
+        isElementDefined = true;
         return super.from(searchSupplier.get().compose(currentContent()));
     }
 
     @Override
     public Function<SeleniumStepContext, String> get() {
-        return ofNullable(super.get())
-                .orElseThrow(() -> new IllegalArgumentException("It is necessary to define element to get attribute"));
-    }
-
-    @Override
-    protected Function<SearchContext, String> getEndFunction() {
-        return toGet(format("Value of the attribute '%s'", attr), searchContext -> {
-            var searchContextClass = searchContext.getClass();
-            if (WebElement.class.isAssignableFrom(searchContextClass)) {
-                return ((WebElement) searchContext).getAttribute(attr);
-            }
-
-            if (HasAttribute.class.isAssignableFrom(searchContextClass)) {
-                return ((HasAttribute) searchContext).getAttribute(attr);
-            }
-
-            throw new UnsupportedOperationException(format("It is impossible to get value of the attribute %s from " +
-                            "the instance of %s. Instance of " +
-                            "%s or subclass of %s and %s is expected.", attr, searchContextClass.getName(), WebElement.class.getName(),
-                    SearchContext.class.getName(), HasAttribute.class.getName()));
-        });
+        checkArgument(isElementDefined, "It is necessary to define element to get attribute");
+        return super.get();
     }
 }

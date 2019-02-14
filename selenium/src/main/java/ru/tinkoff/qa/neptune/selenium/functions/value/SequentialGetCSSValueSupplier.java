@@ -10,18 +10,33 @@ import org.openqa.selenium.WebElement;
 
 import java.util.function.Function;
 
-import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
+import static com.google.common.base.Preconditions.checkArgument;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 import static java.lang.String.format;
-import static java.util.Optional.ofNullable;
 
 public final class SequentialGetCSSValueSupplier extends
-        SequentialGetStepSupplier<SeleniumStepContext, String, SearchContext, SequentialGetCSSValueSupplier> {
-    private final String property;
+        SequentialGetStepSupplier.GetObjectChainedStepSupplier<SeleniumStepContext, String, SearchContext, SequentialGetCSSValueSupplier> {
+
+    private boolean isElementDefined;
 
     private SequentialGetCSSValueSupplier(String property) {
-        this.property = property;
+        super(format("Value of the css property '%s'", property), searchContext -> {
+            Class<? extends SearchContext> searchContextClass = searchContext.getClass();
+            if (WebElement.class.isAssignableFrom(searchContextClass)) {
+                return ((WebElement) searchContext).getCssValue(property);
+            }
+
+            if (HasCssValue.class.isAssignableFrom(searchContextClass)) {
+                return ((HasCssValue) searchContext).getCssValue(property);
+            }
+
+            throw new UnsupportedOperationException(format("It is impossible to get value of the css property %s from " +
+                            "the %s instance. Instance of " +
+                            "%s or %s or %s is expected.", property, searchContextClass.getName(), WebElement.class.getName(),
+                    SearchContext.class.getName(), HasCssValue.class.getName()));
+        });
     }
+
 
     /**
      * Creates an instance of {@link SequentialGetCSSValueSupplier} for the taking of value of the css property.
@@ -39,6 +54,7 @@ public final class SequentialGetCSSValueSupplier extends
      * @return self-reference
      */
     public SequentialGetCSSValueSupplier of(WebElement e) {
+        isElementDefined = true;
         return super.from(e);
     }
 
@@ -48,6 +64,7 @@ public final class SequentialGetCSSValueSupplier extends
      * @return self-reference
      */
     public SequentialGetCSSValueSupplier of(Widget widget) {
+        isElementDefined = true;
         return super.from(widget);
     }
 
@@ -58,6 +75,7 @@ public final class SequentialGetCSSValueSupplier extends
      * @return self-reference
      */
     public <T extends SearchContext & HasCssValue> SequentialGetCSSValueSupplier of(T t) {
+        isElementDefined = true;
         return super.from(t);
     }
 
@@ -71,31 +89,13 @@ public final class SequentialGetCSSValueSupplier extends
      * @return self-reference
      */
     public <T extends SearchContext> SequentialGetCSSValueSupplier of(SearchSupplier<T> searchSupplier) {
+        isElementDefined = true;
         return super.from(searchSupplier.get().compose(currentContent()));
     }
 
     @Override
     public Function<SeleniumStepContext, String> get() {
-        return ofNullable(super.get())
-                .orElseThrow(() -> new IllegalArgumentException("It is necessary to define element to get css property"));
-    }
-
-    @Override
-    protected Function<SearchContext, String> getEndFunction() {
-        return toGet(format("Value of the css property '%s'", property), searchContext -> {
-            Class<? extends SearchContext> searchContextClass = searchContext.getClass();
-            if (WebElement.class.isAssignableFrom(searchContextClass)) {
-                return ((WebElement) searchContext).getCssValue(property);
-            }
-
-            if (HasCssValue.class.isAssignableFrom(searchContextClass)) {
-                return ((HasCssValue) searchContext).getCssValue(property);
-            }
-
-            throw new UnsupportedOperationException(format("It is impossible to get value of thr css property %s from " +
-                            "the instance of %s. Instance of " +
-                            "%s or subclass of %s and %s is expected.", property, searchContextClass.getName(), WebElement.class.getName(),
-                    SearchContext.class.getName(), HasCssValue.class.getName()));
-        });
+        checkArgument(isElementDefined, "It is necessary to define element to get css property");
+        return super.get();
     }
 }

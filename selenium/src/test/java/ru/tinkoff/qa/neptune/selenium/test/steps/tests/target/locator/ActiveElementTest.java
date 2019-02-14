@@ -55,7 +55,8 @@ public class ActiveElementTest extends BaseWebDriverTest {
         seleniumSteps.get(activeElement());
         setStartBenchMark();
         try {
-            seleniumSteps.get(activeElement(FIVE_SECONDS)); //mock is designed the special way
+            seleniumSteps.get(activeElement()
+                    .timeOut(FIVE_SECONDS)); //mock is designed the special way
             //when it tries to switch to active element more than one time per session
             //then it throws the exception
         }

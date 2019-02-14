@@ -19,13 +19,14 @@ import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
 import static ru.tinkoff.qa.neptune.core.api.properties.CapturedEvents.SUCCESS_AND_FAILURE;
 import static ru.tinkoff.qa.neptune.core.api.properties.DoCapturesOf.DO_CAPTURES_OF_INSTANCE;
+import static ru.tinkoff.qa.neptune.data.base.api.query.GetSelectedFunction.selected;
 import static ru.tinkoff.qa.neptune.data.base.api.query.QueryBuilderFunction.ofType;
 import static ru.tinkoff.qa.neptune.data.base.api.query.SQLQueryBuilderFunction.bySQL;
 import static ru.tinkoff.qa.neptune.data.base.api.query.SQLQueryBuilderFunction.byTypedSQL;
-import static ru.tinkoff.qa.neptune.data.base.api.query.SelectListByIdsSupplier.listOfTypeByIds;
-import static ru.tinkoff.qa.neptune.data.base.api.query.SelectListByQuerySupplier.listByQuery;
-import static ru.tinkoff.qa.neptune.data.base.api.query.SelectSingleObjectByIdSupplier.aSingleOfTypeById;
-import static ru.tinkoff.qa.neptune.data.base.api.query.SelectSingleObjectByQuerySupplier.aSingleByQuery;
+import static ru.tinkoff.qa.neptune.data.base.api.query.SelectListGetSupplier.listByQuery;
+import static ru.tinkoff.qa.neptune.data.base.api.query.SelectListGetSupplier.listOfTypeByIds;
+import static ru.tinkoff.qa.neptune.data.base.api.query.SelectOneGetSupplier.aSingleByQuery;
+import static ru.tinkoff.qa.neptune.data.base.api.query.SelectOneGetSupplier.aSingleOfTypeById;
 import static ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.captors.TestStringInjector.INJECTED;
 
 public class QueryCaptorTest extends BaseDbOperationTest {
@@ -50,10 +51,10 @@ public class QueryCaptorTest extends BaseDbOperationTest {
                 .or(c.isbn.eq("0-671-73246-3")) //<Journey to Ixtlan
                 .or(c.book.author.lastName.eq("Pushkin")))
                 .orderBy(c.isbn.desc());
-        var query = querySpec.apply(dataBaseSteps);
+        var query = querySpec.apply(dataBaseSteps.getCurrentPersistenceManager());
 
 
-        Catalog catalogItem = dataBaseSteps.get(aSingleByQuery(querySpec));
+        Catalog catalogItem = dataBaseSteps.get(selected(aSingleByQuery(querySpec)));
         assertThat(INJECTED, contains("Query:" + query));
 
         var secondaryReturned = toGet("Stored value", (Function<DataBaseStepContext, Catalog>)
@@ -71,10 +72,10 @@ public class QueryCaptorTest extends BaseDbOperationTest {
                 .or(c.isbn.eq("0-671-73246-3")) //<Journey to Ixtlan
                 .or(c.book.author.lastName.eq("Pushkin")))
                 .orderBy(c.isbn.desc());
-        var query = querySpec.apply(dataBaseSteps);
+        var query = querySpec.apply(dataBaseSteps.getCurrentPersistenceManager());
 
 
-        List<Catalog> catalogItems = dataBaseSteps.get(listByQuery(querySpec));
+        List<Catalog> catalogItems = dataBaseSteps.get(selected(listByQuery(querySpec)));
         assertThat(INJECTED, containsInAnyOrder(equalTo("Query:" + query),
                 containsString("Resulted collection:")));
 
@@ -91,10 +92,10 @@ public class QueryCaptorTest extends BaseDbOperationTest {
     @Test
     public void testOfSelectSingleItemByTypedSqlQuery() {
         var querySpec = byTypedSQL(Book.class, QUERY);
-        var query = querySpec.apply(dataBaseSteps);
+        var query = querySpec.apply(dataBaseSteps.getCurrentPersistenceManager());
 
 
-        Book book = dataBaseSteps.get(aSingleByQuery(querySpec));
+        Book book = dataBaseSteps.get(selected(aSingleByQuery(querySpec)));
         assertThat(INJECTED, contains("Query:" + query));
 
         var secondaryReturned = toGet("Stored value", (Function<DataBaseStepContext, Book>)
@@ -108,10 +109,10 @@ public class QueryCaptorTest extends BaseDbOperationTest {
     @Test
     public void testOfSelectMultipleItemsByTypedSqlQuery() {
         var querySpec = byTypedSQL(Book.class, QUERY);
-        var query = querySpec.apply(dataBaseSteps);
+        var query = querySpec.apply(dataBaseSteps.getCurrentPersistenceManager());
 
 
-        List<Book> books = dataBaseSteps.get(listByQuery(querySpec));
+        List<Book> books = dataBaseSteps.get(selected(listByQuery(querySpec)));
         assertThat(INJECTED, containsInAnyOrder(equalTo("Query:" + query),
                 containsString("Resulted collection:")));
 
@@ -128,10 +129,10 @@ public class QueryCaptorTest extends BaseDbOperationTest {
     @Test
     public void testOfSelectSingleItemByUntypedSqlQuery() {
         var querySpec = bySQL(QUERY);
-        var query = querySpec.apply(dataBaseSteps);
+        var query = querySpec.apply(dataBaseSteps.getCurrentPersistenceManager());
 
 
-        List<Object> bookRecord = dataBaseSteps.get(aSingleByQuery(querySpec));
+        List<Object> bookRecord = dataBaseSteps.get(selected(aSingleByQuery(querySpec)));
         assertThat(INJECTED, containsInAnyOrder(equalTo("Query:" + query),
                 containsString("Resulted collection:")));
 
@@ -148,10 +149,10 @@ public class QueryCaptorTest extends BaseDbOperationTest {
     @Test
     public void testOfSelectMultipleItemsByUntypedSqlQuery() {
         var querySpec = bySQL(QUERY);
-        var query = querySpec.apply(dataBaseSteps);
+        var query = querySpec.apply(dataBaseSteps.getCurrentPersistenceManager());
 
 
-        List<List<Object>> bookRecords = dataBaseSteps.get(listByQuery(querySpec));
+        List<List<Object>> bookRecords = dataBaseSteps.get(selected(listByQuery(querySpec)));
         assertThat(INJECTED, containsInAnyOrder(equalTo("Query:" + query),
                 containsString("Resulted collection:")));
 
@@ -167,21 +168,21 @@ public class QueryCaptorTest extends BaseDbOperationTest {
 
     @Test
     public void testOfSelectSingleItemById() {
-        Catalog catalogItem = dataBaseSteps.get(aSingleOfTypeById(Catalog.class, "0-671-73246-3"));
-        assertThat(INJECTED, contains("Query:Known Id: 0-671-73246-3"));
+        Catalog catalogItem = dataBaseSteps.get(selected(aSingleOfTypeById(Catalog.class, "0-671-73246-3")));
+        assertThat(INJECTED, contains("Query: Known Id: 0-671-73246-3"));
 
         var secondaryReturned = toGet("Stored value", (Function<DataBaseStepContext, Catalog>)
                 dataBaseStepContext -> catalogItem)
                 .makeStringCaptureOnFinish();
 
         dataBaseSteps.get(secondaryReturned);
-        assertThat(INJECTED,contains("Query:Known Id: 0-671-73246-3"));
+        assertThat(INJECTED,contains("Query: Known Id: 0-671-73246-3"));
     }
 
     @Test
     public void testOfSelectMultipleItemsByIds() {
-        List<Catalog> catalogItems = dataBaseSteps.get(listOfTypeByIds(Catalog.class, "0-930267-39-7", "0-671-73246-3"));
-        assertThat(INJECTED, contains(equalTo("Query:Known Ids: [0-930267-39-7, 0-671-73246-3]"),
+        List<Catalog> catalogItems = dataBaseSteps.get(selected(listOfTypeByIds(Catalog.class, "0-930267-39-7", "0-671-73246-3")));
+        assertThat(INJECTED, contains(equalTo("Query: Known Ids: 0-930267-39-7, 0-671-73246-3"),
                 containsString("Resulted collection:")));
 
         var secondaryReturned = toGet("Stored value", (Function<DataBaseStepContext, List<Catalog>>)
@@ -189,7 +190,7 @@ public class QueryCaptorTest extends BaseDbOperationTest {
                 .makeStringCaptureOnFinish();
 
         dataBaseSteps.get(secondaryReturned);
-        assertThat(INJECTED, contains(equalTo("Query:Known Ids: [0-930267-39-7, 0-671-73246-3]"),
+        assertThat(INJECTED, contains(equalTo("Query: Known Ids: 0-930267-39-7, 0-671-73246-3"),
                 containsString("Resulted collection:"),
                 containsString("Resulted collection:")));
     }

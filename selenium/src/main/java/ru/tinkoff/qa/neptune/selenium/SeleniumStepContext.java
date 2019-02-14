@@ -2,7 +2,7 @@ package ru.tinkoff.qa.neptune.selenium;
 
 import ru.tinkoff.qa.neptune.core.api.steps.context.ActionStepContext;
 import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
-import ru.tinkoff.qa.neptune.core.api.cleaning.Refreshable;
+import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
 import ru.tinkoff.qa.neptune.core.api.cleaning.StoppableOnJVMShutdown;
 import ru.tinkoff.qa.neptune.selenium.functions.navigation.NavigationActionSupplier;
@@ -22,7 +22,7 @@ import java.util.List;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 
 @CreateWith(provider = SeleniumParameterProvider.class)
-public class SeleniumStepContext implements ActionStepContext<SeleniumStepContext>, GetStepContext<SeleniumStepContext>, WrapsDriver, Refreshable,
+public class SeleniumStepContext implements ActionStepContext<SeleniumStepContext>, GetStepContext<SeleniumStepContext>, WrapsDriver, ContextRefreshable,
         TakesScreenshot, StoppableOnJVMShutdown {
 
     private final WrappedWebDriver wrappedWebDriver;
@@ -73,8 +73,8 @@ public class SeleniumStepContext implements ActionStepContext<SeleniumStepContex
     }
 
     @Override
-    public void refresh() {
-        wrappedWebDriver.refresh();
+    public void refreshContext() {
+        wrappedWebDriver.refreshContext();
     }
 
 

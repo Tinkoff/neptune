@@ -34,8 +34,9 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockserver.model.HttpRequest.request;
-import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.condition;
 import static ru.tinkoff.qa.neptune.core.api.steps.proxy.ProxyFactory.getProxied;
+import static ru.tinkoff.qa.neptune.http.api.HttpCookiesActionSupplier.addToCookies;
+import static ru.tinkoff.qa.neptune.http.api.HttpCookiesActionSupplier.clearCookieStore;
 import static ru.tinkoff.qa.neptune.http.api.HttpGetCachedCookiesSupplier.cachedCookies;
 import static ru.tinkoff.qa.neptune.http.api.PreparedHttpRequest.GET;
 import static ru.tinkoff.qa.neptune.http.api.HttpResponseSequentialGetSupplier.responseOf;
@@ -167,19 +168,23 @@ public class HttpClientTest extends BaseHttpTest {
     }
 
     @Test
-    public void getCookieTest() {
+    public void addCookieTest() {
         var httpCookie = new HttpCookie("TestSetUpCookieName",
                 "TestSetUpCookieValue");
 
         var httpSteps = getProxied(HttpStepContext.class);
-        httpSteps.get(responseOf(GET(format("%s/index.html", REQUEST_URI))
-                        .addCookies(null, List.of(httpCookie)),
-                ofString()));
+        httpSteps.perform(addToCookies(null, httpCookie));
         assertThat(httpSteps.get(cachedCookies()), hasItem(httpCookie));
-        assertThat(httpSteps.get(cachedCookies()
-                .criteriaToGetCookies(condition("Has name 'TestSetUpCookieName'",
-                        cookie -> "TestSetUpCookieName".equals(cookie.getName())))),
-                contains(httpCookie));
+    }
+
+    @Test
+    public void clearCookiesTest() {
+        var httpCookie = new HttpCookie("TestSetUpCookieName",
+                "TestSetUpCookieValue");
+
+        var httpSteps = getProxied(HttpStepContext.class);
+        httpSteps.perform(addToCookies(null, httpCookie));
+        httpSteps.perform(clearCookieStore());
     }
 
     @Test

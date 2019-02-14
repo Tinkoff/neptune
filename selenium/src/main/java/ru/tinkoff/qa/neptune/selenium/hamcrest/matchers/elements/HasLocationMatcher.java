@@ -132,13 +132,13 @@ public final class HasLocationMatcher<T extends SearchContext> extends TypeSafeD
 
         Point point;
         if (WebElement.class.isAssignableFrom(clazz)) {
-            point = WebElement.class.cast(item).getLocation();
+            point = ((WebElement) item).getLocation();
         }
         else if (HasLocation.class.isAssignableFrom(clazz)) {
-            point = HasLocation.class.cast(item).getLocation();
+            point = ((HasLocation) item).getLocation();
         }
         else {
-            var e = WrapsElement.class.cast(item).getWrappedElement();
+            var e = ((WrapsElement) item).getWrappedElement();
             if (e == null) {
                 mismatchDescription.appendText(format("Wrapped element is null. It is not possible to get position from an instance of %s.",
                         clazz.getName()));

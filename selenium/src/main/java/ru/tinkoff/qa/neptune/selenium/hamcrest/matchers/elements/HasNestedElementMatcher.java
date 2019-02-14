@@ -10,7 +10,6 @@ import org.openqa.selenium.SearchContext;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
-import static java.util.List.of;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 
@@ -38,7 +37,7 @@ public final class HasNestedElementMatcher<T extends SearchContext> extends Type
     protected boolean matchesSafely(T item, Description mismatchDescription) {
         try {
             return ofNullable(((StepFunction<SearchContext, ?>) search.get())
-                    .addIgnored(of(NoSuchElementException.class)).apply(item))
+                    .addIgnored(NoSuchElementException.class).apply(item))
                     .map(o -> true)
                     .orElseGet(() -> {
                         mismatchDescription.appendText("no such element was found");

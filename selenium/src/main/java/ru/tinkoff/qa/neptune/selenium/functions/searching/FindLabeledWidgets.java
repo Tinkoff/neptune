@@ -8,7 +8,6 @@ import org.openqa.selenium.WebElement;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
@@ -16,8 +15,8 @@ import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindByBuilder.g
 
 class FindLabeledWidgets<R extends Widget> extends FindWidgets<R> {
 
-    private FindLabeledWidgets(Class<R> classOfAWidget, String conditionString) {
-        super(classOfAWidget, conditionString, clazz -> !Modifier.isAbstract(clazz.getModifiers())
+    private FindLabeledWidgets(Class<R> classOfAWidget) {
+        super(classOfAWidget, clazz -> !Modifier.isAbstract(clazz.getModifiers())
                 && Labeled.class.isAssignableFrom(clazz)
 
                 && nonNull(getAnnotations(clazz))
@@ -43,8 +42,7 @@ class FindLabeledWidgets<R extends Widget> extends FindWidgets<R> {
                 Widget.getWidgetName(classOfAWidget), WebElement.class.getName(), Labeled.class.getName()));
     }
 
-    static <R extends Widget> Function<SearchContext, List<R>> labeledWidgets(Class<R> classOfAWidget,
-                                                                              String conditionString) {
-        return new FindLabeledWidgets<>(classOfAWidget, conditionString);
+    static <R extends Widget> FindLabeledWidgets<R> labeledWidgets(Class<R> classOfAWidget) {
+        return new FindLabeledWidgets<>(classOfAWidget);
     }
 }

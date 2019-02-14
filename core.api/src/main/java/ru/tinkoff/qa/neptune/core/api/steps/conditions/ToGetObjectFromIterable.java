@@ -1,7 +1,5 @@
 package ru.tinkoff.qa.neptune.core.api.steps.conditions;
 
-import ru.tinkoff.qa.neptune.core.api.steps.AsIsCondition;
-
 import javax.annotation.Nullable;
 import java.time.Duration;
 import java.util.Objects;
@@ -9,31 +7,29 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetConditionalHelper.*;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.StreamSupport.stream;
+import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetConditionalHelper.fluentWaitFunction;
 
+@SuppressWarnings("unchecked")
 public final class ToGetObjectFromIterable {
 
     private ToGetObjectFromIterable() {
         super();
     }
 
-    private static <T, R, V extends Iterable<R>> Function<T, R> singleFromIterable(String description,
-                                                                                   Function<T, V> function,
+    private static <T, R, V extends Iterable<R>> Function<T, R> singleFromIterable(Function<T, V> function,
                                                                                    Predicate<? super R> condition,
                                                                                    @Nullable Duration waitingTime,
                                                                                    @Nullable Duration sleepingTime,
-                                                                                   boolean checkConditionInParallel,
-                                                                                   boolean ignoreExceptionOnConditionCheck,
                                                                                    @Nullable Supplier<? extends RuntimeException> exceptionSupplier) {
-        return fluentWaitFunction(getDescription(checkDescription(description), condition), t ->
+        return fluentWaitFunction(t ->
                         ofNullable(function.apply(t))
-                                .map(v -> stream(v.spliterator(), checkConditionInParallel).filter(r -> {
+                                .map(v -> stream(v.spliterator(), false).filter(r -> {
                                     try {
-                                        return notNullAnd(condition).test(r);
+                                        return ToGetConditionalHelper.notNullAnd(condition).test(r);
                                     } catch (Throwable t1) {
-                                        return returnFalseOrThrowException(t1, ignoreExceptionOnConditionCheck);
+                                        return ToGetConditionalHelper.printErrorAndFalse(t1);
                                     }
                                 }).findFirst().orElse(null))
                                 .orElse(null),
@@ -44,316 +40,249 @@ public final class ToGetObjectFromIterable {
      * This method returns a function. The result function returns a single first found value which
      * suits criteria from {@link Iterable}.
      *
-     * @param description of a value which should be returned
-     * @param function function which should return {@link Iterable}
-     * @param condition predicate which is used to find some target value
-     * @param waitingTime is a duration of the waiting for valuable result
-     * @param sleepingTime is a duration of the sleeping between attempts to get
-     *                     expected valuable result
-     * @param checkConditionInParallel is how iterable should be matched. If {@code true} when each value will be
-     *                                 checked in parallel.
-     * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
-     *                                        and some exception is thrown. Exception will be thrown when
-     *                                        {@code true}.
+     * @param function          function which should return {@link Iterable}
+     * @param condition         predicate which is used to find some target value
+     * @param waitingTime       is a duration of the waiting for valuable result
+     * @param sleepingTime      is a duration of the sleeping between attempts to get
+     *                          expected valuable result
      * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
-     *                           expiration
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
-     * @param <V> is a type of {@link Iterable} of {@code R}
+     *                          expiration
+     * @param <T>               is a type of input value
+     * @param <R>               is a type of the target value
+     * @param <V>               is a type of {@link Iterable} of {@code R}
      * @return a function. The result function returns a single first found value from {@link Iterable}.
      * It returns a value if something that suits criteria is found. Some exception is thrown if
      * result iterable to get value from is null or has zero-size or it has no item which suits criteria.
      */
-    public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(String description,
-                                                                               Function<T, V> function,
+    public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(Function<T, V> function,
                                                                                Predicate<? super R> condition,
                                                                                Duration waitingTime,
                                                                                Duration sleepingTime,
-                                                                               boolean checkConditionInParallel,
-                                                                               boolean ignoreExceptionOnConditionCheck,
                                                                                Supplier<? extends RuntimeException> exceptionSupplier) {
-        return singleFromIterable(description, checkFunction(function), checkCondition(condition), checkWaitingTime(waitingTime),
-                checkSleepingTime(sleepingTime), checkConditionInParallel, ignoreExceptionOnConditionCheck, checkExceptionSupplier(exceptionSupplier));
+        return singleFromIterable(ToGetConditionalHelper.checkFunction(function), ToGetConditionalHelper.checkCondition(condition), ToGetConditionalHelper.checkWaitingTime(waitingTime),
+                ToGetConditionalHelper.checkSleepingTime(sleepingTime), ToGetConditionalHelper.checkExceptionSupplier(exceptionSupplier));
     }
 
     /**
      * This method returns a function. The result function returns a single first found value from {@link Iterable}.
      *
-     * @param description of a value which should be returned
-     * @param function function which should return {@link Iterable}
-     * @param waitingTime is a duration of the waiting for valuable result
-     * @param sleepingTime is a duration of the sleeping between attempts to get
-     *                     expected valuable result
+     * @param function          function which should return {@link Iterable}
+     * @param waitingTime       is a duration of the waiting for valuable result
+     * @param sleepingTime      is a duration of the sleeping between attempts to get
+     *                          expected valuable result
      * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
-     *                           expiration
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
-     * @param <V> is a type of {@link Iterable} of {@code R}
+     *                          expiration
+     * @param <T>               is a type of input value
+     * @param <R>               is a type of the target value
+     * @param <V>               is a type of {@link Iterable} of {@code R}
      * @return a function. The result function returns a single first found non-null value from {@link Iterable}.
      * Some exception is thrown if result iterable to get value from is null or has zero-size.
      */
-    public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(String description,
-                                                                               Function<T, V> function,
+    public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(Function<T, V> function,
                                                                                Duration waitingTime,
                                                                                Duration sleepingTime,
                                                                                Supplier<? extends RuntimeException> exceptionSupplier) {
 
-        return singleFromIterable(description, checkFunction(function), AsIsCondition.AS_IS, checkWaitingTime(waitingTime),
-                checkSleepingTime(sleepingTime), false, true, checkExceptionSupplier(exceptionSupplier));
+        return singleFromIterable(ToGetConditionalHelper.checkFunction(function), (Predicate<? super R>) ToGetConditionalHelper.AS_IS, ToGetConditionalHelper.checkWaitingTime(waitingTime),
+                ToGetConditionalHelper.checkSleepingTime(sleepingTime), ToGetConditionalHelper.checkExceptionSupplier(exceptionSupplier));
     }
 
     /**
      * This method returns a function. The result function returns a single first found value which
      * suits criteria from {@link Iterable}.
      *
-     * @param description of a value which should be returned
-     * @param function function which should return {@link Iterable}
-     * @param condition predicate which is used to find some target value
-     * @param waitingTime is a duration of the waiting for valuable result
-     * @param checkConditionInParallel is how iterable should be matched. If {@code true} when each value will be
-     *                                 checked in parallel.
-     * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
-     *                                        and some exception is thrown. Exception will be thrown when
-     *                                        {@code true}.
+     * @param function          function which should return {@link Iterable}
+     * @param condition         predicate which is used to find some target value
+     * @param waitingTime       is a duration of the waiting for valuable result
      * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
-     *                           expiration
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
-     * @param <V> is a type of {@link Iterable} of {@code R}
+     *                          expiration
+     * @param <T>               is a type of input value
+     * @param <R>               is a type of the target value
+     * @param <V>               is a type of {@link Iterable} of {@code R}
      * @return a function. The result function returns a single first found value from {@link Iterable}.
      * It returns a value if something that suits criteria is found. Some exception is thrown if
      * result iterable to get value from is null or has zero-size or it has no item which suits criteria.
      */
-    public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(String description,
-                                                                               Function<T, V> function,
-                                                                               Predicate<? super  R> condition,
-                                                                               Duration waitingTime,
-                                                                               boolean checkConditionInParallel,
-                                                                               boolean ignoreExceptionOnConditionCheck,
-                                                                               Supplier<? extends RuntimeException> exceptionSupplier) {
-        return singleFromIterable(description, checkFunction(function), checkCondition(condition), checkWaitingTime(waitingTime),
-                null, checkConditionInParallel, ignoreExceptionOnConditionCheck, checkExceptionSupplier(exceptionSupplier));
-    }
-
-    /**
-     * This method returns a function. The result function returns a single first found value from {@link Iterable}.
-     *
-     * @param description of a value which should be returned
-     * @param function function which should return {@link Iterable}
-     * @param waitingTime is a duration of the waiting for valuable result
-     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
-     *                           expiration
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
-     * @param <V> is a type of {@link Iterable} of {@code R}
-     * @return a function. The result function returns a single first found non-null value from {@link Iterable}.
-     * Some exception is thrown if result iterable to get value from is null or has zero-size.
-     */
-    public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(String description,
-                                                                               Function<T, V> function,
-                                                                               Duration waitingTime,
-                                                                               Supplier<? extends RuntimeException> exceptionSupplier) {
-        return singleFromIterable(description, checkFunction(function), AsIsCondition.AS_IS, checkWaitingTime(waitingTime), null, false,
-                true, checkExceptionSupplier(exceptionSupplier));
-    }
-
-    /**
-     * This method returns a function. The result function returns a single first found value which
-     * suits criteria from {@link Iterable}.
-     *
-     * @param description of a value which should be returned
-     * @param function function which should return {@link Iterable}
-     * @param condition predicate which is used to find some target value
-     * @param checkConditionInParallel is how iterable should be matched. If {@code true} when each value will be
-     *                                 checked in parallel.
-     * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
-     *                                        and some exception is thrown. Exception will be thrown when
-     *                                        {@code true}.
-     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
-     *                           expiration
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
-     * @param <V> is a type of {@link Iterable} of {@code R}
-     * @return a function. The result function returns a single first found value from {@link Iterable}.
-     * It returns a value if something that suits criteria is found. Some exception is thrown if
-     * result iterable to get value from is null or has zero-size or it has no item which suits criteria.
-     */
-    public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(String description,
-                                                                               Function<T, V> function,
+    public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(Function<T, V> function,
                                                                                Predicate<? super R> condition,
-                                                                               boolean checkConditionInParallel,
-                                                                               boolean ignoreExceptionOnConditionCheck,
+                                                                               Duration waitingTime,
                                                                                Supplier<? extends RuntimeException> exceptionSupplier) {
-        return singleFromIterable(description, checkFunction(function), checkCondition(condition), null, null, checkConditionInParallel,
-                ignoreExceptionOnConditionCheck, checkExceptionSupplier(exceptionSupplier));
+        return singleFromIterable(ToGetConditionalHelper.checkFunction(function), ToGetConditionalHelper.checkCondition(condition), ToGetConditionalHelper.checkWaitingTime(waitingTime),
+                null, ToGetConditionalHelper.checkExceptionSupplier(exceptionSupplier));
     }
 
     /**
      * This method returns a function. The result function returns a single first found value from {@link Iterable}.
      *
-     * @param description of a value which should be returned
-     * @param function function which should return {@link Iterable}
+     * @param function          function which should return {@link Iterable}
+     * @param waitingTime       is a duration of the waiting for valuable result
      * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
-     *                           expiration
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
-     * @param <V> is a type of {@link Iterable} of {@code R}
+     *                          expiration
+     * @param <T>               is a type of input value
+     * @param <R>               is a type of the target value
+     * @param <V>               is a type of {@link Iterable} of {@code R}
      * @return a function. The result function returns a single first found non-null value from {@link Iterable}.
      * Some exception is thrown if result iterable to get value from is null or has zero-size.
      */
-    public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(String description,
-                                                                               Function<T, V> function,
+    public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(Function<T, V> function,
+                                                                               Duration waitingTime,
                                                                                Supplier<? extends RuntimeException> exceptionSupplier) {
-        return singleFromIterable(description, checkFunction(function), AsIsCondition.AS_IS, null, null,
-                false, true, checkExceptionSupplier(exceptionSupplier));
+        return singleFromIterable(ToGetConditionalHelper.checkFunction(function), (Predicate<? super R>) ToGetConditionalHelper.AS_IS, ToGetConditionalHelper.checkWaitingTime(waitingTime), null,
+                ToGetConditionalHelper.checkExceptionSupplier(exceptionSupplier));
     }
 
     /**
      * This method returns a function. The result function returns a single first found value which
      * suits criteria from {@link Iterable}.
      *
-     * @param description of a value which should be returned
-     * @param function function which should return {@link Iterable}
-     * @param condition predicate which is used to find some target value
-     * @param waitingTime is a duration of the waiting for valuable result
+     * @param function          function which should return {@link Iterable}
+     * @param condition         predicate which is used to find some target value
+     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
+     *                          expiration
+     * @param <T>               is a type of input value
+     * @param <R>               is a type of the target value
+     * @param <V>               is a type of {@link Iterable} of {@code R}
+     * @return a function. The result function returns a single first found value from {@link Iterable}.
+     * It returns a value if something that suits criteria is found. Some exception is thrown if
+     * result iterable to get value from is null or has zero-size or it has no item which suits criteria.
+     */
+    public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(Function<T, V> function,
+                                                                               Predicate<? super R> condition,
+                                                                               Supplier<? extends RuntimeException> exceptionSupplier) {
+        return singleFromIterable(ToGetConditionalHelper.checkFunction(function), ToGetConditionalHelper.checkCondition(condition), null, null,
+                ToGetConditionalHelper.checkExceptionSupplier(exceptionSupplier));
+    }
+
+    /**
+     * This method returns a function. The result function returns a single first found value from {@link Iterable}.
+     *
+     * @param function          function which should return {@link Iterable}
+     * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
+     *                          expiration
+     * @param <T>               is a type of input value
+     * @param <R>               is a type of the target value
+     * @param <V>               is a type of {@link Iterable} of {@code R}
+     * @return a function. The result function returns a single first found non-null value from {@link Iterable}.
+     * Some exception is thrown if result iterable to get value from is null or has zero-size.
+     */
+    public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(Function<T, V> function,
+                                                                               Supplier<? extends RuntimeException> exceptionSupplier) {
+        return singleFromIterable(ToGetConditionalHelper.checkFunction(function), (Predicate<? super R>) ToGetConditionalHelper.AS_IS, null, null,
+                ToGetConditionalHelper.checkExceptionSupplier(exceptionSupplier));
+    }
+
+    /**
+     * This method returns a function. The result function returns a single first found value which
+     * suits criteria from {@link Iterable}.
+     *
+     * @param function     function which should return {@link Iterable}
+     * @param condition    predicate which is used to find some target value
+     * @param waitingTime  is a duration of the waiting for valuable result
      * @param sleepingTime is a duration of the sleeping between attempts to get
      *                     expected valuable result
-     * @param checkConditionInParallel is how iterable should be matched. If {@code true} when each value will be
-     *                                 checked in parallel.
-     * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
-     *                                        and some exception is thrown. Exception will be thrown when
-     *                                        {@code true}.
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
-     * @param <V> is a type of {@link Iterable} of {@code R}
+     * @param <T>          is a type of input value
+     * @param <R>          is a type of the target value
+     * @param <V>          is a type of {@link Iterable} of {@code R}
      * @return a function. The result function returns a single first found value from {@link Iterable}.
      * It returns a value if something that suits criteria is found. {@code null} is returned if
      * result iterable to get value from is null or has zero-size or it has no item which suits criteria.
      */
-    public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(String description,
-                                                                               Function<T, V> function,
+    public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(Function<T, V> function,
                                                                                Predicate<? super R> condition,
-                                                                               Duration waitingTime,
-                                                                               Duration sleepingTime,
-                                                                               boolean checkConditionInParallel,
-                                                                               boolean ignoreExceptionOnConditionCheck) {
-        return singleFromIterable(description, checkFunction(function), checkCondition(condition), checkWaitingTime(waitingTime),
-                checkSleepingTime(sleepingTime), checkConditionInParallel, ignoreExceptionOnConditionCheck, null);
-    }
-
-    /**
-     * This method returns a function. The result function returns a single first found value from {@link Iterable}.
-     *
-     * @param description of a value which should be returned
-     * @param function function which should return {@link Iterable}
-     * @param waitingTime is a duration of the waiting for valuable result
-     * @param sleepingTime is a duration of the sleeping between attempts to get
-     *                     expected valuable result
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
-     * @param <V> is a type of {@link Iterable} of {@code R}
-     * @return a function. The result function returns a single first found non-null value from {@link Iterable}.
-     * {@code null} is returned if result iterable to get value from is null or has zero-size.
-     */
-    public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(String description,
-                                                                               Function<T, V> function,
                                                                                Duration waitingTime,
                                                                                Duration sleepingTime) {
-        return singleFromIterable(description, checkFunction(function), AsIsCondition.AS_IS, checkWaitingTime(waitingTime), checkSleepingTime(sleepingTime),
-                false, true, null);
+        return singleFromIterable(ToGetConditionalHelper.checkFunction(function), ToGetConditionalHelper.checkCondition(condition), ToGetConditionalHelper.checkWaitingTime(waitingTime),
+                ToGetConditionalHelper.checkSleepingTime(sleepingTime), null);
     }
 
     /**
-     * This method returns a function. The result function returns a single first found value which
-     * suits criteria from {@link Iterable}.
+     * This method returns a function. The result function returns a single first found value from {@link Iterable}.
      *
-     * @param description of a value which should be returned
-     * @param function function which should return {@link Iterable}
-     * @param condition predicate which is used to find some target value
-     * @param waitingTime is a duration of the waiting for valuable result
-     * @param checkConditionInParallel is how iterable should be matched. If {@code true} when each value will be
-     *                                 checked in parallel.
-     * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
-     *                                        and some exception is thrown. Exception will be thrown when
-     *                                        {@code true}.
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
-     * @param <V> is a type of {@link Iterable} of {@code R}
-     * @return a function. The result function returns a single first found value from {@link Iterable}.
-     * It returns a value if something that suits criteria is found. {@code null} is returned if
-     * result iterable to get value from is null or has zero-size or it has no item which suits criteria.
+     * @param function     function which should return {@link Iterable}
+     * @param waitingTime  is a duration of the waiting for valuable result
+     * @param sleepingTime is a duration of the sleeping between attempts to get
+     *                     expected valuable result
+     * @param <T>          is a type of input value
+     * @param <R>          is a type of the target value
+     * @param <V>          is a type of {@link Iterable} of {@code R}
+     * @return a function. The result function returns a single first found non-null value from {@link Iterable}.
+     * {@code null} is returned if result iterable to get value from is null or has zero-size.
      */
-    public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(String description,
-                                                                               Function<T, V> function,
-                                                                               Predicate<? super R> condition,
+    public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(Function<T, V> function,
                                                                                Duration waitingTime,
-                                                                               boolean checkConditionInParallel,
-                                                                               boolean ignoreExceptionOnConditionCheck) {
-        return singleFromIterable(description, checkFunction(function), checkCondition(condition), checkWaitingTime(waitingTime),
-                null, checkConditionInParallel, ignoreExceptionOnConditionCheck, null);
-    }
-
-    /**
-     * This method returns a function. The result function returns a single first found value from {@link Iterable}.
-     *
-     * @param description of a value which should be returned
-     * @param function function which should return {@link Iterable}
-     * @param waitingTime is a duration of the waiting for valuable result
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
-     * @param <V> is a type of {@link Iterable} of {@code R}
-     * @return a function. The result function returns a single first found non-null value from {@link Iterable}.
-     * {@code null} is returned if result iterable to get value from is null or has zero-size.
-     */
-    public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(String description,
-                                                                               Function<T, V> function,
-                                                                               Duration waitingTime) {
-        return singleFromIterable(description, checkFunction(function), AsIsCondition.AS_IS, checkWaitingTime(waitingTime), null, false,
-                true, null);
+                                                                               Duration sleepingTime) {
+        return singleFromIterable(ToGetConditionalHelper.checkFunction(function), (Predicate<? super R>) ToGetConditionalHelper.AS_IS, ToGetConditionalHelper.checkWaitingTime(waitingTime),
+                ToGetConditionalHelper.checkSleepingTime(sleepingTime), null);
     }
 
     /**
      * This method returns a function. The result function returns a single first found value which
      * suits criteria from {@link Iterable}.
      *
-     * @param description of a value which should be returned
-     * @param function function which should return {@link Iterable}
-     * @param condition predicate which is used to find some target value
-     * @param checkConditionInParallel is how iterable should be matched. If {@code true} when each value will be
-     *                                 checked in parallel.
-     * @param ignoreExceptionOnConditionCheck is used to define what should be done when check is failed
-     *                                        and some exception is thrown. Exception will be thrown when
-     *                                        {@code true}.
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
-     * @param <V> is a type of {@link Iterable} of {@code R}
+     * @param function    function which should return {@link Iterable}
+     * @param condition   predicate which is used to find some target value
+     * @param waitingTime is a duration of the waiting for valuable result
+     * @param <T>         is a type of input value
+     * @param <R>         is a type of the target value
+     * @param <V>         is a type of {@link Iterable} of {@code R}
      * @return a function. The result function returns a single first found value from {@link Iterable}.
      * It returns a value if something that suits criteria is found. {@code null} is returned if
      * result iterable to get value from is null or has zero-size or it has no item which suits criteria.
      */
-    public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(String description,
-                                                                               Function<T, V> function,
+    public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(Function<T, V> function,
                                                                                Predicate<? super R> condition,
-                                                                               boolean checkConditionInParallel,
-                                                                               boolean ignoreExceptionOnConditionCheck) {
-        return singleFromIterable(checkDescription(description), checkFunction(function), checkCondition(condition), null, null, checkConditionInParallel,
-                ignoreExceptionOnConditionCheck, null);
+                                                                               Duration waitingTime) {
+        return singleFromIterable(ToGetConditionalHelper.checkFunction(function), ToGetConditionalHelper.checkCondition(condition), ToGetConditionalHelper.checkWaitingTime(waitingTime),
+                null, null);
     }
 
     /**
      * This method returns a function. The result function returns a single first found value from {@link Iterable}.
      *
-     * @param description of a value which should be returned
-     * @param function function which should return {@link Iterable}
-     * @param <T> is a type of input value
-     * @param <R> is a type of the target value
-     * @param <V> is a type of {@link Iterable} of {@code R}
+     * @param function    function which should return {@link Iterable}
+     * @param waitingTime is a duration of the waiting for valuable result
+     * @param <T>         is a type of input value
+     * @param <R>         is a type of the target value
+     * @param <V>         is a type of {@link Iterable} of {@code R}
      * @return a function. The result function returns a single first found non-null value from {@link Iterable}.
      * {@code null} is returned if result iterable to get value from is null or has zero-size.
      */
-    public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(String description,
-                                                                               Function<T, V> function) {
-        return singleFromIterable(description, checkFunction(function), AsIsCondition.AS_IS, null, null, false,
-                true, null);
+    public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(Function<T, V> function,
+                                                                               Duration waitingTime) {
+        return singleFromIterable(ToGetConditionalHelper.checkFunction(function), (Predicate<? super R>) ToGetConditionalHelper.AS_IS, ToGetConditionalHelper.checkWaitingTime(waitingTime),
+                null, null);
+    }
+
+    /**
+     * This method returns a function. The result function returns a single first found value which
+     * suits criteria from {@link Iterable}.
+     *
+     * @param function  function which should return {@link Iterable}
+     * @param condition predicate which is used to find some target value
+     * @param <T>       is a type of input value
+     * @param <R>       is a type of the target value
+     * @param <V>       is a type of {@link Iterable} of {@code R}
+     * @return a function. The result function returns a single first found value from {@link Iterable}.
+     * It returns a value if something that suits criteria is found. {@code null} is returned if
+     * result iterable to get value from is null or has zero-size or it has no item which suits criteria.
+     */
+    public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(Function<T, V> function,
+                                                                               Predicate<? super R> condition) {
+        return singleFromIterable(ToGetConditionalHelper.checkFunction(function), ToGetConditionalHelper.checkCondition(condition), null,
+                null, null);
+    }
+
+    /**
+     * This method returns a function. The result function returns a single first found value from {@link Iterable}.
+     *
+     * @param function function which should return {@link Iterable}
+     * @param <T>      is a type of input value
+     * @param <R>      is a type of the target value
+     * @param <V>      is a type of {@link Iterable} of {@code R}
+     * @return a function. The result function returns a single first found non-null value from {@link Iterable}.
+     * {@code null} is returned if result iterable to get value from is null or has zero-size.
+     */
+    public static <T, R, V extends Iterable<R>> Function<T, R> getFromIterable(Function<T, V> function) {
+        return singleFromIterable(ToGetConditionalHelper.checkFunction(function), (Predicate<? super R>) ToGetConditionalHelper.AS_IS, null, null, null);
     }
 }

@@ -2,71 +2,129 @@ package ru.tinkoff.qa.neptune.core.api.steps;
 
 import java.util.function.Predicate;
 
-import static ru.tinkoff.qa.neptune.core.api.steps.AsIsCondition.AS_IS;
-import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
+import static java.util.Objects.nonNull;
+import static java.util.Objects.requireNonNull;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 interface Condition<T> extends Predicate<T> {
 
-    default Predicate<T> and(Predicate<? super T> other) {
-        checkNotNull(other);
+    String NOT_DESCRIBED = "<not described condition>";
 
-        var thisCondition = this;
-        return new Condition<>() {
-
-            @Override
-            public boolean test(T t) {
-                return thisCondition.test(t) && other.test(t);
-            }
-
-            @Override
-            public String toString() {
-                if (!AS_IS.equals(other) && isLoggable(other)) {
-                    return format("%s, %s", thisCondition.toString(), other.toString());
-                }
-                return thisCondition.toString();
-            }
-        };
+    default Predicate<T> xor(Predicate<? super T> other) {
+        requireNonNull(other);
+        return (t) -> test(t) ^ other.test(t);
     }
 
-    default Predicate<T> negate() {
-        var thisCondition = this;
+    class DescribedCondition<T> implements Condition<T>, TurnsRetortingOff<DescribedCondition<T>> {
 
-        return new Condition<>() {
-            @Override
-            public boolean test(T t) {
-                return !thisCondition.test(t);
+        private final String description;
+        private final Predicate<T> predicate;
+        private boolean toNotReport = false;
+
+        DescribedCondition(String description, Predicate<T> predicate) {
+            checkArgument(nonNull(predicate), "Predicate should be defined");
+            checkArgument(!isBlank(description), "Description should not be empty");
+
+            this.description = description;
+            this.predicate = predicate;
+        }
+
+        @Override
+        public boolean test(T t) {
+            return predicate.test(t);
+        }
+
+        private static <T> DescribedCondition<T> getDescribedCondition(Predicate<T> p) {
+            if (DescribedCondition.class.isAssignableFrom(p.getClass())) {
+                return (DescribedCondition<T>) p;
             }
 
-            @Override
-            public String toString() {
-                return format("not (%s)", thisCondition.toString());
+            if (isLoggable(p)) {
+                return new DescribedCondition<>(p.toString(), p);
             }
-        };
-    }
 
-    default Predicate<T> or(Predicate<? super T> other) {
-        checkNotNull(other);
+            return new DescribedCondition<>(NOT_DESCRIBED, p);
+        }
 
-        var thisCondition = this;
-        return new Condition<>() {
+        private static <T> DescribedCondition<T> getConditionWithChainedDescription(String description,
+                                                                                    DescribedCondition<?> p,
+                                                                                    DescribedCondition p2,
+                                                                                    Predicate<T> toTest) {
+            return new DescribedCondition<>(description, toTest) {
+                String getReportableDescription() {
+                    if (!p.toNotReport && !p2.toNotReport) {
+                        return super.getReportableDescription();
+                    }
 
-            @Override
-            public boolean test(T t) {
-                if (!AS_IS.equals(other)) {
-                    return thisCondition.test(t) || other.test(t);
+                    if (!p.toNotReport) {
+                        return p.description;
+                    }
+
+                    if (!p2.toNotReport) {
+                        return p2.description;
+                    }
+
+                    return EMPTY;
                 }
-                return thisCondition.test(t);
-            }
+            };
+        }
 
-            @Override
-            public String toString() {
-                if (!AS_IS.equals(other) && isLoggable(other)) {
-                    return format("(%s) or (%s)", thisCondition.toString(), other.toString());
-                }
-                return thisCondition.toString();
+        String getReportableDescription() {
+            return description;
+        }
+
+        public String toString() {
+            if (!toNotReport) {
+                return getReportableDescription();
             }
-        };
+            return EMPTY;
+        }
+
+        @Override
+        public Predicate<T> and(Predicate<? super T> other) {
+            checkNotNull(other);
+            var described = getDescribedCondition(other);
+            final var thisDescribed = this;
+
+            return getConditionWithChainedDescription(format("%s, %s", this, described), this, described,
+                    t -> thisDescribed.test(t) && other.test(t));
+        }
+
+        @Override
+        public Predicate<T> negate() {
+            var result = new DescribedCondition<T>(format("not [%s]", description), t -> !test(t));
+            result.toNotReport = toNotReport;
+            return result;
+        }
+
+        public Predicate<T> or(Predicate<? super T> other) {
+            checkNotNull(other);
+            var described = getDescribedCondition(other);
+            final var thisDescribed = this;
+
+            return getConditionWithChainedDescription(format("(%s) or (%s)", this, described), this, described,
+                    t -> thisDescribed.test(t) || other.test(t));
+        }
+
+        @Override
+        public Predicate<T> xor(Predicate<? super T> other) {
+            checkNotNull(other);
+            var described = getDescribedCondition(other);
+            final var thisDescribed = this;
+
+            return getConditionWithChainedDescription(format("(%s) xor (%s)", this, described), this, described,
+                    t -> thisDescribed.test(t) ^ other.test(t));
+        }
+
+        @Override
+        public DescribedCondition<T> turnReportingOff() {
+            toNotReport = true;
+            return this;
+        }
     }
 }

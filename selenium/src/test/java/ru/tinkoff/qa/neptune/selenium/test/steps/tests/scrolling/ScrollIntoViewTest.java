@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.test.steps.tests.scrolling;
 
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.selenium.functions.edit.EditActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 import ru.tinkoff.qa.neptune.selenium.test.MockWebElement;
 import ru.tinkoff.qa.neptune.selenium.test.steps.tests.searching.widgets.buttons.CustomizedButton;
@@ -42,7 +41,9 @@ public class ScrollIntoViewTest extends BaseWebDriverTest {
 
     @Test
     public void scrollElementInsideWidgetIntoView() {
-        var table = seleniumSteps.find(table(shouldContainElements(buttons(ofSeconds(1)))));
+        var table = seleniumSteps.find(table()
+                .criteria(shouldContainElements(buttons()
+                        .timeOut(ofSeconds(1)))));
         var tableScrollCount = ((MockWebElement) table.getWrappedElement()).getScrollCount();
 
         table.getClass();

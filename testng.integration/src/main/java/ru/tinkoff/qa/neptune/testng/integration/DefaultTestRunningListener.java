@@ -16,7 +16,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.testng.ITestResult.*;
-import static ru.tinkoff.qa.neptune.core.api.cleaning.Refreshable.refresh;
+import static ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable.refreshContext;
 import static ru.tinkoff.qa.neptune.testng.integration.properties.TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY;
 import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Arrays.stream;
@@ -61,7 +61,7 @@ public class DefaultTestRunningListener implements IInvokedMethodListener {
                             .filter(annotation -> refreshBeforeMethodsAnnotatedBy
                                     .contains(((Annotation) annotation).annotationType())).collect(toList())
                             .size() > 0) {
-                        refresh(instance);
+                        refreshContext(instance);
                         previouslyRefreshed.set(method);
                     }
                 });

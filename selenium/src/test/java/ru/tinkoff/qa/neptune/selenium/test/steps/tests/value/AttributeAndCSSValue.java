@@ -14,7 +14,6 @@ import static ru.tinkoff.qa.neptune.selenium.functions.value.SequentialGetAttrib
 import static ru.tinkoff.qa.neptune.selenium.functions.value.SequentialGetCSSValueSupplier.cssValue;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
 import static java.time.Duration.ofMillis;
-import static java.util.List.of;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
@@ -30,7 +29,9 @@ public class AttributeAndCSSValue extends BaseWebDriverTest {
 
     @Test
     public void getAttributeValueByWebElementSearchCriteria() {
-        assertThat(seleniumSteps.get(attributeValue(HREF).of(webElement(tagName(LINK_TAG), shouldHaveAttribute(ATTR17, VALUE6)))),
+        assertThat(seleniumSteps.get(attributeValue(HREF)
+                        .of(webElement(tagName(LINK_TAG))
+                                .criteria(shouldHaveAttribute(ATTR17, VALUE6)))),
                 is(LINK_REFERENCE8));
     }
 
@@ -55,16 +56,16 @@ public class AttributeAndCSSValue extends BaseWebDriverTest {
 
     @Test
     public void getAttributeNullValueByWebElementSearchCriteria() {
-        assertThat(seleniumSteps.get(attributeValue(ATTR16).of(webElement(tagName(LINK_TAG),
-                shouldContainElements(webElements(tagName(LABEL_TAG), LINK_LABEL_TEXT1))))),
+        assertThat(seleniumSteps.get(attributeValue(ATTR16).of(webElement(tagName(LINK_TAG))
+                        .criteria(shouldContainElements(webElements(tagName(LABEL_TAG), LINK_LABEL_TEXT1))))),
                 nullValue());
     }
 
     @Test
     public void getAttributeNullValueFromWidget() {
         Select select = seleniumSteps
-                .find(select(of(SELECT_LABEL_TEXT8, SELECT_LABEL_TEXT12),
-                        shouldContainElements(webElements(className(ITEM_OPTION_CLASS), OPTION_TEXT34))));
+                .find(select(SELECT_LABEL_TEXT8, SELECT_LABEL_TEXT12)
+                        .criteria(shouldContainElements(webElements(className(ITEM_OPTION_CLASS), OPTION_TEXT34))));
         assertThat(seleniumSteps.get(attributeValue(ATTR4).of(select)),
                 nullValue());
     }
@@ -83,8 +84,8 @@ public class AttributeAndCSSValue extends BaseWebDriverTest {
 
     @Test
     public void getCSSValueByWebElementSearchCriteria() {
-        assertThat(seleniumSteps.get(cssValue(CSS20).of(webElement(cssSelector(CUSTOM_LINK_CSS),
-                shouldHaveAttribute(HREF, LINK_REFERENCE11)))),
+        assertThat(seleniumSteps.get(cssValue(CSS20).of(webElement(cssSelector(CUSTOM_LINK_CSS))
+                        .criteria(shouldHaveAttribute(HREF, LINK_REFERENCE11)))),
                 is(CSS_VALUE10));
     }
 
@@ -109,14 +110,17 @@ public class AttributeAndCSSValue extends BaseWebDriverTest {
 
     @Test
     public void getCSSNullValueByWebElementSearchCriteria() {
-        assertThat(seleniumSteps.get(cssValue(CSS11).of(webElement(xpath(TEXT_FIELD_XPATH),
-                shouldContainElements(webElements(tagName(LABEL_TAG), INPUT_LABEL_TEXT4, ofMillis(5)))))),
+        assertThat(seleniumSteps.get(cssValue(CSS11).of(webElement(xpath(TEXT_FIELD_XPATH))
+                        .criteria(shouldContainElements(webElements(tagName(LABEL_TAG), INPUT_LABEL_TEXT4)
+                                .timeOut(ofMillis(5)))))),
                 nullValue());
     }
 
     @Test
     public void getCSSNullValueFromWidget() {
-        TextField textField = seleniumSteps.find(textField(of(INPUT_LABEL_TEXT7, INPUT_LABEL_TEXT11), FIVE_SECONDS));
+        TextField textField = seleniumSteps
+                .find(textField(INPUT_LABEL_TEXT7, INPUT_LABEL_TEXT11)
+                        .timeOut(FIVE_SECONDS));
         assertThat(seleniumSteps.get(cssValue(CSS12).of(textField)),
                 nullValue());
     }

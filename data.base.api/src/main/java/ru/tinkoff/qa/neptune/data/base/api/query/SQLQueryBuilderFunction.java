@@ -1,16 +1,13 @@
 package ru.tinkoff.qa.neptune.data.base.api.query;
 
-import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
+import org.datanucleus.api.jdo.JDOPersistenceManager;
+import org.datanucleus.api.jdo.JDOQuery;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
-import javax.jdo.Query;
 import java.util.List;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.ClassLoader.getSystemClassLoader;
-import static java.lang.String.format;
-import static java.lang.reflect.Proxy.newProxyInstance;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -19,10 +16,10 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
  *
  * @param <T> type of objects to be selected.
  */
-public final class SQLQueryBuilderFunction<T> implements Function<DataBaseStepContext, Query<T>> {
+public final class SQLQueryBuilderFunction<T> implements Function<JDOPersistenceManager, SQLQuery<T>> {
 
     private final String sql;
-    private final Class<T> type;
+    final Class<T> type;
 
     private SQLQueryBuilderFunction(String sql, Class<T> type) {
         checkArgument(!isBlank(sql), "SQL query should differ from null/empty string.");
@@ -56,22 +53,9 @@ public final class SQLQueryBuilderFunction<T> implements Function<DataBaseStepCo
 
     @Override
     @SuppressWarnings("unchecked")
-    public Query<T> apply(DataBaseStepContext dataBaseSteps) {
-        var manager = dataBaseSteps.getCurrentPersistenceManager();
-        var query = manager.newQuery("javax.jdo.query.SQL", sql);
+    public SQLQuery<T> apply(JDOPersistenceManager jdoPersistenceManager) {
+        var query = (JDOQuery<T>) jdoPersistenceManager.newQuery("javax.jdo.query.SQL", sql);
         ofNullable(type).ifPresent(query::setClass);
-
-        return (Query<T>) newProxyInstance(getSystemClassLoader(),
-                new Class[] {Query.class},
-                (proxy, method, args) -> {
-                    if (method.getName().equals("toString") && method.getParameterTypes().length == 0) {
-                        return format("SQL query: %s", sql);
-                    }
-                    return method.invoke(query, args);
-                });
-    }
-
-    Class<?> getTypeOfRequiredValue() {
-        return type;
+        return new SQLQuery(query, sql);
     }
 }

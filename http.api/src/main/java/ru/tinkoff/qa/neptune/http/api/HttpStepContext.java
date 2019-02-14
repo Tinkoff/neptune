@@ -3,13 +3,13 @@ package ru.tinkoff.qa.neptune.http.api;
 import ru.tinkoff.qa.neptune.core.api.steps.context.ActionStepContext;
 import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
 import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
-import ru.tinkoff.qa.neptune.core.api.cleaning.Refreshable;
+import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 
 import java.net.CookieManager;
 import java.net.http.HttpClient;
 
 @CreateWith(provider = HttpStepsParameterProvider.class)
-public class HttpStepContext implements GetStepContext<HttpStepContext>, ActionStepContext<HttpStepContext>, Refreshable {
+public class HttpStepContext implements GetStepContext<HttpStepContext>, ActionStepContext<HttpStepContext>, ContextRefreshable {
 
     private final HttpClient client;
 
@@ -22,7 +22,7 @@ public class HttpStepContext implements GetStepContext<HttpStepContext>, ActionS
     }
 
     @Override
-    public void refresh() {
+    public void refreshContext() {
         client.cookieHandler().ifPresent(cookieHandler ->
                 ((CookieManager) cookieHandler).getCookieStore().removeAll());
     }

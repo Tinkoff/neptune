@@ -7,19 +7,16 @@ import ru.tinkoff.qa.neptune.selenium.api.widget.HasValue;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 import org.openqa.selenium.SearchContext;
 
-import java.util.function.Function;
-
 import static java.util.Objects.nonNull;
-import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 import static com.google.common.base.Preconditions.checkArgument;
 
 @MakeCaptureOnFinishing(typeOfCapture = Object.class)
 public final class SequentialGetValueSupplier<T> extends
-        SequentialGetStepSupplier<SeleniumStepContext, T, HasValue<T>, SequentialGetValueSupplier<T>> {
+        SequentialGetStepSupplier.GetObjectChainedStepSupplier<SeleniumStepContext, T, HasValue<T>, SequentialGetValueSupplier<T>> {
 
     private SequentialGetValueSupplier() {
-        super();
+        super("Value", HasValue::getValue);
     }
 
     /**
@@ -45,10 +42,5 @@ public final class SequentialGetValueSupplier<T> extends
     public static <T, R extends SearchContext & HasValue<T>> SequentialGetValueSupplier<T> ofThe(R from) {
         checkArgument(nonNull(from), "The element which has value should be defined");
         return new SequentialGetValueSupplier<T>().from(from);
-    }
-
-    @Override
-    protected Function<HasValue<T>, T> getEndFunction() {
-        return toGet("Value", HasValue::getValue);
     }
 }

@@ -1,11 +1,11 @@
 package ru.tinkoff.qa.neptune.core.api.event.firing;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.CaptorFilterByProducedType;
+import ru.tinkoff.qa.neptune.core.api.utils.SPIUtil;
 
 import java.util.List;
 import java.util.Set;
 
-import static ru.tinkoff.qa.neptune.core.api.utils.SPIUtil.loadSPI;
 import static java.util.Optional.ofNullable;
 
 @SuppressWarnings("unchecked")
@@ -15,7 +15,7 @@ public class StaticEventFiring {
 
     private static List<Captor> getCaptors() {
         return ofNullable(LIST_THREAD_LOCAL_CAPTORS.get()).orElseGet(() -> {
-            var captors = loadSPI(Captor.class);
+            var captors = SPIUtil.loadSPI(Captor.class);
             LIST_THREAD_LOCAL_CAPTORS.set(captors);
             return captors;
         });
@@ -25,8 +25,7 @@ public class StaticEventFiring {
         getCaptors().addAll(captors);
     }
 
-    public static <T> void catchValue(T caught,
-                                      Set<CaptorFilterByProducedType> captorFilters) {
+    public static <T> void catchValue(T caught, Set<CaptorFilterByProducedType> captorFilters) {
         if (caught == null) {
             return;
         }
@@ -44,7 +43,7 @@ public class StaticEventFiring {
     private static List<EventLogger> initEventLoggersIfNecessary() {
         return ofNullable(LIST_THREAD_LOCAL_EVENT_LOGGERS.get())
                 .orElseGet(() -> {
-                    var loggers = loadSPI(EventLogger.class);
+                    var loggers = SPIUtil.loadSPI(EventLogger.class);
                     LIST_THREAD_LOCAL_EVENT_LOGGERS.set(loggers);
                     return loggers;
                 });

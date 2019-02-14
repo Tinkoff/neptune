@@ -3,15 +3,13 @@ package ru.tinkoff.qa.neptune.selenium.functions.target.locator.window;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
-import java.util.function.Function;
-
-import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
 
-public final class GetWindowTitleSupplier extends SequentialGetStepSupplier<SeleniumStepContext, String, Window, GetWindowTitleSupplier> {
+public final class GetWindowTitleSupplier extends SequentialGetStepSupplier
+        .GetObjectChainedStepSupplier<SeleniumStepContext, String, Window, GetWindowTitleSupplier> {
 
     private GetWindowTitleSupplier() {
-        super();
+        super("Title of the window", Window::getTitle);
     }
 
     /**
@@ -41,10 +39,5 @@ public final class GetWindowTitleSupplier extends SequentialGetStepSupplier<Sele
      */
     public static GetWindowTitleSupplier titleOf(Window window) {
         return new GetWindowTitleSupplier().from(window);
-    }
-
-    @Override
-    protected Function<Window, String> getEndFunction() {
-        return toGet("Title of the window", Window::getTitle);
     }
 }

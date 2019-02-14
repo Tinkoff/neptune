@@ -32,13 +32,13 @@ public final class IsElementEnabledMatcher extends TypeSafeDiagnosingMatcher<Sea
         var clazz = item.getClass();
 
         if (WebElement.class.isAssignableFrom(clazz)) {
-            result = WebElement.class.cast(item).isEnabled();
+            result = ((WebElement) item).isEnabled();
         }
         else if (IsEnabled.class.isAssignableFrom(clazz)){
-            result = IsEnabled.class.cast(item).isEnabled();
+            result = ((IsEnabled) item).isEnabled();
         }
         else if (WrapsElement.class.isAssignableFrom(clazz)) {
-            var e = WrapsElement.class.cast(item).getWrappedElement();
+            var e = ((WrapsElement) item).getWrappedElement();
             if (e == null) {
                 mismatchDescription.appendText(format("Wrapped element is null. It is not possible to check is instance of %s enabled or not",
                         clazz.getName()));

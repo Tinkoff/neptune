@@ -1,11 +1,10 @@
 package ru.tinkoff.qa.neptune.core.api.event.firing.captors;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
+import ru.tinkoff.qa.neptune.core.api.utils.SPIUtil;
 
 import java.awt.image.BufferedImage;
 import java.util.List;
-
-import static ru.tinkoff.qa.neptune.core.api.utils.SPIUtil.loadSPI;
 
 public abstract class ImageCaptor<T> extends Captor<T, BufferedImage> {
 
@@ -14,7 +13,7 @@ public abstract class ImageCaptor<T> extends Captor<T, BufferedImage> {
     }
 
     public ImageCaptor(String message) {
-        this(message, loadSPI(CapturedImageInjector.class));
+        this(message, SPIUtil.loadSPI(CapturedImageInjector.class));
     }
 
     @Override

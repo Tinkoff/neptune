@@ -106,8 +106,7 @@ public class SwitchTest extends BaseWebDriverTest {
     @Test
     public void switchToFrameByWrappedElementBySearchingTest() {
         WebElement element = new ValidFrameWebElement();
-        seleniumSteps.performSwitch(to(frame(wrappedBy(() -> element))));
-
+        seleniumSteps.performSwitch(to(frame(wrappedBy((WrapsElement) () -> element))));
         assertThat(((MockWebDriver) seleniumSteps.getWrappedDriver()).getCurrentFrame(), is(element));
     }
 
@@ -135,13 +134,13 @@ public class SwitchTest extends BaseWebDriverTest {
 
     @Test
     public void switchToWindowBySearching() {
-        seleniumSteps.performSwitch(to(window().byIndex(1)));
+        seleniumSteps.performSwitch(to(window(1)));
         assertThat(seleniumSteps.getWrappedDriver().getWindowHandle(), is(HANDLE2.getHandle()));
     }
 
     @Test
     public void switchToWindow() {
-        Window window = seleniumSteps.get(window().byIndex(2));
+        Window window = seleniumSteps.get(window(2));
         seleniumSteps.performSwitch(to(window()));
         seleniumSteps.performSwitch(to(window));
         assertThat(seleniumSteps.getWrappedDriver().getWindowHandle(), is(HANDLE3.getHandle()));

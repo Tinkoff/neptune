@@ -18,7 +18,7 @@ public final class WaitingForQueryResultDuration extends DurationSupplier {
 
     /**
      * Reads properties {@code 'waiting.db.selection.result.time.unit'} and {@code 'waiting.db.selection.result.time.value'}
-     * and builds an instance of {@link Duration}. When any of properties is not defined then in builds a duration of
+     * and builds an instance of {@link Duration}. When any of properties is not defined then it builds a duration of
      * 5 seconds.
      */
     public static final WaitingForQueryResultDuration WAITING_FOR_SELECTION_RESULT_TIME =
@@ -27,7 +27,7 @@ public final class WaitingForQueryResultDuration extends DurationSupplier {
 
     /**
      * Reads properties {@code 'sleeping.db.selection.time.unit'} and {@code 'sleeping.db.selection.time.value'}
-     * and builds an instance of {@link Duration}. When any of properties is not defined then in builds a duration of
+     * and builds an instance of {@link Duration}. When any of properties is not defined then it builds a duration of
      * 100 milliseconds.
      */
     public static final WaitingForQueryResultDuration SLEEPING_TIME =

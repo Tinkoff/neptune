@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame;
 
+import org.openqa.selenium.NoSuchFrameException;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
@@ -7,19 +8,27 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
 import org.openqa.selenium.WebDriver;
 
+import java.time.Duration;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
+import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITING_FRAME_SWITCHING_DURATION;
 
 @MakeImageCapturesOnFinishing
 @MakeFileCapturesOnFinishing
-public final class GetFrameSupplier extends SequentialGetStepSupplier<SeleniumStepContext, Frame, WebDriver, GetFrameSupplier>
+public final class GetFrameSupplier extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<SeleniumStepContext, Frame, WebDriver, GetFrameSupplier>
         implements TargetLocatorSupplier<Frame> {
 
-    private final Function<WebDriver, Frame> getFrame;
 
-    private GetFrameSupplier(Function<WebDriver, Frame> getFrame) {
-        this.getFrame = getFrame;
+    private GetFrameSupplier(GetFrameFunction getFrame) {
+        super(format("Frame %s", getFrame.getDescription()), getFrame);
+        timeOut(WAITING_FRAME_SWITCHING_DURATION.get());
+        throwOnEmptyResult(() -> new NoSuchFrameException(format("Can't find/switch to the frame %s",
+                getFrame.getDescription())));
     }
 
     /**
@@ -29,12 +38,11 @@ public final class GetFrameSupplier extends SequentialGetStepSupplier<SeleniumSt
      * @param howToGetFrame how to get the frame to switch to.
      * @return instance of {@link GetFrameSupplier}
      */
-    public static GetFrameSupplier frame(Function<WebDriver, Frame> howToGetFrame) {
+    public static GetFrameSupplier frame(GetFrameFunction howToGetFrame) {
         return new GetFrameSupplier(howToGetFrame).from(currentContent());
     }
 
-    @Override
-    protected Function<WebDriver, Frame> getEndFunction() {
-        return getFrame;
+    public GetFrameSupplier timeOut(Duration timeOut) {
+        return super.timeOut(timeOut);
     }
 }

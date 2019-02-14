@@ -15,11 +15,12 @@ import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
+import static ru.tinkoff.qa.neptune.data.base.api.query.GetSelectedFunction.selected;
 import static ru.tinkoff.qa.neptune.data.base.api.query.QueryBuilderFunction.ofType;
 import static ru.tinkoff.qa.neptune.data.base.api.query.SQLQueryBuilderFunction.bySQL;
 import static ru.tinkoff.qa.neptune.data.base.api.query.SQLQueryBuilderFunction.byTypedSQL;
-import static ru.tinkoff.qa.neptune.data.base.api.query.SelectListByQuerySupplier.listByQuery;
-import static ru.tinkoff.qa.neptune.data.base.api.query.SelectSingleObjectByQuerySupplier.aSingleByQuery;
+import static ru.tinkoff.qa.neptune.data.base.api.query.SelectListGetSupplier.listByQuery;
+import static ru.tinkoff.qa.neptune.data.base.api.query.SelectOneGetSupplier.aSingleByQuery;
 
 public class SelectBySqlQuery extends BaseDbOperationTest {
     private static final SimpleDateFormat SIMPLE_DATE_FORMAT =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.000000000");
@@ -32,11 +33,12 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
 
     @Test
     public void selectListByTypedSqlTest() {
-        List<Author> authors = dataBaseSteps.get(listByQuery(byTypedSQL(Author.class, QUERY)));
-        List<Book> books = dataBaseSteps.get(listByQuery(byTypedSQL(Book.class, QUERY)));
+        List<Author> authors = dataBaseSteps.get(selected(listByQuery(byTypedSQL(Author.class, QUERY))));
+        List<Book> books = dataBaseSteps.get(selected(listByQuery(byTypedSQL(Book.class, QUERY))));
 
-        List<Book> books2 = dataBaseSteps.get(listByQuery(ofType(Book.class).where(Q_BOOK.yearOfFinishing.gteq(1820))
-                .orderBy(Q_BOOK.yearOfFinishing.asc())));
+        List<Book> books2 = dataBaseSteps.get(selected(listByQuery(ofType(Book.class)
+                .where(Q_BOOK.yearOfFinishing.gteq(1820))
+                .orderBy(Q_BOOK.yearOfFinishing.asc()))));
         List<Author> authors2 = books2.stream().map(Book::getAuthor).collect(toList());
 
         assertThat(authors2, contains(authors.toArray()));
@@ -45,11 +47,12 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
 
     @Test
     public void selectSingleByTypedSqlTest() {
-        Author author = dataBaseSteps.get(aSingleByQuery(byTypedSQL(Author.class, QUERY)));
-        Book book = dataBaseSteps.get(aSingleByQuery(byTypedSQL(Book.class, QUERY)));
+        Author author = dataBaseSteps.get(selected(aSingleByQuery(byTypedSQL(Author.class, QUERY))));
+        Book book = dataBaseSteps.get(selected(aSingleByQuery(byTypedSQL(Book.class, QUERY))));
 
-        Book book2 = dataBaseSteps.get(aSingleByQuery(ofType(Book.class).where(Q_BOOK.yearOfFinishing.gteq(1820))
-                .orderBy(Q_BOOK.yearOfFinishing.asc())));
+        Book book2 = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
+                .where(Q_BOOK.yearOfFinishing.gteq(1820))
+                .orderBy(Q_BOOK.yearOfFinishing.asc()))));
         Author author2 = book2.getAuthor();
 
         assertThat(author2, equalTo(author));
@@ -58,10 +61,10 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
 
     @Test
     public void selectListByUnTypedSqlTest() {
-        List<List<Object>> booksAndAuthors = dataBaseSteps.get(listByQuery(bySQL(QUERY))).subList(0, 1);
-        List<Book> books = dataBaseSteps.get(listByQuery(ofType(Book.class)
+        List<List<Object>> booksAndAuthors = dataBaseSteps.get(selected(listByQuery(bySQL(QUERY)))).subList(0, 1);
+        List<Book> books = dataBaseSteps.get(selected(listByQuery(ofType(Book.class)
                 .where(Q_BOOK.yearOfFinishing.gteq(1820))
-                .orderBy(Q_BOOK.yearOfFinishing.asc()).range(0, 1)));
+                .orderBy(Q_BOOK.yearOfFinishing.asc()).range(0, 1))));
         List<List<Object>> booksAndAuthors2 = books.stream()
                 .map(book -> {
                     List<Object> result = new ArrayList<>();
@@ -84,8 +87,9 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
 
     @Test
     public void selectSingleByUnTypedSqlTest() {
-        List<Object> bookAndAuthor = dataBaseSteps.get(aSingleByQuery(bySQL(QUERY)));
-        Book book = dataBaseSteps.get(aSingleByQuery(ofType(Book.class).where(Q_BOOK.name.eq("Ruslan and Ludmila"))));
+        List<Object> bookAndAuthor = dataBaseSteps.get(selected(aSingleByQuery(bySQL(QUERY))));
+        Book book = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
+                .where(Q_BOOK.name.eq("Ruslan and Ludmila")))));
 
         List<Object> bookAndAuthor2 = new ArrayList<>();
         bookAndAuthor2.add(book.getId());
@@ -105,13 +109,13 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
 
     @Test
     public void aggregatedListResultSelect() {
-        List<List<Object>> result = dataBaseSteps.get(listByQuery(bySQL(QUERY2)));
-        assertThat(result, contains(of(1820)));
+        List<List<Object>> result = dataBaseSteps.get(selected(listByQuery(bySQL(QUERY2))));
+        assertThat(result, contains(contains(1820)));
     }
 
     @Test
     public void aggregatedSingleResultSelect() {
-        List<Object> result = dataBaseSteps.get(aSingleByQuery(bySQL(QUERY2)));
+        List<Object> result = dataBaseSteps.get(selected(aSingleByQuery(bySQL(QUERY2))));
         assertThat(result, contains(1820));
     }
 }
