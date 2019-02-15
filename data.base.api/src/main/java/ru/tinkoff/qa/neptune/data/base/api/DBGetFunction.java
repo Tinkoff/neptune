@@ -62,5 +62,9 @@ public class DBGetFunction<T, R extends DBGetFunction> implements Function<DataB
             dataBaseStepContext.switchToDefault();
         }
     }
+
+    public String toString() {
+        return innerSupplier.toString();
+    }
 }
 
