@@ -9,3 +9,5 @@
 [![Datanucleus](http://www.datanucleus.org/images/frontpage/dn_accessplatform_overview.png)](http://www.datanucleus.org/index.html)
 
 [![Allure](https://avatars3.githubusercontent.com/u/5879127?s=200&v=4)](http://allure.qatools.ru/)
+
+[![Gradle](https://cdn-images-1.medium.com/max/1600/1*gImAplWne6yxtDytygjiYw.png)](https://gradle.org/)
