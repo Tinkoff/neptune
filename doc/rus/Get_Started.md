@@ -15,7 +15,7 @@
 
 Проект модульный. Модули практически независимы. Подробнее о каждом из них:
 - [core.api](/doc/rus/core/Main.md).
-- [check](/doc/rus/check/Main.md). [Начало работы](doc/rus/check/Main.md#Начало-работы)
+- [check](/doc/rus/check/Main.md). [Начало работы](/doc/rus/check/Main.md#начало-работы)
 - [selenium](/doc/rus/selenium/Main.md). 
 - [data.base.api](/doc/rus/data.dase/Main.md). 
 - [http.api](/doc/rus/data.dase/Main.md). 
