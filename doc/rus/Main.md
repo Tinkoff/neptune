@@ -48,8 +48,8 @@
 
     @Test
     public void test() {
-        var catalogItems = dataBase.get(selected(listOfTypeByIds(Catalog.class, -3,
-                "0-930267-39-7", "0-671-73246-3")));
+        var catalogItems = dataBase.get(selected(listOfTypeByIds(Catalog.class, 
+        "0-930267-39-7", "0-671-73246-3")));
 
         check.verify(thatValue("'Элементы книжного каталога", catalogItems)
                 .suitsCriteria("ISBN коды", 
@@ -82,7 +82,7 @@
     
     @Test
     public void test2() {
-        var result = http.get(bodyDataOf(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
+        var result = http.get(bodyDataOf(responseOf(GET(format("http://127.0.0.1/data.html", REQUEST_URI)), ofString()),
                 "Список тэгов <a>", toNodeList("a"))
                 .criteria("В списке 1 тэг <a>", nodeList -> nodeList.size() == 1));
 
