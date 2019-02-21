@@ -1,8 +1,9 @@
-# Инструмент для выполнения проверок
+# check
 
 Модуль разработан для описания/выполнения проверок (assertion).
+[API](https://tinkoffcreditsystems.github.io/neptune/check/) 
 
-## Начало работы
+# Начало работы
 
 ## Требования
  
@@ -29,4 +30,15 @@
 
 `compile group: 'ru.tinkoff.qa.neptune', name: 'check', version: neptuneVersion`
 
+# Инициализация контекста
+
+Достаточно 
+
+```java
+
+```
+
+# Варианты использования
+
+## Обычная проверка
 
