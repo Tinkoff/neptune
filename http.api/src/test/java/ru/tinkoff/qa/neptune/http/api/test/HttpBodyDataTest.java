@@ -55,11 +55,11 @@ public class HttpBodyDataTest extends BaseHttpTest {
     @Test
     public void getAnObjectFromBodyPositiveTest1() {
         var result = httpSteps.get(bodyDataOf(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
-                "Список тэгов <a>", toNodeList("a"))
-                .criteria("В списке 1 тэг <a>", nodeList -> nodeList.size() == 1));
+                "List of tags <a>", toNodeList("a"))
 
-        check.verify(thatValue("Список тэгов <a>", result)
-                .suitsCriteria(not(nullValue())));
+                .criteria("Has 1 tag <a>", nodeList -> nodeList.size() == 1));
+
+        assertThat(result, hasSize(1));
     }
 
     @Test
@@ -68,6 +68,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
 
         var result = httpSteps.get(bodyDataOf(response,
                 "List of tags <a>", toNodeList("a"))
+
                 .criteria("Has 1 tag <a>", nodeList -> nodeList.size() == 1));
 
         assertThat(result, hasSize(1));
