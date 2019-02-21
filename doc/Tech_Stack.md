@@ -1,4 +1,4 @@
-[![Java 11](https://linuxthebest.net/wp-content/uploads/2018/11/java-oracle.png)](https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html)
+[![Java 11](https://proglib.io/wp-content/uploads/2018/05/java-wallpaper-5.jpg)](https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html)
 
 [![Byte Buddy](https://bytebuddy.net/images/logo-bg.png)](https://bytebuddy.net/#/)
 
