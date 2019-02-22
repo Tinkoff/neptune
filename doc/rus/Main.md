@@ -149,7 +149,7 @@
   clickOn(element(tagName("button")).compose(element(tagName("form")))).accept(driver);
   ```
 
-
+# Используемые технологии
 
 - [Используемые технологии](/doc/Tech_Stack.md)
 
