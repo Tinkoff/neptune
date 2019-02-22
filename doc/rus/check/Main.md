@@ -7,7 +7,7 @@
 
 ## Требования
  
- - Операционнаяя система - Windows/Mac Os X/Linux
+ - Операционная система - Windows/Mac Os X/Linux
  - Java Development Kit 11
  - [maven](https://maven.apache.org/) или [gradle](https://gradle.org/)
  
