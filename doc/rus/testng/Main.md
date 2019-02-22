@@ -57,7 +57,7 @@ public class MyStepContext implements ActionStepContext<SeleniumStepContext>, Ge
 }
 ```
 
-и тогда достаточно
+и тогда
 
 ```java
 ...
@@ -65,7 +65,7 @@ import ru.tinkoff.qa.neptune.testng.integration.BaseTestNgTest;
 ...
 public class MyCustomizedTest extends BaseTestNgTest<BaseWebOfficeTest> {
     ...
-    private MyStepContext myContext;
+    private MyStepContext myContext; //для работы достаточно просто объявить поле
     
     @Test
     public void test() {
