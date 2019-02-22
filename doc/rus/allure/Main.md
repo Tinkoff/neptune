@@ -48,7 +48,8 @@
 
 #### Allure + TestNg
 
-`compile group: 'ru.tinkoff.qa.neptune', name: 'allure.testng.bridge', version: neptuneVersion`
 Данный артефакт уже включает в себя зависимость `allure.integration`, [allure-testng](https://docs.qameta.io/allure/#_testng) и [testng.integration](/doc/rus/testng/Main.md) 
+
+`compile group: 'ru.tinkoff.qa.neptune', name: 'allure.testng.bridge', version: neptuneVersion`
 
 Дополнительные действия не нужны. Далее Allure работает как обычный логгер. Для построения оттчета Allure ознакомьтесь с документацией.
