@@ -32,7 +32,7 @@
 
 ## Далее
 
-Далее в проекте следует 
+### Далее в проекте следует 
 
 ```java
 ...
@@ -144,6 +144,18 @@ public class MyCustomizedTest extends BaseTestNgTest<BaseWebOfficeTest> {
 }
 ```
 
+### Настройки 
+
+В файле [general.properties](/doc/rus/core/Properties.md) можно указать значение свойства `testng.refresh.before`. 
+
+[Некоторые контексты следует обновлять перед выполнением теста](/doc/rus/core/Context.md#Обновление-контекста) (перезапусть браузер, почистить куки, обновить соединение с базой данных и т.д.). 
+Свойство `testng.refresh.before` позволяет указать, перед какими методами следует провести обновление. Это должны быть не статические методы, отмеченные аннотациями `@BeforeSuite` или `@BeforeTest`, или `@BeforeClass`, или `@BeforeMethod`, или `@Test`. [Аннотации TestNG](http://testng.org/doc/documentation-main.html#annotations).
+Можно указать как одно значение свойства, так и несколько значений через запятуюю. Значения должны соответствовать именам элементов перечисления [RefreshEachTimeBefore](https://tinkoffcreditsystems.github.io/neptune/testng.integration/ru/tinkoff/qa/neptune/testng/integration/properties/RefreshEachTimeBefore.html). 
+Обновление вызывается ОДИН раз перед тем, как очередной тест (не статический метод, отмеченный аннотацией `@Test`) запущен.
+
+Примеры: 
+- `testng.refresh.before = BEFORE_METHOD_STARTING` Означает, что обновление контекстов должно произойти ОДИН раз до запуска теста (метода отмеченного аннотацией `@Test`), перед ПЕРВЫМ в очереди запуска конфигурационным не статическим методом, отмеченным аннотацией `@BeforeMethod`
+- `testng.refresh.before = BEFORE_METHOD_STARTING,CLASS_STARTING,SUITE_STARTING` Означает, что обновление контекстов должно произойти ОДИН раз до запуска теста (метода отмеченного аннотацией `@Test`), перед ПЕРВЫМ в очереди запуска конфигурационным не статическим методом, отмеченным аннотациями `@BeforeMethod`, `@BeforeClass`, `@BeforeSuite`
 
 
 

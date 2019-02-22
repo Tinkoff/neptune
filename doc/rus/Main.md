@@ -166,11 +166,14 @@
 ## Общие шаги
 
 1. Указать необходимые зависимости от модулей проекта
-2. Создать в корне проекта файл `general.properties`
+2. Создать в корне проекта файл [general.properties](/doc/rus/core/Properties.md)
 3. Объявить в нем свойства и указать необходимые значения этих свойств.
 4. Произвести необходимую кастомизацию
 
-### Фремворки для автоматизации тестирования
+### Общая функциональность
+- [core.api](/doc/rus/core/Main.md)
+
+### Фреймворки для автоматизации тестирования
  - [testng.integration](/doc/rus/testng/Main.md)
 
 ### Инструменты для репортинга
@@ -179,7 +182,6 @@
 ### Прочие инструменты 
   
   - [check](/doc/rus/check/Main.md)
-  - [core.api](/doc/rus/core/Main.md)
   - [selenium](/doc/rus/selenium/Main.md)
   - [data.base.api](/doc/rus/data.dase/Main.md)
   - [http.api](/doc/rus/data.dase/Main.md)
