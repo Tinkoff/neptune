@@ -132,8 +132,8 @@ public class MyCustomizedTest extends BaseTestNgTest<BaseWebOfficeTest> {
              {action("Какое-то спефическое действие 2", (Consumer<MyCustomizedTest>) textContext -> {
                  ...//действия, которые включены в шаг
              })},                    
-            };
-        }
+        };
+    }
     
     @Test(dataProvider = "testDataProvider")
     public void test(StepAction<MyCustomizedTest> action) {
