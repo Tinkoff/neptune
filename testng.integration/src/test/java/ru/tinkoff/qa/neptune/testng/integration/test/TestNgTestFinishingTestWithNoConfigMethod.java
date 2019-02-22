@@ -6,8 +6,6 @@ import org.testng.annotations.Test;
 import org.testng.xml.XmlClass;
 import org.testng.xml.XmlSuite;
 import org.testng.xml.XmlTest;
-import ru.tinkoff.qa.neptune.testng.integration.properties.RefreshEachTimeBefore;
-import ru.tinkoff.qa.neptune.testng.integration.properties.TestNGRefreshStrategyProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +14,8 @@ import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static ru.tinkoff.qa.neptune.testng.integration.properties.RefreshEachTimeBefore.*;
+import static ru.tinkoff.qa.neptune.testng.integration.properties.TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY;
 
 public class TestNgTestFinishingTestWithNoConfigMethod {
 
@@ -55,62 +55,62 @@ public class TestNgTestFinishingTestWithNoConfigMethod {
 
     @Test
     public void whenRefreshingStrategyIsBeforeSuite() {
-        TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY.accept(RefreshEachTimeBefore.SUITE_STARTING.name());
+        REFRESH_STRATEGY_PROPERTY.accept(SUITE_STARTING.name());
         try {
             runBeforeTheChecking();
             assertThat(StepClass2.getRefreshCount(), is(0));
         }
         finally {
-            System.getProperties().remove(TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY.getPropertyName());
+            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getPropertyName());
         }
     }
 
     @Test
     public void whenRefreshingStrategyIsBeforeTest() {
-        TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY.accept(RefreshEachTimeBefore.ALL_TEST_STARTING.name());
+        REFRESH_STRATEGY_PROPERTY.accept(ALL_TEST_STARTING.name());
         try {
             runBeforeTheChecking();
             assertThat(StepClass2.getRefreshCount(), is(0));
         }
         finally {
-            System.getProperties().remove(TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY.getPropertyName());
+            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getPropertyName());
         }
     }
 
     @Test
     public void whenRefreshingStrategyIsBeforeClass() {
-        TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY.accept(RefreshEachTimeBefore.CLASS_STARTING.name());
+        REFRESH_STRATEGY_PROPERTY.accept(CLASS_STARTING.name());
         try {
             runBeforeTheChecking();
             assertThat(StepClass2.getRefreshCount(), is(0));
         }
         finally {
-            System.getProperties().remove(TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY.getPropertyName());
+            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getPropertyName());
         }
     }
 
     @Test
     public void whenRefreshingStrategyIsBeforeMethod() {
-        TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY.accept(RefreshEachTimeBefore.BEFORE_METHOD_STARTING.name());
+        REFRESH_STRATEGY_PROPERTY.accept(BEFORE_METHOD_STARTING.name());
         try {
             runBeforeTheChecking();
             assertThat(StepClass2.getRefreshCount(), is(0));
         }
         finally {
-            System.getProperties().remove(TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY.getPropertyName());
+            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getPropertyName());
         }
     }
 
     @Test
     public void whenRefreshingStrategyIsCombined() {
-        TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY.accept(stream(RefreshEachTimeBefore.values())
+        REFRESH_STRATEGY_PROPERTY.accept(stream(values())
                 .map(Enum::name).collect(joining(",")));
         try {
             runBeforeTheChecking();
             assertThat(StepClass2.getRefreshCount(), is(3));
         }
         finally {
-            System.getProperties().remove(TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY.getPropertyName());
+            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getPropertyName());
         }
     }
 }

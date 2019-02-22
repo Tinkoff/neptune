@@ -153,7 +153,7 @@ public class MyCustomizedTest extends BaseTestNgTest<BaseWebOfficeTest> {
 Можно указать как одно значение свойства, так и несколько значений через запятую. Значения должны соответствовать именам элементов перечисления [RefreshEachTimeBefore](https://tinkoffcreditsystems.github.io/neptune/testng.integration/ru/tinkoff/qa/neptune/testng/integration/properties/RefreshEachTimeBefore.html). 
 Обновление вызывается ОДИН раз перед тем, как очередной тест (не статический метод, отмеченный аннотацией `@Test`) запущен.
 
-Примеры: 
+#### Примеры: 
 - `testng.refresh.before = BEFORE_METHOD_STARTING` Означает, что обновление контекстов должно произойти ОДИН раз до запуска теста (не статического метода, отмеченного аннотацией `@Test`), перед ПЕРВЫМ в очереди запуска конфигурационным не статическим методом, отмеченным аннотацией `@BeforeMethod`
 - `testng.refresh.before = BEFORE_METHOD_STARTING,CLASS_STARTING,SUITE_STARTING` Означает, что обновление контекстов должно произойти ОДИН раз до запуска теста (не статического метода, отмеченного аннотацией `@Test`), перед ПЕРВЫМ в очереди запуска конфигурационным не статическим методом, отмеченным аннотациями `@BeforeMethod` или `@BeforeClass`, или `@BeforeSuite`
 
@@ -162,6 +162,22 @@ public class MyCustomizedTest extends BaseTestNgTest<BaseWebOfficeTest> {
 Указывать значения свойства `testng.refresh.before` следует если:
 
 - в проекте присутствуют конфигурационные методы, использующие контексты, и необходимо чтобы контексты были приведены к состоянию, которое можно считать исходным.
+
+#### Програаммная установка свойства
+
+```java
+import static ru.tinkoff.qa.neptune.testng.integration.properties.TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY;
+import static ru.tinkoff.qa.neptune.testng.integration.properties.RefreshEachTimeBefore.*;
+        
+        ....
+        REFRESH_STRATEGY_PROPERTY.accept(ALL_TEST_STARTING.name());        
+        //или, пример установки множественного значения
+        //в примере используются все возможные значения
+        REFRESH_STRATEGY_PROPERTY.accept(stream(RefreshEachTimeBefore.values())
+                        .map(Enum::name).collect(joining(",")));
+        
+        
+``` 
 
 
 
