@@ -1,3 +1,4 @@
 # Интеграция с Allure 2
 
-- [Начало работы](/doc/rus/allure/Get_Started.md)
+Модуль разработан для автоматического построения отчетов Allure. [API](https://tinkoffcreditsystems.github.io/neptune/allure.integration/) 
+Интеграция с [Allure 2](https://docs.qameta.io/allure/). [Пример отчета](https://demo.qameta.io/allure/)
