@@ -1,11 +1,7 @@
 package ru.tinkoff.qa.neptune.testng.integration.test;
 
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeMethod;
-import ru.tinkoff.qa.neptune.testng.integration.properties.RefreshEachTimeBefore;
-import ru.tinkoff.qa.neptune.testng.integration.test.ignored.IgnoredStubTest;
-import ru.tinkoff.qa.neptune.testng.integration.test.ignored.entries.IgnoredStubTest2;
 import org.testng.TestNG;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.testng.xml.XmlClass;
 import org.testng.xml.XmlSuite;
@@ -16,14 +12,12 @@ import java.util.List;
 
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static ru.tinkoff.qa.neptune.core.api.concurency.ObjectContainer.getAllObjects;
+import static org.hamcrest.Matchers.is;
 import static ru.tinkoff.qa.neptune.testng.integration.properties.RefreshEachTimeBefore.*;
 import static ru.tinkoff.qa.neptune.testng.integration.properties.TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY;
 
-public class TestNgTestFinishingTest {
+public class TestNgTestFinishingTestWithNoConfigMethod {
 
     private void runBeforeTheChecking() {
         TestNG testNG=new TestNG();
@@ -33,15 +27,12 @@ public class TestNgTestFinishingTest {
         XmlSuite suite = new XmlSuite();
         XmlSuite parent = new XmlSuite();
         suite.setParentSuite(parent);
-        suite.setName("FinishSuite");
+        suite.setName("FinishSuiteWithNoConfigMethod");
 
         XmlTest test = new XmlTest(suite);
 
         List<XmlClass> testClasses = new ArrayList<>();
-        testClasses.add(new XmlClass(TestNgInstantiationTest.class.getName()));
-        testClasses.add(new XmlClass(TestNgStubTest.class.getName()));
-        testClasses.add(new XmlClass(IgnoredStubTest2.class.getName()));
-        testClasses.add(new XmlClass(IgnoredStubTest.class.getName()));
+        testClasses.add(new XmlClass(TestWithoutConfigurationMethod.class.getName()));
 
         test.setXmlClasses(testClasses);
         //testNG.setAnnotationTransformer();
@@ -59,7 +50,7 @@ public class TestNgTestFinishingTest {
     @Test
     public void whenNoRefreshingStrategyIsDefined() {
         runBeforeTheChecking();
-        assertThat(StepClass2.getRefreshCount(), is(8));
+        assertThat(StepClass2.getRefreshCount(), is(3));
     }
 
     @Test
@@ -67,7 +58,7 @@ public class TestNgTestFinishingTest {
         REFRESH_STRATEGY_PROPERTY.accept(SUITE_STARTING.name());
         try {
             runBeforeTheChecking();
-            assertThat(StepClass2.getRefreshCount(), is(1));
+            assertThat(StepClass2.getRefreshCount(), is(0));
         }
         finally {
             System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getPropertyName());
@@ -79,7 +70,7 @@ public class TestNgTestFinishingTest {
         REFRESH_STRATEGY_PROPERTY.accept(ALL_TEST_STARTING.name());
         try {
             runBeforeTheChecking();
-            assertThat(StepClass2.getRefreshCount(), is(1));
+            assertThat(StepClass2.getRefreshCount(), is(0));
         }
         finally {
             System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getPropertyName());
@@ -91,7 +82,7 @@ public class TestNgTestFinishingTest {
         REFRESH_STRATEGY_PROPERTY.accept(CLASS_STARTING.name());
         try {
             runBeforeTheChecking();
-            assertThat(StepClass2.getRefreshCount(), is(2));
+            assertThat(StepClass2.getRefreshCount(), is(0));
         }
         finally {
             System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getPropertyName());
@@ -103,7 +94,7 @@ public class TestNgTestFinishingTest {
         REFRESH_STRATEGY_PROPERTY.accept(BEFORE_METHOD_STARTING.name());
         try {
             runBeforeTheChecking();
-            assertThat(StepClass2.getRefreshCount(), is(9));
+            assertThat(StepClass2.getRefreshCount(), is(0));
         }
         finally {
             System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getPropertyName());
@@ -112,20 +103,14 @@ public class TestNgTestFinishingTest {
 
     @Test
     public void whenRefreshingStrategyIsCombined() {
-        REFRESH_STRATEGY_PROPERTY.accept(stream(RefreshEachTimeBefore.values())
+        REFRESH_STRATEGY_PROPERTY.accept(stream(values())
                 .map(Enum::name).collect(joining(",")));
         try {
             runBeforeTheChecking();
-            assertThat(StepClass2.getRefreshCount(), is(9));
+            assertThat(StepClass2.getRefreshCount(), is(3));
         }
         finally {
             System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getPropertyName());
         }
-    }
-
-    @AfterClass
-    public void afterClass() {
-        assertThat(getAllObjects(StepClass2.class, objectContainer -> true), hasSize(6));
-        assertThat(getAllObjects(StepClass1.class, objectContainer -> true), hasSize(6));
     }
 }

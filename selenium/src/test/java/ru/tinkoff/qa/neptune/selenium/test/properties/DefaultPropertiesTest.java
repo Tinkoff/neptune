@@ -7,7 +7,8 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.selenium.test.capability.suppliers.ChromeTestSupplierWithExperimentalOption;
+import ru.tinkoff.qa.neptune.selenium.test.capability.suppliers.ChromeSettingsSupplierWithBinary;
+import ru.tinkoff.qa.neptune.selenium.test.capability.suppliers.ChromeSettingsSupplierWithExperimentalOption;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -24,7 +25,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.FIREFOX;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.*;
 import static ru.tinkoff.qa.neptune.core.api.properties.GeneralPropertyInitializer.GENERAL_PROPERTIES;
 import static ru.tinkoff.qa.neptune.core.api.properties.GeneralPropertyInitializer.refreshProperties;
-import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDriverProperty.WEB_DRIVER_TO_LAUNCH;
+import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDriverProperty.SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.REMOTE_WEB_DRIVER_URL_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.*;
@@ -65,12 +66,13 @@ public class DefaultPropertiesTest {
                     entry(PLATFORM_NAME.getPropertyName(), "Linux"),
                     entry(SUPPORTS_JAVASCRIPT.getPropertyName(), "false"),
                     entry(BROWSER_VERSION.getPropertyName(), "60"),
-                    entry(CHROME.getPropertyName(), ChromeTestSupplierWithExperimentalOption.class.getName()),
+                    entry(CHROME.getPropertyName(), ChromeSettingsSupplierWithExperimentalOption.class.getName()
+                            + "," + ChromeSettingsSupplierWithBinary.class.getName()),
                     entry(CLEAR_WEB_DRIVER_COOKIES.getPropertyName(), "true"),
                     entry(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName(), "true"),
                     entry(GET_BACK_TO_BASE_URL.getPropertyName(), "true"),
                     entry(KEEP_WEB_DRIVER_SESSION_OPENED.getPropertyName(), "true"),
-                    entry(WEB_DRIVER_TO_LAUNCH, "CHROME_DRIVER"));
+                    entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getPropertyName(), "CHROME_DRIVER"));
 
     @BeforeClass
     public void beforeTests() throws Exception {
@@ -186,13 +188,13 @@ public class DefaultPropertiesTest {
         assertThat("Browser version info", capabilities, hasEntry("browserVersion", "60"));
         assertThat("Chrome options info", capabilities, hasKey("goog:chromeOptions"));
 
-        Map<String, ?> args = (Map<String, ?>) capabilitiesAsIs.getCapability("goog:chromeOptions");
+        Map<String, ?> args = (Map<String, ?>) capabilities.get("goog:chromeOptions");
         assertThat("arguments", (List<String>) args.get("args"), contains("--use-fake-device-for-media-stream",
                 "--start-maximized",
                 "--enable-automation",
                 "--disable-web-security"));
-
-        assertThat("arguments", args.get("experimentalOption"), equalTo(new HashMap<>()));
+        assertThat("experimental Option", args.get("experimentalOption"), equalTo(new HashMap<>()));
+        assertThat("binary", args.get("binary"), equalTo("path/to/file"));
 
         FirefoxOptions firefoxOptions = (FirefoxOptions) FIREFOX.get();
         assertThat("Browser info", firefoxOptions.getBrowserName(), is(BrowserType.FIREFOX));
