@@ -18,7 +18,6 @@ import java.util.Map;
 import static io.github.bonigarcia.wdm.WebDriverManager.chromedriver;
 import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CommonCapabilityProperties.BROWSER_NAME;
 import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDriverProperty.SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY;
-import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDriverProperty.WEB_DRIVER_TO_LAUNCH;
 import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers.*;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.REMOTE_WEB_DRIVER_URL_PROPERTY;
@@ -59,7 +58,7 @@ public class SanityTestOfTheStartingAndStoppingOfWebDriver {
     }
 
     private static Map.Entry<String, String> desiredDriver(SupportedWebDrivers supportedWebDriver) {
-        return entry(WEB_DRIVER_TO_LAUNCH, supportedWebDriver.name());
+        return entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getPropertyName(), supportedWebDriver.name());
     }
 
     private static Map.Entry<String, String> browserType(String browserType) {

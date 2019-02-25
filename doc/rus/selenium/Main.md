@@ -63,6 +63,89 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMEN
 var driverToLaunchSetting = WEB_DRIVER_TO_LAUNCH.get();
 ```
 
+#### Capabilities
+
+`короткое_имя_браузера.capability.suppliers` - имя класса/список имен классов через запятую, которые реализуют интерфейс [CapabilitySettingSupplier](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/properties/CapabilitySettingSupplier.html).
+
+Список допустимых коротких имен:
+
+|               |
+|--------------:|
+|        remote |
+|        chrome |
+|          edge |
+|       firefox |
+|            ie |
+|         opera |
+
+`CapabilitySettingSupplier` должен создавать `java.util.function.Consumer`, который будет принимать объект класса, наследующего [MutableCapabilities](https://seleniumhq.github.io/selenium/docs/api/java/org/openqa/selenium/MutableCapabilities.html), и производить необходимые настройки.
+
+Примеры: 
+
+```java
+package org.mypackage;
+
+import ru.tinkoff.qa.neptune.selenium.properties.CapabilitySettingSupplier;
+import org.openqa.selenium.chrome.ChromeOptions;
+
+import java.util.HashMap;
+import java.util.function.Consumer;
+
+public class ChromeSettingsSupplierWithExperimentalOption implements CapabilitySettingSupplier<ChromeOptions> {
+    @Override
+    public Consumer<ChromeOptions> get() {
+        return chromeOptions -> chromeOptions.setExperimentalOption("experimentalOption", new HashMap<>())
+                .addArguments("--use-fake-device-for-media-stream",
+                        "--start-maximized", "--enable-automation",
+                        "--disable-web-security");
+    }
+}
+```
+
+```java
+package org.mypackage;
+
+import ru.tinkoff.qa.neptune.selenium.properties.CapabilitySettingSupplier;
+import org.openqa.selenium.chrome.ChromeOptions;
+
+import java.util.function.Consumer;
+
+public class ChromeSettingsSupplierWithBinary implements CapabilitySettingSupplier<ChromeOptions> {
+    @Override
+    public Consumer<ChromeOptions> get() {
+        return chromeOptions -> chromeOptions.setBinary("path/to/file");
+    }
+}
+```
+
+Предположим, что в случае локального запуска браузера Chrome посредством ChromeDriver. Тогда  
+
+```properties
+#В файле general.properties
+
+web.driver.to.launch = CHROME_DRIVER
+chrome.capability.suppliers = org.mypackage.ChromeSettingsSupplierWithExperimentalOption,org.mypackage.ChromeSettingsSupplierWithBinary
+```
+
+```java
+//Программно
+import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers.CHROME_DRIVER;
+import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDriverProperty.WEB_DRIVER_TO_LAUNCH;
+import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CHROME;
+
+//...
+WEB_DRIVER_TO_LAUNCH.accept(CHROME_DRIVER.name());
+CHROME.accept(ChromeSettingsSupplierWithExperimentalOption.class.getName() + "," + ChromeSettingsSupplierWithBinary.class.getName())
+```
+
+```java
+//Пример получения значения настройки
+import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CHROME;
+
+//...
+var capabilitySetting = CHROME.get();
+```
+
 #### Имя браузера (не обязательно)
 
 `web.driver.capability.browserName` - Имя браузера. Настройка имеет смысл, если выставлено значние `web.driver.to.launch = REMOTE_DRIVER`. Имя вызываемого браузера. Соответствует именам, перечисленным в [BrowserType](https://seleniumhq.github.io/selenium/docs/api/java/org/openqa/selenium/remote/BrowserType.html):
@@ -124,9 +207,62 @@ SUPPORTS_JAVASCRIPT.accept("true");
 import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CommonCapabilityProperties.SUPPORTS_JAVASCRIPT;
 
 //...
-var jvaScriptSetting = SUPPORTS_JAVASCRIPT.get();
+var javaScriptSetting = SUPPORTS_JAVASCRIPT.get();
 ```
 
+#### Имя платформы (не обязательно)
+
+`#web.driver.capability.browserName` - Название платформы/операционной системы, на которой следует открывать браузер. Соответствует значениям, предоставляемым элементами перечисления [Platform](https://seleniumhq.github.io/selenium/docs/api/java/org/openqa/selenium/Platform.html)
+
+Примеры: 
+```properties
+#В файле general.properties
+
+web.driver.capability.platformName = Windows
+```
+
+```java
+//Программно
+import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CommonCapabilityProperties.PLATFORM_NAME;
+
+//...
+PLATFORM_NAME.accept("Windows");
+```
+
+```java
+//Пример получения значения настройки
+import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CommonCapabilityProperties.PLATFORM_NAME;
+
+//...
+var platfornSetting = PLATFORM_NAME.get();
+```
+
+#### Версия браузера (не обязательно)
+
+`#web.driver.capability.browserVersion` - Номер версии браузера.
+
+Примеры: 
+```properties
+#В файле general.properties
+
+web.driver.capability.browserVersion = 67.0.3396.99
+```
+
+```java
+//Программно
+import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CommonCapabilityProperties.BROWSER_VERSION;
+
+//...
+BROWSER_VERSION.accept("67.0.3396.99");
+```
+
+```java
+//Пример получения значения настройки
+import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CommonCapabilityProperties.BROWSER_VERSION;
+
+//...
+var browserVersionSetting = BROWSER_VERSION.get();
+```
 
 ### Время ожидания элементов на странице (не обязательно)
 

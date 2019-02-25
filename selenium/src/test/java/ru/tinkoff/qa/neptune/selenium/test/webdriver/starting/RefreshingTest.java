@@ -9,16 +9,19 @@ import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.testng.annotations.*;
+import ru.tinkoff.qa.neptune.selenium.test.capability.suppliers.ChromeSettingsSupplierHeadless;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static java.util.Map.ofEntries;
 import static org.hamcrest.Matchers.*;
+import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CHROME;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.CLEAR_WEB_DRIVER_COOKIES;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.GET_BACK_TO_BASE_URL;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.KEEP_WEB_DRIVER_SESSION_OPENED;
-import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDriverProperty.WEB_DRIVER_TO_LAUNCH;
+import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDriverProperty.SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers.CHROME_DRIVER;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 import static java.lang.System.setProperty;
@@ -51,8 +54,9 @@ public class RefreshingTest {
     private final String GITHUB = "https://github.com/";
 
     private final Map<String, String> PROPERTIES_TO_SET_BEFORE =
-            Map.ofEntries(entry(WEB_DRIVER_TO_LAUNCH, CHROME_DRIVER.name()),
-                    entry(BASE_WEB_DRIVER_URL_PROPERTY.getPropertyName(), "https://github.com"));
+            ofEntries(entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getPropertyName(), CHROME_DRIVER.name()),
+                    entry(BASE_WEB_DRIVER_URL_PROPERTY.getPropertyName(), "https://github.com"),
+                    entry(CHROME.getPropertyName(), ChromeSettingsSupplierHeadless.class.getName()));
 
     private final List<PropertySupplier<Boolean>> FLAGS =
             List.of(KEEP_WEB_DRIVER_SESSION_OPENED,

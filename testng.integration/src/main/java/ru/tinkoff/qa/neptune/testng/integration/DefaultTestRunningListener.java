@@ -24,9 +24,6 @@ import static java.util.stream.Collectors.toList;
 
 public class DefaultTestRunningListener implements IInvokedMethodListener {
 
-    private final List<Class<? extends Annotation>> refreshBeforeMethodsAnnotatedBy =
-            new ArrayList<>(REFRESH_STRATEGY_PROPERTY.get().stream().map(RefreshEachTimeBefore::get).collect(toList()));
-
     private final ThreadLocal<Method> previouslyRefreshed = new ThreadLocal<>();
 
     private static boolean isIgnored(Method method) {
@@ -49,17 +46,24 @@ public class DefaultTestRunningListener implements IInvokedMethodListener {
         return false;
     }
 
+    private static List<Class<? extends Annotation>> getRefreshStrategy() {
+        return REFRESH_STRATEGY_PROPERTY.get().stream().map(RefreshEachTimeBefore::get).collect(toList());
+    }
+
     private void refreshIfNecessary(Object instance, Method method) {
         if (isIgnored(method)) {
             return;
         }
 
+        var annotationToRefreshBefore = getRefreshStrategy();
+
         ofNullable(previouslyRefreshed.get())
                 .ifPresentOrElse(method1 -> {}, () -> {
                     var methodModifiers = method.getModifiers();
                     if (!isStatic(methodModifiers) && stream(method.getAnnotations())
-                            .filter(annotation -> refreshBeforeMethodsAnnotatedBy
-                                    .contains(((Annotation) annotation).annotationType())).collect(toList())
+                            .filter(annotation -> annotationToRefreshBefore
+                                    .contains(((Annotation) annotation).annotationType()))
+                            .collect(toList())
                             .size() > 0) {
                         refreshContext(instance);
                         previouslyRefreshed.set(method);
