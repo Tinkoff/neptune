@@ -135,7 +135,8 @@ import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CHROME;
 
 //...
 WEB_DRIVER_TO_LAUNCH.accept(CHROME_DRIVER.name());
-CHROME.accept(ChromeSettingsSupplierWithExperimentalOption.class.getName() + "," + ChromeSettingsSupplierWithBinary.class.getName())
+CHROME.accept(ChromeSettingsSupplierWithExperimentalOption.class.getName() 
+    + "," + ChromeSettingsSupplierWithBinary.class.getName());
 ```
 
 ```java
@@ -264,7 +265,63 @@ import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CommonCa
 var browserVersionSetting = BROWSER_VERSION.get();
 ```
 
-### Время ожидания элементов на странице (не обязательно)
+#### URL машины для удаленного запуска браузера (не обязательно)
+
+`remote.web.driver.url` - URL удаленного сервера для запуска браузера. Настройка имеет смысл, если выставлено значние `web.driver.to.launch = REMOTE_DRIVER`. См. [Selenium Grid](https://www.seleniumhq.org/docs/07_selenium_grid.jsp), [Selenoid](https://aerokube.com/selenoid/latest/).
+
+Примеры: 
+```properties
+#В файле general.properties
+
+remote.web.driver.url = http://127.0.0.1:4444/wd/hub
+```
+
+```java
+//Программно
+ru.tinkoff.qa.neptune.selenium.properties.URLProperties.REMOTE_WEB_DRIVER_URL_PROPERTY;
+
+//...
+REMOTE_WEB_DRIVER_URL_PROPERTY.accept("http://127.0.0.1:4444/wd/hub");
+```
+
+```java
+//Пример получения значения настройки
+ru.tinkoff.qa.neptune.selenium.properties.URLProperties.REMOTE_WEB_DRIVER_URL_PROPERTY;
+
+//...
+var remoteURL = REMOTE_WEB_DRIVER_URL_PROPERTY.get();
+```
+
+### Прочие настройки
+
+#### URL приложения
+
+`base.web.driver.url` - URL страницы, которая должна быть загружена по умолчанию/перед началом теста.
+
+Примеры: 
+```properties
+#В файле general.properties
+
+base.web.driver.url = https://www.google.com
+```
+
+```java
+//Программно
+ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
+
+//...
+BASE_WEB_DRIVER_URL_PROPERTY.accept("https://www.google.com");
+```
+
+```java
+//Пример получения значения настройки
+ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
+
+//...
+var baseURL = BASE_WEB_DRIVER_URL_PROPERTY.get();
+```
+
+#### Время ожидания элементов на странице (не обязательно)
 
 В файле [general.properties](/doc/rus/core/Properties.md) можно указать значение свойства:
 
@@ -299,7 +356,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMEN
 var duration = ELEMENT_WAITING_DURATION.get();
 ```
 
-### Время ожидания алерта (не обязательно)
+#### Время ожидания алерта (не обязательно)
 
 - `waiting.alert.time.unit` -  Имя одного из элементов перечисления [ChronoUnit](https://docs.oracle.com/javase/10/docs/api/java/time/temporal/ChronoUnit.html)
 - `waiting.alert.time` -  целое число
@@ -330,7 +387,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITIN
 var duration = WAITING_ALERT_TIME_DURATION.get();
 ```
 
-### Время ожидания окна/вкладки (не обязательно)
+#### Время ожидания окна/вкладки (не обязательно)
 
 - `waiting.window.time.unit` -  Имя одного из элементов перечисления [ChronoUnit](https://docs.oracle.com/javase/10/docs/api/java/time/temporal/ChronoUnit.html)
 - `waiting.window.time` -  целое число
@@ -360,7 +417,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITIN
 var duration = WAITING_WINDOW_TIME_DURATION.get();
 ```
 
-### Время ожидания фрейма (не обязательно)
+#### Время ожидания фрейма (не обязательно)
 
 - `waiting.frame.switching.time.unit` -  Имя одного из элементов перечисления [ChronoUnit](https://docs.oracle.com/javase/10/docs/api/java/time/temporal/ChronoUnit.html)
 - `waiting.frame.switching.time` -  целое число
@@ -390,7 +447,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITIN
 var duration = WAITING_FRAME_SWITCHING_TIME_UNIT.get();
 ```
 
-### Время ожидания загрузки страницы (не обязательно)
+#### Время ожидания загрузки страницы (не обязательно)
 
 - `waiting.for.page.loaded.time.unit` -  Имя одного из элементов перечисления [ChronoUnit](https://docs.oracle.com/javase/10/docs/api/java/time/temporal/ChronoUnit.html)
 - `waiting.for.page.loaded.time` -  целое число
