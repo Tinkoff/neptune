@@ -34,6 +34,8 @@
 
 ### Параметры запуска браузера
 
+#### Вебдрайвер
+
 `web.driver.to.launch` - Класс вебдрайвера, который следует запустить. Значение должно соответствовать имени одного из элементов перечисления [SupportedWebDrivers](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/properties/SupportedWebDrivers.html).
 Если настройка не установлена, то по умолчанию запускается `ChromeDriver` (браузер Chrome, локально)
 
@@ -60,6 +62,8 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMEN
 //...
 var driverToLaunchSetting = WEB_DRIVER_TO_LAUNCH.get();
 ```
+
+#### Имя браузера (не обязательно)
 
 `web.driver.capability.browserName` - Имя браузера. Настройка имеет смысл, если выставлено значние `web.driver.to.launch = REMOTE_DRIVER`. Имя вызываемого браузера. Соответствует именам, перечисленным в [BrowserType](https://seleniumhq.github.io/selenium/docs/api/java/org/openqa/selenium/remote/BrowserType.html):
 
@@ -96,6 +100,8 @@ import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CommonCa
 var browserNameSetting = BROWSER_NAME.get();
 ```
 
+#### Поддержка javascript (не обязательно)
+
 `web.driver.capability.javascriptEnabled` - Включить/выключить поддержку javascript. `true` - дефолтное значение
 
 Примеры: 
@@ -122,7 +128,7 @@ var jvaScriptSetting = SUPPORTS_JAVASCRIPT.get();
 ```
 
 
-### Время ожидания элементов на странице
+### Время ожидания элементов на странице (не обязательно)
 
 В файле [general.properties](/doc/rus/core/Properties.md) можно указать значение свойства:
 
@@ -157,7 +163,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMEN
 var duration = ELEMENT_WAITING_DURATION.get();
 ```
 
-### Время ожидания алерта
+### Время ожидания алерта (не обязательно)
 
 - `waiting.alert.time.unit` -  Имя одного из элементов перечисления [ChronoUnit](https://docs.oracle.com/javase/10/docs/api/java/time/temporal/ChronoUnit.html)
 - `waiting.alert.time` -  целое число
@@ -188,7 +194,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITIN
 var duration = WAITING_ALERT_TIME_DURATION.get();
 ```
 
-### Время ожидания окна/вкладки
+### Время ожидания окна/вкладки (не обязательно)
 
 - `waiting.window.time.unit` -  Имя одного из элементов перечисления [ChronoUnit](https://docs.oracle.com/javase/10/docs/api/java/time/temporal/ChronoUnit.html)
 - `waiting.window.time` -  целое число
@@ -218,7 +224,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITIN
 var duration = WAITING_WINDOW_TIME_DURATION.get();
 ```
 
-### Время ожидания фрейма
+### Время ожидания фрейма (не обязательно)
 
 - `waiting.frame.switching.time.unit` -  Имя одного из элементов перечисления [ChronoUnit](https://docs.oracle.com/javase/10/docs/api/java/time/temporal/ChronoUnit.html)
 - `waiting.frame.switching.time` -  целое число
@@ -248,7 +254,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITIN
 var duration = WAITING_FRAME_SWITCHING_TIME_UNIT.get();
 ```
 
-### Время ожидания загрузки страницы
+### Время ожидания загрузки страницы (не обязательно)
 
 - `waiting.for.page.loaded.time.unit` -  Имя одного из элементов перечисления [ChronoUnit](https://docs.oracle.com/javase/10/docs/api/java/time/temporal/ChronoUnit.html)
 - `waiting.for.page.loaded.time` -  целое число
