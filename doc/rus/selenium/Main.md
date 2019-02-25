@@ -32,6 +32,8 @@
 
 ## Настройки
 
+В файле [general.properties](/doc/rus/core/Properties.md) можно указать значение свойств:
+
 ### Параметры запуска браузера
 
 #### Вебдрайвер
@@ -322,8 +324,6 @@ var baseURL = BASE_WEB_DRIVER_URL_PROPERTY.get();
 ```
 
 #### Время ожидания элементов на странице (не обязательно)
-
-В файле [general.properties](/doc/rus/core/Properties.md) можно указать значение свойства:
 
 - `waiting.for.elements.time.unit` - Имя одного из элементов перечисления [ChronoUnit](https://docs.oracle.com/javase/10/docs/api/java/time/temporal/ChronoUnit.html)
 - `waiting.for.elements.time` -  целое число
