@@ -32,8 +32,95 @@
 
 ## Настройки
 
+### Параметры запуска браузера
+
 `web.driver.to.launch` - Класс вебдрайвера, который следует запустить. Значение должно соответствовать имени одного из элементов перечисления [SupportedWebDrivers](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/properties/SupportedWebDrivers.html).
-Если настройка не установлена, то по умолчанию 
+Если настройка не установлена, то по умолчанию запускается `ChromeDriver` (браузер Chrome, локально)
+
+Примеры: 
+```properties
+#В файле general.properties
+
+web.driver.to.launch = FIREFOX_DRIVER
+```
+
+```java
+//Программно
+import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers.CHROME_DRIVER;
+import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDriverProperty.WEB_DRIVER_TO_LAUNCH;
+
+//...
+WEB_DRIVER_TO_LAUNCH.accept(CHROME_DRIVER.name());
+```
+
+```java
+//Пример получения значения настройки
+import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMENT_WAITING_DURATION;
+
+//...
+var driverToLaunchSetting = WEB_DRIVER_TO_LAUNCH.get();
+```
+
+`web.driver.capability.browserName` - Имя браузера. Настройка имеет смысл, если выставлено значние `web.driver.to.launch = REMOTE_DRIVER`. Имя вызываемого браузера. Соответствует именам, перечисленным в [BrowserType](https://seleniumhq.github.io/selenium/docs/api/java/org/openqa/selenium/remote/BrowserType.html):
+
+|               |
+|--------------:|
+|        chrome |
+|        safari |
+| MicrosoftEdge |
+|       firefox |
+|      iexplore |
+|    operablink |
+
+Примеры: 
+```properties
+#В файле general.properties
+
+web.driver.capability.browserName = safari
+```
+
+```java
+//Программно
+import static org.openqa.selenium.remote.BrowserType.CHROME;
+import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CommonCapabilityProperties.BROWSER_NAME;
+
+//...
+BROWSER_NAME.accept(CHROME);
+```
+
+```java
+//Пример получения значения настройки
+import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CommonCapabilityProperties.BROWSER_NAME;
+
+//...
+var browserNameSetting = BROWSER_NAME.get();
+```
+
+`web.driver.capability.javascriptEnabled` - Включить/выключить поддержку javascript. `true` - дефолтное значение
+
+Примеры: 
+```properties
+#В файле general.properties
+
+web.driver.capability.javascriptEnabled = true
+```
+
+```java
+//Программно
+import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CommonCapabilityProperties.SUPPORTS_JAVASCRIPT;
+
+//...
+SUPPORTS_JAVASCRIPT.accept("true");
+```
+
+```java
+//Пример получения значения настройки
+import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CommonCapabilityProperties.SUPPORTS_JAVASCRIPT;
+
+//...
+var jvaScriptSetting = SUPPORTS_JAVASCRIPT.get();
+```
+
 
 ### Время ожидания элементов на странице
 
