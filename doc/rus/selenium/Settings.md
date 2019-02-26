@@ -673,3 +673,37 @@ seleniumStepContext.navigate(toUrl("/webhp?newwindow=1"));
 ```
 
 См. [Навигация](/doc/rus/selenium/Navigation.md)
+
+## Пример
+
+Ниже пример файла `general.properties`, заполненного перечислнными выше свойствами
+
+```properties
+web.driver.to.launch=REMOTE_DRIVER
+web.driver.capability.browserName=firefox
+web.driver.capability.platformName=Linux
+remote.web.driver.url=http://127.0.0.1:4444/wd/hub
+web.driver.capability.browserVersion=60
+
+clear.web.driver.cookies=true
+keep.web.driver.session.opened=true
+get.back.to.base.web.driver.url=true
+find.only.visible.elements=true
+web.driver.capability.javascriptEnabled=false
+
+waiting.window.time.unit=MILLIS
+waiting.window.time=1500
+
+waiting.alert.time=45
+waiting.alert.time.unit=SECONDS
+
+base.web.driver.url=http\://www.google.com
+
+waiting.for.elements.time=3
+waiting.for.elements.time.unit=MINUTES
+
+chrome.capability.suppliers=org.mypackage.ChromeSettingsSupplierWithExperimentalOption,org.mypackage.ChromeSettingsSupplierWithBinary
+
+waiting.frame.switching.time=100
+waiting.frame.switching.time.unit=SECONDS
+```

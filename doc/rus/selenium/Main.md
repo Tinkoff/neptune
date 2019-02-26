@@ -34,10 +34,15 @@
 
 Далее достаточно
 
+### TestNg
+
+См. [TestNg](/doc/rus/testng/Main.md)
+
 ```java
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+import ru.tinkoff.qa.neptune.testng.integration.BaseTestNgTest;
 
-public class SomeTest {
+public class SomeTest extends BaseTestNgTest<SomeTest> {
     private SeleniumStepContext seleniumStepContext;
     
     //...
@@ -53,8 +58,9 @@ public class SomeTest {
 ```java
 //пример с наследованием
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+import ru.tinkoff.qa.neptune.testng.integration.BaseTestNgTest;
 
-public class SomeBaseTest {
+public class SomeBaseTest extends BaseTestNgTest<SomeBaseTest> {
     private SeleniumStepContext seleniumStepContext;
     
     @Test
