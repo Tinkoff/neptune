@@ -121,7 +121,7 @@ var capabilitySetting = CHROME.get();
 
 ### Имя браузера (не обязательно)
 
-`web.driver.capability.browserName` - Имя браузера. Настройка имеет смысл, если выставлено значние `web.driver.to.launch = REMOTE_DRIVER`. Имя вызываемого браузера. Соответствует именам, перечисленным в [BrowserType](https://seleniumhq.github.io/selenium/docs/api/java/org/openqa/selenium/remote/BrowserType.html):
+`web.driver.capability.browserName` - Имя браузера. Настройка имеет смысл, если выставлено значение `web.driver.to.launch = REMOTE_DRIVER`. Имя вызываемого браузера. Соответствует именам, перечисленным в [BrowserType](https://seleniumhq.github.io/selenium/docs/api/java/org/openqa/selenium/remote/BrowserType.html):
 
 |               |
 |--------------:|
@@ -239,7 +239,7 @@ var browserVersionSetting = BROWSER_VERSION.get();
 
 ### URL машины для удаленного запуска браузера (не обязательно)
 
-`remote.web.driver.url` - URL удаленного сервера для запуска браузера. Настройка имеет смысл, если выставлено значние `web.driver.to.launch = REMOTE_DRIVER`. См. [Selenium Grid](https://www.seleniumhq.org/docs/07_selenium_grid.jsp), [Selenoid](https://aerokube.com/selenoid/latest/).
+`remote.web.driver.url` - URL удаленного сервера для запуска браузера. Настройка имеет смысл, если выставлено значение `web.driver.to.launch = REMOTE_DRIVER`. См. [Selenium Grid](https://www.seleniumhq.org/docs/07_selenium_grid.jsp), [Selenoid](https://aerokube.com/selenoid/latest/).
 
 Примеры: 
 ```properties
@@ -410,6 +410,59 @@ var flagSetting = GET_BACK_TO_BASE_URL.get();
 
 Параметры, которые позволяют сделать поиск элементов страницы/браузерных окон/алертов и т.п. более удобным. 
 
+### Поиск только видимых элементов (не обязательно)
+
+`find.only.visible.elements` - искать только видимые на странице элементы или любые подходящие.  `false` - дефолтное значение, означает что будет осуществляться поиск любых подходящих элементов, независимо от их видимости на странице. `true` - значает что будет осуществляться поиск подходящих элементов
+с учетом их видимости на странице.
+
+Примеры: 
+```properties
+#В файле general.properties
+
+find.only.visible.elements = true
+```
+
+```java
+//Программно
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FIND_ONLY_VISIBLE_ELEMENTS;
+
+//...
+FIND_ONLY_VISIBLE_ELEMENTS.accept("true");
+```
+
+```java
+//Пример получения значения настройки
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FIND_ONLY_VISIBLE_ELEMENTS;
+
+//...
+var flagSetting = FIND_ONLY_VISIBLE_ELEMENTS.get();
+```
+
+```java
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.textField;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeVisible;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+//нужно найти видимое и доступное для редактирования текстовое поле
+//find.only.visible.elements = false
+
+seleniumStepContext.find(textField()
+    .criteria(shouldBeEnabled())
+    .criteria(shouldBeVisible()));
+```
+
+```java
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.textField;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+//нужно найти видимое и доступное для редактирования текстовое поле
+//find.only.visible.elements = true
+
+seleniumStepContext.find(textField()
+    .criteria(shouldBeEnabled())); //при этом видмость элемента учитывается
+    //ищется видимый и доступный элемент
+```
+
+См. [Поиск элементов](/doc/rus/selenium/SearchingForElements.md)
+
 ### Время ожидания элементов на странице (не обязательно)
 
 - `waiting.for.elements.time.unit` - Имя одного из элементов перечисления [ChronoUnit](https://docs.oracle.com/javase/10/docs/api/java/time/temporal/ChronoUnit.html)
@@ -443,6 +496,8 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMEN
 var duration = ELEMENT_WAITING_DURATION.get();
 ```
 
+См. [Поиск элементов](/doc/rus/selenium/SearchingForElements.md)
+
 ### Время ожидания алерта (не обязательно)
 
 - `waiting.alert.time.unit` -  Имя одного из элементов перечисления [ChronoUnit](https://docs.oracle.com/javase/10/docs/api/java/time/temporal/ChronoUnit.html)
@@ -474,6 +529,8 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITIN
 var duration = WAITING_ALERT_TIME_DURATION.get();
 ```
 
+См. [Алерты](/doc/rus/selenium/Alerts.md)
+
 ### Время ожидания окна/вкладки (не обязательно)
 
 - `waiting.window.time.unit` -  Имя одного из элементов перечисления [ChronoUnit](https://docs.oracle.com/javase/10/docs/api/java/time/temporal/ChronoUnit.html)
@@ -503,6 +560,8 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITIN
 //...
 var duration = WAITING_WINDOW_TIME_DURATION.get();
 ```
+
+См. [Окна/Вкладки](/doc/rus/selenium/Windows.md)
 
 ### Время ожидания фрейма (не обязательно)
 
@@ -534,6 +593,8 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITIN
 var duration = WAITING_FRAME_SWITCHING_TIME_UNIT.get();
 ```
 
+См. [Фреймы](/doc/rus/selenium/Frames.md)
+
 ### Время ожидания загрузки страницы (не обязательно)
 
 - `waiting.for.page.loaded.time.unit` -  Имя одного из элементов перечисления [ChronoUnit](https://docs.oracle.com/javase/10/docs/api/java/time/temporal/ChronoUnit.html)
@@ -564,3 +625,51 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITIN
 //...
 var duration = WAITING_FOR_PAGE_LOADED_DURATION.get();
 ```
+
+## Прочие
+
+### Переход на страницу по относительному пути (не обязательно)
+
+
+`enable.ability.to.navigate.by.relative.url` - возможность переходить на новую ссылку по пути относительно значения, указанного в [base.web.driver.url](#url-приложения-не-обязательно)
+
+Примеры: 
+```properties
+#В файле general.properties
+
+enable.ability.to.navigate.by.relative.url = true
+```
+
+```java
+//Программно
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL;
+
+//...
+ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL.accept("true");
+```
+
+```java
+//Пример получения значения настройки
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL;
+
+//...
+var flagSetting = ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL.get();
+```
+
+```java
+//если не указано base.web.driver.url
+//и enable.ability.to.navigate.by.relative.url = false
+import static ru.tinkoff.qa.neptune.selenium.functions.navigation.ToUrl.toUrl;
+
+seleniumStepContext.navigate(toUrl("https://www.google.com/webhp?newwindow=1"));
+```
+
+```java
+//если base.web.driver.url = https://www.google.com
+//и enable.ability.to.navigate.by.relative.url = true
+import static ru.tinkoff.qa.neptune.selenium.functions.navigation.ToUrl.toUrl;
+
+seleniumStepContext.navigate(toUrl("/webhp?newwindow=1"));
+```
+
+См. [Навигация](/doc/rus/selenium/Navigation.md)

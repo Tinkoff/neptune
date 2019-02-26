@@ -5,12 +5,11 @@ import ru.tinkoff.qa.neptune.core.api.properties.booleans.BooleanPropertySupplie
 
 public enum SessionFlagProperties implements BooleanPropertySupplier {
     /**
-     * This enum item reads the property {@code 'find.only.visible.elements.when.no.conditions'}.
-     * That means that the searching for some element finds only visible elements when the property
-     * is defined and has value {@code true} in case if user doesn't define any match criteria of the
-     * searching. Otherwise any suitable elements are found.
+     * This enum item reads the property {@code 'find.only.visible.elements'}.
+     * It means that the searching for some element finds only visible elements when the property
+     * is defined and has value {@code true}. Otherwise any suitable elements are found.
      */
-    FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION("find.only.visible.elements.when.no.condition"),
+    FIND_ONLY_VISIBLE_ELEMENTS("find.only.visible.elements"),
 
     /**
      * This enum item reads the property {@code 'keep.web.driver.session.opened'}. It means that

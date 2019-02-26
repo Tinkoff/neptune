@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.webElements;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
-import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION;
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FIND_ONLY_VISIBLE_ELEMENTS;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeUnitProperties.ELEMENT_WAITING_TIME_UNIT;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeValueProperties.ELEMENT_WAITING_TIME_VALUE;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
@@ -74,7 +74,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
 
     @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findWebElementsFirstLevelOnlyVisibleImplicitConditionAndDefinedTimeTest() {
-        setProperty(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName(), "true");
+        setProperty(FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName(), "true");
         setStartBenchMark();
         try {
             List<WebElement> webElements = seleniumSteps.find(webElements(INVISIBLE_SPAN_BY)
@@ -87,13 +87,13 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
                     shouldBeVisible())));
         }
         finally {
-            removeProperty(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName());
+            removeProperty(FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName());
         }
     }
 
     @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findWebElementsFirstLevelOnlyVisibleImplicitConditionAndImplicitTimeTest() {
-        setProperty(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName(), "true");
+        setProperty(FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName(), "true");
         setProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName(), "SECONDS");
         setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "1");
         setStartBenchMark();
@@ -107,7 +107,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
                     shouldBeVisible())));
         }
         finally {
-            removeProperty(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName());
+            removeProperty(FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName());
             removeProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
             removeProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName());
         }
@@ -115,7 +115,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
 
     @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findWebElementsFirstLevelOnlyVisibleImplicitConditionAndTimeConflictTest() {
-        setProperty(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName(), "true");
+        setProperty(FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName(), "true");
         setProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName(), "SECONDS");
         setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "5");
         setStartBenchMark();
@@ -130,7 +130,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
                     shouldBeVisible())));
         }
         finally {
-            removeProperty(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName());
+            removeProperty(FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName());
             removeProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
             removeProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName());
         }
@@ -171,7 +171,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
 
     @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findWebElementsChainedOnlyVisibleImplicitConditionAndDefinedTimeTest() {
-        setProperty(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName(), "true");
+        setProperty(FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName(), "true");
         setStartBenchMark();
         try {
             List<WebElement> webElements = seleniumSteps.find(webElements(INVISIBLE_SPAN_BY)
@@ -185,13 +185,13 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
                     shouldBeVisible())));
         }
         finally {
-            removeProperty(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName());
+            removeProperty(FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName());
         }
     }
 
     @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findWebElementsChainedOnlyVisibleImplicitConditionAndImplicitTimeTest() {
-        setProperty(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName(), "true");
+        setProperty(FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName(), "true");
         setProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName(), "SECONDS");
         setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "1");
         setStartBenchMark();
@@ -206,7 +206,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
                     shouldBeVisible())));
         }
         finally {
-            removeProperty(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName());
+            removeProperty(FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName());
             removeProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
             removeProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName());
         }
@@ -214,7 +214,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
 
     @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findWebElementsChainedOnlyVisibleImplicitConditionAndTimeConflictTest() {
-        setProperty(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName(), "true");
+        setProperty(FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName(), "true");
         setProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName(), "SECONDS");
         setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "5");
         setStartBenchMark();
@@ -230,7 +230,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
                     shouldBeVisible())));
         }
         finally {
-            removeProperty(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName());
+            removeProperty(FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName());
             removeProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
             removeProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName());
         }
@@ -273,7 +273,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
 
     @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findFromWebElementsOnlyVisibleImplicitConditionAndDefinedTimeTest() {
-        setProperty(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName(), "true");
+        setProperty(FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName(), "true");
         WebElement parent = seleniumSteps.find(webElement(className(SPREAD_SHEET_CLASS)));
         setStartBenchMark();
         try {
@@ -288,13 +288,13 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
                     shouldBeVisible())));
         }
         finally {
-            removeProperty(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName());
+            removeProperty(FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName());
         }
     }
 
     @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findFromWebElementsOnlyVisibleImplicitConditionAndImplicitTimeTest() {
-        setProperty(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName(), "true");
+        setProperty(FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName(), "true");
         setProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName(), "SECONDS");
         setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "1");
         WebElement parent = seleniumSteps.find(webElement(className(SPREAD_SHEET_CLASS)));
@@ -310,7 +310,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
                     shouldBeVisible())));
         }
         finally {
-            removeProperty(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName());
+            removeProperty(FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName());
             removeProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
             removeProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName());
         }
@@ -318,7 +318,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
 
     @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findFromWebElementsOnlyVisibleImplicitConditionAndTimeConflictTest() {
-        setProperty(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName(), "true");
+        setProperty(FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName(), "true");
         setProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName(), "SECONDS");
         setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "5");
         WebElement parent = seleniumSteps.find(webElement(className(SPREAD_SHEET_CLASS)));
@@ -335,7 +335,7 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
                     shouldBeVisible())));
         }
         finally {
-            removeProperty(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName());
+            removeProperty(FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName());
             removeProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
             removeProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName());
         }

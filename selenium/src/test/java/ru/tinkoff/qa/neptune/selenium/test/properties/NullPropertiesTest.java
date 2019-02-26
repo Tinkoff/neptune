@@ -39,8 +39,8 @@ public class NullPropertiesTest {
                 CLEAR_WEB_DRIVER_COOKIES.get(),
                 is(false));
 
-        assertThat(format("Property %s", FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName()),
-                FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.get(),
+        assertThat(format("Property %s", FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName()),
+                FIND_ONLY_VISIBLE_ELEMENTS.get(),
                 is(false));
 
         assertThat(format("Property %s", GET_BACK_TO_BASE_URL.getPropertyName()),
