@@ -30,6 +30,54 @@
 
 `compile group: 'ru.tinkoff.qa.neptune', name: 'selenium', version: neptuneVersion`
 
+## Далее
+
+Далее достаточно
+
+```java
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+
+public class SomeTest {
+    private SeleniumStepContext seleniumStepContext;
+    
+    //...
+    @Test
+    public void tezt() {
+        seleniumStepContext./*...Дальнейшие действия*/
+    }
+}
+```
+
+или 
+
+```java
+//пример с наследованием
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+
+public class SomeBaseTest {
+    private SeleniumStepContext seleniumStepContext;
+    
+    @Test
+    public SeleniumStepContext browser() {
+        return seleniumStepContext;
+    }
+}
+
+//................
+
+public class SomeTest extends SomeBaseTest {
+    
+    //...
+    @Test
+    public void tezt() {
+        browser()./*...Дальнейшие действия*/
+    }
+}
+
+```
+
+Есть ряд настроек, которые позволят выполнять тесты в более правильном и удобном ключе. О них ниже.
+
 ## Настройки
 
 В файле [general.properties](/doc/rus/core/Properties.md) можно указать значение свойств:
