@@ -342,11 +342,9 @@ ru.tinkoff.qa.neptune.selenium.properties.URLProperties.REMOTE_WEB_DRIVER_URL_PR
 var remoteURL = REMOTE_WEB_DRIVER_URL_PROPERTY.get();
 ```
 
-### Прочие настройки
-
 #### URL приложения (не обязательно)
 
-`base.web.driver.url` - URL страницы, которая должна быть загружена по умолчанию/перед началом теста.
+`base.web.driver.url` - URL страницы, которая должна быть загружена по умолчанию/перед началом тестов.
 
 Примеры: 
 ```properties
@@ -370,6 +368,137 @@ ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROP
 //...
 var baseURL = BASE_WEB_DRIVER_URL_PROPERTY.get();
 ```
+
+### Обновление вебдрайвера
+
+[См. также Обновление контекста](/doc/rus/core/Context.md#Обновление-контекста)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#### Сессия вебдрайвера (не обязательно)
+
+`keep.web.driver.session.opened` - Держать сессию вебдрайвера открытой на протяжении прогона всех тестов или перед каждым тестом закрывать прежнюю сессию и начинать новую. `false` - дефолтное значение, означает что нужно перед каждым тестом закрывать прежнюю сессию и начинать новую. `true` - означает, что нужно держать сессию вебдрайвера открытой на протяжении прогона всех тестов. 
+При этом, если сессия вебдрайвера неожиданно завершилась в текущем тесте, то в следующем тесте/повторной попытке провести тест будет открыта новая сессия.
+
+Примеры: 
+```properties
+#В файле general.properties
+
+keep.web.driver.session.opened = true
+```
+
+```java
+//Программно
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.KEEP_WEB_DRIVER_SESSION_OPENED;
+
+//...
+KEEP_WEB_DRIVER_SESSION_OPENED.accept("true");
+```
+
+```java
+//Пример получения значения настройки
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.KEEP_WEB_DRIVER_SESSION_OPENED;
+
+//...
+var flagSetting = KEEP_WEB_DRIVER_SESSION_OPENED.get();
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#### Cookie браузера
+
+`clear.web.driver.cookies` - Очищать cookie браузера перед тестом или нет. `false` - дефолтное значение, означает что не нужно очищать cookie браузера перед тестом. Имеет смысл, если 
+
+Примеры: 
+```properties
+#В файле general.properties
+
+clear.web.driver.cookies = true
+```
+
+```java
+//Программно
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.CLEAR_WEB_DRIVER_COOKIES;
+
+//...
+CLEAR_WEB_DRIVER_COOKIES.accept("true");
+```
+
+```java
+//Пример получения значения настройки
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.CLEAR_WEB_DRIVER_COOKIES;
+
+//...
+var flagSetting = CLEAR_WEB_DRIVER_COOKIES.get();
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #### Время ожидания элементов на странице (не обязательно)
 
