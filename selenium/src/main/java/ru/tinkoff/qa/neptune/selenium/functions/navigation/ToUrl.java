@@ -43,7 +43,7 @@ public final class ToUrl extends NavigationActionSupplier<ToUrl> {
             }
             else {
                 throw new IllegalArgumentException(format("It is impossible to navigate by URL %s. " +
-                                "This value is not a valid URL and the property %s is not defined or its value is %s", url,
+                                "This value is not a valid URL and the property %s is not defined/its value is %s", url,
                         ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL.getPropertyName(), false));
             }
         }

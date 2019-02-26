@@ -21,7 +21,7 @@ import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonCondition
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindLabeledWidgets.labeledWidgets;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindWebElements.webElements;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindWidgets.widgets;
-import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION;
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FIND_ONLY_VISIBLE_ELEMENTS;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMENT_WAITING_DURATION;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
@@ -37,7 +37,7 @@ public final class SearchSupplier<R extends SearchContext>
         from(searchContext -> searchContext);
         timeOut(ELEMENT_WAITING_DURATION.get());
         addIgnored(StaleElementReferenceException.class);
-        if (FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.get()) {
+        if (FIND_ONLY_VISIBLE_ELEMENTS.get()) {
             criteria(shouldBeVisible());
         }
         throwOnEmptyResult(noSuchElementException(this));

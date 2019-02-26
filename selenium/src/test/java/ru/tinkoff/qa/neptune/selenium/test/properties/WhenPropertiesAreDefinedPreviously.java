@@ -68,7 +68,7 @@ public class WhenPropertiesAreDefinedPreviously {
                     entry(CHROME.getPropertyName(), ChromeSettingsSupplierWithExperimentalOption.class.getName()
                             + "," + ChromeSettingsSupplierWithBinary.class.getName()),
                     entry(CLEAR_WEB_DRIVER_COOKIES.getPropertyName(), "true"),
-                    entry(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName(), "true"),
+                    entry(FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName(), "true"),
                     entry(GET_BACK_TO_BASE_URL.getPropertyName(), "true"),
                     entry(KEEP_WEB_DRIVER_SESSION_OPENED.getPropertyName(), "true"),
                     entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getPropertyName(), "CHROME_DRIVER"));
@@ -112,8 +112,8 @@ public class WhenPropertiesAreDefinedPreviously {
                 CLEAR_WEB_DRIVER_COOKIES.get(),
                 is(true));
 
-        assertThat(format("Property %s", FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName()),
-                FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.get(),
+        assertThat(format("Property %s", FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName()),
+                FIND_ONLY_VISIBLE_ELEMENTS.get(),
                 is(true));
 
         assertThat(format("Property %s", GET_BACK_TO_BASE_URL.getPropertyName()),

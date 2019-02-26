@@ -18,7 +18,7 @@ import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonCondition
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldHaveCssValueContains;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.webElements;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
-import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION;
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FIND_ONLY_VISIBLE_ELEMENTS;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeUnitProperties.ELEMENT_WAITING_TIME_UNIT;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeValueProperties.ELEMENT_WAITING_TIME_VALUE;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
@@ -60,7 +60,7 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
 
     @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findWebElementsOnlyVisibleImplicitConditionTest() {
-        setProperty(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName(), "true");
+        setProperty(FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName(), "true");
         try {
             List<WebElement> webElements = seleniumSteps.find(webElements(tagName(BUTTON_TAG)));
             assertThat(webElements, contains(equalTo(COMMON_BUTTON2), equalTo(COMMON_BUTTON3),
@@ -69,7 +69,7 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
                     shouldBeVisible())));
         }
         finally {
-            removeProperty(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName());
+            removeProperty(FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName());
         }
     }
 
@@ -127,7 +127,7 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
 
     @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findWebElementsChainedOnlyVisibleImplicitConditionTest() {
-        setProperty(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName(), "true");
+        setProperty(FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName(), "true");
         try {
             List<WebElement> webElements = seleniumSteps.find(webElements(className(CUSTOM_BUTTON_CLASS))
                     .foundFrom(webElement(className(SPREAD_SHEET_CLASS))));
@@ -136,7 +136,7 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
                     shouldBeVisible())));
         }
         finally {
-            removeProperty(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName());
+            removeProperty(FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName());
         }
     }
 
@@ -181,7 +181,7 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
 
     @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findWebElementsFromAnotherOnlyVisibleImplicitConditionTest() {
-        setProperty(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName(), "true");
+        setProperty(FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName(), "true");
         try {
             WebElement spreadSheet = seleniumSteps.find(webElement(className(SPREAD_SHEET_CLASS)));
             assertThat(spreadSheet.isDisplayed(), is(true));
@@ -192,7 +192,7 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
                     shouldBeVisible())));
         }
         finally {
-            removeProperty(FIND_ONLY_VISIBLE_ELEMENTS_WHEN_NO_CONDITION.getPropertyName());
+            removeProperty(FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName());
         }
     }
 

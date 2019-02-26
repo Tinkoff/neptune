@@ -40,7 +40,7 @@ import ru.tinkoff.qa.neptune.testng.integration.BaseTestNgTest;
 //...
 // Этот класс можно сделать базовым классом для всех тестов проекта, от которого можно наследоваться
 //либо выполнять это действие для каждого теста
-public class MyCustomizedTest extends BaseTestNgTest<BaseWebOfficeTest> {
+public class MyCustomizedTest extends BaseTestNgTest<MyCustomizedTest> {
     //...
 }
 ```
@@ -52,7 +52,7 @@ public class MyCustomizedTest extends BaseTestNgTest<BaseWebOfficeTest> {
 Например
 
 ```java
-public class MyStepContext implements ActionStepContext<SeleniumStepContext>, GetStepContext<SeleniumStepContext> {
+public class MyStepContext implements ActionStepContext<MyStepContext>, GetStepContext<MyStepContext> {
     //...
 }
 ```
@@ -63,7 +63,7 @@ public class MyStepContext implements ActionStepContext<SeleniumStepContext>, Ge
 //...
 import ru.tinkoff.qa.neptune.testng.integration.BaseTestNgTest;
 //...
-public class MyCustomizedTest extends BaseTestNgTest<BaseWebOfficeTest> {
+public class MyCustomizedTest extends BaseTestNgTest<MyCustomizedTest> {
     //...
     private MyStepContext myContext; //для работы достаточно просто объявить поле
     
@@ -86,7 +86,7 @@ public class MyCustomizedTest extends BaseTestNgTest<BaseWebOfficeTest> {
 //...
 import ru.tinkoff.qa.neptune.testng.integration.BaseTestNgTest;
 //...
-public class MyCustomizedTest extends BaseTestNgTest<BaseWebOfficeTest> {
+public class MyCustomizedTest extends BaseTestNgTest<MyCustomizedTest> {
     //...
     private MyStepContext myContext;
     
@@ -116,7 +116,7 @@ import org.testng.annotations.DataProvider;
 import ru.tinkoff.qa.neptune.core.api.steps.StepAction;
 import ru.tinkoff.qa.neptune.testng.integration.BaseTestNgTest;
 //...
-public class MyCustomizedTest extends BaseTestNgTest<BaseWebOfficeTest> {
+public class MyCustomizedTest extends BaseTestNgTest<MyCustomizedTest> {
     //...
     private MyStepContext myContext;
     
