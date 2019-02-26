@@ -84,6 +84,8 @@ public class SomeTest extends SomeBaseTest {
 
 ### Параметры запуска браузера
 
+Настройки, которое необходимо указать, чтобы открываемый браузер и его поведение соответствовали желаемым критериям.
+
 #### Вебдрайвер
 
 `web.driver.to.launch` - Класс вебдрайвера, который следует запустить. Значение должно соответствовать имени одного из элементов перечисления [SupportedWebDrivers](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/properties/SupportedWebDrivers.html).
@@ -369,25 +371,36 @@ ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROP
 var baseURL = BASE_WEB_DRIVER_URL_PROPERTY.get();
 ```
 
+#### Максимизировать окно браузера принудительно при открытии сессии (не обязательно)
+
+`force.window.maximizing.on.start` - Максимизировать окно браузера принудительно при открытии сессии или нет. `false` - дефолтное значение, означает что не нужно.
+
+Примеры: 
+```properties
+#В файле general.properties
+
+force.window.maximizing.on.start = true
+```
+
+```java
+//Программно
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FORCE_WINDOW_MAXIMIZING_ON_START;
+
+//...
+FORCE_WINDOW_MAXIMIZING_ON_START.accept("true");
+```
+
+```java
+//Пример получения значения настройки
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FORCE_WINDOW_MAXIMIZING_ON_START;
+
+//...
+var flagSetting = FORCE_WINDOW_MAXIMIZING_ON_START.get();
+```
+
 ### Обновление вебдрайвера
 
 [См. также Обновление контекста](/doc/rus/core/Context.md#Обновление-контекста)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 #### Сессия вебдрайвера (не обязательно)
@@ -418,23 +431,9 @@ import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.KE
 var flagSetting = KEEP_WEB_DRIVER_SESSION_OPENED.get();
 ```
 
+#### Cookie браузера (не обязательно)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-#### Cookie браузера
-
-`clear.web.driver.cookies` - Очищать cookie браузера перед тестом или нет. `false` - дефолтное значение, означает что не нужно очищать cookie браузера перед тестом. Имеет смысл, если 
+`clear.web.driver.cookies` - Очищать cookie браузера перед тестом или нет. `false` - дефолтное значение, означает что не нужно очищать cookie браузера перед тестом. Имеет смысл, если [keep.web.driver.session.opened = true](#сессия-вебдрайвера-не-обязательно)
 
 Примеры: 
 ```properties
@@ -459,46 +458,37 @@ import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.CL
 var flagSetting = CLEAR_WEB_DRIVER_COOKIES.get();
 ```
 
+#### Навигация к исходной странице (не обязательно)
 
+`get.back.to.base.web.driver.url` - нужно ли возвращаться к исходной странице приложения перед тестом или нет. `false` - дефолтное значение, означает что не нужно. Имеет смысл, если [keep.web.driver.session.opened = true](#сессия-вебдрайвера-не-обязательно) и
+[указана настройка base.web.driver.ur](#url-приложения-не-обязательно).
 
+Примеры: 
+```properties
+#В файле general.properties
 
+get.back.to.base.web.driver.url = true
+```
 
+```java
+//Программно
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.GET_BACK_TO_BASE_URL;
 
+//...
+GET_BACK_TO_BASE_URL.accept("true");
+```
 
+```java
+//Пример получения значения настройки
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.GET_BACK_TO_BASE_URL;
 
+//...
+var flagSetting = GET_BACK_TO_BASE_URL.get();
+```
 
+### Поиск/ожидания
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Параметры, которые позволяют сделать поиск элементов страницы/браузерных окон/алертов и т.п. более удобным. 
 
 #### Время ожидания элементов на странице (не обязательно)
 
