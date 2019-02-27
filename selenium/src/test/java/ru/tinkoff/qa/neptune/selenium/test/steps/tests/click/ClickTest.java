@@ -14,7 +14,6 @@ import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.table;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
-import static java.time.Duration.ofMillis;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -34,7 +33,7 @@ public class ClickTest extends BaseWebDriverTest {
 
         seleniumSteps.click(on(button(BUTTON_LABEL_TEXT6)
                 .foundFrom(webElement(className(CELL_CLASS), CELL_TEXT81)
-                        .criteria(shouldContainElements(buttons().timeOut(ofMillis(5)))))));
+                        .criteria(shouldContainElements(buttons())))));
         assertThat(CUSTOM_LABELED_BUTTON2.getClickCount(), is(1));
     }
 
@@ -47,8 +46,7 @@ public class ClickTest extends BaseWebDriverTest {
 
         button = seleniumSteps.find(button(BUTTON_LABEL_TEXT5)
                 .foundFrom(webElement(className(CELL_CLASS), CELL_TEXT73)
-                        .criteria(shouldContainElements(buttons()
-                        .timeOut(ofMillis(5))))));
+                        .criteria(shouldContainElements(buttons()))));
         seleniumSteps.click(on(button));
         assertThat(CUSTOM_LABELED_BUTTON1.getClickCount(), is(clickCount + 2));
     }
@@ -60,8 +58,7 @@ public class ClickTest extends BaseWebDriverTest {
 
         seleniumSteps.click(on(webElement(className(TAB_CLASS))
                 .criteria(shouldHaveAttribute(ATTR20, VALUE20))
-                .criteria(shouldContainElements(webElements(CUSTOM_LABEL_BY, TAB_TEXT9)
-                        .timeOut(ofMillis(5))))));
+                .criteria(shouldContainElements(webElements(CUSTOM_LABEL_BY, TAB_TEXT9)))));
         assertThat(CUSTOM_LABELED_TAB1.getClickCount(), is(1));
 
         seleniumSteps.click(on(webElement(tagName(TEXT_AREA_TAG)).foundFrom(table(TABLE_LABEL_TEXT10))));
@@ -72,8 +69,7 @@ public class ClickTest extends BaseWebDriverTest {
     public void clickOnWebElementDirectlyTest() {
         WebElement webElement = seleniumSteps.find(webElement(className(TAB_CLASS))
                 .criteria(shouldHaveAttribute(ATTR20, VALUE1))
-                .criteria(shouldContainElements(webElements(CUSTOM_LABEL_BY, TAB_TEXT10)
-                        .timeOut(ofMillis(5)))));
+                .criteria(shouldContainElements(webElements(CUSTOM_LABEL_BY, TAB_TEXT10))));
         seleniumSteps.click(on(webElement));
         assertThat(CUSTOM_LABELED_TAB2.getClickCount(), is(1));
     }

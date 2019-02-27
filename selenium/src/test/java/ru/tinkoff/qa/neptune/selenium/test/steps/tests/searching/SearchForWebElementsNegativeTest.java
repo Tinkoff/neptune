@@ -21,7 +21,6 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeUn
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeValueProperties.ELEMENT_WAITING_TIME_VALUE;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
 import static java.lang.String.format;
-import static java.time.Duration.ofMillis;
 import static java.util.regex.Pattern.compile;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -358,27 +357,27 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
                         expectedDescriptionOfTheFoundElements(VISIBLE_DIV_BY,  shouldBeVisible().negate())},
 
                 {className(MULTI_SELECT_CLASS),
-                        shouldContainElements(webElements(className(ITEM_OPTION_CLASS)).timeOut(ofMillis(10)), 4),
+                        shouldContainElements(webElements(className(ITEM_OPTION_CLASS)), 4),
                         expectedDescriptionOfTheFoundElements(className(MULTI_SELECT_CLASS),
-                                shouldContainElements(webElements(className(ITEM_OPTION_CLASS)).timeOut(ofMillis(10)), 4))},
+                                shouldContainElements(webElements(className(ITEM_OPTION_CLASS)), 4))},
 
                 {className(MULTI_SELECT_CLASS),
-                        shouldContainElements(webElements(className(ITEM_OPTION_CLASS)).timeOut(ofMillis(10)), 3)
-                                .or(shouldContainElements(webElements(className(ITEM_OPTION_CLASS)).timeOut(ofMillis(10)), 2))
+                        shouldContainElements(webElements(className(ITEM_OPTION_CLASS)), 3)
+                                .or(shouldContainElements(webElements(className(ITEM_OPTION_CLASS)), 2))
                                 .negate(),
                         expectedDescriptionOfTheFoundElements(className(MULTI_SELECT_CLASS),
-                                shouldContainElements(webElements(className(ITEM_OPTION_CLASS)).timeOut(ofMillis(10)), 3)
-                                        .or(shouldContainElements(webElements(className(ITEM_OPTION_CLASS)).timeOut(ofMillis(10)), 2))
+                                shouldContainElements(webElements(className(ITEM_OPTION_CLASS)), 3)
+                                        .or(shouldContainElements(webElements(className(ITEM_OPTION_CLASS)), 2))
                                         .negate())},
 
                 {className(MULTI_SELECT_CLASS),
-                        shouldContainElements(webElements(tagName(OPTION)).timeOut(ofMillis(10))),
+                        shouldContainElements(webElements(tagName(OPTION))),
                         expectedDescriptionOfTheFoundElements(className(MULTI_SELECT_CLASS),
-                                shouldContainElements(webElements(tagName(OPTION)).timeOut(ofMillis(10))))},
+                                shouldContainElements(webElements(tagName(OPTION))))},
 
-                {tagName(SELECT), shouldContainElements(webElements(tagName(OPTION)).timeOut(ofMillis(10))).negate(),
+                {tagName(SELECT), shouldContainElements(webElements(tagName(OPTION))).negate(),
                         expectedDescriptionOfTheFoundElements(tagName(SELECT),
-                                shouldContainElements(webElements(tagName(OPTION)).timeOut(ofMillis(10))).negate())},
+                                shouldContainElements(webElements(tagName(OPTION))).negate())},
 
                 {tagName(TEXT_AREA_TAG), shouldHaveAttribute(ATTR11, VALUE10),
                         expectedDescriptionOfTheFoundElements(tagName(TEXT_AREA_TAG),
@@ -552,28 +551,28 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
                                 shouldHaveText(LINK_TEXT2).and(shouldBeVisible().negate()))},
 
                 {tagName(SELECT), OPTION_TEXT23,
-                        shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT22).timeOut(ofMillis(10)), 3),
+                        shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT22), 3),
                         expectedDescriptionOfTheFoundElements(tagName(SELECT), shouldHaveText(OPTION_TEXT23)
-                                .and(shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT22).timeOut(ofMillis(10)), 3)))},
+                                .and(shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT22), 3)))},
 
                 {tagName(SELECT), OPTION_TEXT20,
-                        shouldContainElements(webElements(tagName(OPTION)).timeOut(ofMillis(10)), 3).negate(),
+                        shouldContainElements(webElements(tagName(OPTION)), 3).negate(),
                         expectedDescriptionOfTheFoundElements(tagName(SELECT),
                                 shouldHaveText(OPTION_TEXT20)
-                                        .and(shouldContainElements(webElements(tagName(OPTION)).timeOut(ofMillis(10)), 3).negate()))},
+                                        .and(shouldContainElements(webElements(tagName(OPTION)), 3).negate()))},
 
                 {tagName(BUTTON_TAG), BUTTON_TEXT4,
-                        shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1).timeOut(ofMillis(10))),
+                        shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1)),
                         expectedDescriptionOfTheFoundElements(tagName(BUTTON_TAG),
                                 shouldHaveText(BUTTON_TEXT4)
-                                        .and(shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1).timeOut(ofMillis(10)))))},
+                                        .and(shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1))))},
 
                 {tagName(BUTTON_TAG), BUTTON_TEXT5,
-                        shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1).timeOut(ofMillis(10))).negate(),
+                        shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1)).negate(),
                         expectedDescriptionOfTheFoundElements(tagName(BUTTON_TAG),
                                 shouldHaveText(BUTTON_TEXT5)
                                         .and(shouldContainElements(webElements(tagName(LABEL_TAG),
-                                                BUTTON_LABEL_TEXT1).timeOut(ofMillis(10))).negate()))},
+                                                BUTTON_LABEL_TEXT1)).negate()))},
 
                 {CHAINED_FIND_TAB, TAB_TEXT3, shouldHaveAttribute(ATTR19, VALUE12),
                         expectedDescriptionOfTheFoundElements(CHAINED_FIND_TAB,
@@ -699,28 +698,28 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
                                 shouldHaveText(compile("Text2")).and(shouldBeVisible().negate()))},
 
                 {tagName(SELECT), compile("Text23"),
-                        shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT22).timeOut(ofMillis(10)), 3),
+                        shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT22), 3),
                         expectedDescriptionOfTheFoundElements(tagName(SELECT), shouldHaveText(compile("Text23"))
-                                .and(shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT22).timeOut(ofMillis(10)), 3)))},
+                                .and(shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT22), 3)))},
 
                 {tagName(SELECT), compile(OPTION_TEXT20),
-                        shouldContainElements(webElements(tagName(OPTION)).timeOut(ofMillis(10)), 3).negate(),
+                        shouldContainElements(webElements(tagName(OPTION)), 3).negate(),
                         expectedDescriptionOfTheFoundElements(tagName(SELECT),
                                 shouldHaveText(compile(OPTION_TEXT20))
-                                        .and(shouldContainElements(webElements(tagName(OPTION)).timeOut(ofMillis(10)), 3).negate()))},
+                                        .and(shouldContainElements(webElements(tagName(OPTION)), 3).negate()))},
 
                 {tagName(BUTTON_TAG), compile("Text4"),
-                        shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1).timeOut(ofMillis(10))),
+                        shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1)),
                         expectedDescriptionOfTheFoundElements(tagName(BUTTON_TAG),
                                 shouldHaveText(compile("Text4"))
-                                        .and(shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1).timeOut(ofMillis(10)))))},
+                                        .and(shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1))))},
 
                 {tagName(BUTTON_TAG), compile("Text5"),
-                        shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1).timeOut(ofMillis(10))).negate(),
+                        shouldContainElements(webElements(tagName(LABEL_TAG), BUTTON_LABEL_TEXT1)).negate(),
                         expectedDescriptionOfTheFoundElements(tagName(BUTTON_TAG),
                                 shouldHaveText(compile("Text5"))
                                         .and(shouldContainElements(webElements(tagName(LABEL_TAG),
-                                                BUTTON_LABEL_TEXT1).timeOut(ofMillis(10))).negate()))},
+                                                BUTTON_LABEL_TEXT1)).negate()))},
 
                 {CHAINED_FIND_TAB, compile("Text3"), shouldHaveAttribute(ATTR19, VALUE12),
                         expectedDescriptionOfTheFoundElements(CHAINED_FIND_TAB,
