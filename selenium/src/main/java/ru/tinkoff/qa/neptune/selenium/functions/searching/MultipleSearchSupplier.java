@@ -447,4 +447,9 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
     public MultipleSearchSupplier<R> criteria(String description, Predicate<? super R> condition) {
         return super.criteria(description, condition);
     }
+
+    @Override
+    protected MultipleSearchSupplier<R> clone() {
+        return super.clone();
+    }
 }

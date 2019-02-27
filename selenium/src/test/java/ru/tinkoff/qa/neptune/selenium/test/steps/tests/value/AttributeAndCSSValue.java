@@ -13,7 +13,6 @@ import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.
 import static ru.tinkoff.qa.neptune.selenium.functions.value.SequentialGetAttributeValueSupplier.attributeValue;
 import static ru.tinkoff.qa.neptune.selenium.functions.value.SequentialGetCSSValueSupplier.cssValue;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
-import static java.time.Duration.ofMillis;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
@@ -111,8 +110,7 @@ public class AttributeAndCSSValue extends BaseWebDriverTest {
     @Test
     public void getCSSNullValueByWebElementSearchCriteria() {
         assertThat(seleniumSteps.get(cssValue(CSS11).of(webElement(xpath(TEXT_FIELD_XPATH))
-                        .criteria(shouldContainElements(webElements(tagName(LABEL_TAG), INPUT_LABEL_TEXT4)
-                                .timeOut(ofMillis(5)))))),
+                        .criteria(shouldContainElements(webElements(tagName(LABEL_TAG), INPUT_LABEL_TEXT4))))),
                 nullValue());
     }
 

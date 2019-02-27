@@ -6,11 +6,13 @@ import ru.tinkoff.qa.neptune.core.api.steps.TurnsRetortingOff;
 import ru.tinkoff.qa.neptune.selenium.api.widget.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.internal.WrapsElement;
+
+import java.time.Duration;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static java.util.List.of;
+import static java.time.Duration.ofMillis;
 import static java.util.Objects.nonNull;
 import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.condition;
 import static com.google.common.base.Preconditions.checkArgument;
@@ -359,15 +361,18 @@ public final class CommonConditions {
     }
 
     /**
-     * The checking of an element/widget by presence of nested elements
+     * The checking of an element/widget by presence of nested elements.
      *
      * @param <T> is a type of element/widget
-     * @param howToFind is the way to find nested elements
+     * @param howToFind is the way to find nested elements.
+     *                  <p>NOTE!!!</p>
+     *                  When there is a timeout passed through {@link MultipleSearchSupplier#timeOut(Duration)} of the given
+     *                  {@code howToFind} then it is ignored here.
      * @return predicate that checks/filters an element/widget
      */
     public static <T extends SearchContext> Predicate<T> shouldContainElements(MultipleSearchSupplier<?> howToFind) {
         checkArgument(nonNull(howToFind), "The way how to find nested elements should be defined");
-        var func = howToFind.get();
+        var func = howToFind.clone().timeOut(ofMillis(0)).get();
         if (TurnsRetortingOff.class.isAssignableFrom(func.getClass())) {
             ((TurnsRetortingOff) func).turnReportingOff();
         }
@@ -378,14 +383,17 @@ public final class CommonConditions {
      * The checking of an element/widget by presence of nested elements
      *
      * @param <T> is a type of element/widget
-     * @param howToFind is the way to find nested elements
+     * @param howToFind is the way to find nested elements.
+     *                  <p>NOTE!!!</p>
+     *                  When there is a timeout passed through {@link MultipleSearchSupplier#timeOut(Duration)} of the given
+     *                  {@code howToFind} then it is ignored here.
      * @param expected is the count of expected nested elements
      * @return predicate that checks/filters an element/widget
      */
     public static <T extends SearchContext> Predicate<T> shouldContainElements(MultipleSearchSupplier<?> howToFind, int expected) {
         checkArgument(nonNull(howToFind), "The way how to find nested elements should be defined");
         checkArgument(expected >=0 , "Count of expected nested elements can't be a negative or zero value.");
-        var func = howToFind.get();
+        var func = howToFind.clone().timeOut(ofMillis(0)).get();
         if (TurnsRetortingOff.class.isAssignableFrom(func.getClass())) {
             ((TurnsRetortingOff) func).turnReportingOff();
         }
@@ -397,13 +405,16 @@ public final class CommonConditions {
      * The checking of an element/widget by presence of a nested element
      *
      * @param <T> is a type of element/widget
-     * @param howToFind is the way to find a nested element
+     * @param howToFind is the way to find a nested element.
+     *                  <p>NOTE!!!</p>
+     *                  When there is a timeout passed through {@link SearchSupplier#timeOut(Duration)} of the given
+     *                  {@code howToFind} then it is ignored here.
      * @return predicate that checks/filters an element/widget
      */
     @SuppressWarnings("unchecked")
     public static <T extends SearchContext> Predicate<T> shouldContainElement(SearchSupplier<?> howToFind) {
         checkArgument(nonNull(howToFind), "The way how to find nested elements should be defined");
-        var func = ((IgnoresThrowable<StepFunction<SearchContext, SearchContext>>) howToFind.get())
+        var func = ((IgnoresThrowable<StepFunction<SearchContext, SearchContext>>) howToFind.clone().timeOut(ofMillis(0)).get())
                 .addIgnored(NoSuchElementException.class);
         func.turnReportingOff();
         return condition(format("has nested %s", howToFind), t -> func.apply(t) != null);

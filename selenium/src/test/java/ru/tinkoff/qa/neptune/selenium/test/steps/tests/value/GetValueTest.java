@@ -13,7 +13,6 @@ import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.
 import static ru.tinkoff.qa.neptune.selenium.functions.value.SequentialGetValueSupplier.ofThe;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
 import static java.lang.String.format;
-import static java.time.Duration.ofMillis;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import static java.util.List.of;
@@ -226,14 +225,12 @@ public class GetValueTest extends BaseWebDriverTest {
                 contains(CELL_TEXT37, CELL_TEXT38, CELL_TEXT39));
 
         assertThat(seleniumSteps.getValue(ofThe(tableRow()
-                        .criteria(shouldContainElements(buttons()
-                                .timeOut(ofMillis(5))))
+                        .criteria(shouldContainElements(buttons()))
                         .foundFrom(table(TABLE_LABEL_TEXT5, TABLE_LABEL_TEXT9)))),
                 contains(CELL_TEXT73, CELL_TEXT74, CELL_TEXT75));
 
         TableRow row = seleniumSteps.find(tableRow()
-                .criteria(shouldContainElements(textFields()
-                        .timeOut(ofMillis(5))))
+                .criteria(shouldContainElements(textFields()))
                 .foundFrom(table(TABLE_LABEL_TEXT5, TABLE_LABEL_TEXT9)));
 
         assertThat(seleniumSteps.getValue(ofThe(row)),
@@ -253,8 +250,7 @@ public class GetValueTest extends BaseWebDriverTest {
         assertThat(seleniumSteps.getValue(ofThe(tableHeader()
                         .timeOut(FIVE_SECONDS)
                         .foundFrom(table()
-                                .criteria(shouldContainElements(textFields(INPUT_LABEL_TEXT10)
-                                        .timeOut(ofMillis(5))))))),
+                                .criteria(shouldContainElements(textFields(INPUT_LABEL_TEXT10)))))),
                 contains(HEADER_TEXT28, HEADER_TEXT29, HEADER_TEXT30));
 
         TableHeader header = seleniumSteps.find(tableHeader()
@@ -279,8 +275,7 @@ public class GetValueTest extends BaseWebDriverTest {
         assertThat(seleniumSteps.getValue(ofThe(tableFooter()
                         .timeOut(FIVE_SECONDS)
                         .foundFrom(table()
-                                .criteria(shouldContainElements(textFields(INPUT_LABEL_TEXT6, INPUT_LABEL_TEXT10)
-                                        .timeOut(ofMillis(5))))))),
+                                .criteria(shouldContainElements(textFields(INPUT_LABEL_TEXT6, INPUT_LABEL_TEXT10)))))),
                 contains(FOOTER_TEXT28, FOOTER_TEXT29, FOOTER_TEXT30));
 
         TableFooter footer = seleniumSteps.find(tableFooter()
@@ -299,15 +294,13 @@ public class GetValueTest extends BaseWebDriverTest {
                 is(CELL_TEXT37));
 
         assertThat(seleniumSteps.getValue(ofThe(tableCell()
-                        .criteria(shouldContainElements(textFields(INPUT_LABEL_TEXT6, INPUT_LABEL_TEXT10)
-                                .timeOut(ofMillis(5))))
+                        .criteria(shouldContainElements(textFields(INPUT_LABEL_TEXT6, INPUT_LABEL_TEXT10)))
                         .foundFrom(table(TABLE_LABEL_TEXT6)))),
                 is(CELL_TEXT84));
 
         TableCell cell = seleniumSteps
                 .find(tableCell()
-                        .criteria(shouldContainElements(checkBoxes(CHECKBOX_LABEL_TEXT6, CHECKBOX_LABEL_TEXT10)
-                                .timeOut(ofMillis(5))))
+                        .criteria(shouldContainElements(checkBoxes(CHECKBOX_LABEL_TEXT6, CHECKBOX_LABEL_TEXT10)))
                         .foundFrom(table(TABLE_LABEL_TEXT6)));
         assertThat(seleniumSteps.getValue(ofThe(cell)),
                 is(CELL_TEXT87));
