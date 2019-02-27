@@ -9,17 +9,18 @@ import ru.tinkoff.qa.neptune.http.api.captors.RequestStringCaptor;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.Arrays;
-import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static java.net.http.HttpResponse.BodyHandlers.discarding;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.StreamSupport.stream;
 import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.condition;
 
 /**
  * This class is designed to build chains of functions that get a response when a request is sent.
+ *
  * @param <T> is a type of body of the received response
  */
 @MakeStringCapturesOnFinishing
@@ -42,9 +43,9 @@ public class HttpResponseSequentialGetSupplier<T> extends SequentialGetStepSuppl
         this.request = request;
     }
 
-    static <T, S> HttpResponseSequentialGetSupplier<T> addCondition(HttpResponseSequentialGetSupplier<T> addTo,
-                                                                   Function<T, S> extractObjectFromBody,
-                                                                   Predicate<S> predicateToAdd) {
+    static <T, S> void addCondition(HttpResponseSequentialGetSupplier<T> addTo,
+                                    Function<T, S> extractObjectFromBody,
+                                    Predicate<S> predicateToAdd) {
         Predicate<HttpResponse<T>> predicate = condition(predicateToAdd.toString(), tHttpResponse -> {
             var body = tHttpResponse.body();
             return ofNullable(body)
@@ -54,12 +55,12 @@ public class HttpResponseSequentialGetSupplier<T> extends SequentialGetStepSuppl
                     })
                     .orElse(false);
         });
-        return addTo.criteria(predicate);
+        addTo.criteria(predicate);
     }
 
-    static <T, R, S extends Iterable<R>> HttpResponseSequentialGetSupplier<T> addConditionIterable(HttpResponseSequentialGetSupplier<T> addTo,
-                                                                                                   Function<T, S> extractIterableFromBody,
-                                                                                                   Predicate<R> predicateToAdd) {
+    static <T, R, S extends Iterable<R>> void addConditionIterable(HttpResponseSequentialGetSupplier<T> addTo,
+                                                                   Function<T, S> extractIterableFromBody,
+                                                                   Predicate<R> predicateToAdd) {
         Predicate<HttpResponse<T>> predicate = condition(predicateToAdd.toString(), tHttpResponse -> {
             var body = tHttpResponse.body();
             return ofNullable(body)
@@ -69,20 +70,20 @@ public class HttpResponseSequentialGetSupplier<T> extends SequentialGetStepSuppl
                     })
                     .orElse(false);
         });
-        return addTo.criteria(predicate);
+        addTo.criteria(predicate);
     }
 
-    static <T, R> HttpResponseSequentialGetSupplier<T> addConditionArray(HttpResponseSequentialGetSupplier<T> addTo,
-                                                                         Function<T, R[]> extractIterableFromBody,
-                                                                         Predicate<R> predicateToAdd) {
-        return addConditionIterable(addTo, extractIterableFromBody.andThen(rs -> ofNullable(rs)
-                .map(Arrays::asList)
-                .orElse(null)),
+    static <T, R> void addConditionArray(HttpResponseSequentialGetSupplier<T> addTo,
+                                         Function<T, R[]> extractIterableFromBody,
+                                         Predicate<R> predicateToAdd) {
+        addConditionIterable(addTo, extractIterableFromBody.andThen(rs -> ofNullable(rs)
+                        .map(Arrays::asList)
+                        .orElse(null)),
                 predicateToAdd);
     }
 
     /**
-     * Builds a function to get a response of the given GET-request to be sent.
+     * Builds a function to get a response of the given request to be sent.
      *
      * @param request is a request to get response of
      * @param handler to read the body of resulted response
@@ -92,6 +93,16 @@ public class HttpResponseSequentialGetSupplier<T> extends SequentialGetStepSuppl
     public static <T> HttpResponseSequentialGetSupplier<T> responseOf(PreparedHttpRequest request,
                                                                       HttpResponse.BodyHandler<T> handler) {
         return new HttpResponseSequentialGetSupplier<>(request, handler);
+    }
+
+    /**
+     * Builds a function to get a response of the given request to be sent.
+     *
+     * @param request is a request to get response of
+     * @return an instance of {@link HttpResponseSequentialGetSupplier}
+     */
+    public static HttpResponseSequentialGetSupplier<Void> responseOf(PreparedHttpRequest request) {
+        return responseOf(request, discarding());
     }
 
     @Override
@@ -110,17 +121,17 @@ public class HttpResponseSequentialGetSupplier<T> extends SequentialGetStepSuppl
     }
 
     @Override
-    protected HttpResponseSequentialGetSupplier<T>  criteria(ConditionConcatenation concat, Predicate<? super HttpResponse<T>> condition) {
+    protected HttpResponseSequentialGetSupplier<T> criteria(ConditionConcatenation concat, Predicate<? super HttpResponse<T>> condition) {
         return super.criteria(concat, condition);
     }
 
     @Override
-    protected HttpResponseSequentialGetSupplier<T>  criteria(ConditionConcatenation concat, String conditionDescription, Predicate<? super HttpResponse<T>> condition) {
+    protected HttpResponseSequentialGetSupplier<T> criteria(ConditionConcatenation concat, String conditionDescription, Predicate<? super HttpResponse<T>> condition) {
         return super.criteria(concat, conditionDescription, condition);
     }
 
     @Override
-    protected HttpResponseSequentialGetSupplier<T>  criteria(String conditionDescription, Predicate<? super HttpResponse<T>> condition) {
+    protected HttpResponseSequentialGetSupplier<T> criteria(String conditionDescription, Predicate<? super HttpResponse<T>> condition) {
         return super.criteria(conditionDescription, condition);
     }
 

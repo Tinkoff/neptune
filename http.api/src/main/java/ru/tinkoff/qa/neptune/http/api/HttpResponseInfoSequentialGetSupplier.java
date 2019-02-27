@@ -9,6 +9,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 /**
@@ -23,7 +25,7 @@ public final class HttpResponseInfoSequentialGetSupplier<T> extends SequentialGe
     private static final Function<HttpResponse<?>, HttpRequest> REQUEST = HttpResponse::request;
     private static final Function<HttpResponse<?>, HttpResponse<?>> PREVIOUS_RESPONSE = httpResponse ->
             httpResponse.previousResponse().orElse(null);
-    private static final Function<HttpResponse<?>, HttpHeaders> HEADERS = HttpResponse::headers;
+    private static final Function<HttpResponse<?>, Map<String,List<String>>> HEADERS = httpResponse -> httpResponse.headers().map();
     private static final Function<HttpResponse<?>, SSLSession> SSL_SESSION = httpResponse -> httpResponse
             .sslSession()
             .orElse(null);
@@ -114,7 +116,7 @@ public final class HttpResponseInfoSequentialGetSupplier<T> extends SequentialGe
      * @param httpResponseSequentialGetSupplier is a description of the response to get headers
      * @return instance of {@link HttpResponseInfoSequentialGetSupplier}
      */
-    public static HttpResponseInfoSequentialGetSupplier<HttpHeaders> headersOf(HttpResponseSequentialGetSupplier<?> httpResponseSequentialGetSupplier) {
+    public static HttpResponseInfoSequentialGetSupplier<Map<String, List<String>>> headersOf(HttpResponseSequentialGetSupplier<?> httpResponseSequentialGetSupplier) {
         return new HttpResponseInfoSequentialGetSupplier<>("Response headers of the response", HEADERS)
                 .from(httpResponseSequentialGetSupplier);
     }
@@ -125,7 +127,7 @@ public final class HttpResponseInfoSequentialGetSupplier<T> extends SequentialGe
      * @param httpResponse response to get headers
      * @return instance of {@link HttpResponseInfoSequentialGetSupplier}
      */
-    public static HttpResponseInfoSequentialGetSupplier<HttpHeaders> headersOf(HttpResponse<?> httpResponse) {
+    public static HttpResponseInfoSequentialGetSupplier<Map<String,List<String>>> headersOf(HttpResponse<?> httpResponse) {
         return new HttpResponseInfoSequentialGetSupplier<>("Response headers of the response", HEADERS)
                 .from(httpResponse);
     }
