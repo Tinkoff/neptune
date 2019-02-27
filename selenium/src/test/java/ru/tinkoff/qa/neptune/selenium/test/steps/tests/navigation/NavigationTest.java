@@ -52,7 +52,7 @@ public class NavigationTest extends BaseWebDriverTest {
 
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "It is impossible to navigate by URL /index.html. This value is not a valid URL and the " +
-                    "property enable.ability.to.navigate.by.relative.url is not defined or its value is false")
+                    "property enable.ability.to.navigate.by.relative.url is not defined/its value is false")
     public void invalidNavigationByRelativeUrl() {
         seleniumSteps.navigate(toUrl("/index.html"));
         assertThat(seleniumSteps.get(currentUrl()), containsString("/index.html"));
