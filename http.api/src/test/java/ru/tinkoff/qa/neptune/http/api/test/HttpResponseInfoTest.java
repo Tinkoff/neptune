@@ -45,7 +45,7 @@ public class HttpResponseInfoTest extends BaseHttpTest {
                         .withPath("/testStatusCodeDoesNotExist.html"), exactly(1))
                 .respond(response().withBody("NOT FOUND").withStatusCode(404));
 
-        var response = httpSteps.get(responseOf(GET(format("%s/testStatusCodeDoesNotExist.html", REQUEST_URI)), ofString()));
+        var response = httpSteps.get(responseOf(GET(format("%s/testStatusCodeDoesNotExist.html", REQUEST_URI))));
         assertThat(httpSteps.get(statusCodeOf(response)),
                 equalTo(404));
     }
@@ -60,8 +60,7 @@ public class HttpResponseInfoTest extends BaseHttpTest {
 
         assertThat(httpSteps.get(
                 correspondingRequestOf(responseOf(POST(format("%s/correspondingRequest.html", REQUEST_URI),
-                        stringBody("Request body")),
-                        ofString()))).toString(),
+                        stringBody("Request body"))))).toString(),
                 equalTo("http://127.0.0.1:1080/correspondingRequest.html POST"));
     }
 
@@ -74,8 +73,7 @@ public class HttpResponseInfoTest extends BaseHttpTest {
                 .respond(response().withBody("SUCCESS"));
 
         var response = httpSteps.get(responseOf(POST(format("%s/correspondingRequest2.html", REQUEST_URI),
-                stringBody("Request body")),
-                ofString()));
+                stringBody("Request body"))));
 
         assertThat(httpSteps.get(
                 correspondingRequestOf(response)).toString(),
@@ -92,9 +90,7 @@ public class HttpResponseInfoTest extends BaseHttpTest {
                 .respond(response().withBody("SUCCESS"));
 
         assertThat(httpSteps.get(
-                headersOf(responseOf(POST(format("%s/header.html", REQUEST_URI),
-                        stringBody("Request body")),
-                        ofString()))).map(),
+                headersOf(responseOf(POST(format("%s/header.html", REQUEST_URI), stringBody("Request body"))))),
                 allOf(hasEntry(equalTo("connection"), contains("keep-alive")),
                         hasEntry(equalTo("content-length"), contains("7"))));
     }
@@ -108,10 +104,9 @@ public class HttpResponseInfoTest extends BaseHttpTest {
                 .respond(response().withBody("SUCCESS"));
 
         var response = httpSteps.get(responseOf(POST(format("%s/header2.html", REQUEST_URI),
-                stringBody("Request body")),
-                ofString()));
+                stringBody("Request body"))));
 
-        assertThat(httpSteps.get(headersOf(response)).map(),
+        assertThat(httpSteps.get(headersOf(response)),
                 allOf(hasEntry(equalTo("connection"), contains("keep-alive")),
                         hasEntry(equalTo("content-length"), contains("7"))));
     }
@@ -149,7 +144,7 @@ public class HttpResponseInfoTest extends BaseHttpTest {
                         .withPath("/uri.html"), exactly(1))
                 .respond(response().withBody("SUCCESS"));
 
-        assertThat(httpSteps.get(uriOf(responseOf(GET(format("%s/uri.html", REQUEST_URI)), ofString()))),
+        assertThat(httpSteps.get(uriOf(responseOf(GET(format("%s/uri.html", REQUEST_URI))))),
                 equalTo(new URI("http://127.0.0.1:1080/uri.html")));
     }
 
@@ -161,7 +156,7 @@ public class HttpResponseInfoTest extends BaseHttpTest {
                         .withPath("/uri2.html"), exactly(1))
                 .respond(response().withBody("SUCCESS"));
 
-        var response = httpSteps.get(responseOf(GET(format("%s/uri2.html", REQUEST_URI)), ofString()));
+        var response = httpSteps.get(responseOf(GET(format("%s/uri2.html", REQUEST_URI))));
 
         assertThat(httpSteps.get(uriOf(response)), equalTo(new URI("http://127.0.0.1:1080/uri2.html")));
     }
@@ -174,7 +169,7 @@ public class HttpResponseInfoTest extends BaseHttpTest {
                         .withPath("/version.html"), exactly(1))
                 .respond(response().withBody("SUCCESS"));
 
-        assertThat(httpSteps.get(httpVersionOf(responseOf(GET(format("%s/version.html", REQUEST_URI)), ofString()))),
+        assertThat(httpSteps.get(httpVersionOf(responseOf(GET(format("%s/version.html", REQUEST_URI))))),
                 equalTo(HTTP_1_1));
     }
 
@@ -186,7 +181,7 @@ public class HttpResponseInfoTest extends BaseHttpTest {
                         .withPath("/version2.html"), exactly(1))
                 .respond(response().withBody("SUCCESS"));
 
-        var response = httpSteps.get(responseOf(GET(format("%s/version2.html", REQUEST_URI)), ofString()));
+        var response = httpSteps.get(responseOf(GET(format("%s/version2.html", REQUEST_URI))));
 
         assertThat(httpSteps.get(httpVersionOf(response)), equalTo(HTTP_1_1));
     }

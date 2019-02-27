@@ -13,7 +13,7 @@ import static java.net.http.HttpRequest.BodyPublishers.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
- * Creates instances if {@link java.net.http.HttpRequest.BodyPublisher} for more comfort work
+ * Creates instances if {@link java.net.http.HttpRequest.BodyPublisher} for more comfort usage
  */
 public final class CommonBodyPublishers {
 
