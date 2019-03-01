@@ -871,12 +871,209 @@ public class MyTests /*...*/ {
 
 ## Предлагаемое использование шаблона проектирования Page Object.
 
-Предлагается не описывать всю страницу целиком, а использовать типизированные элементы/структуры элементов. В рамках данного модуля введено такое понятие, как [виджет](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/api/widget/Widget.html). 
+Предлагается не описывать всю страницу целиком, а использовать типизированные элементы/структуры элементов. 
+В рамках данного модуля введено такое понятие, как [виджет](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/api/widget/Widget.html). 
 
 ### Как создать виджет 
 
-```java
+Виджет типизирует элемент/группу элементов и описывает его поведение с точки зрения интерактивного взаимодействия с ним. 
+По умолчанию, модуль содержит интерфейсы, кототорые позволяют описать наиболее частые варианты интерактивного поведения элемента страницы:
+  - [Clickable](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/api/widget/Clickable.html) - виджеты, по котором можно выполнять клик.
+  Кнопки, ссылки и т.д.
+  - [Editable](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/api/widget/Editable.html) - виджеты, значения которых можно редактировать.
+  Текстовые поля, флаги (чекбоксы, радиобаттоны), селекторы и т.д.
+  - [HasValue](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/api/widget/HasValue.html) - Виджеты, которое могут возвращать значения.
+  Текст в текстовом поле, включенность флага, записи в таблице и т.д.
+  - [Labeled](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/api/widget/Labeled.html) - для того, чтобы виджет можно было найти по меткам - 
+  тексту/значению актрибута самого элемента или теккстам/значениям атрибутов связанных элементов.   
+  
+[Модуль содержит наиболее часто используемые варианты типизированных элементов/виджетов. Абстрактные классы](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/api/widget/drafts/package-summary.html)
 
+```java
+//простой пример
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import ru.tinkoff.qa.neptune.selenium.api.widget.Name;
+import ru.tinkoff.qa.neptune.selenium.api.widget.Priority;
+import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
+
+@Priority(1) //приоритет поиска. указывать не обязательно
+@Name("Мой виджет") //отображаемое имя. указывать не обязательно
+@FindBy(xpath = ".//path/to/element") //локатор, по которому ищется элемент. Путь к элементу, 
+//от которого ищутся под-элементы виджета/относительно которого ищутся связанные элементы
+public class MyCustomWidget extends Widget  {
+    public MyCustomWidget(WebElement wrappedElement) {
+        super(wrappedElement);
+    }
+
+    //....
+}
 ``` 
 
-## Поиск элементов
+#### Аннотация [@Name](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/api/widget/Name.html). 
+Нужна для названия виджета/текстового пояснения виджета. 
+
+Указанное значение может наследоваться
+
+```java
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import ru.tinkoff.qa.neptune.selenium.api.widget.Name;
+import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
+
+@Name("Мой виджет") //вызов toString у объекта MyCustomWidget дасть результат
+//`Мой виджет` + пояснение, по какому критерию найден
+@FindBy(xpath = ".//path/to/element")
+public class MyCustomWidget extends Widget  {
+    public MyCustomWidget(WebElement wrappedElement) {
+        super(wrappedElement);
+    }
+
+    //....
+}
+``` 
+
+```java
+//вызов toString у объекта MyCustomWidget дасть результат
+//`Мой виджет` + пояснение, по какому критерию найден
+@FindBy(xpath = ".//path/to/element2")
+public class MyCustomWidget2 extends MyCustomWidget  {
+    public MyCustomWidget2(WebElement wrappedElement) {
+        super(wrappedElement);
+    }
+
+    //....
+}
+```
+
+Указанное значение может перекрываться
+
+```java
+import ru.tinkoff.qa.neptune.selenium.api.widget.Name;
+
+@Name("Мой новый виджет") //вызов toString у объекта MyCustomWidget дасть результат
+//`Мой новый виджет` + пояснение, по какому критерию найден
+@FindBy(xpath = ".//path/to/element3")
+public class MyCustomWidget3 extends MyCustomWidget  {
+    public MyCustomWidget3(WebElement wrappedElement) {
+        super(wrappedElement);
+    }
+
+    //....
+}
+```
+
+#### Аннотация [@Priority](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/api/widget/Priority.html). 
+Указывает приоритет поиска виджета определенного типа среди прочих однотипных. Чем ниже значение, тем выше приоритет. Указанные значения
+должны быть >= 1.
+
+Например 
+
+```java
+import ru.tinkoff.qa.neptune.selenium.api.widget.Priority;
+import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Button;
+
+@FindBy(tagName = "button")
+public class CommonButton extends Button {
+    public CommonButton(WebElement wrappedElement) {
+        super(wrappedElement);
+    }
+    
+    @Override
+    public void click() {
+        //реализация
+    }
+
+    //....
+}
+
+@Priority(1) //означает, что элементы этого класса
+//более приоритетны для поиска, чем элементы класса CommonButton
+@FindBy(className = "MyButton")
+public class MyButton extends Button {
+    public MyButton(WebElement wrappedElement) {
+        super(wrappedElement);
+    }
+    
+    @Override
+    public void click() {
+        //реализация
+    }
+
+    //....
+}
+```
+
+Указанное значение может наследоваться
+
+```java
+import ru.tinkoff.qa.neptune.selenium.api.widget.Priority;
+import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Button;
+
+@Priority(1)
+@FindBy(tagName = "button")
+public class CommonButton extends Button {
+    public CommonButton(WebElement wrappedElement) {
+        super(wrappedElement);
+    }
+    
+    @Override
+    public void click() {
+        //реализация
+    }
+
+    //....
+}
+
+@FindBy(className = "MyButton") /*при поиске 
+кнопок, те кнопки, что описанны классами 
+CommonButton и MyButton имеют одинаковый приоритет для механизма 
+поиска
+*/
+public class MyButton extends CommonButton {
+    public MyButton(WebElement wrappedElement) {
+        super(wrappedElement);
+    }
+    //....
+}
+```
+
+Указанное значение может перекрываться
+
+```java
+import ru.tinkoff.qa.neptune.selenium.api.widget.Priority;
+import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Button;
+
+@Priority(1)
+@FindBy(tagName = "button")
+public class CommonButton extends Button {
+    public CommonButton(WebElement wrappedElement) {
+        super(wrappedElement);
+    }
+    
+    @Override
+    public void click() {
+        //реализация
+    }
+
+    //....
+}
+
+@Priority(2)
+@FindBy(className = "MyButton") /*при поиске 
+кнопок, те кнопки, что описанны классом
+MyButton имеют меньший приоритет для механизма 
+поиска чем кнопки, описанные CommonButton
+*/
+public class MyButton extends CommonButton {
+    public MyButton(WebElement wrappedElement) {
+        super(wrappedElement);
+    }
+    //....
+}
+```
+
+См. [Поиск виджетов](#Поиск-виджетов)
+
+### Поиск виджетов

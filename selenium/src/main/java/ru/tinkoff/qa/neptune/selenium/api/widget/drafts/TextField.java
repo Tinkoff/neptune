@@ -9,7 +9,7 @@ import org.openqa.selenium.WebElement;
 import java.util.List;
 
 /**
- * Test input, text area or something like that
+ * Text input, text area or something like that
  */
 @Name("Text field")
 public abstract class TextField extends Widget implements Editable<List<CharSequence>>,
