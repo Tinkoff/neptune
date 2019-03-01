@@ -1065,7 +1065,7 @@ public class CommonButton extends Button {
 @FindBy(className = "MyButton") /*при поиске 
 кнопок, те кнопки, что описаны классом
 MyButton имеют меньший приоритет для механизма 
-поиска чем кнопки, описаные CommonButton
+поиска чем кнопки, описанные CommonButton
 */
 public class MyButton extends CommonButton {
     public MyButton(WebElement wrappedElement) {
