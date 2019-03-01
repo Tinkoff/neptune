@@ -17,7 +17,7 @@
 |            Да                     	| AND                   	|                Да                          	| По умолчанию выбрасывает  org.openqa.selenium.NoSuchElementException 	| org.openqa.selenium.StaleElementReferenceException 	| Скриншоты. Прочие файлы                                          	|
 
 ```java
-//пример, как игнорировать NoSuchElementException. Вернется null
+//пример поиска элемента
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 //...
 import static org.openqa.selenium.By.*;
@@ -40,7 +40,6 @@ public class MyTests /*...*/ {
 В примере выше происходит обычный поиск элемента по классу (аттрибут html). 
 Поиск занимает 1 минуту или время, указанное в [настройках](/doc/rus/selenium/Settings.md#Время-ожидания-элементов-на-странице-(не-обязательно)).
 Может производиться поиск любого(видимого) подходящего элемента. [см. поиск только видимых элементов](/doc/rus/selenium/Settings.md#Поиск-только-видимых-элементов-(не-обязательно)) 
-Если ничего не будет найдено, то вместо выбрасывания `NoSuchElementException` поиск возвращает `null`.
 
 ```java
 //пример поиска элемента по тексту
@@ -401,8 +400,30 @@ public class MyTests /*...*/ {
 
 
 ```java
+//пример, как игнорировать NoSuchElementException. Вернется null
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+//...
+import static org.openqa.selenium.By.*;
+import java.util.NoSuchElementException;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //**
+        var webElement = seleniumSteps.find(webElement(className("MyClass"))
+                .addIgnored(NoSuchElementException.class));
+        //**
+    }
+}
 ```
+
+В примере выше происходит обычный поиск элемента по классу (аттрибут html). 
+Поиск занимает 1 минуту или время, указанное в [настройках](/doc/rus/selenium/Settings.md#Время-ожидания-элементов-на-странице-(не-обязательно)).
+Может производиться поиск любого(видимого) подходящего элемента. [см. поиск только видимых элементов](/doc/rus/selenium/Settings.md#Поиск-только-видимых-элементов-(не-обязательно)) 
+Если ничего не будет найдено, то вместо выбрасывания `NoSuchElementException` поиск возвращает `null`.
 
 
 ## Поиск множества элементов
