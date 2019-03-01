@@ -869,7 +869,7 @@ public class MyTests /*...*/ {
 ---
 
 
-## Предлагаемое использование шаблона проектирования Page Object.
+## Предлагаемое использование шаблона проектирования Page Object
 
 Предлагается не описывать всю страницу целиком, а использовать типизированные элементы/структуры элементов. 
 В рамках данного модуля введено такое понятие, как [виджет](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/api/widget/Widget.html). 
@@ -910,13 +910,12 @@ public class MyCustomWidget extends Widget  {
 }
 ``` 
 
-#### Аннотация [@Name](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/api/widget/Name.html). 
+#### Аннотация [@Name](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/api/widget/Name.html) 
 Нужна для названия виджета/текстового пояснения виджета. 
 
 Указанное значение может наследоваться
 
 ```java
-import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Name;
@@ -950,6 +949,7 @@ public class MyCustomWidget2 extends MyCustomWidget  {
 Указанное значение может перекрываться
 
 ```java
+import org.openqa.selenium.support.FindBy;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Name;
 
 @Name("Мой новый виджет") //вызов toString у объекта MyCustomWidget дасть результат
@@ -964,13 +964,14 @@ public class MyCustomWidget3 extends MyCustomWidget  {
 }
 ```
 
-#### Аннотация [@Priority](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/api/widget/Priority.html). 
+#### Аннотация [@Priority](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/api/widget/Priority.html) 
 Указывает приоритет поиска виджета определенного типа среди прочих однотипных. Чем ниже значение, тем выше приоритет. Указанные значения
 должны быть >= 1.
 
 Например 
 
 ```java
+import org.openqa.selenium.support.FindBy;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Priority;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Button;
 
@@ -1075,5 +1076,33 @@ public class MyButton extends CommonButton {
 ```
 
 См. [Поиск виджетов](#Поиск-виджетов)
+
+#### Аннотации [@FindBy](https://seleniumhq.github.io/selenium/docs/api/java/org/openqa/selenium/support/FindBy.html), [@FindBys](https://seleniumhq.github.io/selenium/docs/api/java/org/openqa/selenium/support/FindBys.html), [@FindAll](https://seleniumhq.github.io/selenium/docs/api/java/org/openqa/selenium/support/FindAll.html). 
+
+[Стандартные пример использования](https://github.com/SeleniumHQ/selenium/wiki/PageFactory#making-the-example-work-using-annotations).
+
+```java
+//простой пример
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
+
+@FindBy(xpath = ".//path/to/element") //Путь к элементу, от которого строится виджет
+public class MyCustomWidget extends Widget  {
+    
+    //Путь к элементу, вложенному в элемент, от которого строится виджет,
+    //или располагающемуся отностельно элемента, от которого строится виджет
+    @FindBy(xpath = ".//path/to/inner/or/relative/element")
+    private WebElement innerOrRelativeElement;
+    
+    public MyCustomWidget(WebElement wrappedElement) {
+        super(wrappedElement);
+    }
+
+    //....
+}
+```
+
+Никаких дополнительных действий выполнять не нужно.
 
 ### Поиск виджетов
