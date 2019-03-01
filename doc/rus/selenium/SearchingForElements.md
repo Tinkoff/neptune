@@ -12,15 +12,16 @@
 
 Для поиска одного элемента используется [SearchSupplier](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/functions/searching/SearchSupplier.html)
 
-| Возможность использовать критерии 	| Объединение критериев 	| Возможность указывать индивидуальный таймаут 	| Если желаемое значение не получено                                   	| Данные, которые могут быть  приложены к отчетам (по умолчанию)  	|
-|-----------------------------------	|-----------------------	|----------------------------------------------	|----------------------------------------------------------------------	|-----------------------------------------------------------------	|
-|           [x]                     	| *AND*                   	|                [x]                           	| По умолчанию выбрасывает  org.openqa.selenium.NoSuchElementException 	| Скриншоты Прочие файлы                                          	|
+| Возможность использовать критерии 	| Объединение критериев 	| Возможность указывать индивидуальный таймаут 	| Если желаемое значение не получено                                   	| Игнорируемые исключения                            	| Данные, которые могут быть  приложены к отчетам (по умолчанию)  	|
+|-----------------------------------	|-----------------------	|----------------------------------------------	|----------------------------------------------------------------------	|----------------------------------------------------	|-----------------------------------------------------------------	|
+|            Да                     	| AND                   	|                Да                          	| По умолчанию выбрасывает  org.openqa.selenium.NoSuchElementException 	| org.openqa.selenium.StaleElementReferenceException 	| Скриншоты. Прочие файлы                                          	|
 
 ```java
-//пример обычного поиска элемента
+//пример, как игнорировать NoSuchElementException. Вернется null
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 //...
 import static org.openqa.selenium.By.*;
+import java.util.NoSuchElementException;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 
 public class MyTests /*...*/ {
@@ -29,14 +30,17 @@ public class MyTests /*...*/ {
     @Test
     public void myTest() {
         //**
-        var webElement = seleniumSteps.find(webElement(className("MyClass")));
+        var webElement = seleniumSteps.find(webElement(className("MyClass"))
+                .addIgnored(NoSuchElementException.class));
         //**
     }
 }
 ```
 
-В примере выше происходит обычный поиск элемента по классу (аттрибут html). Поиск занимает 1 минуту или время, указанное в [настройках](/doc/rus/selenium/Settings.md#Время-ожидания-элементов-на-странице-(не-обязательно)).
+В примере выше происходит обычный поиск элемента по классу (аттрибут html). 
+Поиск занимает 1 минуту или время, указанное в [настройках](/doc/rus/selenium/Settings.md#Время-ожидания-элементов-на-странице-(не-обязательно)).
 Может производиться поиск любого(видимого) подходящего элемента. [см. поиск только видимых элементов](/doc/rus/selenium/Settings.md#Поиск-только-видимых-элементов-(не-обязательно)) 
+Если ничего не будет найдено, то вместо выбрасывания `NoSuchElementException` поиск возвращает `null`.
 
 ```java
 //пример поиска элемента по тексту
@@ -57,7 +61,8 @@ public class MyTests /*...*/ {
 }
 ```
 
-В примере выше происходит поиск элемента по классу (аттрибут html) и его полному тексту. Поиск занимает 1 минуту или время, указанное в [настройках](/doc/rus/selenium/Settings.md#Время-ожидания-элементов-на-странице-(не-обязательно)).
+В примере выше происходит поиск элемента по классу (аттрибут html) и его полному тексту. 
+Поиск занимает 1 минуту или время, указанное в [настройках](/doc/rus/selenium/Settings.md#Время-ожидания-элементов-на-странице-(не-обязательно)).
 Может производиться поиск любого(видимого) подходящего элемента. [см. поиск только видимых элементов](/doc/rus/selenium/Settings.md#Поиск-только-видимых-элементов-(не-обязательно)) 
 
 ```java
@@ -80,7 +85,8 @@ public class MyTests /*...*/ {
 }
 ```
 
-В примере выше происходит поиск элемента по классу (аттрибут html) и его тексту, соответствующему регулярному выражению. Поиск занимает 1 минуту или время, указанное в [настройках](/doc/rus/selenium/Settings.md#Время-ожидания-элементов-на-странице-(не-обязательно)).
+В примере выше происходит поиск элемента по классу (аттрибут html) и его тексту, соответствующему регулярному выражению. 
+Поиск занимает 1 минуту или время, указанное в [настройках](/doc/rus/selenium/Settings.md#Время-ожидания-элементов-на-странице-(не-обязательно)).
 Может производиться поиск любого(видимого) подходящего элемента. [см. поиск только видимых элементов](/doc/rus/selenium/Settings.md#Поиск-только-видимых-элементов-(не-обязательно)) 
 
 ```java
@@ -104,8 +110,10 @@ public class MyTests /*...*/ {
 }
 ```
 
-В примере выше происходит поиск элемента по классу (аттрибут html) и по условию `элемент должен быть доступен`. Поиск занимает 1 минуту или время, указанное в [настройках](/doc/rus/selenium/Settings.md#Время-ожидания-элементов-на-странице-(не-обязательно)).
-Может производиться поиск любого(видимого) подходящего элемента. [см. поиск только видимых элементов](/doc/rus/selenium/Settings.md#Поиск-только-видимых-элементов-(не-обязательно)). В данном примере используется один из критериев, перечисленных в [CommonConditions](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/functions/searching/CommonConditions.html).
+В примере выше происходит поиск элемента по классу (аттрибут html) и по условию `элемент должен быть доступен`. 
+Поиск занимает 1 минуту или время, указанное в [настройках](/doc/rus/selenium/Settings.md#Время-ожидания-элементов-на-странице-(не-обязательно)).
+Может производиться поиск любого(видимого) подходящего элемента. [см. поиск только видимых элементов](/doc/rus/selenium/Settings.md#Поиск-только-видимых-элементов-(не-обязательно)). 
+В данном примере используется один из критериев, перечисленных в [CommonConditions](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/functions/searching/CommonConditions.html).
 
 ```java
 //пример поиска элемента по нескольким критериям
@@ -130,8 +138,10 @@ public class MyTests /*...*/ {
 }
 ```
 
-В примере выше происходит поиск элемента по классу (аттрибут html) и условию (`элемент должен быть доступен` **И** `Элеменент по оси Y выше чем 100` ). Поиск занимает 1 минуту или время, указанное в [настройках](/doc/rus/selenium/Settings.md#Время-ожидания-элементов-на-странице-(не-обязательно)).
-Может производиться поиск любого(видимого) подходящего элемента. [см. поиск только видимых элементов](/doc/rus/selenium/Settings.md#Поиск-только-видимых-элементов-(не-обязательно)). В данном примере используется один из критериев, перечисленных в [CommonConditions](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/functions/searching/CommonConditions.html).
+В примере выше происходит поиск элемента по классу (аттрибут html) и условию (`элемент должен быть доступен` **И** `Элеменент по оси Y выше чем 100` ). 
+Поиск занимает 1 минуту или время, указанное в [настройках](/doc/rus/selenium/Settings.md#Время-ожидания-элементов-на-странице-(не-обязательно)).
+Может производиться поиск любого(видимого) подходящего элемента. [см. поиск только видимых элементов](/doc/rus/selenium/Settings.md#Поиск-только-видимых-элементов-(не-обязательно)). 
+В данном примере используется один из критериев, перечисленных в [CommonConditions](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/functions/searching/CommonConditions.html).
 Второй критерий определен пользователем.
 
 ```java
@@ -157,12 +167,14 @@ public class MyTests /*...*/ {
 }
 ```
 
-В примере выше происходит поиск элемента по классу (аттрибут html), условию (`элемент должен быть доступен` **И** `Элеменент по оси Y выше чем 100` ) и его полному тексту. Поиск занимает 1 минуту или время, указанное в [настройках](/doc/rus/selenium/Settings.md#Время-ожидания-элементов-на-странице-(не-обязательно)).
-Может производиться поиск любого(видимого) подходящего элемента. [см. поиск только видимых элементов](/doc/rus/selenium/Settings.md#Поиск-только-видимых-элементов-(не-обязательно)). В данном примере используется один из критериев, перечисленных в [CommonConditions](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/functions/searching/CommonConditions.html).
+В примере выше происходит поиск элемента по классу (аттрибут html), условию (`элемент должен быть доступен` **И** `Элеменент по оси Y выше чем 100` ) и его полному тексту. 
+Поиск занимает 1 минуту или время, указанное в [настройках](/doc/rus/selenium/Settings.md#Время-ожидания-элементов-на-странице-(не-обязательно)).
+Может производиться поиск любого(видимого) подходящего элемента. [см. поиск только видимых элементов](/doc/rus/selenium/Settings.md#Поиск-только-видимых-элементов-(не-обязательно)). 
+В данном примере используется один из критериев, перечисленных в [CommonConditions](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/functions/searching/CommonConditions.html).
 Второй критерий определен пользователем.
 
 ```java
-//пример поиска элемента по нескольким критериям и тексту элемента
+//пример поиска элемента по нескольким критериям и регулярному выражению
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 //...
 import static java.util.regex.Pattern.compile;
@@ -185,17 +197,221 @@ public class MyTests /*...*/ {
 }
 ```
 
-В примере выше происходит поиск элемента по классу (аттрибут html), условию (`элемент должен быть доступен` **И** `Элеменент по оси Y выше чем 100` ) и его тексту, соответствующему регулярному выражению. Поиск занимает 1 минуту или время, указанное в [настройках](/doc/rus/selenium/Settings.md#Время-ожидания-элементов-на-странице-(не-обязательно)).
-Может производиться поиск любого(видимого) подходящего элемента. [см. поиск только видимых элементов](/doc/rus/selenium/Settings.md#Поиск-только-видимых-элементов-(не-обязательно)). В данном примере используется один из критериев, перечисленных в [CommonConditions](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/functions/searching/CommonConditions.html).
+В примере выше происходит поиск элемента по классу (аттрибут html), условию (`элемент должен быть доступен` **И** `Элеменент по оси Y выше чем 100` ) и его тексту, соответствующему регулярному выражению. 
+Поиск занимает 1 минуту или время, указанное в [настройках](/doc/rus/selenium/Settings.md#Время-ожидания-элементов-на-странице-(не-обязательно)).
+Может производиться поиск любого(видимого) подходящего элемента. [см. поиск только видимых элементов](/doc/rus/selenium/Settings.md#Поиск-только-видимых-элементов-(не-обязательно)). 
+В данном примере используется один из критериев, перечисленных в [CommonConditions](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/functions/searching/CommonConditions.html).
 Второй критерий определен пользователем.
+
+```java
+//пример поиска элемента, c указанием отведенного времени
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+//...
+import static java.time.Duration.ofSeconds;
+import static org.openqa.selenium.By.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //**
+        var webElement = seleniumSteps.find(webElement(className("MyClass"))
+                .timeOut(ofSeconds(5)));
+        //**
+    }
+}
+```
+
+В примере выше происходит поиск элемента по классу (аттрибут html). Поиск занимает 5 секунд. Может производиться поиск любого(видимого) подходящего элемента. 
+[см. поиск только видимых элементов](/doc/rus/selenium/Settings.md#Поиск-только-видимых-элементов-(не-обязательно)) 
+
+```java
+//пример поиска элемента по тексту, c указанием отведенного времени
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+//...
+import static java.time.Duration.ofSeconds;
+import static org.openqa.selenium.By.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //**
+        var webElement = seleniumSteps.find(webElement(className("MyClass"), "МуText")
+                .timeOut(ofSeconds(5)));
+        //**
+    }
+}
+```
+
+В примере выше происходит поиск элемента по классу (аттрибут html) и его полному тексту. Поиск занимает 5 секунд. 
+Может производиться поиск любого(видимого) подходящего элемента. [см. поиск только видимых элементов](/doc/rus/selenium/Settings.md#Поиск-только-видимых-элементов-(не-обязательно)) 
+
+```java
+//пример поиска элемента по регулярному выражению, c указанием отведенного времени
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+//...
+import static java.time.Duration.ofSeconds;
+import static java.util.regex.Pattern.compile;
+import static org.openqa.selenium.By.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //**
+        var webElement = seleniumSteps.find(webElement(className("MyClass"), compile("МуTextPattern"))
+                .timeOut(ofSeconds(5)));
+        //**
+    }
+}
+```
+
+В примере выше происходит поиск элемента по классу (аттрибут html)  и его тексту, соответствующему регулярному выражению. Поиск занимает 5 секунд. 
+Может производиться поиск любого(видимого) подходящего элемента. [см. поиск только видимых элементов](/doc/rus/selenium/Settings.md#Поиск-только-видимых-элементов-(не-обязательно)) 
+
+```java
+//пример поиска элемента по критерию, c указанием отведенного времени
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+//...
+import static java.time.Duration.ofSeconds;
+import static org.openqa.selenium.By.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //**
+        var webElement = seleniumSteps.find(webElement(className("MyClass"))
+                .criteria(shouldBeEnabled())
+                .timeOut(ofSeconds(5)));                       
+        //**
+    }
+}
+```
+
+В примере выше происходит поиск элемента по классу (аттрибут html) и по условию `элемент должен быть доступен`.  Поиск занимает 5 секунд.
+Может производиться поиск любого(видимого) подходящего элемента. [см. поиск только видимых элементов](/doc/rus/selenium/Settings.md#Поиск-только-видимых-элементов-(не-обязательно)). 
+В данном примере используется один из критериев, перечисленных в [CommonConditions](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/functions/searching/CommonConditions.html).
+
+
+```java
+//пример поиска элемента по нескольким критериям, c указанием отведенного времени
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+//...
+import static java.time.Duration.ofSeconds;
+import static org.openqa.selenium.By.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //**
+        var webElement = seleniumSteps.find(webElement(className("MyClass"))
+                .criteria(shouldBeEnabled())
+                .criteria("Элеменент по оси Y выше чем 100", element -> 
+                        element.getLocation().getY() < 100)
+                .timeOut(ofSeconds(5)));                       
+        //**
+    }
+}
+```
+
+В примере выше происходит поиск элемента по классу (аттрибут html), условию (`элемент должен быть доступен` **И** `Элеменент по оси Y выше чем 100` ). 
+Поиск занимает 5 секунд. 
+Может производиться поиск любого(видимого) подходящего элемента. [см. поиск только видимых элементов](/doc/rus/selenium/Settings.md#Поиск-только-видимых-элементов-(не-обязательно)). 
+В данном примере используется один из критериев, перечисленных в [CommonConditions](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/functions/searching/CommonConditions.html).
+Второй критерий определен пользователем.
+
+```java
+//пример поиска элемента по нескольким критериям и тексту элемента, c указанием отведенного времени
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+//...
+import static java.time.Duration.ofSeconds;
+import static org.openqa.selenium.By.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //**
+        var webElement = seleniumSteps.find(webElement(className("MyClass"), "МуText")
+                .criteria(shouldBeEnabled())
+                .criteria("Элеменент по оси Y выше чем 100", element -> 
+                        element.getLocation().getY() < 100)   
+                .timeOut(ofSeconds(5)));            
+        //**
+    }
+}
+```
+
+В примере выше происходит поиск элемента по классу (аттрибут html), условию (`элемент должен быть доступен` **И** `Элеменент по оси Y выше чем 100` ) и его полному тексту. 
+Поиск занимает 5 секунд. 
+Может производиться поиск любого(видимого) подходящего элемента. [см. поиск только видимых элементов](/doc/rus/selenium/Settings.md#Поиск-только-видимых-элементов-(не-обязательно)). 
+В данном примере используется один из критериев, перечисленных в [CommonConditions](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/functions/searching/CommonConditions.html).
+Второй критерий определен пользователем.
+
+
+```java
+//пример поиска элемента по нескольким критериям и регулярному выражению, c указанием отведенного времени
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+//...
+import static java.time.Duration.ofSeconds;
+import static java.util.regex.Pattern.compile;
+import static org.openqa.selenium.By.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //**
+        var webElement = seleniumSteps.find(webElement(className("MyClass"), compile("МуTextPattern"))
+                .criteria(shouldBeEnabled())
+                .criteria("Элеменент по оси Y выше чем 100", element -> 
+                        element.getLocation().getY() < 100)
+                .timeOut(ofSeconds(5)));              
+        //**
+    }
+}
+```
+
+В примере выше происходит поиск элемента по классу (аттрибут html), условию (`элемент должен быть доступен` **И** `Элеменент по оси Y выше чем 100` ) и его тексту, соответствующему регулярному выражению. 
+Поиск занимает 5 секунд. 
+Может производиться поиск любого(видимого) подходящего элемента. [см. поиск только видимых элементов](/doc/rus/selenium/Settings.md#Поиск-только-видимых-элементов-(не-обязательно)). 
+В данном примере используется один из критериев, перечисленных в [CommonConditions](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/functions/searching/CommonConditions.html).
+Второй критерий определен пользователем.
+
+
+```java
+
+```
+
 
 ## Поиск множества элементов
 
 Для поиска множества элементов используется [MultipleSearchSupplier](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/functions/searching/MultipleSearchSupplier.html)
 
-| Возможность использовать критерии 	| Объединение критериев 	| Возможность указывать индивидуальный таймаут 	| Если желаемое значение не получено    | Данные, которые могут быть  приложены к отчетам (по умолчанию)  	|
-|-----------------------------------	|-----------------------	|----------------------------------------------	|---------------------------------------|-----------------------------------------------------------------	|
-|           [x]                     	| *AND*                   	|                [x]                           	|  Возвращает пустой List           	| Скриншоты Прочие файлы                                          	|
+| Возможность использовать критерии 	| Объединение критериев 	| Возможность указывать индивидуальный таймаут 	| Если желаемое значение не получено 	| Игнорируемые исключения                            	| Данные, которые могут быть  приложены к отчетам (по умолчанию)  	|
+|-----------------------------------	|-----------------------	|----------------------------------------------	|------------------------------------	|----------------------------------------------------	|-----------------------------------------------------------------	|
+|     Да                            	| AND                   	|        Да                                    	| Возвращает пустой List             	| org.openqa.selenium.StaleElementReferenceException 	| Скриншоты Прочие файлы                                          	|
 
 ## Предлагаемое использование шаблона проектирования Page Object.
 
