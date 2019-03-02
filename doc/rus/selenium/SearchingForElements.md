@@ -1227,9 +1227,9 @@ public class MyTests /*...*/ {
     public void myTest() {
         //..
         var webElement = seleniumSteps.find(widget(Button.class)
-                .criteria(shouldBeEnabled()) //условие, что кнопка должна быть доступной
+                .criteria(shouldBeEnabled()) //условие, что кнопка должна быть доступной, если необходимо 
                 .criteria("Кнопка расположена по оси Y выше чем 100", element -> 
-                        element.getLocation().getY() < 100) //условие, указанное пользователем
+                        element.getLocation().getY() < 100) //условие, указанное пользователем, если необходимо 
                 .timeOut(ofSeconds(5)));//Время, на поиск, если необходимо            
         //..
     }
@@ -1252,9 +1252,9 @@ public class MyTests /*...*/ {
     public void myTest() {
         //..
         var webElement = seleniumSteps.find(widgets(Button.class)
-                .criteria(shouldBeEnabled()) //условие, что кнопка должна быть доступной
+                .criteria(shouldBeEnabled()) //условие, что кнопка должна быть доступной, если необходимо 
                 .criteria("Кнопка расположена по оси Y выше чем 100", element -> 
-                        element.getLocation().getY() < 100) //условие, указанное пользователем
+                        element.getLocation().getY() < 100) //условие, указанное пользователем, если необходимо 
                 .timeOut(ofSeconds(5)));//Время, на поиск, если необходимо            
         //..
     }
