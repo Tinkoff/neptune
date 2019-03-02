@@ -30,9 +30,9 @@ public class MyTests /*...*/ {
     
     @Test
     public void myTest() {
-        //**
+        //..
         var webElement = seleniumSteps.find(webElement(className("MyClass")));
-        //**
+        //..
     }
 }
 ```
@@ -55,9 +55,9 @@ public class MyTests /*...*/ {
     
     @Test
     public void myTest() {
-        //**
+        //..
         var webElement = seleniumSteps.find(webElement(className("MyClass"), "МуText"));
-        //**
+        //..
     }
 }
 ```
@@ -81,9 +81,9 @@ public class MyTests /*...*/ {
     
     @Test
     public void myTest() {
-        //**
+        //..
         var webElement = seleniumSteps.find(webElement(className("MyClass"), compile("МуTextPattern")));
-        //**
+        //..
     }
 }
 ```
@@ -107,10 +107,10 @@ public class MyTests /*...*/ {
     
     @Test
     public void myTest() {
-        //**
+        //..
         var webElement = seleniumSteps.find(webElement(className("MyClass"))
                 .criteria(shouldBeEnabled()));        
-        //**
+        //..
     }
 }
 ```
@@ -135,12 +135,12 @@ public class MyTests /*...*/ {
     
     @Test
     public void myTest() {
-        //**
+        //..
         var webElement = seleniumSteps.find(webElement(className("MyClass"))
                 .criteria(shouldBeEnabled())
                 .criteria("Элеменент по оси Y выше чем 100", element -> 
                         element.getLocation().getY() < 100));      
-        //**
+        //..
     }
 }
 ```
@@ -166,12 +166,12 @@ public class MyTests /*...*/ {
     
     @Test
     public void myTest() {
-        //**
+        //..
         var webElement = seleniumSteps.find(webElement(className("MyClass"), "МуText")
                 .criteria(shouldBeEnabled())
                 .criteria("Элеменент по оси Y выше чем 100", element -> 
                         element.getLocation().getY() < 100));      
-        //**
+        //..
     }
 }
 ```
@@ -198,12 +198,12 @@ public class MyTests /*...*/ {
     
     @Test
     public void myTest() {
-        //**
+        //..
         var webElement = seleniumSteps.find(webElement(className("MyClass"), compile("МуTextPattern"))
                 .criteria(shouldBeEnabled())
                 .criteria("Элеменент по оси Y выше чем 100", element -> 
                         element.getLocation().getY() < 100));      
-        //**
+        //..
     }
 }
 ```
@@ -229,10 +229,10 @@ public class MyTests /*...*/ {
     
     @Test
     public void myTest() {
-        //**
+        //..
         var webElement = seleniumSteps.find(webElement(className("MyClass"))
                 .timeOut(ofSeconds(5)));
-        //**
+        //..
     }
 }
 ```
@@ -255,10 +255,10 @@ public class MyTests /*...*/ {
     
     @Test
     public void myTest() {
-        //**
+        //..
         var webElement = seleniumSteps.find(webElement(className("MyClass"), "МуText")
                 .timeOut(ofSeconds(5)));
-        //**
+        //..
     }
 }
 ```
@@ -282,10 +282,10 @@ public class MyTests /*...*/ {
     
     @Test
     public void myTest() {
-        //**
+        //..
         var webElement = seleniumSteps.find(webElement(className("MyClass"), compile("МуTextPattern"))
                 .timeOut(ofSeconds(5)));
-        //**
+        //..
     }
 }
 ```
@@ -309,11 +309,11 @@ public class MyTests /*...*/ {
     
     @Test
     public void myTest() {
-        //**
+        //..
         var webElement = seleniumSteps.find(webElement(className("MyClass"))
                 .criteria(shouldBeEnabled())
                 .timeOut(ofSeconds(5)));                       
-        //**
+        //..
     }
 }
 ```
@@ -338,13 +338,13 @@ public class MyTests /*...*/ {
     
     @Test
     public void myTest() {
-        //**
+        //..
         var webElement = seleniumSteps.find(webElement(className("MyClass"))
                 .criteria(shouldBeEnabled())
                 .criteria("Элеменент по оси Y выше чем 100", element -> 
                         element.getLocation().getY() < 100)
                 .timeOut(ofSeconds(5)));                       
-        //**
+        //..
     }
 }
 ```
@@ -371,13 +371,13 @@ public class MyTests /*...*/ {
     
     @Test
     public void myTest() {
-        //**
+        //..
         var webElement = seleniumSteps.find(webElement(className("MyClass"), "МуText")
                 .criteria(shouldBeEnabled())
                 .criteria("Элеменент по оси Y выше чем 100", element -> 
                         element.getLocation().getY() < 100)   
                 .timeOut(ofSeconds(5)));            
-        //**
+        //..
     }
 }
 ```
@@ -405,13 +405,13 @@ public class MyTests /*...*/ {
     
     @Test
     public void myTest() {
-        //**
+        //..
         var webElement = seleniumSteps.find(webElement(className("MyClass"), compile("МуTextPattern"))
                 .criteria(shouldBeEnabled())
                 .criteria("Элеменент по оси Y выше чем 100", element -> 
                         element.getLocation().getY() < 100)
                 .timeOut(ofSeconds(5)));              
-        //**
+        //..
     }
 }
 ```
@@ -437,10 +437,10 @@ public class MyTests /*...*/ {
     
     @Test
     public void myTest() {
-        //**
+        //..
         var webElement = seleniumSteps.find(webElement(className("MyClass"))
                 .addIgnored(NoSuchElementException.class));
-        //**
+        //..
     }
 }
 ```
@@ -474,9 +474,9 @@ public class MyTests /*...*/ {
     
     @Test
     public void myTest() {
-        //**
+        //..
         var webElements = seleniumSteps.find(webElements(className("MyClass")));
-        //**
+        //..
     }
 }
 ```
@@ -499,9 +499,9 @@ public class MyTests /*...*/ {
     
     @Test
     public void myTest() {
-        //**
+        //..
         var webElements = seleniumSteps.find(webElements(className("MyClass"), "МуText"));
-        //**
+        //..
     }
 }
 ```
@@ -525,9 +525,9 @@ public class MyTests /*...*/ {
     
     @Test
     public void myTest() {
-        //**
+        //..
         var webElements = seleniumSteps.find(webElements(className("MyClass"), compile("МуTextPattern")));
-        //**
+        //..
     }
 }
 ```
@@ -551,10 +551,10 @@ public class MyTests /*...*/ {
     
     @Test
     public void myTest() {
-        //**
+        //..
         var webElements = seleniumSteps.find(webElements(className("MyClass"))
                 .criteria(shouldBeEnabled()));        
-        //**
+        //..
     }
 }
 ```
@@ -579,12 +579,12 @@ public class MyTests /*...*/ {
     
     @Test
     public void myTest() {
-        //**
+        //..
         var webElements = seleniumSteps.find(webElements(className("MyClass"))
                 .criteria(shouldBeEnabled())
                 .criteria("Элеменент по оси Y выше чем 100", element -> 
                         element.getLocation().getY() < 100));      
-        //**
+        //..
     }
 }
 ```
@@ -610,12 +610,12 @@ public class MyTests /*...*/ {
     
     @Test
     public void myTest() {
-        //**
+        //..
         var webElements = seleniumSteps.find(webElements(className("MyClass"), "МуText")
                 .criteria(shouldBeEnabled())
                 .criteria("Элеменент по оси Y выше чем 100", element -> 
                         element.getLocation().getY() < 100));      
-        //**
+        //..
     }
 }
 ```
@@ -642,12 +642,12 @@ public class MyTests /*...*/ {
     
     @Test
     public void myTest() {
-        //**
+        //..
         var webElements = seleniumSteps.find(webElements(className("MyClass"), compile("МуTextPattern"))
                 .criteria(shouldBeEnabled())
                 .criteria("Элеменент по оси Y выше чем 100", element -> 
                         element.getLocation().getY() < 100));      
-        //**
+        //..
     }
 }
 ```
@@ -673,10 +673,10 @@ public class MyTests /*...*/ {
     
     @Test
     public void myTest() {
-        //**
+        //..
         var webElements = seleniumSteps.find(webElements(className("MyClass"))
                 .timeOut(ofSeconds(5)));
-        //**
+        //..
     }
 }
 ```
@@ -699,10 +699,10 @@ public class MyTests /*...*/ {
     
     @Test
     public void myTest() {
-        //**
+        //..
         var webElements = seleniumSteps.find(webElements(className("MyClass"), "МуText")
                 .timeOut(ofSeconds(5)));
-        //**
+        //..
     }
 }
 ```
@@ -726,10 +726,10 @@ public class MyTests /*...*/ {
     
     @Test
     public void myTest() {
-        //**
+        //..
         var webElements = seleniumSteps.find(webElements(className("MyClass"), compile("МуTextPattern"))
                 .timeOut(ofSeconds(5)));
-        //**
+        //..
     }
 }
 ```
@@ -753,11 +753,11 @@ public class MyTests /*...*/ {
     
     @Test
     public void myTest() {
-        //**
+        //..
         var webElements = seleniumSteps.find(webElements(className("MyClass"))
                 .criteria(shouldBeEnabled())
                 .timeOut(ofSeconds(5)));                       
-        //**
+        //..
     }
 }
 ```
@@ -782,13 +782,13 @@ public class MyTests /*...*/ {
     
     @Test
     public void myTest() {
-        //**
+        //..
         var webElements = seleniumSteps.find(webElements(className("MyClass"))
                 .criteria(shouldBeEnabled())
                 .criteria("Элеменент по оси Y выше чем 100", element -> 
                         element.getLocation().getY() < 100)
                 .timeOut(ofSeconds(5)));                       
-        //**
+        //..
     }
 }
 ```
@@ -815,13 +815,13 @@ public class MyTests /*...*/ {
     
     @Test
     public void myTest() {
-        //**
+        //..
         var webElements = seleniumSteps.find(webElements(className("MyClass"), "МуText")
                 .criteria(shouldBeEnabled())
                 .criteria("Элеменент по оси Y выше чем 100", element -> 
                         element.getLocation().getY() < 100)   
                 .timeOut(ofSeconds(5)));            
-        //**
+        //..
     }
 }
 ```
@@ -849,13 +849,13 @@ public class MyTests /*...*/ {
     
     @Test
     public void myTest() {
-        //**
+        //..
         var webElements = seleniumSteps.find(webElements(className("MyClass"), compile("МуTextPattern"))
                 .criteria(shouldBeEnabled())
                 .criteria("Элеменент по оси Y выше чем 100", element -> 
                         element.getLocation().getY() < 100)
                 .timeOut(ofSeconds(5)));              
-        //**
+        //..
     }
 }
 ```
