@@ -1210,3 +1210,53 @@ public class MyButton extends AbstractButton {
 ### Поиск виджетов
 
 Аналогичен [поиску одного элемента страницы](#Поиск-одного-элемента) и [поиску множества элементов страницы](#Поиск-множества-элементов).
+
+```java
+//пример поиска одного элемента-кнопки
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Button;
+//...
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.widget;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //..
+        var webElement = seleniumSteps.find(widget(Button.class)
+                .criteria(shouldBeEnabled()) //условие, что кнопка должна быть доступной
+                .criteria("Кнопка расположена по оси Y выше чем 100", element -> 
+                        element.getLocation().getY() < 100) //условие, указанное пользователем
+                .timeOut(ofSeconds(5)));//Время, на поиск, если необходимо            
+        //..
+    }
+}
+```
+
+```java
+//пример поиска множества элементов-кнопок
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Button;
+//...
+import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.widgets;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //..
+        var webElement = seleniumSteps.find(widgets(Button.class)
+                .criteria(shouldBeEnabled()) //условие, что кнопка должна быть доступной
+                .criteria("Кнопка расположена по оси Y выше чем 100", element -> 
+                        element.getLocation().getY() < 100) //условие, указанное пользователем
+                .timeOut(ofSeconds(5)));//Время, на поиск, если необходимо            
+        //..
+    }
+}
+```

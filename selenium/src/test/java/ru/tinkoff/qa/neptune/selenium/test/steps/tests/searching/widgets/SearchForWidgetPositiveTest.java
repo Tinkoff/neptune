@@ -42,11 +42,11 @@ public class SearchForWidgetPositiveTest extends BaseWebDriverTest {
     @DataProvider(name = "search without criteria")
     public static Object[][] searchCriteria() {
         return new Object[][]{
-                /*{button(), COMMON_BUTTON1,
+                {button(), COMMON_BUTTON1,
                         SimpleButton.class, SIMPLE_BUTTON},
 
                 {button().timeOut(FIVE_SECONDS), COMMON_BUTTON1,
-                        SimpleButton.class, SIMPLE_BUTTON},*/
+                        SimpleButton.class, SIMPLE_BUTTON},
 
                 {button(BUTTON_LABEL_TEXT1), COMMON_LABELED_BUTTON1,
                         LabeledButton.class,
