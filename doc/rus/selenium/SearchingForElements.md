@@ -1105,4 +1105,108 @@ public class MyCustomWidget extends Widget  {
 
 Никаких дополнительных действий выполнять не нужно.
 
+Указанное значение может перекрываться
+
+```java
+//простой пример
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.FindBys;
+import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Button;
+
+@FindBy(tagName = "button")
+public class CommonButton extends Button {
+    public CommonButton(WebElement wrappedElement) {
+        super(wrappedElement);
+    }
+    
+    @Override
+    public void click() {
+        //реализация
+    }
+
+    //....
+}
+
+//Указанное ниже значение перекрывает @FindBy(tagName = "button")
+@FindBys({@FindBy(tagName = "form"), @FindBy(className = "MyButton")})
+public class MyButton extends CommonButton {
+    public MyButton(WebElement wrappedElement) {
+        super(wrappedElement);
+    }
+}
+```
+
+Наследовать поисковый локатор элемента, от которого строится виджет, **ЗАПРЕШЕНО!**.
+
+```java
+//простой пример
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Button;
+
+@FindBy(tagName = "button")
+public class CommonButton extends Button {
+    public CommonButton(WebElement wrappedElement) {
+        super(wrappedElement);
+    }
+    
+    @Override
+    public void click() {
+        //реализация
+    }
+
+    //....
+}
+
+//Так делать некорректно.
+public class MyButton extends CommonButton {
+    public MyButton(WebElement wrappedElement) {
+        super(wrappedElement);
+    }
+}
+```
+
+Но можно наследовать поведение виджета. Например, если все кнопки на страницах приложения ведут себя одинаково и разница 
+только в поисковых локаторах, то см. пример ниже
+
+```java
+//простой пример
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.FindBys;
+import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Button;
+
+public abstract class AbstractButton extends Button {
+    public AbstractButton(WebElement wrappedElement) {
+        super(wrappedElement);
+    }
+    
+    @Override
+    public void click() {
+        //реализация
+    }
+
+    //....
+}
+
+@FindBy(tagName = "button")
+public class CommonButton extends AbstractButton {
+    public CommonButton(WebElement wrappedElement) {
+        super(wrappedElement);
+    }
+}
+
+@FindBys({@FindBy(tagName = "form"), @FindBy(className = "MyButton")})
+public class MyButton extends AbstractButton {
+    public MyButton(WebElement wrappedElement) {
+        super(wrappedElement);
+    }
+}
+```
+
+Строго рекомендуется обеспечить уникальность поисковых локаторов элементов, от которых строятся виджеты.
+
 ### Поиск виджетов
+
+Аналогичен [поиску одного элемента страницы](#Поиск-одного-элемента) и [поиску множества элементов страницы](#Поиск-множества-элементов).
