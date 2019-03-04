@@ -1424,7 +1424,7 @@ import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Button;
 import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.widget;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.widgets;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.widgets;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
 
 public class MyTests /*...*/ {
@@ -1450,5 +1450,177 @@ public class MyTests /*...*/ {
                 .foundFrom(widget(Form.class))); //описание того как найти виджет, от которого следует осуществлять поиск
                 //сюда можно передать уже найденный элемент        
     }
+}
+```
+
+При поиске не обязательно указывать конкретный (НЕ АБСТРАКТНЫЙ) класс виджета. Поиск виджетов выполнен таком образом, чтобы не завязываться
+на особенности той или иной страницы приложения. Достаточно просто указать абстрактный класс, представляющий тот или иной класс элемента. 
+И в зависимости от страницы, будут найдены те или иные элементы, описанные различными классами, расширяющими указанный абстрактный. 
+
+```java
+//простой пример
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.FindBys;
+import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Button;
+
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.widget;
+
+
+@FindBy(tagName = "button")
+public class CommonButton extends Button {
+    public CommonButton(WebElement wrappedElement) {
+        super(wrappedElement);
+    }
+    
+    @Override
+    public void click() {
+        //реализация
+    }
+
+    //....
+}
+
+@FindBys({@FindBy(tagName = "form"), @FindBy(className = "MyButton")})
+public class MyButton extends Button {
+    public MyButton(WebElement wrappedElement) {
+        super(wrappedElement);
+    }
+    
+    @Override
+    public void click() {
+        //реализация
+    }
+
+    //....    
+}
+
+//_________________________________________________________________________________________________
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //..
+        var button = seleniumSteps.find(widget(Button.class));//на одной странице могут быть найдены кнопки
+        //описанные классом CommonButton
+        //на другой странице - MyButton
+    }
+}
+```
+
+Кроме того, существует возможность поиска по меткам. Для этого класс виджета должен реализовывать интерфейс [Labeled](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/api/widget/Labeled.html).
+
+```java
+//простой пример
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.FindBys;
+import ru.tinkoff.qa.neptune.selenium.api.widget.Labeled;
+import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Button;
+
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.widget;
+
+
+@FindBy(tagName = "button")
+public class CommonButton extends Button implements Labeled {
+    public CommonButton(WebElement wrappedElement) {
+        super(wrappedElement);
+    }
+    
+    @Override
+    public void click() {
+        //реализация
+    }
+    
+    @Override
+    public List<String> labels() {
+        //реализация
+    }
+
+    //....
+}
+
+@FindBys({@FindBy(tagName = "form"), @FindBy(className = "MyButton")})
+public class MyButton extends Button {
+    public MyButton(WebElement wrappedElement) {
+        super(wrappedElement);
+    }
+    
+    @Override
+    public void click() {
+        //реализация
+    }   
+
+    //....    
+}
+
+//_________________________________________________________________________________________________
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //..
+        var button = seleniumSteps.find(widget(Button.class, "Сохранить"));//Согласно примеру выше,
+        //по меткам будут искаться только кнопки, описанные классом CommonButton
+    }
+}
+```
+
+Имеется ряд методов, которые помогают описать примеры (выше) поиска кнопки в таком виде
+
+```java
+//простой пример
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.FindBys;
+
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.button;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.buttons;
+
+
+
+
+//_________________________________________________________________________________________________
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //..
+        var button = seleniumSteps.find(button());
+        var buttons = seleniumSteps.find(buttons());
+        
+        var button2 = seleniumSteps.find(button("Сохранить"));
+        var buttons2 = seleniumSteps.find(buttons("Сохранить"));
+    }
+}
+```
+
+Если есть виджеты, описывающие специфические/характерные для приложения элементы, ничего не мешает сделать свою библиотеку критериев поиска.
+
+```java
+
+import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
+import ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier;
+
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.widget;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.widgets;
+
+public class MySearches {
+    
+    public static SearchSupplier<MyWidget> myWidget() {
+        return widget(MyWidget.class);
+    }
+    
+    public static MultipleSearchSupplier<MyWidget> myWidgets() {
+        return widgets(MyWidget.class);
+    }
+    
+    //и т.д.
 }
 ```
