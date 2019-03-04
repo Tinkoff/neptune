@@ -485,7 +485,7 @@ public class MyTests /*...*/ {
 #### Цепочка поиска
 
 ```java
-//пример построения цепочки поиска
+//пример построения цепочки поиска. Корневой элемент еще не найден
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 //...
 import static java.time.Duration.ofSeconds;
@@ -503,6 +503,32 @@ public class MyTests /*...*/ {
                 .foundFrom(webElement(tagName("body"))
                     .criteria(shouldBeEnabled())
                     .timeOut(ofSeconds(5))));              
+        //..
+    }
+}
+```
+
+```java
+//пример построения цепочки поиска. Корневой элемент уже найден
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+//...
+import static java.time.Duration.ofSeconds;
+import static org.openqa.selenium.By.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        var rootElement = seleniumSteps.find(webElement(tagName("body"))
+                .criteria(shouldBeEnabled())
+                .timeOut(ofSeconds(5)));
+        
+        //..
+        var webElement = seleniumSteps.find(webElement(className("MyClass"))
+                .foundFrom(rootElement));              
         //..
     }
 }
@@ -957,7 +983,7 @@ public class MyTests /*...*/ {
 #### Цепочка поиска
 
 ```java
-//пример построения цепочки поиска
+//пример построения цепочки поиска. Корневой элемент еще не найден
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 //...
 import static java.time.Duration.ofSeconds;
@@ -976,6 +1002,33 @@ public class MyTests /*...*/ {
                 .foundFrom(webElement(tagName("body"))
                     .criteria(shouldBeEnabled())
                     .timeOut(ofSeconds(5))));              
+        //..
+    }
+}
+```
+
+```java
+//пример построения цепочки поиска. Корневой элемент уже найден
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+//...
+import static java.time.Duration.ofSeconds;
+import static org.openqa.selenium.By.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElements;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        var rootElement = seleniumSteps.find(webElement(tagName("body"))
+                .criteria(shouldBeEnabled())
+                .timeOut(ofSeconds(5)));
+        
+        //..
+        var webElements = seleniumSteps.find(webElements(className("MyClass"))
+                .foundFrom(rootElement));              
         //..
     }
 }
@@ -1332,6 +1385,8 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Button;
 //...
 import static java.time.Duration.ofSeconds;
+import static org.openqa.selenium.By.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.widget;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
 
@@ -1341,12 +1396,22 @@ public class MyTests /*...*/ {
     @Test
     public void myTest() {
         //..
-        var webElement = seleniumSteps.find(widget(Button.class)
+        var button = seleniumSteps.find(widget(Button.class)
                 .criteria(shouldBeEnabled()) //условие, что кнопка должна быть доступной, если необходимо 
                 .criteria("Кнопка расположена по оси Y выше чем 100", element -> 
                         element.getLocation().getY() < 100) //условие, указанное пользователем, если необходимо 
-                .timeOut(ofSeconds(5)));//Время, на поиск, если необходимо            
-        //..
+                .timeOut(ofSeconds(5)) //Время, на поиск, если необходимо      
+                .foundFrom(webElement(tagName("form")))); //описание того как найти элемент, от которого следует осуществлять поиск 
+                //сюда можно передать уже найденный элемент     
+        //или      
+        //_______________________________________________________________________________
+        var button2 = seleniumSteps.find(widget(Button.class)
+                .criteria(shouldBeEnabled()) //условие, что кнопка должна быть доступной, если необходимо 
+                .criteria("Кнопка расположена по оси Y выше чем 100", element -> 
+                        element.getLocation().getY() < 100) //условие, указанное пользователем, если необходимо 
+                .timeOut(ofSeconds(5)) //Время, на поиск, если необходимо      
+                .foundFrom(widget(Form.class))); //описание того как найти виджет, от которого следует осуществлять поиск
+                //сюда можно передать уже найденный элемент
     }
 }
 ```
@@ -1357,6 +1422,8 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Button;
 //...
 import static java.time.Duration.ofSeconds;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.widget;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.widgets;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
 
@@ -1366,12 +1433,22 @@ public class MyTests /*...*/ {
     @Test
     public void myTest() {
         //..
-        var webElement = seleniumSteps.find(widgets(Button.class)
+        var buttons = seleniumSteps.find(widgets(Button.class)
                 .criteria(shouldBeEnabled()) //условие, что кнопка должна быть доступной, если необходимо 
                 .criteria("Кнопка расположена по оси Y выше чем 100", element -> 
                         element.getLocation().getY() < 100) //условие, указанное пользователем, если необходимо 
-                .timeOut(ofSeconds(5)));//Время, на поиск, если необходимо            
-        //..
+                .timeOut(ofSeconds(5)) //Время, на поиск, если необходимо      
+                .foundFrom(webElement(tagName("form")))); //описание того как найти элемент, от которого следует осуществлять поиск 
+                //сюда можно передать уже найденный элемент  
+        //или      
+        //_______________________________________________________________________________
+        var buttons2 = seleniumSteps.find(widgets(Button.class)
+                .criteria(shouldBeEnabled()) //условие, что кнопка должна быть доступной, если необходимо 
+                .criteria("Кнопка расположена по оси Y выше чем 100", element -> 
+                        element.getLocation().getY() < 100) //условие, указанное пользователем, если необходимо 
+                .timeOut(ofSeconds(5)) //Время, на поиск, если необходимо      
+                .foundFrom(widget(Form.class))); //описание того как найти виджет, от которого следует осуществлять поиск
+                //сюда можно передать уже найденный элемент        
     }
 }
 ```
