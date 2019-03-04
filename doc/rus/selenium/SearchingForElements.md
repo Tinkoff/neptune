@@ -8,7 +8,7 @@
 См. [как построить цепочки шагов, возвращающие результат](/doc/rus/core/Steps.md#Построение-цепочек-шагов,-возвращающих-результат). 
 Используются в связке с [Контекстом шагов для Selenium](/doc/rus/selenium/SeleniumStepContext.md).
 
-## Поиск одного элемента
+### Поиск одного элемента
 
 Для поиска одного элемента используется [SearchSupplier](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/functions/searching/SearchSupplier.html)
 
@@ -17,6 +17,8 @@
 |            Да                     	| AND                   	|                Да                          	| По умолчанию выбрасывает  org.openqa.selenium.NoSuchElementException 	| org.openqa.selenium.StaleElementReferenceException 	| Скриншоты. Прочие файлы                                          	|
 
 ---
+
+#### Простой поиск элемента 
 
 ```java
 //пример поиска элемента
@@ -43,6 +45,8 @@ public class MyTests /*...*/ {
 
 ---
 
+#### Поиск элемента по тексту 
+
 ```java
 //пример поиска элемента по тексту
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
@@ -67,6 +71,8 @@ public class MyTests /*...*/ {
 Может производиться поиск любого(видимого) подходящего элемента. [см. поиск только видимых элементов](/doc/rus/selenium/Settings.md#Поиск-только-видимых-элементов-(не-обязательно)) 
 
 ---
+
+#### Поиск элемента по регулярному выражению 
 
 ```java
 //пример поиска элемента по регулярному выражению
@@ -93,6 +99,8 @@ public class MyTests /*...*/ {
 Может производиться поиск любого(видимого) подходящего элемента. [см. поиск только видимых элементов](/doc/rus/selenium/Settings.md#Поиск-только-видимых-элементов-(не-обязательно)) 
 
 ---
+
+#### Поиск элемента по критерию 
 
 ```java
 //пример поиска элемента по критерию
@@ -121,6 +129,8 @@ public class MyTests /*...*/ {
 В данном примере используется один из критериев, перечисленных в [CommonConditions](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/functions/searching/CommonConditions.html).
 
 ---
+
+#### Поиск элемента по нескольким критериям
 
 ```java
 //пример поиска элемента по нескольким критериям
@@ -153,6 +163,8 @@ public class MyTests /*...*/ {
 
 ---
 
+#### Поиск элемента по нескольким критериям и тексту элемента
+
 ```java
 //пример поиска элемента по нескольким критериям и тексту элемента
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
@@ -183,6 +195,8 @@ public class MyTests /*...*/ {
 Второй критерий определен пользователем.
 
 ---
+
+#### Поиск элемента по нескольким критериям и регулярному выражению
 
 ```java
 //пример поиска элемента по нескольким критериям и регулярному выражению
@@ -216,6 +230,8 @@ public class MyTests /*...*/ {
 
 ---
 
+#### Поиск элемента c указанием отведенного времени
+
 ```java
 //пример поиска элемента, c указанием отведенного времени
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
@@ -241,6 +257,8 @@ public class MyTests /*...*/ {
 [см. поиск только видимых элементов](/doc/rus/selenium/Settings.md#Поиск-только-видимых-элементов-(не-обязательно)) 
 
 ---
+
+#### Поиск элемента по тексту, c указанием отведенного времени
 
 ```java
 //пример поиска элемента по тексту, c указанием отведенного времени
@@ -268,6 +286,8 @@ public class MyTests /*...*/ {
 
 ---
 
+#### Поиск элемента по регулярному выражению, c указанием отведенного времени
+
 ```java
 //пример поиска элемента по регулярному выражению, c указанием отведенного времени
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
@@ -294,6 +314,8 @@ public class MyTests /*...*/ {
 Может производиться поиск любого(видимого) подходящего элемента. [см. поиск только видимых элементов](/doc/rus/selenium/Settings.md#Поиск-только-видимых-элементов-(не-обязательно)) 
 
 ---
+
+#### Поиск элемента по критерию, c указанием отведенного времени
 
 ```java
 //пример поиска элемента по критерию, c указанием отведенного времени
@@ -323,6 +345,8 @@ public class MyTests /*...*/ {
 В данном примере используется один из критериев, перечисленных в [CommonConditions](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/functions/searching/CommonConditions.html).
 
 ---
+
+#### Поиск элемента по нескольким критериям, c указанием отведенного времени
 
 ```java
 //пример поиска элемента по нескольким критериям, c указанием отведенного времени
@@ -357,6 +381,8 @@ public class MyTests /*...*/ {
 
 ---
 
+#### Поиск элемента по нескольким критериям и тексту элемента, c указанием отведенного времени
+
 ```java
 //пример поиска элемента по нескольким критериям и тексту элемента, c указанием отведенного времени
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
@@ -389,6 +415,8 @@ public class MyTests /*...*/ {
 Второй критерий определен пользователем.
 
 ---
+
+#### Поиск элемента по нескольким критериям и регулярному выражению, c указанием отведенного времени
 
 ```java
 //пример поиска элемента по нескольким критериям и регулярному выражению, c указанием отведенного времени
@@ -424,6 +452,8 @@ public class MyTests /*...*/ {
 
 ---
 
+#### Возврат null в случае, если элемент не был найден
+
 ```java
 //пример, как игнорировать NoSuchElementException. Вернется null
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
@@ -452,7 +482,35 @@ public class MyTests /*...*/ {
 
 ---
 
-## Поиск множества элементов
+#### Цепочка поиска
+
+```java
+//пример построения цепочки поиска
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+//...
+import static java.time.Duration.ofSeconds;
+import static org.openqa.selenium.By.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //..
+        var webElement = seleniumSteps.find(webElement(className("MyClass"))
+                .foundFrom(webElement(tagName("body"))
+                    .criteria(shouldBeEnabled())
+                    .timeOut(ofSeconds(5))));              
+        //..
+    }
+}
+```
+
+---
+
+### Поиск множества элементов
 
 Для поиска множества элементов используется [MultipleSearchSupplier](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/functions/searching/MultipleSearchSupplier.html)
 
@@ -461,6 +519,8 @@ public class MyTests /*...*/ {
 |     Да                            	| AND                   	|        Да                                    	| Возвращает пустой List             	| org.openqa.selenium.StaleElementReferenceException 	| Скриншоты Прочие файлы                                          	|
 
 ---
+
+#### Поиска элементов
 
 ```java
 //пример поиска элементов
@@ -487,6 +547,8 @@ public class MyTests /*...*/ {
 
 ---
 
+#### Поиск элементов по тексту
+
 ```java
 //пример поиска элементов по тексту
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
@@ -511,6 +573,8 @@ public class MyTests /*...*/ {
 Может производиться поиск любых(видимых) подходящих элементов. [см. поиск только видимых элементов](/doc/rus/selenium/Settings.md#Поиск-только-видимых-элементов-(не-обязательно)) 
 
 ---
+
+#### Поиск элементов по регулярному выражению
 
 ```java
 //пример поиска элементов по регулярному выражению
@@ -537,6 +601,8 @@ public class MyTests /*...*/ {
 Может производиться поиск любых(видимых) подходящих элементов. [см. поиск только видимых элементов](/doc/rus/selenium/Settings.md#Поиск-только-видимых-элементов-(не-обязательно)) 
 
 ---
+
+#### Поиск элементов по критерию
 
 ```java
 //пример поиска элементов по критерию
@@ -565,6 +631,8 @@ public class MyTests /*...*/ {
 В данном примере используется один из критериев, перечисленных в [CommonConditions](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/functions/searching/CommonConditions.html).
 
 ---
+
+#### Поиск элементов по нескольким критериям
 
 ```java
 //пример поиска элементов по нескольким критериям
@@ -597,6 +665,8 @@ public class MyTests /*...*/ {
 
 ---
 
+#### Поиск элементов по нескольким критериям и тексту элемента
+
 ```java
 //пример поиска элементов по нескольким критериям и тексту элемента
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
@@ -627,6 +697,8 @@ public class MyTests /*...*/ {
 Второй критерий определен пользователем.
 
 ---
+
+#### Поиск элементов по нескольким критериям и регулярному выражению
 
 ```java
 //пример поиска элементов по нескольким критериям и регулярному выражению
@@ -660,6 +732,8 @@ public class MyTests /*...*/ {
 
 ---
 
+#### Поиск элементов c указанием отведенного времени
+
 ```java
 //пример поиска элементов, c указанием отведенного времени
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
@@ -685,6 +759,8 @@ public class MyTests /*...*/ {
 [см. поиск только видимых элементов](/doc/rus/selenium/Settings.md#Поиск-только-видимых-элементов-(не-обязательно)) 
 
 ---
+
+#### Поиск элементов по тексту c указанием отведенного времени
 
 ```java
 //пример поиска элементов по тексту, c указанием отведенного времени
@@ -712,6 +788,8 @@ public class MyTests /*...*/ {
 
 ---
 
+#### Поиск элементов по регулярному выражению c указанием отведенного времени
+
 ```java
 //пример поиска элементов по регулярному выражению, c указанием отведенного времени
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
@@ -738,6 +816,8 @@ public class MyTests /*...*/ {
 Может производиться поиск любых(видимых) подходящих элементов. [см. поиск только видимых элементов](/doc/rus/selenium/Settings.md#Поиск-только-видимых-элементов-(не-обязательно)) 
 
 ---
+
+#### Поиск элементов по критерию c указанием отведенного времени
 
 ```java
 //пример поиска элементов по критерию, c указанием отведенного времени
@@ -767,6 +847,8 @@ public class MyTests /*...*/ {
 В данном примере используется один из критериев, перечисленных в [CommonConditions](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/functions/searching/CommonConditions.html).
 
 ---
+
+#### Поиск элементов по нескольким критериям c указанием отведенного времени
 
 ```java
 //пример поиска элементов по нескольким критериям, c указанием отведенного времени
@@ -801,6 +883,8 @@ public class MyTests /*...*/ {
 
 ---
 
+#### Поиск элементов по нескольким критериям и тексту элемента c указанием отведенного времени
+
 ```java
 //пример поиска элементов по нескольким критериям и тексту элемента, c указанием отведенного времени
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
@@ -834,6 +918,8 @@ public class MyTests /*...*/ {
 
 ---
 
+#### Поиск элементов по нескольким критериям и регулярному выражению c указанием отведенного времени
+
 ```java
 //пример поиска элементов по нескольким критериям и регулярному выражению, c указанием отведенного времени
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
@@ -865,6 +951,35 @@ public class MyTests /*...*/ {
 Может производиться поиск любых(видимых) подходящих элементов. [см. поиск только видимых элементов](/doc/rus/selenium/Settings.md#Поиск-только-видимых-элементов-(не-обязательно)). 
 В данном примере используется один из критериев, перечисленных в [CommonConditions](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/functions/searching/CommonConditions.html).
 Второй критерий определен пользователем.
+
+---
+
+#### Цепочка поиска
+
+```java
+//пример построения цепочки поиска
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+//...
+import static java.time.Duration.ofSeconds;
+import static org.openqa.selenium.By.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElements;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //..
+        var webElements = seleniumSteps.find(webElements(className("MyClass"))
+                .foundFrom(webElement(tagName("body"))
+                    .criteria(shouldBeEnabled())
+                    .timeOut(ofSeconds(5))));              
+        //..
+    }
+}
+```
 
 ---
 
