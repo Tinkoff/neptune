@@ -88,3 +88,5 @@ public class SomeTest extends SomeBaseTest {
 Элементы
 
 - [Поиск элементов страницы](/doc/rus/selenium/SearchingForElements.md)
+- [Клик по элементу](/doc/rus/selenium/Click.md)
+- [Редактирование/Очистка/Получение/Валидация значения элемента](/doc/rus/selenium/ElementValues.md)
