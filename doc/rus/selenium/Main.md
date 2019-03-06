@@ -81,5 +81,13 @@ public class SomeTest extends SomeBaseTest {
 }
 
 ```
+[Контекст шагов для Selenium](/doc/rus/selenium/SeleniumStepContext.md)
 
-[Есть ряд настроек, которые позволят выполнять тесты в более правильном и удобном ключе](/doc/rus/selenium/Settings.md)
+[Настройки, которые позволят выполнять тесты в более правильном и удобном ключе](/doc/rus/selenium/Settings.md)
+
+Элементы
+
+- [Поиск элементов страницы](/doc/rus/selenium/SearchingForElements.md)
+- [Клик по элементу](/doc/rus/selenium/Click.md)
+- [Редактирование/Очистка/Получение/Валидация значения элемента](/doc/rus/selenium/ElementValues.md)
+- [Получение/Валидация значений атрибутов и css](/doc/rus/selenium/ElementAttributesAndCSS.md)

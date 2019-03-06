@@ -29,7 +29,7 @@ public final class HasSizeMatcher<T extends SearchContext> extends TypeSafeDiagn
     }
 
     /**
-     * Creates an instance of {@link HasSizeMatcher} which checks size of an instance of {@link SearchContext}.
+     * Creates an instance of {@link HasSizeMatcher} that checks size of an instance of {@link SearchContext}.
      * It should be {@link WebElement} or some implementor of {@link HasSize} or {@link WrapsElement}.
      * Otherwise the matching returns {@code false}.
      *
@@ -44,7 +44,7 @@ public final class HasSizeMatcher<T extends SearchContext> extends TypeSafeDiagn
     }
 
     /**
-     * Creates an instance of {@link HasSizeMatcher} which checks size of an instance of {@link SearchContext}.
+     * Creates an instance of {@link HasSizeMatcher} that checks size of an instance of {@link SearchContext}.
      * It should be {@link WebElement} or some implementor of {@link HasSize} or {@link WrapsElement}.
      * Otherwise the matching returns {@code false}.
      *
@@ -59,7 +59,7 @@ public final class HasSizeMatcher<T extends SearchContext> extends TypeSafeDiagn
     }
 
     /**
-     * Creates an instance of {@link HasSizeMatcher} which checks size of an instance of {@link SearchContext}.
+     * Creates an instance of {@link HasSizeMatcher} that checks size of an instance of {@link SearchContext}.
      * It should be {@link WebElement} or some implementor of {@link HasSize} or {@link WrapsElement}.
      * Otherwise the matching returns {@code false}.
      *
@@ -74,7 +74,7 @@ public final class HasSizeMatcher<T extends SearchContext> extends TypeSafeDiagn
     }
 
     /**
-     * Creates an instance of {@link HasSizeMatcher} which checks size of an instance of {@link SearchContext}.
+     * Creates an instance of {@link HasSizeMatcher} that checks size of an instance of {@link SearchContext}.
      * It should be {@link WebElement} or some implementor of {@link HasSize} or {@link WrapsElement}.
      * Otherwise the matching returns {@code false}.
      *

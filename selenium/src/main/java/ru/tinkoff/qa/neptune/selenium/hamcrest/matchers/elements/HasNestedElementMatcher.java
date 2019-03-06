@@ -23,9 +23,10 @@ public final class HasNestedElementMatcher<T extends SearchContext> extends Type
     }
 
     /**
-     * Creates a new instance of {@link HasNestedElementMatcher} and defines the way to find desired nested element.
+     * Creates a new instance of {@link HasNestedElementMatcher} and defines the way to find expected nested element.
+     *
      * @param search is the way to find desired nested element.
-     * @param <T> is the type of an instance of {@link SearchContext} which is expected to contain desired nested element.
+     * @param <T> is the type of an instance of {@link SearchContext}.
      * @return created instance of {@link HasNestedElementMatcher}
      */
     public static <T extends SearchContext> HasNestedElementMatcher<T> hasNestedElement(SearchSupplier<?> search) {

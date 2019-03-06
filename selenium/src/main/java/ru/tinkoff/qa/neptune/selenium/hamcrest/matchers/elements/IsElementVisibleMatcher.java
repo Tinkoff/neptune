@@ -16,7 +16,7 @@ public final class IsElementVisibleMatcher extends TypeSafeDiagnosingMatcher<Sea
     }
 
     /**
-     * Creates an instance of {@link IsElementVisibleMatcher} which checks visibility of some instance of {@link SearchContext}.
+     * Creates an instance of {@link IsElementVisibleMatcher} that checks visibility of some instance of {@link SearchContext}.
      * It should be {@link WebElement} or some implementor of {@link IsVisible} or {@link WrapsElement}.
      * Otherwise the matching returns {@code false}
      *

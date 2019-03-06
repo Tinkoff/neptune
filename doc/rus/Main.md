@@ -76,13 +76,13 @@
     @Test
     public void test() {
         check.verify(thatValue("Статус ответа на http запрос", 
-                http.get(statusCodeOf(responseOf(GET("http://127.0.0.1/test_page.html"), ofString()))))
+                http.get(statusCodeOf(responseOf(GET("http://127.0.0.1/test_page.html")))))
                 .suitsCriteria(equalTo(200)));        
     }
     
     @Test
     public void test2() {
-        var result = http.get(bodyDataOf(responseOf(GET(format("http://127.0.0.1/data.html", REQUEST_URI)), ofString()),
+        var result = http.get(bodyDataOf(responseOf(GET("http://127.0.0.1/data.html"), ofString()),
                 "Список тэгов <a>", toNodeList("a"))
                 .criteria("В списке 1 тэг <a>", nodeList -> nodeList.size() == 1));
 

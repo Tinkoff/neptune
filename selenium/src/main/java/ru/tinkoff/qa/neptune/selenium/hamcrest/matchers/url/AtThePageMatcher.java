@@ -21,7 +21,7 @@ public final class AtThePageMatcher extends TypeSafeDiagnosingMatcher<WrapsDrive
     }
 
     /**
-     * Creates an instance of {@link AtThePageMatcher} which checks URL of a page that currently loaded.
+     * Creates an instance of {@link AtThePageMatcher} that checks URL of a page that currently loaded.
      *
      * @param urlMatcher criteria for an URL under the matching.
      * @return instance of {@link AtThePageMatcher}
@@ -31,7 +31,7 @@ public final class AtThePageMatcher extends TypeSafeDiagnosingMatcher<WrapsDrive
     }
 
     /**
-     * Creates an instance of {@link AtThePageMatcher} which checks URL of a page that currently loaded.
+     * Creates an instance of {@link AtThePageMatcher} that checks URL of a page that currently loaded.
      *
      * @param url expected URL of a page.
      * @return instance of {@link AtThePageMatcher}

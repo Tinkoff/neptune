@@ -17,8 +17,8 @@ import static java.util.Optional.ofNullable;
  */
 @Retention(RUNTIME) @Target({TYPE})
 public @interface Priority {
-    static final int HIGHEST = 1;
-    static final int LOWEST = MAX_VALUE;
+    int HIGHEST = 1;
+    int LOWEST = MAX_VALUE;
 
     /**
      * Defines the priority of similar widgets for the searching. The lower number means the
@@ -28,7 +28,7 @@ public @interface Priority {
      */
     int value();
 
-    static final class Reader {
+    final class Reader {
         /**
          * Reads priority of the searching for some widget.
          * @param toBeRead is a subclass of {@link Widget} to be read.
@@ -40,7 +40,7 @@ public @interface Priority {
             if (priority == null) {
                 while (!clazz.equals(Object.class)) {
                     clazz = clazz.getSuperclass();
-                    priority = clazz.getAnnotation(Priority.class);;
+                    priority = clazz.getAnnotation(Priority.class);
                 }
             }
 
