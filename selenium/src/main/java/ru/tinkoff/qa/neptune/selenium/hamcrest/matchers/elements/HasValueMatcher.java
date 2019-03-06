@@ -21,9 +21,9 @@ public final class HasValueMatcher<Q, T extends SearchContext & HasValue<Q>> ext
     }
 
     /**
-     * Creates an instance of {@link HasValueMatcher} which checks value of the element.
+     * Creates an instance of {@link HasValueMatcher} that checks value of the element.
      *
-     * @param value which is expected to be equal to value of the element.
+     * @param value is expected to be equal to value of the element.
      * @param <Q> type of a value
      * @param <T> type of an element
      * @return instance of {@link HasValueMatcher}
@@ -33,9 +33,9 @@ public final class HasValueMatcher<Q, T extends SearchContext & HasValue<Q>> ext
     }
 
     /**
-     * Creates an instance of {@link HasValueMatcher} which checks value of the element.
+     * Creates an instance of {@link HasValueMatcher} that checks value of the element.
      *
-     * @param value matcher which is supposed to be used for the value verification
+     * @param value matcher that is supposed to be used for the value verification
      * @param <Q> type of a value
      * @param <T> type of an element
      * @return instance of {@link HasValueMatcher}

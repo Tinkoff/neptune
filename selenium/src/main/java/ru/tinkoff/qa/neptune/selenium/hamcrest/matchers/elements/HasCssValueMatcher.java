@@ -27,7 +27,7 @@ public final class HasCssValueMatcher<T extends SearchContext> extends TypeSafeD
     }
 
     /**
-     * Creates an instance of {@link HasCssValueMatcher} which checks some css property of an instance of {@link SearchContext}.
+     * Creates an instance of {@link HasCssValueMatcher} that checks some css property of an instance of {@link SearchContext}.
      * It should be {@link WebElement} or some implementor of {@link HasCssValue} or {@link WrapsElement}.
      * Otherwise the matching returns {@code false}
      *
@@ -42,13 +42,13 @@ public final class HasCssValueMatcher<T extends SearchContext> extends TypeSafeD
     }
 
     /**
-     * Creates an instance of {@link HasCssValueMatcher} which checks some css property  of an instance of {@link SearchContext}.
+     * Creates an instance of {@link HasCssValueMatcher} that checks some css property  of an instance of {@link SearchContext}.
      * It should be {@link WebElement} or some implementor of {@link HasCssValue} or {@link WrapsElement}.
      * Otherwise the matching returns {@code false}. It is expected that value of the css property is equal to the
      * defined value.
      *
      * @param cssProperty to be checked
-     * @param value which is expected to be equal to value of the css property.
+     * @param value is expected to be equal to value of the css property.
      * @param <T> is a type of a value to be matched. It should extend {@link WebElement} or it should extend both
      *           {@link SearchContext} and {@link HasCssValue}.
      * @return instance of {@link HasCssValueMatcher}
@@ -58,7 +58,7 @@ public final class HasCssValueMatcher<T extends SearchContext> extends TypeSafeD
     }
 
     /**
-     * Creates an instance of {@link HasCssValueMatcher} which checks some css property  of an instance of {@link SearchContext}.
+     * Creates an instance of {@link HasCssValueMatcher} that checks some css property  of an instance of {@link SearchContext}.
      * It should be {@link WebElement} or some implementor of {@link HasCssValue} or {@link WrapsElement}.
      * Otherwise the matching returns {@code false}. It is expected that value of the css property is not null or empty
      * value.

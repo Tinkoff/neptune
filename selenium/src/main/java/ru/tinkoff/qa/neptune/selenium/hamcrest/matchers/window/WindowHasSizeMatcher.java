@@ -26,7 +26,7 @@ public final class WindowHasSizeMatcher extends TypeSafeDiagnosingMatcher<Window
     }
 
     /**
-     * Creates an instance of {@link WindowHasSizeMatcher} which checks size of a window.
+     * Creates an instance of {@link WindowHasSizeMatcher} that checks size of a window.
      *
      * @param width expected width of the window
      * @param height expected height of the window
@@ -37,7 +37,7 @@ public final class WindowHasSizeMatcher extends TypeSafeDiagnosingMatcher<Window
     }
 
     /**
-     * Creates an instance of {@link WindowHasSizeMatcher} which checks size of a window.
+     * Creates an instance of {@link WindowHasSizeMatcher} that checks size of a window.
      *
      * @param width expected width of the window
      * @param heightMatcher height criteria
@@ -48,7 +48,7 @@ public final class WindowHasSizeMatcher extends TypeSafeDiagnosingMatcher<Window
     }
 
     /**
-     * Creates an instance of {@link WindowHasSizeMatcher} which checks size of a window.
+     * Creates an instance of {@link WindowHasSizeMatcher} that checks size of a window.
      *
      * @param widthMatcher width criteria
      * @param height expected height of the window
@@ -59,7 +59,7 @@ public final class WindowHasSizeMatcher extends TypeSafeDiagnosingMatcher<Window
     }
 
     /**
-     * Creates an instance of {@link WindowHasSizeMatcher} which checks size of a window.
+     * Creates an instance of {@link WindowHasSizeMatcher} that checks size of a window.
      *
      * @param widthMatcher width criteria
      * @param heightMatcher height criteria

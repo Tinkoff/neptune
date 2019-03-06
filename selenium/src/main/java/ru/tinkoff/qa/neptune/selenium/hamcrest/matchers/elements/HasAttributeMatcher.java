@@ -29,7 +29,7 @@ public final class HasAttributeMatcher<T extends SearchContext> extends TypeSafe
     }
 
     /**
-     * Creates an instance of {@link HasAttributeMatcher} which checks some attribute of an instance of {@link SearchContext}.
+     * Creates an instance of {@link HasAttributeMatcher} that checks some attribute of an instance of {@link SearchContext}.
      * It should be {@link WebElement} or some implementor of {@link HasAttribute} or {@link WrapsElement}.
      * Otherwise the matching returns {@code false}
      *
@@ -44,13 +44,13 @@ public final class HasAttributeMatcher<T extends SearchContext> extends TypeSafe
     }
 
     /**
-     * Creates an instance of {@link HasAttributeMatcher} which checks some attribute of an instance of {@link SearchContext}.
+     * Creates an instance of {@link HasAttributeMatcher} that checks some attribute of an instance of {@link SearchContext}.
      * It should be {@link WebElement} or some implementor of {@link HasAttribute} or {@link WrapsElement}.
      * Otherwise the matching returns {@code false}. It is expected that value of the attribute is equal to the
      * defined value.
      *
      * @param attribute to be checked
-     * @param value which is expected to be equal to value of the attribute.
+     * @param value is expected to be equal to value of the attribute.
      * @param <T> is a type of a value to be matched. It should extend {@link WebElement} or it should extend both
      *           {@link SearchContext} and {@link HasAttribute}.
      * @return instance of {@link HasAttributeMatcher}
@@ -60,7 +60,7 @@ public final class HasAttributeMatcher<T extends SearchContext> extends TypeSafe
     }
 
     /**
-     * Creates an instance of {@link HasAttributeMatcher} which checks some attribute of an instance of {@link SearchContext}.
+     * Creates an instance of {@link HasAttributeMatcher} that checks some attribute of an instance of {@link SearchContext}.
      * It should be {@link WebElement} or some implementor of {@link HasAttribute} or {@link WrapsElement}.
      * Otherwise the matching returns {@code false}. It is expected that value of the attribute is not null or empty
      * value.

@@ -31,7 +31,7 @@ public final class HasLocationMatcher<T extends SearchContext> extends TypeSafeD
     }
 
     /**
-     * Creates an instance of {@link HasLocationMatcher} which checks location of an instance of {@link SearchContext}.
+     * Creates an instance of {@link HasLocationMatcher} that checks location of an instance of {@link SearchContext}.
      * It should be {@link WebElement} or some implementor of {@link HasLocation} or {@link WrapsElement}.
      * Otherwise the matching returns {@code false}.
      *
@@ -46,7 +46,7 @@ public final class HasLocationMatcher<T extends SearchContext> extends TypeSafeD
     }
 
     /**
-     * Creates an instance of {@link HasLocationMatcher} which checks location of an instance of {@link SearchContext}.
+     * Creates an instance of {@link HasLocationMatcher} that checks location of an instance of {@link SearchContext}.
      * It should be {@link WebElement} or some implementor of {@link HasLocation} or {@link WrapsElement}.
      * Otherwise the matching returns {@code false}.
      *
@@ -61,7 +61,7 @@ public final class HasLocationMatcher<T extends SearchContext> extends TypeSafeD
     }
 
     /**
-     * Creates an instance of {@link HasLocationMatcher} which checks location of an instance of {@link SearchContext}.
+     * Creates an instance of {@link HasLocationMatcher} that checks location of an instance of {@link SearchContext}.
      * It should be {@link WebElement} or some implementor of {@link HasLocation} or {@link WrapsElement}.
      * Otherwise the matching returns {@code false}.
      *
@@ -76,7 +76,7 @@ public final class HasLocationMatcher<T extends SearchContext> extends TypeSafeD
     }
 
     /**
-     * Creates an instance of {@link HasLocationMatcher} which checks location of an instance of {@link SearchContext}.
+     * Creates an instance of {@link HasLocationMatcher} that checks location of an instance of {@link SearchContext}.
      * It should be {@link WebElement} or some implementor of {@link HasLocation} or {@link WrapsElement}.
      * Otherwise the matching returns {@code false}.
      *
@@ -105,12 +105,12 @@ public final class HasLocationMatcher<T extends SearchContext> extends TypeSafeD
     }
 
     /**
-     * Sets the item which has coordinates. Location under the matching is considered relative to coordinates of this item at this
+     * Sets the item that has coordinates. Location under the matching is considered relative to coordinates of this item at this
      * case.
      *
      * @param relativeTo is some with has coordinates. Location under the matching is considered
      *                   relative to coordinates of this item.
-     * @param <Q> type of customized element which provide getting of location
+     * @param <Q> type of customized element that provide getting of location
      * @return self-reference
      */
     public <Q extends SearchContext & HasLocation> HasLocationMatcher<T> relativeTo(Q relativeTo) {

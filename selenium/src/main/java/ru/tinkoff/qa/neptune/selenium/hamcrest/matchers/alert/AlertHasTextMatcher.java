@@ -20,7 +20,7 @@ public final class AlertHasTextMatcher extends TypeSafeDiagnosingMatcher<Alert> 
     }
 
     /**
-     * Creates an instance of {@link AlertHasTextMatcher} which checks text of an alert.
+     * Creates an instance of {@link AlertHasTextMatcher} that checks text of an alert.
      *
      * @param textMatcher criteria for a text under the matching.
      * @return instance of {@link AlertHasTextMatcher}
@@ -30,7 +30,7 @@ public final class AlertHasTextMatcher extends TypeSafeDiagnosingMatcher<Alert> 
     }
 
     /**
-     * Creates an instance of {@link AlertHasTextMatcher} which checks text of an alert.
+     * Creates an instance of {@link AlertHasTextMatcher} that checks text of an alert.
      *
      * @param text expected text of an alert.
      * @return instance of {@link AlertHasTextMatcher}

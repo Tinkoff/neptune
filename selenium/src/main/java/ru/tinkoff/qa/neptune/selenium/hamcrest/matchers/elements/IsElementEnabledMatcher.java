@@ -16,7 +16,7 @@ public final class IsElementEnabledMatcher extends TypeSafeDiagnosingMatcher<Sea
     }
 
     /**
-     * Creates an instance of {@link IsElementEnabledMatcher} which checks is some instance of {@link SearchContext} enabled or not.
+     * Creates an instance of {@link IsElementEnabledMatcher} that checks is some instance of {@link SearchContext} enabled or not.
      * It should be {@link WebElement} or some implementor of {@link IsEnabled} or {@link WrapsElement}.
      * Otherwise the matching returns {@code false}
      *

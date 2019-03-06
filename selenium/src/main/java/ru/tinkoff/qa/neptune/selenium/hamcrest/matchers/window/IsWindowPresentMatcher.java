@@ -11,7 +11,7 @@ public final class IsWindowPresentMatcher extends TypeSafeDiagnosingMatcher<Wind
     }
 
     /**
-     * Creates an instance of a matcher which checks presence of a window.
+     * Creates an instance of a matcher that checks presence of a window.
      *
      * @return a new instance of {@link IsWindowPresentMatcher}
      */

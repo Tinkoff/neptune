@@ -21,7 +21,7 @@ public final class HasFrameMatcher extends TypeSafeDiagnosingMatcher<WrapsDriver
     }
 
     /**
-     * Creates an instance of {@link HasFrameMatcher} which checks presence of some frame.
+     * Creates an instance of {@link HasFrameMatcher} that checks presence of some frame.
 
      * @param howToGetFrame criteria of the frame to get/switch to
      * @return instance of {@link HasFrameMatcher}

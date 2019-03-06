@@ -26,7 +26,7 @@ public final class WindowHasPositionMatcher extends TypeSafeDiagnosingMatcher<Wi
     }
 
     /**
-     * Creates an instance of {@link WindowHasPositionMatcher} which checks position of a window.
+     * Creates an instance of {@link WindowHasPositionMatcher} that checks position of a window.
      *
      * @param x expected x value
      * @param y expected y value
@@ -37,7 +37,7 @@ public final class WindowHasPositionMatcher extends TypeSafeDiagnosingMatcher<Wi
     }
 
     /**
-     * Creates an instance of {@link WindowHasPositionMatcher} which checks position of a window.
+     * Creates an instance of {@link WindowHasPositionMatcher} that checks position of a window.
      *
      * @param x expected x value
      * @param yMatcher y-value criteria
@@ -48,7 +48,7 @@ public final class WindowHasPositionMatcher extends TypeSafeDiagnosingMatcher<Wi
     }
 
     /**
-     * Creates an instance of {@link WindowHasPositionMatcher} which checks size of a window.
+     * Creates an instance of {@link WindowHasPositionMatcher} that checks size of a window.
      *
      * @param xMatcher x-value criteria
      * @param y expected y value
@@ -59,7 +59,7 @@ public final class WindowHasPositionMatcher extends TypeSafeDiagnosingMatcher<Wi
     }
 
     /**
-     * Creates an instance of {@link WindowHasPositionMatcher} which checks size of a window.
+     * Creates an instance of {@link WindowHasPositionMatcher} that checks size of a window.
      *
      * @param xMatcher x-value criteria
      * @param yMatcher y-value criteria

@@ -22,7 +22,7 @@ public final class HasTextMatcher<T extends SearchContext> extends TypeSafeDiagn
     }
 
     /**
-     * Creates an instance of {@link HasTextMatcher} which checks text entire some {@link SearchContext}.
+     * Creates an instance of {@link HasTextMatcher} that checks text of some {@link SearchContext}.
      * It should be {@link WebElement} or some implementor of {@link WrapsElement}. Otherwise the matching returns {@code false}
      *
      * @param value criteria to check text
@@ -35,12 +35,12 @@ public final class HasTextMatcher<T extends SearchContext> extends TypeSafeDiagn
     }
 
     /**
-     * Creates an instance of {@link HasTextMatcher} which checks text entire some {@link SearchContext}.
+     * Creates an instance of {@link HasTextMatcher} that checks text of some {@link SearchContext}.
      * It should be {@link WebElement} or some implementor of {@link WrapsElement}.
      * Otherwise the matching returns {@code false}. It is expected that text is equal to the
      * defined value.
      *
-     * @param value which is expected to be equal to text of the element.
+     * @param value is expected to be equal to text of the element.
      * @param <T> is a type of a value to be matched. It should extend {@link WebElement} or it should extend both
      *           {@link SearchContext} and {@link WrapsElement}.
      * @return instance of {@link HasTextMatcher}
@@ -50,7 +50,7 @@ public final class HasTextMatcher<T extends SearchContext> extends TypeSafeDiagn
     }
 
     /**
-     * Creates an instance of {@link HasTextMatcher} which checks text entire some {@link SearchContext}.
+     * Creates an instance of {@link HasTextMatcher} that checks text of some {@link SearchContext}.
      * It should be {@link WebElement} or some implementor of {@link WrapsElement}.
      * Otherwise the matching returns {@code false}. It is expected that text is not null or empty value.
      *

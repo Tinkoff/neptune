@@ -20,7 +20,7 @@ public final class WindowHasTitleMatcher extends TypeSafeDiagnosingMatcher<Windo
     }
 
     /**
-     * Creates an instance of {@link WindowHasTitleMatcher} which checks attribute of an instance of {@link Window}.
+     * Creates an instance of {@link WindowHasTitleMatcher} that checks attribute of an instance of {@link Window}.
      *
      * @param titleMatcher criteria to check title of a window
      * @return an instance of a {@link WindowHasTitleMatcher}
@@ -30,7 +30,7 @@ public final class WindowHasTitleMatcher extends TypeSafeDiagnosingMatcher<Windo
     }
 
     /**
-     * Creates an instance of {@link WindowHasTitleMatcher} which checks attribute of an instance of {@link Window}.
+     * Creates an instance of {@link WindowHasTitleMatcher} that checks attribute of an instance of {@link Window}.
      *
      * @param title expected title of a window
      * @return an instance of a {@link WindowHasTitleMatcher}
