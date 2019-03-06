@@ -50,11 +50,6 @@ public final class WindowHasTitleMatcher extends TypeSafeDiagnosingMatcher<Windo
     }
 
     @Override
-    public void describeTo(Description description) {
-        description.appendText(toString());
-    }
-
-    @Override
     public String toString() {
         return format("has title %s", titleMatcher);
     }

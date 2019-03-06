@@ -107,11 +107,6 @@ public final class HasCssValueMatcher<T extends SearchContext> extends TypeSafeD
         return result;
     }
 
-    @Override
-    public void describeTo(Description description) {
-        description.appendText(toString());
-    }
-
     public String toString() {
         return format("has css property %s %s", cssProperty, matcher.toString());
     }

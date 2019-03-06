@@ -93,11 +93,6 @@ public final class HasTextMatcher<T extends SearchContext> extends TypeSafeDiagn
         return result;
     }
 
-    @Override
-    public void describeTo(Description description) {
-        description.appendText(toString());
-    }
-
     public String toString() {
         return format("has text %s", matcher.toString());
     }

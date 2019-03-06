@@ -28,11 +28,6 @@ public final class IsWindowPresentMatcher extends TypeSafeDiagnosingMatcher<Wind
         return result;
     }
 
-    @Override
-    public void describeTo(Description description) {
-        description.appendText(toString());
-    }
-
     public String toString() {
         return "window/tab is currently present";
     }

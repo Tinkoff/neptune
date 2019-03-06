@@ -55,11 +55,6 @@ public final class HasValueMatcher<Q, T extends SearchContext & HasValue<Q>> ext
     }
 
     @Override
-    public void describeTo(Description description) {
-        description.appendText(toString());
-    }
-
-    @Override
     public String toString() {
         return format("has value %s", criteria.toString());
     }

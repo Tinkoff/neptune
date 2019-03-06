@@ -92,11 +92,6 @@ public final class WindowHasSizeMatcher extends TypeSafeDiagnosingMatcher<Window
         return result;
     }
 
-    @Override
-    public void describeTo(Description description) {
-        description.appendText(toString());
-    }
-
     public String toString() {
         return format("window has width %s and height %s", widthMatcher.toString(),
                 heightMatcher.toString());

@@ -58,11 +58,6 @@ public final class AtThePageMatcher extends TypeSafeDiagnosingMatcher<WrapsDrive
     }
 
     @Override
-    public void describeTo(Description description) {
-        description.appendText(toString());
-    }
-
-    @Override
     public String toString() {
         return format("URL of a loaded page %s", urlMatcher.toString());
     }

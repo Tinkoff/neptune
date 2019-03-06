@@ -138,11 +138,6 @@ public final class HasSizeMatcher<T extends SearchContext> extends TypeSafeDiagn
         return result;
     }
 
-    @Override
-    public void describeTo(Description description) {
-        description.appendText(toString());
-    }
-
     public String toString() {
         return format("has width %s and height %s", widthMatcher.toString(),
                 heightMatcher.toString());
