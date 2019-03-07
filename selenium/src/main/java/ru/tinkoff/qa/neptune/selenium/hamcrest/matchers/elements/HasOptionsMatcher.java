@@ -73,6 +73,7 @@ public final class HasOptionsMatcher<T extends Iterable<?>> extends TypeSafeDiag
         boolean result = matcher.matches(options);
 
         if (!result) {
+            mismatchDescription.appendText(format("Options of %s. Mismatch:", item));
             matcher.describeMismatch(options, mismatchDescription);
         }
         return result;
