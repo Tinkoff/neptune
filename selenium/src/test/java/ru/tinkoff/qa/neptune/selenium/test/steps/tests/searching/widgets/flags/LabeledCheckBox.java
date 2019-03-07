@@ -9,10 +9,12 @@ import org.openqa.selenium.support.FindBy;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.CHECK_BOX_XPATH;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.LABEL_TAG;
 import static ru.tinkoff.qa.neptune.selenium.test.steps.tests.searching.widgets.WidgetNames.LABELED_CHECKBOX;
 
 @Name(LABELED_CHECKBOX)
+@FindBy(xpath = CHECK_BOX_XPATH)
 @Priority(3)
 public class LabeledCheckBox extends SimpleCheckbox implements Labeled {
 

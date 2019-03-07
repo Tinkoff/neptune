@@ -83,7 +83,7 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
         if (resultList.size() > 0) {
             return resultList;
         }
-        throw new IllegalArgumentException(String.format("There is no any non-abstract subclass of %s which " +
+        throw new IllegalArgumentException(String.format("There is no any non-abstract subclass of %s that " +
                         "is annotated by any org.openqa.selenium.support.Find* annotation " +
                         "and has a constructor with only one parameter of a type extending %s",
                 Widget.getWidgetName(classOfAWidget), WebElement.class.getName()));

@@ -8,6 +8,7 @@ import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatche
 import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static org.hamcrest.Matchers.*;
@@ -29,6 +30,8 @@ public final class HasOptionsMatcher<T extends Iterable<?>> extends TypeSafeDiag
      * @return created object of {@link HasOptionsMatcher}
      */
     public static HasOptionsMatcher<Iterable<? extends String>> hasOptions(String... options) {
+        checkNotNull(options);
+        checkArgument(options.length > 0, "There should be defined at least one expected option");
         return new HasOptionsMatcher<>(contains(options));
     }
 
@@ -40,6 +43,7 @@ public final class HasOptionsMatcher<T extends Iterable<?>> extends TypeSafeDiag
      * @return created object of {@link HasOptionsMatcher}
      */
     public static HasOptionsMatcher<Iterable<? extends String>> hasOptions(Collection<String> options) {
+        checkNotNull(options);
         return hasOptions(options.toArray(new String[] {}));
     }
 

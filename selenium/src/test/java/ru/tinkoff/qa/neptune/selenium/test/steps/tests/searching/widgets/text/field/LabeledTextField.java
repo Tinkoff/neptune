@@ -8,10 +8,12 @@ import org.openqa.selenium.support.FindBy;
 import java.util.List;
 
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.LABEL_TAG;
+import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.TEXT_FIELD_XPATH;
 import static ru.tinkoff.qa.neptune.selenium.test.steps.tests.searching.widgets.WidgetNames.LABELED_TEXT_FIELD;
 import static java.util.stream.Collectors.toList;
 
 @Name(LABELED_TEXT_FIELD)
+@FindBy(xpath = TEXT_FIELD_XPATH)
 public class LabeledTextField extends SimpleTextField implements Labeled {
 
     @FindBy(tagName = LABEL_TAG)
