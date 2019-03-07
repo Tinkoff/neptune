@@ -92,11 +92,6 @@ public final class WindowHasPositionMatcher extends TypeSafeDiagnosingMatcher<Wi
         return result;
     }
 
-    @Override
-    public void describeTo(Description description) {
-        description.appendText(toString());
-    }
-
     public String toString() {
         return format("window has position x %s and y %s", xMatcher.toString(),
                 yMatcher.toString());

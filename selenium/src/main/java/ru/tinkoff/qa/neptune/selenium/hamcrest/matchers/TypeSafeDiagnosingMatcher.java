@@ -66,9 +66,8 @@ public abstract class TypeSafeDiagnosingMatcher<T> extends BaseMatcher<T> {
         return result;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public final void describeMismatch(Object item, Description mismatchDescription) {
+    public final void describeMismatch(Object ignored, Description mismatchDescription) {
         mismatchDescription.appendText(getSavedMismatchDescription().toString());
         saveMismatchDescription(null);
     }
@@ -80,4 +79,12 @@ public abstract class TypeSafeDiagnosingMatcher<T> extends BaseMatcher<T> {
     private void saveMismatchDescription(Description description) {
         this.savedDescription = description;
     }
+
+    @Override
+    public void describeTo(Description description) {
+        description.appendText(toString());
+    }
+
+    @Override
+    public abstract String toString();
 }

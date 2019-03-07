@@ -51,11 +51,6 @@ public final class AlertHasTextMatcher extends TypeSafeDiagnosingMatcher<Alert> 
     }
 
     @Override
-    public void describeTo(Description description) {
-        description.appendText(toString());
-    }
-
-    @Override
     public String toString() {
         return format("text of the alert %s", textMatcher.toString());
     }

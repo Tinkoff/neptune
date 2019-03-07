@@ -109,11 +109,6 @@ public final class HasAttributeMatcher<T extends SearchContext> extends TypeSafe
         return result;
     }
 
-    @Override
-    public void describeTo(Description description) {
-        description.appendText(toString());
-    }
-
     public String toString() {
         return format("has attribute %s %s", attribute, matcher.toString());
     }

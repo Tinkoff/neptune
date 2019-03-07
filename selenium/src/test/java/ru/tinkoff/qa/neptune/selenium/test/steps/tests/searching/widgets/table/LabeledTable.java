@@ -8,10 +8,12 @@ import org.openqa.selenium.support.FindBy;
 import java.util.List;
 
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.LABEL_TAG;
+import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.TABLE;
 import static ru.tinkoff.qa.neptune.selenium.test.steps.tests.searching.widgets.WidgetNames.LABELED_TABLE;
 import static java.util.stream.Collectors.toList;
 
 @Name(LABELED_TABLE)
+@FindBy(tagName = TABLE)
 public class LabeledTable extends SimpleTable implements Labeled {
 
     @FindBy(tagName = LABEL_TAG)

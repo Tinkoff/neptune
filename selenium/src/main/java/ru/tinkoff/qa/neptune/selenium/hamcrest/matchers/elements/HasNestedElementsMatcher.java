@@ -79,11 +79,6 @@ public final class HasNestedElementsMatcher<T extends SearchContext> extends Typ
     }
 
     @Override
-    public void describeTo(Description description) {
-        description.appendText(toString());
-    }
-
-    @Override
     public String toString() {
         return format("has nested elements %s. Count should meet the criteria %s", search.toString(),
                 expectedCount);

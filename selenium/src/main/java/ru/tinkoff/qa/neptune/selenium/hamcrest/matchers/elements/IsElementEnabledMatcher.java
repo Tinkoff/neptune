@@ -61,11 +61,6 @@ public final class IsElementEnabledMatcher extends TypeSafeDiagnosingMatcher<Sea
     }
 
     @Override
-    public void describeTo(Description description) {
-        description.appendText(toString());
-    }
-
-    @Override
     public String toString() {
         return "element is enabled";
     }

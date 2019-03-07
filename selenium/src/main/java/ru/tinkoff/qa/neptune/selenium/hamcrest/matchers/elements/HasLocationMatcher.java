@@ -170,11 +170,6 @@ public final class HasLocationMatcher<T extends SearchContext> extends TypeSafeD
     }
 
     @Override
-    public void describeTo(Description description) {
-        description.appendText(toString());
-    }
-
-    @Override
     public String toString() {
         return ofNullable(relativeTo)
                 .map(p -> format("has position x %s and y %s relative to %s", xMatcher, yMatcher, p))

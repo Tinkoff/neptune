@@ -58,11 +58,6 @@ public final class HasFrameMatcher extends TypeSafeDiagnosingMatcher<WrapsDriver
     }
 
     @Override
-    public void describeTo(Description description) {
-        description.appendText(toString());
-    }
-
-    @Override
     public String toString() {
         return format("has frame. Description: %s", howToGetFrame.toString());
     }

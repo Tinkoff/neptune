@@ -56,11 +56,6 @@ public final class HasNestedElementMatcher<T extends SearchContext> extends Type
         }
     }
 
-    @Override
-    public void describeTo(Description description) {
-        description.appendText(toString());
-    }
-
     public String toString() {
         return format("has nested element %s", search.toString());
     }
