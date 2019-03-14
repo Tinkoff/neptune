@@ -880,7 +880,7 @@ public class MyTests /*...*/ {
     public void myTest() throws Exception {
         //..
         var google = new URL("https://www.google.com");
-        assertThat(seleniumSteps.find(link()), hasReference(google)); 
+        assertThat(seleniumSteps.find(link("Click me")), hasReference(google)); 
         //Ожидается, что ссылка равна "https://www.google.com"
         //..
     }
@@ -902,7 +902,7 @@ public class MyTests /*...*/ {
     @Test
     public void myTest() {
         //..
-        assertThat(seleniumSteps.find(link()),
+        assertThat(seleniumSteps.find(link("Click me")),
                         hasReference(containsString("google")));
         //Ожидается, что ссылка содержит "google"
         //..
