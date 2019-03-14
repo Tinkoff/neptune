@@ -147,8 +147,9 @@ public class HasColumnMatcher<T extends Iterable<?>> extends TypeSafeDiagnosingM
             columnMismatches.put(header, columnMismatch);
         }
 
-        mismatchDescription.appendText(format("Table %s has column headers that meet the criteria '%s'. Headers: %s. But there are mismatches:",
+        mismatchDescription.appendText(format("Table %s has column headers that meet the criteria '%s'. Headers: %s.\n",
                 item, columnMatcher, Iterables.toString(suitableHeaders)));
+        mismatchDescription.appendText("But there are mismatches of column values:\n");
         columnMismatches.forEach((key, value) -> mismatchDescription.appendText(format("\n - Header: %s. Mismatch: %s", key, value)));
         return false;
     }

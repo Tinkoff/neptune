@@ -247,7 +247,7 @@ public class MyTests /*...*/ {
 
 ## Проверка значения
 
-Модуль содержит матчер, который позволяет проверять значения элементов.
+Модуль содержит матчер, который позволяет проверять значения элементов [HasValueMatcher](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/hamcrest/matchers/elements/HasValueMatcher.html).
 
 ```java
 //на примере текстового поля 
@@ -294,4 +294,6 @@ public class MyTests /*...*/ {
 
 ---
 См. также [check](/doc/rus/check/Main.md)
+
+См. также [hamcrest.org](http://hamcrest.org/JavaHamcrest/)
 

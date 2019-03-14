@@ -107,7 +107,7 @@ public class MyTests /*...*/ {
 
 ### Проверка значения атрибута
 
-Модуль содержит матчер, который позволяет проверять значения атрибутов элементов.
+Модуль содержит матчер, который позволяет проверять значения атрибутов элементов [HasAttributeMatcher](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/hamcrest/matchers/elements/HasAttributeMatcher.html).
 
 ```java
 //на примере WebElement
@@ -197,6 +197,8 @@ public class MyTests /*...*/ {
 
 ---
 См. также [check](/doc/rus/check/Main.md)
+
+См. также [hamcrest.org](http://hamcrest.org/JavaHamcrest/)
 
 ## CSS
 
@@ -296,7 +298,7 @@ public class MyTests /*...*/ {
 
 ### Проверка css
 
-Модуль содержит матчер, который позволяет проверять значения css элементов.
+Модуль содержит матчер, который позволяет проверять значения css элементов [HasCssValueMatcher](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/hamcrest/matchers/elements/HasCssValueMatcher.html).
 
 ```java
 //на примере WebElement
@@ -386,6 +388,8 @@ public class MyTests /*...*/ {
 
 ---
 См. также [check](/doc/rus/check/Main.md)
+
+См. также [hamcrest.org](http://hamcrest.org/JavaHamcrest/)
 
 
 

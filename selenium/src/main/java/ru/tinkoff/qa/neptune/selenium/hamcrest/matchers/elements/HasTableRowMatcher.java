@@ -50,6 +50,8 @@ public class HasTableRowMatcher extends TypeSafeDiagnosingMatcher<Table> {
         var result = rowMatcher.matches(tableRows.get(expectedRowNum));
 
         if (!result) {
+            mismatchDescription.appendText(format("Table %s has the row that was found bu number %s.\n", item, expectedRowNum));
+            mismatchDescription.appendText("Mismatch of row values:\n");
             rowMatcher.describeMismatch(tableRows.get(expectedRowNum), mismatchDescription);
         }
         return result;
