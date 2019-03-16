@@ -1625,6 +1625,101 @@ public class MySearches {
 }
 ```
 
+## Присутствие/отсутствие элементов/виджетов на странице
+
+### Присутствие элементов/виджетов на странице 
+
+См. [Шаги для определения присутствия](/doc/rus/core/Presence_Absence.md#Присутствие). 
+
+Для определения присутствия элементов/виджетов на странице в данный момент/спустя время, отведенное на поиск, используется [ElementPresence](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/functions/searching/presence/ElementPresence.html).
+
+```java
+//пример: присутствие вэб-елемента
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+//...
+import static org.openqa.selenium.By.tagName;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.presence.ElementPresence.presenceOfAnElement;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //присутствие вэб-елемента в данный момент
+        //или спустя время, отведенное на поиск
+        seleniumSteps.get(presenceOfAnElement(webElement(tagName("MyTag"))));
+    }
+}
+```
+
+
+```java
+//пример: присутствие кнопки "Push me"
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+//...
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.button;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.presence.ElementPresence.presenceOfAnElement;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //присутствие кнопки "Push me" в данный момент
+        //или спустя время, отведенное на поиск
+        seleniumSteps.get(presenceOfAnElement(button("Push me")));
+    }
+}
+```
+
+```java
+//пример: присутствие вэб-елементов
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+//...
+import static org.openqa.selenium.By.tagName;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.webElements;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.presence.ElementPresence.presenceOfElements;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //присутствие вэб-елементов (одного или более) в данный момент
+        //или спустя время, отведенное на поиск
+        seleniumSteps.get(presenceOfElements(webElements(tagName("MyTag"))));
+    }
+}
+```
+
+```java
+//пример: присутствие кнопок
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+//...
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.buttons;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.presence.ElementPresence.presenceOfElements;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //присутствие кнопок (одной или более) в данный момент
+        //или спустя время, отведенное на поиск
+        seleniumSteps.get(presenceOfElements(buttons()));
+    }
+}
+```
+
+Если необходимо просто определить, присутствует ли элемент на странице сейчас/спустя некоторое время
+
+### Отсутствие элементов/виджетов на странице 
+
+См. [Шаги для определения отсутствия](/doc/rus/core/Presence_Absence.md#Отсутствие).
+
+В разработке. 
+
 ---
 См. также [Шаги возвращающие результат](/doc/rus/core/Steps.md#Шаги-возвращающие-результат)
 

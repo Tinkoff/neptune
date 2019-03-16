@@ -92,3 +92,5 @@ public class SomeTest extends SomeBaseTest {
 - [Редактирование/Очистка/Получение/Валидация значения элемента](/doc/rus/selenium/ElementValues.md)
 - [Получение/Валидация значений атрибутов и css](/doc/rus/selenium/ElementAttributesAndCSS.md)
 - [Матчеры элементов](/doc/rus/selenium/ElementMatching.md)
+
+[Выполнение Java Script (в браузере)](/doc/rus/selenium/JavaScript.md)
