@@ -2,6 +2,8 @@
 
 См. [Поиск элементов страницы](/doc/rus/selenium/SearchingForElements.md)
 
+См. [Предлагаемое использование шаблона проектирования Page Object](/doc/rus/selenium/SearchingForElements.md#Предлагаемое-использование-шаблона-проектирования-Page-Object)
+
 Для выполнения интерактивных действий используется [InteractiveAction](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/functions/intreraction/InteractiveAction.html)
 
 | [Данные, которые могут быть  приложены к отчетам (по умолчанию)](/doc/rus/core/Steps.md#Данные,-которые-могут-быть-приложены-к-отчетам-и-логу) 	|
