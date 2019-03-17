@@ -4,6 +4,14 @@
 
 См. [Предлагаемое использование шаблона проектирования Page Object](/doc/rus/selenium/SearchingForElements.md#Предлагаемое-использование-шаблона-проектирования-Page-Object)
 
+
+Для выполнения редактирования используется [EditActionSupplier](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/functions/edit/EditActionSupplier.html)
+
+| [Данные, которые могут быть  приложены к отчетам (по умолчанию)](/doc/rus/core/Steps.md#Данные,-которые-могут-быть-приложены-к-отчетам-и-логу) 	|
+|-----------------------------------------------------------------	|
+| Скриншоты Прочие файлы                                          	|
+
+
 ## Редактирование
 
 Для того, чтобы описать редактирование значения элемента-виджета, нужно чтобы класс, который описывает виджет, реализовывал интерфейс [Editable](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/api/widget/Editable.html):

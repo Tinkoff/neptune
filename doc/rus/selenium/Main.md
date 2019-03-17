@@ -94,3 +94,6 @@ public class SomeTest extends SomeBaseTest {
 - [Матчеры элементов](/doc/rus/selenium/ElementMatching.md)
 
 [Выполнение Java Script (в браузере)](/doc/rus/selenium/JavaScript.md)
+
+[Интерактивные действия](/doc/rus/selenium/Interaction.md)
+

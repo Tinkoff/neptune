@@ -42,6 +42,7 @@ public final class ElementPresence extends Presence<SeleniumStepContext> {
         return new ElementPresence(supplier.get().compose(currentContent()));
     }
 
+    @Override
     public ElementPresence throwIfNotPresent(Supplier<? extends RuntimeException> exceptionSupplier) {
         return (ElementPresence) super.throwOnEmptyResult(exceptionSupplier);
     }

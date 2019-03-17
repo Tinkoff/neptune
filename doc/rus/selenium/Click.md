@@ -2,6 +2,12 @@
 
 См. [Поиск элементов страницы](/doc/rus/selenium/SearchingForElements.md)
 
+Для выполнения кликов по элементам используется [ClickActionSupplier](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/functions/click/ClickActionSupplier.html)
+
+| [Данные, которые могут быть  приложены к отчетам (по умолчанию)](/doc/rus/core/Steps.md#Данные,-которые-могут-быть-приложены-к-отчетам-и-логу) 	|
+|-----------------------------------------------------------------	|
+| Скриншоты Прочие файлы                                          	|
+
 ## Клик по WebElement
 
 ### Клик с поиском элемента
