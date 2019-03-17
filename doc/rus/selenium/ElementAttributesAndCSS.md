@@ -209,7 +209,6 @@ public class MyTests /*...*/ {
 
 ## CSS
 
-
 Для получения значений CSS элементов используется [SequentialGetCSSValueSupplier](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/functions/value/SequentialGetCSSValueSupplier.html).
 
 | [Возможность использовать критерии](/doc/rus/core/Steps.md#Критерии)| [Объединение критериев](/doc/rus/core/Steps.md#Объединение-критериев)| [Возможность указывать индивидуальный таймаут](/doc/rus/core/Steps.md#Время-на-получение-значимого-результата)| Если желаемое значение не получено | [Игнорируемые исключения](/doc/rus/core/Steps.md#Игнорирование-выбрасываемых-исключений)| [Данные, которые могут быть  приложены к отчетам (по умолчанию)](/doc/rus/core/Steps.md#Данные,-которые-могут-быть-приложены-к-отчетам/логу)|
