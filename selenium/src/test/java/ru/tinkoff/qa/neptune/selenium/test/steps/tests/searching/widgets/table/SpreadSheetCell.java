@@ -19,4 +19,9 @@ public class SpreadSheetCell extends TableCell {
     public String getValue() {
         return getWrappedElement().getText();
     }
+
+    @Override
+    public void click() {
+        
+    }
 }
