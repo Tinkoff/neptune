@@ -12,7 +12,7 @@
 
 Для поиска одного элемента используется [SearchSupplier](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/functions/searching/SearchSupplier.html)
 
-| Возможность использовать критерии 	| Объединение критериев 	| Возможность указывать индивидуальный таймаут 	| Если желаемое значение не получено                                   	| Игнорируемые исключения                            	| Данные, которые могут быть  приложены к отчетам (по умолчанию)  	|
+| [Возможность использовать критерии](/doc/rus/core/Steps.md#Критерии)| [Объединение критериев](/doc/rus/core/Steps.md#Объединение-критериев)| [Возможность указывать индивидуальный таймаут](/doc/rus/core/Steps.md#Время-на-получение-значимого-результата)| Если желаемое значение не получено | [Игнорируемые исключения](/doc/rus/core/Steps.md#Игнорирование-выбрасываемых-исключений)| [Данные, которые могут быть  приложены к отчетам (по умолчанию)](/doc/rus/core/Steps.md#Данные,-которые-могут-быть-приложены-к-отчетам/логу)|
 |-----------------------------------	|-----------------------	|----------------------------------------------	|----------------------------------------------------------------------	|----------------------------------------------------	|-----------------------------------------------------------------	|
 |            Да                     	| AND                   	|                Да                          	| По умолчанию выбрасывает  org.openqa.selenium.NoSuchElementException 	| org.openqa.selenium.StaleElementReferenceException 	| Скриншоты. Прочие файлы                                          	|
 
@@ -540,7 +540,7 @@ public class MyTests /*...*/ {
 
 Для поиска множества элементов используется [MultipleSearchSupplier](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/functions/searching/MultipleSearchSupplier.html)
 
-| Возможность использовать критерии 	| Объединение критериев 	| Возможность указывать индивидуальный таймаут 	| Если желаемое значение не получено 	| Игнорируемые исключения                            	| Данные, которые могут быть  приложены к отчетам (по умолчанию)  	|
+| [Возможность использовать критерии](/doc/rus/core/Steps.md#Критерии)| [Объединение критериев](/doc/rus/core/Steps.md#Объединение-критериев)| [Возможность указывать индивидуальный таймаут](/doc/rus/core/Steps.md#Время-на-получение-значимого-результата)| Если желаемое значение не получено | [Игнорируемые исключения](/doc/rus/core/Steps.md#Игнорирование-выбрасываемых-исключений)| [Данные, которые могут быть  приложены к отчетам (по умолчанию)](/doc/rus/core/Steps.md#Данные,-которые-могут-быть-приложены-к-отчетам/логу)|
 |-----------------------------------	|-----------------------	|----------------------------------------------	|------------------------------------	|----------------------------------------------------	|-----------------------------------------------------------------	|
 |     Да                            	| AND                   	|        Да                                    	| Возвращает пустой List             	| org.openqa.selenium.StaleElementReferenceException 	| Скриншоты Прочие файлы                                          	|
 
@@ -1624,6 +1624,106 @@ public class MySearches {
     //и т.д.
 }
 ```
+
+## Присутствие/отсутствие элементов/виджетов на странице
+
+### Присутствие элементов/виджетов на странице 
+
+См. [Шаги для определения присутствия](/doc/rus/core/Presence_Absence.md#Присутствие). 
+
+Для определения присутствия элементов/виджетов на странице в данный момент/спустя время, отведенное на поиск, используется [ElementPresence](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/functions/searching/presence/ElementPresence.html).
+
+| [Возможность использовать критерии](/doc/rus/core/Steps.md#Критерии)| [Объединение критериев](/doc/rus/core/Steps.md#Объединение-критериев)| [Возможность указывать индивидуальный таймаут](/doc/rus/core/Steps.md#Время-на-получение-значимого-результата)| Если желаемое значение не получено | [Игнорируемые исключения](/doc/rus/core/Steps.md#Игнорирование-выбрасываемых-исключений)| [Данные, которые могут быть  приложены к отчетам (по умолчанию)](/doc/rus/core/Steps.md#Данные,-которые-могут-быть-приложены-к-отчетам/логу)|
+|-----------------------------------	|-----------------------	|----------------------------------------------	|------------------------------------	|----------------------------------------------------	|-----------------------------------------------------------------	|
+|     Нет                           	| -                   	|        Нет                                    	| false             	| org.openqa.selenium.StaleElementReferenceException, org.openqa.selenium.NoSuchElementException  	| -                                        	|
+
+
+```java
+//пример: присутствие вэб-елемента
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+//...
+import static org.openqa.selenium.By.tagName;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.presence.ElementPresence.presenceOfAnElement;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //присутствие вэб-елемента в данный момент
+        //или спустя время, отведенное на поиск
+        seleniumSteps.get(presenceOfAnElement(webElement(tagName("MyTag"))));
+    }
+}
+```
+
+
+```java
+//пример: присутствие кнопки "Push me"
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+//...
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.button;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.presence.ElementPresence.presenceOfAnElement;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //присутствие кнопки "Push me" в данный момент
+        //или спустя время, отведенное на поиск
+        seleniumSteps.get(presenceOfAnElement(button("Push me")));
+    }
+}
+```
+
+```java
+//пример: присутствие вэб-елементов
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+//...
+import static org.openqa.selenium.By.tagName;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.webElements;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.presence.ElementPresence.presenceOfElements;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //присутствие вэб-елементов (одного или более) в данный момент
+        //или спустя время, отведенное на поиск
+        seleniumSteps.get(presenceOfElements(webElements(tagName("MyTag"))));
+    }
+}
+```
+
+```java
+//пример: присутствие кнопок
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+//...
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.buttons;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.presence.ElementPresence.presenceOfElements;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //присутствие кнопок (одной или более) в данный момент
+        //или спустя время, отведенное на поиск
+        seleniumSteps.get(presenceOfElements(buttons()));
+    }
+}
+```
+
+Если необходимо просто определить, присутствует ли элемент на странице сейчас/спустя некоторое время
+
+### Отсутствие элементов/виджетов на странице 
+
+См. [Шаги для определения отсутствия](/doc/rus/core/Presence_Absence.md#Отсутствие).
+
+В разработке. 
 
 ---
 См. также [Шаги возвращающие результат](/doc/rus/core/Steps.md#Шаги-возвращающие-результат)

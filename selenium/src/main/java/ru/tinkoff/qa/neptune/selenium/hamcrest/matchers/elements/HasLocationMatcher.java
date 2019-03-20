@@ -41,8 +41,8 @@ public final class HasLocationMatcher<T extends SearchContext> extends TypeSafeD
      *           {@link SearchContext} and {@link HasLocation}.
      * @return instance of {@link HasLocationMatcher}
      */
-    public static <T extends SearchContext> HasLocationMatcher<T> hasLoction(int x, int y) {
-        return hasLoction(equalTo(x), equalTo(y));
+    public static <T extends SearchContext> HasLocationMatcher<T> hasLocation(int x, int y) {
+        return hasLocation(equalTo(x), equalTo(y));
     }
 
     /**
@@ -56,8 +56,8 @@ public final class HasLocationMatcher<T extends SearchContext> extends TypeSafeD
      *           {@link SearchContext} and {@link HasLocation}.
      * @return instance of {@link HasLocationMatcher}
      */
-    public static <T extends SearchContext> HasLocationMatcher<T> hasLoction(int x, Matcher<Integer> yMatcher) {
-        return hasLoction(equalTo(x), yMatcher);
+    public static <T extends SearchContext> HasLocationMatcher<T> hasLocation(int x, Matcher<Integer> yMatcher) {
+        return hasLocation(equalTo(x), yMatcher);
     }
 
     /**
@@ -71,8 +71,8 @@ public final class HasLocationMatcher<T extends SearchContext> extends TypeSafeD
      *           {@link SearchContext} and {@link HasLocation}.
      * @return instance of {@link HasLocationMatcher}
      */
-    public static <T extends SearchContext> HasLocationMatcher<T> hasLoction(Matcher<Integer> xMatcher, int y) {
-        return hasLoction(xMatcher, equalTo(y));
+    public static <T extends SearchContext> HasLocationMatcher<T> hasLocation(Matcher<Integer> xMatcher, int y) {
+        return hasLocation(xMatcher, equalTo(y));
     }
 
     /**
@@ -86,7 +86,7 @@ public final class HasLocationMatcher<T extends SearchContext> extends TypeSafeD
      *           {@link SearchContext} and {@link HasLocation}.
      * @return instance of {@link HasLocationMatcher}
      */
-    public static <T extends SearchContext> HasLocationMatcher<T> hasLoction(Matcher<Integer> xMatcher,
+    public static <T extends SearchContext> HasLocationMatcher<T> hasLocation(Matcher<Integer> xMatcher,
                                                                               Matcher<Integer> yMatcher) {
         return new HasLocationMatcher<>(xMatcher, yMatcher);
     }

@@ -4,7 +4,14 @@
 
 См. [Предлагаемое использование шаблона проектирования Page Object](/doc/rus/selenium/SearchingForElements.md#Предлагаемое-использование-шаблона-проектирования-Page-Object)
 
+
 ## Редактирование
+
+Для выполнения редактирования используется [EditActionSupplier](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/functions/edit/EditActionSupplier.html)
+
+| [Данные, которые могут быть  приложены к отчетам (по умолчанию)](/doc/rus/core/Steps.md#Данные,-которые-могут-быть-приложены-к-отчетам-и-логу) 	|
+|-----------------------------------------------------------------	|
+| Скриншоты Прочие файлы                                          	|
 
 Для того, чтобы описать редактирование значения элемента-виджета, нужно чтобы класс, который описывает виджет, реализовывал интерфейс [Editable](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/api/widget/Editable.html):
 
@@ -156,6 +163,9 @@ public class MyTests /*...*/ {
 
 В разработке
 
+---
+См. также [Шаги, выполняющие действие](/doc/rus/core/Steps.md#Шаги,-выполняющие-действие)
+
 ## Получение значения
 
 Для того, чтобы описать получение значения элемента-виджета, нужно чтобы класс, который описывает виджет, реализовывал интерфейс [HasValue](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/api/widget/HasValue.html):
@@ -191,6 +201,13 @@ public class MyTests /*...*/ {
     }
 }
 ```
+
+Для получения значений элементов используется [SequentialGetValueSupplier](https://tinkoffcreditsystems.github.io/neptune/ru/tinkoff/qa/neptune/selenium/functions/value/SequentialGetValueSupplier.html).
+
+| [Возможность использовать критерии](/doc/rus/core/Steps.md#Критерии)| [Объединение критериев](/doc/rus/core/Steps.md#Объединение-критериев)| [Возможность указывать индивидуальный таймаут](/doc/rus/core/Steps.md#Время-на-получение-значимого-результата)| Если желаемое значение не получено | [Игнорируемые исключения](/doc/rus/core/Steps.md#Игнорирование-выбрасываемых-исключений)| [Данные, которые могут быть  приложены к отчетам (по умолчанию)](/doc/rus/core/Steps.md#Данные,-которые-могут-быть-приложены-к-отчетам/логу)|
+|-----------------------------------	|-----------------------	|----------------------------------------------	|----------------------------------------------------------------------	|----------------------------------------------------	|-----------------------------------------------------------------	|
+|            НЕТ                     	| -             	|                НЕТ                         	| Возвращает null                                                      	| НЕТ 	                                                | Любые                                       	        |
+
 
 ### Получение значения с поиском виджета
 
@@ -239,7 +256,6 @@ public class MyTests /*...*/ {
 ```
 
 ---
-См. также [Шаги, выполняющие действие](/doc/rus/core/Steps.md#Шаги,-выполняющие-действие)
 
 См. также [Шаги возвращающие результат](/doc/rus/core/Steps.md#Шаги-возвращающие-результат)
 
@@ -247,7 +263,7 @@ public class MyTests /*...*/ {
 
 ## Проверка значения
 
-Модуль содержит матчер, который позволяет проверять значения элементов.
+Модуль содержит матчер, который позволяет проверять значения элементов [HasValueMatcher](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/hamcrest/matchers/elements/HasValueMatcher.html).
 
 ```java
 //на примере текстового поля 
@@ -294,4 +310,6 @@ public class MyTests /*...*/ {
 
 ---
 См. также [check](/doc/rus/check/Main.md)
+
+См. также [hamcrest.org](http://hamcrest.org/JavaHamcrest/)
 

@@ -44,7 +44,10 @@ abstract class AbstractElementInterceptor implements MethodInterceptor {
                 var result = realObject.equals(args[0]);
                 //it may be another proxy
                 if (!result) {
-                    result = (boolean) proxy.invokeSuper(obj, args);
+                    result = ofNullable(args[0])
+                            .map(o -> o.equals(realObject))
+                            .orElse(false);
+                //(boolean) proxy.invokeSuper(obj, args);
                 }
                 return result;
             }
