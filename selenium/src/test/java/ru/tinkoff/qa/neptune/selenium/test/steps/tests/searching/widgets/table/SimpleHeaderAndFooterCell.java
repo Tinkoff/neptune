@@ -21,4 +21,8 @@ public class SimpleHeaderAndFooterCell extends TableCell {
     public String getValue() {
         return getWrappedElement().getText();
     }
+
+    @Override
+    public void click() {
+    }
 }
