@@ -481,6 +481,201 @@ public class MyTests /*...*/ {
 ---
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Клик мышью с задержкой:
+
+```java
+//пример: простой клик мышью с задержкой
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.clickAndHold;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //....
+        seleniumSteps.perform(clickAndHold());
+        //....        
+    }
+}
+```
+---
+```java
+//пример: простой клик мышью с задержкой, по элементам страницы (WebElement)
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+
+import static org.openqa.selenium.By.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.clickAndHold;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //....
+        var webElement = seleniumSteps.find(webElement(tagName("a")));
+        seleniumSteps.perform(clickAndHold(webElement));
+        //....        
+    }
+}
+```
+---
+
+```java
+//пример: простой клик мышью с задержкой, по элементам страницы (Widget)
+//На примере ссылки
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.clickAndHold;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.link;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //....
+        var link = seleniumSteps.find(link("Click me"));
+        seleniumSteps.perform(clickAndHold(link));
+        //....        
+    }
+}
+```
+---
+
+```java
+//пример: простой клик мышью с задержкой, по элементам страницы (WebElement)
+//Указывается способ, как найти целевые элементы
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+
+import static org.openqa.selenium.By.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.clickAndHold;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //....
+        seleniumSteps.perform(clickAndHold(webElement(tagName("a"))));
+        //....        
+    }
+}
+```
+---
+
+```java
+//пример: простой клик мышью с задержкой, по элементам страницы (Widget)
+//На примере ссылки
+//Указывается способ, как найти целевые виджеты
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.clickAndHold;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.link;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //....
+        seleniumSteps.perform(clickAndHold(link("Click me")));
+        //....        
+    }
+}
+```
+---
+
+
 ---
 См. также [Шаги, выполняющие действие](/doc/rus/core/Steps.md#Шаги,-выполняющие-действие)
 
