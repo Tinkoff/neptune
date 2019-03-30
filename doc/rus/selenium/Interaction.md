@@ -804,80 +804,14 @@ public class MyTests /*...*/ {
 ```
 ---
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## Клик левой кнопкой мыши:
+## Движение мыши:
 
 ```java
-//пример: Клик левой кнопкой мыши. Текущая позиция мыши.
-import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
-
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.click;
-
-public class MyTests /*...*/ {
-    private SeleniumStepContext seleniumSteps;
-    
-    @Test
-    public void myTest() {
-        //....
-        seleniumSteps.perform(click());
-        //....        
-    }
-}
-```
----
-```java
-//пример: Клик левой кнопкой мыши. Элемент страницы (WebElement)
+//пример: Движение мыши к элементу (верхнему левому углу).
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import static org.openqa.selenium.By.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.click;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.moveToElement;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 
 public class MyTests /*...*/ {
@@ -887,7 +821,7 @@ public class MyTests /*...*/ {
     public void myTest() {
         //....
         var webElement = seleniumSteps.find(webElement(tagName("a")));
-        seleniumSteps.perform(click(webElement));
+        seleniumSteps.perform(moveToElement(webElement));
         //....        
     }
 }
@@ -895,11 +829,191 @@ public class MyTests /*...*/ {
 ---
 
 ```java
-//пример: Клик левой кнопкой мыши. Элемент страницы (Widget)
+//пример: Движение мыши к элементу (относительно его верхнего левого угла).
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+
+import static org.openqa.selenium.By.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.moveToElement;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //....
+        var webElement = seleniumSteps.find(webElement(tagName("a")));
+        seleniumSteps.perform(moveToElement(webElement, 
+                10, //отклонение по оси X
+                10)); //отклонение по оси Y
+        //....        
+    }
+}
+```
+---
+
+```java
+//пример: Движение мыши к элементу (верхнему левому углу).
+//Указывается способ, как найти целевые элементы
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+
+import static org.openqa.selenium.By.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.moveToElement;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //....
+        seleniumSteps.perform(moveToElement(webElement(tagName("a"))));
+        //....        
+    }
+}
+```
+---
+
+```java
+//пример: Движение мыши к элементу (относительно его верхнего левого угла).
+//Указывается способ, как найти целевые элементы
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+
+import static org.openqa.selenium.By.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.moveToElement;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //....
+        seleniumSteps.perform(moveToElement(webElement(tagName("a")), 
+                10, //отклонение по оси X
+                10)); //отклонение по оси Y
+        //....        
+    }
+}
+```
+---
+
+```java
+//пример: Движение мыши к виджету (его верхнему левому углу или верхнему левому углу элемента, 
+// относительно которого строится описание виджета).
+//Указывается способ, как найти целевые элементы
 //На примере ссылки
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.click;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.moveToElement;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.link;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //....
+        seleniumSteps.perform(moveToElement(link("Click me")));
+        //....        
+    }
+}
+```
+---
+
+```java
+//пример: Движение мыши к виджету (относительно его верхнего левого угла или верхнего левого угла элемента, 
+// относительно которого строится описание виджета).
+//Указывается способ, как найти целевые элементы
+//На примере ссылки
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.moveToElement;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.link;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //....
+        seleniumSteps.perform(moveToElement(link("Click me"),
+                10, //отклонение по оси X
+                10)); //отклонение по оси Y
+        //....        
+    }
+}
+```
+---
+
+```java
+//пример: Движение мыши относительно текущей позиции/левого верхнего угла страницы
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.moveByOffset;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //....
+        seleniumSteps.perform(moveByOffset(10, //отклонение по оси X
+                10)); //отклонение по оси Y
+        //....        
+    }
+}
+```
+---
+
+## Клик правой кнопкой мыши (контекстный клик):
+
+```java
+//пример: Клик правой кнопкой мыши (контекстный клик). Текущая позиция мыши.
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.contextClick;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //....
+        seleniumSteps.perform(contextClick());
+        //....        
+    }
+}
+```
+---
+```java
+//пример: Клик правой кнопкой мыши (контекстный клик). Элемент страницы (WebElement)
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+
+import static org.openqa.selenium.By.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.contextClick;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //....
+        var webElement = seleniumSteps.find(webElement(tagName("a")));
+        seleniumSteps.perform(contextClick(webElement));
+        //....        
+    }
+}
+```
+---
+
+```java
+//пример: Клик правой кнопкой мыши (контекстный клик). Элемент страницы (Widget)
+//На примере ссылки
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.contextClick;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.link;
 
 public class MyTests /*...*/ {
@@ -909,7 +1023,7 @@ public class MyTests /*...*/ {
     public void myTest() {
         //....
         var link = seleniumSteps.find(link("Click me"));
-        seleniumSteps.perform(click(link));
+        seleniumSteps.perform(contextClick(link));
         //....        
     }
 }
@@ -917,12 +1031,12 @@ public class MyTests /*...*/ {
 ---
 
 ```java
-//пример: Клик левой кнопкой мыши. Элемент страницы (WebElement)
+//пример: Клик правой кнопкой мыши (контекстный клик). Элемент страницы (WebElement)
 //Указывается способ, как найти целевые элементы
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import static org.openqa.selenium.By.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.click;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.contextClick;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 
 public class MyTests /*...*/ {
@@ -931,7 +1045,7 @@ public class MyTests /*...*/ {
     @Test
     public void myTest() {
         //....
-        seleniumSteps.perform(click(webElement(tagName("a"))));
+        seleniumSteps.perform(contextClick(webElement(tagName("a"))));
         //....        
     }
 }
@@ -939,12 +1053,12 @@ public class MyTests /*...*/ {
 ---
 
 ```java
-//пример: Клик левой кнопкой мыши. Элемент страницы (Widget)
+//пример: Клик правой кнопкой мыши (контекстный клик). Элемент страницы (Widget)
 //На примере ссылки
 //Указывается способ, как найти целевые виджеты
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.click;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.contextClick;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.link;
 
 public class MyTests /*...*/ {
@@ -953,12 +1067,159 @@ public class MyTests /*...*/ {
     @Test
     public void myTest() {
         //....
-        seleniumSteps.perform(click(link("Click me")));
+        seleniumSteps.perform(contextClick(link("Click me")));
         //....        
     }
 }
 ```
 ---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Клик правой кнопкой мыши (контекстный клик):
+
+```java
+//пример: Клик правой кнопкой мыши (контекстный клик). Текущая позиция мыши.
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.contextClick;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //....
+        seleniumSteps.perform(contextClick());
+        //....        
+    }
+}
+```
+---
+```java
+//пример: Клик правой кнопкой мыши (контекстный клик). Элемент страницы (WebElement)
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+
+import static org.openqa.selenium.By.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.contextClick;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //....
+        var webElement = seleniumSteps.find(webElement(tagName("a")));
+        seleniumSteps.perform(contextClick(webElement));
+        //....        
+    }
+}
+```
+---
+
+```java
+//пример: Клик правой кнопкой мыши (контекстный клик). Элемент страницы (Widget)
+//На примере ссылки
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.contextClick;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.link;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //....
+        var link = seleniumSteps.find(link("Click me"));
+        seleniumSteps.perform(contextClick(link));
+        //....        
+    }
+}
+```
+---
+
+```java
+//пример: Клик правой кнопкой мыши (контекстный клик). Элемент страницы (WebElement)
+//Указывается способ, как найти целевые элементы
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+
+import static org.openqa.selenium.By.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.contextClick;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //....
+        seleniumSteps.perform(contextClick(webElement(tagName("a"))));
+        //....        
+    }
+}
+```
+---
+
+```java
+//пример: Клик правой кнопкой мыши (контекстный клик). Элемент страницы (Widget)
+//На примере ссылки
+//Указывается способ, как найти целевые виджеты
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.contextClick;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.link;
+
+public class MyTests /*...*/ {
+    private SeleniumStepContext seleniumSteps;
+    
+    @Test
+    public void myTest() {
+        //....
+        seleniumSteps.perform(contextClick(link("Click me")));
+        //....        
+    }
+}
+```
+---
+
 
 См. также [Шаги, выполняющие действие](/doc/rus/core/Steps.md#Шаги,-выполняющие-действие)
 
