@@ -18,9 +18,7 @@ import static io.qameta.allure.util.ResultsUtils.getStatus;
 import static io.qameta.allure.util.ResultsUtils.getStatusDetails;
 import static java.lang.String.format;
 import static java.lang.System.lineSeparator;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.stream;
-import static org.apache.commons.io.IOUtils.toInputStream;
 
 public class AllureEventLogger implements EventLogger {
 
@@ -58,12 +56,7 @@ public class AllureEventLogger implements EventLogger {
         var lineSeparator = lineSeparator();
         var log = new StringBuilder();
         stream(throwable.getStackTrace()).forEach(st -> log.append(format("%s%s", st, lineSeparator)));
-
-        try {
-            addAttachment("Thrown exception:", null,  toInputStream(log, UTF_8), "log");
-        }
-        catch (Exception ignored) {
-        }
+        addAttachment("Thrown exception:", log.toString());
     }
 
     @Override
