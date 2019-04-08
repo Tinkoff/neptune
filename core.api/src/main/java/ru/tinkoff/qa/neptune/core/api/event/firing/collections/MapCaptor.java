@@ -8,12 +8,15 @@ import java.util.Map;
 
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
+import static java.lang.System.lineSeparator;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.hasReadableDescription;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 public class MapCaptor extends StringCaptor<Map<?, ?>> {
+
+    private static final String LINE_SEPARATOR = lineSeparator();
 
     public MapCaptor() {
         super("Resulted map");
@@ -25,11 +28,11 @@ public class MapCaptor extends StringCaptor<Map<?, ?>> {
                     var clazz = o1.getClass();
 
                     if (Iterable.class.isAssignableFrom(clazz)) {
-                        return format("%s\n", Iterables.toString((Iterable<?>) o1));
+                        return format("%s%s", Iterables.toString((Iterable<?>) o1), LINE_SEPARATOR);
                     }
 
                     if (clazz.isArray()) {
-                        return format("%s\n", Arrays.toString((Object[]) o1));
+                        return format("%s%s", Arrays.toString((Object[]) o1), LINE_SEPARATOR);
                     }
 
                     return o1.toString();
@@ -42,7 +45,7 @@ public class MapCaptor extends StringCaptor<Map<?, ?>> {
         caught.forEach((key, value) -> {
             String stringKey = stringValueOf(key);
             String stringValue = stringValueOf(value);
-            captured.append(format("Key = %s, Value = %s\n", stringKey, stringValue));
+            captured.append(format("Key = %s, Value = %s%s", stringKey, stringValue, LINE_SEPARATOR));
         });
         return captured;
     }

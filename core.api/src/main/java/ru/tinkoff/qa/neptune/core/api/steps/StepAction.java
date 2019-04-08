@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import static java.lang.System.lineSeparator;
 import static java.util.Objects.nonNull;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.*;
 import static ru.tinkoff.qa.neptune.core.api.properties.DoCapturesOf.catchFailureEvent;
@@ -178,7 +179,7 @@ public class StepAction<T> implements Consumer<T>, MakesCapturesOnFinishing<Step
 
         @Override
         public String toString() {
-            return before.toString() + "\n" + after.toString();
+            return before.toString() + lineSeparator() + after.toString();
         }
 
         @Override

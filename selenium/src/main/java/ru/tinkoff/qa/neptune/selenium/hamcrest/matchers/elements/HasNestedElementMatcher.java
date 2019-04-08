@@ -9,12 +9,14 @@ import org.openqa.selenium.SearchContext;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
+import static java.lang.System.lineSeparator;
 import static java.util.Arrays.stream;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 
 public final class HasNestedElementMatcher<T extends SearchContext> extends TypeSafeDiagnosingMatcher<T> {
 
+    private static final String LINE_SEPARATOR = lineSeparator();
     private final SearchSupplier<?> search;
 
     private HasNestedElementMatcher(SearchSupplier<?> search) {
@@ -46,12 +48,12 @@ public final class HasNestedElementMatcher<T extends SearchContext> extends Type
                     });
         }
         catch (Throwable e) {
-            mismatchDescription.appendText("The attempt to find nested element was failed. Something went wrong.\n")
-                    .appendText(format("Caught throwable: %s\n", e.getClass().getName()))
-                    .appendText("Stack trace:\n");
+            mismatchDescription.appendText("The attempt to find nested element was failed. Something went wrong." + LINE_SEPARATOR)
+                    .appendText(format("Caught throwable: %s%s", e.getClass().getName(), LINE_SEPARATOR))
+                    .appendText("Stack trace:" + LINE_SEPARATOR);
 
-            stream(e.getStackTrace()).forEach(stackTraceElement -> mismatchDescription.appendText(format("%s\n",
-                    stackTraceElement.toString())));
+            stream(e.getStackTrace()).forEach(stackTraceElement -> mismatchDescription.appendText(format("%s%s",
+                    stackTraceElement.toString(), LINE_SEPARATOR)));
             return false;
         }
     }

@@ -9,6 +9,7 @@ import java.net.URL;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
+import static java.lang.System.lineSeparator;
 import static java.util.Objects.nonNull;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -62,7 +63,7 @@ public final class HasReference extends TypeSafeDiagnosingMatcher<Link> {
         var result = refMatcher.matches(reference);
 
         if (!result) {
-            mismatchDescription.appendText(format("It was expected that %s %s\n", item, toString()));
+            mismatchDescription.appendText(format("It was expected that %s %s%s", item, toString(), lineSeparator()));
             refMatcher.describeMismatch(reference, mismatchDescription);
         }
 

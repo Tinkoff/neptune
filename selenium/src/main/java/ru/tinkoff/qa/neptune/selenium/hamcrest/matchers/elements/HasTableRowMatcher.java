@@ -9,10 +9,12 @@ import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatche
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
+import static java.lang.System.lineSeparator;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.tableRows;
 
 public class HasTableRowMatcher extends TypeSafeDiagnosingMatcher<Table> {
 
+    private static final String LINE_SEPARATOR = lineSeparator();
     private final BaseMatcher<? super TableRow> rowMatcher;
     private final int expectedRowNum;
 
@@ -50,8 +52,8 @@ public class HasTableRowMatcher extends TypeSafeDiagnosingMatcher<Table> {
         var result = rowMatcher.matches(tableRows.get(expectedRowNum));
 
         if (!result) {
-            mismatchDescription.appendText(format("Table %s has the row that was found bu number %s.\n", item, expectedRowNum));
-            mismatchDescription.appendText("Mismatch of row values:\n");
+            mismatchDescription.appendText(format("Table %s has the row that was found bu number %s.%s", item, expectedRowNum, LINE_SEPARATOR));
+            mismatchDescription.appendText("Mismatch of row values:" + LINE_SEPARATOR);
             rowMatcher.describeMismatch(tableRows.get(expectedRowNum), mismatchDescription);
         }
         return result;

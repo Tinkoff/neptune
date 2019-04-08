@@ -44,7 +44,6 @@ public class UpdateTest extends BaseDbOperationTest {
             "like Aleksandr Solzhenitsyn and Anton Chekhov as well as philosophers such as Friedrich Nietzsche and Jean-Paul Sartre. His books have been translated into more than 170 languages.";
 
     private Author fyodorDostoevsky;
-    private Catalog catalogCrimeAndPunishment;
     private Book crimeAndPunishment;
 
     @BeforeClass
@@ -72,18 +71,9 @@ public class UpdateTest extends BaseDbOperationTest {
         fyodorDostoevsky = new Author().setFirstName("Fyodor").setLastName("Dostoevsky")
                 .setBirthDate(birthDateDostoevsky)
                 .setDeathDate(deathDateDostoevsky).setBiography(DOSTOEVSKY_BIOGRAPHY);
-
         crimeAndPunishment = new Book().setName("Crime and Punishment").setAuthor(fyodorDostoevsky)
                 .setYearOfFinishing(1869);
-
-        var doverPublications = new Publisher().setName("Dover Publications");
-
-        catalogCrimeAndPunishment = new Catalog().setBook(crimeAndPunishment)
-                .setIsbn("978-0486454115")
-                .setPublisher(doverPublications)
-                .setYearOfPublishing(2001);
-
-        catalogCrimeAndPunishment = dataBaseSteps.get(inserted(catalogCrimeAndPunishment)).get(0);
+        dataBaseSteps.get(inserted(crimeAndPunishment)).get(0);
     }
 
     @Test
@@ -108,17 +98,23 @@ public class UpdateTest extends BaseDbOperationTest {
 
     @Test
     public void updateByQuery() {
-        var qCatalog = QCatalog.candidate();
+        var qAuthor = QAuthor.candidate();
 
-        var updated = dataBaseSteps.get(updated(aSingleByQuery(ofType(Catalog.class)
-                .where(qCatalog.book.author.eq(fyodorDostoevsky))))
-                .set("Change the year of publishing to 2002", catalog -> catalog.setYearOfPublishing(2002)));
+        var updated = dataBaseSteps.get(updated(aSingleByQuery(ofType(Author.class)
+                .where(qAuthor.lastName.eq("Dostoevsky"))))
+                .set("Change biography", author -> author.setBiography(DOSTOEVSKY_BIOGRAPHY
+                        + "Dostoevsky's immediate ancestors on his mother's side were merchants; the male line on his father's side were priests. "
+                        + "His father, Mikhail Andreevich, was expected to join the clergy but instead ran away from home and broke with the family permanently")));
 
         assertThat(updated, hasSize(1));
-        assertThat(updated.get(0).getYearOfPublishing(),
-                equalTo(2002));
-        assertThat(dataBaseSteps.get(selected(aSingleOfTypeById(Catalog.class, catalogCrimeAndPunishment.getIsbn()))).getYearOfPublishing(),
-                equalTo(2002));
+        assertThat(updated.get(0).getBiography(), equalTo(DOSTOEVSKY_BIOGRAPHY
+                + "Dostoevsky's immediate ancestors on his mother's side were merchants; the male line on his father's side were priests. "
+                + "His father, Mikhail Andreevich, was expected to join the clergy but instead ran away from home and broke with the family permanently"));
+        assertThat(dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
+                        .where(qAuthor.biography.eq(DOSTOEVSKY_BIOGRAPHY
+                                + "Dostoevsky's immediate ancestors on his mother's side were merchants; the male line on his father's side were priests. "
+                                + "His father, Mikhail Andreevich, was expected to join the clergy but instead ran away from home and broke with the family permanently"))))),
+                not(nullValue()));
     }
 
     @Test(dependsOnMethods = {"updateObjectsTest", "updateByQuery"}, expectedExceptions = IllegalArgumentException.class)

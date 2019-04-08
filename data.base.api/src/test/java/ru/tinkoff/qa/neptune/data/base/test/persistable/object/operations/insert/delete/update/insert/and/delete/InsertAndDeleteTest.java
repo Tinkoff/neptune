@@ -22,7 +22,6 @@ import static ru.tinkoff.qa.neptune.data.base.api.operations.DBGetInsertedFuncti
 import static ru.tinkoff.qa.neptune.data.base.api.query.GetSelectedFunction.selected;
 import static ru.tinkoff.qa.neptune.data.base.api.query.QueryBuilderFunction.ofType;
 import static ru.tinkoff.qa.neptune.data.base.api.query.SelectListGetSupplier.listByQuery;
-import static ru.tinkoff.qa.neptune.data.base.api.query.SelectListGetSupplier.listOfTypeByIds;
 
 public class InsertAndDeleteTest extends BaseDbOperationTest {
 
@@ -88,10 +87,8 @@ public class InsertAndDeleteTest extends BaseDbOperationTest {
         createSpaceIndependent = new Publisher().setName("CreateSpace Independent Publishing Platform");
 
         catalogItemOfNotreDame = new Catalog().setBook(theHunchbackOfNotreDame)
-                .setIsbn("978-1853260681")
                 .setPublisher(signet).setYearOfPublishing(1998);
         catalogItemOfLegendOfTheAges = new Catalog().setBook(theLegendOfTheAges)
-                .setIsbn("978-1539940296")
                 .setPublisher(createSpaceIndependent).setYearOfPublishing(2016);
     }
 
@@ -139,11 +136,9 @@ public class InsertAndDeleteTest extends BaseDbOperationTest {
         var bantamDoubledayDellPublishing = new Publisher().setName("Bantam Doubleday Dell Publishing");
 
         var catalogItemOfNotreDame2 = new Catalog().setBook(theHunchbackOfNotreDame)
-                .setIsbn("978-1853260681")
                 .setPublisher(signet).setYearOfPublishing(1998); //Should violate key rules
 
         var catalogItemOfLegendOfTheAges2 = new Catalog().setBook(theLegendOfTheAges)
-                .setIsbn("978-1539940296")
                 .setPublisher(createSpaceIndependent).setYearOfPublishing(2016); //Should violate key rules
 
         List<PersistableObject> persistableObjects;
@@ -177,8 +172,9 @@ public class InsertAndDeleteTest extends BaseDbOperationTest {
         try {
             dataBaseSteps.get(inserted(catalogItemOfNotreDame, catalogItemOfLegendOfTheAges));
         } catch (Exception e) {
-            assertThat(e.getMessage(), equalTo("There are objects already inserted: [Stored item Id=[978-1853260681] " +
-                    "table [Catalog], Stored item Id=[978-1539940296] table [Catalog]]"));
+            assertThat(e.getMessage(), equalTo("There are objects already inserted: "
+                    + "[Stored item Id=[Composite key [CatalogCompositeKey]: yearOfPublishing = 1998, book = 3, publisher = 3,] table [Catalog], "
+                    + "Stored item Id=[Composite key [CatalogCompositeKey]: yearOfPublishing = 2016, book = 4, publisher = 4,] table [Catalog]]"));
             throw e;
         }
         fail("Exception was expected");
@@ -212,12 +208,6 @@ public class InsertAndDeleteTest extends BaseDbOperationTest {
         assertThat(isPersistent(catalogItemOfNotreDame), is(true));
         assertThat(isPersistent(catalogItemOfLegendOfTheAges), is(true));
 
-        List<Catalog> catalogItems = dataBaseSteps.get(selected(listOfTypeByIds(Catalog.class,
-                catalogItemOfNotreDame.getIsbn(),
-                catalogItemOfLegendOfTheAges.getIsbn())));
-
-        assertThat(catalogItems, containsInAnyOrder(catalogItemOfNotreDame, catalogItemOfLegendOfTheAges));
-
         QCatalog qCatalog = QCatalog.candidate();
 
         assertThat(dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class)
@@ -231,7 +221,7 @@ public class InsertAndDeleteTest extends BaseDbOperationTest {
                             Author author = catalog.getBook().getAuthor();
                             return author.getBirthDate().equals(birthDateHugo) && author.getDeathDate().equals(deathDateHugo);
                         }))),
-                containsInAnyOrder(catalogItems.toArray()));
+                containsInAnyOrder(catalogItemOfNotreDame, catalogItemOfLegendOfTheAges));
     }
 
     @Test(dependsOnMethods = "deleteNegativeTest")
@@ -266,10 +256,8 @@ public class InsertAndDeleteTest extends BaseDbOperationTest {
     @Test(dependsOnMethods = "deleteByObjectsPositiveTest")
     public void deleteByQueryPositiveTest() {
         catalogItemOfNotreDame = new Catalog().setBook(theHunchbackOfNotreDame)
-                .setIsbn("978-1853260681")
                 .setPublisher(signet).setYearOfPublishing(1998);
         catalogItemOfLegendOfTheAges = new Catalog().setBook(theLegendOfTheAges)
-                .setIsbn("978-1539940296")
                 .setPublisher(createSpaceIndependent).setYearOfPublishing(2016);
 
         dataBaseSteps.get(inserted(catalogItemOfNotreDame, catalogItemOfLegendOfTheAges));
@@ -314,10 +302,8 @@ public class InsertAndDeleteTest extends BaseDbOperationTest {
     @Test(dependsOnMethods = {"deleteByObjectsPositiveTest", "deleteByQueryPositiveTest"}, priority = 1)
     public void emptyDeleteTest() {
         catalogItemOfNotreDame = new Catalog().setBook(theHunchbackOfNotreDame)
-                .setIsbn("978-1853260681")
                 .setPublisher(signet).setYearOfPublishing(1998);
         catalogItemOfLegendOfTheAges = new Catalog().setBook(theLegendOfTheAges)
-                .setIsbn("978-1539940296")
                 .setPublisher(createSpaceIndependent).setYearOfPublishing(2016);
 
         dataBaseSteps.get(inserted(catalogItemOfNotreDame, catalogItemOfLegendOfTheAges));
@@ -350,17 +336,14 @@ public class InsertAndDeleteTest extends BaseDbOperationTest {
     @Test(dependsOnMethods = "deleteByQueryPositiveTest")
     public void deleteNotStoredObjectTest() {
         catalogItemOfNotreDame = new Catalog().setBook(theHunchbackOfNotreDame)
-                .setIsbn("978-1853260681")
                 .setPublisher(signet).setYearOfPublishing(1998);
         catalogItemOfLegendOfTheAges = new Catalog().setBook(theLegendOfTheAges)
-                .setIsbn("978-1539940296")
                 .setPublisher(createSpaceIndependent).setYearOfPublishing(2016);
 
         dataBaseSteps.get(inserted(catalogItemOfNotreDame, catalogItemOfLegendOfTheAges));
 
         var riaChristieCollections = new Publisher().setName("Ria Christie Collections");
         var catalogItemOfNotreDame2 = new Catalog().setBook(theHunchbackOfNotreDame)
-                .setIsbn("1906230692")
                 .setPublisher(riaChristieCollections)
                 .setYearOfPublishing(2011);
 
@@ -377,7 +360,6 @@ public class InsertAndDeleteTest extends BaseDbOperationTest {
     public void insertPreviouslyDeletedObjectTest() {
         var riaChristieCollections = new Publisher().setName("Ria Christie Collections");
         var catalogItemOfNotreDame2 = new Catalog().setBook(theHunchbackOfNotreDame)
-                .setIsbn("1906230692")
                 .setPublisher(riaChristieCollections)
                 .setYearOfPublishing(2011);
 

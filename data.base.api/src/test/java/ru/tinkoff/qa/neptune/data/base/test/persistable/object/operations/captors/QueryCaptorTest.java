@@ -12,7 +12,6 @@ import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDb
 
 import java.util.List;
 import java.util.function.Function;
-
 import static java.lang.System.getProperties;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -44,13 +43,13 @@ public class QueryCaptorTest extends BaseDbOperationTest {
         INJECTED.clear();
     }
 
+
     @Test
     public void testOfSelectSingleItemByTypedQuery() {
         QCatalog c = QCatalog.candidate();
         var querySpec = ofType(Catalog.class).where(c.book.name.eq("Ruslan and Ludmila")
-                .or(c.isbn.eq("0-671-73246-3")) //<Journey to Ixtlan
-                .or(c.book.author.lastName.eq("Pushkin")))
-                .orderBy(c.isbn.desc());
+                .or(c.book.author.lastName.eq("Castaneda")))
+                .orderBy(c.book.id.desc());
         var query = querySpec.apply(dataBaseSteps.getCurrentPersistenceManager());
 
 
@@ -69,9 +68,8 @@ public class QueryCaptorTest extends BaseDbOperationTest {
     public void testOfSelectMultipleItemsByTypedQuery() {
         QCatalog c = QCatalog.candidate();
         var querySpec = ofType(Catalog.class).where(c.book.name.eq("Ruslan and Ludmila")
-                .or(c.isbn.eq("0-671-73246-3")) //<Journey to Ixtlan
-                .or(c.book.author.lastName.eq("Pushkin")))
-                .orderBy(c.isbn.desc());
+                .or(c.book.author.lastName.eq("Castaneda")))
+                .orderBy(c.book.id.desc());
         var query = querySpec.apply(dataBaseSteps.getCurrentPersistenceManager());
 
 
@@ -168,29 +166,29 @@ public class QueryCaptorTest extends BaseDbOperationTest {
 
     @Test
     public void testOfSelectSingleItemById() {
-        Catalog catalogItem = dataBaseSteps.get(selected(aSingleOfTypeById(Catalog.class, "0-671-73246-3")));
-        assertThat(INJECTED, contains("Query: Known Id: 0-671-73246-3"));
+        var book = dataBaseSteps.get(selected(aSingleOfTypeById(Book.class, 1)));
+        assertThat(INJECTED, contains("Query: Known Id: 1"));
 
-        var secondaryReturned = toGet("Stored value", (Function<DataBaseStepContext, Catalog>)
-                dataBaseStepContext -> catalogItem)
+        var secondaryReturned = toGet("Stored value", (Function<DataBaseStepContext, Book>)
+                dataBaseStepContext -> book)
                 .makeStringCaptureOnFinish();
 
         dataBaseSteps.get(secondaryReturned);
-        assertThat(INJECTED,contains("Query: Known Id: 0-671-73246-3"));
+        assertThat(INJECTED,contains("Query: Known Id: 1"));
     }
 
     @Test
     public void testOfSelectMultipleItemsByIds() {
-        List<Catalog> catalogItems = dataBaseSteps.get(selected(listOfTypeByIds(Catalog.class, "0-930267-39-7", "0-671-73246-3")));
-        assertThat(INJECTED, contains(equalTo("Query: Known Ids: 0-930267-39-7, 0-671-73246-3"),
+        List<Book> books = dataBaseSteps.get(selected(listOfTypeByIds(Book.class, 1, 2)));
+        assertThat(INJECTED, contains(equalTo("Query: Known Ids: 1, 2"),
                 containsString("Resulted collection:")));
 
-        var secondaryReturned = toGet("Stored value", (Function<DataBaseStepContext, List<Catalog>>)
-                dataBaseStepContext -> catalogItems)
+        var secondaryReturned = toGet("Stored value", (Function<DataBaseStepContext, List<Book>>)
+                dataBaseStepContext -> books)
                 .makeStringCaptureOnFinish();
 
         dataBaseSteps.get(secondaryReturned);
-        assertThat(INJECTED, contains(equalTo("Query: Known Ids: 0-930267-39-7, 0-671-73246-3"),
+        assertThat(INJECTED, contains(equalTo("Query: Known Ids: 1, 2"),
                 containsString("Resulted collection:"),
                 containsString("Resulted collection:")));
     }
