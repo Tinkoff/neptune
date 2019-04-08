@@ -4,36 +4,26 @@ import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
 import javax.jdo.annotations.*;
 
-@PersistenceCapable(table = "Catalog")
+@PersistenceCapable(table = "Catalog", objectIdClass = CatalogCompositeKey.class)
 public class Catalog extends PersistableObject {
 
     @PrimaryKey
-    @Column(name = "ISBN")
-    private String isbn;
-
     @Column(name = "YearOfPublishing")
-    private int yearOfPublishing;
+    private Integer yearOfPublishing;
 
+    @PrimaryKey
     @Persistent(column = "BookId")
     private Book book;
 
+    @PrimaryKey
     @Persistent(column = "PublisherId")
     private Publisher publisher;
 
-    public String getIsbn() {
-        return isbn;
-    }
-
-    public Catalog setIsbn(String isbn) {
-        this.isbn = isbn;
-        return this;
-    }
-
-    public int getYearOfPublishing() {
+    public Integer getYearOfPublishing() {
         return yearOfPublishing;
     }
 
-    public Catalog setYearOfPublishing(int yearOfPublishing) {
+    public Catalog setYearOfPublishing(Integer yearOfPublishing) {
         this.yearOfPublishing = yearOfPublishing;
         return this;
     }

@@ -7,6 +7,7 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 
+import static java.lang.System.lineSeparator;
 import static ru.tinkoff.qa.neptune.check.ThatValue.thatValue;
 import static ru.tinkoff.qa.neptune.check.test.TestEventLogger.MESSAGES;
 import static ru.tinkoff.qa.neptune.core.api.steps.proxy.ProxyFactory.getProxied;
@@ -377,11 +378,10 @@ public class CheckTest {
         }
     }
 
-    @Test(expectedExceptions = AssertionError.class, expectedExceptionsMessageRegExp = "List of mismatches:\n" +
-            "\t\n" +
-            "Expected: is <2.0>\n" +
-            "     but: Sqrt value: \n" +
-            "\twas <3.0>")
+    @Test(expectedExceptions = AssertionError.class, expectedExceptionsMessageRegExp = ".*['List of mismatches:']" +
+            "*['Expected: is <2.0>']" +
+            "*['but: Sqrt value:']" +
+            "*['was <3.0>']")
     public void testOfLinearNegativeCaseWhenEventIsNotDefined() {
         try {
             check.verify(thatValue(9)
@@ -401,11 +401,10 @@ public class CheckTest {
         }
     }
 
-    @Test(expectedExceptions = AssertionError.class, expectedExceptionsMessageRegExp = "List of mismatches:\n" +
-            "\t\n" +
-            "Expected: is <2.0>\n" +
-            "     but: Sqrt value: \n" +
-            "\twas <3.0>")
+    @Test(expectedExceptions = AssertionError.class, expectedExceptionsMessageRegExp = ".*['List of mismatches:']" +
+            "*['Expected: is <2.0>']" +
+            "*['but: Sqrt value:']" +
+            "*['was <3.0>']")
     public void testOfLinearNegativeCaseWhenEventIsSuccess() {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS.name());
         try {
@@ -431,11 +430,10 @@ public class CheckTest {
     }
 
     @Test(expectedExceptions = AssertionError.class,
-            expectedExceptionsMessageRegExp = "List of mismatches:\n" +
-                    "\t\n" +
-                    "Expected: is <2.0>\n" +
-                    "     but: Sqrt value: \n" +
-                    "\twas <3.0>")
+            expectedExceptionsMessageRegExp = ".*[List of mismatches:]" +
+                    "*['Expected: is <2.0>']" +
+                    "*['but: Sqrt value:']" +
+                    "*['was <3.0>']")
     public void testOfLinearNegativeCaseWhenEventIsFailure() {
         DO_CAPTURES_OF_INSTANCE.accept(FAILURE.name());
         try {
@@ -459,11 +457,10 @@ public class CheckTest {
     }
 
     @Test(expectedExceptions = AssertionError.class,
-            expectedExceptionsMessageRegExp = "List of mismatches:\n" +
-                    "\t\n" +
-                    "Expected: is <2.0>\n" +
-                    "     but: Sqrt value: \n" +
-                    "\twas <3.0>")
+            expectedExceptionsMessageRegExp = ".*['List of mismatches:']" +
+                    "*['Expected: is <2.0>']" +
+                    "*['but: Sqrt value:']" +
+                    "*['was <3.0>']")
     public void testOfLinearNegativeCaseWhenEventIsAll() {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE.name());
         try {
@@ -491,11 +488,10 @@ public class CheckTest {
     }
 
     @Test(expectedExceptions = AssertionError.class,
-            expectedExceptionsMessageRegExp = "List of mismatches:\n" +
-                    "\t\n" +
-                    "Expected: is <2.0>\n" +
-                    "     but: Sqrt value: \n" +
-                    "\twas <3.0>")
+            expectedExceptionsMessageRegExp = ".*['List of mismatches:']" +
+                    "*['Expected: is <2.0>']" +
+                    "*['but: Sqrt value:']" +
+                    "*['was <3.0>']")
     public void testOfPerformNegativeCaseWhenEventIsNotDefined() {
         try {
             check.perform("Check number 9", check ->
@@ -517,11 +513,10 @@ public class CheckTest {
     }
 
     @Test(expectedExceptions = AssertionError.class,
-            expectedExceptionsMessageRegExp = "List of mismatches:\n" +
-                    "\t\n" +
-                    "Expected: is <2.0>\n" +
-                    "     but: Sqrt value: \n" +
-                    "\twas <3.0>")
+            expectedExceptionsMessageRegExp = ".*[List of mismatches:']" +
+                    "*['Expected: is <2.0>']" +
+                    "*['but: Sqrt value:']" +
+                    "*['was <3.0>']")
     public void testOfPerformNegativeCaseWhenEventIsSuccess() {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS.name());
         try {
@@ -548,11 +543,10 @@ public class CheckTest {
     }
 
     @Test(expectedExceptions = AssertionError.class,
-            expectedExceptionsMessageRegExp = "List of mismatches:\n" +
-                    "\t\n" +
-                    "Expected: is <2.0>\n" +
-                    "     but: Sqrt value: \n" +
-                    "\twas <3.0>")
+            expectedExceptionsMessageRegExp = ".*['List of mismatches:']" +
+                    "*['Expected: is <2.0>']" +
+                    "*['but: Sqrt value:']" +
+                    "*['was <3.0>']")
     public void testOfPerformNegativeCaseWhenEventIsFailure() {
         DO_CAPTURES_OF_INSTANCE.accept(FAILURE.name());
         try {
@@ -577,11 +571,10 @@ public class CheckTest {
     }
 
     @Test(expectedExceptions = AssertionError.class,
-            expectedExceptionsMessageRegExp = "List of mismatches:\n" +
-                    "\t\n" +
-                    "Expected: is <2.0>\n" +
-                    "     but: Sqrt value: \n" +
-                    "\twas <3.0>")
+            expectedExceptionsMessageRegExp = ".*['List of mismatches:']" +
+                    "*['Expected: is <2.0>']" +
+                    "*['but: Sqrt value:']" +
+                    "*['was <3.0>']")
     public void testOfPerformNegativeCaseWhenEventIsAll() {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE.name());
         try {

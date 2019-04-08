@@ -63,7 +63,7 @@ abstract class AbstractElementInterceptor implements MethodInterceptor {
             catch (InvocationTargetException e) {
                 var cause = e.getCause();
                 if (cause != null) {
-                    throw e;
+                    throw cause;
                 }
                 throw e;
             }

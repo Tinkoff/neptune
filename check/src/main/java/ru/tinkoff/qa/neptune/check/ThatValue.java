@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static java.lang.System.lineSeparator;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.joining;
 import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.action;
@@ -23,6 +24,8 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public final class ThatValue<T> extends SequentialActionSupplier<CheckStepContext, T, ThatValue<T>> {
+
+    private static final String LINE_SEPARATOR = lineSeparator();
 
     private final List<AssertionError> caughtMismatches = new ArrayList<>();
     private final List<Consumer<T>> checkList = new ArrayList<>();
@@ -119,8 +122,8 @@ public final class ThatValue<T> extends SequentialActionSupplier<CheckStepContex
 
         AssertionError assertionError = null;
         if (caughtMismatches.size() > 0) {
-            var sb = "List of mismatches:\n\t" + caughtMismatches.stream().map(Throwable::getMessage)
-                    .collect(joining(";\n\t\n\t"));
+            var sb = "List of mismatches:" + LINE_SEPARATOR + caughtMismatches.stream().map(Throwable::getMessage)
+                    .collect(joining(";" + LINE_SEPARATOR + LINE_SEPARATOR));
             assertionError = new AssertionError(sb);
         }
         caughtMismatches.clear();
@@ -146,7 +149,7 @@ public final class ThatValue<T> extends SequentialActionSupplier<CheckStepContex
 
         @Override
         public void describeMismatch(Object item, Description mismatchDescription) {
-            mismatchDescription.appendText(format("%s: \n\t", description));
+            mismatchDescription.appendText(format("%s: %s", description, LINE_SEPARATOR));
             criteria.describeMismatch(item, mismatchDescription);
         }
 

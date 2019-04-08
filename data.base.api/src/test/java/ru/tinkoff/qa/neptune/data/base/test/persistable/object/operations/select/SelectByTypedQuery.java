@@ -47,13 +47,12 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         var c = QCatalog.candidate();
         var catalogItems = dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class)
                 .where(c.book.name.eq("Ruslan and Ludmila")
-                        .or(c.isbn.eq("0-671-73246-3")) //<Journey to Ixtlan
-                        .or(c.book.author.lastName.eq("Pushkin")))
-                .orderBy(c.isbn.desc()))));
+                        .or(c.book.author.lastName.eq("Castaneda")))
+                .orderBy(c.book.id.desc()))));
 
         assertThat(catalogItems, hasSize(2));
-        assertThat(catalogItems.stream().map(Catalog::getIsbn).collect(toList()),
-                contains("0-930267-39-7", "0-671-73246-3"));
+        assertThat(catalogItems.stream().map(catalog -> catalog.getBook().getName()).collect(toList()),
+                contains("Ruslan and Ludmila", "Journey to Ixtlan"));
     }
 
     @Test
@@ -61,11 +60,10 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         var c = QCatalog.candidate();
         var catalogItem = dataBaseSteps.get(selected(aSingleByQuery(ofType(Catalog.class)
                 .where(c.book.name.eq("Ruslan and Ludmila")
-                        .or(c.isbn.eq("0-671-73246-3")) //<Journey to Ixtlan
-                        .or(c.book.author.lastName.eq("Pushkin")))
-                .orderBy(c.isbn.desc()))));
+                        .or(c.book.author.lastName.eq("Castaneda")))
+                .orderBy(c.book.id.desc()))));
 
-        assertThat(catalogItem.getIsbn(), is("0-930267-39-7"));
+        assertThat(catalogItem.getBook().getName(), is("Ruslan and Ludmila"));
     }
 
     @Test
@@ -108,7 +106,6 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
                         catalog -> "Simon & Schuster".equals(catalog.getPublisher().getName()))));
 
         assertThat(catalogItems, hasSize(1));
-        assertThat(catalogItems.get(0).getIsbn(), equalTo("0-671-73246-3"));
         assertThat(catalogItems.get(0).getBook().getAuthor(), equalTo(carlosCastaneda));
     }
 
@@ -130,7 +127,6 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
                 .criteria("Publisher is 'Simon & Schuster'",
                         catalog -> "Simon & Schuster".equals(catalog.getPublisher().getName()))));
 
-        assertThat(catalogItem.getIsbn(), equalTo("0-671-73246-3"));
         assertThat(catalogItem.getBook().getAuthor(), equalTo(carlosCastaneda));
     }
 
@@ -312,8 +308,8 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         var catalogItems = dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class)
                 .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(alexanderPushkin))))
-                .criteria("ISBN is 0-671-73246-3",
-                        catalog -> catalog.getIsbn().equals("0-671-73246-3"))));
+                .criteria("Published in 1995",
+                        catalog -> catalog.getYearOfPublishing().equals(1995))));
         long end = currentTimeMillis();
 
         Duration fiveSeconds = ofSeconds(5);
@@ -339,8 +335,8 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         var catalogItem = dataBaseSteps.get(selected(aSingleByQuery(ofType(Catalog.class)
                 .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(alexanderPushkin))))
-                .criteria("ISBN is 0-671-73246-3",
-                        catalog -> catalog.getIsbn().equals("0-671-73246-3"))));
+                .criteria("Published in 1995",
+                        catalog -> catalog.getYearOfPublishing().equals(1995))));
         long end = currentTimeMillis();
 
         Duration fiveSeconds = ofSeconds(5);
@@ -367,8 +363,8 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         var catalogItems = dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class)
                 .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(alexanderPushkin))))
-                .criteria("ISBN is 0-671-73246-3",
-                        catalog -> catalog.getIsbn().equals("0-671-73246-3"))
+                .criteria("Published in 1995",
+                        catalog -> catalog.getYearOfPublishing().equals(1995))
                 .timeOut(sixSeconds)));
         long end = currentTimeMillis();
 
@@ -395,8 +391,8 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         var catalogItem = dataBaseSteps.get(selected(aSingleByQuery(ofType(Catalog.class)
                 .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(alexanderPushkin))))
-                .criteria("ISBN is 0-671-73246-3",
-                        catalog -> catalog.getIsbn().equals("0-671-73246-3"))
+                .criteria("Published in 1995",
+                        catalog -> catalog.getYearOfPublishing().equals(1995))
                 .timeOut(sixSeconds)));
         long end = currentTimeMillis();
 
@@ -426,8 +422,8 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         var catalogItems = dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class)
                 .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(alexanderPushkin))))
-                .criteria("ISBN is 0-671-73246-3",
-                        catalog -> catalog.getIsbn().equals("0-671-73246-3"))));
+                .criteria("Published in 1995",
+                        catalog -> catalog.getYearOfPublishing().equals(1995))));
         long end = currentTimeMillis();
 
         try {
@@ -461,8 +457,8 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         var catalogItem = dataBaseSteps.get(selected(aSingleByQuery(ofType(Catalog.class)
                 .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(alexanderPushkin))))
-                .criteria("ISBN is 0-671-73246-3",
-                        catalog -> catalog.getIsbn().equals("0-671-73246-3"))));
+                .criteria("Published in 1995",
+                        catalog -> catalog.getYearOfPublishing().equals(1995))));
         long end = currentTimeMillis();
 
         try {
@@ -529,8 +525,8 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class)
                 .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(alexanderPushkin))))
-                .criteria("ISBN is 0-671-73246-3",
-                        catalog -> catalog.getIsbn().equals("0-671-73246-3"))
+                .criteria("Published in 1995",
+                        catalog -> catalog.getYearOfPublishing().equals(1995))
                 .throwWhenResultEmpty(TEST_SUPPLIER)));
     }
 
@@ -550,8 +546,8 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         dataBaseSteps.get(selected(aSingleByQuery(ofType(Catalog.class)
                 .where(qCatalog.book.eq(ruslanAndLudmila)
                         .and(qCatalog.book.author.eq(alexanderPushkin))))
-                .criteria("ISBN is 0-671-73246-3",
-                        catalog -> catalog.getIsbn().equals("0-671-73246-3"))
+                .criteria("Published in 1995",
+                        catalog -> catalog.getYearOfPublishing().equals(1995))
                 .throwWhenResultEmpty(TEST_SUPPLIER)));
     }
 

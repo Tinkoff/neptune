@@ -10,7 +10,7 @@ public class Publisher extends PersistableObject {
     @PrimaryKey
     @Persistent(valueStrategy=IdGeneratorStrategy.INCREMENT)
     @Column(name = "ID")
-    private int id;
+    private Integer id;
 
     @Column(name = "Name")
     private String name;
@@ -24,11 +24,7 @@ public class Publisher extends PersistableObject {
         return this;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 }

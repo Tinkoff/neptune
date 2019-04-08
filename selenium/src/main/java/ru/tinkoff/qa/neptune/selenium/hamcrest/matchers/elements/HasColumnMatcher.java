@@ -12,6 +12,7 @@ import java.util.*;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
+import static java.lang.System.lineSeparator;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.hamcrest.Matchers.contains;
@@ -19,6 +20,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class HasColumnMatcher<T extends Iterable<?>> extends TypeSafeDiagnosingMatcher<Table> {
 
+    private static final String LINE_SEPARATOR = lineSeparator();
     private final Matcher<? super String> headerMatcher;
     private final Matcher<T> columnMatcher;
 
@@ -142,15 +144,16 @@ public class HasColumnMatcher<T extends Iterable<?>> extends TypeSafeDiagnosingM
                 return true;
             }
             var columnMismatch = new StringDescription();
-            columnMismatch.appendText(format("Column %s: \n", header));
+            columnMismatch.appendText(format("Column %s: %s", header, LINE_SEPARATOR));
             columnMatcher.describeMismatch(column, columnMismatch);
             columnMismatches.put(header, columnMismatch);
         }
 
-        mismatchDescription.appendText(format("Table %s has column headers that meet the criteria '%s'. Headers: %s.\n",
-                item, columnMatcher, Iterables.toString(suitableHeaders)));
-        mismatchDescription.appendText("But there are mismatches of column values:\n");
-        columnMismatches.forEach((key, value) -> mismatchDescription.appendText(format("\n - Header: %s. Mismatch: %s", key, value)));
+        mismatchDescription.appendText(format("Table %s has column headers that meet the criteria '%s'. Headers: %s.%s",
+                item, columnMatcher, Iterables.toString(suitableHeaders), LINE_SEPARATOR));
+        mismatchDescription.appendText("But there are mismatches of column values:" + LINE_SEPARATOR);
+        columnMismatches.forEach((key, value) -> mismatchDescription.appendText(format("%s - Header: %s. Mismatch: %s",
+                LINE_SEPARATOR, key, value)));
         return false;
     }
 

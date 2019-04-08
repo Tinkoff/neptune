@@ -4,8 +4,9 @@ import java.io.Serializable;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
-import static java.lang.reflect.Modifier.isStatic;
+import static java.lang.reflect.Modifier.*;
 import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toList;
 
 /**
  * This class is designed to implement classes of composite key objects.
@@ -32,7 +33,7 @@ public abstract class CompositeKey extends OrmObject implements Serializable {
         Class<?> clazz = this.getClass();
         while (!clazz.equals(Object.class)) {
             var fields = stream(clazz.getDeclaredFields()).filter(field -> !isStatic(field.getModifiers()))
-                    .collect(Collectors.toList());
+                    .collect(toList());
             for (var f : fields) {
                 f.setAccessible(true);
                 try {
@@ -54,6 +55,20 @@ public abstract class CompositeKey extends OrmObject implements Serializable {
 
     @Override
     public String toString() {
-        return format("%s:%s", this.getClass(), hashCode());
+        var thisClass = this.getClass();
+        var key = new StringBuffer(format("Composite key [%s]: ", thisClass.getSimpleName()));
+        var thisKey = this;
+        stream(thisClass.getDeclaredFields())
+                .filter(field -> {
+                    var modifiers = field.getModifiers();
+                    return !isStatic(modifiers) && !isFinal(modifiers) && isPublic(modifiers);
+                }).forEach(field -> {
+            try {
+                key.append(format("%s = %s, ", field.getName(), field.get(thisKey)));
+            } catch (Exception ignored) {
+            }
+        });
+
+        return key.toString().trim();
     }
 }

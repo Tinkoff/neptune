@@ -28,28 +28,26 @@ public class SelectByIds extends BaseDbOperationTest {
 
     @Test
     public void selectListTest() {
-        var catalogItems = dataBaseSteps.get(selected(listOfTypeByIds(Catalog.class, -3, "0-930267-39-7", "0-671-73246-3")));
-        assertThat(catalogItems, hasSize(2));
-        assertThat(catalogItems.stream().map(Catalog::getIsbn).collect(toList()),
-                contains("0-930267-39-7", "0-671-73246-3"));
+        var publisherItems = dataBaseSteps.get(selected(listOfTypeByIds(Publisher.class, -3, 1, 2)));
+        assertThat(publisherItems, hasSize(2));
+        assertThat(publisherItems.stream().map(Publisher::getName).collect(toList()),
+                contains("Bergh Publishing", "Simon & Schuster"));
     }
 
     @Test
     public void selectOneTest() {
-        var catalogItem = dataBaseSteps.get(selected(aSingleOfTypeById(Catalog.class, "0-671-73246-3")));
-        assertThat(catalogItem.getIsbn(), is("0-671-73246-3"));
-        assertThat(catalogItem.getPublisher().getName(), is("Simon & Schuster"));
+        var catalogItem = dataBaseSteps.get(selected(aSingleOfTypeById(Publisher.class, 1)));
+        assertThat(catalogItem.getName(), is("Bergh Publishing"));
     }
 
     @Test
     public void selectListTestByCondition() {
-        var catalogItems = dataBaseSteps.get(selected(
-                listOfTypeByIds(Catalog.class, -3, "0-671-73246-3", "0-930267-39-7")
-                        .criteria("A book with title `Ruslan and Ludmila`", catalog -> catalog
-                                .getBook().getName().equalsIgnoreCase("ruslan and ludmila"))));
-        assertThat(catalogItems, hasSize(1));
-        var catalogItem = catalogItems.get(0);
-        assertThat(catalogItem.getBook().getName(), equalTo("Ruslan and Ludmila"));
+        var publishers = dataBaseSteps.get(selected(
+                listOfTypeByIds(Publisher.class, 1, 2, -1)
+                        .criteria("Has name Bergh Publishing", publisher -> publisher
+                                .getName().equalsIgnoreCase("bergh Publishing"))));
+        assertThat(publishers, hasSize(1));
+        assertThat(publishers.get(0).getName(), equalTo("Bergh Publishing"));
     }
 
     @Test
@@ -155,13 +153,13 @@ public class SelectByIds extends BaseDbOperationTest {
     @Test
     public void selectEmptyListByIdAndConditionWithDefaultTime() {
         long start = currentTimeMillis();
-        var catalogItems = dataBaseSteps.get(selected(listOfTypeByIds(Catalog.class, 1)
-                .criteria("ISBN is 0-671-73246-3", catalog -> catalog
-                        .getIsbn().equals("0-671-73246-3"))));
+        var publishers = dataBaseSteps.get(selected(listOfTypeByIds(Publisher.class, 1)
+                .criteria("Has name Simon & Schuster", publisher -> publisher
+                        .getName().equals("Simon & Schuster"))));
         long end = currentTimeMillis();
 
         Duration fiveSeconds = ofSeconds(5);
-        assertThat(catalogItems, hasSize(0));
+        assertThat(publishers, hasSize(0));
         assertThat(end - start, greaterThanOrEqualTo(fiveSeconds.toMillis()));
         assertThat(end - start - fiveSeconds.toMillis(), lessThanOrEqualTo(700L));
     }
@@ -169,13 +167,13 @@ public class SelectByIds extends BaseDbOperationTest {
     @Test
     public void selectNullByIdAndConditionWithDefaultTime() {
         long start = currentTimeMillis();
-        var catalogItem = dataBaseSteps.get(selected(aSingleOfTypeById(Catalog.class, 1)
-                .criteria("ISBN is 0-671-73246-3", catalog -> catalog
-                        .getIsbn().equals("0-671-73246-3"))));
+        var publisher = dataBaseSteps.get(selected(aSingleOfTypeById(Publisher.class, 1)
+                .criteria("Has name Simon & Schuster", publisherItem -> publisherItem
+                        .getName().equals("Simon & Schuster"))));
         long end = currentTimeMillis();
 
         Duration fiveSeconds = ofSeconds(5);
-        assertThat(catalogItem, nullValue());
+        assertThat(publisher, nullValue());
         assertThat(end - start, greaterThanOrEqualTo(fiveSeconds.toMillis()));
         assertThat(end - start - fiveSeconds.toMillis(), lessThanOrEqualTo(700L));
     }
@@ -184,13 +182,13 @@ public class SelectByIds extends BaseDbOperationTest {
     public void selectEmptyListByIdAndConditionWithDefinedTime() {
         Duration sixSeconds = ofSeconds(6);
         long start = currentTimeMillis();
-        var catalogItems = dataBaseSteps.get(selected(listOfTypeByIds(Catalog.class, 1)
-                .criteria("ISBN is 0-671-73246-3", catalog -> catalog
-                        .getIsbn().equals("0-671-73246-3"))
+        var publishers = dataBaseSteps.get(selected(listOfTypeByIds(Publisher.class, 1)
+                .criteria("Has name Simon & Schuster", publisher -> publisher
+                        .getName().equals("Simon & Schuster"))
                 .timeOut(sixSeconds)));
         long end = currentTimeMillis();
 
-        assertThat(catalogItems, hasSize(0));
+        assertThat(publishers, hasSize(0));
         assertThat(end - start, greaterThanOrEqualTo(sixSeconds.toMillis()));
         assertThat(end - start - sixSeconds.toMillis(), lessThanOrEqualTo(700L));
     }
@@ -199,12 +197,13 @@ public class SelectByIds extends BaseDbOperationTest {
     public void selectNullByIdAndConditionWithDefinedTime() {
         Duration sixSeconds = ofSeconds(6);
         long start = currentTimeMillis();
-        var catalogItem = dataBaseSteps.get(selected(aSingleOfTypeById(Catalog.class, 1)
-                .criteria("ISBN is 0-671-73246-3", catalog -> catalog.getIsbn().equals("0-671-73246-3"))
+        var publisher = dataBaseSteps.get(selected(aSingleOfTypeById(Publisher.class, 1)
+                .criteria("Has name Simon & Schuster", publisherItem -> publisherItem
+                        .getName().equals("Simon & Schuster"))
                 .timeOut(sixSeconds)));
         long end = currentTimeMillis();
 
-        assertThat(catalogItem, nullValue());
+        assertThat(publisher, nullValue());
         assertThat(end - start, greaterThanOrEqualTo(sixSeconds.toMillis()));
         assertThat(end - start - sixSeconds.toMillis(), lessThanOrEqualTo(700L));
     }
@@ -216,12 +215,13 @@ public class SelectByIds extends BaseDbOperationTest {
 
         Duration twoSeconds = ofSeconds(2);
         long start = currentTimeMillis();
-        var catalogItems = dataBaseSteps.get(selected(listOfTypeByIds(Catalog.class, 1)
-                .criteria("ISBN is 0-671-73246-3", catalog -> catalog.getIsbn().equals("0-671-73246-3"))));
+        var publishers = dataBaseSteps.get(selected(listOfTypeByIds(Publisher.class, 1)
+                .criteria("Has name Simon & Schuster", publisher -> publisher
+                        .getName().equals("Simon & Schuster"))));
         long end = currentTimeMillis();
 
         try {
-            assertThat(catalogItems, hasSize(0));
+            assertThat(publishers, hasSize(0));
             assertThat(end - start, greaterThanOrEqualTo(twoSeconds.toMillis()));
             assertThat(end - start - twoSeconds.toMillis(), lessThanOrEqualTo(500L));
         }
@@ -238,12 +238,13 @@ public class SelectByIds extends BaseDbOperationTest {
 
         Duration twoSeconds = ofSeconds(2);
         long start = currentTimeMillis();
-        var catalogItem = dataBaseSteps.get(selected(aSingleOfTypeById(Catalog.class, 1)
-                .criteria("ISBN is 0-671-73246-3", catalog -> catalog.getIsbn().equals("0-671-73246-3"))));
+        var publisher = dataBaseSteps.get(selected(aSingleOfTypeById(Publisher.class, 1)
+                .criteria("Has name Simon & Schuster", publisherItem -> publisherItem
+                        .getName().equals("Simon & Schuster"))));
         long end = currentTimeMillis();
 
         try {
-            assertThat(catalogItem, nullValue());
+            assertThat(publisher, nullValue());
             assertThat(end - start, greaterThanOrEqualTo(twoSeconds.toMillis()));
             assertThat(end - start - twoSeconds.toMillis(), lessThanOrEqualTo(500L));
         }
@@ -267,35 +268,35 @@ public class SelectByIds extends BaseDbOperationTest {
 
     @Test(expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = "Test exception")
     public void selectEmptyListByIdAndConditionWithExceptionThrowing() {
-        dataBaseSteps.get(selected(listOfTypeByIds(Catalog.class, 1)
-                .criteria("ISBN is 0-671-73246-3",
-                        catalog -> catalog.getIsbn().equals("0-671-73246-3"))
+        dataBaseSteps.get(selected(listOfTypeByIds(Publisher.class, 1)
+                .criteria("Has name Simon & Schuster", publisher -> publisher
+                        .getName().equals("Simon & Schuster"))
                 .throwWhenResultEmpty(TEST_SUPPLIER)));
     }
 
     @Test(expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = "Test exception")
     public void selectNullByIdAndConditionWithExceptionThrowing() {
-        dataBaseSteps.get(selected(aSingleOfTypeById(Catalog.class, 1)
-                .criteria("ISBN is 0-671-73246-3", catalog -> catalog
-                        .getIsbn().equals("0-671-73246-3"))
+        dataBaseSteps.get(selected(aSingleOfTypeById(Publisher.class, 1)
+                .criteria("Has name Simon & Schuster", publisherItem -> publisherItem
+                        .getName().equals("Simon & Schuster"))
                 .throwWhenResultEmpty(TEST_SUPPLIER)));
     }
 
     @Test
     public void selectOfListWithConnectionDataSupplier() {
-        var query = selected(listOfTypeByIds(Catalog.class, "0-930267-39-7"))
+        var query = selected(listOfTypeByIds(Book.class, 1, 2))
                 .useConnection(ConnectionDataSupplierForTestBase2.class);
-        var query2 = selected(listOfTypeByIds(Catalog.class, "0-930267-39-7"));
+        var query2 = selected(listOfTypeByIds(Book.class, 1, 2));
 
         assertThat(dataBaseSteps.get(query), hasSize(0));
-        assertThat(dataBaseSteps.get(query2), hasSize(1));
+        assertThat(dataBaseSteps.get(query2), hasSize(2));
     }
 
     @Test
     public void selectOfOneWithConnectionDataSupplier() {
-        var query = selected(aSingleOfTypeById(Catalog.class, "0-930267-39-7"))
+        var query = selected(aSingleOfTypeById(Author.class, 1))
                 .useConnection(ConnectionDataSupplierForTestBase2.class);
-        var query2 = selected(aSingleOfTypeById(Catalog.class, "0-930267-39-7"));
+        var query2 = selected(aSingleOfTypeById(Author.class, 1));
 
         assertThat(dataBaseSteps.get(query), nullValue());
         assertThat(dataBaseSteps.get(query2), not(nullValue()));
@@ -303,9 +304,9 @@ public class SelectByIds extends BaseDbOperationTest {
 
     @Test
     public void selectOfListWithConnection() {
-        var query = selected(listOfTypeByIds(Catalog.class, "0-930267-39-7"))
+        var query = selected(listOfTypeByIds(Author.class, 1))
                 .useConnection(getKnownConnection(ConnectionDataSupplierForTestBase2.class, true));
-        var query2 = selected(listOfTypeByIds(Catalog.class, "0-930267-39-7"));
+        var query2 = selected(listOfTypeByIds(Author.class, 1));
 
         assertThat(dataBaseSteps.get(query), hasSize(0));
         assertThat(dataBaseSteps.get(query2), hasSize(1));
@@ -313,9 +314,9 @@ public class SelectByIds extends BaseDbOperationTest {
 
     @Test
     public void selectOfOneWithConnectionChangeByPersistenceManagerFactory() {
-        var query = selected(aSingleOfTypeById(Catalog.class, "0-930267-39-7"))
+        var query = selected(aSingleOfTypeById(Author.class, 1))
                 .useConnection(getKnownConnection(ConnectionDataSupplierForTestBase2.class,true));
-        var query2 = selected(aSingleOfTypeById(Catalog.class, "0-930267-39-7"));
+        var query2 = selected(aSingleOfTypeById(Author.class, 1));
 
         assertThat(dataBaseSteps.get(query), nullValue());
         assertThat(dataBaseSteps.get(query2), not(nullValue()));

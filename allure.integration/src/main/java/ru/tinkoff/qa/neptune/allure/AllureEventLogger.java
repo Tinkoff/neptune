@@ -7,14 +7,20 @@ import io.qameta.allure.model.StepResult;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
+import static io.qameta.allure.Allure.addAttachment;
 import static io.qameta.allure.Allure.getLifecycle;
 import static io.qameta.allure.model.Status.BROKEN;
 import static io.qameta.allure.model.Status.PASSED;
 import static io.qameta.allure.util.ResultsUtils.getStatus;
 import static io.qameta.allure.util.ResultsUtils.getStatusDetails;
 import static java.lang.String.format;
+import static java.lang.System.lineSeparator;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Arrays.stream;
+import static org.apache.commons.io.IOUtils.toInputStream;
 
 public class AllureEventLogger implements EventLogger {
 
@@ -25,7 +31,7 @@ public class AllureEventLogger implements EventLogger {
     @Override
     public void fireTheEventStarting(String message) {
         var uuid = UUID.randomUUID().toString();
-        var result = new StepResult().setName(message).setParameters();
+        var result = new StepResult().setName(message).setParameters(List.of());
 
         if (stepUIIDs.size() == 0) {
             allureLifecycle.startStep(uuid, result);
@@ -48,6 +54,16 @@ public class AllureEventLogger implements EventLogger {
                 .setStatus(getStatus(throwable).orElse(BROKEN))
                 .setStatusDetails(getStatusDetails(throwable).orElse(null)));
         results.put(uuid, getStatus(throwable).orElse(BROKEN));
+
+        var lineSeparator = lineSeparator();
+        var log = new StringBuilder();
+        stream(throwable.getStackTrace()).forEach(st -> log.append(format("%s%s", st, lineSeparator)));
+
+        try {
+            addAttachment("Thrown exception:", null,  toInputStream(log, UTF_8), "log");
+        }
+        catch (Exception ignored) {
+        }
     }
 
     @Override
