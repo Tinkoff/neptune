@@ -5,6 +5,10 @@ import io.qameta.allure.AllureLifecycle;
 import io.qameta.allure.model.Status;
 import io.qameta.allure.model.StepResult;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,6 +22,7 @@ import static io.qameta.allure.util.ResultsUtils.getStatus;
 import static io.qameta.allure.util.ResultsUtils.getStatusDetails;
 import static java.lang.String.format;
 import static java.lang.System.lineSeparator;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.stream;
 
 public class AllureEventLogger implements EventLogger {
@@ -53,10 +58,11 @@ public class AllureEventLogger implements EventLogger {
                 .setStatusDetails(getStatusDetails(throwable).orElse(null)));
         results.put(uuid, getStatus(throwable).orElse(BROKEN));
 
-        var lineSeparator = lineSeparator();
-        var log = new StringBuilder();
-        stream(throwable.getStackTrace()).forEach(st -> log.append(format("%s%s", st, lineSeparator)));
-        addAttachment("Thrown exception:", log.toString());
+        var bos = new ByteArrayOutputStream();
+        var ps = new PrintStream(bos, true, UTF_8);
+        throwable.printStackTrace(ps);
+        String data = new String(bos.toByteArray(), UTF_8);
+        addAttachment("Thrown exception:", data);
     }
 
     @Override
