@@ -8,6 +8,8 @@ import ru.tinkoff.qa.neptune.data.base.api.captors.IsQueryCaptured;
 
 import javax.jdo.annotations.NotPersistent;
 
+import java.util.Objects;
+
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static javax.jdo.JDOHelper.isPersistent;
@@ -87,7 +89,7 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
             return false;
         }
 
-        return ((Persistable) this).dnGetObjectId().equals(((Persistable) obj).dnGetObjectId());
+        return Objects.equals(((Persistable) this).dnGetObjectId(), ((Persistable) obj).dnGetObjectId());
     }
 
     public Object getQuery() {
