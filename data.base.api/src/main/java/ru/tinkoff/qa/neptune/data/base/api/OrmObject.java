@@ -1,11 +1,10 @@
 package ru.tinkoff.qa.neptune.data.base.api;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Arrays.stream;
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 
 class OrmObject {
@@ -20,18 +19,9 @@ class OrmObject {
                     var v1 = f.get(this);
                     var v2 = f.get(obj);
 
-                    if (v1 == null && v2 == null) {
+                    if (Objects.equals(v1, v2)) {
                         continue;
                     }
-
-                    if ((nonNull(v1) && isNull(v2) || isNull(v1) && nonNull(v2))) {
-                        return false;
-                    }
-
-                    if (v1.equals(v2)) {
-                        continue;
-                    }
-
                     return false;
                 } catch (IllegalAccessException e) {
                     throw new RuntimeException(e.getMessage(), e);

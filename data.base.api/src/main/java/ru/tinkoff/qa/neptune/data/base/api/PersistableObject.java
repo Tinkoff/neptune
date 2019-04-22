@@ -89,6 +89,10 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
             return false;
         }
 
+        if (((Persistable) this).dnGetObjectId() == null && ((Persistable) obj).dnGetObjectId() == null) {
+            return super.equals(obj);
+        }
+
         return Objects.equals(((Persistable) this).dnGetObjectId(), ((Persistable) obj).dnGetObjectId());
     }
 
