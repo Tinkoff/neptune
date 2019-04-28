@@ -4,8 +4,8 @@ import org.datanucleus.enhancement.Persistable;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
-import ru.tinkoff.qa.neptune.data.base.api.test.*;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDbOperationTest;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.*;
 
 import java.util.Calendar;
 import java.util.Date;

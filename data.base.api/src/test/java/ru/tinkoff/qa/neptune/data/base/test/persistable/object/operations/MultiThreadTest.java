@@ -3,7 +3,7 @@ package ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.data.base.api.query.GetSelectedFunction;
-import ru.tinkoff.qa.neptune.data.base.api.test.*;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.not;

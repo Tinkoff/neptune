@@ -1,10 +1,10 @@
 package ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.select;
 
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.data.base.api.test.Author;
-import ru.tinkoff.qa.neptune.data.base.api.test.Book;
-import ru.tinkoff.qa.neptune.data.base.api.test.QBook;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDbOperationTest;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Author;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Book;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.QBook;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

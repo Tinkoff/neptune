@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.data.base.api.test;
+package ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables;
 
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 

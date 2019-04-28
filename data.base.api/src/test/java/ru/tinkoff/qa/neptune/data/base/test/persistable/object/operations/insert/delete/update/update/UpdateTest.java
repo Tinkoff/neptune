@@ -2,8 +2,11 @@ package ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.inser
 
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.data.base.api.test.*;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDbOperationTest;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Author;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Book;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.QAuthor;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.QBook;
 
 import java.util.ArrayList;
 import java.util.Calendar;
