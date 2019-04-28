@@ -2,9 +2,12 @@ package ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.selec
 
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.data.base.api.query.*;
-import ru.tinkoff.qa.neptune.data.base.api.test.*;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDbOperationTest;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.ConnectionDataSupplierForTestBase2;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Author;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Book;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Catalog;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Publisher;
 
 import java.time.Duration;
 import java.util.function.Supplier;

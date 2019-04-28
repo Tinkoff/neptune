@@ -1,20 +1,3 @@
-sourceSets {
-    main {
-        java {
-            srcDir 'src/main/java'
-        }
-    }
-    generated {
-        java {
-            srcDirs = ['src/generated']
-        }
-    }
-}
-
-configurations {
-    datanucleus
-}
-
 dependencies {
     compile project(':core.api')
     compile group: 'org.datanucleus', name: 'datanucleus-rdbms', version: '5.2.1'
@@ -25,11 +8,12 @@ dependencies {
     compile group: 'javax.annotation', name: 'javax.annotation-api', version: '1.3.2'
     compile group: 'org.apache.ant', name: 'ant', version: '1.10.5'
     testCompile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.25.2'
-    datanucleus group: 'org.datanucleus', name: 'datanucleus-jdo-query', version: '5.0.9'
+    testAnnotationProcessor 'org.datanucleus:datanucleus-jdo-query:5.0.9'
+    testAnnotationProcessor group: 'org.datanucleus', name: 'javax.jdo', version: '3.2.0-m12'
 }
 
 task enhanceJdoEntities(type: JavaExec) {
-    classpath = sourceSets.main.runtimeClasspath
+    classpath = sourceSets.test.runtimeClasspath
     main = 'ru.tinkoff.qa.neptune.data.base.api.PersistableEnhancer'
 }
 
@@ -37,32 +21,10 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
-compileJava.doLast {
-    enhanceJdoEntities.exec()
-}
-
-task generateStaticMetamodel(type: JavaCompile, group: 'build', description: 'Generates JDO static metamodel') {
-    source = sourceSets.main.java
-    classpath = configurations.compile + configurations.datanucleus
-    options.compilerArgs = [
-            "-proc:only",
-            "-processor", "org.datanucleus.jdo.query.JDOQueryProcessor"
-    ]
-    destinationDir = sourceSets.generated.java.srcDirs.iterator().next()
-}
-
-compileGeneratedJava {
-    dependsOn generateStaticMetamodel
-    options.warnings = false
-    classpath += sourceSets.main.runtimeClasspath
-}
-
-clean {
-    delete sourceSets.generated.java.srcDirs
-}
-
-jar {
-    exclude('**/ru/tinkoff/qa/neptune/data/base/api/test/**')
+compileTestJava {
+    doLast {
+        enhanceJdoEntities.exec()
+    }
 }
 
 uploadArchives {
@@ -105,7 +67,6 @@ uploadArchives {
 }
 
 task javadocJar(type: Jar) {
-    exclude('**/ru/tinkoff/qa/neptune/data/base/api/test/**')
     classifier = 'javadoc'
     from javadoc
 }
@@ -115,7 +76,6 @@ javadoc {
 }
 
 task sourcesJar(type: Jar) {
-    exclude('**/ru/tinkoff/qa/neptune/data/base/api/test/**')
     classifier = 'sources'
     from sourceSets.main.allSource
 }

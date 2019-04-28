@@ -5,10 +5,10 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
-import ru.tinkoff.qa.neptune.data.base.api.test.Book;
-import ru.tinkoff.qa.neptune.data.base.api.test.Catalog;
-import ru.tinkoff.qa.neptune.data.base.api.test.QCatalog;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDbOperationTest;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Book;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Catalog;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.QCatalog;
 
 import java.util.List;
 import java.util.function.Function;

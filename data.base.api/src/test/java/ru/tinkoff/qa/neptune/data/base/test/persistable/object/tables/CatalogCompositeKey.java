@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.data.base.api.test;
+package ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables;
 
 import org.datanucleus.identity.IntId;
 import ru.tinkoff.qa.neptune.data.base.api.CompositeKey;

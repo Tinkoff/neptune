@@ -3,9 +3,9 @@ package ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.selec
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.data.base.api.query.GetSelectedFunction;
 import ru.tinkoff.qa.neptune.data.base.api.query.NothingIsSelectedException;
-import ru.tinkoff.qa.neptune.data.base.api.test.*;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDbOperationTest;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.ConnectionDataSupplierForTestBase2;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.*;
 
 import java.time.Duration;
 import java.util.List;
