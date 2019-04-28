@@ -138,7 +138,7 @@ public class UpdateTest extends BaseDbOperationTest {
             assertThat(isPersistent(theDevils), is(false));
             assertThat(e.getMessage(),
                     equalTo("There are objects that are not stored in DB: " +
-                            "[Not stored data base element mapped by ru.tinkoff.qa.neptune.data.base.api.test.Book]"));
+                            "[Not stored data base element mapped by " + Book.class.getName() + "]"));
             throw e;
         }
         fail("Exception was expected");
