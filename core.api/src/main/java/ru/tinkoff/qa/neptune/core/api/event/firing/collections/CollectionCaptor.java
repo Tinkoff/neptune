@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.hasReadableDescription;
@@ -23,12 +24,15 @@ public class CollectionCaptor extends IterableCaptor<List<?>> {
         var result = ((Collection<?>) toBeCaptured)
                 .stream()
                 .filter(o -> {
-                    var clazz = o.getClass();
+                    var clazz = ofNullable(o)
+                            .map(Object::getClass)
+                            .orElse(null);
+
                     return isLoggable(o)
                             || hasReadableDescription(o)
-                            || clazz.isArray()
-                            || Iterable.class.isAssignableFrom(clazz)
-                            || Map.class.isAssignableFrom(clazz);
+                            || ofNullable(clazz).map(aClass -> aClass.isArray()
+                            || Iterable.class.isAssignableFrom(aClass)
+                            || Map.class.isAssignableFrom(aClass)).orElse(false);
                 }).collect(toList());
 
         if (result.size() == 0) {
