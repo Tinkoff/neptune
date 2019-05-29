@@ -5,6 +5,8 @@ import org.hamcrest.Description;
 import org.hamcrest.StringDescription;
 import org.hamcrest.internal.ReflectiveTypeFinder;
 
+import static java.util.Optional.ofNullable;
+
 public abstract class TypeSafeDiagnosingMatcher<T> extends BaseMatcher<T> {
 
     private static final ReflectiveTypeFinder TYPE_FINDER = new ReflectiveTypeFinder("matchesSafely", 2, 0);
@@ -68,8 +70,9 @@ public abstract class TypeSafeDiagnosingMatcher<T> extends BaseMatcher<T> {
 
     @Override
     public final void describeMismatch(Object ignored, Description mismatchDescription) {
-        mismatchDescription.appendText(getSavedMismatchDescription().toString());
-        saveMismatchDescription(null);
+        ofNullable(getSavedMismatchDescription())
+                .ifPresentOrElse(description -> mismatchDescription.appendText(description.toString()),
+                        () -> saveMismatchDescription(mismatchDescription));
     }
 
     private Description getSavedMismatchDescription() {
