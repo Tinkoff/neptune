@@ -6,13 +6,13 @@ import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
 import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
 
 @CreateWith(provider = ABParameterProvider.class)
-public class StepClass2 implements GetStepContext<StepClass2>, ActionStepContext<StepClass2>, ContextRefreshable {
+public class ContextClass2 implements GetStepContext<ContextClass2>, ActionStepContext<ContextClass2>, ContextRefreshable {
 
     private final int a;
     private final int b;
     private static int refreshCount;
 
-    public StepClass2(int a, int b) {
+    public ContextClass2(int a, int b) {
         this.a = a;
         this.b = b;
     }
