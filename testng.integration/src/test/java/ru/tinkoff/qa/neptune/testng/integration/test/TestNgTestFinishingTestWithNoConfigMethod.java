@@ -44,13 +44,13 @@ public class TestNgTestFinishingTestWithNoConfigMethod {
 
     @BeforeMethod
     public void refresh() {
-        StepClass2.refreshCountToZero();
+        ContextClass2.refreshCountToZero();
     }
 
     @Test
     public void whenNoRefreshingStrategyIsDefined() {
         runBeforeTheChecking();
-        assertThat(StepClass2.getRefreshCount(), is(3));
+        assertThat(ContextClass2.getRefreshCount(), is(3));
     }
 
     @Test
@@ -58,7 +58,7 @@ public class TestNgTestFinishingTestWithNoConfigMethod {
         REFRESH_STRATEGY_PROPERTY.accept(SUITE_STARTING.name());
         try {
             runBeforeTheChecking();
-            assertThat(StepClass2.getRefreshCount(), is(0));
+            assertThat(ContextClass2.getRefreshCount(), is(0));
         }
         finally {
             System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getPropertyName());
@@ -70,7 +70,7 @@ public class TestNgTestFinishingTestWithNoConfigMethod {
         REFRESH_STRATEGY_PROPERTY.accept(ALL_TEST_STARTING.name());
         try {
             runBeforeTheChecking();
-            assertThat(StepClass2.getRefreshCount(), is(0));
+            assertThat(ContextClass2.getRefreshCount(), is(0));
         }
         finally {
             System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getPropertyName());
@@ -82,7 +82,7 @@ public class TestNgTestFinishingTestWithNoConfigMethod {
         REFRESH_STRATEGY_PROPERTY.accept(CLASS_STARTING.name());
         try {
             runBeforeTheChecking();
-            assertThat(StepClass2.getRefreshCount(), is(0));
+            assertThat(ContextClass2.getRefreshCount(), is(0));
         }
         finally {
             System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getPropertyName());
@@ -94,7 +94,7 @@ public class TestNgTestFinishingTestWithNoConfigMethod {
         REFRESH_STRATEGY_PROPERTY.accept(BEFORE_METHOD_STARTING.name());
         try {
             runBeforeTheChecking();
-            assertThat(StepClass2.getRefreshCount(), is(0));
+            assertThat(ContextClass2.getRefreshCount(), is(0));
         }
         finally {
             System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getPropertyName());
@@ -107,7 +107,7 @@ public class TestNgTestFinishingTestWithNoConfigMethod {
                 .map(Enum::name).collect(joining(",")));
         try {
             runBeforeTheChecking();
-            assertThat(StepClass2.getRefreshCount(), is(3));
+            assertThat(ContextClass2.getRefreshCount(), is(3));
         }
         finally {
             System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getPropertyName());

@@ -10,12 +10,6 @@ import static org.hamcrest.Matchers.nullValue;
 
 public class TestNgInstantiationTest extends BaseTestNgIntegrationTest {
 
-    static TestNgInstantiationTest testNgInstantiationTest;
-
-    public TestNgInstantiationTest() {
-        testNgInstantiationTest = this;
-    }
-
     @Test
     public void instantiationTest() {
         assertThat(getStepClass1(), not(nullValue()));

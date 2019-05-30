@@ -5,7 +5,7 @@ import ru.tinkoff.qa.neptune.testng.integration.BaseTestNgTest;
 
 public class TestWithoutConfigurationMethod extends BaseTestNgTest {
 
-    private StepClass2 stepClass2;
+    private ContextClass2 stepClass2;
 
     @Test
     public void test1() {

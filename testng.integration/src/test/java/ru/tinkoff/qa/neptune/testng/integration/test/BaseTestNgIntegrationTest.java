@@ -8,10 +8,10 @@ import org.testng.annotations.BeforeTest;
 
 public class BaseTestNgIntegrationTest extends BaseTestNgTest {
 
-    private StepClass1 stepClass1;
-    private StepClass2 stepClass2;
-    private final StepClass3 stepClass3 = null;
-    private StepClass4 stepClass4;
+    private ContextClass1 stepClass1;
+    private ContextClass2 stepClass2;
+    private final ContextClass3 stepClass3 = null;
+    private ContextClass4 stepClass4;
 
     @BeforeSuite
     public static void beforeSuiteStatic() {
@@ -53,19 +53,19 @@ public class BaseTestNgIntegrationTest extends BaseTestNgTest {
         //does nothing
     }
 
-    StepClass1 getStepClass1() {
+    ContextClass1 getStepClass1() {
         return stepClass1;
     }
 
-    StepClass2 getStepClass2() {
+    ContextClass2 getStepClass2() {
         return stepClass2;
     }
 
-    StepClass3 getStepClass3() {
+    ContextClass3 getStepClass3() {
         return stepClass3;
     }
 
-    StepClass4 getStepClass4() {
+    ContextClass4 getStepClass4() {
         return stepClass4;
     }
 }

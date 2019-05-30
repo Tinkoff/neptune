@@ -7,12 +7,6 @@ import static org.hamcrest.Matchers.*;
 
 public class TestNgStubTest extends BaseTestNgIntegrationTest {
 
-    static TestNgStubTest testNgStubTest;
-
-    public TestNgStubTest() {
-        testNgStubTest = this;
-    }
-
     @BeforeSuite
     public static void beforeSuiteStatic2() {
         //does nothing
