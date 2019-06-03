@@ -2,7 +2,7 @@ package ru.tinkoff.qa.neptune.data.base.api.properties;
 
 import ru.tinkoff.qa.neptune.core.api.properties.enums.EnumPropertySuppler;
 import ru.tinkoff.qa.neptune.core.api.properties.longs.LongValuePropertySupplier;
-import ru.tinkoff.qa.neptune.core.api.properties.waiting.time.DurationSupplier;
+import ru.tinkoff.qa.neptune.core.api.properties.duration.DurationSupplier;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;

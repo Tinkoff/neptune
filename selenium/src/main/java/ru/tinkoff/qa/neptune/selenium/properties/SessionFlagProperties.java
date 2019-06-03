@@ -1,9 +1,9 @@
 package ru.tinkoff.qa.neptune.selenium.properties;
 
 import org.openqa.selenium.WebDriver;
-import ru.tinkoff.qa.neptune.core.api.properties.booleans.BooleanPropertySupplier;
+import ru.tinkoff.qa.neptune.core.api.properties.booleans.BooleanValuePropertySupplier;
 
-public enum SessionFlagProperties implements BooleanPropertySupplier {
+public enum SessionFlagProperties implements BooleanValuePropertySupplier {
     /**
      * This enum item reads the property {@code 'find.only.visible.elements'}.
      * It means that the searching for some element finds only visible elements when the property

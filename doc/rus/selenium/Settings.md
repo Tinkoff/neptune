@@ -1,6 +1,6 @@
 # Настройки
 
-В файле [general.properties](/doc/rus/core/Properties.md) можно указать значение свойств:
+В файле [neptune.general.properties](/doc/rus/core/Properties.md) можно указать значение свойств:
 
 ## Параметры запуска браузера
 
@@ -13,7 +13,7 @@
 
 Примеры: 
 ```properties
-#В файле general.properties
+#В файле neptune.general.properties
 
 web.driver.to.launch = FIREFOX_DRIVER
 ```
@@ -93,7 +93,7 @@ public class ChromeSettingsSupplierWithBinary implements CapabilitySettingSuppli
 Предположим, что в случае локального запуска браузера Chrome посредством ChromeDriver. Тогда  
 
 ```properties
-#В файле general.properties
+#В файле neptune.general.properties
 
 web.driver.to.launch = CHROME_DRIVER
 chrome.capability.suppliers = org.mypackage.ChromeSettingsSupplierWithExperimentalOption,org.mypackage.ChromeSettingsSupplierWithBinary
@@ -134,7 +134,7 @@ var capabilitySetting = CHROME.get();
 
 Примеры: 
 ```properties
-#В файле general.properties
+#В файле neptune.general.properties
 
 web.driver.capability.browserName = safari
 ```
@@ -162,7 +162,7 @@ var browserNameSetting = BROWSER_NAME.get();
 
 Примеры: 
 ```properties
-#В файле general.properties
+#В файле neptune.general.properties
 
 web.driver.capability.javascriptEnabled = true
 ```
@@ -189,7 +189,7 @@ var javaScriptSetting = SUPPORTS_JAVASCRIPT.get();
 
 Примеры: 
 ```properties
-#В файле general.properties
+#В файле neptune.general.properties
 
 web.driver.capability.platformName = Windows
 ```
@@ -216,7 +216,7 @@ var platfornSetting = PLATFORM_NAME.get();
 
 Примеры: 
 ```properties
-#В файле general.properties
+#В файле neptune.general.properties
 
 web.driver.capability.browserVersion = 67.0.3396.99
 ```
@@ -243,7 +243,7 @@ var browserVersionSetting = BROWSER_VERSION.get();
 
 Примеры: 
 ```properties
-#В файле general.properties
+#В файле neptune.general.properties
 
 remote.web.driver.url = http://127.0.0.1:4444/wd/hub
 ```
@@ -270,7 +270,7 @@ var remoteURL = REMOTE_WEB_DRIVER_URL_PROPERTY.get();
 
 Примеры: 
 ```properties
-#В файле general.properties
+#В файле neptune.general.properties
 
 base.web.driver.url = https://www.google.com
 ```
@@ -297,7 +297,7 @@ var baseURL = BASE_WEB_DRIVER_URL_PROPERTY.get();
 
 Примеры: 
 ```properties
-#В файле general.properties
+#В файле neptune.general.properties
 
 force.window.maximizing.on.start = true
 ```
@@ -330,7 +330,7 @@ var flagSetting = FORCE_WINDOW_MAXIMIZING_ON_START.get();
 
 Примеры: 
 ```properties
-#В файле general.properties
+#В файле neptune.general.properties
 
 keep.web.driver.session.opened = true
 ```
@@ -357,7 +357,7 @@ var flagSetting = KEEP_WEB_DRIVER_SESSION_OPENED.get();
 
 Примеры: 
 ```properties
-#В файле general.properties
+#В файле neptune.general.properties
 
 clear.web.driver.cookies = true
 ```
@@ -385,7 +385,7 @@ var flagSetting = CLEAR_WEB_DRIVER_COOKIES.get();
 
 Примеры: 
 ```properties
-#В файле general.properties
+#В файле neptune.general.properties
 
 get.back.to.base.web.driver.url = true
 ```
@@ -417,7 +417,7 @@ var flagSetting = GET_BACK_TO_BASE_URL.get();
 
 Примеры: 
 ```properties
-#В файле general.properties
+#В файле neptune.general.properties
 
 find.only.visible.elements = true
 ```
@@ -470,7 +470,7 @@ seleniumStepContext.find(textField()
 
 Примеры: 
 ```properties
-#В файле general.properties
+#В файле neptune.general.properties
 
 waiting.for.elements.time.unit = SECONDS
 waiting.for.elements.time = 30
@@ -505,7 +505,7 @@ var duration = ELEMENT_WAITING_DURATION.get();
 
 Примеры: 
 ```properties
-#В файле general.properties
+#В файле neptune.general.properties
 waiting.alert.time.unit = SECONDS
 waiting.alert.time = 30
 ```
@@ -538,7 +538,7 @@ var duration = WAITING_ALERT_TIME_DURATION.get();
 
 Примеры: 
 ```properties
-#В файле general.properties
+#В файле neptune.general.properties
 waiting.window.time.unit = SECONDS
 waiting.window.time = 30
 ```
@@ -570,7 +570,7 @@ var duration = WAITING_WINDOW_TIME_DURATION.get();
 
 Примеры: 
 ```properties
-#В файле general.properties
+#В файле neptune.general.properties
 waiting.frame.switching.time.unit = SECONDS
 waiting.frame.switching.time = 30
 ```
@@ -602,7 +602,7 @@ var duration = WAITING_FRAME_SWITCHING_TIME_UNIT.get();
 
 Примеры: 
 ```properties
-#В файле general.properties
+#В файле neptune.general.properties
 waiting.for.page.loaded.time.unit = SECONDS
 waiting.for.page.loaded.time = 30
 ```
@@ -635,7 +635,7 @@ var duration = WAITING_FOR_PAGE_LOADED_DURATION.get();
 
 Примеры: 
 ```properties
-#В файле general.properties
+#В файле neptune.general.properties
 
 enable.ability.to.navigate.by.relative.url = true
 ```
@@ -676,7 +676,7 @@ seleniumStepContext.navigate(toUrl("/webhp?newwindow=1"));
 
 ## Пример
 
-Ниже пример файла `general.properties`, заполненного перечислнными выше свойствами
+Ниже пример файла `neptune.general.properties`, заполненного перечислнными выше свойствами
 
 ```properties
 web.driver.to.launch=REMOTE_DRIVER

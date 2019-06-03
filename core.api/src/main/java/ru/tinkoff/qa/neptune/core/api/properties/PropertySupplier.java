@@ -9,6 +9,8 @@ import static java.lang.String.format;
 import static java.lang.System.setProperty;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static ru.tinkoff.qa.neptune.core.api.properties.GeneralPropertyInitializer.arePropertiesRead;
+import static ru.tinkoff.qa.neptune.core.api.properties.GeneralPropertyInitializer.refreshProperties;
 
 /**
  * Interface to construct classes which read property values
@@ -21,6 +23,9 @@ public interface PropertySupplier<T> extends Supplier<T>, Consumer<String> {
     }
 
     private String getPropertyValue() {
+        if (!arePropertiesRead()) {
+            refreshProperties();
+        }
         var property = getPropertyName();
         return ofNullable(System.getenv(property))
                 .orElseGet(() -> System.getProperty(property));

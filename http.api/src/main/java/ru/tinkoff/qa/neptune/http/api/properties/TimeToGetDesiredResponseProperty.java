@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.http.api.properties;
 
-import ru.tinkoff.qa.neptune.core.api.properties.waiting.time.DurationSupplier;
+import ru.tinkoff.qa.neptune.core.api.properties.duration.DurationSupplier;
 import ru.tinkoff.qa.neptune.http.api.properties.time.TimeUnitToGetDesiredResponseProperty;
 import ru.tinkoff.qa.neptune.http.api.properties.time.TimeValueToGetDesiredResponseProperty;
 
