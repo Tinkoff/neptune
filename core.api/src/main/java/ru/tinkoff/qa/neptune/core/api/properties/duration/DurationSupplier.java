@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.core.api.properties.waiting.time;
+package ru.tinkoff.qa.neptune.core.api.properties.duration;
 
 import ru.tinkoff.qa.neptune.core.api.properties.enums.EnumPropertySuppler;
 import ru.tinkoff.qa.neptune.core.api.properties.longs.LongValuePropertySupplier;

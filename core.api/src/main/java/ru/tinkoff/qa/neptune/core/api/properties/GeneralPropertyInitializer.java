@@ -13,7 +13,8 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public final class GeneralPropertyInitializer {
 
-    public static final String GENERAL_PROPERTIES = "general.properties";
+    public static final String GENERAL_PROPERTIES = "neptune.general.properties";
+    static boolean arePropertiesRead;
 
     private GeneralPropertyInitializer() {
         super();
@@ -64,7 +65,7 @@ public final class GeneralPropertyInitializer {
      * Reads properties defined in a file and instantiates system properties.
      * @param file is a file to read.
      */
-    public static void refreshProperties(File file) {
+    public static synchronized void refreshProperties(File file) {
         var prop = new Properties();
         FileInputStream input;
         try {
@@ -77,17 +78,23 @@ public final class GeneralPropertyInitializer {
 
         prop.forEach((key, value) -> checkSystemPropertyAndFillIfNecessary(valueOf(key),
                 nonNull(value) ? valueOf(value) : EMPTY));
+        arePropertiesRead = true;
     }
 
     /**
      * Reads properties defined in {@link #GENERAL_PROPERTIES} which is located in any folder of the project
      * and instantiates system properties.
      */
-    public static void refreshProperties() {
+    public synchronized static void refreshProperties() {
         File propertyFile = findPropertyFile();
         if (nonNull(propertyFile)) {
             refreshProperties(propertyFile);
         }
+        arePropertiesRead = true;
+    }
+
+    static boolean arePropertiesRead() {
+        return arePropertiesRead;
     }
 
     private static class PropertyReadException extends RuntimeException {

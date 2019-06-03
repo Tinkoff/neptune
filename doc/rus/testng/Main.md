@@ -146,7 +146,7 @@ public class MyCustomizedTest extends BaseTestNgTest<MyCustomizedTest> {
 
 ### Настройки 
 
-В файле [general.properties](/doc/rus/core/Properties.md) можно указать значение свойства `testng.refresh.before`. 
+В файле [neptune.general.properties](/doc/rus/core/Properties.md) можно указать значение свойства `testng.refresh.before`.
 
 [Некоторые контексты следует обновлять перед выполнением теста](/doc/rus/core/Context.md#Обновление-контекста) (перезапустить браузер, почистить куки, обновить соединение с базой данных и т.д.). 
 Свойство `testng.refresh.before` позволяет указать, перед какими методами следует провести обновление. Это должны быть не статические методы, отмеченные аннотациями `@BeforeSuite` или `@BeforeTest`, или `@BeforeClass`, или `@BeforeMethod`, или `@Test`. [Аннотации TestNG](http://testng.org/doc/documentation-main.html#annotations).
