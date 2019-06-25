@@ -1631,7 +1631,7 @@ public class MySearches {
 
 См. [Шаги для определения присутствия](/doc/rus/core/Presence_Absence.md#Присутствие). 
 
-Для определения присутствия элементов/виджетов на странице в данный момент/спустя время, отведенное на поиск, используется [ElementPresence](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/functions/searching/presence/ElementPresence.html).
+Для определения присутствия элементов/виджетов на странице в данный момент/спустя время, отведенное на поиск, используется [ElementPresence](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/functions/searching/ElementPresence.html).
 
 | [Возможность использовать критерии](/doc/rus/core/Steps.md#Критерии)| [Объединение критериев](/doc/rus/core/Steps.md#Объединение-критериев)| [Возможность указывать индивидуальный таймаут](/doc/rus/core/Steps.md#Время-на-получение-значимого-результата)| Если желаемое значение не получено | [Игнорируемые исключения](/doc/rus/core/Steps.md#Игнорирование-выбрасываемых-исключений)| [Данные, которые могут быть  приложены к отчетам (по умолчанию)](/doc/rus/core/Steps.md#Данные,-которые-могут-быть-приложены-к-отчетам/логу)|
 |-----------------------------------	|-----------------------	|----------------------------------------------	|------------------------------------	|----------------------------------------------------	|-----------------------------------------------------------------	|
@@ -1644,7 +1644,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 //...
 import static org.openqa.selenium.By.tagName;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.presence.ElementPresence.presenceOfAnElement;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.ElementPresence.presenceOfAnElement;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -1664,7 +1664,7 @@ public class MyTests /*...*/ {
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 //...
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.button;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.presence.ElementPresence.presenceOfAnElement;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.ElementPresence.presenceOfAnElement;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -1684,7 +1684,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 //...
 import static org.openqa.selenium.By.tagName;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.webElements;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.presence.ElementPresence.presenceOfElements;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.ElementPresence.presenceOfElements;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -1703,7 +1703,7 @@ public class MyTests /*...*/ {
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 //...
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.buttons;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.presence.ElementPresence.presenceOfElements;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.ElementPresence.presenceOfElements;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;

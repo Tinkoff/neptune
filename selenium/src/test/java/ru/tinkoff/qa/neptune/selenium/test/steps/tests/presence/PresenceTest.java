@@ -4,8 +4,8 @@ import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 import org.testng.annotations.Test;
 
 import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.condition;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.presence.ElementPresence.presenceOfAnElement;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.presence.ElementPresence.presenceOfElements;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.ElementPresence.presenceOfAnElement;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.ElementPresence.presenceOfElements;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.textFields;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.flag;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.tableRow;
