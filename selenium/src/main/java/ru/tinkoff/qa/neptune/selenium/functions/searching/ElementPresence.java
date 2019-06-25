@@ -1,29 +1,26 @@
-package ru.tinkoff.qa.neptune.selenium.functions.searching.presence;
+package ru.tinkoff.qa.neptune.selenium.functions.searching;
 
 import org.openqa.selenium.SearchContext;
 import ru.tinkoff.qa.neptune.core.api.steps.Presence;
 import ru.tinkoff.qa.neptune.core.api.steps.StepFunction;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
-import ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier;
-import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 import org.openqa.selenium.NoSuchElementException;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 
-public final class ElementPresence extends Presence<SeleniumStepContext> {
+public final class ElementPresence extends Presence<SeleniumStepContext, ElementPresence> {
 
     private ElementPresence(Function<SeleniumStepContext, ?> toBePresent) {
         super(toBePresent);
     }
 
     /**
-     * Creates an instance of {@link Presence}.
+     * Creates an instance of {@link ElementPresence}.
      *
      * @param supplier supplier of a search criteria to find a single element.
-     * @return an instance of {@link Presence}.
+     * @return an instance of {@link ElementPresence}.
      */
     @SuppressWarnings("unchecked")
     public static ElementPresence presenceOfAnElement(SearchSupplier<?> supplier) {
@@ -33,17 +30,12 @@ public final class ElementPresence extends Presence<SeleniumStepContext> {
     }
 
     /**
-     * Creates an instance of {@link Presence}.
+     * Creates an instance of {@link ElementPresence}.
      *
      * @param supplier supplier of a search criteria to find a list of elements.
-     * @return an instance of {@link Presence}.
+     * @return an instance of {@link ElementPresence}.
      */
     public static ElementPresence presenceOfElements(MultipleSearchSupplier<?> supplier) {
         return new ElementPresence(supplier.get().compose(currentContent()));
-    }
-
-    @Override
-    public ElementPresence throwIfNotPresent(Supplier<? extends RuntimeException> exceptionSupplier) {
-        return (ElementPresence) super.throwOnEmptyResult(exceptionSupplier);
     }
 }

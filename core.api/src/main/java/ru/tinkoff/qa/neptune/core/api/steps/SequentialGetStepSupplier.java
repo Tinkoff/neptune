@@ -205,13 +205,13 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     }
 
     @Override
-    public final THIS addIgnored(Collection<Class<? extends Throwable>> toBeIgnored) {
+    public THIS addIgnored(Collection<Class<? extends Throwable>> toBeIgnored) {
         ignored.addAll(toBeIgnored);
         return (THIS) this;
     }
 
     @Override
-    public final THIS addIgnored(Class<? extends Throwable> toBeIgnored) {
+    public THIS addIgnored(Class<? extends Throwable> toBeIgnored) {
         ignored.add(toBeIgnored);
         return (THIS) this;
     }

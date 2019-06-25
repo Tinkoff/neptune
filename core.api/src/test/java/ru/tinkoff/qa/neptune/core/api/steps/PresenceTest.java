@@ -8,7 +8,7 @@ import java.util.Random;
 import java.util.function.Function;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static ru.tinkoff.qa.neptune.core.api.steps.Presence.presenceOf;
+import static ru.tinkoff.qa.neptune.core.api.steps.Presence.CommonPresence.presenceOf;
 import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
 import static java.util.List.of;
 import static org.hamcrest.Matchers.is;
@@ -47,11 +47,11 @@ public class PresenceTest {
     private static final Function<PresenceTestContext, Object> RETURNS_FALSE = toGet("False value",
             presenceTestContext -> false);
 
-    private static final Function<PresenceTestContext, Object> PRODUCES_IGNORED_EXCEPTIONS = toGet("Ignored exception",
+    private static final Function<PresenceTestContext, Object> PRODUCES_IGNORED_EXCEPTIONS =
             presenceTestContext -> {
                 List<RuntimeException> exceptions = of(IGNORED_EXCEPTION, IGNORED_EXCEPTION2);
                 throw exceptions.get(new Random().nextInt(exceptions.size()));
-            });
+            };
 
     private static final PresenceTestContext presenceTestContext = new PresenceTestContext();
 
@@ -159,7 +159,8 @@ public class PresenceTest {
     @Test(expectedExceptions = RuntimeException.class,
             expectedExceptionsMessageRegExp = "Expected exception to be thrown")
     public void testOfGetSupplierWhichThrowsExpectedException() {
-        assertThat(presenceTestContext.get(presenceOf(new TestGetSupplier(PRODUCES_EXPECTED_EXCEPTIONS))), is(false));
+        assertThat(presenceTestContext.get(presenceOf(new TestGetSupplier(PRODUCES_EXPECTED_EXCEPTIONS))
+                .addIgnored(IGNORED_EXCEPTIONS)), is(false));
     }
 
     @Test(expectedExceptions = IllegalStateException.class,
