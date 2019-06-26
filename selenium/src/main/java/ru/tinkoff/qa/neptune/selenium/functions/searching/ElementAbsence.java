@@ -21,7 +21,7 @@ public final class ElementAbsence extends Absence<SeleniumStepContext, ElementAb
      * @return an instance of {@link ElementAbsence}.
      */
     @SuppressWarnings("unchecked")
-    public static ElementAbsence presenceOfAnElement(SearchSupplier<?> supplier) {
+    public static ElementAbsence absenceOfAnElement(SearchSupplier<?> supplier) {
         return new ElementAbsence(supplier.clone().timeOut(ofMillis(0)).get().compose(currentContent()));
     }
 
@@ -31,7 +31,7 @@ public final class ElementAbsence extends Absence<SeleniumStepContext, ElementAb
      * @param supplier supplier of a search criteria to find a list of elements. These elements are expected to be absent.
      * @return an instance of {@link ElementAbsence}.
      */
-    public static ElementAbsence presenceOfElements(MultipleSearchSupplier<?> supplier) {
+    public static ElementAbsence absenceOfElements(MultipleSearchSupplier<?> supplier) {
         return new ElementAbsence(supplier.clone().timeOut(ofMillis(0)).get().compose(currentContent()));
     }
 }
