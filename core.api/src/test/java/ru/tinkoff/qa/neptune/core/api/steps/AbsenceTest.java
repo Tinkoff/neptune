@@ -217,7 +217,7 @@ public class AbsenceTest {
 
         private static final Object[] DEFAULT_OBJECTS = new Object[] {1, 2, 3, 4, "Test"};
         private final Duration timeToDisappearAfter;
-        private Object[] toBeReturned;
+        private Object[] toBeReturned = DEFAULT_OBJECTS;
 
         private FunctionThatReturnsArray(Duration timeToDisappearAfter) {
             this.timeToDisappearAfter = timeToDisappearAfter;
