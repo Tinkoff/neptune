@@ -12,6 +12,7 @@ ru.tinkoff.qa.neptune.core.api.properties
 ru.tinkoff.qa.neptune.core.api.properties.booleans
 ru.tinkoff.qa.neptune.core.api.properties.bytes
 ru.tinkoff.qa.neptune.core.api.properties.doubles
+ru.tinkoff.qa.neptune.core.api.properties.duration
 ru.tinkoff.qa.neptune.core.api.properties.enums
 ru.tinkoff.qa.neptune.core.api.properties.floats
 ru.tinkoff.qa.neptune.core.api.properties.integers
@@ -19,7 +20,6 @@ ru.tinkoff.qa.neptune.core.api.properties.longs
 ru.tinkoff.qa.neptune.core.api.properties.object
 ru.tinkoff.qa.neptune.core.api.properties.shorts
 ru.tinkoff.qa.neptune.core.api.properties.url
-ru.tinkoff.qa.neptune.core.api.properties.waiting.time
 ru.tinkoff.qa.neptune.core.api.steps
 ru.tinkoff.qa.neptune.core.api.steps.conditions
 ru.tinkoff.qa.neptune.core.api.steps.context
@@ -46,7 +46,6 @@ ru.tinkoff.qa.neptune.selenium.functions.intreraction
 ru.tinkoff.qa.neptune.selenium.functions.java.script
 ru.tinkoff.qa.neptune.selenium.functions.navigation
 ru.tinkoff.qa.neptune.selenium.functions.searching
-ru.tinkoff.qa.neptune.selenium.functions.searching.presence
 ru.tinkoff.qa.neptune.selenium.functions.target.locator
 ru.tinkoff.qa.neptune.selenium.functions.target.locator.active.element
 ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert
