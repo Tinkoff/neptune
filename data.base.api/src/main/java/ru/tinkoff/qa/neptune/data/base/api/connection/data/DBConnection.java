@@ -3,8 +3,9 @@ package ru.tinkoff.qa.neptune.data.base.api.connection.data;
 import org.datanucleus.api.jdo.JDOPersistenceManagerFactory;
 import org.datanucleus.metadata.PersistenceUnitMetaData;
 
+import java.util.Objects;
+
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 
@@ -35,18 +36,7 @@ public final class DBConnection {
     }
 
     private static boolean areEqual(Object o1, Object o2) {
-        var isNull1 = isNull(o1);
-        var isNull2 = isNull(o1);
-
-        if (isNull1 && isNull2) {
-            return true;
-        }
-
-        if ((isNull1 && !isNull2) || (!isNull1 && isNull2)) {
-            return false;
-        }
-
-        return o1.equals(o2);
+        return Objects.equals(o1, o2);
     }
 
     public PersistenceUnitMetaData getData() {
