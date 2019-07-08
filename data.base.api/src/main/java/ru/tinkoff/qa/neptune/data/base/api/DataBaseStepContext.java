@@ -96,6 +96,7 @@ public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>,
 
     @Override
     public void refreshContext() {
-        switchToDefault();
+        ofNullable(currentManager)
+                .ifPresent(jdoPersistenceManager -> switchToDefault());
     }
 }
