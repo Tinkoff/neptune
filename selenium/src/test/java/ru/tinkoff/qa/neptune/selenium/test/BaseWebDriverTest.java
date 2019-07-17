@@ -53,7 +53,7 @@ public abstract class BaseWebDriverTest {
     }
 
     @BeforeClass
-    public void setUpBeforeSuite() {
+    public void setUpBeforeClass() {
         initMocks(this);
     }
 

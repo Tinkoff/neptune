@@ -3,11 +3,8 @@ package ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.parent;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
-import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
-
-import java.time.Duration;
 
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 
@@ -25,7 +22,7 @@ public final class ParentFrameSupplier extends SequentialGetStepSupplier
                 return null;
             }
         });
-        throwOnEmptyResult(() -> new NoSuchFrameException("It was impossible to switch to the parent frame for some reason"));
+        throwOnEmptyResult(() -> new WebDriverException("It was impossible to switch to the parent frame for some reason"));
     }
 
     /**
@@ -41,10 +38,5 @@ public final class ParentFrameSupplier extends SequentialGetStepSupplier
      */
     public static ParentFrameSupplier parentFrame() {
         return new ParentFrameSupplier().from(currentContent());
-    }
-
-    @Override
-    public ParentFrameSupplier timeOut(Duration timeOut) {
-        return super.timeOut(timeOut);
     }
 }

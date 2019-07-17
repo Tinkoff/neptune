@@ -178,24 +178,18 @@ public class MockWebDriver implements WebDriver, JavascriptExecutor, TakesScreen
         return isSwitchedToDefaultContent;
     }
 
-    WebDriver setSwitchedToDefaultContent(boolean switchedToDefaultContent) {
-        if (!isSwitchedToDefaultContent) {
-            isSwitchedToDefaultContent = switchedToDefaultContent;
-            return this;
-        }
-        throw new WebDriverException("Test exception!");
+    WebDriver setSwitchedToDefaultContent() {
+        isSwitchedToDefaultContent = true;
+        return this;
     }
 
     public boolean isSwitchedToParentFrame() {
         return isSwitchedToParentFrame;
     }
 
-    WebDriver setSwitchedToParentFrame(boolean switchedToParentFrame) {
-        if (!isSwitchedToParentFrame) {
-            isSwitchedToParentFrame = switchedToParentFrame;
-            return this;
-        }
-        throw new WebDriverException("Test exception!");
+    WebDriver setSwitchedToParentFrame() {
+        isSwitchedToParentFrame = true;
+        return this;
     }
 
     public Object getCurrentFrame() {

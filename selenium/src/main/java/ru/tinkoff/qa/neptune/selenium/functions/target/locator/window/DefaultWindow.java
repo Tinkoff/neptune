@@ -6,7 +6,7 @@ import java.net.URL;
 
 import static java.lang.String.format;
 
-class DefaultWindow implements Window, TakesScreenshot {
+class DefaultWindow implements Window, TakesScreenshot, WrapsDriver {
 
     private final String handle;
     private final WebDriver driver;
@@ -130,6 +130,7 @@ class DefaultWindow implements Window, TakesScreenshot {
 
     @Override
     public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
+        switchToMe();
         return ((TakesScreenshot) driver).getScreenshotAs(target);
     }
 }
