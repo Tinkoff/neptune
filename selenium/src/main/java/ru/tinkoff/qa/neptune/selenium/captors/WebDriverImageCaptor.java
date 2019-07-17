@@ -39,7 +39,7 @@ public class WebDriverImageCaptor extends ImageCaptor<WebDriver> {
             return null;
         }
 
-        if (WebElement.class.isAssignableFrom(clazz) || Widget.class.isAssignableFrom(clazz) || Frame.class.isAssignableFrom(clazz)) {
+        if (WebElement.class.isAssignableFrom(clazz) || Widget.class.isAssignableFrom(clazz)) {
             return null;
         }
 

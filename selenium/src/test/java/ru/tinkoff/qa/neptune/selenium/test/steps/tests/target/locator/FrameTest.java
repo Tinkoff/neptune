@@ -14,6 +14,7 @@ import org.testng.annotations.Test;
 
 import java.util.Random;
 
+import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.SwitchActionSupplier.to;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.GetFrameFunction.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.GetFrameSupplier.frame;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeUnitProperties.WAITING_FRAME_SWITCHING_TIME_UNIT;
@@ -38,19 +39,19 @@ public class FrameTest extends BaseWebDriverTest {
         Frame frame1 = seleniumSteps.get(frame(index(index1.getIndex())));
         setEndBenchMark();
 
-        assertThat(((MockWebDriver) frame1.getWrappedDriver()).getCurrentFrame(), is(index1.getIndex()));
+        assertThat(((MockWebDriver) seleniumSteps.performSwitch(to(frame1)).getWrappedDriver()).getCurrentFrame(), is(index1.getIndex()));
         assertThat(getTimeDifference(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
         assertThat(frame1.toString(), is(format("frame %s", index1.getIndex())));
 
         Frame frame2 = seleniumSteps.get(frame(index(index2.getIndex())));
-        assertThat(((MockWebDriver) frame2.getWrappedDriver()).getCurrentFrame(), is(index2.getIndex()));
+        assertThat(((MockWebDriver) seleniumSteps.performSwitch(to(frame2)).getWrappedDriver()).getCurrentFrame(), is(index2.getIndex()));
         assertThat(frame2.toString(), is(format("frame %s", index2.getIndex())));
 
         frame1.switchToMe();
-        assertThat(((MockWebDriver) frame1.getWrappedDriver()).getCurrentFrame(), is(index1.getIndex()));
+        assertThat(((MockWebDriver) seleniumSteps.getWrappedDriver()).getCurrentFrame(), is(index1.getIndex()));
 
         frame2.switchToMe();
-        assertThat(((MockWebDriver) frame2.getWrappedDriver()).getCurrentFrame(), is(index2.getIndex()));
+        assertThat(((MockWebDriver) seleniumSteps.getWrappedDriver()).getCurrentFrame(), is(index2.getIndex()));
     }
 
     @Test
@@ -62,7 +63,7 @@ public class FrameTest extends BaseWebDriverTest {
                 .timeOut(FIVE_SECONDS));
         setEndBenchMark();
 
-        assertThat(((MockWebDriver) frame1.getWrappedDriver()).getCurrentFrame(), is(index1.getIndex()));
+        assertThat(((MockWebDriver) seleniumSteps.performSwitch(to(frame1)).getWrappedDriver()).getCurrentFrame(), is(index1.getIndex()));
         assertThat(getTimeDifference(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
     }
 
@@ -76,7 +77,7 @@ public class FrameTest extends BaseWebDriverTest {
             Frame frame1 = seleniumSteps.get(frame(index(index1.getIndex())));
             setEndBenchMark();
 
-            assertThat(((MockWebDriver) frame1.getWrappedDriver()).getCurrentFrame(), is(index1.getIndex()));
+            assertThat(((MockWebDriver) seleniumSteps.performSwitch(to(frame1)).getWrappedDriver()).getCurrentFrame(), is(index1.getIndex()));
             assertThat(getTimeDifference(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
         }
         finally {
@@ -133,19 +134,19 @@ public class FrameTest extends BaseWebDriverTest {
         Frame frame1 = seleniumSteps.get(frame(nameOrId(name1.getNameOrId())));
         setEndBenchMark();
 
-        assertThat(((MockWebDriver) frame1.getWrappedDriver()).getCurrentFrame(), is(name1.getNameOrId()));
+        assertThat(((MockWebDriver) seleniumSteps.performSwitch(to(frame1)).getWrappedDriver()).getCurrentFrame(), is(name1.getNameOrId()));
         assertThat(getTimeDifference(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
         assertThat(frame1.toString(), is(format("frame %s", name1.getNameOrId())));
 
         Frame frame2 = seleniumSteps.get(frame(nameOrId(name2.getNameOrId())));
-        assertThat(((MockWebDriver) frame2.getWrappedDriver()).getCurrentFrame(), is(name2.getNameOrId()));
+        assertThat(((MockWebDriver) seleniumSteps.performSwitch(to(frame2)).getWrappedDriver()).getCurrentFrame(), is(name2.getNameOrId()));
         assertThat(frame2.toString(), is(format("frame %s", name2.getNameOrId())));
 
         frame1.switchToMe();
-        assertThat(((MockWebDriver) frame1.getWrappedDriver()).getCurrentFrame(), is(name1.getNameOrId()));
+        assertThat(((MockWebDriver) seleniumSteps.getWrappedDriver()).getCurrentFrame(), is(name1.getNameOrId()));
 
         frame2.switchToMe();
-        assertThat(((MockWebDriver) frame2.getWrappedDriver()).getCurrentFrame(), is(name2.getNameOrId()));
+        assertThat(((MockWebDriver) seleniumSteps.getWrappedDriver()).getCurrentFrame(), is(name2.getNameOrId()));
     }
 
     @Test
@@ -157,7 +158,7 @@ public class FrameTest extends BaseWebDriverTest {
                 .timeOut(FIVE_SECONDS));
         setEndBenchMark();
 
-        assertThat(((MockWebDriver) frame1.getWrappedDriver()).getCurrentFrame(), is(name1.getNameOrId()));
+        assertThat(((MockWebDriver) seleniumSteps.performSwitch(to(frame1)).getWrappedDriver()).getCurrentFrame(), is(name1.getNameOrId()));
         assertThat(getTimeDifference(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
     }
 
@@ -171,7 +172,7 @@ public class FrameTest extends BaseWebDriverTest {
             Frame frame1 = seleniumSteps.get(frame(nameOrId(name1.getNameOrId())));
             setEndBenchMark();
 
-            assertThat(((MockWebDriver) frame1.getWrappedDriver()).getCurrentFrame(), is(name1.getNameOrId()));
+            assertThat(((MockWebDriver) seleniumSteps.performSwitch(to(frame1)).getWrappedDriver()).getCurrentFrame(), is(name1.getNameOrId()));
             assertThat(getTimeDifference(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
         }
         finally {
@@ -228,18 +229,18 @@ public class FrameTest extends BaseWebDriverTest {
         Frame frame1 = seleniumSteps.get(frame(insideElement(element1)));
         setEndBenchMark();
 
-        assertThat(((MockWebDriver) frame1.getWrappedDriver()).getCurrentFrame(), is(element1));
+        assertThat(((MockWebDriver) seleniumSteps.performSwitch(to(frame1)).getWrappedDriver()).getCurrentFrame(), is(element1));
         assertThat(getTimeDifference(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
         assertThat(frame1.toString(), is(format("frame %s", element1.toString())));
 
         Frame frame2 = seleniumSteps.get(frame(insideElement(element2)));
-        assertThat(((MockWebDriver) frame2.getWrappedDriver()).getCurrentFrame(), is(element2));
+        assertThat(((MockWebDriver) seleniumSteps.performSwitch(to(frame2)).getWrappedDriver()).getCurrentFrame(), is(element2));
 
         frame1.switchToMe();
-        assertThat(((MockWebDriver) frame1.getWrappedDriver()).getCurrentFrame(), is(element1));
+        assertThat(((MockWebDriver) seleniumSteps.getWrappedDriver()).getCurrentFrame(), is(element1));
 
         frame2.switchToMe();
-        assertThat(((MockWebDriver) frame2.getWrappedDriver()).getCurrentFrame(), is(element2));
+        assertThat(((MockWebDriver) seleniumSteps.getWrappedDriver()).getCurrentFrame(), is(element2));
     }
 
     @Test
@@ -251,7 +252,7 @@ public class FrameTest extends BaseWebDriverTest {
                 .timeOut(FIVE_SECONDS));
         setEndBenchMark();
 
-        assertThat(((MockWebDriver) frame1.getWrappedDriver()).getCurrentFrame(), is(element1));
+        assertThat(((MockWebDriver) seleniumSteps.performSwitch(to(frame1)).getWrappedDriver()).getCurrentFrame(), is(element1));
         assertThat(getTimeDifference(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
     }
 
@@ -265,7 +266,7 @@ public class FrameTest extends BaseWebDriverTest {
             Frame frame1 = seleniumSteps.get(frame(insideElement(element1)));
             setEndBenchMark();
 
-            assertThat(((MockWebDriver) frame1.getWrappedDriver()).getCurrentFrame(), is(element1));
+            assertThat(((MockWebDriver) seleniumSteps.performSwitch(to(frame1)).getWrappedDriver()).getCurrentFrame(), is(element1));
             assertThat(getTimeDifference(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
         }
         finally {
@@ -346,19 +347,19 @@ public class FrameTest extends BaseWebDriverTest {
         Frame frame1 = seleniumSteps.get(frame(wrappedBy(wrapsElement1)));
         setEndBenchMark();
 
-        assertThat(((MockWebDriver) frame1.getWrappedDriver()).getCurrentFrame(), is(element1));
+        assertThat(((MockWebDriver) seleniumSteps.performSwitch(to(frame1)).getWrappedDriver()).getCurrentFrame(), is(element1));
         assertThat(getTimeDifference(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
         assertThat(frame1.toString(), is(format("frame %s", wrapsElement1.toString())));
 
         Frame frame2 = seleniumSteps.get(frame(wrappedBy(wrapsElement2)));
-        assertThat(((MockWebDriver) frame2.getWrappedDriver()).getCurrentFrame(), is(element2));
+        assertThat(((MockWebDriver) seleniumSteps.performSwitch(to(frame2)).getWrappedDriver()).getCurrentFrame(), is(element2));
         assertThat(frame2.toString(), is(format("frame %s", wrapsElement2.toString())));
 
         frame1.switchToMe();
-        assertThat(((MockWebDriver) frame1.getWrappedDriver()).getCurrentFrame(), is(element1));
+        assertThat(((MockWebDriver) seleniumSteps.getWrappedDriver()).getCurrentFrame(), is(element1));
 
         frame2.switchToMe();
-        assertThat(((MockWebDriver) frame2.getWrappedDriver()).getCurrentFrame(), is(element2));
+        assertThat(((MockWebDriver) seleniumSteps.getWrappedDriver()).getCurrentFrame(), is(element2));
     }
 
 
@@ -383,7 +384,7 @@ public class FrameTest extends BaseWebDriverTest {
                 .timeOut(FIVE_SECONDS));
         setEndBenchMark();
 
-        assertThat(((MockWebDriver) frame1.getWrappedDriver()).getCurrentFrame(), is(element1));
+        assertThat(((MockWebDriver) seleniumSteps.performSwitch(to(frame1)).getWrappedDriver()).getCurrentFrame(), is(element1));
         assertThat(getTimeDifference(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
     }
 
@@ -409,7 +410,7 @@ public class FrameTest extends BaseWebDriverTest {
             Frame frame1 = seleniumSteps.get(frame(wrappedBy(wrapsElement1)));
             setEndBenchMark();
 
-            assertThat(((MockWebDriver) frame1.getWrappedDriver()).getCurrentFrame(), is(element1));
+            assertThat(((MockWebDriver) seleniumSteps.performSwitch(to(frame1)).getWrappedDriver()).getCurrentFrame(), is(element1));
             assertThat(getTimeDifference(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
         }
         finally {

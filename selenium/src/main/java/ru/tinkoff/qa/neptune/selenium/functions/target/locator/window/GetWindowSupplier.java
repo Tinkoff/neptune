@@ -64,9 +64,7 @@ public final class GetWindowSupplier extends SequentialGetStepSupplier
     private static Window getWindowByIndex(WebDriver driver, int index) {
         var windows = getListOfWindows(driver);
         if (windows.size() >= index + 1) {
-            var result = windows.get(index);
-            result.switchToMe();
-            return result;
+            return windows.get(index);
         }
         return null;
     }

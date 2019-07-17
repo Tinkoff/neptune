@@ -6,14 +6,19 @@ import org.openqa.selenium.internal.WrapsElement;
 
 import static java.lang.String.format;
 
-public class Frame implements SwitchesToItself, TakesScreenshot {
+public class Frame implements SwitchesToItself {
     private final WebDriver webDriver;
     private final Object frame;
 
     Frame(WebDriver webDriver, Object frame) {
         this.webDriver = webDriver;
         this.frame = frame;
-        switchToMe();
+        try {
+            switchToMe();
+        }
+        finally {
+            webDriver.switchTo().parentFrame();
+        }
     }
 
     @Override
@@ -39,17 +44,7 @@ public class Frame implements SwitchesToItself, TakesScreenshot {
         }
     }
 
-    @Override
-    public WebDriver getWrappedDriver() {
-        return webDriver;
-    }
-
     public String toString() {
         return format("frame %s", frame);
-    }
-
-    @Override
-    public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
-        return ((TakesScreenshot) webDriver).getScreenshotAs(target);
     }
 }

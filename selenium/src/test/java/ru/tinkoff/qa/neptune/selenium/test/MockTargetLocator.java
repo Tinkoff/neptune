@@ -63,7 +63,7 @@ public class MockTargetLocator implements WebDriver.TargetLocator {
 
     @Override
     public WebDriver parentFrame() {
-        return driver.setSwitchedToParentFrame(true);
+        return driver.setSwitchedToParentFrame();
     }
 
     @Override
@@ -77,7 +77,7 @@ public class MockTargetLocator implements WebDriver.TargetLocator {
 
     @Override
     public WebDriver defaultContent() {
-        return driver.setSwitchedToDefaultContent(true);
+        return driver.setSwitchedToDefaultContent();
     }
 
     @Override
