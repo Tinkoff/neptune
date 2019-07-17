@@ -6,6 +6,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrapsDriver;
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.ImageCaptor;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
+import ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.Frame;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -38,7 +39,7 @@ public class WebDriverImageCaptor extends ImageCaptor<WebDriver> {
             return null;
         }
 
-        if (WebElement.class.isAssignableFrom(clazz) || Widget.class.isAssignableFrom(clazz)) {
+        if (WebElement.class.isAssignableFrom(clazz) || Widget.class.isAssignableFrom(clazz) || Frame.class.isAssignableFrom(clazz)) {
             return null;
         }
 
