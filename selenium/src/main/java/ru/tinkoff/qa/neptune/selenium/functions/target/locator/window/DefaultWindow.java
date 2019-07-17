@@ -6,7 +6,7 @@ import java.net.URL;
 
 import static java.lang.String.format;
 
-class DefaultWindow implements Window, TakesScreenshot, WrapsDriver {
+class DefaultWindow implements Window, TakesScreenshot {
 
     private final String handle;
     private final WebDriver driver;

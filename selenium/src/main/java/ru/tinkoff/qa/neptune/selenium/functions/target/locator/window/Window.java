@@ -1,9 +1,10 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator.window;
 
+import org.openqa.selenium.WrapsDriver;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.SwitchesToItself;
 import org.openqa.selenium.WebDriver;
 
-public interface Window extends WebDriver.Window, WebDriver.Navigation, SwitchesToItself {
+public interface Window extends WebDriver.Window, WebDriver.Navigation, SwitchesToItself, WrapsDriver {
     /**
      * Closes the window.
      */
