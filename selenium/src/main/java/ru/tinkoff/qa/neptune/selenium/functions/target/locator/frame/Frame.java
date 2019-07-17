@@ -41,7 +41,6 @@ public class Frame implements SwitchesToItself, TakesScreenshot {
 
     @Override
     public WebDriver getWrappedDriver() {
-        switchToMe();
         return webDriver;
     }
 
@@ -51,7 +50,6 @@ public class Frame implements SwitchesToItself, TakesScreenshot {
 
     @Override
     public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
-        switchToMe();
         return ((TakesScreenshot) webDriver).getScreenshotAs(target);
     }
 }
