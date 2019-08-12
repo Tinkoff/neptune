@@ -2,7 +2,7 @@ dependencies {
     compile project(':core.api')
     compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: seleniumVersion
     compile group: 'org.hamcrest', name: 'hamcrest', version: hamcrestVersion
-    compile (group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '3.6.0') {
+    compile (group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '3.6.2') {
         exclude group: 'org.seleniumhq.selenium'
         exclude group: 'org.apache.commons', module: 'commons-lang3'
     }
