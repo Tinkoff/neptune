@@ -1,0 +1,35 @@
+language: java
+install: true
+jdk:
+  - oraclejdk11
+  - oraclejdk9
+  - oraclejdk8 #default jdk
+
+os:
+  - linux
+  - osx
+
+before_cache:
+- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+# cache the build tool's caches
+cache:
+  directories:
+    - $HOME/.m2
+    - $HOME/.gradle
+
+before_install: ignore
+before_script:
+  - echo "Build [testng.integration] is launching up..."
+  - jdk_switcher use openjdk11
+
+script:
+  - cd http.api
+  - gradle assemble
+  - gradle test
+
+after_success:
+  - bash < (curl -s https://codecov.io/bash)
+
+after_failure: echo "Houston, we have some problems"
