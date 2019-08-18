@@ -5,9 +5,7 @@ jdk:
   - oraclejdk9
   - oraclejdk8 #default jdk
 
-os:
-  - linux
-  - osx
+os: linux
 
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
@@ -21,13 +19,11 @@ cache:
 
 before_install: ignore
 before_script:
-  - echo "Build [testng.integration] is launching up..."
+  - echo "General Build is launching up..."
   - jdk_switcher use openjdk11
 
 script:
-  - cd http.api
   - gradle assemble
-  - gradle test
 
 after_success:
   - bash < (curl -s https://codecov.io/bash)
