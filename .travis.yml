@@ -1,9 +1,6 @@
 language: java
 install: true
-jdk:
-  - oraclejdk11
-  - oraclejdk9
-  - oraclejdk8 #default jdk
+jdk: oraclejdk11
 
 os: linux
 
@@ -20,7 +17,7 @@ cache:
 before_install: ignore
 before_script:
   - echo "General Build is launching up..."
-  - jdk_switcher use openjdk11
+  #- jdk_switcher use openjdk11
 
 script:
   - gradle assemble
@@ -28,4 +25,7 @@ script:
 after_success:
   - bash < (curl -s https://codecov.io/bash)
 
-after_failure: echo "Houston, we have some problems"
+after_failure:
+  - echo "Houston, we have some problems"
+  - echo "Main Build has been failed"
+
