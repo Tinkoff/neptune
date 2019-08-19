@@ -1,5 +1,4 @@
 language: java
-install: true
 jdk: oraclejdk11
 
 os: linux
@@ -18,6 +17,8 @@ before_install: ignore
 before_script:
   - echo "General Build is launching up..."
   #- jdk_switcher use openjdk11
+
+install: true
 
 script:
   - gradle assemble
