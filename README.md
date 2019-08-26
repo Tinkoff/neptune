@@ -1,7 +1,6 @@
-[![Build Status](https://travis-ci.org/ArisAgnew/neptune.svg?branch=master)](https://travis-ci.org/ArisAgnew/neptune) 
- <== Assembly
+[![Build Status](https://travis-ci.org/ArisAgnew/neptune.svg?branch=master)](https://travis-ci.org/ArisAgnew/neptune)
 
-# neptune
+# Neptune
 Test automation framework for automation of E2E tests.
 
 It is under the ALPHA testing by developers/QA engineers of [Tinkoff.ru](https://www.tinkoff.ru/software/) for a while. Built jar are not available outside. For now source code and documentation is available for overview.
