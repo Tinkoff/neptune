@@ -3,6 +3,11 @@ jdk: oraclejdk11
 
 os: linux
 
+env:
+  global:
+    - REPO_USER_NAME=qa
+    - REPO_USER_PASSWORD=qa123ws
+
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
