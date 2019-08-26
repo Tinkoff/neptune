@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/ArisAgnew/neptune.svg?branch=master)](https://travis-ci.org/ArisAgnew/neptune.svg?branch=master) 
+[![Build Status](https://travis-ci.org/ArisAgnew/neptune.svg?branch=master)](https://travis-ci.org/ArisAgnew/neptune) 
  <== Assembly
 
 # neptune
