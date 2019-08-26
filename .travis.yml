@@ -18,7 +18,7 @@ cache:
 
 before_install: ignore
 before_script:
-  - echo "General Build is launching up..."
+  - echo "<General Build is launching up...>"
   #- jdk_switcher use openjdk11
 
 install: true
@@ -27,9 +27,10 @@ script:
   - gradle assemble
 
 after_success:
-  - bash < (curl -s https://codecov.io/bash)
+  - echo "Main Build has been executed successfully"
+  - bash <(curl -s https://codecov.io/bash)
 
 after_failure:
   - echo "Houston, we have some problems"
   - echo "Main Build has been failed"
-
+  
