@@ -4,7 +4,8 @@ jdk: oraclejdk11
 os: linux
 
 env:
-  - REPO_USER_NAME=qa REPO_USER_PASSWORD=qa123ws
+  - REPO_USER_NAME=qa
+  - REPO_USER_PASSWORD=qa123ws
 
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
@@ -16,21 +17,36 @@ cache:
     - $HOME/.m2
     - $HOME/.gradle
 
-before_install: ignore
-before_script:
-  - echo "<General Build is launching up...>"
-  #- jdk_switcher use openjdk11
+jobs:
+  include:
+  - stage: assembly
+    install: skip
+    before_script: echo "<STAGE 'assembly' is launching up...>"
+    script: gradle assemble
+    after_success: echo "<STAGE 'assembly' has been executed successfully>"
+    after_failure: echo "<STAGE 'assembly' has been failed>"
 
-install: true
-
-script:
-  - gradle assemble
-
-after_success:
-  - echo "Main Build has been executed successfully"
-  - bash <(curl -s https://codecov.io/bash)
-
-after_failure:
-  - echo "Houston, we have some problems"
-  - echo "Main Build has been failed"
-  
+  - stage: test
+    install: skip
+    before_script: echo "<STAGE 'test' is launching up...>"
+    script: gradle test
+    after_success: echo "<STAGE 'test' has been executed successfully>"
+    after_failure: echo "<STAGE 'test' has been failed>"
+    
+#before_install: ignore
+#before_script:
+#  - echo "<General Build is launching up...>"
+#  #- jdk_switcher use openjdk11
+#
+#install: true
+#
+#script:
+#  - gradle assemble
+#
+#after_success:
+#  - echo "Main Build has been executed successfully"
+#  - bash <(curl -s https://codecov.io/bash)
+#
+#after_failure:
+#  - echo "Houston, we have some problems"
+#  - echo "Main Build has been failed"
