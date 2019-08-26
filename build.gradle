@@ -28,8 +28,8 @@ subprojects {
         seleniumVersion = '3.141.59'
         allureVersion = '2.12.1'
         jacksonVersion = '2.10.0.pr1'
-        mavenDeployLogin = REPO_USER_NAME
-        mavenDeployPassword = REPO_USER_PASSWORD
+        mavenDeployLogin = hasProperty('REPO_USER_NAME') ? REPO_USER_NAME : System.getenv('REPO_USER_NAME')
+        mavenDeployPassword = hasProperty('REPO_USER_PASSWORD') ? REPO_USER_NAME : System.getenv('REPO_USER_PASSWORD')
         globalVersion = version
     }
 
