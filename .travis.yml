@@ -4,8 +4,7 @@ jdk: oraclejdk11
 os: linux
 
 env:
-  - REPO_USER_NAME=qa
-  - REPO_USER_PASSWORD=qa123ws
+  - REPO_USER_NAME=qa REPO_USER_PASSWORD=qa123ws
 
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
@@ -32,7 +31,7 @@ jobs:
     script: gradle test
     after_success: echo "<STAGE 'test' has been executed successfully>"
     after_failure: echo "<STAGE 'test' has been failed>"
-    
+
 #before_install: ignore
 #before_script:
 #  - echo "<General Build is launching up...>"
