@@ -16,21 +16,34 @@ cache:
     - $HOME/.m2
     - $HOME/.gradle
 
+before_install: ignore
+
 jobs:
   include:
-  - stage: assembly
+  - stage: full_assembly
     install: skip
-    before_script: echo "<STAGE 'assembly' is launching up...>"
+    before_script: echo "<STAGE 'full_assembly' is launching up...>"
     script: gradle assemble
-    after_success: echo "<STAGE 'assembly' has been executed successfully>"
-    after_failure: echo "<STAGE 'assembly' has been failed>"
+    after_success: echo "<STAGE 'full_assembly' has been executed successfully>"
+    after_failure: echo "<STAGE 'full_assembly' has been failed>"
 
-  - stage: test
+  - stage: test_check
     install: skip
-    before_script: echo "<STAGE 'test' is launching up...>"
+    before_script:
+     - echo "<STAGE 'test_check' is launching up...>"
+     - cd check
     script: gradle test
-    after_success: echo "<STAGE 'test' has been executed successfully>"
-    after_failure: echo "<STAGE 'test' has been failed>"
+    after_success: echo "<STAGE 'test_check' has been executed successfully>"
+    after_failure: echo "<STAGE 'test_check' has been failed>"
+
+  - stage: test_http_api
+    install: skip
+    before_script:
+    - echo "<STAGE 'test_http_api' is launching up...>"
+    - cd http.api
+    script: gradle test
+    after_success: echo "<STAGE 'test_http_api' has been executed successfully>"
+    after_failure: echo "<STAGE 'test_http_api' has been failed>"
 
 #before_install: ignore
 #before_script:
