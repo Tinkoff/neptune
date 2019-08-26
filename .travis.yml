@@ -36,29 +36,11 @@ jobs:
     after_success: echo "<STAGE 'test_check' has been executed successfully>"
     after_failure: echo "<STAGE 'test_check' has been failed>"
 
-  - stage: test_http_api
-    install: skip
-    before_script:
-    - echo "<STAGE 'test_http_api' is launching up...>"
-    - cd http.api
-    script: gradle test
-    after_success: echo "<STAGE 'test_http_api' has been executed successfully>"
-    after_failure: echo "<STAGE 'test_http_api' has been failed>"
-
-#before_install: ignore
-#before_script:
-#  - echo "<General Build is launching up...>"
-#  #- jdk_switcher use openjdk11
-#
-#install: true
-#
-#script:
-#  - gradle assemble
-#
-#after_success:
-#  - echo "Main Build has been executed successfully"
-#  - bash <(curl -s https://codecov.io/bash)
-#
-#after_failure:
-#  - echo "Houston, we have some problems"
-#  - echo "Main Build has been failed"
+#  - stage: test_http_api
+#    install: skip
+#    before_script:
+#    - echo "<STAGE 'test_http_api' is launching up...>"
+#    - cd http.api
+#    script: gradle test
+#    after_success: echo "<STAGE 'test_http_api' has been executed successfully>"
+#    after_failure: echo "<STAGE 'test_http_api' has been failed>"
