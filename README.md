@@ -1,4 +1,5 @@
-Assembly ==> [![Build Status](https://travis-ci.org/ArisAgnew/neptune.svg?branch=master)](https://travis-ci.org/ArisAgnew/neptune.svg?branch=master)
+[![Build Status](https://travis-ci.org/ArisAgnew/neptune.svg?branch=master)](https://travis-ci.org/ArisAgnew/neptune.svg?branch=master) 
+ <== Assembly
 
 # neptune
 Test automation framework for automation of E2E tests.
