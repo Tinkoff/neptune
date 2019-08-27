@@ -32,32 +32,46 @@ jobs:
       script:
         - cd allure.integration
         - gradle test
-    - name: "[allure.testng.bridge] Module Tests"
-    - script:
+
+    - stage: UnitTest
+      name: "[allure.testng.bridge] Module Tests"
+      script:
         - cd allure.testng.bridge
         - gradle test
-    - name: "[check] Module Tests"
-    - script:
+
+    - stage: UnitTest
+      name: "[check] Module Tests"
+      script:
         - cd check
         - gradle test
-    - name: "[core.api] Module Tests"
-    - script:
+
+    - stage: UnitTest
+      name: "[core.api] Module Tests"
+      script:
         - cd core.api
         - gradle test
-    - name: "[data.base.api] Module Tests"
-    - script:
+
+    - stage: UnitTest
+      name: "[data.base.api] Module Tests"
+      script:
         - cd data.base.api
         - gradle test
-    - name: "[http.api] Module Tests"
-    - script:
+
+    - stage: UnitTest
+      name: "[http.api] Module Tests"
+      script:
         - cd http.api
         - gradle test
-    - name: "[selenium] Module Tests"
-    - script:
+
+    - stage: UnitTest
+      name: "[selenium] Module Tests"
+      script:
         - cd selenium
         - gradle test
-    - name: "[testng.integration] Module Tests"
-    - script:
+
+    - stage: UnitTest
+      name: "[testng.integration] Module Tests"
+      script:
         - cd testng.integration
         - gradle test
 
