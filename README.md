@@ -1,8 +1,8 @@
 # Neptune
 [![Travis][build-badge]][build]
 
-[build-badge]: https://travis-ci.org/ArisAgnew/neptune.svg?branch=master
-[build]: https://travis-ci.org/ArisAgnew/neptune
+[build-badge]: https://travis-ci.com/TinkoffCreditSystems/neptune.svg?branch=master
+[build]: https://travis-ci.com/TinkoffCreditSystems/neptune
 
 Test automation framework for automation of E2E tests.
 
