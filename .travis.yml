@@ -6,6 +6,10 @@ os: linux
 env:
   - REPO_USER_NAME=qa REPO_USER_PASSWORD=qa123ws
 
+branches:
+  only:
+    - master
+
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
@@ -20,50 +24,52 @@ before_install: ignore
 
 jobs:
   include:
+    # Build/Assembly stage
     - stage: Assembly
       install: skip
-      before_script: echo "<STAGE 'Assembly 'islaunchingup...>"
+      before_script: echo "<STAGE 'Assembly 'is launching up...>"
       script: gradle assemble
       after_success: echo "<STAGE 'Assembly 'has been executed successfully>"
       after_failure: echo "<STAGE 'Assembly 'has been failed>"
 
-    - stage: UnitTest
+    # Test stage
+    - stage: Test
       name: "[allure.integration] Module Tests"
       script:
         - cd allure.integration
         - gradle test
 
-    - stage: UnitTest
+    - stage: Test
       name: "[allure.testng.bridge] Module Tests"
       script:
         - cd allure.testng.bridge
         - gradle test
 
-    - stage: UnitTest
+    - stage: Test
       name: "[check] Module Tests"
       script:
         - cd check
         - gradle test
 
-    - stage: UnitTest
+    - stage: Test
       name: "[core.api] Module Tests"
       script:
         - cd core.api
         - gradle test
 
-    - stage: UnitTest
+    - stage: Test
       name: "[data.base.api] Module Tests"
       script:
         - cd data.base.api
         - gradle test
 
-    - stage: UnitTest
+    - stage: Test
       name: "[http.api] Module Tests"
       script:
         - cd http.api
         - gradle test
 
-    - stage: UnitTest
+    - stage: Test
       name: "[selenium] Module Tests"
       script:
         - cd selenium
@@ -75,6 +81,10 @@ jobs:
         - cd testng.integration
         - gradle test
 
-    - stage: deploy
+    # in case of a need for continuous deployment (Docker as an example), you have to set up this stage
+    # Follow-up step is to make 'Heroku' account to do so
+    # Deployment stage
+    - stage: Deploy
       install: skip
       script: skip
+      provider: skip
