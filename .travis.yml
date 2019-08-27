@@ -20,27 +20,17 @@ before_install: ignore
 
 jobs:
   include:
-  - stage: full_assembly
-    install: skip
-    before_script: echo "<STAGE 'full_assembly' is launching up...>"
-    script: gradle assemble
-    after_success: echo "<STAGE 'full_assembly' has been executed successfully>"
-    after_failure: echo "<STAGE 'full_assembly' has been failed>"
+    - stage: UnitTest
+      name: "Check Module Tests"
+      script:
+        - cd check
+        - gradle test
 
-  - stage: test_check
-    install: skip
-    before_script:
-     - echo "<STAGE 'test_check' is launching up...>"
-     - cd check
-    script: gradle test
-    after_success: echo "<STAGE 'test_check' has been executed successfully>"
-    after_failure: echo "<STAGE 'test_check' has been failed>"
+    - name: "Http.api Module Tests"
+    - script:
+        - cd http.api
+        - gradle test
 
-#  - stage: test_http_api
-#    install: skip
-#    before_script:
-#    - echo "<STAGE 'test_http_api' is launching up...>"
-#    - cd http.api
-#    script: gradle test
-#    after_success: echo "<STAGE 'test_http_api' has been executed successfully>"
-#    after_failure: echo "<STAGE 'test_http_api' has been failed>"
+    - stage: deploy
+      install: skip
+      script: skip
