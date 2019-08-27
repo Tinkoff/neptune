@@ -1,6 +1,13 @@
-[![Build Status](https://travis-ci.org/ArisAgnew/neptune.svg?branch=master)](https://travis-ci.org/ArisAgnew/neptune)
-
 # Neptune
+
+[![Travis][build-badge]][build] [![Coveralls][coveralls-badge]][coveralls]
+
+[build-badge]: https://travis-ci.org/ArisAgnew/neptune.svg?branch=master
+[build]: https://travis-ci.org/ArisAgnew/neptune
+
+[coveralls-badge]: https://img.shields.io/coveralls/ArisAgnew/neptune/master.png?style=flat-square
+[coveralls]: https://coveralls.io/github/ArisAgnew/neptune
+
 Test automation framework for automation of E2E tests.
 
 It is under the ALPHA testing by developers/QA engineers of [Tinkoff.ru](https://www.tinkoff.ru/software/) for a while. Built jar are not available outside. For now source code and documentation is available for overview.
