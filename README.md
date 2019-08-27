@@ -1,12 +1,8 @@
 # Neptune
-
-[![Travis][build-badge]][build] [![Coveralls][coveralls-badge]][coveralls]
+[![Travis][build-badge]][build]
 
 [build-badge]: https://travis-ci.org/ArisAgnew/neptune.svg?branch=master
 [build]: https://travis-ci.org/ArisAgnew/neptune
-
-[coveralls-badge]: https://img.shields.io/coveralls/ArisAgnew/neptune/master.png?style=flat-square
-[coveralls]: https://coveralls.io/github/ArisAgnew/neptune
 
 Test automation framework for automation of E2E tests.
 
