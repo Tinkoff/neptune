@@ -75,7 +75,7 @@ jobs:
         - cd selenium
         - gradle test
 
-    - stage: UnitTest
+    - stage: Test
       name: "[testng.integration] Module Tests"
       script:
         - cd testng.integration
