@@ -1,4 +1,9 @@
-# neptune
+# Neptune
+[![Travis][build-badge]][build]
+
+[build-badge]: https://travis-ci.com/TinkoffCreditSystems/neptune.svg?branch=master
+[build]: https://travis-ci.com/TinkoffCreditSystems/neptune
+
 Test automation framework for automation of E2E tests.
 
 It is under the ALPHA testing by developers/QA engineers of [Tinkoff.ru](https://www.tinkoff.ru/software/) for a while. Built jar are not available outside. For now source code and documentation is available for overview.
