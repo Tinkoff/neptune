@@ -38,10 +38,6 @@ import static org.openqa.selenium.remote.BrowserType.*;
  *
  * Requirements:
  * Installed Chrome
- * Installed FireFix
- * Installed Safari if test is run on Mac Os X
- * Installed Edge if test is run on Windows 10
- * Installed Internet explorer if test is run on Windows 8
  */
 public class SanityTestOfTheStartingAndStoppingOfWebDriver {
 
