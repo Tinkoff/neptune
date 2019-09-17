@@ -1,8 +1,12 @@
 # Neptune
 [![Travis][build-badge]][build]
+[![Release][release-badge]][release-link]
 
 [build-badge]: https://travis-ci.com/TinkoffCreditSystems/neptune.svg?branch=master
 [build]: https://travis-ci.com/TinkoffCreditSystems/neptune
+
+[release-badge]: https://img.shields.io/github/v/tag/TinkoffCreditSystems/neptune?label=release
+[release-link]: https://github.com/TinkoffCreditSystems/neptune/releases
 
 Test automation framework for automation of E2E tests.
 
