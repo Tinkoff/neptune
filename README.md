@@ -9,7 +9,7 @@
 [release-badge]: https://img.shields.io/github/v/tag/TinkoffCreditSystems/neptune?label=release
 [release-link]: https://github.com/TinkoffCreditSystems/neptune/releases
 
-[commit-badge]: https://img.shields.io/github/last-commit/TinkoffCreditSystems/neptune/master
+[commit-badge]: https://img.shields.io/github/last-commit/TinkoffCreditSystems/neptune/master?color=orange
 [commit-link]: https://github.com/TinkoffCreditSystems/neptune/commits/master
 
 Test automation framework for automation of E2E tests.
