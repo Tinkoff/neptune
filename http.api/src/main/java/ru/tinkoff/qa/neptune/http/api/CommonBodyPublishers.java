@@ -1,7 +1,17 @@
 package ru.tinkoff.qa.neptune.http.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.GsonBuilder;
+import org.w3c.dom.Document;
+
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.net.http.HttpRequest;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -9,8 +19,10 @@ import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.function.Supplier;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.net.http.HttpRequest.BodyPublishers.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Objects.nonNull;
 
 /**
  * Creates instances if {@link java.net.http.HttpRequest.BodyPublisher} for more comfort usage
@@ -124,5 +136,128 @@ public final class CommonBodyPublishers {
      */
     public static HttpRequest.BodyPublisher empty() {
         return noBody();
+    }
+
+    /**
+     * Serializes given object to json string for the using it as a request body
+     *
+     * @param t is an object to be serialized to json string
+     * @param builder is used for the serialization
+     * @param charset of a resulted request body
+     * @param <T> is a type of the object to be serialized
+     * @return a BodyPublisher
+     */
+    public static  <T> HttpRequest.BodyPublisher jsonStringBody(T t, GsonBuilder builder, Charset charset) {
+        checkArgument(nonNull(builder), "Json builder should not be a null value");
+        checkArgument(nonNull(charset), "Char set should not be a null value");
+        return ofString(builder.create().toJson(t), charset);
+    }
+
+    /**
+     * Serializes given object to json string for the using it as a request body
+     *
+     * @param t is an object to be serialized to json string
+     * @param builder is used for the serialization
+     * @param <T> is a type of the object to be serialized
+     * @return a BodyPublisher
+     */
+    public static  <T> HttpRequest.BodyPublisher jsonStringBody(T t, GsonBuilder builder) {
+        return jsonStringBody(t, builder, UTF_8);
+    }
+
+    /**
+     * Serializes given object to json/xml string for the using it as a request body. The serializing is
+     * performed by Jackson
+     *
+     * @param t is an object to be serialized to json string
+     * @param mapper is an object mapper
+     * @param charset  of a resulted request body
+     * @param <T> is a type of the object to be serialized
+     * @return a BodyPublisher
+     */
+    public static  <T> HttpRequest.BodyPublisher serializedStringBody(T t, ObjectMapper mapper, Charset charset) {
+        checkArgument(nonNull(t), "Object to be serialized should not be a null value");
+        checkArgument(nonNull(mapper), "Object mapper should not be a null value");
+        checkArgument(nonNull(charset), "Char set should not be a null value");
+        try {
+            return ofString(mapper.writeValueAsString(t), charset);
+        } catch (JsonProcessingException e) {
+           throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Serializes given object to json/xml string for the using it as a request body. The serializing is
+     * performed by Jackson
+     *
+     * @param t is an object to be serialized to json string
+     * @param mapper is an object mapper
+     * @param <T> is a type of the object to be serialized
+     * @return a BodyPublisher
+     */
+    public static <T> HttpRequest.BodyPublisher serializedStringBody(T t, ObjectMapper mapper) {
+        return serializedStringBody(t, mapper, UTF_8);
+    }
+
+    /**
+     * Transforms given xml/html document to string body of a request.
+     *
+     * @param document is xml/html document to be used
+     * @param transformer is a transformer of the document to string value
+     * @param charset of a resulted request body
+     * @return a BodyPublisher
+     */
+    public static  HttpRequest.BodyPublisher documentStringBody(Document document,
+                                                                Transformer transformer,
+                                                                Charset charset) {
+        checkArgument(nonNull(document), "Document should not be a null value");
+        checkArgument(nonNull(transformer), "Transformer should not be a null value");
+        checkArgument(nonNull(charset), "Char set should not be a null value");
+
+        DOMSource domSource = new DOMSource(document);
+
+        var sw = new StringWriter();
+        StreamResult sr = new StreamResult(sw);
+        try {
+            transformer.transform(domSource, sr);
+            return ofString(sw.toString(), charset);
+        } catch (TransformerException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Transforms given xml/html document to string body of a request.
+     *
+     * @param document is xml/html document to be used
+     * @param transformer is a transformer of the document to string value
+     * @return a BodyPublisher
+     */
+    public static HttpRequest.BodyPublisher documentStringBody(Document document, Transformer transformer) {
+        return documentStringBody(document, transformer, UTF_8);
+    }
+
+    /**
+     * Transforms given html document to string body of a request.
+     *
+     * @param document is html document to be used
+     * @param charset of a resulted request body
+     * @return a BodyPublisher
+     */
+    public static  HttpRequest.BodyPublisher documentStringBody(org.jsoup.nodes.Document document,
+                                                                Charset charset) {
+        checkArgument(nonNull(document), "Document should not be a null value");
+        checkArgument(nonNull(charset), "Char set should not be a null value");
+        return ofString(document.outerHtml(), charset);
+    }
+
+    /**
+     * Transforms given html document to string body of a request.
+     *
+     * @param document is html document to be used
+     * @return a BodyPublisher
+     */
+    public static  HttpRequest.BodyPublisher documentStringBody(org.jsoup.nodes.Document document) {
+        return documentStringBody(document, UTF_8);
     }
 }
