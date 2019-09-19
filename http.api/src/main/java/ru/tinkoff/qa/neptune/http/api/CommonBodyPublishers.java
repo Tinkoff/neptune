@@ -17,12 +17,15 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.lang.String.format;
 import static java.net.http.HttpRequest.BodyPublishers.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.nonNull;
+import static java.util.stream.Collectors.joining;
 
 /**
  * Creates instances if {@link java.net.http.HttpRequest.BodyPublisher} for more comfort usage
@@ -259,5 +262,35 @@ public final class CommonBodyPublishers {
      */
     public static  HttpRequest.BodyPublisher documentStringBody(org.jsoup.nodes.Document document) {
         return documentStringBody(document, UTF_8);
+    }
+
+    /**
+     * Transforms a map to to string body of a request. It is expected that keys of a map are parameter names
+     * and values are values of defined parameters. Resulted string body looks like following string
+     * {@code key1=val1&key2=val2}
+     *
+     * @param formParameters is a map where keys are parameter names and values are values of defined parameters
+     * @param charset of a resulted request body
+     * @return a BodyPublisher
+     */
+    public static HttpRequest.BodyPublisher formUrlEncodedStringParamsBody(Map<String, String> formParameters, Charset charset) {
+        checkArgument(nonNull(formParameters), "Form parameters should not be a null value");
+        checkArgument(formParameters.size() > 0, "Should be defined at least one parameter name and its value");
+        return ofString(formParameters.entrySet()
+                .stream()
+                .map(entry -> format("%s=%s", entry.getKey(), entry.getValue()))
+                .collect(joining("&")), charset);
+    }
+
+    /**
+     * Transforms a map to to string body of a request. It is expected that keys of a map are parameter names
+     * and values are values of defined parameters. Resulted string body looks like following string
+     * {@code key1=val1&key2=val2}
+     *
+     * @param formParameters is a map where keys are parameter names and values are values of defined parameters
+     * @return a BodyPublisher
+     */
+    public static HttpRequest.BodyPublisher formUrlEncodedStringParamsBody(Map<String, String> formParameters) {
+        return formUrlEncodedStringParamsBody(formParameters,  UTF_8);
     }
 }

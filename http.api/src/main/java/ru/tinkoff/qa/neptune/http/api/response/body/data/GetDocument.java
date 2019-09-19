@@ -12,17 +12,17 @@ import static java.util.Objects.nonNull;
 import static org.jsoup.Jsoup.parse;
 
 /**
- *
- * @param <T>
+ * This function is designed to read string content and transform it to XML/HTML documents.
+ * @param <T> is a type of resulted object
  */
 public abstract class GetDocument<T> implements Function<String, T> {
 
     /**
-     *
-     * @param documentBuilder
-     * @return
+     * Creates an instance of {@link GetDocument} that reads string body of a response and transforms it to {@link Document}
+     * @param documentBuilder an instance of that {@link DocumentBuilder} parses string and creates resulted xml/html document
+     * @return an instance of anonymous {@link GetDocument} subclass
      */
-    public static GetDocument<Document> getDocument(DocumentBuilder documentBuilder) {
+    public static Function<String, Document> getDocument(DocumentBuilder documentBuilder) {
         checkArgument(nonNull(documentBuilder), "Document builder should not be a null value");
         return new GetDocument<>() {
             @Override
@@ -38,10 +38,11 @@ public abstract class GetDocument<T> implements Function<String, T> {
     }
 
     /**
+     * Creates an instance of {@link GetDocument} that reads string body of a response and transforms it to {@link org.jsoup.nodes.Document}
      *
-     * @return
+     * @return an instance of anonymous {@link GetDocument} subclass
      */
-    public static GetDocument<org.jsoup.nodes.Document> getDocument() {
+    public static Function<String, org.jsoup.nodes.Document> getDocument() {
         return new GetDocument<>() {
             @Override
             public org.jsoup.nodes.Document apply(String s) {

@@ -8,8 +8,9 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.nonNull;
 
 /**
- *
- * @param <T>
+ * This function is designed to deserialize json string to some object/array of custom objects. Deserialization is
+ * performed by {@link com.google.gson.Gson}
+ * @param <T> is a type of resulted object
  */
 public class FromJson<T> implements Function<String, T> {
 
@@ -24,23 +25,25 @@ public class FromJson<T> implements Function<String, T> {
     }
 
     /**
+     * Creates an instance of {@link FromJson}
      *
-     * @param toReturn
-     * @param builder
-     * @param <T>
-     * @return
+     * @param toReturn is a type of resulted object to deserialize string body of an http response
+     * @param builder is an instance of {@link GsonBuilder}
+     * @param <T> is a type of resulted object
+     * @return instance of {@link FromJson}
      */
-    public static <T> FromJson<T> getFromJson(Class<T> toReturn, GsonBuilder builder) {
+    public static <T> Function<String, T> getFromJson(Class<T> toReturn, GsonBuilder builder) {
         return new FromJson<>(toReturn, builder);
     }
 
     /**
+     * Creates an instance of {@link FromJson}
      *
-     * @param toReturn
-     * @param <T>
-     * @return
+     * @param toReturn is a type of resulted object to deserialize string body of an http response
+     * @param <T> is a type of resulted object
+     * @return instance of {@link FromJson}
      */
-    public static <T> FromJson<T> getFromJson(Class<T> toReturn) {
+    public static <T> Function<String, T> getFromJson(Class<T> toReturn) {
         return getFromJson(toReturn, new GsonBuilder());
     }
 

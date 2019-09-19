@@ -10,8 +10,9 @@ import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
- *
- * @param <T>
+ * This function is designed to deserialize json/xml string to some object. Deserialization is
+ * performed by {@link com.fasterxml.jackson.databind.ObjectMapper}
+ * @param <T> is a type of resulted object
  */
 public class GetMapped<T> implements Function<String, T> {
 
@@ -26,22 +27,25 @@ public class GetMapped<T> implements Function<String, T> {
     }
 
     /**
-     * @param toReturn
-     * @param mapper
-     * @param <T>
-     * @return
+     * Creates an instance of {@link GetMapped}
+     *
+     * @param toReturn is a type of resulted object to deserialize string body of an http response
+     * @param mapper is an instance of {@link ObjectMapper}
+     * @param <T> is a type of resulted object
+     * @return instance of {@link GetMapped}
      */
-    public static <T> GetMapped<T> getMapped(Class<T> toReturn, ObjectMapper mapper) {
+    public static <T> Function<String, T> getMapped(Class<T> toReturn, ObjectMapper mapper) {
         return new GetMapped<>(toReturn, mapper);
     }
 
     /**
-     * 
-     * @param toReturn
-     * @param <T>
-     * @return
+     * Creates an instance of {@link GetMapped}
+     *
+     * @param toReturn is a type of resulted object to deserialize string body of an http response
+     * @param <T> is a type of resulted object
+     * @return instance of {@link GetMapped}
      */
-    public static <T> GetMapped<T> getMapped(Class<T> toReturn) {
+    public static <T> Function<String, T> getMapped(Class<T> toReturn) {
         return getMapped(toReturn, new ObjectMapper());
     }
 
