@@ -5,6 +5,10 @@ import com.google.gson.annotations.SerializedName;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+import java.util.Objects;
+
+import static java.util.Objects.nonNull;
+
 @XmlType(namespace = "http://www.example.com")
 public class BodyObject {
 
@@ -46,5 +50,13 @@ public class BodyObject {
     public BodyObject setC(Boolean c) {
         this.c = c;
         return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return nonNull(o) && BodyObject.class.equals(o.getClass())
+                && Objects.equals(this.a, ((BodyObject) o).a)
+                && Objects.equals(this.b, ((BodyObject) o).b)
+                && Objects.equals(this.c, ((BodyObject) o).c);
     }
 }
