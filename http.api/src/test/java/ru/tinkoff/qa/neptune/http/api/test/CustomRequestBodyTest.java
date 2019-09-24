@@ -85,8 +85,7 @@ public class CustomRequestBodyTest extends BaseHttpTest {
                 request()
                         .withMethod("POST")
                         .withHeader("Content-Type", "application/json")
-                        .withBody(REQUEST_BODY_GSON
-                        )
+                        .withBody(REQUEST_BODY_GSON)
                         .withPath(PATH_TO_GSON))
                 .respond(response().withBody(JSON_HAS_BEEN_SUCCESSFULLY_POSTED));
 

@@ -3,7 +3,6 @@ package ru.tinkoff.qa.neptune.http.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.GsonBuilder;
-import org.w3c.dom.Document;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -144,7 +143,7 @@ public final class CommonBodyPublishers {
     }
 
     /**
-     * Serializes given object to json string for the using it as a request body
+     * Serializes given object to json string to be used as a request body.
      *
      * @param t is an object to be serialized to json string
      * @param builder is used for the serialization
@@ -153,13 +152,14 @@ public final class CommonBodyPublishers {
      * @return a BodyPublisher
      */
     public static  <T> HttpRequest.BodyPublisher jsonStringBody(T t, GsonBuilder builder, Charset charset) {
+        checkArgument(nonNull(t), "Object to be serialized should not be a null value");
         checkArgument(nonNull(builder), "Json builder should not be a null value");
         checkArgument(nonNull(charset), "Char set should not be a null value");
         return ofString(builder.create().toJson(t), charset);
     }
 
     /**
-     * Serializes given object to json string for the using it as a request body
+     * Serializes given object to json string to be used as a request body.
      *
      * @param t is an object to be serialized to json string
      * @param builder is used for the serialization
@@ -171,8 +171,8 @@ public final class CommonBodyPublishers {
     }
 
     /**
-     * Serializes given object to json/xml string for the using it as a request body. The serializing is
-     * performed by Jackson
+     * Serializes given object to json/xml string to be used as a request body.
+     * A serialization is performed by Jackson.
      *
      * @param t is an object to be serialized to json string
      * @param mapper is an object mapper
@@ -192,8 +192,8 @@ public final class CommonBodyPublishers {
     }
 
     /**
-     * Serializes given object to json/xml string for the using it as a request body. The serializing is
-     * performed by Jackson
+     * Serializes given object to json/xml string to be used as a request body.
+     * A serialization is performed by Jackson.
      *
      * @param t is an object to be serialized to json string
      * @param mapper is an object mapper
@@ -212,7 +212,7 @@ public final class CommonBodyPublishers {
      * @param charset of a resulted request body
      * @return a BodyPublisher
      */
-    public static  HttpRequest.BodyPublisher documentStringBody(Document document,
+    public static  HttpRequest.BodyPublisher documentStringBody(org.w3c.dom.Document document,
                                                                 Transformer transformer,
                                                                 Charset charset) {
         checkArgument(nonNull(document), "Document should not be a null value");
@@ -238,7 +238,7 @@ public final class CommonBodyPublishers {
      * @param transformer is a transformer of the document to string value
      * @return a BodyPublisher
      */
-    public static HttpRequest.BodyPublisher documentStringBody(Document document, Transformer transformer) {
+    public static HttpRequest.BodyPublisher documentStringBody(org.w3c.dom.Document document, Transformer transformer) {
         return documentStringBody(document, transformer, UTF_8);
     }
 
@@ -267,7 +267,7 @@ public final class CommonBodyPublishers {
     }
 
     /**
-     * Transforms a map to to string body of {@code application/x-www-form-urlencoded} format
+     * Transforms a map to string body of {@code application/x-www-form-urlencoded} format
      *
      * @param formParameters is a map where keys are parameter names and values are values of defined parameters
      * @param charset of a resulted request body
@@ -291,7 +291,7 @@ public final class CommonBodyPublishers {
     }
 
     /**
-     * Transforms a map to to string body of {@code application/x-www-form-urlencoded} format
+     * Transforms a map to string body of {@code application/x-www-form-urlencoded} format
      *
      * @param formParameters is a map where keys are parameter names and values are values of defined parameters
      * @return a BodyPublisher

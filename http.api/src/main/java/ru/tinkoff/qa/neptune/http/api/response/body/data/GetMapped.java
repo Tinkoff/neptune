@@ -1,13 +1,13 @@
 package ru.tinkoff.qa.neptune.http.api.response.body.data;
 
-import java.util.function.Function;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.function.Function;
+
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * This function is designed to deserialize json/xml string to some object. Deserialization is
@@ -52,7 +52,7 @@ public class GetMapped<T> implements Function<String, T> {
     @Override
     public T apply(String s) {
         try {
-            if (!isBlank(s)) {
+            if (isNotBlank(s)) {
                 return mapper.readValue(s, toGet);
             }
             else {
