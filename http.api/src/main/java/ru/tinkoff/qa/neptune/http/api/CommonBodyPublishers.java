@@ -291,9 +291,7 @@ public final class CommonBodyPublishers {
     }
 
     /**
-     * Transforms a map to to string body of a request. It is expected that keys of a map are parameter names
-     * and values are values of defined parameters. Resulted string body looks like following string
-     * {@code key1=val1&key2=val2}
+     * Transforms a map to to string body of {@code application/x-www-form-urlencoded} format
      *
      * @param formParameters is a map where keys are parameter names and values are values of defined parameters
      * @return a BodyPublisher
