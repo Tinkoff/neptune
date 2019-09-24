@@ -12,6 +12,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.http.HttpRequest;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -22,6 +23,7 @@ import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
+import static java.net.URLEncoder.encode;
 import static java.net.http.HttpRequest.BodyPublishers.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.nonNull;
@@ -265,9 +267,7 @@ public final class CommonBodyPublishers {
     }
 
     /**
-     * Transforms a map to to string body of a request. It is expected that keys of a map are parameter names
-     * and values are values of defined parameters. Resulted string body looks like following string
-     * {@code key1=val1&key2=val2}
+     * Transforms a map to to string body of {@code application/x-www-form-urlencoded} format
      *
      * @param formParameters is a map where keys are parameter names and values are values of defined parameters
      * @param charset of a resulted request body
@@ -278,7 +278,15 @@ public final class CommonBodyPublishers {
         checkArgument(formParameters.size() > 0, "Should be defined at least one parameter name and its value");
         return ofString(formParameters.entrySet()
                 .stream()
-                .map(entry -> format("%s=%s", entry.getKey(), entry.getValue()))
+                .map(entry -> {
+                    try {
+                        return format("%s=%s",
+                                encode(entry.getKey(), UTF_8.toString()),
+                                encode(entry.getValue(), UTF_8.toString()));
+                    } catch (UnsupportedEncodingException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .collect(joining("&")), charset);
     }
 

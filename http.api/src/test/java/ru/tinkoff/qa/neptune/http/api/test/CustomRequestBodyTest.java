@@ -70,6 +70,7 @@ public class CustomRequestBodyTest extends BaseHttpTest {
             "</html>";
 
     private static final String REQUEST_BODY_URL_UNLOADED = "param1=value1&param2=value2";
+    private static final String REQUEST_BODY_URL_UNLOADED2 = "chip%26dale=rescue+rangers&how+to+get+water=2H2+%2B+O2+%3D+2H2O";
 
     private static final String JSON_HAS_BEEN_SUCCESSFULLY_POSTED = "Json has been successfully posted";
     private static final String JACKSON_XML_HAS_BEEN_SUCCESSFULLY_POSTED = "Jackson xml has been successfully posted";
@@ -120,6 +121,14 @@ public class CustomRequestBodyTest extends BaseHttpTest {
                         .withBody(REQUEST_BODY_URL_UNLOADED)
                         .withPath(PATH_URL_UNLOADED))
                 .respond(response().withBody(FORM_HAS_BEEN_SUCCESSFULLY_POSTED));
+
+        clientAndServer.when(
+                request()
+                        .withMethod("POST")
+                        .withHeader("Content-Type", "application/x-www-form-urlencoded")
+                        .withBody(REQUEST_BODY_URL_UNLOADED2)
+                        .withPath(PATH_URL_UNLOADED))
+                .respond(response().withBody(FORM_HAS_BEEN_SUCCESSFULLY_POSTED));
     }
 
     @DataProvider
@@ -134,6 +143,10 @@ public class CustomRequestBodyTest extends BaseHttpTest {
         var params = new LinkedHashMap<String, String>();
         params.put("param1", "value1");
         params.put("param2", "value2");
+
+        var params2 = new LinkedHashMap<String, String>();
+        params2.put("chip&dale", "rescue rangers");
+        params2.put("how to get water", "2H2 + O2 = 2H2O");
 
         var htmlDoc = Jsoup.parse("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n" +
                 "<html>\n" +
@@ -176,6 +189,11 @@ public class CustomRequestBodyTest extends BaseHttpTest {
 
                 {PATH_URL_UNLOADED,
                         formUrlEncodedStringParamsBody(params),
+                        "application/x-www-form-urlencoded",
+                        FORM_HAS_BEEN_SUCCESSFULLY_POSTED},
+
+                {PATH_URL_UNLOADED,
+                        formUrlEncodedStringParamsBody(params2),
                         "application/x-www-form-urlencoded",
                         FORM_HAS_BEEN_SUCCESSFULLY_POSTED},
         };
