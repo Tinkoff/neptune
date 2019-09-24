@@ -22,7 +22,7 @@ public abstract class GetDocument<T> implements Function<String, T> {
      * @param documentBuilder an instance of that {@link DocumentBuilder} parses string and creates resulted xml/html document
      * @return an instance of anonymous {@link GetDocument} subclass
      */
-    public static Function<String, Document> getDocument(DocumentBuilder documentBuilder) {
+    public static Function<String, org.w3c.dom.Document> getDocument(DocumentBuilder documentBuilder) {
         checkArgument(nonNull(documentBuilder), "Document builder should not be a null value");
         return new GetDocument<>() {
             @Override
