@@ -35,6 +35,7 @@ ru.tinkoff.qa.neptune.http.api
 ru.tinkoff.qa.neptune.http.api.captors
 ru.tinkoff.qa.neptune.http.api.properties
 ru.tinkoff.qa.neptune.http.api.properties.time
+ru.tinkoff.qa.neptune.http.api.response.body.data
 ru.tinkoff.qa.neptune.selenium
 ru.tinkoff.qa.neptune.selenium.api.widget
 ru.tinkoff.qa.neptune.selenium.api.widget.drafts
