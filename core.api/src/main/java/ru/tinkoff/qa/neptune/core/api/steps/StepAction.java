@@ -13,8 +13,8 @@ import java.util.function.Consumer;
 import static java.lang.System.lineSeparator;
 import static java.util.Objects.nonNull;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.*;
-import static ru.tinkoff.qa.neptune.core.api.properties.DoCapturesOf.catchFailureEvent;
-import static ru.tinkoff.qa.neptune.core.api.properties.DoCapturesOf.catchSuccessEvent;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchFailureEvent;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchSuccessEvent;
 import static com.google.common.base.Preconditions.checkArgument;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 

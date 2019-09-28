@@ -7,8 +7,8 @@ import ru.tinkoff.qa.neptune.selenium.test.ActiveWebElement;
 import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 
 import static java.lang.System.getProperties;
-import static ru.tinkoff.qa.neptune.core.api.properties.CapturedEvents.SUCCESS_AND_FAILURE;
-import static ru.tinkoff.qa.neptune.core.api.properties.DoCapturesOf.DO_CAPTURES_OF_INSTANCE;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents.SUCCESS_AND_FAILURE;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.DO_CAPTURES_OF_INSTANCE;
 import static ru.tinkoff.qa.neptune.selenium.test.captors.TestImageInjector.INJECTED;
 
 public class BaseCaptorTest extends BaseWebDriverTest {
