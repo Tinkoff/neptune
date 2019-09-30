@@ -18,7 +18,7 @@ class ThreadFreeStateLoop extends Thread {
         var startTime = currentTimeMillis();
         var timeToWait = FREE_RESOURCES_ON_INACTIVITY_AFTER.get().toMillis();
 
-        while (currentTimeMillis() < startTime + timeToWait) {
+        while (currentTimeMillis() <= startTime + timeToWait) {
             if (container.isBusy()) {
                 return;
             }
@@ -28,7 +28,7 @@ class ThreadFreeStateLoop extends Thread {
             }
         }
 
-        if (container.isBusy()) {
+        if (!container.isBusy()) {
             synchronized (container) {
                 var contained = container.getWrappedObject();
                 if (Stoppable.class.isAssignableFrom(contained.getClass())) {

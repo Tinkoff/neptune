@@ -8,6 +8,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
 import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
 import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnection;
 import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionSupplier;
+import ru.tinkoff.qa.neptune.data.base.api.connection.data.InnerJDOPersistenceManagerFactory;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -39,18 +40,16 @@ public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>,
      */
     DataBaseStepContext switchTo(DBConnection dbConnection) {
         checkArgument(nonNull(dbConnection), "DB connection should not be null-value");
-        var factory = dbConnection.getConnectionFactory();
-        checkArgument(!factory.isClosed(), "Persistence manager factory should not be closed");
         var manager = jdoPersistenceManagerSet
                 .stream()
                 .filter(jdoPersistenceManager -> !jdoPersistenceManager.isClosed()
-                        && jdoPersistenceManager.getPersistenceManagerFactory()
-                        .equals(factory))
+                        && ((InnerJDOPersistenceManagerFactory) jdoPersistenceManager.getPersistenceManagerFactory())
+                        .getConnection() == dbConnection)
                 .findFirst()
                 .orElse(null);
 
         currentManager = ofNullable(manager).orElseGet(() -> {
-            var newManager = (JDOPersistenceManager) factory.getPersistenceManager();
+            var newManager = (JDOPersistenceManager) dbConnection.getConnectionFactory().getPersistenceManager();
             jdoPersistenceManagerSet.add(newManager);
             return newManager;
         });

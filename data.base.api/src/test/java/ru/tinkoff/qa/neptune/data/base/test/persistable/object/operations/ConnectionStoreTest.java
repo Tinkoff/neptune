@@ -1,10 +1,12 @@
 package ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations;
 
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnection;
 import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionSupplier;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.nullValue;
 import static ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionStore.getKnownConnection;
 
 public class ConnectionStoreTest extends BaseDbOperationTest {
@@ -12,9 +14,9 @@ public class ConnectionStoreTest extends BaseDbOperationTest {
     @Test
     public void checkExistingConnectionSupplier() {
         assertThat(getKnownConnection(ConnectionDataSupplierForTestBase1.class, true),
-                equalTo(new ConnectionDataSupplierForTestBase1().get()));
+                instanceOf(DBConnection.class));
         assertThat(getKnownConnection(ConnectionDataSupplierForTestBase2.class, true),
-                equalTo(new ConnectionDataSupplierForTestBase2().get()));
+                instanceOf(DBConnection.class));
     }
 
     @Test

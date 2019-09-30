@@ -18,7 +18,8 @@ import static ru.tinkoff.qa.neptune.core.api.properties.general.resorces.FreeRes
 
 public class ObjectContainer<T> {
 
-    private static final Set<ObjectContainer<?>> containers = synchronizedSet(new HashSet<>());
+    //package private for unit testing
+    static final Set<ObjectContainer<?>> containers = synchronizedSet(new HashSet<>());
 
     private final T t;
     private Thread busyBy;
@@ -81,7 +82,7 @@ public class ObjectContainer<T> {
     synchronized void setFree() {
         this.busyBy = null;
         if (TO_FREE_RESOURCES_ON_INACTIVITY_PROPERTY.get()) {
-            new ThreadFreeStateLoop(this);
+            new ThreadFreeStateLoop(this).start();
         }
     }
 
