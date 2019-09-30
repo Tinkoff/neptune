@@ -3,8 +3,6 @@ package ru.tinkoff.qa.neptune.data.base.api.connection.data;
 import org.datanucleus.api.jdo.JDOPersistenceManagerFactory;
 import org.datanucleus.metadata.PersistenceUnitMetaData;
 
-import java.util.Objects;
-
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.nonNull;
 
@@ -32,10 +30,6 @@ public final class DBConnection {
     private DBConnection(PersistenceUnitMetaData persistenceUnitMetaData) {
         checkArgument(nonNull(persistenceUnitMetaData), "Meta data of a connection should not be a null value");
         this.persistenceUnitMetaData = persistenceUnitMetaData;
-    }
-
-    private static boolean areEqual(Object o1, Object o2) {
-        return Objects.equals(o1, o2);
     }
 
     public PersistenceUnitMetaData getData() {
