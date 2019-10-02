@@ -1,10 +1,10 @@
-package ru.tinkoff.qa.neptune.core.api.properties;
+package ru.tinkoff.qa.neptune.core.api.properties.general.events;
 
 import ru.tinkoff.qa.neptune.core.api.properties.enums.EnumPropertySuppler;
 
-import static ru.tinkoff.qa.neptune.core.api.properties.CapturedEvents.FAILURE;
-import static ru.tinkoff.qa.neptune.core.api.properties.CapturedEvents.SUCCESS;
-import static ru.tinkoff.qa.neptune.core.api.properties.CapturedEvents.SUCCESS_AND_FAILURE;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents.FAILURE;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents.SUCCESS;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents.SUCCESS_AND_FAILURE;
 import static java.util.Optional.ofNullable;
 
 /**

@@ -1,11 +1,17 @@
 package ru.tinkoff.qa.neptune.core.api.concurency;
 
-class ThreadStateLoop extends Thread {
+/**
+ * This thread checks a container (is it busy or not).
+ * When another thread that takes an {@link ObjectContainer} stops then
+ * this thread marks {@link ObjectContainer} free by invocation of
+ * {@link ObjectContainer#setFree()}
+ */
+class ThreadBusyStateLoop extends Thread {
 
     private final Thread threadToListenTo;
     private final ObjectContainer<?> container;
 
-    ThreadStateLoop(Thread threadToListenTo, ObjectContainer<?> container) {
+    ThreadBusyStateLoop(Thread threadToListenTo, ObjectContainer<?> container) {
         this.threadToListenTo = threadToListenTo;
         this.container = container;
     }

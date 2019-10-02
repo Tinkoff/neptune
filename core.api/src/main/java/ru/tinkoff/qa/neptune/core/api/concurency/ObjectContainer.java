@@ -14,10 +14,12 @@ import static java.lang.Thread.currentThread;
 import static java.util.Collections.synchronizedSet;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.resorces.FreeResourcesOnInactivity.TO_FREE_RESOURCES_ON_INACTIVITY_PROPERTY;
 
 public class ObjectContainer<T> {
 
-    private static final Set<ObjectContainer<?>> containers = synchronizedSet(new HashSet<>());
+    //package private for unit testing
+    static final Set<ObjectContainer<?>> containers = synchronizedSet(new HashSet<>());
 
     private final T t;
     private Thread busyBy;
@@ -68,17 +70,20 @@ public class ObjectContainer<T> {
         return (ObjectContainer<T>) result;
     }
 
-    private synchronized boolean isBusy() {
+    synchronized boolean isBusy() {
         return nonNull(busyBy);
     }
 
     private synchronized void setBusy(Thread thread) {
         this.busyBy = thread;
-        new ThreadStateLoop(currentThread(), this).start();
+        new ThreadBusyStateLoop(currentThread(), this).start();
     }
 
     synchronized void setFree() {
         this.busyBy = null;
+        if (TO_FREE_RESOURCES_ON_INACTIVITY_PROPERTY.get()) {
+            new ThreadFreeStateLoop(this).start();
+        }
     }
 
     public T getWrappedObject() {

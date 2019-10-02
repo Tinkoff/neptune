@@ -1,13 +1,14 @@
 package ru.tinkoff.qa.neptune.data.base.api;
 
 import org.datanucleus.api.jdo.JDOPersistenceManager;
+import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
+import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
+import ru.tinkoff.qa.neptune.core.api.steps.context.ActionStepContext;
 import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
 import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
-import ru.tinkoff.qa.neptune.core.api.steps.context.ActionStepContext;
-import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
-import ru.tinkoff.qa.neptune.core.api.cleaning.StoppableOnJVMShutdown;
 import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnection;
 import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionSupplier;
+import ru.tinkoff.qa.neptune.data.base.api.connection.data.InnerJDOPersistenceManagerFactory;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -19,7 +20,7 @@ import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionStore.getKnownConnection;
 
 @CreateWith(provider = DataBaseParameterProvider.class)
-public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>, ActionStepContext<DataBaseStepContext>, StoppableOnJVMShutdown,
+public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>, ActionStepContext<DataBaseStepContext>, Stoppable,
         ContextRefreshable {
 
     private final DBConnection defaultConnection;
@@ -39,18 +40,16 @@ public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>,
      */
     DataBaseStepContext switchTo(DBConnection dbConnection) {
         checkArgument(nonNull(dbConnection), "DB connection should not be null-value");
-        var factory = dbConnection.getConnectionFactory();
-        checkArgument(!factory.isClosed(), "Persistence manager factory should not be closed");
         var manager = jdoPersistenceManagerSet
                 .stream()
                 .filter(jdoPersistenceManager -> !jdoPersistenceManager.isClosed()
-                        && jdoPersistenceManager.getPersistenceManagerFactory()
-                        .equals(factory))
+                        && ((InnerJDOPersistenceManagerFactory) jdoPersistenceManager.getPersistenceManagerFactory())
+                        .getConnection() == dbConnection)
                 .findFirst()
                 .orElse(null);
 
         currentManager = ofNullable(manager).orElseGet(() -> {
-            var newManager = (JDOPersistenceManager) factory.getPersistenceManager();
+            var newManager = (JDOPersistenceManager) dbConnection.getConnectionFactory().getPersistenceManager();
             jdoPersistenceManagerSet.add(newManager);
             return newManager;
         });
@@ -62,11 +61,11 @@ public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>,
      * This method performs the switching to desired database by class of DB connection supplier.
      * <p>NOTE!</p>
      * It is expected that all instances of {@link DBConnectionSupplier} to find and use are loaded by SPI firstly.
-     * @see <a href="https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html">
-     *     Introduction to the Service Provider Interfaces</a>
      *
      * @param dbConnectionSupplierClass is a class of DB connection supplier.
      * @return self-reference
+     * @see <a href="https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html">
+     * Introduction to the Service Provider Interfaces</a>
      */
     DataBaseStepContext switchTo(Class<? extends DBConnectionSupplier> dbConnectionSupplierClass) {
         checkArgument(nonNull(dbConnectionSupplierClass),
@@ -87,11 +86,11 @@ public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>,
     }
 
     @Override
-    public Thread getHookOnJvmStop() {
-        return new Thread(() -> jdoPersistenceManagerSet.forEach(jdoPersistenceManager -> {
+    public void stop() {
+        jdoPersistenceManagerSet.forEach(jdoPersistenceManager -> {
             jdoPersistenceManager.getPersistenceManagerFactory().close();
             jdoPersistenceManager.close();
-        }));
+        });
     }
 
     @Override

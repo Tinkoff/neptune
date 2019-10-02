@@ -2,8 +2,8 @@ package ru.tinkoff.qa.neptune.core.api.steps;
 
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.core.api.properties.CapturedEvents;
-import ru.tinkoff.qa.neptune.core.api.properties.DoCapturesOf;
+import ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents;
+import ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf;
 import ru.tinkoff.qa.neptune.core.api.steps.context.ConstructorParameters;
 import ru.tinkoff.qa.neptune.core.api.steps.proxy.ProxyFactory;
 

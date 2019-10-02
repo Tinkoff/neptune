@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.core.api.properties;
+package ru.tinkoff.qa.neptune.core.api.properties.general.events;
 
 /**
  * Types of events to be captured by the logging/reporting.

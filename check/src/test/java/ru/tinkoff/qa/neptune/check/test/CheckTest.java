@@ -7,14 +7,13 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 
-import static java.lang.System.lineSeparator;
 import static ru.tinkoff.qa.neptune.check.ThatValue.thatValue;
 import static ru.tinkoff.qa.neptune.check.test.TestEventLogger.MESSAGES;
 import static ru.tinkoff.qa.neptune.core.api.steps.proxy.ProxyFactory.getProxied;
-import static ru.tinkoff.qa.neptune.core.api.properties.CapturedEvents.FAILURE;
-import static ru.tinkoff.qa.neptune.core.api.properties.CapturedEvents.SUCCESS;
-import static ru.tinkoff.qa.neptune.core.api.properties.CapturedEvents.SUCCESS_AND_FAILURE;
-import static ru.tinkoff.qa.neptune.core.api.properties.DoCapturesOf.DO_CAPTURES_OF_INSTANCE;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents.FAILURE;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents.SUCCESS;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents.SUCCESS_AND_FAILURE;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.DO_CAPTURES_OF_INSTANCE;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 import static java.lang.System.getProperties;

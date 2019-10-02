@@ -1,21 +1,21 @@
 package ru.tinkoff.qa.neptune.selenium;
 
-import ru.tinkoff.qa.neptune.core.api.steps.context.ActionStepContext;
-import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
+import org.openqa.selenium.*;
 import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
+import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
+import ru.tinkoff.qa.neptune.core.api.steps.context.ActionStepContext;
 import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
-import ru.tinkoff.qa.neptune.core.api.cleaning.StoppableOnJVMShutdown;
+import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
+import ru.tinkoff.qa.neptune.selenium.functions.click.ClickActionSupplier;
+import ru.tinkoff.qa.neptune.selenium.functions.edit.EditActionSupplier;
+import ru.tinkoff.qa.neptune.selenium.functions.java.script.GetJavaScriptResultSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.navigation.NavigationActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.SwitchActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert.AlertActionSupplier;
-import ru.tinkoff.qa.neptune.selenium.functions.click.ClickActionSupplier;
-import ru.tinkoff.qa.neptune.selenium.functions.edit.EditActionSupplier;
-import ru.tinkoff.qa.neptune.selenium.functions.java.script.GetJavaScriptResultSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.value.SequentialGetValueSupplier;
 import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
-import org.openqa.selenium.*;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentConte
 
 @CreateWith(provider = SeleniumParameterProvider.class)
 public class SeleniumStepContext implements ActionStepContext<SeleniumStepContext>, GetStepContext<SeleniumStepContext>, WrapsDriver, ContextRefreshable,
-        TakesScreenshot, StoppableOnJVMShutdown {
+        TakesScreenshot, Stoppable {
 
     private final WrappedWebDriver wrappedWebDriver;
 
@@ -84,7 +84,7 @@ public class SeleniumStepContext implements ActionStepContext<SeleniumStepContex
     }
 
     @Override
-    public Thread getHookOnJvmStop() {
-        return new Thread(wrappedWebDriver::shutDown);
+    public void stop() {
+        wrappedWebDriver.shutDown();
     }
 }

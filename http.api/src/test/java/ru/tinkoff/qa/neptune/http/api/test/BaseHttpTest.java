@@ -1,16 +1,11 @@
 package ru.tinkoff.qa.neptune.http.api.test;
 
-import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeSuite;
 
-import static java.util.Optional.ofNullable;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
-import static ru.tinkoff.qa.neptune.core.api.properties.CapturedEvents.SUCCESS_AND_FAILURE;
-import static ru.tinkoff.qa.neptune.core.api.properties.DoCapturesOf.DO_CAPTURES_OF_INSTANCE;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents.SUCCESS_AND_FAILURE;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.DO_CAPTURES_OF_INSTANCE;
 
 public class BaseHttpTest {
 

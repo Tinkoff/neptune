@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.core.api.steps.proxy;
 
-import ru.tinkoff.qa.neptune.core.api.cleaning.StoppableOnJVMShutdown;
+import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
 import ru.tinkoff.qa.neptune.core.api.concurency.ObjectContainer;
 import ru.tinkoff.qa.neptune.core.api.steps.context.ConstructorParameters;
 import net.bytebuddy.implementation.bind.annotation.AllArguments;
@@ -57,8 +57,8 @@ public class MethodInterceptor<T> {
                         T t;
                         try {
                             t = manipulationWithObjectToReturn.apply(c.newInstance(constructorParameters.getParameterValues()));
-                            if (StoppableOnJVMShutdown.class.isAssignableFrom(t.getClass())) {
-                                getRuntime().addShutdownHook(((StoppableOnJVMShutdown) t).getHookOnJvmStop());
+                            if (Stoppable.class.isAssignableFrom(t.getClass())) {
+                                getRuntime().addShutdownHook(new Thread(((Stoppable) t)::stop));
                             }
                             var container = new ObjectContainer<>(t);
                             threadLocal.set(container);

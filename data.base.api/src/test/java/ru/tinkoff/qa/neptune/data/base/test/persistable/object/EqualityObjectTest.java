@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.data.base.test.persistable.object;
 
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.data.base.api.connection.data.InnerJDOPersistenceManagerFactory;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDbOperationTest;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.ConnectionDataSupplierForTestBase1;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.ConnectionDataSupplierForTestBase2;
@@ -85,16 +86,8 @@ public class EqualityObjectTest extends BaseDbOperationTest {
     }
 
     @Test
-    public void persistableFactoryEqualityTest1() {
+    public void connectionEqualityTest1() {
         assertThat(getKnownConnection(ConnectionDataSupplierForTestBase1.class, true),
                 equalTo(getKnownConnection(ConnectionDataSupplierForTestBase1.class, true)));
-    }
-
-    @Test
-    public void persistableFactoryEqualityTest2() {
-        assertThat(dataBaseSteps.getCurrentPersistenceManager().getPersistenceManagerFactory(),
-                equalTo(getKnownConnection(ConnectionDataSupplierForTestBase1.class, true).getConnectionFactory()));
-        assertThat(dataBaseSteps.getCurrentPersistenceManager().getPersistenceManagerFactory(),
-                not(equalTo(getKnownConnection(ConnectionDataSupplierForTestBase2.class, true).getConnectionFactory())));
     }
 }
