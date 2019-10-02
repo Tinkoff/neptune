@@ -5,6 +5,12 @@ import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
 import static java.lang.System.currentTimeMillis;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.resorces.FreeResourcesOnInactivityAfter.FREE_RESOURCES_ON_INACTIVITY_AFTER;
 
+/**
+ * This thread checks an instance of {@link ObjectContainer} that is marked free by
+ * invocation of {@link ObjectContainer#setFree()} and those class implements {@link Stoppable}.
+ * It checks is the container active or not. When the container is still inactive after some time
+ * this thread invokes {@link Stoppable#stop()}
+ */
 class ThreadFreeStateLoop extends Thread {
 
     private final ObjectContainer<?> container;

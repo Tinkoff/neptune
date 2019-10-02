@@ -6,7 +6,7 @@ package ru.tinkoff.qa.neptune.core.api.cleaning;
  */
 public interface Stoppable {
     /**
-     * An action that should be performed on the stopping.
+     * An action to be performed when stopped
      */
     void stop();
 }
