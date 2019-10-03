@@ -28,7 +28,7 @@ class ThreadBusyStateLoop extends Thread {
                 sleep(1);
                 var state = threadToListenTo.getState();
                 isThreadActive = threadToListenTo.isAlive() &&
-                        (!Objects.equals(state, WAITING) || !Objects.equals(state, TERMINATED));
+                        (!Objects.equals(state, WAITING) && !Objects.equals(state, TERMINATED));
 
             } catch (InterruptedException ignored) {
             }
