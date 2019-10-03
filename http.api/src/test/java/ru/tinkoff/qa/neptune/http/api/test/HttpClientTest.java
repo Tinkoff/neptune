@@ -38,8 +38,8 @@ import static ru.tinkoff.qa.neptune.core.api.steps.proxy.ProxyFactory.getProxied
 import static ru.tinkoff.qa.neptune.http.api.HttpCookiesActionSupplier.addToCookies;
 import static ru.tinkoff.qa.neptune.http.api.HttpCookiesActionSupplier.clearCookieStore;
 import static ru.tinkoff.qa.neptune.http.api.HttpGetCachedCookiesSupplier.cachedCookies;
-import static ru.tinkoff.qa.neptune.http.api.PreparedHttpRequest.GET;
 import static ru.tinkoff.qa.neptune.http.api.HttpResponseSequentialGetSupplier.responseOf;
+import static ru.tinkoff.qa.neptune.http.api.PreparedHttpRequest.GET;
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpAuthenticatorProperty.DEFAULT_HTTP_AUTHENTICATOR_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpCookieManagerProperty.DEFAULT_HTTP_COOKIE_MANAGER_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpDomainToRespondProperty.DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY;
@@ -101,7 +101,7 @@ public class HttpClientTest extends BaseHttpTest {
 
         assertThat(client.authenticator().orElse(null), nullValue());
         assertThat(client.connectTimeout().orElse(null), equalTo(ofSeconds(5)));
-        assertThat(client.cookieHandler().orElse(null), equalTo(CookieHandler.getDefault()));
+        assertThat(client.cookieHandler().orElse(null), instanceOf(CookieManager.class));
         assertThat(client.executor().orElse(null), nullValue());
         assertThat(client.followRedirects(), is(NEVER));
         assertThat(client.proxy().orElse(null), nullValue());

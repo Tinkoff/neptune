@@ -24,11 +24,7 @@ public class ConcurrencyTest {
     private final TestContext context = getProxied(TestContext.class);
 
     private Thread thread1;
-    private Thread thread2 = new Thread(() -> {
-        while (true) {
-            context.get("Some value", testContext -> new Object());
-        }
-    });
+    private Thread thread2;
 
     @BeforeMethod
     public void runThreads() throws Exception {
@@ -36,7 +32,12 @@ public class ConcurrencyTest {
 
         thread1 = new Thread(() -> {
             while (true) {
-                context.perform("Some action", testContext -> {});
+                context.perform("Do something", testContext -> {});
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         });
         thread1.start();

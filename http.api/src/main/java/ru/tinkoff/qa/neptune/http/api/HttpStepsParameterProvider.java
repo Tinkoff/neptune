@@ -36,11 +36,7 @@ public class HttpStepsParameterProvider implements ParameterProvider {
                     ofNullable(cookieHandlerSupplier.get()).ifPresent(builder::cookieHandler);
                     return builder;
                 }).orElseGet(() -> {
-                    var cookieHandler = ofNullable(CookieHandler.getDefault()).orElseGet(() -> {
-                        var handler = new CookieManager();
-                        CookieHandler.setDefault(handler);
-                        return handler;
-                    });
+                    var cookieHandler = new CookieManager();
                     return builder.cookieHandler(cookieHandler);
                 });
 
