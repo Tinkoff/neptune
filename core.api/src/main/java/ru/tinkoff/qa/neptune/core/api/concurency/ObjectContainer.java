@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.core.api.concurency;
 
+import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
 import ru.tinkoff.qa.neptune.core.api.steps.context.ActionStepContext;
 import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
 
@@ -79,10 +80,13 @@ public class ObjectContainer<T> {
         new ThreadBusyStateLoop(currentThread(), this).start();
     }
 
-    synchronized void setFree() {
+    @SuppressWarnings("unchecked")
+    synchronized void setFree(long toStopOnInactivityAfter) {
         this.busyBy = null;
-        if (TO_FREE_RESOURCES_ON_INACTIVITY_PROPERTY.get()) {
-            new ThreadFreeStateLoop(this).start();
+        if (TO_FREE_RESOURCES_ON_INACTIVITY_PROPERTY.get()
+                && Stoppable.class.isAssignableFrom(t.getClass())) {
+            new ThreadStoppableFreeStateLoop((ObjectContainer<? extends Stoppable>) this, toStopOnInactivityAfter)
+                    .start();
         }
     }
 

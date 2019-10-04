@@ -3,28 +3,27 @@ package ru.tinkoff.qa.neptune.core.api.concurency;
 import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
 
 import static java.lang.System.currentTimeMillis;
-import static ru.tinkoff.qa.neptune.core.api.properties.general.resorces.FreeResourcesOnInactivityAfter.FREE_RESOURCES_ON_INACTIVITY_AFTER;
 
 /**
  * This thread checks an instance of {@link ObjectContainer} that is marked free by
- * invocation of {@link ObjectContainer#setFree()} and those class implements {@link Stoppable}.
+ * invocation of {@link ObjectContainer#setFree(long)} and those class implements {@link Stoppable}.
  * It checks whether the container active or not. When the container is still inactive after some time
  * this thread invokes {@link Stoppable#stop()}
  */
-class ThreadFreeStateLoop extends Thread {
+class ThreadStoppableFreeStateLoop extends Thread {
 
-    private final ObjectContainer<?> container;
+    private final ObjectContainer<? extends Stoppable> container;
+    private final long millisToStopAfter;
 
-    ThreadFreeStateLoop(ObjectContainer<?> container) {
+    ThreadStoppableFreeStateLoop(ObjectContainer<? extends Stoppable> container, long millisToStopAfter) {
         this.container = container;
+        this.millisToStopAfter = millisToStopAfter;
     }
 
     @Override
     public void run() {
         var startTime = currentTimeMillis();
-        var timeToWait = FREE_RESOURCES_ON_INACTIVITY_AFTER.get().toMillis();
-
-        while (currentTimeMillis() <= startTime + timeToWait) {
+        while (currentTimeMillis() <= startTime + millisToStopAfter) {
             if (container.isBusy()) {
                 return;
             }
@@ -36,10 +35,7 @@ class ThreadFreeStateLoop extends Thread {
 
         if (!container.isBusy()) {
             synchronized (container) {
-                var contained = container.getWrappedObject();
-                if (Stoppable.class.isAssignableFrom(contained.getClass())) {
-                    ((Stoppable) contained).stop();
-                }
+                container.getWrappedObject().stop();
             }
         }
     }
