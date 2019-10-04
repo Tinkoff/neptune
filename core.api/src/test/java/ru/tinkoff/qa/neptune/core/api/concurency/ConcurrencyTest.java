@@ -192,6 +192,7 @@ public class ConcurrencyTest {
         }
         var stop = currentTimeMillis();
 
+        sleep(1000);
         assertThat(freeObject, notNullValue());
         assertThat(freeObject.isActive(), is(false));
         //5 seconds is defined. -1 second of the sleeping. see above
