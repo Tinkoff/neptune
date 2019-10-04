@@ -125,7 +125,7 @@ public class TestNgTestFinishingTest {
 
     @AfterClass
     public void afterClass() {
-        assertThat(getAllObjects(ContextClass2.class, objectContainer -> true), hasSize(6));
-        assertThat(getAllObjects(ContextClass1.class, objectContainer -> true), hasSize(6));
+        assertThat(getAllObjects(ContextClass2.class, objectContainer -> true), hasSize(5));
+        assertThat(getAllObjects(ContextClass1.class, objectContainer -> true), hasSize(5));
     }
 }
