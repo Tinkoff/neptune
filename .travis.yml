@@ -43,10 +43,10 @@ jobs:
 
     # Test stage
     - stage: Test
-      name: "[core.api] Module Tests"
-        script:
-          - cd core.api
-          - gradle test
+      name: "[allure.integration] Module Tests"
+      script:
+        - cd allure.integration
+        - gradle test
 
     - stage: Test
       name: "[allure.testng.bridge] Module Tests"
@@ -61,10 +61,10 @@ jobs:
         - gradle test
 
     - stage: Test
-      name: "[allure.integration] Module Tests"
-        script:
-          - cd allure.integration
-          - gradle test
+      name: "[core.api] Module Tests"
+      script:
+        - cd core.api
+        - gradle test
 
     - stage: Test
       name: "[data.base.api] Module Tests"
