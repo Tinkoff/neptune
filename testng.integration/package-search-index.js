@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"ru.tinkoff.qa.neptune.testng.integration"},{"l":"ru.tinkoff.qa.neptune.testng.integration.properties"}]
