@@ -43,51 +43,8 @@ jobs:
 
     # Test stage
     - stage: Test
-      name: "[allure.integration] Module Tests"
+      name: "Unit tests"
       script:
-        - cd allure.integration
-        - gradle test
-
-    - stage: Test
-      name: "[allure.testng.bridge] Module Tests"
-      script:
-        - cd allure.testng.bridge
-        - gradle test
-
-    - stage: Test
-      name: "[check] Module Tests"
-      script:
-        - cd check
-        - gradle test
-
-    - stage: Test
-      name: "[core.api] Module Tests"
-      script:
-        - cd core.api
-        - gradle test
-
-    - stage: Test
-      name: "[data.base.api] Module Tests"
-      script:
-        - cd data.base.api
-        - gradle test
-
-    - stage: Test
-      name: "[http.api] Module Tests"
-      script:
-        - cd http.api
-        - gradle test
-
-    - stage: Test
-      name: "[selenium] Module Tests"
-      script:
-        - cd selenium
-        - gradle test
-
-    - stage: Test
-      name: "[testng.integration] Module Tests"
-      script:
-        - cd testng.integration
         - gradle test
 
     # in case of a need for continuous deployment (Docker as an example), you have to set up this stage
