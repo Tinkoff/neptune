@@ -8,10 +8,8 @@ import ru.tinkoff.qa.neptune.data.base.api.captors.IsQueryCaptured;
 import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnection;
 
 import javax.jdo.annotations.NotPersistent;
-
 import java.util.Objects;
 
-import static java.lang.Package.getPackages;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static javax.jdo.JDOHelper.isPersistent;
@@ -179,7 +177,7 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
                         return getKnownConnection(connectionToUse.connectionSupplier(), true);
                     }
 
-                    for (Package p: getPackages()) {
+                    for (Package p: thisClass.getClassLoader().getDefinedPackages()) {
                         connectionToUse = p.getAnnotation(ConnectionToUse.class);
                         if (connectionToUse != null) {
                             return getKnownConnection(connectionToUse.connectionSupplier(), true);
