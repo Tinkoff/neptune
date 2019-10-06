@@ -5,15 +5,18 @@ import org.datanucleus.identity.ObjectId;
 import org.datanucleus.state.ObjectProvider;
 import ru.tinkoff.qa.neptune.core.api.steps.LoggableObject;
 import ru.tinkoff.qa.neptune.data.base.api.captors.IsQueryCaptured;
+import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnection;
 
 import javax.jdo.annotations.NotPersistent;
 
 import java.util.Objects;
 
+import static java.lang.Package.getPackages;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static javax.jdo.JDOHelper.isPersistent;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionStore.getKnownConnection;
 
 /**
  * This abstract class is designed to mark persistable classes.
@@ -162,5 +165,30 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
         public String toString() {
             return query.toString();
         }
+    }
+
+    DBConnection getConnection() {
+        var thisClass = this.getClass();
+        return ofNullable(thisClass.getAnnotation(ConnectionToUse.class))
+                .map(connectionToUse -> getKnownConnection(connectionToUse.connectionSupplier(), true))
+                .orElseGet(() -> {
+                    var pack = thisClass.getPackage();
+                    var connectionToUse = pack.getAnnotation(ConnectionToUse.class);
+
+                    if (connectionToUse != null) {
+                        return getKnownConnection(connectionToUse.connectionSupplier(), true);
+                    }
+
+                    for (Package p: getPackages()) {
+                        connectionToUse = p.getAnnotation(ConnectionToUse.class);
+                        if (connectionToUse != null) {
+                            return getKnownConnection(connectionToUse.connectionSupplier(), true);
+                        }
+                    }
+
+                    throw new IllegalArgumentException(format("No annotation %s is defined for class %s/its packages",
+                            ConnectionToUse.class,
+                            thisClass.getName()));
+                });
     }
 }
