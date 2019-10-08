@@ -165,19 +165,18 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
         }
     }
 
-    DBConnection getConnection() {
-        var thisClass = this.getClass();
-        return ofNullable(thisClass.getAnnotation(ConnectionToUse.class))
+    static DBConnection getConnection(Class<? extends PersistableObject> clazz) {
+        return ofNullable(clazz.getAnnotation(ConnectionToUse.class))
                 .map(connectionToUse -> getKnownConnection(connectionToUse.connectionSupplier(), true))
                 .orElseGet(() -> {
-                    var pack = thisClass.getPackage();
+                    var pack = clazz.getPackage();
                     var connectionToUse = pack.getAnnotation(ConnectionToUse.class);
 
                     if (connectionToUse != null) {
                         return getKnownConnection(connectionToUse.connectionSupplier(), true);
                     }
 
-                    for (Package p: thisClass.getClassLoader().getDefinedPackages()) {
+                    for (Package p: clazz.getClassLoader().getDefinedPackages()) {
                         connectionToUse = p.getAnnotation(ConnectionToUse.class);
                         if (connectionToUse != null) {
                             return getKnownConnection(connectionToUse.connectionSupplier(), true);
@@ -186,7 +185,11 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
 
                     throw new IllegalArgumentException(format("No annotation %s is defined for class %s/its packages",
                             ConnectionToUse.class,
-                            thisClass.getName()));
+                            clazz.getName()));
                 });
+    }
+
+    DBConnection getConnection() {
+        return getConnection(this.getClass());
     }
 }
