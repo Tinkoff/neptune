@@ -4,7 +4,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
+import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContextDeprecated;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDbOperationTest;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Book;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Catalog;
@@ -56,7 +56,7 @@ public class QueryCaptorTest extends BaseDbOperationTest {
         Catalog catalogItem = dataBaseSteps.get(selected(aSingleByQuery(querySpec)));
         assertThat(INJECTED, contains("Query:" + query));
 
-        var secondaryReturned = toGet("Stored value", (Function<DataBaseStepContext, Catalog>)
+        var secondaryReturned = toGet("Stored value", (Function<DataBaseStepContextDeprecated, Catalog>)
                 dataBaseStepContext -> catalogItem)
                 .makeStringCaptureOnFinish();
 
@@ -77,7 +77,7 @@ public class QueryCaptorTest extends BaseDbOperationTest {
         assertThat(INJECTED, containsInAnyOrder(equalTo("Query:" + query),
                 containsString("Resulted collection:")));
 
-        var secondaryReturned = toGet("Stored value", (Function<DataBaseStepContext, List<Catalog>>)
+        var secondaryReturned = toGet("Stored value", (Function<DataBaseStepContextDeprecated, List<Catalog>>)
                 dataBaseStepContext -> catalogItems)
                 .makeStringCaptureOnFinish();
 
@@ -96,7 +96,7 @@ public class QueryCaptorTest extends BaseDbOperationTest {
         Book book = dataBaseSteps.get(selected(aSingleByQuery(querySpec)));
         assertThat(INJECTED, contains("Query:" + query));
 
-        var secondaryReturned = toGet("Stored value", (Function<DataBaseStepContext, Book>)
+        var secondaryReturned = toGet("Stored value", (Function<DataBaseStepContextDeprecated, Book>)
                 dataBaseStepContext -> book)
                 .makeStringCaptureOnFinish();
 
@@ -114,7 +114,7 @@ public class QueryCaptorTest extends BaseDbOperationTest {
         assertThat(INJECTED, containsInAnyOrder(equalTo("Query:" + query),
                 containsString("Resulted collection:")));
 
-        var secondaryReturned = toGet("Stored value", (Function<DataBaseStepContext, List<Book>>)
+        var secondaryReturned = toGet("Stored value", (Function<DataBaseStepContextDeprecated, List<Book>>)
                 dataBaseStepContext -> books)
                 .makeStringCaptureOnFinish();
 
@@ -134,7 +134,7 @@ public class QueryCaptorTest extends BaseDbOperationTest {
         assertThat(INJECTED, containsInAnyOrder(equalTo("Query:" + query),
                 containsString("Resulted collection:")));
 
-        var secondaryReturned = toGet("Stored value", (Function<DataBaseStepContext, List<Object>>)
+        var secondaryReturned = toGet("Stored value", (Function<DataBaseStepContextDeprecated, List<Object>>)
                 dataBaseStepContext -> bookRecord)
                 .makeStringCaptureOnFinish();
 
@@ -154,7 +154,7 @@ public class QueryCaptorTest extends BaseDbOperationTest {
         assertThat(INJECTED, containsInAnyOrder(equalTo("Query:" + query),
                 containsString("Resulted collection:")));
 
-        var secondaryReturned = toGet("Stored value", (Function<DataBaseStepContext, List<List<Object>>>)
+        var secondaryReturned = toGet("Stored value", (Function<DataBaseStepContextDeprecated, List<List<Object>>>)
                 dataBaseStepContext -> bookRecords)
                 .makeStringCaptureOnFinish();
 
@@ -169,7 +169,7 @@ public class QueryCaptorTest extends BaseDbOperationTest {
         var book = dataBaseSteps.get(selected(aSingleOfTypeById(Book.class, 1)));
         assertThat(INJECTED, contains("Query: Known Id: 1"));
 
-        var secondaryReturned = toGet("Stored value", (Function<DataBaseStepContext, Book>)
+        var secondaryReturned = toGet("Stored value", (Function<DataBaseStepContextDeprecated, Book>)
                 dataBaseStepContext -> book)
                 .makeStringCaptureOnFinish();
 
@@ -183,7 +183,7 @@ public class QueryCaptorTest extends BaseDbOperationTest {
         assertThat(INJECTED, contains(equalTo("Query: Known Ids: 1, 2"),
                 containsString("Resulted collection:")));
 
-        var secondaryReturned = toGet("Stored value", (Function<DataBaseStepContext, List<Book>>)
+        var secondaryReturned = toGet("Stored value", (Function<DataBaseStepContextDeprecated, List<Book>>)
                 dataBaseStepContext -> books)
                 .makeStringCaptureOnFinish();
 

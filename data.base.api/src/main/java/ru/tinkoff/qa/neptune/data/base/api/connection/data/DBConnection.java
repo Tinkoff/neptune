@@ -23,7 +23,7 @@ public final class DBConnection {
      *                                by {@link PersistenceUnitMetaData}.
      * @return created {@link DBConnection}
      */
-    public static DBConnection connectionData(PersistenceUnitMetaData persistenceUnitMetaData) {
+    static DBConnection connectionData(PersistenceUnitMetaData persistenceUnitMetaData) {
         return new DBConnection(persistenceUnitMetaData);
     }
 

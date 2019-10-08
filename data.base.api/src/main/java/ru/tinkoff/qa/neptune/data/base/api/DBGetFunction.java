@@ -9,8 +9,9 @@ import java.util.function.Function;
 
 import static java.util.Optional.ofNullable;
 
+@Deprecated
 @SuppressWarnings("unchecked")
-public class DBGetFunction<T, R extends DBGetFunction> implements Function<DataBaseStepContext, T> {
+public class DBGetFunction<T, R extends DBGetFunction> implements Function<DataBaseStepContextDeprecated, T> {
 
     private Object connection;
     private final SequentialGetStepSupplier<JDOPersistenceManager, T, ?, ?, ?> innerSupplier;
@@ -47,7 +48,7 @@ public class DBGetFunction<T, R extends DBGetFunction> implements Function<DataB
     }
 
     @Override
-    public T apply(DataBaseStepContext dataBaseStepContext) {
+    public T apply(DataBaseStepContextDeprecated dataBaseStepContext) {
         try {
             ofNullable(connection).ifPresent(o -> {
                 if (DBConnection.class.equals(o.getClass())) {

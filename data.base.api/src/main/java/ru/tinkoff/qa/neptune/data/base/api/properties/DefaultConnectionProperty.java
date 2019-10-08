@@ -7,6 +7,7 @@ import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionSupplier;
  * This class is designed to read the property {@code "default.db.connection"} and to return
  * an instance of {@link DBConnectionSupplier}.
  */
+@Deprecated
 public final class DefaultConnectionProperty implements ObjectPropertySupplier<DBConnectionSupplier> {
 
     private final static String DB_CONNECTION_PROPERTY_NAME = "default.db.connection";
