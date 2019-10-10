@@ -45,10 +45,10 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
     @Test
     public void selectListTestWithQuery() {
         var c = QCatalog.candidate();
-        var catalogItems = dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class)
+        var catalogItems = dataBaseSteps.select(listByQuery(ofType(Catalog.class)
                 .where(c.book.name.eq("Ruslan and Ludmila")
                         .or(c.book.author.lastName.eq("Castaneda")))
-                .orderBy(c.book.id.desc()))));
+                .orderBy(c.book.id.desc())));
 
         assertThat(catalogItems, hasSize(2));
         assertThat(catalogItems.stream().map(catalog -> catalog.getBook().getName()).collect(toList()),

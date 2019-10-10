@@ -98,6 +98,7 @@ public final class QueryBuilderFunction<T extends PersistableObject> implements 
         ofNullable(orderExpressions).ifPresent(tq1::orderBy);
         ofNullable(groupByExpressions).ifPresent(tq1::groupBy);
         ofNullable(havingExpression).ifPresent(tq1::having);
+        tq1.executeUnique()
         return tq1;
     }
 }

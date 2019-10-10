@@ -18,7 +18,7 @@ public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>,
 
     private final Set<JDOPersistenceManager> jdoPersistenceManagerSet = synchronizedSet(new HashSet<>());
 
-    JDOPersistenceManager getManager(DBConnection connection) {
+    public JDOPersistenceManager getManager(DBConnection connection) {
         checkArgument(nonNull(connection), "DB connection should not be null-value");
         var manager = jdoPersistenceManagerSet
                 .stream()
