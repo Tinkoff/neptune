@@ -1,9 +1,10 @@
 package ru.tinkoff.qa.neptune.selenium.functions.searching;
 
 import com.google.common.annotations.Beta;
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ScanResult;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrapsElement;
-import org.reflections.Reflections;
 import ru.tinkoff.qa.neptune.selenium.api.widget.ScrollsIntoView;
 
 import java.lang.reflect.Constructor;
@@ -20,7 +21,7 @@ import static java.util.Objects.isNull;
 @Beta
 public abstract class ScrollWebElementIntoView implements ScrollsIntoView, WrapsElement {
 
-    private static final Reflections reflections = new Reflections("");
+    private static final ScanResult SCAN_RESULT = new ClassGraph().enableClassInfo().scan();
     private final WebElement elementToBeScrolledIntoView;
 
     public ScrollWebElementIntoView(WebElement elementToBeScrolledIntoView) {
@@ -54,8 +55,8 @@ public abstract class ScrollWebElementIntoView implements ScrollsIntoView, Wraps
             return null;
         }
 
-        Constructor<?> constructor = reflections
-                .getSubTypesOf(ScrollWebElementIntoView.class)
+        Constructor<?> constructor = SCAN_RESULT.getSubclasses(ScrollWebElementIntoView.class.getName())
+                .loadClasses(ScrollWebElementIntoView.class)
                 .stream()
                 .map(aClass -> {
                     var constructors = aClass.getDeclaredConstructors();
