@@ -1,8 +1,10 @@
 package ru.tinkoff.qa.neptune.selenium.functions.searching;
 
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ScanResult;
+import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.WebElement;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
-import org.openqa.selenium.*;
-import org.reflections.Reflections;
 
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
@@ -11,23 +13,25 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CGLibProxyBuilder.createProxy;
-import static ru.tinkoff.qa.neptune.selenium.api.widget.Widget.getWidgetName;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindByBuilder.getAnnotations;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.WidgetPriorityComparator.widgetPriorityComparator;
-import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static ru.tinkoff.qa.neptune.selenium.api.widget.Widget.getWidgetName;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CGLibProxyBuilder.createProxy;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindByBuilder.getAnnotations;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.WidgetPriorityComparator.widgetPriorityComparator;
 
 class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> {
 
-    private static final FindByBuilder builder = new FindByBuilder();
-    private static final Reflections reflections = new Reflections("");
+    private static final FindByBuilder BUILDER = new FindByBuilder();
+    private static final ScanResult SCAN_RESULT = new ClassGraph().enableClassInfo()
+            .enableAllInfo()
+            .scan();
 
     final Class<? extends R> classOfAWidget;
     private final Predicate<Class<? extends R>> classPredicate;
@@ -62,7 +66,9 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
 
     private static <R extends Widget> List<Class<? extends R>> findSubclasses(Class<? extends R> classOfAWidget,
                                                                               Predicate<Class<? extends R>> classPredicate) {
-        return reflections.getSubTypesOf(classOfAWidget).stream()
+        return SCAN_RESULT.getSubclasses(classOfAWidget.getName())
+                .loadClasses(classOfAWidget)
+                .stream()
                 .filter(classPredicate)
                 .sorted(widgetPriorityComparator()).collect(toList());
     }
@@ -110,7 +116,7 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
         };
 
         classesToInstantiate.forEach(clazz -> {
-            var by = builder.buildIt(clazz);
+            var by = BUILDER.buildIt(clazz);
             result.addAll(searchContext.findElements(by).stream()
                     .map(webElement -> {
                         var stringDescription = getWidgetName(clazz);

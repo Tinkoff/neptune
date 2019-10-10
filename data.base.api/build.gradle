@@ -10,6 +10,10 @@ dependencies {
     testCompile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.27.2.1'
     testAnnotationProcessor 'org.datanucleus:datanucleus-jdo-query:5.0.9'
     testAnnotationProcessor group: 'org.datanucleus', name: 'javax.jdo', version: '3.2.0-m12'
+    compile (group: 'org.reflections', name: 'reflections', version: '0.9.11') {
+        exclude group: 'com.google.guava'
+        exclude group: 'com.google.code.gson'
+    }
 }
 
 task enhanceJdoEntities(type: JavaExec) {
