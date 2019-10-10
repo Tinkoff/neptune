@@ -1,0 +1,6 @@
+ru.tinkoff.qa.neptune.data.base.api
+ru.tinkoff.qa.neptune.data.base.api.captors
+ru.tinkoff.qa.neptune.data.base.api.connection.data
+ru.tinkoff.qa.neptune.data.base.api.operations
+ru.tinkoff.qa.neptune.data.base.api.properties
+ru.tinkoff.qa.neptune.data.base.api.query
