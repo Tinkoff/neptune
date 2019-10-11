@@ -19,6 +19,7 @@ import static java.util.Optional.ofNullable;
 
 @MakeFileCapturesOnFinishing
 @MakeStringCapturesOnFinishing
+@Deprecated
 class OperationSequentialGetSupplier<T extends PersistableObject> extends SequentialGetStepSupplier
         .GetIterableChainedStepSupplier<JDOPersistenceManager, List<T>, Transaction, T, OperationSequentialGetSupplier<T>> {
 

@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.select;
 
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.data.base.api.query.*;
+import ru.tinkoff.qa.neptune.data.base.api.NothingIsSelectedException;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDbOperationTest;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.ConnectionDataSupplierForTestBase2;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Author;

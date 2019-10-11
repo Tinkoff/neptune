@@ -11,6 +11,7 @@ import java.util.function.Function;
 
 import static java.util.Optional.ofNullable;
 
+@Deprecated
 class ListOfSelectObjects<T> extends ListOfStoredObjects<T> implements GotByQuery, IsQueryCaptured {
 
     private transient Object query;

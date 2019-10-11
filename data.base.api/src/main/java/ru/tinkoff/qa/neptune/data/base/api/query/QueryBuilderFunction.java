@@ -1,6 +1,8 @@
 package ru.tinkoff.qa.neptune.data.base.api.query;
 
 import org.datanucleus.api.jdo.JDOPersistenceManager;
+import org.datanucleus.api.jdo.query.ExpressionImpl;
+import org.datanucleus.query.expression.PrimaryExpression;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
 import javax.jdo.JDOQLTypedQuery;
@@ -20,6 +22,7 @@ import static java.util.Optional.ofNullable;
  *
  * @param <T> type of objects to be selected.
  */
+@Deprecated
 public final class QueryBuilderFunction<T extends PersistableObject> implements Function<JDOPersistenceManager, JDOQLTypedQuery<T>> {
 
     private final Class<T> toSelect;
@@ -81,6 +84,8 @@ public final class QueryBuilderFunction<T extends PersistableObject> implements 
         checkArgument(nonNull(orderExpressions), "Order expression should be defined as not a null value");
         checkArgument(orderExpressions.length > 0, "At least one order expression is expected to be defined");
         this.orderExpressions = orderExpressions;
+        ((PrimaryExpression) ((ExpressionImpl<Object>) orderExpressions[0].getExpression()).getQueryExpression()).getId();
+        //orderExpressions[0]
         return this;
     }
 
@@ -98,7 +103,6 @@ public final class QueryBuilderFunction<T extends PersistableObject> implements 
         ofNullable(orderExpressions).ifPresent(tq1::orderBy);
         ofNullable(groupByExpressions).ifPresent(tq1::groupBy);
         ofNullable(havingExpression).ifPresent(tq1::having);
-        tq1.executeUnique()
         return tq1;
     }
 }

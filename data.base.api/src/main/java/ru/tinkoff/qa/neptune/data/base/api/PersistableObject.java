@@ -129,6 +129,7 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
         }).orElse(tableName);
     }
 
+    @Deprecated
     public PersistableObject setQuery(Object query) {
         this.query = ofNullable(query).map(QueryInfo::new).orElse(null);
         return this;

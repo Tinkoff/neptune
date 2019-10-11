@@ -5,6 +5,7 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOn
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.ConditionConcatenation;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.data.base.api.NothingIsSelectedException;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
 import javax.jdo.JDOQLTypedQuery;
@@ -20,6 +21,7 @@ import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResu
 
 @MakeFileCapturesOnFinishing
 @MakeStringCapturesOnFinishing
+@Deprecated
 public class SelectOneGetSupplier<T, M> extends SequentialGetStepSupplier
         .GetObjectFromIterableChainedStepSupplier<JDOPersistenceManager, T, M, SelectOneGetSupplier<T, M>> {
 

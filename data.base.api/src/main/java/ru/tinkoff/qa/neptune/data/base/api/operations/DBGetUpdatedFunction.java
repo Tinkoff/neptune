@@ -21,6 +21,7 @@ import static javax.jdo.JDOHelper.isDeleted;
 import static javax.jdo.JDOHelper.isPersistent;
 import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.action;
 
+@Deprecated
 public class DBGetUpdatedFunction<T extends PersistableObject> extends DBGetOperationFunction<T, DBGetUpdatedFunction<T>> {
 
     private final List<Consumer<T>> updateActions = new ArrayList<>();

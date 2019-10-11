@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.data.base.api;
 
 import org.datanucleus.api.jdo.query.AbstractJDOQLTypedQuery;
 
+@Deprecated
 public interface GotByQuery {
 
     /**

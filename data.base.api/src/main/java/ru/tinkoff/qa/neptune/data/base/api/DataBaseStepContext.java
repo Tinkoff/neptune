@@ -5,8 +5,11 @@ import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
 import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
 import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnection;
 import ru.tinkoff.qa.neptune.data.base.api.connection.data.InnerJDOPersistenceManagerFactory;
+import ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle;
+import ru.tinkoff.qa.neptune.data.base.api.queries.SelectList;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -41,5 +44,13 @@ public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>,
             jdoPersistenceManager.getPersistenceManagerFactory().close();
             jdoPersistenceManager.close();
         });
+    }
+
+    public <T> List<T> select(SelectList<T> selectList) {
+        return get(selectList);
+    }
+
+    public <T> T select(SelectASingle<T> selectOne) {
+        return get(selectOne);
     }
 }

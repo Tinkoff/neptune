@@ -12,6 +12,7 @@ import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.data.base.api.ListOfStoredObjects.INFO_PERSISTABLE_INFO;
 
 @SuppressWarnings("unchecked")
+@Deprecated
 class SelectBySqlQuery<T> implements Function<SQLQuery<T>, List<T>> {
 
     @Override

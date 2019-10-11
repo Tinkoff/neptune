@@ -8,6 +8,7 @@ import java.util.function.Function;
 
 import static ru.tinkoff.qa.neptune.data.base.api.ListOfStoredObjects.INFO_PERSISTABLE_INFO;
 
+@Deprecated
 class SelectByTypedQuery<T extends PersistableObject> implements Function<JDOQLTypedQuery<T>, List<T>> {
     @Override
     public List<T> apply(JDOQLTypedQuery<T> jdoTypedQuery) {

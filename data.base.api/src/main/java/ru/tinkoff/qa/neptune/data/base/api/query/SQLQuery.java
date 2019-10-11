@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.data.base.api.query;
 
 import org.datanucleus.api.jdo.JDOQuery;
 
+@Deprecated
 public final class SQLQuery<T> {
     private final JDOQuery<T> query;
     private final String stringQuery;

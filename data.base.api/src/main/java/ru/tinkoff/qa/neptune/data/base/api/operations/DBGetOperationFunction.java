@@ -13,6 +13,7 @@ import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
+@Deprecated
 abstract class DBGetOperationFunction<T extends PersistableObject, R extends DBGetOperationFunction> extends DBGetFunction<List<T>, R> {
 
     DBGetOperationFunction(OperationSequentialGetSupplier<T> innerSupplier) {

@@ -9,6 +9,7 @@ import java.util.List;
 /**
  * Creates function that performs selection from a data store and returns selected values
  */
+@Deprecated
 public class GetSelectedFunction<T> extends DBGetFunction<T, GetSelectedFunction<T>> {
 
 

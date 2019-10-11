@@ -18,6 +18,7 @@ import static java.util.stream.Collectors.toList;
 import static javax.jdo.JDOHelper.isDeleted;
 import static javax.jdo.JDOHelper.isPersistent;
 
+@Deprecated
 public class DBGetDeletedFunction<T extends PersistableObject> extends DBGetOperationFunction<T, DBGetDeletedFunction<T>> {
 
     private DBGetDeletedFunction(OperationSequentialGetSupplier<T> innerSupplier) {

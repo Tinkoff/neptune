@@ -12,6 +12,7 @@ import static java.lang.String.valueOf;
 import static java.util.stream.Collectors.joining;
 import static ru.tinkoff.qa.neptune.data.base.api.ListOfStoredObjects.INFO_PERSISTABLE_INFO;
 
+@Deprecated
 class SelectListByIds<T extends PersistableObject> implements Function<JDOPersistenceManager, List<T>> {
 
     private final Object[] ids;

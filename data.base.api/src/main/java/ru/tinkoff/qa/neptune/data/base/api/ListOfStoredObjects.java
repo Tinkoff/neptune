@@ -13,6 +13,7 @@ import static javax.jdo.JDOHelper.isPersistent;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
+@Deprecated
 public class ListOfStoredObjects<T> implements LoggableObject, List<T> {
 
     public static final Function<List<? extends PersistableObject>, String> INFO_PERSISTABLE_INFO = persistableObjects -> {

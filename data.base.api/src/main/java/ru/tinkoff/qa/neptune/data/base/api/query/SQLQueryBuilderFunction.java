@@ -16,6 +16,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
  *
  * @param <T> type of objects to be selected.
  */
+@Deprecated
 public final class SQLQueryBuilderFunction<T> implements Function<JDOPersistenceManager, SQLQuery<T>> {
 
     private final String sql;

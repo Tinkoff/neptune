@@ -1,18 +1,91 @@
 package ru.tinkoff.qa.neptune.data.base.api.queries;
 
 import org.datanucleus.api.jdo.JDOPersistenceManager;
+import ru.tinkoff.qa.neptune.core.api.steps.ConditionConcatenation;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
+import ru.tinkoff.qa.neptune.data.base.api.NothingIsSelectedException;
+import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
+import ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQueryParameters;
 
+import javax.jdo.query.PersistableExpression;
+import java.time.Duration;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
-public abstract class SelectASingle<T, THIS extends SelectASingle<T, THIS>>
-        extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<DataBaseStepContext, T, JDOPersistenceManager, THIS> {
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.lang.String.format;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static ru.tinkoff.qa.neptune.data.base.api.queries.JDOPersistenceManagerByPersistableClass.getConnectionByClass;
+import static ru.tinkoff.qa.neptune.data.base.api.queries.ids.IdQuery.byIds;
+import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQuery.byJDOQLQuery;
 
-    protected SelectASingle(String description,
-                            Function<DataBaseStepContext, JDOPersistenceManager> from,
-                            Function<JDOPersistenceManager, T> originalFunction) {
+public final class SelectASingle<T> extends SequentialGetStepSupplier
+        .GetObjectFromIterableChainedStepSupplier<DataBaseStepContext, T, JDOPersistenceManager, SelectASingle<T>> {
+
+
+    private  <S extends Iterable<T>> SelectASingle(String description,
+                                                    Function<DataBaseStepContext, JDOPersistenceManager> from,
+                                                    Function<JDOPersistenceManager, S> originalFunction) {
         super(description, originalFunction);
         from(from);
+    }
+
+    public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectASingle<R> oneOf(Class<R> toSelect,
+                                                                                                           JDOQLQueryParameters<R, Q> params) {
+        return new SelectASingle<>(format("One of %s by query %s",
+                toSelect.getName(),
+                params.toString()),
+                getConnectionByClass(toSelect),
+                byJDOQLQuery(toSelect).setParameters(params));
+    }
+
+    public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectASingle<R> oneOf(Class<R> toSelect) {
+        return new SelectASingle<>(format("One of %s", toSelect.getName()),
+                getConnectionByClass(toSelect),
+                byJDOQLQuery(toSelect));
+    }
+
+    public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectASingle<R> oneOf(Class<R> toSelect,
+                                                                                                           Object id) {
+        return new SelectASingle<>(format("One of %s by id %s",
+                toSelect.getName(), id),
+                getConnectionByClass(toSelect),
+                byIds(toSelect, id));
+    }
+
+    @Override
+    public SelectASingle<T> timeOut(Duration timeOut) {
+        return super.timeOut(timeOut);
+    }
+
+    @Override
+    public SelectASingle<T> pollingInterval(Duration pollingTime) {
+        return super.pollingInterval(pollingTime);
+    }
+
+    @Override
+    public SelectASingle<T> criteria(ConditionConcatenation concat, Predicate<? super T> condition) {
+        return super.criteria(concat, condition);
+    }
+
+    @Override
+    public SelectASingle<T> criteria(ConditionConcatenation concat, String conditionDescription, Predicate<? super T> condition) {
+        return super.criteria(concat, conditionDescription, condition);
+    }
+
+    @Override
+    public SelectASingle<T> criteria(Predicate<? super T> condition) {
+        return super.criteria(condition);
+    }
+
+    @Override
+    public SelectASingle<T> criteria(String conditionDescription, Predicate<? super T> condition) {
+        return super.criteria(conditionDescription, condition);
+    }
+
+    public SelectASingle<T> throwWhenResultEmpty(String errorText) {
+        checkArgument(isNotBlank(errorText), "Please define not blank exception text");
+        return super.throwOnEmptyResult(() -> new NothingIsSelectedException(errorText));
     }
 }

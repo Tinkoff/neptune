@@ -5,6 +5,7 @@ import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
 import java.util.Collection;
 
+@Deprecated
 class OperationResultList<T extends PersistableObject> extends ListOfStoredObjects<T> {
 
     protected OperationResultList(String description, Collection<T> toAdd) {
