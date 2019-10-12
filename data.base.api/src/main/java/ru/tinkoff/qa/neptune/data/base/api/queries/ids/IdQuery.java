@@ -16,16 +16,16 @@ public final class IdQuery<T extends PersistableObject> implements Function<JDOP
     private final Class<T> classOfRequestedValue;
     private final Object[] ids;
 
-    public static <T extends PersistableObject> IdQuery<T> byIds(Class<T> classOfRequestedValue, Object... ids) {
-        return new IdQuery<>(classOfRequestedValue, ids);
-    }
-
     private IdQuery(Class<T> classOfRequestedValue, Object[] ids) {
         checkNotNull(classOfRequestedValue);
         checkNotNull(ids);
         checkArgument(ids.length > 0, "Should be defined at least one object Id");
         this.classOfRequestedValue = classOfRequestedValue;
         this.ids = ids;
+    }
+
+    public static <T extends PersistableObject> IdQuery<T> byIds(Class<T> classOfRequestedValue, Object... ids) {
+        return new IdQuery<>(classOfRequestedValue, ids);
     }
 
     @Override

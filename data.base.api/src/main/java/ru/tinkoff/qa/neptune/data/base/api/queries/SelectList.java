@@ -6,6 +6,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 import ru.tinkoff.qa.neptune.data.base.api.NothingIsSelectedException;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
+import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionSupplier;
 import ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQueryParameters;
 
 import javax.jdo.query.PersistableExpression;
@@ -18,9 +19,11 @@ import java.util.function.Predicate;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static ru.tinkoff.qa.neptune.data.base.api.queries.JDOPersistenceManagerByConnectionSupplierClass.getConnectionBySupplierClass;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.JDOPersistenceManagerByPersistableClass.getConnectionByClass;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.ids.IdQuery.byIds;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQuery.byJDOQLQuery;
+import static ru.tinkoff.qa.neptune.data.base.api.queries.sql.SqlQuery.bySql;
 
 public final class SelectList<T> extends SequentialGetStepSupplier
         .GetIterableChainedStepSupplier<DataBaseStepContext, List<T>, JDOPersistenceManager, T, SelectList<T>> {
@@ -41,7 +44,7 @@ public final class SelectList<T> extends SequentialGetStepSupplier
                 byJDOQLQuery(toSelect).setParameters(params));
     }
 
-    public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectList<R> listOf(Class<R> toSelect) {
+    public static <R extends PersistableObject> SelectList<R> listOf(Class<R> toSelect) {
         return new SelectList<>(format("List of %s", toSelect.getName()),
                 getConnectionByClass(toSelect),
                 byJDOQLQuery(toSelect));
@@ -54,6 +57,20 @@ public final class SelectList<T> extends SequentialGetStepSupplier
                 Arrays.toString(ids)),
                 getConnectionByClass(toSelect),
                 byIds(toSelect, ids));
+    }
+
+    public static <R extends PersistableObject> SelectList<R> listOf(Class<R> toSelect, String sql) {
+        return new SelectList<>(format("List of %s by query '%s'",
+                toSelect.getName(),
+                sql),
+                getConnectionByClass(toSelect),
+                bySql(toSelect, sql));
+    }
+
+    public static <R extends DBConnectionSupplier> SelectList<Object> listOf(String sql, Class<R> connection) {
+        return new SelectList<>(format("List of rows by query %s. The connection is described by %s", sql, connection.getName()),
+                getConnectionBySupplierClass(connection),
+                bySql(sql));
     }
 
     @Override

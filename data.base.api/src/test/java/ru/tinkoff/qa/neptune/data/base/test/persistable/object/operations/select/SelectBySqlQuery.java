@@ -6,6 +6,7 @@ import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 import ru.tinkoff.qa.neptune.data.base.api.queries.SelectList;
 import ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQueryParameters;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDbOperationTest;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.ConnectionDataSupplierForTestBase1;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Author;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Book;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.QBook;
@@ -133,6 +134,15 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
                 .throwWhenResultEmpty(""));
 
         new DataBaseStepContext().select(listOf(Book.class, 1, 2, 3));
+
+        new DataBaseStepContext().select(listOf(Book.class, "Select * from Books " +
+                "join Authors on Books.Author = Authors.Id " +
+                "where Books.YearOfFinishing >= 1820 order by YearOfFinishing asc"));
+
+        new DataBaseStepContext().select(listOf("Select * from Books " +
+                "join Authors on Books.Author = Authors.Id " +
+                "where Books.YearOfFinishing >= 1820 order by YearOfFinishing asc",
+                ConnectionDataSupplierForTestBase1.class));
     }
 
     @Test

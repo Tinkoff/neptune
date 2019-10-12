@@ -6,6 +6,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 import ru.tinkoff.qa.neptune.data.base.api.NothingIsSelectedException;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
+import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionSupplier;
 import ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQueryParameters;
 
 import javax.jdo.query.PersistableExpression;
@@ -16,9 +17,11 @@ import java.util.function.Predicate;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static ru.tinkoff.qa.neptune.data.base.api.queries.JDOPersistenceManagerByConnectionSupplierClass.getConnectionBySupplierClass;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.JDOPersistenceManagerByPersistableClass.getConnectionByClass;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.ids.IdQuery.byIds;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQuery.byJDOQLQuery;
+import static ru.tinkoff.qa.neptune.data.base.api.queries.sql.SqlQuery.bySql;
 
 public final class SelectASingle<T> extends SequentialGetStepSupplier
         .GetObjectFromIterableChainedStepSupplier<DataBaseStepContext, T, JDOPersistenceManager, SelectASingle<T>> {
@@ -52,6 +55,20 @@ public final class SelectASingle<T> extends SequentialGetStepSupplier
                 toSelect.getName(), id),
                 getConnectionByClass(toSelect),
                 byIds(toSelect, id));
+    }
+
+    public static <R extends PersistableObject> SelectASingle<R> oneOf(Class<R> toSelect, String sql) {
+        return new SelectASingle<>(format("One of %s by query '%s'",
+                toSelect.getName(),
+                sql),
+                getConnectionByClass(toSelect),
+                bySql(toSelect, sql));
+    }
+
+    public static <R extends DBConnectionSupplier> SelectASingle<Object> oneOf(String sql, Class<R> connection) {
+        return new SelectASingle<>(format("One row by query %s. The connection is described by %s", sql, connection.getName()),
+                getConnectionBySupplierClass(connection),
+                bySql(sql));
     }
 
     @Override

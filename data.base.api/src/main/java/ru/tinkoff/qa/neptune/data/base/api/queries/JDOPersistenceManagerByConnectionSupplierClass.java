@@ -19,6 +19,10 @@ public class JDOPersistenceManagerByConnectionSupplierClass
         this.clazz = clazz;
     }
 
+    static JDOPersistenceManagerByConnectionSupplierClass getConnectionBySupplierClass(Class<? extends DBConnectionSupplier> clazz) {
+        return new JDOPersistenceManagerByConnectionSupplierClass(clazz);
+    }
+
     @Override
     public JDOPersistenceManager apply(DataBaseStepContext dataBaseStepContext) {
         var connection = getKnownConnection(clazz, true);
