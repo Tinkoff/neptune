@@ -130,8 +130,7 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
                 .setGroupBy(qBook -> qBook.author)
                 .having(qBook -> qBook.id.lteq(1))
                 .range(0,1))
-                .timeOut(ofSeconds(20))
-                .throwWhenResultEmpty(""));
+                .timeOut(ofSeconds(20)));
 
         new DataBaseStepContext().select(listOf(Book.class, 1, 2, 3));
 

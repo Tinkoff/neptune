@@ -1,5 +1,7 @@
 package ru.tinkoff.qa.neptune.data.base.api;
 
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ScanResult;
 import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnection;
 import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionSupplier;
 
@@ -29,7 +31,15 @@ public @interface ConnectionToUse {
     /**
      * This is utility that tries to read info about proper connection from {@link PersistableObject}
      */
-    class ConnectionDataReader {
+    final class ConnectionDataReader {
+
+        private static final ScanResult SCAN_RESULT = new ClassGraph().enableClassInfo()
+                .enableAllInfo()
+                .scan();
+
+        private ConnectionDataReader() {
+            super();
+        }
 
         /**
          * This method used to return an instance of {@link DBConnection} from the class of {@link PersistableObject}.
@@ -44,24 +54,42 @@ public @interface ConnectionToUse {
             return ofNullable(clazz.getAnnotation(ConnectionToUse.class))
                     .map(connectionToUse -> getKnownConnection(connectionToUse.connectionSupplier(), true))
                     .orElseGet(() -> {
-                        var pack = clazz.getPackage();
-                        var connectionToUse = pack.getAnnotation(ConnectionToUse.class);
+                        var connectionToUse = getConnectionInfoFromPackageOf(clazz);
 
                         if (connectionToUse != null) {
                             return getKnownConnection(connectionToUse.connectionSupplier(), true);
-                        }
-
-                        for (Package p: clazz.getClassLoader().getDefinedPackages()) {
-                            connectionToUse = p.getAnnotation(ConnectionToUse.class);
-                            if (connectionToUse != null) {
-                                return getKnownConnection(connectionToUse.connectionSupplier(), true);
-                            }
                         }
 
                         throw new IllegalArgumentException(format("No annotation %s is defined for class %s/its packages",
                                 ConnectionToUse.class,
                                 clazz.getName()));
                     });
+        }
+
+        public static <T  extends DBConnectionSupplier> boolean usesConnection(Class<? extends PersistableObject> clazz,
+                                                                               Class<T> supplierClass) {
+            return ofNullable(clazz.getAnnotation(ConnectionToUse.class))
+                    .map(connectionToUse -> connectionToUse.connectionSupplier().equals(supplierClass))
+                    .orElseGet(() -> {
+                        var connectionToUse = getConnectionInfoFromPackageOf(clazz);
+                        return connectionToUse != null && connectionToUse.connectionSupplier().equals(supplierClass);
+                    });
+        }
+
+        private static ConnectionToUse getConnectionInfoFromPackageOf(Class<? extends PersistableObject> clazz) {
+            return ofNullable(clazz.getPackage())
+                    .map(aPackage -> {
+                        var packInfo = SCAN_RESULT.getPackageInfo(aPackage.getName());
+                        while (packInfo != null) {
+                            var annotationInfo = packInfo.getAnnotationInfo(ConnectionToUse.class.getName());
+                            if (annotationInfo != null) {
+                                return (ConnectionToUse) annotationInfo.loadClassAndInstantiate();
+                            }
+                            packInfo = packInfo.getParent();
+                        }
+                        return null;
+                    })
+                    .orElse(null);
         }
     }
 }

@@ -16,7 +16,6 @@ dependencies {
     testCompile group: 'org.mockito', name: 'mockito-core', version: '2.23.4'
     compile group: 'cglib', name: 'cglib', version: '3.3.0'
     compile group: 'org.jsoup', name: 'jsoup', version: '1.12.1'
-    compile group: 'io.github.classgraph', name: 'classgraph', version: '4.8.47'
 }
 
 test {
