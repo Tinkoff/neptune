@@ -1,12 +1,15 @@
 package ru.tinkoff.qa.neptune.data.base.api.queries.jdoql;
 
 import org.datanucleus.api.jdo.JDOPersistenceManager;
+import ru.tinkoff.qa.neptune.data.base.api.ListOfDataBaseObjects;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 
@@ -56,7 +59,11 @@ public final class JDOQLQuery<T extends PersistableObject> implements Function<J
                     .ifPresent(query::having);
         });
 
-        return query.executeList();
+        return new ListOfDataBaseObjects<>(query.executeList()) {
+            public String toString() {
+                return format("%s objects/object selected by jdo typed query %s", size(), query.toString());
+            }
+        };
     }
 
     public JDOQLQuery<T> setParameters(JDOQLQueryParameters<T, ?> parameters) {

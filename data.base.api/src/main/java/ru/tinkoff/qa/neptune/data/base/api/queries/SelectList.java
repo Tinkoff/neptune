@@ -1,6 +1,8 @@
 package ru.tinkoff.qa.neptune.data.base.api.queries;
 
 import org.datanucleus.api.jdo.JDOPersistenceManager;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.ConditionConcatenation;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
@@ -25,14 +27,14 @@ import static ru.tinkoff.qa.neptune.data.base.api.queries.ids.IdQuery.byIds;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQuery.byJDOQLQuery;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.sql.SqlQuery.bySql;
 
+@MakeFileCapturesOnFinishing
+@MakeStringCapturesOnFinishing
 public final class SelectList<T> extends SequentialGetStepSupplier
         .GetIterableChainedStepSupplier<DataBaseStepContext, List<T>, JDOPersistenceManager, T, SelectList<T>> {
 
     private SelectList(String description,
-                         Function<DataBaseStepContext, JDOPersistenceManager> from,
                          Function<JDOPersistenceManager, List<T>> originalFunction) {
         super(description, originalFunction);
-        from(from);
     }
 
     public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectList<R> listOf(Class<R> toSelect,
@@ -40,14 +42,14 @@ public final class SelectList<T> extends SequentialGetStepSupplier
         return new SelectList<>(format("List of %s by query %s",
                 toSelect.getName(),
                 params.toString()),
-                getConnectionByClass(toSelect),
-                byJDOQLQuery(toSelect).setParameters(params));
+                byJDOQLQuery(toSelect).setParameters(params))
+                .from(getConnectionByClass(toSelect));
     }
 
     public static <R extends PersistableObject> SelectList<R> listOf(Class<R> toSelect) {
         return new SelectList<>(format("List of %s", toSelect.getName()),
-                getConnectionByClass(toSelect),
-                byJDOQLQuery(toSelect));
+                byJDOQLQuery(toSelect))
+                .from(getConnectionByClass(toSelect));
     }
 
     public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectList<R> listOf(Class<R> toSelect,
@@ -55,22 +57,22 @@ public final class SelectList<T> extends SequentialGetStepSupplier
         return new SelectList<>(format("List of %s by ids [%s]",
                 toSelect.getName(),
                 Arrays.toString(ids)),
-                getConnectionByClass(toSelect),
-                byIds(toSelect, ids));
+                byIds(toSelect, ids))
+                .from(getConnectionByClass(toSelect));
     }
 
     public static <R extends PersistableObject> SelectList<R> listOf(Class<R> toSelect, String sql) {
         return new SelectList<>(format("List of %s by query '%s'",
                 toSelect.getName(),
                 sql),
-                getConnectionByClass(toSelect),
-                bySql(toSelect, sql));
+                bySql(toSelect, sql))
+                .from(getConnectionByClass(toSelect));
     }
 
     public static <R extends DBConnectionSupplier> SelectList<Object> listOf(String sql, Class<R> connection) {
         return new SelectList<>(format("List of rows by query %s. The connection is described by %s", sql, connection.getName()),
-                getConnectionBySupplierClass(connection),
-                bySql(sql));
+                bySql(sql))
+                .from(getConnectionBySupplierClass(connection));
     }
 
     @Override

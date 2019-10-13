@@ -1,6 +1,8 @@
 package ru.tinkoff.qa.neptune.data.base.api.queries;
 
 import org.datanucleus.api.jdo.JDOPersistenceManager;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.ConditionConcatenation;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
@@ -23,15 +25,15 @@ import static ru.tinkoff.qa.neptune.data.base.api.queries.ids.IdQuery.byIds;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQuery.byJDOQLQuery;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.sql.SqlQuery.bySql;
 
+@MakeFileCapturesOnFinishing
+@MakeStringCapturesOnFinishing
 public final class SelectASingle<T> extends SequentialGetStepSupplier
         .GetObjectFromIterableChainedStepSupplier<DataBaseStepContext, T, JDOPersistenceManager, SelectASingle<T>> {
 
 
     private  <S extends Iterable<T>> SelectASingle(String description,
-                                                    Function<DataBaseStepContext, JDOPersistenceManager> from,
-                                                    Function<JDOPersistenceManager, S> originalFunction) {
+                                                   Function<JDOPersistenceManager, S> originalFunction) {
         super(description, originalFunction);
-        from(from);
     }
 
     public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectASingle<R> oneOf(Class<R> toSelect,
@@ -39,36 +41,36 @@ public final class SelectASingle<T> extends SequentialGetStepSupplier
         return new SelectASingle<>(format("One of %s by query %s",
                 toSelect.getName(),
                 params.toString()),
-                getConnectionByClass(toSelect),
-                byJDOQLQuery(toSelect).setParameters(params));
+                byJDOQLQuery(toSelect).setParameters(params))
+                .from(getConnectionByClass(toSelect));
     }
 
     public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectASingle<R> oneOf(Class<R> toSelect) {
         return new SelectASingle<>(format("One of %s", toSelect.getName()),
-                getConnectionByClass(toSelect),
-                byJDOQLQuery(toSelect));
+                byJDOQLQuery(toSelect))
+                .from(getConnectionByClass(toSelect));
     }
 
     public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectASingle<R> oneOf(Class<R> toSelect,
                                                                                                            Object id) {
         return new SelectASingle<>(format("One of %s by id %s",
                 toSelect.getName(), id),
-                getConnectionByClass(toSelect),
-                byIds(toSelect, id));
+                byIds(toSelect, id))
+                .from(getConnectionByClass(toSelect));
     }
 
     public static <R extends PersistableObject> SelectASingle<R> oneOf(Class<R> toSelect, String sql) {
         return new SelectASingle<>(format("One of %s by query '%s'",
                 toSelect.getName(),
                 sql),
-                getConnectionByClass(toSelect),
-                bySql(toSelect, sql));
+                bySql(toSelect, sql))
+                .from(getConnectionByClass(toSelect));
     }
 
     public static <R extends DBConnectionSupplier> SelectASingle<Object> oneOf(String sql, Class<R> connection) {
         return new SelectASingle<>(format("One row by query %s. The connection is described by %s", sql, connection.getName()),
-                getConnectionBySupplierClass(connection),
-                bySql(sql));
+                bySql(sql))
+                .from(getConnectionBySupplierClass(connection));
     }
 
     @Override

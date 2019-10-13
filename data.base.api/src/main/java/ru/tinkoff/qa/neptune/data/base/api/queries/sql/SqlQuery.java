@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.data.base.api.queries.sql;
 
 import org.datanucleus.api.jdo.JDOPersistenceManager;
+import ru.tinkoff.qa.neptune.data.base.api.ListOfDataBaseObjects;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
 import javax.jdo.Query;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.List.copyOf;
 import static java.util.List.of;
@@ -20,14 +22,14 @@ public final class SqlQuery<T> implements Function<JDOPersistenceManager, List<T
     private final String sql;
     private final Class<T> classOfRequestedValue;
 
-    public SqlQuery(String sql, Class<T> classOfRequestedValue) {
+    private SqlQuery(String sql, Class<T> classOfRequestedValue) {
         checkArgument(isNotBlank(sql), "Sql query should not be a blank string");
         checkArgument(nonNull(classOfRequestedValue), "Please define a class of values to be returned");
         this.classOfRequestedValue = classOfRequestedValue;
         this.sql = sql;
     }
 
-    private static List<List<Object>> getUntypedResult(Query<?> sqlQuery) {
+    private List<List<Object>> getUntypedResult(Query<?> sqlQuery) {
         var result = sqlQuery.executeList();
         var toBeReturned = new ArrayList<List<Object>>();
 
@@ -39,7 +41,11 @@ public final class SqlQuery<T> implements Function<JDOPersistenceManager, List<T
             }
         });
 
-        return toBeReturned;
+        return new ListOfDataBaseObjects<>(toBeReturned) {
+            public String toString() {
+                return format("%s resulted row/rows selected by sql query %s", size(), sql);
+            }
+        };
     }
 
     public static <T extends PersistableObject> SqlQuery<T> bySql(Class<T> classOfRequestedValue, String sql) {
@@ -57,7 +63,11 @@ public final class SqlQuery<T> implements Function<JDOPersistenceManager, List<T
 
         if (PersistableObject.class.isAssignableFrom(classOfRequestedValue)) {
             query.setClass(classOfRequestedValue);
-            return query.executeList();
+            return new ListOfDataBaseObjects<>(query.executeList()) {
+                public String toString() {
+                    return format("%s objects/object selected by sql query %s", size(), sql);
+                }
+            };
         }
         else {
             return (List<T>) getUntypedResult(query);

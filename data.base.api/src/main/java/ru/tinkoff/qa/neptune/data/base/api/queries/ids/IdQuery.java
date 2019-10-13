@@ -1,14 +1,17 @@
 package ru.tinkoff.qa.neptune.data.base.api.queries.ids;
 
 import org.datanucleus.api.jdo.JDOPersistenceManager;
+import ru.tinkoff.qa.neptune.data.base.api.ListOfDataBaseObjects;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
 import static java.util.Arrays.stream;
 
 public final class IdQuery<T extends PersistableObject> implements Function<JDOPersistenceManager, List<T>> {
@@ -30,7 +33,11 @@ public final class IdQuery<T extends PersistableObject> implements Function<JDOP
 
     @Override
     public List<T> apply(JDOPersistenceManager jdoPersistenceManager) {
-        var found = new ArrayList<T>();
+        var found = new ListOfDataBaseObjects<T>() {
+            public String toString() {
+                return format("%s objects/object selected by ids %s", size(), Arrays.toString(ids));
+            }
+        };
         stream(ids).forEach(id -> {
             try {
                 var p = jdoPersistenceManager.getObjectById(classOfRequestedValue, id);
