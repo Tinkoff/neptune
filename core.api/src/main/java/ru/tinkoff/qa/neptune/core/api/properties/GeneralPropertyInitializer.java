@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.core.api.properties;
 import java.io.*;
 import java.util.Properties;
 
+import static java.lang.ClassLoader.getSystemClassLoader;
 import static java.lang.String.valueOf;
 import static java.lang.System.getProperty;
 import static java.lang.System.setProperty;
@@ -63,15 +64,21 @@ public final class GeneralPropertyInitializer {
 
     /**
      * Reads properties defined in a file and instantiates system properties.
+     *
      * @param file is a file to read.
      */
     public static synchronized void refreshProperties(File file) {
-        var prop = new Properties();
-        FileInputStream input;
         try {
-            input = new FileInputStream(file);
+            refreshProperties(new FileInputStream(file));
+        } catch (FileNotFoundException e) {
+            throw new PropertyReadException(e.getMessage(), e);
+        }
+    }
+
+    private static synchronized void refreshProperties(InputStream input) {
+        var prop = new Properties();
+        try {
             prop.load(input);
-            input.close();
         } catch (IOException e) {
             throw new PropertyReadException(e.getMessage(), e);
         }
@@ -85,11 +92,16 @@ public final class GeneralPropertyInitializer {
      * Reads properties defined in {@link #GENERAL_PROPERTIES} which is located in any folder of the project
      * and instantiates system properties.
      */
-    public synchronized static void refreshProperties() {
-        File propertyFile = findPropertyFile();
-        if (nonNull(propertyFile)) {
-            refreshProperties(propertyFile);
-        }
+    public static synchronized void refreshProperties() {
+        //Firstly we try to read properties from resources
+        ofNullable(getSystemClassLoader().getResourceAsStream(GENERAL_PROPERTIES))
+                .ifPresentOrElse(GeneralPropertyInitializer::refreshProperties,
+                        () -> {
+                            var propertyFile = findPropertyFile();
+                            if (nonNull(propertyFile)) {
+                                refreshProperties(propertyFile);
+                            }
+                        });
         arePropertiesRead = true;
     }
 
