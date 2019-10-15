@@ -92,7 +92,7 @@ public final class GeneralPropertyInitializer {
      * Reads properties defined in {@link #GENERAL_PROPERTIES} which is located in any folder of the project
      * and instantiates system properties.
      */
-    public synchronized static void refreshProperties() {
+    public static synchronized void refreshProperties() {
         //Firstly we try to read properties from resources
         ofNullable(getSystemClassLoader().getResourceAsStream(GENERAL_PROPERTIES))
                 .ifPresentOrElse(GeneralPropertyInitializer::refreshProperties,
