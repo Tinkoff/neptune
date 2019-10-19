@@ -5,9 +5,11 @@ import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
 import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
 import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnection;
 import ru.tinkoff.qa.neptune.data.base.api.connection.data.InnerJDOPersistenceManagerFactory;
+import ru.tinkoff.qa.neptune.data.base.api.data.operations.UpdateExpression;
 import ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle;
 import ru.tinkoff.qa.neptune.data.base.api.queries.SelectList;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,6 +18,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Collections.synchronizedSet;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.data.base.api.data.operations.DataOperation.*;
 
 public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>, Stoppable {
 
@@ -52,5 +55,45 @@ public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>,
 
     public <T> T select(SelectASingle<T> selectOne) {
         return get(selectOne);
+    }
+
+    public <T extends PersistableObject> List<T> update(SelectASingle<T> howToSelect, UpdateExpression<T> set) {
+        return get(updated(howToSelect, set));
+    }
+
+    public <T extends PersistableObject> List<T> update(SelectList<T> howToSelect, UpdateExpression<T> set) {
+        return get(updated(howToSelect, set));
+    }
+
+    public <T extends PersistableObject> List<T> update(Collection<T> toUpdate, UpdateExpression<T> set) {
+        return get(updated(toUpdate, set));
+    }
+
+    public <T extends PersistableObject> List<T> update(T toUpdate, UpdateExpression<T> set) {
+        return get(updated(toUpdate, set));
+    }
+
+    public <T extends PersistableObject> List<T> delete(SelectASingle<T> howToSelect) {
+        return get(deleted(howToSelect));
+    }
+
+    public <T extends PersistableObject> List<T> delete(SelectList<T> howToSelect) {
+        return get(deleted(howToSelect));
+    }
+
+    public <T extends PersistableObject> List<T> delete(Collection<T> toDelete) {
+        return get(deleted(toDelete));
+    }
+
+    public <T extends PersistableObject> List<T> delete(T... toDelete) {
+        return get(deleted(toDelete));
+    }
+
+    public <T extends PersistableObject> List<T> insert(Collection<T> toInsert) {
+        return get(inserted(toInsert));
+    }
+
+    public <T extends PersistableObject> List<T> insert(T... toInsert) {
+        return get(inserted(toInsert));
     }
 }
