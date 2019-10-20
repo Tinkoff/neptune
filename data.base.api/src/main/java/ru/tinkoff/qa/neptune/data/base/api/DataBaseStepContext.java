@@ -49,19 +49,19 @@ public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>,
         });
     }
 
-    public <T> List<T> select(SelectList<T> selectList) {
+    public <T> List<T> select(SelectList<T, ?> selectList) {
         return get(selectList);
     }
 
-    public <T> T select(SelectASingle<T> selectOne) {
+    public <T> T select(SelectASingle<T, ?> selectOne) {
         return get(selectOne);
     }
 
-    public <T extends PersistableObject> List<T> update(SelectASingle<T> howToSelect, UpdateExpression<T> set) {
+    public <T extends PersistableObject> List<T> update(SelectASingle<T, ?> howToSelect, UpdateExpression<T> set) {
         return get(updated(howToSelect, set));
     }
 
-    public <T extends PersistableObject> List<T> update(SelectList<T> howToSelect, UpdateExpression<T> set) {
+    public <T extends PersistableObject> List<T> update(SelectList<T, ?> howToSelect, UpdateExpression<T> set) {
         return get(updated(howToSelect, set));
     }
 
@@ -73,11 +73,11 @@ public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>,
         return get(updated(toUpdate, set));
     }
 
-    public <T extends PersistableObject> List<T> delete(SelectASingle<T> howToSelect) {
+    public <T extends PersistableObject> List<T> delete(SelectASingle<T, ?> howToSelect) {
         return get(deleted(howToSelect));
     }
 
-    public <T extends PersistableObject> List<T> delete(SelectList<T> howToSelect) {
+    public <T extends PersistableObject> List<T> delete(SelectList<T, ?> howToSelect) {
         return get(deleted(howToSelect));
     }
 

@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.data.base.api.queries.jdoql;
 
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
+import javax.jdo.JDOQLTypedQuery;
 import javax.jdo.query.BooleanExpression;
 import javax.jdo.query.Expression;
 import javax.jdo.query.OrderExpression;
@@ -70,10 +71,6 @@ public final class JDOQLQueryParameters<T extends PersistableObject, Q extends P
         return this;
     }
 
-    BooleanExpression getWhere() {
-        return where;
-    }
-
     OrderExpression<?>[] orderExpressions() {
         return orderExpressions;
     }
@@ -96,10 +93,6 @@ public final class JDOQLQueryParameters<T extends PersistableObject, Q extends P
         return this;
     }
 
-    Expression<?>[] groupByExpressions() {
-        return groupByExpressions;
-    }
-
     public JDOQLQueryParameters<T, Q> setGroupBy(Function<Q, Expression<?>> expression) {
         checkArgument(nonNull(expression), "GroupBy expressions should be defined as not a null value");
         var groupBy = expression.apply(persistableExpression);
@@ -115,10 +108,6 @@ public final class JDOQLQueryParameters<T extends PersistableObject, Q extends P
         this.groupByExpressions = ofNullable(this.groupByExpressions)
                 .map(expressions -> add(expressions, groupBy))
                 .orElseGet(() -> new Expression[]{groupBy});
-    }
-
-    Expression<?> havingExpression() {
-        return havingExpression;
     }
 
     public JDOQLQueryParameters<T, Q> having(Function<Q, Expression<?>> expression) {
@@ -139,17 +128,30 @@ public final class JDOQLQueryParameters<T extends PersistableObject, Q extends P
         return this;
     }
 
-    Integer getRangeEnd() {
-        return rangeEnd;
-    }
+    public <M extends JDOQLTypedQuery<T>> M  buildQuery(M m) {
+        ofNullable(where).ifPresent(m::filter);
 
-    Integer getRangeStart() {
-        return rangeStart;
-    }
+        if (nonNull(rangeStart) && nonNull(rangeEnd)) {
+            m.range(rangeStart, rangeEnd);
+        }
 
-    @Override
-    public String toString() {
-        //TODO TO IMPLEMENT
-        return null;
+        ofNullable(orderExpressions)
+                .ifPresent(orderExpressions1 -> {
+                    if (orderExpressions1.length > 0) {
+                        m.orderBy(orderExpressions1);
+                    }
+                });
+
+        ofNullable(groupByExpressions)
+                .ifPresent(expressions -> {
+                    if (expressions.length > 0) {
+                        m.groupBy(expressions);
+                    }
+                });
+
+        ofNullable(havingExpression)
+                .ifPresent(m::having);
+
+        return m;
     }
 }

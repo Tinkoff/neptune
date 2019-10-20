@@ -30,7 +30,7 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
         super(description, originalFunction);
     }
 
-    public static <T extends PersistableObject> DataOperation<T> updated(SelectASingle<T> howToSelect, UpdateExpression<T> set) {
+    public static <T extends PersistableObject> DataOperation<T> updated(SelectASingle<T, ?> howToSelect, UpdateExpression<T> set) {
         checkArgument(nonNull(howToSelect), "Please define how to select an object to be updated");
         checkArgument(nonNull(set), "Please define update-actions");
         return new DataOperation<T>(format("Updated %s", howToSelect),
@@ -42,7 +42,7 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
                 });
     }
 
-    public static <T extends PersistableObject> DataOperation<T> updated(SelectList<T> howToSelect, UpdateExpression<T> set) {
+    public static <T extends PersistableObject> DataOperation<T> updated(SelectList<T, ?> howToSelect, UpdateExpression<T> set) {
         checkArgument(nonNull(howToSelect), "Please define how to select objects to be updated");
         checkArgument(nonNull(set), "Please define update-actions");
         return new DataOperation<T>(format("Updated %s", howToSelect),
@@ -83,7 +83,7 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
         return updated(updateCollection, set);
     }
 
-    public static <T extends PersistableObject> DataOperation<T> deleted(SelectASingle<T> howToSelect) {
+    public static <T extends PersistableObject> DataOperation<T> deleted(SelectASingle<T, ?> howToSelect) {
         checkArgument(nonNull(howToSelect), "Please define how to select an object to be deleted");
         return new DataOperation<T>(format("Deleted %s", howToSelect),
                 DataOperation::delete)
@@ -94,7 +94,7 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
                 });
     }
 
-    public static <T extends PersistableObject> DataOperation<T> deleted(SelectList<T> howToSelect) {
+    public static <T extends PersistableObject> DataOperation<T> deleted(SelectList<T, ?> howToSelect) {
         checkArgument(nonNull(howToSelect), "Please define how to select objects to be deleted");
         return new DataOperation<T>(format("Deleted %s", howToSelect),
                 DataOperation::delete)
