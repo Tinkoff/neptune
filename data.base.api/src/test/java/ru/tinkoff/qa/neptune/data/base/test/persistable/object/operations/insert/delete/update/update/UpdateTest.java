@@ -1,31 +1,11 @@
 package ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.insert.delete.update.update;
 
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDbOperationTest;
-import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Author;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.one.tables.Author;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Book;
-import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.QAuthor;
-import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.QBook;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-import static java.util.Calendar.*;
-import static java.util.Calendar.MILLISECOND;
-import static javax.jdo.JDOHelper.isPersistent;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.fail;
-import static ru.tinkoff.qa.neptune.data.base.api.operations.DBGetInsertedFunction.inserted;
-import static ru.tinkoff.qa.neptune.data.base.api.query.GetSelectedFunction.selected;
-import static ru.tinkoff.qa.neptune.data.base.api.query.QueryBuilderFunction.ofType;
-import static ru.tinkoff.qa.neptune.data.base.api.operations.DBGetUpdatedFunction.updated;
-import static ru.tinkoff.qa.neptune.data.base.api.query.SelectListGetSupplier.listByQuery;
-import static ru.tinkoff.qa.neptune.data.base.api.query.SelectOneGetSupplier.aSingleByQuery;
-import static ru.tinkoff.qa.neptune.data.base.api.query.SelectOneGetSupplier.aSingleOfTypeById;
 
 public class UpdateTest extends BaseDbOperationTest {
 
@@ -49,7 +29,7 @@ public class UpdateTest extends BaseDbOperationTest {
     private Author fyodorDostoevsky;
     private Book crimeAndPunishment;
 
-    @BeforeClass
+    /*@BeforeClass
     public void setUpBeforeClass() {
         var c1 = Calendar.getInstance();
         c1.set(YEAR, 1821);
@@ -194,5 +174,5 @@ public class UpdateTest extends BaseDbOperationTest {
         assertThat(updated.size(), is(0));
         assertThat(dataBaseSteps.get(selected(aSingleOfTypeById(Book.class, crimeAndPunishment.getId()))).getYearOfFinishing(),
                 not(equalTo(1870)));
-    }
+    }*/
 }

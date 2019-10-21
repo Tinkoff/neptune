@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables;
 import ru.tinkoff.qa.neptune.data.base.api.ConnectionToUse;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.ConnectionDataSupplierForTestBase1;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.one.tables.Author;
 
 import javax.jdo.annotations.*;
 

@@ -23,6 +23,8 @@ import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
+import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.SLEEPING_TIME;
+import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.WAITING_FOR_SELECTION_RESULT_TIME;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.JDOPersistenceManagerByConnectionSupplierClass.getConnectionBySupplierClass;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.JDOPersistenceManagerByPersistableClass.getConnectionByClass;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.ids.IdQuery.byIds;
@@ -36,6 +38,8 @@ public class SelectASingle<T, M> extends SequentialGetStepSupplier
 
     private SelectASingle(String description, Function<M, List<T>> originalFunction) {
         super(description, originalFunction);
+        timeOut(WAITING_FOR_SELECTION_RESULT_TIME.get());
+        pollingInterval(SLEEPING_TIME.get());
     }
 
     public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectASingle<R, ReadableJDOQuery<R>> oneOf(Class<R> toSelect,

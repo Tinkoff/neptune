@@ -2,22 +2,17 @@ package ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.data.base.api.query.GetSelectedFunction;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
-import static ru.tinkoff.qa.neptune.data.base.api.query.GetSelectedFunction.selected;
-import static ru.tinkoff.qa.neptune.data.base.api.query.QueryBuilderFunction.ofType;
-import static ru.tinkoff.qa.neptune.data.base.api.query.SelectListGetSupplier.listByQuery;
-import static ru.tinkoff.qa.neptune.data.base.api.query.SelectListGetSupplier.listOfTypeByIds;
-import static ru.tinkoff.qa.neptune.data.base.api.query.SelectOneGetSupplier.aSingleByQuery;
+
 
 @SuppressWarnings({"ConstantConditions"})
 public class MultiThreadTest extends BaseDbOperationTest {
 
-    @DataProvider(parallel = true)
+   /*@DataProvider(parallel = true)
     public Object[][] query() {
         QAuthor qAuthor = QAuthor.candidate();
         QBook qBook = QBook.candidate();
@@ -91,5 +86,5 @@ public class MultiThreadTest extends BaseDbOperationTest {
     @Test(threadPoolSize = 4, dataProvider = "query")
     public void multiThreadTest(GetSelectedFunction<?> selectedFunction) {
         assertThat(dataBaseSteps.get(selectedFunction), not(nullValue()));
-    }
+    }*/
 }

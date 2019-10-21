@@ -2,7 +2,9 @@ package ru.tinkoff.qa.neptune.data.base.api;
 
 import org.datanucleus.api.jdo.JDOPersistenceManager;
 import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
+import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
 import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
+import ru.tinkoff.qa.neptune.core.api.steps.context.ProviderOfEmptyParameters;
 import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnection;
 import ru.tinkoff.qa.neptune.data.base.api.connection.data.InnerJDOPersistenceManagerFactory;
 import ru.tinkoff.qa.neptune.data.base.api.data.operations.UpdateExpression;
@@ -20,6 +22,7 @@ import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.data.base.api.data.operations.DataOperation.*;
 
+@CreateWith(provider = ProviderOfEmptyParameters.class)
 public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>, Stoppable {
 
     private final Set<JDOPersistenceManager> jdoPersistenceManagerSet = synchronizedSet(new HashSet<>());

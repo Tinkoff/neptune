@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.select;
 
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.data.base.api.query.GetSelectedFunction;
 import ru.tinkoff.qa.neptune.data.base.api.NothingIsSelectedException;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDbOperationTest;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.ConnectionDataSupplierForTestBase2;
@@ -19,10 +18,6 @@ import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionStore.getKnownConnection;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.QueryTimeUnitProperties.WAITING_FOR_SELECTION_RESULT_TIME_UNIT;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.QueryTimeValueProperties.WAITING_FOR_SELECTION_RESULT_TIME_VALUE;
-import static ru.tinkoff.qa.neptune.data.base.api.query.GetSelectedFunction.selected;
-import static ru.tinkoff.qa.neptune.data.base.api.query.QueryBuilderFunction.ofType;
-import static ru.tinkoff.qa.neptune.data.base.api.query.SelectListGetSupplier.listByQuery;
-import static ru.tinkoff.qa.neptune.data.base.api.query.SelectOneGetSupplier.aSingleByQuery;
 
 @SuppressWarnings("ConstantConditions")
 public class SelectByTypedQuery extends BaseDbOperationTest {
@@ -30,7 +25,7 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
     private static final Supplier<NothingIsSelectedException> TEST_SUPPLIER = () ->
             new NothingIsSelectedException("Test exception");
 
-    @Test
+    /*@Test
     public void selectListTestWithoutAnyCondition() {
         assertThat(dataBaseSteps.get(selected(listByQuery(ofType(Author.class)))),
                 hasSize(greaterThanOrEqualTo(2)));
@@ -661,5 +656,5 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
                 .where(qBook.name.eq("Ruslan and Ludmila")))));
 
         assertThat(ruslanAndLudmila, is(ruslanAndLudmila2));
-    }
+    }*/
 }

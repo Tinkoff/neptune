@@ -1,27 +1,19 @@
 package ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.insert.delete.update.insert.and.delete;
 
-import org.datanucleus.enhancement.Persistable;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDbOperationTest;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.*;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.one.tables.Author;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.one.tables.Catalog;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.one.tables.Publisher;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import static java.util.Calendar.*;
 import static java.util.List.of;
-import static javax.jdo.JDOHelper.isPersistent;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.fail;
-import static ru.tinkoff.qa.neptune.data.base.api.operations.DBGetDeletedFunction.deleted;
-import static ru.tinkoff.qa.neptune.data.base.api.operations.DBGetInsertedFunction.inserted;
-import static ru.tinkoff.qa.neptune.data.base.api.query.GetSelectedFunction.selected;
-import static ru.tinkoff.qa.neptune.data.base.api.query.QueryBuilderFunction.ofType;
-import static ru.tinkoff.qa.neptune.data.base.api.query.SelectListGetSupplier.listByQuery;
 
 public class InsertAndDeleteTest extends BaseDbOperationTest {
 
@@ -92,7 +84,7 @@ public class InsertAndDeleteTest extends BaseDbOperationTest {
                 .setPublisher(createSpaceIndependent).setYearOfPublishing(2016);
     }
 
-    @Test
+    /*@Test
     public void insertTest() {
         List<Catalog> catalogItems = dataBaseSteps.get(inserted(catalogItemOfNotreDame, catalogItemOfLegendOfTheAges));
 
@@ -370,5 +362,5 @@ public class InsertAndDeleteTest extends BaseDbOperationTest {
 
 
         assertThat(isPersistent(insertedAgain.get(0)), is(true));
-    }
+    }*/
 }

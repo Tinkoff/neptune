@@ -4,9 +4,7 @@ import org.datanucleus.enhancement.Persistable;
 import org.datanucleus.identity.ObjectId;
 import org.datanucleus.state.ObjectProvider;
 import ru.tinkoff.qa.neptune.core.api.steps.LoggableObject;
-import ru.tinkoff.qa.neptune.data.base.api.captors.IsQueryCaptured;
 
-import javax.jdo.annotations.NotPersistent;
 import java.util.Objects;
 
 import static java.lang.String.format;
@@ -17,10 +15,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 /**
  * This abstract class is designed to mark persistable classes.
  */
-public abstract class PersistableObject extends OrmObject implements Cloneable, LoggableObject, GotByQuery {
-
-    @NotPersistent
-    private transient Object query;
+public abstract class PersistableObject extends OrmObject implements Cloneable, LoggableObject {
 
     @Override
     public String toString() {
@@ -95,10 +90,6 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
         return Objects.equals(((Persistable) this).dnGetObjectId(), ((Persistable) obj).dnGetObjectId());
     }
 
-    public Object getQuery() {
-        return query;
-    }
-
     /**
      * Returns table name
      *
@@ -127,40 +118,5 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
             }
             return tableName;
         }).orElse(tableName);
-    }
-
-    @Deprecated
-    public PersistableObject setQuery(Object query) {
-        this.query = ofNullable(query).map(QueryInfo::new).orElse(null);
-        return this;
-    }
-
-    private static class QueryInfo implements IsQueryCaptured, GotByQuery {
-        private final Object query;
-        private boolean isCaptured;
-
-        private QueryInfo(Object query) {
-            this.query = query;
-        }
-
-        @Override
-        public Object getQuery() {
-            return query;
-        }
-
-        @Override
-        public boolean isCaptured() {
-            return isCaptured;
-        }
-
-        @Override
-        public void setCaptured() {
-            isCaptured = true;
-        }
-
-        @Override
-        public String toString() {
-            return query.toString();
-        }
     }
 }

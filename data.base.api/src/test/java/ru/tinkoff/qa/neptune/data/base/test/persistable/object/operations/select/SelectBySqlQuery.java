@@ -1,34 +1,14 @@
 package ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.select;
 
-import org.datanucleus.store.rdbms.query.JDOQLQuery;
-import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
-import ru.tinkoff.qa.neptune.data.base.api.queries.SelectList;
-import ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQueryParameters;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDbOperationTest;
-import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.ConnectionDataSupplierForTestBase1;
-import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Author;
-import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Book;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.QBook;
 
 import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
 
 import static java.time.Duration.ofSeconds;
-import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.equalTo;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.SelectList.listOf;
-import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQueryParameters.byJDOQuery;
-import static ru.tinkoff.qa.neptune.data.base.api.query.GetSelectedFunction.selected;
-import static ru.tinkoff.qa.neptune.data.base.api.query.QueryBuilderFunction.ofType;
-import static ru.tinkoff.qa.neptune.data.base.api.query.SQLQueryBuilderFunction.bySQL;
-import static ru.tinkoff.qa.neptune.data.base.api.query.SQLQueryBuilderFunction.byTypedSQL;
-import static ru.tinkoff.qa.neptune.data.base.api.query.SelectListGetSupplier.listByQuery;
-import static ru.tinkoff.qa.neptune.data.base.api.query.SelectOneGetSupplier.aSingleByQuery;
 
 public class SelectBySqlQuery extends BaseDbOperationTest {
     private static final SimpleDateFormat SIMPLE_DATE_FORMAT =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.000000000");
@@ -39,7 +19,7 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
 
     private static final QBook Q_BOOK = QBook.candidate();
 
-    @Test
+    /*@Test
     public void selectListByTypedSqlTest() {
         List<Author> authors = dataBaseSteps.get(selected(listByQuery(byTypedSQL(Author.class, QUERY))));
         List<Book> books = dataBaseSteps.get(selected(listByQuery(byTypedSQL(Book.class, QUERY))));
@@ -113,35 +93,6 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
         bookAndAuthor2.add(book.getAuthor().getBiography());
 
         assertThat(bookAndAuthor2, contains(bookAndAuthor.toArray()));
-
-        byJDOQuery(QBook.class).where(qBook -> qBook.author.eq(book.getAuthor())
-                .and(qBook.id.eq(1))
-                .and(qBook.name.eq("")))
-                .addOrderBy(qBook -> qBook.id.asc())
-                .setGroupBy(qBook -> qBook.author)
-                .having(qBook -> qBook.id.lteq(1))
-                .range(0,1);
-
-        new DataBaseStepContext().select(listOf(Book.class, byJDOQuery(QBook.class)
-                .where(qBook -> qBook.author.eq(book.getAuthor())
-                        .and(qBook.id.eq(1))
-                        .and(qBook.name.eq("")))
-                .addOrderBy(qBook -> qBook.id.asc())
-                .setGroupBy(qBook -> qBook.author)
-                .having(qBook -> qBook.id.lteq(1))
-                .range(0,1))
-                .timeOut(ofSeconds(20)));
-
-        new DataBaseStepContext().select(listOf(Book.class, 1, 2, 3));
-
-        new DataBaseStepContext().select(listOf(Book.class, "Select * from Books " +
-                "join Authors on Books.Author = Authors.Id " +
-                "where Books.YearOfFinishing >= 1820 order by YearOfFinishing asc"));
-
-        new DataBaseStepContext().select(listOf("Select * from Books " +
-                "join Authors on Books.Author = Authors.Id " +
-                "where Books.YearOfFinishing >= 1820 order by YearOfFinishing asc",
-                ConnectionDataSupplierForTestBase1.class));
     }
 
     @Test
@@ -154,5 +105,5 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
     public void aggregatedSingleResultSelect() {
         List<Object> result = dataBaseSteps.get(selected(aSingleByQuery(bySQL(QUERY2))));
         assertThat(result, contains(1820));
-    }
+    }*/
 }
