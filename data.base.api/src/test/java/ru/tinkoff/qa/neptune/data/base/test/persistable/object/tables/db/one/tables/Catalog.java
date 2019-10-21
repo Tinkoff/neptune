@@ -1,6 +1,7 @@
-package ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables;
+package ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.one.tables;
 
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Book;
 
 import javax.jdo.annotations.*;
 

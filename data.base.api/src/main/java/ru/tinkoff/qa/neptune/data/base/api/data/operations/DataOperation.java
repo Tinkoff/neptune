@@ -2,6 +2,8 @@ package ru.tinkoff.qa.neptune.data.base.api.data.operations;
 
 import org.apache.commons.lang3.StringUtils;
 import org.datanucleus.api.jdo.JDOPersistenceManager;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 import ru.tinkoff.qa.neptune.data.base.api.ListOfDataBaseObjects;
@@ -23,6 +25,8 @@ import static javax.jdo.JDOHelper.isPersistent;
 import static ru.tinkoff.qa.neptune.data.base.api.ConnectionToUse.ConnectionDataReader.getConnection;
 
 @SuppressWarnings("unchecked")
+@MakeFileCapturesOnFinishing
+@MakeStringCapturesOnFinishing
 public final class DataOperation<T extends PersistableObject>  extends SequentialGetStepSupplier
         .GetIterableChainedStepSupplier<DataBaseStepContext, List<T>, Map<JDOPersistenceManager, List<T>>, T, DataOperation<T>> {
 

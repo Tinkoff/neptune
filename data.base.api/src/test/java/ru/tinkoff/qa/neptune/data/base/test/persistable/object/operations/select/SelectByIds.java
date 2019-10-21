@@ -4,10 +4,10 @@ import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.data.base.api.NothingIsSelectedException;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDbOperationTest;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.ConnectionDataSupplierForTestBase2;
-import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Author;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.one.tables.Author;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Book;
-import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Catalog;
-import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Publisher;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.one.tables.Catalog;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.one.tables.Publisher;
 
 import java.time.Duration;
 import java.util.function.Supplier;
@@ -20,16 +20,13 @@ import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionStore.getKnownConnection;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.QueryTimeUnitProperties.WAITING_FOR_SELECTION_RESULT_TIME_UNIT;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.QueryTimeValueProperties.WAITING_FOR_SELECTION_RESULT_TIME_VALUE;
-import static ru.tinkoff.qa.neptune.data.base.api.query.GetSelectedFunction.selected;
-import static ru.tinkoff.qa.neptune.data.base.api.query.SelectListGetSupplier.listOfTypeByIds;
-import static ru.tinkoff.qa.neptune.data.base.api.query.SelectOneGetSupplier.aSingleOfTypeById;
 
 public class SelectByIds extends BaseDbOperationTest {
 
     private static final Supplier<NothingIsSelectedException> TEST_SUPPLIER = () ->
             new NothingIsSelectedException("Test exception");
 
-    @Test
+   /* @Test
     public void selectListTest() {
         var publisherItems = dataBaseSteps.get(selected(listOfTypeByIds(Publisher.class, -3, 1, 2)));
         assertThat(publisherItems, hasSize(2));
@@ -323,5 +320,5 @@ public class SelectByIds extends BaseDbOperationTest {
 
         assertThat(dataBaseSteps.get(query), nullValue());
         assertThat(dataBaseSteps.get(query2), not(nullValue()));
-    }
+    }*/
 }
