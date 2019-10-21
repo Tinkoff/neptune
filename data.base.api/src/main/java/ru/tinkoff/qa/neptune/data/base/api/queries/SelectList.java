@@ -9,7 +9,6 @@ import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 import ru.tinkoff.qa.neptune.data.base.api.NothingIsSelectedException;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionSupplier;
-import ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQuery;
 import ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQueryParameters;
 import ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.ReadableJDOQuery;
 
@@ -28,6 +27,7 @@ import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.JDOPersistenceManagerByConnectionSupplierClass.getConnectionBySupplierClass;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.JDOPersistenceManagerByPersistableClass.getConnectionByClass;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.ids.IdQuery.byIds;
+import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQuery.byJDOQLQuery;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.sql.SqlQuery.bySql;
 
 @MakeFileCapturesOnFinishing
@@ -42,16 +42,16 @@ public class SelectList<T, M> extends SequentialGetStepSupplier
 
     public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectList<R, ReadableJDOQuery<R>> listOf(Class<R> toSelect,
                                                                                                                               JDOQLQueryParameters<R, Q> params) {
-        return new SelectList<>(format("List of %s by JDO typed query", toSelect.getName()),
-                JDOQLQuery.<R>byJDOQLQuery()) {
+        return new SelectList<R, ReadableJDOQuery<R>>(format("List of %s by JDO typed query", toSelect.getName()),
+                byJDOQLQuery()) {
             protected Function<ReadableJDOQuery<R>, List<R>> getEndFunction() {
                 //such implementation is for advanced reporting
-                return rReadableJDOQuery -> toGet(format("Result using native query %s",
-                        rReadableJDOQuery.getInternalQuery().getNativeQuery()),
+                return rReadableJDOQuery -> toGet(format("Result using JDO query %s",
+                        rReadableJDOQuery.getInternalQuery()),
                         super.getEndFunction()).apply(rReadableJDOQuery);
             }
         }
-        .from(getConnectionByClass(toSelect).andThen(manager ->
+                .from(getConnectionByClass(toSelect).andThen(manager ->
                         ofNullable(params)
                                 .map(parameters -> parameters.buildQuery(new ReadableJDOQuery<>(manager, toSelect)))
                                 .orElseGet(() -> new ReadableJDOQuery<>(manager, toSelect))));

@@ -9,12 +9,12 @@ import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 import ru.tinkoff.qa.neptune.data.base.api.NothingIsSelectedException;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionSupplier;
-import ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQuery;
 import ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQueryParameters;
 import ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.ReadableJDOQuery;
 
 import javax.jdo.query.PersistableExpression;
 import java.time.Duration;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -34,19 +34,18 @@ import static ru.tinkoff.qa.neptune.data.base.api.queries.sql.SqlQuery.bySql;
 public class SelectASingle<T, M> extends SequentialGetStepSupplier
         .GetObjectFromIterableChainedStepSupplier<DataBaseStepContext, T, M, SelectASingle<T, M>> {
 
-    private <S extends Iterable<T>> SelectASingle(String description,
-                                                  Function<M, S> originalFunction) {
+    private SelectASingle(String description, Function<M, List<T>> originalFunction) {
         super(description, originalFunction);
     }
 
     public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectASingle<R, ReadableJDOQuery<R>> oneOf(Class<R> toSelect,
                                                                                                                                 JDOQLQueryParameters<R, Q> params) {
-        return new SelectASingle<>(format("One of %s by JDO typed query", toSelect.getName()),
-                JDOQLQuery.<R>byJDOQLQuery()) {
+        return new SelectASingle<R, ReadableJDOQuery<R>>(format("One of %s by JDO typed query", toSelect.getName()),
+                byJDOQLQuery()) {
             protected Function<ReadableJDOQuery<R>, R> getEndFunction() {
                 //such implementation is for advanced reporting
-                return rReadableJDOQuery -> toGet(format("Result using native query %s",
-                        rReadableJDOQuery.getInternalQuery().getNativeQuery()),
+                return rReadableJDOQuery -> toGet(format("Result using JDO query %s",
+                        rReadableJDOQuery.getInternalQuery()),
                         super.getEndFunction()).apply(rReadableJDOQuery);
             }
         }
