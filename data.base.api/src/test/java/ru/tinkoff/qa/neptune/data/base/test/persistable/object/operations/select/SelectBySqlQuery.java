@@ -1,24 +1,14 @@
 package ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.select;
 
-import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDbOperationTest;
-import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.ConnectionDataSupplierForTestBase1;
-import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.one.tables.Author;
-import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Book;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.QBook;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 import static java.time.Duration.ofSeconds;
-import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.equalTo;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.SelectList.listOf;
-import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQueryParameters.byJDOQuery;
 
 public class SelectBySqlQuery extends BaseDbOperationTest {
     private static final SimpleDateFormat SIMPLE_DATE_FORMAT =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.000000000");
@@ -103,35 +93,6 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
         bookAndAuthor2.add(book.getAuthor().getBiography());
 
         assertThat(bookAndAuthor2, contains(bookAndAuthor.toArray()));
-
-        byJDOQuery(QBook.class).where(qBook -> qBook.author.eq(book.getAuthor())
-                .and(qBook.id.eq(1))
-                .and(qBook.name.eq("")))
-                .addOrderBy(qBook -> qBook.id.asc())
-                .setGroupBy(qBook -> qBook.author)
-                .having(qBook -> qBook.id.lteq(1))
-                .range(0,1);
-
-        new DataBaseStepContext().select(listOf(Book.class, byJDOQuery(QBook.class)
-                .where(qBook -> qBook.author.eq(book.getAuthor())
-                        .and(qBook.id.eq(1))
-                        .and(qBook.name.eq("")))
-                .addOrderBy(qBook -> qBook.id.asc())
-                .setGroupBy(qBook -> qBook.author)
-                .having(qBook -> qBook.id.lteq(1))
-                .range(0,1))
-                .timeOut(ofSeconds(20)));
-
-        new DataBaseStepContext().select(listOf(Book.class, 1, 2, 3));
-
-        new DataBaseStepContext().select(listOf(Book.class, "Select * from Books " +
-                "join Authors on Books.Author = Authors.Id " +
-                "where Books.YearOfFinishing >= 1820 order by YearOfFinishing asc"));
-
-        new DataBaseStepContext().select(listOf("Select * from Books " +
-                "join Authors on Books.Author = Authors.Id " +
-                "where Books.YearOfFinishing >= 1820 order by YearOfFinishing asc",
-                ConnectionDataSupplierForTestBase1.class));
     }
 
     @Test

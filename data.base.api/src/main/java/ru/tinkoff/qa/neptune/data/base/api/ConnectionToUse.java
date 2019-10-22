@@ -33,7 +33,10 @@ public @interface ConnectionToUse {
      */
     final class ConnectionDataReader {
 
-        private static final ScanResult SCAN_RESULT = new ClassGraph().enableClassInfo()
+        private static final ScanResult SCAN_RESULT = new ClassGraph()
+                .enableSystemJarsAndModules()
+                .enableExternalClasses()
+                .enableClassInfo()
                 .enableAllInfo()
                 .scan();
 
@@ -54,10 +57,10 @@ public @interface ConnectionToUse {
             return ofNullable(clazz.getAnnotation(ConnectionToUse.class))
                     .map(connectionToUse -> getKnownConnection(connectionToUse.connectionSupplier(), true))
                     .orElseGet(() -> {
-                        var connectionToUse = getConnectionInfoFromPackageOf(clazz);
+                        var connectionInfo = getConnectionInfoFromPackageOf(clazz);
 
-                        if (connectionToUse != null) {
-                            return getKnownConnection(connectionToUse.connectionSupplier(), true);
+                        if (connectionInfo != null) {
+                            return getKnownConnection(connectionInfo, true);
                         }
 
                         throw new IllegalArgumentException(format("No annotation %s is defined for class %s/its packages",
@@ -71,19 +74,28 @@ public @interface ConnectionToUse {
             return ofNullable(clazz.getAnnotation(ConnectionToUse.class))
                     .map(connectionToUse -> connectionToUse.connectionSupplier().equals(supplierClass))
                     .orElseGet(() -> {
-                        var connectionToUse = getConnectionInfoFromPackageOf(clazz);
-                        return connectionToUse != null && connectionToUse.connectionSupplier().equals(supplierClass);
+                        var connectionInfo = getConnectionInfoFromPackageOf(clazz);
+                        return connectionInfo != null && connectionInfo.equals(supplierClass);
                     });
         }
 
-        private static ConnectionToUse getConnectionInfoFromPackageOf(Class<? extends PersistableObject> clazz) {
+        @SuppressWarnings("unchecked")
+        private static Class<? extends DBConnectionSupplier> getConnectionInfoFromPackageOf(Class<? extends PersistableObject> clazz) {
             return ofNullable(clazz.getPackage())
                     .map(aPackage -> {
                         var packInfo = SCAN_RESULT.getPackageInfo(aPackage.getName());
                         while (packInfo != null) {
                             var annotationInfo = packInfo.getAnnotationInfo(ConnectionToUse.class.getName());
                             if (annotationInfo != null) {
-                                return (ConnectionToUse) annotationInfo.loadClassAndInstantiate();
+                                try {
+                                    return (Class<? extends DBConnectionSupplier>) Class.forName(annotationInfo
+                                            .getParameterValues()
+                                            .getValue("connectionSupplier")
+                                            .toString()
+                                            .replace(".class", ""));
+                                } catch (Throwable throwable) {
+                                    throw new RuntimeException(throwable);
+                                }
                             }
                             packInfo = packInfo.getParent();
                         }

@@ -3,17 +3,16 @@ package ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.*;
-import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.one.tables.Author;
-import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.one.tables.Catalog;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 
+
 @SuppressWarnings({"ConstantConditions"})
 public class MultiThreadTest extends BaseDbOperationTest {
 
-    /*@DataProvider(parallel = true)
+   /*@DataProvider(parallel = true)
     public Object[][] query() {
         QAuthor qAuthor = QAuthor.candidate();
         QBook qBook = QBook.candidate();

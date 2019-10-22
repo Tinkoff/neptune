@@ -1,21 +1,10 @@
 package ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.insert.delete.update.update;
 
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDbOperationTest;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.one.tables.Author;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Book;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-import static java.util.Calendar.*;
-import static java.util.Calendar.MILLISECOND;
-import static javax.jdo.JDOHelper.isPersistent;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.fail;
 
 public class UpdateTest extends BaseDbOperationTest {
@@ -40,7 +29,7 @@ public class UpdateTest extends BaseDbOperationTest {
     private Author fyodorDostoevsky;
     private Book crimeAndPunishment;
 
-    @BeforeClass
+    /*@BeforeClass
     public void setUpBeforeClass() {
         var c1 = Calendar.getInstance();
         c1.set(YEAR, 1821);
