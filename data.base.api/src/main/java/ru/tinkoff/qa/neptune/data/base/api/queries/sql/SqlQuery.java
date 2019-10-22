@@ -14,7 +14,6 @@ import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.List.copyOf;
 import static java.util.List.of;
-import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public final class SqlQuery<T> implements Function<JDOPersistenceManager, List<T>> {
@@ -24,7 +23,6 @@ public final class SqlQuery<T> implements Function<JDOPersistenceManager, List<T
 
     private SqlQuery(String sql, Class<T> classOfRequestedValue) {
         checkArgument(isNotBlank(sql), "Sql query should not be a blank string");
-        checkArgument(nonNull(classOfRequestedValue), "Please define a class of values to be returned");
         this.classOfRequestedValue = classOfRequestedValue;
         this.sql = sql;
     }
@@ -52,8 +50,8 @@ public final class SqlQuery<T> implements Function<JDOPersistenceManager, List<T
         return new SqlQuery<>(sql, classOfRequestedValue);
     }
 
-    public static SqlQuery<Object> bySql(String sql) {
-        return new SqlQuery<>(sql, Object.class);
+    public static SqlQuery<List<Object>> bySql(String sql) {
+        return new SqlQuery<>(sql, null);
     }
 
     @Override
@@ -61,16 +59,15 @@ public final class SqlQuery<T> implements Function<JDOPersistenceManager, List<T
     public List<T> apply(JDOPersistenceManager jdoPersistenceManager) {
         var query = jdoPersistenceManager.newQuery("javax.jdo.query.SQL", sql);
 
-        if (PersistableObject.class.isAssignableFrom(classOfRequestedValue)) {
-            query.setClass(classOfRequestedValue);
-            return new ListOfDataBaseObjects<>(query.executeList()) {
-                public String toString() {
-                    return format("%s objects/object selected by sql query %s", size(), sql);
-                }
-            };
-        }
-        else {
+        if (classOfRequestedValue == null) {
             return (List<T>) getUntypedResult(query);
         }
+
+        query.setClass(classOfRequestedValue);
+        return new ListOfDataBaseObjects<>(query.executeList()) {
+            public String toString() {
+                return format("%s objects/object selected by sql query %s", size(), sql);
+            }
+        };
     }
 }

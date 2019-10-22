@@ -79,7 +79,7 @@ public class SelectASingle<T, M> extends SequentialGetStepSupplier
                 .from(getConnectionByClass(toSelect));
     }
 
-    public static <R extends DBConnectionSupplier> SelectASingle<Object, JDOPersistenceManager> oneOf(String sql, Class<R> connection) {
+    public static <R extends DBConnectionSupplier> SelectASingle<List<Object>, JDOPersistenceManager> oneOf(String sql, Class<R> connection) {
         return new SelectASingle<>(format("One row by query %s. The connection is described by %s", sql, connection.getName()),
                 bySql(sql))
                 .from(getConnectionBySupplierClass(connection));

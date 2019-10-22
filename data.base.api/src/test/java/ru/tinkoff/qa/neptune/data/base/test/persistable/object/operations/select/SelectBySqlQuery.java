@@ -1,14 +1,23 @@
 package ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.select;
 
+import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDbOperationTest;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.ConnectionDataSupplierForTestBase1;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Book;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.QBook;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.one.tables.Author;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
-import static java.time.Duration.ofSeconds;
+import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.equalTo;
+import static ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle.oneOf;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.SelectList.listOf;
+import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQueryParameters.byJDOQuery;
 
 public class SelectBySqlQuery extends BaseDbOperationTest {
     private static final SimpleDateFormat SIMPLE_DATE_FORMAT =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.000000000");
@@ -17,30 +26,28 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
             "where Books.YearOfFinishing >= 1820 order by YearOfFinishing asc";
     private static final String QUERY2 = "Select MIN(YearOfFinishing) from Books";
 
-    private static final QBook Q_BOOK = QBook.candidate();
-
-    /*@Test
+    @Test
     public void selectListByTypedSqlTest() {
-        List<Author> authors = dataBaseSteps.get(selected(listByQuery(byTypedSQL(Author.class, QUERY))));
-        List<Book> books = dataBaseSteps.get(selected(listByQuery(byTypedSQL(Book.class, QUERY))));
+        List<Author> authors = dataBaseSteps.select(listOf(Author.class, QUERY));
+        List<Book> books = dataBaseSteps.select(listOf(Book.class, QUERY));
 
-        List<Book> books2 = dataBaseSteps.get(selected(listByQuery(ofType(Book.class)
-                .where(Q_BOOK.yearOfFinishing.gteq(1820))
-                .orderBy(Q_BOOK.yearOfFinishing.asc()))));
+        List<Book> books2 = dataBaseSteps.get(listOf(Book.class, byJDOQuery(QBook.class)
+                .where(qBook -> qBook.yearOfFinishing.gteq(1820))
+                .addOrderBy(qBook -> qBook.yearOfFinishing.asc())));
+
         List<Author> authors2 = books2.stream().map(Book::getAuthor).collect(toList());
-
         assertThat(authors2, contains(authors.toArray()));
         assertThat(books2, contains(books.toArray()));
     }
 
     @Test
     public void selectSingleByTypedSqlTest() {
-        Author author = dataBaseSteps.get(selected(aSingleByQuery(byTypedSQL(Author.class, QUERY))));
-        Book book = dataBaseSteps.get(selected(aSingleByQuery(byTypedSQL(Book.class, QUERY))));
+        Author author = dataBaseSteps.select(oneOf(Author.class, QUERY));
+        Book book = dataBaseSteps.select(oneOf(Book.class, QUERY));
 
-        Book book2 = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
-                .where(Q_BOOK.yearOfFinishing.gteq(1820))
-                .orderBy(Q_BOOK.yearOfFinishing.asc()))));
+        Book book2 = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
+                .where(qBook -> qBook.yearOfFinishing.gteq(1820))
+                .addOrderBy(qBook -> qBook.yearOfFinishing.asc())));
         Author author2 = book2.getAuthor();
 
         assertThat(author2, equalTo(author));
@@ -49,10 +56,13 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
 
     @Test
     public void selectListByUnTypedSqlTest() {
-        List<List<Object>> booksAndAuthors = dataBaseSteps.get(selected(listByQuery(bySQL(QUERY)))).subList(0, 1);
-        List<Book> books = dataBaseSteps.get(selected(listByQuery(ofType(Book.class)
-                .where(Q_BOOK.yearOfFinishing.gteq(1820))
-                .orderBy(Q_BOOK.yearOfFinishing.asc()).range(0, 1))));
+        var booksAndAuthors = dataBaseSteps.select(listOf(QUERY, ConnectionDataSupplierForTestBase1.class))
+                .subList(0, 1);
+        List<Book> books = dataBaseSteps.select(listOf(Book.class, byJDOQuery(QBook.class)
+                .where(qBook -> qBook.yearOfFinishing.gteq(1820))
+                .addOrderBy(qBook -> qBook.yearOfFinishing.asc())
+                .range(0, 1)));
+
         List<List<Object>> booksAndAuthors2 = books.stream()
                 .map(book -> {
                     List<Object> result = new ArrayList<>();
@@ -75,9 +85,10 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
 
     @Test
     public void selectSingleByUnTypedSqlTest() {
-        List<Object> bookAndAuthor = dataBaseSteps.get(selected(aSingleByQuery(bySQL(QUERY))));
-        Book book = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
-                .where(Q_BOOK.name.eq("Ruslan and Ludmila")))));
+        var bookAndAuthor = dataBaseSteps.select(oneOf(QUERY, ConnectionDataSupplierForTestBase1.class));
+
+        Book book = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
+                .where(qBook -> qBook.name.eq("Ruslan and Ludmila"))));
 
         List<Object> bookAndAuthor2 = new ArrayList<>();
         bookAndAuthor2.add(book.getId());
@@ -97,13 +108,13 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
 
     @Test
     public void aggregatedListResultSelect() {
-        List<List<Object>> result = dataBaseSteps.get(selected(listByQuery(bySQL(QUERY2))));
+        var result = dataBaseSteps.select(listOf(QUERY2, ConnectionDataSupplierForTestBase1.class));
         assertThat(result, contains(contains(1820)));
     }
 
     @Test
     public void aggregatedSingleResultSelect() {
-        List<Object> result = dataBaseSteps.get(selected(aSingleByQuery(bySQL(QUERY2))));
+        var result = dataBaseSteps.select(oneOf(QUERY2, ConnectionDataSupplierForTestBase1.class));
         assertThat(result, contains(1820));
-    }*/
+    }
 }

@@ -23,7 +23,7 @@ public class SelectByIds extends BaseDbOperationTest {
 
     private static final String TEST_EXCEPTION = "Test exception";
 
-    @Test
+    @Test(groups = "positive tests")
     public void selectListTest() {
         var publisherItems = dataBaseSteps.select(listOf(Publisher.class, -3, 1, 2));
         assertThat(publisherItems, hasSize(2));
@@ -31,13 +31,13 @@ public class SelectByIds extends BaseDbOperationTest {
                 contains("Bergh Publishing", "Simon & Schuster"));
     }
 
-    @Test
+    @Test(groups = "positive tests")
     public void selectOneTest() {
         var catalogItem = dataBaseSteps.select(oneOf(Publisher.class, 1));
         assertThat(catalogItem.getName(), is("Bergh Publishing"));
     }
 
-    @Test
+    @Test(groups = "positive tests")
     public void selectListTestByCondition() {
         var publishers = dataBaseSteps.select(listOf(Publisher.class, 1, 2, -1)
                 .criteria("Has name Bergh Publishing", publisher -> publisher
@@ -46,7 +46,7 @@ public class SelectByIds extends BaseDbOperationTest {
         assertThat(publishers.get(0).getName(), equalTo("Bergh Publishing"));
     }
 
-    @Test
+    @Test(groups = "positive tests")
     public void selectOneTestByCondition() {
         var author = dataBaseSteps.select(oneOf(Author.class, 1)
                 .criteria("Wrote `Ruslan and Ludmila`", author1 -> null != author1.getBooks().stream()
@@ -55,7 +55,7 @@ public class SelectByIds extends BaseDbOperationTest {
         assertThat(author.getLastName(), equalTo("Pushkin"));
     }
 
-    @Test
+    @Test(dependsOnGroups = "positive tests")
     public void selectEmptyListTestWithDefaultTime() {
         long start = currentTimeMillis();
         var catalogItems = dataBaseSteps.select(listOf(Catalog.class, -1, -2));
@@ -67,7 +67,7 @@ public class SelectByIds extends BaseDbOperationTest {
         assertThat(end - start - fiveSeconds.toMillis(), lessThanOrEqualTo(700L));
     }
 
-    @Test
+    @Test(dependsOnGroups = "positive tests")
     public void selectNullTestWithDefaultTime() {
         long start = currentTimeMillis();
         var catalogItem = dataBaseSteps.select(oneOf(Catalog.class, -2));
@@ -79,7 +79,7 @@ public class SelectByIds extends BaseDbOperationTest {
         assertThat(end - start - fiveSeconds.toMillis(), lessThanOrEqualTo(700L));
     }
 
-    @Test
+    @Test(dependsOnGroups = "positive tests")
     public void selectEmptyListByIdWithDefinedTime() {
         Duration sixSeconds = ofSeconds(6);
         long start = currentTimeMillis();
@@ -92,7 +92,7 @@ public class SelectByIds extends BaseDbOperationTest {
         assertThat(end - start - sixSeconds.toMillis(), lessThanOrEqualTo(700L));
     }
 
-    @Test
+    @Test(dependsOnGroups = "positive tests")
     public void selectNullByIdWithDefinedTime() {
         Duration sixSeconds = ofSeconds(6);
         long start = currentTimeMillis();
@@ -105,7 +105,7 @@ public class SelectByIds extends BaseDbOperationTest {
         assertThat(end - start - sixSeconds.toMillis(), lessThanOrEqualTo(700L));
     }
 
-    @Test
+    @Test(dependsOnGroups = "positive tests")
     public void selectEmptyListByIdyWithTimeDefinedByProperty() {
         WAITING_FOR_SELECTION_RESULT_TIME_UNIT.accept("SECONDS");
         WAITING_FOR_SELECTION_RESULT_TIME_VALUE.accept("2");
@@ -125,7 +125,7 @@ public class SelectByIds extends BaseDbOperationTest {
         }
     }
 
-    @Test
+    @Test(dependsOnGroups = "positive tests")
     public void selectNullByIdWithTimeDefinedByProperty() {
         WAITING_FOR_SELECTION_RESULT_TIME_UNIT.accept("SECONDS");
         WAITING_FOR_SELECTION_RESULT_TIME_VALUE.accept("2");
@@ -145,7 +145,7 @@ public class SelectByIds extends BaseDbOperationTest {
         }
     }
 
-    @Test
+    @Test(dependsOnGroups = "positive tests")
     public void selectEmptyListByIdAndConditionWithDefaultTime() {
         long start = currentTimeMillis();
         var publishers = dataBaseSteps.select(listOf(Publisher.class, 1)
@@ -159,7 +159,7 @@ public class SelectByIds extends BaseDbOperationTest {
         assertThat(end - start - fiveSeconds.toMillis(), lessThanOrEqualTo(700L));
     }
 
-    @Test
+    @Test(dependsOnGroups = "positive tests")
     public void selectNullByIdAndConditionWithDefaultTime() {
         long start = currentTimeMillis();
         var publisher = dataBaseSteps.select(oneOf(Publisher.class, 1)
@@ -173,7 +173,7 @@ public class SelectByIds extends BaseDbOperationTest {
         assertThat(end - start - fiveSeconds.toMillis(), lessThanOrEqualTo(700L));
     }
 
-    @Test
+    @Test(dependsOnGroups = "positive tests")
     public void selectEmptyListByIdAndConditionWithDefinedTime() {
         Duration sixSeconds = ofSeconds(6);
         long start = currentTimeMillis();
@@ -188,7 +188,7 @@ public class SelectByIds extends BaseDbOperationTest {
         assertThat(end - start - sixSeconds.toMillis(), lessThanOrEqualTo(700L));
     }
 
-    @Test
+    @Test(dependsOnGroups = "positive tests")
     public void selectNullByIdAndConditionWithDefinedTime() {
         Duration sixSeconds = ofSeconds(6);
         long start = currentTimeMillis();
@@ -203,7 +203,7 @@ public class SelectByIds extends BaseDbOperationTest {
         assertThat(end - start - sixSeconds.toMillis(), lessThanOrEqualTo(700L));
     }
 
-    @Test
+    @Test(dependsOnGroups = "positive tests")
     public void selectEmptyListByIdAndConditionWithTimeDefinedByProperty() {
         WAITING_FOR_SELECTION_RESULT_TIME_UNIT.accept("SECONDS");
         WAITING_FOR_SELECTION_RESULT_TIME_VALUE.accept("2");
@@ -225,7 +225,7 @@ public class SelectByIds extends BaseDbOperationTest {
         }
     }
 
-    @Test
+    @Test(dependsOnGroups = "positive tests")
     public void selectNullByIdAndConditionWithTimeDefinedByProperty() {
         WAITING_FOR_SELECTION_RESULT_TIME_UNIT.accept("SECONDS");
         WAITING_FOR_SELECTION_RESULT_TIME_VALUE.accept("2");
@@ -247,13 +247,15 @@ public class SelectByIds extends BaseDbOperationTest {
         }
     }
 
-    @Test(expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = TEST_EXCEPTION)
+    @Test(dependsOnGroups = "positive tests",
+            expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = TEST_EXCEPTION)
     public void selectEmptyListByIdWithExceptionThrowing() {
         dataBaseSteps.select(listOf(Catalog.class, -1)
                 .throwWhenResultEmpty(TEST_EXCEPTION));
     }
 
-    @Test(expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = TEST_EXCEPTION)
+    @Test(dependsOnGroups = "positive tests",
+            expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = TEST_EXCEPTION)
     public void selectNullByIdWithExceptionThrowing() {
         dataBaseSteps.select(oneOf(Catalog.class, -1)
                 .throwWhenResultEmpty(TEST_EXCEPTION));
@@ -267,7 +269,8 @@ public class SelectByIds extends BaseDbOperationTest {
                 .throwWhenResultEmpty(TEST_EXCEPTION));
     }
 
-    @Test(expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = TEST_EXCEPTION)
+    @Test(dependsOnGroups = "positive tests",
+            expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = TEST_EXCEPTION)
     public void selectNullByIdAndConditionWithExceptionThrowing() {
         dataBaseSteps.select(oneOf(Publisher.class, 1)
                 .criteria("Has name Simon & Schuster", publisherItem -> publisherItem

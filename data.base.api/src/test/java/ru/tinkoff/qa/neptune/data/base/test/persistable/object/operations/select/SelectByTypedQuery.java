@@ -1,148 +1,136 @@
 package ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.select;
 
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.data.base.api.NothingIsSelectedException;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDbOperationTest;
-import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.ConnectionDataSupplierForTestBase2;
-import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.*;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Book;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.QBook;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.one.tables.Author;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.one.tables.Catalog;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.one.tables.QAuthor;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.one.tables.QCatalog;
 
 import java.time.Duration;
-import java.util.List;
-import java.util.function.Supplier;
 
 import static java.lang.System.currentTimeMillis;
 import static java.time.Duration.ofSeconds;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionStore.getKnownConnection;
+import static org.testng.Assert.fail;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.QueryTimeUnitProperties.WAITING_FOR_SELECTION_RESULT_TIME_UNIT;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.QueryTimeValueProperties.WAITING_FOR_SELECTION_RESULT_TIME_VALUE;
+import static ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle.oneOf;
+import static ru.tinkoff.qa.neptune.data.base.api.queries.SelectList.listOf;
+import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQueryParameters.byJDOQuery;
 
 @SuppressWarnings("ConstantConditions")
 public class SelectByTypedQuery extends BaseDbOperationTest {
 
-    private static final Supplier<NothingIsSelectedException> TEST_SUPPLIER = () ->
-            new NothingIsSelectedException("Test exception");
+    private static final String TEST_SUPPLIER = "Test exception";
+    private Book journeyToIxtlan;
+    private Author carlosCastaneda;
+    private Book ruslanAndLudmila;
+    private Author alexanderPushkin;
 
-    /*@Test
+    @BeforeClass
+    public void prepare() {
+        journeyToIxtlan = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
+                .where(qBook -> qBook.name.eq("Journey to Ixtlan"))));
+
+        carlosCastaneda = dataBaseSteps.select(oneOf(Author.class, byJDOQuery(QAuthor.class)
+                .where(qAuthor -> qAuthor.firstName.eq("Carlos").and(qAuthor.lastName.eq("Castaneda")))));
+
+        ruslanAndLudmila = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
+                .where(qBook -> qBook.name.eq("Ruslan and Ludmila"))));
+
+        alexanderPushkin = dataBaseSteps.select(oneOf(Author.class, byJDOQuery(QAuthor.class)
+                .where(qAuthor -> qAuthor.firstName.eq("Alexander").and(qAuthor.lastName.eq("Pushkin")))));
+    }
+
+    @Test(groups = "positive tests")
     public void selectListTestWithoutAnyCondition() {
-        assertThat(dataBaseSteps.get(selected(listByQuery(ofType(Author.class)))),
+        assertThat(dataBaseSteps.select(listOf(Author.class)),
                 hasSize(greaterThanOrEqualTo(2)));
     }
 
-    @Test
+    @Test(groups = "positive tests")
     public void selectOneTestWithoutCondition() {
-        var a = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class))));
+        var a = dataBaseSteps.select(oneOf(Author.class));
         assertThat(a.getId(), is(1));
     }
 
-    @Test
+    @Test(groups = "positive tests")
     public void selectListTestWithQuery() {
-        var c = QCatalog.candidate();
-        var catalogItems = dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class)
-                .where(c.book.name.eq("Ruslan and Ludmila")
-                        .or(c.book.author.lastName.eq("Castaneda")))
-                .orderBy(c.book.id.desc()))));
+        var catalogItems = dataBaseSteps.select(listOf(Catalog.class, byJDOQuery(QCatalog.class)
+                .where(qCatalog -> qCatalog.book.name.eq(ruslanAndLudmila.getName())
+                        .or(qCatalog.book.author.lastName.eq(carlosCastaneda.getLastName())))
+                .addOrderBy(qCatalog -> qCatalog.book.id.desc())));
 
         assertThat(catalogItems, hasSize(2));
         assertThat(catalogItems.stream().map(catalog -> catalog.getBook().getName()).collect(toList()),
                 contains("Ruslan and Ludmila", "Journey to Ixtlan"));
     }
 
-    @Test
+    @Test(groups = "positive tests")
     public void selectOneTestWithQuery() {
-        var c = QCatalog.candidate();
-        var catalogItem = dataBaseSteps.get(selected(aSingleByQuery(ofType(Catalog.class)
-                .where(c.book.name.eq("Ruslan and Ludmila")
-                        .or(c.book.author.lastName.eq("Castaneda")))
-                .orderBy(c.book.id.desc()))));
+        var catalogItem = dataBaseSteps.select(oneOf(Catalog.class, byJDOQuery(QCatalog.class)
+                .where(qCatalog -> qCatalog.book.name.eq(ruslanAndLudmila.getName())
+                        .or(qCatalog.book.author.lastName.eq(carlosCastaneda.getLastName())))
+                .addOrderBy(qCatalog -> qCatalog.book.id.desc())));
 
         assertThat(catalogItem.getBook().getName(), is("Ruslan and Ludmila"));
     }
 
-    @Test
+    @Test(groups = "positive tests")
     public void selectListTestByCondition() {
-        var catalogItems = dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class))
+        var catalogItems = dataBaseSteps.select(listOf(Catalog.class)
                 .criteria("A book with title `Ruslan and Ludmila`", catalog -> catalog
-                        .getBook().getName().equalsIgnoreCase("ruslan and ludmila"))));
+                        .getBook().getName().equalsIgnoreCase(ruslanAndLudmila.getName())));
+
         assertThat(catalogItems, hasSize(1));
         var catalogItem = catalogItems.get(0);
         assertThat(catalogItem.getBook().getName(), equalTo("Ruslan and Ludmila"));
     }
 
-    @Test
+    @Test(groups = "positive tests")
     public void selectOneTestByCondition() {
-        var author = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class))
+        var author = dataBaseSteps.select(oneOf(Author.class)
                 .criteria("Wrote `Ruslan and Ludmila`", author1 -> null != author1.getBooks().stream()
-                        .filter(book -> "ruslan and ludmila".equalsIgnoreCase(book.getName()))
+                        .filter(book -> ruslanAndLudmila.getName().equalsIgnoreCase(book.getName()))
                         .findFirst()
-                        .orElse(null))));
+                        .orElse(null)));
         assertThat(author.getLastName(), equalTo("Pushkin"));
     }
 
-    @Test
+    @Test(groups = "positive tests")
     public void selectListTestByQueryAndCondition() {
-        var qAuthor = QAuthor.candidate();
-        var qBook = QBook.candidate();
-        var qCatalog = QCatalog.candidate();
-
-        var journeyToIxtlan = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Journey to Ixtlan")))));
-
-        var carlosCastaneda = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
-                .where(qAuthor.firstName.eq("Carlos")
-                        .and(qAuthor.lastName.eq("Castaneda"))))));
-
-        var catalogItems = dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class)
-                .where(qCatalog.book.eq(journeyToIxtlan)))
-
+        var catalogItems = dataBaseSteps.select(listOf(Catalog.class, byJDOQuery(QCatalog.class)
+                .where(qCatalog -> qCatalog.book.eq(journeyToIxtlan)))
                 .criteria("Publisher is 'Simon & Schuster'",
-                        catalog -> "Simon & Schuster".equals(catalog.getPublisher().getName()))));
+                        catalog -> "Simon & Schuster".equals(catalog.getPublisher().getName())));
 
         assertThat(catalogItems, hasSize(1));
         assertThat(catalogItems.get(0).getBook().getAuthor(), equalTo(carlosCastaneda));
     }
 
-    @Test
+    @Test(groups = "positive tests")
     public void selectOneTestByQueryAndCondition() {
-        var qAuthor = QAuthor.candidate();
-        var qBook = QBook.candidate();
-        var qCatalog = QCatalog.candidate();
-
-        var journeyToIxtlan = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Journey to Ixtlan")))));
-
-        var carlosCastaneda = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
-                .where(qAuthor.firstName.eq("Carlos").and(qAuthor.lastName.eq("Castaneda"))))));
-
-        var catalogItem = dataBaseSteps.get(selected(aSingleByQuery(ofType(Catalog.class)
-                .where(qCatalog.book.eq(journeyToIxtlan)
-                        .and(qCatalog.book.author.eq(carlosCastaneda))))
+        var catalogItem = dataBaseSteps.select(oneOf(Catalog.class, byJDOQuery(QCatalog.class)
+                .where(qCatalog -> qCatalog.book.eq(journeyToIxtlan).and(qCatalog.book.author.eq(carlosCastaneda))))
                 .criteria("Publisher is 'Simon & Schuster'",
-                        catalog -> "Simon & Schuster".equals(catalog.getPublisher().getName()))));
+                        catalog -> "Simon & Schuster".equals(catalog.getPublisher().getName())));
 
         assertThat(catalogItem.getBook().getAuthor(), equalTo(carlosCastaneda));
     }
 
-    @Test
+    @Test(dependsOnGroups = "positive tests")
     public void selectEmptyListByQueryWithDefaultTime() {
-        var qAuthor = QAuthor.candidate();
-        var qBook = QBook.candidate();
-        var qCatalog = QCatalog.candidate();
-
-        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila")))));
-
-        var carlosCastaneda = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
-                .where(qAuthor.firstName.eq("Carlos")
-                        .and(qAuthor.lastName.eq("Castaneda"))))));
-
         long start = currentTimeMillis();
-        var catalogItems = dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class)
-                .where(qCatalog.book.eq(ruslanAndLudmila).and(qCatalog.book.author.eq(carlosCastaneda))))));
+        var catalogItems = dataBaseSteps.select(listOf(Catalog.class, byJDOQuery(QCatalog.class)
+                .where(qCatalog -> qCatalog.book.eq(ruslanAndLudmila).and(qCatalog.book.author.eq(carlosCastaneda)))));
+
         long end = currentTimeMillis();
 
         Duration fiveSeconds = ofSeconds(5);
@@ -151,22 +139,12 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         assertThat(end - start - fiveSeconds.toMillis(), lessThanOrEqualTo(500L));
     }
 
-    @Test
+    @Test(dependsOnGroups = "positive tests")
     public void selectNullByQueryWithDefaultTime() {
-        var qAuthor = QAuthor.candidate();
-        var qBook = QBook.candidate();
-        var qCatalog = QCatalog.candidate();
-
-        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila")))));
-
-        var carlosCastaneda = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
-                .where(qAuthor.firstName.eq("Carlos")
-                        .and(qAuthor.lastName.eq("Castaneda"))))));
-
         long start = currentTimeMillis();
-        var catalogItem = dataBaseSteps.get(selected(aSingleByQuery(ofType(Catalog.class)
-                .where(qCatalog.book.eq(ruslanAndLudmila).and(qCatalog.book.author.eq(carlosCastaneda))))));
+        var catalogItem = dataBaseSteps.select(oneOf(Catalog.class, byJDOQuery(QCatalog.class)
+                .where(qCatalog -> qCatalog.book.eq(ruslanAndLudmila)
+                        .and(qCatalog.book.author.eq(carlosCastaneda)))));
         long end = currentTimeMillis();
 
         Duration fiveSeconds = ofSeconds(5);
@@ -175,24 +153,14 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         assertThat(end - start - fiveSeconds.toMillis(), lessThanOrEqualTo(500L));
     }
 
-    @Test
+    @Test(dependsOnGroups = "positive tests")
     public void selectEmptyListByQueryWithDefinedTime() {
-        var qAuthor = QAuthor.candidate();
-        var qBook = QBook.candidate();
-        var qCatalog = QCatalog.candidate();
-
-        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila")))));
-
-        var carlosCastaneda = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
-                .where(qAuthor.firstName.eq("Carlos")
-                        .and(qAuthor.lastName.eq("Castaneda"))))));
-
         Duration sixSeconds = ofSeconds(6);
         long start = currentTimeMillis();
-        var catalogItems = dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class)
-                .where(qCatalog.book.eq(ruslanAndLudmila).and(qCatalog.book.author.eq(carlosCastaneda))))
-                .timeOut(sixSeconds)));
+        var catalogItems = dataBaseSteps.select(listOf(Catalog.class, byJDOQuery(QCatalog.class)
+                .where(qCatalog -> qCatalog.book.eq(ruslanAndLudmila)
+                        .and(qCatalog.book.author.eq(carlosCastaneda))))
+                .timeOut(sixSeconds));
         long end = currentTimeMillis();
 
         assertThat(catalogItems, hasSize(0));
@@ -200,23 +168,14 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         assertThat(end - start - sixSeconds.toMillis(), lessThanOrEqualTo(500L));
     }
 
-    @Test
+    @Test(dependsOnGroups = "positive tests")
     public void selectNullByQueryWithDefinedTime() {
-        var qAuthor = QAuthor.candidate();
-        var qBook = QBook.candidate();
-        var qCatalog = QCatalog.candidate();
-
-        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila")))));
-
-        var carlosCastaneda = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
-                .where(qAuthor.firstName.eq("Carlos").and(qAuthor.lastName.eq("Castaneda"))))));
-
         Duration sixSeconds = ofSeconds(6);
         long start = currentTimeMillis();
-        var catalogItem = dataBaseSteps.get(selected(aSingleByQuery(ofType(Catalog.class)
-                .where(qCatalog.book.eq(ruslanAndLudmila).and(qCatalog.book.author.eq(carlosCastaneda))))
-                .timeOut(sixSeconds)));
+        var catalogItem = dataBaseSteps.select(oneOf(Catalog.class, byJDOQuery(QCatalog.class)
+                .where(qCatalog -> qCatalog.book.eq(ruslanAndLudmila)
+                        .and(qCatalog.book.author.eq(carlosCastaneda))))
+                .timeOut(sixSeconds));
         long end = currentTimeMillis();
 
         assertThat(catalogItem, nullValue());
@@ -224,25 +183,16 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         assertThat(end - start - sixSeconds.toMillis(), lessThanOrEqualTo(500L));
     }
 
-    @Test
+    @Test(dependsOnGroups = "positive tests")
     public void selectEmptyListByQueryWithTimeDefinedByProperty() {
         WAITING_FOR_SELECTION_RESULT_TIME_UNIT.accept("SECONDS");
         WAITING_FOR_SELECTION_RESULT_TIME_VALUE.accept("2");
 
-        var qAuthor = QAuthor.candidate();
-        var qBook = QBook.candidate();
-        var qCatalog = QCatalog.candidate();
-
-        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila")))));
-
-        var carlosCastaneda = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
-                .where(qAuthor.firstName.eq("Carlos").and(qAuthor.lastName.eq("Castaneda"))))));
-
         Duration twoSeconds = ofSeconds(2);
         long start = currentTimeMillis();
-        var catalogItems = dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class)
-                .where(qCatalog.book.eq(ruslanAndLudmila).and(qCatalog.book.author.eq(carlosCastaneda))))));
+        var catalogItems = dataBaseSteps.select(listOf(Catalog.class, byJDOQuery(QCatalog.class)
+                .where(qCatalog -> qCatalog.book.eq(ruslanAndLudmila)
+                        .and(qCatalog.book.author.eq(carlosCastaneda)))));
         long end = currentTimeMillis();
 
         try {
@@ -255,27 +205,16 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         }
     }
 
-    @Test
+    @Test(dependsOnGroups = "positive tests")
     public void selectNullByQueryWithTimeDefinedByProperty() {
         WAITING_FOR_SELECTION_RESULT_TIME_UNIT.accept("SECONDS");
         WAITING_FOR_SELECTION_RESULT_TIME_VALUE.accept("2");
 
-        var qAuthor = QAuthor.candidate();
-        var qBook = QBook.candidate();
-        var qCatalog = QCatalog.candidate();
-
-        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila")))));
-
-        var carlosCastaneda = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
-                .where(qAuthor.firstName.eq("Carlos")
-                        .and(qAuthor.lastName.eq("Castaneda"))))));
-
         Duration twoSeconds = ofSeconds(2);
         long start = currentTimeMillis();
-        var catalogItem = dataBaseSteps.get(selected(aSingleByQuery(ofType(Catalog.class)
-                .where(qCatalog.book.eq(ruslanAndLudmila)
-                        .and(qCatalog.book.author.eq(carlosCastaneda))))));
+        var catalogItem = dataBaseSteps.select(oneOf(Catalog.class, byJDOQuery(QCatalog.class)
+                .where(qCatalog -> qCatalog.book.eq(ruslanAndLudmila)
+                        .and(qCatalog.book.author.eq(carlosCastaneda)))));
         long end = currentTimeMillis();
 
         try {
@@ -288,25 +227,13 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         }
     }
 
-    @Test
+    @Test(dependsOnGroups = "positive tests")
     public void selectEmptyListByQueryAndConditionWithDefaultTime() {
-        var qAuthor = QAuthor.candidate();
-        var qBook = QBook.candidate();
-        var qCatalog = QCatalog.candidate();
-
-        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila")))));
-
-        var alexanderPushkin = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
-                .where(qAuthor.firstName.eq("Alexander")
-                        .and(qAuthor.lastName.eq("Pushkin"))))));
-
         long start = currentTimeMillis();
-        var catalogItems = dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class)
-                .where(qCatalog.book.eq(ruslanAndLudmila)
-                        .and(qCatalog.book.author.eq(alexanderPushkin))))
-                .criteria("Published in 1995",
-                        catalog -> catalog.getYearOfPublishing().equals(1995))));
+        var catalogItems = dataBaseSteps.select(listOf(Catalog.class, byJDOQuery(QCatalog.class)
+                .where(qCatalog -> qCatalog.book.eq(ruslanAndLudmila).and(qCatalog.book.author.eq(alexanderPushkin))))
+                .criteria("Published in 1995", catalog -> catalog
+                        .getYearOfPublishing().equals(1995)));
         long end = currentTimeMillis();
 
         Duration fiveSeconds = ofSeconds(5);
@@ -315,25 +242,12 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         assertThat(end - start - fiveSeconds.toMillis(), lessThanOrEqualTo(500L));
     }
 
-    @Test
+    @Test(dependsOnGroups = "positive tests")
     public void selectNullByQueryAndConditionWithDefaultTime() {
-        var qAuthor = QAuthor.candidate();
-        var qBook = QBook.candidate();
-        var qCatalog = QCatalog.candidate();
-
-        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila")))));
-
-        var alexanderPushkin = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
-                .where(qAuthor.firstName.eq("Alexander")
-                        .and(qAuthor.lastName.eq("Pushkin"))))));
-
         long start = currentTimeMillis();
-        var catalogItem = dataBaseSteps.get(selected(aSingleByQuery(ofType(Catalog.class)
-                .where(qCatalog.book.eq(ruslanAndLudmila)
-                        .and(qCatalog.book.author.eq(alexanderPushkin))))
-                .criteria("Published in 1995",
-                        catalog -> catalog.getYearOfPublishing().equals(1995))));
+        var catalogItem = dataBaseSteps.select(oneOf(Catalog.class, byJDOQuery(QCatalog.class)
+                .where(qCatalog ->qCatalog.book.eq(ruslanAndLudmila).and(qCatalog.book.author.eq(alexanderPushkin))))
+                .criteria("Published in 1995", catalog -> catalog.getYearOfPublishing().equals(1995)));
         long end = currentTimeMillis();
 
         Duration fiveSeconds = ofSeconds(5);
@@ -342,27 +256,14 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         assertThat(end - start - fiveSeconds.toMillis(), lessThanOrEqualTo(500L));
     }
 
-    @Test
+    @Test(dependsOnGroups = "positive tests")
     public void selectEmptyListByQueryAndConditionWithDefinedTime() {
-        var qAuthor = QAuthor.candidate();
-        var qBook = QBook.candidate();
-        var qCatalog = QCatalog.candidate();
-
-        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila")))));
-
-        var alexanderPushkin = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
-                .where(qAuthor.firstName.eq("Alexander")
-                        .and(qAuthor.lastName.eq("Pushkin"))))));
-
         Duration sixSeconds = ofSeconds(6);
         long start = currentTimeMillis();
-        var catalogItems = dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class)
-                .where(qCatalog.book.eq(ruslanAndLudmila)
-                        .and(qCatalog.book.author.eq(alexanderPushkin))))
-                .criteria("Published in 1995",
-                        catalog -> catalog.getYearOfPublishing().equals(1995))
-                .timeOut(sixSeconds)));
+        var catalogItems = dataBaseSteps.select(listOf(Catalog.class, byJDOQuery(QCatalog.class)
+                .where(qCatalog -> qCatalog.book.eq(ruslanAndLudmila).and(qCatalog.book.author.eq(alexanderPushkin))))
+                .criteria("Published in 1995", catalog -> catalog.getYearOfPublishing().equals(1995))
+                .timeOut(sixSeconds));
         long end = currentTimeMillis();
 
         assertThat(catalogItems, hasSize(0));
@@ -370,27 +271,14 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         assertThat(end - start - sixSeconds.toMillis(), lessThanOrEqualTo(500L));
     }
 
-    @Test
+    @Test(dependsOnGroups = "positive tests")
     public void selectNullByQueryAndConditionWithDefinedTime() {
-        var qAuthor = QAuthor.candidate();
-        var qBook = QBook.candidate();
-        var qCatalog = QCatalog.candidate();
-
-        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila")))));
-
-        var alexanderPushkin = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
-                .where(qAuthor.firstName.eq("Alexander")
-                        .and(qAuthor.lastName.eq("Pushkin"))))));
-
         Duration sixSeconds = ofSeconds(6);
         long start = currentTimeMillis();
-        var catalogItem = dataBaseSteps.get(selected(aSingleByQuery(ofType(Catalog.class)
-                .where(qCatalog.book.eq(ruslanAndLudmila)
-                        .and(qCatalog.book.author.eq(alexanderPushkin))))
-                .criteria("Published in 1995",
-                        catalog -> catalog.getYearOfPublishing().equals(1995))
-                .timeOut(sixSeconds)));
+        var catalogItem = dataBaseSteps.select(oneOf(Catalog.class, byJDOQuery(QCatalog.class)
+                .where(qCatalog -> qCatalog.book.eq(ruslanAndLudmila).and(qCatalog.book.author.eq(alexanderPushkin))))
+                .criteria("Published in 1995", catalog -> catalog.getYearOfPublishing().equals(1995))
+                .timeOut(sixSeconds));
         long end = currentTimeMillis();
 
         assertThat(catalogItem, nullValue());
@@ -398,31 +286,18 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         assertThat(end - start - sixSeconds.toMillis(), lessThanOrEqualTo(500L));
     }
 
-    @Test
+    @Test(dependsOnGroups = "positive tests")
     public void selectEmptyListByQueryAndConditionWithTimeDefinedByProperty() {
         WAITING_FOR_SELECTION_RESULT_TIME_UNIT.accept("SECONDS");
         WAITING_FOR_SELECTION_RESULT_TIME_VALUE.accept("2");
 
-        var qAuthor = QAuthor.candidate();
-        var qBook = QBook.candidate();
-        var qCatalog = QCatalog.candidate();
-
-        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila")))));
-
-        var alexanderPushkin = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
-                .where(qAuthor.firstName.eq("Alexander")
-                        .and(qAuthor.lastName.eq("Pushkin"))))));
-
         Duration twoSeconds = ofSeconds(2);
         long start = currentTimeMillis();
-        var catalogItems = dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class)
-                .where(qCatalog.book.eq(ruslanAndLudmila)
-                        .and(qCatalog.book.author.eq(alexanderPushkin))))
-                .criteria("Published in 1995",
-                        catalog -> catalog.getYearOfPublishing().equals(1995))));
-        long end = currentTimeMillis();
+        var catalogItems = dataBaseSteps.select(listOf(Catalog.class, byJDOQuery(QCatalog.class)
+                .where(qCatalog ->  qCatalog.book.eq(ruslanAndLudmila).and(qCatalog.book.author.eq(alexanderPushkin))))
+                .criteria("Published in 1995", catalog -> catalog.getYearOfPublishing().equals(1995)));
 
+        long end = currentTimeMillis();
         try {
             assertThat(catalogItems, hasSize(0));
             assertThat(end - start, greaterThanOrEqualTo(twoSeconds.toMillis()));
@@ -433,29 +308,17 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         }
     }
 
-    @Test
+    @Test(dependsOnGroups = "positive tests")
     public void selectNullByQueryAndConditionWithTimeDefinedByProperty() {
         WAITING_FOR_SELECTION_RESULT_TIME_UNIT.accept("SECONDS");
         WAITING_FOR_SELECTION_RESULT_TIME_VALUE.accept("2");
 
-        var qAuthor = QAuthor.candidate();
-        var qBook = QBook.candidate();
-        var qCatalog = QCatalog.candidate();
-
-        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila")))));
-
-        var alexanderPushkin = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
-                .where(qAuthor.firstName.eq("Alexander")
-                        .and(qAuthor.lastName.eq("Pushkin"))))));
-
         Duration twoSeconds = ofSeconds(2);
         long start = currentTimeMillis();
-        var catalogItem = dataBaseSteps.get(selected(aSingleByQuery(ofType(Catalog.class)
-                .where(qCatalog.book.eq(ruslanAndLudmila)
-                        .and(qCatalog.book.author.eq(alexanderPushkin))))
-                .criteria("Published in 1995",
-                        catalog -> catalog.getYearOfPublishing().equals(1995))));
+        var catalogItem = dataBaseSteps.select(oneOf(Catalog.class, byJDOQuery(QCatalog.class)
+                .where(qCatalog -> qCatalog.book.eq(ruslanAndLudmila).and(qCatalog.book.author.eq(alexanderPushkin))))
+                .criteria("Published in 1995", catalog -> catalog.getYearOfPublishing().equals(1995)));
+
         long end = currentTimeMillis();
 
         try {
@@ -468,195 +331,61 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
         }
     }
 
-    @Test(expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = "Test exception")
+    @Test(expectedExceptions = NothingIsSelectedException.class,
+            expectedExceptionsMessageRegExp = "Test exception",
+            dependsOnGroups = "positive tests")
     public void selectEmptyListByQueryWithExceptionThrowing() {
-        var qAuthor = QAuthor.candidate();
-        var qBook = QBook.candidate();
-        var qCatalog = QCatalog.candidate();
+        dataBaseSteps.select(listOf(Catalog.class, byJDOQuery(QCatalog.class)
+                .where(qCatalog -> qCatalog.book.eq(ruslanAndLudmila).and(qCatalog.book.author.eq(carlosCastaneda))))
+                .throwWhenResultEmpty(TEST_SUPPLIER));
 
-        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila")))));
-
-        var carlosCastaneda = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
-                .where(qAuthor.firstName.eq("Carlos")
-                        .and(qAuthor.lastName.eq("Castaneda"))))));
-
-        dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class)
-                .where(qCatalog.book.eq(ruslanAndLudmila)
-                        .and(qCatalog.book.author.eq(carlosCastaneda))))
-                .throwWhenResultEmpty(TEST_SUPPLIER)));
+        fail("Exception was expected");
     }
 
-    @Test(expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = "Test exception")
+    @Test(expectedExceptions = NothingIsSelectedException.class,
+            expectedExceptionsMessageRegExp = "Test exception",
+            dependsOnGroups = "positive tests")
     public void selectNullByQueryWithExceptionThrowing() {
-        var qAuthor = QAuthor.candidate();
-        var qBook = QBook.candidate();
-        var qCatalog = QCatalog.candidate();
 
-        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila")))));
+        dataBaseSteps.select(oneOf(Catalog.class, byJDOQuery(QCatalog.class)
+                .where(qCatalog -> qCatalog.book.eq(ruslanAndLudmila).and(qCatalog.book.author.eq(carlosCastaneda))))
+                .throwWhenResultEmpty(TEST_SUPPLIER));
 
-        var carlosCastaneda = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
-                .where(qAuthor.firstName.eq("Carlos")
-                        .and(qAuthor.lastName.eq("Castaneda"))))));
-
-        dataBaseSteps.get(selected(aSingleByQuery(ofType(Catalog.class)
-                .where(qCatalog.book.eq(ruslanAndLudmila)
-                        .and(qCatalog.book.author.eq(carlosCastaneda))))
-                .throwWhenResultEmpty(TEST_SUPPLIER)));
+        fail("Exception was expected");
     }
 
-    @Test(expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = "Test exception")
+    @Test(expectedExceptions = NothingIsSelectedException.class,
+            expectedExceptionsMessageRegExp = "Test exception",
+            dependsOnGroups = "positive tests")
     public void selectEmptyListByQueryAndConditionWithExceptionThrowing() {
-        var qAuthor = QAuthor.candidate();
-        var qBook = QBook.candidate();
-        var qCatalog = QCatalog.candidate();
+        dataBaseSteps.select(listOf(Catalog.class, byJDOQuery(QCatalog.class)
+                .where(qCatalog -> qCatalog.book.eq(ruslanAndLudmila).and(qCatalog.book.author.eq(alexanderPushkin))))
+                .criteria("Published in 1995", catalog -> catalog.getYearOfPublishing().equals(1995))
+                .throwWhenResultEmpty(TEST_SUPPLIER));
 
-        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila")))));
-
-        var alexanderPushkin = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
-                .where(qAuthor.firstName.eq("Alexander")
-                        .and(qAuthor.lastName.eq("Pushkin"))))));
-
-        dataBaseSteps.get(selected(listByQuery(ofType(Catalog.class)
-                .where(qCatalog.book.eq(ruslanAndLudmila)
-                        .and(qCatalog.book.author.eq(alexanderPushkin))))
-                .criteria("Published in 1995",
-                        catalog -> catalog.getYearOfPublishing().equals(1995))
-                .throwWhenResultEmpty(TEST_SUPPLIER)));
+        fail("Exception was expected");
     }
 
-    @Test(expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = "Test exception")
+    @Test(expectedExceptions = NothingIsSelectedException.class,
+            expectedExceptionsMessageRegExp = "Test exception",
+            dependsOnGroups = "positive tests")
     public void selectNullByQueryAndConditionWithExceptionThrowing() {
-        var qAuthor = QAuthor.candidate();
-        var qBook = QBook.candidate();
-        var qCatalog = QCatalog.candidate();
+        dataBaseSteps.select(oneOf(Catalog.class, byJDOQuery(QCatalog.class)
+                .where(qCatalog -> qCatalog.book.eq(ruslanAndLudmila).and(qCatalog.book.author.eq(alexanderPushkin))))
+                .criteria("Published in 1995", catalog -> catalog
+                        .getYearOfPublishing().equals(1995))
+                .throwWhenResultEmpty(TEST_SUPPLIER));
 
-        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila")))));
-
-        var alexanderPushkin = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
-                .where(qAuthor.firstName.eq("Alexander")
-                        .and(qAuthor.lastName.eq("Pushkin"))))));
-
-        dataBaseSteps.get(selected(aSingleByQuery(ofType(Catalog.class)
-                .where(qCatalog.book.eq(ruslanAndLudmila)
-                        .and(qCatalog.book.author.eq(alexanderPushkin))))
-                .criteria("Published in 1995",
-                        catalog -> catalog.getYearOfPublishing().equals(1995))
-                .throwWhenResultEmpty(TEST_SUPPLIER)));
+        fail("Exception was expected");
     }
 
-    @Test
-    public void selectOfListWithConnectionSupplier() {
-        var qAuthor = QAuthor.candidate();
-        var qBook = QBook.candidate();
-        var qCatalog = QCatalog.candidate();
-
-        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila")))));
-
-        var alexanderPushkin = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
-                .where(qAuthor.firstName.eq("Alexander")
-                        .and(qAuthor.lastName.eq("Pushkin"))))));
-
-        GetSelectedFunction<List<Catalog>> query = selected(listByQuery(ofType(Catalog.class)
-                .where(qCatalog.book.eq(ruslanAndLudmila)
-                        .and(qCatalog.book.author.eq(alexanderPushkin)))))
-                .useConnection(ConnectionDataSupplierForTestBase2.class);
-
-        GetSelectedFunction<List<Catalog>> query2 = selected(listByQuery(ofType(Catalog.class)
-                .where(qCatalog.book.eq(ruslanAndLudmila)
-                        .and(qCatalog.book.author.eq(alexanderPushkin)))));
-
-        assertThat(dataBaseSteps.get(query), hasSize(0));
-        assertThat(dataBaseSteps.get(query2), hasSize(1));
-    }
-
-    @Test
-    public void selectOfOneWithConnectionSupplier() {
-        var qAuthor = QAuthor.candidate();
-        var qBook = QBook.candidate();
-        var qCatalog = QCatalog.candidate();
-
-        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila")))));
-
-        var alexanderPushkin = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
-                .where(qAuthor.firstName.eq("Alexander")
-                        .and(qAuthor.lastName.eq("Pushkin"))))));
-
-        var query = selected(aSingleByQuery(ofType(Catalog.class).where(qCatalog.book.eq(ruslanAndLudmila)
-                .and(qCatalog.book.author.eq(alexanderPushkin)))))
-                .useConnection(ConnectionDataSupplierForTestBase2.class);
-
-        var query2 = selected(aSingleByQuery(ofType(Catalog.class).where(qCatalog.book.eq(ruslanAndLudmila)
-                .and(qCatalog.book.author.eq(alexanderPushkin)))));
-
-        assertThat(dataBaseSteps.get(query), nullValue());
-        assertThat(dataBaseSteps.get(query2), not(nullValue()));
-    }
-
-    @Test
-    public void selectOfListWithConnectionChange() {
-        var qAuthor = QAuthor.candidate();
-        var qBook = QBook.candidate();
-        var qCatalog = QCatalog.candidate();
-
-        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila")))));
-
-        var alexanderPushkin = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
-                .where(qAuthor.firstName.eq("Alexander")
-                        .and(qAuthor.lastName.eq("Pushkin"))))));
-
-        var query = selected(listByQuery(ofType(Catalog.class).where(qCatalog.book.eq(ruslanAndLudmila)
-                .and(qCatalog.book.author.eq(alexanderPushkin)))))
-                .useConnection(getKnownConnection(ConnectionDataSupplierForTestBase2.class, true));
-
-        var query2 = selected(listByQuery(ofType(Catalog.class).where(qCatalog.book.eq(ruslanAndLudmila)
-                .and(qCatalog.book.author.eq(alexanderPushkin)))));
-
-        assertThat(dataBaseSteps.get(query), hasSize(0));
-        assertThat(dataBaseSteps.get(query2), hasSize(1));
-    }
-
-    @Test
-    public void selectOfOneWithConnectionChange() {
-        var qAuthor = QAuthor.candidate();
-        var qBook = QBook.candidate();
-        var qCatalog = QCatalog.candidate();
-
-        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila")))));
-
-        var alexanderPushkin = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
-                .where(qAuthor.firstName.eq("Alexander")
-                        .and(qAuthor.lastName.eq("Pushkin"))))));
-
-        var query = selected(aSingleByQuery(ofType(Catalog.class).where(qCatalog.book.eq(ruslanAndLudmila)
-                .and(qCatalog.book.author.eq(alexanderPushkin)))))
-                .useConnection(getKnownConnection(ConnectionDataSupplierForTestBase2.class, true));
-
-        var query2 = selected(aSingleByQuery(ofType(Catalog.class).where(qCatalog.book.eq(ruslanAndLudmila)
-                .and(qCatalog.book.author.eq(alexanderPushkin)))));
-
-        assertThat(dataBaseSteps.get(query), nullValue());
-        assertThat(dataBaseSteps.get(query2), not(nullValue()));
-    }
-
-    @Test
+    @Test(groups = "positive tests")
     public void equalityTest() {
-        var pushkin = dataBaseSteps.get(selected(aSingleByQuery(ofType(Author.class)
-                .where(QAuthor.candidate().lastName.eq("Pushkin")))));
-
-        var qBook = QBook.candidate();
-        var ruslanAndLudmila = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
-                .where(qBook.author.eq(pushkin)))));
-        var ruslanAndLudmila2 = dataBaseSteps.get(selected(aSingleByQuery(ofType(Book.class)
-                .where(qBook.name.eq("Ruslan and Ludmila")))));
+        var ruslanAndLudmila = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
+                .where(qBook -> qBook.author.eq(alexanderPushkin))));
+        var ruslanAndLudmila2 = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
+                .where(qBook -> qBook.name.eq("Ruslan and Ludmila"))));
 
         assertThat(ruslanAndLudmila, is(ruslanAndLudmila2));
-    }*/
+    }
 }

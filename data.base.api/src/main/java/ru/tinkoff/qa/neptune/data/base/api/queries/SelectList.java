@@ -82,7 +82,7 @@ public class SelectList<T, M> extends SequentialGetStepSupplier
                 .from(getConnectionByClass(toSelect));
     }
 
-    public static <R extends DBConnectionSupplier> SelectList<Object, JDOPersistenceManager> listOf(String sql, Class<R> connection) {
+    public static <R extends DBConnectionSupplier> SelectList<List<Object>, JDOPersistenceManager> listOf(String sql, Class<R> connection) {
         return new SelectList<>(format("List of rows by query %s. The connection is described by %s", sql, connection.getName()),
                 bySql(sql))
                 .from(getConnectionBySupplierClass(connection));

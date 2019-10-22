@@ -57,7 +57,7 @@ public class UpdateTest extends BaseDbOperationTest {
         crimeAndPunishment = new Book().setName("Crime and Punishment").setAuthor(fyodorDostoevsky)
                 .setYearOfFinishing(1869);
         /*dataBaseSteps.get(inserted(crimeAndPunishment)).get(0);*/
-    }
+    //}
 
     /*@Test
     public void updateObjectsTest() {

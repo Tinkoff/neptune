@@ -29,7 +29,9 @@ public abstract class DBConnectionSupplier implements Supplier<DBConnection> {
 
     public DBConnectionSupplier() {
         var thisClass = this.getClass();
-        tableClassNames = new ClassGraph().enableClassInfo()
+        tableClassNames = new ClassGraph().enableSystemJarsAndModules()
+                .enableExternalClasses()
+                .enableClassInfo()
                 .enableAllInfo()
                 .scan()
                 .getSubclasses(PersistableObject.class.getName())

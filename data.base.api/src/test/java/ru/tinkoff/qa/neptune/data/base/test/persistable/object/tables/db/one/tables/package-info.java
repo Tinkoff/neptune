@@ -1,1 +1,0 @@
-package ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.one.tables;
