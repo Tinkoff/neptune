@@ -74,17 +74,28 @@ public class SelectList<T, M> extends SequentialGetStepSupplier
                 .from(getConnectionByClass(toSelect));
     }
 
-    public static <R extends PersistableObject> SelectList<R, JDOPersistenceManager> listOf(Class<R> toSelect, String sql) {
-        return new SelectList<>(format("List of %s by query '%s'",
+    public static <R extends PersistableObject> SelectList<R, JDOPersistenceManager> listOf(Class<R> toSelect,
+                                                                                            String sql,
+                                                                                            Object... parameters) {
+        return new SelectList<>(format("List of %s by query '%s'. " +
+                        "Parameters: %s",
                 toSelect.getName(),
-                sql),
-                bySql(toSelect, sql))
+                sql,
+                Arrays.toString(parameters)),
+                bySql(toSelect, sql, parameters))
                 .from(getConnectionByClass(toSelect));
     }
 
-    public static <R extends DBConnectionSupplier> SelectList<List<Object>, JDOPersistenceManager> listOf(String sql, Class<R> connection) {
-        return new SelectList<>(format("List of rows by query %s. The connection is described by %s", sql, connection.getName()),
-                bySql(sql))
+    public static <R extends DBConnectionSupplier> SelectList<List<Object>, JDOPersistenceManager> listOf(String sql,
+                                                                                                          Class<R> connection,
+                                                                                                          Object... parameters) {
+        return new SelectList<>(format("List of rows by query %s. " +
+                "The connection is described by %s. " +
+                "Parameters: %s",
+                sql,
+                connection.getName(),
+                Arrays.toString(parameters)),
+                bySql(sql, parameters))
                 .from(getConnectionBySupplierClass(connection));
     }
 

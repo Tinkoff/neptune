@@ -14,6 +14,7 @@ import ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.ReadableJDOQuery;
 
 import javax.jdo.query.PersistableExpression;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -71,17 +72,28 @@ public class SelectASingle<T, M> extends SequentialGetStepSupplier
                 .from(getConnectionByClass(toSelect));
     }
 
-    public static <R extends PersistableObject> SelectASingle<R, JDOPersistenceManager> oneOf(Class<R> toSelect, String sql) {
-        return new SelectASingle<>(format("One of %s by query '%s'",
+    public static <R extends PersistableObject> SelectASingle<R, JDOPersistenceManager> oneOf(Class<R> toSelect,
+                                                                                              String sql,
+                                                                                              Object... parameters) {
+        return new SelectASingle<>(format("One of %s by query '%s'. " +
+                        "Parameters: %s",
                 toSelect.getName(),
-                sql),
-                bySql(toSelect, sql))
+                sql,
+                Arrays.toString(parameters)),
+                bySql(toSelect, sql, parameters))
                 .from(getConnectionByClass(toSelect));
     }
 
-    public static <R extends DBConnectionSupplier> SelectASingle<List<Object>, JDOPersistenceManager> oneOf(String sql, Class<R> connection) {
-        return new SelectASingle<>(format("One row by query %s. The connection is described by %s", sql, connection.getName()),
-                bySql(sql))
+    public static <R extends DBConnectionSupplier> SelectASingle<List<Object>, JDOPersistenceManager> oneOf(String sql,
+                                                                                                            Class<R> connection,
+                                                                                                            Object... parameters) {
+        return new SelectASingle<>(format("One row by query %s. " +
+                        "The connection is described by %s. " +
+                        "Parameters: %s",
+                sql,
+                connection.getName(),
+                Arrays.toString(parameters)),
+                bySql(sql, parameters))
                 .from(getConnectionBySupplierClass(connection));
     }
 

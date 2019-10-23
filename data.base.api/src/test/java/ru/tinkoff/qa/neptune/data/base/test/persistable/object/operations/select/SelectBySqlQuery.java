@@ -23,13 +23,13 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
     private static final SimpleDateFormat SIMPLE_DATE_FORMAT =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.000000000");
 
     private static final String QUERY = "Select * from Books join Authors on Books.Author = Authors.Id " +
-            "where Books.YearOfFinishing >= 1820 order by YearOfFinishing asc";
+            "where Books.YearOfFinishing >= ? order by YearOfFinishing asc";
     private static final String QUERY2 = "Select MIN(YearOfFinishing) from Books";
 
     @Test
     public void selectListByTypedSqlTest() {
-        List<Author> authors = dataBaseSteps.select(listOf(Author.class, QUERY));
-        List<Book> books = dataBaseSteps.select(listOf(Book.class, QUERY));
+        List<Author> authors = dataBaseSteps.select(listOf(Author.class, QUERY, 1820));
+        List<Book> books = dataBaseSteps.select(listOf(Book.class, QUERY, 1820));
 
         List<Book> books2 = dataBaseSteps.get(listOf(Book.class, byJDOQuery(QBook.class)
                 .where(qBook -> qBook.yearOfFinishing.gteq(1820))
@@ -42,8 +42,8 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
 
     @Test
     public void selectSingleByTypedSqlTest() {
-        Author author = dataBaseSteps.select(oneOf(Author.class, QUERY));
-        Book book = dataBaseSteps.select(oneOf(Book.class, QUERY));
+        Author author = dataBaseSteps.select(oneOf(Author.class, QUERY, 1820));
+        Book book = dataBaseSteps.select(oneOf(Book.class, QUERY, 1820));
 
         Book book2 = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
                 .where(qBook -> qBook.yearOfFinishing.gteq(1820))
@@ -56,7 +56,9 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
 
     @Test
     public void selectListByUnTypedSqlTest() {
-        var booksAndAuthors = dataBaseSteps.select(listOf(QUERY, ConnectionDataSupplierForTestBase1.class))
+        var booksAndAuthors = dataBaseSteps.select(listOf(QUERY,
+                ConnectionDataSupplierForTestBase1.class,
+                1820))
                 .subList(0, 1);
         List<Book> books = dataBaseSteps.select(listOf(Book.class, byJDOQuery(QBook.class)
                 .where(qBook -> qBook.yearOfFinishing.gteq(1820))
@@ -85,7 +87,9 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
 
     @Test
     public void selectSingleByUnTypedSqlTest() {
-        var bookAndAuthor = dataBaseSteps.select(oneOf(QUERY, ConnectionDataSupplierForTestBase1.class));
+        var bookAndAuthor = dataBaseSteps.select(oneOf(QUERY,
+                ConnectionDataSupplierForTestBase1.class,
+                1820));
 
         Book book = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
                 .where(qBook -> qBook.name.eq("Ruslan and Ludmila"))));
