@@ -269,16 +269,16 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
     }
 
     private static void openTransaction(Set<JDOPersistenceManager> jdoPersistenceManagers) {
-        jdoPersistenceManagers.forEach(jdoPersistenceManager -> {
-            var transaction = jdoPersistenceManager.currentTransaction();
-            transaction.setOptimistic(true);
-            transaction.begin();
-        });
+        jdoPersistenceManagers.forEach(jdoPersistenceManager -> jdoPersistenceManager
+                .currentTransaction()
+                .begin());
     }
 
     private static void commitTransaction(Set<JDOPersistenceManager> jdoPersistenceManagers) {
         jdoPersistenceManagers.forEach(jdoPersistenceManager ->
-                jdoPersistenceManager.currentTransaction().commit());
+                jdoPersistenceManager
+                        .currentTransaction()
+                        .commit());
     }
 
     private static void rollbackTransaction(Set<JDOPersistenceManager> jdoPersistenceManagers) {

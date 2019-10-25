@@ -33,7 +33,7 @@ public final class JDOQLQueryParameters<T extends PersistableObject, Q extends P
         this.persistableExpression = getCandidate(toUse);
     }
 
-    public static <T extends PersistableObject, Q extends PersistableExpression<T>> JDOQLQueryParameters<T, Q> byJDOQuery(Class<? extends Q> toUse) {
+    public static <T extends PersistableObject, Q extends PersistableExpression<T>> JDOQLQueryParameters<T, Q> byJDOQuery(Class<Q> toUse) {
         return new JDOQLQueryParameters<>(toUse);
     }
 
