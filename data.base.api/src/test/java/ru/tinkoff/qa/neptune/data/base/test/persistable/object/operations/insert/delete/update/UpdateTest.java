@@ -2,12 +2,10 @@ package ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.inser
 
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.data.base.api.queries.SelectList;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDbOperationTest;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.one.tables.Author;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.one.tables.QAuthor;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.two.tables.CarModel;
-import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.two.tables.Manufacturer;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.two.tables.QCarModel;
 
 import java.util.Date;
@@ -62,9 +60,6 @@ public class UpdateTest extends BaseDbOperationTest {
     private Author dostoevsky;
     private CarModel crownVictoria;
 
-    //negative
-    private CarModel corollaE170;
-
     @BeforeClass
     public void setUpBeforeClass() {
         dostoevsky = dataBaseSteps.select(oneOf(Author.class,
@@ -74,9 +69,6 @@ public class UpdateTest extends BaseDbOperationTest {
 
         crownVictoria = dataBaseSteps.select(oneOf(CarModel.class, byJDOQuery(QCarModel.class)
                 .where(qCarModel -> qCarModel.carModelName.eq("Crown Victoria"))));
-
-        corollaE170 = dataBaseSteps.select(oneOf(CarModel.class, byJDOQuery(QCarModel.class)
-                .where(qCarModel -> qCarModel.carModelName.eq("Corolla E170"))));
     }
 
     @Test(groups = "positive update")
@@ -168,7 +160,7 @@ public class UpdateTest extends BaseDbOperationTest {
                 crownVictoria.getId()));
 
         assertEquals(updatedDostoevsky.getBiography(), BIO3);
-        assertEquals(crownVictoria.getProducedTo(), dateToChange);
+        assertEquals(updatedCrownVictoria.getProducedTo(), dateToChange);
     }
 
     @Test(dependsOnGroups = "positive update")
