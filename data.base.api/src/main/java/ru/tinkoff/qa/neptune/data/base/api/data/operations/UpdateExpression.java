@@ -19,11 +19,11 @@ public final class UpdateExpression<T extends PersistableObject> {
         super();
     }
 
-    public static <T extends PersistableObject> UpdateExpression<T> set(String description,  Consumer<T> setAction) {
-        return new UpdateExpression<T>().setElse(description, setAction);
+    public static <T extends PersistableObject> UpdateExpression<T> change(String description,  Consumer<T> setAction) {
+        return new UpdateExpression<T>().changeAlso(description, setAction);
     }
 
-    public UpdateExpression<T> setElse(String description,  Consumer<T> setAction) {
+    public UpdateExpression<T> changeAlso(String description, Consumer<T> setAction) {
         checkArgument(isNotBlank(description), "Description of an update action should not be a null or blank string");
         checkArgument(nonNull(setAction), "Please define an update action");
         updateActions.add(new Consumer<>() {

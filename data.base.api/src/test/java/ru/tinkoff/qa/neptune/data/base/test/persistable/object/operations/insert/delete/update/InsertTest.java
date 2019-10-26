@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.insert.delete.update.insert.and.delete;
+package ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.insert.delete.update;
 
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -10,7 +10,6 @@ import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.two.tab
 import java.util.Date;
 
 import static java.util.Objects.nonNull;
-import static javax.jdo.JDOHelper.isPersistent;
 import static org.testng.Assert.*;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle.oneOf;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQueryParameters.byJDOQuery;
@@ -71,9 +70,9 @@ public class InsertTest extends BaseDbOperationTest {
 
         dataBaseSteps.insert(catalogItem, swCross);
 
-        assertTrue(isPersistent(catalogItem));
-        assertTrue(isPersistent(swCross));
-        assertTrue(isPersistent(swCross.getCar()));
+        //assertTrue(isPersistent(catalogItem));
+        //assertTrue(isPersistent(swCross));
+        //assertTrue(isPersistent(swCross.getCar()));
 
         var catalogAdded = dataBaseSteps.select(oneOf(Catalog.class, byJDOQuery(QCatalog.class)
                 .where(qCatalog -> qCatalog.book.eq(theHunchbackOfNotreDame)
