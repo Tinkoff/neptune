@@ -97,10 +97,9 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
     @Test(groups = "positive tests")
     public void selectOneTestByCondition() {
         var author = dataBaseSteps.select(oneOf(Author.class)
-                .criteria("Wrote `Ruslan and Ludmila`", author1 -> null != author1.getBooks().stream()
-                        .filter(book -> ruslanAndLudmila.getName().equalsIgnoreCase(book.getName()))
-                        .findFirst()
-                        .orElse(null)));
+                .criteria("Wrote `Ruslan and Ludmila`", author1 -> ruslanAndLudmila
+                        .getAuthor()
+                        .equals(author1)));
         assertThat(author.getLastName(), equalTo("Pushkin"));
     }
 

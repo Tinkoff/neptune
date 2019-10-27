@@ -23,7 +23,10 @@ public final class JDOQLQuery<T extends PersistableObject> implements Function<R
 
     @Override
     public List<T> apply(ReadableJDOQuery<T> jdoqlTypedQuery) {
-        return new ListOfDataBaseObjects<>(jdoqlTypedQuery.executeList()) {
+        var list = jdoqlTypedQuery.executeList();
+        var manager = jdoqlTypedQuery.getPersistenceManager();
+
+        return new ListOfDataBaseObjects<>(manager.detachCopyAll(list)) {
             public String toString() {
                 var resultStr =  format("%s objects/object", size());
 

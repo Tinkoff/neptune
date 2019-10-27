@@ -49,9 +49,7 @@ public class SelectByIds extends BaseDbOperationTest {
     @Test(groups = "positive tests")
     public void selectOneTestByCondition() {
         var author = dataBaseSteps.select(oneOf(Author.class, 1)
-                .criteria("Wrote `Ruslan and Ludmila`", author1 -> null != author1.getBooks().stream()
-                        .filter(book -> "ruslan and ludmila".equalsIgnoreCase(book.getName()))
-                        .findFirst().orElse(null)));
+                .criteria("Name is 'Alexander'", author1 -> "Alexander".equals(author1.getFirstName())));
         assertThat(author.getLastName(), equalTo("Pushkin"));
     }
 

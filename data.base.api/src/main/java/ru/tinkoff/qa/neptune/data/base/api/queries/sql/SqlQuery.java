@@ -79,7 +79,8 @@ public final class SqlQuery<T> implements Function<JDOPersistenceManager, List<T
         }
 
         query.setClass(classOfRequestedValue);
-        return new ListOfDataBaseObjects<>(query.executeList()) {
+        var list = query.executeList();
+        return new ListOfDataBaseObjects<>(jdoPersistenceManager.detachCopyAll(list)) {
             public String toString() {
                 return format("%s objects/object selected by sql query '%s'" +
                                 " with parameters '%s'",

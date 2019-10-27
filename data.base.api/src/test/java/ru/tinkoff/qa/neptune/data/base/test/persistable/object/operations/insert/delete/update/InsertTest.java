@@ -4,6 +4,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDbOperationTest;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Book;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.QBook;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.one.tables.*;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.two.tables.*;
 
@@ -26,25 +27,13 @@ public class InsertTest extends BaseDbOperationTest {
     private Book theLegendOfTheAges;
     private Car kalina;
 
-
-
     @BeforeClass
     public void setUpBeforeClass() {
+        theHunchbackOfNotreDame = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
+                .where(qBook -> qBook.name.eq("The Hunchback of Notre-Dame"))));
 
-        Author victorHugo = dataBaseSteps.select(oneOf(Author.class,
-                byJDOQuery(QAuthor.class).where(qAuthor -> qAuthor
-                        .firstName.eq("Victor")
-                        .and(qAuthor.lastName.eq("Hugo")))));
-
-        theHunchbackOfNotreDame = victorHugo.getBooks().stream()
-                .filter(book -> book.getName().equals("The Hunchback of Notre-Dame"))
-                .findFirst()
-                .orElseThrow();
-
-        theLegendOfTheAges = victorHugo.getBooks().stream()
-                .filter(book -> book.getName().equals("The Legend of the Ages"))
-                .findFirst()
-                .orElseThrow();
+        theLegendOfTheAges = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
+                .where(qBook -> qBook.name.eq("The Legend of the Ages"))));
 
         signet = dataBaseSteps.select(oneOf(Publisher.class, byJDOQuery(QPublisher.class)
                 .where(qPublisher -> qPublisher.name.eq("Signet"))));

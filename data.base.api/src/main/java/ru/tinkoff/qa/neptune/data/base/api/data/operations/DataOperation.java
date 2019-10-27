@@ -20,8 +20,6 @@ import static java.lang.String.join;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
-import static javax.jdo.JDOHelper.isDeleted;
-import static javax.jdo.JDOHelper.isPersistent;
 import static ru.tinkoff.qa.neptune.data.base.api.ConnectionToUse.ConnectionDataReader.getConnection;
 
 @SuppressWarnings("unchecked")
@@ -57,29 +55,25 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
     public static <T extends PersistableObject> DataOperation<T> updated(Collection<T> toBeUpdated, UpdateExpression<T> set) {
         checkArgument(nonNull(toBeUpdated),
                 "Collection of objects to be updated should be defined as a value that differs from null");
-        checkArgument(toBeUpdated.size() > 0,
+
+        var toUpdate = toBeUpdated
+                .stream()
+                .filter(Objects::nonNull)
+                .collect(toList());
+
+        checkArgument(toUpdate.size() > 0,
                 "Should be defined at least one object to update it");
         checkArgument(nonNull(set),
                 "Please define update-actions");
 
-        checkArgument(toBeUpdated
-                .stream()
-                .noneMatch(Objects::isNull),
-                format("There are null-values are being passed for the updating. The collection: %s", toBeUpdated));
-
-        checkArgument(toBeUpdated
-                .stream()
-                .noneMatch(t -> !isPersistent(t) || isDeleted(t)),
-                "There are objects that not stored in DB yet");
-
         return new DataOperation<T>(format("Updated %s object/objects from table/tables %s",
-                toBeUpdated.size(),
-                toBeUpdated.stream()
+                toUpdate.size(),
+                toUpdate.stream()
                         .map(PersistableObject::fromTable)
                         .distinct()
                         .collect(toList())),
                 jdoPersistenceManagerListMap -> update(jdoPersistenceManagerListMap, set))
-                .from(context -> getMap(context, toBeUpdated));
+                .from(context -> getMap(context, toUpdate));
     }
 
     public static <T extends PersistableObject> DataOperation<T> updated(T toBeUpdated, UpdateExpression<T> set) {
@@ -111,7 +105,7 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
 
         var toDelete = toBeDeleted
                 .stream()
-                .filter(t -> nonNull(t) && isPersistent(t) && !isDeleted(t))
+                .filter(Objects::nonNull)
                 .collect(toList());
 
         return new DataOperation<T>(format("Deleted %s object/objects from table/tables %s",
@@ -133,27 +127,13 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
         checkArgument(nonNull(toBeInserted),
                 "Collection of objects to be inserted should be defined as a value that differs from null");
 
-        checkArgument(toBeInserted.size() > 0,
-                "Should be defined at least one object to insert it");
-
-        checkArgument(toBeInserted
-                        .stream()
-                        .noneMatch(Objects::isNull),
-                format("There are null-values are being passed for the inserting. The collection: %s", toBeInserted));
-
-        checkArgument(toBeInserted
-                        .stream()
-                        .noneMatch(t -> isPersistent(t) && !isDeleted(t)),
-                "There are objects that stored in DB already");
-
         var toInsert = toBeInserted
                 .stream()
-                .map(t -> {
-                    if (!isPersistent(t)) {
-                        return t;
-                    }//persistent but deleted
-                    return (T) t.clone();
-                }).collect(toList());
+                .filter(Objects::nonNull)
+                .collect(toList());
+
+        checkArgument(toInsert.size() > 0,
+                "Should be defined at least one object to insert it");
 
         return new DataOperation<T>(format("Inserted %s object/objects",
                 toInsert.size()),
@@ -187,11 +167,15 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
             };
 
             var toBeUpdated = new ArrayList<T>();
-            connectionMap.forEach((ignored, value) -> toBeUpdated.addAll(value));
+            connectionMap.values().forEach(toBeUpdated::addAll);
             set.getUpdateAction().forEach(setAction -> setAction.accept(toBeUpdated));
-            result.addAll(toBeUpdated);
-            commitTransaction(managerSet);
 
+            connectionMap.forEach((manager, ts) -> {
+                manager.makePersistentAll(ts);
+                result.addAll(manager.detachCopyAll(ts));
+            });
+
+            commitTransaction(managerSet);
             return result;
         }
         catch (Throwable t) {
@@ -220,8 +204,10 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
                 }
             };
 
-            connectionMap.forEach((manager, toBeInserted) ->
-                    result.addAll(manager.makePersistentAll(toBeInserted)));
+            connectionMap.forEach((manager, toBeInserted) -> {
+                manager.makePersistentAll(toBeInserted);
+                result.addAll(manager.detachCopyAll(toBeInserted));
+            });
             commitTransaction(managerSet);
             return result;
         }

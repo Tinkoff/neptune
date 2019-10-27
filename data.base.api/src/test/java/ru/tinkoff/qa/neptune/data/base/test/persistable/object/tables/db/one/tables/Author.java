@@ -1,10 +1,8 @@
 package ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.one.tables;
 
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
-import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Book;
 
 import javax.jdo.annotations.*;
-import java.util.Collection;
 import java.util.Date;
 
 @PersistenceCapable(table = "Authors")
@@ -29,10 +27,6 @@ public class Author extends PersistableObject {
 
     @Column(name = "BiographyDescription", length = 10000)
     private String biography;
-
-    @Persistent
-    @Element(column="Author")
-    transient Collection<Book> books;
 
     public int getId() {
         return id;
@@ -81,10 +75,6 @@ public class Author extends PersistableObject {
     public Author setBiography(String biography) {
         this.biography = biography;
         return this;
-    }
-
-    public Collection<Book> getBooks() {
-        return books;
     }
 
     public void setId(int id) {

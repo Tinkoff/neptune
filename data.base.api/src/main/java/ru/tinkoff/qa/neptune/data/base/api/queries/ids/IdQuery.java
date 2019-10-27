@@ -5,6 +5,7 @@ import org.datanucleus.api.jdo.JDOPersistenceManager;
 import ru.tinkoff.qa.neptune.data.base.api.ListOfDataBaseObjects;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -51,14 +52,18 @@ public final class IdQuery<T extends PersistableObject> implements Function<JDOP
                 return resultStr;
             }
         };
+
+        var list = new ArrayList<T>();
         stream(ids).forEach(id -> {
             try {
                 var p = jdoPersistenceManager.getObjectById(classOfRequestedValue, id);
-                found.add(p);
+                list.add(p);
             }
             catch (RuntimeException ignored) {
             }
         });
+
+        found.addAll(jdoPersistenceManager.detachCopyAll(list));
         return found;
     }
 }

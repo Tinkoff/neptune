@@ -12,6 +12,8 @@ import java.util.Date;
 
 import static java.util.List.of;
 import static java.util.Objects.nonNull;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.testng.Assert.*;
 import static ru.tinkoff.qa.neptune.data.base.api.data.operations.UpdateExpression.change;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle.oneOf;
@@ -47,7 +49,7 @@ public class UpdateTest extends BaseDbOperationTest {
             " Aleksandr Solzhenitsyn and Anton Chekhov as well as philosophers such as Friedrich Nietzsche and Jean-Paul Sartre. " +
             "His books have been translated into more than 170 languages.";
 
-    private static final String BIO4 = BIO3 + "\n"  +
+    private static final String BIO4 = BIO3 + "\n" +
             "Dostoevsky's parents were part of a multi-ethnic and multi-denominational noble family, " +
             "its branches including Russian Orthodox Christians, Polish Roman Catholics and Ukrainian Eastern Catholics. " +
             "The family traced its roots back to a Tatar, Aslan Chelebi-Murza, who in 1389 defected from the Golden Horde and joined the forces of Dmitry Donskoy, " +
@@ -111,7 +113,7 @@ public class UpdateTest extends BaseDbOperationTest {
 
     @Test(groups = "positive update")
     public void positiveUpdateTest2() {
-        dataBaseSteps.update(oneOf(Author.class,
+        var updatedAuthors = dataBaseSteps.update(oneOf(Author.class,
                 byJDOQuery(QAuthor.class).where(qAuthor -> qAuthor
                         .firstName.eq("Fyodor")
                         .and(qAuthor.lastName.eq("Dostoevsky")))),
@@ -119,8 +121,8 @@ public class UpdateTest extends BaseDbOperationTest {
                         author.setBiography(BIO2)));
 
         var dateToChange = new Date();
-        dataBaseSteps.update(oneOf(CarModel.class, byJDOQuery(QCarModel.class)
-                .where(qCarModel -> qCarModel.carModelName.eq("Crown Victoria"))),
+        var updatedCarModels = dataBaseSteps.update(oneOf(CarModel.class, byJDOQuery(QCarModel.class)
+                        .where(qCarModel -> qCarModel.carModelName.eq("Crown Victoria"))),
                 change("Change date of the 'Produced to' to current", carModel ->
                         carModel.setProducedTo(dateToChange)));
 
@@ -134,8 +136,8 @@ public class UpdateTest extends BaseDbOperationTest {
                 .criteria("'Produced to' is changed",
                         carModel -> carModel.getProducedTo().equals(dateToChange)));
 
-        assertTrue(nonNull(updatedDostoevsky));
-        assertTrue(nonNull(updatedCrownVictoria));
+        assertThat(updatedAuthors, contains(updatedDostoevsky));
+        assertThat(updatedCarModels, contains(updatedCrownVictoria));
     }
 
     @Test(groups = "positive update")
@@ -186,8 +188,7 @@ public class UpdateTest extends BaseDbOperationTest {
                                     ((CarModel) persistableObject).setProducedFrom(null);
                                 }
                             }));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             var updatedDostoevsky = dataBaseSteps.select(oneOf(Author.class,
                     dostoevsky.getId()));
 
