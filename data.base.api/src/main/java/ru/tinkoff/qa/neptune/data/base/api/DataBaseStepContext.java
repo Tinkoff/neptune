@@ -39,7 +39,6 @@ public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>,
 
         return  ofNullable(manager).orElseGet(() -> {
             var newManager = (JDOPersistenceManager) connection.getConnectionFactory().getPersistenceManager();
-            newManager.getFetchPlan().setMaxFetchDepth(100000000);
             jdoPersistenceManagerSet.add(newManager);
             return newManager;
         });
