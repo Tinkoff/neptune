@@ -38,7 +38,7 @@ public abstract class DBConnectionSupplier implements Supplier<DBConnection> {
                 .loadClasses(PersistableObject.class)
                 .stream()
                 .filter(clazz -> nonNull(clazz.getAnnotation(PersistenceCapable.class))
-                        && isAbstract(clazz.getModifiers())
+                        && !isAbstract(clazz.getModifiers())
                         && usesConnection(clazz, thisClass))
                 .map(Class::getName)
                 .collect(toList());

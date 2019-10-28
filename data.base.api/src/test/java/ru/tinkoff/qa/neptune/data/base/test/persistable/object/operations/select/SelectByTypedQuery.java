@@ -36,17 +36,17 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
 
     @BeforeClass
     public void prepare() {
-        journeyToIxtlan = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
-                .where(qBook -> qBook.name.eq("Journey to Ixtlan"))));
-
         carlosCastaneda = dataBaseSteps.select(oneOf(Author.class, byJDOQuery(QAuthor.class)
                 .where(qAuthor -> qAuthor.firstName.eq("Carlos").and(qAuthor.lastName.eq("Castaneda")))));
 
-        ruslanAndLudmila = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
-                .where(qBook -> qBook.name.eq("Ruslan and Ludmila"))));
+        journeyToIxtlan = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
+                .where(qBook -> qBook.name.eq("Journey to Ixtlan").and(qBook.author.eq(carlosCastaneda)))));
 
         alexanderPushkin = dataBaseSteps.select(oneOf(Author.class, byJDOQuery(QAuthor.class)
                 .where(qAuthor -> qAuthor.firstName.eq("Alexander").and(qAuthor.lastName.eq("Pushkin")))));
+
+        ruslanAndLudmila = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
+                .where(qBook -> qBook.name.eq("Ruslan and Ludmila").and(qBook.author.eq(alexanderPushkin)))));
     }
 
     @Test(groups = "positive tests")

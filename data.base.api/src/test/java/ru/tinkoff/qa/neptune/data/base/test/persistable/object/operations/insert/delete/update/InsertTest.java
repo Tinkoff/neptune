@@ -11,6 +11,8 @@ import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.two.tab
 import java.util.Date;
 
 import static java.util.Objects.nonNull;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.testng.Assert.*;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle.oneOf;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQueryParameters.byJDOQuery;
@@ -57,11 +59,7 @@ public class InsertTest extends BaseDbOperationTest {
                 .setCarModelName("SW Cross")
                 .setProducedFrom(producedFrom);
 
-        dataBaseSteps.insert(catalogItem, swCross);
-
-        //assertTrue(isPersistent(catalogItem));
-        //assertTrue(isPersistent(swCross));
-        //assertTrue(isPersistent(swCross.getCar()));
+        var inserted = dataBaseSteps.insert(catalogItem, swCross);
 
         var catalogAdded = dataBaseSteps.select(oneOf(Catalog.class, byJDOQuery(QCatalog.class)
                 .where(qCatalog -> qCatalog.book.eq(theHunchbackOfNotreDame)
@@ -80,9 +78,8 @@ public class InsertTest extends BaseDbOperationTest {
                         carModel -> carModel.getProducedFrom().equals(producedFrom)));
 
 
-        assertTrue(nonNull(catalogAdded));
         assertTrue(nonNull(carAdded));
-        assertTrue(nonNull(carModelAdded));
+        assertThat(inserted, containsInAnyOrder(carModelAdded, catalogAdded));
     }
 
     @Test(dependsOnMethods = "insertPositiveTest")
@@ -100,9 +97,6 @@ public class InsertTest extends BaseDbOperationTest {
             dataBaseSteps.insert(kalinaCross, catalogItem);
         }
         catch (Exception e) {
-            //assertFalse(isPersistent(catalogItem));
-            //assertFalse(isPersistent(kalinaCross));
-
             var catalogAdded = dataBaseSteps.select(oneOf(Catalog.class, byJDOQuery(QCatalog.class)
                     .where(qCatalog -> qCatalog.book.eq(theLegendOfTheAges)
                             .and(qCatalog.yearOfPublishing.eq(2019)))));

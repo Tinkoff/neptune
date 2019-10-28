@@ -11,9 +11,9 @@ import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.two.tab
 import java.util.Date;
 
 import static java.util.List.of;
-import static java.util.Objects.nonNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.testng.Assert.*;
 import static ru.tinkoff.qa.neptune.data.base.api.data.operations.UpdateExpression.change;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle.oneOf;
@@ -84,7 +84,7 @@ public class UpdateTest extends BaseDbOperationTest {
                 .where(qCarModel -> qCarModel.carModelName.eq("Crown Victoria"))));
 
         var dateToChange = new Date();
-        dataBaseSteps.update(of(dostoevsky, crownVictoria), change("Add biography details to Author",
+        var updatedObjects = dataBaseSteps.update(of(dostoevsky, crownVictoria), change("Add biography details to Author",
                 persistableObject -> {
                     if (Author.class.isAssignableFrom(persistableObject.getClass())) {
                         ((Author) persistableObject).setBiography(BIO1);
@@ -107,8 +107,8 @@ public class UpdateTest extends BaseDbOperationTest {
                 .criteria("'Produced to' is changed",
                         carModel -> carModel.getProducedTo().equals(dateToChange)));
 
-        assertTrue(nonNull(updatedDostoevsky));
-        assertTrue(nonNull(updatedCrownVictoria));
+        assertThat(updatedObjects, containsInAnyOrder(updatedDostoevsky,
+                updatedCrownVictoria));
     }
 
     @Test(groups = "positive update")
@@ -142,7 +142,7 @@ public class UpdateTest extends BaseDbOperationTest {
 
     @Test(groups = "positive update")
     public void positiveUpdateTest3() {
-        dataBaseSteps.update(listOf(Author.class,
+        var updatedAuthors = dataBaseSteps.update(listOf(Author.class,
                 byJDOQuery(QAuthor.class).where(qAuthor -> qAuthor
                         .firstName.eq("Fyodor")
                         .and(qAuthor.lastName.eq("Dostoevsky")))),
@@ -150,19 +150,23 @@ public class UpdateTest extends BaseDbOperationTest {
                         author.setBiography(BIO3)));
 
         var dateToChange = new Date();
-        dataBaseSteps.update(listOf(CarModel.class, byJDOQuery(QCarModel.class)
+        var updatedCarModels = dataBaseSteps.update(listOf(CarModel.class, byJDOQuery(QCarModel.class)
                         .where(qCarModel -> qCarModel.carModelName.eq("Crown Victoria"))),
                 change("Change date of the 'Produced to' to current", carModel ->
                         carModel.setProducedTo(dateToChange)));
 
         var updatedDostoevsky = dataBaseSteps.select(oneOf(Author.class,
-                dostoevsky.getId()));
+                dostoevsky.getId())
+                .criteria("Biography is changed",
+                        author -> BIO3.equals(author.getBiography())));
 
         var updatedCrownVictoria = dataBaseSteps.select(oneOf(CarModel.class,
-                crownVictoria.getId()));
+                crownVictoria.getId())
+                .criteria("'Produced to' is changed",
+                        carModel -> carModel.getProducedTo().equals(dateToChange)));
 
-        assertEquals(updatedDostoevsky.getBiography(), BIO3);
-        assertEquals(updatedCrownVictoria.getProducedTo(), dateToChange);
+        assertThat(updatedAuthors, contains(updatedDostoevsky));
+        assertThat(updatedCarModels, contains(updatedCrownVictoria));
     }
 
     @Test(dependsOnGroups = "positive update")

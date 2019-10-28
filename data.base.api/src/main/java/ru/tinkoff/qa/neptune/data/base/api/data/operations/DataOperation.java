@@ -76,11 +76,6 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
                 .from(context -> getMap(context, toUpdate));
     }
 
-    public static <T extends PersistableObject> DataOperation<T> updated(T toBeUpdated, UpdateExpression<T> set) {
-        var updateCollection = ofNullable(toBeUpdated).map(List::of).orElse(null);
-        return updated(updateCollection, set);
-    }
-
     public static <T extends PersistableObject> DataOperation<T> deleted(SelectASingle<T, ?> howToSelect) {
         checkArgument(nonNull(howToSelect), "Please define how to select an object to be deleted");
         return new DataOperation<T>(format("Deleted %s", howToSelect),
@@ -118,11 +113,6 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
                 .from(context -> getMap(context, toDelete));
     }
 
-    public static <T extends PersistableObject> DataOperation<T> deleted(T... toBeDeleted) {
-        var deleteCollection = ofNullable(toBeDeleted).map(List::of).orElse(null);
-        return deleted(deleteCollection);
-    }
-
     public static <T extends PersistableObject> DataOperation<T> inserted(Collection<T> toBeInserted) {
         checkArgument(nonNull(toBeInserted),
                 "Collection of objects to be inserted should be defined as a value that differs from null");
@@ -139,11 +129,6 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
                 toInsert.size()),
                 DataOperation::insert)
                 .from(context -> getMap(context, toInsert));
-    }
-
-    public static <T extends PersistableObject> DataOperation<T> inserted(T... toBeInserted) {
-        var insertCollection = ofNullable(toBeInserted).map(List::of).orElse(null);
-        return inserted(insertCollection);
     }
 
     private static <T extends PersistableObject> List<T> update(Map<JDOPersistenceManager, List<T>> connectionMap, UpdateExpression<T> set) {
@@ -229,8 +214,9 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
             };
 
             connectionMap.forEach((manager, ts) -> {
-                manager.deletePersistentAll(ts);
-                ts.forEach(o -> result.add((T) o.clone()));
+                var persistent  = manager.makePersistentAll(ts);
+                manager.deletePersistentAll(persistent);
+                persistent.forEach(o -> result.add((T) o.clone()));
             });
             commitTransaction(managerSet);
             return result;

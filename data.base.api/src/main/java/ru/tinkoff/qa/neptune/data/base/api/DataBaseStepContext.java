@@ -72,10 +72,6 @@ public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>,
         return get(updated(toUpdate, set));
     }
 
-    public <T extends PersistableObject> List<T> update(T toUpdate, UpdateExpression<T> set) {
-        return get(updated(toUpdate, set));
-    }
-
     public <T extends PersistableObject> List<T> delete(SelectASingle<T, ?> howToSelect) {
         return get(deleted(howToSelect));
     }
@@ -88,15 +84,17 @@ public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>,
         return get(deleted(toDelete));
     }
 
-    public <T extends PersistableObject> List<T> delete(T... toDelete) {
-        return get(deleted(toDelete));
+    @SafeVarargs
+    public final <T extends PersistableObject> List<T> delete(T... toDelete) {
+        return delete(ofNullable(toDelete).map(List::of).orElse(null));
     }
 
     public <T extends PersistableObject> List<T> insert(Collection<T> toInsert) {
         return get(inserted(toInsert));
     }
 
-    public <T extends PersistableObject> List<T> insert(T... toInsert) {
-        return get(inserted(toInsert));
+    @SafeVarargs
+    public final <T extends PersistableObject> List<T> insert(T... toInsert) {
+        return insert(ofNullable(toInsert).map(List::of).orElse(null));
     }
 }

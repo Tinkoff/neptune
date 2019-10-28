@@ -14,7 +14,6 @@ import static java.util.Objects.nonNull;
 public final class DBConnection {
 
     private final PersistenceUnitMetaData persistenceUnitMetaData;
-    private JDOPersistenceManagerFactory factory;
 
     /**
      * Creates an instance of the {@link DBConnection}
