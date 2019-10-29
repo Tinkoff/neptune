@@ -84,7 +84,7 @@ public class DeleteTest extends BaseDbOperationTest {
                 byJDOQuery(QManufacturer.class).where(qManufacturer -> qManufacturer.name.eq("Skoda")))));
     }
 
-    @Test(/*dependsOnGroups = "positive delete"*/)
+    @Test
     public void negativeTest1() {
         var lermontov =  dataBaseSteps.select(oneOf(Author.class,
                 byJDOQuery(QAuthor.class).where(qAuthor -> qAuthor

@@ -56,7 +56,6 @@ public final class InnerJDOPersistenceManagerFactory extends JDOPersistenceManag
                 .getFetchPlan()
                 .addGroup(group.getName())));
         manager.getFetchPlan().setMaxFetchDepth(DEPTH);
-        manager.setProperty(PROPERTY_DELETION_POLICY, "DataNucleus");
         return manager;
     }
 }

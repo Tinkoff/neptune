@@ -214,9 +214,10 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
             };
 
             connectionMap.forEach((manager, ts) -> {
-                var persistent  = manager.makePersistentAll(ts);
+                var persistent = manager.makePersistentAll(ts);
+                manager.makeTransactionalAll(persistent);
                 manager.deletePersistentAll(persistent);
-                persistent.forEach(o -> result.add((T) o.clone()));
+                ts.forEach(o -> result.add((T) o.clone()));
             });
             commitTransaction(managerSet);
             return result;
