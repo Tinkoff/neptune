@@ -9,7 +9,6 @@ import java.util.function.Consumer;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.action;
 
 public final class UpdateExpression<T extends PersistableObject> {
 
@@ -19,7 +18,7 @@ public final class UpdateExpression<T extends PersistableObject> {
         super();
     }
 
-    public static <T extends PersistableObject> UpdateExpression<T> change(String description,  Consumer<T> setAction) {
+    public static <T extends PersistableObject> UpdateExpression<T> change(String description, Consumer<T> setAction) {
         return new UpdateExpression<T>().changeAlso(description, setAction);
     }
 
@@ -43,7 +42,17 @@ public final class UpdateExpression<T extends PersistableObject> {
     List<Consumer<List<T>>> getUpdateAction() {
         var result = new ArrayList<Consumer<List<T>>>();
         updateActions.forEach(tConsumer ->
-                result.add(action(tConsumer.toString(), ts -> ts.forEach(tConsumer))));
+                result.add(new Consumer<>() {
+                    @Override
+                    public void accept(List<T> ts) {
+                        ts.forEach(tConsumer);
+                    }
+
+                    @Override
+                    public String toString() {
+                        return tConsumer.toString();
+                    }
+                }));
         return result;
     }
 }

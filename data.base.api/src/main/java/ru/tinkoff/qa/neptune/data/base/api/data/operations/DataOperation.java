@@ -12,7 +12,9 @@ import ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle;
 import ru.tinkoff.qa.neptune.data.base.api.queries.SelectList;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
@@ -20,6 +22,7 @@ import static java.lang.String.join;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.action;
 import static ru.tinkoff.qa.neptune.data.base.api.ConnectionToUse.ConnectionDataReader.getConnection;
 
 @SuppressWarnings("unchecked")
@@ -151,16 +154,18 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
                 }
             };
 
-            var toBeUpdated = new ArrayList<T>();
-            connectionMap.values().forEach(toBeUpdated::addAll);
-            set.getUpdateAction().forEach(setAction -> setAction.accept(toBeUpdated));
-
-            connectionMap.forEach((manager, ts) -> {
-                manager.makePersistentAll(ts);
-                result.addAll(manager.detachCopyAll(ts));
+            var updated = new HashSet<T>();
+            set.getUpdateAction().forEach(setAction -> {
+                    updated.clear();
+                    action(setAction.toString(), (Consumer<Map<JDOPersistenceManager, List<T>>>) map -> map.forEach((manager, ts) -> {
+                        setAction.accept(ts);
+                        manager.makePersistentAll(ts);
+                        updated.addAll(manager.detachCopyAll(ts));
+                    })).accept(connectionMap);
             });
 
             commitTransaction(managerSet);
+            result.addAll(updated);
             return result;
         }
         catch (Throwable t) {
