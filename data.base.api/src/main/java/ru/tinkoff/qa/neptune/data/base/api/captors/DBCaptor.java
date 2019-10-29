@@ -26,7 +26,7 @@ abstract class DBCaptor<T> extends FileCaptor<T> {
                     defaultCharset(), true);
             json.deleteOnExit();
             return json;
-        } catch (IOException e) {
+        } catch (Exception e) {
             return null;
         }
     }
