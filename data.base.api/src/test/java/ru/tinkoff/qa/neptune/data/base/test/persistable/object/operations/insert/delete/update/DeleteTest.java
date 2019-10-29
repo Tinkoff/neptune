@@ -84,7 +84,7 @@ public class DeleteTest extends BaseDbOperationTest {
                 byJDOQuery(QManufacturer.class).where(qManufacturer -> qManufacturer.name.eq("Skoda")))));
     }
 
-    @Test
+    @Test(dependsOnGroups = "positive delete")
     public void negativeTest1() {
         var lermontov =  dataBaseSteps.select(oneOf(Author.class,
                 byJDOQuery(QAuthor.class).where(qAuthor -> qAuthor
@@ -110,5 +110,25 @@ public class DeleteTest extends BaseDbOperationTest {
         }
 
         fail("Exception was expected");
+    }
+
+    @Test(dependsOnGroups = "positive delete")
+    public void insertAfterDelete() {
+        var ferrari = dataBaseSteps.insert(new Manufacturer().setName("Ferrari"));
+
+        assertThat(ferrari, hasSize(1));
+        assertNotNull(dataBaseSteps.select(oneOf(Manufacturer.class,
+                byJDOQuery(QManufacturer.class).where(qManufacturer -> qManufacturer.name.eq("Ferrari")))));
+
+        ferrari = dataBaseSteps.delete(ferrari);
+
+        assertThat(ferrari, hasSize(1));
+        assertNull(dataBaseSteps.select(oneOf(Manufacturer.class,
+                byJDOQuery(QManufacturer.class).where(qManufacturer -> qManufacturer.name.eq("Ferrari")))));
+
+        ferrari = dataBaseSteps.insert(ferrari);
+        assertThat(ferrari, hasSize(1));
+        assertNotNull(dataBaseSteps.select(oneOf(Manufacturer.class,
+                byJDOQuery(QManufacturer.class).where(qManufacturer -> qManufacturer.name.eq("Ferrari")))));
     }
 }

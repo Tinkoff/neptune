@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.data.base.api.data.operations;
 
 import org.apache.commons.lang3.StringUtils;
+import org.datanucleus.ExecutionContextImpl;
 import org.datanucleus.api.jdo.JDOPersistenceManager;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
@@ -14,7 +15,6 @@ import ru.tinkoff.qa.neptune.data.base.api.queries.SelectList;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
@@ -198,6 +198,8 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
                 manager.makePersistentAll(toBeInserted);
                 result.addAll(manager.detachCopyAll(toBeInserted));
             });
+
+            preCommit(managerSet);
             commitTransaction(managerSet);
             return result;
         }
@@ -219,11 +221,11 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
             };
 
             connectionMap.forEach((manager, ts) -> {
-                var persistent = manager.makePersistentAll(ts);
-                manager.makeTransactionalAll(persistent);
-                manager.deletePersistentAll(persistent);
+                manager.deletePersistentAll(ts);
                 ts.forEach(o -> result.add((T) o.clone()));
             });
+
+            preCommit(managerSet);
             commitTransaction(managerSet);
             return result;
         }
@@ -247,9 +249,10 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
     }
 
     private static void openTransaction(Set<JDOPersistenceManager> jdoPersistenceManagers) {
-        jdoPersistenceManagers.forEach(jdoPersistenceManager -> jdoPersistenceManager
-                .currentTransaction()
-                .begin());
+        jdoPersistenceManagers.forEach(jdoPersistenceManager -> {
+            var transaction = jdoPersistenceManager.currentTransaction();
+            transaction.begin();
+        });
     }
 
     private static void commitTransaction(Set<JDOPersistenceManager> jdoPersistenceManagers) {
@@ -266,5 +269,12 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
                 transaction.rollback();
             }
         });
+    }
+
+    private static void preCommit(Set<JDOPersistenceManager> jdoPersistenceManagers) {
+        jdoPersistenceManagers.forEach(jdoPersistenceManager ->
+                ((ExecutionContextImpl) jdoPersistenceManager
+                        .getExecutionContext())
+                        .preCommit());
     }
 }
