@@ -72,6 +72,10 @@ public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>,
         return get(updated(toUpdate, set));
     }
 
+    public <T extends PersistableObject> List<T> update(T t, UpdateExpression<T> set) {
+        return update(ofNullable(t).map(List::of).orElse(null), set);
+    }
+
     public <T extends PersistableObject> List<T> delete(SelectASingle<T, ?> howToSelect) {
         return get(deleted(howToSelect));
     }
