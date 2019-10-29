@@ -6,14 +6,13 @@ import javax.jdo.PersistenceManager;
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.Persistent;
 
-import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
-import static org.datanucleus.PropertyNames.PROPERTY_DELETION_POLICY;
+import static java.util.UUID.randomUUID;
 
 public final class InnerJDOPersistenceManagerFactory extends JDOPersistenceManagerFactory {
 
-    private final int DEPTH = 1000000000;
+    private final int DEPTH = -1;
     private final DBConnection connection;
 
     InnerJDOPersistenceManagerFactory(DBConnection connection) {
@@ -29,17 +28,17 @@ public final class InnerJDOPersistenceManagerFactory extends JDOPersistenceManag
         try {
             var clazz = Class.forName(className);
 
+            var defaultFetchGroup =  getFetchGroup(clazz, randomUUID().toString());
             stream(clazz.getDeclaredFields()).forEach(f -> {
                 var annotationColumn = f.getAnnotation(Column.class);
                 var annotationPersistent = f.getAnnotation(Persistent.class);
 
                 if (annotationColumn != null || annotationPersistent != null) {
-                    var defaultFetchGroup =  getFetchGroup(clazz, format("%s_%s", className, f.getName()));
                     defaultFetchGroup.addMember(f.getName());
                     defaultFetchGroup.setRecursionDepth(f.getName(), DEPTH);
-                    addFetchGroups(defaultFetchGroup);
                 }
             });
+            addFetchGroups(defaultFetchGroup);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

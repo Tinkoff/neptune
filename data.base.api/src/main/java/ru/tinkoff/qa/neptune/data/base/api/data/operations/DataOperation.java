@@ -195,8 +195,8 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
             };
 
             connectionMap.forEach((manager, toBeInserted) -> {
-                manager.makePersistentAll(toBeInserted);
-                result.addAll(manager.detachCopyAll(toBeInserted));
+                var persistent = manager.makePersistentAll(toBeInserted);
+                result.addAll(manager.detachCopyAll(persistent));
             });
 
             preCommit(managerSet);
