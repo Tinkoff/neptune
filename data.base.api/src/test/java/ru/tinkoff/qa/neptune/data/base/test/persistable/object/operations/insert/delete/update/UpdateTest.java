@@ -113,7 +113,7 @@ public class UpdateTest extends BaseDbOperationTest {
 
     @Test(groups = "positive update")
     public void positiveUpdateTest2() {
-        var updatedAuthors = dataBaseSteps.update(oneOf(Author.class,
+        var updatedAuthor = dataBaseSteps.update(oneOf(Author.class,
                 byJDOQuery(QAuthor.class).where(qAuthor -> qAuthor
                         .firstName.eq("Fyodor")
                         .and(qAuthor.lastName.eq("Dostoevsky")))),
@@ -121,7 +121,7 @@ public class UpdateTest extends BaseDbOperationTest {
                         author.setBiography(BIO2)));
 
         var dateToChange = new Date();
-        var updatedCarModels = dataBaseSteps.update(oneOf(CarModel.class, byJDOQuery(QCarModel.class)
+        var updatedCarModel = dataBaseSteps.update(oneOf(CarModel.class, byJDOQuery(QCarModel.class)
                         .where(qCarModel -> qCarModel.carModelName.eq("Crown Victoria"))),
                 change("Change date of the 'Produced to' to current", carModel ->
                         carModel.setProducedTo(dateToChange)));
@@ -136,8 +136,8 @@ public class UpdateTest extends BaseDbOperationTest {
                 .criteria("'Produced to' is changed",
                         carModel -> carModel.getProducedTo().equals(dateToChange)));
 
-        assertThat(updatedAuthors, contains(updatedDostoevsky));
-        assertThat(updatedCarModels, contains(updatedCrownVictoria));
+        assertEquals(updatedAuthor, updatedDostoevsky);
+        assertEquals(updatedCarModel, updatedCrownVictoria);
     }
 
     @Test(groups = "positive update")

@@ -50,8 +50,8 @@ public class DeleteTest extends BaseDbOperationTest {
         var deleted2 = dataBaseSteps.delete(oneOf(Manufacturer.class,
                 byJDOQuery(QManufacturer.class).where(qManufacturer -> qManufacturer.name.eq("Fiat"))));
 
-        assertThat(deleted, hasSize(1));
-        assertThat(deleted2, hasSize(1));
+        assertNotNull(deleted);
+        assertNotNull(deleted2);
 
         assertNull(dataBaseSteps.select(oneOf(Author.class,
                 byJDOQuery(QAuthor.class).where(qAuthor -> qAuthor
@@ -116,18 +116,18 @@ public class DeleteTest extends BaseDbOperationTest {
     public void insertAfterDelete() {
         var ferrari = dataBaseSteps.insert(new Manufacturer().setName("Ferrari"));
 
-        assertThat(ferrari, hasSize(1));
+        assertNotNull(ferrari);
         assertNotNull(dataBaseSteps.select(oneOf(Manufacturer.class,
                 byJDOQuery(QManufacturer.class).where(qManufacturer -> qManufacturer.name.eq("Ferrari")))));
 
         ferrari = dataBaseSteps.delete(ferrari);
 
-        assertThat(ferrari, hasSize(1));
+        assertNotNull(ferrari);
         assertNull(dataBaseSteps.select(oneOf(Manufacturer.class,
                 byJDOQuery(QManufacturer.class).where(qManufacturer -> qManufacturer.name.eq("Ferrari")))));
 
         ferrari = dataBaseSteps.insert(ferrari);
-        assertThat(ferrari, hasSize(1));
+        assertNotNull(ferrari);
         assertNotNull(dataBaseSteps.select(oneOf(Manufacturer.class,
                 byJDOQuery(QManufacturer.class).where(qManufacturer -> qManufacturer.name.eq("Ferrari")))));
     }

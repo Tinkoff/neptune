@@ -18,6 +18,7 @@ import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Collections.synchronizedSet;
+import static java.util.List.of;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.data.base.api.data.operations.DataOperation.*;
@@ -26,6 +27,13 @@ import static ru.tinkoff.qa.neptune.data.base.api.data.operations.DataOperation.
 public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>, Stoppable {
 
     private final Set<JDOPersistenceManager> jdoPersistenceManagerSet = synchronizedSet(new HashSet<>());
+
+    private static  <T> T returnSingleWhenNecessary(List<T> ts) {
+        if (ts.size() == 0) {
+            return null;
+        }
+        return ts.get(0);
+    }
 
     public JDOPersistenceManager getManager(DBConnection connection) {
         checkArgument(nonNull(connection), "DB connection should not be null-value");
@@ -60,8 +68,8 @@ public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>,
         return get(selectOne);
     }
 
-    public <T extends PersistableObject> List<T> update(SelectASingle<T, ?> howToSelect, UpdateExpression<T> set) {
-        return get(updated(howToSelect, set));
+    public <T extends PersistableObject> T update(SelectASingle<T, ?> howToSelect, UpdateExpression<T> set) {
+        return returnSingleWhenNecessary(get(updated(howToSelect, set)));
     }
 
     public <T extends PersistableObject> List<T> update(SelectList<T, ?> howToSelect, UpdateExpression<T> set) {
@@ -72,12 +80,12 @@ public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>,
         return get(updated(toUpdate, set));
     }
 
-    public <T extends PersistableObject> List<T> update(T t, UpdateExpression<T> set) {
-        return update(ofNullable(t).map(List::of).orElse(null), set);
+    public <T extends PersistableObject> T update(T t, UpdateExpression<T> set) {
+        return returnSingleWhenNecessary(update(ofNullable(t).map(List::of).orElse(null), set));
     }
 
-    public <T extends PersistableObject> List<T> delete(SelectASingle<T, ?> howToSelect) {
-        return get(deleted(howToSelect));
+    public <T extends PersistableObject> T delete(SelectASingle<T, ?> howToSelect) {
+        return returnSingleWhenNecessary(get(deleted(howToSelect)));
     }
 
     public <T extends PersistableObject> List<T> delete(SelectList<T, ?> howToSelect) {
@@ -93,6 +101,11 @@ public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>,
         return delete(ofNullable(toDelete).map(List::of).orElse(null));
     }
 
+    public <T extends PersistableObject> T delete(T toDelete) {
+        checkArgument(nonNull(toDelete), "Object to be deleted should be defined as a value that differs from null");
+        return returnSingleWhenNecessary(delete(of(toDelete)));
+    }
+
     public <T extends PersistableObject> List<T> insert(Collection<T> toInsert) {
         return get(inserted(toInsert));
     }
@@ -100,5 +113,10 @@ public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>,
     @SafeVarargs
     public final <T extends PersistableObject> List<T> insert(T... toInsert) {
         return insert(ofNullable(toInsert).map(List::of).orElse(null));
+    }
+
+    public <T extends PersistableObject> T insert(T toInsert) {
+        checkArgument(nonNull(toInsert), "Object to be inserted should be defined as a value that differs from null");
+        return returnSingleWhenNecessary(insert(of(toInsert)));
     }
 }

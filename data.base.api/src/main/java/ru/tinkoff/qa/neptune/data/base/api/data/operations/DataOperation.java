@@ -25,6 +25,12 @@ import static java.util.stream.Collectors.toList;
 import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.action;
 import static ru.tinkoff.qa.neptune.data.base.api.ConnectionToUse.ConnectionDataReader.getConnection;
 
+/**
+ * This class is designed to perform available operations on stored data such as the inserting/updating/deleting
+ * and return results.
+ *
+ * @param <T> is a type of {@link PersistableObject} to be operated (e.g. inserted, updated or deleted)
+ */
 @SuppressWarnings("unchecked")
 @MakeFileCapturesOnFinishing
 @MakeStringCapturesOnFinishing
@@ -35,6 +41,14 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
         super(description, originalFunction);
     }
 
+    /**
+     * Updating a single stored record. The record to be updated is selected by query and then updated.
+     *
+     * @param howToSelect is a description of query how to select the record
+     * @param set is an instance of {@link UpdateExpression} that describes how to update the record
+     * @param <T> is a type of {@link PersistableObject} to be updated
+     * @return an instance of {@link DataOperation}
+     */
     public static <T extends PersistableObject> DataOperation<T> updated(SelectASingle<T, ?> howToSelect, UpdateExpression<T> set) {
         checkArgument(nonNull(howToSelect), "Please define how to select an object to be updated");
         checkArgument(nonNull(set), "Please define update-actions");
@@ -47,6 +61,14 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
                 });
     }
 
+    /**
+     * Updating a list of stored records. Records to be updated are selected by query and then updated.
+     *
+     * @param howToSelect is a description of query how to select records
+     * @param set is an instance of {@link UpdateExpression} that describes how to update records
+     * @param <T> is a type of {@link PersistableObject} to be updated
+     * @return an instance of {@link DataOperation}
+     */
     public static <T extends PersistableObject> DataOperation<T> updated(SelectList<T, ?> howToSelect, UpdateExpression<T> set) {
         checkArgument(nonNull(howToSelect), "Please define how to select objects to be updated");
         checkArgument(nonNull(set), "Please define update-actions");
@@ -55,6 +77,14 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
                 .from(context -> getMap(context, context.select(howToSelect)));
     }
 
+    /**
+     * Updating a list of stored records.
+     *
+     * @param toBeUpdated is a list of stored records that is selected firstly
+     * @param set is an instance of {@link UpdateExpression} that describes how to update records
+     * @param <T> is a type of {@link PersistableObject} to be updated
+     * @return an instance of {@link DataOperation}
+     */
     public static <T extends PersistableObject> DataOperation<T> updated(Collection<T> toBeUpdated, UpdateExpression<T> set) {
         checkArgument(nonNull(toBeUpdated),
                 "Collection of objects to be updated should be defined as a value that differs from null");
@@ -79,6 +109,13 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
                 .from(context -> getMap(context, toUpdate));
     }
 
+    /**
+     * Deleting a single stored record. The record to be updated is selected by query and then deleted.
+     *
+     * @param howToSelect is a description of query how to select the record
+     * @param <T> is a type of {@link PersistableObject} to be updated
+     * @return an instance of {@link DataOperation}
+     */
     public static <T extends PersistableObject> DataOperation<T> deleted(SelectASingle<T, ?> howToSelect) {
         checkArgument(nonNull(howToSelect), "Please define how to select an object to be deleted");
         return new DataOperation<T>(format("Deleted %s", howToSelect),
