@@ -22,8 +22,11 @@ import static org.testng.Assert.fail;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.QueryTimeUnitProperties.WAITING_FOR_SELECTION_RESULT_TIME_UNIT;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.QueryTimeValueProperties.WAITING_FOR_SELECTION_RESULT_TIME_VALUE;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle.oneOf;
+import static ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle.row;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.SelectList.listOf;
+import static ru.tinkoff.qa.neptune.data.base.api.queries.SelectList.rows;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQueryParameters.byJDOQuery;
+import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLResultQueryParams.byJDOResultQuery;
 
 @SuppressWarnings("ConstantConditions")
 public class SelectByTypedQuery extends BaseDbOperationTest {
@@ -33,6 +36,12 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
     private Author carlosCastaneda;
     private Book ruslanAndLudmila;
     private Author alexanderPushkin;
+
+    private Book theLegendOfTheAges;
+    private Author hugo;
+
+    private Book aHeroOfOurTimes;
+    private Author lermontov;
 
     @BeforeClass
     public void prepare() {
@@ -47,6 +56,18 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
 
         ruslanAndLudmila = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
                 .where(qBook -> qBook.name.eq("Ruslan and Ludmila").and(qBook.author.eq(alexanderPushkin)))));
+
+        theLegendOfTheAges = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
+                .where(qBook -> qBook.name.eq("The Legend of the Ages"))));
+
+        hugo = dataBaseSteps.select(oneOf(Author.class, byJDOQuery(QAuthor.class)
+                .where(qAuthor -> qAuthor.firstName.eq("Victor").and(qAuthor.lastName.eq("Hugo")))));
+
+        aHeroOfOurTimes = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
+                .where(qBook -> qBook.name.eq("A Hero of Our Times"))));
+
+        lermontov = dataBaseSteps.select(oneOf(Author.class, byJDOQuery(QAuthor.class)
+                .where(qAuthor -> qAuthor.firstName.eq("Mikhail").and(qAuthor.lastName.eq("Lermontov")))));
     }
 
     @Test(groups = "positive tests")
@@ -122,6 +143,44 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
                         catalog -> "Simon & Schuster".equals(catalog.getPublisher().getName())));
 
         assertThat(catalogItem.getBook().getAuthor(), equalTo(carlosCastaneda));
+    }
+
+    @Test(groups = "positive tests")
+    public void selectListByResultQuery() {
+        var row = dataBaseSteps.select(row(Book.class, byJDOResultQuery(QBook.class)
+                .addResultField(qBook -> qBook.author)
+                .addResultField(qBook -> qBook.name)
+                .addResultField(qBook -> qBook.yearOfFinishing.max())
+                .where(qBook -> qBook.yearOfFinishing.lt(1972))
+                .addGroupBy(qBook -> qBook.author)
+                .addOrderBy(qBook -> qBook.id.asc())));
+
+        assertThat(row, contains(alexanderPushkin,
+                ruslanAndLudmila.getName(),
+                ruslanAndLudmila.getYearOfFinishing()));
+    }
+
+    @Test(groups = "positive tests")
+    public void selectOneByResultQuery() {
+        var rows = dataBaseSteps.select(rows(Book.class, byJDOResultQuery(QBook.class)
+                .addResultField(qBook -> qBook.author)
+                .addResultField(qBook -> qBook.name)
+                .addResultField(qBook -> qBook.yearOfFinishing.max())
+                .where(qBook -> qBook.yearOfFinishing.lt(1972))
+                .addGroupBy(qBook -> qBook.author)
+                .addOrderBy(qBook -> qBook.id.asc())));
+
+        assertThat(rows, containsInRelativeOrder(contains(alexanderPushkin,
+                ruslanAndLudmila.getName(),
+                ruslanAndLudmila.getYearOfFinishing()),
+
+                contains(hugo,
+                        theLegendOfTheAges.getName(),
+                        theLegendOfTheAges.getYearOfFinishing()),
+
+                contains(lermontov,
+                        aHeroOfOurTimes.getName(),
+                        aHeroOfOurTimes.getYearOfFinishing())));
     }
 
     @Test(dependsOnGroups = "positive tests")

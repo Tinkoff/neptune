@@ -16,7 +16,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle.oneOf;
+import static ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle.row;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.SelectList.listOf;
+import static ru.tinkoff.qa.neptune.data.base.api.queries.SelectList.rows;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQueryParameters.byJDOQuery;
 
 public class SelectBySqlQuery extends BaseDbOperationTest {
@@ -56,7 +58,7 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
 
     @Test
     public void selectListByUnTypedSqlTest() {
-        var booksAndAuthors = dataBaseSteps.select(listOf(QUERY,
+        var booksAndAuthors = dataBaseSteps.select(rows(QUERY,
                 ConnectionDataSupplierForTestBase1.class,
                 1820))
                 .subList(0, 1);
@@ -87,7 +89,7 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
 
     @Test
     public void selectSingleByUnTypedSqlTest() {
-        var bookAndAuthor = dataBaseSteps.select(oneOf(QUERY,
+        var bookAndAuthor = dataBaseSteps.select(row(QUERY,
                 ConnectionDataSupplierForTestBase1.class,
                 1820));
 
@@ -112,13 +114,13 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
 
     @Test
     public void aggregatedListResultSelect() {
-        var result = dataBaseSteps.select(listOf(QUERY2, ConnectionDataSupplierForTestBase1.class));
+        var result = dataBaseSteps.select(rows(QUERY2, ConnectionDataSupplierForTestBase1.class));
         assertThat(result, contains(contains(1820)));
     }
 
     @Test
     public void aggregatedSingleResultSelect() {
-        var result = dataBaseSteps.select(oneOf(QUERY2, ConnectionDataSupplierForTestBase1.class));
+        var result = dataBaseSteps.select(row(QUERY2, ConnectionDataSupplierForTestBase1.class));
         assertThat(result, contains(1820));
     }
 }

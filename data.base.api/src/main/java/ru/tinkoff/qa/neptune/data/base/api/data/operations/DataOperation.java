@@ -110,10 +110,10 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
     }
 
     /**
-     * Deleting a single stored record. The record to be updated is selected by query and then deleted.
+     * Deleting a single stored record. The record to be deleted is selected by query and then deleted.
      *
      * @param howToSelect is a description of query how to select the record
-     * @param <T> is a type of {@link PersistableObject} to be updated
+     * @param <T> is a type of {@link PersistableObject} to be deleted
      * @return an instance of {@link DataOperation}
      */
     public static <T extends PersistableObject> DataOperation<T> deleted(SelectASingle<T, ?> howToSelect) {
@@ -127,6 +127,13 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
                 });
     }
 
+    /**
+     * Deleting a list of stored records. Records to be deleted are selected by query and then deleted.
+     *
+     * @param howToSelect is a description of query how to select records
+     * @param <T> is a type of {@link PersistableObject} to be deleted
+     * @return an instance of {@link DataOperation}
+     */
     public static <T extends PersistableObject> DataOperation<T> deleted(SelectList<T, ?> howToSelect) {
         checkArgument(nonNull(howToSelect), "Please define how to select objects to be deleted");
         return new DataOperation<T>(format("Deleted %s", howToSelect),
@@ -134,6 +141,13 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
                 .from(context -> getMap(context, context.select(howToSelect)));
     }
 
+    /**
+     * Deleting a list of stored records.
+     *
+     * @param toBeDeleted is a list of stored records that is selected firstly
+     * @param <T> is a type of {@link PersistableObject} to be deleted
+     * @return an instance of {@link DataOperation}
+     */
     public static <T extends PersistableObject> DataOperation<T> deleted(Collection<T> toBeDeleted) {
         checkArgument(nonNull(toBeDeleted),
                 "Collection of objects to be deleted should be defined as a value that differs from null");
@@ -153,6 +167,13 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
                 .from(context -> getMap(context, toDelete));
     }
 
+    /**
+     * Inserting a list of stored records.
+     *
+     * @param toBeInserted is a list of records to be inserted
+     * @param <T> is a type of {@link PersistableObject} to be inserted
+     * @return an instance of {@link DataOperation}
+     */
     public static <T extends PersistableObject> DataOperation<T> inserted(Collection<T> toBeInserted) {
         checkArgument(nonNull(toBeInserted),
                 "Collection of objects to be inserted should be defined as a value that differs from null");

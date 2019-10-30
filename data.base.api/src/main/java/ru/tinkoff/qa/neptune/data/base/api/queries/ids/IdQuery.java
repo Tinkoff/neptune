@@ -17,6 +17,10 @@ import static java.lang.String.join;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
+/**
+ * This class constructs a query to select stored objects by known ids.
+ * @param <T> is a type of {@link PersistableObject} to be selected
+ */
 public final class IdQuery<T extends PersistableObject> implements Function<JDOPersistenceManager, List<T>> {
 
     private final Class<T> classOfRequestedValue;
@@ -30,6 +34,14 @@ public final class IdQuery<T extends PersistableObject> implements Function<JDOP
         this.ids = ids;
     }
 
+    /**
+     * Creates an instance that performs a query to select stored objects by known ids
+     *
+     * @param classOfRequestedValue is a class of {@link PersistableObject} to be selected
+     * @param ids is an array of ids used to select desired objects
+     * @param <T> is a type of {@link PersistableObject} to be selected
+     * @return new {@link IdQuery}
+     */
     public static <T extends PersistableObject> IdQuery<T> byIds(Class<T> classOfRequestedValue, Object... ids) {
         return new IdQuery<>(classOfRequestedValue, ids);
     }

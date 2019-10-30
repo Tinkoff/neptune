@@ -8,7 +8,7 @@ import javax.jdo.PersistenceManager;
 
 /**
  * This class is the same is original {@link JDOQLTypedQueryImpl} except
- * ability to get native value of the query to execute
+ * ability to get native value of the query to perform
  *
  * @param <T> is a type of values to select by the query
  */

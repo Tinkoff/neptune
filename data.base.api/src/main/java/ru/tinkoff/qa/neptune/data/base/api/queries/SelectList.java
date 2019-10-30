@@ -10,6 +10,7 @@ import ru.tinkoff.qa.neptune.data.base.api.NothingIsSelectedException;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionSupplier;
 import ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQueryParameters;
+import ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLResultQueryParams;
 import ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.ReadableJDOQuery;
 
 import javax.jdo.query.PersistableExpression;
@@ -30,6 +31,7 @@ import static ru.tinkoff.qa.neptune.data.base.api.queries.JDOPersistenceManagerB
 import static ru.tinkoff.qa.neptune.data.base.api.queries.JDOPersistenceManagerByPersistableClass.getConnectionByClass;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.ids.IdQuery.byIds;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQuery.byJDOQLQuery;
+import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLResultQuery.byJDOQLResultQuery;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.sql.SqlQuery.bySql;
 
 @MakeFileCapturesOnFinishing
@@ -49,6 +51,23 @@ public class SelectList<T, M> extends SequentialGetStepSupplier
         return new SelectList<R, ReadableJDOQuery<R>>(format("List of %s by JDO typed query", toSelect.getName()),
                 byJDOQLQuery()) {
             protected Function<ReadableJDOQuery<R>, List<R>> getEndFunction() {
+                //such implementation is for advanced reporting
+                return rReadableJDOQuery -> toGet(format("Result using JDO query %s",
+                        rReadableJDOQuery.getInternalQuery()),
+                        super.getEndFunction()).apply(rReadableJDOQuery);
+            }
+        }
+                .from(getConnectionByClass(toSelect).andThen(manager ->
+                        ofNullable(params)
+                                .map(parameters -> parameters.buildQuery(new ReadableJDOQuery<>(manager, toSelect)))
+                                .orElseGet(() -> new ReadableJDOQuery<>(manager, toSelect))));
+    }
+
+    public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectList<List<Object>, ReadableJDOQuery<R>> rows(Class<R> toSelect,
+                                                                                                                                       JDOQLResultQueryParams<R, Q> params) {
+        return new SelectList<List<Object>, ReadableJDOQuery<R>>(format("List of %s by JDO typed query", toSelect.getName()),
+                byJDOQLResultQuery()) {
+            protected Function<ReadableJDOQuery<R>, List<List<Object>>> getEndFunction() {
                 //such implementation is for advanced reporting
                 return rReadableJDOQuery -> toGet(format("Result using JDO query %s",
                         rReadableJDOQuery.getInternalQuery()),
@@ -86,9 +105,9 @@ public class SelectList<T, M> extends SequentialGetStepSupplier
                 .from(getConnectionByClass(toSelect));
     }
 
-    public static <R extends DBConnectionSupplier> SelectList<List<Object>, JDOPersistenceManager> listOf(String sql,
-                                                                                                          Class<R> connection,
-                                                                                                          Object... parameters) {
+    public static <R extends DBConnectionSupplier> SelectList<List<Object>, JDOPersistenceManager> rows(String sql,
+                                                                                                        Class<R> connection,
+                                                                                                        Object... parameters) {
         return new SelectList<>(format("List of rows by query %s. " +
                 "The connection is described by %s. " +
                 "Parameters: %s",
