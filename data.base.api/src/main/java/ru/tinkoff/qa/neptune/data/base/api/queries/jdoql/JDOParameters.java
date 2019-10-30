@@ -18,6 +18,12 @@ import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.ArrayUtils.add;
 
+/**
+ * This class is designed to construct/detail {@link JDOQLTypedQuery}
+ *
+ * @param <T> is a type of {@link PersistableObject} to be selected
+ * @param <Q> is a type of {@link PersistableExpression} that represents {@code T} in a query
+ */
 @SuppressWarnings("unchecked")
 public abstract class JDOParameters<T extends PersistableObject, Q extends PersistableExpression<T>, S extends JDOParameters<T, Q, S>> {
 
@@ -91,7 +97,7 @@ public abstract class JDOParameters<T extends PersistableObject, Q extends Persi
     }
 
     /**
-     * Adds ORDER BY to query. The sample below:
+     * Adds ORDER BY-clause to query. The sample below:
      * <p>
      * {@code byJDOQuery(QPerson.class)
      *          .addOrderBy(qPerson -> qPerson.id.asc())
@@ -110,6 +116,13 @@ public abstract class JDOParameters<T extends PersistableObject, Q extends Persi
         return (S) this;
     }
 
+    /**
+     * Sets range of resulted row numbers to be returned by the selecting.
+     *
+     * @param rangeStart number of the first row to be returned
+     * @param rangeEnd number of the first row to be returned
+     * @return self-reference
+     */
     public S range(int rangeStart, int rangeEnd) {
         checkArgument(rangeStart >= 0, "A number of the range starting should be positive or 0");
         checkArgument(rangeEnd > 0, "A number of the range ending should be greater than 0");

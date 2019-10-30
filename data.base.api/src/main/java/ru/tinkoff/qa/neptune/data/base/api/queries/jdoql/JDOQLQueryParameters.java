@@ -9,7 +9,7 @@ import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 
 /**
- * This class is designed to construct/detail {@link JDOQLTypedQuery}
+ * This class is designed to construct/detail {@link JDOQLTypedQuery} to select list of stored objects
  *
  * @param <T> is a type of {@link PersistableObject} to be selected
  * @param <Q> is a type of {@link PersistableExpression} that represents {@code T} in a query

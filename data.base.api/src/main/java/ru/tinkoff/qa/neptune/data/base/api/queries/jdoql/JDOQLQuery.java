@@ -13,7 +13,7 @@ import static java.lang.String.join;
 import static java.util.stream.Collectors.toList;
 
 /**
- * This class is designed to perform a query to select stored objects by {@link JDOQLTypedQuery}
+ * This class is designed to perform a query to select list of stored objects by {@link JDOQLTypedQuery}
  * @param <T> is a type of {@link PersistableObject} to be selected
  */
 public final class JDOQLQuery<T extends PersistableObject> implements Function<ReadableJDOQuery<T>, List<T>> {
@@ -23,7 +23,7 @@ public final class JDOQLQuery<T extends PersistableObject> implements Function<R
     }
 
     /**
-     * Creates an instance that performs a query to select stored objects by {@link JDOQLTypedQuery}
+     * Creates an instance that performs a query to select list of stored objects by {@link JDOQLTypedQuery}
      *
      * @param <T> is a type of {@link PersistableObject} to be selected
      * @return new {@link JDOQLQuery}

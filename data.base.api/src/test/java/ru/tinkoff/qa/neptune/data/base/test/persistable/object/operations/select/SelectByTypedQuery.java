@@ -146,7 +146,7 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
     }
 
     @Test(groups = "positive tests")
-    public void selectListByResultQuery() {
+    public void selectOneByResultQuery() {
         var row = dataBaseSteps.select(row(Book.class, byJDOResultQuery(QBook.class)
                 .addResultField(qBook -> qBook.author)
                 .addResultField(qBook -> qBook.name)
@@ -161,14 +161,15 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
     }
 
     @Test(groups = "positive tests")
-    public void selectOneByResultQuery() {
+    public void selectListByResultQuery() {
         var rows = dataBaseSteps.select(rows(Book.class, byJDOResultQuery(QBook.class)
                 .addResultField(qBook -> qBook.author)
                 .addResultField(qBook -> qBook.name)
                 .addResultField(qBook -> qBook.yearOfFinishing.max())
                 .where(qBook -> qBook.yearOfFinishing.lt(1972))
                 .addGroupBy(qBook -> qBook.author)
-                .addOrderBy(qBook -> qBook.id.asc())));
+                .addOrderBy(qBook -> qBook.id.asc())
+                .distinct(true)));
 
         assertThat(rows, containsInRelativeOrder(contains(alexanderPushkin,
                 ruslanAndLudmila.getName(),
