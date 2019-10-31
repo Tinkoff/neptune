@@ -221,8 +221,9 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
 
             stream(set).forEach(setAction -> {
                 updated.clear();
-                action(setAction.toString(), (Consumer<Map<JDOPersistenceManager, List<T>>>) map -> map.forEach((manager, ts) -> {
-                    setAction.getUpdateAction().accept(ts);
+                var consumer = setAction.getUpdateAction();
+                action(consumer.toString(), (Consumer<Map<JDOPersistenceManager, List<T>>>) map -> map.forEach((manager, ts) -> {
+                    consumer.accept(ts);
                     manager.makePersistentAll(ts);
                     updated.addAll(manager.detachCopyAll(ts));
                 })).accept(connectionMap);
