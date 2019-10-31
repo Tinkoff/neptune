@@ -153,7 +153,9 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
                 .addResultField(qBook -> qBook.yearOfFinishing.max())
                 .where(qBook -> qBook.yearOfFinishing.lt(1972))
                 .addGroupBy(qBook -> qBook.author)
-                .addOrderBy(qBook -> qBook.id.asc())));
+                .addOrderBy(qBook -> qBook.id.asc())
+                .having(qBook -> qBook.id.count().gteq(1))
+                .distinct(true)));
 
         assertThat(row, contains(alexanderPushkin,
                 ruslanAndLudmila.getName(),
@@ -169,6 +171,7 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
                 .where(qBook -> qBook.yearOfFinishing.lt(1972))
                 .addGroupBy(qBook -> qBook.author)
                 .addOrderBy(qBook -> qBook.id.asc())
+                .having(qBook -> qBook.id.count().gteq(1))
                 .distinct(true)));
 
         assertThat(rows, containsInRelativeOrder(contains(alexanderPushkin,
