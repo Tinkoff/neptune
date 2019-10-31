@@ -83,6 +83,7 @@ public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>,
         return get(updated(toUpdate, set));
     }
 
+    @SafeVarargs
     public final <T extends PersistableObject> T update(T t, UpdateExpression<T>... set) {
         return returnSingleWhenNecessary(update(ofNullable(t).map(List::of).orElse(null), set));
     }
