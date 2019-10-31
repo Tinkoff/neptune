@@ -89,8 +89,8 @@ public class UpdateTest extends BaseDbOperationTest {
                     if (Author.class.isAssignableFrom(persistableObject.getClass())) {
                         ((Author) persistableObject).setBiography(BIO1);
                     }
-                })
-                .changeAlso("Change date of the 'Produced to' to current ",
+                }),
+                change("Change date of the 'Produced to' to current ",
                         persistableObject -> {
                             if (CarModel.class.isAssignableFrom(persistableObject.getClass())) {
                                 ((CarModel) persistableObject).setProducedTo(dateToChange);
@@ -185,8 +185,8 @@ public class UpdateTest extends BaseDbOperationTest {
                         if (Author.class.isAssignableFrom(persistableObject.getClass())) {
                             ((Author) persistableObject).setBiography(BIO4);
                         }
-                    })
-                    .changeAlso("Change date of the 'Produced from' to null ",
+                    }),
+                    change("Change date of the 'Produced from' to null ",
                             persistableObject -> { //this updating is supposed to be failed
                                 if (CarModel.class.isAssignableFrom(persistableObject.getClass())) {
                                     ((CarModel) persistableObject).setProducedFrom(null);

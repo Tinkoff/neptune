@@ -19,6 +19,7 @@ import java.util.function.Function;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.lang.String.join;
+import static java.util.Arrays.stream;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -45,13 +46,14 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
      * Updating a single stored record. The record to be updated is selected by query and then updated.
      *
      * @param howToSelect is a description of query how to select the record
-     * @param set is an instance of {@link UpdateExpression} that describes how to update the record
+     * @param set are instances of {@link UpdateExpression} that describe how to update the record
      * @param <T> is a type of {@link PersistableObject} to be updated
      * @return an instance of {@link DataOperation}
      */
-    public static <T extends PersistableObject> DataOperation<T> updated(SelectASingle<T, ?> howToSelect, UpdateExpression<T> set) {
+    public static <T extends PersistableObject> DataOperation<T> updated(SelectASingle<T, ?> howToSelect, UpdateExpression<T>... set) {
         checkArgument(nonNull(howToSelect), "Please define how to select an object to be updated");
         checkArgument(nonNull(set), "Please define update-actions");
+        checkArgument(set.length > 0, "Should be defined at leas one update-actions");
         return new DataOperation<T>(format("Updated %s", howToSelect),
                 jdoPersistenceManagerListMap -> update(jdoPersistenceManagerListMap, set))
                 .from(context -> {
@@ -65,13 +67,14 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
      * Updating a list of stored records. Records to be updated are selected by query and then updated.
      *
      * @param howToSelect is a description of query how to select records
-     * @param set is an instance of {@link UpdateExpression} that describes how to update records
+     * @param set are instances of {@link UpdateExpression} that describe how to update the record
      * @param <T> is a type of {@link PersistableObject} to be updated
      * @return an instance of {@link DataOperation}
      */
-    public static <T extends PersistableObject> DataOperation<T> updated(SelectList<T, ?> howToSelect, UpdateExpression<T> set) {
+    public static <T extends PersistableObject> DataOperation<T> updated(SelectList<T, ?> howToSelect, UpdateExpression<T>... set) {
         checkArgument(nonNull(howToSelect), "Please define how to select objects to be updated");
         checkArgument(nonNull(set), "Please define update-actions");
+        checkArgument(set.length > 0, "Should be defined at leas one update-actions");
         return new DataOperation<T>(format("Updated %s", howToSelect),
                 jdoPersistenceManagerListMap -> update(jdoPersistenceManagerListMap, set))
                 .from(context -> getMap(context, context.select(howToSelect)));
@@ -81,13 +84,15 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
      * Updating a list of stored records.
      *
      * @param toBeUpdated is a list of stored records that is selected firstly
-     * @param set is an instance of {@link UpdateExpression} that describes how to update records
+     * @param set are instances of {@link UpdateExpression} that describe how to update the record
      * @param <T> is a type of {@link PersistableObject} to be updated
      * @return an instance of {@link DataOperation}
      */
-    public static <T extends PersistableObject> DataOperation<T> updated(Collection<T> toBeUpdated, UpdateExpression<T> set) {
+    public static <T extends PersistableObject> DataOperation<T> updated(Collection<T> toBeUpdated, UpdateExpression<T>... set) {
         checkArgument(nonNull(toBeUpdated),
                 "Collection of objects to be updated should be defined as a value that differs from null");
+        checkArgument(nonNull(set), "Please define update-actions");
+        checkArgument(set.length > 0, "Should be defined at leas one update-actions");
 
         var toUpdate = toBeUpdated
                 .stream()
@@ -192,7 +197,7 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
                 .from(context -> getMap(context, toInsert));
     }
 
-    private static <T extends PersistableObject> List<T> update(Map<JDOPersistenceManager, List<T>> connectionMap, UpdateExpression<T> set) {
+    private static <T extends PersistableObject> List<T> update(Map<JDOPersistenceManager, List<T>> connectionMap, UpdateExpression<T>... set) {
         var managerSet = connectionMap.keySet();
         openTransaction(managerSet);
 
@@ -213,13 +218,14 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
             };
 
             var updated = new HashSet<T>();
-            set.getUpdateAction().forEach(setAction -> {
-                    updated.clear();
-                    action(setAction.toString(), (Consumer<Map<JDOPersistenceManager, List<T>>>) map -> map.forEach((manager, ts) -> {
-                        setAction.accept(ts);
-                        manager.makePersistentAll(ts);
-                        updated.addAll(manager.detachCopyAll(ts));
-                    })).accept(connectionMap);
+
+            stream(set).forEach(setAction -> {
+                updated.clear();
+                action(setAction.toString(), (Consumer<Map<JDOPersistenceManager, List<T>>>) map -> map.forEach((manager, ts) -> {
+                    setAction.getUpdateAction().accept(ts);
+                    manager.makePersistentAll(ts);
+                    updated.addAll(manager.detachCopyAll(ts));
+                })).accept(connectionMap);
             });
 
             commitTransaction(managerSet);
