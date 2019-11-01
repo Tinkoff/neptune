@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.selenium.functions.navigation;
 
-import org.apache.commons.validator.routines.UrlValidator;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 
@@ -18,7 +17,6 @@ import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_D
 public final class ToUrl extends NavigationActionSupplier<ToUrl> {
 
     private static final String DESCRIPTION = "Navigate to URL %s in %s";
-    private static final UrlValidator URL_VALIDATOR = new UrlValidator();
     private final String url;
 
     private ToUrl(String description, String url) {
@@ -29,14 +27,19 @@ public final class ToUrl extends NavigationActionSupplier<ToUrl> {
     private static String checkUrl(String url) {
         checkArgument(!isBlank(url), "Url should not be blank");
 
-        String toURL;
-        if (URL_VALIDATOR.isValid(url)) {
-            toURL = url;
+        try {
+            return new URL(url).toString();
         }
-        else {
+        catch (MalformedURLException e) {
             if (ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL.get()) {
-                toURL = ofNullable(BASE_WEB_DRIVER_URL_PROPERTY.get())
-                        .map(url1 -> url1 + url)
+                return ofNullable(BASE_WEB_DRIVER_URL_PROPERTY.get())
+                        .map(url1 -> {
+                            try {
+                                return new URL(url1 + url).toString();
+                            } catch (MalformedURLException ex) {
+                                throw new IllegalArgumentException(format("Given url %s is malformed", url), ex);
+                            }
+                        })
                         .orElseThrow(() -> new IllegalArgumentException(format("It is impossible to navigate by URL %s. " +
                                         "This value is not a valid URL and the property %s is not defined", url,
                                 BASE_WEB_DRIVER_URL_PROPERTY.getPropertyName())));
@@ -46,12 +49,6 @@ public final class ToUrl extends NavigationActionSupplier<ToUrl> {
                                 "This value is not a valid URL and the property %s is not defined/its value is %s", url,
                         ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL.getPropertyName(), false));
             }
-        }
-
-        try {
-            return new URL(toURL).toString();
-        } catch (MalformedURLException e) {
-            throw new IllegalArgumentException(format("Given url %s is malformed", url));
         }
     }
 

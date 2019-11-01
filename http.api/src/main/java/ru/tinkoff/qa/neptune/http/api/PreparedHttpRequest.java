@@ -1,17 +1,17 @@
 package ru.tinkoff.qa.neptune.http.api;
 
-import org.apache.commons.validator.routines.UrlValidator;
 import org.glassfish.jersey.uri.internal.JerseyUriBuilder;
 import ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpDomainToRespondProperty;
 
 import javax.ws.rs.core.UriBuilder;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpTimeoutException;
 import java.time.Duration;
 import java.util.function.Consumer;
+
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.net.http.HttpRequest.newBuilder;
@@ -26,37 +26,32 @@ import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpDomainToRespo
  */
 public class PreparedHttpRequest {
 
-    private static final UrlValidator URL_VALIDATOR = new UrlValidator();
-
     private final HttpRequest.Builder builder;
     private final UriBuilder uriBuilder = new JerseyUriBuilder();
 
 
     private PreparedHttpRequest(String uri, Consumer<HttpRequest.Builder> builderPreparing) {
         checkArgument(!isBlank(uri), "URI parameter should not be a null or empty value");
-        try {
-            if (URL_VALIDATOR.isValid(uri)) {
-                uriBuilder.uri(new URI(uri));
-            } else {
-                uriBuilder.uri(ofNullable(DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY.get())
-                        .map(url -> {
-                            try {
-                                return new URI(url.toString() + uri);
-                            } catch (URISyntaxException e) {
-                                throw new IllegalArgumentException(e.getMessage(), e);
-                            }
-                        })
-                        .orElseThrow(() -> new IllegalArgumentException(format("It is impossible to make a request by URI %s. " +
-                                        "This value is not a valid URI and the property %s is not defined", uri,
-                                DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY.getPropertyName()))));
-            }
 
-            builder = newBuilder();
-            uriBuilder.uri(uri);
-            builderPreparing.accept(builder);
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException(e.getMessage(), e);
+        try {
+            uriBuilder.uri(new URL(uri).toString());
+        } catch (MalformedURLException e) {
+            uriBuilder.uri(ofNullable(DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY.get())
+                    .map(url -> {
+                        try {
+                            return new URL(url.toString() + uri).toString();
+                        } catch (MalformedURLException e1) {
+                            throw new IllegalArgumentException(e1.getMessage(), e1);
+                        }
+                    })
+                    .orElseThrow(() -> new IllegalArgumentException(format("It is impossible to make a request by URI %s. " +
+                                    "This value is not a valid URI and the property %s is not defined", uri,
+                            DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY.getPropertyName()))));
         }
+
+        builder = newBuilder();
+        uriBuilder.uri(uri);
+        builderPreparing.accept(builder);
     }
 
     /**
