@@ -66,7 +66,9 @@ public class SelectList<T, M> extends SequentialGetStepSupplier
         return new SelectList<R, ReadableJDOQuery<R>>(format("List of %s by JDO typed query", toSelect.getName()),
                 byJDOQLQuery()) {
             protected Function<ReadableJDOQuery<R>, List<R>> getEndFunction() {
-                //such implementation is for advanced reporting
+                //TODO such implementation is for advanced reporting
+                //TODO jdo query should be turned into step parameter in a report
+                //TODO comment for further releases
                 return rReadableJDOQuery -> toGet(format("Result using JDO query %s",
                         rReadableJDOQuery.getInternalQuery()),
                         super.getEndFunction()).apply(rReadableJDOQuery);
@@ -92,7 +94,9 @@ public class SelectList<T, M> extends SequentialGetStepSupplier
         return new SelectList<List<Object>, ReadableJDOQuery<R>>(format("Rows taken from %s by JDO query", toSelectFrom.getName()),
                 byJDOQLResultQuery()) {
             protected Function<ReadableJDOQuery<R>, List<List<Object>>> getEndFunction() {
-                //such implementation is for advanced reporting
+                //TODO such implementation is for advanced reporting
+                //TODO jdo query should be turned into step parameter in a report
+                //TODO comment for further releases
                 return rReadableJDOQuery -> toGet(format("Result using JDO query %s",
                         rReadableJDOQuery.getInternalQuery()),
                         super.getEndFunction()).apply(rReadableJDOQuery);
@@ -125,6 +129,8 @@ public class SelectList<T, M> extends SequentialGetStepSupplier
      */
     public static <R extends PersistableObject> SelectList<R, JDOPersistenceManager> listOf(Class<R> toSelect,
                                                                                             Object... ids) {
+        //TODO ids should be turned into step parameter in a report
+        //TODO comment for further releases
         return new SelectList<>(format("List of %s by ids [%s]",
                 toSelect.getName(),
                 Arrays.toString(ids)),
@@ -151,6 +157,8 @@ public class SelectList<T, M> extends SequentialGetStepSupplier
     public static <R extends PersistableObject> SelectList<R, JDOPersistenceManager> listOf(Class<R> toSelect,
                                                                                             String sql,
                                                                                             Object... parameters) {
+        //TODO sql + parameters should be turned into step parameters in a report
+        //TODO comment for further releases
         return new SelectList<>(format("List of %s by query '%s'. " +
                         "Parameters: %s",
                 toSelect.getName(),
@@ -176,6 +184,8 @@ public class SelectList<T, M> extends SequentialGetStepSupplier
     public static <R extends DBConnectionSupplier> SelectList<List<Object>, JDOPersistenceManager> rows(String sql,
                                                                                                         Class<R> connection,
                                                                                                         Object... parameters) {
+        //TODO sql + parameters should be turned into step parameters in a report
+        //TODO comment for further releases
         return new SelectList<>(format("Rows by query %s. " +
                         "The connection is described by %s. " +
                         "Parameters: %s",

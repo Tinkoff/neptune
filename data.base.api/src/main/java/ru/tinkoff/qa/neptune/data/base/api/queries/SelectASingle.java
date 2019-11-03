@@ -65,7 +65,9 @@ public class SelectASingle<T, M> extends SequentialGetStepSupplier
         return new SelectASingle<R, ReadableJDOQuery<R>>(format("One of %s by JDO typed query", toSelect.getName()),
                 byJDOQLQuery()) {
             protected Function<ReadableJDOQuery<R>, R> getEndFunction() {
-                //such implementation is for advanced reporting
+                //TODO such implementation is for advanced reporting
+                //TODO jdo query should be turned into step parameter in a report
+                //TODO comment for further releases
                 return rReadableJDOQuery -> toGet(format("Result using JDO query %s",
                         rReadableJDOQuery.getInternalQuery()),
                         super.getEndFunction()).apply(rReadableJDOQuery);
@@ -91,7 +93,9 @@ public class SelectASingle<T, M> extends SequentialGetStepSupplier
         return new SelectASingle<List<Object>, ReadableJDOQuery<R>>(format("One row taken from %s by JDO query", toSelectFrom.getName()),
                 byJDOQLResultQuery()) {
             protected Function<ReadableJDOQuery<R>, List<Object>> getEndFunction() {
-                //such implementation is for advanced reporting
+                //TODO such implementation is for advanced reporting
+                //TODO jdo query should be turned into step parameter in a report
+                //TODO comment for further releases
                 return rReadableJDOQuery -> toGet(format("Result using JDO query %s",
                         rReadableJDOQuery.getInternalQuery()),
                         super.getEndFunction()).apply(rReadableJDOQuery);
@@ -124,6 +128,8 @@ public class SelectASingle<T, M> extends SequentialGetStepSupplier
      */
     public static <R extends PersistableObject> SelectASingle<R, JDOPersistenceManager> oneOf(Class<R> toSelect,
                                                                                               Object id) {
+        //TODO id should be turned into step parameter in a report
+        //TODO comment for further releases
         return new SelectASingle<>(format("One of %s by id %s",
                 toSelect.getName(), id),
                 byIds(toSelect, id))
@@ -149,6 +155,8 @@ public class SelectASingle<T, M> extends SequentialGetStepSupplier
     public static <R extends PersistableObject> SelectASingle<R, JDOPersistenceManager> oneOf(Class<R> toSelect,
                                                                                               String sql,
                                                                                               Object... parameters) {
+        //TODO sql + parameters should be turned into step parameters in a report
+        //TODO comment for further releases
         return new SelectASingle<>(format("One of %s by query '%s'. " +
                         "Parameters: %s",
                 toSelect.getName(),
@@ -174,6 +182,8 @@ public class SelectASingle<T, M> extends SequentialGetStepSupplier
     public static <R extends DBConnectionSupplier> SelectASingle<List<Object>, JDOPersistenceManager> row(String sql,
                                                                                                           Class<R> connection,
                                                                                                           Object... parameters) {
+        //TODO sql + parameters should be turned into step parameters in a report
+        //TODO comment for further releases
         return new SelectASingle<>(format("One row by query %s. " +
                         "The connection is described by %s. " +
                         "Parameters: %s",
