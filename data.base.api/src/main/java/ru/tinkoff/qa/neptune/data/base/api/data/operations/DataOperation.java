@@ -24,7 +24,7 @@ import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.action;
-import static ru.tinkoff.qa.neptune.data.base.api.ConnectionToUse.ConnectionDataReader.getConnection;
+import static ru.tinkoff.qa.neptune.data.base.api.ConnectionDataReader.getConnection;
 
 /**
  * This class is designed to perform available operations on stored data such as the inserting/updating/deleting
@@ -51,9 +51,10 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
      * @return an instance of {@link DataOperation}
      */
     public static <T extends PersistableObject> DataOperation<T> updated(SelectASingle<T, ?> howToSelect, UpdateExpression<T>... set) {
-        checkArgument(nonNull(howToSelect), "Please define how to select an object to be updated");
-        checkArgument(nonNull(set), "Please define update-actions");
-        checkArgument(set.length > 0, "Should be defined at leas one update-actions");
+        checkArgument(nonNull(howToSelect), "A strategy that describes how to select an object to be updated " +
+                "should be defined as a value that differs from null");
+        checkArgument(nonNull(set), "Update-action should be defined");
+        checkArgument(set.length > 0, "At least one update-action should be defined");
         return new DataOperation<T>(format("Updated %s", howToSelect),
                 jdoPersistenceManagerListMap -> update(jdoPersistenceManagerListMap, set))
                 .from(context -> {
@@ -72,9 +73,10 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
      * @return an instance of {@link DataOperation}
      */
     public static <T extends PersistableObject> DataOperation<T> updated(SelectList<T, ?> howToSelect, UpdateExpression<T>... set) {
-        checkArgument(nonNull(howToSelect), "Please define how to select objects to be updated");
-        checkArgument(nonNull(set), "Please define update-actions");
-        checkArgument(set.length > 0, "Should be defined at leas one update-actions");
+        checkArgument(nonNull(howToSelect), "A strategy that describes how to select objects to be updated " +
+                "should be defined as a value that differs from null");
+        checkArgument(nonNull(set), "Update-action should be defined");
+        checkArgument(set.length > 0, "At least one update-action should be defined");
         return new DataOperation<T>(format("Updated %s", howToSelect),
                 jdoPersistenceManagerListMap -> update(jdoPersistenceManagerListMap, set))
                 .from(context -> getMap(context, context.select(howToSelect)));
@@ -91,8 +93,8 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
     public static <T extends PersistableObject> DataOperation<T> updated(Collection<T> toBeUpdated, UpdateExpression<T>... set) {
         checkArgument(nonNull(toBeUpdated),
                 "Collection of objects to be updated should be defined as a value that differs from null");
-        checkArgument(nonNull(set), "Please define update-actions");
-        checkArgument(set.length > 0, "Should be defined at leas one update-actions");
+        checkArgument(nonNull(set), "Update-action should be defined");
+        checkArgument(set.length > 0, "At least one update-action should be defined");
 
         var toUpdate = toBeUpdated
                 .stream()
@@ -100,9 +102,7 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
                 .collect(toList());
 
         checkArgument(toUpdate.size() > 0,
-                "Should be defined at least one object to update it");
-        checkArgument(nonNull(set),
-                "Please define update-actions");
+                "At least one object to be updated should be defined");
 
         return new DataOperation<T>(format("Updated %s object/objects from table/tables %s",
                 toUpdate.size(),
@@ -122,7 +122,8 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
      * @return an instance of {@link DataOperation}
      */
     public static <T extends PersistableObject> DataOperation<T> deleted(SelectASingle<T, ?> howToSelect) {
-        checkArgument(nonNull(howToSelect), "Please define how to select an object to be deleted");
+        checkArgument(nonNull(howToSelect), "A strategy that describes how to select and object to be deleted " +
+                "should be defined as a value that differs from null");
         return new DataOperation<T>(format("Deleted %s", howToSelect),
                 DataOperation::delete)
                 .from(context -> {
@@ -140,7 +141,8 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
      * @return an instance of {@link DataOperation}
      */
     public static <T extends PersistableObject> DataOperation<T> deleted(SelectList<T, ?> howToSelect) {
-        checkArgument(nonNull(howToSelect), "Please define how to select objects to be deleted");
+        checkArgument(nonNull(howToSelect), "A strategy that describes how to select objects to be deleted " +
+                "should be defined as a value that differs from null");
         return new DataOperation<T>(format("Deleted %s", howToSelect),
                 DataOperation::delete)
                 .from(context -> getMap(context, context.select(howToSelect)));
@@ -189,7 +191,7 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
                 .collect(toList());
 
         checkArgument(toInsert.size() > 0,
-                "Should be defined at least one object to insert it");
+                "At least one object to be inserted should be defined");
 
         return new DataOperation<T>(format("Inserted %s object/objects",
                 toInsert.size()),
@@ -225,6 +227,7 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
                 action(consumer.toString(), (Consumer<Map<JDOPersistenceManager, List<T>>>) map -> map.forEach((manager, ts) -> {
                     consumer.accept(ts);
                     manager.makePersistentAll(ts);
+                    preCommit(managerSet);
                     updated.addAll(manager.detachCopyAll(ts));
                 })).accept(connectionMap);
             });

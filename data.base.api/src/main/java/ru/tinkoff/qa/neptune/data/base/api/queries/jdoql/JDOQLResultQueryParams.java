@@ -153,7 +153,7 @@ public class JDOQLResultQueryParams<T extends PersistableObject, Q extends Persi
     @Override
     public <M extends JDOQLTypedQuery<T>> M  buildQuery(M m) {
         checkArgument(nonNull(resultFields) && resultFields.length > 0,
-                "Should be defined at least one resul field");
+                "At least one result field should be defined");
 
         ofNullable(where).ifPresent(m::filter);
 
@@ -162,18 +162,12 @@ public class JDOQLResultQueryParams<T extends PersistableObject, Q extends Persi
         }
 
         ofNullable(orderExpressions)
-                .ifPresent(orderExpressions1 -> {
-                    if (orderExpressions1.length > 0) {
-                        m.orderBy(orderExpressions1);
-                    }
-                });
+                .filter(oe -> oe.length > 0)
+                .ifPresent(m::orderBy);
 
         ofNullable(groupByExpressions)
-                .ifPresent(expressions -> {
-                    if (expressions.length > 0) {
-                        m.groupBy(expressions);
-                    }
-                });
+                .filter(ge -> ge.length > 0)
+                .ifPresent(m::groupBy);
 
         ofNullable(havingExpression)
                 .ifPresent(m::having);

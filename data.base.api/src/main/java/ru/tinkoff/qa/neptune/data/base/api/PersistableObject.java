@@ -55,7 +55,7 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
 
                             return null;
                         })
-                        .orElseGet(() -> ofNullable(persistent).map(persistent1 -> {
+                        .or(() -> ofNullable(persistent).map(persistent1 -> {
                             var nameStr = persistent1.name();
 
                             if (isNotBlank(nameStr)) {
@@ -63,7 +63,8 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
                             }
 
                             return null;
-                        }).orElse(null));
+                        }))
+                        .orElse(null);
 
                 f.setAccessible(true);
                 try {
@@ -98,18 +99,18 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
 
     public Object clone() {
         try {
-            var cloned =  super.clone();
+            var cloned = super.clone();
             var thisClass = this.getClass();
 
-            var dnStateManager  = thisClass.getDeclaredField("dnStateManager");
+            var dnStateManager = thisClass.getDeclaredField("dnStateManager");
             dnStateManager.setAccessible(true);
             dnStateManager.set(cloned, null);
 
-            var dnFlags  = thisClass.getDeclaredField("dnFlags");
+            var dnFlags = thisClass.getDeclaredField("dnFlags");
             dnFlags.setAccessible(true);
             dnFlags.set(cloned, Byte.valueOf("0"));
 
-            var dnDetachedState  = thisClass.getDeclaredField("dnDetachedState");
+            var dnDetachedState = thisClass.getDeclaredField("dnDetachedState");
             dnDetachedState.setAccessible(true);
             dnDetachedState.set(cloned, null);
 

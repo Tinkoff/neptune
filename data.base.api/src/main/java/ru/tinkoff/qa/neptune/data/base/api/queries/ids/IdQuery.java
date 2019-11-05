@@ -27,9 +27,9 @@ public final class IdQuery<T extends PersistableObject> implements Function<JDOP
     private final Object[] ids;
 
     private IdQuery(Class<T> classOfRequestedValue, Object[] ids) {
-        checkNotNull(classOfRequestedValue);
-        checkNotNull(ids);
-        checkArgument(ids.length > 0, "Should be defined at least one object Id");
+        checkNotNull(classOfRequestedValue, "A class of selected objects should be defined");
+        checkNotNull(ids, "Ids should be defined as a value that differs from null");
+        checkArgument(ids.length > 0, "At least one object Id should be defined");
         this.classOfRequestedValue = classOfRequestedValue;
         this.ids = ids;
     }

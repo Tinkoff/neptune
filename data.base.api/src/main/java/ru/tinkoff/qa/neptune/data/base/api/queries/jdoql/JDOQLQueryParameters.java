@@ -45,11 +45,8 @@ public final class JDOQLQueryParameters<T extends PersistableObject, Q extends P
         }
 
         ofNullable(orderExpressions)
-                .ifPresent(orderExpressions1 -> {
-                    if (orderExpressions1.length > 0) {
-                        m.orderBy(orderExpressions1);
-                    }
-                });
+                .filter(oe -> oe.length > 0)
+                .ifPresent(m::orderBy);
 
         return m;
     }

@@ -14,7 +14,7 @@ import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.datanucleus.metadata.TransactionType.RESOURCE_LOCAL;
-import static ru.tinkoff.qa.neptune.data.base.api.ConnectionToUse.ConnectionDataReader.usesConnection;
+import static ru.tinkoff.qa.neptune.data.base.api.ConnectionDataReader.usesConnection;
 import static ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnection.connectionData;
 
 /**

@@ -7,7 +7,7 @@ import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static ru.tinkoff.qa.neptune.data.base.api.ConnectionToUse.ConnectionDataReader.getConnection;
+import static ru.tinkoff.qa.neptune.data.base.api.ConnectionDataReader.getConnection;
 
 class JDOPersistenceManagerByPersistableClass<T extends PersistableObject> implements Function<DataBaseStepContext, JDOPersistenceManager> {
 
