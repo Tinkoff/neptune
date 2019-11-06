@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="30a71712-d150-4926-8f65-07db031d45fa" name="Default Changelist" comment="" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <projects_view>
+          <tree_state>
+            <expand />
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IgnoredFileRootStore">
+    <option name="generatedRoots">
+      <set>
+        <option value="C:\neptune\neptune\.idea" />
+      </set>
+    </option>
+  </component>
+  <component name="ProjectId" id="1RK6HjvZEgCKGWfpK0Ofc9aieGe" />
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="30a71712-d150-4926-8f65-07db031d45fa" name="Default Changelist" comment="" />
+      <created>1569403354979</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1569403354979</updated>
+    </task>
+    <task id="LOCAL-00001" summary="0.10.1-ALPHA">
+      <created>1569406516171</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1569406516171</updated>
+    </task>
+    <task id="LOCAL-00002" summary="0.10.2-ALPHA">
+      <created>1570017960818</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1570017960818</updated>
+    </task>
+    <task id="LOCAL-00003" summary="0.10.3-ALPHA">
+      <created>1570123194792</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1570123194792</updated>
+    </task>
+    <task id="LOCAL-00004" summary="0.10.4-ALPHA">
+      <created>1570214375293</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1570214375293</updated>
+    </task>
+    <task id="LOCAL-00005" summary="0.10.5-ALPHA">
+      <created>1570725915729</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1570725915729</updated>
+    </task>
+    <task id="LOCAL-00006" summary="0.10.5-ALPHA">
+      <created>1570726667785</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1570726667785</updated>
+    </task>
+    <task id="LOCAL-00007" summary="0.10.6-ALPHA">
+      <created>1571127899831</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1571127899831</updated>
+    </task>
+    <task id="LOCAL-00008" summary="0.10.7-ALPHA">
+      <created>1572594857864</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1572594857864</updated>
+    </task>
+    <task id="LOCAL-00009" summary="0.10.8-ALPHA">
+      <created>1573028755723</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1573028755723</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ORDER">
+      <list>
+        <option value="0" />
+        <option value="2" />
+        <option value="3" />
+        <option value="1" />
+      </list>
+    </option>
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
+    <MESSAGE value="0.10.1-ALPHA" />
+    <MESSAGE value="0.10.2-ALPHA" />
+    <MESSAGE value="0.10.3-ALPHA" />
+    <MESSAGE value="0.10.4-ALPHA" />
+    <MESSAGE value="0.10.5-ALPHA" />
+    <MESSAGE value="0.10.6-ALPHA" />
+    <MESSAGE value="0.10.7-ALPHA" />
+    <MESSAGE value="0.10.8-ALPHA" />
+    <option name="LAST_COMMIT_MESSAGE" value="0.10.8-ALPHA" />
+  </component>
+</project>
