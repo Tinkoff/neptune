@@ -1,38 +1,31 @@
 package ru.tinkoff.qa.neptune.data.base.api;
 
-import org.datanucleus.enhancement.Persistable;
-import org.datanucleus.identity.ObjectId;
-import org.datanucleus.state.ObjectProvider;
 import ru.tinkoff.qa.neptune.core.api.steps.LoggableObject;
-import ru.tinkoff.qa.neptune.data.base.api.captors.IsQueryCaptured;
 
-import javax.jdo.annotations.NotPersistent;
-
-import java.util.Objects;
+import javax.jdo.annotations.Column;
+import javax.jdo.annotations.PersistenceCapable;
+import javax.jdo.annotations.Persistent;
+import javax.jdo.annotations.PrimaryKey;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
+import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
-import static javax.jdo.JDOHelper.isPersistent;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * This abstract class is designed to mark persistable classes.
  */
-public abstract class PersistableObject extends OrmObject implements Cloneable, LoggableObject, GotByQuery {
-
-    @NotPersistent
-    private transient Object query;
+public abstract class PersistableObject extends OrmObject implements Cloneable, LoggableObject {
 
     @Override
     public String toString() {
         var name = fromTable();
-        if (!isPersistent(this)) {
-            return format("Not stored data base element mapped by %s", name);
-        }
+        var id = getIdValue();
 
-        return ofNullable(getIdValue())
-                .map(o -> format("Stored item Id=[%s] table [%s]", o, name))
-                .orElseGet(() -> format("Stored item without id table [%s]", name));
+        return ofNullable(id).map(o -> format("%s %s", name, o))
+                .orElseGet(() -> format("%s <no id>", name));
     }
 
     /**
@@ -40,64 +33,96 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
      *
      * @return the value of id.
      */
-    public Object getIdValue() {
-        if (!isPersistent(this)) {
+    private Object getIdValue() {
+        var fields = this.getClass().getDeclaredFields();
+        var listOfPrimaryKeys = new ArrayList<>();
+
+        var thisReference = this;
+        stream(fields).forEach(f -> {
+            var primary = f.getAnnotation(PrimaryKey.class);
+            var persistent = f.getAnnotation(Persistent.class);
+            var column = f.getAnnotation(Column.class);
+
+            var isPrimary = (primary != null) || (persistent != null && Boolean.parseBoolean(persistent.primaryKey()));
+
+            if (isPrimary) {
+                var columnName = ofNullable(column)
+                        .map(column1 -> {
+                            var nameStr = column1.name();
+                            if (isNotBlank(nameStr)) {
+                                return nameStr;
+                            }
+
+                            return null;
+                        })
+                        .or(() -> ofNullable(persistent).map(persistent1 -> {
+                            var nameStr = persistent1.name();
+
+                            if (isNotBlank(nameStr)) {
+                                return nameStr;
+                            }
+
+                            return null;
+                        }))
+                        .orElse(null);
+
+                f.setAccessible(true);
+                try {
+                    var fieldValue = f.get(thisReference);
+                    if (fieldValue == null) {
+                        return;
+                    }
+
+                    ofNullable(columnName).ifPresentOrElse(s -> listOfPrimaryKeys.add(format("%s = [%s]", s, fieldValue)),
+                            () -> listOfPrimaryKeys.add(fieldValue));
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
+                }
+            }
+        });
+
+        if (listOfPrimaryKeys.size() == 0) {
             return null;
         }
 
-        return ofNullable(((Persistable) this).dnGetObjectId())
-                .map(o -> {
-                    if (ObjectId.class.isAssignableFrom(o.getClass())) {
-                        return ((ObjectId) o).getKey();
-                    }
+        if (listOfPrimaryKeys.size() == 1) {
+            return listOfPrimaryKeys.get(0);
+        }
 
-                    return o;
-                }).orElse(null);
+        return new ArrayList<>(listOfPrimaryKeys) {
+            @Override
+            public String toString() {
+                return this.stream().map(Object::toString).collect(Collectors.joining(", "));
+            }
+        };
     }
 
     public Object clone() {
         try {
-            return super.clone();
-        } catch (CloneNotSupportedException e) {
+            var cloned = super.clone();
+            var thisClass = this.getClass();
+
+            var dnStateManager = thisClass.getDeclaredField("dnStateManager");
+            dnStateManager.setAccessible(true);
+            dnStateManager.set(cloned, null);
+
+            var dnFlags = thisClass.getDeclaredField("dnFlags");
+            dnFlags.setAccessible(true);
+            dnFlags.set(cloned, Byte.valueOf("0"));
+
+            var dnDetachedState = thisClass.getDeclaredField("dnDetachedState");
+            dnDetachedState.setAccessible(true);
+            dnDetachedState.set(cloned, null);
+
+            return cloned;
+        } catch (CloneNotSupportedException | NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-
-        var otherClass = obj.getClass();
-        if (!PersistableObject.class.isAssignableFrom(otherClass)) {
-            return false;
-        }
-
-        var thisClass  = this.getClass();
-
-        if (!thisClass.equals(otherClass)) {
-            return false;
-        }
-
-        if (!isPersistent(this) && !isPersistent(obj)) {
-            return super.equals(obj);
-        }
-
-        if ((!isPersistent(this) && isPersistent(obj)) ||
-                (isPersistent(this) && !isPersistent(obj))) {
-            return false;
-        }
-
-        if (((Persistable) this).dnGetObjectId() == null && ((Persistable) obj).dnGetObjectId() == null) {
-            return super.equals(obj);
-        }
-
-        return Objects.equals(((Persistable) this).dnGetObjectId(), ((Persistable) obj).dnGetObjectId());
-    }
-
-    public Object getQuery() {
-        return query;
+        return super.equals(obj, "dnStateManager", "dnFlags", "dnDetachedState");
     }
 
     /**
@@ -106,61 +131,16 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
      * @return name of the table or name of the class when this object is not received from the data store
      */
     public String fromTable() {
-        String tableName = this.getClass().getName();
-        if (!isPersistent(this)) {
-            return tableName;
-        }
-
-        var persistable = (Persistable) this;
-        var stateManager = persistable.dnGetStateManager();
-
-        return ofNullable(stateManager).map(sm -> {
-            if (ObjectProvider.class.isAssignableFrom(sm.getClass())) {
-                return ofNullable(((ObjectProvider) sm).getClassMetaData())
-                        .map(abstractClassMetaData -> {
-                            var table = abstractClassMetaData.getTable();
-                            if (!isBlank(table)) {
-                                return table;
-                            }
-                            return tableName;
-                        })
-                        .orElse(tableName);
-            }
-            return tableName;
-        }).orElse(tableName);
-    }
-
-    public PersistableObject setQuery(Object query) {
-        this.query = ofNullable(query).map(QueryInfo::new).orElse(null);
-        return this;
-    }
-
-    private static class QueryInfo implements IsQueryCaptured, GotByQuery {
-        private final Object query;
-        private boolean isCaptured;
-
-        private QueryInfo(Object query) {
-            this.query = query;
-        }
-
-        @Override
-        public Object getQuery() {
-            return query;
-        }
-
-        @Override
-        public boolean isCaptured() {
-            return isCaptured;
-        }
-
-        @Override
-        public void setCaptured() {
-            isCaptured = true;
-        }
-
-        @Override
-        public String toString() {
-            return query.toString();
-        }
+        var persistenceCapable = this.getClass().getAnnotation(PersistenceCapable.class);
+        var thisClass = this.getClass();
+        return ofNullable(persistenceCapable)
+                .map(persistenceCapable1 -> {
+                    var table = persistenceCapable1.table();
+                    if (isNotBlank(table)) {
+                        return table;
+                    }
+                    return format("class:%s <no table defined>", thisClass.getSimpleName());
+                })
+                .orElseGet(() -> format("class:%s <no table defined>", thisClass.getSimpleName()));
     }
 }

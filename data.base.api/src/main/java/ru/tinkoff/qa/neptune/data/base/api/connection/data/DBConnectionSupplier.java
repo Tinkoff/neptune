@@ -1,17 +1,20 @@
 package ru.tinkoff.qa.neptune.data.base.api.connection.data;
 
+import io.github.classgraph.ClassGraph;
 import org.datanucleus.metadata.PersistenceUnitMetaData;
 import org.datanucleus.metadata.TransactionType;
-import org.reflections.Reflections;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
 import javax.jdo.annotations.PersistenceCapable;
+import java.util.List;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
+import static java.lang.reflect.Modifier.isAbstract;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 import static org.datanucleus.metadata.TransactionType.RESOURCE_LOCAL;
+import static ru.tinkoff.qa.neptune.data.base.api.ConnectionDataReader.usesConnection;
 import static ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnection.connectionData;
 
 /**
@@ -21,9 +24,25 @@ import static ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnection.c
 public abstract class DBConnectionSupplier implements Supplier<DBConnection> {
 
     private static TransactionType DEFAULT_TRANSACTION_TYPE = RESOURCE_LOCAL;
-    private static final Reflections REFLECTIONS = new Reflections("");
-
     private DBConnection connectionData;
+    private final List<String> tableClassNames;
+
+    public DBConnectionSupplier() {
+        var thisClass = this.getClass();
+        tableClassNames = new ClassGraph().enableSystemJarsAndModules()
+                .enableExternalClasses()
+                .enableClassInfo()
+                .enableAllInfo()
+                .scan()
+                .getSubclasses(PersistableObject.class.getName())
+                .loadClasses(PersistableObject.class)
+                .stream()
+                .filter(clazz -> nonNull(clazz.getAnnotation(PersistenceCapable.class))
+                        && !isAbstract(clazz.getModifiers())
+                        && usesConnection(clazz, thisClass))
+                .map(Class::getName)
+                .collect(toList());
+    }
 
     /**
      * Fills given persistence unit with properties/parameters and returns filled object.
@@ -40,9 +59,7 @@ public abstract class DBConnectionSupplier implements Supplier<DBConnection> {
             var persistenceUnitMetaData = fillPersistenceUnit(new PersistenceUnitMetaData(this.getClass().getName(),
                     DEFAULT_TRANSACTION_TYPE.name(),
                     null));
-            REFLECTIONS.getSubTypesOf(PersistableObject.class).stream()
-                    .filter(clazz -> nonNull(clazz.getAnnotation(PersistenceCapable.class)))
-                    .map(Class::getName).collect(Collectors.toList()).forEach(persistenceUnitMetaData::addClassName);
+            tableClassNames.forEach(persistenceUnitMetaData::addClassName);
             return connectionData(persistenceUnitMetaData);
         });
         return connectionData;

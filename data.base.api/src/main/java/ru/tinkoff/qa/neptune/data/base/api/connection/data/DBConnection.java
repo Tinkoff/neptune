@@ -14,7 +14,6 @@ import static java.util.Objects.nonNull;
 public final class DBConnection {
 
     private final PersistenceUnitMetaData persistenceUnitMetaData;
-    private JDOPersistenceManagerFactory factory;
 
     /**
      * Creates an instance of the {@link DBConnection}
@@ -23,7 +22,7 @@ public final class DBConnection {
      *                                by {@link PersistenceUnitMetaData}.
      * @return created {@link DBConnection}
      */
-    public static DBConnection connectionData(PersistenceUnitMetaData persistenceUnitMetaData) {
+    static DBConnection connectionData(PersistenceUnitMetaData persistenceUnitMetaData) {
         return new DBConnection(persistenceUnitMetaData);
     }
 

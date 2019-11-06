@@ -13,7 +13,7 @@ public class ConnectionDataSupplierForTestBase2 extends DBConnectionSupplier {
     protected PersistenceUnitMetaData fillPersistenceUnit(PersistenceUnitMetaData toBeFilled) {
         toBeFilled.addProperty("datanucleus.ConnectionDriverName", JDBC.class.getName());
         toBeFilled.addProperty("datanucleus.identifier.case", "MixedCase");
-        toBeFilled.addProperty("datanucleus.ConnectionURL", format("jdbc:sqlite:%s", testDB2.getAbsolutePath()));
+        toBeFilled.addProperty("datanucleus.ConnectionURL", format("jdbc:sqlite:%s?foreign_keys=on;", testDB2.getAbsolutePath()));
         return toBeFilled;
     }
 }
