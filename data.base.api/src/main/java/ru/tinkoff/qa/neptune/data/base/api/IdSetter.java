@@ -18,7 +18,7 @@ import static java.util.stream.Collectors.toList;
 
 public interface IdSetter {
 
-    static List<PersistableObject> getFlatListOfPersistableObjects(Collection<?> ts,
+    private static List<PersistableObject> getFlatListOfPersistableObjects(Collection<?> ts,
                                                                    LinkedList<PersistableObject> found) {
         ts.forEach(t -> {
             var fields = t.getClass().getDeclaredFields();
