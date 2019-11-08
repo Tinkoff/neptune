@@ -2,8 +2,10 @@ package ru.tinkoff.qa.neptune.data.base.test.persistable.object;
 
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
+import javax.jdo.annotations.PersistenceCapable;
 import java.util.List;
 
+@PersistenceCapable(embeddedOnly = "true")
 class PersistableObjectOne extends PersistableObject {
 
     private Boolean booleanField;

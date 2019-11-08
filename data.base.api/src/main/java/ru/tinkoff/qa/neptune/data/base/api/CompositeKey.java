@@ -1,11 +1,11 @@
 package ru.tinkoff.qa.neptune.data.base.api;
 
 import java.io.Serializable;
-import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.lang.reflect.Modifier.*;
 import static java.util.Arrays.stream;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -56,7 +56,7 @@ public abstract class CompositeKey extends OrmObject implements Serializable {
     @Override
     public String toString() {
         var thisClass = this.getClass();
-        var key = new StringBuffer(format("Composite key [%s]: ", thisClass.getSimpleName()));
+        var key = new StringBuffer();
         var thisKey = this;
         stream(thisClass.getDeclaredFields())
                 .filter(field -> {
@@ -70,5 +70,19 @@ public abstract class CompositeKey extends OrmObject implements Serializable {
         });
 
         return key.toString().trim();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        var toCheck = this;
+        return ofNullable(obj)
+                .map(o -> {
+                    if (toCheck == o) {
+                        return true;
+                    }
+                    return toCheck.getClass().equals(obj.getClass()) &&
+                            toCheck.equalsByFields(obj);
+                })
+                .orElse(false);
     }
 }
