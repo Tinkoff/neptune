@@ -26,7 +26,7 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
     public String toString() {
         var name = fromTable();
 
-        return ofNullable($).map(o -> format("%s %s", name, o))
+        return ofNullable(getRealId()).map(o -> format("%s [%s]", name, o))
                 .orElseGet(() -> format("%s <no id>", name));
     }
 
