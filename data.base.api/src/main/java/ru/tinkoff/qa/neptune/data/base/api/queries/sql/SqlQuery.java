@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.data.base.api.queries.sql;
 
 import org.datanucleus.api.jdo.JDOPersistenceManager;
+import ru.tinkoff.qa.neptune.data.base.api.IdSetter;
 import ru.tinkoff.qa.neptune.data.base.api.ListOfDataBaseObjects;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
@@ -21,7 +22,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
  * This class is designed to perform a query to select list of stored objects/list os stored field values by sql
  * @param <T> is a type of values to be selected.
  */
-public final class SqlQuery<T> implements Function<JDOPersistenceManager, List<T>> {
+public final class SqlQuery<T> implements Function<JDOPersistenceManager, List<T>>, IdSetter {
 
     private final String sql;
     private final Class<T> classOfRequestedValue;
@@ -116,7 +117,7 @@ public final class SqlQuery<T> implements Function<JDOPersistenceManager, List<T
 
         query.setClass(classOfRequestedValue);
         var list = query.executeList();
-        return new ListOfDataBaseObjects<>(jdoPersistenceManager.detachCopyAll(list)) {
+        var toReturn =  new ListOfDataBaseObjects<>(jdoPersistenceManager.detachCopyAll(list)) {
             public String toString() {
                 return format("%s objects/object selected by sql query '%s'" +
                                 " with parameters '%s'",
@@ -125,5 +126,8 @@ public final class SqlQuery<T> implements Function<JDOPersistenceManager, List<T
                         Arrays.toString(parameters));
             }
         };
+
+        setRealIds(list, toReturn);
+        return toReturn;
     }
 }

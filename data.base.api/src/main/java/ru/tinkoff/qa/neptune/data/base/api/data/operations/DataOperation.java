@@ -7,6 +7,7 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOn
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
+import ru.tinkoff.qa.neptune.data.base.api.IdSetter;
 import ru.tinkoff.qa.neptune.data.base.api.ListOfDataBaseObjects;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 import ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle;
@@ -25,6 +26,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.action;
 import static ru.tinkoff.qa.neptune.data.base.api.ConnectionDataReader.getConnection;
+import static ru.tinkoff.qa.neptune.data.base.api.IdSetter.getFlatListOfPersistableObjects;
 
 /**
  * This class is designed to perform available operations on stored data such as the inserting/updating/deleting
@@ -226,9 +228,9 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
                 var consumer = setAction.getUpdateAction();
                 action(consumer.toString(), (Consumer<Map<JDOPersistenceManager, List<T>>>) map -> map.forEach((manager, ts) -> {
                     consumer.accept(ts);
-                    manager.makePersistentAll(ts);
+                    var persistent = makeEverythingPersistent(manager, ts);
                     preCommit(Set.of(manager));
-                    updated.addAll(manager.detachCopyAll(ts));
+                    updated.addAll(detachEveryThing(manager, persistent));
                 })).accept(connectionMap);
             });
 
@@ -263,8 +265,8 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
             };
 
             connectionMap.forEach((manager, toBeInserted) -> {
-                var persistent = manager.makePersistentAll(toBeInserted);
-                result.addAll(manager.detachCopyAll(persistent));
+                var persistent = makeEverythingPersistent(manager, toBeInserted);
+                result.addAll(detachEveryThing(manager, persistent));
             });
 
             preCommit(managerSet);
@@ -275,6 +277,22 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
             rollbackTransaction(managerSet);
             throw t;
         }
+    }
+
+    private static <T extends PersistableObject> Collection<T> makeEverythingPersistent(JDOPersistenceManager manager,
+                                                                                        Collection<T> ts) {
+        manager.makePersistentAll(getFlatListOfPersistableObjects(ts, new LinkedList<>()));
+        return manager.makePersistentAll(ts);
+    }
+
+    private static <T extends PersistableObject> Collection<T> detachEveryThing(JDOPersistenceManager manager,
+                                                                                Collection<T> ts) {
+        var detached = manager.detachCopyAll(ts);
+
+        var idSetter = new IdSetter(){};
+        idSetter.setRealIds(new LinkedList<>(ts), new LinkedList(detached));
+
+        return detached;
     }
 
     private static <T extends PersistableObject> List<T> delete(Map<JDOPersistenceManager, List<T>> connectionMap) {
@@ -319,6 +337,7 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
     private static void openTransaction(Set<JDOPersistenceManager> jdoPersistenceManagers) {
         jdoPersistenceManagers.forEach(jdoPersistenceManager -> {
             var transaction = jdoPersistenceManager.currentTransaction();
+            transaction.setOptimistic(true);
             transaction.begin();
         });
     }

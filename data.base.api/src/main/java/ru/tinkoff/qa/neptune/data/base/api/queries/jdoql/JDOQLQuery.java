@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.data.base.api.queries.jdoql;
 
 import org.apache.commons.lang3.StringUtils;
+import ru.tinkoff.qa.neptune.data.base.api.IdSetter;
 import ru.tinkoff.qa.neptune.data.base.api.ListOfDataBaseObjects;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
@@ -16,7 +17,7 @@ import static java.util.stream.Collectors.toList;
  * This class is designed to perform a query to select list of stored objects by {@link JDOQLTypedQuery}
  * @param <T> is a type of {@link PersistableObject} to be selected
  */
-public final class JDOQLQuery<T extends PersistableObject> implements Function<ReadableJDOQuery<T>, List<T>> {
+public final class JDOQLQuery<T extends PersistableObject> implements Function<ReadableJDOQuery<T>, List<T>>, IdSetter {
 
     private JDOQLQuery() {
         super();
@@ -37,7 +38,7 @@ public final class JDOQLQuery<T extends PersistableObject> implements Function<R
         var list = jdoqlTypedQuery.executeList();
         var manager = jdoqlTypedQuery.getPersistenceManager();
 
-        return new ListOfDataBaseObjects<>(manager.detachCopyAll(list)) {
+        var toReturn =  new ListOfDataBaseObjects<>(manager.detachCopyAll(list)) {
             public String toString() {
                 var resultStr =  format("%s objects/object", size());
 
@@ -53,5 +54,8 @@ public final class JDOQLQuery<T extends PersistableObject> implements Function<R
                 return resultStr;
             }
         };
+
+        setRealIds(list, toReturn);
+        return toReturn;
     }
 }

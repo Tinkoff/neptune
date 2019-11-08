@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.data.base.api.queries.jdoql;
 
+import ru.tinkoff.qa.neptune.data.base.api.IdSetter;
 import ru.tinkoff.qa.neptune.data.base.api.ListOfDataBaseObjects;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
@@ -18,7 +19,7 @@ import static java.util.stream.Collectors.toList;
  * from stored objects.
  * @param <T> is a type of {@link PersistableObject} objects to take field values from
  */
-public class JDOQLResultQuery<T extends PersistableObject> implements Function<ReadableJDOQuery<T>, List<List<Object>>> {
+public class JDOQLResultQuery<T extends PersistableObject> implements Function<ReadableJDOQuery<T>, List<List<Object>>>, IdSetter {
 
     private JDOQLResultQuery() {
         super();
@@ -56,7 +57,9 @@ public class JDOQLResultQuery<T extends PersistableObject> implements Function<R
                                 return o2;
                             }
                             else {
-                                return manager.detachCopy(o2);
+                                var toReturn = manager.detachCopy(o2);
+                                setRealId(o2, toReturn);
+                                return toReturn;
                             }
                         }).orElse(null))
                         .collect(toList()));
@@ -64,11 +67,13 @@ public class JDOQLResultQuery<T extends PersistableObject> implements Function<R
                 toBeReturned.add(row);
             } else {
                 var resulted = ofNullable(o).map(o1 -> {
-                    if (!PersistableObject.class.isAssignableFrom(o.getClass())) {
-                        return o;
+                    if (!PersistableObject.class.isAssignableFrom(o1.getClass())) {
+                        return o1;
                     }
                     else {
-                        return manager.detachCopy(o);
+                        var toReturn = manager.detachCopy(o1);
+                        setRealId(o1, toReturn);
+                        return toReturn;
                     }
                 }).orElse(null);
                 row.add(resulted);

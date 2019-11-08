@@ -1,17 +1,17 @@
 package ru.tinkoff.qa.neptune.data.base.api;
 
+import org.datanucleus.enhancement.Persistable;
 import ru.tinkoff.qa.neptune.core.api.steps.LoggableObject;
 
-import javax.jdo.annotations.Column;
+import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
-import javax.jdo.annotations.PrimaryKey;
-import java.util.ArrayList;
-import java.util.stream.Collectors;
 
+import java.util.Objects;
+
+import static java.lang.Boolean.parseBoolean;
 import static java.lang.String.format;
-import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
+import static javax.jdo.JDOHelper.*;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
@@ -19,82 +19,15 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
  */
 public abstract class PersistableObject extends OrmObject implements Cloneable, LoggableObject {
 
+    @NotPersistent
+    private Object $;
+
     @Override
     public String toString() {
         var name = fromTable();
-        var id = getIdValue();
 
-        return ofNullable(id).map(o -> format("%s %s", name, o))
+        return ofNullable($).map(o -> format("%s %s", name, o))
                 .orElseGet(() -> format("%s <no id>", name));
-    }
-
-    /**
-     * Returns object id
-     *
-     * @return the value of id.
-     */
-    private Object getIdValue() {
-        var fields = this.getClass().getDeclaredFields();
-        var listOfPrimaryKeys = new ArrayList<>();
-
-        var thisReference = this;
-        stream(fields).forEach(f -> {
-            var primary = f.getAnnotation(PrimaryKey.class);
-            var persistent = f.getAnnotation(Persistent.class);
-            var column = f.getAnnotation(Column.class);
-
-            var isPrimary = (primary != null) || (persistent != null && Boolean.parseBoolean(persistent.primaryKey()));
-
-            if (isPrimary) {
-                var columnName = ofNullable(column)
-                        .map(column1 -> {
-                            var nameStr = column1.name();
-                            if (isNotBlank(nameStr)) {
-                                return nameStr;
-                            }
-
-                            return null;
-                        })
-                        .or(() -> ofNullable(persistent).map(persistent1 -> {
-                            var nameStr = persistent1.name();
-
-                            if (isNotBlank(nameStr)) {
-                                return nameStr;
-                            }
-
-                            return null;
-                        }))
-                        .orElse(null);
-
-                f.setAccessible(true);
-                try {
-                    var fieldValue = f.get(thisReference);
-                    if (fieldValue == null) {
-                        return;
-                    }
-
-                    ofNullable(columnName).ifPresentOrElse(s -> listOfPrimaryKeys.add(format("%s = [%s]", s, fieldValue)),
-                            () -> listOfPrimaryKeys.add(fieldValue));
-                } catch (Throwable t) {
-                    throw new RuntimeException(t);
-                }
-            }
-        });
-
-        if (listOfPrimaryKeys.size() == 0) {
-            return null;
-        }
-
-        if (listOfPrimaryKeys.size() == 1) {
-            return listOfPrimaryKeys.get(0);
-        }
-
-        return new ArrayList<>(listOfPrimaryKeys) {
-            @Override
-            public String toString() {
-                return this.stream().map(Object::toString).collect(Collectors.joining(", "));
-            }
-        };
     }
 
     public Object clone() {
@@ -114,6 +47,8 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
             dnDetachedState.setAccessible(true);
             dnDetachedState.set(cloned, null);
 
+            ((PersistableObject) cloned).setRealId(null);
+
             return cloned;
         } catch (CloneNotSupportedException | NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
@@ -122,7 +57,57 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
 
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj, "dnStateManager", "dnFlags", "dnDetachedState");
+        var thisObj = this;
+        return ofNullable(obj)
+                .map(o -> {
+                    if (thisObj == o) {
+                        return true;
+                    }
+
+                    var thisClazz = thisObj.getClass();
+
+                    if (!Objects.equals(thisClazz, o.getClass())) {
+                        return false;
+                    }
+
+                    if (parseBoolean(thisClazz.getAnnotation(PersistenceCapable.class).embeddedOnly())) {
+                        return super.equalsByFields(o, "dnStateManager", "dnFlags", "dnDetachedState", "$");
+                    }
+
+                    var isThisPersistent = isPersistent(thisObj);
+                    if (!Objects.equals(isThisPersistent, isPersistent(o))) {
+                        return false;
+                    }
+
+                    if (isThisPersistent) {
+                        return Objects.equals(((Persistable) thisObj).dnGetObjectId(),
+                                ((Persistable) o).dnGetObjectId());
+                    }
+
+                    var isThisDetached = isDetached(thisObj);
+                    if (!Objects.equals(isThisDetached, isDetached(o))) {
+                        return false;
+                    }
+
+                    if (isThisDetached) {
+                        var idToCheck = ((PersistableObject) o).getRealId();
+                        var thisId = thisObj.getRealId();
+                        if (thisId == null && idToCheck == null) {
+                            return super.equalsByFields(o, "dnStateManager", "dnFlags", "dnDetachedState", "$");
+                        }
+
+                        return Objects.equals(thisObj.getRealId(),
+                                ((PersistableObject) o).getRealId());
+                    }
+
+                    var isThisDeleted = isDeleted(thisObj);
+                    if (!Objects.equals(isThisDeleted, isDetached(o))) {
+                        return false;
+                    }
+
+                    return super.equalsByFields(o, "dnStateManager", "dnFlags", "dnDetachedState", "$");
+                })
+                .orElse(false);
     }
 
     /**
@@ -142,5 +127,13 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
                     return format("class:%s <no table defined>", thisClass.getSimpleName());
                 })
                 .orElseGet(() -> format("class:%s <no table defined>", thisClass.getSimpleName()));
+    }
+
+    public Object getRealId() {
+        return $;
+    }
+
+    void setRealId(Object $) {
+        this.$ = $;
     }
 }

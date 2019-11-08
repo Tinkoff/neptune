@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.data.base.api.queries.ids;
 
 import org.apache.commons.lang3.StringUtils;
 import org.datanucleus.api.jdo.JDOPersistenceManager;
+import ru.tinkoff.qa.neptune.data.base.api.IdSetter;
 import ru.tinkoff.qa.neptune.data.base.api.ListOfDataBaseObjects;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
@@ -21,7 +22,7 @@ import static java.util.stream.Collectors.toList;
  * This class constructs a query to select stored objects by known ids.
  * @param <T> is a type of {@link PersistableObject} to be selected
  */
-public final class IdQuery<T extends PersistableObject> implements Function<JDOPersistenceManager, List<T>> {
+public final class IdQuery<T extends PersistableObject> implements Function<JDOPersistenceManager, List<T>>, IdSetter {
 
     private final Class<T> classOfRequestedValue;
     private final Object[] ids;
@@ -76,6 +77,8 @@ public final class IdQuery<T extends PersistableObject> implements Function<JDOP
         });
 
         found.addAll(jdoPersistenceManager.detachCopyAll(list));
+        setRealIds(list, found);
+
         return found;
     }
 }
