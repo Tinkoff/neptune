@@ -22,29 +22,17 @@ import static java.util.stream.Collectors.toList;
  * This class constructs a query to select stored objects by known ids.
  * @param <T> is a type of {@link PersistableObject} to be selected
  */
-public final class IdQuery<T extends PersistableObject> implements Function<JDOPersistenceManager, List<T>>, IdSetter {
+final class IdQuery<T extends PersistableObject> implements Function<JDOPersistenceManager, List<T>>, IdSetter {
 
     private final Class<T> classOfRequestedValue;
     private final Object[] ids;
 
-    private IdQuery(Class<T> classOfRequestedValue, Object[] ids) {
+    IdQuery(Class<T> classOfRequestedValue, Object[] ids) {
         checkNotNull(classOfRequestedValue, "A class of selected objects should be defined");
         checkNotNull(ids, "Ids should be defined as a value that differs from null");
         checkArgument(ids.length > 0, "At least one object Id should be defined");
         this.classOfRequestedValue = classOfRequestedValue;
         this.ids = ids;
-    }
-
-    /**
-     * Creates an instance that performs a query to select stored objects by known ids
-     *
-     * @param classOfRequestedValue is a class of {@link PersistableObject} to be selected
-     * @param ids is an array of ids used to select desired objects
-     * @param <T> is a type of {@link PersistableObject} to be selected
-     * @return new {@link IdQuery}
-     */
-    public static <T extends PersistableObject> IdQuery<T> byIds(Class<T> classOfRequestedValue, Object... ids) {
-        return new IdQuery<>(classOfRequestedValue, ids);
     }
 
     @Override

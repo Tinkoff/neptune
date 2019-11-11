@@ -9,6 +9,7 @@ import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 import ru.tinkoff.qa.neptune.data.base.api.NothingIsSelectedException;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionSupplier;
+import ru.tinkoff.qa.neptune.data.base.api.queries.ids.Ids;
 import ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQueryParameters;
 import ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLResultQueryParams;
 import ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.ReadableJDOQuery;
@@ -29,7 +30,6 @@ import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResu
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.WAITING_FOR_SELECTION_RESULT_TIME;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.JDOPersistenceManagerByConnectionSupplierClass.getConnectionBySupplierClass;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.JDOPersistenceManagerByPersistableClass.getConnectionByClass;
-import static ru.tinkoff.qa.neptune.data.base.api.queries.ids.IdQuery.byIds;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQuery.byJDOQLQuery;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLResultQuery.byJDOQLResultQuery;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.sql.SqlQuery.bySql;
@@ -123,18 +123,18 @@ public class SelectList<T, M> extends SequentialGetStepSupplier
      * Retrieves a list of {@link PersistableObject} selected by known ids.
      *
      * @param toSelect is a class of each {@link PersistableObject} from returned list
-     * @param ids      known ids of the desired objects
+     * @param ids      is a wrapper of known ids used to find desired objects
      * @param <R>      is a type of each {@link PersistableObject} from returned list
      * @return new {@link SelectList}
      */
     public static <R extends PersistableObject> SelectList<R, JDOPersistenceManager> listOf(Class<R> toSelect,
-                                                                                            Object... ids) {
+                                                                                            Ids ids) {
         //TODO ids should be turned into step parameter in a report
         //TODO comment for further releases
         return new SelectList<>(format("List of %s by ids [%s]",
                 toSelect.getName(),
-                Arrays.toString(ids)),
-                byIds(toSelect, ids))
+                ids),
+                ids.build(toSelect))
                 .from(getConnectionByClass(toSelect));
     }
 
