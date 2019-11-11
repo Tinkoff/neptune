@@ -131,7 +131,7 @@ public class SelectList<T, M> extends SequentialGetStepSupplier
                                                                                             Ids ids) {
         //TODO ids should be turned into step parameter in a report
         //TODO comment for further releases
-        return new SelectList<>(format("List of %s by ids [%s]",
+        return new SelectList<>(format("List of %s by ids %s",
                 toSelect.getName(),
                 ids),
                 ids.build(toSelect))
