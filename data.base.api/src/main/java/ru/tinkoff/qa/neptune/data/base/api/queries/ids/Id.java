@@ -19,7 +19,7 @@ public final class Id extends IdQueryBuilder {
      * @param id is an id used to select desired object
      * @return a new {@link Id}
      */
-    public static Id ids(Object id) {
+    public static Id id(Object id) {
         return new Id(id);
     }
 }
