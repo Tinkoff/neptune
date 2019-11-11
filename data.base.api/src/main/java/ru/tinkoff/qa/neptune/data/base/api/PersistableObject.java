@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.data.base.api;
 
 import org.datanucleus.enhancement.Persistable;
+import org.datanucleus.identity.ObjectId;
 import ru.tinkoff.qa.neptune.core.api.steps.LoggableObject;
 
 import javax.jdo.annotations.NotPersistent;
@@ -26,8 +27,18 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
     public String toString() {
         var name = fromTable();
 
-        return ofNullable(getRealId()).map(o -> format("%s [%s]", name, o))
-                .orElseGet(() -> format("%s <no id>", name));
+        return ofNullable(getRealId()).map(o -> {
+            Object id;
+
+            if (ObjectId.class.isAssignableFrom(o.getClass())) {
+                id = ((ObjectId) o).getKey();
+            }
+            else {
+                id = o;
+            }
+
+            return format("%s [%s]", name, id);
+        }).orElseGet(() -> format("%s <no id>", name));
     }
 
     public Object clone() {
@@ -130,6 +141,9 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
     }
 
     public Object getRealId() {
+        if (isPersistent(this)) {
+            return ((Persistable) this).dnGetObjectId();
+        }
         return $;
     }
 

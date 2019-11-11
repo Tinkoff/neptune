@@ -1,3 +1,4 @@
+
 dependencies {
     compile project(':core.api')
     compile group: 'org.datanucleus', name: 'datanucleus-rdbms', version: '5.2.1'

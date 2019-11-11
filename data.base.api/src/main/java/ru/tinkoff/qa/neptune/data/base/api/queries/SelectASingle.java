@@ -9,6 +9,7 @@ import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 import ru.tinkoff.qa.neptune.data.base.api.NothingIsSelectedException;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionSupplier;
+import ru.tinkoff.qa.neptune.data.base.api.queries.ids.Id;
 import ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQueryParameters;
 import ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLResultQueryParams;
 import ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.ReadableJDOQuery;
@@ -29,7 +30,6 @@ import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResu
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.WAITING_FOR_SELECTION_RESULT_TIME;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.JDOPersistenceManagerByConnectionSupplierClass.getConnectionBySupplierClass;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.JDOPersistenceManagerByPersistableClass.getConnectionByClass;
-import static ru.tinkoff.qa.neptune.data.base.api.queries.ids.IdQuery.byIds;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQuery.byJDOQLQuery;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLResultQuery.byJDOQLResultQuery;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.sql.SqlQuery.bySql;
@@ -115,24 +115,24 @@ public class SelectASingle<T, M> extends SequentialGetStepSupplier
      * @return new {@link SelectASingle}
      */
     public static <R extends PersistableObject> SelectASingle<R, ReadableJDOQuery<R>> oneOf(Class<R> toSelect) {
-        return oneOf(toSelect, null);
+        return oneOf(toSelect, (JDOQLQueryParameters<R, PersistableExpression<R>>) null);
     }
 
     /**
      * Retrieves a single {@link PersistableObject} selected by known id.
      *
      * @param toSelect is a class of resulted {@link PersistableObject} to be returned
-     * @param id       known id of the desired object
+     * @param id       is a wrapper of known id used to find the desired object
      * @param <R>      is a type of resulted {@link PersistableObject} to be returned
      * @return new {@link SelectASingle}
      */
     public static <R extends PersistableObject> SelectASingle<R, JDOPersistenceManager> oneOf(Class<R> toSelect,
-                                                                                              Object id) {
+                                                                                              Id id) {
         //TODO id should be turned into step parameter in a report
         //TODO comment for further releases
         return new SelectASingle<>(format("One of %s by id %s",
                 toSelect.getName(), id),
-                byIds(toSelect, id))
+                id.build(toSelect))
                 .from(getConnectionByClass(toSelect));
     }
 

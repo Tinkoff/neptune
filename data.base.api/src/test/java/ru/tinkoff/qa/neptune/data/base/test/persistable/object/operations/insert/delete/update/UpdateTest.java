@@ -18,6 +18,7 @@ import static org.testng.Assert.*;
 import static ru.tinkoff.qa.neptune.data.base.api.data.operations.UpdateExpression.change;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle.oneOf;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.SelectList.listOf;
+import static ru.tinkoff.qa.neptune.data.base.api.queries.ids.Id.id;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQueryParameters.byJDOQuery;
 
 public class UpdateTest extends BaseDbOperationTest {
@@ -98,12 +99,12 @@ public class UpdateTest extends BaseDbOperationTest {
                         }));
 
         var updatedDostoevsky = dataBaseSteps.select(oneOf(Author.class,
-                dostoevsky.getId())
+                id(dostoevsky.getId()))
                 .criteria("Biography is changed",
                         author -> BIO1.equals(author.getBiography())));
 
         var updatedCrownVictoria = dataBaseSteps.select(oneOf(CarModel.class,
-                crownVictoria.getId())
+                id(crownVictoria.getId()))
                 .criteria("'Produced to' is changed",
                         carModel -> carModel.getProducedTo().equals(dateToChange)));
 
@@ -127,12 +128,12 @@ public class UpdateTest extends BaseDbOperationTest {
                         carModel.setProducedTo(dateToChange)));
 
         var updatedDostoevsky = dataBaseSteps.select(oneOf(Author.class,
-                dostoevsky.getId())
+                id(dostoevsky.getId()))
                 .criteria("Biography is changed",
                         author -> BIO2.equals(author.getBiography())));
 
         var updatedCrownVictoria = dataBaseSteps.select(oneOf(CarModel.class,
-                crownVictoria.getId())
+                id(crownVictoria.getId()))
                 .criteria("'Produced to' is changed",
                         carModel -> carModel.getProducedTo().equals(dateToChange)));
 
@@ -156,12 +157,12 @@ public class UpdateTest extends BaseDbOperationTest {
                         carModel.setProducedTo(dateToChange)));
 
         var updatedDostoevsky = dataBaseSteps.select(oneOf(Author.class,
-                dostoevsky.getId())
+                id(dostoevsky.getId()))
                 .criteria("Biography is changed",
                         author -> BIO3.equals(author.getBiography())));
 
         var updatedCrownVictoria = dataBaseSteps.select(oneOf(CarModel.class,
-                crownVictoria.getId())
+                id(crownVictoria.getId()))
                 .criteria("'Produced to' is changed",
                         carModel -> carModel.getProducedTo().equals(dateToChange)));
 
@@ -194,10 +195,10 @@ public class UpdateTest extends BaseDbOperationTest {
                             }));
         } catch (Exception e) {
             var updatedDostoevsky = dataBaseSteps.select(oneOf(Author.class,
-                    dostoevsky.getId()));
+                    id(dostoevsky.getId())));
 
             var updatedCorollaE170 = dataBaseSteps.select(oneOf(CarModel.class,
-                    corollaE170.getId()));
+                    id(corollaE170.getId())));
 
             assertNotEquals(updatedDostoevsky.getBiography(), BIO4);
             assertNotNull(updatedCorollaE170.getProducedFrom());
