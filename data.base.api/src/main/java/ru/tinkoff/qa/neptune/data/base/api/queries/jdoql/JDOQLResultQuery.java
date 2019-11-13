@@ -6,11 +6,14 @@ import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
 import javax.jdo.JDOQLTypedQuery;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
+import static java.util.List.of;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
@@ -36,9 +39,23 @@ public class JDOQLResultQuery<T extends PersistableObject> implements Function<R
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<List<Object>> apply(ReadableJDOQuery<T> jdoqlTypedQuery) {
-        List<Object> list = jdoqlTypedQuery.executeResultList();
+        var result = jdoqlTypedQuery.executeInternalQuery(jdoqlTypedQuery.getInternalQuery());
+        List<?> list = ofNullable(result)
+                .map(o -> {
+                    var clazz = o.getClass();
+                    if (Collection.class.isAssignableFrom(clazz)) {
+                        return new ArrayList<>((Collection<?>) o);
+                    }
+
+                    if (clazz.isArray()) {
+                        return of(Arrays.asList((Object[]) o));
+                    }
+
+                    return of(o);
+                })
+                .orElseGet(List::of);
+
         var manager = jdoqlTypedQuery.getPersistenceManager();
         List<List<Object>> toBeReturned = new ArrayList<>();
 

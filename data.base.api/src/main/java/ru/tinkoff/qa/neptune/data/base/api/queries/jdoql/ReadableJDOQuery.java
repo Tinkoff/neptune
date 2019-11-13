@@ -26,4 +26,8 @@ public class ReadableJDOQuery<T extends PersistableObject> extends JDOQLTypedQue
     public Query getInternalQuery() {
         return super.getInternalQuery();
     }
+
+    public Object executeInternalQuery(Query internalQuery) {
+        return super.executeInternalQuery(internalQuery);
+    }
 }
