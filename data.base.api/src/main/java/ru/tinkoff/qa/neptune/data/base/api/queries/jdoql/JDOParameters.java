@@ -8,14 +8,12 @@ import javax.jdo.query.BooleanExpression;
 import javax.jdo.query.OrderExpression;
 import javax.jdo.query.PersistableExpression;
 import java.lang.reflect.Method;
-import java.util.Objects;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 import static java.lang.reflect.Modifier.isStatic;
-import static java.util.Arrays.stream;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.ArrayUtils.add;
@@ -66,18 +64,18 @@ public abstract class JDOParameters<T extends PersistableObject, Q extends Persi
     }
 
     /**
-     * Sets WHERE-clause to query. The sample below:
+     * Adds WHERE-clause to query. The sample below:
      * <p>
      * {@code byJDOQuery(QPerson.class)
-     *          .where(qPerson -> qPerson.name.eq(desiredName))}
+     *          .addWhere(qPerson -> qPerson.name.eq(desiredName))}
      * </p>
      *
      * It is possible to define several expressions. The sample below demonstrates how define few expressions
      * aggregated by AND-junction:
      * <p>
      * {@code byJDOQuery(QPerson.class)
-     *          .where(qPerson -> qPerson.name.eq(desiredName),
-     *            qPerson -> qPerson.age.gt(age))
+     *          .addWhere(qPerson -> qPerson.name.eq(desiredName))
+     *          .addWhere(qPerson -> qPerson.age.gt(age))
      *          }
      * </p>
      *
@@ -86,34 +84,22 @@ public abstract class JDOParameters<T extends PersistableObject, Q extends Persi
      * The sample below:
      * <p>
      * {@code byJDOQuery(QPerson.class)
-     *          .where(qPerson -> or(
+     *          .addWhere(qPerson -> or(
      *                qPerson.name.eq(desiredName),
-     *                qPerson.age.gt(age)
-     *           ))}
+     *                qPerson.age.gt(age)))
+     *                }
      * </p>
      *
      * @param whereExpressions are functions that return a {@link BooleanExpression} on the applying.
      * @return self-reference
      */
-    @SafeVarargs
-    public final S where(Function<Q, BooleanExpression>... whereExpressions) {
+    public final S addWhere(Function<Q, BooleanExpression> whereExpressions) {
         checkArgument(nonNull(whereExpressions), "Where-expression should be defined as not a null value");
-        checkArgument(whereExpressions.length > 0, "At least one where expression should be defined");
+        var whereExpr = whereExpressions.apply(persistableExpression);
+        checkNotNull(whereExpr, "A new added `where` is null");
 
-        var booleanExpressions = stream(whereExpressions)
-                .map(qFunction -> qFunction.apply(persistableExpression))
-                .filter(Objects::nonNull)
-                .toArray(BooleanExpression[]::new);
-
-        checkArgument(booleanExpressions.length > 0, "At least one where expression should be defined");
-
-        if (booleanExpressions.length == 1) {
-            this.where = booleanExpressions[0];
-        }
-        else {
-            this.where = and(booleanExpressions);
-        }
-
+        this.where = ofNullable(this.where).map(booleanExpression -> and(booleanExpression, whereExpr))
+                .orElse(whereExpr);
         return (S) this;
     }
 

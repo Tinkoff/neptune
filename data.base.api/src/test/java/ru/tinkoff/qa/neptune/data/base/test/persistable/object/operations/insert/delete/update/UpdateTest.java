@@ -66,23 +66,23 @@ public class UpdateTest extends BaseDbOperationTest {
     @BeforeClass
     public void setUpBeforeClass() {
         dostoevsky = dataBaseSteps.select(oneOf(Author.class,
-                byJDOQuery(QAuthor.class).where(qAuthor -> qAuthor
+                byJDOQuery(QAuthor.class).addWhere(qAuthor -> qAuthor
                         .firstName.eq("Fyodor")
                         .and(qAuthor.lastName.eq("Dostoevsky")))));
 
         crownVictoria = dataBaseSteps.select(oneOf(CarModel.class, byJDOQuery(QCarModel.class)
-                .where(qCarModel -> qCarModel.carModelName.eq("Crown Victoria"))));
+                .addWhere(qCarModel -> qCarModel.carModelName.eq("Crown Victoria"))));
     }
 
     @Test(groups = "positive update")
     public void positiveUpdateTest1() {
         var dostoevsky = dataBaseSteps.select(oneOf(Author.class,
-                byJDOQuery(QAuthor.class).where(qAuthor -> qAuthor
+                byJDOQuery(QAuthor.class).addWhere(qAuthor -> qAuthor
                         .firstName.eq("Fyodor")
                         .and(qAuthor.lastName.eq("Dostoevsky")))));
 
         var crownVictoria = dataBaseSteps.select(oneOf(CarModel.class, byJDOQuery(QCarModel.class)
-                .where(qCarModel -> qCarModel.carModelName.eq("Crown Victoria"))));
+                .addWhere(qCarModel -> qCarModel.carModelName.eq("Crown Victoria"))));
 
         var dateToChange = new Date();
         var updatedObjects = dataBaseSteps.update(of(dostoevsky, crownVictoria), change("Add biography details to Author",
@@ -115,7 +115,7 @@ public class UpdateTest extends BaseDbOperationTest {
     @Test(groups = "positive update")
     public void positiveUpdateTest2() {
         var updatedAuthor = dataBaseSteps.update(oneOf(Author.class,
-                byJDOQuery(QAuthor.class).where(qAuthor -> qAuthor
+                byJDOQuery(QAuthor.class).addWhere(qAuthor -> qAuthor
                         .firstName.eq("Fyodor")
                         .and(qAuthor.lastName.eq("Dostoevsky")))),
                 change("Add biography details to Author", author ->
@@ -123,7 +123,7 @@ public class UpdateTest extends BaseDbOperationTest {
 
         var dateToChange = new Date();
         var updatedCarModel = dataBaseSteps.update(oneOf(CarModel.class, byJDOQuery(QCarModel.class)
-                        .where(qCarModel -> qCarModel.carModelName.eq("Crown Victoria"))),
+                        .addWhere(qCarModel -> qCarModel.carModelName.eq("Crown Victoria"))),
                 change("Change date of the 'Produced to' to current", carModel ->
                         carModel.setProducedTo(dateToChange)));
 
@@ -144,7 +144,7 @@ public class UpdateTest extends BaseDbOperationTest {
     @Test(groups = "positive update")
     public void positiveUpdateTest3() {
         var updatedAuthors = dataBaseSteps.update(listOf(Author.class,
-                byJDOQuery(QAuthor.class).where(qAuthor -> qAuthor
+                byJDOQuery(QAuthor.class).addWhere(qAuthor -> qAuthor
                         .firstName.eq("Fyodor")
                         .and(qAuthor.lastName.eq("Dostoevsky")))),
                 change("Add biography details to Author", author ->
@@ -152,7 +152,7 @@ public class UpdateTest extends BaseDbOperationTest {
 
         var dateToChange = new Date();
         var updatedCarModels = dataBaseSteps.update(listOf(CarModel.class, byJDOQuery(QCarModel.class)
-                        .where(qCarModel -> qCarModel.carModelName.eq("Crown Victoria"))),
+                        .addWhere(qCarModel -> qCarModel.carModelName.eq("Crown Victoria"))),
                 change("Change date of the 'Produced to' to current", carModel ->
                         carModel.setProducedTo(dateToChange)));
 
@@ -173,12 +173,12 @@ public class UpdateTest extends BaseDbOperationTest {
     @Test(dependsOnGroups = "positive update")
     public void negativeUpdateTest1() {
         var dostoevsky = dataBaseSteps.select(oneOf(Author.class,
-                byJDOQuery(QAuthor.class).where(qAuthor -> qAuthor
+                byJDOQuery(QAuthor.class).addWhere(qAuthor -> qAuthor
                         .firstName.eq("Fyodor")
                         .and(qAuthor.lastName.eq("Dostoevsky")))));
 
         var corollaE170 = dataBaseSteps.select(oneOf(CarModel.class, byJDOQuery(QCarModel.class)
-                .where(qCarModel -> qCarModel.carModelName.eq("Corolla E170"))));
+                .addWhere(qCarModel -> qCarModel.carModelName.eq("Corolla E170"))));
 
         try {
             dataBaseSteps.update(of(dostoevsky, crownVictoria), change("Add biography details to Author",

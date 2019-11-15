@@ -32,19 +32,19 @@ public class InsertTest extends BaseDbOperationTest {
     @BeforeClass
     public void setUpBeforeClass() {
         theHunchbackOfNotreDame = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
-                .where(qBook -> qBook.name.eq("The Hunchback of Notre-Dame"))));
+                .addWhere(qBook -> qBook.name.eq("The Hunchback of Notre-Dame"))));
 
         theLegendOfTheAges = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
-                .where(qBook -> qBook.name.eq("The Legend of the Ages"))));
+                .addWhere(qBook -> qBook.name.eq("The Legend of the Ages"))));
 
         signet = dataBaseSteps.select(oneOf(Publisher.class, byJDOQuery(QPublisher.class)
-                .where(qPublisher -> qPublisher.name.eq("Signet"))));
+                .addWhere(qPublisher -> qPublisher.name.eq("Signet"))));
 
         lada = dataBaseSteps.select(oneOf(Manufacturer.class, byJDOQuery(QManufacturer.class)
-                .where(qManufacturer -> qManufacturer.name.eq("Lada"))));
+                .addWhere(qManufacturer -> qManufacturer.name.eq("Lada"))));
 
         kalina = dataBaseSteps.select(oneOf(Car.class, byJDOQuery(QCar.class)
-                .where(qCar -> qCar.name.eq("Kalina"))));
+                .addWhere(qCar -> qCar.name.eq("Kalina"))));
     }
 
     @Test
@@ -62,16 +62,16 @@ public class InsertTest extends BaseDbOperationTest {
         var inserted = dataBaseSteps.insert(catalogItem, swCross);
 
         var catalogAdded = dataBaseSteps.select(oneOf(Catalog.class, byJDOQuery(QCatalog.class)
-                .where(qCatalog -> qCatalog.book.eq(theHunchbackOfNotreDame)
+                .addWhere(qCatalog -> qCatalog.book.eq(theHunchbackOfNotreDame)
                         .and(qCatalog.publisher.eq(signet))
                         .and(qCatalog.yearOfPublishing.eq(2010)))));
 
         var carAdded = dataBaseSteps.select(oneOf(Car.class, byJDOQuery(QCar.class)
-                .where(qCar -> qCar.manufacturer.eq(lada)
+                .addWhere(qCar -> qCar.manufacturer.eq(lada)
                         .and(qCar.name.eq("Granta")))));
 
         var carModelAdded = dataBaseSteps.select(oneOf(CarModel.class, byJDOQuery(QCarModel.class)
-                .where(qCarModel -> qCarModel.carModelName.eq("SW Cross")
+                .addWhere(qCarModel -> qCarModel.carModelName.eq("SW Cross")
                         .and(qCarModel.car.eq(carAdded))
                         .and(qCarModel.car.manufacturer.eq(lada))))
                 .criteria("Produced from is " + producedFrom,
@@ -98,11 +98,11 @@ public class InsertTest extends BaseDbOperationTest {
         }
         catch (Exception e) {
             var catalogAdded = dataBaseSteps.select(oneOf(Catalog.class, byJDOQuery(QCatalog.class)
-                    .where(qCatalog -> qCatalog.book.eq(theLegendOfTheAges)
+                    .addWhere(qCatalog -> qCatalog.book.eq(theLegendOfTheAges)
                             .and(qCatalog.yearOfPublishing.eq(2019)))));
 
             var carModelAdded = dataBaseSteps.select(oneOf(CarModel.class, byJDOQuery(QCarModel.class)
-                    .where(qCarModel -> qCarModel.carModelName.eq("Kalina Cross")
+                    .addWhere(qCarModel -> qCarModel.carModelName.eq("Kalina Cross")
                             .and(qCarModel.car.eq(kalina))
                             .and(qCarModel.car.manufacturer.eq(lada)))));
 
