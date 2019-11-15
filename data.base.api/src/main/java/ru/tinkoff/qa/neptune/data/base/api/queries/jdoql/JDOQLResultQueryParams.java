@@ -48,33 +48,17 @@ public class JDOQLResultQueryParams<T extends PersistableObject, Q extends Persi
         return new JDOQLResultQueryParams<>(toUse);
     }
 
-    /**
-     * Sets GROUP BY-clause to query. The sample below:
-     * <p>
-     * {@code byJDOQuery(QPerson.class)
-     *          .setGroupBy(qPerson -> qPerson.name)
-     * </p>
-     * @param expression is a function that returns a {@link Expression}
-     * @return self-reference
-     */
-    public JDOQLResultQueryParams<T, Q> setGroupBy(Function<Q, Expression<?>> expression) {
-        checkArgument(nonNull(expression), "GroupBy expressions should be defined as not a null value");
-        var groupBy = expression.apply(persistableExpression);
-        checkNotNull(groupBy);
-        this.groupByExpressions =  new Expression[] {groupBy};
-        return this;
-    }
 
     /**
      * Adds GROUP BY-clause to query. The sample below:
      * <p>
      * {@code byJDOQuery(QPerson.class)
-     *          .addGroupBy(qPerson -> qPerson.name)
+     *          .groupBy(qPerson -> qPerson.name)
      * </p>
      * @param expression is a function that returns a {@link Expression}
      * @return self-reference
      */
-    public JDOQLResultQueryParams<T, Q> addGroupBy(Function<Q, Expression<?>> expression) {
+    public JDOQLResultQueryParams<T, Q> groupBy(Function<Q, Expression<?>> expression) {
         checkArgument(nonNull(expression), "GroupBy expression should be defined as not a null value");
         var groupBy = expression.apply(persistableExpression);
         checkNotNull(groupBy);
@@ -102,34 +86,17 @@ public class JDOQLResultQueryParams<T extends PersistableObject, Q extends Persi
         return this;
     }
 
-    /**
-     * Sets result field to query. The sample below:
-     * <p>
-     * {@code byJDOQuery(QPerson.class)
-     *          .setResultField(qPerson -> qPerson.name)
-     * </p>
-     * @param expression is a function that returns a {@link Expression}
-     * @return self-reference
-     */
-    public JDOQLResultQueryParams<T, Q> setResultField(Function<Q, Expression<?>> expression) {
-        checkArgument(nonNull(expression), "Result field expression should be defined as not a null value");
-        var result = expression.apply(persistableExpression);
-        checkNotNull(result);
-        this.resultFields =  new Expression[] {result};
-        return this;
-    }
-
 
     /**
      * Adds result field to query. The sample below:
      * <p>
      * {@code byJDOQuery(QPerson.class)
-     *          .addResultField(qPerson -> qPerson.name)
+     *          .resultField(qPerson -> qPerson.name)
      * </p>
      * @param expression is a function that returns a {@link Expression}
      * @return self-reference
      */
-    public JDOQLResultQueryParams<T, Q> addResultField(Function<Q, Expression<?>> expression) {
+    public JDOQLResultQueryParams<T, Q> resultField(Function<Q, Expression<?>> expression) {
         checkArgument(nonNull(expression), "Result field expression should be defined as not a null value");
         var result = expression.apply(persistableExpression);
         checkNotNull(result);

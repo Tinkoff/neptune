@@ -8,15 +8,18 @@ import javax.jdo.query.BooleanExpression;
 import javax.jdo.query.OrderExpression;
 import javax.jdo.query.PersistableExpression;
 import java.lang.reflect.Method;
+import java.util.Objects;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 import static java.lang.reflect.Modifier.isStatic;
+import static java.util.Arrays.stream;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.ArrayUtils.add;
+import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.WhereJunction.and;
 
 /**
  * This class is designed to construct/detail {@link JDOQLTypedQuery}
@@ -68,31 +71,49 @@ public abstract class JDOParameters<T extends PersistableObject, Q extends Persi
      * {@code byJDOQuery(QPerson.class)
      *          .where(qPerson -> qPerson.name.eq(desiredName))}
      * </p>
-     * @param whereExpression is a function that returns a {@link BooleanExpression}
-     * @return self-reference
-     */
-    public S where(Function<Q, BooleanExpression> whereExpression) {
-        checkArgument(nonNull(whereExpression), "Where-expression should be defined as not a null value");
-        var where = whereExpression.apply(persistableExpression);
-        checkNotNull(where);
-        this.where = where;
-        return (S) this;
-    }
-
-    /**
-     * Sets ORDER BY-clause to query. The sample below:
+     *
+     * It is possible to define several expressions. The sample below demonstrates how define few expressions
+     * aggregated by AND-junction:
      * <p>
      * {@code byJDOQuery(QPerson.class)
-     *          .setOrderBy(qPerson -> qPerson.id.asc())}
+     *          .where(qPerson -> qPerson.name.eq(desiredName),
+     *            qPerson -> qPerson.age.gt(age))
+     *          }
      * </p>
-     * @param orderExpression is a function that returns a {@link OrderExpression}
+     *
+     * Also it is possible to use junctions.
+     * @see WhereJunction
+     * The sample below:
+     * <p>
+     * {@code byJDOQuery(QPerson.class)
+     *          .where(qPerson -> or(
+     *                qPerson.name.eq(desiredName),
+     *                qPerson.age.gt(age)
+     *           ))}
+     * </p>
+     *
+     * @param whereExpressions are functions that return a {@link BooleanExpression} on the applying.
      * @return self-reference
      */
-    public S setOrderBy(Function<Q, OrderExpression<?>> orderExpression) {
-        checkArgument(nonNull(orderExpression), "Order expression should be defined as not a null value");
-        var orderBy = orderExpression.apply(persistableExpression);
-        checkNotNull(orderBy);
-        this.orderExpressions = new OrderExpression[] {orderBy};
+    @SafeVarargs
+    public final S where(Function<Q, BooleanExpression>... whereExpressions) {
+        checkArgument(nonNull(whereExpressions), "Where-expression should be defined as not a null value");
+        checkArgument(whereExpressions.length > 0, "At least one where expression should be defined");
+
+        var booleanExpressions = stream(whereExpressions)
+                .map(qFunction -> qFunction.apply(persistableExpression))
+                .filter(Objects::nonNull)
+                .toArray(BooleanExpression[]::new);
+
+        checkArgument(booleanExpressions.length > 0, "At least one where expression should be defined");
+
+        if (booleanExpressions.length == 1) {
+            this.where = booleanExpressions[0];
+        }
+        else {
+            this.where = and(booleanExpressions);
+        }
+
         return (S) this;
     }
 
@@ -100,13 +121,13 @@ public abstract class JDOParameters<T extends PersistableObject, Q extends Persi
      * Adds ORDER BY-clause to query. The sample below:
      * <p>
      * {@code byJDOQuery(QPerson.class)
-     *          .addOrderBy(qPerson -> qPerson.id.asc())
-     *          .addOrderBy(qPerson -> qPerson.birthDay.asc())}
+     *          .orderBy(qPerson -> qPerson.id.asc())
+     *          .orderBy(qPerson -> qPerson.birthDay.asc())}
      * </p>
      * @param orderExpression is a function that returns a {@link OrderExpression}
      * @return self-reference
      */
-    public S  addOrderBy(Function<Q, OrderExpression<?>> orderExpression) {
+    public S orderBy(Function<Q, OrderExpression<?>> orderExpression) {
         checkArgument(nonNull(orderExpression), "Order expression should be defined as not a null value");
         var orderBy = orderExpression.apply(persistableExpression);
         checkNotNull(orderBy);

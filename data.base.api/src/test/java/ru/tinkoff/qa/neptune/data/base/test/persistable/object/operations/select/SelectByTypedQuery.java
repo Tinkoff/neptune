@@ -27,6 +27,8 @@ import static ru.tinkoff.qa.neptune.data.base.api.queries.SelectList.listOf;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.SelectList.rows;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQueryParameters.byJDOQuery;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLResultQueryParams.byJDOResultQuery;
+import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.WhereJunction.and;
+import static  ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.WhereJunction.or;
 
 @SuppressWarnings("ConstantConditions")
 public class SelectByTypedQuery extends BaseDbOperationTest {
@@ -46,28 +48,34 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
     @BeforeClass
     public void prepare() {
         carlosCastaneda = dataBaseSteps.select(oneOf(Author.class, byJDOQuery(QAuthor.class)
-                .where(qAuthor -> qAuthor.firstName.eq("Carlos").and(qAuthor.lastName.eq("Castaneda")))));
+                .where(qAuthor -> qAuthor.firstName.eq("Carlos"),
+                        qAuthor ->  qAuthor.lastName.eq("Castaneda"))));
 
         journeyToIxtlan = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
-                .where(qBook -> qBook.name.eq("Journey to Ixtlan").and(qBook.author.eq(carlosCastaneda)))));
+                .where(qBook -> qBook.name.eq("Journey to Ixtlan"),
+                        qBook -> qBook.author.eq(carlosCastaneda))));
 
         alexanderPushkin = dataBaseSteps.select(oneOf(Author.class, byJDOQuery(QAuthor.class)
-                .where(qAuthor -> qAuthor.firstName.eq("Alexander").and(qAuthor.lastName.eq("Pushkin")))));
+                .where(qAuthor -> qAuthor.firstName.eq("Alexander"),
+                        qAuthor -> qAuthor.lastName.eq("Pushkin"))));
 
         ruslanAndLudmila = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
-                .where(qBook -> qBook.name.eq("Ruslan and Ludmila").and(qBook.author.eq(alexanderPushkin)))));
+                .where(qBook -> qBook.name.eq("Ruslan and Ludmila"),
+                        qBook -> qBook.author.eq(alexanderPushkin))));
 
         theLegendOfTheAges = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
                 .where(qBook -> qBook.name.eq("The Legend of the Ages"))));
 
         hugo = dataBaseSteps.select(oneOf(Author.class, byJDOQuery(QAuthor.class)
-                .where(qAuthor -> qAuthor.firstName.eq("Victor").and(qAuthor.lastName.eq("Hugo")))));
+                .where(qAuthor -> qAuthor.firstName.eq("Victor"),
+                        qAuthor -> qAuthor.lastName.eq("Hugo"))));
 
         aHeroOfOurTimes = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
                 .where(qBook -> qBook.name.eq("A Hero of Our Times"))));
 
         lermontov = dataBaseSteps.select(oneOf(Author.class, byJDOQuery(QAuthor.class)
-                .where(qAuthor -> qAuthor.firstName.eq("Mikhail").and(qAuthor.lastName.eq("Lermontov")))));
+                .where(qAuthor -> qAuthor.firstName.eq("Mikhail"),
+                        qAuthor ->  qAuthor.lastName.eq("Lermontov"))));
     }
 
     @Test(groups = "positive tests")
@@ -85,9 +93,11 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
     @Test(groups = "positive tests")
     public void selectListTestWithQuery() {
         var catalogItems = dataBaseSteps.select(listOf(Catalog.class, byJDOQuery(QCatalog.class)
-                .where(qCatalog -> qCatalog.book.name.eq(ruslanAndLudmila.getName())
-                        .or(qCatalog.book.author.lastName.eq(carlosCastaneda.getLastName())))
-                .addOrderBy(qCatalog -> qCatalog.book.id.desc())));
+                .where(qCatalog -> or(
+                        qCatalog.book.name.eq(ruslanAndLudmila.getName()),
+                        qCatalog.book.author.lastName.eq(carlosCastaneda.getLastName()))
+                )
+                .orderBy(qCatalog -> qCatalog.book.id.desc())));
 
         assertThat(catalogItems, hasSize(2));
         assertThat(catalogItems.stream().map(catalog -> catalog.getBook().getName()).collect(toList()),
@@ -97,11 +107,52 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
     @Test(groups = "positive tests")
     public void selectOneTestWithQuery() {
         var catalogItem = dataBaseSteps.select(oneOf(Catalog.class, byJDOQuery(QCatalog.class)
-                .where(qCatalog -> qCatalog.book.name.eq(ruslanAndLudmila.getName())
-                        .or(qCatalog.book.author.lastName.eq(carlosCastaneda.getLastName())))
-                .addOrderBy(qCatalog -> qCatalog.book.id.desc())));
+                .where(qCatalog -> or(
+                        qCatalog.book.name.eq(ruslanAndLudmila.getName()),
+                        qCatalog.book.author.lastName.eq(carlosCastaneda.getLastName())
+                ))
+                .orderBy(qCatalog -> qCatalog.book.id.desc())));
 
         assertThat(catalogItem.getBook().getName(), is("Ruslan and Ludmila"));
+    }
+
+    @Test(groups = "positive tests")
+    public void selectOneTestWithWhereJunctionQuery() {
+        var catalogItem = dataBaseSteps.select(oneOf(Catalog.class, byJDOQuery(QCatalog.class)
+                .where(qCatalog -> or(
+                        and(
+                                qCatalog.book.name.eq(ruslanAndLudmila.getName()),
+                                qCatalog.book.author.lastName.eq(alexanderPushkin.getLastName())
+                        ),
+                        and(
+                                qCatalog.book.name.eq(journeyToIxtlan.getName()),
+                                qCatalog.book.author.lastName.eq(carlosCastaneda.getLastName())
+                        )
+
+                ))
+                .orderBy(qCatalog -> qCatalog.book.id.desc())));
+
+        assertThat(catalogItem.getBook().getName(), is("Ruslan and Ludmila"));
+    }
+
+    @Test(groups = "positive tests")
+    public void selectListTestWithWithWhereJunctionQuery() {
+        var catalogItems = dataBaseSteps.select(listOf(Catalog.class, byJDOQuery(QCatalog.class)
+                .where(qCatalog -> or(
+                        and(
+                                qCatalog.book.name.eq(ruslanAndLudmila.getName()),
+                                qCatalog.book.author.lastName.eq(alexanderPushkin.getLastName())
+                        ),
+                        and(
+                                qCatalog.book.name.eq(journeyToIxtlan.getName()),
+                                qCatalog.book.author.lastName.eq(carlosCastaneda.getLastName())
+                        )
+                ))
+                .orderBy(qCatalog -> qCatalog.book.id.desc())));
+
+        assertThat(catalogItems, hasSize(2));
+        assertThat(catalogItems.stream().map(catalog -> catalog.getBook().getName()).collect(toList()),
+                contains("Ruslan and Ludmila", "Journey to Ixtlan"));
     }
 
     @Test(groups = "positive tests")
@@ -148,12 +199,12 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
     @Test(groups = "positive tests")
     public void selectOneByResultQuery() {
         var row = dataBaseSteps.select(row(Book.class, byJDOResultQuery(QBook.class)
-                .addResultField(qBook -> qBook.author)
-                .addResultField(qBook -> qBook.name)
-                .addResultField(qBook -> qBook.yearOfFinishing.max())
+                .resultField(qBook -> qBook.author)
+                .resultField(qBook -> qBook.name)
+                .resultField(qBook -> qBook.yearOfFinishing.max())
                 .where(qBook -> qBook.yearOfFinishing.lt(1972))
-                .addGroupBy(qBook -> qBook.author)
-                .addOrderBy(qBook -> qBook.id.asc())
+                .groupBy(qBook -> qBook.author)
+                .orderBy(qBook -> qBook.id.asc())
                 .having(qBook -> qBook.id.count().gteq(1))
                 .distinct(true)));
 
@@ -165,12 +216,12 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
     @Test(groups = "positive tests")
     public void selectListByResultQuery() {
         var rows = dataBaseSteps.select(rows(Book.class, byJDOResultQuery(QBook.class)
-                .addResultField(qBook -> qBook.author)
-                .addResultField(qBook -> qBook.name)
-                .addResultField(qBook -> qBook.yearOfFinishing.max())
+                .resultField(qBook -> qBook.author)
+                .resultField(qBook -> qBook.name)
+                .resultField(qBook -> qBook.yearOfFinishing.max())
                 .where(qBook -> qBook.yearOfFinishing.lt(1972))
-                .addGroupBy(qBook -> qBook.author)
-                .addOrderBy(qBook -> qBook.id.asc())
+                .groupBy(qBook -> qBook.author)
+                .orderBy(qBook -> qBook.id.asc())
                 .having(qBook -> qBook.id.count().gteq(1))
                 .distinct(true)));
 
