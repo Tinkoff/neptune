@@ -34,7 +34,7 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
         List<Book> books = dataBaseSteps.select(listOf(Book.class, QUERY, 1820));
 
         List<Book> books2 = dataBaseSteps.get(listOf(Book.class, byJDOQuery(QBook.class)
-                .where(qBook -> qBook.yearOfFinishing.gteq(1820))
+                .addWhere(qBook -> qBook.yearOfFinishing.gteq(1820))
                 .orderBy(qBook -> qBook.yearOfFinishing.asc())));
 
         List<Author> authors2 = books2.stream().map(Book::getAuthor).collect(toList());
@@ -48,7 +48,7 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
         Book book = dataBaseSteps.select(oneOf(Book.class, QUERY, 1820));
 
         Book book2 = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
-                .where(qBook -> qBook.yearOfFinishing.gteq(1820))
+                .addWhere(qBook -> qBook.yearOfFinishing.gteq(1820))
                 .orderBy(qBook -> qBook.yearOfFinishing.asc())));
         Author author2 = book2.getAuthor();
 
@@ -63,7 +63,7 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
                 1820))
                 .subList(0, 1);
         List<Book> books = dataBaseSteps.select(listOf(Book.class, byJDOQuery(QBook.class)
-                .where(qBook -> qBook.yearOfFinishing.gteq(1820))
+                .addWhere(qBook -> qBook.yearOfFinishing.gteq(1820))
                 .orderBy(qBook -> qBook.yearOfFinishing.asc())
                 .range(0, 1)));
 
@@ -94,7 +94,7 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
                 1820));
 
         Book book = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
-                .where(qBook -> qBook.name.eq("Ruslan and Ludmila"))));
+                .addWhere(qBook -> qBook.name.eq("Ruslan and Ludmila"))));
 
         List<Object> bookAndAuthor2 = new ArrayList<>();
         bookAndAuthor2.add(book.getId());
