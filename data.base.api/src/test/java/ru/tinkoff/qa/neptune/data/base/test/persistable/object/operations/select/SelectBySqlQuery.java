@@ -35,7 +35,7 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
 
         List<Book> books2 = dataBaseSteps.get(listOf(Book.class, byJDOQuery(QBook.class)
                 .where(qBook -> qBook.yearOfFinishing.gteq(1820))
-                .addOrderBy(qBook -> qBook.yearOfFinishing.asc())));
+                .orderBy(qBook -> qBook.yearOfFinishing.asc())));
 
         List<Author> authors2 = books2.stream().map(Book::getAuthor).collect(toList());
         assertThat(authors2, contains(authors.toArray()));
@@ -49,7 +49,7 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
 
         Book book2 = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
                 .where(qBook -> qBook.yearOfFinishing.gteq(1820))
-                .addOrderBy(qBook -> qBook.yearOfFinishing.asc())));
+                .orderBy(qBook -> qBook.yearOfFinishing.asc())));
         Author author2 = book2.getAuthor();
 
         assertThat(author2, equalTo(author));
@@ -64,7 +64,7 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
                 .subList(0, 1);
         List<Book> books = dataBaseSteps.select(listOf(Book.class, byJDOQuery(QBook.class)
                 .where(qBook -> qBook.yearOfFinishing.gteq(1820))
-                .addOrderBy(qBook -> qBook.yearOfFinishing.asc())
+                .orderBy(qBook -> qBook.yearOfFinishing.asc())
                 .range(0, 1)));
 
         List<List<Object>> booksAndAuthors2 = books.stream()
