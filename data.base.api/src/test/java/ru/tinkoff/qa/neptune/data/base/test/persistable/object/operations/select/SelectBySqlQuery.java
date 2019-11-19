@@ -7,8 +7,10 @@ import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.Book;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.QBook;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.one.tables.Author;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -60,31 +62,41 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
     public void selectListByUnTypedSqlTest() {
         var booksAndAuthors = dataBaseSteps.select(rows(QUERY,
                 ConnectionDataSupplierForTestBase1.class,
-                1820))
-                .subList(0, 1);
+                1820));
+
         List<Book> books = dataBaseSteps.select(listOf(Book.class, byJDOQuery(QBook.class)
                 .addWhere(qBook -> qBook.yearOfFinishing.gteq(1820))
-                .orderBy(qBook -> qBook.yearOfFinishing.asc())
-                .range(0, 1)));
+                .orderBy(qBook -> qBook.yearOfFinishing.asc())));
 
-        List<List<Object>> booksAndAuthors2 = books.stream()
-                .map(book -> {
-                    List<Object> result = new ArrayList<>();
-                    result.add(book.getId());
-                    result.add(book.getName());
-                    result.add(book.getAuthor().getId());
-                    result.add(book.getYearOfFinishing());
+        assertThat(booksAndAuthors.getColumn(1),
+                contains(books.stream().map(Book::getName).toArray(String[]::new)));
 
-                    result.add(book.getAuthor().getId());
-                    result.add(book.getAuthor().getFirstName());
-                    result.add(book.getAuthor().getLastName());
-                    result.add(SIMPLE_DATE_FORMAT.format(book.getAuthor().getBirthDate()));
-                    result.add(SIMPLE_DATE_FORMAT.format(book.getAuthor().getDeathDate()));
-                    result.add(book.getAuthor().getBiography());
-                    return result;
-                }).collect(toList());
+        assertThat(booksAndAuthors.getColumn(5),
+                contains(books.stream().map(book -> book.getAuthor().getFirstName()).toArray(String[]::new)));
 
-        assertThat(booksAndAuthors2, contains(booksAndAuthors.toArray()));
+        assertThat(booksAndAuthors.getColumn(6),
+                contains(books.stream().map(book -> book.getAuthor().getLastName()).toArray(String[]::new)));
+
+        assertThat(booksAndAuthors.getColumn(7, o -> {
+                    try {
+                        return SIMPLE_DATE_FORMAT.parse(o.toString());
+                    } catch (ParseException e) {
+                        throw new RuntimeException(e);
+                    }
+                }),
+                contains(books.stream().map(book -> book.getAuthor().getBirthDate()).toArray(Date[]::new)));
+
+        assertThat(booksAndAuthors.getColumn(8, o -> {
+                    try {
+                        return SIMPLE_DATE_FORMAT.parse(o.toString());
+                    } catch (ParseException e) {
+                        throw new RuntimeException(e);
+                    }
+                }),
+                contains(books.stream().map(book -> book.getAuthor().getDeathDate()).toArray(Date[]::new)));
+
+        assertThat(booksAndAuthors.getColumn(9),
+                contains(books.stream().map(book -> book.getAuthor().getBiography()).toArray(String[]::new)));
     }
 
     @Test

@@ -8,7 +8,7 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCaptures
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 import ru.tinkoff.qa.neptune.data.base.api.IdSetter;
-import ru.tinkoff.qa.neptune.data.base.api.ListOfDataBaseObjects;
+import ru.tinkoff.qa.neptune.data.base.api.result.ListOfPersistentObjects;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 import ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle;
 import ru.tinkoff.qa.neptune.data.base.api.queries.SelectList;
@@ -52,7 +52,7 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
      * @param <T> is a type of {@link PersistableObject} to be updated
      * @return an instance of {@link DataOperation}
      */
-    public static <T extends PersistableObject> DataOperation<T> updated(SelectASingle<T, ?> howToSelect, UpdateExpression<T>... set) {
+    public static <T extends PersistableObject> DataOperation<T> updated(SelectASingle<T, ?, ?> howToSelect, UpdateExpression<T>... set) {
         checkArgument(nonNull(howToSelect), "A strategy that describes how to select an object to be updated " +
                 "should be defined as a value that differs from null");
         checkArgument(nonNull(set), "Update-action should be defined");
@@ -74,7 +74,7 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
      * @param <T> is a type of {@link PersistableObject} to be updated
      * @return an instance of {@link DataOperation}
      */
-    public static <T extends PersistableObject> DataOperation<T> updated(SelectList<T, ?> howToSelect, UpdateExpression<T>... set) {
+    public static <T extends PersistableObject> DataOperation<T> updated(SelectList<?, List<T>, ?> howToSelect, UpdateExpression<T>... set) {
         checkArgument(nonNull(howToSelect), "A strategy that describes how to select objects to be updated " +
                 "should be defined as a value that differs from null");
         checkArgument(nonNull(set), "Update-action should be defined");
@@ -123,7 +123,7 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
      * @param <T> is a type of {@link PersistableObject} to be deleted
      * @return an instance of {@link DataOperation}
      */
-    public static <T extends PersistableObject> DataOperation<T> deleted(SelectASingle<T, ?> howToSelect) {
+    public static <T extends PersistableObject> DataOperation<T> deleted(SelectASingle<T, ?, ?> howToSelect) {
         checkArgument(nonNull(howToSelect), "A strategy that describes how to select and object to be deleted " +
                 "should be defined as a value that differs from null");
         return new DataOperation<T>(format("Deleted %s", howToSelect),
@@ -142,7 +142,7 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
      * @param <T> is a type of {@link PersistableObject} to be deleted
      * @return an instance of {@link DataOperation}
      */
-    public static <T extends PersistableObject> DataOperation<T> deleted(SelectList<T, ?> howToSelect) {
+    public static <T extends PersistableObject> DataOperation<T> deleted(SelectList<?, List<T>, ?> howToSelect) {
         checkArgument(nonNull(howToSelect), "A strategy that describes how to select objects to be deleted " +
                 "should be defined as a value that differs from null");
         return new DataOperation<T>(format("Deleted %s", howToSelect),
@@ -206,7 +206,7 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
         openTransaction(managerSet);
 
         try {
-            var result = new ListOfDataBaseObjects<T>() {
+            var result = new ListOfPersistentObjects<T>() {
                 public String toString() {
                     var resultStr = format("%s updated object/objects", size());
                     var tableList = stream().map(PersistableObject::fromTable)
@@ -253,7 +253,7 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
         openTransaction(managerSet);
 
         try {
-            var result = new ListOfDataBaseObjects<T>() {
+            var result = new ListOfPersistentObjects<T>() {
                 public String toString() {
                     var resultStr = format("%s inserted object/objects", size());
                     var tableList = stream().map(PersistableObject::fromTable)
@@ -291,7 +291,7 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
         openTransaction(managerSet);
 
         try {
-            var result = new ListOfDataBaseObjects<T>() {
+            var result = new ListOfPersistentObjects<T>() {
                 public String toString() {
                     return format("%s deleted object/objects", size());
                 }

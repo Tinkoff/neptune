@@ -60,21 +60,21 @@ public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>,
         });
     }
 
-    public final <T> List<T> select(SelectList<T, ?> selectList) {
+    public final <T, R extends List<T>> R select(SelectList<?, R, ?> selectList) {
         return get(selectList);
     }
 
-    public final <T> T select(SelectASingle<T, ?> selectOne) {
+    public final <T> T select(SelectASingle<T, ?, ?> selectOne) {
         return get(selectOne);
     }
 
     @SafeVarargs
-    public final <T extends PersistableObject> T update(SelectASingle<T, ?> howToSelect, UpdateExpression<T>... set) {
+    public final <T extends PersistableObject> T update(SelectASingle<T, ?, ?> howToSelect, UpdateExpression<T>... set) {
         return returnSingleWhenNecessary(get(updated(howToSelect, set)));
     }
 
     @SafeVarargs
-    public final <T extends PersistableObject> List<T> update(SelectList<T, ?> howToSelect, UpdateExpression<T>... set) {
+    public final <T extends PersistableObject> List<T> update(SelectList<?, List<T>, ?> howToSelect, UpdateExpression<T>... set) {
         return get(updated(howToSelect, set));
     }
 
@@ -88,11 +88,11 @@ public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>,
         return returnSingleWhenNecessary(update(ofNullable(t).map(List::of).orElse(null), set));
     }
 
-    public final <T extends PersistableObject> T delete(SelectASingle<T, ?> howToSelect) {
+    public final <T extends PersistableObject> T delete(SelectASingle<T, ?, ?> howToSelect) {
         return returnSingleWhenNecessary(get(deleted(howToSelect)));
     }
 
-    public final <T extends PersistableObject> List<T> delete(SelectList<T, ?> howToSelect) {
+    public final <T extends PersistableObject> List<T> delete(SelectList<T, List<T>, ?> howToSelect) {
         return get(deleted(howToSelect));
     }
 
