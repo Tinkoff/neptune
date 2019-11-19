@@ -1,8 +1,8 @@
 package ru.tinkoff.qa.neptune.data.base.api.queries.jdoql;
 
 import ru.tinkoff.qa.neptune.data.base.api.IdSetter;
-import ru.tinkoff.qa.neptune.data.base.api.ListOfDataBaseObjects;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
+import ru.tinkoff.qa.neptune.data.base.api.result.TableResultList;
 
 import javax.jdo.JDOQLTypedQuery;
 import java.util.ArrayList;
@@ -11,9 +11,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
-import static java.lang.String.format;
 import static java.util.Arrays.stream;
-import static java.util.List.of;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
@@ -22,7 +20,7 @@ import static java.util.stream.Collectors.toList;
  * from stored objects.
  * @param <T> is a type of {@link PersistableObject} objects to take field values from
  */
-public class JDOQLResultQuery<T extends PersistableObject> implements Function<ReadableJDOQuery<T>, List<List<Object>>>, IdSetter {
+public class JDOQLResultQuery<T extends PersistableObject> implements Function<ReadableJDOQuery<T>, TableResultList>, IdSetter {
 
     private JDOQLResultQuery() {
         super();
@@ -39,7 +37,7 @@ public class JDOQLResultQuery<T extends PersistableObject> implements Function<R
     }
 
     @Override
-    public List<List<Object>> apply(ReadableJDOQuery<T> jdoqlTypedQuery) {
+    public TableResultList apply(ReadableJDOQuery<T> jdoqlTypedQuery) {
         var result = jdoqlTypedQuery.executeInternalQuery(jdoqlTypedQuery.getInternalQuery());
         List<?> list = ofNullable(result)
                 .map(o -> {
@@ -49,23 +47,20 @@ public class JDOQLResultQuery<T extends PersistableObject> implements Function<R
                     }
 
                     if (clazz.isArray()) {
-                        return of(Arrays.asList((Object[]) o));
+                        return new ArrayList<>(Arrays.asList((Object[]) o));
                     }
 
-                    return of(o);
+                    var resultList =  new ArrayList<>();
+                    resultList.add(o);
+                    return resultList;
                 })
-                .orElseGet(List::of);
+                .orElseGet(ArrayList::new);
 
         var manager = jdoqlTypedQuery.getPersistenceManager();
         List<List<Object>> toBeReturned = new ArrayList<>();
 
         list.forEach(o -> {
-            var row = new ListOfDataBaseObjects<>(){
-                @Override
-                public String toString() {
-                    return format("row of field values: %s", super.toString());
-                }
-            };
+            var row = new ArrayList<>();
 
             if (o != null && o.getClass().isArray()) {
                 row.addAll(stream(((Object[]) o))
@@ -99,12 +94,7 @@ public class JDOQLResultQuery<T extends PersistableObject> implements Function<R
             }
         });
 
-        return new ListOfDataBaseObjects<>(toBeReturned) {
-            public String toString() {
-                return format("%s row/rows selected by query '%s' ",
-                        size(),
-                        jdoqlTypedQuery.getInternalQuery());
-            }
+        return new TableResultList(toBeReturned) {
         };
     }
 }
