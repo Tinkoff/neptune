@@ -50,8 +50,6 @@ public class TableResultList extends ArrayList<List<Object>> implements Loggable
             } catch (IndexOutOfBoundsException e) {
                 throw new IndexOutOfBoundsException(format("%s. It is possible that %s is greater than index of the last column " +
                         "or the result table is invalid due to some row has lower size ", e.getMessage(), columnIndex));
-            } catch (Throwable t) {
-                throw t;
             }
         }).collect(toCollection(ResultTableColumn::new));
     }

@@ -236,6 +236,14 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
                 contains(lermontov,
                         aHeroOfOurTimes.getName(),
                         aHeroOfOurTimes.getYearOfFinishing())));
+
+        assertThat(rows.getColumn(0), contains(alexanderPushkin, hugo, lermontov));
+        assertThat(rows.getColumn(1), contains(ruslanAndLudmila.getName(),
+                theLegendOfTheAges.getName(),
+                aHeroOfOurTimes.getName()));
+        assertThat(rows.getColumn(2), contains(ruslanAndLudmila.getYearOfFinishing(),
+                theLegendOfTheAges.getYearOfFinishing(),
+                aHeroOfOurTimes.getYearOfFinishing()));
     }
 
     @Test(dependsOnGroups = "positive tests")
