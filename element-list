@@ -36,6 +36,7 @@ ru.tinkoff.qa.neptune.data.base.api.queries
 ru.tinkoff.qa.neptune.data.base.api.queries.ids
 ru.tinkoff.qa.neptune.data.base.api.queries.jdoql
 ru.tinkoff.qa.neptune.data.base.api.queries.sql
+ru.tinkoff.qa.neptune.data.base.api.result
 ru.tinkoff.qa.neptune.http.api
 ru.tinkoff.qa.neptune.http.api.captors
 ru.tinkoff.qa.neptune.http.api.properties

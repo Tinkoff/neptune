@@ -7,3 +7,4 @@ ru.tinkoff.qa.neptune.data.base.api.queries
 ru.tinkoff.qa.neptune.data.base.api.queries.ids
 ru.tinkoff.qa.neptune.data.base.api.queries.jdoql
 ru.tinkoff.qa.neptune.data.base.api.queries.sql
+ru.tinkoff.qa.neptune.data.base.api.result
