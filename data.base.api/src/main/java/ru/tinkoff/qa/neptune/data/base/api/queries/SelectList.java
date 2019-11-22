@@ -19,11 +19,13 @@ import javax.jdo.query.PersistableExpression;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
+import static java.lang.String.valueOf;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
@@ -169,6 +171,34 @@ public class SelectList<T, R extends List<T>, M> extends SequentialGetStepSuppli
     }
 
     /**
+     * Retrieves a list of  {@link PersistableObject} selected by sql-query.
+     *
+     * @param toSelect   is a class of each {@link PersistableObject} from returned list
+     * @param sql        is an sql query. Parameter naming is supported. It is important!:
+     *                   <p>Sql query should be defined as below</p>
+     *                   {@code 'Select * from Persons...'}
+     * @param parameters is a map of parameter names and values. It is necessary to define for queries as below
+     *                   <p>
+     *                   {@code 'Select * from Persons where Some_Field=:paramName'}
+     *                   </p>
+     * @param <R>        is a type of each {@link PersistableObject} from returned list
+     * @return new {@link SelectList}
+     */
+    public static <R extends PersistableObject> SelectList<R, List<R>, JDOPersistenceManager> listOf(Class<R> toSelect,
+                                                                                                     String sql,
+                                                                                                     Map<String, ?> parameters) {
+        //TODO sql + parameters should be turned into step parameters in a report
+        //TODO comment for further releases
+        return new SelectList<>(format("List of %s by query '%s'. " +
+                        "Parameters: %s",
+                toSelect.getName(),
+                sql,
+                valueOf(parameters)),
+                bySql(toSelect, sql, parameters))
+                .from(getConnectionByClass(toSelect));
+    }
+
+    /**
      * Retrieves a list of lists. Each item is a list of raw objects taken from records of a data store. These records are selected by sql query.
      *
      * @param sql        is an sql query. Parameter mask ({@code ?}) is supported.
@@ -192,6 +222,34 @@ public class SelectList<T, R extends List<T>, M> extends SequentialGetStepSuppli
                 sql,
                 connection.getName(),
                 Arrays.toString(parameters)),
+                bySql(sql, parameters))
+                .from(getConnectionBySupplierClass(connection));
+    }
+
+    /**
+     * Retrieves a list of lists. Each item is a list of raw objects taken from records of a data store. These records are selected by sql query.
+     *
+     * @param sql        is an sql query. Parameter naming is supported.
+     * @param connection is an  class of {@link DBConnectionSupplier} that actually describes how to connect and how to use
+     *                   the data store
+     * @param parameters is a map of parameter names and values. It is necessary to define for queries as below
+     *                   <p>
+     *                   {@code 'Select * from Persons where Some_Field=:paramName'}
+     *                   </p>
+     * @param <R>        is a type of {@link DBConnectionSupplier}
+     * @return new {@link SelectList}
+     */
+    public static <R extends DBConnectionSupplier> SelectList<List<Object>, TableResultList, JDOPersistenceManager> rows(String sql,
+                                                                                                                         Class<R> connection,
+                                                                                                                         Map<String, ?> parameters) {
+        //TODO sql + parameters should be turned into step parameters in a report
+        //TODO comment for further releases
+        return new SelectList<>(format("Rows by query %s. " +
+                        "The connection is described by %s. " +
+                        "Parameters: %s",
+                sql,
+                connection.getName(),
+                valueOf(parameters)),
                 bySql(sql, parameters))
                 .from(getConnectionBySupplierClass(connection));
     }

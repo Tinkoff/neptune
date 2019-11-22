@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -24,10 +25,14 @@ import static ru.tinkoff.qa.neptune.data.base.api.queries.SelectList.rows;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQueryParameters.byJDOQuery;
 
 public class SelectBySqlQuery extends BaseDbOperationTest {
-    private static final SimpleDateFormat SIMPLE_DATE_FORMAT =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.000000000");
+    private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.000000000");
 
     private static final String QUERY = "Select * from Books join Authors on Books.Author = Authors.Id " +
             "where Books.YearOfFinishing >= ? order by YearOfFinishing asc";
+
+    private static final String QUERY1 = "Select * from Books join Authors on Books.Author = Authors.Id " +
+            "where Books.YearOfFinishing >= :year order by YearOfFinishing asc";
+
     private static final String QUERY2 = "Select MIN(YearOfFinishing) from Books";
 
     @Test
@@ -45,9 +50,37 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
     }
 
     @Test
+    public void selectListByTypedSqlTest2() {
+        List<Author> authors = dataBaseSteps.select(listOf(Author.class, QUERY1, Map.of("year", 1820)));
+        List<Book> books = dataBaseSteps.select(listOf(Book.class, QUERY1, Map.of("year", 1820)));
+
+        List<Book> books2 = dataBaseSteps.get(listOf(Book.class, byJDOQuery(QBook.class)
+                .addWhere(qBook -> qBook.yearOfFinishing.gteq(1820))
+                .orderBy(qBook -> qBook.yearOfFinishing.asc())));
+
+        List<Author> authors2 = books2.stream().map(Book::getAuthor).collect(toList());
+        assertThat(authors2, contains(authors.toArray()));
+        assertThat(books2, contains(books.toArray()));
+    }
+
+    @Test
     public void selectSingleByTypedSqlTest() {
         Author author = dataBaseSteps.select(oneOf(Author.class, QUERY, 1820));
         Book book = dataBaseSteps.select(oneOf(Book.class, QUERY, 1820));
+
+        Book book2 = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
+                .addWhere(qBook -> qBook.yearOfFinishing.gteq(1820))
+                .orderBy(qBook -> qBook.yearOfFinishing.asc())));
+        Author author2 = book2.getAuthor();
+
+        assertThat(author2, equalTo(author));
+        assertThat(book2, equalTo(book));
+    }
+
+    @Test
+    public void selectSingleByTypedSqlTest2() {
+        Author author = dataBaseSteps.select(oneOf(Author.class, QUERY1, Map.of("year", 1820)));
+        Book book = dataBaseSteps.select(oneOf(Book.class, QUERY1, Map.of("year", 1820)));
 
         Book book2 = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
                 .addWhere(qBook -> qBook.yearOfFinishing.gteq(1820))
@@ -100,10 +133,76 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
     }
 
     @Test
+    public void selectListByUnTypedSqlTest2() {
+        var booksAndAuthors = dataBaseSteps.select(rows(QUERY1,
+                ConnectionDataSupplierForTestBase1.class,
+                Map.of("year", 1820)));
+
+        List<Book> books = dataBaseSteps.select(listOf(Book.class, byJDOQuery(QBook.class)
+                .addWhere(qBook -> qBook.yearOfFinishing.gteq(1820))
+                .orderBy(qBook -> qBook.yearOfFinishing.asc())));
+
+        assertThat(booksAndAuthors.getColumn(1),
+                contains(books.stream().map(Book::getName).toArray(String[]::new)));
+
+        assertThat(booksAndAuthors.getColumn(5),
+                contains(books.stream().map(book -> book.getAuthor().getFirstName()).toArray(String[]::new)));
+
+        assertThat(booksAndAuthors.getColumn(6),
+                contains(books.stream().map(book -> book.getAuthor().getLastName()).toArray(String[]::new)));
+
+        assertThat(booksAndAuthors.getColumn(7, o -> {
+                    try {
+                        return SIMPLE_DATE_FORMAT.parse(o.toString());
+                    } catch (ParseException e) {
+                        throw new RuntimeException(e);
+                    }
+                }),
+                contains(books.stream().map(book -> book.getAuthor().getBirthDate()).toArray(Date[]::new)));
+
+        assertThat(booksAndAuthors.getColumn(8, o -> {
+                    try {
+                        return SIMPLE_DATE_FORMAT.parse(o.toString());
+                    } catch (ParseException e) {
+                        throw new RuntimeException(e);
+                    }
+                }),
+                contains(books.stream().map(book -> book.getAuthor().getDeathDate()).toArray(Date[]::new)));
+
+        assertThat(booksAndAuthors.getColumn(9),
+                contains(books.stream().map(book -> book.getAuthor().getBiography()).toArray(String[]::new)));
+    }
+
+    @Test
     public void selectSingleByUnTypedSqlTest() {
         var bookAndAuthor = dataBaseSteps.select(row(QUERY,
                 ConnectionDataSupplierForTestBase1.class,
                 1820));
+
+        Book book = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
+                .addWhere(qBook -> qBook.name.eq("Ruslan and Ludmila"))));
+
+        List<Object> bookAndAuthor2 = new ArrayList<>();
+        bookAndAuthor2.add(book.getId());
+        bookAndAuthor2.add(book.getName());
+        bookAndAuthor2.add(book.getAuthor().getId());
+        bookAndAuthor2.add(book.getYearOfFinishing());
+
+        bookAndAuthor2.add(book.getAuthor().getId());
+        bookAndAuthor2.add(book.getAuthor().getFirstName());
+        bookAndAuthor2.add(book.getAuthor().getLastName());
+        bookAndAuthor2.add(SIMPLE_DATE_FORMAT.format(book.getAuthor().getBirthDate()));
+        bookAndAuthor2.add(SIMPLE_DATE_FORMAT.format(book.getAuthor().getDeathDate()));
+        bookAndAuthor2.add(book.getAuthor().getBiography());
+
+        assertThat(bookAndAuthor2, contains(bookAndAuthor.toArray()));
+    }
+
+    @Test
+    public void selectSingleByUnTypedSqlTest2() {
+        var bookAndAuthor = dataBaseSteps.select(row(QUERY1,
+                ConnectionDataSupplierForTestBase1.class,
+                Map.of("year", 1820)));
 
         Book book = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
                 .addWhere(qBook -> qBook.name.eq("Ruslan and Ludmila"))));
