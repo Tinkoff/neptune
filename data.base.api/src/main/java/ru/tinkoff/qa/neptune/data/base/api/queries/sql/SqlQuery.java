@@ -9,6 +9,7 @@ import ru.tinkoff.qa.neptune.data.base.api.result.TableResultList;
 import javax.jdo.Query;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -85,6 +86,46 @@ public abstract class SqlQuery<T, R extends List<T>> implements Function<JDOPers
     }
 
     /**
+     * Constructs an object that performs sql query to select list of stored objects.
+     *
+     * @param classOfRequestedValue is a type of objects to be returned
+     * @param sql is an sql query. Parameter naming is supported. It is important!:
+     *            <p>Sql query should be defined as below</p>
+     *            {@code 'Select * from Persons...'}
+     * @param parameters is a map of parameter names and values. It is necessary to define for queries as below
+     *                   <p>
+     *                   {@code 'Select * from Persons where Some_Field=:paramName'}
+     *                   </p>
+     * @param <T> is a type of retrieved objects
+     * @return new {@link SqlQuery}
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends PersistableObject> SqlQuery<T, List<T>> bySql(Class<T> classOfRequestedValue,
+                                                                           String sql,
+                                                                           Map<String, ?> parameters) {
+        checkNotNull(classOfRequestedValue, "Class of objects to select should not be null value");
+        checkArgument(isNotBlank(sql), "Sql query should not be a blank string");
+        checkArgument(nonNull(parameters), "Query parameters should be defined as a value that differs from null");
+        checkArgument(parameters.size() > 0, "At least one parameter name and value should be defined");
+
+        return new SqlQuery<>() {
+            @Override
+            public List<T> apply(JDOPersistenceManager jdoPersistenceManager) {
+                var query = jdoPersistenceManager.newQuery("javax.jdo.query.SQL", sql);
+
+                query.setNamedParameters(parameters);
+                query.setClass(classOfRequestedValue);
+                var list = query.executeList();
+                var toReturn =  new ListOfPersistentObjects<>(jdoPersistenceManager.detachCopyAll(list)) {
+                };
+
+                setRealIds(list, toReturn);
+                return (List<T>) toReturn;
+            }
+        };
+    }
+
+    /**
      * Constructs an object that performs sql query to select list of lists. Each list item contains
      * raw objects as they actually stored without any deserialization.
      *
@@ -108,6 +149,33 @@ public abstract class SqlQuery<T, R extends List<T>> implements Function<JDOPers
                     query.setParameters(parameters);
                 }
 
+                return getUntypedResult(query);
+            }
+        };
+    }
+
+    /**
+     * Constructs an object that performs sql query to select list of lists. Each list item contains
+     * raw objects as they actually stored without any deserialization.
+     *
+     * @param sql is an sql query. Parameter naming is supported.
+     * @param parameters is a map of parameter names and values. It is necessary to define for queries as below
+     *                   <p>
+     *                   {@code 'Select * from Persons where Some_Field=:paramName'}
+     *                   </p>
+     * @return new {@link SqlQuery}
+     */
+    @SuppressWarnings("unchecked")
+    public static SqlQuery<List<Object>, TableResultList> bySql(String sql,  Map<String, ?> parameters) {
+        checkArgument(isNotBlank(sql), "Sql query should not be a blank string");
+        checkArgument(nonNull(parameters), "Query parameters should be defined as a value that differs from null");
+        checkArgument(parameters.size() > 0, "At least one parameter name and value should be defined");
+
+        return new SqlQuery<>() {
+            @Override
+            public TableResultList apply(JDOPersistenceManager jdoPersistenceManager) {
+                var query = jdoPersistenceManager.newQuery("javax.jdo.query.SQL", sql);
+                query.setNamedParameters(parameters);
                 return getUntypedResult(query);
             }
         };
