@@ -48,9 +48,12 @@ import static ru.tinkoff.qa.neptune.data.base.api.queries.sql.SqlQuery.bySql;
 public class SelectList<T, R extends List<T>, M> extends SequentialGetStepSupplier
         .GetIterableChainedStepSupplier<DataBaseStepContext, R, M, T, SelectList<T, R, M>> {
 
+    private final KeepResultPersistent resultPersistent;
+
     private SelectList(String description,
-                       Function<M, R> originalFunction) {
+                       Function<M, R> originalFunction, KeepResultPersistent resultPersistent) {
         super(description, originalFunction);
+        this.resultPersistent = resultPersistent;
         timeOut(WAITING_FOR_SELECTION_RESULT_TIME.get());
         pollingInterval(SLEEPING_TIME.get());
     }
@@ -66,8 +69,9 @@ public class SelectList<T, R extends List<T>, M> extends SequentialGetStepSuppli
      */
     public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectList<R, List<R>, ReadableJDOQuery<R>> listOf(Class<R> toSelect,
                                                                                                                                        JDOQLQueryParameters<R, Q> params) {
+        var resultPersistent = new KeepResultPersistent();
         return new SelectList<R, List<R>, ReadableJDOQuery<R>>(format("List of %s by JDO typed query", toSelect.getName()),
-                byJDOQLQuery()) {
+                byJDOQLQuery(resultPersistent), resultPersistent) {
             protected Function<ReadableJDOQuery<R>, List<R>> getEndFunction() {
                 //TODO such implementation is for advanced reporting
                 //TODO jdo query should be turned into step parameter in a report
@@ -96,7 +100,7 @@ public class SelectList<T, R extends List<T>, M> extends SequentialGetStepSuppli
     rows(Class<R> toSelectFrom,
          JDOQLResultQueryParams<R, Q> params) {
         return new SelectList<List<Object>, TableResultList, ReadableJDOQuery<R>>(format("Rows taken from %s by JDO query", toSelectFrom.getName()),
-                byJDOQLResultQuery()) {
+                byJDOQLResultQuery(), null) {
             protected Function<ReadableJDOQuery<R>, TableResultList> getEndFunction() {
                 //TODO such implementation is for advanced reporting
                 //TODO jdo query should be turned into step parameter in a report
@@ -135,10 +139,11 @@ public class SelectList<T, R extends List<T>, M> extends SequentialGetStepSuppli
                                                                                                      Ids ids) {
         //TODO ids should be turned into step parameter in a report
         //TODO comment for further releases
+        var resultPersistent = new KeepResultPersistent();
         return new SelectList<>(format("List of %s by ids %s",
                 toSelect.getName(),
                 ids),
-                ids.build(toSelect))
+                ids.build(toSelect, resultPersistent), resultPersistent)
                 .from(getConnectionByClass(toSelect));
     }
 
@@ -161,12 +166,13 @@ public class SelectList<T, R extends List<T>, M> extends SequentialGetStepSuppli
                                                                                                      Object... parameters) {
         //TODO sql + parameters should be turned into step parameters in a report
         //TODO comment for further releases
+        var resultPersistent = new KeepResultPersistent();
         return new SelectList<>(format("List of %s by query '%s'. " +
                         "Parameters: %s",
                 toSelect.getName(),
                 sql,
                 Arrays.toString(parameters)),
-                bySql(toSelect, sql, parameters))
+                bySql(toSelect, sql, resultPersistent, parameters), resultPersistent)
                 .from(getConnectionByClass(toSelect));
     }
 
@@ -189,12 +195,13 @@ public class SelectList<T, R extends List<T>, M> extends SequentialGetStepSuppli
                                                                                                      Map<String, ?> parameters) {
         //TODO sql + parameters should be turned into step parameters in a report
         //TODO comment for further releases
+        var resultPersistent = new KeepResultPersistent();
         return new SelectList<>(format("List of %s by query '%s'. " +
                         "Parameters: %s",
                 toSelect.getName(),
                 sql,
                 valueOf(parameters)),
-                bySql(toSelect, sql, parameters))
+                bySql(toSelect, sql, resultPersistent, parameters), resultPersistent)
                 .from(getConnectionByClass(toSelect));
     }
 
@@ -222,7 +229,7 @@ public class SelectList<T, R extends List<T>, M> extends SequentialGetStepSuppli
                 sql,
                 connection.getName(),
                 Arrays.toString(parameters)),
-                bySql(sql, parameters))
+                bySql(sql, parameters), null)
                 .from(getConnectionBySupplierClass(connection));
     }
 
@@ -250,7 +257,7 @@ public class SelectList<T, R extends List<T>, M> extends SequentialGetStepSuppli
                 sql,
                 connection.getName(),
                 valueOf(parameters)),
-                bySql(sql, parameters))
+                bySql(sql, parameters), null)
                 .from(getConnectionBySupplierClass(connection));
     }
 
@@ -293,5 +300,9 @@ public class SelectList<T, R extends List<T>, M> extends SequentialGetStepSuppli
     public SelectList<T, R, M> throwWhenResultEmpty(String errorText) {
         checkArgument(isNotBlank(errorText), "Please define not blank exception text");
         return super.throwOnEmptyResult(() -> new NothingIsSelectedException(errorText));
+    }
+
+    KeepResultPersistent getResultPersistent() {
+        return resultPersistent;
     }
 }

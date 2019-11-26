@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.data.base.api.queries.jdoql;
 
 import ru.tinkoff.qa.neptune.data.base.api.IdSetter;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
+import ru.tinkoff.qa.neptune.data.base.api.queries.KeepResultPersistent;
 import ru.tinkoff.qa.neptune.data.base.api.result.ListOfPersistentObjects;
 
 import javax.jdo.JDOQLTypedQuery;
@@ -14,8 +15,11 @@ import java.util.function.Function;
  */
 public final class JDOQLQuery<T extends PersistableObject> implements Function<ReadableJDOQuery<T>, List<T>>, IdSetter {
 
-    private JDOQLQuery() {
+    private final KeepResultPersistent keepResultPersistent;
+
+    private JDOQLQuery(KeepResultPersistent keepResultPersistent) {
         super();
+        this.keepResultPersistent = keepResultPersistent;
     }
 
     /**
@@ -24,8 +28,8 @@ public final class JDOQLQuery<T extends PersistableObject> implements Function<R
      * @param <T> is a type of {@link PersistableObject} to be selected
      * @return new {@link JDOQLQuery}
      */
-    public static <T extends PersistableObject> JDOQLQuery<T> byJDOQLQuery() {
-        return new JDOQLQuery<>();
+    public static <T extends PersistableObject> JDOQLQuery<T> byJDOQLQuery(KeepResultPersistent keepResultPersistent) {
+        return new JDOQLQuery<>(keepResultPersistent);
     }
 
     @Override
@@ -33,10 +37,18 @@ public final class JDOQLQuery<T extends PersistableObject> implements Function<R
         var list = jdoqlTypedQuery.executeList();
         var manager = jdoqlTypedQuery.getPersistenceManager();
 
-        var toReturn =  new ListOfPersistentObjects<>(manager.detachCopyAll(list)) {
-        };
+        ListOfPersistentObjects<T> toReturn;
+        if (!keepResultPersistent.toKeepOnPersistent()) {
+            toReturn = new ListOfPersistentObjects<>(manager.detachCopyAll(list)) {
+            };
+            setRealIds(list, toReturn);
+        }
+        else {
+            toReturn = new ListOfPersistentObjects<>(list) {
+            };
+        }
 
-        setRealIds(list, toReturn);
+
         return toReturn;
     }
 }

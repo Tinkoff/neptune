@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.data.base.api.queries.sql;
 import org.datanucleus.api.jdo.JDOPersistenceManager;
 import ru.tinkoff.qa.neptune.data.base.api.IdSetter;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
+import ru.tinkoff.qa.neptune.data.base.api.queries.KeepResultPersistent;
 import ru.tinkoff.qa.neptune.data.base.api.result.ListOfPersistentObjects;
 import ru.tinkoff.qa.neptune.data.base.api.result.TableResultList;
 
@@ -59,8 +60,9 @@ public abstract class SqlQuery<T, R extends List<T>> implements Function<JDOPers
      */
     @SuppressWarnings("unchecked")
     public static <T extends PersistableObject> SqlQuery<T, List<T>> bySql(Class<T> classOfRequestedValue,
-                                                                  String sql,
-                                                                  Object... parameters) {
+                                                                           String sql,
+                                                                           KeepResultPersistent keepResultPersistent,
+                                                                           Object... parameters) {
         checkNotNull(classOfRequestedValue, "Class of objects to select should not be null value");
         checkArgument(isNotBlank(sql), "Sql query should not be a blank string");
         checkArgument(nonNull(parameters), "Query parameters should be defined as a value that differs from null");
@@ -76,11 +78,19 @@ public abstract class SqlQuery<T, R extends List<T>> implements Function<JDOPers
 
                 query.setClass(classOfRequestedValue);
                 var list = query.executeList();
-                var toReturn =  new ListOfPersistentObjects<>(jdoPersistenceManager.detachCopyAll(list)) {
-                };
 
-                setRealIds(list, toReturn);
-                return (List<T>) toReturn;
+                ListOfPersistentObjects<T> toReturn;
+                if (!keepResultPersistent.toKeepOnPersistent()) {
+                    toReturn = new ListOfPersistentObjects<>(jdoPersistenceManager.detachCopyAll(list)) {
+                    };
+                    setRealIds(list, toReturn);
+                }
+                else {
+                    toReturn = new ListOfPersistentObjects<>(list) {
+                    };
+                }
+
+                return toReturn;
             }
         };
     }
@@ -102,6 +112,7 @@ public abstract class SqlQuery<T, R extends List<T>> implements Function<JDOPers
     @SuppressWarnings("unchecked")
     public static <T extends PersistableObject> SqlQuery<T, List<T>> bySql(Class<T> classOfRequestedValue,
                                                                            String sql,
+                                                                           KeepResultPersistent keepResultPersistent,
                                                                            Map<String, ?> parameters) {
         checkNotNull(classOfRequestedValue, "Class of objects to select should not be null value");
         checkArgument(isNotBlank(sql), "Sql query should not be a blank string");
@@ -116,11 +127,19 @@ public abstract class SqlQuery<T, R extends List<T>> implements Function<JDOPers
                 query.setNamedParameters(parameters);
                 query.setClass(classOfRequestedValue);
                 var list = query.executeList();
-                var toReturn =  new ListOfPersistentObjects<>(jdoPersistenceManager.detachCopyAll(list)) {
-                };
 
-                setRealIds(list, toReturn);
-                return (List<T>) toReturn;
+                ListOfPersistentObjects<T> toReturn;
+                if (!keepResultPersistent.toKeepOnPersistent()) {
+                    toReturn = new ListOfPersistentObjects<>(jdoPersistenceManager.detachCopyAll(list)) {
+                    };
+                    setRealIds(list, toReturn);
+                }
+                else {
+                    toReturn = new ListOfPersistentObjects<>(list) {
+                    };
+                }
+
+                return toReturn;
             }
         };
     }

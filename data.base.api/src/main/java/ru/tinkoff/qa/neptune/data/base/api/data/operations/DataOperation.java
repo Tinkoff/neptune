@@ -8,10 +8,11 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCaptures
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 import ru.tinkoff.qa.neptune.data.base.api.IdSetter;
-import ru.tinkoff.qa.neptune.data.base.api.result.ListOfPersistentObjects;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
+import ru.tinkoff.qa.neptune.data.base.api.queries.ResultPersistentManager;
 import ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle;
 import ru.tinkoff.qa.neptune.data.base.api.queries.SelectList;
+import ru.tinkoff.qa.neptune.data.base.api.result.ListOfPersistentObjects;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -25,6 +26,7 @@ import static java.util.List.copyOf;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static javax.jdo.JDOHelper.isPersistent;
 import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.action;
 import static ru.tinkoff.qa.neptune.data.base.api.ConnectionDataReader.getConnection;
 
@@ -37,8 +39,11 @@ import static ru.tinkoff.qa.neptune.data.base.api.ConnectionDataReader.getConnec
 @SuppressWarnings("unchecked")
 @MakeFileCapturesOnFinishing
 @MakeStringCapturesOnFinishing
-public final class DataOperation<T extends PersistableObject>  extends SequentialGetStepSupplier
+public final class DataOperation<T extends PersistableObject> extends SequentialGetStepSupplier
         .GetIterableChainedStepSupplier<DataBaseStepContext, List<T>, Map<JDOPersistenceManager, List<T>>, T, DataOperation<T>> {
+
+    private static final ResultPersistentManager RESULT_PERSISTENT_MANAGER = new ResultPersistentManager() {
+    };
 
     private DataOperation(String description, Function<Map<JDOPersistenceManager, List<T>>, List<T>> originalFunction) {
         super(description, originalFunction);
@@ -48,8 +53,8 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
      * Updating a single stored record. The record to be updated is selected by query and then updated.
      *
      * @param howToSelect is a description of query how to select the record
-     * @param set are instances of {@link UpdateExpression} that describe how to update the record
-     * @param <T> is a type of {@link PersistableObject} to be updated
+     * @param set         are instances of {@link UpdateExpression} that describe how to update the record
+     * @param <T>         is a type of {@link PersistableObject} to be updated
      * @return an instance of {@link DataOperation}
      */
     public static <T extends PersistableObject> DataOperation<T> updated(SelectASingle<T, ?, ?> howToSelect, UpdateExpression<T>... set) {
@@ -60,6 +65,7 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
         return new DataOperation<T>(format("Updated %s", howToSelect),
                 jdoPersistenceManagerListMap -> update(jdoPersistenceManagerListMap, set))
                 .from(context -> {
+                    RESULT_PERSISTENT_MANAGER.keepResultPersistent(howToSelect);
                     var result = context.select(howToSelect);
                     var list = ofNullable(result).map(List::of).orElseGet(List::of);
                     return getMap(context, list);
@@ -70,8 +76,8 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
      * Updating a list of stored records. Records to be updated are selected by query and then updated.
      *
      * @param howToSelect is a description of query how to select records
-     * @param set are instances of {@link UpdateExpression} that describe how to update the record
-     * @param <T> is a type of {@link PersistableObject} to be updated
+     * @param set         are instances of {@link UpdateExpression} that describe how to update the record
+     * @param <T>         is a type of {@link PersistableObject} to be updated
      * @return an instance of {@link DataOperation}
      */
     public static <T extends PersistableObject> DataOperation<T> updated(SelectList<?, List<T>, ?> howToSelect, UpdateExpression<T>... set) {
@@ -81,15 +87,18 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
         checkArgument(set.length > 0, "At least one update-action should be defined");
         return new DataOperation<T>(format("Updated %s", howToSelect),
                 jdoPersistenceManagerListMap -> update(jdoPersistenceManagerListMap, set))
-                .from(context -> getMap(context, context.select(howToSelect)));
+                .from(context -> {
+                    RESULT_PERSISTENT_MANAGER.keepResultPersistent(howToSelect);
+                    return getMap(context, context.select(howToSelect));
+                });
     }
 
     /**
      * Updating a list of stored records.
      *
      * @param toBeUpdated is a list of stored records that is selected firstly
-     * @param set are instances of {@link UpdateExpression} that describe how to update the record
-     * @param <T> is a type of {@link PersistableObject} to be updated
+     * @param set         are instances of {@link UpdateExpression} that describe how to update the record
+     * @param <T>         is a type of {@link PersistableObject} to be updated
      * @return an instance of {@link DataOperation}
      */
     public static <T extends PersistableObject> DataOperation<T> updated(Collection<T> toBeUpdated, UpdateExpression<T>... set) {
@@ -120,7 +129,7 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
      * Deleting a single stored record. The record to be deleted is selected by query and then deleted.
      *
      * @param howToSelect is a description of query how to select the record
-     * @param <T> is a type of {@link PersistableObject} to be deleted
+     * @param <T>         is a type of {@link PersistableObject} to be deleted
      * @return an instance of {@link DataOperation}
      */
     public static <T extends PersistableObject> DataOperation<T> deleted(SelectASingle<T, ?, ?> howToSelect) {
@@ -129,6 +138,7 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
         return new DataOperation<T>(format("Deleted %s", howToSelect),
                 DataOperation::delete)
                 .from(context -> {
+                    RESULT_PERSISTENT_MANAGER.keepResultPersistent(howToSelect);
                     var result = context.select(howToSelect);
                     var list = ofNullable(result).map(List::of).orElseGet(List::of);
                     return getMap(context, list);
@@ -139,7 +149,7 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
      * Deleting a list of stored records. Records to be deleted are selected by query and then deleted.
      *
      * @param howToSelect is a description of query how to select records
-     * @param <T> is a type of {@link PersistableObject} to be deleted
+     * @param <T>         is a type of {@link PersistableObject} to be deleted
      * @return an instance of {@link DataOperation}
      */
     public static <T extends PersistableObject> DataOperation<T> deleted(SelectList<?, List<T>, ?> howToSelect) {
@@ -147,14 +157,17 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
                 "should be defined as a value that differs from null");
         return new DataOperation<T>(format("Deleted %s", howToSelect),
                 DataOperation::delete)
-                .from(context -> getMap(context, context.select(howToSelect)));
+                .from(context -> {
+                    RESULT_PERSISTENT_MANAGER.keepResultPersistent(howToSelect);
+                    return getMap(context, context.select(howToSelect));
+                });
     }
 
     /**
      * Deleting a list of stored records.
      *
      * @param toBeDeleted is a list of stored records that is selected firstly
-     * @param <T> is a type of {@link PersistableObject} to be deleted
+     * @param <T>         is a type of {@link PersistableObject} to be deleted
      * @return an instance of {@link DataOperation}
      */
     public static <T extends PersistableObject> DataOperation<T> deleted(Collection<T> toBeDeleted) {
@@ -180,7 +193,7 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
      * Inserting a list of stored records.
      *
      * @param toBeInserted is a list of records to be inserted
-     * @param <T> is a type of {@link PersistableObject} to be inserted
+     * @param <T>          is a type of {@link PersistableObject} to be inserted
      * @return an instance of {@link DataOperation}
      */
     public static <T extends PersistableObject> DataOperation<T> inserted(Collection<T> toBeInserted) {
@@ -199,6 +212,22 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
                 toInsert.size()),
                 DataOperation::insert)
                 .from(context -> getMap(context, toInsert));
+    }
+
+    private static <T extends PersistableObject> List<T> makeEveryThingPersistentIfNecessary(JDOPersistenceManager manager, List<T> persistable) {
+        var result = new ArrayList<T>();
+
+        persistable.forEach(t ->  {
+           T t2;
+           if (!isPersistent(t)) {
+               t2 = manager.makePersistent(t);
+           }
+           else {
+               t2 = t;
+           }
+           result.add(t2);
+        });
+        return result;
     }
 
     private static <T extends PersistableObject> List<T> update(Map<JDOPersistenceManager, List<T>> connectionMap, UpdateExpression<T>... set) {
@@ -221,28 +250,29 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
                 }
             };
 
-            var updated = new HashSet<T>();
+            var idSetter = new IdSetter() {
+            };
 
-            var idSetter = new IdSetter(){};
             stream(set).forEach(setAction -> {
-                updated.clear();
                 var consumer = setAction.getUpdateAction();
-                action(consumer.toString(), (Consumer<Map<JDOPersistenceManager, List<T>>>) map -> map.forEach((manager, ts) -> {
-                    consumer.accept(ts);
-                    var persistent = manager.makePersistentAll(ts);
-                    preCommit(Set.of(manager));
+                action(consumer.toString(), (Consumer<Map<JDOPersistenceManager, List<T>>>) map -> {
+                    for (var entry : map.entrySet()) {
+                        consumer.accept(entry.getValue());
+                        entry.setValue(makeEveryThingPersistentIfNecessary(entry.getKey(), entry.getValue()));
+                        preCommit(Set.of(entry.getKey()));
+                    }
+                }).accept(connectionMap);
+            });
 
-                    var detached = manager.detachCopyAll(persistent);
-                    idSetter.setRealIds(copyOf(persistent), copyOf(detached));
-                    updated.addAll(detached);
-                })).accept(connectionMap);
+            connectionMap.forEach((manager, ts) -> {
+                var detached = manager.detachCopyAll(ts);
+                idSetter.setRealIds(copyOf(ts), copyOf(detached));
+                result.addAll(detached);
             });
 
             commitTransaction(managerSet);
-            result.addAll(updated);
             return result;
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             rollbackTransaction(managerSet);
             throw t;
         }
@@ -268,7 +298,8 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
                 }
             };
 
-            var idSetter = new IdSetter(){};
+            var idSetter = new IdSetter() {
+            };
             connectionMap.forEach((manager, toBeInserted) -> {
                 var persistent = manager.makePersistentAll(toBeInserted);
                 var detached = manager.detachCopyAll(persistent);
@@ -279,8 +310,7 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
             preCommit(managerSet);
             commitTransaction(managerSet);
             return result;
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             rollbackTransaction(managerSet);
             throw t;
         }
@@ -305,8 +335,7 @@ public final class DataOperation<T extends PersistableObject>  extends Sequentia
             preCommit(managerSet);
             commitTransaction(managerSet);
             return result;
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             rollbackTransaction(managerSet);
             throw t;
         }

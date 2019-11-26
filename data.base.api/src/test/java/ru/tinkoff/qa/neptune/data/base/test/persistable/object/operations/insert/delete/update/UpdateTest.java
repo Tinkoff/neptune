@@ -181,7 +181,7 @@ public class UpdateTest extends BaseDbOperationTest {
                 .addWhere(qCarModel -> qCarModel.carModelName.eq("Corolla E170"))));
 
         try {
-            dataBaseSteps.update(of(dostoevsky, crownVictoria), change("Add biography details to Author",
+            dataBaseSteps.update(of(dostoevsky, corollaE170), change("Add biography details to Author",
                     persistableObject -> { //this updating is supposed to be successful
                         if (Author.class.isAssignableFrom(persistableObject.getClass())) {
                             ((Author) persistableObject).setBiography(BIO4);
