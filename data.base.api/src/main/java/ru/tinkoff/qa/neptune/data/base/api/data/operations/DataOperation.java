@@ -307,7 +307,9 @@ public final class DataOperation<T extends PersistableObject> extends Sequential
                 result.addAll(detached);
             });
 
-            preCommit(managerSet);
+            if (managerSet.size() > 1) {
+                preCommit(managerSet);
+            }
             commitTransaction(managerSet);
             return result;
         } catch (Throwable t) {
@@ -332,7 +334,9 @@ public final class DataOperation<T extends PersistableObject> extends Sequential
                 ts.forEach(o -> result.add((T) o.clone()));
             });
 
-            preCommit(managerSet);
+            if (managerSet.size() > 1) {
+                preCommit(managerSet);
+            }
             commitTransaction(managerSet);
             return result;
         } catch (Throwable t) {
