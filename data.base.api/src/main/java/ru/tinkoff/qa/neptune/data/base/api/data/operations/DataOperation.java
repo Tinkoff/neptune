@@ -214,7 +214,7 @@ public final class DataOperation<T extends PersistableObject> extends Sequential
                 .from(context -> getMap(context, toInsert));
     }
 
-    private static <T extends PersistableObject> List<T> makeEveryThingPersistentIfNecessary(JDOPersistenceManager manager, List<T> persistable) {
+    private static <T extends PersistableObject> List<T> makeEveryThingTransientIfNecessary(JDOPersistenceManager manager, List<T> persistable) {
         var result = new ArrayList<T>();
 
         persistable.forEach(t ->  {
@@ -227,6 +227,7 @@ public final class DataOperation<T extends PersistableObject> extends Sequential
            }
            result.add(t2);
         });
+        manager.makeTransactionalAll(result);
         return result;
     }
 
@@ -257,20 +258,19 @@ public final class DataOperation<T extends PersistableObject> extends Sequential
                 var consumer = setAction.getUpdateAction();
                 action(consumer.toString(), (Consumer<Map<JDOPersistenceManager, List<T>>>) map -> {
                     for (var entry : map.entrySet()) {
+                        entry.setValue(makeEveryThingTransientIfNecessary(entry.getKey(), entry.getValue()));
                         consumer.accept(entry.getValue());
-                        entry.setValue(makeEveryThingPersistentIfNecessary(entry.getKey(), entry.getValue()));
                         preCommit(Set.of(entry.getKey()));
                     }
                 }).accept(connectionMap);
             });
 
+            commitTransaction(managerSet);
             connectionMap.forEach((manager, ts) -> {
                 var detached = manager.detachCopyAll(ts);
                 idSetter.setRealIds(copyOf(ts), copyOf(detached));
                 result.addAll(detached);
             });
-
-            commitTransaction(managerSet);
             return result;
         } catch (Throwable t) {
             rollbackTransaction(managerSet);
