@@ -27,6 +27,7 @@ import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static javax.jdo.JDOHelper.isPersistent;
+import static javax.jdo.JDOHelper.isTransactional;
 import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.action;
 import static ru.tinkoff.qa.neptune.data.base.api.ConnectionDataReader.getConnection;
 
@@ -224,6 +225,10 @@ public final class DataOperation<T extends PersistableObject> extends Sequential
            }
            else {
                t2 = t;
+           }
+
+           if (!isTransactional(t2)) {
+               manager.makeTransactional(t2);
            }
            result.add(t2);
         });
