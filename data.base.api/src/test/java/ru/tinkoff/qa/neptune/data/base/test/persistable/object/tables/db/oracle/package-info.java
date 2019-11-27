@@ -1,5 +1,0 @@
-@ConnectionToUse(connectionSupplier = WofOracleConnectionSupplier.class)
-package ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.oracle;
-
-import ru.tinkoff.qa.neptune.data.base.api.ConnectionToUse;
-import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.WofOracleConnectionSupplier;
