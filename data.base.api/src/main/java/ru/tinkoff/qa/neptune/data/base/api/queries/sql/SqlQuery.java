@@ -72,6 +72,7 @@ public abstract class SqlQuery<T, R extends List<T>> implements Function<JDOPers
             public List<T> apply(JDOPersistenceManager jdoPersistenceManager) {
                 var query = jdoPersistenceManager.newQuery("javax.jdo.query.SQL", sql);
                 query.addExtension("datanucleus.query.resultCacheType", "none");
+                query.setIgnoreCache(true);
 
                 if (parameters.length > 0) {
                     query.setParameters(parameters);
@@ -125,6 +126,7 @@ public abstract class SqlQuery<T, R extends List<T>> implements Function<JDOPers
             public List<T> apply(JDOPersistenceManager jdoPersistenceManager) {
                 var query = jdoPersistenceManager.newQuery("javax.jdo.query.SQL", sql);
                 query.addExtension("datanucleus.query.resultCacheType", "none");
+                query.setIgnoreCache(true);
 
                 query.setNamedParameters(parameters);
                 query.setClass(classOfRequestedValue);
@@ -166,6 +168,7 @@ public abstract class SqlQuery<T, R extends List<T>> implements Function<JDOPers
             public TableResultList apply(JDOPersistenceManager jdoPersistenceManager) {
                 var query = jdoPersistenceManager.newQuery("javax.jdo.query.SQL", sql);
                 query.addExtension("datanucleus.query.resultCacheType", "none");
+                query.setIgnoreCache(true);
 
                 if (parameters.length > 0) {
                     query.setParameters(parameters);
@@ -198,6 +201,7 @@ public abstract class SqlQuery<T, R extends List<T>> implements Function<JDOPers
             public TableResultList apply(JDOPersistenceManager jdoPersistenceManager) {
                 var query = jdoPersistenceManager.newQuery("javax.jdo.query.SQL", sql);
                 query.addExtension("datanucleus.query.resultCacheType", "none");
+                query.setIgnoreCache(true);
                 query.setNamedParameters(parameters);
                 return getUntypedResult(query);
             }
