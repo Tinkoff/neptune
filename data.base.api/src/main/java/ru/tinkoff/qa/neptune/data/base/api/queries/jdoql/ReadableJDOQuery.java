@@ -21,6 +21,7 @@ public class ReadableJDOQuery<T extends PersistableObject> extends JDOQLTypedQue
      */
     public ReadableJDOQuery(PersistenceManager pm, Class<T> candidateClass) {
         super(pm, candidateClass);
+        getInternalQuery().addExtension("datanucleus.query.resultCacheType", "none");
     }
 
     public Query getInternalQuery() {
