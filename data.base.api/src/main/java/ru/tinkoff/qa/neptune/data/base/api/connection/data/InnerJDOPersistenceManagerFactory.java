@@ -55,6 +55,7 @@ public final class InnerJDOPersistenceManagerFactory extends JDOPersistenceManag
                 .getFetchPlan()
                 .addGroup(group.getName())));
         manager.getFetchPlan().setMaxFetchDepth(DEPTH);
+        manager.setIgnoreCache(true);
         return manager;
     }
 }
