@@ -22,7 +22,11 @@ abstract class DBCaptor<T> extends FileCaptor<T> {
     public File getData(T caught) {
         try {
             var json = createTempFile("persistable", UUID.randomUUID().toString() + ".json");
-            writeStringToFile(json, new GsonBuilder().setPrettyPrinting().create().toJson(new Gson().toJsonTree(caught)),
+            writeStringToFile(json, new GsonBuilder()
+                            .setPrettyPrinting()
+                            .setExclusionStrategies(new DataNucleousEnhancedExclusionStrategy())
+                            .create()
+                            .toJson(new Gson().toJsonTree(caught)),
                     defaultCharset(), true);
             json.deleteOnExit();
             return json;

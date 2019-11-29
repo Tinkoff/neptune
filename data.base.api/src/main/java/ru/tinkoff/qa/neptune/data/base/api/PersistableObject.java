@@ -20,6 +20,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
  */
 public abstract class PersistableObject extends OrmObject implements Cloneable, LoggableObject {
 
+    public static final String[] DATA_NUCLEOUS_ENHANCED_FIELDS = new String[]{"dnStateManager", "dnFlags", "dnDetachedState", "$"};
+
     @NotPersistent
     private Object $;
 
@@ -82,7 +84,7 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
                     }
 
                     if (parseBoolean(thisClazz.getAnnotation(PersistenceCapable.class).embeddedOnly())) {
-                        return super.equalsByFields(o, "dnStateManager", "dnFlags", "dnDetachedState", "$");
+                        return super.equalsByFields(o, DATA_NUCLEOUS_ENHANCED_FIELDS);
                     }
 
                     var isThisPersistent = isPersistent(thisObj);
@@ -104,7 +106,7 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
                         var idToCheck = ((PersistableObject) o).getRealId();
                         var thisId = thisObj.getRealId();
                         if (thisId == null && idToCheck == null) {
-                            return super.equalsByFields(o, "dnStateManager", "dnFlags", "dnDetachedState", "$");
+                            return super.equalsByFields(o, DATA_NUCLEOUS_ENHANCED_FIELDS);
                         }
 
                         return Objects.equals(thisObj.getRealId(),
@@ -116,7 +118,7 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
                         return false;
                     }
 
-                    return super.equalsByFields(o, "dnStateManager", "dnFlags", "dnDetachedState", "$");
+                    return super.equalsByFields(o, DATA_NUCLEOUS_ENHANCED_FIELDS);
                 })
                 .orElse(false);
     }
