@@ -4,7 +4,9 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.operations.BaseDbOperationTest;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.one.tables.Author;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.one.tables.Catalog;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.one.tables.QAuthor;
+import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.one.tables.QCatalog;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.two.tables.CarModel;
 import ru.tinkoff.qa.neptune.data.base.test.persistable.object.tables.db.two.tables.QCarModel;
 
@@ -168,6 +170,14 @@ public class UpdateTest extends BaseDbOperationTest {
 
         assertThat(updatedAuthors, contains(updatedDostoevsky));
         assertThat(updatedCarModels, contains(updatedCrownVictoria));
+    }
+
+    @Test(groups = "positive update")
+    public void positiveUpdateTest4() {
+        var catalogItem = dataBaseSteps.update(listOf(Catalog.class, byJDOQuery(QCatalog.class)
+                .addWhere(q -> q.book.name.eq("Ruslan and Ludmila"))
+                .addWhere(q -> q.publisher.name.eq("Bergh Publishing"))),
+                change("YEAR OF PUBLISHING = 1995", catalog -> catalog.setYearOfPublishing(1995)));
     }
 
     @Test(dependsOnGroups = "positive update")
