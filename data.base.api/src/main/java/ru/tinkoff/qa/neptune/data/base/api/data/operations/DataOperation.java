@@ -232,7 +232,6 @@ public final class DataOperation<T extends PersistableObject> extends Sequential
            }
            result.add(t2);
         });
-        manager.makeTransactionalAll(result);
         return result;
     }
 
