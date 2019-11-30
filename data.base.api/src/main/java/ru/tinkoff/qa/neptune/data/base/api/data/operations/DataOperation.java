@@ -219,16 +219,19 @@ public final class DataOperation<T extends PersistableObject> extends Sequential
         var result = new ArrayList<T>();
 
         persistable.forEach(t ->  {
-           T t2;
-           if (!isPersistent(t)) {
-               t2 = manager.makePersistent(t);
-           }
-           else {
-               t2 = t;
-           }
-           result.add(t2);
+            T t2;
+            if (!isPersistent(t)) {
+                t2 = manager.makePersistent(t);
+            }
+            else {
+                t2 = t;
+            }
+
+            if (!isTransactional(t2)) {
+                manager.makeTransactional(t2);
+            }
+            result.add(t2);
         });
-        manager.makeTransactionalAll(result);
         return result;
     }
 
