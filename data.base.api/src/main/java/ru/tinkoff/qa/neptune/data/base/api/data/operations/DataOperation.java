@@ -226,12 +226,9 @@ public final class DataOperation<T extends PersistableObject> extends Sequential
            else {
                t2 = t;
            }
-
-           if (!isTransactional(t2)) {
-               manager.makeTransactional(t2);
-           }
            result.add(t2);
         });
+        manager.makeTransactionalAll(result);
         return result;
     }
 
