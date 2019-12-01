@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.data.base.api.queries.ids;
 import org.datanucleus.api.jdo.JDOPersistenceManager;
 import ru.tinkoff.qa.neptune.data.base.api.IdSetter;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
+import ru.tinkoff.qa.neptune.data.base.api.queries.KeepResultPersistent;
 import ru.tinkoff.qa.neptune.data.base.api.result.ListOfPersistentObjects;
 
 import java.util.ArrayList;
@@ -21,8 +22,10 @@ final class IdQuery<T extends PersistableObject> implements Function<JDOPersiste
 
     private final Class<T> classOfRequestedValue;
     private final Object[] ids;
+    private final KeepResultPersistent keepResultPersistent;
 
-    IdQuery(Class<T> classOfRequestedValue, Object[] ids) {
+    IdQuery(Class<T> classOfRequestedValue, Object[] ids, KeepResultPersistent keepResultPersistent) {
+        this.keepResultPersistent = keepResultPersistent;
         checkNotNull(classOfRequestedValue, "A class of selected objects should be defined");
         checkNotNull(ids, "Ids should be defined as a value that differs from null");
         checkArgument(ids.length > 0, "At least one object Id should be defined");
@@ -43,9 +46,17 @@ final class IdQuery<T extends PersistableObject> implements Function<JDOPersiste
             }
         });
 
-        var found = new ListOfPersistentObjects<T>((jdoPersistenceManager.detachCopyAll(list))){
-        };
-        setRealIds(list, found);
+        ListOfPersistentObjects<T> found;
+
+        if (!keepResultPersistent.toKeepOnPersistent()) {
+            found = new ListOfPersistentObjects<>((jdoPersistenceManager.detachCopyAll(list))) {
+            };
+            setRealIds(list, found);
+        }
+        else {
+            found = new ListOfPersistentObjects<>(list) {
+            };
+        }
 
         return found;
     }

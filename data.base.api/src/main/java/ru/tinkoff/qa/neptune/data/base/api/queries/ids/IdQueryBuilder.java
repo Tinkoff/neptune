@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.data.base.api.queries.ids;
 
 import org.datanucleus.api.jdo.JDOPersistenceManager;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
+import ru.tinkoff.qa.neptune.data.base.api.queries.KeepResultPersistent;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,8 +26,9 @@ abstract class IdQueryBuilder {
      * @param <T> is a type of {@link PersistableObject} to be selected
      * @return a function that performs the selecting of stored objects by defined ids.
      */
-    public <T extends PersistableObject> Function<JDOPersistenceManager, List<T>> build(Class<T> toSelect) {
-        return new IdQuery<>(toSelect, ids);
+    public <T extends PersistableObject> Function<JDOPersistenceManager, List<T>> build(Class<T> toSelect,
+                                                                                        KeepResultPersistent keepResultPersistent) {
+        return new IdQuery<>(toSelect, ids, keepResultPersistent);
     }
 
     @Override
