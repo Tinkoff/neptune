@@ -12,6 +12,6 @@ class DirectMatchAction<T> extends MatchAction<T, T> {
 
     @Override
     public void accept(T t) {
-        assertThat(t, new InnerMatcher<>(description, criteria));
+        assertThat(t, new InnerMatcher<>(getDescription(), getCriteria()));
     }
 }

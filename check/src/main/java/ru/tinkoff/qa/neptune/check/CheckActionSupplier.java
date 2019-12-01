@@ -28,17 +28,18 @@ public final class CheckActionSupplier<T> extends SequentialActionSupplier<T, T,
     }
 
     /**
-     * Creates an instance of {@link CheckActionSupplier} and defines value to be verified and verification criteria.
-     * And then the checking is performed.
+     * Creates an instance of {@link CheckActionSupplier};
+     * Defines a value to be verified and verification criteria;
+     * Value check is performed.
      *
-     * @param description of a value to be verified.
+     * @param description Value description
      * @param t           value to be verified.
-     * @param matchActions is an arrya of {@link MatchAction}
+     * @param matchActions is an array of {@link MatchAction}
      * @param <T>         is a type of a value to be verified.
      */
     @SafeVarargs
     public static <T> void check(String description, T t, MatchAction<T, ?>...matchActions) {
-        checkArgument(!isBlank(description), "Description of a value to be inspected should not be null");
+        checkArgument(!isBlank(description), "Value description to be inspected should not be blank");
         new CheckActionSupplier<T>(description)
                 .matches(matchActions)
                 .performOn(t)
@@ -46,16 +47,17 @@ public final class CheckActionSupplier<T> extends SequentialActionSupplier<T, T,
     }
 
     /**
-     * Creates an instance of {@link CheckActionSupplier} and defines value to be verified and verification criteria.
-     * And then the checking is performed.
+     * Creates an instance of {@link CheckActionSupplier};
+     * Defines a value to be verified and verification criteria;
+     * Value check is performed.
      *
      * @param t   value to be verified.
-     * @param matchActions is an arrya of {@link MatchAction}
+     * @param matchActions is an array of {@link MatchAction}
      * @param <T> is a type to be verified.
      */
     @SafeVarargs
     public static <T> void check(T t, MatchAction<T, ?>...matchActions) {
-        new CheckActionSupplier<T>(format("inspected value %s", t))
+        new CheckActionSupplier<T>(format("Inspected value %s", t))
                 .matches(matchActions)
                 .performOn(t)
                 .get().accept(t);

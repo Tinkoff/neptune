@@ -21,8 +21,8 @@ import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.action;
  */
 public abstract class MatchAction<T, R> implements Consumer<T>, Supplier<Consumer<T>> {
 
-    final Matcher<? super R> criteria;
-    final String description;
+    private final Matcher<? super R> criteria;
+    private final String description;
 
     MatchAction(String description, Matcher<? super R> criteria) {
         checkArgument(isNotBlank(description), "Description of a value to be evaluated and checked should not be blank");
@@ -32,7 +32,7 @@ public abstract class MatchAction<T, R> implements Consumer<T>, Supplier<Consume
     }
 
     /**
-     * Creates an instance that performs the matching of an object.
+     * Creates an instance that performs an object matching.
      *
      * @param matcher is a criteria matcher
      * @param <T> is a type of a value to be checked
@@ -43,7 +43,7 @@ public abstract class MatchAction<T, R> implements Consumer<T>, Supplier<Consume
     }
 
     /**
-     * Creates an instance that performs the matching of a value evaluated from an inspected object.
+     * Creates an instance that performs a value matching evaluated out of inspected object
      *
      * @param description of evaluated value
      * @param eval a function that performs evaluation
@@ -53,7 +53,7 @@ public abstract class MatchAction<T, R> implements Consumer<T>, Supplier<Consume
      * @return a new {@link MatchAction}
      */
     public static <T, R> MatchAction<T, R> match(String description, Function<T, R> eval, Matcher<? super R> matcher) {
-        return new EvaluateAndMatchAction<>(matcher, description, eval);
+        return new EvaluateAndMatchAction<>(description, matcher, eval);
     }
 
     @Override
@@ -61,5 +61,13 @@ public abstract class MatchAction<T, R> implements Consumer<T>, Supplier<Consume
         var action =  action(format("Check %s. Assert: %s", description, criteria), this);
         action.onFinishMakeCaptureOfType(Object.class);
         return action;
+    }
+
+    String getDescription() {
+        return description;
+    }
+
+    Matcher<? super R> getCriteria() {
+        return criteria;
     }
 }

@@ -13,9 +13,9 @@ class EvaluateAndMatchAction<T, R> extends MatchAction<T, R> {
 
     private final Function<T, R> eval;
 
-    EvaluateAndMatchAction(Matcher<? super R> criteria, String description, Function<T, R> eval) {
+    EvaluateAndMatchAction(String description, Matcher<? super R> criteria, Function<T, R> eval) {
         super(description, criteria);
-        checkArgument(nonNull(eval), "Function that evaluates value to be checked should be defined");
+        checkArgument(nonNull(eval), "Function to evaluate a value should be defined");
         var describedFunction = toGet(description, eval);
         describedFunction.onFinishMakeCaptureOfType(Object.class);
         this.eval = describedFunction;
@@ -24,6 +24,6 @@ class EvaluateAndMatchAction<T, R> extends MatchAction<T, R> {
     @Override
     public void accept(T t) {
         var r = eval.apply(t);
-        assertThat(r, new InnerMatcher<>(description, criteria));
+        assertThat(r, new InnerMatcher<>(getDescription(), getCriteria()));
     }
 }
