@@ -35,7 +35,7 @@ public final class DBConnection {
         return persistenceUnitMetaData;
     }
 
-    public JDOPersistenceManagerFactory getConnectionFactory() {
+    public synchronized JDOPersistenceManagerFactory getConnectionFactory() {
         return new InnerJDOPersistenceManagerFactory(this);
     }
 }
