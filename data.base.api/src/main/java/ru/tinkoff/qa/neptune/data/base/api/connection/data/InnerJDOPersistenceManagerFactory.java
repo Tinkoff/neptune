@@ -2,21 +2,18 @@ package ru.tinkoff.qa.neptune.data.base.api.connection.data;
 
 import org.datanucleus.api.jdo.JDOPersistenceManagerFactory;
 
-import javax.jdo.FetchGroup;
 import javax.jdo.PersistenceManager;
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.Persistent;
 
-import java.util.HashSet;
-
 import static java.util.Arrays.stream;
+import static java.util.Optional.ofNullable;
 import static java.util.UUID.randomUUID;
 
 public final class InnerJDOPersistenceManagerFactory extends JDOPersistenceManagerFactory {
 
     private final int DEPTH = -1;
     private final DBConnection connection;
-    private final HashSet<FetchGroup> fetchGroups = new HashSet<>();
 
     InnerJDOPersistenceManagerFactory(DBConnection connection) {
         super(connection.getData(), null);
@@ -42,7 +39,6 @@ public final class InnerJDOPersistenceManagerFactory extends JDOPersistenceManag
                 }
             });
             addFetchGroups(defaultFetchGroup);
-            fetchGroups.add(defaultFetchGroup);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -55,9 +51,9 @@ public final class InnerJDOPersistenceManagerFactory extends JDOPersistenceManag
     @Override
     public PersistenceManager getPersistenceManager() {
         var manager = super.getPersistenceManager();
-        fetchGroups.forEach(group -> manager
+        ofNullable(getFetchGroups()).ifPresent(groups -> groups.forEach(group -> manager
                 .getFetchPlan()
-                .addGroup(group.getName()));
+                .addGroup(group.getName())));
         manager.getFetchPlan().setMaxFetchDepth(DEPTH);
         manager.setIgnoreCache(true);
         return manager;
