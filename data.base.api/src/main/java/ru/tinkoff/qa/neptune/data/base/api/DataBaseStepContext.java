@@ -29,7 +29,7 @@ public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>,
 
     private final Set<JDOPersistenceManagerFactory> jdoFactorySet = synchronizedSet(new HashSet<>());
 
-    private static  <T> T returnSingleWhenNecessary(List<T> ts) {
+    private static <T> T returnSingleWhenNecessary(List<T> ts) {
         if (ts.size() == 0) {
             return null;
         }
@@ -39,19 +39,16 @@ public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>,
     public JDOPersistenceManager getManager(DBConnection connection) {
         checkArgument(nonNull(connection), "DB connection should not be null-value");
 
-        JDOPersistenceManagerFactory current;
-        synchronized (jdoFactorySet) {
-            current = jdoFactorySet.stream()
-                    .filter(managerFactory -> !managerFactory.isClosed()
-                            && ((InnerJDOPersistenceManagerFactory) managerFactory)
-                            .getConnection() == connection)
-                    .findFirst()
-                    .orElse(null);
+        JDOPersistenceManagerFactory current = jdoFactorySet.stream()
+                .filter(managerFactory -> !managerFactory.isClosed()
+                        && ((InnerJDOPersistenceManagerFactory) managerFactory)
+                        .getConnection() == connection)
+                .findFirst()
+                .orElse(null);
 
-            if (current == null) {
-                current = connection.getConnectionFactory();
-                jdoFactorySet.add(current);
-            }
+        if (current == null) {
+            current = connection.getConnectionFactory();
+            jdoFactorySet.add(current);
         }
 
         return (JDOPersistenceManager) current.getPersistenceManager();
