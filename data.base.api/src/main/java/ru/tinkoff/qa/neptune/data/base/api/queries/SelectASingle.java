@@ -75,24 +75,15 @@ public class SelectASingle<T, R extends List<T>, M> extends SequentialGetStepSup
                 //TODO such implementation is for advanced reporting
                 //TODO jdo query should be turned into step parameter in a report
                 //TODO comment for further releases
-                var keepPersistent = this.getResultPersistent();
-                Function<ReadableJDOQuery<R>, R> func = rReadableJDOQuery -> {
-                    try {
-                        return super.getEndFunction().apply(rReadableJDOQuery);
-                    } finally {
-                        if (!keepPersistent.toKeepOnPersistent()) {
-                            rReadableJDOQuery.getPersistenceManager().close();
-                        }
-                    }
-                };
-
                 return rReadableJDOQuery -> toGet(format("Result using JDO query %s",
                         rReadableJDOQuery.getInternalQuery()),
-                        func).apply(rReadableJDOQuery);
+                        super.getEndFunction()).apply(rReadableJDOQuery);
             }
-        }.from(getConnectionByClass(toSelect).andThen(manager -> ofNullable(params)
-                .map(parameters -> parameters.buildQuery(new ReadableJDOQuery<>(manager, toSelect)))
-                .orElseGet(() -> new ReadableJDOQuery<>(manager, toSelect))));
+        }
+                .from(getConnectionByClass(toSelect).andThen(manager ->
+                        ofNullable(params)
+                                .map(parameters -> parameters.buildQuery(new ReadableJDOQuery<>(manager, toSelect)))
+                                .orElseGet(() -> new ReadableJDOQuery<>(manager, toSelect))));
     }
 
     /**
@@ -113,21 +104,15 @@ public class SelectASingle<T, R extends List<T>, M> extends SequentialGetStepSup
                 //TODO such implementation is for advanced reporting
                 //TODO jdo query should be turned into step parameter in a report
                 //TODO comment for further releases
-                Function<ReadableJDOQuery<R>, List<Object>> func = rReadableJDOQuery -> {
-                    try {
-                        return super.getEndFunction().apply(rReadableJDOQuery);
-                    } finally {
-                        rReadableJDOQuery.getPersistenceManager().close();
-                    }
-                };
-
                 return rReadableJDOQuery -> toGet(format("Result using JDO query %s",
                         rReadableJDOQuery.getInternalQuery()),
-                        func).apply(rReadableJDOQuery);
+                        super.getEndFunction()).apply(rReadableJDOQuery);
             }
-        }.from(getConnectionByClass(toSelectFrom).andThen(manager -> ofNullable(params)
-                .map(parameters -> parameters.buildQuery(new ReadableJDOQuery<>(manager, toSelectFrom)))
-                .orElseGet(() -> new ReadableJDOQuery<>(manager, toSelectFrom))));
+        }
+                .from(getConnectionByClass(toSelectFrom).andThen(manager ->
+                        ofNullable(params)
+                                .map(parameters -> parameters.buildQuery(new ReadableJDOQuery<>(manager, toSelectFrom)))
+                                .orElseGet(() -> new ReadableJDOQuery<>(manager, toSelectFrom))));
     }
 
     /**
@@ -156,20 +141,8 @@ public class SelectASingle<T, R extends List<T>, M> extends SequentialGetStepSup
         var resultPersistent = new KeepResultPersistent();
         return new SelectASingle<>(format("One of %s by id %s",
                 toSelect.getName(), id),
-                id.build(toSelect, resultPersistent), resultPersistent) {
-            protected Function<JDOPersistenceManager, R> getEndFunction() {
-                var keepPersistent = this.getResultPersistent();
-                return manager -> {
-                    try {
-                        return super.getEndFunction().apply(manager);
-                    } finally {
-                        if (!keepPersistent.toKeepOnPersistent()) {
-                            manager.close();
-                        }
-                    }
-                };
-            }
-        }.from(getConnectionByClass(toSelect));
+                id.build(toSelect, resultPersistent), resultPersistent)
+                .from(getConnectionByClass(toSelect));
     }
 
     /**
@@ -197,20 +170,8 @@ public class SelectASingle<T, R extends List<T>, M> extends SequentialGetStepSup
                 toSelect.getName(),
                 sql,
                 Arrays.toString(parameters)),
-                bySql(toSelect, sql, resultPersistent, parameters), resultPersistent) {
-            protected Function<JDOPersistenceManager, R> getEndFunction() {
-                var keepPersistent = this.getResultPersistent();
-                return manager -> {
-                    try {
-                        return super.getEndFunction().apply(manager);
-                    } finally {
-                        if (!keepPersistent.toKeepOnPersistent()) {
-                            manager.close();
-                        }
-                    }
-                };
-            }
-        }.from(getConnectionByClass(toSelect));
+                bySql(toSelect, sql, resultPersistent, parameters), resultPersistent)
+                .from(getConnectionByClass(toSelect));
     }
 
     /**
@@ -238,20 +199,8 @@ public class SelectASingle<T, R extends List<T>, M> extends SequentialGetStepSup
                 toSelect.getName(),
                 sql,
                 valueOf(parameters)),
-                bySql(toSelect, sql, resultPersistent, parameters), resultPersistent) {
-            protected Function<JDOPersistenceManager, R> getEndFunction() {
-                var keepPersistent = this.getResultPersistent();
-                return manager -> {
-                    try {
-                        return super.getEndFunction().apply(manager);
-                    } finally {
-                        if (!keepPersistent.toKeepOnPersistent()) {
-                            manager.close();
-                        }
-                    }
-                };
-            }
-        }.from(getConnectionByClass(toSelect));
+                bySql(toSelect, sql, resultPersistent, parameters), resultPersistent)
+                .from(getConnectionByClass(toSelect));
     }
 
     /**
@@ -279,15 +228,8 @@ public class SelectASingle<T, R extends List<T>, M> extends SequentialGetStepSup
                 sql,
                 connection.getName(),
                 Arrays.toString(parameters)),
-                bySql(sql, parameters), null) {
-            protected Function<JDOPersistenceManager, List<Object>> getEndFunction() {
-                return manager -> {
-                    try (manager) {
-                        return super.getEndFunction().apply(manager);
-                    }
-                };
-            }
-        }.from(getConnectionBySupplierClass(connection));
+                bySql(sql, parameters), null)
+                .from(getConnectionBySupplierClass(connection));
     }
 
     /**
@@ -315,15 +257,8 @@ public class SelectASingle<T, R extends List<T>, M> extends SequentialGetStepSup
                 sql,
                 connection.getName(),
                 valueOf(parameters)),
-                bySql(sql, parameters), null) {
-            protected Function<JDOPersistenceManager, List<Object>> getEndFunction() {
-                return manager -> {
-                    try (manager) {
-                        return super.getEndFunction().apply(manager);
-                    }
-                };
-            }
-        }.from(getConnectionBySupplierClass(connection));
+                bySql(sql, parameters), null)
+                .from(getConnectionBySupplierClass(connection));
     }
 
     @Override

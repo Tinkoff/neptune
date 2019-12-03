@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.data.base.api;
 
 import org.datanucleus.api.jdo.JDOPersistenceManager;
-import org.datanucleus.api.jdo.JDOPersistenceManagerFactory;
 import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
 import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
 import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
@@ -27,9 +26,9 @@ import static ru.tinkoff.qa.neptune.data.base.api.data.operations.DataOperation.
 @CreateWith(provider = ProviderOfEmptyParameters.class)
 public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>, Stoppable {
 
-    private final Set<JDOPersistenceManagerFactory> jdoFactorySet = synchronizedSet(new HashSet<>());
+    private final Set<JDOPersistenceManager> jdoPersistenceManagerSet = synchronizedSet(new HashSet<>());
 
-    private static <T> T returnSingleWhenNecessary(List<T> ts) {
+    private static  <T> T returnSingleWhenNecessary(List<T> ts) {
         if (ts.size() == 0) {
             return null;
         }
@@ -38,25 +37,27 @@ public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>,
 
     public JDOPersistenceManager getManager(DBConnection connection) {
         checkArgument(nonNull(connection), "DB connection should not be null-value");
-
-        JDOPersistenceManagerFactory current = jdoFactorySet.stream()
-                .filter(managerFactory -> !managerFactory.isClosed()
-                        && ((InnerJDOPersistenceManagerFactory) managerFactory)
+        var manager = jdoPersistenceManagerSet
+                .stream()
+                .filter(jdoPersistenceManager -> !jdoPersistenceManager.isClosed()
+                        && ((InnerJDOPersistenceManagerFactory) jdoPersistenceManager.getPersistenceManagerFactory())
                         .getConnection() == connection)
                 .findFirst()
                 .orElse(null);
 
-        if (current == null) {
-            current = connection.getConnectionFactory();
-            jdoFactorySet.add(current);
-        }
-
-        return (JDOPersistenceManager) current.getPersistenceManager();
+        return  ofNullable(manager).orElseGet(() -> {
+            var newManager = (JDOPersistenceManager) connection.getConnectionFactory().getPersistenceManager();
+            jdoPersistenceManagerSet.add(newManager);
+            return newManager;
+        });
     }
 
     @Override
     public void stop() {
-        jdoFactorySet.forEach(JDOPersistenceManagerFactory::close);
+        jdoPersistenceManagerSet.forEach(jdoPersistenceManager -> {
+            jdoPersistenceManager.getPersistenceManagerFactory().close();
+            jdoPersistenceManager.close();
+        });
     }
 
     public final <T, R extends List<T>> R select(SelectList<?, R, ?> selectList) {
