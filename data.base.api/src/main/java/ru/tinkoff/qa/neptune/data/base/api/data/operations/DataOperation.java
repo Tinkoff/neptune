@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.data.base.api.data.operations;
 import org.apache.commons.lang3.StringUtils;
 import org.datanucleus.ExecutionContextImpl;
 import org.datanucleus.api.jdo.JDOPersistenceManager;
+import org.datanucleus.enhancement.Persistable;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
@@ -238,7 +239,6 @@ public final class DataOperation<T extends PersistableObject> extends Sequential
     private static <T extends PersistableObject> List<T> update(Map<JDOPersistenceManager, List<T>> connectionMap, UpdateExpression<T>... set) {
         var managerSet = connectionMap.keySet();
         openTransaction(managerSet);
-
         try {
             var result = new ListOfPersistentObjects<T>() {
                 public String toString() {
@@ -280,6 +280,9 @@ public final class DataOperation<T extends PersistableObject> extends Sequential
             rollbackTransaction(managerSet);
             throw t;
         }
+        finally {
+            closeManagers(managerSet);
+        }
     }
 
     private static <T extends PersistableObject> List<T> insert(Map<JDOPersistenceManager, List<T>> connectionMap) {
@@ -320,6 +323,9 @@ public final class DataOperation<T extends PersistableObject> extends Sequential
             rollbackTransaction(managerSet);
             throw t;
         }
+        finally {
+            closeManagers(managerSet);
+        }
     }
 
     private static <T extends PersistableObject> List<T> delete(Map<JDOPersistenceManager, List<T>> connectionMap) {
@@ -347,6 +353,9 @@ public final class DataOperation<T extends PersistableObject> extends Sequential
             rollbackTransaction(managerSet);
             throw t;
         }
+        finally {
+            closeManagers(managerSet);
+        }
     }
 
     private static <T extends PersistableObject> Map<JDOPersistenceManager, List<T>> getMap(DataBaseStepContext context,
@@ -354,7 +363,16 @@ public final class DataOperation<T extends PersistableObject> extends Sequential
         var result = new LinkedHashMap<JDOPersistenceManager, List<T>>();
 
         toBeOperated.forEach(t -> {
-            var manager = context.getManager(getConnection(t.getClass()));
+            JDOPersistenceManager manager;
+            if (isPersistent(t)) {
+                manager = (JDOPersistenceManager) ((Persistable) t).dnGetStateManager()
+                        .getExecutionContextReference()
+                        .getOwner();
+            }
+            else {
+                manager = context.getManager(getConnection(t.getClass()));
+            }
+
             ofNullable(result.get(manager))
                     .ifPresentOrElse(ts -> ts.add(t),
                             () -> result.put(manager, new ArrayList<>(List.of(t))));
@@ -391,5 +409,9 @@ public final class DataOperation<T extends PersistableObject> extends Sequential
                 ((ExecutionContextImpl) jdoPersistenceManager
                         .getExecutionContext())
                         .preCommit());
+    }
+
+    private static void closeManagers(Set<JDOPersistenceManager> jdoPersistenceManagers) {
+        jdoPersistenceManagers.forEach(JDOPersistenceManager::close);
     }
 }
