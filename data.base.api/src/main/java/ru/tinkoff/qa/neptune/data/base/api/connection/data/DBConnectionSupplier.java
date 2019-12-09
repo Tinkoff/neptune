@@ -15,7 +15,6 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.datanucleus.metadata.TransactionType.RESOURCE_LOCAL;
 import static ru.tinkoff.qa.neptune.data.base.api.ConnectionDataReader.usesConnection;
-import static ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnection.connectionData;
 
 /**
  * This class is designed to prepare data of the connection to be created and used
@@ -31,7 +30,6 @@ public abstract class DBConnectionSupplier implements Supplier<DBConnection> {
         var thisClass = this.getClass();
         tableClassNames = new ClassGraph().enableSystemJarsAndModules()
                 .enableExternalClasses()
-                .enableClassInfo()
                 .enableAllInfo()
                 .scan()
                 .getSubclasses(PersistableObject.class.getName())
@@ -60,7 +58,7 @@ public abstract class DBConnectionSupplier implements Supplier<DBConnection> {
                     DEFAULT_TRANSACTION_TYPE.name(),
                     null));
             tableClassNames.forEach(persistenceUnitMetaData::addClassName);
-            return connectionData(persistenceUnitMetaData);
+            return new DBConnection(persistenceUnitMetaData);
         });
         return connectionData;
     }
