@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.data.base.api;
 
 import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ScanResult;
 import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnection;
 import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionSupplier;
 
@@ -13,6 +14,11 @@ import static ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionSt
  * This is utility that tries to read info about proper connection from {@link PersistableObject}
  */
 public class ConnectionDataReader {
+
+    private static final ScanResult SCAN_RESULT = new ClassGraph().enableSystemJarsAndModules()
+            .enableExternalClasses()
+            .enableAllInfo()
+            .scan();
 
     private ConnectionDataReader() {
         super();
@@ -59,12 +65,7 @@ public class ConnectionDataReader {
     private static Class<? extends DBConnectionSupplier> getConnectionInfoFromPackageOf(Class<? extends PersistableObject> clazz) {
         return ofNullable(clazz.getPackage())
                 .map(aPackage -> {
-                    var scanResult = new ClassGraph().enableSystemJarsAndModules()
-                            .enableExternalClasses()
-                            .enableAllInfo()
-                            .scan();
-
-                    var packInfo = scanResult.getPackageInfo(aPackage.getName());
+                    var packInfo = SCAN_RESULT.getPackageInfo(aPackage.getName());
                     while (packInfo != null) {
                         var annotationInfo = packInfo.getAnnotationInfo(ConnectionToUse.class.getName());
                         if (annotationInfo != null) {
