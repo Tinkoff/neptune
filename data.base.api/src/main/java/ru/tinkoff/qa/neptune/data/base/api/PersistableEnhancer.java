@@ -23,8 +23,7 @@ public final class PersistableEnhancer {
         var enhancer = new DataNucleusEnhancer("JDO", props);
         enhancer.setVerbose(true);
 
-        enhancer.addClasses(new ClassGraph().enableSystemJarsAndModules()
-                .enableExternalClasses()
+        enhancer.addClasses(new ClassGraph()
                 .enableAllInfo()
                 .scan()
                 .getSubclasses(PersistableObject.class.getName())

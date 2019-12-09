@@ -15,8 +15,7 @@ import static ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionSt
  */
 public class ConnectionDataReader {
 
-    private static final ScanResult SCAN_RESULT = new ClassGraph().enableSystemJarsAndModules()
-            .enableExternalClasses()
+    private static final ScanResult SCAN_RESULT = new ClassGraph()
             .enableAllInfo()
             .scan();
 
@@ -37,9 +36,6 @@ public class ConnectionDataReader {
         return ofNullable(clazz.getAnnotation(ConnectionToUse.class))
                 .map(connectionToUse -> getKnownConnection(connectionToUse.connectionSupplier(), true))
                 .orElseGet(() -> {
-
-
-
                     var connectionInfo = getConnectionInfoFromPackageOf(clazz);
                     if (connectionInfo != null) {
                         return getKnownConnection(connectionInfo, true);

@@ -29,8 +29,7 @@ import static ru.tinkoff.qa.neptune.selenium.functions.searching.WidgetPriorityC
 class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> {
 
     private static final FindByBuilder BUILDER = new FindByBuilder();
-    private static final ScanResult SCAN_RESULT = new ClassGraph().enableSystemJarsAndModules()
-            .enableExternalClasses()
+    private static final ScanResult SCAN_RESULT = new ClassGraph()
             .enableAllInfo()
             .scan();
 
