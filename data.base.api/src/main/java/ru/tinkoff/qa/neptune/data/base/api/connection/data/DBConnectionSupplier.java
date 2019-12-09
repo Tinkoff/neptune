@@ -6,6 +6,7 @@ import org.datanucleus.metadata.TransactionType;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
 import javax.jdo.annotations.PersistenceCapable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -22,24 +23,35 @@ import static ru.tinkoff.qa.neptune.data.base.api.ConnectionDataReader.usesConne
  */
 public abstract class DBConnectionSupplier implements Supplier<DBConnection> {
 
+    private static final List<Class<? extends PersistableObject>> persistableClasses = new ArrayList<>();
     private static TransactionType DEFAULT_TRANSACTION_TYPE = RESOURCE_LOCAL;
+
     private DBConnection connectionData;
     private final List<String> tableClassNames;
 
+
     public DBConnectionSupplier() {
         var thisClass = this.getClass();
-        tableClassNames = new ClassGraph().enableSystemJarsAndModules()
-                .enableExternalClasses()
+        tableClassNames = initListOfPersistableClasses().stream()
+                .filter(clazz -> usesConnection(clazz, thisClass))
+                .map(Class::getName)
+                .collect(toList());
+    }
+
+    private static synchronized List<Class<? extends PersistableObject>> initListOfPersistableClasses() {
+        if (persistableClasses.size() > 0) {
+            return persistableClasses;
+        }
+
+        persistableClasses.addAll(new ClassGraph()
                 .enableAllInfo()
                 .scan()
                 .getSubclasses(PersistableObject.class.getName())
                 .loadClasses(PersistableObject.class)
                 .stream()
                 .filter(clazz -> nonNull(clazz.getAnnotation(PersistenceCapable.class))
-                        && !isAbstract(clazz.getModifiers())
-                        && usesConnection(clazz, thisClass))
-                .map(Class::getName)
-                .collect(toList());
+                        && !isAbstract(clazz.getModifiers())).collect(toList()));
+        return persistableClasses;
     }
 
     /**
