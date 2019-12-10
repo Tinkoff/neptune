@@ -1,5 +1,5 @@
 ext {
-    globalVersion = '0.10.29-ALPHA'
+    globalVersion = '0.10.30-ALPHA'
 }
 
 subprojects {
