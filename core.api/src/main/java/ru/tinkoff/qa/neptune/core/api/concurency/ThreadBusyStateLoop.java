@@ -41,7 +41,7 @@ class ThreadBusyStateLoop extends Thread {
     @Beta
     private boolean isFinishedAndWaitingForTermination() {
         try {
-            var val = targetField.get(targetField);
+            var val = targetField.get(threadToListenTo);
             if (val == null) {
                 return false;
             }
