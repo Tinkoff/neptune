@@ -46,7 +46,7 @@ public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>,
                 .orElse(null);
 
         return  ofNullable(manager).orElseGet(() -> {
-            var newManager = (JDOPersistenceManager) connection.getConnectionFactory().getPersistenceManager();
+            var newManager = (JDOPersistenceManager) connection.getPersistenceManager();
             jdoPersistenceManagerSet.add(newManager);
             return newManager;
         });
@@ -54,10 +54,7 @@ public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>,
 
     @Override
     public void stop() {
-        jdoPersistenceManagerSet.forEach(jdoPersistenceManager -> {
-            jdoPersistenceManager.getPersistenceManagerFactory().close();
-            jdoPersistenceManager.close();
-        });
+        jdoPersistenceManagerSet.forEach(JDOPersistenceManager::close);
     }
 
     public final <T, R extends List<T>> R select(SelectList<?, R, ?> selectList) {

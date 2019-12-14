@@ -6,6 +6,7 @@ import org.datanucleus.metadata.TransactionType;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
 import javax.jdo.annotations.PersistenceCapable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -15,7 +16,6 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.datanucleus.metadata.TransactionType.RESOURCE_LOCAL;
 import static ru.tinkoff.qa.neptune.data.base.api.ConnectionDataReader.usesConnection;
-import static ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnection.connectionData;
 
 /**
  * This class is designed to prepare data of the connection to be created and used
@@ -23,25 +23,35 @@ import static ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnection.c
  */
 public abstract class DBConnectionSupplier implements Supplier<DBConnection> {
 
+    private static final List<Class<? extends PersistableObject>> persistableClasses = new ArrayList<>();
     private static TransactionType DEFAULT_TRANSACTION_TYPE = RESOURCE_LOCAL;
+
     private DBConnection connectionData;
     private final List<String> tableClassNames;
 
+
     public DBConnectionSupplier() {
         var thisClass = this.getClass();
-        tableClassNames = new ClassGraph().enableSystemJarsAndModules()
-                .enableExternalClasses()
-                .enableClassInfo()
+        tableClassNames = initListOfPersistableClasses().stream()
+                .filter(clazz -> usesConnection(clazz, thisClass))
+                .map(Class::getName)
+                .collect(toList());
+    }
+
+    private static synchronized List<Class<? extends PersistableObject>> initListOfPersistableClasses() {
+        if (persistableClasses.size() > 0) {
+            return persistableClasses;
+        }
+
+        persistableClasses.addAll(new ClassGraph()
                 .enableAllInfo()
                 .scan()
                 .getSubclasses(PersistableObject.class.getName())
                 .loadClasses(PersistableObject.class)
                 .stream()
                 .filter(clazz -> nonNull(clazz.getAnnotation(PersistenceCapable.class))
-                        && !isAbstract(clazz.getModifiers())
-                        && usesConnection(clazz, thisClass))
-                .map(Class::getName)
-                .collect(toList());
+                        && !isAbstract(clazz.getModifiers())).collect(toList()));
+        return persistableClasses;
     }
 
     /**
@@ -60,7 +70,7 @@ public abstract class DBConnectionSupplier implements Supplier<DBConnection> {
                     DEFAULT_TRANSACTION_TYPE.name(),
                     null));
             tableClassNames.forEach(persistenceUnitMetaData::addClassName);
-            return connectionData(persistenceUnitMetaData);
+            return new DBConnection(persistenceUnitMetaData);
         });
         return connectionData;
     }

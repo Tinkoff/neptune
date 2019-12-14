@@ -22,7 +22,7 @@ public final class DBConnectionStore {
      *
      * @return list of {@link DBConnectionSupplier} initialized by SPI engines.
      */
-    private static List<DBConnectionSupplier> getConnectionDataSuppliers() {
+    private static synchronized List<DBConnectionSupplier> getConnectionDataSuppliers() {
         if (CONNECTION_DATA_SUPPLIERS.size() == 0) {
             CONNECTION_DATA_SUPPLIERS.addAll(loadSPI(DBConnectionSupplier.class));
         }

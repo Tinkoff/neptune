@@ -162,44 +162,6 @@ public class ConcurrencyTest {
                 closeTo(new BigDecimal(5000), new BigDecimal(1000)));
     }
 
-    @Test(dependsOnMethods = {"resourcesFreeAfterDefinedTimeTest", "resourcesFreeByDefaultTest"})
-    public void resourcesAreFreeOnLongWaiting() throws Exception {
-        setProperty(TO_FREE_RESOURCES_ON_INACTIVITY_PROPERTY.getPropertyName(), "true");
-        setProperty(FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_UNIT.getPropertyName(), "SECONDS");
-        setProperty(FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_VALUE.getPropertyName(), "5");
-
-        new Thread(() -> {
-            context.get("Some value again", testContext -> new Object());
-            try {
-                synchronized (this) {
-                    wait();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }).start();
-        sleep(1000);
-
-        var containerList = new ArrayList<>(containers);
-        var start = currentTimeMillis();
-
-        TestContext freeObject = null;
-        while (currentTimeMillis() <= start + ofSeconds(5).toMillis() && freeObject == null) {
-            freeObject = containerList.stream().filter(objectContainer -> !objectContainer.isBusy())
-                    .findFirst()
-                    .map(objectContainer -> (TestContext) objectContainer.getWrappedObject())
-                    .orElse(null);
-        }
-        var stop = currentTimeMillis();
-
-        sleep(1000);
-        assertThat(freeObject, notNullValue());
-        assertThat(freeObject.isActive(), is(false));
-        //5 seconds is defined. -1 second of the sleeping. see above
-        assertThat(new BigDecimal(stop - start),
-                closeTo(new BigDecimal(5000), new BigDecimal(1000)));
-    }
-
     @Test(dependsOnMethods = {"resourcesFreeByDefaultTest", "resourcesFreeAfterDefinedTimeTest", "resourcesStillBusyTest"})
     public void resourcesAreBusyAgain() throws Exception {
         setProperty(TO_FREE_RESOURCES_ON_INACTIVITY_PROPERTY.getPropertyName(), "true");

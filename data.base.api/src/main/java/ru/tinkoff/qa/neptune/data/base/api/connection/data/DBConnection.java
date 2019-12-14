@@ -1,10 +1,13 @@
 package ru.tinkoff.qa.neptune.data.base.api.connection.data;
 
+import org.datanucleus.api.jdo.JDOPersistenceManager;
 import org.datanucleus.api.jdo.JDOPersistenceManagerFactory;
 import org.datanucleus.metadata.PersistenceUnitMetaData;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.lang.Runtime.getRuntime;
 import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
 
 /**
  * This class is designed to wrap data of a DB connection and and create the opened connection.
@@ -14,19 +17,10 @@ import static java.util.Objects.nonNull;
 public final class DBConnection {
 
     private final PersistenceUnitMetaData persistenceUnitMetaData;
+    private InnerJDOPersistenceManagerFactory persistenceManagerFactory;
 
-    /**
-     * Creates an instance of the {@link DBConnection}
-     *
-     * @param persistenceUnitMetaData is the description of a connection to the data base represented
-     *                                by {@link PersistenceUnitMetaData}.
-     * @return created {@link DBConnection}
-     */
-    static DBConnection connectionData(PersistenceUnitMetaData persistenceUnitMetaData) {
-        return new DBConnection(persistenceUnitMetaData);
-    }
 
-    private DBConnection(PersistenceUnitMetaData persistenceUnitMetaData) {
+    DBConnection(PersistenceUnitMetaData persistenceUnitMetaData) {
         checkArgument(nonNull(persistenceUnitMetaData), "Meta data of a connection should not be a null value");
         this.persistenceUnitMetaData = persistenceUnitMetaData;
     }
@@ -35,7 +29,15 @@ public final class DBConnection {
         return persistenceUnitMetaData;
     }
 
-    public JDOPersistenceManagerFactory getConnectionFactory() {
-        return new InnerJDOPersistenceManagerFactory(this);
+    private synchronized JDOPersistenceManagerFactory getPersistenceManagerFactory() {
+        return ofNullable(persistenceManagerFactory).orElseGet(() -> {
+            persistenceManagerFactory = new InnerJDOPersistenceManagerFactory(this);
+            getRuntime().addShutdownHook(new Thread(() -> persistenceManagerFactory.close()));
+            return persistenceManagerFactory;
+        });
+    }
+
+    public synchronized JDOPersistenceManager getPersistenceManager() {
+        return (JDOPersistenceManager) getPersistenceManagerFactory().getPersistenceManager();
     }
 }

@@ -21,7 +21,9 @@ import static java.util.Objects.isNull;
 @Beta
 public abstract class ScrollWebElementIntoView implements ScrollsIntoView, WrapsElement {
 
-    private static final ScanResult SCAN_RESULT = new ClassGraph().enableClassInfo().scan();
+    private static final ScanResult SCAN_RESULT = new ClassGraph()
+            .enableAllInfo()
+            .scan();
     private final WebElement elementToBeScrolledIntoView;
 
     public ScrollWebElementIntoView(WebElement elementToBeScrolledIntoView) {
