@@ -6,7 +6,6 @@ import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 import java.lang.reflect.Array;
 import java.time.Duration;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
