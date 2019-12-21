@@ -24,7 +24,7 @@ public class NegativeTest {
 
     @Test(expectedExceptions = NoSuchMethodException.class)
     public void testOfCompletelyMismatchingParameters() {
-        ProxyFactory.getProxied(GetStepStub.class, ConstructorParameters.params()).get(StoryWriter.toGet("Something", getStep -> new Object()));
+        ProxyFactory.getProxied(GetStepStub.class, ConstructorParameters.params()).get(StepFunction.toGet("Something", getStep -> new Object()));
         fail("The exception throwing was expected");
     }
 
@@ -32,7 +32,7 @@ public class NegativeTest {
             dependsOnMethods = "testOfCompletelyMismatchingParameters")
     public void testOfPartiallyMismatchingParameters() {
         ProxyFactory.getProxied(GetStepStub.class, ConstructorParameters.params("12345", 1, 1.5F, false))
-                .get(StoryWriter.toGet("Something", getStep -> new Object()));
+                .get(StepFunction.toGet("Something", getStep -> new Object()));
         fail("The exception throwing was expected");
     }
 
@@ -41,7 +41,7 @@ public class NegativeTest {
             "testOfPartiallyMismatchingParameters"})
     public void positiveTest() {
         assertThat(ProxyFactory.getProxied(GetStepStub.class, ConstructorParameters.params("12345", 1, 1, false))
-                .get(StoryWriter.toGet("Something", getStep -> new Object())), not(nullValue()));
+                .get(StepFunction.toGet("Something", getStep -> new Object())), not(nullValue()));
     }
 
     static class GetStepStub implements GetStepContext<GetStepStub>, ActionStepContext<GetStepStub> {

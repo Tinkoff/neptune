@@ -17,7 +17,7 @@ import static ru.tinkoff.qa.neptune.core.api.steps.ArithmeticalSequence.multiply
 import static ru.tinkoff.qa.neptune.core.api.steps.ArithmeticalSequence.subtractFromResultOf;
 import static java.lang.System.getProperties;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
+import static ru.tinkoff.qa.neptune.core.api.steps.StepFunction.toGet;
 
 public class EventFiringTest {
 

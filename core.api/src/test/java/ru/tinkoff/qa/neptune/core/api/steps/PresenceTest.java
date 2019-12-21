@@ -9,7 +9,7 @@ import java.util.function.Function;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static ru.tinkoff.qa.neptune.core.api.steps.Presence.CommonPresence.presenceOf;
-import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
+import static ru.tinkoff.qa.neptune.core.api.steps.StepFunction.toGet;
 import static java.util.List.of;
 import static org.hamcrest.Matchers.is;
 

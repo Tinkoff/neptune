@@ -3,7 +3,7 @@ package ru.tinkoff.qa.neptune.core.api.steps;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.condition;
+import static ru.tinkoff.qa.neptune.core.api.steps.Condition.condition;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 /**

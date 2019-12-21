@@ -3,7 +3,7 @@ package ru.tinkoff.qa.neptune.selenium.test.steps.tests.presence;
 import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 import org.testng.annotations.Test;
 
-import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.condition;
+import static ru.tinkoff.qa.neptune.core.api.steps.Condition.condition;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.ElementPresence.presenceOfAnElement;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.ElementPresence.presenceOfElements;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.textFields;

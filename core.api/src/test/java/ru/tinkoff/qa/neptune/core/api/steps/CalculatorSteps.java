@@ -6,7 +6,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
 import java.util.function.Supplier;
 
 import static java.util.Optional.ofNullable;
-import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.action;
+import static ru.tinkoff.qa.neptune.core.api.steps.StepAction.action;
 
 public class CalculatorSteps implements ActionStepContext<CalculatorSteps>, GetStepContext<CalculatorSteps>, Supplier<Double> {
     private Double calculated = 0D;

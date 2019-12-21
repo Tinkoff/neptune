@@ -9,7 +9,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.context.ProviderOfEmptyParameters;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
+import static ru.tinkoff.qa.neptune.core.api.steps.StepFunction.toGet;
 
 @CreateWith(provider = ProviderOfEmptyParameters.class)
 public class TestContext implements GetStepContext<TestContext>, ActionStepContext<TestContext>, Stoppable {

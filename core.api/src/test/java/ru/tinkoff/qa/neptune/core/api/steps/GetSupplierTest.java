@@ -11,7 +11,7 @@ import static ru.tinkoff.qa.neptune.core.api.steps.GetSupplierTest.SqrtFromSomeN
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.testng.Assert.fail;
-import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
+import static ru.tinkoff.qa.neptune.core.api.steps.StepFunction.toGet;
 
 public class GetSupplierTest {
 

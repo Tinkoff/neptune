@@ -17,7 +17,7 @@ public class ToGetTest {
 
     @Test
     public void testWhenTheNextFunctionIsNotDescribed() {
-        Function<Object, String> describedToString = StoryWriter.toGet("String value of the object",
+        Function<Object, String> describedToString = StepFunction.toGet("String value of the object",
                 GET_TO_STRING);
         assertThat(describedToString.andThen(GET_STRING_LENGTH).toString(),
                 is("<not described value>"));
@@ -27,15 +27,15 @@ public class ToGetTest {
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Description should not be empty string or null value")
     public void negativeTestOfEmptyDescription() {
-        StoryWriter.toGet("", GET_TO_STRING);
+        StepFunction.toGet("", GET_TO_STRING);
         fail("The exception throwing was expected");
     }
 
     @Test
     public void checkDescriptionOfAFunctionThen() {
-        Function<Object, String> describedToString = StoryWriter.toGet("String value of the object",
+        Function<Object, String> describedToString = StepFunction.toGet("String value of the object",
                 GET_TO_STRING);
-        Function<String, Integer> describedStringLength = StoryWriter.toGet("Length of the given string",
+        Function<String, Integer> describedStringLength = StepFunction.toGet("Length of the given string",
                 GET_STRING_LENGTH);
 
         assertThat("Sting value of the function",
@@ -45,7 +45,7 @@ public class ToGetTest {
 
     @Test
     public void checkDescriptionOfAFunctionComposeBeforeIsNotDescribed() {
-        Function<String, Integer> describedStringLength = StoryWriter.toGet("Length of the given string",
+        Function<String, Integer> describedStringLength = StepFunction.toGet("Length of the given string",
                 GET_STRING_LENGTH);
 
         var result = describedStringLength.compose(GET_TO_STRING);
@@ -58,9 +58,9 @@ public class ToGetTest {
 
     @Test
     public void checkDescriptionOfAFunctionChainedComposeBeforeIsNotDescribed() {
-        Function<Object, String> describedToString = StoryWriter.toGet("String value of the object",
+        Function<Object, String> describedToString = StepFunction.toGet("String value of the object",
                 GET_TO_STRING);
-        Function<String, Integer> describedStringLength = StoryWriter.toGet("Length of the given string",
+        Function<String, Integer> describedStringLength = StepFunction.toGet("Length of the given string",
                 GET_STRING_LENGTH);
 
         var result = describedStringLength.compose(describedToString).compose(s -> s);
@@ -75,9 +75,9 @@ public class ToGetTest {
     @Test
     @SuppressWarnings("unchecked")
     public void checkDescriptionOfAFunctionChainedAndThenAfterIsNotDescribed() {
-        Function<Object, String> describedToString = StoryWriter.toGet("String value of the object",
+        Function<Object, String> describedToString = StepFunction.toGet("String value of the object",
                 GET_TO_STRING);
-        Function<String, Integer> describedStringLength = StoryWriter.toGet("Length of the given string",
+        Function<String, Integer> describedStringLength = StepFunction.toGet("Length of the given string",
                 GET_STRING_LENGTH);
 
         var result = describedStringLength.compose(describedToString).andThen(s -> s);
@@ -93,9 +93,9 @@ public class ToGetTest {
 
     @Test
     public void checkDescriptionOfAFunctionCompose() {
-        Function<Object, String> describedToString = StoryWriter.toGet("String value of the object",
+        Function<Object, String> describedToString = StepFunction.toGet("String value of the object",
                 GET_TO_STRING);
-        Function<String, Integer> describedStringLength = StoryWriter.toGet("Length of the given string",
+        Function<String, Integer> describedStringLength = StepFunction.toGet("Length of the given string",
                 GET_STRING_LENGTH);
 
         assertThat("Sting value of the function",
@@ -105,12 +105,12 @@ public class ToGetTest {
 
     @Test
     public void checkDescriptionOfAFunctionComplex() {
-        Function<Object, String> describedToString = StoryWriter.toGet("String value of the object",
+        Function<Object, String> describedToString = StepFunction.toGet("String value of the object",
                 GET_TO_STRING);
-        Function<String, Integer> describedStringLength = StoryWriter.toGet("Length of the given string",
+        Function<String, Integer> describedStringLength = StepFunction.toGet("Length of the given string",
                 GET_STRING_LENGTH);
         Function<Integer, Boolean> describedPositivityFunction =
-                StoryWriter.toGet("Positivity of the calculated value", GET_POSITIVITY);
+                StepFunction.toGet("Positivity of the calculated value", GET_POSITIVITY);
 
         System.out.println(describedStringLength.compose(describedToString).andThen(describedPositivityFunction).toString());
         assertThat("Sting value of the function",
@@ -120,9 +120,9 @@ public class ToGetTest {
 
     @Test
     public void checkNullPointerExceptionSafetyOnCompose() {
-        Function<Object, String> describedToString = StoryWriter.toGet("String value of the object",
+        Function<Object, String> describedToString = StepFunction.toGet("String value of the object",
                 o -> null);
-        Function<String, Integer> describedStringLength = StoryWriter.toGet("Length of the given string",
+        Function<String, Integer> describedStringLength = StepFunction.toGet("Length of the given string",
                 GET_STRING_LENGTH);
 
         assertThat("Check that null is returned", describedStringLength.compose(describedToString)
@@ -132,9 +132,9 @@ public class ToGetTest {
 
     @Test
     public void checkNullPointerExceptionSafetyOnAndThan() {
-        Function<Object, String> describedToString = StoryWriter.toGet("String value of the object",
+        Function<Object, String> describedToString = StepFunction.toGet("String value of the object",
                 o -> null);
-        Function<String, Integer> describedStringLength = StoryWriter.toGet("Length of the given string",
+        Function<String, Integer> describedStringLength = StepFunction.toGet("Length of the given string",
                 GET_STRING_LENGTH);
 
         assertThat("Check that null is returned", describedToString.andThen(describedStringLength)

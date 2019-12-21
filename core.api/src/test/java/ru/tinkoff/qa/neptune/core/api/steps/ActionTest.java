@@ -5,7 +5,7 @@ import org.testng.annotations.Test;
 import java.util.function.Consumer;
 
 import static org.testng.Assert.fail;
-import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.action;
+import static ru.tinkoff.qa.neptune.core.api.steps.StepAction.action;
 
 public class ActionTest {
     private static final Consumer<String> REPLACE_SPACE = s -> s.replace(" ", "");

@@ -23,19 +23,19 @@ public class RefreshTest {
     @Test
     public void checkRefreshTest() {
         refreshableStep = getProxied(RefreshableStep.class);
-        refreshableStep.perform(StoryWriter.action("Add elements to some list", refreshableStep1 -> {
+        refreshableStep.perform(StepAction.action("Add elements to some list", refreshableStep1 -> {
             refreshableStep.getListToRefresh().add(1);
             refreshableStep.getListToRefresh().add(true);
             refreshableStep.getListToRefresh().add("String");
         }));
 
         assertThat("Check added values",
-                refreshableStep.get(StoryWriter.toGet("Get elements", RefreshableStep::getListToRefresh)),
+                refreshableStep.get(StepFunction.toGet("Get elements", RefreshableStep::getListToRefresh)),
                 contains(1, true, "String"));
 
         refreshContext(this);
         assertThat("Check values",
-                refreshableStep.get(StoryWriter.toGet("Get elements", RefreshableStep::getListToRefresh)),
+                refreshableStep.get(StepFunction.toGet("Get elements", RefreshableStep::getListToRefresh)),
                 emptyCollectionOf(Object.class));
     }
 

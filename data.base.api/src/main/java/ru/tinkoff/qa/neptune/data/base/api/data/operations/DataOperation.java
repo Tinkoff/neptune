@@ -29,7 +29,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static javax.jdo.JDOHelper.isPersistent;
 import static javax.jdo.JDOHelper.isTransactional;
-import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.action;
+import static ru.tinkoff.qa.neptune.core.api.steps.StepAction.action;
 import static ru.tinkoff.qa.neptune.data.base.api.ConnectionDataReader.getConnection;
 
 /**
