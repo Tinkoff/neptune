@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
+import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -11,10 +11,9 @@ import java.util.function.Function;
 import static java.lang.System.currentTimeMillis;
 import static java.time.Duration.ofMillis;
 import static java.time.Duration.ofSeconds;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static ru.tinkoff.qa.neptune.core.api.steps.Absence.CommonAbsence.absenceOf;
 
 public class AbsenceTest {
 
@@ -34,8 +33,8 @@ public class AbsenceTest {
     @Test
     public void absenceOfAnObjectTest1() {
         var start = currentTimeMillis();
-        assertThat(testContext.get(absenceOf(new FunctionThatReturnsObject(ofSeconds(5)).run())
-                .timeOut(ofSeconds(10))), is(true));
+        assertThat(testContext.absenceOf(new FunctionThatReturnsObject(ofSeconds(5)).run(), ofSeconds(10)),
+                is(true));
         var end = currentTimeMillis();
         assertThat(new BigDecimal(end - start),
                 closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
@@ -44,8 +43,8 @@ public class AbsenceTest {
     @Test
     public void absenceOfAnObjectTest2() {
         var start = currentTimeMillis();
-        assertThat(testContext.get(absenceOf(new FunctionThatReturnsObject(ofSeconds(10)).run())
-                .timeOut(ofSeconds(5))), is(false));
+        assertThat(testContext.absenceOf(new FunctionThatReturnsObject(ofSeconds(10)).run(), ofSeconds(5)),
+                is(false));
         var end = currentTimeMillis();
         assertThat(new BigDecimal(end - start),
                 closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
@@ -54,8 +53,8 @@ public class AbsenceTest {
     @Test
     public void absenceOfAnObjectTest3() {
         var start = currentTimeMillis();
-        assertThat(testContext.get(absenceOf(new TestGetSupplier<>(new FunctionThatReturnsObject(ofSeconds(5)).run()))
-                .timeOut(ofSeconds(10))), is(true));
+        assertThat(testContext.absenceOf(new TestGetSupplier<>(new FunctionThatReturnsObject(ofSeconds(5)).run()), ofSeconds(10)),
+                is(true));
         var end = currentTimeMillis();
         assertThat(new BigDecimal(end - start),
                 closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
@@ -64,9 +63,10 @@ public class AbsenceTest {
     @Test
     public void absenceOfAnObjectTest4() {
         var start = currentTimeMillis();
-        assertThat(testContext.get(absenceOf(new TestGetSupplier<>(new FunctionThatReturnsObject(ofMillis(0)).run())
-                .timeOut(ofSeconds(5)))
-                .timeOut(ofSeconds(10))), is(true));
+        assertThat(testContext.absenceOf(new TestGetSupplier<>(new FunctionThatReturnsObject(ofMillis(0)).run())
+                .timeOut(ofSeconds(5)),
+                ofSeconds(10)),
+                is(true));
         var end = currentTimeMillis();
         assertThat(new BigDecimal(end - start),
                 closeTo(new BigDecimal(ofMillis(0).toMillis()), new BigDecimal(500)));
@@ -75,8 +75,8 @@ public class AbsenceTest {
     @Test
     public void absenceOfAnArrayTest1() {
         var start = currentTimeMillis();
-        assertThat(testContext.get(absenceOf(new FunctionThatReturnsArray(ofSeconds(5)).run())
-                .timeOut(ofSeconds(10))), is(true));
+        assertThat(testContext.absenceOf(new FunctionThatReturnsArray(ofSeconds(5)).run(), ofSeconds(10)),
+                is(true));
         var end = currentTimeMillis();
         assertThat(new BigDecimal(end - start),
                 closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
@@ -85,8 +85,8 @@ public class AbsenceTest {
     @Test
     public void absenceOfAnArrayTest2() {
         var start = currentTimeMillis();
-        assertThat(testContext.get(absenceOf(new FunctionThatReturnsArray(ofSeconds(10)).run())
-                .timeOut(ofSeconds(5))), is(false));
+        assertThat(testContext.absenceOf(new FunctionThatReturnsArray(ofSeconds(10)).run(), ofSeconds(5)),
+                is(false));
         var end = currentTimeMillis();
         assertThat(new BigDecimal(end - start),
                 closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
@@ -95,8 +95,8 @@ public class AbsenceTest {
     @Test
     public void absenceOfAnArrayTest3() {
         var start = currentTimeMillis();
-        assertThat(testContext.get(absenceOf(new TestGetSupplier<>(new FunctionThatReturnsArray(ofSeconds(5)).run()))
-                .timeOut(ofSeconds(10))), is(true));
+        assertThat(testContext.absenceOf(new TestGetSupplier<>(new FunctionThatReturnsArray(ofSeconds(5)).run()), ofSeconds(10)),
+                is(true));
         var end = currentTimeMillis();
         assertThat(new BigDecimal(end - start),
                 closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
@@ -105,9 +105,9 @@ public class AbsenceTest {
     @Test
     public void absenceOfAnArrayTest4() {
         var start = currentTimeMillis();
-        assertThat(testContext.get(absenceOf(new TestGetSupplier<>(new FunctionThatReturnsArray(ofMillis(0)).run())
-                .timeOut(ofSeconds(5)))
-                .timeOut(ofSeconds(10))), is(true));
+        assertThat(testContext.absenceOf(new TestGetSupplier<>(new FunctionThatReturnsArray(ofMillis(0)).run())
+                .timeOut(ofSeconds(5)),
+                ofSeconds(10)), is(true));
         var end = currentTimeMillis();
         assertThat(new BigDecimal(end - start),
                 closeTo(new BigDecimal(ofMillis(0).toMillis()), new BigDecimal(500)));
@@ -116,8 +116,8 @@ public class AbsenceTest {
     @Test
     public void absenceOfAnIterableTest1() {
         var start = currentTimeMillis();
-        assertThat(testContext.get(absenceOf(new FunctionThatReturnsIterable(ofSeconds(5)).run())
-                .timeOut(ofSeconds(10))), is(true));
+        assertThat(testContext.absenceOf(new FunctionThatReturnsIterable(ofSeconds(5)).run(), ofSeconds(10)),
+                is(true));
         var end = currentTimeMillis();
         assertThat(new BigDecimal(end - start),
                 closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
@@ -126,8 +126,8 @@ public class AbsenceTest {
     @Test
     public void absenceOfAnIterableTest2() {
         var start = currentTimeMillis();
-        assertThat(testContext.get(absenceOf(new FunctionThatReturnsIterable(ofSeconds(10)).run())
-                .timeOut(ofSeconds(5))), is(false));
+        assertThat(testContext.absenceOf(new FunctionThatReturnsIterable(ofSeconds(10)).run(), ofSeconds(5)),
+                is(false));
         var end = currentTimeMillis();
         assertThat(new BigDecimal(end - start),
                 closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
@@ -136,8 +136,9 @@ public class AbsenceTest {
     @Test
     public void absenceOfAnIterableTest3() {
         var start = currentTimeMillis();
-        assertThat(testContext.get(absenceOf(new TestGetSupplier<>(new FunctionThatReturnsIterable(ofSeconds(5)).run()))
-                .timeOut(ofSeconds(10))), is(true));
+        assertThat(testContext.absenceOf(new TestGetSupplier<>(new FunctionThatReturnsIterable(ofSeconds(5)).run()),
+                ofSeconds(10)),
+                is(true));
         var end = currentTimeMillis();
         assertThat(new BigDecimal(end - start),
                 closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
@@ -146,9 +147,9 @@ public class AbsenceTest {
     @Test
     public void absenceOfAnIterableTest4() {
         var start = currentTimeMillis();
-        assertThat(testContext.get(absenceOf(new TestGetSupplier<>(new FunctionThatReturnsIterable(ofMillis(0)).run())
-                .timeOut(ofSeconds(5)))
-                .timeOut(ofSeconds(10))), is(true));
+        assertThat(testContext.absenceOf(new TestGetSupplier<>(new FunctionThatReturnsIterable(ofMillis(0)).run())
+                .timeOut(ofSeconds(5)),
+                ofSeconds(10)), is(true));
         var end = currentTimeMillis();
         assertThat(new BigDecimal(end - start),
                 closeTo(new BigDecimal(ofMillis(0).toMillis()), new BigDecimal(500)));
@@ -157,9 +158,9 @@ public class AbsenceTest {
     @Test
     public void whenFunctionThrowsExceptionTest() {
         var start = currentTimeMillis();
-        assertThat(testContext.get(absenceOf(new TestGetSupplier<>(FAILED_EXCEPTION)
-                .timeOut(ofSeconds(100)))
-                .timeOut(ofSeconds(5))), is(true));
+        assertThat(testContext.absenceOf(new TestGetSupplier<>(FAILED_EXCEPTION)
+                .timeOut(ofSeconds(100)),
+               ofSeconds(5)), is(true));
         var end = currentTimeMillis();
         assertThat(new BigDecimal(end - start),
                 closeTo(new BigDecimal(ofMillis(0).toMillis()), new BigDecimal(500)));
@@ -168,8 +169,7 @@ public class AbsenceTest {
     @Test
     public void whenFunctionThrowsExceptionTest2() {
         var start = currentTimeMillis();
-        assertThat(testContext.get(absenceOf(FAILED_EXCEPTION)
-                .timeOut(ofSeconds(5))), is(true));
+        assertThat(testContext.absenceOf(FAILED_EXCEPTION, ofSeconds(5)), is(true));
         var end = currentTimeMillis();
         assertThat(new BigDecimal(end - start),
                 closeTo(new BigDecimal(ofMillis(0).toMillis()), new BigDecimal(500)));
@@ -295,7 +295,6 @@ public class AbsenceTest {
         }
     }
 
-    private static class AbsenceTestContext implements GetStepContext<AbsenceTest.AbsenceTestContext> {
-
+    private static class AbsenceTestContext extends Context<AbsenceTestContext> {
     }
 }

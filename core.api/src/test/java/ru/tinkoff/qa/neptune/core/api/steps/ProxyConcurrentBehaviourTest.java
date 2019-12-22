@@ -3,16 +3,12 @@ package ru.tinkoff.qa.neptune.core.api.steps;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.core.api.steps.context.ConstructorParameters;
 
-import static java.util.Optional.ofNullable;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static ru.tinkoff.qa.neptune.core.api.steps.proxy.ProxyFactory.getProxied;
+import static ru.tinkoff.qa.neptune.core.api.steps.CalculatorSteps.calculator;
 
 public class ProxyConcurrentBehaviourTest {
-
-    private CalculatorSteps calculator;
 
     @DataProvider(parallel = true)
     public Object[][] getData() {
@@ -101,19 +97,11 @@ public class ProxyConcurrentBehaviourTest {
 
     @BeforeMethod
     public synchronized void beforeTest() {
-        calculator = ofNullable(calculator).orElseGet(() -> {
-            try {
-                return getProxied(CalculatorSteps.class, ConstructorParameters.params());
-            }
-            catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-        calculator.reset();
+        calculator().set(0D);
     }
 
     @Test(threadPoolSize = 4, dataProvider = "getData")
     public void threadSafetyTest(SequentialGetStepSupplier<CalculatorSteps, Number, ?, ?, ?> calculation, Number number) {
-        assertThat("Result of calculation", calculator.get(calculation), is(number.doubleValue()));
+        assertThat("Result of calculation", calculator().evaluate(calculation), is(number.doubleValue()));
     }
 }

@@ -1,29 +1,26 @@
 package ru.tinkoff.qa.neptune.core.api.concurency;
 
 import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
-import ru.tinkoff.qa.neptune.core.api.steps.context.ActionStepContext;
-import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
-import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
-import ru.tinkoff.qa.neptune.core.api.steps.context.ProviderOfEmptyParameters;
+import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 
-import java.util.function.Consumer;
-import java.util.function.Function;
+public class TestContext extends Context<TestContext> implements Stoppable {
 
-import static ru.tinkoff.qa.neptune.core.api.steps.StepFunction.toGet;
+    private static final TestContext context = getInstance(TestContext.class);
 
-@CreateWith(provider = ProviderOfEmptyParameters.class)
-public class TestContext implements GetStepContext<TestContext>, ActionStepContext<TestContext>, Stoppable {
+    public static TestContext getContext() {
+        return context;
+    }
 
     private boolean isActive = true;
 
-    public TestContext perform(String description, Consumer<TestContext> actionConsumer) {
+    public void doSomething() {
+        //there is nothing to do
         isActive = true;
-        return ActionStepContext.super.perform(description, actionConsumer);
     }
 
-    public  <T> T get(String description, Function<TestContext, T> function) {
+    public Object getSomething() {
         isActive = true;
-        return GetStepContext.super.get(toGet(description, function));
+        return new Object();
     }
 
     @Override

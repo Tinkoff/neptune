@@ -42,7 +42,7 @@ public final class CheckActionSupplier<T> extends SequentialActionSupplier<T, T,
         checkArgument(!isBlank(description), "Value description to be inspected should not be blank");
         new CheckActionSupplier<T>(description)
                 .matches(matchActions)
-                .performOn(t)
+                .performOn(o -> o)
                 .get().accept(t);
     }
 
@@ -59,7 +59,7 @@ public final class CheckActionSupplier<T> extends SequentialActionSupplier<T, T,
     public static <T> void check(T t, MatchAction<T, ?>...matchActions) {
         new CheckActionSupplier<T>(format("Inspected value %s", t))
                 .matches(matchActions)
-                .performOn(t)
+                .performOn(o -> o)
                 .get().accept(t);
     }
 
