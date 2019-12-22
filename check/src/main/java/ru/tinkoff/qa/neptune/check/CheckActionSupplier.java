@@ -16,7 +16,7 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-public final class CheckActionSupplier<T> extends SequentialActionSupplier<T, T, CheckActionSupplier<T>> {
+public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R, T, CheckActionSupplier<R, T>> {
 
     private static final String LINE_SEPARATOR = lineSeparator();
 
@@ -40,9 +40,9 @@ public final class CheckActionSupplier<T> extends SequentialActionSupplier<T, T,
     @SafeVarargs
     public static <T> void check(String description, T t, MatchAction<T, ?>...matchActions) {
         checkArgument(!isBlank(description), "Value description to be inspected should not be blank");
-        new CheckActionSupplier<T>(description)
+        new CheckActionSupplier<T, T>(description)
                 .matches(matchActions)
-                .performOn(o -> o)
+                .performOn(t)
                 .get().accept(t);
     }
 
@@ -57,14 +57,14 @@ public final class CheckActionSupplier<T> extends SequentialActionSupplier<T, T,
      */
     @SafeVarargs
     public static <T> void check(T t, MatchAction<T, ?>...matchActions) {
-        new CheckActionSupplier<T>(format("Inspected value %s", t))
+        new CheckActionSupplier<T, T>(format("Inspected value %s", t))
                 .matches(matchActions)
                 .performOn(o -> o)
                 .get().accept(t);
     }
 
     @SafeVarargs
-    private CheckActionSupplier<T> matches(MatchAction<T, ?>... matchActions) {
+    private CheckActionSupplier<R, T> matches(MatchAction<T, ?>... matchActions) {
         checkArgument(nonNull(matchActions), "Criteria to check value should not be a null value");
         checkArgument(matchActions.length > 0, "At least one criteria to check value should be defined");
         checkList.addAll(stream(matchActions).map(MatchAction::get).collect(toList()));
