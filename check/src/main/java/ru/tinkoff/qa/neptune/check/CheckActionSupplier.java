@@ -51,7 +51,8 @@ public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R,
 
     /**
      * Creates an instance of {@link CheckActionSupplier};
-     *
+     * Evaluates value to be checked;
+     * Value check is performed.
      *
      * @param description description of a value to get and then check it
      * @param toGet is how to get a value

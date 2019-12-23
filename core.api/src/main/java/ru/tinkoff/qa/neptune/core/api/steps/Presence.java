@@ -4,6 +4,9 @@ import com.google.common.collect.Iterables;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 
 import java.lang.reflect.Array;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -15,6 +18,8 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 @SuppressWarnings("unchecked")
 public final class Presence<T extends Context> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<T, Boolean, Object, Presence<T>> {
+
+    private final Set<Class<? extends Throwable>> ignored2 = new HashSet<>();
 
     private Presence(Function<T, ?> toBePresent) {
         super(format("Presence of [%s]", isLoggable(toBePresent) ? toBePresent.toString() : "<not described value>"),
@@ -82,7 +87,7 @@ public final class Presence<T extends Context> extends SequentialGetStepSupplier
     protected Function<T, Object> preparePreFunction() {
         var preFunction = super.preparePreFunction();
         if (StepFunction.class.isAssignableFrom(preFunction.getClass())) {
-            ((StepFunction) preFunction).addIgnored(ignored);
+            ((StepFunction) preFunction).addIgnored(ignored2);
         }
         return ((Function<Object, Object>) o -> ofNullable(o).orElse(false))
                 .compose(preFunction);
@@ -104,6 +109,18 @@ public final class Presence<T extends Context> extends SequentialGetStepSupplier
             }
             return true;
         };
+    }
+
+    @Override
+    public Presence<T> addIgnored(Collection<Class<? extends Throwable>> toBeIgnored) {
+        ignored2.addAll(toBeIgnored);
+        return this;
+    }
+
+    @Override
+    public Presence<T> addIgnored(Class<? extends Throwable> toBeIgnored) {
+        ignored2.add(toBeIgnored);
+        return this;
     }
 
     /**

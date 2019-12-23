@@ -110,7 +110,9 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return is element present|visible or not
      */
     public boolean presenceOf(SearchSupplier<?> toFind) {
-        return super.presenceOf(toFind.get().compose(currentContent()), NoSuchElementException.class);
+        return super.presenceOf(toFind.get().compose(currentContent()),
+                NoSuchElementException.class,
+                StaleElementReferenceException.class);
     }
 
     /**
@@ -123,7 +125,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     public boolean presenceOf(SearchSupplier<?> toFind, String errorMessage) {
         return super.presenceOf(toFind.get().compose(currentContent()),
                 () -> new NoSuchElementException(errorMessage),
-                NoSuchElementException.class);
+                NoSuchElementException.class,
+                StaleElementReferenceException.class);
     }
 
     /**
@@ -133,7 +136,9 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return are elements present|visible or not
      */
     public boolean presenceOf(MultipleSearchSupplier<?> toFind) {
-        return super.presenceOf(toFind.get().compose(currentContent()), NoSuchElementException.class);
+        return super.presenceOf(toFind.get().compose(currentContent()),
+                NoSuchElementException.class,
+                StaleElementReferenceException.class);
     }
 
     /**
@@ -146,7 +151,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     public boolean presenceOf(MultipleSearchSupplier<?> toFind, String errorMessage) {
         return super.presenceOf(toFind.get().compose(currentContent()),
                 () -> new NoSuchElementException(errorMessage),
-                NoSuchElementException.class);
+                NoSuchElementException.class,
+                StaleElementReferenceException.class);
     }
 
     /**

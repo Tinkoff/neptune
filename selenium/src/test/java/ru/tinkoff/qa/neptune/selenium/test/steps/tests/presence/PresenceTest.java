@@ -34,15 +34,15 @@ public class PresenceTest extends BaseWebDriverTest {
         assertThat(presence, is(false));
     }
 
-    @Test(expectedExceptions = NoSuchElementException.class, expectedExceptionsMessageRegExp = "Test exception")
+    @Test(expectedExceptions = NoSuchElementException.class, expectedExceptionsMessageRegExp = ".*['Test exception']*$")
     public void negativeTestOfSearchSupplierWithExceptionThrowing() {
-        assertThat(seleniumSteps.presenceOf(flag()
+        var presence = seleniumSteps.presenceOf(flag()
                         .timeOut(FIVE_SECONDS)
                         .foundFrom(tableRow().timeOut(FIVE_SECONDS)
                                 .criteria(condition(format("Contains %s, %s and %s", CELL_TEXT49, CELL_TEXT50, CELL_TEXT51),
                                         tableRow -> tableRow.getValue().containsAll(of(CELL_TEXT49, CELL_TEXT50, CELL_TEXT51))))),
-                "Test exception"),
-                is(false));
+                "Test exception");
+        assertThat(presence, is(false));
     }
 
     @Test
@@ -57,24 +57,22 @@ public class PresenceTest extends BaseWebDriverTest {
 
     @Test
     public void negativeTestOfMultiSearchSupplier() {
-        assertThat(seleniumSteps.presenceOf(textFields()
-                        .timeOut(FIVE_SECONDS)
-                        .foundFrom(tableRow()
-                                .timeOut(FIVE_SECONDS)
-                                .criteria(condition(format("Contains %s, %s and %s", CELL_TEXT22, CELL_TEXT23, CELL_TEXT24),
-                                        tableRow -> tableRow.getValue().containsAll(of(CELL_TEXT22, CELL_TEXT23, CELL_TEXT24)))))),
-                is(false));
+        var presence = seleniumSteps.presenceOf(textFields()
+                .timeOut(FIVE_SECONDS)
+                .foundFrom(tableRow().timeOut(FIVE_SECONDS)
+                        .criteria(condition(format("Contains %s, %s and %s", CELL_TEXT22, CELL_TEXT23, CELL_TEXT24),
+                                tableRow -> tableRow.getValue().containsAll(of(CELL_TEXT22, CELL_TEXT23, CELL_TEXT24))))));
+        assertThat(presence, is(false));
     }
 
-    @Test(expectedExceptions = IllegalStateException.class, expectedExceptionsMessageRegExp = "Test exception")
+    @Test(expectedExceptions = NoSuchElementException.class, expectedExceptionsMessageRegExp = ".*['Test exception']*$")
     public void negativeTestOfMultiSearchSupplierWithExceptionThrowing() {
-        assertThat(seleniumSteps.presenceOf(textFields()
+        var presence = seleniumSteps.presenceOf(textFields()
                         .timeOut(FIVE_SECONDS)
-                        .foundFrom(tableRow()
-                                .timeOut(FIVE_SECONDS)
+                        .foundFrom(tableRow().timeOut(FIVE_SECONDS)
                                 .criteria(condition(format("Contains %s, %s and %s", CELL_TEXT22, CELL_TEXT23, CELL_TEXT24), tableRow ->
                                         tableRow.getValue().containsAll(of(CELL_TEXT22, CELL_TEXT23, CELL_TEXT24))))),
-                "Test exception"),
-                is(false));
+                "Test exception");
+        assertThat(presence, is(false));
     }
 }
