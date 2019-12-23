@@ -8,7 +8,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.xml.sax.InputSource;
-import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
 import ru.tinkoff.qa.neptune.http.api.test.request.body.BodyObject;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -19,18 +18,16 @@ import java.util.LinkedHashMap;
 
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
-import static ru.tinkoff.qa.neptune.core.api.steps.proxy.ProxyFactory.getProxied;
 import static ru.tinkoff.qa.neptune.http.api.CommonBodyPublishers.*;
 import static ru.tinkoff.qa.neptune.http.api.HttpResponseInfoSequentialGetSupplier.bodyOf;
 import static ru.tinkoff.qa.neptune.http.api.HttpResponseSequentialGetSupplier.responseOf;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.PreparedHttpRequest.POST;
 
 public class CustomRequestBodyTest extends BaseHttpTest {
-
-    private HttpStepContext httpSteps = getProxied(HttpStepContext.class);
 
     private static final BodyObject BODY_OBJECT = new BodyObject().setA("Some String")
             .setB(666)
@@ -203,7 +200,7 @@ public class CustomRequestBodyTest extends BaseHttpTest {
                                       HttpRequest.BodyPublisher bodyPublisher,
                                       String contentType,
                                       String expectedMessage){
-        assertThat(httpSteps.get(bodyOf(responseOf(
+        assertThat(http().get(bodyOf(responseOf(
                 POST(REQUEST_URI + urlPath,
                         bodyPublisher)
                         .header("Content-Type", contentType),

@@ -34,11 +34,11 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockserver.model.HttpRequest.request;
-import static ru.tinkoff.qa.neptune.core.api.steps.proxy.ProxyFactory.getProxied;
 import static ru.tinkoff.qa.neptune.http.api.HttpCookiesActionSupplier.addToCookies;
 import static ru.tinkoff.qa.neptune.http.api.HttpCookiesActionSupplier.clearCookieStore;
 import static ru.tinkoff.qa.neptune.http.api.HttpGetCachedCookiesSupplier.cachedCookies;
 import static ru.tinkoff.qa.neptune.http.api.HttpResponseSequentialGetSupplier.responseOf;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.PreparedHttpRequest.GET;
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpAuthenticatorProperty.DEFAULT_HTTP_AUTHENTICATOR_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpCookieManagerProperty.DEFAULT_HTTP_COOKIE_MANAGER_PROPERTY;
@@ -96,8 +96,7 @@ public class HttpClientTest extends BaseHttpTest {
 
     @Test
     public void useHttpClientWithoutProperties() throws Exception {
-        var httpSteps = getProxied(HttpStepContext.class);
-        var client = httpSteps.getCurrentClient();
+        var client = http().getCurrentClient();
 
         assertThat(client.authenticator().orElse(null), nullValue());
         assertThat(client.connectTimeout().orElse(null), equalTo(ofSeconds(5)));
@@ -125,8 +124,7 @@ public class HttpClientTest extends BaseHttpTest {
         setProperty(DEFAULT_HTTP_SSL_PARAMETERS_PROPERTY.getPropertyName(), TestSslParametersSupplier.class.getName());
 
         try {
-            var httpSteps = getProxied(HttpStepContext.class);
-            var client = httpSteps.getCurrentClient();
+            var client = http().getCurrentClient();
 
             assertThat(client.authenticator().orElse(null), equalTo(DEFAULT_AUTHENTICATOR));
             assertThat(client.connectTimeout().orElse(null), equalTo(of(DEFAULT_CONNECT_TIME_VALUE, DEFAULT_CONNECT_CHRONO_UNIT)));
@@ -156,10 +154,9 @@ public class HttpClientTest extends BaseHttpTest {
     @Test
     public void abilityToUseRelativeURIPathTest() {
         setProperty(DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY.getPropertyName(), REQUEST_URI);
-        var httpSteps = getProxied(HttpStepContext.class);
 
         try {
-            assertThat(httpSteps.get(responseOf(GET("/index.html"), ofString())).body(),
+            assertThat(http().get(responseOf(GET("/index.html"), ofString())).body(),
                     equalTo("Hello"));
         }
         finally {
@@ -172,9 +169,8 @@ public class HttpClientTest extends BaseHttpTest {
         var httpCookie = new HttpCookie("TestSetUpCookieName",
                 "TestSetUpCookieValue");
 
-        var httpSteps = getProxied(HttpStepContext.class);
-        httpSteps.perform(addToCookies(null, httpCookie));
-        assertThat(httpSteps.get(cachedCookies()), hasItem(httpCookie));
+        http().perform(addToCookies(null, httpCookie));
+        assertThat(http().get(cachedCookies()), hasItem(httpCookie));
     }
 
     @Test
@@ -182,9 +178,8 @@ public class HttpClientTest extends BaseHttpTest {
         var httpCookie = new HttpCookie("TestSetUpCookieName",
                 "TestSetUpCookieValue");
 
-        var httpSteps = getProxied(HttpStepContext.class);
-        httpSteps.perform(addToCookies(null, httpCookie));
-        httpSteps.perform(clearCookieStore());
+        http().perform(addToCookies(null, httpCookie));
+        http().perform(clearCookieStore());
     }
 
     @Test
@@ -195,8 +190,7 @@ public class HttpClientTest extends BaseHttpTest {
                         .withPath("/query"))
                 .respond(HttpResponse.response().withBody("Hello query"));
 
-        var httpSteps = getProxied(HttpStepContext.class);
-        var response = httpSteps.get(responseOf(GET(format("%s/query", REQUEST_URI))
+        var response = http().get(responseOf(GET(format("%s/query", REQUEST_URI))
                 .queryParam("date", "01-01-1980")
                 .queryParam("some word", "Word and word again"), ofString()));
 
