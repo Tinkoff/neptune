@@ -290,5 +290,14 @@ public class CheckTest {
         evaluateAndCheck("Sqrt value of 9",
                 () -> sqrt(9),
                 match(is(3D)));
+
+        assertThat(MESSAGES,
+                contains("Verify Sqrt value of 9 has started",
+                        "Get Sqrt value of 9 has started",
+                        "3.0 has been returned",
+                        "Event finished",
+                        "Check object. Assert: is <3.0> has started",
+                        "Event finished",
+                        "Event finished"));
     }
 }

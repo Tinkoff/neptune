@@ -12,12 +12,10 @@ public class TestNgInstantiationTest extends BaseTestNgIntegrationTest {
 
     @Test
     public void instantiationTest() {
-        assertThat(getStepClass1(), not(nullValue()));
-        assertThat(getStepClass2(), not(nullValue()));
-        assertThat(getStepClass2().getA(), is(1));
-        assertThat(getStepClass2().getB(), is(2));
-        assertThat(getStepClass3(), nullValue());
-        assertThat(getStepClass4(), nullValue());
+        assertThat(ContextClass1.context, not(nullValue()));
+        assertThat(ContextClass2.context, not(nullValue()));
+        assertThat(ContextClass2.context.getA(), is(1));
+        assertThat(ContextClass2.context.getB(), is(2));
     }
 
     @DataProvider(parallel = true)
@@ -33,7 +31,7 @@ public class TestNgInstantiationTest extends BaseTestNgIntegrationTest {
 
     @Test(dataProvider = "dataProvider")
     public void instantiationTest2(Integer integer) {
-        assertThat(getStepClass2().getA() + integer, is(1 + integer));
-        assertThat(getStepClass2().getB() + integer, is(2 + integer));
+        assertThat(ContextClass2.context.getA() + integer, is(1 + integer));
+        assertThat(ContextClass2.context.getB() + integer, is(2 + integer));
     }
 }

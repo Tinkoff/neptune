@@ -8,7 +8,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class SequentialParameterizedTestNGTest extends BaseTestNgTest {
 
-    private ContextClass2 contextClass2;
     private final int numberToAdd;
     private final Matcher<? super Integer> criteria;
     private int result;
@@ -20,7 +19,7 @@ public class SequentialParameterizedTestNGTest extends BaseTestNgTest {
 
     @Test
     public void calcResult() {
-        result = contextClass2.getA() + contextClass2.getB() + numberToAdd;
+        result = ContextClass2.context.getA() + ContextClass2.context.getB() + numberToAdd;
     }
 
     @Test(dependsOnMethods = "calcResult")
