@@ -14,6 +14,7 @@ import static java.time.Duration.ofSeconds;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext.inDataBase;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.QueryTimeUnitProperties.WAITING_FOR_SELECTION_RESULT_TIME_UNIT;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.QueryTimeValueProperties.WAITING_FOR_SELECTION_RESULT_TIME_VALUE;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle.oneOf;
@@ -27,7 +28,7 @@ public class SelectByIds extends BaseDbOperationTest {
 
     @Test(groups = "positive tests")
     public void selectListTest() {
-        var publisherItems = dataBaseSteps.select(listOf(Publisher.class, ids(-3, 1, 2)));
+        var publisherItems = inDataBase().select(listOf(Publisher.class, ids(-3, 1, 2)));
         assertThat(publisherItems, hasSize(2));
         assertThat(publisherItems.stream().map(Publisher::getName).collect(toList()),
                 contains("Bergh Publishing", "Simon & Schuster"));
@@ -35,13 +36,13 @@ public class SelectByIds extends BaseDbOperationTest {
 
     @Test(groups = "positive tests")
     public void selectOneTest() {
-        var catalogItem = dataBaseSteps.select(oneOf(Publisher.class, id(1)));
+        var catalogItem = inDataBase().select(oneOf(Publisher.class, id(1)));
         assertThat(catalogItem.getName(), is("Bergh Publishing"));
     }
 
     @Test(groups = "positive tests")
     public void selectListTestByCondition() {
-        var publishers = dataBaseSteps.select(listOf(Publisher.class, ids(1, 2, -1))
+        var publishers = inDataBase().select(listOf(Publisher.class, ids(1, 2, -1))
                 .criteria("Has name Bergh Publishing", publisher -> publisher
                         .getName().equalsIgnoreCase("bergh Publishing")));
         assertThat(publishers, hasSize(1));
@@ -50,7 +51,7 @@ public class SelectByIds extends BaseDbOperationTest {
 
     @Test(groups = "positive tests")
     public void selectOneTestByCondition() {
-        var author = dataBaseSteps.select(oneOf(Author.class, id(1))
+        var author = inDataBase().select(oneOf(Author.class, id(1))
                 .criteria("Name is 'Alexander'", author1 -> "Alexander".equals(author1.getFirstName())));
         assertThat(author.getLastName(), equalTo("Pushkin"));
     }
@@ -58,7 +59,7 @@ public class SelectByIds extends BaseDbOperationTest {
     @Test(dependsOnGroups = "positive tests")
     public void selectEmptyListTestWithDefaultTime() {
         long start = currentTimeMillis();
-        var catalogItems = dataBaseSteps.select(listOf(Catalog.class, ids(-1, -2)));
+        var catalogItems = inDataBase().select(listOf(Catalog.class, ids(-1, -2)));
         long end = currentTimeMillis();
 
         Duration fiveSeconds = ofSeconds(5);
@@ -70,7 +71,7 @@ public class SelectByIds extends BaseDbOperationTest {
     @Test(dependsOnGroups = "positive tests")
     public void selectNullTestWithDefaultTime() {
         long start = currentTimeMillis();
-        var catalogItem = dataBaseSteps.select(oneOf(Catalog.class, id(-2)));
+        var catalogItem = inDataBase().select(oneOf(Catalog.class, id(-2)));
         long end = currentTimeMillis();
 
         Duration fiveSeconds = ofSeconds(5);
@@ -83,7 +84,7 @@ public class SelectByIds extends BaseDbOperationTest {
     public void selectEmptyListByIdWithDefinedTime() {
         Duration sixSeconds = ofSeconds(6);
         long start = currentTimeMillis();
-        var catalogItems = dataBaseSteps.select(listOf(Catalog.class, ids(-1, -2))
+        var catalogItems = inDataBase().select(listOf(Catalog.class, ids(-1, -2))
                 .timeOut(sixSeconds));
         long end = currentTimeMillis();
 
@@ -96,7 +97,7 @@ public class SelectByIds extends BaseDbOperationTest {
     public void selectNullByIdWithDefinedTime() {
         Duration sixSeconds = ofSeconds(6);
         long start = currentTimeMillis();
-        var catalogItem = dataBaseSteps.select(oneOf(Catalog.class, id(-2))
+        var catalogItem = inDataBase().select(oneOf(Catalog.class, id(-2))
                 .timeOut(sixSeconds));
         long end = currentTimeMillis();
 
@@ -112,7 +113,7 @@ public class SelectByIds extends BaseDbOperationTest {
 
         Duration twoSeconds = ofSeconds(2);
         long start = currentTimeMillis();
-        var catalogItems = dataBaseSteps.select(listOf(Catalog.class, ids(-1, -2)));
+        var catalogItems = inDataBase().select(listOf(Catalog.class, ids(-1, -2)));
         long end = currentTimeMillis();
 
         try {
@@ -132,7 +133,7 @@ public class SelectByIds extends BaseDbOperationTest {
 
         Duration twoSeconds = ofSeconds(2);
         long start = currentTimeMillis();
-        var catalogItem = dataBaseSteps.select(oneOf(Catalog.class, id(-2)));
+        var catalogItem = inDataBase().select(oneOf(Catalog.class, id(-2)));
         long end = currentTimeMillis();
 
         try {
@@ -148,7 +149,7 @@ public class SelectByIds extends BaseDbOperationTest {
     @Test(dependsOnGroups = "positive tests")
     public void selectEmptyListByIdAndConditionWithDefaultTime() {
         long start = currentTimeMillis();
-        var publishers = dataBaseSteps.select(listOf(Publisher.class, ids(1))
+        var publishers = inDataBase().select(listOf(Publisher.class, ids(1))
                 .criteria("Has name Simon & Schuster", publisher -> publisher
                         .getName().equals("Simon & Schuster")));
         long end = currentTimeMillis();
@@ -162,7 +163,7 @@ public class SelectByIds extends BaseDbOperationTest {
     @Test(dependsOnGroups = "positive tests")
     public void selectNullByIdAndConditionWithDefaultTime() {
         long start = currentTimeMillis();
-        var publisher = dataBaseSteps.select(oneOf(Publisher.class, id(1))
+        var publisher = inDataBase().select(oneOf(Publisher.class, id(1))
                 .criteria("Has name Simon & Schuster", publisherItem -> publisherItem
                         .getName().equals("Simon & Schuster")));
         long end = currentTimeMillis();
@@ -177,7 +178,7 @@ public class SelectByIds extends BaseDbOperationTest {
     public void selectEmptyListByIdAndConditionWithDefinedTime() {
         Duration sixSeconds = ofSeconds(6);
         long start = currentTimeMillis();
-        var publishers = dataBaseSteps.select(listOf(Publisher.class, ids(1))
+        var publishers = inDataBase().select(listOf(Publisher.class, ids(1))
                 .criteria("Has name Simon & Schuster", publisher -> publisher
                         .getName().equals("Simon & Schuster"))
                 .timeOut(sixSeconds));
@@ -192,7 +193,7 @@ public class SelectByIds extends BaseDbOperationTest {
     public void selectNullByIdAndConditionWithDefinedTime() {
         Duration sixSeconds = ofSeconds(6);
         long start = currentTimeMillis();
-        var publisher = dataBaseSteps.select(oneOf(Publisher.class, id(1))
+        var publisher = inDataBase().select(oneOf(Publisher.class, id(1))
                 .criteria("Has name Simon & Schuster", publisherItem -> publisherItem
                         .getName().equals("Simon & Schuster"))
                 .timeOut(sixSeconds));
@@ -210,7 +211,7 @@ public class SelectByIds extends BaseDbOperationTest {
 
         Duration twoSeconds = ofSeconds(2);
         long start = currentTimeMillis();
-        var publishers = dataBaseSteps.select(listOf(Publisher.class, ids(1))
+        var publishers = inDataBase().select(listOf(Publisher.class, ids(1))
                 .criteria("Has name Simon & Schuster", publisher -> publisher
                         .getName().equals("Simon & Schuster")));
         long end = currentTimeMillis();
@@ -232,7 +233,7 @@ public class SelectByIds extends BaseDbOperationTest {
 
         Duration twoSeconds = ofSeconds(2);
         long start = currentTimeMillis();
-        var publisher = dataBaseSteps.select(oneOf(Publisher.class, id(1))
+        var publisher = inDataBase().select(oneOf(Publisher.class, id(1))
                 .criteria("Has name Simon & Schuster", publisherItem -> publisherItem
                         .getName().equals("Simon & Schuster")));
         long end = currentTimeMillis();
@@ -250,20 +251,20 @@ public class SelectByIds extends BaseDbOperationTest {
     @Test(dependsOnGroups = "positive tests",
             expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = TEST_EXCEPTION)
     public void selectEmptyListByIdWithExceptionThrowing() {
-        dataBaseSteps.select(listOf(Catalog.class, ids(-1))
+        inDataBase().select(listOf(Catalog.class, ids(-1))
                 .throwWhenResultEmpty(TEST_EXCEPTION));
     }
 
     @Test(dependsOnGroups = "positive tests",
             expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = TEST_EXCEPTION)
     public void selectNullByIdWithExceptionThrowing() {
-        dataBaseSteps.select(oneOf(Catalog.class, id(-1))
+        inDataBase().select(oneOf(Catalog.class, id(-1))
                 .throwWhenResultEmpty(TEST_EXCEPTION));
     }
 
     @Test(expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = TEST_EXCEPTION)
     public void selectEmptyListByIdAndConditionWithExceptionThrowing() {
-        dataBaseSteps.select(listOf(Publisher.class, ids(1))
+        inDataBase().select(listOf(Publisher.class, ids(1))
                 .criteria("Has name Simon & Schuster", publisher -> publisher
                         .getName().equals("Simon & Schuster"))
                 .throwWhenResultEmpty(TEST_EXCEPTION));
@@ -272,7 +273,7 @@ public class SelectByIds extends BaseDbOperationTest {
     @Test(dependsOnGroups = "positive tests",
             expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = TEST_EXCEPTION)
     public void selectNullByIdAndConditionWithExceptionThrowing() {
-        dataBaseSteps.select(oneOf(Publisher.class, id(1))
+        inDataBase().select(oneOf(Publisher.class, id(1))
                 .criteria("Has name Simon & Schuster", publisherItem -> publisherItem
                         .getName().equals("Simon & Schuster"))
                 .throwWhenResultEmpty(TEST_EXCEPTION));
