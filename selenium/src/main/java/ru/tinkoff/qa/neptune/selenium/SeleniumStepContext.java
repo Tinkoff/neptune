@@ -3,9 +3,8 @@ package ru.tinkoff.qa.neptune.selenium;
 import org.openqa.selenium.*;
 import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
-import ru.tinkoff.qa.neptune.core.api.steps.context.ActionStepContext;
+import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
-import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.click.ClickActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.edit.EditActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.java.script.GetJavaScriptResultSupplier;
@@ -22,7 +21,7 @@ import java.util.List;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 
 @CreateWith(provider = SeleniumParameterProvider.class)
-public class SeleniumStepContext implements ActionStepContext<SeleniumStepContext>, GetStepContext<SeleniumStepContext>, WrapsDriver, ContextRefreshable,
+public class SeleniumStepContext extends Context<SeleniumStepContext> implements WrapsDriver, ContextRefreshable,
         TakesScreenshot, Stoppable {
 
     private final WrappedWebDriver wrappedWebDriver;
@@ -37,39 +36,44 @@ public class SeleniumStepContext implements ActionStepContext<SeleniumStepContex
     }
 
     public <R extends SearchContext> R find(SearchSupplier<R> what) {
-        return get(what.get().compose(currentContent()));
+        return what.get().compose(currentContent()).apply(this);
     }
 
     public <R extends SearchContext> List<R> find(MultipleSearchSupplier<R> what) {
-        return get(what.get().compose(currentContent()));
+        return what.get().compose(currentContent()).apply(this);
     }
 
     public SeleniumStepContext click(ClickActionSupplier clickActionSupplier) {
-        return perform(clickActionSupplier);
+        clickActionSupplier.get().accept(this);
+        return this;
     }
 
     public <T> T getValue(SequentialGetValueSupplier<T> getValueSupplier) {
-        return get(getValueSupplier);
+        return getValueSupplier.get().apply(this);
     }
 
     public SeleniumStepContext edit(EditActionSupplier editActionSupplier) {
-        return perform(editActionSupplier);
+        editActionSupplier.get().accept(this);
+        return this;
     }
 
     public Object evaluate(GetJavaScriptResultSupplier javaScriptResultSupplier) {
-        return get(javaScriptResultSupplier);
+        return javaScriptResultSupplier.get().apply(this);
     }
 
     public SeleniumStepContext alert(AlertActionSupplier alertActionSupplier) {
-        return perform(alertActionSupplier);
+        alertActionSupplier.get().accept(this);
+        return this;
     }
 
     public SeleniumStepContext performSwitch(SwitchActionSupplier switchActionSupplier) {
-        return perform(switchActionSupplier);
+        switchActionSupplier.get().accept(this);
+        return this;
     }
 
     public SeleniumStepContext navigate(NavigationActionSupplier<?> navigationActionSupplier) {
-        return perform(navigationActionSupplier);
+        navigationActionSupplier.get().accept(this);
+        return this;
     }
 
     @Override

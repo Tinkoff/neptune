@@ -5,6 +5,7 @@ import org.mockserver.model.HttpResponse;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
+import ru.tinkoff.qa.neptune.http.api.HttpStepsParameterProvider;
 import ru.tinkoff.qa.neptune.http.api.properties.*;
 
 import javax.net.ssl.SSLContext;
@@ -124,7 +125,8 @@ public class HttpClientTest extends BaseHttpTest {
         setProperty(DEFAULT_HTTP_SSL_PARAMETERS_PROPERTY.getPropertyName(), TestSslParametersSupplier.class.getName());
 
         try {
-            var client = http().getCurrentClient();
+            var newContext = new HttpStepContext((HttpClient.Builder) new HttpStepsParameterProvider().provide().getParameterValues()[0]);
+            var client = newContext.getCurrentClient();
 
             assertThat(client.authenticator().orElse(null), equalTo(DEFAULT_AUTHENTICATOR));
             assertThat(client.connectTimeout().orElse(null), equalTo(of(DEFAULT_CONNECT_TIME_VALUE, DEFAULT_CONNECT_CHRONO_UNIT)));
