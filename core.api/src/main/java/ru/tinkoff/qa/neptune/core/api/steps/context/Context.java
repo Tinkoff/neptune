@@ -150,7 +150,7 @@ public abstract class Context<THIS extends Context> {
      * @return is desired object present or not
      */
     @SafeVarargs
-    public final boolean presenceOf(Function<THIS, ?> toBePresent,
+    protected final boolean presenceOf(Function<THIS, ?> toBePresent,
                                  Supplier<? extends RuntimeException> exceptionSupplier,
                                  Class<? extends Throwable>... toIgnore) {
         return presence(toBePresent)
@@ -168,7 +168,7 @@ public abstract class Context<THIS extends Context> {
      * @return is desired object present or not
      */
     @SafeVarargs
-    public final boolean presenceOf(Function<THIS, ?> toBePresent,
+    protected final boolean presenceOf(Function<THIS, ?> toBePresent,
                                  Class<? extends Throwable>... toIgnore) {
         return presence(toBePresent)
                 .addIgnored(ignoredExceptions(toIgnore))
@@ -211,7 +211,7 @@ public abstract class Context<THIS extends Context> {
      * @param timeOut is a time to wait for value is absent.
      * @return is an object absent or not
      */
-    public final boolean absenceOf(Function<THIS, ?> toBePresent,
+    protected final boolean absenceOf(Function<THIS, ?> toBePresent,
                                 Duration timeOut) {
         return absence(toBePresent).timeOut(timeOut).get().apply((THIS) this);
     }
@@ -224,7 +224,7 @@ public abstract class Context<THIS extends Context> {
      * @param exceptionMessage is a message of {@link IllegalStateException} to be thrown when value is present
      * @return is an object absent or not
      */
-    public final boolean absenceOf(Function<THIS, ?> toBePresent,
+    protected final boolean absenceOf(Function<THIS, ?> toBePresent,
                                 Duration timeOut,
                                 String exceptionMessage) {
         return absence(toBePresent).throwIfPresent(exceptionMessage).timeOut(timeOut).get().apply((THIS) this);

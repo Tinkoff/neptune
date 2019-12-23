@@ -12,6 +12,7 @@ import static java.util.List.of;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.check.CheckActionSupplier.check;
+import static ru.tinkoff.qa.neptune.check.CheckActionSupplier.evaluateAndCheck;
 import static ru.tinkoff.qa.neptune.check.MatchAction.match;
 import static ru.tinkoff.qa.neptune.check.test.TestEventLogger.MESSAGES;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents.*;
@@ -282,5 +283,12 @@ public class CheckTest {
                         "Check object. Assert: null has started",
                         "Event finished",
                         "Event finished"));
+    }
+
+    @Test
+    public void testOfPostponedValueEvaluation() {
+        evaluateAndCheck("Sqrt value of 9",
+                () -> sqrt(9),
+                match(is(3D)));
     }
 }

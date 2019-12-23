@@ -1,10 +1,12 @@
 package ru.tinkoff.qa.neptune.check;
 
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.Step;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
@@ -15,6 +17,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static ru.tinkoff.qa.neptune.core.api.steps.Step.createStep;
 
 public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R, T, CheckActionSupplier<R, T>> {
 
@@ -44,6 +47,24 @@ public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R,
                 .matches(matchActions)
                 .performOn(t)
                 .get().accept(t);
+    }
+
+    /**
+     * Creates an instance of {@link CheckActionSupplier};
+     *
+     *
+     * @param description description of a value to get and then check it
+     * @param toGet is how to get a value
+     * @param matchActions is an array of {@link MatchAction}
+     * @param <T> is a type of a value to be verified.
+     */
+    @SafeVarargs
+    public static <T> void evaluateAndCheck(String description, Supplier<T> toGet, MatchAction<T, ?>...matchActions) {
+        checkArgument(!isBlank(description), "Value description to be inspected should not be blank");
+        new CheckActionSupplier<Step<T>, T>(description)
+                .matches(matchActions)
+                .performOn(Step::perform)
+                .get().accept(createStep(description, toGet));
     }
 
     /**
