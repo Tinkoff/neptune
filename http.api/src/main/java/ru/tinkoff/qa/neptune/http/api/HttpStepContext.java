@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.http.api;
 
-import org.apache.commons.lang3.StringUtils;
 import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
@@ -14,8 +13,6 @@ import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static ru.tinkoff.qa.neptune.core.api.steps.StepAction.action;
-import static ru.tinkoff.qa.neptune.core.api.steps.StepFunction.toGet;
 
 @CreateWith(provider = HttpStepsParameterProvider.class)
 public class HttpStepContext extends Context<HttpStepContext> implements ContextRefreshable {
@@ -64,15 +61,6 @@ public class HttpStepContext extends Context<HttpStepContext> implements Context
      * This method was added for backward compatibility temporary
      */
     @Deprecated(since = "0.11.2-ALPHA", forRemoval = true)
-    public <T> T get(String description, Function<HttpStepContext, T> function) {
-        checkArgument(!StringUtils.isBlank(description), "Description should not be null or an empty string");
-        return this.get(toGet(description, function));
-    }
-
-    /**
-     * This method was added for backward compatibility temporary
-     */
-    @Deprecated(since = "0.11.2-ALPHA", forRemoval = true)
     public HttpStepContext perform(Consumer<HttpStepContext> actionConsumer) {
         checkArgument(Objects.nonNull(actionConsumer), "Action is not defined");
         actionConsumer.accept(this);
@@ -86,14 +74,5 @@ public class HttpStepContext extends Context<HttpStepContext> implements Context
     public HttpStepContext perform(Supplier<Consumer<HttpStepContext>> actionSupplier) {
         checkNotNull(actionSupplier, "Supplier of the action was not defined");
         return this.perform(actionSupplier.get());
-    }
-
-    /**
-     * This method was added for backward compatibility temporary
-     */
-    @Deprecated(since = "0.11.2-ALPHA", forRemoval = true)
-    public HttpStepContext perform(String description, Consumer<HttpStepContext> actionConsumer) {
-        checkArgument(!StringUtils.isBlank(description), "Description should not be null or an empty string");
-        return this.perform(action(description, actionConsumer));
     }
 }
