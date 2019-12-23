@@ -104,6 +104,52 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     }
 
     /**
+     * Checks whenever an element is present or not
+     *
+     * @param toFind is how to find the element
+     * @return is element present|visible or not
+     */
+    public boolean presenceOf(SearchSupplier<?> toFind) {
+        return super.presenceOf(toFind.get().compose(currentContent()), NoSuchElementException.class);
+    }
+
+    /**
+     * Checks whenever an element is present or not
+     *
+     * @param toFind is how to find the element
+     * @param errorMessage is a message of {@link NoSuchElementException} to be thrown when element is not present
+     * @return is element present|visible or not
+     */
+    public boolean presenceOf(SearchSupplier<?> toFind, String errorMessage) {
+        return super.presenceOf(toFind.get().compose(currentContent()),
+                () -> new NoSuchElementException(errorMessage),
+                NoSuchElementException.class);
+    }
+
+    /**
+     * Checks whenever elements is present or not
+     *
+     * @param toFind is how to find the element
+     * @return are elements present|visible or not
+     */
+    public boolean presenceOf(MultipleSearchSupplier<?> toFind) {
+        return super.presenceOf(toFind.get().compose(currentContent()), NoSuchElementException.class);
+    }
+
+    /**
+     * Checks whenever elements is present or not
+     *
+     * @param toFind is how to find the element
+     * @param errorMessage is a message of {@link NoSuchElementException} to be thrown when elements are not present
+     * @return are elements present|visible or not
+     */
+    public boolean presenceOf(MultipleSearchSupplier<?> toFind, String errorMessage) {
+        return super.presenceOf(toFind.get().compose(currentContent()),
+                () -> new NoSuchElementException(errorMessage),
+                NoSuchElementException.class);
+    }
+
+    /**
      * This method was added for backward compatibility temporary
      */
     @Deprecated(since = "0.11.2-ALPHA")
