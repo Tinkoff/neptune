@@ -16,6 +16,7 @@ import ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert.AlertAction
 import ru.tinkoff.qa.neptune.selenium.functions.value.SequentialGetValueSupplier;
 import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -24,6 +25,7 @@ import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.time.Duration.ofMillis;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 
 @CreateWith(provider = SeleniumParameterProvider.class)
@@ -118,7 +120,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     /**
      * Checks whenever an element is present or not
      *
-     * @param toFind is how to find the element
+     * @param toFind       is how to find the element
      * @param errorMessage is a message of {@link NoSuchElementException} to be thrown when element is not present
      * @return is element present|visible or not
      */
@@ -132,7 +134,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     /**
      * Checks whenever elements is present or not
      *
-     * @param toFind is how to find the element
+     * @param toFind is how to find elements
      * @return are elements present|visible or not
      */
     public boolean presenceOf(MultipleSearchSupplier<?> toFind) {
@@ -144,7 +146,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     /**
      * Checks whenever elements is present or not
      *
-     * @param toFind is how to find the element
+     * @param toFind       is how to find elements
      * @param errorMessage is a message of {@link NoSuchElementException} to be thrown when elements are not present
      * @return are elements present|visible or not
      */
@@ -153,6 +155,80 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
                 () -> new NoSuchElementException(errorMessage),
                 NoSuchElementException.class,
                 StaleElementReferenceException.class);
+    }
+
+    /**
+     * Checks whenever an element is absent or not
+     *
+     * @param toBeAbsent is how to find the element
+     * @param timeOut    is a time to wait for the element is absent.
+     * @return is element absent or not
+     */
+    public boolean absenceOf(SearchSupplier<?> toBeAbsent,
+                             Duration timeOut) {
+        return super.absenceOf(toBeAbsent
+                        .clone()
+                        .timeOut(ofMillis(0))
+                        .get()
+                        .compose(currentContent()),
+                timeOut);
+    }
+
+    /**
+     * Checks whenever an element is absent or not
+     *
+     * @param toBeAbsent       is how to find the element
+     * @param timeOut          is a time to wait for the element is absent.
+     * @param exceptionMessage is a message of {@link IllegalStateException} to be thrown when the element is present
+     * @return is element absent or not
+     */
+    public boolean absenceOf(SearchSupplier<?> toBeAbsent,
+                             Duration timeOut,
+                             String exceptionMessage) {
+        return super.absenceOf(toBeAbsent
+                        .clone()
+                        .timeOut(ofMillis(0))
+                        .get()
+                        .compose(currentContent()),
+                timeOut,
+                exceptionMessage);
+    }
+
+    /**
+     * Checks whenever elements are absent or not
+     *
+     * @param toBeAbsent is how to find elements
+     * @param timeOut    is a time to wait for elements are absent.
+     * @return are elements absent or not
+     */
+    public boolean absenceOf(MultipleSearchSupplier<?> toBeAbsent,
+                             Duration timeOut) {
+        return super.absenceOf(toBeAbsent
+                        .clone()
+                        .timeOut(ofMillis(0))
+                        .get()
+                        .compose(currentContent()),
+                timeOut);
+    }
+
+    /**
+     * Checks whenever an element is absent or not
+     *
+     * @param toBeAbsent       is how to find elements
+     * @param timeOut          is a time to wait for elements are absent.
+     * @param exceptionMessage is a message of {@link IllegalStateException} to be thrown when elements are present
+     * @return are elements absent or not
+     */
+    public boolean absenceOf(MultipleSearchSupplier<?> toBeAbsent,
+                             Duration timeOut,
+                             String exceptionMessage) {
+        return super.absenceOf(toBeAbsent
+                        .clone()
+                        .timeOut(ofMillis(0))
+                        .get()
+                        .compose(currentContent()),
+                timeOut,
+                exceptionMessage);
     }
 
     /**
