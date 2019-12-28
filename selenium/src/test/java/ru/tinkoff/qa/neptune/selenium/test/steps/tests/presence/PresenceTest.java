@@ -17,8 +17,9 @@ import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
 public class PresenceTest extends BaseWebDriverTest {
 
     @Test
-    public void positiveTestOfSearchSupplier() {
-        var presence = seleniumSteps.presenceOf(flag().foundFrom(tableRow()
+    public void positiveTestOfPresence() {
+        var presence = seleniumSteps.presenceOf(flag()
+                .foundFrom(tableRow()
                 .timeOut(FIVE_SECONDS)
                 .criteria(condition(format("Contains %s, %s and %s", CELL_TEXT87, CELL_TEXT88, CELL_TEXT89), tableRow ->
                         tableRow.getValue().containsAll(of(CELL_TEXT87, CELL_TEXT88, CELL_TEXT89))))));
@@ -27,15 +28,18 @@ public class PresenceTest extends BaseWebDriverTest {
     }
 
     @Test
-    public void negativeTestOfSearchSupplier() {
-        var presence = seleniumSteps.presenceOf(flag().timeOut(FIVE_SECONDS).foundFrom(tableRow().timeOut(FIVE_SECONDS)
-                .criteria(condition(format("Contains %s, %s and %s", CELL_TEXT49, CELL_TEXT50, CELL_TEXT51),
-                        tableRow -> tableRow.getValue().containsAll(of(CELL_TEXT49, CELL_TEXT50, CELL_TEXT51))))));
+    public void negativeTestOfPresence() {
+        var presence = seleniumSteps.presenceOf(flag()
+                .timeOut(FIVE_SECONDS)
+                .foundFrom(tableRow().timeOut(FIVE_SECONDS)
+                        .criteria(condition(format("Contains %s, %s and %s", CELL_TEXT49, CELL_TEXT50, CELL_TEXT51),
+                                tableRow -> tableRow.getValue().containsAll(of(CELL_TEXT49, CELL_TEXT50, CELL_TEXT51))))));
+
         assertThat(presence, is(false));
     }
 
     @Test(expectedExceptions = NoSuchElementException.class, expectedExceptionsMessageRegExp = ".*['Test exception']*$")
-    public void negativeTestOfSearchSupplierWithExceptionThrowing() {
+    public void negativeTestOfPresenceWithExceptionThrowing() {
         var presence = seleniumSteps.presenceOf(flag()
                         .timeOut(FIVE_SECONDS)
                         .foundFrom(tableRow().timeOut(FIVE_SECONDS)
@@ -46,8 +50,9 @@ public class PresenceTest extends BaseWebDriverTest {
     }
 
     @Test
-    public void positiveTestOfMultiSearchSupplier() {
-        var presence = seleniumSteps.presenceOf(textFields().foundFrom(tableRow()
+    public void positiveTestOfPresence2() {
+        var presence = seleniumSteps.presenceOf(textFields()
+                .foundFrom(tableRow()
                 .timeOut(FIVE_SECONDS)
                 .criteria(condition(format("Contains %s, %s and %s", CELL_TEXT84, CELL_TEXT85, CELL_TEXT86), tableRow ->
                         tableRow.getValue().containsAll(of(CELL_TEXT84, CELL_TEXT85, CELL_TEXT86))))));
@@ -56,20 +61,22 @@ public class PresenceTest extends BaseWebDriverTest {
     }
 
     @Test
-    public void negativeTestOfMultiSearchSupplier() {
+    public void negativeTestOfPresence2() {
         var presence = seleniumSteps.presenceOf(textFields()
                 .timeOut(FIVE_SECONDS)
-                .foundFrom(tableRow().timeOut(FIVE_SECONDS)
+                .foundFrom(tableRow()
+                        .timeOut(FIVE_SECONDS)
                         .criteria(condition(format("Contains %s, %s and %s", CELL_TEXT22, CELL_TEXT23, CELL_TEXT24),
                                 tableRow -> tableRow.getValue().containsAll(of(CELL_TEXT22, CELL_TEXT23, CELL_TEXT24))))));
         assertThat(presence, is(false));
     }
 
     @Test(expectedExceptions = NoSuchElementException.class, expectedExceptionsMessageRegExp = ".*['Test exception']*$")
-    public void negativeTestOfMultiSearchSupplierWithExceptionThrowing() {
+    public void negativeTestOfPresenceWithExceptionThrowing2() {
         var presence = seleniumSteps.presenceOf(textFields()
                         .timeOut(FIVE_SECONDS)
-                        .foundFrom(tableRow().timeOut(FIVE_SECONDS)
+                        .foundFrom(tableRow()
+                                .timeOut(FIVE_SECONDS)
                                 .criteria(condition(format("Contains %s, %s and %s", CELL_TEXT22, CELL_TEXT23, CELL_TEXT24), tableRow ->
                                         tableRow.getValue().containsAll(of(CELL_TEXT22, CELL_TEXT23, CELL_TEXT24))))),
                 "Test exception");

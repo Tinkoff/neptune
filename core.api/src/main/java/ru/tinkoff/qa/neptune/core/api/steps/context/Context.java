@@ -35,7 +35,7 @@ import static ru.tinkoff.qa.neptune.core.api.steps.Presence.presence;
  * @param <THIS> is a type of a class that extends {@link Context}
  */
 @SuppressWarnings("unchecked")
-public abstract class Context<THIS extends Context> {
+public abstract class Context<THIS extends Context<THIS>> {
 
     /**
      * This is the utility method that helps to create a thread-safe proxy instance with byte-buddy tools.
