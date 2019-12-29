@@ -176,54 +176,54 @@ public abstract class Context<THIS extends Context<THIS>> {
     /**
      * Retrieves whenever some object is absent or not.
      *
-     * @param toBePresent is a supplier of a function that retrieves a value
-     * @param timeOut     is a time to wait for value is absent. WARNING!!! When {@code toBePresent} has a defined time out
-     *                    then it is ignored in favour of a time defined by the method.
+     * @param toBeAbsent is a supplier of a function that retrieves a value
+     * @param timeOut    is a time to wait for value is absent. WARNING!!! When {@code toBePresent} has a defined time out
+     *                   then it is ignored in favour of a time defined by the method.
      * @return is an object absent or not
      */
-    public final boolean absenceOf(SequentialGetStepSupplier<THIS, ?, ?, ?, ?> toBePresent,
+    public final boolean absenceOf(SequentialGetStepSupplier<THIS, ?, ?, ?, ?> toBeAbsent,
                                    Duration timeOut) {
-        return absence(toBePresent).timeOut(timeOut).get().apply((THIS) this);
+        return absence(toBeAbsent).timeOut(timeOut).get().apply((THIS) this);
     }
 
     /**
      * Retrieves whenever some object is absent or not.
      *
-     * @param toBePresent      is a supplier of a function that retrieves a value
+     * @param toBeAbsent       is a supplier of a function that retrieves a value
      * @param timeOut          is a time to wait for value is absent. WARNING!!! When {@code toBePresent} has a defined time out
      *                         then it is ignored in favour of a time defined by the method
      * @param exceptionMessage is a message of {@link IllegalStateException} to be thrown when value is present
      * @return is an object absent or not
      */
-    public final boolean absenceOf(SequentialGetStepSupplier<THIS, ?, ?, ?, ?> toBePresent,
+    public final boolean absenceOf(SequentialGetStepSupplier<THIS, ?, ?, ?, ?> toBeAbsent,
                                    Duration timeOut,
                                    String exceptionMessage) {
-        return absence(toBePresent).throwIfPresent(exceptionMessage).timeOut(timeOut).get().apply((THIS) this);
+        return absence(toBeAbsent).throwIfPresent(exceptionMessage).timeOut(timeOut).get().apply((THIS) this);
     }
 
     /**
      * Retrieves whenever some object is absent or not.
      *
-     * @param toBePresent is a function that retrieves a value
-     * @param timeOut     is a time to wait for value is absent.
+     * @param toBeAbsent is a function that retrieves a value
+     * @param timeOut    is a time to wait for value is absent.
      * @return is an object absent or not
      */
-    protected final boolean absenceOf(Function<THIS, ?> toBePresent,
+    protected final boolean absenceOf(Function<THIS, ?> toBeAbsent,
                                       Duration timeOut) {
-        return absence(toBePresent).timeOut(timeOut).get().apply((THIS) this);
+        return absence(toBeAbsent).timeOut(timeOut).get().apply((THIS) this);
     }
 
     /**
      * Retrieves whenever some object is absent or not.
      *
-     * @param toBePresent      is a function that retrieves a value
+     * @param toBeAbsent       is a function that retrieves a value
      * @param timeOut          is a time to wait for value is absent.
      * @param exceptionMessage is a message of {@link IllegalStateException} to be thrown when value is present
      * @return is an object absent or not
      */
-    protected final boolean absenceOf(Function<THIS, ?> toBePresent,
+    protected final boolean absenceOf(Function<THIS, ?> toBeAbsent,
                                       Duration timeOut,
                                       String exceptionMessage) {
-        return absence(toBePresent).throwIfPresent(exceptionMessage).timeOut(timeOut).get().apply((THIS) this);
+        return absence(toBeAbsent).throwIfPresent(exceptionMessage).timeOut(timeOut).get().apply((THIS) this);
     }
 }

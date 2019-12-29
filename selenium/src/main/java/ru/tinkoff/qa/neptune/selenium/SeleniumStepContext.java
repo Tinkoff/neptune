@@ -112,6 +112,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return is element present|visible or not
      */
     public boolean presenceOf(SearchSupplier<?> toFind) {
+        checkNotNull(toFind, "It is necessary to define how to find an element to be present");
         return super.presenceOf(toFind.get().compose(currentContent()),
                 NoSuchElementException.class,
                 StaleElementReferenceException.class);
@@ -125,6 +126,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return is element present|visible or not
      */
     public boolean presenceOf(SearchSupplier<?> toFind, String errorMessage) {
+        checkNotNull(toFind, "It is necessary to define how to find an element to be present");
         return super.presenceOf(toFind.get().compose(currentContent()),
                 () -> new NoSuchElementException(errorMessage),
                 NoSuchElementException.class,
@@ -138,6 +140,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return are elements present|visible or not
      */
     public boolean presenceOf(MultipleSearchSupplier<?> toFind) {
+        checkNotNull(toFind, "It is necessary to define how to find elements to be present");
         return super.presenceOf(toFind.get().compose(currentContent()),
                 NoSuchElementException.class,
                 StaleElementReferenceException.class);
@@ -151,6 +154,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return are elements present|visible or not
      */
     public boolean presenceOf(MultipleSearchSupplier<?> toFind, String errorMessage) {
+        checkNotNull(toFind, "It is necessary to define how to find elements to be present");
         return super.presenceOf(toFind.get().compose(currentContent()),
                 () -> new NoSuchElementException(errorMessage),
                 NoSuchElementException.class,
@@ -166,6 +170,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public boolean absenceOf(SearchSupplier<?> toBeAbsent,
                              Duration timeOut) {
+        checkNotNull(toBeAbsent, "It is necessary to define how to find an element to be absent");
         return super.absenceOf(toBeAbsent
                         .clone()
                         .timeOut(ofMillis(0))
@@ -185,6 +190,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     public boolean absenceOf(SearchSupplier<?> toBeAbsent,
                              Duration timeOut,
                              String exceptionMessage) {
+        checkNotNull(toBeAbsent, "It is necessary to define how to find an element to be absent");
         return super.absenceOf(toBeAbsent
                         .clone()
                         .timeOut(ofMillis(0))
@@ -203,6 +209,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public boolean absenceOf(MultipleSearchSupplier<?> toBeAbsent,
                              Duration timeOut) {
+        checkNotNull(toBeAbsent, "It is necessary to define how to find elements to be absent");
         return super.absenceOf(toBeAbsent
                         .clone()
                         .timeOut(ofMillis(0))
@@ -222,6 +229,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     public boolean absenceOf(MultipleSearchSupplier<?> toBeAbsent,
                              Duration timeOut,
                              String exceptionMessage) {
+        checkNotNull(toBeAbsent, "It is necessary to define how to find elements to be absent");
         return super.absenceOf(toBeAbsent
                         .clone()
                         .timeOut(ofMillis(0))

@@ -388,15 +388,15 @@ public class AbsenceTest {
 
     private static class AbsenceTestContext extends Context<AbsenceTestContext> {
 
-        public boolean absence(Function<AbsenceTestContext, ?> toBePresent,
+        public boolean absence(Function<AbsenceTestContext, ?> toBeAbsent,
                                Duration timeOut) {
-            return super.absenceOf(toBePresent, timeOut);
+            return super.absenceOf(toBeAbsent, timeOut);
         }
 
-        public boolean absence(Function<AbsenceTestContext, ?> toBePresent,
+        public boolean absence(Function<AbsenceTestContext, ?> toBeAbsent,
                                Duration timeOut,
                                String errorMessage) {
-            return super.absenceOf(toBePresent, timeOut, errorMessage);
+            return super.absenceOf(toBeAbsent, timeOut, errorMessage);
         }
     }
 }
