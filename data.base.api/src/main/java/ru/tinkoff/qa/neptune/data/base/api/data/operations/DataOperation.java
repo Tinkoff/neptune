@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.data.base.api.data.operations;
 import org.apache.commons.lang3.StringUtils;
 import org.datanucleus.ExecutionContextImpl;
 import org.datanucleus.api.jdo.JDOPersistenceManager;
+import org.datanucleus.enhancement.Persistable;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
@@ -219,18 +220,18 @@ public final class DataOperation<T extends PersistableObject> extends Sequential
         var result = new ArrayList<T>();
 
         persistable.forEach(t ->  {
-           T t2;
-           if (!isPersistent(t)) {
-               t2 = manager.makePersistent(t);
-           }
-           else {
-               t2 = t;
-           }
+            T t2;
+            if (!isPersistent(t)) {
+                t2 = manager.makePersistent(t);
+            }
+            else {
+                t2 = t;
+            }
 
-           if (!isTransactional(t2)) {
-               manager.makeTransactional(t2);
-           }
-           result.add(t2);
+            if (!isTransactional(t2)) {
+                manager.makeTransactional(t2);
+            }
+            result.add(t2);
         });
         return result;
     }
@@ -354,7 +355,14 @@ public final class DataOperation<T extends PersistableObject> extends Sequential
         var result = new LinkedHashMap<JDOPersistenceManager, List<T>>();
 
         toBeOperated.forEach(t -> {
-            var manager = context.getManager(getConnection(t.getClass()));
+            JDOPersistenceManager manager;
+            if (isPersistent(t)) {
+                manager = (JDOPersistenceManager) ((Persistable) t).dnGetStateManager().getExecutionContextReference().getOwner();
+            }
+            else {
+                manager = context.getManager(getConnection(t.getClass()));
+            }
+
             ofNullable(result.get(manager))
                     .ifPresentOrElse(ts -> ts.add(t),
                             () -> result.put(manager, new ArrayList<>(List.of(t))));
