@@ -7,7 +7,7 @@ import org.testng.annotations.Factory;
 import static org.hamcrest.Matchers.*;
 
 public class SequentialParameterizedTestNGTestFactory {
-    @DataProvider
+    @DataProvider(parallel = true)
     public static Object[][] data() {
         return new Object[][]{
                 {1, equalTo(4)},
