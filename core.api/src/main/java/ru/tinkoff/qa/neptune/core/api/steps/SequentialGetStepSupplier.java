@@ -25,7 +25,7 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.core.api.steps.Condition.NOT_DESCRIBED;
-import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.toGet;
+import static ru.tinkoff.qa.neptune.core.api.steps.StepFunction.toGet;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromArray.getFromArray;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromIterable.getFromIterable;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
@@ -94,7 +94,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * @return self-reference
      */
     protected THIS criteria(ConditionConcatenation concat, String conditionDescription, Predicate<? super P> condition) {
-        return criteria(concat, StoryWriter.condition(conditionDescription, condition));
+        return criteria(concat, Condition.condition(conditionDescription, condition));
     }
 
     /**
@@ -382,7 +382,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * Returns string description of the defined criteria. If there is some description and {@link Predicate#toString()}
      * returns some human-readable value then method returns this value. When criteria is defined then it returns
      * {@code '<not described condition>'}. When criteria is not defined then an empty string is returned.
-     * @see StoryWriter#condition(String, Predicate)
+     * @see Condition#condition(String, Predicate)
      * @see #criteria(Predicate)
      * @see #criteria(String, Predicate)
      * @see #criteria(ConditionConcatenation, Predicate)

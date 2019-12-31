@@ -1,24 +1,23 @@
 package ru.tinkoff.qa.neptune.testng.integration.test;
 
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeMethod;
-import ru.tinkoff.qa.neptune.testng.integration.properties.RefreshEachTimeBefore;
-import ru.tinkoff.qa.neptune.testng.integration.test.ignored.IgnoredStubTest;
-import ru.tinkoff.qa.neptune.testng.integration.test.ignored.entries.IgnoredStubTest2;
 import org.testng.TestNG;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 import org.testng.xml.XmlClass;
 import org.testng.xml.XmlSuite;
 import org.testng.xml.XmlTest;
+import ru.tinkoff.qa.neptune.testng.integration.properties.RefreshEachTimeBefore;
+import ru.tinkoff.qa.neptune.testng.integration.test.ignored.IgnoredStubTest;
+import ru.tinkoff.qa.neptune.testng.integration.test.ignored.entries.IgnoredStubTest2;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static ru.tinkoff.qa.neptune.core.api.concurency.ObjectContainer.getAllObjects;
 import static ru.tinkoff.qa.neptune.testng.integration.properties.RefreshEachTimeBefore.*;
 import static ru.tinkoff.qa.neptune.testng.integration.properties.TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY;
@@ -26,6 +25,7 @@ import static ru.tinkoff.qa.neptune.testng.integration.properties.TestNGRefreshS
 public class TestNgTestFinishingTest {
 
     private void runBeforeTheChecking() {
+        ContextClass2.refreshCountToZero();
         TestNG testNG=new TestNG();
 
         List<XmlSuite> testSuites=new ArrayList<>();
@@ -51,15 +51,10 @@ public class TestNgTestFinishingTest {
         testNG.run();
     }
 
-    @BeforeMethod
-    public void refresh() {
-        ContextClass2.refreshCountToZero();
-    }
-
     @Test
     public void whenNoRefreshingStrategyIsDefined() {
         runBeforeTheChecking();
-        assertThat(ContextClass2.getRefreshCount(), is(8));
+        assertThat(ContextClass2.getRefreshCount(), is(9));
     }
 
     @Test

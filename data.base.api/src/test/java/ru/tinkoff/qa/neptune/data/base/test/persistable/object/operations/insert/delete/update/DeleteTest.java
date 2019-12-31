@@ -12,6 +12,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.fail;
 import static org.testng.AssertJUnit.assertNotNull;
+import static ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext.inDataBase;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle.oneOf;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.SelectList.listOf;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQueryParameters.byJDOQuery;
@@ -20,90 +21,90 @@ public class DeleteTest extends BaseDbOperationTest {
 
     @Test(groups = "positive delete")
     public void positiveDeleteTest1() {
-        var jackLondon =  dataBaseSteps.select(oneOf(Author.class,
+        var jackLondon =  inDataBase().select(oneOf(Author.class,
                 byJDOQuery(QAuthor.class).addWhere(qAuthor -> qAuthor
                         .firstName.eq("Jack")
                         .and(qAuthor.lastName.eq("London")))));
 
-        var mazda = dataBaseSteps.select(oneOf(Manufacturer.class,
+        var mazda = inDataBase().select(oneOf(Manufacturer.class,
                 byJDOQuery(QManufacturer.class).addWhere(qManufacturer -> qManufacturer.name.eq("Mazda"))));
 
-        var deleted = dataBaseSteps.delete(jackLondon, mazda);
+        var deleted = inDataBase().delete(jackLondon, mazda);
 
         assertThat(deleted, hasSize(2));
-        assertNull(dataBaseSteps.select(oneOf(Author.class,
+        assertNull(inDataBase().select(oneOf(Author.class,
                 byJDOQuery(QAuthor.class).addWhere(qAuthor -> qAuthor
                         .firstName.eq("Jack")
                         .and(qAuthor.lastName.eq("London"))))));
 
-        assertNull(dataBaseSteps.select(oneOf(Manufacturer.class,
+        assertNull(inDataBase().select(oneOf(Manufacturer.class,
                 byJDOQuery(QManufacturer.class).addWhere(qManufacturer -> qManufacturer.name.eq("Mazda")))));
     }
 
     @Test(groups = "positive delete")
     public void positiveDeleteTest2() {
-        var deleted = dataBaseSteps.delete(oneOf(Author.class,
+        var deleted = inDataBase().delete(oneOf(Author.class,
                 byJDOQuery(QAuthor.class).addWhere(qAuthor -> qAuthor
                         .firstName.eq("Mikhail")
                         .and(qAuthor.lastName.eq("Bulgakov")))));
 
-        var deleted2 = dataBaseSteps.delete(oneOf(Manufacturer.class,
+        var deleted2 = inDataBase().delete(oneOf(Manufacturer.class,
                 byJDOQuery(QManufacturer.class).addWhere(qManufacturer -> qManufacturer.name.eq("Fiat"))));
 
         assertNotNull(deleted);
         assertNotNull(deleted2);
 
-        assertNull(dataBaseSteps.select(oneOf(Author.class,
+        assertNull(inDataBase().select(oneOf(Author.class,
                 byJDOQuery(QAuthor.class).addWhere(qAuthor -> qAuthor
                         .firstName.eq("Mikhail")
                         .and(qAuthor.lastName.eq("Bulgakov"))))));
 
-        assertNull(dataBaseSteps.select(oneOf(Manufacturer.class,
+        assertNull(inDataBase().select(oneOf(Manufacturer.class,
                 byJDOQuery(QManufacturer.class).addWhere(qManufacturer -> qManufacturer.name.eq("Fiat")))));
     }
 
     @Test(groups = "positive delete")
     public void positiveDeleteTest3() {
-        var deleted = dataBaseSteps.delete(listOf(Author.class,
+        var deleted = inDataBase().delete(listOf(Author.class,
                 byJDOQuery(QAuthor.class).addWhere(qAuthor -> qAuthor
                         .firstName.eq("Honoré")
                         .and(qAuthor.lastName.eq("de Balzac")))));
 
-        var deleted2 = dataBaseSteps.delete(listOf(Manufacturer.class,
+        var deleted2 = inDataBase().delete(listOf(Manufacturer.class,
                 byJDOQuery(QManufacturer.class).addWhere(qManufacturer -> qManufacturer.name.eq("Skoda"))));
 
         assertThat(deleted, hasSize(1));
         assertThat(deleted2, hasSize(1));
 
-        assertNull(dataBaseSteps.select(oneOf(Author.class,
+        assertNull(inDataBase().select(oneOf(Author.class,
                 byJDOQuery(QAuthor.class).addWhere(qAuthor -> qAuthor
                         .firstName.eq("Honoré")
                         .and(qAuthor.lastName.eq("de Balzac"))))));
 
-        assertNull(dataBaseSteps.select(oneOf(Manufacturer.class,
+        assertNull(inDataBase().select(oneOf(Manufacturer.class,
                 byJDOQuery(QManufacturer.class).addWhere(qManufacturer -> qManufacturer.name.eq("Skoda")))));
     }
 
     @Test(dependsOnGroups = "positive delete")
     public void negativeTest1() {
-        var lermontov =  dataBaseSteps.select(oneOf(Author.class,
+        var lermontov =  inDataBase().select(oneOf(Author.class,
                 byJDOQuery(QAuthor.class).addWhere(qAuthor -> qAuthor
                         .firstName.eq("Mikhail") //this deleting is supposed to be failed because if
                         .and(qAuthor.lastName.eq("Lermontov"))))); //referential policy violation
 
-        var nissan = dataBaseSteps.select(oneOf(Manufacturer.class, //this deleting is supposed to be successful
+        var nissan = inDataBase().select(oneOf(Manufacturer.class, //this deleting is supposed to be successful
                 byJDOQuery(QManufacturer.class).addWhere(qManufacturer -> qManufacturer.name.eq("Nissan"))));
 
         try {
-            dataBaseSteps.delete(nissan, lermontov);
+            inDataBase().delete(nissan, lermontov);
         }
         catch (Exception e) {
-            assertNotNull(dataBaseSteps.select(oneOf(Author.class,
+            assertNotNull(inDataBase().select(oneOf(Author.class,
                     byJDOQuery(QAuthor.class).addWhere(qAuthor -> qAuthor
                             .firstName.eq("Mikhail")
                             .and(qAuthor.lastName.eq("Lermontov"))))));
 
-            assertNotNull(dataBaseSteps.select(oneOf(Manufacturer.class,
+            assertNotNull(inDataBase().select(oneOf(Manufacturer.class,
                     byJDOQuery(QManufacturer.class).addWhere(qManufacturer -> qManufacturer.name.eq("Nissan")))));
 
             return;
@@ -114,21 +115,21 @@ public class DeleteTest extends BaseDbOperationTest {
 
     @Test(dependsOnGroups = "positive delete")
     public void insertAfterDelete() {
-        var ferrari = dataBaseSteps.insert(new Manufacturer().setName("Ferrari"));
+        var ferrari = inDataBase().insert(new Manufacturer().setName("Ferrari"));
 
         assertNotNull(ferrari);
-        assertNotNull(dataBaseSteps.select(oneOf(Manufacturer.class,
+        assertNotNull(inDataBase().select(oneOf(Manufacturer.class,
                 byJDOQuery(QManufacturer.class).addWhere(qManufacturer -> qManufacturer.name.eq("Ferrari")))));
 
-        ferrari = dataBaseSteps.delete(ferrari);
+        ferrari = inDataBase().delete(ferrari);
 
         assertNotNull(ferrari);
-        assertNull(dataBaseSteps.select(oneOf(Manufacturer.class,
+        assertNull(inDataBase().select(oneOf(Manufacturer.class,
                 byJDOQuery(QManufacturer.class).addWhere(qManufacturer -> qManufacturer.name.eq("Ferrari")))));
 
-        ferrari = dataBaseSteps.insert(ferrari);
+        ferrari = inDataBase().insert(ferrari);
         assertNotNull(ferrari);
-        assertNotNull(dataBaseSteps.select(oneOf(Manufacturer.class,
+        assertNotNull(inDataBase().select(oneOf(Manufacturer.class,
                 byJDOQuery(QManufacturer.class).addWhere(qManufacturer -> qManufacturer.name.eq("Ferrari")))));
     }
 }

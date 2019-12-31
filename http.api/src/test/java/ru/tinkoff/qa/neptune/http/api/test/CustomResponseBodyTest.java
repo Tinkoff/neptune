@@ -8,7 +8,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.w3c.dom.Document;
-import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
 import ru.tinkoff.qa.neptune.http.api.test.request.body.BodyObject;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -21,17 +20,15 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
-import static ru.tinkoff.qa.neptune.core.api.steps.proxy.ProxyFactory.getProxied;
 import static ru.tinkoff.qa.neptune.http.api.HttpGetObjectFromResponseBody.bodyDataOf;
 import static ru.tinkoff.qa.neptune.http.api.HttpResponseSequentialGetSupplier.responseOf;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.PreparedHttpRequest.GET;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.FromJson.getFromJson;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.GetDocument.getDocument;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.GetMapped.getMapped;
 
 public class CustomResponseBodyTest extends BaseHttpTest {
-
-    private HttpStepContext httpSteps = getProxied(HttpStepContext.class);
 
     private static final BodyObject BODY_OBJECT = new BodyObject().setA("Some String 2")
             .setB(777)
@@ -135,7 +132,7 @@ public class CustomResponseBodyTest extends BaseHttpTest {
                                        String toGetDescription,
                                        Function<String, ?> howToGet,
                                        Matcher<? super  Object> matcher){
-        assertThat(httpSteps.get(bodyDataOf(responseOf(
+        assertThat(http().get(bodyDataOf(responseOf(
                 GET(REQUEST_URI + urlPath),
                 ofString()),
                 toGetDescription,

@@ -1,30 +1,42 @@
 package ru.tinkoff.qa.neptune.testng.integration;
 
 import com.google.common.collect.Iterables;
-import ru.tinkoff.qa.neptune.testng.integration.properties.RefreshEachTimeBefore;
-import org.testng.*;
+import io.github.classgraph.ClassGraph;
+import org.testng.IInvokedMethod;
+import org.testng.IInvokedMethodListener;
+import org.testng.ITestResult;
 import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
+import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
+import ru.tinkoff.qa.neptune.testng.integration.properties.RefreshEachTimeBefore;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
+import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.testng.ITestResult.*;
-import static ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable.refreshContext;
 import static ru.tinkoff.qa.neptune.testng.integration.properties.TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY;
-import static java.lang.reflect.Modifier.isStatic;
-import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toList;
 
 public class DefaultTestRunningListener implements IInvokedMethodListener {
 
     private final ThreadLocal<Method> previouslyRefreshed = new ThreadLocal<>();
+    private final List<Class<? extends Context>> REFRESHABLE_CONTEXTS = new ClassGraph()
+            .enableAllInfo()
+            .scan()
+            .getSubclasses(Context.class.getName())
+            .loadClasses(Context.class)
+            .stream()
+            .filter(ContextRefreshable.class::isAssignableFrom)
+            .collect(toList());
 
     private static boolean isIgnored(Method method) {
         Class<?> declaredBy;
@@ -50,7 +62,7 @@ public class DefaultTestRunningListener implements IInvokedMethodListener {
         return REFRESH_STRATEGY_PROPERTY.get().stream().map(RefreshEachTimeBefore::get).collect(toList());
     }
 
-    private void refreshIfNecessary(Object instance, Method method) {
+    private void refreshIfNecessary(Method method) {
         if (isIgnored(method)) {
             return;
         }
@@ -59,13 +71,9 @@ public class DefaultTestRunningListener implements IInvokedMethodListener {
 
         ofNullable(previouslyRefreshed.get())
                 .ifPresentOrElse(method1 -> {}, () -> {
-                    var methodModifiers = method.getModifiers();
-                    if (!isStatic(methodModifiers) && stream(method.getAnnotations())
-                            .filter(annotation -> annotationToRefreshBefore
-                                    .contains(((Annotation) annotation).annotationType()))
-                            .collect(toList())
-                            .size() > 0) {
-                        refreshContext(instance);
+                    if (stream(method.getAnnotations()).anyMatch(annotation -> annotationToRefreshBefore
+                            .contains(((Annotation) annotation).annotationType()))) {
+                        REFRESHABLE_CONTEXTS.forEach(ContextRefreshable::refreshContext);
                         previouslyRefreshed.set(method);
                     }
                 });
@@ -75,7 +83,7 @@ public class DefaultTestRunningListener implements IInvokedMethodListener {
     public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
         var reflectionMethod = method.getTestMethod().getConstructorOrMethod().getMethod();
         ofNullable(testResult.getInstance()).ifPresent(o ->
-                refreshIfNecessary(o, reflectionMethod));
+                refreshIfNecessary(reflectionMethod));
 
         if (method.isTestMethod()) {
             previouslyRefreshed.remove();

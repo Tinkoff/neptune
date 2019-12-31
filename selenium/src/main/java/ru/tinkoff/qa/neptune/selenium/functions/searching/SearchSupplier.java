@@ -456,7 +456,7 @@ public final class SearchSupplier<R extends SearchContext>
     }
 
     @Override
-    protected SearchSupplier<R> clone() {
+    public SearchSupplier<R> clone() {
         return super.clone();
     }
 }

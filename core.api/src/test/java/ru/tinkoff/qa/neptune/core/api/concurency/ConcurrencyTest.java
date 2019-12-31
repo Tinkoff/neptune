@@ -14,14 +14,13 @@ import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.core.api.concurency.ObjectContainer.containers;
+import static ru.tinkoff.qa.neptune.core.api.concurency.TestContext.getContext;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.resorces.FreeResourcesOnInactivity.TO_FREE_RESOURCES_ON_INACTIVITY_PROPERTY;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.resorces.FreeResourcesOnInactivityAfter.FreeResourcesOnInactivityAfterTimeUnit.FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_UNIT;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.resorces.FreeResourcesOnInactivityAfter.FreeResourcesOnInactivityAfterTimeValue.FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_VALUE;
-import static ru.tinkoff.qa.neptune.core.api.steps.proxy.ProxyFactory.getProxied;
 
 public class ConcurrencyTest {
 
-    private final TestContext context = getProxied(TestContext.class);
 
     private Thread thread1;
     private Thread thread2;
@@ -32,7 +31,7 @@ public class ConcurrencyTest {
 
         thread1 = new Thread(() -> {
             while (true) {
-                context.perform("Do something", testContext -> {});
+                getContext().doSomething();
                 try {
                     sleep(1000);
                 } catch (InterruptedException e) {
@@ -46,7 +45,7 @@ public class ConcurrencyTest {
 
         thread2 = new Thread(() -> {
             while (true) {
-                context.get("Some value", testContext -> new Object());
+                getContext().getSomething();
             }
         });
         thread2.start();
@@ -181,7 +180,7 @@ public class ConcurrencyTest {
 
         thread2 = new Thread(() -> {
             while (true) {
-                context.get("Some value", testContext -> new Object());
+                getContext().getSomething();
             }
         });
         thread2.start();

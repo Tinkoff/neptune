@@ -10,6 +10,7 @@ import static java.lang.String.format;
 
 @MakeStringCapturesOnFinishing
 @MakeCaptureOnFinishing(typeOfCapture = String.class)
+@MakeCaptureOnFinishing(typeOfCapture = Number.class)
 @MakeFileCapturesOnFinishing
 class ArithmeticalSequence extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<CalculatorSteps, Number, Number, ArithmeticalSequence> {
 

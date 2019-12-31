@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 import static java.net.http.HttpResponse.BodyHandlers.discarding;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.StreamSupport.stream;
-import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.condition;
+import static ru.tinkoff.qa.neptune.core.api.steps.Condition.condition;
 
 /**
  * This class is designed to build chains of functions that get a response when a request is sent.

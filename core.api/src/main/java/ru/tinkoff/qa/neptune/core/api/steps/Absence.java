@@ -1,13 +1,11 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
 import com.google.common.collect.Iterables;
-import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
+import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 
 import java.lang.reflect.Array;
 import java.time.Duration;
-import java.util.Collection;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
@@ -19,11 +17,11 @@ import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleChecked
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 @SuppressWarnings("unchecked")
-public abstract class Absence<T extends GetStepContext<T>, R extends Absence<T, R>> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<T, Boolean, Object, R> {
+public final class Absence<T extends Context> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<T, Boolean, Object, Absence<T>> {
 
     private Object received;
 
-    protected Absence(Function<T, ?> toBeAbsent) {
+    private Absence(Function<T, ?> toBeAbsent) {
         super(format("Absence of [%s]", isLoggable(toBeAbsent) ? toBeAbsent.toString() : "<not described value>"),
                 o -> ofNullable(o)
                         .map(o1 -> {
@@ -49,10 +47,36 @@ public abstract class Absence<T extends GetStepContext<T>, R extends Absence<T, 
                 .addIgnored(Throwable.class));
     }
 
-    protected Absence(SequentialGetStepSupplier<T, ?, ?, ?, ?> toBeAbsent) {
+    private Absence(SequentialGetStepSupplier<T, ?, ?, ?, ?> toBeAbsent) {
         this(toBeAbsent.clone().timeOut(ofMillis(0))
                 .pollingInterval(ofMillis(0))
                 .get());
+    }
+
+    /**
+     * Creates an instance of {@link Absence}.
+     *
+     * @param function that should return something. If the result of {@link Function#apply(Object)} is {@code null},
+     *                 it is an empty iterable/array or it is {@link Boolean} {@code false} then this is considered absent.
+     * @param <T>      is a type of {@link Context}
+     * @return an instance of {@link Absence}.
+     */
+    public static <T extends Context> Absence<T> absence(Function<T, ?> function) {
+        checkArgument(nonNull(function), "Function should not be a null-value");
+        return new Absence<>(function);
+    }
+
+    /**
+     * Creates an instance of {@link Absence}.
+     *
+     * @param toBeAbsent as a supplier of a function. If the result of {@link Function#apply(Object)} is {@code null},
+     *                    it is an empty iterable/array or it is {@link Boolean} {@code false} then this is considered absent.
+     * @param <T>         is a type of {@link Context}
+     * @return an instance of {@link Absence}.
+     */
+    public static <T extends Context> Absence<T> absence(SequentialGetStepSupplier<T, ?, ?, ?, ?> toBeAbsent) {
+        checkArgument(nonNull(toBeAbsent), "Supplier of a function should not be a null-value");
+        return new Absence<>(toBeAbsent);
     }
 
     protected Function<T, Object> preparePreFunction() {
@@ -104,10 +128,10 @@ public abstract class Absence<T extends GetStepContext<T>, R extends Absence<T, 
         return o -> {
             var result = super.getEndFunction().apply(o);
             if (!result) {
-                return ofNullable(exceptionSupplier)
-                        .map((Function<Supplier<? extends RuntimeException>, Boolean>) supplier -> {
-                            throw supplier.get();
-                        }).orElse(result);
+                ofNullable(exceptionSupplier).ifPresent(supplier -> {
+                    throw supplier.get();
+                });
+                return false;
             }
             return true;
         };
@@ -123,82 +147,23 @@ public abstract class Absence<T extends GetStepContext<T>, R extends Absence<T, 
      * When there is a function that is used to find a value to be absent and it was received by
      * invocation of {@link SequentialGetStepSupplier#get()} and there is a timeout defined by
      * {@link SequentialGetStepSupplier#timeOut(Duration)} then this timeout is ignored in favor of the time value
-     * defined by {@link #timeOut(Duration)}
+     * defined by this method
      *
      * @param timeOut is a time duration to get the value is absent or not
      * @return self-reference
      */
     @Override
-    public R timeOut(Duration timeOut) {
+    public Absence<T> timeOut(Duration timeOut) {
         return super.timeOut(timeOut);
-    }
-
-    /**
-     * This method is deprecated because it is not necessary to define throwable to be ignored here.
-     */
-    @Override
-    @Deprecated
-    public final R addIgnored(Collection<Class<? extends Throwable>> toBeIgnored) {
-        return super.addIgnored(toBeIgnored);
-    }
-
-    /**
-     * This method is deprecated because it is not necessary to define throwable to be ignored here.
-     */
-    @Override
-    @Deprecated
-    public final R addIgnored(Class<? extends Throwable> toBeIgnored) {
-        return super.addIgnored(toBeIgnored);
     }
 
     /**
      * This method defines an exception to be thrown when value to be absent is here still.
      *
-     * @param exceptionSupplier is a supplier of exception to be thrown when value to be absent is here still.
+     * @param exceptionMessage is a message of {@link IllegalStateException} to be thrown when value to be absent is still here.
      * @return self-reference
      */
-    public R throwIfPresent(Supplier<? extends RuntimeException> exceptionSupplier) {
-        return throwOnEmptyResult(exceptionSupplier);
-    }
-
-    /**
-     * This is the general implementation of {@link Absence}
-     * @param <T> is a type of a {@link GetStepContext} subclass
-     */
-    public static final class CommonAbsence<T extends GetStepContext<T>> extends Absence<T, Absence.CommonAbsence<T>> {
-
-        private CommonAbsence(Function<T, ?> toBePresent) {
-            super(toBePresent);
-        }
-
-        private CommonAbsence(SequentialGetStepSupplier<T, ?, ?, ?, ?> toBeAbsent) {
-            super(toBeAbsent);
-        }
-
-        /**
-         * Creates an instance of {@link CommonAbsence}.
-         *
-         * @param function that should return something. If the result of {@link Function#apply(Object)} is {@code null},
-         *                 it is an empty iterable/array or it is {@link Boolean} {@code false} then this is considered absent.
-         * @param <T>      is a type of a {@link GetStepContext} subclass.
-         * @return an instance of {@link CommonAbsence}.
-         */
-        public static <T extends GetStepContext<T>> CommonAbsence<T> absenceOf(Function<T, ?> function) {
-            checkArgument(nonNull(function), "Function should not be a null-value");
-            return new CommonAbsence(function);
-        }
-
-        /**
-         * Creates an instance of {@link CommonAbsence}.
-         *
-         * @param toBeAbsent as a supplier of a function. If the result of {@link Function#apply(Object)} is {@code null},
-         *                    it is an empty iterable/array or it is {@link Boolean} {@code false} then this is considered absent.
-         * @param <T>         is a type of a {@link GetStepContext} subclass.
-         * @return an instance of {@link CommonAbsence}.
-         */
-        public static <T extends GetStepContext<T>> CommonAbsence<T> absenceOf(SequentialGetStepSupplier<T, ?, ?, ?, ?> toBeAbsent) {
-            checkArgument(nonNull(toBeAbsent), "Supplier of a function should not be a null-value");
-            return new CommonAbsence(toBeAbsent);
-        }
+    public Absence<T> throwIfPresent(String exceptionMessage) {
+        return throwOnEmptyResult(() -> new IllegalStateException(exceptionMessage));
     }
 }

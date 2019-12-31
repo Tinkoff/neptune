@@ -1,36 +1,30 @@
 package ru.tinkoff.qa.neptune.core.api.steps.proxy;
 
-import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
-import ru.tinkoff.qa.neptune.core.api.concurency.ObjectContainer;
-import ru.tinkoff.qa.neptune.core.api.steps.context.ConstructorParameters;
 import net.bytebuddy.implementation.bind.annotation.AllArguments;
 import net.bytebuddy.implementation.bind.annotation.Origin;
 import net.bytebuddy.implementation.bind.annotation.RuntimeType;
 import net.bytebuddy.implementation.bind.annotation.This;
+import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
+import ru.tinkoff.qa.neptune.core.api.concurency.ObjectContainer;
+import ru.tinkoff.qa.neptune.core.api.steps.context.ConstructorParameters;
 import ru.tinkoff.qa.neptune.core.api.utils.ConstructorUtil;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.function.Function;
 
 import static java.lang.Runtime.getRuntime;
 import static java.util.Optional.ofNullable;
 
 public class MethodInterceptor<T> {
 
-    private final Class<T> originalClass;
     private final Class<T> classToInstantiate;
     private final ConstructorParameters constructorParameters;
-    private final Function<T, T> manipulationWithObjectToReturn;
     private final ThreadLocal<ObjectContainer<T>> threadLocal;
 
-    MethodInterceptor(Class<T> originalClass, Class<T> classToInstantiate, ConstructorParameters constructorParameters,
-                      Function<T, T> manipulationWithObjectToReturn) {
-        this.originalClass = originalClass;
+    public MethodInterceptor(Class<T> classToInstantiate, ConstructorParameters constructorParameters) {
         this.classToInstantiate = classToInstantiate;
         this.constructorParameters = constructorParameters;
-        this.manipulationWithObjectToReturn = manipulationWithObjectToReturn;
         threadLocal = new ThreadLocal<>();
     }
 
@@ -40,7 +34,7 @@ public class MethodInterceptor<T> {
         T target;
         try {
             target = ofNullable(threadLocal.get()).map(ObjectContainer::getWrappedObject).orElseGet(() ->
-                    ofNullable(ObjectContainer.setObjectBusy(originalClass)).map(tObjectContainer -> {
+                    ofNullable(ObjectContainer.setObjectBusy(classToInstantiate)).map(tObjectContainer -> {
                         threadLocal.set(tObjectContainer);
                         return tObjectContainer.getWrappedObject();
                     }).orElseGet(() -> {
@@ -56,7 +50,7 @@ public class MethodInterceptor<T> {
 
                         T t;
                         try {
-                            t = manipulationWithObjectToReturn.apply(c.newInstance(constructorParameters.getParameterValues()));
+                            t = c.newInstance(constructorParameters.getParameterValues());
                             if (Stoppable.class.isAssignableFrom(t.getClass())) {
                                 getRuntime().addShutdownHook(new Thread(((Stoppable) t)::stop));
                             }
@@ -77,7 +71,7 @@ public class MethodInterceptor<T> {
 
         try {
             return ofNullable(method.invoke(target, args)).map(o -> {
-                if (o.getClass().equals(originalClass)) {
+                if (o.getClass().equals(classToInstantiate)) {
                     return obj;
                 }
                 return o;

@@ -1,13 +1,11 @@
 package ru.tinkoff.qa.neptune.testng.integration.test;
 
-import ru.tinkoff.qa.neptune.core.api.steps.context.ActionStepContext;
-import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
-import ru.tinkoff.qa.neptune.core.api.steps.context.ProviderOfEmptyParameters;
 import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
+import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 
-@CreateWith(provider = ProviderOfEmptyParameters.class)
-public class ContextClass1 implements ActionStepContext<ContextClass1>, ContextRefreshable {
+public class ContextClass1 extends Context<ContextClass1> implements ContextRefreshable {
 
+    static final ContextClass1 context = getInstance(ContextClass1.class);
     private static int refreshCount;
 
     @Override

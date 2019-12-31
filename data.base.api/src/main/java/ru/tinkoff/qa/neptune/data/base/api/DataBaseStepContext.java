@@ -2,9 +2,7 @@ package ru.tinkoff.qa.neptune.data.base.api;
 
 import org.datanucleus.api.jdo.JDOPersistenceManager;
 import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
-import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
-import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
-import ru.tinkoff.qa.neptune.core.api.steps.context.ProviderOfEmptyParameters;
+import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnection;
 import ru.tinkoff.qa.neptune.data.base.api.connection.data.InnerJDOPersistenceManagerFactory;
 import ru.tinkoff.qa.neptune.data.base.api.data.operations.UpdateExpression;
@@ -23,9 +21,9 @@ import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.data.base.api.data.operations.DataOperation.*;
 
-@CreateWith(provider = ProviderOfEmptyParameters.class)
-public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>, Stoppable {
+public class DataBaseStepContext extends Context<DataBaseStepContext> implements Stoppable {
 
+    private static final DataBaseStepContext context = getInstance(DataBaseStepContext.class);
     private final Set<JDOPersistenceManager> jdoPersistenceManagerSet = synchronizedSet(new HashSet<>());
 
     private static  <T> T returnSingleWhenNecessary(List<T> ts) {
@@ -33,6 +31,10 @@ public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>,
             return null;
         }
         return ts.get(0);
+    }
+
+    public static DataBaseStepContext inDataBase() {
+        return context;
     }
 
     public JDOPersistenceManager getManager(DBConnection connection) {
@@ -58,26 +60,26 @@ public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>,
     }
 
     public final <T, R extends List<T>> R select(SelectList<?, R, ?> selectList) {
-        return get(selectList);
+        return selectList.get().apply(this);
     }
 
     public final <T> T select(SelectASingle<T, ?, ?> selectOne) {
-        return get(selectOne);
+        return selectOne.get().apply(this);
     }
 
     @SafeVarargs
     public final <T extends PersistableObject> T update(SelectASingle<T, ?, ?> howToSelect, UpdateExpression<T>... set) {
-        return returnSingleWhenNecessary(get(updated(howToSelect, set)));
+        return returnSingleWhenNecessary(updated(howToSelect, set).get().apply(this));
     }
 
     @SafeVarargs
     public final <T extends PersistableObject> List<T> update(SelectList<?, List<T>, ?> howToSelect, UpdateExpression<T>... set) {
-        return get(updated(howToSelect, set));
+        return updated(howToSelect, set).get().apply(this);
     }
 
     @SafeVarargs
     public final <T extends PersistableObject> List<T> update(Collection<T> toUpdate, UpdateExpression<T>... set) {
-        return get(updated(toUpdate, set));
+        return updated(toUpdate, set).get().apply(this);
     }
 
     @SafeVarargs
@@ -86,15 +88,15 @@ public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>,
     }
 
     public final <T extends PersistableObject> T delete(SelectASingle<T, ?, ?> howToSelect) {
-        return returnSingleWhenNecessary(get(deleted(howToSelect)));
+        return returnSingleWhenNecessary(deleted(howToSelect).get().apply(this));
     }
 
     public final <T extends PersistableObject> List<T> delete(SelectList<T, List<T>, ?> howToSelect) {
-        return get(deleted(howToSelect));
+        return deleted(howToSelect).get().apply(this);
     }
 
     public final <T extends PersistableObject> List<T> delete(Collection<T> toDelete) {
-        return get(deleted(toDelete));
+        return deleted(toDelete).get().apply(this);
     }
 
     @SafeVarargs
@@ -108,7 +110,7 @@ public class DataBaseStepContext implements GetStepContext<DataBaseStepContext>,
     }
 
     public final <T extends PersistableObject> List<T> insert(Collection<T> toInsert) {
-        return get(inserted(toInsert));
+        return inserted(toInsert).get().apply(this);
     }
 
     @SafeVarargs

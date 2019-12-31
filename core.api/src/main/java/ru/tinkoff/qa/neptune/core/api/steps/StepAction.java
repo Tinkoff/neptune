@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.core.api.steps;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.CaptorFilterByProducedType;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakesCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -31,21 +32,32 @@ public class StepAction<T> implements Consumer<T>, MakesCapturesOnFinishing<Step
         this.consumer = consumer;
     }
 
-    private void fireThrownExceptionIfNecessary(Throwable thrown) {
-        fireThrownException(thrown);
+    /**
+     * This method creates a consumer with some string description. This consumer is
+     * supposed to perform some action.
+     *
+     * @param description string narration of the action
+     * @param consumer which performs the action
+     * @param <T> type of accepted value
+     * @return a new consumer with the given string description. Description is returned
+     * by the {@link #toString()} method.
+     */
+    public static <T> StepAction<T> action(String description, Consumer<T> consumer) {
+        return new StepAction<>(description, consumer);
     }
+
 
     @Override
     public void accept(T t) {
         try {
             fireEventStarting(description);
             consumer.accept(t);
-            if (catchSuccessEvent() && !StepAction.class.isAssignableFrom(consumer.getClass())) {
+            if (catchSuccessEvent() && !Context.class.isAssignableFrom(consumer.getClass())) {
                 catchValue(t, captorFilters);
             }
         }
         catch (Throwable thrown) {
-            fireThrownExceptionIfNecessary(thrown);
+            fireThrownException(thrown);
             if (catchFailureEvent() && !StepAction.class.isAssignableFrom(consumer.getClass())) {
                 catchValue(t, captorFilters);
             }

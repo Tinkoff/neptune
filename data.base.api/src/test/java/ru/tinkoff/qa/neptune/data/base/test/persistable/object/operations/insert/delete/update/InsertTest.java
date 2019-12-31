@@ -14,6 +14,7 @@ import static java.util.Objects.nonNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.testng.Assert.*;
+import static ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext.inDataBase;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle.oneOf;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQueryParameters.byJDOQuery;
 
@@ -31,19 +32,19 @@ public class InsertTest extends BaseDbOperationTest {
 
     @BeforeClass
     public void setUpBeforeClass() {
-        theHunchbackOfNotreDame = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
+        theHunchbackOfNotreDame = inDataBase().select(oneOf(Book.class, byJDOQuery(QBook.class)
                 .addWhere(qBook -> qBook.name.eq("The Hunchback of Notre-Dame"))));
 
-        theLegendOfTheAges = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
+        theLegendOfTheAges = inDataBase().select(oneOf(Book.class, byJDOQuery(QBook.class)
                 .addWhere(qBook -> qBook.name.eq("The Legend of the Ages"))));
 
-        signet = dataBaseSteps.select(oneOf(Publisher.class, byJDOQuery(QPublisher.class)
+        signet = inDataBase().select(oneOf(Publisher.class, byJDOQuery(QPublisher.class)
                 .addWhere(qPublisher -> qPublisher.name.eq("Signet"))));
 
-        lada = dataBaseSteps.select(oneOf(Manufacturer.class, byJDOQuery(QManufacturer.class)
+        lada = inDataBase().select(oneOf(Manufacturer.class, byJDOQuery(QManufacturer.class)
                 .addWhere(qManufacturer -> qManufacturer.name.eq("Lada"))));
 
-        kalina = dataBaseSteps.select(oneOf(Car.class, byJDOQuery(QCar.class)
+        kalina = inDataBase().select(oneOf(Car.class, byJDOQuery(QCar.class)
                 .addWhere(qCar -> qCar.name.eq("Kalina"))));
     }
 
@@ -59,18 +60,18 @@ public class InsertTest extends BaseDbOperationTest {
                 .setCarModelName("SW Cross")
                 .setProducedFrom(producedFrom);
 
-        var inserted = dataBaseSteps.insert(catalogItem, swCross);
+        var inserted = inDataBase().insert(catalogItem, swCross);
 
-        var catalogAdded = dataBaseSteps.select(oneOf(Catalog.class, byJDOQuery(QCatalog.class)
+        var catalogAdded = inDataBase().select(oneOf(Catalog.class, byJDOQuery(QCatalog.class)
                 .addWhere(qCatalog -> qCatalog.book.eq(theHunchbackOfNotreDame)
                         .and(qCatalog.publisher.eq(signet))
                         .and(qCatalog.yearOfPublishing.eq(2010)))));
 
-        var carAdded = dataBaseSteps.select(oneOf(Car.class, byJDOQuery(QCar.class)
+        var carAdded = inDataBase().select(oneOf(Car.class, byJDOQuery(QCar.class)
                 .addWhere(qCar -> qCar.manufacturer.eq(lada)
                         .and(qCar.name.eq("Granta")))));
 
-        var carModelAdded = dataBaseSteps.select(oneOf(CarModel.class, byJDOQuery(QCarModel.class)
+        var carModelAdded = inDataBase().select(oneOf(CarModel.class, byJDOQuery(QCarModel.class)
                 .addWhere(qCarModel -> qCarModel.carModelName.eq("SW Cross")
                         .and(qCarModel.car.eq(carAdded))
                         .and(qCarModel.car.manufacturer.eq(lada))))
@@ -94,14 +95,14 @@ public class InsertTest extends BaseDbOperationTest {
                 .setProducedFrom(new Date());
 
         try {
-            dataBaseSteps.insert(kalinaCross, catalogItem);
+            inDataBase().insert(kalinaCross, catalogItem);
         }
         catch (Exception e) {
-            var catalogAdded = dataBaseSteps.select(oneOf(Catalog.class, byJDOQuery(QCatalog.class)
+            var catalogAdded = inDataBase().select(oneOf(Catalog.class, byJDOQuery(QCatalog.class)
                     .addWhere(qCatalog -> qCatalog.book.eq(theLegendOfTheAges)
                             .and(qCatalog.yearOfPublishing.eq(2019)))));
 
-            var carModelAdded = dataBaseSteps.select(oneOf(CarModel.class, byJDOQuery(QCarModel.class)
+            var carModelAdded = inDataBase().select(oneOf(CarModel.class, byJDOQuery(QCarModel.class)
                     .addWhere(qCarModel -> qCarModel.carModelName.eq("Kalina Cross")
                             .and(qCarModel.car.eq(kalina))
                             .and(qCarModel.car.manufacturer.eq(lada)))));
