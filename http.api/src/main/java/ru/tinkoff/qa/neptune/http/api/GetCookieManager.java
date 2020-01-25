@@ -5,6 +5,7 @@ import java.util.function.Function;
 
 import static java.lang.String.format;
 
+@Deprecated(since = "0.11.4-ALPHA", forRemoval = true)
 class GetCookieManager implements Function<HttpStepContext, CookieManager> {
 
     static GetCookieManager getCookieManager() {

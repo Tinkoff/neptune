@@ -17,6 +17,7 @@ import java.util.function.Function;
  * This class is designed to build chains of functions that get needed data from a http response.
  * @param <T> is a type of data to get from a http response
  */
+@Deprecated(since = "0.11.4-ALPHA", forRemoval = true)
 @MakeCaptureOnFinishing(typeOfCapture = Object.class)
 public final class HttpResponseInfoSequentialGetSupplier<T> extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<HttpStepContext, T, HttpResponse<?>, HttpResponseInfoSequentialGetSupplier<T>> {

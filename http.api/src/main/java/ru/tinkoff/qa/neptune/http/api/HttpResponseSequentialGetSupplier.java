@@ -25,6 +25,7 @@ import static ru.tinkoff.qa.neptune.core.api.steps.Condition.condition;
  */
 @MakeStringCapturesOnFinishing
 @MakeFileCapturesOnFinishing
+@Deprecated(since = "0.11.4-ALPHA", forRemoval = true)
 public class HttpResponseSequentialGetSupplier<T> extends SequentialGetStepSupplier
         .GetObjectStepSupplier<HttpStepContext, HttpResponse<T>, HttpResponseSequentialGetSupplier<T>> implements Cloneable {
 

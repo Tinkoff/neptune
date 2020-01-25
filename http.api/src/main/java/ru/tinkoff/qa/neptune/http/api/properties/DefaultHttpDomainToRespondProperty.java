@@ -15,6 +15,7 @@ import java.net.http.HttpRequest;
  * {@link PreparedHttpRequest#methodRequest(String, String)} and
  * {@link PreparedHttpRequest#methodRequest(String, String, HttpRequest.BodyPublisher)}
  */
+@Deprecated(since = "0.11.4-ALPHA", forRemoval = true)
 public final class DefaultHttpDomainToRespondProperty implements URLValuePropertySupplier {
 
     private static final String PROPERTY = "default.http.domain.to.respond";
