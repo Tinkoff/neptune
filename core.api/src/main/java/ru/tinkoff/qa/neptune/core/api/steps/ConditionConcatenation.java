@@ -10,6 +10,7 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
  * For concatenation of predicates and the building of AND, OR, XOR and NOT expressions
  */
 @SuppressWarnings("unchecked")
+@Deprecated(since = "0.11.4-ALPHA", forRemoval = true)
 public enum ConditionConcatenation {
     AND {
         @Override

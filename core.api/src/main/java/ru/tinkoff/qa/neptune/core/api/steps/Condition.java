@@ -11,6 +11,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
+@Deprecated(since = "0.11.4-ALPHA", forRemoval = true)
 public interface Condition<T> extends Predicate<T> {
 
     String NOT_DESCRIBED = "<not described condition>";
