@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.testng.integration.test;
 
 import org.testng.TestNG;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.testng.xml.XmlClass;
 import org.testng.xml.XmlSuite;
@@ -20,6 +19,7 @@ import static ru.tinkoff.qa.neptune.testng.integration.properties.TestNGRefreshS
 public class TestNgTestFinishingTestWithNoConfigMethod {
 
     private void runBeforeTheChecking() {
+        ContextClass2.refreshCountToZero();
         TestNG testNG=new TestNG();
 
         List<XmlSuite> testSuites=new ArrayList<>();
@@ -40,11 +40,6 @@ public class TestNgTestFinishingTestWithNoConfigMethod {
 
         testNG.setXmlSuites(testSuites);
         testNG.run();
-    }
-
-    @BeforeMethod
-    public void refresh() {
-        ContextClass2.refreshCountToZero();
     }
 
     @Test

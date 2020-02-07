@@ -15,7 +15,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.condition;
+import static ru.tinkoff.qa.neptune.core.api.steps.Condition.condition;
 import static ru.tinkoff.qa.neptune.http.api.HttpResponseSequentialGetSupplier.*;
 import static ru.tinkoff.qa.neptune.http.api.HttpResponseSequentialGetSupplier.addConditionArray;
 import static ru.tinkoff.qa.neptune.http.api.properties.TimeToGetDesiredResponseProperty.DEFAULT_TIME_TO_GET_DESIRED_RESPONSE_PROPERTY;

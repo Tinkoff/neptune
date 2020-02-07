@@ -10,7 +10,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.action;
+import static ru.tinkoff.qa.neptune.core.api.steps.StepAction.action;
 
 /**
  * This class is designed to perform the matching of values.

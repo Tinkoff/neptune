@@ -15,7 +15,7 @@ import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.action;
+import static ru.tinkoff.qa.neptune.core.api.steps.StepAction.action;
 import static ru.tinkoff.qa.neptune.http.api.GetCookieManager.getCookieManager;
 
 /**

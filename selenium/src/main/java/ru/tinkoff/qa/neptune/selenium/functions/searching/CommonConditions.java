@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 import static java.time.Duration.ofMillis;
 import static java.util.Objects.nonNull;
-import static ru.tinkoff.qa.neptune.core.api.steps.StoryWriter.condition;
+import static ru.tinkoff.qa.neptune.core.api.steps.Condition.condition;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;

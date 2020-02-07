@@ -18,6 +18,7 @@ import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
+import static ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext.inDataBase;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle.oneOf;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle.row;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.SelectList.listOf;
@@ -37,10 +38,10 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
 
     @Test
     public void selectListByTypedSqlTest() {
-        List<Author> authors = dataBaseSteps.select(listOf(Author.class, QUERY, 1820));
-        List<Book> books = dataBaseSteps.select(listOf(Book.class, QUERY, 1820));
+        List<Author> authors = inDataBase().select(listOf(Author.class, QUERY, 1820));
+        List<Book> books = inDataBase().select(listOf(Book.class, QUERY, 1820));
 
-        List<Book> books2 = dataBaseSteps.get(listOf(Book.class, byJDOQuery(QBook.class)
+        List<Book> books2 = inDataBase().select(listOf(Book.class, byJDOQuery(QBook.class)
                 .addWhere(qBook -> qBook.yearOfFinishing.gteq(1820))
                 .orderBy(qBook -> qBook.yearOfFinishing.asc())));
 
@@ -51,10 +52,10 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
 
     @Test
     public void selectListByTypedSqlTest2() {
-        List<Author> authors = dataBaseSteps.select(listOf(Author.class, QUERY1, Map.of("year", 1820)));
-        List<Book> books = dataBaseSteps.select(listOf(Book.class, QUERY1, Map.of("year", 1820)));
+        List<Author> authors = inDataBase().select(listOf(Author.class, QUERY1, Map.of("year", 1820)));
+        List<Book> books = inDataBase().select(listOf(Book.class, QUERY1, Map.of("year", 1820)));
 
-        List<Book> books2 = dataBaseSteps.get(listOf(Book.class, byJDOQuery(QBook.class)
+        List<Book> books2 = inDataBase().select(listOf(Book.class, byJDOQuery(QBook.class)
                 .addWhere(qBook -> qBook.yearOfFinishing.gteq(1820))
                 .orderBy(qBook -> qBook.yearOfFinishing.asc())));
 
@@ -65,10 +66,10 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
 
     @Test
     public void selectSingleByTypedSqlTest() {
-        Author author = dataBaseSteps.select(oneOf(Author.class, QUERY, 1820));
-        Book book = dataBaseSteps.select(oneOf(Book.class, QUERY, 1820));
+        Author author = inDataBase().select(oneOf(Author.class, QUERY, 1820));
+        Book book = inDataBase().select(oneOf(Book.class, QUERY, 1820));
 
-        Book book2 = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
+        Book book2 = inDataBase().select(oneOf(Book.class, byJDOQuery(QBook.class)
                 .addWhere(qBook -> qBook.yearOfFinishing.gteq(1820))
                 .orderBy(qBook -> qBook.yearOfFinishing.asc())));
         Author author2 = book2.getAuthor();
@@ -79,10 +80,10 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
 
     @Test
     public void selectSingleByTypedSqlTest2() {
-        Author author = dataBaseSteps.select(oneOf(Author.class, QUERY1, Map.of("year", 1820)));
-        Book book = dataBaseSteps.select(oneOf(Book.class, QUERY1, Map.of("year", 1820)));
+        Author author = inDataBase().select(oneOf(Author.class, QUERY1, Map.of("year", 1820)));
+        Book book = inDataBase().select(oneOf(Book.class, QUERY1, Map.of("year", 1820)));
 
-        Book book2 = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
+        Book book2 = inDataBase().select(oneOf(Book.class, byJDOQuery(QBook.class)
                 .addWhere(qBook -> qBook.yearOfFinishing.gteq(1820))
                 .orderBy(qBook -> qBook.yearOfFinishing.asc())));
         Author author2 = book2.getAuthor();
@@ -93,11 +94,11 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
 
     @Test
     public void selectListByUnTypedSqlTest() {
-        var booksAndAuthors = dataBaseSteps.select(rows(QUERY,
+        var booksAndAuthors = inDataBase().select(rows(QUERY,
                 ConnectionDataSupplierForTestBase1.class,
                 1820));
 
-        List<Book> books = dataBaseSteps.select(listOf(Book.class, byJDOQuery(QBook.class)
+        List<Book> books = inDataBase().select(listOf(Book.class, byJDOQuery(QBook.class)
                 .addWhere(qBook -> qBook.yearOfFinishing.gteq(1820))
                 .orderBy(qBook -> qBook.yearOfFinishing.asc())));
 
@@ -134,11 +135,11 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
 
     @Test
     public void selectListByUnTypedSqlTest2() {
-        var booksAndAuthors = dataBaseSteps.select(rows(QUERY1,
+        var booksAndAuthors = inDataBase().select(rows(QUERY1,
                 ConnectionDataSupplierForTestBase1.class,
                 Map.of("year", 1820)));
 
-        List<Book> books = dataBaseSteps.select(listOf(Book.class, byJDOQuery(QBook.class)
+        List<Book> books = inDataBase().select(listOf(Book.class, byJDOQuery(QBook.class)
                 .addWhere(qBook -> qBook.yearOfFinishing.gteq(1820))
                 .orderBy(qBook -> qBook.yearOfFinishing.asc())));
 
@@ -175,11 +176,11 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
 
     @Test
     public void selectSingleByUnTypedSqlTest() {
-        var bookAndAuthor = dataBaseSteps.select(row(QUERY,
+        var bookAndAuthor = inDataBase().select(row(QUERY,
                 ConnectionDataSupplierForTestBase1.class,
                 1820));
 
-        Book book = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
+        Book book = inDataBase().select(oneOf(Book.class, byJDOQuery(QBook.class)
                 .addWhere(qBook -> qBook.name.eq("Ruslan and Ludmila"))));
 
         List<Object> bookAndAuthor2 = new ArrayList<>();
@@ -200,11 +201,11 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
 
     @Test
     public void selectSingleByUnTypedSqlTest2() {
-        var bookAndAuthor = dataBaseSteps.select(row(QUERY1,
+        var bookAndAuthor = inDataBase().select(row(QUERY1,
                 ConnectionDataSupplierForTestBase1.class,
                 Map.of("year", 1820)));
 
-        Book book = dataBaseSteps.select(oneOf(Book.class, byJDOQuery(QBook.class)
+        Book book = inDataBase().select(oneOf(Book.class, byJDOQuery(QBook.class)
                 .addWhere(qBook -> qBook.name.eq("Ruslan and Ludmila"))));
 
         List<Object> bookAndAuthor2 = new ArrayList<>();
@@ -225,13 +226,13 @@ public class SelectBySqlQuery extends BaseDbOperationTest {
 
     @Test
     public void aggregatedListResultSelect() {
-        var result = dataBaseSteps.select(rows(QUERY2, ConnectionDataSupplierForTestBase1.class));
+        var result = inDataBase().select(rows(QUERY2, ConnectionDataSupplierForTestBase1.class));
         assertThat(result, contains(contains(1820)));
     }
 
     @Test
     public void aggregatedSingleResultSelect() {
-        var result = dataBaseSteps.select(row(QUERY2, ConnectionDataSupplierForTestBase1.class));
+        var result = inDataBase().select(row(QUERY2, ConnectionDataSupplierForTestBase1.class));
         assertThat(result, contains(1820));
     }
 }

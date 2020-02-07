@@ -11,9 +11,23 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
-interface Condition<T> extends Predicate<T> {
+public interface Condition<T> extends Predicate<T> {
 
     String NOT_DESCRIBED = "<not described condition>";
+
+    /**
+     * This method creates a predicate with some string description. This predicate is
+     * supposed to be used as some conditions or filter.
+     *
+     * @param description string narration of the conditions
+     * @param predicate which checks some input value
+     * @param <T> type of the input value
+     * @return a new predicate with the given string description. Description is returned
+     * by the {@link #toString()} method.
+     */
+    static <T> Predicate<T> condition(String description, Predicate<T> predicate) {
+        return new DescribedCondition<>(description, predicate);
+    }
 
     default Predicate<T> xor(Predicate<? super T> other) {
         requireNonNull(other);

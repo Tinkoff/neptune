@@ -15,6 +15,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.testng.Assert.*;
+import static ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext.inDataBase;
 import static ru.tinkoff.qa.neptune.data.base.api.data.operations.UpdateExpression.change;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle.oneOf;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.SelectList.listOf;
@@ -65,27 +66,27 @@ public class UpdateTest extends BaseDbOperationTest {
 
     @BeforeClass
     public void setUpBeforeClass() {
-        dostoevsky = dataBaseSteps.select(oneOf(Author.class,
+        dostoevsky = inDataBase().select(oneOf(Author.class,
                 byJDOQuery(QAuthor.class).addWhere(qAuthor -> qAuthor
                         .firstName.eq("Fyodor")
                         .and(qAuthor.lastName.eq("Dostoevsky")))));
 
-        crownVictoria = dataBaseSteps.select(oneOf(CarModel.class, byJDOQuery(QCarModel.class)
+        crownVictoria = inDataBase().select(oneOf(CarModel.class, byJDOQuery(QCarModel.class)
                 .addWhere(qCarModel -> qCarModel.carModelName.eq("Crown Victoria"))));
     }
 
     @Test(groups = "positive update")
     public void positiveUpdateTest1() {
-        var dostoevsky = dataBaseSteps.select(oneOf(Author.class,
+        var dostoevsky = inDataBase().select(oneOf(Author.class,
                 byJDOQuery(QAuthor.class).addWhere(qAuthor -> qAuthor
                         .firstName.eq("Fyodor")
                         .and(qAuthor.lastName.eq("Dostoevsky")))));
 
-        var crownVictoria = dataBaseSteps.select(oneOf(CarModel.class, byJDOQuery(QCarModel.class)
+        var crownVictoria = inDataBase().select(oneOf(CarModel.class, byJDOQuery(QCarModel.class)
                 .addWhere(qCarModel -> qCarModel.carModelName.eq("Crown Victoria"))));
 
         var dateToChange = new Date();
-        var updatedObjects = dataBaseSteps.update(of(dostoevsky, crownVictoria), change("Add biography details to Author",
+        var updatedObjects = inDataBase().update(of(dostoevsky, crownVictoria), change("Add biography details to Author",
                 persistableObject -> {
                     if (Author.class.isAssignableFrom(persistableObject.getClass())) {
                         ((Author) persistableObject).setBiography(BIO1);
@@ -98,12 +99,12 @@ public class UpdateTest extends BaseDbOperationTest {
                             }
                         }));
 
-        var updatedDostoevsky = dataBaseSteps.select(oneOf(Author.class,
+        var updatedDostoevsky = inDataBase().select(oneOf(Author.class,
                 id(dostoevsky.getId()))
                 .criteria("Biography is changed",
                         author -> BIO1.equals(author.getBiography())));
 
-        var updatedCrownVictoria = dataBaseSteps.select(oneOf(CarModel.class,
+        var updatedCrownVictoria = inDataBase().select(oneOf(CarModel.class,
                 id(crownVictoria.getId()))
                 .criteria("'Produced to' is changed",
                         carModel -> carModel.getProducedTo().equals(dateToChange)));
@@ -114,7 +115,7 @@ public class UpdateTest extends BaseDbOperationTest {
 
     @Test(groups = "positive update")
     public void positiveUpdateTest2() {
-        var updatedAuthor = dataBaseSteps.update(oneOf(Author.class,
+        var updatedAuthor = inDataBase().update(oneOf(Author.class,
                 byJDOQuery(QAuthor.class).addWhere(qAuthor -> qAuthor
                         .firstName.eq("Fyodor")
                         .and(qAuthor.lastName.eq("Dostoevsky")))),
@@ -122,17 +123,17 @@ public class UpdateTest extends BaseDbOperationTest {
                         author.setBiography(BIO2)));
 
         var dateToChange = new Date();
-        var updatedCarModel = dataBaseSteps.update(oneOf(CarModel.class, byJDOQuery(QCarModel.class)
+        var updatedCarModel = inDataBase().update(oneOf(CarModel.class, byJDOQuery(QCarModel.class)
                         .addWhere(qCarModel -> qCarModel.carModelName.eq("Crown Victoria"))),
                 change("Change date of the 'Produced to' to current", carModel ->
                         carModel.setProducedTo(dateToChange)));
 
-        var updatedDostoevsky = dataBaseSteps.select(oneOf(Author.class,
+        var updatedDostoevsky = inDataBase().select(oneOf(Author.class,
                 id(dostoevsky.getId()))
                 .criteria("Biography is changed",
                         author -> BIO2.equals(author.getBiography())));
 
-        var updatedCrownVictoria = dataBaseSteps.select(oneOf(CarModel.class,
+        var updatedCrownVictoria = inDataBase().select(oneOf(CarModel.class,
                 id(crownVictoria.getId()))
                 .criteria("'Produced to' is changed",
                         carModel -> carModel.getProducedTo().equals(dateToChange)));
@@ -143,7 +144,7 @@ public class UpdateTest extends BaseDbOperationTest {
 
     @Test(groups = "positive update")
     public void positiveUpdateTest3() {
-        var updatedAuthors = dataBaseSteps.update(listOf(Author.class,
+        var updatedAuthors = inDataBase().update(listOf(Author.class,
                 byJDOQuery(QAuthor.class).addWhere(qAuthor -> qAuthor
                         .firstName.eq("Fyodor")
                         .and(qAuthor.lastName.eq("Dostoevsky")))),
@@ -151,17 +152,17 @@ public class UpdateTest extends BaseDbOperationTest {
                         author.setBiography(BIO3)));
 
         var dateToChange = new Date();
-        var updatedCarModels = dataBaseSteps.update(listOf(CarModel.class, byJDOQuery(QCarModel.class)
+        var updatedCarModels = inDataBase().update(listOf(CarModel.class, byJDOQuery(QCarModel.class)
                         .addWhere(qCarModel -> qCarModel.carModelName.eq("Crown Victoria"))),
                 change("Change date of the 'Produced to' to current", carModel ->
                         carModel.setProducedTo(dateToChange)));
 
-        var updatedDostoevsky = dataBaseSteps.select(oneOf(Author.class,
+        var updatedDostoevsky = inDataBase().select(oneOf(Author.class,
                 id(dostoevsky.getId()))
                 .criteria("Biography is changed",
                         author -> BIO3.equals(author.getBiography())));
 
-        var updatedCrownVictoria = dataBaseSteps.select(oneOf(CarModel.class,
+        var updatedCrownVictoria = inDataBase().select(oneOf(CarModel.class,
                 id(crownVictoria.getId()))
                 .criteria("'Produced to' is changed",
                         carModel -> carModel.getProducedTo().equals(dateToChange)));
@@ -172,16 +173,16 @@ public class UpdateTest extends BaseDbOperationTest {
 
     @Test(dependsOnGroups = "positive update")
     public void negativeUpdateTest1() {
-        var dostoevsky = dataBaseSteps.select(oneOf(Author.class,
+        var dostoevsky = inDataBase().select(oneOf(Author.class,
                 byJDOQuery(QAuthor.class).addWhere(qAuthor -> qAuthor
                         .firstName.eq("Fyodor")
                         .and(qAuthor.lastName.eq("Dostoevsky")))));
 
-        var corollaE170 = dataBaseSteps.select(oneOf(CarModel.class, byJDOQuery(QCarModel.class)
+        var corollaE170 = inDataBase().select(oneOf(CarModel.class, byJDOQuery(QCarModel.class)
                 .addWhere(qCarModel -> qCarModel.carModelName.eq("Corolla E170"))));
 
         try {
-            dataBaseSteps.update(of(dostoevsky, corollaE170), change("Add biography details to Author",
+            inDataBase().update(of(dostoevsky, corollaE170), change("Add biography details to Author",
                     persistableObject -> { //this updating is supposed to be successful
                         if (Author.class.isAssignableFrom(persistableObject.getClass())) {
                             ((Author) persistableObject).setBiography(BIO4);
@@ -194,10 +195,10 @@ public class UpdateTest extends BaseDbOperationTest {
                                 }
                             }));
         } catch (Exception e) {
-            var updatedDostoevsky = dataBaseSteps.select(oneOf(Author.class,
+            var updatedDostoevsky = inDataBase().select(oneOf(Author.class,
                     id(dostoevsky.getId())));
 
-            var updatedCorollaE170 = dataBaseSteps.select(oneOf(CarModel.class,
+            var updatedCorollaE170 = inDataBase().select(oneOf(CarModel.class,
                     id(corollaE170.getId())));
 
             assertNotEquals(updatedDostoevsky.getBiography(), BIO4);

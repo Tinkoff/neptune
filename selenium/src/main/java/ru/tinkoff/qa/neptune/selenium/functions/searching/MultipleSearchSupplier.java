@@ -449,7 +449,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
     }
 
     @Override
-    protected MultipleSearchSupplier<R> clone() {
+    public MultipleSearchSupplier<R> clone() {
         return super.clone();
     }
 }

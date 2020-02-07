@@ -1,8 +1,7 @@
 package ru.tinkoff.qa.neptune.core.api.concurency;
 
 import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
-import ru.tinkoff.qa.neptune.core.api.steps.context.ActionStepContext;
-import ru.tinkoff.qa.neptune.core.api.steps.context.GetStepContext;
+import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 
 import java.util.HashSet;
 import java.util.List;
@@ -11,6 +10,7 @@ import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
 import static java.lang.Thread.currentThread;
 import static java.util.Collections.synchronizedSet;
 import static java.util.Objects.nonNull;
@@ -27,10 +27,8 @@ public class ObjectContainer<T> {
 
     public ObjectContainer(T t) {
         checkNotNull(t);
-        checkArgument(ActionStepContext.class.isAssignableFrom(t.getClass()) ||
-                GetStepContext.class.isAssignableFrom(t.getClass()), "Class of an object should be " +
-                "assignable from GetStepContext and/or " +
-                "ActionStepContext.");
+        checkArgument(Context.class.isAssignableFrom(t.getClass()), format("Class of an object should be " +
+                "assignable %s", Context.class.getName()));
         this.t = t;
         synchronized (containers) {
             this.setBusy(currentThread());
@@ -42,10 +40,8 @@ public class ObjectContainer<T> {
                                                              Predicate<ObjectContainer<?>> predicate) {
         checkNotNull(tClass);
         checkNotNull(predicate);
-        checkArgument(ActionStepContext.class.isAssignableFrom(tClass) ||
-                GetStepContext.class.isAssignableFrom(tClass), "Class of an object should be " +
-                "assignable from GetStepContext and/or " +
-                "ActionStepContext.");
+        checkArgument(Context.class.isAssignableFrom(tClass), format("Class of an object should be " +
+                "assignable %s", Context.class.getName()));
         synchronized (containers) {
             return containers.stream().filter(predicate
                     .and(objectContainer -> tClass.isAssignableFrom(objectContainer.getWrappedObject().getClass()))).collect(toList());

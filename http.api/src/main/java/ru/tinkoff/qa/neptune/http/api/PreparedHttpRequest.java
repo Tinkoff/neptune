@@ -5,6 +5,7 @@ import ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpDomainToRespondPrope
 
 import javax.ws.rs.core.UriBuilder;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -52,6 +53,38 @@ public class PreparedHttpRequest {
         builder = newBuilder();
         uriBuilder.uri(uri);
         builderPreparing.accept(builder);
+    }
+
+    /**
+     * This method was added due unresolved issues of java.
+     * @see <a href="http://bugs.openjdk.java.net/browse/JDK-8019345</a>
+     * @see <a href="http://bugs.openjdk.java.net/browse/JDK-6791060</a>
+     * @see <a href="http://bugs.openjdk.java.net/browse/JDK-8221675</a>
+     *
+     * @param toBePatched uri to be improved
+     * @return improved URI
+     */
+    private static URI patchURI(URI toBePatched) {
+        if (toBePatched.getHost() != null) {
+            return toBePatched;
+        }
+
+        try {
+            var host = toBePatched.toURL().getHost();
+            //something is wrong here, so let it be failed further
+            if (host == null) {
+                return toBePatched;
+            }
+
+            var field = URI.class.getDeclaredField("host");
+            field.setAccessible(true);
+            field.set(toBePatched, host);
+
+            return toBePatched;
+        } catch (MalformedURLException | NoSuchFieldException | IllegalAccessException e) {
+            //something is wrong here, so let it be failed further
+            return toBePatched;
+        }
     }
 
     /**
@@ -229,7 +262,7 @@ public class PreparedHttpRequest {
     }
 
     public HttpRequest build() {
-        builder.uri(uriBuilder.build());
+        builder.uri(patchURI(uriBuilder.build()));
         return builder.build();
     }
 }

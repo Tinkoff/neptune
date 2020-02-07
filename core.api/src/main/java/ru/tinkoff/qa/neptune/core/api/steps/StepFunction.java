@@ -42,6 +42,21 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
         super();
     }
 
+    /**
+     * This method creates a function with some string description. This function is
+     * supposed to get some value.
+     *
+     * @param description string narration of the getting value
+     * @param function which gets the needed value
+     * @param <T> type of the input value
+     * @param <R> type of the value to get
+     * @return a new function with the given string description. Description is returned
+     * by the {@link #toString()} method.
+     */
+    public static <T, R> StepFunction<T, R> toGet(String description, Function<T, R> function) {
+        return new StepFunction<>(description, function);
+    }
+
 
     private boolean shouldBeThrowableIgnored(Throwable toBeIgnored) {
         for (var throwableClass: ignored) {
