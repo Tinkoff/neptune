@@ -11,8 +11,9 @@ import static java.util.stream.Collectors.joining;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
+ * This class is designed to create a {@link Predicate} used by {@link SequentialGetStepSupplier}
  *
- * @param <T>
+ * @param <T> is a type of a value to be checked/filtered
  */
 @SuppressWarnings("unchecked")
 public final class Criteria<T> implements Supplier<Predicate<T>> {
@@ -36,10 +37,12 @@ public final class Criteria<T> implements Supplier<Predicate<T>> {
     }
 
     /**
+     * The joining of defined criteria with AND-condition.
      *
-     * @param criteria
-     * @param <T>
-     * @return
+     * @param criteria to be joined
+     * @param <T> <T> is a type of a value to be checked/filtered by each criteria
+     *           and resulted criteria as well
+     * @return a new joined criteria
      */
     public static <T> Criteria<T> AND(Criteria<T>... criteria) {
         checkArgument(nonNull(criteria), "List of criteria should not be null");
@@ -60,10 +63,12 @@ public final class Criteria<T> implements Supplier<Predicate<T>> {
     }
 
     /**
+     * The joining of defined criteria with OR-condition.
      *
-     * @param criteria
-     * @param <T>
-     * @return
+     * @param criteria to be joined
+     * @param <T> <T> is a type of a value to be checked/filtered by each criteria
+     *           and resulted criteria as well
+     * @return a new joined criteria
      */
     public static <T> Criteria<T> OR(Criteria<T>... criteria) {
         checkArgument(nonNull(criteria), "List of criteria should not be null");
@@ -84,10 +89,12 @@ public final class Criteria<T> implements Supplier<Predicate<T>> {
     }
 
     /**
+     * The joining of defined criteria with XOR-condition.
      *
-     * @param criteria
-     * @param <T>
-     * @return
+     * @param criteria to be joined
+     * @param <T> <T> is a type of a value to be checked/filtered by each criteria
+     *           and resulted criteria as well
+     * @return a new joined criteria
      */
     public static <T> Criteria<T> XOR(Criteria<T>... criteria) {
         checkArgument(nonNull(criteria), "List of criteria should not be null");
@@ -108,11 +115,12 @@ public final class Criteria<T> implements Supplier<Predicate<T>> {
     }
 
     /**
-     * 
-     * @param description
-     * @param predicate
-     * @param <T>
-     * @return
+     * Creates and instance of {@link Criteria}
+     *
+     * @param description is a string description of the condition
+     * @param predicate is the condition described by {@link Predicate}
+     * @param <T> is a type of a value to be checked/filtered
+     * @return a new instance of {@link Criteria}
      */
     public static <T> Criteria<T> condition(String description, Predicate<T> predicate) {
         return new Criteria<>(description, predicate);

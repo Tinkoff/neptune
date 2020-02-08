@@ -51,7 +51,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     final Set<Class<? extends Throwable>> ignored = new HashSet<>();
     private final List<CaptorFilterByProducedType> captorFilters = new ArrayList<>();
 
-    Predicate<P> condition;
+    final List<Criteria<P>> condition = new ArrayList<>();
     private Object from;
     Duration timeToGet;
     Duration sleepingTime;
