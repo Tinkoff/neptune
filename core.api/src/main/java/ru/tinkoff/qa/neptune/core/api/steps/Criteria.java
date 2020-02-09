@@ -1,5 +1,9 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
+import com.google.common.collect.Iterables;
+import org.checkerframework.checker.units.qual.C;
+
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -28,14 +32,6 @@ public final class Criteria<T> implements Supplier<Predicate<T>> {
         this.howToCheck = howToCheck;
     }
 
-    public String toString() {
-        return description;
-    }
-
-    public Predicate<T> get() {
-        return (Predicate<T>) howToCheck;
-    }
-
     /**
      * The joining of defined criteria with AND-condition.
      *
@@ -60,6 +56,18 @@ public final class Criteria<T> implements Supplier<Predicate<T>> {
         }
 
         return new Criteria<>(description, newPredicate);
+    }
+
+    static <T> Criteria<T> AND(List<Criteria<T>> criteria) {
+        if (criteria == null) {
+            return null;
+        }
+
+        if (criteria.size() == 1) {
+            return criteria.get(0);
+        }
+
+        return AND(Iterables.toArray(criteria, Criteria.class));
     }
 
     /**
@@ -124,5 +132,13 @@ public final class Criteria<T> implements Supplier<Predicate<T>> {
      */
     public static <T> Criteria<T> condition(String description, Predicate<T> predicate) {
         return new Criteria<>(description, predicate);
+    }
+
+    public String toString() {
+        return description;
+    }
+
+    public Predicate<T> get() {
+        return (Predicate<T>) howToCheck;
     }
 }

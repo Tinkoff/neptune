@@ -24,7 +24,8 @@ import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static ru.tinkoff.qa.neptune.core.api.steps.Condition.NOT_DESCRIBED;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.AND;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 import static ru.tinkoff.qa.neptune.core.api.steps.StepFunction.toGet;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromArray.getFromArray;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromIterable.getFromIterable;
@@ -51,7 +52,9 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     final Set<Class<? extends Throwable>> ignored = new HashSet<>();
     private final List<CaptorFilterByProducedType> captorFilters = new ArrayList<>();
 
-    final List<Criteria<P>> condition = new ArrayList<>();
+    private final List<Criteria<P>> conditions = new ArrayList<>();
+    Criteria<P> condition;
+
     private Object from;
     Duration timeToGet;
     Duration sleepingTime;
@@ -63,67 +66,28 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     }
 
     /**
-     * Sometimes it is necessary to get a value that suits some criteria. This method defines the criteria to filter
-     * values received after invocation of {@link Function#apply(Object)} on a resulted function.
+     * Sometimes it is necessary to get a value that suits some criteria.
+     * This method adds the criteria to filter values.
+     * When this method and/or {@link #criteria(String, Predicate)} are invoked previously then it joins conditions with 'AND'.
      *
-     * @param concat    AND, OR, XOR to build a logical expression. It concatenates defined {@link Predicate}
-     *                  with a value set ut by the previous invocation of this method or {@link #criteria(ConditionConcatenation, String, Predicate)},
-     *                  {@link #criteria(Predicate)}, {@link #criteria(String, Predicate)}. When there is no value has been set
-     *                  up then this parameter is ignored and the method just sets up defined {@link Predicate}.
-     * @param condition a condition to get desired value
-     * @return self-reference
+     * @param criteria is the criteria to get required value
      */
-    protected THIS criteria(ConditionConcatenation concat, Predicate<? super P> condition) {
-        checkNotNull(concat);
-        this.condition = ofNullable(this.condition)
-                .map(pPredicate -> concat.concat(pPredicate, condition))
-                .orElse((Predicate<P>) condition);
+    protected THIS criteria(Criteria<? super P> criteria){
+        conditions.add((Criteria<P>) criteria);
+        condition = AND(conditions);
         return (THIS) this;
     }
 
     /**
-     * Sometimes it is necessary to get a value that suits some criteria. This method defines the criteria to filter
-     * values received after invocation of {@link Function#apply(Object)} on a resulted function.
+     * Sometimes it is necessary to get a value that suits some criteria.
+     * This method adds the criteria to filter values.
+     * When this method and/or {@link #criteria(Criteria)} are invoked previously then it joins conditions with 'AND'.
      *
-     * @param concat               AND, OR, XOR to build a logical expression. It concatenates defined {@link Predicate}
-     *                             with a value set ut by the previous invocation of this method or {@link #criteria(ConditionConcatenation, Predicate)},
-     *                             {@link #criteria(Predicate)}, {@link #criteria(String, Predicate)}. When there is no value has been set
-     *                             up then this parameter is ignored and the method just sets up defined {@link Predicate}.
-     * @param conditionDescription is a description of a condition to get desired value
-     * @param condition            a condition to get desired value
-     * @return self-reference
+     * @param description is a description of the criteria
+     * @param predicate   is the the criteria
      */
-    protected THIS criteria(ConditionConcatenation concat, String conditionDescription, Predicate<? super P> condition) {
-        return criteria(concat, Condition.condition(conditionDescription, condition));
-    }
-
-    /**
-     * Sometimes it is necessary to get a value that suits some criteria. This method defines the criteria to filter
-     * values received after invocation of {@link Function#apply(Object)} on a resulted function. It builds AND-expression
-     * by default.
-     *
-     * @param condition is a condition to get desired value
-     * @return self-reference
-     * @see #criteria(ConditionConcatenation, Predicate)
-     * @see #criteria(ConditionConcatenation, String, Predicate)
-     */
-    protected THIS criteria(Predicate<? super P> condition) {
-        return criteria(ConditionConcatenation.AND, condition);
-    }
-
-    /**
-     * Sometimes it is necessary to get a value that suits some criteria. This method defines the criteria to filter
-     * values received after invocation of {@link Function#apply(Object)} on a resulted function. It builds AND-expression
-     * by default.
-     *
-     * @param conditionDescription is a description of a condition to get desired value
-     * @param condition            a condition to get desired value
-     * @return self-reference
-     * @see #criteria(ConditionConcatenation, Predicate)
-     * @see #criteria(ConditionConcatenation, String, Predicate)
-     */
-    protected THIS criteria(String conditionDescription, Predicate<? super P> condition) {
-        return criteria(ConditionConcatenation.AND, conditionDescription, condition);
+    protected THIS criteria(String description, Predicate<? super P> predicate) {
+        return criteria(condition(description, predicate));
     }
 
     /**
@@ -300,7 +264,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * @return self-reference
      */
     @Override
-    public THIS onFinishMakeCaptureOfType(Class typeOfCapture) {
+    public THIS onFinishMakeCaptureOfType(Class<?> typeOfCapture) {
         captorFilters.add(new CaptorFilterByProducedType(typeOfCapture));
         return (THIS) this;
     }
@@ -379,34 +343,16 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     protected abstract Function<M, R> getEndFunction();
 
     /**
-     * Returns string description of the defined criteria. If there is some description and {@link Predicate#toString()}
-     * returns some human-readable value then method returns this value. When criteria is defined then it returns
-     * {@code '<not described condition>'}. When criteria is not defined then an empty string is returned.
-     * @see Condition#condition(String, Predicate)
-     * @see #criteria(Predicate)
-     * @see #criteria(String, Predicate)
-     * @see #criteria(ConditionConcatenation, Predicate)
-     * @see #criteria(ConditionConcatenation, String, Predicate)
-     *
      * @return string description of the defined criteria
      */
     protected String getCriteriaDescription() {
         return ofNullable(condition)
-                .map(pPredicate -> {
-                    if (Condition.DescribedCondition.DescribedCondition.class.isAssignableFrom(pPredicate.getClass())) {
-                        return pPredicate.toString();
-                    }
-
-                    if (isLoggable(pPredicate)) {
-                        return pPredicate.toString();
-                    }
-
-                    return NOT_DESCRIBED;
-                }).orElse(EMPTY);
+                .map(Criteria::toString)
+                .orElse(EMPTY);
     }
 
     protected Predicate<P> getCriteria() {
-        return condition;
+        return ofNullable(condition).map(Criteria::get).orElse(null);
     }
 
     private static abstract class PrivateGetObjectStepSupplier<T, R, M, THIS extends PrivateGetObjectStepSupplier<T, R, M, THIS>>
@@ -421,7 +367,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
         @Override
         protected Function<M, R> getEndFunction() {
-            return ofNullable(condition)
+            return ofNullable(getCriteria())
                     .map(rPredicate -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime).map(sleep ->
                                     ofNullable(exceptionSupplier)
@@ -511,7 +457,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
         @Override
         protected Function<M, R> getEndFunction() {
-            return ofNullable(condition)
+            return ofNullable(getCriteria())
                     .map(rPredicate -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime).map(sleep ->
                                     ofNullable(exceptionSupplier)
@@ -601,7 +547,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
         @Override
         protected Function<M, R> getEndFunction() {
-            return ofNullable(condition)
+            return ofNullable(getCriteria())
                     .map(rPredicate -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime).map(sleep ->
                                     ofNullable(exceptionSupplier)
@@ -691,7 +637,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
         @Override
         protected Function<M, S> getEndFunction() {
-            return ofNullable(condition)
+            return ofNullable(getCriteria())
                     .map(rPredicate -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime).map(sleep ->
                                     ofNullable(exceptionSupplier)
@@ -783,7 +729,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
         @Override
         protected Function<M, R[]> getEndFunction() {
-            return ofNullable(condition)
+            return ofNullable(getCriteria())
                     .map(rPredicate -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime).map(sleep ->
                                     ofNullable(exceptionSupplier)
