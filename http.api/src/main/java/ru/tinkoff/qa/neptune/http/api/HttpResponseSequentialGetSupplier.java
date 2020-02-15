@@ -1,9 +1,10 @@
 package ru.tinkoff.qa.neptune.http.api;
 
-import ru.tinkoff.qa.neptune.core.api.steps.ConditionConcatenation;
-import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.ConditionConcatenation;
+import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.http.api.captors.RequestStringCaptor;
 
 import java.net.http.HttpResponse;
@@ -46,7 +47,7 @@ public class HttpResponseSequentialGetSupplier<T> extends SequentialGetStepSuppl
 
     static <T, S> void addCondition(HttpResponseSequentialGetSupplier<T> addTo,
                                     Function<T, S> extractObjectFromBody,
-                                    Predicate<S> predicateToAdd) {
+                                    Criteria<S> criteria) {
         Predicate<HttpResponse<T>> predicate = condition(predicateToAdd.toString(), tHttpResponse -> {
             var body = tHttpResponse.body();
             return ofNullable(body)
@@ -117,18 +118,8 @@ public class HttpResponseSequentialGetSupplier<T> extends SequentialGetStepSuppl
     }
 
     @Override
-    protected HttpResponseSequentialGetSupplier<T> criteria(Predicate<? super HttpResponse<T>> condition) {
-        return super.criteria(condition);
-    }
-
-    @Override
-    protected HttpResponseSequentialGetSupplier<T> criteria(ConditionConcatenation concat, Predicate<? super HttpResponse<T>> condition) {
-        return super.criteria(concat, condition);
-    }
-
-    @Override
-    protected HttpResponseSequentialGetSupplier<T> criteria(ConditionConcatenation concat, String conditionDescription, Predicate<? super HttpResponse<T>> condition) {
-        return super.criteria(concat, conditionDescription, condition);
+    protected HttpResponseSequentialGetSupplier<T> criteria(Criteria<? super HttpResponse<T>> criteria) {
+        return super.criteria(criteria);
     }
 
     @Override

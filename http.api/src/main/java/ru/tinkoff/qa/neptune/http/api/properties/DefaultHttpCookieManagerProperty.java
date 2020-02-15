@@ -10,7 +10,6 @@ import java.util.function.Supplier;
  * This class is designed to read value of the property {@code 'default.http.cookie.handler'} and convert it to an instance of
  * {@link CookieManagerSupplier}
  */
-@Deprecated(since = "0.11.4-ALPHA", forRemoval = true)
 public final class DefaultHttpCookieManagerProperty implements ObjectPropertySupplier<DefaultHttpCookieManagerProperty.CookieManagerSupplier> {
 
     private static final String PROPERTY = "default.http.cookie.handler";

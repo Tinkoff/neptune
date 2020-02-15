@@ -51,7 +51,7 @@ public final class Presence<T extends Context> extends SequentialGetStepSupplier
                     "<not described value>",
                     toBePresent);
         }
-        from(expectedToBePresent);
+        from(expectedToBePresent.turnReportingOff());
     }
 
     private Presence(SequentialGetStepSupplier<T, ?, ?, ?, ?> toBePresent) {

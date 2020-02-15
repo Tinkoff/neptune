@@ -1,12 +1,13 @@
 package ru.tinkoff.qa.neptune.selenium.functions.searching;
 
-import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import org.openqa.selenium.*;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Labeled;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.*;
-import org.openqa.selenium.*;
 
 import java.time.Duration;
 import java.util.function.Function;
@@ -14,7 +15,9 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
+import static java.lang.String.format;
 import static java.lang.String.join;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.selenium.api.widget.Widget.getWidgetName;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.*;
@@ -23,8 +26,6 @@ import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindWebElements
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindWidgets.widgets;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FIND_ONLY_VISIBLE_ELEMENTS;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMENT_WAITING_DURATION;
-import static java.lang.String.format;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 @SuppressWarnings({"unused"})
 @MakeImageCapturesOnFinishing
@@ -85,7 +86,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<WebElement> webElement(By by, Pattern textPattern) {
-        Predicate<WebElement> shouldHaveText = shouldHaveText(textPattern);
+        var shouldHaveText = shouldHaveText(textPattern);
         var webElements = webElements(by);
         var search = new SearchSupplier<>(format("Web element located %s", by), webElements);
         webElements.setCriteriaDescription(criteriaDescription(search));
@@ -120,7 +121,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @return an instance of {@link SearchSupplier}
      */
     public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, String... labels) {
-        Predicate<T> labeledBy = shouldBeLabeledBy(labels);
+        var labeledBy = shouldBeLabeledBy(labels);
         var labeledWidgets = labeledWidgets(tClass);
         var stringLabels = join(",", labels);
         var search =  new SearchSupplier<>(format("%s '%s'", getWidgetName(tClass), join(", ", labels)), labeledWidgets);
@@ -446,7 +447,7 @@ public final class SearchSupplier<R extends SearchContext>
     }
 
     @Override
-    public SearchSupplier<R> criteria(Predicate<? super R> condition) {
+    public SearchSupplier<R> criteria(Criteria<? super R> condition) {
         return super.criteria(condition);
     }
 

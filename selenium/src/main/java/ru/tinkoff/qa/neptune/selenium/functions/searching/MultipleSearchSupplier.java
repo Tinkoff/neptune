@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.functions.searching;
 
+import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
@@ -64,7 +65,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<WebElement> webElements(By by, String text) {
-        Predicate<WebElement> shouldHaveText = shouldHaveText(text);
+        var shouldHaveText = shouldHaveText(text);
         var webElements = FindWebElements.webElements(by);
         var search = new MultipleSearchSupplier<>(format("Web element located %s with the text '%s'", by, text), webElements);
         webElements.setCriteriaDescription(criteriaDescription(search));
@@ -81,7 +82,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<WebElement> webElements(By by, Pattern textPattern) {
-        Predicate<WebElement> shouldHaveText = shouldHaveText(textPattern);
+        var shouldHaveText = shouldHaveText(textPattern);
         var webElements = FindWebElements.webElements(by);
         var search = new MultipleSearchSupplier<>(format("Web element located %s with text that matches the pattern '%s'", by, textPattern), webElements);
         webElements.setCriteriaDescription(criteriaDescription(search));
@@ -439,7 +440,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
     }
 
     @Override
-    public MultipleSearchSupplier<R> criteria(Predicate<? super R> condition) {
+    public MultipleSearchSupplier<R> criteria(Criteria<? super R> condition) {
         return super.criteria(condition);
     }
 

@@ -2,10 +2,10 @@ package ru.tinkoff.qa.neptune.selenium.functions.cookies;
 
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
-import ru.tinkoff.qa.neptune.core.api.steps.ConditionConcatenation;
-import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import java.util.Set;
@@ -37,20 +37,11 @@ public final class GetSeleniumCookieSupplier extends SequentialGetStepSupplier
     }
 
     @Override
-    public GetSeleniumCookieSupplier criteria(ConditionConcatenation concat, Predicate<? super Cookie> condition) {
-        return super.criteria(concat, condition);
-    }
-
-    @Override
-    public GetSeleniumCookieSupplier criteria(ConditionConcatenation concat, String conditionDescription, Predicate<? super Cookie> condition) {
-        return super.criteria(concat, conditionDescription, condition);
-    }
-
-    @Override
-    public GetSeleniumCookieSupplier criteria(Predicate<? super Cookie> condition) {
+    public GetSeleniumCookieSupplier criteria(Criteria<? super Cookie> condition) {
         return super.criteria(condition);
     }
 
+    @Override
     public GetSeleniumCookieSupplier criteria(String conditionDescription, Predicate<? super Cookie> condition) {
         return super.criteria(conditionDescription, condition);
     }
