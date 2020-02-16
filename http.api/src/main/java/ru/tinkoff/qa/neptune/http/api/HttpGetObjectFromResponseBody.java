@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.http.api;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeCaptureOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.steps.ConditionConcatenation;
+import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 
 import java.net.http.HttpResponse;
@@ -15,7 +15,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static ru.tinkoff.qa.neptune.core.api.steps.Condition.condition;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 import static ru.tinkoff.qa.neptune.http.api.HttpResponseSequentialGetSupplier.*;
 import static ru.tinkoff.qa.neptune.http.api.properties.TimeToGetDesiredResponseProperty.DEFAULT_TIME_TO_GET_DESIRED_RESPONSE_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.TimeToSleepProperty.SLEEP_RESPONSE_TIME_PROPERTY;
@@ -157,19 +157,10 @@ public final class HttpGetObjectFromResponseBody {
             this.getFromBody = getFromBody;
         }
 
-        @Override
-        public R criteria(ConditionConcatenation concat, Predicate<? super T> condition) {
-            return super.criteria(concat, condition);
-        }
 
         @Override
-        public R criteria(ConditionConcatenation concat, String conditionDescription, Predicate<? super T> condition) {
-            return super.criteria(concat, conditionDescription, condition);
-        }
-
-        @Override
-        public R criteria(Predicate<? super T> condition) {
-            return super.criteria(condition);
+        public R criteria(Criteria<? super T> criteria) {
+            return super.criteria(criteria);
         }
 
         @Override
@@ -224,7 +215,6 @@ public final class HttpGetObjectFromResponseBody {
             this.response.pollingInterval(SLEEP_RESPONSE_TIME_PROPERTY.get());
         }
 
-        @SuppressWarnings("unchecked")
         public Function<HttpStepContext, T> get() {
             var criteria = getCriteria();
             var thisReference = this;
@@ -262,42 +252,6 @@ public final class HttpGetObjectFromResponseBody {
          * Defines the criteria that the desired value should meet. Also it defines criteria to check body of the received
          * response.
          *
-         * @see SequentialGetStepSupplier#criteria(ConditionConcatenation, Predicate)
-         */
-        @Override
-        public WaitingResponseGetHttpBodyObjectStepSupplier<T, S> criteria(ConditionConcatenation concat,
-                                                                           Predicate<? super T> condition) {
-            return super.criteria(concat, condition);
-        }
-
-        /**
-         * Defines the criteria that the desired value should meet. Also it defines criteria to check body of the received
-         * response.
-         *
-         * @see SequentialGetStepSupplier#criteria(ConditionConcatenation, String, Predicate)
-         */
-        @Override
-        public WaitingResponseGetHttpBodyObjectStepSupplier<T, S> criteria(ConditionConcatenation concat,
-                                                                           String conditionDescription,
-                                                                           Predicate<? super T> condition) {
-            return super.criteria(concat, conditionDescription, condition);
-        }
-
-        /**
-         * Defines the criteria that the desired value should meet. Also it defines criteria to check body of the received
-         * response.
-         *
-         * @see SequentialGetStepSupplier#criteria(Predicate)
-         */
-        @Override
-        public WaitingResponseGetHttpBodyObjectStepSupplier<T, S> criteria(Predicate<? super T> condition) {
-            return super.criteria(condition);
-        }
-
-        /**
-         * Defines the criteria that the desired value should meet. Also it defines criteria to check body of the received
-         * response.
-         *
          * @see SequentialGetStepSupplier#criteria(String, Predicate)
          */
         @Override
@@ -306,36 +260,24 @@ public final class HttpGetObjectFromResponseBody {
             return super.criteria(conditionDescription, condition);
         }
 
-
         /**
-         * Defines the criteria that response to get data from should meet.
+         * Defines the criteria that the desired value should meet. Also it defines criteria to check body of the received
+         * response.
          *
-         * @see SequentialGetStepSupplier#criteria(ConditionConcatenation, Predicate)
+         * @see SequentialGetStepSupplier#criteria(Criteria)
          */
-        public WaitingResponseGetHttpBodyObjectStepSupplier<T, S> criteriaOfResponse(ConditionConcatenation concat,
-                                                                                     Predicate<? super HttpResponse<S>> condition) {
-            response.criteria(concat, condition);
-            return this;
+        @Override
+        public WaitingResponseGetHttpBodyObjectStepSupplier<T, S> criteria(Criteria<? super T> criteria) {
+            return super.criteria(criteria);
         }
 
-        /**
-         * Defines the criteria that response to get data from should meet.
-         *
-         * @see SequentialGetStepSupplier#criteria(ConditionConcatenation, String, Predicate)
-         */
-        public WaitingResponseGetHttpBodyObjectStepSupplier<T, S> criteriaOfResponse(ConditionConcatenation concat,
-                                                                                     String conditionDescription,
-                                                                                     Predicate<? super HttpResponse<S>> condition) {
-            response.criteria(concat, conditionDescription, condition);
-            return this;
-        }
 
         /**
          * Defines the criteria that response to get data from should meet.
          *
-         * @see SequentialGetStepSupplier#criteria(Predicate)
+         * @see SequentialGetStepSupplier#criteria(Criteria)
          */
-        public WaitingResponseGetHttpBodyObjectStepSupplier<T, S> criteriaOfResponse(Predicate<? super HttpResponse<S>> condition) {
+        public WaitingResponseGetHttpBodyObjectStepSupplier<T, S> criteriaOfResponse(Criteria<? super HttpResponse<S>> condition) {
             response.criteria(condition);
             return this;
         }
@@ -382,17 +324,7 @@ public final class HttpGetObjectFromResponseBody {
         }
 
         @Override
-        public R criteria(ConditionConcatenation concat, Predicate<? super T> condition) {
-            return super.criteria(concat, condition);
-        }
-
-        @Override
-        public R criteria(ConditionConcatenation concat, String conditionDescription, Predicate<? super T> condition) {
-            return super.criteria(concat, conditionDescription, condition);
-        }
-
-        @Override
-        public R criteria(Predicate<? super T> condition) {
+        public R criteria(Criteria<? super T> condition) {
             return super.criteria(condition);
         }
 
@@ -450,12 +382,12 @@ public final class HttpGetObjectFromResponseBody {
             this.response.pollingInterval(SLEEP_RESPONSE_TIME_PROPERTY.get());
         }
 
-        @SuppressWarnings("unchecked")
         public Function<HttpStepContext, T> get() {
             var criteria = getCriteria();
             var thisReference = this;
             var responseClone = this.response.clone();
             from(responseClone);
+
             ofNullable(criteria).ifPresentOrElse(tPredicate ->
                             addConditionIterable(responseClone,
                                     getFromBody,
@@ -488,80 +420,19 @@ public final class HttpGetObjectFromResponseBody {
          * Defines the criteria that desired values should meet. Also it defines criteria to check body of the received
          * response.
          *
-         * @see SequentialGetStepSupplier#criteria(ConditionConcatenation, Predicate)
+         * @see SequentialGetStepSupplier#criteria(Criteria)
          */
         @Override
-        public WaitingResponseGetHttpBodyObjectFromIterableStepSupplier<T, S> criteria(ConditionConcatenation concat,
-                                                                                       Predicate<? super T> condition) {
-            return super.criteria(concat, condition);
-        }
-
-        /**
-         * Defines the criteria that desired values should meet. Also it defines criteria to check body of the received
-         * response.
-         *
-         * @see SequentialGetStepSupplier#criteria(ConditionConcatenation, String, Predicate)
-         */
-        @Override
-        public WaitingResponseGetHttpBodyObjectFromIterableStepSupplier<T, S> criteria(ConditionConcatenation concat,
-                                                                                       String conditionDescription,
-                                                                                       Predicate<? super T> condition) {
-            return super.criteria(concat, conditionDescription, condition);
-        }
-
-        /**
-         * Defines the criteria that desired values should meet. Also it defines criteria to check body of the received
-         * response.
-         *
-         * @see SequentialGetStepSupplier#criteria(Predicate)
-         */
-        @Override
-        public WaitingResponseGetHttpBodyObjectFromIterableStepSupplier<T, S> criteria(Predicate<? super T> condition) {
+        public WaitingResponseGetHttpBodyObjectFromIterableStepSupplier<T, S> criteria(Criteria<? super T> condition) {
             return super.criteria(condition);
         }
 
         /**
-         * Defines the criteria that desired values should meet. Also it defines criteria to check body of the received
-         * response.
-         *
-         * @see SequentialGetStepSupplier#criteria(String, Predicate)
-         */
-        @Override
-        public WaitingResponseGetHttpBodyObjectFromIterableStepSupplier<T, S> criteria(String conditionDescription,
-                                                                                       Predicate<? super T> condition) {
-            return super.criteria(conditionDescription, condition);
-        }
-
-
-        /**
          * Defines the criteria that response to get data from should meet.
          *
-         * @see SequentialGetStepSupplier#criteria(ConditionConcatenation, Predicate)
+         * @see SequentialGetStepSupplier#criteria(Criteria)
          */
-        public WaitingResponseGetHttpBodyObjectFromIterableStepSupplier<T, S> criteriaOfResponse(ConditionConcatenation concat,
-                                                                                                 Predicate<? super HttpResponse<S>> condition) {
-            response.criteria(concat, condition);
-            return this;
-        }
-
-        /**
-         * Defines the criteria that response to get data from should meet.
-         *
-         * @see SequentialGetStepSupplier#criteria(ConditionConcatenation, String, Predicate)
-         */
-        public WaitingResponseGetHttpBodyObjectFromIterableStepSupplier<T, S> criteriaOfResponse(ConditionConcatenation concat,
-                                                                                                 String conditionDescription,
-                                                                                                 Predicate<? super HttpResponse<S>> condition) {
-            response.criteria(concat, conditionDescription, condition);
-            return this;
-        }
-
-        /**
-         * Defines the criteria that response to get data from should meet.
-         *
-         * @see SequentialGetStepSupplier#criteria(Predicate)
-         */
-        public WaitingResponseGetHttpBodyObjectFromIterableStepSupplier<T, S> criteriaOfResponse(Predicate<? super HttpResponse<S>> condition) {
+        public WaitingResponseGetHttpBodyObjectFromIterableStepSupplier<T, S> criteriaOfResponse(Criteria<? super HttpResponse<S>> condition) {
             response.criteria(condition);
             return this;
         }
@@ -608,18 +479,8 @@ public final class HttpGetObjectFromResponseBody {
         }
 
         @Override
-        public R criteria(ConditionConcatenation concat, Predicate<? super T> condition) {
-            return super.criteria(concat, condition);
-        }
-
-        @Override
-        public R criteria(ConditionConcatenation concat, String conditionDescription, Predicate<? super T> condition) {
-            return super.criteria(concat, conditionDescription, condition);
-        }
-
-        @Override
-        public R criteria(Predicate<? super T> condition) {
-            return super.criteria(condition);
+        public R criteria(Criteria<? super T> criteria) {
+            return super.criteria(criteria);
         }
 
         @Override
@@ -675,7 +536,6 @@ public final class HttpGetObjectFromResponseBody {
             this.response.pollingInterval(SLEEP_RESPONSE_TIME_PROPERTY.get());
         }
 
-        @SuppressWarnings("unchecked")
         public Function<HttpStepContext, T> get() {
             var criteria = getCriteria();
             var thisReference = this;
@@ -713,35 +573,10 @@ public final class HttpGetObjectFromResponseBody {
          * Defines the criteria that desired values should meet. Also it defines criteria to check body of the received
          * response.
          *
-         * @see SequentialGetStepSupplier#criteria(ConditionConcatenation, Predicate)
+         * @see SequentialGetStepSupplier#criteria(Criteria)
          */
         @Override
-        public WaitingResponseGetHttpBodyObjectFromArrayStepSupplier<T, S> criteria(ConditionConcatenation concat,
-                                                                                    Predicate<? super T> condition) {
-            return super.criteria(concat, condition);
-        }
-
-        /**
-         * Defines the criteria that desired values should meet. Also it defines criteria to check body of the received
-         * response.
-         *
-         * @see SequentialGetStepSupplier#criteria(ConditionConcatenation, String, Predicate)
-         */
-        @Override
-        public WaitingResponseGetHttpBodyObjectFromArrayStepSupplier<T, S> criteria(ConditionConcatenation concat,
-                                                                                    String conditionDescription,
-                                                                                    Predicate<? super T> condition) {
-            return super.criteria(concat, conditionDescription, condition);
-        }
-
-        /**
-         * Defines the criteria that desired values should meet. Also it defines criteria to check body of the received
-         * response.
-         *
-         * @see SequentialGetStepSupplier#criteria(Predicate)
-         */
-        @Override
-        public WaitingResponseGetHttpBodyObjectFromArrayStepSupplier<T, S> criteria(Predicate<? super T> condition) {
+        public WaitingResponseGetHttpBodyObjectFromArrayStepSupplier<T, S> criteria(Criteria<? super T> condition) {
             return super.criteria(condition);
         }
 
@@ -757,36 +592,12 @@ public final class HttpGetObjectFromResponseBody {
             return super.criteria(conditionDescription, condition);
         }
 
-
         /**
          * Defines the criteria that response to get data from should meet.
          *
-         * @see SequentialGetStepSupplier#criteria(ConditionConcatenation, Predicate)
+         * @see SequentialGetStepSupplier#criteria(Criteria)
          */
-        public WaitingResponseGetHttpBodyObjectFromArrayStepSupplier<T, S> criteriaOfResponse(ConditionConcatenation concat,
-                                                                                              Predicate<? super HttpResponse<S>> condition) {
-            response.criteria(concat, condition);
-            return this;
-        }
-
-        /**
-         * Defines the criteria that response to get data from should meet.
-         *
-         * @see SequentialGetStepSupplier#criteria(ConditionConcatenation, String, Predicate)
-         */
-        public WaitingResponseGetHttpBodyObjectFromArrayStepSupplier<T, S> criteriaOfResponse(ConditionConcatenation concat,
-                                                                                              String conditionDescription,
-                                                                                              Predicate<? super HttpResponse<S>> condition) {
-            response.criteria(concat, conditionDescription, condition);
-            return this;
-        }
-
-        /**
-         * Defines the criteria that response to get data from should meet.
-         *
-         * @see SequentialGetStepSupplier#criteria(Predicate)
-         */
-        public WaitingResponseGetHttpBodyObjectFromArrayStepSupplier<T, S> criteriaOfResponse(Predicate<? super HttpResponse<S>> condition) {
+        public WaitingResponseGetHttpBodyObjectFromArrayStepSupplier<T, S> criteriaOfResponse(Criteria<? super HttpResponse<S>> condition) {
             response.criteria(condition);
             return this;
         }
