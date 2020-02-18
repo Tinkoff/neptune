@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
 import com.google.common.collect.Iterables;
-import org.checkerframework.checker.units.qual.C;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -11,6 +10,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Arrays.stream;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
+import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.joining;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -40,13 +40,14 @@ public final class Criteria<T> implements Supplier<Predicate<T>> {
      *           and resulted criteria as well
      * @return a new joined criteria
      */
+    @SafeVarargs
     public static <T> Criteria<T> AND(Criteria<T>... criteria) {
         checkArgument(nonNull(criteria), "List of criteria should not be null");
         checkArgument(criteria.length > 1, "At least two criteria should be defined");
 
         var description = stream(criteria)
-                .map(c -> "(" + c.toString() + ")")
-                .collect(joining(" and "));
+                .map(Criteria::toString)
+                .collect(joining(", "));
 
         Predicate<T> newPredicate = null;
         for (var tCriteria: criteria) {
@@ -74,10 +75,11 @@ public final class Criteria<T> implements Supplier<Predicate<T>> {
      * The joining of defined criteria with OR-condition.
      *
      * @param criteria to be joined
-     * @param <T> <T> is a type of a value to be checked/filtered by each criteria
+     * @param <T> is a type of a value to be checked/filtered by each criteria
      *           and resulted criteria as well
      * @return a new joined criteria
      */
+    @SafeVarargs
     public static <T> Criteria<T> OR(Criteria<T>... criteria) {
         checkArgument(nonNull(criteria), "List of criteria should not be null");
         checkArgument(criteria.length > 1, "At least two criteria should be defined");
@@ -100,23 +102,50 @@ public final class Criteria<T> implements Supplier<Predicate<T>> {
      * The joining of defined criteria with XOR-condition.
      *
      * @param criteria to be joined
-     * @param <T> <T> is a type of a value to be checked/filtered by each criteria
+     * @param <T> is a type of a value to be checked/filtered by each criteria
      *           and resulted criteria as well
      * @return a new joined criteria
      */
+    @SafeVarargs
     public static <T> Criteria<T> XOR(Criteria<T>... criteria) {
         checkArgument(nonNull(criteria), "List of criteria should not be null");
         checkArgument(criteria.length > 1, "At least two criteria should be defined");
 
         var description = stream(criteria)
                 .map(c -> "(" + c.toString() + ")")
-                .collect(joining(" or "));
+                .collect(joining(" xor "));
 
         Predicate<T> newPredicate = null;
         for (var tCriteria: criteria) {
             newPredicate = ofNullable(newPredicate)
                     .map(predicate -> predicate.or(tCriteria.get()))
                     .orElseGet(tCriteria);
+        }
+
+        return new Criteria<>(description, newPredicate);
+    }
+
+    /**
+     * The joining of defined criteria with AND NOT-condition.
+     *
+     * @param criteria to be joined
+     * @param <T> is a type of a value to be checked/filtered
+     * @return a new joined criteria
+     */
+    @SafeVarargs
+    public static <T> Criteria<T> NOT(Criteria<T>... criteria) {
+        checkArgument(nonNull(criteria), "List of criteria should not be null");
+        checkArgument(criteria.length > 0, "At least one criteria should be defined");
+
+        var description = stream(criteria)
+                .map(c -> "not (" + c.toString() + ")")
+                .collect(joining(", "));
+
+        Predicate<T> newPredicate = null;
+        for (var tCriteria: criteria) {
+            newPredicate = ofNullable(newPredicate)
+                    .map(predicate -> predicate.and(not(tCriteria.get())))
+                    .orElseGet(() -> not(tCriteria.get()));
         }
 
         return new Criteria<>(description, newPredicate);

@@ -1,28 +1,27 @@
 package ru.tinkoff.qa.neptune.selenium.test.steps.tests.java.script;
 
-import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 import org.apache.commons.lang3.ArrayUtils;
 import org.openqa.selenium.WebDriverException;
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 
-import java.util.function.Predicate;
-
-import static ru.tinkoff.qa.neptune.core.api.steps.Condition.condition;
-import static ru.tinkoff.qa.neptune.selenium.functions.java.script.GetJavaScriptResultSupplier.asynchronousJavaScript;
-import static ru.tinkoff.qa.neptune.selenium.functions.java.script.GetJavaScriptResultSupplier.javaScript;
-import static ru.tinkoff.qa.neptune.selenium.test.enums.Scripts.SCRIPT_1;
-import static ru.tinkoff.qa.neptune.selenium.test.enums.Scripts.SCRIPT_2;
 import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.fail;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
+import static ru.tinkoff.qa.neptune.selenium.functions.java.script.GetJavaScriptResultSupplier.asynchronousJavaScript;
+import static ru.tinkoff.qa.neptune.selenium.functions.java.script.GetJavaScriptResultSupplier.javaScript;
+import static ru.tinkoff.qa.neptune.selenium.test.enums.Scripts.SCRIPT_1;
+import static ru.tinkoff.qa.neptune.selenium.test.enums.Scripts.SCRIPT_2;
 
 public class JavaScriptTest extends BaseWebDriverTest {
 
     private static final Object[] ARGUMENTS = new Object[]{"Argument 1", "Argument 2", "Argument 3", "Argument 4"};
-    private static final Predicate<Object> CONTAINS_ARGUMENT_1 =
+    private static final Criteria<Object> CONTAINS_ARGUMENT_1 =
             condition("Contains `Argument 1`", o -> String.valueOf(o).contains("Argument 1"));
-    private static final Predicate<Object> CONTAINS_ARGUMENT_5 =
+    private static final Criteria<Object> CONTAINS_ARGUMENT_5 =
             condition("Contains `Argument 5`", o -> String.valueOf(o).contains("Argument 5"));
     private static final String EXCEPTION_MESSAGE = "Could't evaluate script";
     private static final String EXCEPTION_MESSAGE_PATTERN = "%s %s";

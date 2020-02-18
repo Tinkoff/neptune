@@ -13,14 +13,14 @@ import java.time.Duration;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.regex.Pattern;
 
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.selenium.api.widget.Widget.getWidgetName;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.labeled;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.visible;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindLabeledWidgets.labeledWidgets;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindWebElements.webElements;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindWidgets.widgets;
@@ -39,7 +39,7 @@ public final class SearchSupplier<R extends SearchContext>
         timeOut(ELEMENT_WAITING_DURATION.get());
         addIgnored(StaleElementReferenceException.class);
         if (FIND_ONLY_VISIBLE_ELEMENTS.get()) {
-            criteria(shouldBeVisible());
+            criteria(visible());
         }
         throwOnEmptyResult(noSuchElementException(this));
     }
@@ -56,41 +56,6 @@ public final class SearchSupplier<R extends SearchContext>
             }
             return EMPTY;
         };
-    }
-
-
-    /**
-     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
-     * The built function takes an instance of {@link SearchContext} for the searching
-     * and returns some {@link WebElement} found from the input value.
-     *
-     * @param by locator strategy to find an element
-     * @param text that the desired element should have
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<WebElement> webElement(By by, String text) {
-        Predicate<WebElement> shouldHaveText = shouldHaveText(text);
-        var webElements = webElements(by);
-        var search = new SearchSupplier<>(format("Web element located %s", by), webElements);
-        webElements.setCriteriaDescription(criteriaDescription(search));
-        return search.criteria(shouldHaveText);
-    }
-
-    /**
-     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
-     * The built function takes an instance of {@link SearchContext} for the searching
-     * and returns some {@link WebElement} found from the input value.
-     *
-     * @param by locator strategy to find an element
-     * @param textPattern is a regExp to match text of the desired element
-     * @return an instance of {@link SearchSupplier}
-     */
-    public static SearchSupplier<WebElement> webElement(By by, Pattern textPattern) {
-        var shouldHaveText = shouldHaveText(textPattern);
-        var webElements = webElements(by);
-        var search = new SearchSupplier<>(format("Web element located %s", by), webElements);
-        webElements.setCriteriaDescription(criteriaDescription(search));
-        return search.criteria(shouldHaveText);
     }
 
     /**
@@ -121,7 +86,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @return an instance of {@link SearchSupplier}
      */
     public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, String... labels) {
-        var labeledBy = shouldBeLabeledBy(labels);
+        var labeledBy = labeled(labels);
         var labeledWidgets = labeledWidgets(tClass);
         var stringLabels = join(",", labels);
         var search =  new SearchSupplier<>(format("%s '%s'", getWidgetName(tClass), join(", ", labels)), labeledWidgets);
