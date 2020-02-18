@@ -7,20 +7,16 @@ import org.openqa.selenium.WebElement;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static java.lang.String.format;
+import static java.util.Arrays.stream;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.selenium.api.widget.Widget.getWidgetName;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CGLibProxyBuilder.createProxy;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindByBuilder.getAnnotations;
@@ -36,8 +32,6 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
     final Class<? extends R> classOfAWidget;
     private final Predicate<Class<? extends R>> classPredicate;
     private List<Class<? extends R>> classesToInstantiate;
-    private Supplier<String> criteriaDescription;
-    private String labels;
 
     FindWidgets(Class<R> classOfAWidget, Predicate<Class<? extends R>> classPredicate) {
         checkArgument(nonNull(classOfAWidget), "The class to be instantiated should be defined.");
@@ -47,17 +41,14 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
 
     private FindWidgets(Class<R> classOfAWidget) {
         this(classOfAWidget, clazz -> !Modifier.isAbstract(clazz.getModifiers())
-
                 && nonNull(getAnnotations(clazz))
-
-                && (Arrays.stream(clazz.getDeclaredConstructors())
-                .filter(constructor -> {
+                && (stream(clazz.getDeclaredConstructors())
+                .anyMatch(constructor -> {
                     var parameters = constructor.getParameterTypes();
                     return parameters.length == 1 &&
                             WebElement.class.isAssignableFrom(parameters[0]);
-                }).collect(toList()).size() > 0));
+                })));
     }
-
 
 
     static <R extends Widget> FindWidgets<R> widgets(Class<R> classOfAWidget) {
@@ -103,47 +94,19 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
         var result = new LoggableElementList<R>() {
             @Override
             public String toString() {
-                var stringDescription = String.format("%s elements of type %s", size(), getWidgetName(classOfAWidget));
-                var criteria = ofNullable(criteriaDescription)
-                        .map(Supplier::get)
-                        .orElse(EMPTY);
-
-                if (!isBlank(criteria)) {
-                    stringDescription = format("%s and meet criteria ['%s']", stringDescription, criteria);
-                }
-                return stringDescription;
+                return String.format("%s elements of type(s) %s", size(),
+                        stream().map(r -> getWidgetName(r.getClass()))
+                                .distinct()
+                                .collect(joining(", ")));
             }
         };
 
         classesToInstantiate.forEach(clazz -> {
             var by = BUILDER.buildIt(clazz);
             result.addAll(searchContext.findElements(by).stream()
-                    .map(webElement -> {
-                        var stringDescription = getWidgetName(clazz);
-                        var criteria = ofNullable(criteriaDescription)
-                                .map(Supplier::get)
-                                .orElse(EMPTY);
-
-                        if (!isBlank(labels)) {
-                            stringDescription = format("%s '%s'", stringDescription, labels);
-                        }
-
-                        if (!isBlank(criteria)) {
-                            stringDescription = format("%s ['%s']", stringDescription, criteria);
-                        }
-                        return createProxy(clazz, new WidgetInterceptor(webElement, clazz, stringDescription));
-                    })
+                    .map(webElement -> createProxy(clazz, new WidgetInterceptor(webElement, clazz)))
                     .collect(toList()));
         });
         return result;
-    }
-
-    void setCriteriaDescription(Supplier<String> criteriaDescription) {
-        checkNotNull(criteriaDescription);
-        this.criteriaDescription = criteriaDescription;
-    }
-
-    void setLabels(String labels) {
-        this.labels = labels;
     }
 }

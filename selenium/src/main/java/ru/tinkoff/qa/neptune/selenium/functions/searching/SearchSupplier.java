@@ -68,9 +68,7 @@ public final class SearchSupplier<R extends SearchContext>
      */
     public static SearchSupplier<WebElement> webElement(By by) {
         var webElements = webElements(by);
-        var search = new SearchSupplier<>(format("Web element located %s", by), webElements);
-        webElements.setCriteriaDescription(criteriaDescription(search));
-        return search;
+        return new SearchSupplier<>(format("Web element located %s", by), webElements);
     }
 
     /**
@@ -90,8 +88,6 @@ public final class SearchSupplier<R extends SearchContext>
         var labeledWidgets = labeledWidgets(tClass);
         var stringLabels = join(",", labels);
         var search =  new SearchSupplier<>(format("%s '%s'", getWidgetName(tClass), join(", ", labels)), labeledWidgets);
-        labeledWidgets.setCriteriaDescription(criteriaDescription(search));
-        labeledWidgets.setLabels(stringLabels);
         return search.criteria(labeledBy);
     }
 
@@ -106,9 +102,7 @@ public final class SearchSupplier<R extends SearchContext>
      */
     public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass) {
         var widgets = widgets(tClass);
-        var search = new SearchSupplier<>(getWidgetName(tClass), widgets);
-        widgets.setCriteriaDescription(criteriaDescription(search));
-        return search;
+        return new SearchSupplier<>(getWidgetName(tClass), widgets);
     }
 
     /**

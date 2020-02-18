@@ -65,9 +65,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      */
     public static MultipleSearchSupplier<WebElement> webElements(By by) {
         var webElements = FindWebElements.webElements(by);
-        var search = new MultipleSearchSupplier<>(format("List of web elements located %s", by), webElements);
-        webElements.setCriteriaDescription(criteriaDescription(search));
-        return search;
+        return new MultipleSearchSupplier<>(format("List of web elements located %s", by), webElements);
     }
 
     /**
@@ -86,7 +84,6 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
         var labeledBy = labeled(labels);
         var labeledWidgets = labeledWidgets(tClass);
         var search =  new MultipleSearchSupplier<>(format("List of %s '%s'", getWidgetName(tClass), join(",", labels)), labeledWidgets);
-        labeledWidgets.setCriteriaDescription(criteriaDescription(search));
         return search.criteria(labeledBy);
     }
 
@@ -101,9 +98,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      */
     public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass) {
         var widgets = FindWidgets.widgets(tClass);
-        var search = new MultipleSearchSupplier<>(format("List of %s", getWidgetName(tClass)), widgets);
-        widgets.setCriteriaDescription(criteriaDescription(search));
-        return search;
+        return new MultipleSearchSupplier<>(format("List of %s", getWidgetName(tClass)), widgets);
     }
 
     /**

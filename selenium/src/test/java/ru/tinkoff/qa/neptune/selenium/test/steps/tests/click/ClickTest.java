@@ -28,7 +28,8 @@ public class ClickTest extends BaseWebDriverTest {
         assertThat(CUSTOM_LABELED_BUTTON4.getClickCount(), is(1));
 
         seleniumSteps.click(on(button(BUTTON_LABEL_TEXT6)
-                .foundFrom(webElement(className(CELL_CLASS)).criteria(text(CELL_TEXT81))
+                .foundFrom(webElement(className(CELL_CLASS))
+                        .criteria(text(CELL_TEXT81))
                         .criteria(nestedElements(buttons())))));
         assertThat(CUSTOM_LABELED_BUTTON2.getClickCount(), is(1));
     }
