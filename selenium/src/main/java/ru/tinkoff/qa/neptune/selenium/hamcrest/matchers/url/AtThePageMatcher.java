@@ -1,10 +1,14 @@
 package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.url;
 
-import org.openqa.selenium.WrapsDriver;
-import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WrapsDriver;
+import ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.ResourceLocatorMatcher;
+import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
@@ -13,9 +17,9 @@ import static org.hamcrest.Matchers.equalTo;
 
 public final class AtThePageMatcher extends TypeSafeDiagnosingMatcher<WrapsDriver> {
 
-    private final Matcher<String> urlMatcher;
+    private final Matcher<?> urlMatcher;
 
-    private AtThePageMatcher(Matcher<String> urlMatcher) {
+    private AtThePageMatcher(Matcher<?> urlMatcher) {
         checkArgument(nonNull(urlMatcher), "Criteria for the matching of an URL should be defined");
         this.urlMatcher = urlMatcher;
     }
@@ -26,8 +30,18 @@ public final class AtThePageMatcher extends TypeSafeDiagnosingMatcher<WrapsDrive
      * @param urlMatcher criteria for an URL under the matching.
      * @return instance of {@link AtThePageMatcher}
      */
-    public static AtThePageMatcher atThePage(Matcher<String> urlMatcher) {
+    public static AtThePageMatcher pageURL(Matcher<String> urlMatcher) {
         return new AtThePageMatcher(urlMatcher);
+    }
+
+    /**
+     * Creates an instance of {@link AtThePageMatcher} that checks URL of a page that currently loaded.
+     *
+     * @param urlMatcher criteria for an URL under the matching.
+     * @return instance of {@link AtThePageMatcher}
+     */
+    public static AtThePageMatcher url(Matcher<URL> urlMatcher) {
+        return new AtThePageMatcher(new PageUrlMatcher(urlMatcher));
     }
 
     /**
@@ -36,8 +50,8 @@ public final class AtThePageMatcher extends TypeSafeDiagnosingMatcher<WrapsDrive
      * @param url expected URL of a page.
      * @return instance of {@link AtThePageMatcher}
      */
-    public static AtThePageMatcher atThePage(String url) {
-        return atThePage(equalTo(url));
+    public static AtThePageMatcher pageURL(String url) {
+        return pageURL(equalTo(url));
     }
 
     @Override
@@ -49,11 +63,23 @@ public final class AtThePageMatcher extends TypeSafeDiagnosingMatcher<WrapsDrive
             return false;
         }
 
-        var currentUrl = driver.getCurrentUrl();
-        result = urlMatcher.matches(currentUrl);
-        if (!result) {
-            urlMatcher.describeMismatch(currentUrl, mismatchDescription);
+        var currentUrlString = driver.getCurrentUrl();
+        URL url;
+        try {
+            url = new URL(currentUrlString);
+        } catch (MalformedURLException e) {
+            mismatchDescription.appendText("URl " + currentUrlString + " is malformed");
+            return false;
         }
+
+        if (ResourceLocatorMatcher.class.isAssignableFrom(urlMatcher.getClass())) {
+            result = urlMatcher.matches(url);
+            urlMatcher.describeMismatch(url, mismatchDescription);
+        } else {
+            result = urlMatcher.matches(currentUrlString);
+            urlMatcher.describeMismatch(currentUrlString, mismatchDescription);
+        }
+
         return result;
     }
 

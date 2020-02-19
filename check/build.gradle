@@ -1,6 +1,5 @@
 dependencies {
     compile project(':core.api')
-    compile group: 'org.hamcrest', name: 'hamcrest', version: hamcrestVersion
 }
 
 task javadocJar(type: Jar) {
