@@ -23,6 +23,7 @@ import static ru.tinkoff.qa.neptune.http.api.GetCookieManager.getCookieManager;
  *
  * @param <T> is a type of a {@link HttpCookiesActionSupplier} subclass required by specification
  */
+@Deprecated(since = "0.11.4-ALPHA", forRemoval = true)
 public abstract class HttpCookiesActionSupplier<T extends HttpCookiesActionSupplier<T>>
         extends SequentialActionSupplier<HttpStepContext, CookieManager, T> {
 

@@ -22,10 +22,10 @@ import static org.hamcrest.Matchers.is;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 import static ru.tinkoff.qa.neptune.http.api.CommonBodyPublishers.*;
-import static ru.tinkoff.qa.neptune.http.api.HttpResponseInfoSequentialGetSupplier.bodyOf;
 import static ru.tinkoff.qa.neptune.http.api.HttpResponseSequentialGetSupplier.responseOf;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.PreparedHttpRequest.POST;
+import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasBody.hasBody;
 
 public class CustomRequestBodyTest extends BaseHttpTest {
 
@@ -162,7 +162,7 @@ public class CustomRequestBodyTest extends BaseHttpTest {
                 "    </body>\n" +
                 "</html>");
 
-        return new Object[][] {
+        return new Object[][]{
                 {PATH_TO_GSON,
                         jsonStringBody(BODY_OBJECT, new GsonBuilder()),
                         "application/json",
@@ -199,12 +199,12 @@ public class CustomRequestBodyTest extends BaseHttpTest {
     public void customRequestBodyTest(String urlPath,
                                       HttpRequest.BodyPublisher bodyPublisher,
                                       String contentType,
-                                      String expectedMessage){
-        assertThat(http().get(bodyOf(responseOf(
+                                      String expectedMessage) {
+        assertThat(http().get(responseOf(
                 POST(REQUEST_URI + urlPath,
                         bodyPublisher)
                         .header("Content-Type", contentType),
-                ofString()))),
-                is(expectedMessage));
+                ofString())),
+                hasBody(is(expectedMessage)));
     }
 }

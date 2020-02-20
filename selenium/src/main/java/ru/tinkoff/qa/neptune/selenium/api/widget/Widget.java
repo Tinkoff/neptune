@@ -1,12 +1,17 @@
 package ru.tinkoff.qa.neptune.selenium.api.widget;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.internal.WrapsElement;
 import ru.tinkoff.qa.neptune.core.api.steps.LoggableObject;
 
 import java.util.List;
 
+import static java.lang.String.format;
 import static java.util.Objects.nonNull;
+import static java.util.stream.Collectors.joining;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.selenium.api.widget.Priority.LOWEST;
 
 /**
@@ -84,5 +89,43 @@ public abstract class Widget implements WrapsElement, SearchContext, HasAttribut
     @Override
     public boolean isEnabled() {
         return ((WebElement) wrappedElement).isEnabled();
+    }
+
+    public String toString() {
+        var thisClazz = this.getClass();
+        var widgetName = getWidgetName(thisClazz);
+
+        try {
+            String text = null;
+            if (Labeled.class.isAssignableFrom(thisClazz)) {
+                text = ((Labeled) this).labels().stream()
+                        .filter(StringUtils::isNotBlank)
+                        .map(String::trim)
+                        .distinct()
+                        .collect(joining(", "));
+            }
+
+            if (isBlank(text)) {
+                var elementText = getWrappedElement().getText().trim();
+
+                if (isBlank(elementText)) {
+                    text =  EMPTY;
+                }
+                else if (elementText.length() < 30) {
+                    text = elementText;
+                }
+                else {
+                    text = format("%s s...", elementText.substring(0, 30));
+                }
+            }
+
+            if (isBlank(text)) {
+                return widgetName;
+            }
+            return format("%s [%s]", widgetName, text);
+        }
+        catch (Throwable t) {
+            return widgetName;
+        }
     }
 }

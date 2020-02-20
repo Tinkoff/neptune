@@ -1,32 +1,33 @@
 package ru.tinkoff.qa.neptune.selenium.functions.searching;
 
-import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.selenium.api.widget.Labeled;
-import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
-import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.selenium.api.widget.Labeled;
+import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
+import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.*;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.regex.Pattern;
 
+import static java.lang.String.format;
 import static java.lang.String.join;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.selenium.api.widget.Widget.getWidgetName;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.labeled;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.visible;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindLabeledWidgets.labeledWidgets;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FIND_ONLY_VISIBLE_ELEMENTS;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMENT_WAITING_DURATION;
-import static java.lang.String.format;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 @SuppressWarnings({"unused"})
 @MakeImageCapturesOnFinishing
@@ -40,7 +41,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
         timeOut(ELEMENT_WAITING_DURATION.get());
         addIgnored(StaleElementReferenceException.class);
         if (FIND_ONLY_VISIBLE_ELEMENTS.get()) {
-            criteria(shouldBeVisible());
+            criteria(visible());
         }
     }
 
@@ -59,48 +60,12 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some list of {@link WebElement} found from the input value.
      *
-     * @param by locator strategy to find elements
-     * @param text that desired elements should have
-     * @return an instance of {@link MultipleSearchSupplier}
-     */
-    public static MultipleSearchSupplier<WebElement> webElements(By by, String text) {
-        Predicate<WebElement> shouldHaveText = shouldHaveText(text);
-        var webElements = FindWebElements.webElements(by);
-        var search = new MultipleSearchSupplier<>(format("Web element located %s with the text '%s'", by, text), webElements);
-        webElements.setCriteriaDescription(criteriaDescription(search));
-        return search.criteria(shouldHaveText);
-    }
-
-    /**
-     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
-     * The built function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of {@link WebElement} found from the input value.
-     *
-     * @param by locator strategy to find elements
-     * @param textPattern is a regExp to match text of desired elements
-     * @return an instance of {@link MultipleSearchSupplier}
-     */
-    public static MultipleSearchSupplier<WebElement> webElements(By by, Pattern textPattern) {
-        Predicate<WebElement> shouldHaveText = shouldHaveText(textPattern);
-        var webElements = FindWebElements.webElements(by);
-        var search = new MultipleSearchSupplier<>(format("Web element located %s with text that matches the pattern '%s'", by, textPattern), webElements);
-        webElements.setCriteriaDescription(criteriaDescription(search));
-        return search.criteria(shouldHaveText);
-    }
-
-    /**
-     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
-     * The built function takes an instance of {@link SearchContext} for the searching
-     * and returns some list of {@link WebElement} found from the input value.
-     *
      * @param by locator strategy to find an element
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static MultipleSearchSupplier<WebElement> webElements(By by) {
         var webElements = FindWebElements.webElements(by);
-        var search = new MultipleSearchSupplier<>(format("List of web elements located %s", by), webElements);
-        webElements.setCriteriaDescription(criteriaDescription(search));
-        return search;
+        return new MultipleSearchSupplier<>(format("List of web elements located %s", by), webElements);
     }
 
     /**
@@ -116,10 +81,9 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass, String... labels) {
-        var labeledBy = shouldBeLabeledBy(labels);
+        var labeledBy = labeled(labels);
         var labeledWidgets = labeledWidgets(tClass);
         var search =  new MultipleSearchSupplier<>(format("List of %s '%s'", getWidgetName(tClass), join(",", labels)), labeledWidgets);
-        labeledWidgets.setCriteriaDescription(criteriaDescription(search));
         return search.criteria(labeledBy);
     }
 
@@ -134,9 +98,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      */
     public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass) {
         var widgets = FindWidgets.widgets(tClass);
-        var search = new MultipleSearchSupplier<>(format("List of %s", getWidgetName(tClass)), widgets);
-        widgets.setCriteriaDescription(criteriaDescription(search));
-        return search;
+        return new MultipleSearchSupplier<>(format("List of %s", getWidgetName(tClass)), widgets);
     }
 
     /**
@@ -439,7 +401,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
     }
 
     @Override
-    public MultipleSearchSupplier<R> criteria(Predicate<? super R> condition) {
+    public MultipleSearchSupplier<R> criteria(Criteria<? super R> condition) {
         return super.criteria(condition);
     }
 

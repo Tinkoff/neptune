@@ -1,30 +1,33 @@
 package ru.tinkoff.qa.neptune.selenium.functions.searching;
 
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.WrapsElement;
 import ru.tinkoff.qa.neptune.core.api.exception.management.IgnoresThrowable;
+import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.StepFunction;
 import ru.tinkoff.qa.neptune.core.api.steps.TurnsRetortingOff;
 import ru.tinkoff.qa.neptune.selenium.api.widget.*;
-import org.openqa.selenium.*;
-import org.openqa.selenium.internal.WrapsElement;
 
 import java.time.Duration;
-import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static java.time.Duration.ofMillis;
-import static java.util.Objects.nonNull;
-import static ru.tinkoff.qa.neptune.core.api.steps.Condition.condition;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
+import static java.lang.String.valueOf;
+import static java.time.Duration.ofMillis;
 import static java.util.Arrays.asList;
+import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 
-public final class CommonConditions {
+public final class CommonElementCriteria {
 
-    private CommonConditions() {
+    private CommonElementCriteria() {
         super();
     }
 
@@ -34,7 +37,7 @@ public final class CommonConditions {
      * @param <T> is a type of element/widget to be visible
      * @return predicate that checks/filters an element/widget
      */
-    public static <T extends SearchContext> Predicate<T> shouldBeVisible() {
+    public static <T extends SearchContext> Criteria<T> visible() {
         return condition("visible", t -> {
             var tClass = t.getClass();
             if (WebElement.class.isAssignableFrom(tClass)) {
@@ -61,7 +64,7 @@ public final class CommonConditions {
      * @param <T> is a type of element/widget to be enabled
      * @return predicate that checks/filters an element/widget
      */
-    public static <T extends SearchContext> Predicate<T> shouldBeEnabled() {
+    public static <T extends SearchContext> Criteria<T> enabled() {
         return condition("enabled", t -> {
             var tClass = t.getClass();
             if (WebElement.class.isAssignableFrom(tClass)) {
@@ -89,7 +92,7 @@ public final class CommonConditions {
      * @param <T> is a type of element/widget
      * @return predicate that checks/filters an element/widget
      */
-    public static <T extends SearchContext> Predicate<T>  shouldHaveText(String text) {
+    public static <T extends SearchContext> Criteria<T> text(String text) {
         checkArgument(!isBlank(text), "String is used to check text " +
                 "of an element should not be null or empty.");
         return condition(format("has text '%s'", text), t -> {
@@ -111,20 +114,50 @@ public final class CommonConditions {
     /**
      * The checking of an element/widget text.
      *
+     * @param textPart that text of an element/widget is supposed to contain
+     * @param <T> is a type of element/widget
+     * @return predicate that checks/filters an element/widget
+     */
+    public static <T extends SearchContext> Criteria<T> textContains(String textPart) {
+        checkArgument(!isBlank(textPart), "String is used to check text " +
+                "of an element should not be null or empty.");
+        return condition(format("has text that contains '%s'", textPart), t -> {
+            var clazz = t.getClass();
+            if (WebElement.class.isAssignableFrom(clazz)) {
+                return valueOf(((WebElement) t).getText()).contains(textPart);
+            }
+
+            if (WrapsElement.class.isAssignableFrom(clazz)) {
+                return ofNullable(((WrapsElement) t).getWrappedElement())
+                        .map(webElement -> valueOf(webElement.getText()).contains(textPart))
+                        .orElse(false);
+            }
+
+            return false;
+        });
+    }
+
+    /**
+     * The checking of an element/widget text.
+     *
      * @param pattern is a regExp pattern to check text of an element/widget
      * @param <T> is a type of element/widget
      * @return predicate that checks/filters an element/widget
      */
-    public static <T extends SearchContext> Predicate<T> shouldHaveText(Pattern pattern) {
+    public static <T extends SearchContext> Criteria<T> textMatches(Pattern pattern) {
         checkArgument(nonNull(pattern), "RegEx pattern should be defined");
         return condition(format("has text that meets regExp pattern '%s'", pattern), t -> {
             var clazz = t.getClass();
             if (WebElement.class.isAssignableFrom(clazz)) {
-                return pattern.matcher(((WebElement) t).getText()).find();
+                var mather = pattern.matcher(((WebElement) t).getText());
+                return mather.matches() || mather.find();
             }
             else if (WrapsElement.class.isAssignableFrom(clazz)) {
                 return ofNullable(((WrapsElement) t).getWrappedElement())
-                        .map(webElement -> pattern.matcher(webElement.getText()).find())
+                        .map(webElement -> {
+                            var mather = pattern.matcher(webElement.getText());
+                            return mather.matches() || mather.find();
+                        })
                         .orElse(false);
             }
             return false;
@@ -139,7 +172,7 @@ public final class CommonConditions {
      * @param attrValue desired value of the attribute
      * @return predicate that checks/filters an element/widget
      */
-    public static <T extends SearchContext> Predicate<T> shouldHaveAttribute(String attribute, String attrValue) {
+    public static <T extends SearchContext> Criteria<T> attribute(String attribute, String attrValue) {
         checkArgument(!isBlank(attribute), "Attribute name should not be empty or null.");
         checkArgument(!isBlank(attrValue), "Attribute value should not be empty or null.");
 
@@ -171,7 +204,7 @@ public final class CommonConditions {
      * @param attrValue substring that supposed to be contained by value of the attribute
      * @return predicate that checks/filters an element/widget
      */
-    public static <T extends SearchContext> Predicate<T> shouldHaveAttributeContains(String attribute, String attrValue) {
+    public static <T extends SearchContext> Criteria<T> attributeContains(String attribute, String attrValue) {
         checkArgument(!isBlank(attribute), "Attribute name should not be empty or null.");
         checkArgument(!isBlank(attrValue), "Attribute value should not be empty or null.");
 
@@ -206,7 +239,7 @@ public final class CommonConditions {
      * @param pattern is a regex pattern to check the attribute value
      * @return predicate that checks/filters an element/widget
      */
-    public static <T extends SearchContext> Predicate<T> shouldHaveAttributeContains(String attribute, Pattern pattern) {
+    public static <T extends SearchContext> Criteria<T> attributeMatches(String attribute, Pattern pattern) {
         checkArgument(!isBlank(attribute), "Attribute name should not be empty or null.");
         checkArgument(nonNull(pattern), "RegEx pattern of the desired " +
                 "attribute value should be defined.");
@@ -253,7 +286,7 @@ public final class CommonConditions {
      * @param cssValue desired value of the css property
      * @return predicate that checks/filters an element/widget
      */
-    public static <T extends SearchContext> Predicate<T> shouldHaveCssValue(String cssProperty, String cssValue) {
+    public static <T extends SearchContext> Criteria<T> css(String cssProperty, String cssValue) {
         checkArgument(!isBlank(cssProperty), "Css property should not be empty or null.");
         checkArgument(!isBlank(cssValue), "Css value should not be empty or null.");
 
@@ -285,7 +318,7 @@ public final class CommonConditions {
      * @param cssValue substring that supposed to be contained by value of the css property
      * @return predicate that checks/filters an element/widget
      */
-    public static <T extends SearchContext> Predicate<T> shouldHaveCssValueContains(String cssProperty, String cssValue) {
+    public static <T extends SearchContext> Criteria<T> cssContains(String cssProperty, String cssValue) {
         checkArgument(!isBlank(cssProperty), "Css property should not be empty or null.");
         checkArgument(!isBlank(cssValue), "Css value should not be empty or null.");
 
@@ -321,7 +354,7 @@ public final class CommonConditions {
      * @param pattern is a regex pattern to check the css value
      * @return predicate that checks/filters an element/widget
      */
-    public static <T extends SearchContext> Predicate<T> shouldHaveCssValueContains(String cssProperty, Pattern pattern) {
+    public static <T extends SearchContext> Criteria<T> cssMatches(String cssProperty, Pattern pattern) {
         checkArgument(!isBlank(cssProperty), "Css property should not be empty or null.");
         checkArgument(nonNull(pattern), "RegEx pattern of the desired " +
                 "css value should be defined.");
@@ -370,11 +403,11 @@ public final class CommonConditions {
      *                  {@code howToFind} then it is ignored here.
      * @return predicate that checks/filters an element/widget
      */
-    public static <T extends SearchContext> Predicate<T> shouldContainElements(MultipleSearchSupplier<?> howToFind) {
+    public static <T extends SearchContext> Criteria<T> nestedElements(MultipleSearchSupplier<?> howToFind) {
         checkArgument(nonNull(howToFind), "The way how to find nested elements should be defined");
         var func = howToFind.clone().timeOut(ofMillis(0)).get();
         if (TurnsRetortingOff.class.isAssignableFrom(func.getClass())) {
-            ((TurnsRetortingOff) func).turnReportingOff();
+            ((TurnsRetortingOff<?>) func).turnReportingOff();
         }
         return condition(format("has nested %s", howToFind), t -> func.apply(t).size() > 0);
     }
@@ -390,12 +423,12 @@ public final class CommonConditions {
      * @param expected is the count of expected nested elements
      * @return predicate that checks/filters an element/widget
      */
-    public static <T extends SearchContext> Predicate<T> shouldContainElements(MultipleSearchSupplier<?> howToFind, int expected) {
+    public static <T extends SearchContext> Criteria<T> nestedElements(MultipleSearchSupplier<?> howToFind, int expected) {
         checkArgument(nonNull(howToFind), "The way how to find nested elements should be defined");
         checkArgument(expected >=0 , "Count of expected nested elements can't be a negative or zero value.");
         var func = howToFind.clone().timeOut(ofMillis(0)).get();
         if (TurnsRetortingOff.class.isAssignableFrom(func.getClass())) {
-            ((TurnsRetortingOff) func).turnReportingOff();
+            ((TurnsRetortingOff<?>) func).turnReportingOff();
         }
         return condition(format("has %s nested %s", expected, howToFind),
                 t -> func.apply(t).size() == expected);
@@ -412,7 +445,7 @@ public final class CommonConditions {
      * @return predicate that checks/filters an element/widget
      */
     @SuppressWarnings("unchecked")
-    public static <T extends SearchContext> Predicate<T> shouldContainElement(SearchSupplier<?> howToFind) {
+    public static <T extends SearchContext> Criteria<T> nestedElement(SearchSupplier<?> howToFind) {
         checkArgument(nonNull(howToFind), "The way how to find nested elements should be defined");
         var func = ((IgnoresThrowable<StepFunction<SearchContext, SearchContext>>) howToFind.clone().timeOut(ofMillis(0)).get())
                 .addIgnored(NoSuchElementException.class);
@@ -420,12 +453,10 @@ public final class CommonConditions {
         return condition(format("has nested %s", howToFind), t -> func.apply(t) != null);
     }
 
-    static  <T extends SearchContext> Predicate<T> shouldBeLabeledBy(String...labels) {
+    static  <T extends SearchContext> Criteria<T> labeled(String...labels) {
         checkNotNull(labels);
         checkArgument(labels.length > 0, "At least one label should be defined");
-        Predicate<T> condition =  condition(format("has label(s) %s", String.join("and ", labels)),
+        return condition(format("has label(s) %s", String.join("and ", labels)),
                 t -> Labeled.class.isAssignableFrom(t.getClass()) && ((Labeled) t).labels().containsAll(asList(labels)));
-        ((TurnsRetortingOff<?>) condition).turnReportingOff();
-        return condition;
     }
 }

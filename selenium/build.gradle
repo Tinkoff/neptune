@@ -1,7 +1,6 @@
 dependencies {
     compile project(':core.api')
     compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: seleniumVersion
-    compile group: 'org.hamcrest', name: 'hamcrest', version: hamcrestVersion
     compile (group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '3.7.1') {
         exclude group: 'org.seleniumhq.selenium'
         exclude group: 'org.apache.commons', module: 'commons-lang3'
@@ -84,5 +83,5 @@ javadoc {
     options.links 'http://download.oracle.com/javase/9/docs/api/'
     options.addStringOption 'Xdoclint:none', '-quiet'
     options.memberLevel = JavadocMemberLevel.PROTECTED
-    options.bottom = "Copyright &copy; 2019 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
+    options.bottom = "Copyright &copy; 2020 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
 }

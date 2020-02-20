@@ -1,20 +1,16 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame;
 
 import org.openqa.selenium.NoSuchFrameException;
-import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import org.openqa.selenium.WebDriver;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
-import org.openqa.selenium.WebDriver;
 
 import java.time.Duration;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
-import static java.util.Objects.nonNull;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITING_FRAME_SWITCHING_DURATION;
 
