@@ -8,7 +8,7 @@ import java.util.function.Function;
 
 import static org.hamcrest.Matchers.equalTo;
 
-public class HasUserInfoMatcher<T> extends ResourceLocatorMatcher<T, String> {
+public final class HasUserInfoMatcher<T> extends ResourceLocatorMatcher<T, String> {
 
     private HasUserInfoMatcher(Matcher<? super String> matcher, Function<T, String> conversion) {
         super("User info", matcher, conversion);

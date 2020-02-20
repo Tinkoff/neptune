@@ -13,8 +13,7 @@ import static org.hamcrest.Matchers.*;
 /**
  * This matcher is for the checking of headers of a response.
  */
-@SuppressWarnings("unchecked")
-public class HasHeaders extends TypeSafeDiagnosingMatcher<HttpResponse<?>> {
+public final class HasHeaders extends TypeSafeDiagnosingMatcher<HttpResponse<?>> {
 
     private final Matcher<?> headerMatcher;
 

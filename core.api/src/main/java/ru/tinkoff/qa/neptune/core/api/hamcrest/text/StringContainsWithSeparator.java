@@ -15,7 +15,7 @@ import static org.hamcrest.Matchers.hasItem;
  * Checks whenever string has substring(s) that meet defined criteria or not.
  * These substrings should be separated from each other by defined separator
  */
-public class StringContainsWithSeparator extends TypeSafeDiagnosingMatcher<String> {
+public final class StringContainsWithSeparator extends TypeSafeDiagnosingMatcher<String> {
 
     private final Matcher<? super Iterable<? super String>> toContain;
     private final String separator;

@@ -8,7 +8,7 @@ import java.util.function.Function;
 
 import static org.hamcrest.Matchers.equalTo;
 
-public class HasHostMatcher<T> extends ResourceLocatorMatcher<T, String> {
+public final class HasHostMatcher<T> extends ResourceLocatorMatcher<T, String> {
 
     private HasHostMatcher(Matcher<? super String> matcher, Function<T, String> conversion) {
         super("Host", matcher, conversion);

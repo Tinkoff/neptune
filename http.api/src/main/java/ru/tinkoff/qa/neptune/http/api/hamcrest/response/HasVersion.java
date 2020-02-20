@@ -13,7 +13,7 @@ import static org.hamcrest.Matchers.equalTo;
 /**
  * This matcher is for the checking of a response version.
  */
-public class HasVersion extends TypeSafeDiagnosingMatcher<HttpResponse<?>> {
+public final class HasVersion extends TypeSafeDiagnosingMatcher<HttpResponse<?>> {
     private final Matcher<? super HttpClient.Version> versionMatcher;
 
     private HasVersion(Matcher<? super HttpClient.Version> versionMatcher) {

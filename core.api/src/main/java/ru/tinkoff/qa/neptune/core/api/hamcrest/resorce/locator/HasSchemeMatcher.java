@@ -8,7 +8,7 @@ import java.util.function.Function;
 
 import static org.hamcrest.Matchers.equalTo;
 
-public class HasSchemeMatcher<T> extends ResourceLocatorMatcher<T, String> {
+public final class HasSchemeMatcher<T> extends ResourceLocatorMatcher<T, String> {
 
     private HasSchemeMatcher(Matcher<? super String> matcher, Function<T, String> conversion) {
         super("Scheme", matcher, conversion);

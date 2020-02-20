@@ -13,7 +13,7 @@ import static org.hamcrest.Matchers.equalTo;
 /**
  * This matcher is for the checking of an URI of a response.
  */
-public class HasURI extends TypeSafeDiagnosingMatcher<HttpResponse<?>> {
+public final class HasURI extends TypeSafeDiagnosingMatcher<HttpResponse<?>> {
 
     private final Matcher<? super URI> uriMatcher;
 

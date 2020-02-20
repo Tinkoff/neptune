@@ -8,7 +8,7 @@ import java.util.function.Function;
 
 import static org.hamcrest.Matchers.equalTo;
 
-public class HasPortMatcher<T> extends ResourceLocatorMatcher<T, Integer> {
+public final class HasPortMatcher<T> extends ResourceLocatorMatcher<T, Integer> {
 
     private HasPortMatcher(Matcher<? super Integer> matcher, Function<T, Integer> conversion) {
         super("Port", matcher, conversion);

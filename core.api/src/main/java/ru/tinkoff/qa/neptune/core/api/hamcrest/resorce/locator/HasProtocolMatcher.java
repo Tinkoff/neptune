@@ -7,7 +7,7 @@ import java.util.function.Function;
 
 import static org.hamcrest.Matchers.equalTo;
 
-public class HasProtocolMatcher<T> extends ResourceLocatorMatcher<T, String> {
+public final class HasProtocolMatcher<T> extends ResourceLocatorMatcher<T, String> {
 
     private HasProtocolMatcher(Matcher<? super String> matcher, Function<T, String> conversion) {
         super("Protocol", matcher, conversion);

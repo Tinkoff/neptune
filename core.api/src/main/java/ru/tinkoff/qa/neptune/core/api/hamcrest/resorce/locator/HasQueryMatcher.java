@@ -8,7 +8,7 @@ import java.util.function.Function;
 
 import static org.hamcrest.Matchers.equalTo;
 
-public class HasQueryMatcher<T> extends ResourceLocatorMatcher<T, String> {
+public final class HasQueryMatcher<T> extends ResourceLocatorMatcher<T, String> {
 
     private HasQueryMatcher(Matcher<? super String> matcher, Function<T, String> conversion) {
         super("Query", matcher, conversion);

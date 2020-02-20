@@ -12,7 +12,7 @@ import static org.hamcrest.Matchers.equalTo;
 /**
  * This matcher is for the checking of status code of a response.
  */
-public class HasStatusCode extends TypeSafeDiagnosingMatcher<HttpResponse<?>> {
+public final class HasStatusCode extends TypeSafeDiagnosingMatcher<HttpResponse<?>> {
 
     private final Matcher<? super Integer> statusMatcher;
 

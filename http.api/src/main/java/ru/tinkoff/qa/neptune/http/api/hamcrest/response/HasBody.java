@@ -12,7 +12,7 @@ import static org.hamcrest.Matchers.equalTo;
 /**
  * This matcher is for the checking of body of a response.
  */
-public class HasBody<T> extends TypeSafeDiagnosingMatcher<HttpResponse<T>> {
+public final class HasBody<T> extends TypeSafeDiagnosingMatcher<HttpResponse<T>> {
 
     private final Matcher<? super T> bodyMatcher;
 

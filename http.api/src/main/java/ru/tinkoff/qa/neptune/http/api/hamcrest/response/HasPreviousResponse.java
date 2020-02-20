@@ -13,7 +13,7 @@ import static org.hamcrest.Matchers.nullValue;
 /**
  * This matcher is for the checking of a previous response.
  */
-public class HasPreviousResponse<T> extends TypeSafeDiagnosingMatcher<HttpResponse<T>> {
+public final class HasPreviousResponse<T> extends TypeSafeDiagnosingMatcher<HttpResponse<T>> {
 
     public final Matcher<? super HttpResponse<T>> responseMatcher;
 
