@@ -13,7 +13,6 @@ import ru.tinkoff.qa.neptune.selenium.test.steps.tests.searching.widgets.buttons
 
 import static java.time.Duration.ofMillis;
 import static java.util.Optional.ofNullable;
-import static java.util.regex.Pattern.compile;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.openqa.selenium.By.tagName;
@@ -56,46 +55,46 @@ public class SearchForWidgetPositiveTest extends BaseWebDriverTest {
                 {button().criteria(NOT(visible())), COMMON_BUTTON1,
                         SimpleButton.class},
 
-                {button().criteria(nestedElements(webElements(tagName(LABEL_TAG))
+                {button().criteria(nested(webElements(tagName(LABEL_TAG))
                         .timeOut(ofMillis(5)), 1)),
                         COMMON_LABELED_BUTTON1,
                         SimpleButton.class},
 
-                {button().criteria(NOT(nestedElements(webElements(tagName(LABEL_TAG))
+                {button().criteria(NOT(nested(webElements(tagName(LABEL_TAG))
                         .timeOut(ofMillis(5)), 1))),
                         COMMON_BUTTON1,
                         SimpleButton.class},
 
                 {button()
-                        .criteria(attribute(ATTR5, VALUE11))
-                        .criteria(attribute(ATTR6, VALUE12)),
+                        .criteria(attr(ATTR5, VALUE11))
+                        .criteria(attr(ATTR6, VALUE12)),
                         CUSTOM_LABELED_BUTTON2,
                         CustomizedButton.class},
 
-                {button().criteria(attribute(ATTR5, VALUE11))
-                        .criteria(NOT(attribute(ATTR6, VALUE13))),
+                {button().criteria(attr(ATTR5, VALUE11))
+                        .criteria(NOT(attr(ATTR6, VALUE13))),
                         CUSTOM_LABELED_BUTTON2,
                         CustomizedButton.class},
 
                 {button().criteria(OR(
-                        attributeContains(ATTR1, "1"),
-                        attributeContains(ATTR6, "12")
+                        attrMatches(ATTR1, "1"),
+                        attrMatches(ATTR6, "12")
                 )), COMMON_LABELED_BUTTON1,
                         SimpleButton.class},
 
-                {button().criteria(OR(attributeContains(ATTR1, "1"),
-                        NOT(attributeContains(ATTR6, "12")))), COMMON_BUTTON1,
+                {button().criteria(OR(attrMatches(ATTR1, "1"),
+                        NOT(attrMatches(ATTR6, "12")))), COMMON_BUTTON1,
                         SimpleButton.class},
 
                 {button().criteria(OR(
-                        attributeMatches(ATTR1, compile("1")),
-                        attributeMatches(ATTR6, compile("12"))
+                        attrMatches(ATTR1, "1"),
+                        attrMatches(ATTR6, "12")
                 )), COMMON_LABELED_BUTTON1,
                         SimpleButton.class},
 
                 {button().criteria(OR(
-                        attributeMatches(ATTR1, compile("1")),
-                        NOT(attributeMatches(ATTR6, compile("12")))
+                        attrMatches(ATTR1, "1"),
+                        NOT(attrMatches(ATTR6, "12"))
                 )), COMMON_BUTTON1,
                         SimpleButton.class},
 
@@ -111,18 +110,18 @@ public class SearchForWidgetPositiveTest extends BaseWebDriverTest {
                         SimpleButton.class},
 
                 {button().criteria(OR(
-                        cssContains(CSS5, "9"),
-                        cssContains(CSS6, "11")
+                        cssMatches(CSS5, "9"),
+                        cssMatches(CSS6, "11")
                 )), CUSTOM_LABELED_BUTTON3,
                         CustomizedButton.class},
 
                 {button().criteria(NOT(
-                        cssContains(CSS5, "9"),
-                        cssContains(CSS6, "11"))), COMMON_BUTTON1,
+                        cssMatches(CSS5, "9"),
+                        cssMatches(CSS6, "11"))), COMMON_BUTTON1,
                         SimpleButton.class},
 
-                {button().criteria(OR(cssMatches(CSS16, compile("18")),
-                        cssMatches(CSS4, compile("5")))),
+                {button().criteria(OR(cssMatches(CSS16, "18"),
+                        cssMatches(CSS4, "5"))),
                         COMMON_BUTTON1,
                         SimpleButton.class},
 
@@ -153,7 +152,7 @@ public class SearchForWidgetPositiveTest extends BaseWebDriverTest {
 
                 {button()
                         .timeOut(FIVE_SECONDS)
-                        .criteria(nestedElements(webElements(tagName(LABEL_TAG)).timeOut(ofMillis(5)), 1)),
+                        .criteria(nested(webElements(tagName(LABEL_TAG)).timeOut(ofMillis(5)), 1)),
                         COMMON_LABELED_BUTTON1,
                         SimpleButton.class},
 

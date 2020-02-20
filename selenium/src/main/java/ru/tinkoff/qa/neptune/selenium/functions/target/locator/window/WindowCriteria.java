@@ -3,13 +3,14 @@ package ru.tinkoff.qa.neptune.selenium.functions.target.locator.window;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 
 import java.net.URL;
+import java.util.Objects;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
+import static java.util.regex.Pattern.compile;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 
@@ -26,33 +27,36 @@ public final class WindowCriteria {
      * @return criteria.
      */
     public static Criteria<Window> title(String title) {
-        checkArgument(isNotBlank(title), "Expected title should not be defined as a blank/null string");
-        return condition(format("title '%s'", title), window -> title.equals(window.getTitle()));
+        checkArgument(isNotBlank(title), "Title should be defined");
+        return condition(format("title '%s'", title), window -> Objects.equals(title, window.getTitle()));
     }
 
     /**
-     * Builds criteria to match title of a window. It is expected that title contains defined string.
+     * Builds criteria to match title of a window.
      *
-     * @param toContain is a part of a window title
-     * @return criteria
-     */
-    public static Criteria<Window> titleContains(String toContain) {
-        checkArgument(isNotBlank(toContain), "Part of a window title should not be defined as a blank/null string");
-        return condition(format("title contains '%s'", toContain), window -> valueOf(window.getTitle()).contains(toContain));
-    }
-
-    /**
-     * Builds criteria to match title of a window by regExp pattern.
-     *
-     * @param titlePattern regExp pattern which is used to match title of a window.
+     * @param expression is a substring that title of a window is supposed to have.
+     *                   It is possible to pass reg exp pattern that title of a window should fit.
      * @return criteria.
      */
-    public static Criteria<Window> titleMatches(Pattern titlePattern) {
-        checkNotNull(titlePattern, "Req exp to match title should not be defined as a null value");
-        return condition(format("title meets regExp pattern '%s'", titlePattern),
+    public static Criteria<Window> titleMatches(String expression) {
+        checkArgument(isNotBlank(expression), "Title expression should be defined");
+
+        return condition(format("title contains '%s' or meets regExp pattern '%s'", expression, expression),
                 window -> {
-                    var m = titlePattern.matcher(window.getTitle());
-                    return m.matches();
+                    var title = valueOf(window.getTitle());
+
+                    if (title.contains(expression)) {
+                        return false;
+                    }
+
+                    try {
+                        var pattern = compile(expression);
+                        var m = pattern.matcher(title);
+                        return m.matches() || m.find();
+                    } catch (Throwable t) {
+                        t.printStackTrace();
+                        return false;
+                    }
                 });
     }
 
@@ -63,7 +67,7 @@ public final class WindowCriteria {
      * @return criteria.
      */
     public static Criteria<Window> pageAt(String url) {
-        checkArgument(isNotBlank(url), "Expected url should not be defined as a blank/null string");
+        checkArgument(isNotBlank(url), "Expected url should be defined");
         return condition(format("url '%s'", url), window -> url.equals(window.getCurrentUrl()));
     }
 
@@ -79,48 +83,61 @@ public final class WindowCriteria {
     }
 
     /**
-     * Builds criteria to match url of the page loaded in a window by containing of defined substring.
+     * Builds criteria to match url of the page loaded in a window.
      *
-     * @param substring that is expected to be contained
+     * @param expression is a substring that url of a window/tab is supposed to have.
+     *                   It is possible to pass reg exp pattern that url should fit.
      * @return criteria.
      */
-    public static Criteria<Window> urlContains(String substring) {
-        checkArgument(isNotBlank(substring), "Part of a page url should not be defined as a blank/null string");
-        return condition(format("url contains '%s'", substring), window -> valueOf(window.getCurrentUrl()).contains(substring));
-    }
+    public static Criteria<Window> urlMatches(String expression) {
+        checkArgument(isNotBlank(expression), "Title expression should be defined");
 
-    /**
-     * Builds criteria to match url of the page loaded in a window by regExp pattern.
-     *
-     * @param urlPattern regExp pattern which is used to match url of the page loaded in a window.
-     * @return criteria.
-     */
-    public static Criteria<Window> urlMatches(Pattern urlPattern) {
-        checkNotNull(urlPattern, "Req exp to match url should not be defined as a null value");
-        return condition(format("url meets regExp pattern '%s'", urlPattern),
-                window -> {
-                    var m = urlPattern.matcher(window.getCurrentUrl());
-                    return m.matches();
-                });
+        return condition(format("url contains '%s' or meets regExp pattern '%s'", expression, expression), window -> {
+            var url = valueOf(window.getCurrentUrl());
+            if (url.contains(expression)) {
+                return false;
+            }
+
+            try {
+                var pattern = compile(expression);
+                var m = pattern.matcher(url);
+                return m.matches() || m.find();
+            } catch (Throwable t) {
+                t.printStackTrace();
+                return false;
+            }
+        });
     }
 
     private static Criteria<Window> urlPartStringCriteria(String description, String expected, Function<URL, String> getPart) {
         checkArgument(isNotBlank(expected), format("Expected %s should not be defined as a blank/null string", description));
         return condition(format("url %s is '%s'", description, expected), window -> {
             try {
-                return getPart.apply(new URL(valueOf(window.getCurrentUrl()))).equals(expected);
+                return Objects.equals(getPart.apply(new URL(valueOf(window.getCurrentUrl()))), expected);
             } catch (Throwable t) {
                 throw new RuntimeException(t);
             }
         });
     }
 
-    private static Criteria<Window> urlPartRegExpCriteria(String description, Pattern expected, Function<URL, String> getPart) {
-        checkNotNull(expected, format("Req exp to match url %s should not be defined as a null value", description));
-        return condition(format("url %s meets regExp '%s'", description, expected), window -> {
+    private static Criteria<Window> urlPartRegExpCriteria(String description, String expression, Function<URL, String> getPart) {
+        checkNotNull(expression, format("expression url %s should not be defined", description));
+        return condition(format("url %s contains '%s' or meets regExp pattern '%s'", description, expression, expression), window -> {
             try {
-                var m = expected.matcher(getPart.apply(new URL(valueOf(window.getCurrentUrl()))));
-                return m.matches();
+                var part = getPart.apply(new URL(valueOf(window.getCurrentUrl())));
+
+                if (part.contains(expression)) {
+                    return false;
+                }
+
+                try {
+                    var pattern = compile(expression);
+                    var m = pattern.matcher(part);
+                    return m.matches() || m.find();
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                    return false;
+                }
             } catch (Throwable t) {
                 throw new RuntimeException(t);
             }
@@ -128,7 +145,7 @@ public final class WindowCriteria {
     }
 
     /**
-     * Builds criteria to match url of the page loaded in by host value.
+     * Builds criteria to match url of the loaded page by host value.
      *
      * @param host is a host value
      * @return criteria.
@@ -138,17 +155,18 @@ public final class WindowCriteria {
     }
 
     /**
-     * Builds criteria to match url of the page loaded in by host value.
+     * Builds criteria to match url of the loaded page by host value.
      *
-     * @param hostPattern is a pattern to match URL host
+     * @param expression is a substring that host is supposed to have.
+     *                   It is possible to pass reg exp pattern that host should fit.
      * @return criteria.
      */
-    public static Criteria<Window> urlHost(Pattern hostPattern) {
-        return urlPartRegExpCriteria("host", hostPattern, URL::getHost);
+    public static Criteria<Window> urlHostMatches(String expression) {
+        return urlPartRegExpCriteria("host", expression, URL::getHost);
     }
 
     /**
-     * Builds criteria to match url of the page loaded in by protocol value.
+     * Builds criteria to match url of the loaded page by protocol value.
      *
      * @param protocol is a protocol value
      * @return criteria.
@@ -158,17 +176,18 @@ public final class WindowCriteria {
     }
 
     /**
-     * Builds criteria to match url of the page loaded in by protocol value.
+     * Builds criteria to match url of the loaded page by protocol value.
      *
-     * @param protocolPattern is a pattern to match URL protocol
+     * @param expression is a substring that protocol is supposed to have.
+     *                   It is possible to pass reg exp pattern that protocol should fit.
      * @return criteria.
      */
-    public static Criteria<Window> urlProtocol(Pattern protocolPattern) {
-        return urlPartRegExpCriteria("protocol", protocolPattern, URL::getProtocol);
+    public static Criteria<Window> urlProtocolMatches(String expression) {
+        return urlPartRegExpCriteria("protocol", expression, URL::getProtocol);
     }
 
     /**
-     * Builds criteria to match url of the page loaded in by path value.
+     * Builds criteria to match url of the loaded page by path value.
      *
      * @param path is a path value
      * @return criteria.
@@ -178,17 +197,18 @@ public final class WindowCriteria {
     }
 
     /**
-     * Builds criteria to match url of the page loaded in by path value.
+     * Builds criteria to match url of the loaded page by path value.
      *
-     * @param pathPattern is a pattern to match URL path
+     * @param expression is a substring that path is supposed to have.
+     *                   It is possible to pass reg exp pattern that path should fit.
      * @return criteria.
      */
-    public static Criteria<Window> urlPath(Pattern pathPattern) {
-        return urlPartRegExpCriteria("path", pathPattern, URL::getPath);
+    public static Criteria<Window> urlPathMatches(String expression) {
+        return urlPartRegExpCriteria("path", expression, URL::getPath);
     }
 
     /**
-     * Builds criteria to match url of the page loaded in by query value.
+     * Builds criteria to match url of the loaded page by query value.
      *
      * @param query is a query value
      * @return criteria.
@@ -198,17 +218,18 @@ public final class WindowCriteria {
     }
 
     /**
-     * Builds criteria to match url of the page loaded in by query value.
+     * Builds criteria to match url of the loaded page by query value.
      *
-     * @param queryPattern is a pattern to match URL query
+     * @param expression is a substring that query is supposed to have.
+     *                   It is possible to pass reg exp pattern that query should fit.
      * @return criteria.
      */
-    public static Criteria<Window> urlQuery(Pattern queryPattern) {
-        return urlPartRegExpCriteria("query", queryPattern, URL::getQuery);
+    public static Criteria<Window> urlQueryMatches(String expression) {
+        return urlPartRegExpCriteria("query", expression, URL::getQuery);
     }
 
     /**
-     * Builds criteria to match url of the page loaded in by user info value.
+     * Builds criteria to match url of the loaded page by user info value.
      *
      * @param userInfo is an user info value
      * @return criteria.
@@ -218,13 +239,14 @@ public final class WindowCriteria {
     }
 
     /**
-     * Builds criteria to match url of the page loaded in by user info value.
+     * Builds criteria to match url of the loaded page by user info value.
      *
-     * @param userInfoPattern is a pattern to match URL user info
+     * @param expression is a substring that user info is supposed to have.
+     *                   It is possible to pass reg exp pattern that user info should fit.
      * @return criteria.
      */
-    public static Criteria<Window> urlUserInfo(Pattern userInfoPattern) {
-        return urlPartRegExpCriteria("user info", userInfoPattern, URL::getUserInfo);
+    public static Criteria<Window> urlUserInfoMatches(String expression) {
+        return urlPartRegExpCriteria("user info", expression, URL::getUserInfo);
     }
 
     /**
@@ -258,7 +280,7 @@ public final class WindowCriteria {
         checkArgument(portMax > portMin, "Max port value should be greater than defined min");
         return condition(format("url port is in ['%s', '%s']", portMin, portMax), window -> {
             try {
-                var port =  new URL(valueOf(window.getCurrentUrl())).getPort();
+                var port = new URL(valueOf(window.getCurrentUrl())).getPort();
                 return port >= portMin && port <= portMax;
             } catch (Throwable t) {
                 throw new RuntimeException(t);

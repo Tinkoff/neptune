@@ -15,7 +15,7 @@ import static org.hamcrest.Matchers.*;
 import static org.openqa.selenium.By.tagName;
 import static ru.tinkoff.qa.neptune.selenium.functions.click.ClickActionSupplier.on;
 import static ru.tinkoff.qa.neptune.selenium.functions.edit.EditActionSupplier.valueOfThe;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.nestedElements;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.nested;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.buttons;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.*;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
@@ -43,7 +43,7 @@ public class ScrollIntoViewTest extends BaseWebDriverTest {
     @Test
     public void scrollElementInsideWidgetIntoView() {
         var table = seleniumSteps.find(table()
-                .criteria(CommonElementCriteria.nestedElements(buttons()
+                .criteria(CommonElementCriteria.nested(buttons()
                         .timeOut(ofSeconds(1)))));
         var tableScrollCount = ((MockWebElement) table.getWrappedElement()).getScrollCount();
 

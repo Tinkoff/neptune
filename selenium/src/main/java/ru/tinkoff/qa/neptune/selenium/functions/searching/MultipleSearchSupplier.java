@@ -23,8 +23,7 @@ import static java.lang.String.join;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.selenium.api.widget.Widget.getWidgetName;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.labeled;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.visible;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindLabeledWidgets.labeledWidgets;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FIND_ONLY_VISIBLE_ELEMENTS;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMENT_WAITING_DURATION;
@@ -66,6 +65,22 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
     public static MultipleSearchSupplier<WebElement> webElements(By by) {
         var webElements = FindWebElements.webElements(by);
         return new MultipleSearchSupplier<>(format("List of web elements located %s", by), webElements);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of {@link WebElement} found from the input value.
+     *
+     * @param by locator strategy to find elements
+     * @param text that desired elements should have
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<WebElement> webElements(By by, String text) {
+        var shouldHaveText = text(text);
+        var webElements = FindWebElements.webElements(by);
+        var search = new MultipleSearchSupplier<>(format("Web element located %s with the text '%s'", by, text), webElements);
+        return search.criteria(shouldHaveText);
     }
 
     /**
