@@ -8,6 +8,8 @@ ru.tinkoff.qa.neptune.core.api.event.firing.captors
 ru.tinkoff.qa.neptune.core.api.event.firing.collections
 ru.tinkoff.qa.neptune.core.api.event.firing.console
 ru.tinkoff.qa.neptune.core.api.exception.management
+ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator
+ru.tinkoff.qa.neptune.core.api.hamcrest.text
 ru.tinkoff.qa.neptune.core.api.properties
 ru.tinkoff.qa.neptune.core.api.properties.booleans
 ru.tinkoff.qa.neptune.core.api.properties.bytes
@@ -39,6 +41,7 @@ ru.tinkoff.qa.neptune.data.base.api.queries.sql
 ru.tinkoff.qa.neptune.data.base.api.result
 ru.tinkoff.qa.neptune.http.api
 ru.tinkoff.qa.neptune.http.api.captors
+ru.tinkoff.qa.neptune.http.api.hamcrest.response
 ru.tinkoff.qa.neptune.http.api.properties
 ru.tinkoff.qa.neptune.http.api.properties.time
 ru.tinkoff.qa.neptune.http.api.response.body.data
