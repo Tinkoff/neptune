@@ -19,8 +19,7 @@ import static java.lang.String.join;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.selenium.api.widget.Widget.getWidgetName;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.labeled;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.visible;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindLabeledWidgets.labeledWidgets;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindWebElements.webElements;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindWidgets.widgets;
@@ -69,6 +68,22 @@ public final class SearchSupplier<R extends SearchContext>
     public static SearchSupplier<WebElement> webElement(By by) {
         var webElements = webElements(by);
         return new SearchSupplier<>(format("Web element located %s", by), webElements);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some {@link WebElement} found from the input value.
+     *
+     * @param by locator strategy to find an element
+     * @param text that the desired element should have
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<WebElement> webElement(By by, String text) {
+        var shouldHaveText = text(text);
+        var webElements = webElements(by);
+        var search = new SearchSupplier<>(format("Web element located %s", by), webElements);
+        return search.criteria(shouldHaveText);
     }
 
     /**

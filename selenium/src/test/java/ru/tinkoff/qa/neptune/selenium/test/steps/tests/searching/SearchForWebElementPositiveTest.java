@@ -10,7 +10,6 @@ import ru.tinkoff.qa.neptune.selenium.test.RetryAnalyzer;
 
 import java.math.BigDecimal;
 
-import static java.util.regex.Pattern.compile;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.openqa.selenium.By.*;
@@ -179,45 +178,45 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
 
                 {tagName(LINK_TAG), NOT(visible()), COMMON_LABELED_LINK2},
 
-                {className(MULTI_SELECT_CLASS), nestedElements(webElements(className(ITEM_OPTION_CLASS)), 2), MULTI_SELECT4},
+                {className(MULTI_SELECT_CLASS), nested(webElements(className(ITEM_OPTION_CLASS)), 2), MULTI_SELECT4},
 
-                {className(MULTI_SELECT_CLASS), NOT(nestedElements(webElements(className(ITEM_OPTION_CLASS)), 2)), MULTI_SELECT1},
+                {className(MULTI_SELECT_CLASS), NOT(nested(webElements(className(ITEM_OPTION_CLASS)), 2)), MULTI_SELECT1},
 
-                {className(MULTI_SELECT_CLASS), nestedElements(webElements(className(ITEM_OPTION_CLASS))), MULTI_SELECT1},
+                {className(MULTI_SELECT_CLASS), nested(webElements(className(ITEM_OPTION_CLASS))), MULTI_SELECT1},
 
-                {tagName(SELECT), NOT(nestedElements(webElements(className(ITEM_OPTION_CLASS)))), COMMON_LABELED_SELECT1},
+                {tagName(SELECT), NOT(nested(webElements(className(ITEM_OPTION_CLASS)))), COMMON_LABELED_SELECT1},
 
-                {tagName(TEXT_AREA_TAG), attribute(ATTR11, VALUE13), TEXT_AREA2},
+                {tagName(TEXT_AREA_TAG), attr(ATTR11, VALUE13), TEXT_AREA2},
 
-                {tagName(TEXT_AREA_TAG), NOT(attribute(ATTR11, VALUE13)), TEXT_AREA1},
+                {tagName(TEXT_AREA_TAG), NOT(attr(ATTR11, VALUE13)), TEXT_AREA1},
 
-                {tagName(TEXT_AREA_TAG), attributeContains(ATTR11, VALUE13), TEXT_AREA2},
+                {tagName(TEXT_AREA_TAG), attrMatches(ATTR11, VALUE13), TEXT_AREA2},
 
-                {tagName(TEXT_AREA_TAG), NOT(attributeContains(ATTR11, VALUE13)), TEXT_AREA1},
+                {tagName(TEXT_AREA_TAG), NOT(attrMatches(ATTR11, VALUE13)), TEXT_AREA1},
 
-                {tagName(TEXT_AREA_TAG), attributeMatches(ATTR11, compile(VALUE13)), TEXT_AREA2},
+                {tagName(TEXT_AREA_TAG), attrMatches(ATTR11, VALUE13), TEXT_AREA2},
 
-                {tagName(TEXT_AREA_TAG), NOT(attributeMatches(ATTR11, compile(VALUE13))), TEXT_AREA1},
+                {tagName(TEXT_AREA_TAG), NOT(attrMatches(ATTR11, VALUE13)), TEXT_AREA1},
 
                 {xpath(RADIO_BUTTON_XPATH), css(CSS18, CSS_VALUE9), COMMON_RADIOBUTTON3},
 
                 {xpath(RADIO_BUTTON_XPATH), NOT(css(CSS18, CSS_VALUE9)), COMMON_RADIOBUTTON1},
 
-                {xpath(RADIO_BUTTON_XPATH), cssContains(CSS18, CSS_VALUE9), COMMON_RADIOBUTTON3},
+                {xpath(RADIO_BUTTON_XPATH), cssMatches(CSS18, CSS_VALUE9), COMMON_RADIOBUTTON3},
 
-                {xpath(RADIO_BUTTON_XPATH), NOT(cssContains(CSS18, CSS_VALUE9)), COMMON_RADIOBUTTON1},
+                {xpath(RADIO_BUTTON_XPATH), NOT(cssMatches(CSS18, CSS_VALUE9)), COMMON_RADIOBUTTON1},
 
-                {xpath(RADIO_BUTTON_XPATH), cssMatches(CSS18, compile(CSS_VALUE9)), COMMON_RADIOBUTTON3},
+                {xpath(RADIO_BUTTON_XPATH), cssMatches(CSS18, CSS_VALUE9), COMMON_RADIOBUTTON3},
 
-                {xpath(RADIO_BUTTON_XPATH), NOT(cssMatches(CSS18, compile(CSS_VALUE9))), COMMON_RADIOBUTTON1},
+                {xpath(RADIO_BUTTON_XPATH), NOT(cssMatches(CSS18, CSS_VALUE9)), COMMON_RADIOBUTTON1},
 
                 {xpath(TEXT_FIELD_XPATH), text(INPUT_TEXT2), COMMON_TEXT_INPUT2},
 
                 {xpath(TEXT_FIELD_XPATH), NOT(text(INPUT_TEXT2)), COMMON_LABELED_INPUT1},
 
-                {xpath(TEXT_FIELD_XPATH), textMatches(compile(INPUT_TEXT2)), COMMON_TEXT_INPUT2},
+                {xpath(TEXT_FIELD_XPATH), textMatches(INPUT_TEXT2), COMMON_TEXT_INPUT2},
 
-                {xpath(TEXT_FIELD_XPATH), NOT(textMatches(compile(INPUT_TEXT2))), COMMON_LABELED_INPUT1}
+                {xpath(TEXT_FIELD_XPATH), NOT(textMatches(INPUT_TEXT2)), COMMON_LABELED_INPUT1}
         };
     }
 

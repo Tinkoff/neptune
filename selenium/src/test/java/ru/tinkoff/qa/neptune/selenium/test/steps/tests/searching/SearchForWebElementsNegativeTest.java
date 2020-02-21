@@ -11,7 +11,6 @@ import ru.tinkoff.qa.neptune.selenium.test.RetryAnalyzer;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static java.util.regex.Pattern.compile;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.openqa.selenium.By.*;
@@ -306,36 +305,36 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
                 {VISIBLE_DIV_BY, NOT(visible())},
 
                 {className(MULTI_SELECT_CLASS),
-                        nestedElements(webElements(className(ITEM_OPTION_CLASS)), 4)},
+                        nested(webElements(className(ITEM_OPTION_CLASS)), 4)},
 
                 {className(MULTI_SELECT_CLASS),
-                        NOT(nestedElements(webElements(className(ITEM_OPTION_CLASS)), 3),
-                                nestedElements(webElements(className(ITEM_OPTION_CLASS)), 2))},
+                        NOT(nested(webElements(className(ITEM_OPTION_CLASS)), 3),
+                                nested(webElements(className(ITEM_OPTION_CLASS)), 2))},
 
-                {className(MULTI_SELECT_CLASS), nestedElements(webElements(tagName(OPTION)))},
+                {className(MULTI_SELECT_CLASS), nested(webElements(tagName(OPTION)))},
 
-                {tagName(SELECT), NOT(nestedElements(webElements(tagName(OPTION))))},
+                {tagName(SELECT), NOT(nested(webElements(tagName(OPTION))))},
 
-                {tagName(TEXT_AREA_TAG), attribute(ATTR11, VALUE10)},
+                {tagName(TEXT_AREA_TAG), attr(ATTR11, VALUE10)},
 
-                {tagName(TEXT_AREA_TAG), NOT(attribute(ATTR11, VALUE12),
-                        attribute(ATTR11, VALUE13),
-                        attribute(ATTR11, VALUE14),
-                        attribute(ATTR11, VALUE15))},
+                {tagName(TEXT_AREA_TAG), NOT(attr(ATTR11, VALUE12),
+                        attr(ATTR11, VALUE13),
+                        attr(ATTR11, VALUE14),
+                        attr(ATTR11, VALUE15))},
 
-                {tagName(TEXT_AREA_TAG), attributeContains(ATTR11, "10")},
+                {tagName(TEXT_AREA_TAG), attrMatches(ATTR11, "10")},
 
-                {tagName(TEXT_AREA_TAG), NOT(attributeContains(ATTR11, "12"),
-                        attributeContains(ATTR11, "13"),
-                        attributeContains(ATTR11, VALUE14),
-                        attributeContains(ATTR11, VALUE15))},
+                {tagName(TEXT_AREA_TAG), NOT(attrMatches(ATTR11, "12"),
+                        attrMatches(ATTR11, "13"),
+                        attrMatches(ATTR11, VALUE14),
+                        attrMatches(ATTR11, VALUE15))},
 
-                {tagName(TEXT_AREA_TAG), attributeMatches(ATTR11, compile("10"))},
+                {tagName(TEXT_AREA_TAG), attrMatches(ATTR11, "10")},
 
-                {tagName(TEXT_AREA_TAG), NOT(attributeMatches(ATTR11, compile("12")),
-                        attributeMatches(ATTR11, compile("13")),
-                        attributeMatches(ATTR11, compile(VALUE14)),
-                        attributeMatches(ATTR11, compile(VALUE15)))},
+                {tagName(TEXT_AREA_TAG), NOT(attrMatches(ATTR11, "12"),
+                        attrMatches(ATTR11, "13"),
+                        attrMatches(ATTR11, VALUE14),
+                        attrMatches(ATTR11, VALUE15))},
 
                 {xpath(RADIO_BUTTON_XPATH), css(CSS18, CSS_VALUE6)},
 
@@ -354,21 +353,21 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
                                 css(CSS18, CSS_VALUE18),
                                 css(CSS18, CSS_VALUE19))},
 
-                {xpath(RADIO_BUTTON_XPATH), cssContains(CSS18, "value6")},
+                {xpath(RADIO_BUTTON_XPATH), cssMatches(CSS18, "value6")},
 
-                {xpath(RADIO_BUTTON_XPATH), NOT(cssContains(CSS18, "value"))},
+                {xpath(RADIO_BUTTON_XPATH), NOT(cssMatches(CSS18, "value"))},
 
-                {xpath(RADIO_BUTTON_XPATH), cssMatches(CSS18, compile("value6"))},
+                {xpath(RADIO_BUTTON_XPATH), cssMatches(CSS18, "value6")},
 
-                {xpath(RADIO_BUTTON_XPATH), NOT(cssMatches(CSS18, compile("value")))},
+                {xpath(RADIO_BUTTON_XPATH), NOT(cssMatches(CSS18, "value"))},
 
                 {INVISIBLE_SPAN_BY, text(VISIBLE_DIV)},
 
                 {VISIBLE_DIV_BY, NOT(text(VISIBLE_DIV))},
 
-                {INVISIBLE_SPAN_BY, textMatches(compile("div"))},
+                {INVISIBLE_SPAN_BY, textMatches("div")},
 
-                {VISIBLE_DIV_BY, NOT(textMatches(compile("div")))}
+                {VISIBLE_DIV_BY, NOT(textMatches("div"))}
         };
     }
 

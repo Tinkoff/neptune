@@ -13,7 +13,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static java.time.Duration.ofMillis;
-import static java.util.regex.Pattern.compile;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.openqa.selenium.By.*;
@@ -221,24 +220,24 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
                                 equalTo(COMMON_LINK4))},
 
                 {className(MULTI_SELECT_CLASS),
-                        nestedElements(webElements(className(ITEM_OPTION_CLASS)).timeOut(FIVE_SECONDS), 2),
+                        nested(webElements(className(ITEM_OPTION_CLASS)).timeOut(FIVE_SECONDS), 2),
                         contains(equalTo(MULTI_SELECT4))},
 
                 {className(MULTI_SELECT_CLASS),
-                        NOT(nestedElements(webElements(className(ITEM_OPTION_CLASS)).timeOut(FIVE_SECONDS), 2)),
+                        NOT(nested(webElements(className(ITEM_OPTION_CLASS)).timeOut(FIVE_SECONDS), 2)),
                         contains(equalTo(MULTI_SELECT1),
                                 equalTo(MULTI_SELECT2),
                                 equalTo(MULTI_SELECT3))},
 
                 {className(MULTI_SELECT_CLASS),
-                        nestedElements(webElements(className(ITEM_OPTION_CLASS)).timeOut(FIVE_SECONDS)),
+                        nested(webElements(className(ITEM_OPTION_CLASS)).timeOut(FIVE_SECONDS)),
                         contains(equalTo(MULTI_SELECT1),
                                 equalTo(MULTI_SELECT2),
                                 equalTo(MULTI_SELECT3),
                                 equalTo(MULTI_SELECT4))},
 
                 {tagName(SELECT),
-                        NOT(nestedElements(webElements(className(ITEM_OPTION_CLASS)).timeOut(ofMillis(1)))),
+                        NOT(nested(webElements(className(ITEM_OPTION_CLASS)).timeOut(ofMillis(1)))),
                         contains(equalTo(COMMON_LABELED_SELECT1),
                                 equalTo(COMMON_LABELED_SELECT2),
                                 equalTo(COMMON_LABELED_SELECT3),
@@ -249,34 +248,34 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
                                 equalTo(COMMON_SELECT4))},
 
                 {tagName(TEXT_AREA_TAG),
-                        attribute(ATTR11, VALUE13),
+                        attr(ATTR11, VALUE13),
                         contains(equalTo(TEXT_AREA2),
                                 equalTo(TEXT_AREA2))},
 
                 {tagName(TEXT_AREA_TAG),
-                        NOT(attribute(ATTR11, VALUE13)),
+                        NOT(attr(ATTR11, VALUE13)),
                         contains(equalTo(TEXT_AREA1),
                                 equalTo(TEXT_AREA3),
                                 equalTo(TEXT_AREA4),
                                 equalTo(TEXT_AREA1))},
 
-                {tagName(TEXT_AREA_TAG), attributeContains(ATTR11, "13"),
+                {tagName(TEXT_AREA_TAG), attrMatches(ATTR11, "13"),
                         contains(equalTo(TEXT_AREA2),
                                 equalTo(TEXT_AREA2))},
 
                 {tagName(TEXT_AREA_TAG),
-                        NOT(attributeContains(ATTR11, "13")),
+                        NOT(attrMatches(ATTR11, "13")),
                         contains(equalTo(TEXT_AREA1),
                                 equalTo(TEXT_AREA3),
                                 equalTo(TEXT_AREA4),
                                 equalTo(TEXT_AREA1))},
 
-                {tagName(TEXT_AREA_TAG), attributeMatches(ATTR11, compile("13")),
+                {tagName(TEXT_AREA_TAG), attrMatches(ATTR11, "13"),
                         contains(equalTo(TEXT_AREA2),
                                 equalTo(TEXT_AREA2))},
 
                 {tagName(TEXT_AREA_TAG),
-                        NOT(attributeMatches(ATTR11, compile("13"))),
+                        NOT(attrMatches(ATTR11, "13")),
                         contains(equalTo(TEXT_AREA1),
                                 equalTo(TEXT_AREA3),
                                 equalTo(TEXT_AREA4),
@@ -301,15 +300,15 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
                                 equalTo(COMMON_LABELED_RADIOBUTTON8))},
 
                 {xpath(CHECK_BOX_XPATH),
-                        OR(cssContains(CSS13, "15"),
-                                cssContains(CSS2, "17")),
+                        OR(cssMatches(CSS13, "15"),
+                                cssMatches(CSS2, "17")),
                         contains(
                                 equalTo(COMMON_CHECKBOX4),
                                 equalTo(COMMON_LABELED_CHECKBOX1))},
 
                 {xpath(CHECK_BOX_XPATH),
-                        NOT(cssContains(CSS13, "15"),
-                                cssContains(CSS2, "17")),
+                        NOT(cssMatches(CSS13, "15"),
+                                cssMatches(CSS2, "17")),
                         contains(equalTo(COMMON_CHECKBOX1),
                                 equalTo(COMMON_CHECKBOX2),
                                 equalTo(COMMON_CHECKBOX3),
@@ -324,14 +323,14 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
                                 equalTo(COMMON_LABELED_CHECKBOX6))},
 
                 {className(TAB_CLASS),
-                        AND(cssMatches(CSS15, compile("1")),
-                                cssMatches(CSS20, compile(CSS_VALUE2))),
+                        AND(cssMatches(CSS15, "1"),
+                                cssMatches(CSS20, CSS_VALUE2)),
                         contains(equalTo(CUSTOM_LABELED_TAB1),
                                 equalTo(CUSTOM_LABELED_TAB3))},
 
                 {className(TAB_CLASS),
-                        NOT(cssMatches(CSS15, compile("1")),
-                                cssMatches(CSS20, compile(CSS_VALUE2))),
+                        NOT(cssMatches(CSS15, "1"),
+                                cssMatches(CSS20, CSS_VALUE2)),
                         contains(equalTo(CUSTOM_LABELED_TAB2),
                                 equalTo(CUSTOM_LABELED_TAB4))},
 
@@ -350,13 +349,13 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
                                 equalTo(COMMON_TEXT_INPUT4))},
 
                 {xpath(TEXT_FIELD_XPATH),
-                        textMatches(compile("Text")),
+                        textMatches("Text"),
                         contains(equalTo(COMMON_TEXT_INPUT1),
                                 equalTo(COMMON_TEXT_INPUT2),
                                 equalTo(COMMON_TEXT_INPUT3),
                                 equalTo(COMMON_TEXT_INPUT4))},
 
-                {xpath(TEXT_FIELD_XPATH), NOT(textMatches(compile("Text"))),
+                {xpath(TEXT_FIELD_XPATH), NOT(textMatches("Text")),
                         contains(equalTo(COMMON_LABELED_INPUT1),
                                 equalTo(COMMON_LABELED_INPUT2),
                                 equalTo(COMMON_LABELED_INPUT3),

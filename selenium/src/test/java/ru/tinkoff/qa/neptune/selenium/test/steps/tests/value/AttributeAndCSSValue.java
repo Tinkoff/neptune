@@ -29,7 +29,7 @@ public class AttributeAndCSSValue extends BaseWebDriverTest {
     public void getAttributeValueByWebElementSearchCriteria() {
         assertThat(seleniumSteps.get(attributeValue(HREF)
                         .of(webElement(tagName(LINK_TAG))
-                                .criteria(attribute(ATTR17, VALUE6)))),
+                                .criteria(attr(ATTR17, VALUE6)))),
                 is(LINK_REFERENCE8));
     }
 
@@ -55,7 +55,7 @@ public class AttributeAndCSSValue extends BaseWebDriverTest {
     @Test
     public void getAttributeNullValueByWebElementSearchCriteria() {
         assertThat(seleniumSteps.get(attributeValue(ATTR16).of(webElement(tagName(LINK_TAG))
-                        .criteria(nestedElements(webElements(tagName(LABEL_TAG)).criteria(text(LINK_LABEL_TEXT1)))))),
+                        .criteria(nested(webElements(tagName(LABEL_TAG)).criteria(text(LINK_LABEL_TEXT1)))))),
                 nullValue());
     }
 
@@ -63,7 +63,7 @@ public class AttributeAndCSSValue extends BaseWebDriverTest {
     public void getAttributeNullValueFromWidget() {
         Select select = seleniumSteps
                 .find(select(SELECT_LABEL_TEXT8, SELECT_LABEL_TEXT12)
-                        .criteria(nestedElements(webElements(className(ITEM_OPTION_CLASS)).criteria(text(OPTION_TEXT34)))));
+                        .criteria(nested(webElements(className(ITEM_OPTION_CLASS)).criteria(text(OPTION_TEXT34)))));
         assertThat(seleniumSteps.get(attributeValue(ATTR4).of(select)),
                 nullValue());
     }
@@ -83,7 +83,7 @@ public class AttributeAndCSSValue extends BaseWebDriverTest {
     @Test
     public void getCSSValueByWebElementSearchCriteria() {
         assertThat(seleniumSteps.get(cssValue(CSS20).of(webElement(cssSelector(CUSTOM_LINK_CSS))
-                        .criteria(attribute(HREF, LINK_REFERENCE11)))),
+                        .criteria(attr(HREF, LINK_REFERENCE11)))),
                 is(CSS_VALUE10));
     }
 
@@ -109,7 +109,7 @@ public class AttributeAndCSSValue extends BaseWebDriverTest {
     @Test
     public void getCSSNullValueByWebElementSearchCriteria() {
         assertThat(seleniumSteps.get(cssValue(CSS11).of(webElement(xpath(TEXT_FIELD_XPATH))
-                        .criteria(nestedElements(webElements(tagName(LABEL_TAG)).criteria(text(INPUT_LABEL_TEXT4)))))),
+                        .criteria(nested(webElements(tagName(LABEL_TAG)).criteria(text(INPUT_LABEL_TEXT4)))))),
                 nullValue());
     }
 
