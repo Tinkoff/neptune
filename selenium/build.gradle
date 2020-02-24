@@ -1,7 +1,7 @@
 dependencies {
     compile project(':core.api')
     compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: seleniumVersion
-    compile (group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '3.7.1') {
+    compile (group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '3.8.1') {
         exclude group: 'org.seleniumhq.selenium'
         exclude group: 'org.apache.commons', module: 'commons-lang3'
         exclude group: 'org.jsoup', module: 'jsoup'
@@ -14,7 +14,7 @@ dependencies {
     }
     testCompile group: 'org.mockito', name: 'mockito-core', version: '2.23.4'
     compile group: 'cglib', name: 'cglib', version: '3.3.0'
-    compile group: 'org.jsoup', name: 'jsoup', version: '1.12.1'
+    compile group: 'org.jsoup', name: 'jsoup', version: '1.12.2'
 }
 
 test {

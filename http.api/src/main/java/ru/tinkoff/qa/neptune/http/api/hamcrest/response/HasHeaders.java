@@ -5,6 +5,7 @@ import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 
 import java.net.http.HttpResponse;
+import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -59,7 +60,7 @@ public final class HasHeaders extends TypeSafeDiagnosingMatcher<HttpResponse<?>>
      * @param valueMatcher is criteria that describes expected value
      * @return a new instance of {@link HasHeaders}
      */
-    public static HasHeaders hasHeader(String key, Matcher<? super List<? super String>> valueMatcher) {
+    public static HasHeaders hasHeader(String key, Matcher<? super Collection<? super String>> valueMatcher) {
         return hasHeaders(hasEntry(equalTo(key), valueMatcher));
     }
 
@@ -71,7 +72,7 @@ public final class HasHeaders extends TypeSafeDiagnosingMatcher<HttpResponse<?>>
      * @param valueMatcher is criteria that describes expected value
      * @return a new instance of {@link HasHeaders}
      */
-    public static HasHeaders hasHeader(Matcher<? super String> keyMatcher, Matcher<? super List<? super String>> valueMatcher) {
+    public static HasHeaders hasHeader(Matcher<? super String> keyMatcher, Matcher<? super Collection<? super String>> valueMatcher) {
         return hasHeaders(hasEntry(keyMatcher, valueMatcher));
     }
 
@@ -101,7 +102,7 @@ public final class HasHeaders extends TypeSafeDiagnosingMatcher<HttpResponse<?>>
      * @param valueMatcher criteria that describes expected header value
      * @return a new instance of {@link HasHeaders}
      */
-    public static HasHeaders hasHeaderValue(Matcher<? super List<? super String>> valueMatcher) {
+    public static HasHeaders hasHeaderValue(Matcher<? super Collection<? super String>> valueMatcher) {
         return hasHeaders(hasValue(valueMatcher));
     }
 
