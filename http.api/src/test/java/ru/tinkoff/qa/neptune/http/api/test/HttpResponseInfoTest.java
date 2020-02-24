@@ -57,7 +57,8 @@ public class HttpResponseInfoTest extends BaseHttpTest {
                 stringBody("Request body")))),
                 allOf(
                         hasHeader("connection", contains("keep-alive")),
-                        hasHeader("content-length", of("7"))
+                        hasHeader("content-length", of("7")),
+                        hasHeader("content-length", not(emptyIterable()))
                 ));
     }
 

@@ -1,7 +1,7 @@
 dependencies {
     compile project(':core.api')
     compile group: 'org.glassfish.jersey.core', name: 'jersey-common', version: '2.28'
-    compile group: 'org.jsoup', name: 'jsoup', version: '1.12.1'
+    compile group: 'org.jsoup', name: 'jsoup', version: '1.12.2'
     testCompile group: 'org.mock-server', name: 'mockserver-netty', version: '5.5.1'
     testCompile group: 'org.mock-server', name: 'mockserver-client-java', version: '5.5.1'
 }
