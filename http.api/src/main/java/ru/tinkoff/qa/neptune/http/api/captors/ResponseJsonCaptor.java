@@ -15,6 +15,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.UUID.randomUUID;
 import static org.apache.commons.io.FileUtils.writeStringToFile;
 
+@Deprecated(forRemoval = true)
 public class ResponseJsonCaptor extends FileCaptor<HttpResponse<String>> {
 
 

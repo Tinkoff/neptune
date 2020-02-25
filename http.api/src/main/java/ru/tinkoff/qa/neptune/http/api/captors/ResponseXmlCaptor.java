@@ -27,6 +27,7 @@ import static java.util.UUID.randomUUID;
 import static javax.xml.transform.OutputKeys.INDENT;
 import static org.apache.commons.io.FileUtils.writeStringToFile;
 
+@Deprecated(forRemoval = true)
 public class ResponseXmlCaptor extends FileCaptor<HttpResponse<String>> {
 
     public ResponseXmlCaptor() {
