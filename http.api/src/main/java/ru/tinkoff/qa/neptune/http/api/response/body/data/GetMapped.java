@@ -59,7 +59,8 @@ public class GetMapped<T> implements Function<String, T> {
                 return null;
             }
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            return null;
         }
     }
 }
