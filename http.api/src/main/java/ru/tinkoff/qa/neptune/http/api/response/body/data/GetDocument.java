@@ -30,8 +30,9 @@ public abstract class GetDocument<T> implements Function<String, T> {
                 var inputSource = new InputSource(new StringReader(s));
                 try {
                     return documentBuilder.parse(inputSource);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                    return null;
                 }
             }
         };
@@ -46,7 +47,13 @@ public abstract class GetDocument<T> implements Function<String, T> {
         return new GetDocument<>() {
             @Override
             public org.jsoup.nodes.Document apply(String s) {
-                return parse(s);
+                try {
+                    return parse(s);
+                }
+                catch (Throwable t) {
+                    t.printStackTrace();
+                    return null;
+                }
             }
         };
     }

@@ -15,10 +15,10 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.function.Function;
 
+import static java.net.http.HttpResponse.BodyHandlers.discarding;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.*;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 import static ru.tinkoff.qa.neptune.http.api.HttpGetObjectFromResponseBody.bodyDataOf;
@@ -172,5 +172,26 @@ public class CustomResponseBodyTest extends BaseHttpTest {
                                             Matcher<? super T> matcher) {
         assertThat(http().get(responseOf(GET(REQUEST_URI + urlPath), handler)),
                 hasBody(matcher));
+    }
+
+    @DataProvider
+    public static Object[][] data3() {
+        return new Object[][]{
+                {PATH_TO_GSON,
+                        mappedByJackson(BodyObject.class, mapper)},
+
+                {PATH_TO_GSON,
+                        document(documentBuilder)},
+
+                {PATH_DOCUMENT_XML,
+                        json(BodyObject.class)},
+        };
+    }
+
+    @Test(dataProvider = "data3")
+    public <T> void negativeTest(String urlPath,
+                                 MappedBodyHandler<?, T> handler) {
+        assertThat(http().get(responseOf(GET(REQUEST_URI + urlPath), handler)),
+                hasBody(nullValue()));
     }
 }
