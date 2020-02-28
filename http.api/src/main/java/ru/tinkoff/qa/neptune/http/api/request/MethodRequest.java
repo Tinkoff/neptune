@@ -5,6 +5,7 @@ import java.net.URL;
 import java.net.http.HttpRequest;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.net.http.HttpRequest.BodyPublishers.noBody;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -50,6 +51,17 @@ public final class MethodRequest extends RequestBuilder {
 
     /**
      * Creates an instance that builds a request with defined common or customized http method name
+     *
+     * @param endPoint is a request end point
+     * @param method  name of the method to use
+     * @return new {@link MethodRequest}
+     */
+    public static MethodRequest METHOD(URI endPoint, String method) {
+        return METHOD(endPoint, method, noBody());
+    }
+
+    /**
+     * Creates an instance that builds a request with defined common or customized http method name
      * and with body publisher
      *
      * @param url is a request end point
@@ -63,6 +75,17 @@ public final class MethodRequest extends RequestBuilder {
 
     /**
      * Creates an instance that builds a request with defined common or customized http method name
+     *
+     * @param url is a request end point
+     * @param method  name of the method to use
+     * @return new {@link MethodRequest}
+     */
+    public static MethodRequest METHOD(URL url, String method) {
+        return METHOD(url, method, noBody());
+    }
+
+    /**
+     * Creates an instance that builds a request with defined common or customized http method name
      * and with body publisher
      *
      * @param uriExpression is a request end point
@@ -72,5 +95,16 @@ public final class MethodRequest extends RequestBuilder {
      */
     public static MethodRequest METHOD(String uriExpression, String method, HttpRequest.BodyPublisher bodyPublisher) {
         return new MethodRequest(uriExpression, method, bodyPublisher);
+    }
+
+    /**
+     * Creates an instance that builds a request with defined common or customized http method name
+     *
+     * @param uriExpression is a request end point
+     * @param method  name of the method to use
+     * @return new {@link MethodRequest}
+     */
+    public static MethodRequest METHOD(String uriExpression, String method) {
+        return METHOD(uriExpression, method, noBody());
     }
 }
