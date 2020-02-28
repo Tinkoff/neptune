@@ -26,7 +26,7 @@ abstract class RequestBuilder {
         uriBuilder.uri(endPoint);
     }
 
-    public RequestBuilder(URL url) {
+    RequestBuilder(URL url) {
         this(ofNullable(url)
                 .map(u -> {
                     try {
@@ -38,7 +38,7 @@ abstract class RequestBuilder {
                 .orElseThrow(() -> new IllegalArgumentException("Endpoint url should not be null")));
     }
 
-    public RequestBuilder(String uriExpression) {
+    RequestBuilder(String uriExpression) {
         this(ofNullable(uriExpression)
                 .map(URI::create)
                 .orElseThrow(() -> new IllegalArgumentException("Endpoint string uri should not be null")));
