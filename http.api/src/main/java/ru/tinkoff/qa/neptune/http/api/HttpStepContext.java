@@ -3,9 +3,11 @@ package ru.tinkoff.qa.neptune.http.api;
 import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
+import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 
 import java.net.CookieManager;
 import java.net.http.HttpClient;
+import java.net.http.HttpResponse;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -13,6 +15,7 @@ import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSupplier.response;
 
 @CreateWith(provider = HttpStepsParameterProvider.class)
 public class HttpStepContext extends Context<HttpStepContext> implements ContextRefreshable {
@@ -31,6 +34,14 @@ public class HttpStepContext extends Context<HttpStepContext> implements Context
 
     public HttpClient getCurrentClient() {
         return client;
+    }
+
+    public <T> HttpResponse<T> responseOf(RequestBuilder requestBuilder, HttpResponse.BodyHandler<T> bodyHandler) {
+        return response(requestBuilder, bodyHandler).get().apply(this);
+    }
+
+    public HttpResponse<Void> responseOf(RequestBuilder requestBuilder) {
+        return response(requestBuilder).get().apply(this);
     }
 
     @Override

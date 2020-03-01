@@ -16,7 +16,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.valueOf;
 import static java.util.Optional.ofNullable;
 
-abstract class RequestBuilder {
+public abstract class RequestBuilder {
     final HttpRequest.Builder builder;
     private final UriBuilder uriBuilder = new JerseyUriBuilder();
 
