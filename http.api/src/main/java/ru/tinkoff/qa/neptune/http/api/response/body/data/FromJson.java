@@ -49,6 +49,12 @@ public class FromJson<T> implements Function<String, T> {
 
     @Override
     public T apply(String s) {
-        return builder.create().fromJson(s, toGet);
+        try {
+            return builder.create().fromJson(s, toGet);
+        }
+        catch (Throwable t) {
+            t.printStackTrace();
+            return null;
+        }
     }
 }

@@ -440,8 +440,8 @@ var flagSetting = FIND_ONLY_VISIBLE_ELEMENTS.get();
 
 ```java
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.textField;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeVisible;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.shouldBeVisible;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.shouldBeEnabled;
 //нужно найти видимое и доступное для редактирования текстовое поле
 //find.only.visible.elements = false
 
@@ -452,7 +452,7 @@ seleniumStepContext.find(textField()
 
 ```java
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.textField;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.shouldBeEnabled;
 //нужно найти видимое и доступное для редактирования текстовое поле
 //find.only.visible.elements = true
 

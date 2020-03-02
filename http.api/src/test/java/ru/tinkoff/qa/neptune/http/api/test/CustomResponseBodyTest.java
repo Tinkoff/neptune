@@ -8,25 +8,28 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.w3c.dom.Document;
+import ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler;
 import ru.tinkoff.qa.neptune.http.api.test.request.body.BodyObject;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.function.Function;
 
+import static java.net.http.HttpResponse.BodyHandlers.discarding;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.*;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 import static ru.tinkoff.qa.neptune.http.api.HttpGetObjectFromResponseBody.bodyDataOf;
 import static ru.tinkoff.qa.neptune.http.api.HttpResponseSequentialGetSupplier.responseOf;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.PreparedHttpRequest.GET;
+import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasBody.hasBody;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.FromJson.getFromJson;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.GetDocument.getDocument;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.GetMapped.getMapped;
+import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.*;
 
 public class CustomResponseBodyTest extends BaseHttpTest {
 
@@ -99,12 +102,12 @@ public class CustomResponseBodyTest extends BaseHttpTest {
         documentBuilder = documentBuilderFactory.newDocumentBuilder();
 
         var module = new JaxbAnnotationModule();
-        mapper =  new XmlMapper().registerModule(module);
+        mapper = new XmlMapper().registerModule(module);
     }
 
     @DataProvider
     public static Object[][] data() {
-        return new Object[][] {
+        return new Object[][]{
                 {PATH_TO_GSON,
                         "Object created by Gson",
                         getFromJson(BodyObject.class),
@@ -131,12 +134,64 @@ public class CustomResponseBodyTest extends BaseHttpTest {
     public void customResponseBodyTest(String urlPath,
                                        String toGetDescription,
                                        Function<String, ?> howToGet,
-                                       Matcher<? super  Object> matcher){
+                                       Matcher<? super Object> matcher) {
         assertThat(http().get(bodyDataOf(responseOf(
                 GET(REQUEST_URI + urlPath),
                 ofString()),
                 toGetDescription,
                 howToGet)),
                 matcher);
+    }
+
+    @DataProvider
+    public static Object[][] data2() {
+        return new Object[][]{
+                {PATH_TO_GSON,
+                        json(BodyObject.class),
+                        equalTo(BODY_OBJECT)},
+
+                {PATH_TO_JACKSON,
+                        mappedByJackson(BodyObject.class, mapper),
+                        equalTo(BODY_OBJECT)},
+
+                {PATH_DOCUMENT_XML,
+                        document(documentBuilder),
+                        instanceOf(Document.class)},
+
+                {PATH_DOCUMENT_HTML,
+                        document(),
+                        instanceOf(org.jsoup.nodes.Document.class)},
+        };
+    }
+
+
+
+    @Test(dataProvider = "data2")
+    public <T> void customResponseBodyTest2(String urlPath,
+                                            MappedBodyHandler<?, T> handler,
+                                            Matcher<? super T> matcher) {
+        assertThat(http().get(responseOf(GET(REQUEST_URI + urlPath), handler)),
+                hasBody(matcher));
+    }
+
+    @DataProvider
+    public static Object[][] data3() {
+        return new Object[][]{
+                {PATH_TO_GSON,
+                        mappedByJackson(BodyObject.class, mapper)},
+
+                {PATH_TO_GSON,
+                        document(documentBuilder)},
+
+                {PATH_DOCUMENT_XML,
+                        json(BodyObject.class)},
+        };
+    }
+
+    @Test(dataProvider = "data3")
+    public <T> void negativeTest(String urlPath,
+                                 MappedBodyHandler<?, T> handler) {
+        assertThat(http().get(responseOf(GET(REQUEST_URI + urlPath), handler)),
+                hasBody(nullValue()));
     }
 }

@@ -1,22 +1,21 @@
 package ru.tinkoff.qa.neptune.selenium.test.steps.tests.value;
 
+import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Select;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Table;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.TextField;
 import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
-import org.testng.annotations.Test;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldContainElements;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldHaveAttribute;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.openqa.selenium.By.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.webElements;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.value.SequentialGetAttributeValueSupplier.attributeValue;
 import static ru.tinkoff.qa.neptune.selenium.functions.value.SequentialGetCSSValueSupplier.cssValue;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.openqa.selenium.By.*;
 
 public class AttributeAndCSSValue extends BaseWebDriverTest {
 
@@ -30,7 +29,7 @@ public class AttributeAndCSSValue extends BaseWebDriverTest {
     public void getAttributeValueByWebElementSearchCriteria() {
         assertThat(seleniumSteps.get(attributeValue(HREF)
                         .of(webElement(tagName(LINK_TAG))
-                                .criteria(shouldHaveAttribute(ATTR17, VALUE6)))),
+                                .criteria(attr(ATTR17, VALUE6)))),
                 is(LINK_REFERENCE8));
     }
 
@@ -56,7 +55,7 @@ public class AttributeAndCSSValue extends BaseWebDriverTest {
     @Test
     public void getAttributeNullValueByWebElementSearchCriteria() {
         assertThat(seleniumSteps.get(attributeValue(ATTR16).of(webElement(tagName(LINK_TAG))
-                        .criteria(shouldContainElements(webElements(tagName(LABEL_TAG), LINK_LABEL_TEXT1))))),
+                        .criteria(nested(webElements(tagName(LABEL_TAG)).criteria(text(LINK_LABEL_TEXT1)))))),
                 nullValue());
     }
 
@@ -64,7 +63,7 @@ public class AttributeAndCSSValue extends BaseWebDriverTest {
     public void getAttributeNullValueFromWidget() {
         Select select = seleniumSteps
                 .find(select(SELECT_LABEL_TEXT8, SELECT_LABEL_TEXT12)
-                        .criteria(shouldContainElements(webElements(className(ITEM_OPTION_CLASS), OPTION_TEXT34))));
+                        .criteria(nested(webElements(className(ITEM_OPTION_CLASS)).criteria(text(OPTION_TEXT34)))));
         assertThat(seleniumSteps.get(attributeValue(ATTR4).of(select)),
                 nullValue());
     }
@@ -84,7 +83,7 @@ public class AttributeAndCSSValue extends BaseWebDriverTest {
     @Test
     public void getCSSValueByWebElementSearchCriteria() {
         assertThat(seleniumSteps.get(cssValue(CSS20).of(webElement(cssSelector(CUSTOM_LINK_CSS))
-                        .criteria(shouldHaveAttribute(HREF, LINK_REFERENCE11)))),
+                        .criteria(attr(HREF, LINK_REFERENCE11)))),
                 is(CSS_VALUE10));
     }
 
@@ -110,7 +109,7 @@ public class AttributeAndCSSValue extends BaseWebDriverTest {
     @Test
     public void getCSSNullValueByWebElementSearchCriteria() {
         assertThat(seleniumSteps.get(cssValue(CSS11).of(webElement(xpath(TEXT_FIELD_XPATH))
-                        .criteria(shouldContainElements(webElements(tagName(LABEL_TAG), INPUT_LABEL_TEXT4))))),
+                        .criteria(nested(webElements(tagName(LABEL_TAG)).criteria(text(INPUT_LABEL_TEXT4)))))),
                 nullValue());
     }
 

@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.http.api;
 
-import ru.tinkoff.qa.neptune.core.api.steps.ConditionConcatenation;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 
 import java.net.CookieManager;
@@ -32,18 +32,8 @@ public final class HttpGetCachedCookiesSupplier extends SequentialGetStepSupplie
     }
 
     @Override
-    public HttpGetCachedCookiesSupplier criteria(ConditionConcatenation concat, Predicate<? super HttpCookie> condition) {
-        return super.criteria(concat, condition);
-    }
-
-    @Override
-    public HttpGetCachedCookiesSupplier criteria(ConditionConcatenation concat, String conditionDescription, Predicate<? super HttpCookie> condition) {
-        return super.criteria(concat, conditionDescription, condition);
-    }
-
-    @Override
-    public HttpGetCachedCookiesSupplier criteria(Predicate<? super HttpCookie> condition) {
-        return super.criteria(condition);
+    public HttpGetCachedCookiesSupplier criteria(Criteria<? super HttpCookie> criteria) {
+        return super.criteria(criteria);
     }
 
     @Override

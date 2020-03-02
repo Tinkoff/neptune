@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.selenium.functions.target.locator.window;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
@@ -86,14 +87,14 @@ public final class GetWindowSupplier extends SequentialGetStepSupplier
      */
     public static GetWindowSupplier window(Integer index) {
         checkArgument(ofNullable(index)
-                .map(integer -> integer >=0)
+                .map(integer -> integer >= 0)
                 .orElse(true), "Index should not be a negative value");
         return new GetWindowSupplier(index).from(currentContent());
     }
 
 
     @Override
-    public GetWindowSupplier criteria(Predicate<? super Window> condition) {
+    public GetWindowSupplier criteria(Criteria<? super Window> condition) {
         return super.criteria(condition);
     }
 

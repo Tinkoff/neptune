@@ -8,7 +8,7 @@ import static java.lang.String.format;
 import static java.util.List.of;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static ru.tinkoff.qa.neptune.core.api.steps.Condition.condition;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.textFields;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.flag;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.tableRow;

@@ -1,24 +1,22 @@
 package ru.tinkoff.qa.neptune.selenium.test.steps.tests.value;
 
+import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.*;
 import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
-import org.testng.annotations.Test;
 
-import static ru.tinkoff.qa.neptune.core.api.steps.Condition.condition;
-import static ru.tinkoff.qa.neptune.selenium.functions.edit.EditActionSupplier.valueOfThe;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.radioButton;
-import static ru.tinkoff.qa.neptune.selenium.functions.value.SequentialGetValueSupplier.ofThe;
-import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
 import static java.lang.String.format;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import static java.util.List.of;
-import static java.util.function.Predicate.not;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.openqa.selenium.By.tagName;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.NOT;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
+import static ru.tinkoff.qa.neptune.selenium.functions.edit.EditActionSupplier.valueOfThe;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.value.SequentialGetValueSupplier.ofThe;
+import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
 
 public class GetValueTest extends BaseWebDriverTest {
 
@@ -32,15 +30,15 @@ public class GetValueTest extends BaseWebDriverTest {
                 is(INPUT_TEXT4));
 
         assertThat(seleniumSteps.getValue(ofThe(textField()
-                        .criteria(shouldHaveAttribute(ATTR8, VALUE4)))),
+                        .criteria(attr(ATTR8, VALUE4)))),
                 emptyOrNullString());
 
         assertThat(seleniumSteps
                         .edit(valueOfThe(textField()
-                                .criteria(shouldHaveAttribute(ATTR8, VALUE4)), of(INPUT_TEXT1))
+                                .criteria(attr(ATTR8, VALUE4)), of(INPUT_TEXT1))
                                 .andValueOfThe(textField(INPUT_LABEL_TEXT8, INPUT_LABEL_TEXT12), of(INPUT_TEXT2)))
                         .getValue(ofThe(textField()
-                                .criteria(shouldHaveAttribute(ATTR8, VALUE4)))),
+                                .criteria(attr(ATTR8, VALUE4)))),
                 is(INPUT_TEXT1));
 
         assertThat(seleniumSteps.getValue(ofThe(textField(INPUT_LABEL_TEXT8, INPUT_LABEL_TEXT12))),
@@ -70,7 +68,7 @@ public class GetValueTest extends BaseWebDriverTest {
         seleniumSteps.edit(valueOfThe(flag(CHECKBOX_LABEL_TEXT8, CHECKBOX_LABEL_TEXT12), true)
                 .andValueOfThe(flag(RADIOBUTTON_LABEL_TEXT2), true)
                 .andValueOfThe(flag()
-                        .criteria(shouldBeEnabled()), true));
+                        .criteria(enabled()), true));
 
         assertThat(seleniumSteps.getValue(ofThe(flag(CHECKBOX_LABEL_TEXT8, CHECKBOX_LABEL_TEXT12))),
                 is(true));
@@ -79,7 +77,7 @@ public class GetValueTest extends BaseWebDriverTest {
                 is(true));
 
         assertThat(seleniumSteps.getValue(ofThe(flag()
-                        .criteria(shouldBeEnabled()))),
+                        .criteria(enabled()))),
                 is(true));
 
         Flag nestedFlag = seleniumSteps.find(flag(CHECKBOX_LABEL_TEXT5, CHECKBOX_LABEL_TEXT9)
@@ -106,7 +104,7 @@ public class GetValueTest extends BaseWebDriverTest {
         seleniumSteps.edit(valueOfThe(checkbox(CHECKBOX_LABEL_TEXT7, CHECKBOX_LABEL_TEXT11), true)
                 .andValueOfThe(checkbox(CHECKBOX_LABEL_TEXT3), true)
                 .andValueOfThe(checkbox()
-                        .criteria(not(shouldBeEnabled())), true));
+                        .criteria(NOT(enabled())), true));
 
         assertThat(seleniumSteps.getValue(ofThe(checkbox(CHECKBOX_LABEL_TEXT7, CHECKBOX_LABEL_TEXT11))),
                 is(true));
@@ -115,7 +113,7 @@ public class GetValueTest extends BaseWebDriverTest {
                 is(true));
 
         assertThat(seleniumSteps.getValue(ofThe(flag()
-                        .criteria(not(shouldBeEnabled())))),
+                        .criteria(NOT(enabled())))),
                 is(true));
 
         Flag.CheckBox checkbox = seleniumSteps.find(checkbox(CHECKBOX_LABEL_TEXT6, CHECKBOX_LABEL_TEXT10));
@@ -141,7 +139,7 @@ public class GetValueTest extends BaseWebDriverTest {
         seleniumSteps.edit(valueOfThe(radioButton(RADIOBUTTON_LABEL_TEXT7, RADIOBUTTON_LABEL_TEXT11), true)
                 .andValueOfThe(radioButton(RADIOBUTTON_LABEL_TEXT3), true)
                 .andValueOfThe(radioButton()
-                        .criteria(shouldBeVisible()), true));
+                        .criteria(visible()), true));
 
         assertThat(seleniumSteps.getValue(ofThe(radioButton(RADIOBUTTON_LABEL_TEXT7, RADIOBUTTON_LABEL_TEXT11))),
                 is(true));
@@ -150,7 +148,7 @@ public class GetValueTest extends BaseWebDriverTest {
                 is(true));
 
         assertThat(seleniumSteps.getValue(ofThe(radioButton()
-                        .criteria(shouldBeVisible()))),
+                        .criteria(visible()))),
                 is(true));
 
         Flag.RadioButton radioButton = seleniumSteps.find(radioButton(RADIOBUTTON_LABEL_TEXT6, RADIOBUTTON_LABEL_TEXT10));
@@ -174,21 +172,21 @@ public class GetValueTest extends BaseWebDriverTest {
                 .andValueOfThe(select(SELECT_LABEL_TEXT1, SELECT_LABEL_TEXT9), OPTION_TEXT25)
                 .andValueOfThe(select(SELECT_LABEL_TEXT1, SELECT_LABEL_TEXT9), OPTION_TEXT26)
                 .andValueOfThe(select()
-                        .criteria(shouldHaveAttribute(ATTR1, VALUE4)), OPTION_TEXT5)
+                        .criteria(attr(ATTR1, VALUE4)), OPTION_TEXT5)
                 .andValueOfThe(select()
-                        .criteria(shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT14))), OPTION_TEXT15)
+                        .criteria(nested(webElements(tagName(OPTION)).criteria(text(OPTION_TEXT14)))), OPTION_TEXT15)
                 .andValueOfThe(select()
-                        .criteria(shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT14))), OPTION_TEXT13));
+                        .criteria(nested(webElements(tagName(OPTION)).criteria(text(OPTION_TEXT14)))), OPTION_TEXT13));
 
         assertThat(seleniumSteps.getValue(ofThe(select(SELECT_LABEL_TEXT1, SELECT_LABEL_TEXT9))),
                 contains(OPTION_TEXT25, OPTION_TEXT26, OPTION_TEXT27));
 
         assertThat(seleniumSteps.getValue(ofThe(select()
-                        .criteria(shouldHaveAttribute(ATTR1, VALUE4)))),
+                        .criteria(attr(ATTR1, VALUE4)))),
                 contains(OPTION_TEXT5));
 
         assertThat(seleniumSteps.getValue(ofThe(select()
-                        .criteria(shouldContainElements(webElements(tagName(OPTION), OPTION_TEXT14))))),
+                        .criteria(nested(webElements(tagName(OPTION)).criteria(text(OPTION_TEXT14)))))),
                 contains(OPTION_TEXT13));
 
         Select select = seleniumSteps.find(select(SELECT_LABEL_TEXT10));
@@ -206,7 +204,7 @@ public class GetValueTest extends BaseWebDriverTest {
                         hasEntry(is(HEADER_TEXT15), contains(CELL_TEXT39, CELL_TEXT42, CELL_TEXT45))));
 
         assertThat(seleniumSteps.getValue(ofThe(table()
-                        .criteria(shouldHaveCssValue(CSS1, CSS_VALUE4)))),
+                        .criteria(css(CSS1, CSS_VALUE4)))),
                 allOf(hasEntry(is(HEADER_TEXT4), contains(CELL_TEXT10, CELL_TEXT13, CELL_TEXT16)),
                         hasEntry(is(HEADER_TEXT5), contains(CELL_TEXT11, CELL_TEXT14, CELL_TEXT17)),
                         hasEntry(is(HEADER_TEXT6), contains(CELL_TEXT12, CELL_TEXT15, CELL_TEXT18))));
@@ -225,12 +223,12 @@ public class GetValueTest extends BaseWebDriverTest {
                 contains(CELL_TEXT37, CELL_TEXT38, CELL_TEXT39));
 
         assertThat(seleniumSteps.getValue(ofThe(tableRow()
-                        .criteria(shouldContainElements(buttons()))
+                        .criteria(nested(buttons()))
                         .foundFrom(table(TABLE_LABEL_TEXT5, TABLE_LABEL_TEXT9)))),
                 contains(CELL_TEXT73, CELL_TEXT74, CELL_TEXT75));
 
         TableRow row = seleniumSteps.find(tableRow()
-                .criteria(shouldContainElements(textFields()))
+                .criteria(nested(textFields()))
                 .foundFrom(table(TABLE_LABEL_TEXT5, TABLE_LABEL_TEXT9)));
 
         assertThat(seleniumSteps.getValue(ofThe(row)),
@@ -250,7 +248,7 @@ public class GetValueTest extends BaseWebDriverTest {
         assertThat(seleniumSteps.getValue(ofThe(tableHeader()
                         .timeOut(FIVE_SECONDS)
                         .foundFrom(table()
-                                .criteria(shouldContainElements(textFields(INPUT_LABEL_TEXT10)))))),
+                                .criteria(nested(textFields(INPUT_LABEL_TEXT10)))))),
                 contains(HEADER_TEXT28, HEADER_TEXT29, HEADER_TEXT30));
 
         TableHeader header = seleniumSteps.find(tableHeader()
@@ -275,7 +273,7 @@ public class GetValueTest extends BaseWebDriverTest {
         assertThat(seleniumSteps.getValue(ofThe(tableFooter()
                         .timeOut(FIVE_SECONDS)
                         .foundFrom(table()
-                                .criteria(shouldContainElements(textFields(INPUT_LABEL_TEXT6, INPUT_LABEL_TEXT10)))))),
+                                .criteria(nested(textFields(INPUT_LABEL_TEXT6, INPUT_LABEL_TEXT10)))))),
                 contains(FOOTER_TEXT28, FOOTER_TEXT29, FOOTER_TEXT30));
 
         TableFooter footer = seleniumSteps.find(tableFooter()
@@ -294,13 +292,13 @@ public class GetValueTest extends BaseWebDriverTest {
                 is(CELL_TEXT37));
 
         assertThat(seleniumSteps.getValue(ofThe(tableCell()
-                        .criteria(shouldContainElements(textFields(INPUT_LABEL_TEXT6, INPUT_LABEL_TEXT10)))
+                        .criteria(nested(textFields(INPUT_LABEL_TEXT6, INPUT_LABEL_TEXT10)))
                         .foundFrom(table(TABLE_LABEL_TEXT6)))),
                 is(CELL_TEXT84));
 
         TableCell cell = seleniumSteps
                 .find(tableCell()
-                        .criteria(shouldContainElements(checkBoxes(CHECKBOX_LABEL_TEXT6, CHECKBOX_LABEL_TEXT10)))
+                        .criteria(nested(checkBoxes(CHECKBOX_LABEL_TEXT6, CHECKBOX_LABEL_TEXT10)))
                         .foundFrom(table(TABLE_LABEL_TEXT6)));
         assertThat(seleniumSteps.getValue(ofThe(cell)),
                 is(CELL_TEXT87));
