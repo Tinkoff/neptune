@@ -35,8 +35,8 @@ public final class BrowserProxyCriteria {
     public static Criteria<HarEntry> requestUrl(String url) {
         checkArgument(isNotBlank(url), "URL should be defined");
 
-        return condition(format("request url equals to '%s'", url), t -> {
-            String requestUrl = t.getRequest().getUrl();
+        return condition(format("request url equals to '%s'", url), entry -> {
+            String requestUrl = entry.getRequest().getUrl();
 
             return Objects.equals(requestUrl, url);
         });
@@ -45,8 +45,8 @@ public final class BrowserProxyCriteria {
     public static Criteria<HarEntry> requestUrlMatches(String urlExpression) {
         checkArgument(isNotBlank(urlExpression), "URL Substring/RegExp should be defined");
 
-        return condition(format("request url contains '%s' or fits regExp pattern '%s'", urlExpression, urlExpression), t -> {
-            String requestUrl = t.getRequest().getUrl();
+        return condition(format("request url contains '%s' or fits regExp pattern '%s'", urlExpression, urlExpression), entry -> {
+            String requestUrl = entry.getRequest().getUrl();
 
             return ofNullable(requestUrl)
                     .map(s -> {
@@ -71,8 +71,8 @@ public final class BrowserProxyCriteria {
     public static Criteria<HarEntry> requestMethod(String method) {
         checkArgument(isNotBlank(method), "Method should be defined");
 
-        return condition(format("request with method '%s'", method), t -> {
-            String requestMethod = t.getRequest().getMethod();
+        return condition(format("request with method '%s'", method), entry -> {
+            String requestMethod = entry.getRequest().getMethod();
 
             return Objects.equals(requestMethod, method);
         });
@@ -81,8 +81,8 @@ public final class BrowserProxyCriteria {
     public static Criteria<HarEntry> requestHttpVersion(HttpClient.Version version) {
         checkArgument(nonNull(version), "Http version should be defined");
 
-        return condition(format("request with HTTP version '%s'", version), t -> {
-            HttpClient.Version httpVersion = t.getRequest().getHttpVersion().equals("HTTP/1.1") ? HTTP_1_1 : HTTP_2;
+        return condition(format("request with HTTP version '%s'", version), entry -> {
+            HttpClient.Version httpVersion = entry.getRequest().getHttpVersion().equals("HTTP/1.1") ? HTTP_1_1 : HTTP_2;
 
             return Objects.equals(httpVersion, version);
         });
@@ -91,8 +91,8 @@ public final class BrowserProxyCriteria {
     public static Criteria<HarEntry> responseHttpVersion(HttpClient.Version version) {
         checkArgument(nonNull(version), "Http version should be defined");
 
-        return condition(format("response with HTTP version '%s'", version), t -> {
-            HttpClient.Version httpVersion = t.getResponse().getHttpVersion().equals("HTTP/1.1") ? HTTP_1_1 : HTTP_2;
+        return condition(format("response with HTTP version '%s'", version), entry -> {
+            HttpClient.Version httpVersion = entry.getResponse().getHttpVersion().equals("HTTP/1.1") ? HTTP_1_1 : HTTP_2;
 
             return Objects.equals(httpVersion, version);
         });
@@ -100,10 +100,10 @@ public final class BrowserProxyCriteria {
 
     public static Criteria<HarEntry> requestQueryParams(List<HarNameValuePair> params) {
         checkArgument(nonNull(params), "Query params list should be defined");
-        checkArgument(params.size() > 0, "Query params list can't be empty");
+        checkArgument(params.size() > 0, "Query params list can'entry be empty");
 
-        return condition(format("request with query parameters '%s'", params), t -> {
-            List<HarNameValuePair> queryParams = t.getRequest().getQueryString();
+        return condition(format("request with query parameters '%s'", params), entry -> {
+            List<HarNameValuePair> queryParams = entry.getRequest().getQueryString();
 
             return ofNullable(queryParams)
                     .map(qParams -> qParams.size() == params.size() && qParams.containsAll(params))
@@ -113,10 +113,10 @@ public final class BrowserProxyCriteria {
 
     public static Criteria<HarEntry> requestContainsQueryParams(List<HarNameValuePair> params) {
         checkArgument(nonNull(params), "Query params list should be defined");
-        checkArgument(params.size() > 0, "Query params list can't be empty");
+        checkArgument(params.size() > 0, "Query params list can'entry be empty");
 
-        return condition(format("request containing query parameters '%s'", params), t -> {
-            List<HarNameValuePair> queryParams = t.getRequest().getQueryString();
+        return condition(format("request containing query parameters '%s'", params), entry -> {
+            List<HarNameValuePair> queryParams = entry.getRequest().getQueryString();
 
             return ofNullable(queryParams)
                     .map(qParams -> qParams.containsAll(params))
@@ -126,10 +126,10 @@ public final class BrowserProxyCriteria {
 
     public static Criteria<HarEntry> requestHeaders(List<HarNameValuePair> headers) {
         checkArgument(nonNull(headers), "Request headers list should be defined");
-        checkArgument(headers.size() > 0, "Request headers list can't be empty");
+        checkArgument(headers.size() > 0, "Request headers list can'entry be empty");
 
-        return condition(format("request with headers '%s'", headers), t -> {
-            List<HarNameValuePair> requestHeaders = t.getRequest().getHeaders();
+        return condition(format("request with headers '%s'", headers), entry -> {
+            List<HarNameValuePair> requestHeaders = entry.getRequest().getHeaders();
 
             return ofNullable(requestHeaders)
                     .map(reqHeaders -> reqHeaders.size() == headers.size() && reqHeaders.containsAll(headers))
@@ -139,10 +139,10 @@ public final class BrowserProxyCriteria {
 
     public static Criteria<HarEntry> requestHeadersContains(List<HarNameValuePair> headers) {
         checkArgument(nonNull(headers), "Request headers list should be defined");
-        checkArgument(headers.size() > 0, "Request headers list can't be empty");
+        checkArgument(headers.size() > 0, "Request headers list can'entry be empty");
 
-        return condition(format("request with headers '%s'", headers), t -> {
-            List<HarNameValuePair> requestHeaders = t.getRequest().getHeaders();
+        return condition(format("request with headers '%s'", headers), entry -> {
+            List<HarNameValuePair> requestHeaders = entry.getRequest().getHeaders();
 
             return ofNullable(requestHeaders)
                     .map(reqHeaders -> reqHeaders.containsAll(headers))
@@ -152,10 +152,10 @@ public final class BrowserProxyCriteria {
 
     public static Criteria<HarEntry> responseHeaders(List<HarNameValuePair> headers) {
         checkArgument(nonNull(headers), "Response headers list should be defined");
-        checkArgument(headers.size() > 0, "Response headers list can't be empty");
+        checkArgument(headers.size() > 0, "Response headers list can'entry be empty");
 
-        return condition(format("response with headers '%s'", headers), t -> {
-            List<HarNameValuePair> responseHeaders = t.getResponse().getHeaders();
+        return condition(format("response with headers '%s'", headers), entry -> {
+            List<HarNameValuePair> responseHeaders = entry.getResponse().getHeaders();
 
             return ofNullable(responseHeaders)
                     .map(respHeaders -> respHeaders.size() == headers.size() && respHeaders.containsAll(headers))
@@ -165,10 +165,10 @@ public final class BrowserProxyCriteria {
 
     public static Criteria<HarEntry> responseHeadersContains(List<HarNameValuePair> headers) {
         checkArgument(nonNull(headers), "Response headers list should be defined");
-        checkArgument(headers.size() > 0, "Response headers list can't be empty");
+        checkArgument(headers.size() > 0, "Response headers list can'entry be empty");
 
-        return condition(format("response with headers '%s'", headers), t -> {
-            List<HarNameValuePair> responseHeaders = t.getResponse().getHeaders();
+        return condition(format("response with headers '%s'", headers), entry -> {
+            List<HarNameValuePair> responseHeaders = entry.getResponse().getHeaders();
 
             return ofNullable(responseHeaders)
                     .map(respHeaders -> respHeaders.containsAll(headers))
@@ -180,8 +180,8 @@ public final class BrowserProxyCriteria {
         checkArgument(isNotBlank(name), "Request header name should be defined");
         checkArgument(isNotBlank(value), "Request header value should be defined");
 
-        return condition(format("request has header '%s' with value '%s'", name, value), t -> {
-            List<HarNameValuePair> requestHeaders = t.getRequest().getHeaders();
+        return condition(format("request has header '%s' with value '%s'", name, value), entry -> {
+            List<HarNameValuePair> requestHeaders = entry.getRequest().getHeaders();
 
             return ofNullable(requestHeaders)
                     .map(reqHeaders -> reqHeaders.contains(new HarNameValuePair(name, value)))
@@ -193,8 +193,8 @@ public final class BrowserProxyCriteria {
         checkArgument(isNotBlank(name), "Request header name should be defined");
         checkArgument(isNotBlank(valueExpression), "Request header value substring/RegExp should be defined");
 
-        return condition(format("request has header '%s' with value contains/matches RegExp pattern '%s'", name, valueExpression), t -> {
-            List<HarNameValuePair> requestHeaders = t.getRequest().getHeaders();
+        return condition(format("request has header '%s' with value contains/matches RegExp pattern '%s'", name, valueExpression), entry -> {
+            List<HarNameValuePair> requestHeaders = entry.getRequest().getHeaders();
 
             return ofNullable(requestHeaders)
                     .map(reqHeaders ->
@@ -221,8 +221,8 @@ public final class BrowserProxyCriteria {
         checkArgument(isNotBlank(name), "Response header name should be defined");
         checkArgument(isNotBlank(value), "Response header value should be defined");
 
-        return condition(format("response has header '%s' with value '%s'", name, value), t -> {
-            List<HarNameValuePair> responseHeaders = t.getResponse().getHeaders();
+        return condition(format("response has header '%s' with value '%s'", name, value), entry -> {
+            List<HarNameValuePair> responseHeaders = entry.getResponse().getHeaders();
 
             return ofNullable(responseHeaders)
                     .map(respHeaders -> respHeaders.contains(new HarNameValuePair(name, value)))
@@ -234,8 +234,8 @@ public final class BrowserProxyCriteria {
         checkArgument(isNotBlank(name), "Response header name should be defined");
         checkArgument(isNotBlank(valueExpression), "Response header value substring/RegExp should be defined");
 
-        return condition(format("response has header '%s' with value contains/matches RegExp pattern '%s'", name, valueExpression), t -> {
-            List<HarNameValuePair> responseHeaders = t.getResponse().getHeaders();
+        return condition(format("response has header '%s' with value contains/matches RegExp pattern '%s'", name, valueExpression), entry -> {
+            List<HarNameValuePair> responseHeaders = entry.getResponse().getHeaders();
 
             return ofNullable(responseHeaders)
                     .map(respHeaders ->
@@ -261,8 +261,8 @@ public final class BrowserProxyCriteria {
     public static Criteria<HarEntry> requestBody(String body) {
         checkArgument(isNotBlank(body), "Request body should be defined");
 
-        return condition(format("request has body '%s'", body), t -> {
-            HarPostData postData = t.getRequest().getPostData();
+        return condition(format("request has body '%s'", body), entry -> {
+            HarPostData postData = entry.getRequest().getPostData();
 
             return ofNullable(postData)
                     .map(data -> Objects.equals(data.getText(), body))
@@ -273,8 +273,8 @@ public final class BrowserProxyCriteria {
     public static Criteria<HarEntry> responseBody(String body) {
         checkArgument(isNotBlank(body), "Response body should be defined");
 
-        return condition(format("response has body '%s'", body), t -> {
-            HarContent responseContent = t.getResponse().getContent();
+        return condition(format("response has body '%s'", body), entry -> {
+            HarContent responseContent = entry.getResponse().getContent();
 
             return ofNullable(responseContent)
                     .map(content -> Objects.equals(content.getText(), body))
@@ -285,8 +285,8 @@ public final class BrowserProxyCriteria {
     public static Criteria<HarEntry> requestBodyMatches(String bodyExpression) {
         checkArgument(isNotBlank(bodyExpression), "Request body substring/RegExp should be defined");
 
-        return condition(format("request body contains substring/matches RegExp '%s'", bodyExpression), t -> {
-            HarPostData postData = t.getRequest().getPostData();
+        return condition(format("request body contains substring/matches RegExp '%s'", bodyExpression), entry -> {
+            HarPostData postData = entry.getRequest().getPostData();
 
             return ofNullable(postData)
                     .map(data -> {
@@ -311,8 +311,8 @@ public final class BrowserProxyCriteria {
     public static Criteria<HarEntry> responseBodyMatches(String bodyExpression) {
         checkArgument(isNotBlank(bodyExpression), "Response body substring/RegExp should be defined");
 
-        return condition(format("response body contains substring/matches RegExp '%s'", bodyExpression), t -> {
-            HarContent responseContent = t.getResponse().getContent();
+        return condition(format("response body contains substring/matches RegExp '%s'", bodyExpression), entry -> {
+            HarContent responseContent = entry.getResponse().getContent();
 
             return ofNullable(responseContent)
                     .map(content -> {
@@ -337,8 +337,8 @@ public final class BrowserProxyCriteria {
     public static Criteria<HarEntry> responseStatusCode(Integer status) {
         checkArgument(nonNull(status), "Status code should be defined");
 
-        return condition(format("response status code is '%s'", status), t -> {
-            Integer statusCode = t.getResponse().getStatus();
+        return condition(format("response status code is '%s'", status), entry -> {
+            Integer statusCode = entry.getResponse().getStatus();
 
             return Objects.equals(statusCode, status);
         });
