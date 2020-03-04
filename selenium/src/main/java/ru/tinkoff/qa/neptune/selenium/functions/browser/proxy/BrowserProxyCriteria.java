@@ -26,7 +26,13 @@ public final class BrowserProxyCriteria {
         super();
     }
 
-    public static <T extends HarEntry> Criteria<T> requestUrl(String url) {
+    /**
+     * Checks the request url of an entry.
+     *
+     * @param url the url request is supposed to have
+     * @return criteria that checks proxied har entry
+     */
+    public static Criteria<HarEntry> requestUrl(String url) {
         checkArgument(isNotBlank(url), "URL should be defined");
 
         return condition(format("request url equals to '%s'", url), t -> {
@@ -36,7 +42,7 @@ public final class BrowserProxyCriteria {
         });
     }
 
-    public static <T extends HarEntry> Criteria<T> requestUrlMatches(String urlExpression) {
+    public static Criteria<HarEntry> requestUrlMatches(String urlExpression) {
         checkArgument(isNotBlank(urlExpression), "URL Substring/RegExp should be defined");
 
         return condition(format("request url contains '%s' or fits regExp pattern '%s'", urlExpression, urlExpression), t -> {
@@ -62,7 +68,7 @@ public final class BrowserProxyCriteria {
         });
     }
 
-    public static <T extends HarEntry> Criteria<T> requestMethod(String method) {
+    public static Criteria<HarEntry> requestMethod(String method) {
         checkArgument(isNotBlank(method), "Method should be defined");
 
         return condition(format("request with method '%s'", method), t -> {
@@ -72,7 +78,7 @@ public final class BrowserProxyCriteria {
         });
     }
 
-    public static <T extends HarEntry> Criteria<T> requestHttpVersion(HttpClient.Version version) {
+    public static Criteria<HarEntry> requestHttpVersion(HttpClient.Version version) {
         checkArgument(nonNull(version), "Http version should be defined");
 
         return condition(format("request with HTTP version '%s'", version), t -> {
@@ -82,7 +88,7 @@ public final class BrowserProxyCriteria {
         });
     }
 
-    public static <T extends HarEntry> Criteria<T> responseHttpVersion(HttpClient.Version version) {
+    public static Criteria<HarEntry> responseHttpVersion(HttpClient.Version version) {
         checkArgument(nonNull(version), "Http version should be defined");
 
         return condition(format("response with HTTP version '%s'", version), t -> {
@@ -92,7 +98,7 @@ public final class BrowserProxyCriteria {
         });
     }
 
-    public static <T extends HarEntry> Criteria<T> requestQueryParams(List<HarNameValuePair> params) {
+    public static Criteria<HarEntry> requestQueryParams(List<HarNameValuePair> params) {
         checkArgument(nonNull(params), "Query params list should be defined");
         checkArgument(params.size() > 0, "Query params list can't be empty");
 
@@ -105,7 +111,7 @@ public final class BrowserProxyCriteria {
         });
     }
 
-    public static <T extends HarEntry> Criteria<T> requestContainsQueryParams(List<HarNameValuePair> params) {
+    public static Criteria<HarEntry> requestContainsQueryParams(List<HarNameValuePair> params) {
         checkArgument(nonNull(params), "Query params list should be defined");
         checkArgument(params.size() > 0, "Query params list can't be empty");
 
@@ -118,7 +124,7 @@ public final class BrowserProxyCriteria {
         });
     }
 
-    public static <T extends HarEntry> Criteria<T> requestHeaders(List<HarNameValuePair> headers) {
+    public static Criteria<HarEntry> requestHeaders(List<HarNameValuePair> headers) {
         checkArgument(nonNull(headers), "Request headers list should be defined");
         checkArgument(headers.size() > 0, "Request headers list can't be empty");
 
@@ -131,7 +137,7 @@ public final class BrowserProxyCriteria {
         });
     }
 
-    public static <T extends HarEntry> Criteria<T> requestHeadersContains(List<HarNameValuePair> headers) {
+    public static Criteria<HarEntry> requestHeadersContains(List<HarNameValuePair> headers) {
         checkArgument(nonNull(headers), "Request headers list should be defined");
         checkArgument(headers.size() > 0, "Request headers list can't be empty");
 
@@ -144,7 +150,7 @@ public final class BrowserProxyCriteria {
         });
     }
 
-    public static <T extends HarEntry> Criteria<T> responseHeaders(List<HarNameValuePair> headers) {
+    public static Criteria<HarEntry> responseHeaders(List<HarNameValuePair> headers) {
         checkArgument(nonNull(headers), "Response headers list should be defined");
         checkArgument(headers.size() > 0, "Response headers list can't be empty");
 
@@ -157,7 +163,7 @@ public final class BrowserProxyCriteria {
         });
     }
 
-    public static <T extends HarEntry> Criteria<T> responseHeadersContains(List<HarNameValuePair> headers) {
+    public static Criteria<HarEntry> responseHeadersContains(List<HarNameValuePair> headers) {
         checkArgument(nonNull(headers), "Response headers list should be defined");
         checkArgument(headers.size() > 0, "Response headers list can't be empty");
 
@@ -170,7 +176,7 @@ public final class BrowserProxyCriteria {
         });
     }
 
-    public static <T extends HarEntry> Criteria<T> requestHeader(String name, String value) {
+    public static Criteria<HarEntry> requestHeader(String name, String value) {
         checkArgument(isNotBlank(name), "Request header name should be defined");
         checkArgument(isNotBlank(value), "Request header value should be defined");
 
@@ -183,7 +189,7 @@ public final class BrowserProxyCriteria {
         });
     }
 
-    public static <T extends HarEntry> Criteria<T> requestHeaderMatches(String name, String valueExpression) {
+    public static Criteria<HarEntry> requestHeaderMatches(String name, String valueExpression) {
         checkArgument(isNotBlank(name), "Request header name should be defined");
         checkArgument(isNotBlank(valueExpression), "Request header value substring/RegExp should be defined");
 
@@ -211,7 +217,7 @@ public final class BrowserProxyCriteria {
         });
     }
 
-    public static <T extends HarEntry> Criteria<T> responseHeader(String name, String value) {
+    public static Criteria<HarEntry> responseHeader(String name, String value) {
         checkArgument(isNotBlank(name), "Response header name should be defined");
         checkArgument(isNotBlank(value), "Response header value should be defined");
 
@@ -224,7 +230,7 @@ public final class BrowserProxyCriteria {
         });
     }
 
-    public static <T extends HarEntry> Criteria<T> responseHeaderMatches(String name, String valueExpression) {
+    public static Criteria<HarEntry> responseHeaderMatches(String name, String valueExpression) {
         checkArgument(isNotBlank(name), "Response header name should be defined");
         checkArgument(isNotBlank(valueExpression), "Response header value substring/RegExp should be defined");
 
@@ -252,7 +258,7 @@ public final class BrowserProxyCriteria {
         });
     }
 
-    public static <T extends HarEntry> Criteria<T> requestBody(String body) {
+    public static Criteria<HarEntry> requestBody(String body) {
         checkArgument(isNotBlank(body), "Request body should be defined");
 
         return condition(format("request has body '%s'", body), t -> {
@@ -264,7 +270,7 @@ public final class BrowserProxyCriteria {
         });
     }
 
-    public static <T extends HarEntry> Criteria<T> responseBody(String body) {
+    public static Criteria<HarEntry> responseBody(String body) {
         checkArgument(isNotBlank(body), "Response body should be defined");
 
         return condition(format("response has body '%s'", body), t -> {
@@ -276,7 +282,7 @@ public final class BrowserProxyCriteria {
         });
     }
 
-    public static <T extends HarEntry> Criteria<T> requestBodyMatches(String bodyExpression) {
+    public static Criteria<HarEntry> requestBodyMatches(String bodyExpression) {
         checkArgument(isNotBlank(bodyExpression), "Request body substring/RegExp should be defined");
 
         return condition(format("request body contains substring/matches RegExp '%s'", bodyExpression), t -> {
@@ -302,7 +308,7 @@ public final class BrowserProxyCriteria {
         });
     }
 
-    public static <T extends HarEntry> Criteria<T> responseBodyMatches(String bodyExpression) {
+    public static Criteria<HarEntry> responseBodyMatches(String bodyExpression) {
         checkArgument(isNotBlank(bodyExpression), "Response body substring/RegExp should be defined");
 
         return condition(format("response body contains substring/matches RegExp '%s'", bodyExpression), t -> {
@@ -328,17 +334,11 @@ public final class BrowserProxyCriteria {
         });
     }
 
-    public static <T extends HarEntry> Criteria<T> responseStatusCode(Integer status) {
+    public static Criteria<HarEntry> responseStatusCode(Integer status) {
         checkArgument(nonNull(status), "Status code should be defined");
 
         return condition(format("response status code is '%s'", status), t -> {
-            var clazz = t.getClass();
-
-            Integer statusCode = null;
-
-            if (HarEntry.class.isAssignableFrom(clazz)) {
-                statusCode = t.getResponse().getStatus();
-            }
+            Integer statusCode = t.getResponse().getStatus();
 
             return Objects.equals(statusCode, status);
         });
