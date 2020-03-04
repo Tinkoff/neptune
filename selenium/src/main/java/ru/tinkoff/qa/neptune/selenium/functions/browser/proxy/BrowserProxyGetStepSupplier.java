@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.functions.browser.proxy;
 
+import net.lightbody.bmp.core.har.Har;
 import net.lightbody.bmp.core.har.HarEntry;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
@@ -16,7 +17,15 @@ public class BrowserProxyGetStepSupplier extends SequentialGetStepSupplier.GetIt
     private BrowserProxyGetStepSupplier() {
         super("Proxied requests", seleniumStepContext ->
                 ofNullable(seleniumStepContext.getProxy())
-                        .map(proxy -> proxy.getHar().getLog().getEntries())
+                        .map(proxy -> {
+                            Har har = proxy.getHar();
+
+                            if (har == null) {
+                                throw new IllegalStateException("HAR recording is not started");
+                            }
+
+                            return har.getLog().getEntries();
+                        })
                         .orElseGet(List::of));
     }
 

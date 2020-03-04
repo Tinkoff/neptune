@@ -27,10 +27,10 @@ public final class BrowserProxyCriteria {
     }
 
     /**
-     * Checks the request url of an entry.
+     * Checks the url of request.
      *
-     * @param url the url request is supposed to have
-     * @return criteria that checks proxied har entry
+     * @param url is the url request is supposed to have
+     * @return criteria that checks HAR entry
      */
     public static Criteria<HarEntry> requestUrl(String url) {
         checkArgument(isNotBlank(url), "URL should be defined");
@@ -42,6 +42,13 @@ public final class BrowserProxyCriteria {
         });
     }
 
+    /**
+     * Checks the url of request.
+     *
+     * @param urlExpression is the substring the url is supposed to have or
+     *                      the RegExp the url is predicted to match
+     * @return criteria that checks HAR entry
+     */
     public static Criteria<HarEntry> requestUrlMatches(String urlExpression) {
         checkArgument(isNotBlank(urlExpression), "URL Substring/RegExp should be defined");
 
@@ -68,6 +75,12 @@ public final class BrowserProxyCriteria {
         });
     }
 
+    /**
+     * Checks HTTP method of request.
+     *
+     * @param method is the name of HTTP method request is supposed to have
+     * @return criteria that checks HAR entry
+     */
     public static Criteria<HarEntry> requestMethod(String method) {
         checkArgument(isNotBlank(method), "Method should be defined");
 
@@ -78,6 +91,12 @@ public final class BrowserProxyCriteria {
         });
     }
 
+    /**
+     * Checks HTTP version of request.
+     *
+     * @param version is the HTTP version request is supposed to have
+     * @return criteria that checks HAR entry
+     */
     public static Criteria<HarEntry> requestHttpVersion(HttpClient.Version version) {
         checkArgument(nonNull(version), "Http version should be defined");
 
@@ -88,6 +107,12 @@ public final class BrowserProxyCriteria {
         });
     }
 
+    /**
+     * Checks HTTP version of response.
+     *
+     * @param version is the HTTP version response is supposed to have
+     * @return criteria that checks HAR entry
+     */
     public static Criteria<HarEntry> responseHttpVersion(HttpClient.Version version) {
         checkArgument(nonNull(version), "Http version should be defined");
 
@@ -98,6 +123,12 @@ public final class BrowserProxyCriteria {
         });
     }
 
+    /**
+     * Checks query parameters of request.
+     *
+     * @param params is the {@link HarNameValuePair} list of query parameters request is supposed to have
+     * @return criteria that checks HAR entry
+     */
     public static Criteria<HarEntry> requestQueryParams(List<HarNameValuePair> params) {
         checkArgument(nonNull(params), "Query params list should be defined");
         checkArgument(params.size() > 0, "Query params list can'entry be empty");
@@ -111,6 +142,12 @@ public final class BrowserProxyCriteria {
         });
     }
 
+    /**
+     * Checks query parameters of request.
+     *
+     * @param params is the {@link HarNameValuePair} list of query parameters request is supposed to contain
+     * @return criteria that checks HAR entry
+     */
     public static Criteria<HarEntry> requestContainsQueryParams(List<HarNameValuePair> params) {
         checkArgument(nonNull(params), "Query params list should be defined");
         checkArgument(params.size() > 0, "Query params list can'entry be empty");
@@ -124,6 +161,12 @@ public final class BrowserProxyCriteria {
         });
     }
 
+    /**
+     * Checks headers of request.
+     *
+     * @param headers is the {@link HarNameValuePair} list of headers request is supposed to have
+     * @return criteria that checks HAR entry
+     */
     public static Criteria<HarEntry> requestHeaders(List<HarNameValuePair> headers) {
         checkArgument(nonNull(headers), "Request headers list should be defined");
         checkArgument(headers.size() > 0, "Request headers list can'entry be empty");
@@ -137,6 +180,12 @@ public final class BrowserProxyCriteria {
         });
     }
 
+    /**
+     * Checks headers of request.
+     *
+     * @param headers headers is the {@link HarNameValuePair} list of headers request is supposed to contain
+     * @return criteria that checks HAR entry
+     */
     public static Criteria<HarEntry> requestHeadersContains(List<HarNameValuePair> headers) {
         checkArgument(nonNull(headers), "Request headers list should be defined");
         checkArgument(headers.size() > 0, "Request headers list can'entry be empty");
@@ -150,6 +199,12 @@ public final class BrowserProxyCriteria {
         });
     }
 
+    /**
+     * Checks headers of response.
+     *
+     * @param headers headers is the {@link HarNameValuePair} list of headers response is supposed to have
+     * @return criteria that checks HAR entry
+     */
     public static Criteria<HarEntry> responseHeaders(List<HarNameValuePair> headers) {
         checkArgument(nonNull(headers), "Response headers list should be defined");
         checkArgument(headers.size() > 0, "Response headers list can'entry be empty");
@@ -163,6 +218,12 @@ public final class BrowserProxyCriteria {
         });
     }
 
+    /**
+     * Checks headers of response.
+     *
+     * @param headers headers is the {@link HarNameValuePair} list of headers response is supposed to contain
+     * @return criteria that checks HAR entry
+     */
     public static Criteria<HarEntry> responseHeadersContains(List<HarNameValuePair> headers) {
         checkArgument(nonNull(headers), "Response headers list should be defined");
         checkArgument(headers.size() > 0, "Response headers list can'entry be empty");
@@ -176,6 +237,13 @@ public final class BrowserProxyCriteria {
         });
     }
 
+    /**
+     * Checks header of request.
+     *
+     * @param name  is the name of header request is supposed to have
+     * @param value is the value of header request is supposed to have
+     * @return criteria that checks HAR entry
+     */
     public static Criteria<HarEntry> requestHeader(String name, String value) {
         checkArgument(isNotBlank(name), "Request header name should be defined");
         checkArgument(isNotBlank(value), "Request header value should be defined");
@@ -189,6 +257,14 @@ public final class BrowserProxyCriteria {
         });
     }
 
+    /**
+     * Checks header of request.
+     *
+     * @param name            is the name of header request is supposed to have
+     * @param valueExpression is the substring the header value is supposed to have or
+     *                        the RegExp the header value is predicted to match
+     * @return criteria that checks HAR entry
+     */
     public static Criteria<HarEntry> requestHeaderMatches(String name, String valueExpression) {
         checkArgument(isNotBlank(name), "Request header name should be defined");
         checkArgument(isNotBlank(valueExpression), "Request header value substring/RegExp should be defined");
@@ -217,6 +293,13 @@ public final class BrowserProxyCriteria {
         });
     }
 
+    /**
+     * Checks header of response.
+     *
+     * @param name  is the name of header response is supposed to have
+     * @param value is the value of header response is supposed to have
+     * @return criteria that checks HAR entry
+     */
     public static Criteria<HarEntry> responseHeader(String name, String value) {
         checkArgument(isNotBlank(name), "Response header name should be defined");
         checkArgument(isNotBlank(value), "Response header value should be defined");
@@ -230,6 +313,14 @@ public final class BrowserProxyCriteria {
         });
     }
 
+    /**
+     * Checks header of response.
+     *
+     * @param name            is the name of header response is supposed to have
+     * @param valueExpression is the substring the header value is supposed to have or
+     *                        the RegExp the header value is predicted to match
+     * @return criteria that checks HAR entry
+     */
     public static Criteria<HarEntry> responseHeaderMatches(String name, String valueExpression) {
         checkArgument(isNotBlank(name), "Response header name should be defined");
         checkArgument(isNotBlank(valueExpression), "Response header value substring/RegExp should be defined");
@@ -258,6 +349,12 @@ public final class BrowserProxyCriteria {
         });
     }
 
+    /**
+     * Checks body of request.
+     *
+     * @param body is the body request is supposed to have
+     * @return criteria that checks HAR entry
+     */
     public static Criteria<HarEntry> requestBody(String body) {
         checkArgument(isNotBlank(body), "Request body should be defined");
 
@@ -270,6 +367,12 @@ public final class BrowserProxyCriteria {
         });
     }
 
+    /**
+     * Checks body of response.
+     *
+     * @param body is the body response is supposed to have
+     * @return criteria that checks HAR entry
+     */
     public static Criteria<HarEntry> responseBody(String body) {
         checkArgument(isNotBlank(body), "Response body should be defined");
 
@@ -282,6 +385,13 @@ public final class BrowserProxyCriteria {
         });
     }
 
+    /**
+     * Checks body of request.
+     *
+     * @param bodyExpression is the substring the request body is supposed to have or
+     *                       the RegExp the request body is predicted to match
+     * @return criteria that checks HAR entry
+     */
     public static Criteria<HarEntry> requestBodyMatches(String bodyExpression) {
         checkArgument(isNotBlank(bodyExpression), "Request body substring/RegExp should be defined");
 
@@ -308,6 +418,13 @@ public final class BrowserProxyCriteria {
         });
     }
 
+    /**
+     * Checks body of response.
+     *
+     * @param bodyExpression is the substring the response body is supposed to have or
+     *                       the RegExp the response body is predicted to match
+     * @return criteria that checks HAR entry
+     */
     public static Criteria<HarEntry> responseBodyMatches(String bodyExpression) {
         checkArgument(isNotBlank(bodyExpression), "Response body substring/RegExp should be defined");
 
@@ -334,6 +451,12 @@ public final class BrowserProxyCriteria {
         });
     }
 
+    /**
+     * Checks status code of response.
+     *
+     * @param status is the status code response is supposed to have
+     * @return criteria that checks HAR entry
+     */
     public static Criteria<HarEntry> responseStatusCode(Integer status) {
         checkArgument(nonNull(status), "Status code should be defined");
 
