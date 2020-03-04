@@ -7,10 +7,7 @@ import net.lightbody.bmp.client.ClientUtil;
 import net.sf.cglib.proxy.Enhancer;
 import org.apache.commons.lang3.ArrayUtils;
 import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
-import org.openqa.selenium.Proxy;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WrapsDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.server.SeleniumServer;
 import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
@@ -19,13 +16,12 @@ import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
 import java.net.URL;
 
 import static java.lang.String.format;
+import static java.util.Arrays.stream;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.openqa.selenium.net.PortProber.findFreePort;
 import static ru.tinkoff.qa.neptune.core.api.utils.ConstructorUtil.findSuitableConstructor;
-import static ru.tinkoff.qa.neptune.selenium.properties.BrowserProxyHostProperty.BROWSER_PROXY_HOST_PROPERTY;
-import static ru.tinkoff.qa.neptune.selenium.properties.BrowserProxyPortProperty.BROWSER_PROXY_PORT_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.*;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITING_FOR_PAGE_LOADED_DURATION;
@@ -87,33 +83,25 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
     private void initDriverIfNecessary() {
         driver = ofNullable(driver).orElseGet(() -> {
             Object[] parameters;
-            var arguments = supportedWebDriver.get();
+            Object[] arguments = supportedWebDriver.get();
 
-            boolean startProxyServer = true;
-            for (Object arg : arguments) {
-                if (arg.equals(CapabilityType.PROXY)) {
-                    startProxyServer = false;
-                    break;
-                }
-            }
+            MutableCapabilities capabilities = (MutableCapabilities) stream(arguments)
+                    .filter(arg -> MutableCapabilities.class.isAssignableFrom(arg.getClass()))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException("Browser mutable capabilities not found"));
 
-            if (startProxyServer) {
-                var proxyHost = BROWSER_PROXY_HOST_PROPERTY.get();
-                var proxyPort = BROWSER_PROXY_PORT_PROPERTY.get();
-
-                if (proxyHost != null && proxyPort != null) {
-                    proxy.start(proxyPort, proxyHost);
-                } else if (proxyPort != null) {
-                    proxy.start(proxyPort);
-                } else if (proxyHost != null) {
-                    throw new IllegalArgumentException(format("Proxy server port not specified for host %s", proxyHost));
-                } else {
-                    proxy.start();
-                }
+            if (!capabilities.asMap().containsKey(CapabilityType.PROXY)) {
+                proxy.start();
 
                 Proxy seleniumProxy = ClientUtil.createSeleniumProxy(proxy);
 
-                ArrayUtils.addAll(new Object[]{CapabilityType.PROXY, seleniumProxy}, arguments);
+                capabilities.setCapability(CapabilityType.PROXY, seleniumProxy);
+
+                for (var i = 0; i < arguments.length; i++) {
+                    if (MutableCapabilities.class.isAssignableFrom(arguments[i].getClass())) {
+                        arguments[i] = capabilities;
+                    }
+                }
             }
 
             if (supportedWebDriver.requiresRemoteUrl() && supportedWebDriver.getRemoteURL() == null) {
