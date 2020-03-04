@@ -23,6 +23,7 @@ public enum SessionFlagProperties implements BooleanValuePropertySupplier {
      * will try to clear {@link org.openqa.selenium.WebDriver} cookies after the test running has finished if the
      * property is defined and has value {@code true}. This option has sense if {@code 'keep.web.driver.session.opened'}
      * has value {@code true}.
+     *
      * @see #KEEP_WEB_DRIVER_SESSION_OPENED
      * @see WebDriver.Options#deleteAllCookies()
      */
@@ -32,6 +33,7 @@ public enum SessionFlagProperties implements BooleanValuePropertySupplier {
      * This enum item reads the property {@code 'get.back.to.base.web.driver.url'}. It means that it
      * will try to get to defined URL which is supposed to be loaded in browser if the property is defined and
      * has value {@code true}. This option has sense if {@code 'keep.web.driver.session.opened'} has value {@code true}.
+     *
      * @see #KEEP_WEB_DRIVER_SESSION_OPENED
      * @see URLProperties#BASE_WEB_DRIVER_URL_PROPERTY
      * @see WebDriver#get(String)
@@ -51,7 +53,15 @@ public enum SessionFlagProperties implements BooleanValuePropertySupplier {
      * <p>{@code seleniumSteps.navigate(toUrl("/relative/url/path.html")}</p>
      * <p>WARNING: it is necessary to define {@link URLProperties#BASE_WEB_DRIVER_URL_PROPERTY}</p>
      */
-    ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL("enable.ability.to.navigate.by.relative.url");
+    ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL("enable.ability.to.navigate.by.relative.url"),
+
+    /**
+     * This enum item reads the property {@code 'use.browser.proxy'}. {@code true} value means that browser session
+     * will be proxied by locally instantiated {@link net.lightbody.bmp.BrowserMobProxy} server
+     *
+     * @see <a href="https://github.com/lightbody/browsermob-proxy">https://github.com/lightbody/browsermob-proxy</a>
+     */
+    USE_BROWSER_PROXY("use.browser.proxy");
 
     private final String propertyName;
 

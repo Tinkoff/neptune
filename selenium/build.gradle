@@ -15,6 +15,7 @@ dependencies {
     testCompile group: 'org.mockito', name: 'mockito-core', version: '2.23.4'
     compile group: 'cglib', name: 'cglib', version: '3.3.0'
     compile group: 'org.jsoup', name: 'jsoup', version: '1.12.2'
+    compile group: 'net.lightbody.bmp', name: 'browsermob-core', version: '2.1.5'
 }
 
 test {

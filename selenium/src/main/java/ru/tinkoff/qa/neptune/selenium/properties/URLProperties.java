@@ -12,6 +12,7 @@ public enum URLProperties implements URLValuePropertySupplier {
     /**
      * This item read the property {@code 'base.web.driver.url'} and returns URL to load at
      * browser when it is started.
+     *
      * @see org.openqa.selenium.WebDriver#get(String)
      */
     BASE_WEB_DRIVER_URL_PROPERTY("base.web.driver.url");

@@ -1,26 +1,33 @@
 package ru.tinkoff.qa.neptune.selenium;
 
-import org.openqa.selenium.WrapsDriver;
-import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
-import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import net.lightbody.bmp.BrowserMobProxy;
+import net.lightbody.bmp.BrowserMobProxyServer;
+import net.lightbody.bmp.client.ClientUtil;
 import net.sf.cglib.proxy.Enhancer;
 import org.apache.commons.lang3.ArrayUtils;
 import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WrapsDriver;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.server.SeleniumServer;
+import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
+import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
 
 import java.net.URL;
 
+import static java.lang.String.format;
 import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.openqa.selenium.net.PortProber.findFreePort;
 import static ru.tinkoff.qa.neptune.core.api.utils.ConstructorUtil.findSuitableConstructor;
+import static ru.tinkoff.qa.neptune.selenium.properties.BrowserProxyHostProperty.BROWSER_PROXY_HOST_PROPERTY;
+import static ru.tinkoff.qa.neptune.selenium.properties.BrowserProxyPortProperty.BROWSER_PROXY_PORT_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.*;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
-import static java.lang.String.format;
-import static java.util.Optional.ofNullable;
-import static org.openqa.selenium.net.PortProber.findFreePort;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITING_FOR_PAGE_LOADED_DURATION;
 
 public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
@@ -31,11 +38,18 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
     private static URL serverUrl;
 
     private final SupportedWebDrivers supportedWebDriver;
+    private final BrowserMobProxy proxy;
     private WebDriver driver;
     private boolean isWebDriverInstalled;
 
     public WrappedWebDriver(SupportedWebDrivers supportedWebDriver) {
         this.supportedWebDriver = supportedWebDriver;
+
+        if (ofNullable(USE_BROWSER_PROXY.get()).orElse(false)) {
+            proxy = new BrowserMobProxyServer();
+        } else {
+            proxy = null;
+        }
     }
 
     private static synchronized void initServerLocally() {
@@ -50,8 +64,7 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
         try {
             serverStarted = server.boot();
             serverUrl = new URL(format(DEFAULT_LOCAL_HOST, serverPort));
-        }
-        catch (Throwable e) {
+        } catch (Throwable e) {
             serverStarted = false;
             server = null;
             throw new RuntimeException(e);
@@ -67,8 +80,7 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
             server.stop();
             server = null;
             serverStarted = false;
-        }
-        catch (Throwable ignored) {
+        } catch (Throwable ignored) {
         }
     }
 
@@ -76,11 +88,38 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
         driver = ofNullable(driver).orElseGet(() -> {
             Object[] parameters;
             var arguments = supportedWebDriver.get();
+
+            boolean startProxyServer = true;
+            for (Object arg : arguments) {
+                if (arg.equals(CapabilityType.PROXY)) {
+                    startProxyServer = false;
+                    break;
+                }
+            }
+
+            if (startProxyServer) {
+                var proxyHost = BROWSER_PROXY_HOST_PROPERTY.get();
+                var proxyPort = BROWSER_PROXY_PORT_PROPERTY.get();
+
+                if (proxyHost != null && proxyPort != null) {
+                    proxy.start(proxyPort, proxyHost);
+                } else if (proxyPort != null) {
+                    proxy.start(proxyPort);
+                } else if (proxyHost != null) {
+                    throw new IllegalArgumentException(format("Proxy server port not specified for host %s", proxyHost));
+                } else {
+                    proxy.start();
+                }
+
+                Proxy seleniumProxy = ClientUtil.createSeleniumProxy(proxy);
+
+                ArrayUtils.addAll(new Object[]{CapabilityType.PROXY, seleniumProxy}, arguments);
+            }
+
             if (supportedWebDriver.requiresRemoteUrl() && supportedWebDriver.getRemoteURL() == null) {
                 initServerLocally();
-                parameters = ArrayUtils.addAll(new Object[] {serverUrl}, arguments);
-            }
-            else {
+                parameters = ArrayUtils.addAll(new Object[]{serverUrl}, arguments);
+            } else {
                 parameters = arguments;
             }
 
@@ -124,8 +163,7 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
         try {
             driver.getCurrentUrl();
             isAlive = true;
-        }
-        catch (WebDriverException e) {
+        } catch (WebDriverException e) {
             isAlive = false;
         }
 
@@ -156,12 +194,22 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
         return driver;
     }
 
+    public BrowserMobProxy getProxy() {
+        return proxy;
+    }
+
     public void shutDown() {
         ofNullable(driver).ifPresent(webDriver -> {
+            ofNullable(proxy).ifPresent(browserMobProxy -> {
+                if (browserMobProxy.isStarted()) {
+                    browserMobProxy.stop();
+                }
+            });
+
             try {
                 webDriver.quit();
+            } catch (Throwable ignored) {
             }
-            catch (Throwable ignored) {}
         });
 
         shutDownServerLocally();

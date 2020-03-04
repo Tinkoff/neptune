@@ -1,10 +1,13 @@
 package ru.tinkoff.qa.neptune.selenium;
 
+import net.lightbody.bmp.BrowserMobProxy;
+import net.lightbody.bmp.core.har.HarEntry;
 import org.openqa.selenium.*;
 import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
+import ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.BrowserProxyGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.click.ClickActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.edit.EditActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.java.script.GetJavaScriptResultSupplier;
@@ -46,6 +49,10 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     @Override
     public WebDriver getWrappedDriver() {
         return wrappedWebDriver.getWrappedDriver();
+    }
+
+    public BrowserMobProxy getProxy() {
+        return wrappedWebDriver.getProxy();
     }
 
     public <R extends SearchContext> R find(SearchSupplier<R> what) {
@@ -237,6 +244,11 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
                         .compose(currentContent()),
                 timeOut,
                 exceptionMessage);
+    }
+
+    public List<HarEntry> get(BrowserProxyGetStepSupplier browserProxy) {
+        checkArgument(Objects.nonNull(browserProxy), "Browser proxy supplier is not defined");
+        return browserProxy.get().apply(this);
     }
 
     /**
