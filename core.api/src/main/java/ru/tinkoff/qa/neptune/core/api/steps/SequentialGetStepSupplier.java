@@ -19,7 +19,6 @@ import java.util.function.Supplier;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
-import static java.lang.String.valueOf;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
@@ -304,7 +303,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
                 return format("%s. From %s", toString(), ((SequentialGetStepSupplier) from).description);
             }
 
-            return format("%s. From %s", toString(), valueOf(from));
+            return format("%s. From %s", toString(), from);
         }
         return toString();
     }
