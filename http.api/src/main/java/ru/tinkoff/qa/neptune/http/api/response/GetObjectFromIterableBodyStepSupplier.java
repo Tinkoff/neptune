@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.http.api.response.support;
+package ru.tinkoff.qa.neptune.http.api.response;
 
 
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
