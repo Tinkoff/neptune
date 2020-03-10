@@ -85,21 +85,23 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
             Object[] parameters;
             Object[] arguments = supportedWebDriver.get();
 
-            MutableCapabilities capabilities = (MutableCapabilities) stream(arguments)
-                    .filter(arg -> MutableCapabilities.class.isAssignableFrom(arg.getClass()))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalStateException("Browser mutable capabilities not found"));
+            if (proxy != null) {
+                MutableCapabilities capabilities = (MutableCapabilities) stream(arguments)
+                        .filter(arg -> MutableCapabilities.class.isAssignableFrom(arg.getClass()))
+                        .findFirst()
+                        .orElseThrow(() -> new IllegalStateException("Browser mutable capabilities not found"));
 
-            if (!capabilities.asMap().containsKey(CapabilityType.PROXY)) {
-                proxy.start();
+                if (!capabilities.asMap().containsKey(CapabilityType.PROXY)) {
+                    proxy.start();
 
-                Proxy seleniumProxy = ClientUtil.createSeleniumProxy(proxy);
+                    Proxy seleniumProxy = ClientUtil.createSeleniumProxy(proxy);
 
-                capabilities.setCapability(CapabilityType.PROXY, seleniumProxy);
+                    capabilities.setCapability(CapabilityType.PROXY, seleniumProxy);
 
-                for (var i = 0; i < arguments.length; i++) {
-                    if (MutableCapabilities.class.isAssignableFrom(arguments[i].getClass())) {
-                        arguments[i] = capabilities;
+                    for (var i = 0; i < arguments.length; i++) {
+                        if (MutableCapabilities.class.isAssignableFrom(arguments[i].getClass())) {
+                            arguments[i] = capabilities;
+                        }
                     }
                 }
             }
