@@ -96,6 +96,11 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
         return this;
     }
 
+    public List<HarEntry> get(BrowserProxyGetStepSupplier browserProxy) {
+        checkArgument(Objects.nonNull(browserProxy), "Browser proxy supplier is not defined");
+        return browserProxy.get().apply(this);
+    }
+
     @Override
     public void refreshContext() {
         wrappedWebDriver.refreshContext();
@@ -244,11 +249,6 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
                         .compose(currentContent()),
                 timeOut,
                 exceptionMessage);
-    }
-
-    public List<HarEntry> get(BrowserProxyGetStepSupplier browserProxy) {
-        checkArgument(Objects.nonNull(browserProxy), "Browser proxy supplier is not defined");
-        return browserProxy.get().apply(this);
     }
 
     /**

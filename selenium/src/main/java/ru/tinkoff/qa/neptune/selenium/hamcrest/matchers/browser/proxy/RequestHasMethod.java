@@ -11,7 +11,7 @@ import static org.hamcrest.Matchers.is;
 
 public final class RequestHasMethod extends TypeSafeDiagnosingMatcher<HarEntry> {
 
-    private Matcher<? super String> methodMatcher;
+    private final Matcher<? super String> methodMatcher;
 
     private RequestHasMethod(Matcher<? super String> methodMatcher) {
         checkNotNull(methodMatcher, "HTTP method matcher is not defined");

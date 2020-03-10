@@ -11,7 +11,7 @@ import static org.hamcrest.Matchers.is;
 
 public final class RequestHasUrl extends TypeSafeDiagnosingMatcher<HarEntry> {
 
-    private Matcher<? super String> urlMatcher;
+    private final Matcher<? super String> urlMatcher;
 
     private RequestHasUrl(Matcher<? super String> urlMatcher) {
         checkNotNull(urlMatcher, "URL matcher is not defined");

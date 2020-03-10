@@ -7,6 +7,7 @@ import net.lightbody.bmp.core.har.HarPostData;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 
 import java.net.http.HttpClient;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -464,6 +465,72 @@ public final class BrowserProxyCriteria {
             Integer statusCode = entry.getResponse().getStatus();
 
             return Objects.equals(statusCode, status);
+        });
+    }
+
+    /**
+     * Checks the datetime the request was sent
+     *
+     * @param date is the datetime after which the request was to be sent
+     * @return criteria that checks HAR entry
+     */
+    public static Criteria<HarEntry> startedDateTimeAfter(Date date) {
+        checkArgument(nonNull(date), "Date should be defined");
+
+        return condition(format("request was sent after %s", date), entry -> {
+            Date startedDateTime = entry.getStartedDateTime();
+
+            return startedDateTime.after(date);
+        });
+    }
+
+    /**
+     * Checks the datetime the request was sent
+     *
+     * @param date is the datetime before which the request was to be sent
+     * @return criteria that checks HAR entry
+     */
+    public static Criteria<HarEntry> startedDateTimeBefore(Date date) {
+        checkArgument(nonNull(date), "Date should be defined");
+
+        return condition(format("request was sent before %s", date), entry -> {
+            Date startedDateTime = entry.getStartedDateTime();
+
+            return startedDateTime.before(date);
+        });
+    }
+
+    /**
+     * Checks the duration of the request
+     *
+     * @param millis is the number of milliseconds longer than which the duration of the request is supposed to be
+     * @return criteria that checks HAR entry
+     */
+    public static Criteria<HarEntry> durationLongerThan(Long millis) {
+        checkArgument(nonNull(millis), "Duration must be defined");
+        checkArgument(millis > 0, "Duration should be positive");
+
+        return condition(format("request duration is longer than %s", millis), entry -> {
+            long time = entry.getTime();
+
+            return time > millis;
+        });
+    }
+
+    /**
+     * Checks the duration of the request
+     *
+     * @param millis is the number of milliseconds shorter than which the duration of the request is supposed to be
+     * @return criteria that checks HAR entry
+     */
+    public static Criteria<HarEntry> durationShorterThan(Long millis) {
+        checkArgument(nonNull(millis), "Duration must be defined");
+        checkArgument(millis > 0, "Duration should be positive");
+
+        return condition(format("request duration is shorter than %s", millis), entry -> {
+            long time = entry.getTime();
+
+            return time < millis;
         });
     }
 }
