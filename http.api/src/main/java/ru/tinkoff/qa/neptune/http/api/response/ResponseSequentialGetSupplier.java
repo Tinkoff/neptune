@@ -1,10 +1,12 @@
 package ru.tinkoff.qa.neptune.http.api.response;
 
+import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 
 import java.net.http.HttpResponse;
+import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
@@ -53,5 +55,15 @@ public class ResponseSequentialGetSupplier<T> extends SequentialGetStepSupplier.
      */
     public static ResponseSequentialGetSupplier<Void> response(RequestBuilder requestBuilder) {
         return new ResponseSequentialGetSupplier<>(requestBuilder, discarding());
+    }
+
+    @Override
+    protected ResponseSequentialGetSupplier<T> criteria(String description, Predicate<? super HttpResponse<T>> predicate) {
+        return super.criteria(description, predicate);
+    }
+
+    @Override
+    protected ResponseSequentialGetSupplier<T> criteria(Criteria<? super HttpResponse<T>> criteria) {
+        return super.criteria(criteria);
     }
 }

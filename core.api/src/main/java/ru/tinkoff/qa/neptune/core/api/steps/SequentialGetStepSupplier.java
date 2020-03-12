@@ -129,6 +129,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         return (THIS) this;
     }
 
+    protected abstract Function<M, ?> getOriginalFunction();
+
     /**
      * This method defines a function to get mediator value. This value is used to get desired result.
      *
@@ -354,7 +356,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         return ofNullable(condition).map(Criteria::get).orElse(null);
     }
 
-    private static abstract class PrivateGetObjectStepSupplier<T, R, M, THIS extends PrivateGetObjectStepSupplier<T, R, M, THIS>>
+    private static class PrivateGetObjectStepSupplier<T, R, M, THIS extends PrivateGetObjectStepSupplier<T, R, M, THIS>>
             extends SequentialGetStepSupplier<T, R, M, R, THIS> {
 
         private final Function<M, R> originalFunction;
@@ -365,7 +367,13 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
 
         @Override
+        protected Function<M, R> getOriginalFunction() {
+            return originalFunction;
+        }
+
+        @Override
         protected Function<M, R> getEndFunction() {
+            var originalFunction = getOriginalFunction();
             return ofNullable(getCriteria())
                     .map(rPredicate -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime).map(sleep ->
@@ -455,7 +463,13 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
 
         @Override
+        protected Function<M, ? extends Iterable<R>> getOriginalFunction() {
+            return originalFunction;
+        }
+
+        @Override
         protected Function<M, R> getEndFunction() {
+            var originalFunction = getOriginalFunction();
             return ofNullable(getCriteria())
                     .map(rPredicate -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime).map(sleep ->
@@ -545,7 +559,13 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
 
         @Override
+        protected Function<M, R[]> getOriginalFunction() {
+            return originalFunction;
+        }
+
+        @Override
         protected Function<M, R> getEndFunction() {
+            var originalFunction = getOriginalFunction();
             return ofNullable(getCriteria())
                     .map(rPredicate -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime).map(sleep ->
@@ -635,7 +655,13 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
 
         @Override
+        protected Function<M, S> getOriginalFunction() {
+            return originalFunction;
+        }
+
+        @Override
         protected Function<M, S> getEndFunction() {
+            var originalFunction = getOriginalFunction();
             return ofNullable(getCriteria())
                     .map(rPredicate -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime).map(sleep ->
@@ -727,7 +753,13 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         }
 
         @Override
+        protected Function<M, R[]> getOriginalFunction() {
+            return originalFunction;
+        }
+
+        @Override
         protected Function<M, R[]> getEndFunction() {
+            var originalFunction = getOriginalFunction();
             return ofNullable(getCriteria())
                     .map(rPredicate -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime).map(sleep ->
