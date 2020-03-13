@@ -21,12 +21,12 @@ public class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Iterable<R>>
     }
 
     @Override
-    public GetObjectsFromIterableBodyStepSupplier<T, R, S> criteria(String description, Predicate<? super R> predicate) {
+    protected GetObjectsFromIterableBodyStepSupplier<T, R, S> criteria(String description, Predicate<? super R> predicate) {
         return super.criteria(description, predicate);
     }
 
     @Override
-    public GetObjectsFromIterableBodyStepSupplier<T, R, S> criteria(Criteria<? super R> criteria) {
+    protected GetObjectsFromIterableBodyStepSupplier<T, R, S> criteria(Criteria<? super R> criteria) {
         return super.criteria(criteria);
     }
 

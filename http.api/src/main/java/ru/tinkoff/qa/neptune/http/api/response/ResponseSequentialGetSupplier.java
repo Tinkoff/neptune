@@ -10,7 +10,6 @@ import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
-import static java.net.http.HttpResponse.BodyHandlers.discarding;
 import static java.util.Objects.nonNull;
 
 /**
@@ -44,17 +43,6 @@ public class ResponseSequentialGetSupplier<T> extends SequentialGetStepSupplier.
      */
     public static <T> ResponseSequentialGetSupplier<T> response(RequestBuilder requestBuilder, HttpResponse.BodyHandler<T> bodyHandler) {
         return new ResponseSequentialGetSupplier<>(requestBuilder, bodyHandler);
-    }
-
-    /**
-     * Creates an instance that builds a step-function to send an http request and to receive a response
-     * without body.
-     *
-     * @param requestBuilder is a builder of an http request
-     * @return an instance of {@link ResponseSequentialGetSupplier}
-     */
-    public static ResponseSequentialGetSupplier<Void> response(RequestBuilder requestBuilder) {
-        return new ResponseSequentialGetSupplier<>(requestBuilder, discarding());
     }
 
     @Override

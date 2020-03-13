@@ -21,12 +21,12 @@ public class GetObjectFromBodyStepSupplier<T, R> extends
     }
 
     @Override
-    public GetObjectFromBodyStepSupplier<T, R> criteria(Criteria<? super R> criteria) {
+    protected GetObjectFromBodyStepSupplier<T, R> criteria(Criteria<? super R> criteria) {
         return super.criteria(criteria);
     }
 
     @Override
-    public GetObjectFromBodyStepSupplier<T, R> criteria(String description, Predicate<? super R> predicate) {
+    protected GetObjectFromBodyStepSupplier<T, R> criteria(String description, Predicate<? super R> predicate) {
         return super.criteria(description, predicate);
     }
 

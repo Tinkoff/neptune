@@ -15,6 +15,7 @@ import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.net.http.HttpResponse.BodyHandlers.discarding;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSupplier.response;
 
 @CreateWith(provider = HttpStepsParameterProvider.class)
@@ -41,7 +42,7 @@ public class HttpStepContext extends Context<HttpStepContext> implements Context
     }
 
     public HttpResponse<Void> responseOf(RequestBuilder requestBuilder) {
-        return response(requestBuilder).get().apply(this);
+        return responseOf(requestBuilder, discarding());
     }
 
     @Override

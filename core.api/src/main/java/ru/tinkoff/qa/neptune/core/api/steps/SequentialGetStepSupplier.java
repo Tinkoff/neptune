@@ -40,7 +40,7 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
  * @param <T>    is a type of an input value
  * @param <R>    is a type of a returned value
  * @param <M>    is a type of a mediator value is used to get the required result
- * @param <P>    is a type of a value checked by a {@link Predicate}.
+ * @param <P>    is a type of a value checked by a {@link Criteria}.
  * @param <THIS> this is the self-type. It is used for the method chaining.
  */
 @SuppressWarnings("unchecked")
