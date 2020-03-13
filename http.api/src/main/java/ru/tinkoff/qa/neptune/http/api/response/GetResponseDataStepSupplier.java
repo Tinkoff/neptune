@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.http.api.response;
 
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeCaptureOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.StepFunction;
@@ -24,6 +25,7 @@ import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromBodyStepSuppl
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSupplier.response;
 
 @SuppressWarnings("unchecked")
+@MakeCaptureOnFinishing(typeOfCapture = Object.class)
 public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponseDataStepSupplier<R, T, P, S>> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<HttpStepContext, R, R, S> {
 
     SequentialGetStepSupplier<HttpStepContext, ? extends R, ?, P, ?> from;

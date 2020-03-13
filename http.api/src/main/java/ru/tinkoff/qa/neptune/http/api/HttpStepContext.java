@@ -4,6 +4,7 @@ import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
+import ru.tinkoff.qa.neptune.http.api.response.GetResponseDataStepSupplier;
 
 import java.net.CookieManager;
 import java.net.http.HttpClient;
@@ -43,6 +44,10 @@ public class HttpStepContext extends Context<HttpStepContext> implements Context
 
     public HttpResponse<Void> responseOf(RequestBuilder requestBuilder) {
         return responseOf(requestBuilder, discarding());
+    }
+
+    public <T> T get(GetResponseDataStepSupplier<T, ?, ?, ?> responseBody) {
+        return responseBody.get().apply(this);
     }
 
     @Override
