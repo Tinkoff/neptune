@@ -113,11 +113,11 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
                     capabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
                     capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
 
-                    if (ChromeOptions.class.isAssignableFrom(capabilities.getClass())) {
+//                    if (ChromeOptions.class.isAssignableFrom(capabilities.getClass())) {
 //                        ((ChromeOptions) capabilities).addArguments("--ingore-certificate-errors");
 //                        ((ChromeOptions) capabilities).addArguments("--allow-insecure-localhost");
-                        ((ChromeOptions) capabilities).addArguments("--proxy-server=localhost:8082");
-                    }
+//                        ((ChromeOptions) capabilities).addArguments("--proxy-server=localhost:8082");
+//                    }
 
                     for (var i = 0; i < arguments.length; i++) {
                         if (MutableCapabilities.class.isAssignableFrom(arguments[i].getClass())) {
