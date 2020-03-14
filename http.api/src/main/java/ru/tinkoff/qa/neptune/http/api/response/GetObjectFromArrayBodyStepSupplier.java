@@ -41,6 +41,11 @@ public final class GetObjectFromArrayBodyStepSupplier<T, R> extends
     }
 
     @Override
+    protected GetObjectFromArrayBodyStepSupplier<T, R> pollingInterval(Duration pollingTime) {
+        return super.pollingInterval(pollingTime);
+    }
+
+    @Override
     protected ForResponseBodyFunction<T, R[]> getOriginalFunction() {
         return (ForResponseBodyFunction<T, R[]>) super.getOriginalFunction();
     }

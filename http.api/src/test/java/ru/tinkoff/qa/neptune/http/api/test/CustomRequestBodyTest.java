@@ -22,10 +22,9 @@ import static org.hamcrest.Matchers.is;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 import static ru.tinkoff.qa.neptune.http.api.CommonBodyPublishers.*;
-import static ru.tinkoff.qa.neptune.http.api.HttpResponseSequentialGetSupplier.responseOf;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.PreparedHttpRequest.POST;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasBody.hasBody;
+import static ru.tinkoff.qa.neptune.http.api.request.PostRequest.POST;
 
 public class CustomRequestBodyTest extends BaseHttpTest {
 
@@ -200,11 +199,11 @@ public class CustomRequestBodyTest extends BaseHttpTest {
                                       HttpRequest.BodyPublisher bodyPublisher,
                                       String contentType,
                                       String expectedMessage) {
-        assertThat(http().get(responseOf(
+        assertThat(http().responseOf(
                 POST(REQUEST_URI + urlPath,
                         bodyPublisher)
                         .header("Content-Type", contentType),
-                ofString())),
+                ofString()),
                 hasBody(is(expectedMessage)));
     }
 }

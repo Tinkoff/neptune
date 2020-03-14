@@ -17,16 +17,15 @@ import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasPortMat
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasQueryMatcher.uriHasQuery;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasSchemeMatcher.uriHasScheme;
 import static ru.tinkoff.qa.neptune.http.api.CommonBodyPublishers.stringBody;
-import static ru.tinkoff.qa.neptune.http.api.HttpResponseSequentialGetSupplier.responseOf;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.PreparedHttpRequest.GET;
-import static ru.tinkoff.qa.neptune.http.api.PreparedHttpRequest.POST;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasBody.hasBody;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasHeaders.hasHeader;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasPreviousResponse.hasPreviousResponse;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasStatusCode.hasStatusCode;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasURI.hasURI;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasVersion.hasVersion;
+import static ru.tinkoff.qa.neptune.http.api.request.GetRequest.GET;
+import static ru.tinkoff.qa.neptune.http.api.request.PostRequest.POST;
 
 public class HttpResponseInfoTest extends BaseHttpTest {
 
@@ -38,8 +37,8 @@ public class HttpResponseInfoTest extends BaseHttpTest {
                         .withPath("/testStatusCode.html"), exactly(1))
                 .respond(response().withBody("SUCCESS"));
 
-        assertThat(http().get(responseOf(GET(format("%s/testStatusCode.html", REQUEST_URI)),
-                ofString())),
+        assertThat(http().responseOf(GET(format("%s/testStatusCode.html", REQUEST_URI)),
+                ofString()),
                 hasStatusCode(200));
     }
 
@@ -53,8 +52,8 @@ public class HttpResponseInfoTest extends BaseHttpTest {
                 .respond(response().withBody("SUCCESS"));
 
 
-        assertThat(http().get(responseOf(POST(format("%s/header2.html", REQUEST_URI),
-                stringBody("Request body")))),
+        assertThat(http().responseOf(POST(format("%s/header2.html", REQUEST_URI),
+                stringBody("Request body"))),
                 allOf(
                         hasHeader("connection", contains("keep-alive")),
                         hasHeader("content-length", of("7")),
@@ -71,7 +70,7 @@ public class HttpResponseInfoTest extends BaseHttpTest {
                 .respond(response().withBody("SUCCESS"));
 
 
-        assertThat(http().get(responseOf(GET(format("%s/body2.html", REQUEST_URI)), ofString())),
+        assertThat(http().responseOf(GET(format("%s/body2.html", REQUEST_URI)), ofString()),
                 hasBody("SUCCESS"));
     }
 
@@ -83,7 +82,7 @@ public class HttpResponseInfoTest extends BaseHttpTest {
                         .withPath("/uri.html"), exactly(1))
                 .respond(response().withBody("SUCCESS"));
 
-        assertThat(http().get(responseOf(GET(format("%s/uri.html", REQUEST_URI)))),
+        assertThat(http().responseOf(GET(format("%s/uri.html", REQUEST_URI))),
                 hasURI(allOf(uriHasScheme("http"),
                         uriHasHost("127.0.0.1"),
                         uriHasPort(1080),
@@ -100,7 +99,7 @@ public class HttpResponseInfoTest extends BaseHttpTest {
                         .withPath("/version.html"), exactly(1))
                 .respond(response().withBody("SUCCESS"));
 
-        assertThat(http().get(responseOf(GET(format("%s/version.html", REQUEST_URI)))),
+        assertThat(http().responseOf(GET(format("%s/version.html", REQUEST_URI))),
                 hasVersion(HTTP_1_1));
     }
 
@@ -113,7 +112,7 @@ public class HttpResponseInfoTest extends BaseHttpTest {
                         .withPath("/version2.html"), exactly(1))
                 .respond(response().withBody("SUCCESS"));
 
-        assertThat(http().get(responseOf(GET(format("%s/version2.html", REQUEST_URI)))),
+        assertThat(http().responseOf(GET(format("%s/version2.html", REQUEST_URI))),
                 not(hasPreviousResponse()));
     }
 }

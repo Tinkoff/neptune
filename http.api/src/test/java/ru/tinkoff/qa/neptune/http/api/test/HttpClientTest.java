@@ -38,12 +38,9 @@ import static org.mockserver.model.HttpRequest.request;
 import static ru.tinkoff.qa.neptune.http.api.HttpCookiesActionSupplier.addToCookies;
 import static ru.tinkoff.qa.neptune.http.api.HttpCookiesActionSupplier.clearCookieStore;
 import static ru.tinkoff.qa.neptune.http.api.HttpGetCachedCookiesSupplier.cachedCookies;
-import static ru.tinkoff.qa.neptune.http.api.HttpResponseSequentialGetSupplier.responseOf;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.PreparedHttpRequest.GET;
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpAuthenticatorProperty.DEFAULT_HTTP_AUTHENTICATOR_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpCookieManagerProperty.DEFAULT_HTTP_COOKIE_MANAGER_PROPERTY;
-import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpDomainToRespondProperty.DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpExecutorProperty.DEFAULT_HTTP_EXECUTOR_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpPriorityProperty.DEFAULT_HTTP_PRIORITY_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpProtocolVersionProperty.DEFAULT_HTTP_PROTOCOL_VERSION_PROPERTY;
@@ -53,6 +50,7 @@ import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpSslContextPro
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpSslParametersProperty.DEFAULT_HTTP_SSL_PARAMETERS_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.time.DefaultConnectTimeOutUnitProperty.DEFAULT_CONNECT_TIME_UNIT_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.time.DefaultConnectTimeOutValueProperty.DEFAULT_CONNECT_TIME_VALUE_PROPERTY;
+import static ru.tinkoff.qa.neptune.http.api.request.GetRequest.GET;
 
 public class HttpClientTest extends BaseHttpTest {
 
@@ -154,19 +152,6 @@ public class HttpClientTest extends BaseHttpTest {
     }
 
     @Test
-    public void abilityToUseRelativeURIPathTest() {
-        setProperty(DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY.getPropertyName(), REQUEST_URI);
-
-        try {
-            assertThat(http().get(responseOf(GET("/index.html"), ofString())).body(),
-                    equalTo("Hello"));
-        }
-        finally {
-            getProperties().remove(DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY.getPropertyName());
-        }
-    }
-
-    @Test
     public void addCookieTest() {
         var httpCookie = new HttpCookie("TestSetUpCookieName",
                 "TestSetUpCookieValue");
@@ -192,9 +177,9 @@ public class HttpClientTest extends BaseHttpTest {
                         .withPath("/query"))
                 .respond(HttpResponse.response().withBody("Hello query"));
 
-        var response = http().get(responseOf(GET(format("%s/query", REQUEST_URI))
+        var response = http().responseOf(GET(format("%s/query", REQUEST_URI))
                 .queryParam("date", "01-01-1980")
-                .queryParam("some word", "Word and word again"), ofString()));
+                .queryParam("some word", "Word and word again"), ofString());
 
         assertThat(response.body(),
                 equalTo("Hello query"));

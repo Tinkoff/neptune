@@ -43,6 +43,11 @@ public class GetObjectFromIterableBodyStepSupplier<T, R> extends
     }
 
     @Override
+    protected GetObjectFromIterableBodyStepSupplier<T, R> pollingInterval(Duration pollingTime) {
+        return super.pollingInterval(pollingTime);
+    }
+
+    @Override
     protected ForResponseBodyFunction<T, ? extends Iterable<R>> getOriginalFunction() {
         return (ForResponseBodyFunction<T, ? extends Iterable<R>>) super.getOriginalFunction();
     }

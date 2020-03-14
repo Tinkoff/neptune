@@ -412,5 +412,37 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
             });
             return this;
         }
+
+        @Override
+        public Retrying<R, T, P> pollingInterval(Duration pollingTime) {
+            ofNullable(from).ifPresent(s -> {
+                var clazz = s.getClass();
+
+                if (GetObjectFromArrayBodyStepSupplier.class.isAssignableFrom(clazz)) {
+                    ((GetObjectFromArrayBodyStepSupplier<?, ?>) s).pollingInterval(pollingTime);
+                    return;
+                }
+
+                if (GetObjectFromBodyStepSupplier.class.isAssignableFrom(clazz)) {
+                    ((GetObjectFromBodyStepSupplier<?, ?>) s).pollingInterval(pollingTime);
+                    return;
+                }
+
+                if (GetObjectFromIterableBodyStepSupplier.class.isAssignableFrom(clazz)) {
+                    ((GetObjectFromIterableBodyStepSupplier<?, ?>) s).pollingInterval(pollingTime);
+                    return;
+                }
+
+                if (GetObjectsFromArrayBodyStepSupplier.class.isAssignableFrom(clazz)) {
+                    ((GetObjectsFromArrayBodyStepSupplier<?, ?>) s).pollingInterval(pollingTime);
+                    return;
+                }
+
+                if (GetObjectsFromIterableBodyStepSupplier.class.isAssignableFrom(clazz)) {
+                    ((GetObjectsFromIterableBodyStepSupplier<?, ?, ?>) s).pollingInterval(pollingTime);
+                }
+            });
+            return this;
+        }
     }
 }

@@ -50,7 +50,7 @@ public final class PutRequest extends RequestBuilder {
      * @param bodyPublisher the body publisher
      * @return new {@link PutRequest}
      */
-    public static PutRequest METHOD(URL url, HttpRequest.BodyPublisher bodyPublisher) {
+    public static PutRequest PUT(URL url, HttpRequest.BodyPublisher bodyPublisher) {
         return new PutRequest(url, bodyPublisher);
     }
 
@@ -61,7 +61,7 @@ public final class PutRequest extends RequestBuilder {
      * @param bodyPublisher the body publisher
      * @return new {@link PutRequest}
      */
-    public static PutRequest METHOD(String uriExpression, HttpRequest.BodyPublisher bodyPublisher) {
+    public static PutRequest PUT(String uriExpression, HttpRequest.BodyPublisher bodyPublisher) {
         return new PutRequest(uriExpression, bodyPublisher);
     }
 }

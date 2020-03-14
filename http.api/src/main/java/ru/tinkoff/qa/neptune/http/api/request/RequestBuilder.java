@@ -196,6 +196,6 @@ public abstract class RequestBuilder {
 
     @Override
     public String toString() {
-        return valueOf(builder.build());
+        return valueOf(build());
     }
 }

@@ -15,17 +15,16 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.function.Function;
 
-import static java.net.http.HttpResponse.BodyHandlers.discarding;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
-import static ru.tinkoff.qa.neptune.http.api.HttpGetObjectFromResponseBody.bodyDataOf;
-import static ru.tinkoff.qa.neptune.http.api.HttpResponseSequentialGetSupplier.responseOf;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.PreparedHttpRequest.GET;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasBody.hasBody;
+import static ru.tinkoff.qa.neptune.http.api.request.GetRequest.GET;
+import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromBodyStepSupplier.object;
+import static ru.tinkoff.qa.neptune.http.api.response.GetResponseDataStepSupplier.responseBody;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.FromJson.getFromJson;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.GetDocument.getDocument;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.GetMapped.getMapped;
@@ -135,11 +134,10 @@ public class CustomResponseBodyTest extends BaseHttpTest {
                                        String toGetDescription,
                                        Function<String, ?> howToGet,
                                        Matcher<? super Object> matcher) {
-        assertThat(http().get(bodyDataOf(responseOf(
+        assertThat(http().get(responseBody(
                 GET(REQUEST_URI + urlPath),
-                ofString()),
-                toGetDescription,
-                howToGet)),
+                ofString(),
+                object(toGetDescription, howToGet))),
                 matcher);
     }
 
@@ -165,12 +163,11 @@ public class CustomResponseBodyTest extends BaseHttpTest {
     }
 
 
-
     @Test(dataProvider = "data2")
     public <T> void customResponseBodyTest2(String urlPath,
                                             MappedBodyHandler<?, T> handler,
                                             Matcher<? super T> matcher) {
-        assertThat(http().get(responseOf(GET(REQUEST_URI + urlPath), handler)),
+        assertThat(http().responseOf(GET(REQUEST_URI + urlPath), handler),
                 hasBody(matcher));
     }
 
@@ -191,7 +188,7 @@ public class CustomResponseBodyTest extends BaseHttpTest {
     @Test(dataProvider = "data3")
     public <T> void negativeTest(String urlPath,
                                  MappedBodyHandler<?, T> handler) {
-        assertThat(http().get(responseOf(GET(REQUEST_URI + urlPath), handler)),
+        assertThat(http().responseOf(GET(REQUEST_URI + urlPath), handler),
                 hasBody(nullValue()));
     }
 }

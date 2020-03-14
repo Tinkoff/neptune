@@ -4,6 +4,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.http.api.DesiredResponseHasNotBeenReceivedException;
 import ru.tinkoff.qa.neptune.http.api.ResponseHasNoDesiredDataException;
+import ru.tinkoff.qa.neptune.http.api.request.GetRequest;
 
 import java.util.function.Supplier;
 
@@ -27,6 +28,9 @@ import static ru.tinkoff.qa.neptune.http.api.properties.TimeToGetDesiredResponse
 import static ru.tinkoff.qa.neptune.http.api.properties.TimeToSleepProperty.SLEEP_RESPONSE_TIME_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.time.TimeUnitToGetDesiredResponseProperty.TIME_UNIT_TO_GET_DESIRED_RESPONSE_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.time.TimeValueToGetDesiredResponseProperty.TIME_VALUE_TO_GET_DESIRED_RESPONSE_PROPERTY;
+import static ru.tinkoff.qa.neptune.http.api.request.GetRequest.GET;
+import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromBodyStepSupplier.object;
+import static ru.tinkoff.qa.neptune.http.api.response.GetResponseDataStepSupplier.responseBody;
 import static ru.tinkoff.qa.neptune.http.api.test.FunctionToGetXMLTagArray.toNodeArray;
 import static ru.tinkoff.qa.neptune.http.api.test.FunctionToGetXMLTagList.toNodeList;
 
@@ -50,10 +54,9 @@ public class HttpBodyDataTest extends BaseHttpTest {
 
     @Test
     public void getAnObjectFromBodyPositiveTest1() {
-        var result = http().get(bodyDataOf(responseOf(GET(format("%s/data.html", REQUEST_URI)), ofString()),
-                "List of tags <a>", toNodeList("a"))
-
-                .criteria("Has 1 tag <a>", nodeList -> nodeList.size() == 1));
+        var result = http().get(responseBody(GET(format("%s/data.html", REQUEST_URI)), ofString(),
+                object("List of tags <a>", toNodeList("a")))
+                .bodyDataCriteria("Has 1 tag <a>", nodeList -> nodeList.size() == 1));
 
         assertThat(result, hasSize(1));
     }

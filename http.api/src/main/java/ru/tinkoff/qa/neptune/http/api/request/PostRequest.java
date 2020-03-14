@@ -36,7 +36,7 @@ public final class PostRequest extends RequestBuilder {
     /**
      * Creates an instance that builds a POST request.
      *
-     * @param endPoint is a request end point
+     * @param endPoint      is a request end point
      * @param bodyPublisher the body publisher
      * @return new {@link PostRequest}
      */
@@ -47,11 +47,11 @@ public final class PostRequest extends RequestBuilder {
     /**
      * Creates an instance that builds a POST request.
      *
-     * @param url is a request end point
+     * @param url           is a request end point
      * @param bodyPublisher the body publisher
      * @return new {@link PostRequest}
      */
-    public static PostRequest METHOD(URL url, HttpRequest.BodyPublisher bodyPublisher) {
+    public static PostRequest POST(URL url, HttpRequest.BodyPublisher bodyPublisher) {
         return new PostRequest(url, bodyPublisher);
     }
 
@@ -62,7 +62,7 @@ public final class PostRequest extends RequestBuilder {
      * @param bodyPublisher the body publisher
      * @return new {@link PostRequest}
      */
-    public static PostRequest METHOD(String uriExpression, HttpRequest.BodyPublisher bodyPublisher) {
+    public static PostRequest POST(String uriExpression, HttpRequest.BodyPublisher bodyPublisher) {
         return new PostRequest(uriExpression, bodyPublisher);
     }
 }
