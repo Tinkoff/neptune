@@ -90,7 +90,7 @@ public final class WindowCriteria {
      * @return criteria.
      */
     public static Criteria<Window> urlMatches(String expression) {
-        checkArgument(isNotBlank(expression), "Title expression should be defined");
+        checkArgument(isNotBlank(expression), "URL expression should be defined");
 
         return condition(format("url contains '%s' or meets regExp pattern '%s'", expression, expression), window -> {
             var url = valueOf(window.getCurrentUrl());
