@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium;
 
-import net.lightbody.bmp.BrowserMobProxy;
-import net.lightbody.bmp.core.har.HarEntry;
+import com.browserup.bup.BrowserUpProxy;
+import com.browserup.harreader.model.HarEntry;
 import org.openqa.selenium.*;
 import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
@@ -51,7 +51,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
         return wrappedWebDriver.getWrappedDriver();
     }
 
-    public BrowserMobProxy getProxy() {
+    public BrowserUpProxy getProxy() {
         return wrappedWebDriver.getProxy();
     }
 

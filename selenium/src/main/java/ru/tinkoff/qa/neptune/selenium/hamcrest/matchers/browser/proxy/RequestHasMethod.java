@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy;
 
-import net.lightbody.bmp.core.har.HarEntry;
+import com.browserup.harreader.model.HarEntry;
+import com.browserup.harreader.model.HttpMethod;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
@@ -11,9 +12,9 @@ import static org.hamcrest.Matchers.is;
 
 public final class RequestHasMethod extends TypeSafeDiagnosingMatcher<HarEntry> {
 
-    private final Matcher<? super String> methodMatcher;
+    private final Matcher<? super HttpMethod> methodMatcher;
 
-    private RequestHasMethod(Matcher<? super String> methodMatcher) {
+    private RequestHasMethod(Matcher<? super HttpMethod> methodMatcher) {
         checkNotNull(methodMatcher, "HTTP method matcher is not defined");
         this.methodMatcher = methodMatcher;
     }
@@ -24,7 +25,7 @@ public final class RequestHasMethod extends TypeSafeDiagnosingMatcher<HarEntry> 
      * @param methodMatcher criteria that describes expected method
      * @return a new instance of {@link RequestHasMethod}
      */
-    public static RequestHasMethod requestHasMethod(Matcher<? super String> methodMatcher) {
+    public static RequestHasMethod requestHasMethod(Matcher<? super HttpMethod> methodMatcher) {
         return new RequestHasMethod(methodMatcher);
     }
 
@@ -34,7 +35,7 @@ public final class RequestHasMethod extends TypeSafeDiagnosingMatcher<HarEntry> 
      * @param method is the expected method of the request
      * @return a new instance of {@link RequestHasMethod}
      */
-    public static RequestHasMethod requestHasMethod(String method) {
+    public static RequestHasMethod requestHasMethod(HttpMethod method) {
         return new RequestHasMethod(is(method));
     }
 

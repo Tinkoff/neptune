@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy;
 
-import net.lightbody.bmp.core.har.HarEntry;
+import com.browserup.harreader.model.HarEntry;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;

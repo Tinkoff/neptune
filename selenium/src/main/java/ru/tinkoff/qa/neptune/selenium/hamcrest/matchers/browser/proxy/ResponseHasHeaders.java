@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy;
 
-import net.lightbody.bmp.core.har.HarEntry;
-import net.lightbody.bmp.core.har.HarNameValuePair;
+import com.browserup.harreader.model.HarEntry;
+import com.browserup.harreader.model.HarHeader;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
@@ -11,17 +11,17 @@ import java.util.List;
 import static java.lang.String.format;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.hasItem;
-import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy.HasHarPair.hasHarPair;
+import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy.HasHarHeader.hasHarHeader;
 
 public final class ResponseHasHeaders extends TypeSafeDiagnosingMatcher<HarEntry> {
 
-    private final Matcher<? super List<HarNameValuePair>> headerMatcher;
+    private final Matcher<? super List<HarHeader>> headerMatcher;
 
-    private ResponseHasHeaders(Matcher<? super List<HarNameValuePair>> headerMatcher) {
+    private ResponseHasHeaders(Matcher<? super List<HarHeader>> headerMatcher) {
         this.headerMatcher = headerMatcher;
     }
 
-    private static ResponseHasHeaders responseHasHeaders(Matcher<? super List<HarNameValuePair>> headerMatcher) {
+    private static ResponseHasHeaders responseHasHeaders(Matcher<? super List<HarHeader>> headerMatcher) {
         return new ResponseHasHeaders(headerMatcher);
     }
 
@@ -33,7 +33,7 @@ public final class ResponseHasHeaders extends TypeSafeDiagnosingMatcher<HarEntry
      * @return a new instance of {@link ResponseHasHeaders}
      */
     public static ResponseHasHeaders responseHasHeader(String name, String value) {
-        return new ResponseHasHeaders(hasItem(hasHarPair(name, value)));
+        return new ResponseHasHeaders(hasItem(hasHarHeader(name, value)));
     }
 
     /**
@@ -44,7 +44,7 @@ public final class ResponseHasHeaders extends TypeSafeDiagnosingMatcher<HarEntry
      * @return a new instance of {@link ResponseHasHeaders}
      */
     public static ResponseHasHeaders responseHasHeader(Matcher<? super String> nameMatcher, String value) {
-        return new ResponseHasHeaders(hasItem(hasHarPair(nameMatcher, value)));
+        return new ResponseHasHeaders(hasItem(hasHarHeader(nameMatcher, value)));
     }
 
     /**
@@ -55,7 +55,7 @@ public final class ResponseHasHeaders extends TypeSafeDiagnosingMatcher<HarEntry
      * @return a new instance of {@link ResponseHasHeaders}
      */
     public static ResponseHasHeaders responseHasHeader(String name, Matcher<? super String> valueMatcher) {
-        return new ResponseHasHeaders(hasItem(hasHarPair(name, valueMatcher)));
+        return new ResponseHasHeaders(hasItem(hasHarHeader(name, valueMatcher)));
     }
 
     /**
@@ -66,7 +66,7 @@ public final class ResponseHasHeaders extends TypeSafeDiagnosingMatcher<HarEntry
      * @return a new instance of {@link ResponseHasHeaders}
      */
     public static ResponseHasHeaders responseHasHeader(Matcher<? super String> nameMatcher, Matcher<? super String> valueMatcher) {
-        return new ResponseHasHeaders(hasItem(hasHarPair(nameMatcher, valueMatcher)));
+        return new ResponseHasHeaders(hasItem(hasHarHeader(nameMatcher, valueMatcher)));
     }
 
     /**
@@ -76,7 +76,7 @@ public final class ResponseHasHeaders extends TypeSafeDiagnosingMatcher<HarEntry
      * @return a new instance of {@link ResponseHasHeaders}
      */
     public static ResponseHasHeaders responseHasHeaderName(Matcher<? super String> nameMatcher) {
-        return new ResponseHasHeaders(hasItem(hasHarPair(nameMatcher, anything())));
+        return new ResponseHasHeaders(hasItem(hasHarHeader(nameMatcher, anything())));
     }
 
     /**
@@ -86,7 +86,7 @@ public final class ResponseHasHeaders extends TypeSafeDiagnosingMatcher<HarEntry
      * @return a new instance of {@link ResponseHasHeaders}
      */
     public static ResponseHasHeaders responseHasHeaderName(String name) {
-        return new ResponseHasHeaders(hasItem(hasHarPair(name, anything())));
+        return new ResponseHasHeaders(hasItem(hasHarHeader(name, anything())));
     }
 
     /**
@@ -96,7 +96,7 @@ public final class ResponseHasHeaders extends TypeSafeDiagnosingMatcher<HarEntry
      * @return a new instance of {@link ResponseHasHeaders}
      */
     public static ResponseHasHeaders responseHasHeaderValue(Matcher<? super String> valueMatcher) {
-        return new ResponseHasHeaders(hasItem(hasHarPair(anything(), valueMatcher)));
+        return new ResponseHasHeaders(hasItem(hasHarHeader(anything(), valueMatcher)));
     }
 
     /**
@@ -106,7 +106,7 @@ public final class ResponseHasHeaders extends TypeSafeDiagnosingMatcher<HarEntry
      * @return a new instance of {@link ResponseHasHeaders}
      */
     public static ResponseHasHeaders responseHasHeaderValue(String value) {
-        return new ResponseHasHeaders(hasItem(hasHarPair(anything(), value)));
+        return new ResponseHasHeaders(hasItem(hasHarHeader(anything(), value)));
     }
 
     @Override

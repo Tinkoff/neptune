@@ -1,5 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy;
 
+import com.browserup.harreader.model.HarEntry;
+import com.browserup.harreader.model.HarQueryParam;
 import net.lightbody.bmp.core.har.HarEntry;
 import net.lightbody.bmp.core.har.HarNameValuePair;
 import org.hamcrest.Description;
@@ -15,7 +17,7 @@ import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy.Has
 
 public final class RequestHasQueries extends TypeSafeDiagnosingMatcher<HarEntry> {
 
-    private final Matcher<? super List<HarNameValuePair>> queryMatcher;
+    private final Matcher<? super List<HarQueryParam>> queryMatcher;
 
     private RequestHasQueries(Matcher<? super List<HarNameValuePair>> queryMatcher) {
         this.queryMatcher = queryMatcher;

@@ -1,9 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.functions.browser.proxy;
 
-import net.lightbody.bmp.core.har.HarContent;
-import net.lightbody.bmp.core.har.HarEntry;
-import net.lightbody.bmp.core.har.HarNameValuePair;
-import net.lightbody.bmp.core.har.HarPostData;
+import com.browserup.harreader.model.*;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 
 import java.net.http.HttpClient;
@@ -82,11 +79,11 @@ public final class BrowserProxyCriteria {
      * @param method is the name of HTTP method request is supposed to have
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> requestMethod(String method) {
-        checkArgument(isNotBlank(method), "Method should be defined");
+    public static Criteria<HarEntry> requestMethod(HttpMethod method) {
+        checkArgument(nonNull(method), "Method should be defined");
 
         return condition(format("request with method '%s'", method), entry -> {
-            String requestMethod = entry.getRequest().getMethod();
+            HttpMethod requestMethod = entry.getRequest().getMethod();
 
             return Objects.equals(requestMethod, method);
         });
@@ -165,15 +162,15 @@ public final class BrowserProxyCriteria {
     /**
      * Checks headers of request.
      *
-     * @param headers is the {@link HarNameValuePair} list of headers request is supposed to have
+     * @param headers is the {@link HarHeader} list of headers request is supposed to have
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> requestHeaders(List<HarNameValuePair> headers) {
+    public static Criteria<HarEntry> requestHeaders(List<HarHeader> headers) {
         checkArgument(nonNull(headers), "Request headers list should be defined");
         checkArgument(headers.size() > 0, "Request headers list can'entry be empty");
 
         return condition(format("request with headers '%s'", headers), entry -> {
-            List<HarNameValuePair> requestHeaders = entry.getRequest().getHeaders();
+            List<HarHeader> requestHeaders = entry.getRequest().getHeaders();
 
             return ofNullable(requestHeaders)
                     .map(reqHeaders -> reqHeaders.size() == headers.size() && reqHeaders.containsAll(headers))
@@ -184,15 +181,15 @@ public final class BrowserProxyCriteria {
     /**
      * Checks headers of request.
      *
-     * @param headers headers is the {@link HarNameValuePair} list of headers request is supposed to contain
+     * @param headers headers is the {@link HarHeader} list of headers request is supposed to contain
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> requestHeadersContains(List<HarNameValuePair> headers) {
+    public static Criteria<HarEntry> requestHeadersContains(List<HarHeader> headers) {
         checkArgument(nonNull(headers), "Request headers list should be defined");
         checkArgument(headers.size() > 0, "Request headers list can'entry be empty");
 
         return condition(format("request with headers '%s'", headers), entry -> {
-            List<HarNameValuePair> requestHeaders = entry.getRequest().getHeaders();
+            List<HarHeader> requestHeaders = entry.getRequest().getHeaders();
 
             return ofNullable(requestHeaders)
                     .map(reqHeaders -> reqHeaders.containsAll(headers))
@@ -203,15 +200,15 @@ public final class BrowserProxyCriteria {
     /**
      * Checks headers of response.
      *
-     * @param headers headers is the {@link HarNameValuePair} list of headers response is supposed to have
+     * @param headers headers is the {@link HarHeader} list of headers response is supposed to have
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> responseHeaders(List<HarNameValuePair> headers) {
+    public static Criteria<HarEntry> responseHeaders(List<HarHeader> headers) {
         checkArgument(nonNull(headers), "Response headers list should be defined");
         checkArgument(headers.size() > 0, "Response headers list can'entry be empty");
 
         return condition(format("response with headers '%s'", headers), entry -> {
-            List<HarNameValuePair> responseHeaders = entry.getResponse().getHeaders();
+            List<HarHeader> responseHeaders = entry.getResponse().getHeaders();
 
             return ofNullable(responseHeaders)
                     .map(respHeaders -> respHeaders.size() == headers.size() && respHeaders.containsAll(headers))
@@ -222,15 +219,15 @@ public final class BrowserProxyCriteria {
     /**
      * Checks headers of response.
      *
-     * @param headers headers is the {@link HarNameValuePair} list of headers response is supposed to contain
+     * @param headers headers is the {@link HarHeader} list of headers response is supposed to contain
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> responseHeadersContains(List<HarNameValuePair> headers) {
+    public static Criteria<HarEntry> responseHeadersContains(List<HarHeader> headers) {
         checkArgument(nonNull(headers), "Response headers list should be defined");
         checkArgument(headers.size() > 0, "Response headers list can'entry be empty");
 
         return condition(format("response with headers '%s'", headers), entry -> {
-            List<HarNameValuePair> responseHeaders = entry.getResponse().getHeaders();
+            List<HarHeader> responseHeaders = entry.getResponse().getHeaders();
 
             return ofNullable(responseHeaders)
                     .map(respHeaders -> respHeaders.containsAll(headers))
@@ -250,10 +247,13 @@ public final class BrowserProxyCriteria {
         checkArgument(isNotBlank(value), "Request header value should be defined");
 
         return condition(format("request has header '%s' with value '%s'", name, value), entry -> {
-            List<HarNameValuePair> requestHeaders = entry.getRequest().getHeaders();
+            List<HarHeader> requestHeaders = entry.getRequest().getHeaders();
 
             return ofNullable(requestHeaders)
-                    .map(reqHeaders -> reqHeaders.contains(new HarNameValuePair(name, value)))
+                    .map(reqHeaders -> {
+//                        reqHeaders.contains(new HarHeader(name, value)) TODO 16.03.2020
+//                        reqHeaders.stream().map(header -> header.)
+                    })
                     .orElse(false);
         });
     }
@@ -271,7 +271,7 @@ public final class BrowserProxyCriteria {
         checkArgument(isNotBlank(valueExpression), "Request header value substring/RegExp should be defined");
 
         return condition(format("request has header '%s' with value contains/matches RegExp pattern '%s'", name, valueExpression), entry -> {
-            List<HarNameValuePair> requestHeaders = entry.getRequest().getHeaders();
+            List<HarHeader> requestHeaders = entry.getRequest().getHeaders();
 
             return ofNullable(requestHeaders)
                     .map(reqHeaders ->
@@ -306,10 +306,10 @@ public final class BrowserProxyCriteria {
         checkArgument(isNotBlank(value), "Response header value should be defined");
 
         return condition(format("response has header '%s' with value '%s'", name, value), entry -> {
-            List<HarNameValuePair> responseHeaders = entry.getResponse().getHeaders();
+            List<HarHeader> responseHeaders = entry.getResponse().getHeaders();
 
             return ofNullable(responseHeaders)
-                    .map(respHeaders -> respHeaders.contains(new HarNameValuePair(name, value)))
+                    .map(respHeaders -> respHeaders.contains(new HarHeader(name, value))) // TODO: 16.03.2020
                     .orElse(false);
         });
     }
@@ -327,7 +327,7 @@ public final class BrowserProxyCriteria {
         checkArgument(isNotBlank(valueExpression), "Response header value substring/RegExp should be defined");
 
         return condition(format("response has header '%s' with value contains/matches RegExp pattern '%s'", name, valueExpression), entry -> {
-            List<HarNameValuePair> responseHeaders = entry.getResponse().getHeaders();
+            List<HarHeader> responseHeaders = entry.getResponse().getHeaders();
 
             return ofNullable(responseHeaders)
                     .map(respHeaders ->

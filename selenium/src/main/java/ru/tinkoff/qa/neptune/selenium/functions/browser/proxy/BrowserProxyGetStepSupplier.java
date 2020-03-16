@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.functions.browser.proxy;
 
-import net.lightbody.bmp.core.har.Har;
-import net.lightbody.bmp.core.har.HarEntry;
+import com.browserup.harreader.model.Har;
+import com.browserup.harreader.model.HarEntry;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;

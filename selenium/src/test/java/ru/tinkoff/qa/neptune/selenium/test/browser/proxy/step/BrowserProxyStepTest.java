@@ -1,14 +1,12 @@
 package ru.tinkoff.qa.neptune.selenium.test.browser.proxy.step;
 
-import net.lightbody.bmp.core.har.HarEntry;
+import com.browserup.harreader.model.HarEntry;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.selenium.SeleniumParameterProvider;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
-import ru.tinkoff.qa.neptune.selenium.test.capability.suppliers.ChromeSettingsSupplierHeadless;
 
 import java.util.List;
 import java.util.Map;
@@ -19,8 +17,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasSize;
 import static ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.BrowserProxyGetStepSupplier.proxiedRequests;
-import static ru.tinkoff.qa.neptune.selenium.functions.navigation.Refresh.refresh;
-import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CHROME;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.KEEP_WEB_DRIVER_SESSION_OPENED;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.USE_BROWSER_PROXY;
 import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDriverProperty.SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY;

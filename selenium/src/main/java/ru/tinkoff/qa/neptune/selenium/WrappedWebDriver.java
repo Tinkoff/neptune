@@ -1,34 +1,28 @@
 package ru.tinkoff.qa.neptune.selenium;
 
+import com.browserup.bup.BrowserUpProxy;
+import com.browserup.bup.BrowserUpProxyServer;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import net.lightbody.bmp.BrowserMobProxy;
-import net.lightbody.bmp.BrowserMobProxyServer;
-import net.lightbody.bmp.client.ClientUtil;
-import net.lightbody.bmp.mitm.manager.ImpersonatingMitmManager;
-import net.lightbody.bmp.proxy.dns.NativeResolver;
-import net.lightbody.bmp.util.BrowserMobHttpUtil;
-import net.lightbody.bmp.util.BrowserMobProxyUtil;
 import net.sf.cglib.proxy.Enhancer;
 import org.apache.commons.lang3.ArrayUtils;
 import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.server.SeleniumServer;
 import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
 
 import java.net.URL;
-import java.util.concurrent.TimeUnit;
 
+import static com.browserup.bup.proxy.CaptureType.*;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static net.lightbody.bmp.proxy.CaptureType.*;
+import static org.openqa.selenium.Proxy.ProxyType.MANUAL;
 import static org.openqa.selenium.net.PortProber.findFreePort;
 import static ru.tinkoff.qa.neptune.core.api.utils.ConstructorUtil.findSuitableConstructor;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.*;
@@ -43,7 +37,7 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
     private static URL serverUrl;
 
     private final SupportedWebDrivers supportedWebDriver;
-    private final BrowserMobProxy proxy;
+    private final BrowserUpProxy proxy;
     private WebDriver driver;
     private boolean isWebDriverInstalled;
 
@@ -51,11 +45,8 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
         this.supportedWebDriver = supportedWebDriver;
 
         if (ofNullable(USE_BROWSER_PROXY.get()).orElse(false)) {
-            proxy = new BrowserMobProxyServer();
-//            proxy.setTrustAllServers(true);
-//            proxy.setMitmManager(ImpersonatingMitmManager.builder()
-//                    .trustAllServers(true)
-//                    .build());
+            proxy = new BrowserUpProxyServer();
+            proxy.setTrustAllServers(true);
         } else {
             proxy = null;
         }
@@ -107,17 +98,24 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
                 if (!capabilities.asMap().containsKey(CapabilityType.PROXY)) {
                     proxy.start();
 
-                    Proxy seleniumProxy = ClientUtil.createSeleniumProxy(proxy);
+                    Proxy seleniumProxy = new Proxy();
+                    seleniumProxy.setProxyType(MANUAL);
+
+                    String hostIp = new NetworkUtils().getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
+
+                    seleniumProxy.setHttpProxy(hostIp + ":" + proxy.getPort());
+                    seleniumProxy.setSslProxy(hostIp + ":" + proxy.getPort());
+                    seleniumProxy.setFtpProxy(hostIp + ":" + proxy.getPort());
 
                     capabilities.setCapability(CapabilityType.PROXY, seleniumProxy);
                     capabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
-                    capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+//                    capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
 
-//                    if (ChromeOptions.class.isAssignableFrom(capabilities.getClass())) {
-//                        ((ChromeOptions) capabilities).addArguments("--ingore-certificate-errors");
+                    if (ChromeOptions.class.isAssignableFrom(capabilities.getClass())) {
+                        ((ChromeOptions) capabilities).addArguments("--ingore-certificate-errors");
 //                        ((ChromeOptions) capabilities).addArguments("--allow-insecure-localhost");
-//                        ((ChromeOptions) capabilities).addArguments("--proxy-server=localhost:8082");
-//                    }
+//                        ((ChromeOptions) capabilities).addArguments(format("--proxy-server=%s:%s", hostIp, proxy.getPort()));
+                    }
 
                     for (var i = 0; i < arguments.length; i++) {
                         if (MutableCapabilities.class.isAssignableFrom(arguments[i].getClass())) {
@@ -215,7 +213,7 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
         return driver;
     }
 
-    public BrowserMobProxy getProxy() {
+    public BrowserUpProxy getProxy() {
         return proxy;
     }
 
