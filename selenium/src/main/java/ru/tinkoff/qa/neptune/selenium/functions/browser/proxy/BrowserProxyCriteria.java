@@ -14,6 +14,7 @@ import static java.net.http.HttpClient.Version.HTTP_1_1;
 import static java.net.http.HttpClient.Version.HTTP_2;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
+import static java.util.function.Predicate.isEqual;
 import static java.util.regex.Pattern.compile;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
@@ -124,15 +125,15 @@ public final class BrowserProxyCriteria {
     /**
      * Checks query parameters of request.
      *
-     * @param params is the {@link HarNameValuePair} list of query parameters request is supposed to have
+     * @param params is the {@link HarQueryParam} list of query parameters request is supposed to have
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> requestQueryParams(List<HarNameValuePair> params) {
+    public static Criteria<HarEntry> requestQueryParams(List<HarQueryParam> params) {
         checkArgument(nonNull(params), "Query params list should be defined");
         checkArgument(params.size() > 0, "Query params list can'entry be empty");
 
         return condition(format("request with query parameters '%s'", params), entry -> {
-            List<HarNameValuePair> queryParams = entry.getRequest().getQueryString();
+            List<HarQueryParam> queryParams = entry.getRequest().getQueryString();
 
             return ofNullable(queryParams)
                     .map(qParams -> qParams.size() == params.size() && qParams.containsAll(params))
@@ -143,15 +144,15 @@ public final class BrowserProxyCriteria {
     /**
      * Checks query parameters of request.
      *
-     * @param params is the {@link HarNameValuePair} list of query parameters request is supposed to contain
+     * @param params is the {@link HarQueryParam} list of query parameters request is supposed to contain
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> requestContainsQueryParams(List<HarNameValuePair> params) {
+    public static Criteria<HarEntry> requestContainsQueryParams(List<HarQueryParam> params) {
         checkArgument(nonNull(params), "Query params list should be defined");
         checkArgument(params.size() > 0, "Query params list can'entry be empty");
 
         return condition(format("request containing query parameters '%s'", params), entry -> {
-            List<HarNameValuePair> queryParams = entry.getRequest().getQueryString();
+            List<HarQueryParam> queryParams = entry.getRequest().getQueryString();
 
             return ofNullable(queryParams)
                     .map(qParams -> qParams.containsAll(params))
@@ -250,10 +251,10 @@ public final class BrowserProxyCriteria {
             List<HarHeader> requestHeaders = entry.getRequest().getHeaders();
 
             return ofNullable(requestHeaders)
-                    .map(reqHeaders -> {
-//                        reqHeaders.contains(new HarHeader(name, value)) TODO 16.03.2020
-//                        reqHeaders.stream().map(header -> header.)
-                    })
+                    .map(reqHeaders ->
+                            reqHeaders.stream()
+                                    .map(header -> header.getName().equals(name) && header.getValue().equals(value))
+                                    .anyMatch(isEqual(true)))
                     .orElse(false);
         });
     }
@@ -309,7 +310,10 @@ public final class BrowserProxyCriteria {
             List<HarHeader> responseHeaders = entry.getResponse().getHeaders();
 
             return ofNullable(responseHeaders)
-                    .map(respHeaders -> respHeaders.contains(new HarHeader(name, value))) // TODO: 16.03.2020
+                    .map(respHeaders ->
+                            respHeaders.stream()
+                                    .map(header -> header.getName().equals(name) && header.getValue().equals(value))
+                                    .anyMatch(isEqual(true)))
                     .orElse(false);
         });
     }

@@ -2,8 +2,6 @@ package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy;
 
 import com.browserup.harreader.model.HarEntry;
 import com.browserup.harreader.model.HarQueryParam;
-import net.lightbody.bmp.core.har.HarEntry;
-import net.lightbody.bmp.core.har.HarNameValuePair;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
@@ -13,17 +11,17 @@ import java.util.List;
 import static java.lang.String.format;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.hasItem;
-import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy.HasHarPair.hasHarPair;
+import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy.HasHarQueryParam.hasHarQueryParam;
 
 public final class RequestHasQueries extends TypeSafeDiagnosingMatcher<HarEntry> {
 
     private final Matcher<? super List<HarQueryParam>> queryMatcher;
 
-    private RequestHasQueries(Matcher<? super List<HarNameValuePair>> queryMatcher) {
+    private RequestHasQueries(Matcher<? super List<HarQueryParam>> queryMatcher) {
         this.queryMatcher = queryMatcher;
     }
 
-    private static RequestHasQueries requestHasQueries(Matcher<? super List<HarNameValuePair>> queryMatcher) {
+    private static RequestHasQueries requestHasQueries(Matcher<? super List<HarQueryParam>> queryMatcher) {
         return new RequestHasQueries(queryMatcher);
     }
 
@@ -35,7 +33,7 @@ public final class RequestHasQueries extends TypeSafeDiagnosingMatcher<HarEntry>
      * @return a new instance of {@link RequestHasQueries}
      */
     public static RequestHasQueries requestHasQuery(String name, String value) {
-        return new RequestHasQueries(hasItem(hasHarPair(name, value)));
+        return new RequestHasQueries(hasItem(hasHarQueryParam(name, value)));
     }
 
     /**
@@ -46,7 +44,7 @@ public final class RequestHasQueries extends TypeSafeDiagnosingMatcher<HarEntry>
      * @return a new instance of {@link RequestHasQueries}
      */
     public static RequestHasQueries requestHasQuery(Matcher<? super String> nameMatcher, String value) {
-        return new RequestHasQueries(hasItem(hasHarPair(nameMatcher, value)));
+        return new RequestHasQueries(hasItem(hasHarQueryParam(nameMatcher, value)));
     }
 
     /**
@@ -57,7 +55,7 @@ public final class RequestHasQueries extends TypeSafeDiagnosingMatcher<HarEntry>
      * @return a new instance of {@link RequestHasQueries}
      */
     public static RequestHasQueries requestHasQuery(String name, Matcher<? super String> valueMatcher) {
-        return new RequestHasQueries(hasItem(hasHarPair(name, valueMatcher)));
+        return new RequestHasQueries(hasItem(hasHarQueryParam(name, valueMatcher)));
     }
 
     /**
@@ -68,7 +66,7 @@ public final class RequestHasQueries extends TypeSafeDiagnosingMatcher<HarEntry>
      * @return a new instance of {@link RequestHasQueries}
      */
     public static RequestHasQueries requestHasQuery(Matcher<? super String> nameMatcher, Matcher<? super String> valueMatcher) {
-        return new RequestHasQueries(hasItem(hasHarPair(nameMatcher, valueMatcher)));
+        return new RequestHasQueries(hasItem(hasHarQueryParam(nameMatcher, valueMatcher)));
     }
 
     /**
@@ -78,7 +76,7 @@ public final class RequestHasQueries extends TypeSafeDiagnosingMatcher<HarEntry>
      * @return a new instance of {@link RequestHasQueries}
      */
     public static RequestHasQueries requestHasQueryName(Matcher<? super String> nameMatcher) {
-        return new RequestHasQueries(hasItem(hasHarPair(nameMatcher, anything())));
+        return new RequestHasQueries(hasItem(hasHarQueryParam(nameMatcher, anything())));
     }
 
     /**
@@ -88,7 +86,7 @@ public final class RequestHasQueries extends TypeSafeDiagnosingMatcher<HarEntry>
      * @return a new instance of {@link RequestHasQueries}
      */
     public static RequestHasQueries requestHasQueryName(String name) {
-        return new RequestHasQueries(hasItem(hasHarPair(name, anything())));
+        return new RequestHasQueries(hasItem(hasHarQueryParam(name, anything())));
     }
 
     /**
@@ -98,7 +96,7 @@ public final class RequestHasQueries extends TypeSafeDiagnosingMatcher<HarEntry>
      * @return a new instance of {@link RequestHasQueries}
      */
     public static RequestHasQueries requestHasQueryValue(Matcher<? super String> valueMatcher) {
-        return new RequestHasQueries(hasItem(hasHarPair(anything(), valueMatcher)));
+        return new RequestHasQueries(hasItem(hasHarQueryParam(anything(), valueMatcher)));
     }
 
     /**
@@ -108,7 +106,7 @@ public final class RequestHasQueries extends TypeSafeDiagnosingMatcher<HarEntry>
      * @return a new instance of {@link RequestHasQueries}
      */
     public static RequestHasQueries requestHasQueryValue(String value) {
-        return new RequestHasQueries(hasItem(hasHarPair(anything(), value)));
+        return new RequestHasQueries(hasItem(hasHarQueryParam(anything(), value)));
     }
 
     @Override
