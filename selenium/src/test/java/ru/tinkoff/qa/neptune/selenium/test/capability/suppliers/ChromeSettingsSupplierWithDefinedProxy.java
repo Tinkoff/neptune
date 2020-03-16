@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.test.capability.suppliers;
 
-import net.lightbody.bmp.BrowserMobProxyServer;
-import net.lightbody.bmp.client.ClientUtil;
+import com.browserup.bup.BrowserUpProxyServer;
+import com.browserup.bup.client.ClientUtil;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.CapabilityType;
@@ -14,7 +14,7 @@ public class ChromeSettingsSupplierWithDefinedProxy implements CapabilitySetting
     @Override
     public Consumer<ChromeOptions> get() {
         return chromeOptions -> {
-            Proxy tempProxy = ClientUtil.createSeleniumProxy(new BrowserMobProxyServer());
+            Proxy tempProxy = ClientUtil.createSeleniumProxy(new BrowserUpProxyServer());
 
             chromeOptions.setCapability(CapabilityType.PROXY, tempProxy);
             chromeOptions.addArguments("--headless");
