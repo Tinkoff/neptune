@@ -54,4 +54,9 @@ public class GetObjectFromBodyStepSupplier<T, R> extends
     public Function<HttpStepContext, R> get() {
         return getEndFunction();
     }
+
+    @Override
+    protected String prepareStepDescription() {
+        return super.prepareStepDescription();
+    }
 }

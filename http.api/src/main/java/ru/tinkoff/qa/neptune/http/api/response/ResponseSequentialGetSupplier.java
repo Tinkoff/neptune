@@ -58,4 +58,13 @@ public class ResponseSequentialGetSupplier<T> extends SequentialGetStepSupplier.
     protected ResponseSequentialGetSupplier<T> criteria(Criteria<? super HttpResponse<T>> criteria) {
         return super.criteria(criteria);
     }
+
+    @Override
+    protected String prepareStepDescription() {
+        return super.prepareStepDescription();
+    }
+
+    protected ResponseSequentialGetSupplier<T> clone() {
+        return super.clone();
+    }
 }

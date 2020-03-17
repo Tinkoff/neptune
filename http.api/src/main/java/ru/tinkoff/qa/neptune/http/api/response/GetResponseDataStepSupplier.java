@@ -5,7 +5,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.StepFunction;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
-import ru.tinkoff.qa.neptune.http.api.ResponseHasNoDesiredDataException;
+import ru.tinkoff.qa.neptune.http.api.DesiredDataHasNotBeenReceivedException;
 import ru.tinkoff.qa.neptune.http.api.request.GetRequest;
 import ru.tinkoff.qa.neptune.http.api.request.MethodRequest;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
@@ -68,33 +68,33 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
                                                                 SequentialGetStepSupplier<HttpStepContext, R, ?, P, ?> whatToGet) {
         checkArgument(nonNull(response), "Http response to get body data should be defined");
         checkArgument(nonNull(whatToGet), "Object that describes what to get from the response body should be defined");
-        return new Common<R, T, P>(format("%s from received response %s", whatToGet, response))
+        return new Common<R, T, P>(whatToGet.toString())
                 .use(whatToGet)
-                .fromResponse(ignored -> response);
+                .fromResponse(response);
     }
 
-    public static <R, T> Common<R, T, R> responseBody(HttpResponse<T> response, GetObjectFromArrayBodyStepSupplier<T, R> array) {
+    public static <R, T> Common<R, T, R> body(HttpResponse<T> response, GetObjectFromArrayBodyStepSupplier<T, R> array) {
         return responseBodyCommon(response, array);
     }
 
-    public static <R, T> Common<R, T, R> responseBody(HttpResponse<T> response, GetObjectFromBodyStepSupplier<T, R> obj) {
+    public static <R, T> Common<R, T, R> body(HttpResponse<T> response, GetObjectFromBodyStepSupplier<T, R> obj) {
         return responseBodyCommon(response, obj);
     }
 
-    public static <R, T> Common<R, T, R> responseBody(HttpResponse<T> response, GetObjectFromIterableBodyStepSupplier<T, R> iterable) {
+    public static <R, T> Common<R, T, R> body(HttpResponse<T> response, GetObjectFromIterableBodyStepSupplier<T, R> iterable) {
         return responseBodyCommon(response, iterable);
     }
 
-    public static <R, T> Common<R[], T, R> responseBody(HttpResponse<T> response, GetObjectsFromArrayBodyStepSupplier<T, R> array) {
+    public static <R, T> Common<R[], T, R> body(HttpResponse<T> response, GetObjectsFromArrayBodyStepSupplier<T, R> array) {
         return responseBodyCommon(response, array);
     }
 
-    public static <T, R, S extends Iterable<R>> Common<S, T, R> responseBody(HttpResponse<T> response, GetObjectsFromIterableBodyStepSupplier<T, R, S> iterable) {
+    public static <T, R, S extends Iterable<R>> Common<S, T, R> body(HttpResponse<T> response, GetObjectsFromIterableBodyStepSupplier<T, R, S> iterable) {
         return responseBodyCommon(response, iterable);
     }
 
-    public static <T> Common<T, T, T> responseBody(HttpResponse<T> response) {
-        return responseBody(response, object("Body", t -> t));
+    public static <T> Common<T, T, T> body(HttpResponse<T> response) {
+        return body(response, object("Body", t -> t));
     }
 
     private static <R, T, P> Common2<R, T, P> responseBodyCommon2(RequestBuilder request,
@@ -103,45 +103,45 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
         checkArgument(nonNull(request), "Http request should be defined");
         checkArgument(nonNull(bodyHandler), "Body handler of http response should be defined");
         checkArgument(nonNull(whatToGet), "Object that describes what to get from the response body should be defined");
-        return new Common2<R, T, P>(format("%s from received response %s", whatToGet, request))
+        return new Common2<R, T, P>(whatToGet.toString())
                 .use(whatToGet)
                 .fromResponse(response(request, bodyHandler));
     }
 
 
-    public static <R, T> Common2<R, T, R> responseBody(RequestBuilder request,
-                                                       HttpResponse.BodyHandler<T> bodyHandler,
-                                                       GetObjectFromArrayBodyStepSupplier<T, R> array) {
+    public static <R, T> Common2<R, T, R> body(RequestBuilder request,
+                                               HttpResponse.BodyHandler<T> bodyHandler,
+                                               GetObjectFromArrayBodyStepSupplier<T, R> array) {
         return responseBodyCommon2(request, bodyHandler, array);
     }
 
-    public static <R, T> Common2<R, T, R> responseBody(RequestBuilder request,
-                                                       HttpResponse.BodyHandler<T> bodyHandler,
-                                                       GetObjectFromBodyStepSupplier<T, R> obj) {
+    public static <R, T> Common2<R, T, R> body(RequestBuilder request,
+                                               HttpResponse.BodyHandler<T> bodyHandler,
+                                               GetObjectFromBodyStepSupplier<T, R> obj) {
         return responseBodyCommon2(request, bodyHandler, obj);
     }
 
-    public static <R, T> Common2<R, T, R> responseBody(RequestBuilder request,
-                                                       HttpResponse.BodyHandler<T> bodyHandler,
-                                                       GetObjectFromIterableBodyStepSupplier<T, R> iterable) {
+    public static <R, T> Common2<R, T, R> body(RequestBuilder request,
+                                               HttpResponse.BodyHandler<T> bodyHandler,
+                                               GetObjectFromIterableBodyStepSupplier<T, R> iterable) {
         return responseBodyCommon2(request, bodyHandler, iterable);
     }
 
-    public static <R, T> Common2<R[], T, R> responseBody(RequestBuilder request,
-                                                         HttpResponse.BodyHandler<T> bodyHandler,
-                                                         GetObjectsFromArrayBodyStepSupplier<T, R> array) {
+    public static <R, T> Common2<R[], T, R> body(RequestBuilder request,
+                                                 HttpResponse.BodyHandler<T> bodyHandler,
+                                                 GetObjectsFromArrayBodyStepSupplier<T, R> array) {
         return responseBodyCommon2(request, bodyHandler, array);
     }
 
-    public static <T, R, S extends Iterable<R>> Common2<S, T, R> responseBody(RequestBuilder request,
-                                                                              HttpResponse.BodyHandler<T> bodyHandler,
-                                                                              GetObjectsFromIterableBodyStepSupplier<T, R, S> iterable) {
+    public static <T, R, S extends Iterable<R>> Common2<S, T, R> body(RequestBuilder request,
+                                                                      HttpResponse.BodyHandler<T> bodyHandler,
+                                                                      GetObjectsFromIterableBodyStepSupplier<T, R, S> iterable) {
         return responseBodyCommon2(request, bodyHandler, iterable);
     }
 
-    public static <T> Common2<T, T, T> responseBody(RequestBuilder request,
-                                                    HttpResponse.BodyHandler<T> bodyHandler) {
-        return responseBody(request, bodyHandler, object("Body", t -> t));
+    public static <T> Common2<T, T, T> body(RequestBuilder request,
+                                            HttpResponse.BodyHandler<T> bodyHandler) {
+        return body(request, bodyHandler, object("Body", t -> t));
     }
 
     private static <R, T, P> Retrying<R, T, P> responseBodyRetrying(RequestBuilder request,
@@ -150,79 +150,79 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
         checkArgument(nonNull(request), "Http request should be defined");
         checkArgument(nonNull(bodyHandler), "Body handler of http response should be defined");
         checkArgument(nonNull(whatToGet), "Object that describes what to get from the response body should be defined");
-        return new Retrying<R, T, P>(format("%s from received response %s", whatToGet, request))
+        return new Retrying<R, T, P>(whatToGet.toString())
                 .use(whatToGet)
                 .fromResponse(response(request, bodyHandler));
     }
 
-    public static <R, T> Retrying<R, T, R> responseBody(GetRequest request,
-                                                        HttpResponse.BodyHandler<T> bodyHandler,
-                                                        GetObjectFromArrayBodyStepSupplier<T, R> array) {
+    public static <R, T> Retrying<R, T, R> body(GetRequest request,
+                                                HttpResponse.BodyHandler<T> bodyHandler,
+                                                GetObjectFromArrayBodyStepSupplier<T, R> array) {
         return responseBodyRetrying(request, bodyHandler, array);
     }
 
-    public static <R, T> Retrying<R, T, R> responseBody(GetRequest request,
-                                                        HttpResponse.BodyHandler<T> bodyHandler,
-                                                        GetObjectFromBodyStepSupplier<T, R> obj) {
+    public static <R, T> Retrying<R, T, R> body(GetRequest request,
+                                                HttpResponse.BodyHandler<T> bodyHandler,
+                                                GetObjectFromBodyStepSupplier<T, R> obj) {
         return responseBodyRetrying(request, bodyHandler, obj);
     }
 
-    public static <R, T> Retrying<R, T, R> responseBody(GetRequest request,
-                                                        HttpResponse.BodyHandler<T> bodyHandler,
-                                                        GetObjectFromIterableBodyStepSupplier<T, R> iterable) {
+    public static <R, T> Retrying<R, T, R> body(GetRequest request,
+                                                HttpResponse.BodyHandler<T> bodyHandler,
+                                                GetObjectFromIterableBodyStepSupplier<T, R> iterable) {
         return responseBodyRetrying(request, bodyHandler, iterable);
     }
 
-    public static <R, T> Retrying<R[], T, R> responseBody(GetRequest request,
-                                                          HttpResponse.BodyHandler<T> bodyHandler,
-                                                          GetObjectsFromArrayBodyStepSupplier<T, R> array) {
+    public static <R, T> Retrying<R[], T, R> body(GetRequest request,
+                                                  HttpResponse.BodyHandler<T> bodyHandler,
+                                                  GetObjectsFromArrayBodyStepSupplier<T, R> array) {
         return responseBodyRetrying(request, bodyHandler, array);
     }
 
-    public static <T, R, S extends Iterable<R>> Retrying<S, T, R> responseBody(GetRequest request,
-                                                                               HttpResponse.BodyHandler<T> bodyHandler,
-                                                                               GetObjectsFromIterableBodyStepSupplier<T, R, S> iterable) {
+    public static <T, R, S extends Iterable<R>> Retrying<S, T, R> body(GetRequest request,
+                                                                       HttpResponse.BodyHandler<T> bodyHandler,
+                                                                       GetObjectsFromIterableBodyStepSupplier<T, R, S> iterable) {
         return responseBodyRetrying(request, bodyHandler, iterable);
     }
 
-    public static <T> Retrying<T, T, T> responseBody(GetRequest request,
-                                                     HttpResponse.BodyHandler<T> bodyHandler) {
+    public static <T> Retrying<T, T, T> body(GetRequest request,
+                                             HttpResponse.BodyHandler<T> bodyHandler) {
         return responseBodyRetrying(request, bodyHandler,
                 GetObjectFromBodyStepSupplier.<T, T>object("Body", t -> t));
     }
 
-    public static <R, T> Retrying<R, T, R> responseBody(MethodRequest request,
-                                                        HttpResponse.BodyHandler<T> bodyHandler,
-                                                        GetObjectFromArrayBodyStepSupplier<T, R> array) {
+    public static <R, T> Retrying<R, T, R> body(MethodRequest request,
+                                                HttpResponse.BodyHandler<T> bodyHandler,
+                                                GetObjectFromArrayBodyStepSupplier<T, R> array) {
         return responseBodyRetrying(request, bodyHandler, array);
     }
 
-    public static <R, T> Retrying<R, T, R> responseBody(MethodRequest request,
-                                                        HttpResponse.BodyHandler<T> bodyHandler,
-                                                        GetObjectFromBodyStepSupplier<T, R> obj) {
+    public static <R, T> Retrying<R, T, R> body(MethodRequest request,
+                                                HttpResponse.BodyHandler<T> bodyHandler,
+                                                GetObjectFromBodyStepSupplier<T, R> obj) {
         return responseBodyRetrying(request, bodyHandler, obj);
     }
 
-    public static <R, T> Retrying<R, T, R> responseBody(MethodRequest request,
-                                                        HttpResponse.BodyHandler<T> bodyHandler,
-                                                        GetObjectFromIterableBodyStepSupplier<T, R> iterable) {
+    public static <R, T> Retrying<R, T, R> body(MethodRequest request,
+                                                HttpResponse.BodyHandler<T> bodyHandler,
+                                                GetObjectFromIterableBodyStepSupplier<T, R> iterable) {
         return responseBodyRetrying(request, bodyHandler, iterable);
     }
 
-    public static <R, T> Retrying<R[], T, R> responseBody(MethodRequest request,
-                                                          HttpResponse.BodyHandler<T> bodyHandler,
-                                                          GetObjectsFromArrayBodyStepSupplier<T, R> array) {
+    public static <R, T> Retrying<R[], T, R> body(MethodRequest request,
+                                                  HttpResponse.BodyHandler<T> bodyHandler,
+                                                  GetObjectsFromArrayBodyStepSupplier<T, R> array) {
         return responseBodyRetrying(request, bodyHandler, array);
     }
 
-    public static <T, R, S extends Iterable<R>> Retrying<S, T, R> responseBody(MethodRequest request,
-                                                                               HttpResponse.BodyHandler<T> bodyHandler,
-                                                                               GetObjectsFromIterableBodyStepSupplier<T, R, S> iterable) {
+    public static <T, R, S extends Iterable<R>> Retrying<S, T, R> body(MethodRequest request,
+                                                                       HttpResponse.BodyHandler<T> bodyHandler,
+                                                                       GetObjectsFromIterableBodyStepSupplier<T, R, S> iterable) {
         return responseBodyRetrying(request, bodyHandler, iterable);
     }
 
-    public static <T> Retrying<T, T, T> responseBody(MethodRequest request,
-                                                     HttpResponse.BodyHandler<T> bodyHandler) {
+    public static <T> Retrying<T, T, T> body(MethodRequest request,
+                                             HttpResponse.BodyHandler<T> bodyHandler) {
         return responseBodyRetrying(request, bodyHandler,
                 GetObjectFromBodyStepSupplier.<T, T>object("Body", t -> t));
     }
@@ -232,19 +232,19 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
         return (S) this;
     }
 
-    S fromResponse(Function<HttpStepContext, HttpResponse<T>> getResponse) {
-        this.responseFunction = getResponse;
+    S fromResponse(HttpResponse<T> response) {
+        this.responseFunction = response;
         return (S) this;
     }
 
     S fromResponse(ResponseSequentialGetSupplier<T> getResponse) {
-        this.responseFunction = getResponse;
+        this.responseFunction = getResponse.clone();
         return (S) this;
     }
 
     public S throwWhenNothing(String exceptionMessage) {
         ofNullable(from).ifPresent(s -> {
-            var toThrow = ((Supplier<ResponseHasNoDesiredDataException>) () -> new ResponseHasNoDesiredDataException(exceptionMessage));
+            var toThrow = ((Supplier<DesiredDataHasNotBeenReceivedException>) () -> new DesiredDataHasNotBeenReceivedException(exceptionMessage));
             var clazz = s.getClass();
 
             if (GetObjectFromArrayBodyStepSupplier.class.isAssignableFrom(clazz)) {
@@ -274,7 +274,7 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
         return (S) this;
     }
 
-    public S bodyDataCriteria(Criteria<? super P> criteria) {
+    public S dataCriteria(Criteria<? super P> criteria) {
         ofNullable(from).ifPresent(s -> {
             var clazz = s.getClass();
 
@@ -305,8 +305,8 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
         return (S) this;
     }
 
-    public S bodyDataCriteria(String description, Predicate<? super P> predicate) {
-        return bodyDataCriteria(condition(description, predicate));
+    public S dataCriteria(String description, Predicate<? super P> predicate) {
+        return dataCriteria(condition(description, predicate));
     }
 
     protected S responseCriteria(Criteria<? super HttpResponse<T>> criteria) {
@@ -324,6 +324,33 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
         return responseCriteria(condition(description, predicate));
     }
 
+    protected String prepareStepDescription() {
+        //TODO use step arguments
+
+        String stepDescription;
+        var clazz = from.getClass();
+
+        if (GetObjectFromArrayBodyStepSupplier.class.isAssignableFrom(clazz)) {
+            stepDescription = ((GetObjectFromArrayBodyStepSupplier<?, ?>) from).prepareStepDescription();
+        } else if (GetObjectFromBodyStepSupplier.class.isAssignableFrom(clazz)) {
+            stepDescription = ((GetObjectFromBodyStepSupplier<?, ?>) from).prepareStepDescription();
+        } else if (GetObjectFromIterableBodyStepSupplier.class.isAssignableFrom(clazz)) {
+            stepDescription = ((GetObjectFromIterableBodyStepSupplier<?, ?>) from).prepareStepDescription();
+        } else if (GetObjectsFromArrayBodyStepSupplier.class.isAssignableFrom(clazz)) {
+            stepDescription = ((GetObjectsFromArrayBodyStepSupplier<?, ?>) from).prepareStepDescription();
+        } else if (GetObjectsFromIterableBodyStepSupplier.class.isAssignableFrom(clazz)) {
+            stepDescription = ((GetObjectsFromIterableBodyStepSupplier<?, ?, ?>) from).prepareStepDescription();
+        } else {
+            stepDescription = from.toString();
+        }
+
+        if (ResponseSequentialGetSupplier.class.isAssignableFrom(responseFunction.getClass())) {
+            return format("%s from %s", stepDescription, ((ResponseSequentialGetSupplier<?>) responseFunction).prepareStepDescription());
+        } else {
+            return format("%s from %s", stepDescription, responseFunction);
+        }
+    }
+
     @Override
     public Function<HttpStepContext, R> get() {
         checkArgument(nonNull(from), "It is not defined how to get data from http response");
@@ -331,8 +358,8 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
 
         var clazz = responseFunction.getClass();
         Function<HttpStepContext, HttpResponse<T>> f;
-        if (Function.class.isAssignableFrom(clazz)) {
-            f = (Function<HttpStepContext, HttpResponse<T>>) responseFunction;
+        if (HttpResponse.class.isAssignableFrom(clazz)) {
+            f = ignored -> (HttpResponse<T>) responseFunction;
         } else {
             f = ((StepFunction<HttpStepContext, HttpResponse<T>>) ((ResponseSequentialGetSupplier<T>) responseFunction).get())
                     .turnReportingOff();

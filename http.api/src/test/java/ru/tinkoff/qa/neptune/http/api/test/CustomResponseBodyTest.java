@@ -8,6 +8,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.w3c.dom.Document;
+import ru.tinkoff.qa.neptune.http.api.response.GetResponseDataStepSupplier;
 import ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler;
 import ru.tinkoff.qa.neptune.http.api.test.request.body.BodyObject;
 
@@ -24,7 +25,7 @@ import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasBody.hasBody;
 import static ru.tinkoff.qa.neptune.http.api.request.GetRequest.GET;
 import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromBodyStepSupplier.object;
-import static ru.tinkoff.qa.neptune.http.api.response.GetResponseDataStepSupplier.responseBody;
+import static ru.tinkoff.qa.neptune.http.api.response.GetResponseDataStepSupplier.body;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.FromJson.getFromJson;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.GetDocument.getDocument;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.GetMapped.getMapped;
@@ -134,7 +135,7 @@ public class CustomResponseBodyTest extends BaseHttpTest {
                                        String toGetDescription,
                                        Function<String, ?> howToGet,
                                        Matcher<? super Object> matcher) {
-        assertThat(http().get(responseBody(
+        assertThat(http().get(GetResponseDataStepSupplier.body(
                 GET(REQUEST_URI + urlPath),
                 ofString(),
                 object(toGetDescription, howToGet))),

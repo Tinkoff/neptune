@@ -54,4 +54,9 @@ public class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Iterable<R>>
     public Function<HttpStepContext, S> get() {
         return getEndFunction();
     }
+
+    @Override
+    protected String prepareStepDescription() {
+        return super.prepareStepDescription();
+    }
 }
