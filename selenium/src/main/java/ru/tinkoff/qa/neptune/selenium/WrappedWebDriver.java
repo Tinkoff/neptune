@@ -221,8 +221,7 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
         ofNullable(driver).ifPresent(webDriver -> {
             ofNullable(proxy).ifPresent(browserMobProxy -> {
                 if (browserMobProxy.isStarted()) {
-                    browserMobProxy.endHar();
-                    browserMobProxy.stop();
+                        browserMobProxy.abort();
                 }
             });
 

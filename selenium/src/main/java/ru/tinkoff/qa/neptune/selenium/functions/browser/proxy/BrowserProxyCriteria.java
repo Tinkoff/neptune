@@ -253,8 +253,8 @@ public final class BrowserProxyCriteria {
             return ofNullable(requestHeaders)
                     .map(reqHeaders ->
                             reqHeaders.stream()
-                                    .map(header -> header.getName().equals(name) && header.getValue().equals(value))
-                                    .anyMatch(isEqual(true)))
+                                    .anyMatch(header ->
+                                            header.getName().equals(name) && header.getValue().equals(value)))
                     .orElse(false);
         });
     }
@@ -312,8 +312,8 @@ public final class BrowserProxyCriteria {
             return ofNullable(responseHeaders)
                     .map(respHeaders ->
                             respHeaders.stream()
-                                    .map(header -> header.getName().equals(name) && header.getValue().equals(value))
-                                    .anyMatch(isEqual(true)))
+                                    .anyMatch(header ->
+                                            header.getName().equals(name) && header.getValue().equals(value)))
                     .orElse(false);
         });
     }
