@@ -10,9 +10,7 @@ import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 import java.net.http.HttpResponse;
 import java.util.function.Predicate;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
-import static java.util.Objects.nonNull;
 
 /**
  * Builds a step-function that receives http response
@@ -25,15 +23,8 @@ public class ResponseSequentialGetSupplier<T> extends SequentialGetStepSupplier.
         ResponseSequentialGetSupplier<T>> {
 
     private ResponseSequentialGetSupplier(RequestBuilder requestBuilder, HttpResponse.BodyHandler<T> bodyHandler) {
-        super(format("Response of [%s]", requestBuilder), httpStepContext -> {
-            try {
-                checkArgument(nonNull(requestBuilder), "Http request should not be null");
-                checkArgument(nonNull(bodyHandler), "Http response body handler should not be null");
-                return httpStepContext.getCurrentClient().send(requestBuilder.build(), bodyHandler);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+        super(format("Response of [%s]", requestBuilder),
+                new ForResponseFunction<>(requestBuilder, bodyHandler));
     }
 
     /**
@@ -66,5 +57,10 @@ public class ResponseSequentialGetSupplier<T> extends SequentialGetStepSupplier.
 
     protected ResponseSequentialGetSupplier<T> clone() {
         return super.clone();
+    }
+
+    @Override
+    protected ForResponseFunction<T> getOriginalFunction() {
+        return (ForResponseFunction<T>) super.getOriginalFunction();
     }
 }
