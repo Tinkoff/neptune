@@ -3,7 +3,6 @@ package ru.tinkoff.qa.neptune.http.api.response;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeCaptureOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
-import ru.tinkoff.qa.neptune.core.api.steps.StepFunction;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
 import ru.tinkoff.qa.neptune.http.api.DesiredDataHasNotBeenReceivedException;
 import ru.tinkoff.qa.neptune.http.api.request.GetRequest;
@@ -36,31 +35,60 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
     }
 
     private static <T> void addHowToGetResponse(SequentialGetStepSupplier<HttpStepContext, ?, ?, ?, ?> from,
-                                                Function<HttpStepContext, HttpResponse<T>> f) {
+                                                HttpResponse<T> response) {
         var clazz = from.getClass();
 
         if (GetObjectFromArrayBodyStepSupplier.class.isAssignableFrom(clazz)) {
-            ((GetObjectFromArrayBodyStepSupplier<T, ?>) from).getOriginalFunction().setResponseFunc(f);
+            ((GetObjectFromArrayBodyStepSupplier<T, ?>) from).getOriginalFunction().setResponse(response);
             return;
         }
 
         if (GetObjectFromBodyStepSupplier.class.isAssignableFrom(clazz)) {
-            ((GetObjectFromBodyStepSupplier<T, ?>) from).getOriginalFunction().setResponseFunc(f);
+            ((GetObjectFromBodyStepSupplier<T, ?>) from).getOriginalFunction().setResponse(response);
             return;
         }
 
         if (GetObjectFromIterableBodyStepSupplier.class.isAssignableFrom(clazz)) {
-            ((GetObjectFromIterableBodyStepSupplier<T, ?>) from).getOriginalFunction().setResponseFunc(f);
+            ((GetObjectFromIterableBodyStepSupplier<T, ?>) from).getOriginalFunction().setResponse(response);
             return;
         }
 
         if (GetObjectsFromArrayBodyStepSupplier.class.isAssignableFrom(clazz)) {
-            ((GetObjectsFromArrayBodyStepSupplier<T, ?>) from).getOriginalFunction().setResponseFunc(f);
+            ((GetObjectsFromArrayBodyStepSupplier<T, ?>) from).getOriginalFunction().setResponse(response);
             return;
         }
 
         if (GetObjectsFromIterableBodyStepSupplier.class.isAssignableFrom(clazz)) {
-            ((GetObjectsFromIterableBodyStepSupplier<T, ?, ?>) from).getOriginalFunction().setResponseFunc(f);
+            ((GetObjectsFromIterableBodyStepSupplier<T, ?, ?>) from).getOriginalFunction().setResponse(response);
+        }
+    }
+
+    private static <T> void addHowToGetResponse(SequentialGetStepSupplier<HttpStepContext, ?, ?, ?, ?> from,
+                                                ResponseSequentialGetSupplier<T> response) {
+        var clazz = from.getClass();
+
+        if (GetObjectFromArrayBodyStepSupplier.class.isAssignableFrom(clazz)) {
+            ((GetObjectFromArrayBodyStepSupplier<T, ?>) from).getOriginalFunction().setResponse(response);
+            return;
+        }
+
+        if (GetObjectFromBodyStepSupplier.class.isAssignableFrom(clazz)) {
+            ((GetObjectFromBodyStepSupplier<T, ?>) from).getOriginalFunction().setResponse(response);
+            return;
+        }
+
+        if (GetObjectFromIterableBodyStepSupplier.class.isAssignableFrom(clazz)) {
+            ((GetObjectFromIterableBodyStepSupplier<T, ?>) from).getOriginalFunction().setResponse(response);
+            return;
+        }
+
+        if (GetObjectsFromArrayBodyStepSupplier.class.isAssignableFrom(clazz)) {
+            ((GetObjectsFromArrayBodyStepSupplier<T, ?>) from).getOriginalFunction().setResponse(response);
+            return;
+        }
+
+        if (GetObjectsFromIterableBodyStepSupplier.class.isAssignableFrom(clazz)) {
+            ((GetObjectsFromIterableBodyStepSupplier<T, ?, ?>) from).getOriginalFunction().setResponse(response);
         }
     }
 
@@ -357,15 +385,12 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
         checkArgument(nonNull(responseFunction), "Response to be received is not defined");
 
         var clazz = responseFunction.getClass();
-        Function<HttpStepContext, HttpResponse<T>> f;
         if (HttpResponse.class.isAssignableFrom(clazz)) {
-            f = ignored -> (HttpResponse<T>) responseFunction;
+            addHowToGetResponse(from, (HttpResponse<T>) responseFunction);
         } else {
-            f = ((StepFunction<HttpStepContext, HttpResponse<T>>) ((ResponseSequentialGetSupplier<T>) responseFunction).get())
-                    .turnReportingOff();
+            addHowToGetResponse(from, (ResponseSequentialGetSupplier<T>) responseFunction);
         }
 
-        addHowToGetResponse(from, f);
         super.from(from.get());
         return super.get();
     }

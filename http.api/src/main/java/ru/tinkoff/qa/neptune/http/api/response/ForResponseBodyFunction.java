@@ -13,7 +13,7 @@ import static java.util.Objects.nonNull;
 final class ForResponseBodyFunction<R, T> implements Function<HttpStepContext, T> {
 
     final Function<R, T> getFromBody;
-    private Function<HttpStepContext, HttpResponse<R>> getResponse;
+    private Object response;
 
     ForResponseBodyFunction(Function<R, T> getFromBody) {
         checkNotNull(getFromBody);
@@ -21,9 +21,20 @@ final class ForResponseBodyFunction<R, T> implements Function<HttpStepContext, T
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public T apply(HttpStepContext httpStepContext) {
-        checkArgument(nonNull(getResponse), "How to get response is not defined");
-        var r =  getResponse.apply(httpStepContext);
+        checkArgument(nonNull(response), "How to get response is not defined");
+        HttpResponse<R> r;
+
+        if (response instanceof HttpResponse) {
+            r = (HttpResponse<R>) response;
+        }
+        else {
+            r = ((StepFunction<HttpStepContext, HttpResponse<R>>) ((ResponseSequentialGetSupplier<R>) response).get())
+                    .turnReportingOff()
+                    .apply(httpStepContext);
+        }
+
         if (r == null) {
             return null;
         }
@@ -37,8 +48,13 @@ final class ForResponseBodyFunction<R, T> implements Function<HttpStepContext, T
         }
     }
 
-    ForResponseBodyFunction<R, T> setResponseFunc(Function<HttpStepContext, HttpResponse<R>> getResponse) {
-        this.getResponse = getResponse;
+    ForResponseBodyFunction<R, T> setResponse(HttpResponse<R> response) {
+        this.response = response;
+        return this;
+    }
+
+    ForResponseBodyFunction<R, T> setResponse(ResponseSequentialGetSupplier<R> howToGetResponse) {
+        this.response = howToGetResponse;
         return this;
     }
 }
