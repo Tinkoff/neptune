@@ -4,7 +4,6 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeCaptureOnFinis
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
-import ru.tinkoff.qa.neptune.http.api.DesiredDataHasNotBeenReceivedException;
 import ru.tinkoff.qa.neptune.http.api.request.GetRequest;
 import ru.tinkoff.qa.neptune.http.api.request.MethodRequest;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;

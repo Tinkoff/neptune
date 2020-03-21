@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.http.api;
+package ru.tinkoff.qa.neptune.http.api.response;
 
 public class DesiredDataHasNotBeenReceivedException extends RuntimeException {
 

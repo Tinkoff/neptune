@@ -2,7 +2,7 @@ package ru.tinkoff.qa.neptune.http.api.test;
 
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.http.api.DesiredDataHasNotBeenReceivedException;
+import ru.tinkoff.qa.neptune.http.api.response.DesiredDataHasNotBeenReceivedException;
 import ru.tinkoff.qa.neptune.http.api.response.GetResponseDataStepSupplier;
 
 import static java.lang.String.format;

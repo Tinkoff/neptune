@@ -9,11 +9,13 @@ import java.util.function.Function;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
 
 final class ForResponseBodyFunction<R, T> implements Function<HttpStepContext, T> {
 
     final Function<R, T> getFromBody;
     private Object response;
+    private HttpResponse<R> r;
 
     ForResponseBodyFunction(Function<R, T> getFromBody) {
         checkNotNull(getFromBody);
@@ -24,7 +26,6 @@ final class ForResponseBodyFunction<R, T> implements Function<HttpStepContext, T
     @SuppressWarnings("unchecked")
     public T apply(HttpStepContext httpStepContext) {
         checkArgument(nonNull(response), "How to get response is not defined");
-        HttpResponse<R> r;
 
         if (response instanceof HttpResponse) {
             r = (HttpResponse<R>) response;
@@ -48,13 +49,29 @@ final class ForResponseBodyFunction<R, T> implements Function<HttpStepContext, T
         }
     }
 
-    ForResponseBodyFunction<R, T> setResponse(HttpResponse<R> response) {
+    void setResponse(HttpResponse<R> response) {
         this.response = response;
-        return this;
     }
 
-    ForResponseBodyFunction<R, T> setResponse(ResponseSequentialGetSupplier<R> howToGetResponse) {
+    void setResponse(ResponseSequentialGetSupplier<R> howToGetResponse) {
         this.response = howToGetResponse;
-        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    HttpResponse<R> getLastReceivedResponse() {
+        return ofNullable(response)
+                .map(o -> {
+                    if (o instanceof HttpResponse) {
+                        return  (HttpResponse<R>) o;
+                    }
+                    else {
+                        return ((ResponseSequentialGetSupplier<R>) o).getOriginalFunction().getLastReceived();
+                    }
+                })
+                .orElse(null);
+    }
+
+    HttpResponse<R> getLastValidResponse() {
+        return r;
     }
 }
