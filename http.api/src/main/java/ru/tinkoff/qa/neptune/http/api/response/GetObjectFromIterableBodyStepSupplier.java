@@ -8,7 +8,6 @@ import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
 import java.time.Duration;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
 public class GetObjectFromIterableBodyStepSupplier<T, R> extends
@@ -32,9 +31,9 @@ public class GetObjectFromIterableBodyStepSupplier<T, R> extends
         return super.criteria(description, predicate);
     }
 
-    @Override
-    protected GetObjectFromIterableBodyStepSupplier<T, R> throwOnEmptyResult(Supplier<? extends RuntimeException> exceptionSupplier) {
-        return super.throwOnEmptyResult(exceptionSupplier);
+    protected GetObjectFromIterableBodyStepSupplier<T, R> throwWhenNothing(String exceptionMessage) {
+        super.throwOnEmptyResult(new DataHasNotBeenReceivedExceptionSupplier(exceptionMessage, getOriginalFunction()));
+        return this;
     }
 
     @Override

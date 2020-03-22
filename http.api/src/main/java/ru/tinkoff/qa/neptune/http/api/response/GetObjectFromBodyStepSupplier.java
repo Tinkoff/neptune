@@ -7,7 +7,6 @@ import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
 import java.time.Duration;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 public class GetObjectFromBodyStepSupplier<T, R> extends
         SequentialGetStepSupplier.GetObjectStepSupplier<HttpStepContext, R, GetObjectFromBodyStepSupplier<T, R>> {
@@ -30,9 +29,9 @@ public class GetObjectFromBodyStepSupplier<T, R> extends
         return super.criteria(description, predicate);
     }
 
-    @Override
-    protected GetObjectFromBodyStepSupplier<T, R> throwOnEmptyResult(Supplier<? extends RuntimeException> exceptionSupplier) {
-        return super.throwOnEmptyResult(exceptionSupplier);
+    protected GetObjectFromBodyStepSupplier<T, R> throwWhenNothing(String exceptionMessage) {
+        super.throwOnEmptyResult(new DataHasNotBeenReceivedExceptionSupplier(exceptionMessage, getOriginalFunction()));
+        return this;
     }
 
     @Override

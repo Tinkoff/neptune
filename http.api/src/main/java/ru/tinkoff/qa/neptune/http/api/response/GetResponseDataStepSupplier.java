@@ -12,7 +12,6 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
@@ -271,31 +270,30 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
 
     public S throwWhenNothing(String exceptionMessage) {
         ofNullable(from).ifPresent(s -> {
-            var toThrow = ((Supplier<DesiredDataHasNotBeenReceivedException>) () -> new DesiredDataHasNotBeenReceivedException(exceptionMessage));
             var clazz = s.getClass();
 
             if (GetObjectFromArrayBodyStepSupplier.class.isAssignableFrom(clazz)) {
-                ((GetObjectFromArrayBodyStepSupplier<?, ?>) s).throwOnEmptyResult(toThrow);
+                ((GetObjectFromArrayBodyStepSupplier<?, ?>) s).throwWhenNothing(exceptionMessage);
                 return;
             }
 
             if (GetObjectFromBodyStepSupplier.class.isAssignableFrom(clazz)) {
-                ((GetObjectFromBodyStepSupplier<?, ?>) s).throwOnEmptyResult(toThrow);
+                ((GetObjectFromBodyStepSupplier<?, ?>) s).throwWhenNothing(exceptionMessage);
                 return;
             }
 
             if (GetObjectFromIterableBodyStepSupplier.class.isAssignableFrom(clazz)) {
-                ((GetObjectFromIterableBodyStepSupplier<?, ?>) s).throwOnEmptyResult(toThrow);
+                ((GetObjectFromIterableBodyStepSupplier<?, ?>) s).throwWhenNothing(exceptionMessage);
                 return;
             }
 
             if (GetObjectsFromArrayBodyStepSupplier.class.isAssignableFrom(clazz)) {
-                ((GetObjectsFromArrayBodyStepSupplier<?, ?>) s).throwOnEmptyResult(toThrow);
+                ((GetObjectsFromArrayBodyStepSupplier<?, ?>) s).throwWhenNothing(exceptionMessage);
                 return;
             }
 
             if (GetObjectsFromIterableBodyStepSupplier.class.isAssignableFrom(clazz)) {
-                ((GetObjectsFromIterableBodyStepSupplier<?, ?, ?>) s).throwOnEmptyResult(toThrow);
+                ((GetObjectsFromIterableBodyStepSupplier<?, ?, ?>) s).throwWhenNothing(exceptionMessage);
             }
         });
         return (S) this;
