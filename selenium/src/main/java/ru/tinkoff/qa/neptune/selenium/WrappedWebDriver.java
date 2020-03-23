@@ -7,7 +7,6 @@ import net.sf.cglib.proxy.Enhancer;
 import org.apache.commons.lang3.ArrayUtils;
 import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
 import org.openqa.selenium.*;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.server.SeleniumServer;
@@ -109,13 +108,7 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
 
                     capabilities.setCapability(CapabilityType.PROXY, seleniumProxy);
                     capabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
-//                    capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
-
-                    if (ChromeOptions.class.isAssignableFrom(capabilities.getClass())) {
-                        ((ChromeOptions) capabilities).addArguments("--ingore-certificate-errors");
-//                        ((ChromeOptions) capabilities).addArguments("--allow-insecure-localhost");
-//                        ((ChromeOptions) capabilities).addArguments(format("--proxy-server=%s:%s", hostIp, proxy.getPort()));
-                    }
+                    capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
 
                     for (var i = 0; i < arguments.length; i++) {
                         if (MutableCapabilities.class.isAssignableFrom(arguments[i].getClass())) {
@@ -221,7 +214,7 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
         ofNullable(driver).ifPresent(webDriver -> {
             ofNullable(proxy).ifPresent(browserMobProxy -> {
                 if (browserMobProxy.isStarted()) {
-                        browserMobProxy.abort();
+                    browserMobProxy.abort();
                 }
             });
 
