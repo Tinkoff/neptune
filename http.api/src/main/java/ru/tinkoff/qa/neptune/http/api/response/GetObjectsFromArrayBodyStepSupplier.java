@@ -8,6 +8,12 @@ import java.time.Duration;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+/**
+ * Builds a step-function that retrieves an array from http response body.
+ *
+ * @param <T> is a type of a response body
+ * @param <R> is a type of an item of resulted array
+ */
 public class GetObjectsFromArrayBodyStepSupplier<T, R> extends
         SequentialGetStepSupplier.GetArrayStepSupplier<HttpStepContext, R, GetObjectsFromArrayBodyStepSupplier<T, R>> {
 
@@ -15,6 +21,16 @@ public class GetObjectsFromArrayBodyStepSupplier<T, R> extends
         super(description, new ForResponseBodyFunction<>(f));
     }
 
+    /**
+     * Creates an instance of {@link GetObjectsFromArrayBodyStepSupplier}. It builds a step-function that retrieves
+     * an array from http response body.
+     *
+     * @param description is a description of resulted array
+     * @param f           is a function that describes how to transform body of http response to array
+     * @param <T>         is a type of a response body
+     * @param <R>         is a type of an item of resulted array
+     * @return an instance of {@link GetObjectsFromArrayBodyStepSupplier}
+     */
     public static <T, R> GetObjectsFromArrayBodyStepSupplier<T, R> array(String description, Function<T, R[]> f) {
         return new GetObjectsFromArrayBodyStepSupplier<>(description, f);
     }
@@ -29,7 +45,7 @@ public class GetObjectsFromArrayBodyStepSupplier<T, R> extends
         return super.criteria(description, predicate);
     }
 
-    protected GetObjectsFromArrayBodyStepSupplier<T, R> throwWhenNothing(String exceptionMessage) {
+    GetObjectsFromArrayBodyStepSupplier<T, R> throwWhenNothing(String exceptionMessage) {
         super.throwOnEmptyResult(new DataHasNotBeenReceivedExceptionSupplier(exceptionMessage, getOriginalFunction()));
         return this;
     }

@@ -21,6 +21,16 @@ import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromBodyStepSupplier.object;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSupplier.response;
 
+/**
+ * Builds a step-function to receive http response and extract desired data from the response body.
+ *
+ * @param <R> is a type of resulted value
+ * @param <T> is a type of a response body
+ * @param <P> is a type of a value that should be filtered by criteria.
+ * @param <S> if a type of a class that extends {@link GetResponseDataStepSupplier}
+ * @see #dataCriteria(Criteria)
+ * @see #dataCriteria(String, Predicate)
+ */
 @SuppressWarnings("unchecked")
 @MakeCaptureOnFinishing(typeOfCapture = Object.class)
 public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponseDataStepSupplier<R, T, P, S>> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<HttpStepContext, R, R, S> {
@@ -99,26 +109,85 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
                 .fromResponse(response);
     }
 
-    public static <R, T> Common<R, T, R> body(HttpResponse<T> response, GetObjectFromArrayBodyStepSupplier<T, R> array) {
-        return responseBodyCommon(response, array);
+    /**
+     * Creates an instance of {@link GetResponseDataStepSupplier}. It builds a step-function that returns an item of array.
+     * An array is retrieved from body of the received http response.
+     *
+     * @param response   is a received http response.
+     * @param oneOfArray is an object that describes resulted object and how to get an array from response body
+     * @param <R>        is a type of an an item of an array
+     * @param <T>        is a type of a response body
+     * @return instance of {@link Common}
+     */
+    public static <R, T> Common<R, T, R> body(HttpResponse<T> response, GetObjectFromArrayBodyStepSupplier<T, R> oneOfArray) {
+        return responseBodyCommon(response, oneOfArray);
     }
 
+    /**
+     * Creates an instance of {@link GetResponseDataStepSupplier}. It builds a step-function that returns an object.
+     * This object is retrieved from body of the received http response.
+     *
+     * @param response is a received http response.
+     * @param obj      is an object that describes resulted object
+     * @param <R>      is a type of resulted object
+     * @param <T>      is a type of a response body
+     * @return instance of {@link Common}
+     */
     public static <R, T> Common<R, T, R> body(HttpResponse<T> response, GetObjectFromBodyStepSupplier<T, R> obj) {
         return responseBodyCommon(response, obj);
     }
 
-    public static <R, T> Common<R, T, R> body(HttpResponse<T> response, GetObjectFromIterableBodyStepSupplier<T, R> iterable) {
-        return responseBodyCommon(response, iterable);
+    /**
+     * Creates an instance of {@link GetResponseDataStepSupplier}. It builds a step-function that returns an item of {@link Iterable}.
+     * An iterable is retrieved from body of the received http response.
+     *
+     * @param response      is a received http response.
+     * @param oneOfIterable is an object that describes resulted object and how to get an {@link Iterable} from response body
+     * @param <R>           is a type of an item of iterable
+     * @param <T>           is a type of a response body
+     * @return instance of {@link Common}
+     */
+    public static <R, T> Common<R, T, R> body(HttpResponse<T> response, GetObjectFromIterableBodyStepSupplier<T, R> oneOfIterable) {
+        return responseBodyCommon(response, oneOfIterable);
     }
 
+    /**
+     * Creates an instance of {@link GetResponseDataStepSupplier}. It builds a step-function that returns an array.
+     * An array is retrieved from body of the received http response.
+     *
+     * @param response is a received http response.
+     * @param array    is an object that describes resulted array and how to get it from response body
+     * @param <R>      is a type of an an item of an array
+     * @param <T>      is a type of a response body
+     * @return instance of {@link Common}
+     */
     public static <R, T> Common<R[], T, R> body(HttpResponse<T> response, GetObjectsFromArrayBodyStepSupplier<T, R> array) {
         return responseBodyCommon(response, array);
     }
 
+    /**
+     * Creates an instance of {@link GetResponseDataStepSupplier}. It builds a step-function that returns an {@link Iterable}.
+     * An iterable is retrieved from body of the received http response.
+     *
+     * @param response is a received http response.
+     * @param iterable is an object that describes resulted iterable and how to get it from response body
+     * @param <T>      is a type of a response body
+     * @param <R>      is a type of an item of iterable
+     * @param <S>      is a type of {@link Iterable}
+     * @return instance of {@link Common}
+     */
     public static <T, R, S extends Iterable<R>> Common<S, T, R> body(HttpResponse<T> response, GetObjectsFromIterableBodyStepSupplier<T, R, S> iterable) {
         return responseBodyCommon(response, iterable);
     }
 
+    /**
+     * Creates an instance of {@link GetResponseDataStepSupplier}. It builds a step-function that returns body of a
+     * received http response
+     *
+     * @param response is a received http response.
+     * @param <T>      is a type of a response body
+     * @return instance of {@link Common}
+     */
     public static <T> Common<T, T, T> body(HttpResponse<T> response) {
         return body(response, object("Body", t -> t));
     }
@@ -134,37 +203,101 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
                 .fromResponse(response(request, bodyHandler));
     }
 
-
+    /**
+     * Creates an instance of {@link GetResponseDataStepSupplier}. It builds a step-function that sends http request,
+     * then receives a response and then returns an item of array. An array is retrieved from body of the http response.
+     *
+     * @param request     is a description of an http request to send
+     * @param bodyHandler is a body handler of received response
+     * @param oneOfArray  is an object that describes resulted object and how to get an array from response body
+     * @param <R>         is a type of an an item of an array
+     * @param <T>         is a type of a response body
+     * @return instance of {@link Common2}
+     */
     public static <R, T> Common2<R, T, R> body(RequestBuilder request,
                                                HttpResponse.BodyHandler<T> bodyHandler,
-                                               GetObjectFromArrayBodyStepSupplier<T, R> array) {
-        return responseBodyCommon2(request, bodyHandler, array);
+                                               GetObjectFromArrayBodyStepSupplier<T, R> oneOfArray) {
+        return responseBodyCommon2(request, bodyHandler, oneOfArray);
     }
 
+    /**
+     * Creates an instance of {@link GetResponseDataStepSupplier}. It builds a step-function that sends http request,
+     * then receives a response and then returns an object. The object is retrieved from body of the http response.
+     *
+     * @param request     is a description of an http request to send
+     * @param bodyHandler is a body handler of received response
+     * @param obj         is an object that describes resulted object
+     * @param <R>         is a type of resulted object
+     * @param <T>         is a type of a response body
+     * @return instance of {@link Common2}
+     */
     public static <R, T> Common2<R, T, R> body(RequestBuilder request,
                                                HttpResponse.BodyHandler<T> bodyHandler,
                                                GetObjectFromBodyStepSupplier<T, R> obj) {
         return responseBodyCommon2(request, bodyHandler, obj);
     }
 
+    /**
+     * Creates an instance of {@link GetResponseDataStepSupplier}. It builds a step-function that sends http request,
+     * then receives a response and then returns an item of {@link Iterable}. An iterable is retrieved from body of the http response.
+     *
+     * @param request       is a description of an http request to send
+     * @param bodyHandler   is a body handler of received response
+     * @param oneOfIterable is an object that describes resulted object and how to get an {@link Iterable} from response body
+     * @param <R>           is a type of an item of iterable
+     * @param <T>           is a type of a response body
+     * @return instance of {@link Common2}
+     */
     public static <R, T> Common2<R, T, R> body(RequestBuilder request,
                                                HttpResponse.BodyHandler<T> bodyHandler,
-                                               GetObjectFromIterableBodyStepSupplier<T, R> iterable) {
-        return responseBodyCommon2(request, bodyHandler, iterable);
+                                               GetObjectFromIterableBodyStepSupplier<T, R> oneOfIterable) {
+        return responseBodyCommon2(request, bodyHandler, oneOfIterable);
     }
 
+    /**
+     * Creates an instance of {@link GetResponseDataStepSupplier}. It builds a step-function that sends http request,
+     * then receives a response and then returns an array. The array is retrieved from body of the http response.
+     *
+     * @param request     is a description of an http request to send
+     * @param bodyHandler is a body handler of received response
+     * @param array       is an object that describes resulted array and how to get it from response body
+     * @param <R>         is a type of an an item of an array
+     * @param <T>         is a type of a response body
+     * @return instance of {@link Common2}
+     */
     public static <R, T> Common2<R[], T, R> body(RequestBuilder request,
                                                  HttpResponse.BodyHandler<T> bodyHandler,
                                                  GetObjectsFromArrayBodyStepSupplier<T, R> array) {
         return responseBodyCommon2(request, bodyHandler, array);
     }
 
+    /**
+     * Creates an instance of {@link GetResponseDataStepSupplier}. It builds a step-function that sends http request,
+     * then receives a response and then returns an {@link Iterable}. The iterable is retrieved from body of the http response.
+     *
+     * @param request     is a description of an http request to send
+     * @param bodyHandler is a body handler of received response
+     * @param iterable    is an object that describes resulted iterable and how to get it from response body
+     * @param <T>         is a type of a response body
+     * @param <R>         is a type of an item of iterable
+     * @param <S>         is a type of {@link Iterable}
+     * @return instance of {@link Common2}
+     */
     public static <T, R, S extends Iterable<R>> Common2<S, T, R> body(RequestBuilder request,
                                                                       HttpResponse.BodyHandler<T> bodyHandler,
                                                                       GetObjectsFromIterableBodyStepSupplier<T, R, S> iterable) {
         return responseBodyCommon2(request, bodyHandler, iterable);
     }
 
+    /**
+     * Creates an instance of {@link GetResponseDataStepSupplier}. It builds a step-function that sends http request,
+     * then receives a response and then returns body of the http response.
+     *
+     * @param request     is a description of an http request to send
+     * @param bodyHandler s a body handler of received response
+     * @param <T>         is a type of a response body
+     * @return instance of {@link Common2}
+     */
     public static <T> Common2<T, T, T> body(RequestBuilder request,
                                             HttpResponse.BodyHandler<T> bodyHandler) {
         return body(request, bodyHandler, object("Body", t -> t));
@@ -181,72 +314,214 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
                 .fromResponse(response(request, bodyHandler));
     }
 
+    /**
+     * Creates an instance of {@link GetResponseDataStepSupplier}. It builds a step-function that sends http GET-request,
+     * then receives a response and then returns an item of array. An array is retrieved from body of the http response.
+     *
+     * @param request     is a description of an http GET-request to send
+     * @param bodyHandler is a body handler of received response
+     * @param oneOfArray  is an object that describes resulted object and how to get an array from response body
+     * @param <R>         is a type of an an item of an array
+     * @param <T>         is a type of a response body
+     * @return instance of {@link Retrying}
+     * @see GetRequest
+     */
     public static <R, T> Retrying<R, T, R> body(GetRequest request,
                                                 HttpResponse.BodyHandler<T> bodyHandler,
-                                                GetObjectFromArrayBodyStepSupplier<T, R> array) {
-        return responseBodyRetrying(request, bodyHandler, array);
+                                                GetObjectFromArrayBodyStepSupplier<T, R> oneOfArray) {
+        return responseBodyRetrying(request, bodyHandler, oneOfArray);
     }
 
+    /**
+     * Creates an instance of {@link GetResponseDataStepSupplier}. It builds a step-function that sends http GET-request,
+     * then receives a response and then returns an object. The object is retrieved from body of the http response.
+     *
+     * @param request     is a description of an http GET-request to send
+     * @param bodyHandler is a body handler of received response
+     * @param obj         is an object that describes resulted object
+     * @param <R>         is a type of resulted object
+     * @param <T>         is a type of a response body
+     * @return instance of {@link Retrying}
+     * @see GetRequest
+     */
     public static <R, T> Retrying<R, T, R> body(GetRequest request,
                                                 HttpResponse.BodyHandler<T> bodyHandler,
                                                 GetObjectFromBodyStepSupplier<T, R> obj) {
         return responseBodyRetrying(request, bodyHandler, obj);
     }
 
+    /**
+     * Creates an instance of {@link GetResponseDataStepSupplier}. It builds a step-function that sends http GET-request,
+     * then receives a response and then returns an item of {@link Iterable}. An iterable is retrieved from body of the http response.
+     *
+     * @param request       is a description of an http GET-request to send
+     * @param bodyHandler   is a body handler of received response
+     * @param oneOfIterable is an object that describes resulted object and how to get an {@link Iterable} from response body
+     * @param <R>           is a type of an item of iterable
+     * @param <T>           is a type of a response body
+     * @return instance of {@link Retrying}
+     * @see GetRequest
+     */
     public static <R, T> Retrying<R, T, R> body(GetRequest request,
                                                 HttpResponse.BodyHandler<T> bodyHandler,
-                                                GetObjectFromIterableBodyStepSupplier<T, R> iterable) {
-        return responseBodyRetrying(request, bodyHandler, iterable);
+                                                GetObjectFromIterableBodyStepSupplier<T, R> oneOfIterable) {
+        return responseBodyRetrying(request, bodyHandler, oneOfIterable);
     }
 
+    /**
+     * Creates an instance of {@link GetResponseDataStepSupplier}. It builds a step-function that sends http GET-request,
+     * then receives a response and then returns an array. The array is retrieved from body of the http response.
+     *
+     * @param request     is a description of an http GET-request to send
+     * @param bodyHandler is a body handler of received response
+     * @param array       is an object that describes resulted array and how to get it from response body
+     * @param <R>         is a type of an an item of an array
+     * @param <T>         is a type of a response body
+     * @return instance of {@link Retrying}
+     * @see GetRequest
+     */
     public static <R, T> Retrying<R[], T, R> body(GetRequest request,
                                                   HttpResponse.BodyHandler<T> bodyHandler,
                                                   GetObjectsFromArrayBodyStepSupplier<T, R> array) {
         return responseBodyRetrying(request, bodyHandler, array);
     }
 
+    /**
+     * Creates an instance of {@link GetResponseDataStepSupplier}. It builds a step-function that sends http GET-request,
+     * then receives a response and then returns an {@link Iterable}. The iterable is retrieved from body of the http response.
+     *
+     * @param request     is a description of an http GET-request to send
+     * @param bodyHandler is a body handler of received response
+     * @param iterable    is an object that describes resulted iterable and how to get it from response body
+     * @param <T>         is a type of a response body
+     * @param <R>         is a type of an item of iterable
+     * @param <S>         is a type of {@link Iterable}
+     * @return instance of {@link Retrying}
+     * @see GetRequest
+     */
     public static <T, R, S extends Iterable<R>> Retrying<S, T, R> body(GetRequest request,
                                                                        HttpResponse.BodyHandler<T> bodyHandler,
                                                                        GetObjectsFromIterableBodyStepSupplier<T, R, S> iterable) {
         return responseBodyRetrying(request, bodyHandler, iterable);
     }
 
+    /**
+     * Creates an instance of {@link GetResponseDataStepSupplier}. It builds a step-function that sends http GET-request,
+     * then receives a response and then returns body of the http response.
+     *
+     * @param request     is a description of an http GET-request to send
+     * @param bodyHandler s a body handler of received response
+     * @param <T>         is a type of a response body
+     * @return instance of {@link Retrying}
+     * @see GetRequest
+     */
     public static <T> Retrying<T, T, T> body(GetRequest request,
                                              HttpResponse.BodyHandler<T> bodyHandler) {
         return responseBodyRetrying(request, bodyHandler,
                 GetObjectFromBodyStepSupplier.<T, T>object("Body", t -> t));
     }
 
+    /**
+     * Creates an instance of {@link GetResponseDataStepSupplier}. It builds a step-function that sends http request,
+     * then receives a response and then returns an item of array. An array is retrieved from body of the http response.
+     *
+     * @param request     is a description of an http request to send
+     * @param bodyHandler is a body handler of received response
+     * @param oneOfArray  is an object that describes resulted object and how to get an array from response body
+     * @param <R>         is a type of an an item of an array
+     * @param <T>         is a type of a response body
+     * @return instance of {@link Retrying}
+     * @see MethodRequest
+     */
     public static <R, T> Retrying<R, T, R> body(MethodRequest request,
                                                 HttpResponse.BodyHandler<T> bodyHandler,
-                                                GetObjectFromArrayBodyStepSupplier<T, R> array) {
-        return responseBodyRetrying(request, bodyHandler, array);
+                                                GetObjectFromArrayBodyStepSupplier<T, R> oneOfArray) {
+        return responseBodyRetrying(request, bodyHandler, oneOfArray);
     }
 
+    /**
+     * Creates an instance of {@link GetResponseDataStepSupplier}. It builds a step-function that sends http request,
+     * then receives a response and then returns an object. The object is retrieved from body of the http response.
+     *
+     * @param request     is a description of an http request to send
+     * @param bodyHandler is a body handler of received response
+     * @param obj         is an object that describes resulted object
+     * @param <R>         is a type of resulted object
+     * @param <T>         is a type of a response body
+     * @return instance of {@link Retrying}
+     * @see MethodRequest
+     */
     public static <R, T> Retrying<R, T, R> body(MethodRequest request,
                                                 HttpResponse.BodyHandler<T> bodyHandler,
                                                 GetObjectFromBodyStepSupplier<T, R> obj) {
         return responseBodyRetrying(request, bodyHandler, obj);
     }
 
+    /**
+     * Creates an instance of {@link GetResponseDataStepSupplier}. It builds a step-function that sends http request,
+     * then receives a response and then returns an item of {@link Iterable}. An iterable is retrieved from body of the http response.
+     *
+     * @param request       is a description of an http request to send
+     * @param bodyHandler   is a body handler of received response
+     * @param oneOfIterable is an object that describes resulted object and how to get an {@link Iterable} from response body
+     * @param <R>           is a type of an item of iterable
+     * @param <T>           is a type of a response body
+     * @return instance of {@link Retrying}
+     * @see MethodRequest
+     */
     public static <R, T> Retrying<R, T, R> body(MethodRequest request,
                                                 HttpResponse.BodyHandler<T> bodyHandler,
-                                                GetObjectFromIterableBodyStepSupplier<T, R> iterable) {
-        return responseBodyRetrying(request, bodyHandler, iterable);
+                                                GetObjectFromIterableBodyStepSupplier<T, R> oneOfIterable) {
+        return responseBodyRetrying(request, bodyHandler, oneOfIterable);
     }
 
+    /**
+     * Creates an instance of {@link GetResponseDataStepSupplier}. It builds a step-function that sends http request,
+     * then receives a response and then returns an array. The array is retrieved from body of the http response.
+     *
+     * @param request     is a description of an http request to send
+     * @param bodyHandler is a body handler of received response
+     * @param array       is an object that describes resulted array and how to get it from response body
+     * @param <R>         is a type of an an item of an array
+     * @param <T>         is a type of a response body
+     * @return instance of {@link Retrying}
+     * @see MethodRequest
+     */
     public static <R, T> Retrying<R[], T, R> body(MethodRequest request,
                                                   HttpResponse.BodyHandler<T> bodyHandler,
                                                   GetObjectsFromArrayBodyStepSupplier<T, R> array) {
         return responseBodyRetrying(request, bodyHandler, array);
     }
 
+    /**
+     * Creates an instance of {@link GetResponseDataStepSupplier}. It builds a step-function that sends http request,
+     * then receives a response and then returns an {@link Iterable}. The iterable is retrieved from body of the http response.
+     *
+     * @param request     is a description of an http request to send
+     * @param bodyHandler is a body handler of received response
+     * @param iterable    is an object that describes resulted iterable and how to get it from response body
+     * @param <T>         is a type of a response body
+     * @param <R>         is a type of an item of iterable
+     * @param <S>         is a type of {@link Iterable}
+     * @return instance of {@link Retrying}
+     * @see MethodRequest
+     */
     public static <T, R, S extends Iterable<R>> Retrying<S, T, R> body(MethodRequest request,
                                                                        HttpResponse.BodyHandler<T> bodyHandler,
                                                                        GetObjectsFromIterableBodyStepSupplier<T, R, S> iterable) {
         return responseBodyRetrying(request, bodyHandler, iterable);
     }
 
+    /**
+     * Creates an instance of {@link GetResponseDataStepSupplier}. It builds a step-function that sends http request,
+     * then receives a response and then returns body of the http response.
+     *
+     * @param request     is a description of an http request to send
+     * @param bodyHandler s a body handler of received response
+     * @param <T>         is a type of a response body
+     * @return instance of {@link Retrying}
+     * @see MethodRequest
+     */
     public static <T> Retrying<T, T, T> body(MethodRequest request,
                                              HttpResponse.BodyHandler<T> bodyHandler) {
         return responseBodyRetrying(request, bodyHandler,
@@ -268,6 +543,14 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
         return (S) this;
     }
 
+    /**
+     * Defines message text of an exception to be thrown when received http response has no desired data or
+     * expected http response has not been received.
+     *
+     * @param exceptionMessage a message text of an exception to be thrown when received http response has no
+     *                         desired data or expected http response has not been received.
+     * @return self-reference
+     */
     public S throwWhenNothing(String exceptionMessage) {
         ofNullable(from).ifPresent(s -> {
             var clazz = s.getClass();
@@ -299,6 +582,12 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
         return (S) this;
     }
 
+    /**
+     * Defines criteria that resulted data should meet.
+     *
+     * @param criteria is a criteria that resulted data should meet.
+     * @return self-reference
+     */
     public S dataCriteria(Criteria<? super P> criteria) {
         ofNullable(from).ifPresent(s -> {
             var clazz = s.getClass();
@@ -330,10 +619,23 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
         return (S) this;
     }
 
+    /**
+     * Defines criteria that resulted data should meet.
+     *
+     * @param description is a description of a criteria
+     * @param predicate   is a {@link Predicate} that describes the criteria
+     * @return self-reference
+     */
     public S dataCriteria(String description, Predicate<? super P> predicate) {
         return dataCriteria(condition(description, predicate));
     }
 
+    /**
+     * Defines criteria that received response should meet.
+     *
+     * @param criteria is a criteria that received response should meet.
+     * @return self-reference
+     */
     protected S responseCriteria(Criteria<? super HttpResponse<T>> criteria) {
         ofNullable(responseFunction).ifPresent(o -> {
             var clazz = o.getClass();
@@ -345,6 +647,13 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
         return (S) this;
     }
 
+    /**
+     * Defines criteria that received response should meet.
+     *
+     * @param description is a description of a criteria
+     * @param predicate is a {@link Predicate} that describes the criteria
+     * @return self-reference
+     */
     protected S responseCriteria(String description, Predicate<? super HttpResponse<T>> predicate) {
         return responseCriteria(condition(description, predicate));
     }
@@ -392,12 +701,28 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
         return super.get();
     }
 
+    /**
+     * Builds a step-function extract desired data from the response body. This class has no extension to
+     * {@link GetResponseDataStepSupplier}
+     *
+     * @param <R> is a type of resulted value
+     * @param <T> is a type of a response body
+     * @param <P> is a type of a value that should be filtered by criteria.
+     */
     public static final class Common<R, T, P> extends GetResponseDataStepSupplier<R, T, P, Common<R, T, P>> {
         private Common(String description) {
             super(description);
         }
     }
 
+    /**
+     * Builds a step-function that sends http request and then extract desired data from body of received http response.
+     * It allows to define criteria that received response should meet.
+     *
+     * @param <R> is a type of resulted value
+     * @param <T> is a type of a response body
+     * @param <P> is a type of a value that should be filtered by criteria.
+     */
     public static final class Common2<R, T, P> extends GetResponseDataStepSupplier<R, T, P, Common2<R, T, P>> {
         private Common2(String description) {
             super(description);
@@ -414,6 +739,15 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
         }
     }
 
+    /**
+     * Builds a step-function that sends http request and then extract desired data from body of received http response.
+     * It allows to define criteria that received response should meet. Also it allows to define duration of time
+     * of the waiting for expected http response that has expected body.
+     *
+     * @param <R> is a type of resulted value
+     * @param <T> is a type of a response body
+     * @param <P> is a type of a value that should be filtered by criteria.
+     */
     public static final class Retrying<R, T, P> extends GetResponseDataStepSupplier<R, T, P, Retrying<R, T, P>> {
 
         private Retrying(String description) {

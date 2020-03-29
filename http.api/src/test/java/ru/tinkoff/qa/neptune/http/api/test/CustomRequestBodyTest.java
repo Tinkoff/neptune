@@ -21,9 +21,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
-import static ru.tinkoff.qa.neptune.http.api.CommonBodyPublishers.*;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasBody.hasBody;
+import static ru.tinkoff.qa.neptune.http.api.request.CommonBodyPublishers.*;
 import static ru.tinkoff.qa.neptune.http.api.request.PostRequest.POST;
 
 public class CustomRequestBodyTest extends BaseHttpTest {

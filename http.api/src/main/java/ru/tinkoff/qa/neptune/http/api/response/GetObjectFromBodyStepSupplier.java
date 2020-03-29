@@ -8,6 +8,12 @@ import java.time.Duration;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+/**
+ * Builds a step-function that retrieves an object from http response body.
+ *
+ * @param <T> is a type of a response body
+ * @param <R> is a type of resulted object
+ */
 public class GetObjectFromBodyStepSupplier<T, R> extends
         SequentialGetStepSupplier.GetObjectStepSupplier<HttpStepContext, R, GetObjectFromBodyStepSupplier<T, R>> {
 
@@ -15,6 +21,16 @@ public class GetObjectFromBodyStepSupplier<T, R> extends
         super(description, new ForResponseBodyFunction<>(f));
     }
 
+    /**
+     * Creates an instance of {@link GetObjectFromBodyStepSupplier}. It builds a step-function that retrieves
+     * an object from http response body.
+     *
+     * @param description is a description of resulted object
+     * @param f is a function that describes how to transform body of http response to resulted object
+     * @param <T> is a type of a response body
+     * @param <R> is a type of resulted object
+     * @return an instance of {@link GetObjectFromBodyStepSupplier}
+     */
     public static <T, R> GetObjectFromBodyStepSupplier<T, R> object(String description, Function<T, R> f) {
         return new GetObjectFromBodyStepSupplier<>(description, f);
     }
@@ -29,7 +45,7 @@ public class GetObjectFromBodyStepSupplier<T, R> extends
         return super.criteria(description, predicate);
     }
 
-    protected GetObjectFromBodyStepSupplier<T, R> throwWhenNothing(String exceptionMessage) {
+    GetObjectFromBodyStepSupplier<T, R> throwWhenNothing(String exceptionMessage) {
         super.throwOnEmptyResult(new DataHasNotBeenReceivedExceptionSupplier(exceptionMessage, getOriginalFunction()));
         return this;
     }

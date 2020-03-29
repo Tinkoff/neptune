@@ -8,6 +8,13 @@ import java.time.Duration;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+/**
+ * Builds a step-function that retrieves an {@link Iterable} from http response body.
+ *
+ * @param <T> is a type of a response body
+ * @param <R> is a type of an item of resulted iterable
+ * @param <S> is a type of resulted iterable
+ */
 public class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Iterable<R>>
         extends SequentialGetStepSupplier.GetIterableStepSupplier<HttpStepContext, S, R, GetObjectsFromIterableBodyStepSupplier<T, R, S>> {
 
@@ -15,6 +22,17 @@ public class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Iterable<R>>
         super(description, new ForResponseBodyFunction<>(f));
     }
 
+    /**
+     * Creates an instance of {@link GetObjectsFromIterableBodyStepSupplier}. It builds a step-function that retrieves
+     * an {@link Iterable} from http response body.
+     *
+     * @param description is a description of resulted array {@link Iterable}
+     * @param f           is a function that describes how to transform body of http response to {@link Iterable}
+     * @param <T>         is a type of a response body
+     * @param <R>         is a type of an item of resulted iterable
+     * @param <S>         is a type of resulted iterable
+     * @return an instance of {@link GetObjectsFromIterableBodyStepSupplier}
+     */
     public static <T, R, S extends Iterable<R>> GetObjectsFromIterableBodyStepSupplier<T, R, S> iterable(String description, Function<T, S> f) {
         return new GetObjectsFromIterableBodyStepSupplier<>(description, f);
     }
@@ -29,7 +47,7 @@ public class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Iterable<R>>
         return super.criteria(criteria);
     }
 
-    protected GetObjectsFromIterableBodyStepSupplier<T, R, S> throwWhenNothing(String exceptionMessage) {
+    GetObjectsFromIterableBodyStepSupplier<T, R, S> throwWhenNothing(String exceptionMessage) {
         super.throwOnEmptyResult(new DataHasNotBeenReceivedExceptionSupplier(exceptionMessage, getOriginalFunction()));
         return this;
     }

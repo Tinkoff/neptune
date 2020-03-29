@@ -16,7 +16,6 @@ import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasPathMat
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasPortMatcher.uriHasPort;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasQueryMatcher.uriHasQuery;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasSchemeMatcher.uriHasScheme;
-import static ru.tinkoff.qa.neptune.http.api.CommonBodyPublishers.stringBody;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasBody.hasBody;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasHeaders.hasHeader;
@@ -24,6 +23,7 @@ import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasPreviousRespon
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasStatusCode.hasStatusCode;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasURI.hasURI;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasVersion.hasVersion;
+import static ru.tinkoff.qa.neptune.http.api.request.CommonBodyPublishers.stringBody;
 import static ru.tinkoff.qa.neptune.http.api.request.GetRequest.GET;
 import static ru.tinkoff.qa.neptune.http.api.request.PostRequest.POST;
 

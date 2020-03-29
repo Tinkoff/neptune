@@ -9,6 +9,13 @@ import java.time.Duration;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+/**
+ * Builds a step-function that retrieves an object from some {@link Iterable} which is retrieved from
+ * http response body.
+ *
+ * @param <T> is a type of a response body
+ * @param <R> is a type of resulted object
+ */
 @SuppressWarnings("unchecked")
 public class GetObjectFromIterableBodyStepSupplier<T, R> extends
         SequentialGetStepSupplier.GetObjectFromIterableStepSupplier<HttpStepContext, R, GetObjectFromIterableBodyStepSupplier<T, R>> {
@@ -17,6 +24,17 @@ public class GetObjectFromIterableBodyStepSupplier<T, R> extends
         super(description, new ForResponseBodyFunction<>(f));
     }
 
+    /**
+     * Creates an instance of {@link GetObjectFromIterableBodyStepSupplier}. It builds a step-function that retrieves an object from some
+     * {@link Iterable} which is retrieved from http response body.
+     *
+     * @param description is a description of resulted object
+     * @param f           is a function that describes how to transform body of http response to iterable
+     * @param <T>         is a type of a response body
+     * @param <R>         is a type of resulted object
+     * @param <S>         if a type of {@link Iterable} of R
+     * @return an instance of {@link GetObjectFromIterableBodyStepSupplier}
+     */
     public static <T, R, S extends Iterable<R>> GetObjectFromIterableBodyStepSupplier<T, R> oneOfIterable(String description, Function<T, S> f) {
         return new GetObjectFromIterableBodyStepSupplier<>(description, f);
     }
@@ -31,7 +49,7 @@ public class GetObjectFromIterableBodyStepSupplier<T, R> extends
         return super.criteria(description, predicate);
     }
 
-    protected GetObjectFromIterableBodyStepSupplier<T, R> throwWhenNothing(String exceptionMessage) {
+    GetObjectFromIterableBodyStepSupplier<T, R> throwWhenNothing(String exceptionMessage) {
         super.throwOnEmptyResult(new DataHasNotBeenReceivedExceptionSupplier(exceptionMessage, getOriginalFunction()));
         return this;
     }
