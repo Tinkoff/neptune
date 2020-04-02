@@ -3,7 +3,6 @@ package ru.tinkoff.qa.neptune.http.api;
 import ru.tinkoff.qa.neptune.core.api.steps.context.ConstructorParameters;
 import ru.tinkoff.qa.neptune.core.api.steps.context.ParameterProvider;
 
-import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.http.HttpClient;
 
@@ -28,8 +27,7 @@ public class HttpStepsParameterProvider implements ParameterProvider {
                 .ifPresent(builder::connectTimeout);
 
         ofNullable(DEFAULT_HTTP_AUTHENTICATOR_PROPERTY.get())
-                .ifPresent(authenticatorSupplier -> ofNullable(authenticatorSupplier.get())
-                        .ifPresent(builder::authenticator));
+                .flatMap(authenticatorSupplier -> ofNullable(authenticatorSupplier.get())).ifPresent(builder::authenticator);
 
         ofNullable(DEFAULT_HTTP_COOKIE_MANAGER_PROPERTY.get())
                 .map(cookieHandlerSupplier -> {
@@ -41,8 +39,7 @@ public class HttpStepsParameterProvider implements ParameterProvider {
                 });
 
         ofNullable(DEFAULT_HTTP_EXECUTOR_PROPERTY.get())
-                .ifPresent(executorSupplier -> ofNullable(executorSupplier.get())
-                        .ifPresent(builder::executor));
+                .flatMap(executorSupplier -> ofNullable(executorSupplier.get())).ifPresent(builder::executor);
 
         ofNullable(DEFAULT_HTTP_PROTOCOL_VERSION_PROPERTY.get())
                 .ifPresent(builder::version);
@@ -51,19 +48,16 @@ public class HttpStepsParameterProvider implements ParameterProvider {
                 .ifPresent(builder::priority);
 
         ofNullable(DEFAULT_HTTP_PROXY_SELECTOR_PROPERTY.get())
-                .ifPresent(proxySelectorSupplier -> ofNullable(proxySelectorSupplier.get())
-                        .ifPresent(builder::proxy));
+                .flatMap(proxySelectorSupplier -> ofNullable(proxySelectorSupplier.get())).ifPresent(builder::proxy);
 
         ofNullable(DEFAULT_HTTP_REDIRECT_PROPERTY.get())
                 .ifPresent(builder::followRedirects);
 
         ofNullable(DEFAULT_HTTP_SSL_CONTEXT_PROPERTY.get())
-                .ifPresent(sslContextSupplier -> ofNullable(sslContextSupplier.get())
-                        .ifPresent(builder::sslContext));
+                .flatMap(sslContextSupplier -> ofNullable(sslContextSupplier.get())).ifPresent(builder::sslContext);
 
         ofNullable(DEFAULT_HTTP_SSL_PARAMETERS_PROPERTY.get())
-                .ifPresent(sslParametersSupplier -> ofNullable(sslParametersSupplier.get())
-                        .ifPresent(builder::sslParameters));
+                .flatMap(sslParametersSupplier -> ofNullable(sslParametersSupplier.get())).ifPresent(builder::sslParameters);
 
         return params(builder);
     }

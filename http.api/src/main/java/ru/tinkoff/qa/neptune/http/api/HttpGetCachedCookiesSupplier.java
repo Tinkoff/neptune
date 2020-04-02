@@ -14,6 +14,7 @@ import static ru.tinkoff.qa.neptune.http.api.GetCookieManager.getCookieManager;
 /**
  * This class is designed to build functions that get applicable cookies from a cookie cache
  */
+@Deprecated(since = "0.11.4-ALPHA", forRemoval = true)
 @MakeStringCapturesOnFinishing
 public final class HttpGetCachedCookiesSupplier extends SequentialGetStepSupplier
         .GetIterableChainedStepSupplier<HttpStepContext, List<HttpCookie>, CookieManager, HttpCookie, HttpGetCachedCookiesSupplier> {

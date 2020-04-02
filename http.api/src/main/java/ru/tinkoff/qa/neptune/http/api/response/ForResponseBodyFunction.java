@@ -63,8 +63,7 @@ final class ForResponseBodyFunction<R, T> implements Function<HttpStepContext, T
                 .map(o -> {
                     if (o instanceof HttpResponse) {
                         return  (HttpResponse<R>) o;
-                    }
-                    else {
+                    } else {
                         return ((ResponseSequentialGetSupplier<R>) o).getOriginalFunction().getLastReceived();
                     }
                 })
@@ -73,5 +72,18 @@ final class ForResponseBodyFunction<R, T> implements Function<HttpStepContext, T
 
     HttpResponse<R> getLastValidResponse() {
         return r;
+    }
+
+    @SuppressWarnings("unchecked")
+    RequestResponseLogCollector getLog() {
+        return ofNullable(response)
+                .map(o -> {
+                    if (o instanceof HttpResponse) {
+                        return null;
+                    } else {
+                        return ((ResponseSequentialGetSupplier<R>) o).getOriginalFunction().getLog();
+                    }
+                })
+                .orElse(null);
     }
 }

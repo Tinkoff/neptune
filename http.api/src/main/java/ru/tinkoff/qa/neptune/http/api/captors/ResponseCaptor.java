@@ -21,7 +21,7 @@ public class ResponseCaptor extends StringCaptor<HttpResponse<?>> {
         var request = caught.request();
         var stringBuilder = new StringBuilder()
                 .append(format("Status code: %s%s", caught.statusCode(), LINE_SEPARATOR))
-                .append("Request data: " + LINE_SEPARATOR)
+                .append("Request data: ").append(LINE_SEPARATOR)
                 .append(format(" - URI: %s %s", request.uri(), LINE_SEPARATOR))
                 .append(format(" - Method: %s %s", request.method(), LINE_SEPARATOR))
                 .append(format(" - Headers: %s %s", request.headers(), LINE_SEPARATOR))

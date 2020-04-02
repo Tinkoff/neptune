@@ -10,7 +10,7 @@ import static java.util.Objects.nonNull;
 /**
  * Designed to create a PUT-request
  */
-public final class PutRequest extends RequestBuilder {
+public final class PutRequest extends RequestBuilder<PutRequest> {
 
     private PutRequest(URI endPoint, HttpRequest.BodyPublisher bodyPublisher) {
         super(endPoint);

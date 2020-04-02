@@ -13,7 +13,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
  * Designed to create a request with defined common or customized http method name
  * and with body publisher
  */
-public final class MethodRequest extends RequestBuilder {
+public final class MethodRequest extends RequestBuilder<MethodRequest> {
 
     private MethodRequest(URI endPoint, String method, HttpRequest.BodyPublisher bodyPublisher) {
         super(endPoint);

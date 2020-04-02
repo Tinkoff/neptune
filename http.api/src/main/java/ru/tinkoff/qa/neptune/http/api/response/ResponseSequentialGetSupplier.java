@@ -55,10 +55,6 @@ public class ResponseSequentialGetSupplier<T> extends SequentialGetStepSupplier.
         return super.prepareStepDescription();
     }
 
-    protected ResponseSequentialGetSupplier<T> clone() {
-        return super.clone();
-    }
-
     @Override
     protected ForResponseFunction<T> getOriginalFunction() {
         return (ForResponseFunction<T>) super.getOriginalFunction();

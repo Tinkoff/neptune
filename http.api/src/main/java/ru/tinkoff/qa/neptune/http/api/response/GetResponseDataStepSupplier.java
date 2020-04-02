@@ -10,6 +10,9 @@ import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -35,6 +38,7 @@ import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSuppl
 @MakeCaptureOnFinishing(typeOfCapture = Object.class)
 public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponseDataStepSupplier<R, T, P, S>> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<HttpStepContext, R, R, S> {
 
+    private final Set<Class<? extends Throwable>> ignored = new HashSet<>();
     SequentialGetStepSupplier<HttpStepContext, ? extends R, ?, P, ?> from;
     Object responseFunction;
 
@@ -119,7 +123,7 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
      * @param <T>        is a type of a response body
      * @return instance of {@link Common}
      */
-    public static <R, T> Common<R, T, R> body(HttpResponse<T> response, GetObjectFromArrayBodyStepSupplier<T, R> oneOfArray) {
+    public static <R, T> Common<R, T, R> bodyData(HttpResponse<T> response, GetObjectFromArrayBodyStepSupplier<T, R> oneOfArray) {
         return responseBodyCommon(response, oneOfArray);
     }
 
@@ -133,7 +137,7 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
      * @param <T>      is a type of a response body
      * @return instance of {@link Common}
      */
-    public static <R, T> Common<R, T, R> body(HttpResponse<T> response, GetObjectFromBodyStepSupplier<T, R> obj) {
+    public static <R, T> Common<R, T, R> bodyData(HttpResponse<T> response, GetObjectFromBodyStepSupplier<T, R> obj) {
         return responseBodyCommon(response, obj);
     }
 
@@ -147,7 +151,7 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
      * @param <T>           is a type of a response body
      * @return instance of {@link Common}
      */
-    public static <R, T> Common<R, T, R> body(HttpResponse<T> response, GetObjectFromIterableBodyStepSupplier<T, R> oneOfIterable) {
+    public static <R, T> Common<R, T, R> bodyData(HttpResponse<T> response, GetObjectFromIterableBodyStepSupplier<T, R> oneOfIterable) {
         return responseBodyCommon(response, oneOfIterable);
     }
 
@@ -161,7 +165,7 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
      * @param <T>      is a type of a response body
      * @return instance of {@link Common}
      */
-    public static <R, T> Common<R[], T, R> body(HttpResponse<T> response, GetObjectsFromArrayBodyStepSupplier<T, R> array) {
+    public static <R, T> Common<R[], T, R> bodyData(HttpResponse<T> response, GetObjectsFromArrayBodyStepSupplier<T, R> array) {
         return responseBodyCommon(response, array);
     }
 
@@ -176,7 +180,7 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
      * @param <S>      is a type of {@link Iterable}
      * @return instance of {@link Common}
      */
-    public static <T, R, S extends Iterable<R>> Common<S, T, R> body(HttpResponse<T> response, GetObjectsFromIterableBodyStepSupplier<T, R, S> iterable) {
+    public static <T, R, S extends Iterable<R>> Common<S, T, R> bodyData(HttpResponse<T> response, GetObjectsFromIterableBodyStepSupplier<T, R, S> iterable) {
         return responseBodyCommon(response, iterable);
     }
 
@@ -189,10 +193,10 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
      * @return instance of {@link Common}
      */
     public static <T> Common<T, T, T> body(HttpResponse<T> response) {
-        return body(response, object("Body", t -> t));
+        return bodyData(response, object("Body", t -> t));
     }
 
-    private static <R, T, P> Common2<R, T, P> responseBodyCommon2(RequestBuilder request,
+    private static <R, T, P> Common2<R, T, P> responseBodyCommon2(RequestBuilder<?> request,
                                                                   HttpResponse.BodyHandler<T> bodyHandler,
                                                                   SequentialGetStepSupplier<HttpStepContext, R, ?, P, ?> whatToGet) {
         checkArgument(nonNull(request), "Http request should be defined");
@@ -214,9 +218,9 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
      * @param <T>         is a type of a response body
      * @return instance of {@link Common2}
      */
-    public static <R, T> Common2<R, T, R> body(RequestBuilder request,
-                                               HttpResponse.BodyHandler<T> bodyHandler,
-                                               GetObjectFromArrayBodyStepSupplier<T, R> oneOfArray) {
+    public static <R, T> Common2<R, T, R> bodyData(RequestBuilder<?> request,
+                                                   HttpResponse.BodyHandler<T> bodyHandler,
+                                                   GetObjectFromArrayBodyStepSupplier<T, R> oneOfArray) {
         return responseBodyCommon2(request, bodyHandler, oneOfArray);
     }
 
@@ -231,9 +235,9 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
      * @param <T>         is a type of a response body
      * @return instance of {@link Common2}
      */
-    public static <R, T> Common2<R, T, R> body(RequestBuilder request,
-                                               HttpResponse.BodyHandler<T> bodyHandler,
-                                               GetObjectFromBodyStepSupplier<T, R> obj) {
+    public static <R, T> Common2<R, T, R> bodyData(RequestBuilder<?> request,
+                                                   HttpResponse.BodyHandler<T> bodyHandler,
+                                                   GetObjectFromBodyStepSupplier<T, R> obj) {
         return responseBodyCommon2(request, bodyHandler, obj);
     }
 
@@ -248,9 +252,9 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
      * @param <T>           is a type of a response body
      * @return instance of {@link Common2}
      */
-    public static <R, T> Common2<R, T, R> body(RequestBuilder request,
-                                               HttpResponse.BodyHandler<T> bodyHandler,
-                                               GetObjectFromIterableBodyStepSupplier<T, R> oneOfIterable) {
+    public static <R, T> Common2<R, T, R> bodyData(RequestBuilder<?> request,
+                                                   HttpResponse.BodyHandler<T> bodyHandler,
+                                                   GetObjectFromIterableBodyStepSupplier<T, R> oneOfIterable) {
         return responseBodyCommon2(request, bodyHandler, oneOfIterable);
     }
 
@@ -265,9 +269,9 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
      * @param <T>         is a type of a response body
      * @return instance of {@link Common2}
      */
-    public static <R, T> Common2<R[], T, R> body(RequestBuilder request,
-                                                 HttpResponse.BodyHandler<T> bodyHandler,
-                                                 GetObjectsFromArrayBodyStepSupplier<T, R> array) {
+    public static <R, T> Common2<R[], T, R> bodyData(RequestBuilder<?> request,
+                                                     HttpResponse.BodyHandler<T> bodyHandler,
+                                                     GetObjectsFromArrayBodyStepSupplier<T, R> array) {
         return responseBodyCommon2(request, bodyHandler, array);
     }
 
@@ -283,9 +287,9 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
      * @param <S>         is a type of {@link Iterable}
      * @return instance of {@link Common2}
      */
-    public static <T, R, S extends Iterable<R>> Common2<S, T, R> body(RequestBuilder request,
-                                                                      HttpResponse.BodyHandler<T> bodyHandler,
-                                                                      GetObjectsFromIterableBodyStepSupplier<T, R, S> iterable) {
+    public static <T, R, S extends Iterable<R>> Common2<S, T, R> bodyData(RequestBuilder<?> request,
+                                                                          HttpResponse.BodyHandler<T> bodyHandler,
+                                                                          GetObjectsFromIterableBodyStepSupplier<T, R, S> iterable) {
         return responseBodyCommon2(request, bodyHandler, iterable);
     }
 
@@ -298,12 +302,12 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
      * @param <T>         is a type of a response body
      * @return instance of {@link Common2}
      */
-    public static <T> Common2<T, T, T> body(RequestBuilder request,
+    public static <T> Common2<T, T, T> body(RequestBuilder<?> request,
                                             HttpResponse.BodyHandler<T> bodyHandler) {
-        return body(request, bodyHandler, object("Body", t -> t));
+        return bodyData(request, bodyHandler, object("Body", t -> t));
     }
 
-    private static <R, T, P> Retrying<R, T, P> responseBodyRetrying(RequestBuilder request,
+    private static <R, T, P> Retrying<R, T, P> responseBodyRetrying(RequestBuilder<?> request,
                                                                     HttpResponse.BodyHandler<T> bodyHandler,
                                                                     SequentialGetStepSupplier<HttpStepContext, R, ?, P, ?> whatToGet) {
         checkArgument(nonNull(request), "Http request should be defined");
@@ -326,9 +330,9 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
      * @return instance of {@link Retrying}
      * @see GetRequest
      */
-    public static <R, T> Retrying<R, T, R> body(GetRequest request,
-                                                HttpResponse.BodyHandler<T> bodyHandler,
-                                                GetObjectFromArrayBodyStepSupplier<T, R> oneOfArray) {
+    public static <R, T> Retrying<R, T, R> bodyData(GetRequest request,
+                                                    HttpResponse.BodyHandler<T> bodyHandler,
+                                                    GetObjectFromArrayBodyStepSupplier<T, R> oneOfArray) {
         return responseBodyRetrying(request, bodyHandler, oneOfArray);
     }
 
@@ -344,9 +348,9 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
      * @return instance of {@link Retrying}
      * @see GetRequest
      */
-    public static <R, T> Retrying<R, T, R> body(GetRequest request,
-                                                HttpResponse.BodyHandler<T> bodyHandler,
-                                                GetObjectFromBodyStepSupplier<T, R> obj) {
+    public static <R, T> Retrying<R, T, R> bodyData(GetRequest request,
+                                                    HttpResponse.BodyHandler<T> bodyHandler,
+                                                    GetObjectFromBodyStepSupplier<T, R> obj) {
         return responseBodyRetrying(request, bodyHandler, obj);
     }
 
@@ -362,9 +366,9 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
      * @return instance of {@link Retrying}
      * @see GetRequest
      */
-    public static <R, T> Retrying<R, T, R> body(GetRequest request,
-                                                HttpResponse.BodyHandler<T> bodyHandler,
-                                                GetObjectFromIterableBodyStepSupplier<T, R> oneOfIterable) {
+    public static <R, T> Retrying<R, T, R> bodyData(GetRequest request,
+                                                    HttpResponse.BodyHandler<T> bodyHandler,
+                                                    GetObjectFromIterableBodyStepSupplier<T, R> oneOfIterable) {
         return responseBodyRetrying(request, bodyHandler, oneOfIterable);
     }
 
@@ -380,9 +384,9 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
      * @return instance of {@link Retrying}
      * @see GetRequest
      */
-    public static <R, T> Retrying<R[], T, R> body(GetRequest request,
-                                                  HttpResponse.BodyHandler<T> bodyHandler,
-                                                  GetObjectsFromArrayBodyStepSupplier<T, R> array) {
+    public static <R, T> Retrying<R[], T, R> bodyData(GetRequest request,
+                                                      HttpResponse.BodyHandler<T> bodyHandler,
+                                                      GetObjectsFromArrayBodyStepSupplier<T, R> array) {
         return responseBodyRetrying(request, bodyHandler, array);
     }
 
@@ -399,9 +403,9 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
      * @return instance of {@link Retrying}
      * @see GetRequest
      */
-    public static <T, R, S extends Iterable<R>> Retrying<S, T, R> body(GetRequest request,
-                                                                       HttpResponse.BodyHandler<T> bodyHandler,
-                                                                       GetObjectsFromIterableBodyStepSupplier<T, R, S> iterable) {
+    public static <T, R, S extends Iterable<R>> Retrying<S, T, R> bodyData(GetRequest request,
+                                                                           HttpResponse.BodyHandler<T> bodyHandler,
+                                                                           GetObjectsFromIterableBodyStepSupplier<T, R, S> iterable) {
         return responseBodyRetrying(request, bodyHandler, iterable);
     }
 
@@ -433,9 +437,9 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
      * @return instance of {@link Retrying}
      * @see MethodRequest
      */
-    public static <R, T> Retrying<R, T, R> body(MethodRequest request,
-                                                HttpResponse.BodyHandler<T> bodyHandler,
-                                                GetObjectFromArrayBodyStepSupplier<T, R> oneOfArray) {
+    public static <R, T> Retrying<R, T, R> bodyData(MethodRequest request,
+                                                    HttpResponse.BodyHandler<T> bodyHandler,
+                                                    GetObjectFromArrayBodyStepSupplier<T, R> oneOfArray) {
         return responseBodyRetrying(request, bodyHandler, oneOfArray);
     }
 
@@ -451,9 +455,9 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
      * @return instance of {@link Retrying}
      * @see MethodRequest
      */
-    public static <R, T> Retrying<R, T, R> body(MethodRequest request,
-                                                HttpResponse.BodyHandler<T> bodyHandler,
-                                                GetObjectFromBodyStepSupplier<T, R> obj) {
+    public static <R, T> Retrying<R, T, R> bodyData(MethodRequest request,
+                                                    HttpResponse.BodyHandler<T> bodyHandler,
+                                                    GetObjectFromBodyStepSupplier<T, R> obj) {
         return responseBodyRetrying(request, bodyHandler, obj);
     }
 
@@ -469,9 +473,9 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
      * @return instance of {@link Retrying}
      * @see MethodRequest
      */
-    public static <R, T> Retrying<R, T, R> body(MethodRequest request,
-                                                HttpResponse.BodyHandler<T> bodyHandler,
-                                                GetObjectFromIterableBodyStepSupplier<T, R> oneOfIterable) {
+    public static <R, T> Retrying<R, T, R> bodyData(MethodRequest request,
+                                                    HttpResponse.BodyHandler<T> bodyHandler,
+                                                    GetObjectFromIterableBodyStepSupplier<T, R> oneOfIterable) {
         return responseBodyRetrying(request, bodyHandler, oneOfIterable);
     }
 
@@ -487,9 +491,9 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
      * @return instance of {@link Retrying}
      * @see MethodRequest
      */
-    public static <R, T> Retrying<R[], T, R> body(MethodRequest request,
-                                                  HttpResponse.BodyHandler<T> bodyHandler,
-                                                  GetObjectsFromArrayBodyStepSupplier<T, R> array) {
+    public static <R, T> Retrying<R[], T, R> bodyData(MethodRequest request,
+                                                      HttpResponse.BodyHandler<T> bodyHandler,
+                                                      GetObjectsFromArrayBodyStepSupplier<T, R> array) {
         return responseBodyRetrying(request, bodyHandler, array);
     }
 
@@ -506,9 +510,9 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
      * @return instance of {@link Retrying}
      * @see MethodRequest
      */
-    public static <T, R, S extends Iterable<R>> Retrying<S, T, R> body(MethodRequest request,
-                                                                       HttpResponse.BodyHandler<T> bodyHandler,
-                                                                       GetObjectsFromIterableBodyStepSupplier<T, R, S> iterable) {
+    public static <T, R, S extends Iterable<R>> Retrying<S, T, R> bodyData(MethodRequest request,
+                                                                           HttpResponse.BodyHandler<T> bodyHandler,
+                                                                           GetObjectsFromIterableBodyStepSupplier<T, R, S> iterable) {
         return responseBodyRetrying(request, bodyHandler, iterable);
     }
 
@@ -528,6 +532,17 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
                 GetObjectFromBodyStepSupplier.<T, T>object("Body", t -> t));
     }
 
+    public S addIgnored(Class<? extends Throwable> toBeIgnored) {
+        this.ignored.add(toBeIgnored);
+        return (S) this;
+    }
+
+    @Override
+    public S addIgnored(Collection<Class<? extends Throwable>> toBeIgnored) {
+        ignored.addAll(toBeIgnored);
+        return (S) this;
+    }
+
     S use(SequentialGetStepSupplier<HttpStepContext, R, ?, P, ?> from) {
         this.from = from;
         return (S) this;
@@ -539,7 +554,8 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
     }
 
     S fromResponse(ResponseSequentialGetSupplier<T> getResponse) {
-        this.responseFunction = getResponse.clone();
+        this.responseFunction = getResponse;
+        getResponse.getOriginalFunction().turnOffReportingOftLog();
         return (S) this;
     }
 
@@ -694,8 +710,12 @@ public abstract class GetResponseDataStepSupplier<R, T, P, S extends GetResponse
         if (HttpResponse.class.isAssignableFrom(clazz)) {
             addHowToGetResponse(from, (HttpResponse<T>) responseFunction);
         } else {
-            addHowToGetResponse(from, (ResponseSequentialGetSupplier<T>) responseFunction);
+            var responseStepSupplier = (ResponseSequentialGetSupplier<T>) responseFunction;
+            responseStepSupplier.addIgnored(ignored);
+            addHowToGetResponse(from, responseStepSupplier);
         }
+
+        from.addIgnored(ignored);
 
         super.from(from.get());
         return super.get();

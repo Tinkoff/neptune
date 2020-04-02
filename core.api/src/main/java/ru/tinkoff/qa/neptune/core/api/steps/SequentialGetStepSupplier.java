@@ -48,7 +48,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         Supplier<Function<T, R>>, IgnoresThrowable<THIS>, MakesCapturesOnFinishing<THIS> {
 
     private final String description;
-    final Set<Class<? extends Throwable>> ignored = new HashSet<>();
+    private final Set<Class<? extends Throwable>> ignored = new HashSet<>();
     private final List<CaptorFilterByProducedType> captorFilters = new ArrayList<>();
 
     private final List<Criteria<P>> conditions = new ArrayList<>();
@@ -181,6 +181,10 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         return (THIS) this;
     }
 
+    private Collection<Class<? extends Throwable>> getIgnoredExceptions() {
+        return ignored;
+    }
+
     /**
      * Marks that it is needed to produce a {@link java.awt.image.BufferedImage} after invocation of
      * {@link java.util.function.Function#apply(Object)} on built resulted {@link java.util.function.Function}.
@@ -281,7 +285,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         StepFunction<T, R> toBeReturned;
         if (StepFunction.class.isAssignableFrom(composeWith.getClass())) {
             var endFunctionStep  = toGet(resultedDescription, endFunction);
-            endFunctionStep.addIgnored(ignored);
+            endFunctionStep.addIgnored(getIgnoredExceptions());
             endFunctionStep.addCaptorFilters(captorFilters);
             toBeReturned = endFunctionStep.compose(composeWith);
         }
@@ -289,7 +293,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
             toBeReturned = toGet(resultedDescription, endFunction.compose(composeWith));
         }
 
-        toBeReturned.addIgnored(ignored);
+        toBeReturned.addIgnored(getIgnoredExceptions());
         toBeReturned.addCaptorFilters(captorFilters);
         return toBeReturned;
     }

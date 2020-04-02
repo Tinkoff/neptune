@@ -6,12 +6,11 @@ import java.net.http.HttpRequest;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * Designed to create a POST-request
  */
-public final class PostRequest extends RequestBuilder {
+public final class PostRequest extends RequestBuilder<PostRequest> {
 
     private PostRequest(URI endPoint, HttpRequest.BodyPublisher bodyPublisher) {
         super(endPoint);

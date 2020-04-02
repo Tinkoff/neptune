@@ -1,11 +1,8 @@
 package ru.tinkoff.qa.neptune.http.api.response;
 
-import java.net.http.HttpResponse;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.format;
-import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 final class DataHasNotBeenReceivedExceptionSupplier implements Supplier<RuntimeException> {
@@ -19,28 +16,6 @@ final class DataHasNotBeenReceivedExceptionSupplier implements Supplier<RuntimeE
         this.forResponse = forResponse;
     }
 
-    private static String buildResponseDescription(HttpResponse<?> response) {
-        var descriptionBuilder = new StringBuilder();
-        descriptionBuilder.append("- response status code: ").append(response.statusCode()).append("\n");
-        descriptionBuilder.append("- response URI: ").append(response.uri()).append("\n");
-        descriptionBuilder.append("- response body: ").append(ofNullable(response.body())
-                .map(String::valueOf).orElse("<no body> or body was not read as expected"))
-                .append("\n");
-        ofNullable(response.headers()).ifPresent(httpHeaders -> {
-            var headerMap = httpHeaders.map();
-            if (headerMap.size() > 0) {
-                descriptionBuilder.append("- response headers: ").append(headerMap).append("\n");
-            }
-        });
-
-        response.previousResponse().ifPresent(response1 -> {
-            descriptionBuilder.append("- previous response: ").append(response1).append("\n");
-        });
-
-        descriptionBuilder.append("- request: ").append(response.request()).append("\n");
-        return descriptionBuilder.toString();
-    }
-
     @Override
     public RuntimeException get() {
         var validResponse = forResponse.getLastValidResponse();
@@ -52,11 +27,9 @@ final class DataHasNotBeenReceivedExceptionSupplier implements Supplier<RuntimeE
             }
 
             return new DesiredDataHasNotBeenReceivedException(text,
-                    new DesiredResponseHasNotBeenReceivedException(format("Desired response has not been received. The last received: \n%s",
-                            buildResponseDescription(lastReceived))));
+                    new DesiredResponseHasNotBeenReceivedException("A response has been received bit it doesn't meet expectations"));
         }
 
-        return new DesiredDataHasNotBeenReceivedException(format("%s. The received response: \n%s", text,
-                buildResponseDescription(validResponse)));
+        return new DesiredDataHasNotBeenReceivedException(text);
     }
 }

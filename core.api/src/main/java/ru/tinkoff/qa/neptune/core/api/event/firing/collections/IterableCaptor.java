@@ -35,7 +35,7 @@ abstract class IterableCaptor<T extends Iterable<?>> extends StringCaptor<T> {
 
                     captured.append(format("%s%s", o1, LINE_SEPARATOR));
                 },
-                () -> captured.append(format("%s%s", String.valueOf(o), LINE_SEPARATOR))));
+                () -> captured.append(format("%s%s", o, LINE_SEPARATOR))));
         return captured;
     }
 }

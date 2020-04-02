@@ -3,7 +3,7 @@ package ru.tinkoff.qa.neptune.http.api.request;
 import java.net.URI;
 import java.net.URL;
 
-public final class DeleteRequest extends RequestBuilder {
+public final class DeleteRequest extends RequestBuilder<DeleteRequest> {
 
     private DeleteRequest(URI endPoint) {
         super(endPoint);

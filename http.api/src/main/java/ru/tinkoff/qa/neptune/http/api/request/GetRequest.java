@@ -6,7 +6,7 @@ import java.net.URL;
 /**
  * Designed to create a GET-request
  */
-public final class GetRequest extends RequestBuilder {
+public final class GetRequest extends RequestBuilder<GetRequest> {
 
 
     private GetRequest(URI endPoint) {

@@ -16,7 +16,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.valueOf;
 import static java.util.Optional.ofNullable;
 
-public abstract class RequestBuilder {
+@SuppressWarnings("unchecked")
+public abstract class RequestBuilder<S extends RequestBuilder<S>> {
     final HttpRequest.Builder builder;
     private final UriBuilder uriBuilder = new JerseyUriBuilder();
 
@@ -58,9 +59,9 @@ public abstract class RequestBuilder {
      * @param enable {@code true} if Expect continue to be sent
      * @return this builder
      */
-    public RequestBuilder expectContinue(boolean enable) {
+    public S expectContinue(boolean enable) {
         builder.expectContinue(enable);
-        return this;
+        return (S) this;
     }
 
     /**
@@ -77,9 +78,9 @@ public abstract class RequestBuilder {
      * @param version the HTTP protocol version requested
      * @return this builder
      */
-    public RequestBuilder version(HttpClient.Version version) {
+    public S version(HttpClient.Version version) {
         builder.version(version);
-        return this;
+        return (S) this;
     }
 
     /**
@@ -104,9 +105,9 @@ public abstract class RequestBuilder {
      * {@code IllegalArgumentException} if such a header is passed
      * to the builder.
      */
-    public RequestBuilder header(String name, String value) {
+    public S header(String name, String value) {
         builder.header(name, value);
-        return this;
+        return (S) this;
     }
 
     /**
@@ -128,9 +129,9 @@ public abstract class RequestBuilder {
      *                                  {@linkplain #header(String, String) restricted} by the
      *                                  implementation.
      */
-    public RequestBuilder headers(String... headers) {
+    public S headers(String... headers) {
         builder.headers(headers);
-        return this;
+        return (S) this;
     }
 
     /**
@@ -151,9 +152,9 @@ public abstract class RequestBuilder {
      * @return this builder
      * @throws IllegalArgumentException if the duration is non-positive
      */
-    public RequestBuilder timeout(Duration duration) {
+    public S timeout(Duration duration) {
         builder.timeout(duration);
-        return this;
+        return (S) this;
     }
 
     /**
@@ -172,9 +173,9 @@ public abstract class RequestBuilder {
      *                                  {@linkplain #header(String, String) restricted} by the
      *                                  implementation.
      */
-    public RequestBuilder setHeader(String name, String value) {
+    public S setHeader(String name, String value) {
         builder.setHeader(name, value);
-        return this;
+        return (S) this;
     }
 
     /**
@@ -184,9 +185,9 @@ public abstract class RequestBuilder {
      * @param values values of the parameter
      * @return self-reference
      */
-    public RequestBuilder queryParam(String name, final Object... values) {
+    public S queryParam(String name, final Object... values) {
         uriBuilder.queryParam(name, values);
-        return this;
+        return (S) this;
     }
 
     public HttpRequest build() {

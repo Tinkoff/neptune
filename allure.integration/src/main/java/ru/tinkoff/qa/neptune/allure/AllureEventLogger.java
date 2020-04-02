@@ -1,14 +1,12 @@
 package ru.tinkoff.qa.neptune.allure;
 
-import ru.tinkoff.qa.neptune.core.api.event.firing.EventLogger;
 import io.qameta.allure.AllureLifecycle;
 import io.qameta.allure.model.Status;
 import io.qameta.allure.model.StepResult;
+import ru.tinkoff.qa.neptune.core.api.event.firing.EventLogger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,9 +19,7 @@ import static io.qameta.allure.model.Status.PASSED;
 import static io.qameta.allure.util.ResultsUtils.getStatus;
 import static io.qameta.allure.util.ResultsUtils.getStatusDetails;
 import static java.lang.String.format;
-import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Arrays.stream;
 
 public class AllureEventLogger implements EventLogger {
 
@@ -38,8 +34,7 @@ public class AllureEventLogger implements EventLogger {
 
         if (stepUIIDs.size() == 0) {
             allureLifecycle.startStep(uuid, result);
-        }
-        else {
+        } else {
             allureLifecycle.startStep(stepUIIDs.getLast(), uuid, result);
         }
         stepUIIDs.addLast(uuid);

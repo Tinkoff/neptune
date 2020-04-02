@@ -1,12 +1,10 @@
 package ru.tinkoff.qa.neptune.http.api;
 
-import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 import ru.tinkoff.qa.neptune.http.api.response.GetResponseDataStepSupplier;
 
-import java.net.CookieManager;
 import java.net.http.HttpClient;
 import java.net.http.HttpResponse;
 import java.util.Objects;
@@ -20,7 +18,7 @@ import static java.net.http.HttpResponse.BodyHandlers.discarding;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSupplier.response;
 
 @CreateWith(provider = HttpStepsParameterProvider.class)
-public class HttpStepContext extends Context<HttpStepContext> implements ContextRefreshable {
+public class HttpStepContext extends Context<HttpStepContext> {
 
     private static final HttpStepContext context = getInstance(HttpStepContext.class);
 
@@ -38,22 +36,16 @@ public class HttpStepContext extends Context<HttpStepContext> implements Context
         return client;
     }
 
-    public <T> HttpResponse<T> responseOf(RequestBuilder requestBuilder, HttpResponse.BodyHandler<T> bodyHandler) {
+    public <T> HttpResponse<T> responseOf(RequestBuilder<?> requestBuilder, HttpResponse.BodyHandler<T> bodyHandler) {
         return response(requestBuilder, bodyHandler).get().apply(this);
     }
 
-    public HttpResponse<Void> responseOf(RequestBuilder requestBuilder) {
+    public HttpResponse<Void> responseOf(RequestBuilder<?> requestBuilder) {
         return responseOf(requestBuilder, discarding());
     }
 
     public <T> T get(GetResponseDataStepSupplier<T, ?, ?, ?> responseBody) {
         return responseBody.get().apply(this);
-    }
-
-    @Override
-    public void refreshContext() {
-        client.cookieHandler().ifPresent(cookieHandler ->
-                ((CookieManager) cookieHandler).getCookieStore().removeAll());
     }
 
     /**
