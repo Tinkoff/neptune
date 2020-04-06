@@ -133,12 +133,10 @@ public final class GeneralPropertyInitializer {
      */
     public static synchronized void refreshProperties() {
         //Firstly we try to read properties from resources
-        if (!arePropertiesRead) {
-            var global = findGlobalProperties();
-            var local = findLocalProperties();
-            refreshProperties(global, local);
-            arePropertiesRead = true;
-        }
+        var global = findGlobalProperties();
+        var local = findLocalProperties();
+        refreshProperties(global, local);
+        arePropertiesRead = true;
     }
 
     static boolean arePropertiesRead() {
