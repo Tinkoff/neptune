@@ -25,7 +25,7 @@ public final class GeneralPropertyInitializer {
 
     private static synchronized InputStream findGlobalProperties() {
         return ofNullable(getSystemClassLoader()
-                .getResourceAsStream(PROPERTIES))
+                .getResourceAsStream(GLOBAL_PROPERTIES))
                 .orElseGet(() -> {
                     //try to find it in the root directory of the project
                     var f = new File(GLOBAL_PROPERTIES).getAbsoluteFile();
