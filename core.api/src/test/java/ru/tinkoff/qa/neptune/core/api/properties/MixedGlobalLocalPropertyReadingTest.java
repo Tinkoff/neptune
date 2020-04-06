@@ -56,14 +56,7 @@ public class MixedGlobalLocalPropertyReadingTest extends BasePropertyReadingTest
                     entry(TEST_URL_PROPERTY, "https://www.google.com"));
 
     private static final Map<String, String> PROPERTY_SET_2 = Map
-            .ofEntries(entry(TEST_BOOLEAN_PROPERTY, "true"),
-                    entry(TEST_BYTE_PROPERTY, "2"),
-                    entry(TEST_DOUBLE_PROPERTY, "3"),
-                    entry(TEST_CHRONO_UNIT_PROPERTY,  "HOURS"),
-                    entry(TEST_TIME_VALUE_PROPERTY, "4"),
-                    entry(TEST_ENUM_ITEM_PROPERTY, "ITEM4"),
-                    entry(TEST_ENUM_ITEMS_PROPERTY, "ITEM1,ITEM2,ITEM3"),
-                    entry(TEST_FLOAT_PROPERTY, "5"),
+            .ofEntries(entry(TEST_FLOAT_PROPERTY, "5"),
                     entry(TEST_INTEGER_PROPERTY, "6"),
                     entry(TEST_LONG_PROPERTY, "7"),
                     entry(TEST_OBJECTS_PROPERTY, ObjectSupplier1.class.getName() + "," + ObjectSupplier1.class.getName()),
@@ -78,13 +71,13 @@ public class MixedGlobalLocalPropertyReadingTest extends BasePropertyReadingTest
                 is(ofSeconds(3)),
                 contains(ITEM1, ITEM2, ITEM4),
                 is(ITEM3),
-                is(4F),
-                is(5),
-                is(6L),
-                contains(O1, O2),
-                is(O1),
-                is(Short.valueOf("7")),
-                is(new URL("https://www.google.com")));
+                is(5F),
+                is(6),
+                is(7L),
+                contains(O1, O1),
+                is(O2),
+                is(Short.valueOf("8")),
+                is(new URL("https://www.programcreek.com")));
     }
 
     @BeforeClass
@@ -97,14 +90,16 @@ public class MixedGlobalLocalPropertyReadingTest extends BasePropertyReadingTest
             prop.store(output, null);
         }
 
-        var f = new File("./../" + GLOBAL_PROPERTIES);
-        assert f.createNewFile();
+        var f = new File(new File(GLOBAL_PROPERTIES).getAbsoluteFile()
+                .getParentFile()
+                .getParentFile(),
+                GLOBAL_PROPERTIES);
 
-        try (OutputStream output = new FileOutputStream(f)) {
+        try (OutputStream output2 = new FileOutputStream(f)) {
             // set the properties value
             PROPERTY_SET_1.forEach(prop::setProperty);
             // save properties to project root folder
-            prop.store(output, null);
+            prop.store(output2, null);
         }
 
         refreshProperties();
@@ -120,7 +115,10 @@ public class MixedGlobalLocalPropertyReadingTest extends BasePropertyReadingTest
             forceDelete(toDelete);
         }
 
-        toDelete = getFile("./../" + GLOBAL_PROPERTIES);
+        toDelete = new File(new File(GLOBAL_PROPERTIES).getAbsoluteFile()
+                .getParentFile()
+                .getParentFile(),
+                GLOBAL_PROPERTIES);
         if (toDelete.exists()) {
             forceDelete(toDelete);
         }

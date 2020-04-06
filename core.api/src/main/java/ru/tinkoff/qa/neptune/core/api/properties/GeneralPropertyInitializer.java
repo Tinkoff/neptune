@@ -27,12 +27,13 @@ public final class GeneralPropertyInitializer {
                 .getResourceAsStream(PROPERTIES))
                 .orElseGet(() -> {
                     //try to find it in the root directory of the project
-                    var f = new File(GLOBAL_PROPERTIES);
-                    var parent = f.getParentFile();
-
-                    while (nonNull(parent) && !f.exists()) {
-                        f = new File(parent, GLOBAL_PROPERTIES);
-                        parent = f.getParentFile();
+                    var f = new File(GLOBAL_PROPERTIES).getAbsoluteFile();
+                    while (!f.exists()) {
+                        var parent = f.getParentFile().getParentFile();
+                        if (parent == null) {
+                            break;
+                        }
+                        f = new File(parent, GLOBAL_PROPERTIES).getAbsoluteFile();
                     }
 
                     if (f.exists()) {
@@ -52,7 +53,7 @@ public final class GeneralPropertyInitializer {
                 .getResourceAsStream(PROPERTIES))
                 .orElseGet(() -> {
                     //try to find it in the root directory of the project/module
-                    var f = new File(GLOBAL_PROPERTIES);
+                    var f = new File(PROPERTIES);
 
                     if (f.exists()) {
                         try {
@@ -83,7 +84,7 @@ public final class GeneralPropertyInitializer {
         return ofNullable(is)
                 .map(inputStream -> {
                     var prop = new Properties();
-                    try {
+                    try (inputStream) {
                         prop.load(inputStream);
                         return prop;
                     } catch (IOException e) {
