@@ -18,8 +18,7 @@ import static org.apache.commons.io.FileUtils.forceDelete;
 import static org.apache.commons.io.FileUtils.getFile;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
-import static ru.tinkoff.qa.neptune.core.api.properties.GeneralPropertyInitializer.GENERAL_PROPERTIES;
-import static ru.tinkoff.qa.neptune.core.api.properties.GeneralPropertyInitializer.refreshProperties;
+import static ru.tinkoff.qa.neptune.core.api.properties.GeneralPropertyInitializer.*;
 import static ru.tinkoff.qa.neptune.core.api.properties.TestBooleanPropertySupplier.TEST_BOOLEAN_PROPERTY;
 import static ru.tinkoff.qa.neptune.core.api.properties.TestBytePropertySupplier.TEST_BYTE_PROPERTY;
 import static ru.tinkoff.qa.neptune.core.api.properties.TestDoublePropertySupplier.TEST_DOUBLE_PROPERTY;
@@ -38,7 +37,7 @@ import static ru.tinkoff.qa.neptune.core.api.properties.TestURLValuePropertySupp
 import static ru.tinkoff.qa.neptune.core.api.properties.object.suppliers.ObjectSupplier1.O1;
 import static ru.tinkoff.qa.neptune.core.api.properties.object.suppliers.ObjectSupplier2.O2;
 
-public class MixedPropertyReadingTest extends BasePropertyReadingTest {
+public class MixedGlobalLocalPropertyReadingTest extends BasePropertyReadingTest {
 
     private static final Map<String, String> PROPERTY_SET_1 = Map
             .ofEntries(entry(TEST_BOOLEAN_PROPERTY, "false"),
@@ -72,7 +71,7 @@ public class MixedPropertyReadingTest extends BasePropertyReadingTest {
                     entry(TEST_SHORT_PROPERTY, "8"),
                     entry(TEST_URL_PROPERTY, "https://www.programcreek.com"));
 
-    public MixedPropertyReadingTest() throws Exception {
+    public MixedGlobalLocalPropertyReadingTest() throws Exception {
         super(is(false),
                 is(Byte.valueOf("1")),
                 is(2D),
@@ -90,14 +89,24 @@ public class MixedPropertyReadingTest extends BasePropertyReadingTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        PROPERTY_SET_1.forEach(System::setProperty);
         Properties prop = new Properties();
-        try (OutputStream output = new FileOutputStream(GENERAL_PROPERTIES)) {
+        try (OutputStream output = new FileOutputStream(PROPERTIES)) {
             // set the properties value
             PROPERTY_SET_2.forEach(prop::setProperty);
             // save properties to project root folder
             prop.store(output, null);
         }
+
+        var f = new File("./../" + GLOBAL_PROPERTIES);
+        assert f.createNewFile();
+
+        try (OutputStream output = new FileOutputStream(f)) {
+            // set the properties value
+            PROPERTY_SET_1.forEach(prop::setProperty);
+            // save properties to project root folder
+            prop.store(output, null);
+        }
+
         refreshProperties();
     }
 
@@ -106,7 +115,12 @@ public class MixedPropertyReadingTest extends BasePropertyReadingTest {
         PROPERTY_SET_1.keySet().forEach(s -> System.getProperties().remove(s));
         PROPERTY_SET_2.keySet().forEach(s -> System.getProperties().remove(s));
         GeneralPropertyInitializer.arePropertiesRead = false;
-        File toDelete = getFile(GENERAL_PROPERTIES);
+        File toDelete = getFile(PROPERTIES);
+        if (toDelete.exists()) {
+            forceDelete(toDelete);
+        }
+
+        toDelete = getFile("./../" + GLOBAL_PROPERTIES);
         if (toDelete.exists()) {
             forceDelete(toDelete);
         }
