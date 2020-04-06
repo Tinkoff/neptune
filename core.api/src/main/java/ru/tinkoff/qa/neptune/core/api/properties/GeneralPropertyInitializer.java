@@ -10,7 +10,8 @@ import static java.lang.System.setProperty;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public final class GeneralPropertyInitializer {
 
@@ -101,9 +102,7 @@ public final class GeneralPropertyInitializer {
 
     private static Properties mergeProperties(Properties properties1, Properties properties2) {
         properties2.forEach((key, value) -> {
-            if (nonNull(value) && isNotBlank(valueOf(value))) {
-                properties1.setProperty(valueOf(key), valueOf(value));
-            }
+            properties1.setProperty(valueOf(key), valueOf(value));
         });
         return properties1;
     }
