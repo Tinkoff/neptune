@@ -16,8 +16,8 @@ import static java.time.Duration.ofSeconds;
 import static java.util.Map.entry;
 import static org.apache.commons.io.FileUtils.forceDelete;
 import static org.apache.commons.io.FileUtils.getFile;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.is;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.core.api.properties.GeneralPropertyInitializer.*;
 import static ru.tinkoff.qa.neptune.core.api.properties.TestBooleanPropertySupplier.TEST_BOOLEAN_PROPERTY;
 import static ru.tinkoff.qa.neptune.core.api.properties.TestBytePropertySupplier.TEST_BYTE_PROPERTY;
@@ -61,7 +61,7 @@ public class MixedGlobalLocalPropertyReadingTest extends BasePropertyReadingTest
                     entry(TEST_LONG_PROPERTY, "7"),
                     entry(TEST_OBJECTS_PROPERTY, ObjectSupplier1.class.getName() + "," + ObjectSupplier1.class.getName()),
                     entry(TEST_OBJECT_PROPERTY, ObjectSupplier2.class.getName()),
-                    entry(TEST_SHORT_PROPERTY, "8"),
+                    entry(TEST_SHORT_PROPERTY, EMPTY),
                     entry(TEST_URL_PROPERTY, "https://www.programcreek.com"));
 
     public MixedGlobalLocalPropertyReadingTest() throws Exception {
@@ -76,7 +76,7 @@ public class MixedGlobalLocalPropertyReadingTest extends BasePropertyReadingTest
                 is(7L),
                 contains(O1, O1),
                 is(O2),
-                is(Short.valueOf("8")),
+                nullValue(),
                 is(new URL("https://www.programcreek.com")));
     }
 
