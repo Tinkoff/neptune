@@ -12,7 +12,6 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Properties;
 
-import static java.time.Duration.ofHours;
 import static java.time.Duration.ofSeconds;
 import static java.util.Map.entry;
 import static org.apache.commons.io.FileUtils.forceDelete;
@@ -39,9 +38,25 @@ import static ru.tinkoff.qa.neptune.core.api.properties.TestURLValuePropertySupp
 import static ru.tinkoff.qa.neptune.core.api.properties.object.suppliers.ObjectSupplier1.O1;
 import static ru.tinkoff.qa.neptune.core.api.properties.object.suppliers.ObjectSupplier2.O2;
 
-public class FilePropertyReadingTest extends BasePropertyReadingTest {
+public class MixedFileEnvPropertyReadingTest extends BasePropertyReadingTest {
 
-    private static final Map<String, String> PROPERTY_SET = Map
+    private static final Map<String, String> PROPERTY_SET_1 = Map
+            .ofEntries(entry(TEST_BOOLEAN_PROPERTY, "false"),
+                    entry(TEST_BYTE_PROPERTY, "1"),
+                    entry(TEST_DOUBLE_PROPERTY, "2"),
+                    entry(TEST_CHRONO_UNIT_PROPERTY,  "SECONDS"),
+                    entry(TEST_TIME_VALUE_PROPERTY, "3"),
+                    entry(TEST_ENUM_ITEM_PROPERTY, "ITEM3"),
+                    entry(TEST_ENUM_ITEMS_PROPERTY, "ITEM1,ITEM2,ITEM4"),
+                    entry(TEST_FLOAT_PROPERTY, "4"),
+                    entry(TEST_INTEGER_PROPERTY, "5"),
+                    entry(TEST_LONG_PROPERTY, "6"),
+                    entry(TEST_OBJECTS_PROPERTY, ObjectSupplier1.class.getName() + "," + ObjectSupplier2.class.getName()),
+                    entry(TEST_OBJECT_PROPERTY, ObjectSupplier1.class.getName()),
+                    entry(TEST_SHORT_PROPERTY, "7"),
+                    entry(TEST_URL_PROPERTY, "https://www.google.com"));
+
+    private static final Map<String, String> PROPERTY_SET_2 = Map
             .ofEntries(entry(TEST_BOOLEAN_PROPERTY, "true"),
                     entry(TEST_BYTE_PROPERTY, "2"),
                     entry(TEST_DOUBLE_PROPERTY, "3"),
@@ -57,28 +72,29 @@ public class FilePropertyReadingTest extends BasePropertyReadingTest {
                     entry(TEST_SHORT_PROPERTY, "8"),
                     entry(TEST_URL_PROPERTY, "https://www.programcreek.com"));
 
-    public FilePropertyReadingTest() throws Exception {
-        super(is(true),
-                is(Byte.valueOf("2")),
-                is(3D),
-                is(ofHours(4)),
-                contains(ITEM1,ITEM2,ITEM3),
-                is(ITEM4),
-                is(5F),
-                is(6),
-                is(7L),
-                contains(O1, O1),
-                is(O2),
-                is(Short.valueOf("8")),
-                is(new URL("https://www.programcreek.com")));
+    public MixedFileEnvPropertyReadingTest() throws Exception {
+        super(is(false),
+                is(Byte.valueOf("1")),
+                is(2D),
+                is(ofSeconds(3)),
+                contains(ITEM1, ITEM2, ITEM4),
+                is(ITEM3),
+                is(4F),
+                is(5),
+                is(6L),
+                contains(O1, O2),
+                is(O1),
+                is(Short.valueOf("7")),
+                is(new URL("https://www.google.com")));
     }
 
     @BeforeClass
     public static void setUp() throws Exception {
+        PROPERTY_SET_1.forEach(System::setProperty);
         Properties prop = new Properties();
         try (OutputStream output = new FileOutputStream(PROPERTIES)) {
             // set the properties value
-            PROPERTY_SET.forEach(prop::setProperty);
+            PROPERTY_SET_2.forEach(prop::setProperty);
             // save properties to project root folder
             prop.store(output, null);
         }
@@ -87,7 +103,8 @@ public class FilePropertyReadingTest extends BasePropertyReadingTest {
 
     @AfterClass
     public void tearDown() throws Throwable {
-        PROPERTY_SET.keySet().forEach(s -> System.getProperties().remove(s));
+        PROPERTY_SET_1.keySet().forEach(s -> System.getProperties().remove(s));
+        PROPERTY_SET_2.keySet().forEach(s -> System.getProperties().remove(s));
         GeneralPropertyInitializer.arePropertiesRead = false;
         File toDelete = getFile(PROPERTIES);
         if (toDelete.exists()) {

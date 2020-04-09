@@ -26,7 +26,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.testng.ITestResult.*;
 import static ru.tinkoff.qa.neptune.testng.integration.properties.TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY;
 
-public class DefaultTestRunningListener implements IInvokedMethodListener {
+public final class DefaultTestRunningListener implements IInvokedMethodListener {
 
     private final ThreadLocal<Method> previouslyRefreshed = new ThreadLocal<>();
     private final List<Class<? extends Context>> REFRESHABLE_CONTEXTS = new ClassGraph()
