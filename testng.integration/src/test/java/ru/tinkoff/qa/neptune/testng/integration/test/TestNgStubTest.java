@@ -3,8 +3,9 @@ package ru.tinkoff.qa.neptune.testng.integration.test;
 import org.testng.annotations.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 
+@Listeners(UserCustomListener.class)
 public class TestNgStubTest extends BaseTestNgIntegrationTest {
 
     @BeforeSuite
@@ -54,7 +55,7 @@ public class TestNgStubTest extends BaseTestNgIntegrationTest {
 
     @Test(enabled = false)
     public void ignoredTest() {
-       assertThat(true, is(true));
+        assertThat(true, is(true));
     }
 
     @Test

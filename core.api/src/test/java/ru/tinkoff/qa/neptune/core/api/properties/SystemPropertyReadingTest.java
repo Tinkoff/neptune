@@ -70,7 +70,8 @@ public class SystemPropertyReadingTest extends BasePropertyReadingTest {
     }
 
     @AfterClass
-    public void tearDown() throws Throwable {
+    public void tearDown() {
+        GeneralPropertyInitializer.arePropertiesRead = false;
         PROPERTY_SET.keySet().forEach(s -> System.getProperties().remove(s));
     }
 }
