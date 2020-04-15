@@ -13,7 +13,6 @@ import java.net.http.HttpTimeoutException;
 import java.time.Duration;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.lang.String.valueOf;
 import static java.util.Optional.ofNullable;
 
 @SuppressWarnings("unchecked")
@@ -25,6 +24,7 @@ public abstract class RequestBuilder<S extends RequestBuilder<S>> {
         checkNotNull(endPoint);
         builder = HttpRequest.newBuilder();
         uriBuilder.uri(endPoint);
+        defineRequestMethodAndBody();
     }
 
     RequestBuilder(URL url) {
@@ -44,6 +44,8 @@ public abstract class RequestBuilder<S extends RequestBuilder<S>> {
                 .map(URI::create)
                 .orElseThrow(() -> new IllegalArgumentException("Endpoint string uri should not be null")));
     }
+
+    abstract void defineRequestMethodAndBody();
 
     /**
      * Requests the server to acknowledge the request before sending the
@@ -190,13 +192,13 @@ public abstract class RequestBuilder<S extends RequestBuilder<S>> {
         return (S) this;
     }
 
-    public HttpRequest build() {
+    HttpRequest build() {
         return builder.uri(uriBuilder.build()).build();
     }
 
 
     @Override
     public String toString() {
-        return valueOf(build());
+        return build().toString();
     }
 }
