@@ -187,24 +187,24 @@ public final class WindowCriteria {
     }
 
     /**
-     * Builds criteria to match url of the loaded page by path value.
+     * Builds criteria to match url of the loaded page by reference value.
      *
-     * @param path is a path value
+     * @param reference is a reference value
      * @return criteria.
      */
-    public static Criteria<Window> urlPath(String path) {
-        return urlPartStringCriteria("path", path, URL::getPath);
+    public static Criteria<Window> urlRef(String reference) {
+        return urlPartStringCriteria("reference", reference, URL::getRef);
     }
 
     /**
-     * Builds criteria to match url of the loaded page by path value.
+     * Builds criteria to match url of the loaded page by reference value.
      *
-     * @param expression is a substring that path is supposed to have.
-     *                   It is possible to pass reg exp pattern that path should fit.
+     * @param expression is a substring that reference is supposed to have.
+     *                   It is possible to pass reg exp pattern that reference should fit.
      * @return criteria.
      */
-    public static Criteria<Window> urlPathMatches(String expression) {
-        return urlPartRegExpCriteria("path", expression, URL::getPath);
+    public static Criteria<Window> urlRefMatches(String expression) {
+        return urlPartRegExpCriteria("reference", expression, URL::getRef);
     }
 
     /**
@@ -247,6 +247,27 @@ public final class WindowCriteria {
      */
     public static Criteria<Window> urlUserInfoMatches(String expression) {
         return urlPartRegExpCriteria("user info", expression, URL::getUserInfo);
+    }
+
+    /**
+     * Builds criteria to match url of the loaded page by path value.
+     *
+     * @param path is a path value
+     * @return criteria.
+     */
+    public static Criteria<Window> urlPath(String path) {
+        return urlPartStringCriteria("path", path, URL::getPath);
+    }
+
+    /**
+     * Builds criteria to match url of the loaded page by path value.
+     *
+     * @param expression is a substring that path is supposed to have.
+     *                   It is possible to pass reg exp pattern that path should fit.
+     * @return criteria.
+     */
+    public static Criteria<Window> urlPathMatches(String expression) {
+        return urlPartRegExpCriteria("path", expression, URL::getPath);
     }
 
     /**
