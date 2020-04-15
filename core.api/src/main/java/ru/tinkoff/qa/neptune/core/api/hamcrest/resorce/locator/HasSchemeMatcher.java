@@ -3,7 +3,6 @@ package ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator;
 import org.hamcrest.Matcher;
 
 import java.net.URI;
-import java.net.URL;
 import java.util.function.Function;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -15,7 +14,7 @@ public final class HasSchemeMatcher<T> extends ResourceLocatorMatcher<T, String>
     }
 
     /**
-     * Creates matcher that verifier the scheme of an URI
+     * Creates matcher that verifies the scheme of an URI
      *
      * @param schemeMather that checks the scheme value
      * @return new {@link HasSchemeMatcher}
@@ -25,7 +24,7 @@ public final class HasSchemeMatcher<T> extends ResourceLocatorMatcher<T, String>
     }
 
     /**
-     * Creates matcher that verifier the scheme of an URI
+     * Creates matcher that verifies the scheme of an URI
      *
      * @param scheme is the expected value of the scheme
      * @return new {@link HasSchemeMatcher}

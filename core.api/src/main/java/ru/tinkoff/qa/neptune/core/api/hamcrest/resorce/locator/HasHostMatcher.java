@@ -15,7 +15,7 @@ public final class HasHostMatcher<T> extends ResourceLocatorMatcher<T, String> {
     }
 
     /**
-     * Creates matcher that verifier the host of an URL
+     * Creates matcher that verifies the host of an URL
      *
      * @param hostMather that checks the host value
      * @return new {@link HasHostMatcher}
@@ -25,7 +25,7 @@ public final class HasHostMatcher<T> extends ResourceLocatorMatcher<T, String> {
     }
 
     /**
-     * Creates matcher that verifier the host of an URL
+     * Creates matcher that verifies the host of an URL
      *
      * @param host is the expected value of the host
      * @return new {@link HasHostMatcher}
@@ -35,7 +35,7 @@ public final class HasHostMatcher<T> extends ResourceLocatorMatcher<T, String> {
     }
 
     /**
-     * Creates matcher that verifier the host of an URI
+     * Creates matcher that verifies the host of an URI
      *
      * @param hostMather that checks the host value
      * @return new {@link HasHostMatcher}
@@ -45,7 +45,7 @@ public final class HasHostMatcher<T> extends ResourceLocatorMatcher<T, String> {
     }
 
     /**
-     * Creates matcher that verifier the host of an URI
+     * Creates matcher that verifies the host of an URI
      *
      * @param host is the expected value of the host
      * @return new {@link HasHostMatcher}

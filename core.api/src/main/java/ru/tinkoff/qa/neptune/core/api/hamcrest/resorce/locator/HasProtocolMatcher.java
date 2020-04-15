@@ -14,7 +14,7 @@ public final class HasProtocolMatcher<T> extends ResourceLocatorMatcher<T, Strin
     }
 
     /**
-     * Creates matcher that verifier the path of an URL
+     * Creates matcher that verifies the path of an URL
      *
      * @param pathMather that checks the path value
      * @return new {@link HasProtocolMatcher}
@@ -24,7 +24,7 @@ public final class HasProtocolMatcher<T> extends ResourceLocatorMatcher<T, Strin
     }
 
     /**
-     * Creates matcher that verifier the path of an URL
+     * Creates matcher that verifies the path of an URL
      *
      * @param path is the expected value of the path
      * @return new {@link HasProtocolMatcher}

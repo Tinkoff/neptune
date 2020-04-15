@@ -15,7 +15,7 @@ public final class HasPortMatcher<T> extends ResourceLocatorMatcher<T, Integer> 
     }
 
     /**
-     * Creates matcher that verifier the port of an URL
+     * Creates matcher that verifies the port of an URL
      *
      * @param portMather that checks the port value
      * @return new {@link HasPortMatcher}
@@ -25,7 +25,7 @@ public final class HasPortMatcher<T> extends ResourceLocatorMatcher<T, Integer> 
     }
 
     /**
-     * Creates matcher that verifier the port of an URL
+     * Creates matcher that verifies the port of an URL
      *
      * @param port is the expected value of the port
      * @return new {@link HasPortMatcher}
@@ -35,7 +35,7 @@ public final class HasPortMatcher<T> extends ResourceLocatorMatcher<T, Integer> 
     }
 
     /**
-     * Creates matcher that verifier the port of an URI
+     * Creates matcher that verifies the port of an URI
      *
      * @param portMather that checks the port value
      * @return new {@link HasPortMatcher}
@@ -45,7 +45,7 @@ public final class HasPortMatcher<T> extends ResourceLocatorMatcher<T, Integer> 
     }
 
     /**
-     * Creates matcher that verifier the port of an URI
+     * Creates matcher that verifies the port of an URI
      *
      * @param port is the expected value of the port
      * @return new {@link HasPortMatcher}

@@ -46,7 +46,7 @@ public final class WindowCriteria {
                     var title = valueOf(window.getTitle());
 
                     if (title.contains(expression)) {
-                        return false;
+                        return true;
                     }
 
                     try {
@@ -90,12 +90,12 @@ public final class WindowCriteria {
      * @return criteria.
      */
     public static Criteria<Window> urlMatches(String expression) {
-        checkArgument(isNotBlank(expression), "Title expression should be defined");
+        checkArgument(isNotBlank(expression), "URL expression should be defined");
 
         return condition(format("url contains '%s' or meets regExp pattern '%s'", expression, expression), window -> {
             var url = valueOf(window.getCurrentUrl());
             if (url.contains(expression)) {
-                return false;
+                return true;
             }
 
             try {
@@ -110,7 +110,7 @@ public final class WindowCriteria {
     }
 
     private static Criteria<Window> urlPartStringCriteria(String description, String expected, Function<URL, String> getPart) {
-        checkArgument(isNotBlank(expected), format("Expected %s should not be defined as a blank/null string", description));
+        checkArgument(isNotBlank(expected), format("Expected url %s should not be defined as a blank/null string", description));
         return condition(format("url %s is '%s'", description, expected), window -> {
             try {
                 return Objects.equals(getPart.apply(new URL(valueOf(window.getCurrentUrl()))), expected);
@@ -121,13 +121,13 @@ public final class WindowCriteria {
     }
 
     private static Criteria<Window> urlPartRegExpCriteria(String description, String expression, Function<URL, String> getPart) {
-        checkNotNull(expression, format("expression url %s should not be defined", description));
+        checkArgument(isNotBlank(expression), format("expression of url %s should not be defined as a blank/null string", description));
         return condition(format("url %s contains '%s' or meets regExp pattern '%s'", description, expression, expression), window -> {
             try {
                 var part = getPart.apply(new URL(valueOf(window.getCurrentUrl())));
 
                 if (part.contains(expression)) {
-                    return false;
+                    return true;
                 }
 
                 try {
@@ -187,24 +187,24 @@ public final class WindowCriteria {
     }
 
     /**
-     * Builds criteria to match url of the loaded page by path value.
+     * Builds criteria to match url of the loaded page by reference value.
      *
-     * @param path is a path value
+     * @param reference is a reference value
      * @return criteria.
      */
-    public static Criteria<Window> urlPath(String path) {
-        return urlPartStringCriteria("path", path, URL::getPath);
+    public static Criteria<Window> urlRef(String reference) {
+        return urlPartStringCriteria("reference", reference, URL::getRef);
     }
 
     /**
-     * Builds criteria to match url of the loaded page by path value.
+     * Builds criteria to match url of the loaded page by reference value.
      *
-     * @param expression is a substring that path is supposed to have.
-     *                   It is possible to pass reg exp pattern that path should fit.
+     * @param expression is a substring that reference is supposed to have.
+     *                   It is possible to pass reg exp pattern that reference should fit.
      * @return criteria.
      */
-    public static Criteria<Window> urlPathMatches(String expression) {
-        return urlPartRegExpCriteria("path", expression, URL::getPath);
+    public static Criteria<Window> urlRefMatches(String expression) {
+        return urlPartRegExpCriteria("reference", expression, URL::getRef);
     }
 
     /**
@@ -250,6 +250,27 @@ public final class WindowCriteria {
     }
 
     /**
+     * Builds criteria to match url of the loaded page by path value.
+     *
+     * @param path is a path value
+     * @return criteria.
+     */
+    public static Criteria<Window> urlPath(String path) {
+        return urlPartStringCriteria("path", path, URL::getPath);
+    }
+
+    /**
+     * Builds criteria to match url of the loaded page by path value.
+     *
+     * @param expression is a substring that path is supposed to have.
+     *                   It is possible to pass reg exp pattern that path should fit.
+     * @return criteria.
+     */
+    public static Criteria<Window> urlPathMatches(String expression) {
+        return urlPartRegExpCriteria("path", expression, URL::getPath);
+    }
+
+    /**
      * Builds criteria to match url of the page loaded in by port value.
      *
      * @param port is a port value
@@ -260,28 +281,6 @@ public final class WindowCriteria {
         return condition(format("url port is '%s'", port), window -> {
             try {
                 return new URL(valueOf(window.getCurrentUrl())).getPort() == port;
-            } catch (Throwable t) {
-                throw new RuntimeException(t);
-            }
-        });
-    }
-
-    /**
-     * Builds criteria to match url of the page loaded in by port value. It is expected that url of the page
-     * is in defined diapason.
-     *
-     * @param portMin is an expected min value of a port
-     * @param portMax is an expected max value of a port
-     * @return criteria.
-     */
-    public static Criteria<Window> urlPortIn(int portMin, int portMax) {
-        checkArgument(portMin > 0, "Min port value should be greater than 0");
-        checkArgument(portMax > 0, "Max port value should be greater than 0");
-        checkArgument(portMax > portMin, "Max port value should be greater than defined min");
-        return condition(format("url port is in ['%s', '%s']", portMin, portMax), window -> {
-            try {
-                var port = new URL(valueOf(window.getCurrentUrl())).getPort();
-                return port >= portMin && port <= portMax;
             } catch (Throwable t) {
                 throw new RuntimeException(t);
             }

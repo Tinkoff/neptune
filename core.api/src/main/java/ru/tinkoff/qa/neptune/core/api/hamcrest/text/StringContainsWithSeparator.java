@@ -35,7 +35,7 @@ public final class StringContainsWithSeparator extends TypeSafeDiagnosingMatcher
      * @param separator is string separator
      * @return new {@link StringContainsWithSeparator}
      */
-    public StringContainsWithSeparator containsStringsSeparatedBy(Matcher<? super Iterable<? super String>> matcher, String separator) {
+    public static StringContainsWithSeparator containsStringsSeparatedBy(Matcher<? super Iterable<? super String>> matcher, String separator) {
         return new StringContainsWithSeparator(matcher, separator);
     }
 
@@ -47,7 +47,7 @@ public final class StringContainsWithSeparator extends TypeSafeDiagnosingMatcher
      * @param separator is string separator
      * @return new {@link StringContainsWithSeparator}
      */
-    public StringContainsWithSeparator containsStringSeparatedBy(String toContain, String separator) {
+    public static StringContainsWithSeparator containsStringSeparatedBy(String toContain, String separator) {
         return new StringContainsWithSeparator(hasItem(toContain), separator);
     }
 
