@@ -16,7 +16,7 @@ class StringBody extends RequestBody<String> {
     }
 
     @Override
-    protected HttpRequest.BodyPublisher createPublisher() {
+    public HttpRequest.BodyPublisher createPublisher() {
         return ofString(super.body(), charset);
     }
 

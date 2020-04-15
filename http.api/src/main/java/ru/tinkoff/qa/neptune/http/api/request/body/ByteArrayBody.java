@@ -28,7 +28,7 @@ class ByteArrayBody extends RequestBody<byte[]> {
     }
 
     @Override
-    protected HttpRequest.BodyPublisher createPublisher() {
+    public HttpRequest.BodyPublisher createPublisher() {
         if (length == null || offset == null) {
             return byteArrayBody(super.body());
         }

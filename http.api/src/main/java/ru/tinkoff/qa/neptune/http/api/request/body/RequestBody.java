@@ -20,7 +20,7 @@ public abstract class RequestBody<T> {
      *
      * @return an instance of {@link java.net.http.HttpRequest.BodyPublisher}
      */
-    protected abstract HttpRequest.BodyPublisher createPublisher();
+    public abstract HttpRequest.BodyPublisher createPublisher();
 
     /**
      * Returns an object that represents a body of http response

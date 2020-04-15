@@ -11,7 +11,7 @@ class EmptyBody extends RequestBody<Void> {
     }
 
     @Override
-    protected HttpRequest.BodyPublisher createPublisher() {
+    public HttpRequest.BodyPublisher createPublisher() {
         return empty();
     }
 }

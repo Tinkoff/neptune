@@ -14,7 +14,7 @@ class StreamSuppliedBody extends RequestBody<Supplier<InputStream>> {
     }
 
     @Override
-    protected HttpRequest.BodyPublisher createPublisher() {
+    public HttpRequest.BodyPublisher createPublisher() {
         return ofInputStream(body());
     }
 }

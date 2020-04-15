@@ -13,7 +13,7 @@ class StreamBody extends RequestBody<InputStream> {
     }
 
     @Override
-    protected HttpRequest.BodyPublisher createPublisher() {
-        return ofInputStream(() -> body());
+    public HttpRequest.BodyPublisher createPublisher() {
+        return ofInputStream(this::body);
     }
 }
