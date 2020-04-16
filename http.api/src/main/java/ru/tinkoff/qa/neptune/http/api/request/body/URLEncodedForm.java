@@ -14,8 +14,6 @@ import static java.util.stream.Collectors.joining;
 
 class URLEncodedForm extends RequestBody<String> {
 
-    private final Charset charset;
-
     URLEncodedForm(Map<String, String> formParameters, Charset charset) {
         super(ofNullable(formParameters)
                 .map(m -> m.entrySet()
@@ -31,16 +29,10 @@ class URLEncodedForm extends RequestBody<String> {
                         })
                         .collect(joining("&")))
                 .orElseThrow());
-        this.charset = charset;
     }
 
     @Override
     public HttpRequest.BodyPublisher createPublisher() {
-        return ofString(super.body(), charset);
-    }
-
-    @Override
-    public String body() {
-        return new String(super.body().getBytes(charset));
+        return ofString(super.body());
     }
 }
