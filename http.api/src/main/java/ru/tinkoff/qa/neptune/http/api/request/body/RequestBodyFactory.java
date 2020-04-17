@@ -108,7 +108,7 @@ public final class RequestBodyFactory {
     }
 
     /**
-     * Creates a body of http request with delayed creation of a stream.
+     * Creates a body of http request.
      *
      * @param body is a body of http request. It is considered that an input stream is created
      *             at the moment when http request is sent
@@ -149,8 +149,7 @@ public final class RequestBodyFactory {
     }
 
     /**
-     * Creates a body of http request. An object is used to serialize it to
-     * json/xml string body.
+     * Creates a body of http request. An object is transformed into json/xml string body.
      *
      * @param body object to be serialized
      * @return an instance of {@link RequestBody}
@@ -160,11 +159,10 @@ public final class RequestBodyFactory {
     }
 
     /**
-     * Creates a body of http request. An object is used to serialize it to
-     * json/xml string body.
+     * Creates a body of http request. An object is transformed into json/xml string body.
      *
-     * @param mapper is an instance of {@link ObjectMapper} that is used to serialize object
-     *               to json/xml string
+     * @param mapper is an instance of {@link ObjectMapper} that is used to transform object
+     *               into json/xml string
      * @param body   object to be serialized
      * @return an instance of {@link RequestBody}
      */
@@ -173,11 +171,10 @@ public final class RequestBodyFactory {
     }
 
     /**
-     * Creates a body of http request. An object is used to serialize it to
-     * json/xml string body.
+     * Creates a body of http request. An object is transformed into json/xml string body.
      *
-     * @param mapper is an instance of {@link ObjectMapper} that is used to serialize object
-     *               to json/xml string by default.
+     * @param mapper creates/gets an instance of {@link ObjectMapper} that is used by default to transform object
+     *               into json/xml string.
      * @param body   object to be serialized
      * @return an instance of {@link RequestBody}
      * @see DefaultBodyMappers
