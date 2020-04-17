@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.http.api.properties.dto;
+package ru.tinkoff.qa.neptune.http.api.properties.mapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.tinkoff.qa.neptune.core.api.properties.object.ObjectPropertySupplier;
