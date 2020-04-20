@@ -19,7 +19,7 @@ import static org.apache.commons.io.FileUtils.forceDelete;
 import static org.apache.commons.io.FileUtils.getFile;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
-import static ru.tinkoff.qa.neptune.core.api.properties.GeneralPropertyInitializer.GENERAL_PROPERTIES;
+import static ru.tinkoff.qa.neptune.core.api.properties.GeneralPropertyInitializer.PROPERTIES;
 import static ru.tinkoff.qa.neptune.core.api.properties.GeneralPropertyInitializer.refreshProperties;
 import static ru.tinkoff.qa.neptune.core.api.properties.TestBooleanPropertySupplier.TEST_BOOLEAN_PROPERTY;
 import static ru.tinkoff.qa.neptune.core.api.properties.TestBytePropertySupplier.TEST_BYTE_PROPERTY;
@@ -76,7 +76,7 @@ public class FilePropertyReadingTest extends BasePropertyReadingTest {
     @BeforeClass
     public static void setUp() throws Exception {
         Properties prop = new Properties();
-        try (OutputStream output = new FileOutputStream(GENERAL_PROPERTIES)) {
+        try (OutputStream output = new FileOutputStream(PROPERTIES)) {
             // set the properties value
             PROPERTY_SET.forEach(prop::setProperty);
             // save properties to project root folder
@@ -89,7 +89,7 @@ public class FilePropertyReadingTest extends BasePropertyReadingTest {
     public void tearDown() throws Throwable {
         PROPERTY_SET.keySet().forEach(s -> System.getProperties().remove(s));
         GeneralPropertyInitializer.arePropertiesRead = false;
-        File toDelete = getFile(GENERAL_PROPERTIES);
+        File toDelete = getFile(PROPERTIES);
         if (toDelete.exists()) {
             forceDelete(toDelete);
         }

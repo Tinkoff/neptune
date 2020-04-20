@@ -108,7 +108,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 //...
 import static org.openqa.selenium.By.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.shouldBeEnabled;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -138,7 +138,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 //...
 import static org.openqa.selenium.By.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.shouldBeEnabled;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -171,7 +171,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 //...
 import static org.openqa.selenium.By.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.shouldBeEnabled;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -205,7 +205,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import static java.util.regex.Pattern.compile;
 import static org.openqa.selenium.By.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.shouldBeEnabled;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -324,7 +324,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import static java.time.Duration.ofSeconds;
 import static org.openqa.selenium.By.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.shouldBeEnabled;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -355,7 +355,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import static java.time.Duration.ofSeconds;
 import static org.openqa.selenium.By.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.shouldBeEnabled;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -390,7 +390,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import static java.time.Duration.ofSeconds;
 import static org.openqa.selenium.By.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.shouldBeEnabled;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -426,7 +426,7 @@ import static java.time.Duration.ofSeconds;
 import static java.util.regex.Pattern.compile;
 import static org.openqa.selenium.By.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.shouldBeEnabled;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -491,7 +491,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import static java.time.Duration.ofSeconds;
 import static org.openqa.selenium.By.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.shouldBeEnabled;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -515,7 +515,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import static java.time.Duration.ofSeconds;
 import static org.openqa.selenium.By.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.shouldBeEnabled;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -636,7 +636,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 //...
 import static org.openqa.selenium.By.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.webElements;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.shouldBeEnabled;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -666,7 +666,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 //...
 import static org.openqa.selenium.By.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.webElements;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.shouldBeEnabled;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -699,7 +699,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 //...
 import static org.openqa.selenium.By.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.webElements;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.shouldBeEnabled;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -733,7 +733,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import static java.util.regex.Pattern.compile;
 import static org.openqa.selenium.By.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.webElements;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.shouldBeEnabled;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -852,7 +852,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import static java.time.Duration.ofSeconds;
 import static org.openqa.selenium.By.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.webElements;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.shouldBeEnabled;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -883,7 +883,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import static java.time.Duration.ofSeconds;
 import static org.openqa.selenium.By.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.webElements;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.shouldBeEnabled;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -918,7 +918,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import static java.time.Duration.ofSeconds;
 import static org.openqa.selenium.By.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.webElements;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.shouldBeEnabled;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -954,7 +954,7 @@ import static java.time.Duration.ofSeconds;
 import static java.util.regex.Pattern.compile;
 import static org.openqa.selenium.By.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.webElements;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.shouldBeEnabled;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -990,7 +990,7 @@ import static java.time.Duration.ofSeconds;
 import static org.openqa.selenium.By.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElements;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.shouldBeEnabled;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -1015,7 +1015,7 @@ import static java.time.Duration.ofSeconds;
 import static org.openqa.selenium.By.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElements;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.shouldBeEnabled;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -1388,7 +1388,7 @@ import static java.time.Duration.ofSeconds;
 import static org.openqa.selenium.By.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.widget;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.shouldBeEnabled;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -1425,7 +1425,7 @@ import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.widget;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.widgets;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldBeEnabled;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.shouldBeEnabled;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;

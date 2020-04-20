@@ -1,9 +1,9 @@
 package ru.tinkoff.qa.neptune.http.api;
 
-import ru.tinkoff.qa.neptune.core.api.steps.ConditionConcatenation;
-import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.http.api.captors.RequestStringCaptor;
 
 import java.net.http.HttpResponse;
@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 import static java.net.http.HttpResponse.BodyHandlers.discarding;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.StreamSupport.stream;
-import static ru.tinkoff.qa.neptune.core.api.steps.Condition.condition;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 
 /**
  * This class is designed to build chains of functions that get a response when a request is sent.
@@ -25,6 +25,7 @@ import static ru.tinkoff.qa.neptune.core.api.steps.Condition.condition;
  */
 @MakeStringCapturesOnFinishing
 @MakeFileCapturesOnFinishing
+@Deprecated(since = "0.11.4-ALPHA", forRemoval = true)
 public class HttpResponseSequentialGetSupplier<T> extends SequentialGetStepSupplier
         .GetObjectStepSupplier<HttpStepContext, HttpResponse<T>, HttpResponseSequentialGetSupplier<T>> implements Cloneable {
 
@@ -45,13 +46,13 @@ public class HttpResponseSequentialGetSupplier<T> extends SequentialGetStepSuppl
 
     static <T, S> void addCondition(HttpResponseSequentialGetSupplier<T> addTo,
                                     Function<T, S> extractObjectFromBody,
-                                    Predicate<S> predicateToAdd) {
-        Predicate<HttpResponse<T>> predicate = condition(predicateToAdd.toString(), tHttpResponse -> {
+                                    Criteria<S> criteria) {
+        Criteria<HttpResponse<T>> predicate = condition(criteria.toString(), tHttpResponse -> {
             var body = tHttpResponse.body();
             return ofNullable(body)
                     .map(t -> {
                         S s = extractObjectFromBody.apply(t);
-                        return predicateToAdd.test(s);
+                        return criteria.get().test(s);
                     })
                     .orElse(false);
         });
@@ -60,13 +61,13 @@ public class HttpResponseSequentialGetSupplier<T> extends SequentialGetStepSuppl
 
     static <T, R, S extends Iterable<R>> void addConditionIterable(HttpResponseSequentialGetSupplier<T> addTo,
                                                                    Function<T, S> extractIterableFromBody,
-                                                                   Predicate<R> predicateToAdd) {
-        Predicate<HttpResponse<T>> predicate = condition(predicateToAdd.toString(), tHttpResponse -> {
+                                                                   Criteria<R> predicateToAdd) {
+        Criteria<HttpResponse<T>> predicate = condition(predicateToAdd.toString(), tHttpResponse -> {
             var body = tHttpResponse.body();
             return ofNullable(body)
                     .map(t -> {
                         S s = extractIterableFromBody.apply(t);
-                        return stream(s.spliterator(), true).anyMatch(predicateToAdd);
+                        return stream(s.spliterator(), true).anyMatch(predicateToAdd.get());
                     })
                     .orElse(false);
         });
@@ -75,7 +76,7 @@ public class HttpResponseSequentialGetSupplier<T> extends SequentialGetStepSuppl
 
     static <T, R> void addConditionArray(HttpResponseSequentialGetSupplier<T> addTo,
                                          Function<T, R[]> extractIterableFromBody,
-                                         Predicate<R> predicateToAdd) {
+                                         Criteria<R> predicateToAdd) {
         addConditionIterable(addTo, extractIterableFromBody.andThen(rs -> ofNullable(rs)
                         .map(Arrays::asList)
                         .orElse(null)),
@@ -116,18 +117,8 @@ public class HttpResponseSequentialGetSupplier<T> extends SequentialGetStepSuppl
     }
 
     @Override
-    protected HttpResponseSequentialGetSupplier<T> criteria(Predicate<? super HttpResponse<T>> condition) {
-        return super.criteria(condition);
-    }
-
-    @Override
-    protected HttpResponseSequentialGetSupplier<T> criteria(ConditionConcatenation concat, Predicate<? super HttpResponse<T>> condition) {
-        return super.criteria(concat, condition);
-    }
-
-    @Override
-    protected HttpResponseSequentialGetSupplier<T> criteria(ConditionConcatenation concat, String conditionDescription, Predicate<? super HttpResponse<T>> condition) {
-        return super.criteria(concat, conditionDescription, condition);
+    protected HttpResponseSequentialGetSupplier<T> criteria(Criteria<? super HttpResponse<T>> criteria) {
+        return super.criteria(criteria);
     }
 
     @Override

@@ -3,7 +3,7 @@ package ru.tinkoff.qa.neptune.data.base.api.queries;
 import org.datanucleus.api.jdo.JDOPersistenceManager;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.steps.ConditionConcatenation;
+import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 import ru.tinkoff.qa.neptune.data.base.api.NothingIsSelectedException;
@@ -272,18 +272,8 @@ public class SelectList<T, R extends List<T>, M> extends SequentialGetStepSuppli
     }
 
     @Override
-    public SelectList<T, R, M> criteria(ConditionConcatenation concat, Predicate<? super T> condition) {
-        return super.criteria(concat, condition);
-    }
-
-    @Override
-    public SelectList<T, R, M> criteria(ConditionConcatenation concat, String conditionDescription, Predicate<? super T> condition) {
-        return super.criteria(concat, conditionDescription, condition);
-    }
-
-    @Override
-    public SelectList<T, R, M> criteria(Predicate<? super T> condition) {
-        return super.criteria(condition);
+    public SelectList<T, R, M> criteria(Criteria<? super T> criteria) {
+        return super.criteria(criteria);
     }
 
     @Override

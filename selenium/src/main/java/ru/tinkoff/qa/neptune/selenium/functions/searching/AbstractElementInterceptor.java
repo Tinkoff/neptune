@@ -12,61 +12,57 @@ import static java.util.Optional.ofNullable;
 
 abstract class AbstractElementInterceptor implements MethodInterceptor {
 
-    final String description;
     final WebElement element;
     private boolean isScrollerSetUp;
 
     Object realObject;
     ScrollsIntoView scrollsIntoView;
 
-    AbstractElementInterceptor(String description, WebElement element) {
-        this.description = description;
+    AbstractElementInterceptor(WebElement element) {
         this.element = element;
     }
 
     public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
-        if ("toString".equals(method.getName()) &&
-                method.getParameterTypes().length == 0
-                && String.class.equals(method.getReturnType())) {
-            return description;
-        } else {
-            realObject = ofNullable(realObject)
-                    .orElseGet(this::createRealObject);
+        realObject = ofNullable(realObject)
+                .orElseGet(this::createRealObject);
 
-            if (!isScrollerSetUp) {
-                setScroller();
-                isScrollerSetUp = true;
-            }
+        if (!isScrollerSetUp) {
+            setScroller();
+            isScrollerSetUp = true;
+        }
 
-            Class<?>[] parameters;
-            if ("equals".equals(method.getName()) && (parameters = method.getParameterTypes()).length == 1
-                    && parameters[0].equals(Object.class)) {
-                var result = realObject.equals(args[0]);
-                //it may be another proxy
-                if (!result) {
-                    result = ofNullable(args[0])
-                            .map(o -> o.equals(realObject))
-                            .orElse(false);
+        Class<?>[] parameters;
+        if ("equals".equals(method.getName()) && (parameters = method.getParameterTypes()).length == 1
+                && parameters[0].equals(Object.class)) {
+            var result = realObject.equals(args[0]);
+            //it may be another proxy
+            if (!result) {
+                result = ofNullable(args[0])
+                        .map(o -> o.equals(realObject))
+                        .orElse(false);
                 //(boolean) proxy.invokeSuper(obj, args);
-                }
-                return result;
             }
+            return result;
+        }
 
-            if (toPerformTheScrolling(method)) {
-                ofNullable(scrollsIntoView)
-                        .ifPresent(ScrollsIntoView::scrollIntoView);
-            }
+        if ("getClass".equals(method.getName()) && (method.getParameterTypes()).length == 0) {
+           return realObject.getClass();
+        }
 
-            try {
-                return method.invoke(realObject, args);
+        if (toPerformTheScrolling(method)) {
+            ofNullable(scrollsIntoView)
+                    .ifPresent(ScrollsIntoView::scrollIntoView);
+        }
+
+        try {
+            return method.invoke(realObject, args);
+        }
+        catch (InvocationTargetException e) {
+            var cause = e.getCause();
+            if (cause != null) {
+                throw cause;
             }
-            catch (InvocationTargetException e) {
-                var cause = e.getCause();
-                if (cause != null) {
-                    throw cause;
-                }
-                throw e;
-            }
+            throw e;
         }
     }
 

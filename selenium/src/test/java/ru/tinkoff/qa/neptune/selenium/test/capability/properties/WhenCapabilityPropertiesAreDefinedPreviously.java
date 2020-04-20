@@ -23,7 +23,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CHROME;
 import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CommonCapabilityProperties.*;
 import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.FIREFOX;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.*;
-import static ru.tinkoff.qa.neptune.core.api.properties.GeneralPropertyInitializer.GENERAL_PROPERTIES;
+import static ru.tinkoff.qa.neptune.core.api.properties.GeneralPropertyInitializer.PROPERTIES;
 import static ru.tinkoff.qa.neptune.core.api.properties.GeneralPropertyInitializer.refreshProperties;
 import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDriverProperty.SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
@@ -92,7 +92,7 @@ public class WhenCapabilityPropertiesAreDefinedPreviously {
         System.setProperty(FIREFOX.getPropertyName(), FirefoxSettingsSupplierWithProfile.class.getName());
 
         Properties prop = new Properties();
-        try (OutputStream output = new FileOutputStream(GENERAL_PROPERTIES)) {
+        try (OutputStream output = new FileOutputStream(PROPERTIES)) {
             // set the properties value
             properties.forEach(prop::setProperty);
             // save properties to project root folder
@@ -153,7 +153,7 @@ public class WhenCapabilityPropertiesAreDefinedPreviously {
     @AfterClass
     public void afterTests() throws Exception {
         properties.keySet().forEach(s -> System.getProperties().remove(s));
-        File toDelete = getFile(GENERAL_PROPERTIES);
+        File toDelete = getFile(PROPERTIES);
         if (toDelete.exists()) {
             forceDelete(toDelete);
         }

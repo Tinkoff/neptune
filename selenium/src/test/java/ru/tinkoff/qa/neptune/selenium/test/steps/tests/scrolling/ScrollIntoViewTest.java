@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.test.steps.tests.scrolling;
 
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria;
 import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 import ru.tinkoff.qa.neptune.selenium.test.MockWebElement;
 import ru.tinkoff.qa.neptune.selenium.test.steps.tests.searching.widgets.buttons.CustomizedButton;
@@ -14,7 +15,7 @@ import static org.hamcrest.Matchers.*;
 import static org.openqa.selenium.By.tagName;
 import static ru.tinkoff.qa.neptune.selenium.functions.click.ClickActionSupplier.on;
 import static ru.tinkoff.qa.neptune.selenium.functions.edit.EditActionSupplier.valueOfThe;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonConditions.shouldContainElements;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.nested;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.buttons;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.*;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
@@ -42,7 +43,7 @@ public class ScrollIntoViewTest extends BaseWebDriverTest {
     @Test
     public void scrollElementInsideWidgetIntoView() {
         var table = seleniumSteps.find(table()
-                .criteria(shouldContainElements(buttons()
+                .criteria(CommonElementCriteria.nested(buttons()
                         .timeOut(ofSeconds(1)))));
         var tableScrollCount = ((MockWebElement) table.getWrappedElement()).getScrollCount();
 

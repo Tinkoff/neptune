@@ -9,6 +9,7 @@ import static java.lang.String.format;
 import static java.lang.System.lineSeparator;
 import static org.apache.commons.lang3.time.DurationFormatUtils.formatDuration;
 
+@Deprecated(forRemoval = true)
 public class RequestStringCaptor extends StringCaptor<HttpRequest> {
     private static final String LINE_SEPARATOR = lineSeparator();
 

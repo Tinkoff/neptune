@@ -1,19 +1,20 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert;
 
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
+import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.NoAlertPresentException;
 
 import java.time.Duration;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
-import static java.lang.String.format;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITING_ALERT_TIME_DURATION;
 
 public final class GetAlertSupplier extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<SeleniumStepContext, Alert, WebDriver, GetAlertSupplier>
@@ -36,7 +37,7 @@ public final class GetAlertSupplier extends SequentialGetStepSupplier.GetObjectC
     }
 
     @Override
-    public GetAlertSupplier criteria(Predicate<? super Alert> condition) {
+    public GetAlertSupplier criteria(Criteria<? super Alert> condition) {
         return super.criteria(condition);
     }
 
