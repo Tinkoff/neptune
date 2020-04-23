@@ -216,7 +216,9 @@ public final class HttpGetObjectFromResponseBody {
         }
 
         public Function<HttpStepContext, T> get() {
-            var criteria = getCriteria();
+            var criteria = ofNullable(getCriteria())
+                    .map(Criteria::get)
+                    .orElse(null);
             var thisReference = this;
             var responseClone = this.response.clone();
             from(responseClone);
@@ -383,7 +385,9 @@ public final class HttpGetObjectFromResponseBody {
         }
 
         public Function<HttpStepContext, T> get() {
-            var criteria = getCriteria();
+            var criteria = ofNullable(getCriteria())
+                    .map(Criteria::get)
+                    .orElse(null);
             var thisReference = this;
             var responseClone = this.response.clone();
             from(responseClone);
@@ -537,7 +541,9 @@ public final class HttpGetObjectFromResponseBody {
         }
 
         public Function<HttpStepContext, T> get() {
-            var criteria = getCriteria();
+            var criteria = ofNullable(getCriteria())
+                    .map(Criteria::get)
+                    .orElse(null);
             var thisReference = this;
             var responseClone = this.response.clone();
             from(responseClone);

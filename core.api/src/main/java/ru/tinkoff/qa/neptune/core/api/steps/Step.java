@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.lang.String.format;
+import static java.util.Collections.emptyMap;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.*;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchSuccessEvent;
@@ -15,6 +15,7 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 /**
  * This class allows to perform steps and to create it as a java object.
+ *
  * @param <T> is a type of resulted value of step execution
  */
 public abstract class Step<T> {
@@ -30,7 +31,7 @@ public abstract class Step<T> {
      * Creates a step and performs it immediately. The result is void.
      *
      * @param description Is description of the step.
-     * @param runnable is algorithm of the step.
+     * @param runnable    is algorithm of the step.
      */
     public static void $(String description, Runnable runnable) {
         createStep(description, runnable).perform();
@@ -40,16 +41,12 @@ public abstract class Step<T> {
      * Creates a step and performs it immediately. The result is some value.
      *
      * @param description Is description of the step.
-     * @param supplier is algorithm of the step.
-     * @param <T> is a type of resulted value
+     * @param supplier    is algorithm of the step.
+     * @param <T>         is a type of resulted value
      * @return result of the step performing
      */
     public static <T> T $(String description, Supplier<T> supplier) {
         return createStep(description, supplier).perform();
-    }
-
-    String getDescription() {
-        return description;
     }
 
     /**
@@ -57,7 +54,7 @@ public abstract class Step<T> {
      * The step does't return anything on the performing.
      *
      * @param description Is description of the step.
-     * @param runnable is algorithm of the step.
+     * @param runnable    is algorithm of the step.
      * @return new {@link Step}
      */
     public static Step<Void> createStep(String description, Runnable runnable) {
@@ -69,12 +66,16 @@ public abstract class Step<T> {
      * The step returns some value on the performing.
      *
      * @param description Is description of the step.
-     * @param supplier is algorithm of the step.
-     * @param <T> is a type of resulted value
+     * @param supplier    is algorithm of the step.
+     * @param <T>         is a type of resulted value
      * @return new {@link Step}
      */
     public static <T> Step<T> createStep(String description, Supplier<T> supplier) {
         return new GetStep<>(description, supplier);
+    }
+
+    public String toString() {
+        return description;
     }
 
     /**
@@ -96,15 +97,13 @@ public abstract class Step<T> {
         @Override
         public Void perform() {
             try {
-                fireEventStarting(getDescription());
+                fireEventStarting(toString(), emptyMap());
                 stepRunnable.run();
                 return null;
-            }
-            catch (Throwable thrown) {
+            } catch (Throwable thrown) {
                 fireThrownException(thrown);
                 throw thrown;
-            }
-            finally {
+            } finally {
                 fireEventFinishing();
             }
         }
@@ -123,7 +122,7 @@ public abstract class Step<T> {
         @Override
         public T perform() {
             try {
-                fireEventStarting(format("Get %s", getDescription()));
+                fireEventStarting("Get " + toString(), emptyMap());
 
                 T result = stepSupplier.get();
                 if (isLoggable(result)) {
@@ -134,12 +133,10 @@ public abstract class Step<T> {
                     catchValue(result, Set.of(new CaptorFilterByProducedType(Object.class)));
                 }
                 return result;
-            }
-            catch (Throwable thrown) {
+            } catch (Throwable thrown) {
                 fireThrownException(thrown);
                 throw thrown;
-            }
-            finally {
+            } finally {
                 fireEventFinishing();
             }
         }

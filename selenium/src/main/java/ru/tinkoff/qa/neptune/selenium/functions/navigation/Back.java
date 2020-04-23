@@ -3,12 +3,9 @@ package ru.tinkoff.qa.neptune.selenium.functions.navigation;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 
-import static java.lang.String.format;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
 
 public final class Back extends NavigationActionSupplier<Back> {
-
-    private static final String DESCRIPTION = "Navigate back in %s";
 
     private Back(String description) {
         super(description);
@@ -30,7 +27,7 @@ public final class Back extends NavigationActionSupplier<Back> {
      * @return built navigation action
      */
     public static Back back(GetWindowSupplier windowSupplier) {
-        return new Back(format(DESCRIPTION, windowSupplier)).performOn(windowSupplier);
+        return new Back("Navigate back").performOn(windowSupplier);
     }
 
     /**
@@ -40,7 +37,7 @@ public final class Back extends NavigationActionSupplier<Back> {
      * @return built navigation action
      */
     public static Back back(Window window) {
-        return new Back(format(DESCRIPTION, window)).performOn(window);
+        return new Back("Navigate back").performOn(window);
     }
 
     @Override

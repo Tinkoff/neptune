@@ -34,11 +34,9 @@ public class GetValueTest extends BaseWebDriverTest {
                 emptyOrNullString());
 
         assertThat(seleniumSteps
-                        .edit(valueOfThe(textField()
-                                .criteria(attr(ATTR8, VALUE4)), of(INPUT_TEXT1))
-                                .andValueOfThe(textField(INPUT_LABEL_TEXT8, INPUT_LABEL_TEXT12), of(INPUT_TEXT2)))
-                        .getValue(ofThe(textField()
-                                .criteria(attr(ATTR8, VALUE4)))),
+                        .edit(valueOfThe(textField().criteria(attr(ATTR8, VALUE4)), of(INPUT_TEXT1)))
+                        .edit(valueOfThe(textField(INPUT_LABEL_TEXT8, INPUT_LABEL_TEXT12), of(INPUT_TEXT2)))
+                        .getValue(ofThe(textField().criteria(attr(ATTR8, VALUE4)))),
                 is(INPUT_TEXT1));
 
         assertThat(seleniumSteps.getValue(ofThe(textField(INPUT_LABEL_TEXT8, INPUT_LABEL_TEXT12))),
@@ -65,10 +63,9 @@ public class GetValueTest extends BaseWebDriverTest {
                         .getValue(ofThe(flag(RADIOBUTTON_LABEL_TEXT4))),
                 is(true));
 
-        seleniumSteps.edit(valueOfThe(flag(CHECKBOX_LABEL_TEXT8, CHECKBOX_LABEL_TEXT12), true)
-                .andValueOfThe(flag(RADIOBUTTON_LABEL_TEXT2), true)
-                .andValueOfThe(flag()
-                        .criteria(enabled()), true));
+        seleniumSteps.edit(valueOfThe(flag(CHECKBOX_LABEL_TEXT8, CHECKBOX_LABEL_TEXT12), true))
+                .edit(valueOfThe(flag(RADIOBUTTON_LABEL_TEXT2), true))
+                .edit(valueOfThe(flag().criteria(enabled()), true));
 
         assertThat(seleniumSteps.getValue(ofThe(flag(CHECKBOX_LABEL_TEXT8, CHECKBOX_LABEL_TEXT12))),
                 is(true));
@@ -101,10 +98,9 @@ public class GetValueTest extends BaseWebDriverTest {
                         .getValue(ofThe(checkbox(CHECKBOX_LABEL_TEXT4))),
                 is(true));
 
-        seleniumSteps.edit(valueOfThe(checkbox(CHECKBOX_LABEL_TEXT7, CHECKBOX_LABEL_TEXT11), true)
-                .andValueOfThe(checkbox(CHECKBOX_LABEL_TEXT3), true)
-                .andValueOfThe(checkbox()
-                        .criteria(NOT(enabled())), true));
+        seleniumSteps.edit(valueOfThe(checkbox(CHECKBOX_LABEL_TEXT7, CHECKBOX_LABEL_TEXT11), true))
+                .edit(valueOfThe(checkbox(CHECKBOX_LABEL_TEXT3), true))
+                .edit(valueOfThe(checkbox().criteria(NOT(enabled())), true));
 
         assertThat(seleniumSteps.getValue(ofThe(checkbox(CHECKBOX_LABEL_TEXT7, CHECKBOX_LABEL_TEXT11))),
                 is(true));
@@ -136,10 +132,9 @@ public class GetValueTest extends BaseWebDriverTest {
                         .getValue(ofThe(radioButton(RADIOBUTTON_LABEL_TEXT1))),
                 is(true));
 
-        seleniumSteps.edit(valueOfThe(radioButton(RADIOBUTTON_LABEL_TEXT7, RADIOBUTTON_LABEL_TEXT11), true)
-                .andValueOfThe(radioButton(RADIOBUTTON_LABEL_TEXT3), true)
-                .andValueOfThe(radioButton()
-                        .criteria(visible()), true));
+        seleniumSteps.edit(valueOfThe(radioButton(RADIOBUTTON_LABEL_TEXT7, RADIOBUTTON_LABEL_TEXT11), true))
+                .edit(valueOfThe(radioButton(RADIOBUTTON_LABEL_TEXT3), true))
+                .edit(valueOfThe(radioButton().criteria(visible()), true));
 
         assertThat(seleniumSteps.getValue(ofThe(radioButton(RADIOBUTTON_LABEL_TEXT7, RADIOBUTTON_LABEL_TEXT11))),
                 is(true));
@@ -163,20 +158,17 @@ public class GetValueTest extends BaseWebDriverTest {
         assertThat(seleniumSteps.getValue(ofThe(select(SELECT_LABEL_TEXT2))),
                 emptyIterable());
 
-        assertThat(seleniumSteps.edit(valueOfThe(select(SELECT_LABEL_TEXT2), OPTION_TEXT18)
-                        .andValueOfThe(select(SELECT_LABEL_TEXT2), OPTION_TEXT16))
+        assertThat(seleniumSteps.edit(valueOfThe(select(SELECT_LABEL_TEXT2), OPTION_TEXT18))
+                        .edit(valueOfThe(select(SELECT_LABEL_TEXT2), OPTION_TEXT16))
                         .getValue(ofThe(select(SELECT_LABEL_TEXT2))),
                 contains(OPTION_TEXT16));
 
-        seleniumSteps.edit(valueOfThe(select(SELECT_LABEL_TEXT1, SELECT_LABEL_TEXT9), OPTION_TEXT27)
-                .andValueOfThe(select(SELECT_LABEL_TEXT1, SELECT_LABEL_TEXT9), OPTION_TEXT25)
-                .andValueOfThe(select(SELECT_LABEL_TEXT1, SELECT_LABEL_TEXT9), OPTION_TEXT26)
-                .andValueOfThe(select()
-                        .criteria(attr(ATTR1, VALUE4)), OPTION_TEXT5)
-                .andValueOfThe(select()
-                        .criteria(nested(webElements(tagName(OPTION)).criteria(text(OPTION_TEXT14)))), OPTION_TEXT15)
-                .andValueOfThe(select()
-                        .criteria(nested(webElements(tagName(OPTION)).criteria(text(OPTION_TEXT14)))), OPTION_TEXT13));
+        seleniumSteps.edit(valueOfThe(select(SELECT_LABEL_TEXT1, SELECT_LABEL_TEXT9), OPTION_TEXT27))
+                .edit(valueOfThe(select(SELECT_LABEL_TEXT1, SELECT_LABEL_TEXT9), OPTION_TEXT25))
+                .edit(valueOfThe(select(SELECT_LABEL_TEXT1, SELECT_LABEL_TEXT9), OPTION_TEXT26))
+                .edit(valueOfThe(select().criteria(attr(ATTR1, VALUE4)), OPTION_TEXT5))
+                .edit(valueOfThe(select().criteria(nested(webElements(tagName(OPTION)).criteria(text(OPTION_TEXT14)))), OPTION_TEXT15))
+                .edit(valueOfThe(select().criteria(nested(webElements(tagName(OPTION)).criteria(text(OPTION_TEXT14)))), OPTION_TEXT13));
 
         assertThat(seleniumSteps.getValue(ofThe(select(SELECT_LABEL_TEXT1, SELECT_LABEL_TEXT9))),
                 contains(OPTION_TEXT25, OPTION_TEXT26, OPTION_TEXT27));

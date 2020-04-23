@@ -1,5 +1,7 @@
 package ru.tinkoff.qa.neptune.core.api.event.firing;
 
+import java.util.Map;
+
 /**
  * This interface is designed to support the logging|reporting.
  */
@@ -10,7 +12,7 @@ public interface EventLogger {
      *
      * @param message that describes the event.
      */
-    void fireTheEventStarting(String message);
+    void fireTheEventStarting(String message, Map<String, String> parameters);
 
     /**
      * Fires the thrown exception.

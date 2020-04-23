@@ -2,10 +2,10 @@ package ru.tinkoff.qa.neptune.check;
 
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.Step;
+import ru.tinkoff.qa.neptune.core.api.steps.StepAction;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -24,7 +24,7 @@ public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R,
     private static final String LINE_SEPARATOR = lineSeparator();
 
     private final List<AssertionError> caughtMismatches = new ArrayList<>();
-    private final List<Consumer<T>> checkList = new ArrayList<>();
+    private final List<StepAction<T>> checkList = new ArrayList<>();
 
     private CheckActionSupplier(String description) {
         super(format("Verify %s", description));
@@ -35,18 +35,19 @@ public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R,
      * Defines a value to be verified and verification criteria;
      * Value check is performed.
      *
-     * @param description Value description
-     * @param t           value to be verified.
+     * @param description  Value description
+     * @param t            value to be verified.
      * @param matchActions is an array of {@link MatchAction}
-     * @param <T>         is a type of a value to be verified.
+     * @param <T>          is a type of a value to be verified.
      */
     @SafeVarargs
-    public static <T> void check(String description, T t, MatchAction<T, ?>...matchActions) {
+    public static <T> void check(String description, T t, MatchAction<T, ?>... matchActions) {
         checkArgument(!isBlank(description), "Value description to be inspected should not be blank");
         new CheckActionSupplier<T, T>(description)
                 .matches(matchActions)
-                .performOn(t)
-                .get().accept(t);
+                .performOn(t1 -> t1)
+                .get()
+                .accept(t);
     }
 
     /**
@@ -54,18 +55,19 @@ public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R,
      * Evaluates value to be checked;
      * Value check is performed.
      *
-     * @param description description of a value to get and then check it
-     * @param toGet is how to get a value
+     * @param description  description of a value to get and then check it
+     * @param toGet        is how to get a value
      * @param matchActions is an array of {@link MatchAction}
-     * @param <T> is a type of a value to be verified.
+     * @param <T>          is a type of a value to be verified.
      */
     @SafeVarargs
-    public static <T> void evaluateAndCheck(String description, Supplier<T> toGet, MatchAction<T, ?>...matchActions) {
+    public static <T> void evaluateAndCheck(String description, Supplier<T> toGet, MatchAction<T, ?>... matchActions) {
         checkArgument(!isBlank(description), "Value description to be inspected should not be blank");
         new CheckActionSupplier<Step<T>, T>(description)
                 .matches(matchActions)
                 .performOn(Step::perform)
-                .get().accept(createStep(description, toGet));
+                .get()
+                .accept(createStep(description, toGet));
     }
 
     /**
@@ -73,12 +75,12 @@ public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R,
      * Defines a value to be verified and verification criteria;
      * Value check is performed.
      *
-     * @param t   value to be verified.
+     * @param t            value to be verified.
      * @param matchActions is an array of {@link MatchAction}
-     * @param <T> is a type to be verified.
+     * @param <T>          is a type to be verified.
      */
     @SafeVarargs
-    public static <T> void check(T t, MatchAction<T, ?>...matchActions) {
+    public static <T> void check(T t, MatchAction<T, ?>... matchActions) {
         new CheckActionSupplier<T, T>(format("Inspected value %s", t))
                 .matches(matchActions)
                 .performOn(o -> o)

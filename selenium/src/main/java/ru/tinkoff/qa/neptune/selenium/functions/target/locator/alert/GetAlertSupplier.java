@@ -13,6 +13,8 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static java.lang.String.format;
+import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITING_ALERT_TIME_DURATION;
@@ -28,7 +30,9 @@ public final class GetAlertSupplier extends SequentialGetStepSupplier.GetObjectC
 
     private Supplier<NoAlertPresentException> noSuchAlert() {
         return () -> {
-            String description = getCriteriaDescription();
+            String description = ofNullable(getCriteria())
+                    .map(Criteria::toString)
+                    .orElse(EMPTY);
             if (!isBlank(description)) {
                 return new NoAlertPresentException(format("No alert that suits criteria '%s' has been found", description));
             }

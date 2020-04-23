@@ -3,9 +3,14 @@ package ru.tinkoff.qa.neptune.selenium;
 import org.openqa.selenium.*;
 import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
+import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.StepAction;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
 import ru.tinkoff.qa.neptune.selenium.functions.click.ClickActionSupplier;
+import ru.tinkoff.qa.neptune.selenium.functions.cookies.AddCookiesActionSupplier;
+import ru.tinkoff.qa.neptune.selenium.functions.cookies.GetSeleniumCookieSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.edit.EditActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.java.script.GetJavaScriptResultSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.navigation.NavigationActionSupplier;
@@ -17,16 +22,19 @@ import ru.tinkoff.qa.neptune.selenium.functions.value.SequentialGetValueSupplier
 import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
 
 import java.time.Duration;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.time.Duration.ofMillis;
+import static java.util.Arrays.asList;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
+import static ru.tinkoff.qa.neptune.selenium.functions.cookies.RemoveCookiesActionSupplier.deleteCookies;
 
 @CreateWith(provider = SeleniumParameterProvider.class)
 public class SeleniumStepContext extends Context<SeleniumStepContext> implements WrapsDriver, ContextRefreshable,
@@ -70,7 +78,13 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
         return this;
     }
 
-    public Object evaluate(GetJavaScriptResultSupplier javaScriptResultSupplier) {
+    /**
+     * Returns a result of js evaluation.
+     *
+     * @param javaScriptResultSupplier is which script and how to execute it
+     * @return a result of js evaluation
+     */
+    public Object getEvaluationOf(GetJavaScriptResultSupplier javaScriptResultSupplier) {
         return javaScriptResultSupplier.get().apply(this);
     }
 
@@ -240,6 +254,94 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     }
 
     /**
+     * Returns a set of browser {@link Cookie}
+     *
+     * @param getCookies is how to get find cookies
+     * @return a set of {@link Cookie}
+     */
+    public Set<Cookie> get(GetSeleniumCookieSupplier getCookies) {
+        checkNotNull(getCookies, "It is necessary to define how to get browser cookies");
+        return getCookies.get().apply(this);
+    }
+
+    /**
+     * Cleans browser's cookie jar.
+     *
+     * @return self-reference
+     */
+    public SeleniumStepContext removeCookies() {
+        deleteCookies().get().accept(this);
+        return this;
+    }
+
+    /**
+     * Cleans browser's cookie jar.
+     *
+     * @param timeToFindCookies time of the waiting for expected cookies are present.
+     * @param toBeRemoved       which cookies should be deleted
+     * @return self-reference
+     */
+    @SafeVarargs
+    public final SeleniumStepContext removeCookies(Duration timeToFindCookies,
+                                                   Criteria<Cookie>... toBeRemoved) {
+        deleteCookies(timeToFindCookies, toBeRemoved).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Cleans browser's cookie jar.
+     *
+     * @param toBeRemoved which cookies should be deleted
+     * @return self-reference
+     */
+    @SafeVarargs
+    public final SeleniumStepContext removeCookies(Criteria<Cookie>... toBeRemoved) {
+        return removeCookies(null, toBeRemoved);
+    }
+
+    /**
+     * Cleans browser's cookie jar.
+     *
+     * @param cookies cookies that should be deleted
+     * @return self-reference
+     */
+    public SeleniumStepContext removeCookies(Collection<Cookie> cookies) {
+        deleteCookies(cookies).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Cleans browser's cookie jar.
+     *
+     * @param cookies cookies that should be deleted
+     * @return self-reference
+     */
+    public SeleniumStepContext removeCookies(Cookie... cookies) {
+        return removeCookies(asList(cookies));
+    }
+
+    /**
+     * Adds cookies to browser's cookie jar.
+     *
+     * @param cookies to be added
+     * @return self-reference
+     */
+    public SeleniumStepContext addCookies(Collection<Cookie> cookies) {
+        AddCookiesActionSupplier.addCookies(cookies).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Adds cookies to browser's cookie jar.
+     *
+     * @param cookies to be added
+     * @return self-reference
+     */
+    public SeleniumStepContext addCookies(Cookie... cookies) {
+        return addCookies(asList(cookies));
+    }
+
+    /**
      * This method was added for backward compatibility temporary
      */
     @Deprecated(since = "0.11.2-ALPHA")
@@ -261,7 +363,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * This method was added for backward compatibility temporary
      */
     @Deprecated(since = "0.11.2-ALPHA")
-    public SeleniumStepContext perform(Consumer<SeleniumStepContext> actionConsumer) {
+    public SeleniumStepContext perform(StepAction<SeleniumStepContext> actionConsumer) {
         checkArgument(Objects.nonNull(actionConsumer), "Action is not defined");
         actionConsumer.accept(this);
         return this;
@@ -271,7 +373,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * This method was added for backward compatibility temporary
      */
     @Deprecated(since = "0.11.2-ALPHA")
-    public SeleniumStepContext perform(Supplier<Consumer<SeleniumStepContext>> actionSupplier) {
+    public SeleniumStepContext perform(SequentialActionSupplier<SeleniumStepContext, ?, ?> actionSupplier) {
         checkNotNull(actionSupplier, "Supplier of the action was not defined");
         return this.perform(actionSupplier.get());
     }

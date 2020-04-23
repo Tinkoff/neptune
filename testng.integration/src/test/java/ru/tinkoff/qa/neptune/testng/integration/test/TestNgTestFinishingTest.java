@@ -18,7 +18,7 @@ import static java.util.stream.Collectors.joining;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static ru.tinkoff.qa.neptune.core.api.concurency.ObjectContainer.getAllObjects;
+import static ru.tinkoff.qa.neptune.core.api.concurrency.ObjectContainer.getAllObjects;
 import static ru.tinkoff.qa.neptune.testng.integration.properties.RefreshEachTimeBefore.*;
 import static ru.tinkoff.qa.neptune.testng.integration.properties.TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY;
 

@@ -1,38 +1,43 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
-import com.google.common.annotations.Beta;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.*;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.CaptorFilterByProducedType;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakesCapturesOnFinishing;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.lang.String.valueOf;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static ru.tinkoff.qa.neptune.core.api.steps.DefaultReportStepParameterFactory.readParameters;
 import static ru.tinkoff.qa.neptune.core.api.steps.StepAction.action;
+import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 /**
  * This class is designed to build actions to be performed on different objects.
  * Also it may be used to build chains of same actions on different objects.
  *
- * @param <T> is the type of an input value.
- * @param <R> is the type of an object to perform action on.
+ * @param <T>    is the type of an input value.
+ * @param <R>    is the type of an object to perform action on.
  * @param <THIS> is self-type.
  */
 @SuppressWarnings("unchecked")
-public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActionSupplier<T, R, THIS>> implements Supplier<Consumer<T>>,
+public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActionSupplier<T, R, THIS>> implements Supplier<StepAction<T>>,
         MakesCapturesOnFinishing<THIS> {
 
     private final String actionDescription;
     private final List<CaptorFilterByProducedType> captorFilters = new ArrayList<>();
-    private List<Object> toBePerformedOn = new ArrayList<>();
-    private List<THIS> mergeFrom = new ArrayList<>();
+
+    private Object toBePerformedOn;
 
     protected SequentialActionSupplier(String description) {
         checkArgument(!isBlank(description), "Description of the action should not be blank or null string value");
@@ -40,46 +45,83 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
         MakesCapturesOnFinishing.makeCaptureSettings(this);
     }
 
-    private Consumer<T> performOnPrivate(Object functionOrObject) {
-        Function<T, ? extends R> function;
-        if (nonNull(functionOrObject) && Function.class.isAssignableFrom(functionOrObject.getClass())) {
-            function = (Function) functionOrObject;
+    protected Map<String, String> getParameters() {
+        var result = new LinkedHashMap<String, String>();
+        result.putAll(formPerformOnForReport());
+        result.putAll(formParameters());
+        return result;
+    }
+
+    protected Map<String, String> formPerformOnForReport() {
+        /*var result = new LinkedHashMap<String, String>();
+        var cls = toBePerformedOn.getClass();
+
+        if (SequentialGetStepSupplier.class.isAssignableFrom(cls)) {
+            result.put("Perform action on", fromParameterBySupplier((SequentialGetStepSupplier<?, ?, ?, ?, ?>) toBePerformedOn));
+            return result;
+        }
+        else if (StepFunction.class.isAssignableFrom(cls)) {
+            result.put("Perform action on", fromParameterByStepFunction((StepFunction<?, ?>) toBePerformedOn));
+            return result;
         }
         else {
+            if (isLoggable(toBePerformedOn)) {
+                result.put("Perform action on", valueOf(toBePerformedOn));
+            }
+            return result;
+        }*/
+        var result = new LinkedHashMap<String, String>();
+        if (isLoggable(toBePerformedOn)) {
+            result.put("Perform action on", valueOf(toBePerformedOn));
+        }
+        return result;
+    }
+
+    protected Map<String, String> formParameters() {
+        return new LinkedHashMap<>(readParameters(this, SequentialActionSupplier.class));
+    }
+
+    private StepAction<T> performOnPrivate(Object functionOrObject) {
+        Function<T, ? extends R> function;
+        if (nonNull(functionOrObject) && Function.class.isAssignableFrom(functionOrObject.getClass())) {
+            function = (Function<T, ? extends R>) functionOrObject;
+        } else {
             function = null;
         }
 
-        var action = (StepAction) ofNullable(function).map(function1 ->
+        var action = ofNullable(function).map(function1 ->
                 action(actionDescription, (Consumer<T>) t -> {
                     R r = function1.apply(t);
                     performActionOn(r);
                 }))
                 .orElseGet(() -> action(actionDescription, t ->
                         performActionOn((R) functionOrObject)));
+
         action.addCaptorFilters(captorFilters);
-        return action;
+        return action.setParameters(getParameters());
     }
 
     /**
-     * This is the helping method that is designed to add the action to the sequiance of actions. A new one action is
-     * supposed to be performed on an object returned by the defined function. The method is supposed to be overridden
-     * or overloaded/used by custom method.
+     * This method is designed to define a value/object to perform the action on. The action is
+     * supposed to be performed on an object that returned as a result of the function applying.
+     * The method is designed to be overridden or overloaded/used by custom method when it is necessary.
      *
-     * @param function that gets a target object
+     * @param function that returns a target object on the applying
      * @return self-reference.
      */
     protected THIS performOn(Function<T, ? extends R> function) {
         checkArgument(nonNull(function), "Function that gets value to perform action is not defined");
-        toBePerformedOn.add(function);
+        toBePerformedOn = function;
         return (THIS) this;
     }
 
     /**
-     * This is the helping method that is designed to add the action to the sequiance of actions. A new one action is
-     * supposed to be performed on an object returned by the defined function. The method is supposed to be overridden
-     * or overloaded/used by custom method.
+     * This method is designed to define a value/object to perform the action on. The action is
+     * supposed to be performed on an object that returned as a result of the function applying.
+     * This function is built and supplied by {@link SequentialGetStepSupplier}
+     * The method is designed to be overridden or overloaded/used by custom method when it is necessary.
      *
-     * @param supplier that supplies a function to get a target object
+     * @param supplier that supplies a function. This function returns a target object on the applying.
      * @return self-reference.
      */
     protected THIS performOn(SequentialGetStepSupplier<T, ? extends R, ?, ?, ?> supplier) {
@@ -89,15 +131,15 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
     }
 
     /**
-     * This is the helping method that is designed to add the action to the sequiance of actions. A new one action is
-     * supposed to be performed on the defined object. The method is supposed to be overridden or overloaded/used by
-     * custom method.
+     * This method is designed to define a value/object to perform the action on.The action is
+     * supposed to be performed on a {@code value}. The method is designed to be overridden or
+     * overloaded/used by custom method when it is necessary.
      *
      * @param value is a target object to perform the action on
      * @return self-reference.
      */
     protected THIS performOn(R value) {
-        toBePerformedOn.add(value);
+        toBePerformedOn = value;
         return (THIS) this;
     }
 
@@ -110,34 +152,10 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
     protected abstract void performActionOn(R value);
 
 
-    /**
-     * Adds built actions from another {@link SequentialActionSupplier} of the same type as the instance that invokes
-     * the method.
-     *
-     * @param mergeFrom is the instance of {@link SequentialActionSupplier} that has got built actions to be added to the
-     *                  current sequence of actions
-     * @return self-reference.
-     */
-    @Beta
-    protected THIS mergeActionSequenceFrom(THIS mergeFrom) {
-        checkArgument(nonNull(mergeFrom), "Action builder should be defined");
-        this.mergeFrom.add(mergeFrom);
-        return (THIS) this;
-    }
-
     @Override
-    public Consumer<T> get() {
-        checkArgument(toBePerformedOn.size() > 0, "At least one object should be defined to perform the action");
-        Consumer<T> action = null;
-        for (Object o : toBePerformedOn) {
-            action = ofNullable(action).map(tConsumer -> tConsumer.andThen(performOnPrivate(o))).orElse(performOnPrivate(o));
-        }
-
-        for (THIS t : mergeFrom) {
-            action = action.andThen(t.get());
-        }
-
-        return action;
+    public StepAction<T> get() {
+        checkArgument(nonNull(toBePerformedOn), "An object should be defined to perform the action on");
+        return performOnPrivate(toBePerformedOn);
     }
 
     @Override
@@ -228,7 +246,7 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
      * @return self-reference
      */
     @Override
-    public THIS onFinishMakeCaptureOfType(Class typeOfCapture) {
+    public THIS onFinishMakeCaptureOfType(Class<?> typeOfCapture) {
         captorFilters.add(new CaptorFilterByProducedType(typeOfCapture));
         return (THIS) this;
     }

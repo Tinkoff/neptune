@@ -1,6 +1,6 @@
 dependencies {
     compile group: 'org.objenesis', name: 'objenesis', version: '3.1'
-    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.10.8'
+    compile group: 'net.bytebuddy', name: 'byte-buddy', version: '1.10.9'
 }
 
 task javadocJar(type: Jar) {
@@ -15,6 +15,13 @@ task sourcesJar(type: Jar) {
 
 artifacts {
     archives jar, javadocJar, sourcesJar
+}
+
+test {
+    useTestNG() {
+        // runlist to executed. path is relative to current folder
+        suites 'src/test/resources/suite.xml'
+    }
 }
 
 uploadArchives {

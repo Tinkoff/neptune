@@ -16,8 +16,8 @@ import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
-import static ru.tinkoff.qa.neptune.http.api.HttpResponseSequentialGetSupplier.*;
 import static ru.tinkoff.qa.neptune.http.api.HttpResponseSequentialGetSupplier.addConditionArray;
+import static ru.tinkoff.qa.neptune.http.api.HttpResponseSequentialGetSupplier.addConditionIterable;
 import static ru.tinkoff.qa.neptune.http.api.properties.TimeToGetDesiredResponseProperty.DEFAULT_TIME_TO_GET_DESIRED_RESPONSE_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.TimeToSleepProperty.SLEEP_RESPONSE_TIME_PROPERTY;
 
@@ -185,7 +185,9 @@ public final class HttpGetObjectsFromResponseBody {
 
         @SuppressWarnings("unchecked")
         public Function<HttpStepContext, V> get() {
-            var criteria = getCriteria();
+            var criteria = ofNullable(getCriteria())
+                    .map(Criteria::get)
+                    .orElse(null);
             var thisReference = this;
             var responseClone = this.response.clone();
             from(responseClone);
@@ -350,7 +352,9 @@ public final class HttpGetObjectsFromResponseBody {
 
         @SuppressWarnings("unchecked")
         public Function<HttpStepContext, T[]> get() {
-            var criteria = getCriteria();
+            var criteria = ofNullable(getCriteria())
+                    .map(Criteria::get)
+                    .orElse(null);
             var thisReference = this;
             var responseClone = this.response.clone();
             from(responseClone);

@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.core.api.concurency;
+package ru.tinkoff.qa.neptune.core.api.concurrency;
 
 import com.google.common.annotations.Beta;
 

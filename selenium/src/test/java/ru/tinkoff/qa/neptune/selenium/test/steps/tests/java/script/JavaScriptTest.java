@@ -29,7 +29,7 @@ public class JavaScriptTest extends BaseWebDriverTest {
     @Test
     public void javaScriptEvaluationFullParametersWithPositiveResult() {
         setStartBenchMark();
-        Object result = seleniumSteps.evaluate(javaScript(SCRIPT_1.getScript(), ARGUMENTS)
+        Object result = seleniumSteps.getEvaluationOf(javaScript(SCRIPT_1.getScript(), ARGUMENTS)
                 .criteria(CONTAINS_ARGUMENT_1)
                 .timeOut(FIVE_SECONDS)
                 .pollingInterval(HALF_SECOND)
@@ -44,7 +44,7 @@ public class JavaScriptTest extends BaseWebDriverTest {
     public void javaScriptEvaluationFullParametersWithNegativeResult() {
         setStartBenchMark();
         try {
-            seleniumSteps.evaluate(javaScript(SCRIPT_1.getScript(), ARGUMENTS)
+            seleniumSteps.getEvaluationOf(javaScript(SCRIPT_1.getScript(), ARGUMENTS)
                     .criteria(CONTAINS_ARGUMENT_5)
                     .timeOut(FIVE_SECONDS)
                     .pollingInterval(HALF_SECOND)
@@ -64,7 +64,7 @@ public class JavaScriptTest extends BaseWebDriverTest {
     @Test
     public void javaScriptEvaluationFullParametersWithNullResult() {
         setStartBenchMark();
-        Object result = seleniumSteps.evaluate(javaScript(SCRIPT_1.getScript(), ARGUMENTS)
+        Object result = seleniumSteps.getEvaluationOf(javaScript(SCRIPT_1.getScript(), ARGUMENTS)
                 .criteria(CONTAINS_ARGUMENT_5)
                 .timeOut(FIVE_SECONDS)
                 .pollingInterval(HALF_SECOND));
@@ -77,7 +77,7 @@ public class JavaScriptTest extends BaseWebDriverTest {
     public void javaScriptEvaluationFullParametersWithExceptionThrowing() {
         setStartBenchMark();
         try {
-            seleniumSteps.evaluate(javaScript(SCRIPT_2.getScript(), ARGUMENTS)
+            seleniumSteps.getEvaluationOf(javaScript(SCRIPT_2.getScript(), ARGUMENTS)
                     .criteria(CONTAINS_ARGUMENT_1)
                     .timeOut(FIVE_SECONDS)
                     .pollingInterval(HALF_SECOND)
@@ -97,7 +97,7 @@ public class JavaScriptTest extends BaseWebDriverTest {
     @Test
     public void asyncJavaScriptEvaluationFullParametersWithPositiveResult() {
         Object result =
-                seleniumSteps.evaluate(asynchronousJavaScript(SCRIPT_1.getScript(), ARGUMENTS)
+                seleniumSteps.getEvaluationOf(asynchronousJavaScript(SCRIPT_1.getScript(), ARGUMENTS)
                         .criteria(CONTAINS_ARGUMENT_1)
                         .throwOnEmptyResult(() -> new WebDriverException(format(EXCEPTION_MESSAGE_PATTERN,
                                 EXCEPTION_MESSAGE, SCRIPT_1.getScript()))));
@@ -107,7 +107,7 @@ public class JavaScriptTest extends BaseWebDriverTest {
     @Test(expectedExceptions = WebDriverException.class)
     public void asyncJavaScriptEvaluationFullParametersWithNegativeResult() {
         try {
-            seleniumSteps.evaluate(asynchronousJavaScript(SCRIPT_1.getScript(), ARGUMENTS)
+            seleniumSteps.getEvaluationOf(asynchronousJavaScript(SCRIPT_1.getScript(), ARGUMENTS)
                     .criteria(CONTAINS_ARGUMENT_5)
                     .throwOnEmptyResult(() -> new WebDriverException(format(EXCEPTION_MESSAGE_PATTERN,
                             EXCEPTION_MESSAGE, SCRIPT_1.getScript()))));
@@ -121,7 +121,7 @@ public class JavaScriptTest extends BaseWebDriverTest {
 
     @Test
     public void asyncJavaScriptEvaluationFullParametersWithNullResult() {
-        Object result = seleniumSteps.evaluate(asynchronousJavaScript(SCRIPT_1.getScript(), ARGUMENTS)
+        Object result = seleniumSteps.getEvaluationOf(asynchronousJavaScript(SCRIPT_1.getScript(), ARGUMENTS)
                 .criteria(CONTAINS_ARGUMENT_5));
         assertThat(result, nullValue());
     }
@@ -130,7 +130,7 @@ public class JavaScriptTest extends BaseWebDriverTest {
     public void asyncJavaScriptEvaluationFullParametersWithExceptionThrowing() {
         setStartBenchMark();
         try {
-            seleniumSteps.evaluate(asynchronousJavaScript(SCRIPT_2.getScript(), ARGUMENTS)
+            seleniumSteps.getEvaluationOf(asynchronousJavaScript(SCRIPT_2.getScript(), ARGUMENTS)
                     .criteria(CONTAINS_ARGUMENT_1)
                     .throwOnEmptyResult(() -> new WebDriverException(format(EXCEPTION_MESSAGE_PATTERN,
                             EXCEPTION_MESSAGE, SCRIPT_2.getScript()))));

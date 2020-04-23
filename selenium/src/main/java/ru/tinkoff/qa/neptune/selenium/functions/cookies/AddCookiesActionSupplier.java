@@ -3,13 +3,12 @@ package ru.tinkoff.qa.neptune.selenium.functions.cookies;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.StepParameter;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
-import java.util.Arrays;
+import java.util.Collection;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.format;
-import static java.util.Arrays.stream;
 import static java.util.Objects.nonNull;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 
@@ -18,13 +17,15 @@ import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentConte
  */
 public final class AddCookiesActionSupplier extends SequentialActionSupplier<SeleniumStepContext, WebDriver, AddCookiesActionSupplier> {
 
-    private final Cookie[] cookies;
+    @StepParameter("Cookies to add")
+    private final Collection<Cookie> cookies;
 
-    private AddCookiesActionSupplier(Cookie... cookies) {
-        super(format("Adding the cookies %s", Arrays.toString(cookies)));
-        checkArgument(nonNull(cookies), "Cookies to be add should not be a null value");
-        checkArgument(cookies.length > 0, "At least one cookie should be defined for the adding");
+    private AddCookiesActionSupplier(Collection<Cookie> cookies) {
+        super("Add cookies to browsers cookie jar");
+        checkArgument(nonNull(cookies), "Cookies to be added should not be a null value");
+        checkArgument(cookies.size() > 0, "At least one cookie should be defined for the adding");
         this.cookies = cookies;
+        performOn(currentContent());
     }
 
     /**
@@ -33,14 +34,12 @@ public final class AddCookiesActionSupplier extends SequentialActionSupplier<Sel
      * @param cookies to be added
      * @return an instance of {@link AddCookiesActionSupplier}
      */
-    public static AddCookiesActionSupplier addCookies(Cookie...cookies) {
-        return new AddCookiesActionSupplier(cookies).performOn(currentContent());
+    public static AddCookiesActionSupplier addCookies(Collection<Cookie> cookies) {
+        return new AddCookiesActionSupplier(cookies);
     }
 
     @Override
     protected void performActionOn(WebDriver value) {
-        checkArgument(nonNull(cookies), "Cookies to be add should not be a null value");
-        checkArgument(cookies.length > 0, "At least one cookie should be defined for the adding");
-        stream(cookies).forEach(cookie -> value.manage().addCookie(cookie));
+        cookies.forEach(cookie -> value.manage().addCookie(cookie));
     }
 }

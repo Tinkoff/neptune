@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.core.api.concurency;
+package ru.tinkoff.qa.neptune.core.api.concurrency;
 
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -13,8 +13,8 @@ import static java.time.Duration.ofSeconds;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static ru.tinkoff.qa.neptune.core.api.concurency.ObjectContainer.containers;
-import static ru.tinkoff.qa.neptune.core.api.concurency.TestContext.getContext;
+import static ru.tinkoff.qa.neptune.core.api.concurrency.ObjectContainer.containers;
+import static ru.tinkoff.qa.neptune.core.api.concurrency.TestContext.getContext;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.resorces.FreeResourcesOnInactivity.TO_FREE_RESOURCES_ON_INACTIVITY_PROPERTY;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.resorces.FreeResourcesOnInactivityAfter.FreeResourcesOnInactivityAfterTimeUnit.FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_UNIT;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.resorces.FreeResourcesOnInactivityAfter.FreeResourcesOnInactivityAfterTimeValue.FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_VALUE;

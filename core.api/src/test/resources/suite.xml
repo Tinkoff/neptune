@@ -1,0 +1,22 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Core test suite">
+    <test name="Concurrency tests">
+        <packages>
+            <package name="ru.tinkoff.qa.neptune.core.api.concurrency.*"/>
+        </packages>
+    </test>
+    <test name="Property tests" group-by-instances="true">
+        <classes>
+            <class name="ru.tinkoff.qa.neptune.core.api.properties.EmptyPropertiesReadingTest"/>
+            <class name="ru.tinkoff.qa.neptune.core.api.properties.SystemPropertyReadingTest"/>
+            <class name="ru.tinkoff.qa.neptune.core.api.properties.FilePropertyReadingTest"/>
+            <class name="ru.tinkoff.qa.neptune.core.api.properties.MixedFileEnvPropertyReadingTest"/>
+            <class name="ru.tinkoff.qa.neptune.core.api.properties.MixedGlobalLocalPropertyReadingTest"/>
+        </classes>
+    </test>
+    <test name="Step tests">
+        <packages>
+            <package name="ru.tinkoff.qa.neptune.core.api.steps.*"/>
+        </packages>
+    </test>
+</suite>

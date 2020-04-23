@@ -1,62 +1,51 @@
 package ru.tinkoff.qa.neptune.selenium.functions.java.script;
 
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.StepParameter;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.format;
-import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
-import static ru.tinkoff.qa.neptune.selenium.functions.java.script.EvaluateAsyncJavaScript.evalAsyncJS;
-import static ru.tinkoff.qa.neptune.selenium.functions.java.script.EvaluateJavaScript.evalJS;
 
 @MakeImageCapturesOnFinishing
 @MakeStringCapturesOnFinishing
 public final class GetJavaScriptResultSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, Object, WebDriver, GetJavaScriptResultSupplier> {
 
+    @StepParameter("Script")
+    private final String script;
 
-    private GetJavaScriptResultSupplier(String description, Function<WebDriver, Object> originalFunction) {
+    @StepParameter("Script arguments")
+    private final Collection<?> args;
+
+    private GetJavaScriptResultSupplier(String description,
+                                        Function<WebDriver, Object> originalFunction,
+                                        String script,
+                                        Collection<?> args) {
         super(description, originalFunction);
-    }
-
-    private static void checkScript(String script) {
-        checkArgument(!isBlank(script), "Script to be evaluated should not be null value or empty string");
-    }
-
-    private static void checkArguments(Object... arguments) {
-        checkArgument(nonNull(arguments), "Arguments to be used by script evaluation should not be null");
-    }
-
-    private static String getScriptDescription(String script, Object... parameters) {
-        var description = format("Evaluation of java script '%s'", script);
-        if (nonNull(parameters) && parameters.length > 0) {
-            description = format("%s with parameters %s", description, Arrays.toString(parameters));
-        }
-        return description;
-    }
-
-    private static String getAsyncScriptDescription(String script, Object... parameters) {
-        var description = format("Evaluation of asynchronous java script '%s'", script);
-        if (nonNull(parameters) && parameters.length > 0) {
-            description = format("%s with parameters %s", description, Arrays.toString(parameters));
-        }
-        return description;
+        checkArgument(isNotBlank(script), "Script should be defined as not null/empty string");
+        this.script = script;
+        checkNotNull(args, "Parameters value should not be null");
+        this.args = args;
     }
 
     /**
-     * This methods builds a function which evaluates java script and returns the result as it is.
+     * This methods builds a function that evaluates java script and returns the result as it is.
      * <p>
      * The documentation below was taken from Selenium:
      * <p>
@@ -97,14 +86,15 @@ public final class GetJavaScriptResultSupplier extends SequentialGetStepSupplier
      * @return the function which evaluates java script and returns the result as it is.
      */
     public static GetJavaScriptResultSupplier javaScript(String script, Object... arguments) {
-        checkScript(script);
-        checkArguments(arguments);
-        return new GetJavaScriptResultSupplier(getScriptDescription(script, arguments), evalJS(script, arguments))
+        return new GetJavaScriptResultSupplier("Evaluation of java script",
+                webDriver -> ((JavascriptExecutor) webDriver).executeScript(script, arguments),
+                script,
+                ofNullable(arguments).map(Arrays::asList).orElse(null))
                 .from(currentContent());
     }
 
     /**
-     * This method builds a function which evaluates java asynchronous script and returns the result as it is.
+     * This method builds a function that evaluates java asynchronous script and returns the result as it is.
      * <p>
      * The documentation below was taken from Selenium:
      * <p>
@@ -189,10 +179,11 @@ public final class GetJavaScriptResultSupplier extends SequentialGetStepSupplier
      */
     public static GetJavaScriptResultSupplier asynchronousJavaScript(String script,
                                                                      Object... arguments) {
-        checkScript(script);
-        checkArguments(arguments);
-        return new GetJavaScriptResultSupplier(getAsyncScriptDescription(script, arguments),
-                evalAsyncJS(script, arguments)).from(currentContent());
+        return new GetJavaScriptResultSupplier("Evaluation of asynchronous java script",
+                webDriver -> ((JavascriptExecutor) webDriver).executeAsyncScript(script, arguments),
+                script,
+                ofNullable(arguments).map(Arrays::asList).orElse(null))
+                .from(currentContent());
     }
 
     @Override

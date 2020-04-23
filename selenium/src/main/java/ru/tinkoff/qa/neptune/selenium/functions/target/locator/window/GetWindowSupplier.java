@@ -1,27 +1,26 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator.window;
 
+import org.openqa.selenium.NoSuchWindowException;
+import org.openqa.selenium.WebDriver;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
-import org.openqa.selenium.NoSuchWindowException;
-import org.openqa.selenium.WebDriver;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.lang.String.format;
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITING_WINDOW_TIME_DURATION;
-import static com.google.common.base.Preconditions.checkArgument;
-
-import static java.lang.String.format;
-import static java.util.Optional.ofNullable;
 
 @MakeImageCapturesOnFinishing
 @MakeFileCapturesOnFinishing
@@ -41,7 +40,9 @@ public final class GetWindowSupplier extends SequentialGetStepSupplier
             errorDescription = format("%s%s", errorDescription, ofNullable(index)
                     .map(integer -> format(". By index %s", integer)).orElse(EMPTY)).trim();
 
-            var description = getCriteriaDescription();
+            var description = ofNullable(getCriteria())
+                    .map(Criteria::toString)
+                    .orElse(EMPTY);
             if (!isBlank(description)) {
                 errorDescription = format("%s. Criteria:%s", errorDescription, description);
             }

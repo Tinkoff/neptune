@@ -18,14 +18,13 @@ import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.lang.String.format;
 import static java.lang.String.valueOf;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationHMS;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.AND;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
+import static ru.tinkoff.qa.neptune.core.api.steps.DefaultReportStepParameterFactory.readParameters;
 import static ru.tinkoff.qa.neptune.core.api.steps.StepFunction.toGet;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromArray.getFromArray;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromIterable.getFromIterable;
@@ -49,20 +48,70 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         Supplier<Function<T, R>>, IgnoresThrowable<THIS>, MakesCapturesOnFinishing<THIS> {
 
     private final String description;
+
     final Set<Class<? extends Throwable>> ignored = new HashSet<>();
+
     private final List<CaptorFilterByProducedType> captorFilters = new ArrayList<>();
 
-    private final List<Criteria<P>> conditions = new ArrayList<>();
-    Criteria<P> condition;
+    final List<Criteria<P>> conditions = new ArrayList<>();
+
+    private Criteria<P> condition;
 
     private Object from;
+
     Duration timeToGet;
+
     Duration sleepingTime;
+
     Supplier<? extends RuntimeException> exceptionSupplier;
 
     protected SequentialGetStepSupplier(String description) {
         this.description = description;
         MakesCapturesOnFinishing.makeCaptureSettings(this);
+    }
+
+    protected Map<String, String> getParameters() {
+        var result = new LinkedHashMap<>(formParameters());
+        result.putAll(formCriteriaReportParams(conditions));
+        ofNullable(timeToGet).ifPresent(duration -> result.putAll(formTimeoutForReport(duration)));
+        ofNullable(sleepingTime).ifPresent(duration -> result.putAll(formSleepTimeForReport(duration)));
+        result.putAll(formFromParameter());
+        return result;
+    }
+
+    protected Map<String, String> formCriteriaReportParams(List<Criteria<P>> conditions) {
+        var result = new LinkedHashMap<String, String>();
+        int i = 0;
+        for (var c : conditions) {
+            var name = i == 0 ? "Result criteria" : "Result criteria " + (i + 1);
+            result.put(name, c.toString());
+            i++;
+        }
+        return result;
+    }
+
+    protected Map<String, String> formFromParameter() {
+        var result = new LinkedHashMap<String, String>();
+        if (isLoggable(from)) {
+            result.put("Get from", valueOf(from));
+        }
+        return result;
+    }
+
+    protected Map<String, String> formTimeoutForReport(Duration timeOut) {
+        var result = new LinkedHashMap<String, String>();
+        result.put("Timeout/time for retrying", formatDurationHMS(timeOut.toMillis()));
+        return result;
+    }
+
+    protected Map<String, String> formSleepTimeForReport(Duration sleepingTime) {
+        var result = new LinkedHashMap<String, String>();
+        result.put("Polling time", formatDurationHMS(sleepingTime.toMillis()));
+        return result;
+    }
+
+    protected Map<String, String> formParameters() {
+        return new LinkedHashMap<>(readParameters(this, SequentialGetStepSupplier.class));
     }
 
     /**
@@ -72,7 +121,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      *
      * @param criteria is the criteria to get required value
      */
-    protected THIS criteria(Criteria<? super P> criteria){
+    protected THIS criteria(Criteria<? super P> criteria) {
         conditions.add((Criteria<P>) criteria);
         condition = AND(conditions);
         return (THIS) this;
@@ -273,40 +322,23 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     public Function<T, R> get() {
         checkArgument(nonNull(from), "FROM-object is not defined");
         var composeWith = preparePreFunction();
-        String resultedDescription = prepareStepDescription();
         var endFunction = getEndFunction();
         checkNotNull(endFunction);
 
         StepFunction<T, R> toBeReturned;
         if (StepFunction.class.isAssignableFrom(composeWith.getClass())) {
-            var endFunctionStep  = toGet(resultedDescription, endFunction);
+            var endFunctionStep = toGet(description, endFunction);
             endFunctionStep.addIgnored(ignored);
             endFunctionStep.addCaptorFilters(captorFilters);
+            endFunctionStep.setParameters(getParameters());
             toBeReturned = endFunctionStep.compose(composeWith);
-        }
-        else {
-            toBeReturned = toGet(resultedDescription, endFunction.compose(composeWith));
+        } else {
+            toBeReturned = toGet(description, endFunction.compose(composeWith));
         }
 
         toBeReturned.addIgnored(ignored);
         toBeReturned.addCaptorFilters(captorFilters);
-        return toBeReturned;
-    }
-
-    protected String prepareStepDescription() {
-        var fromClazz = from.getClass();
-        if (isLoggable(from)) {
-            if (Function.class.isAssignableFrom(fromClazz)) {
-                return format("%s. From %s", toString(), from.toString());
-            }
-
-            if (SequentialGetStepSupplier.class.isAssignableFrom(fromClazz)) {
-                return format("%s. From %s", toString(), ((SequentialGetStepSupplier) from).description);
-            }
-
-            return format("%s. From %s", toString(), valueOf(from));
-        }
-        return toString();
+        return toBeReturned.setParameters(getParameters());
     }
 
     protected Function<T, M> preparePreFunction() {
@@ -324,10 +356,6 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
     @Override
     public String toString() {
-        var criteriaDescription = getCriteriaDescription();
-        if (!isBlank(criteriaDescription)) {
-            return format("%s [Criteria: %s]", description, criteriaDescription).trim();
-        }
         return description;
     }
 
@@ -342,17 +370,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
     protected abstract Function<M, R> getEndFunction();
 
-    /**
-     * @return string description of the defined criteria
-     */
-    protected String getCriteriaDescription() {
-        return ofNullable(condition)
-                .map(Criteria::toString)
-                .orElse(EMPTY);
-    }
-
-    protected Predicate<P> getCriteria() {
-        return ofNullable(condition).map(Criteria::get).orElse(null);
+    protected Criteria<P> getCriteria() {
+        return condition;
     }
 
     private static abstract class PrivateGetObjectStepSupplier<T, R, M, THIS extends PrivateGetObjectStepSupplier<T, R, M, THIS>>
@@ -368,19 +387,19 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         @Override
         protected Function<M, R> getEndFunction() {
             return ofNullable(getCriteria())
-                    .map(rPredicate -> ofNullable(timeToGet)
+                    .map(c -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime).map(sleep ->
                                     ofNullable(exceptionSupplier)
-                                            .map(supplier -> getSingle(originalFunction, rPredicate, wait, sleep, supplier))
-                                            .orElseGet(() -> getSingle(originalFunction, rPredicate, wait, sleep)))
+                                            .map(supplier -> getSingle(originalFunction, c.get(), wait, sleep, supplier))
+                                            .orElseGet(() -> getSingle(originalFunction, c.get(), wait, sleep)))
 
                                     .orElseGet(() -> ofNullable(exceptionSupplier)
-                                            .map(supplier -> getSingle(originalFunction, rPredicate, wait, supplier))
-                                            .orElseGet(() -> getSingle(originalFunction, rPredicate, wait))))
+                                            .map(supplier -> getSingle(originalFunction, c.get(), wait, supplier))
+                                            .orElseGet(() -> getSingle(originalFunction, c.get(), wait))))
 
                             .orElseGet(() -> ofNullable(exceptionSupplier)
-                                    .map(supplier -> getSingle(originalFunction, rPredicate, supplier))
-                                    .orElseGet(() -> getSingle(originalFunction, rPredicate))))
+                                    .map(supplier -> getSingle(originalFunction, c.get(), supplier))
+                                    .orElseGet(() -> getSingle(originalFunction, c.get()))))
 
                     .orElseGet(() -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime)
@@ -399,10 +418,10 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     }
 
     /**
-     *  This class is designed to build and supply functions to get some desired object-value.
+     * This class is designed to build and supply functions to get some desired object-value.
      *
-     * @param <T> is a type of an input value
-     * @param <R> is a type of a result value
+     * @param <T>    is a type of an input value
+     * @param <R>    is a type of a result value
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
     public static abstract class GetObjectStepSupplier<T, R, THIS extends GetObjectStepSupplier<T, R, THIS>>
@@ -415,11 +434,11 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     }
 
     /**
-     *  This class is designed to build and supply chained functions to get object-value.
+     * This class is designed to build and supply chained functions to get object-value.
      *
-     * @param <T> is a type of an input value
-     * @param <R> is a type of a result value
-     * @param <M> is a type of a mediator value is used to get the result
+     * @param <T>    is a type of an input value
+     * @param <R>    is a type of a result value
+     * @param <M>    is a type of a mediator value is used to get the result
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
     public static abstract class GetObjectChainedStepSupplier<T, R, M, THIS extends GetObjectChainedStepSupplier<T, R, M, THIS>>
@@ -458,19 +477,19 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         @Override
         protected Function<M, R> getEndFunction() {
             return ofNullable(getCriteria())
-                    .map(rPredicate -> ofNullable(timeToGet)
+                    .map(c -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime).map(sleep ->
                                     ofNullable(exceptionSupplier)
-                                            .map(supplier -> getFromIterable(originalFunction, rPredicate, wait, sleep, supplier))
-                                            .orElseGet(() -> getFromIterable(originalFunction, rPredicate, wait, sleep)))
+                                            .map(supplier -> getFromIterable(originalFunction, c.get(), wait, sleep, supplier))
+                                            .orElseGet(() -> getFromIterable(originalFunction, c.get(), wait, sleep)))
 
                                     .orElseGet(() -> ofNullable(exceptionSupplier)
-                                            .map(supplier -> getFromIterable(originalFunction, rPredicate, wait, supplier))
-                                            .orElseGet(() -> getFromIterable(originalFunction, rPredicate, wait))))
+                                            .map(supplier -> getFromIterable(originalFunction, c.get(), wait, supplier))
+                                            .orElseGet(() -> getFromIterable(originalFunction, c.get(), wait))))
 
                             .orElseGet(() -> ofNullable(exceptionSupplier)
-                                    .map(supplier -> getFromIterable(originalFunction, rPredicate, supplier))
-                                    .orElseGet(() -> getFromIterable(originalFunction, rPredicate))))
+                                    .map(supplier -> getFromIterable(originalFunction, c.get(), supplier))
+                                    .orElseGet(() -> getFromIterable(originalFunction, c.get()))))
 
                     .orElseGet(() -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime)
@@ -491,8 +510,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     /**
      * This class is designed to build and supply functions to get desired value using some iterable.
      *
-     * @param <T> is a type of an input value
-     * @param <R> is a type of a result value. Also it is a type of an item from iterable.
+     * @param <T>    is a type of an input value
+     * @param <R>    is a type of a result value. Also it is a type of an item from iterable.
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
     public static abstract class GetObjectFromIterableStepSupplier<T, R, THIS extends GetObjectFromIterableStepSupplier<T, R, THIS>>
@@ -507,9 +526,9 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     /**
      * This class is designed to build and supply chained functions to get desired value using some iterable.
      *
-     * @param <T> is a type of an input value
-     * @param <R> is a type of a result value. Also it is a type of an item from iterable.
-     * @param <M> is a type of a mediator value is used to get the result
+     * @param <T>    is a type of an input value
+     * @param <R>    is a type of a result value. Also it is a type of an item from iterable.
+     * @param <M>    is a type of a mediator value is used to get the result
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
     public static abstract class GetObjectFromIterableChainedStepSupplier<T, R, M, THIS extends GetObjectFromIterableChainedStepSupplier<T, R, M, THIS>>
@@ -548,19 +567,19 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         @Override
         protected Function<M, R> getEndFunction() {
             return ofNullable(getCriteria())
-                    .map(rPredicate -> ofNullable(timeToGet)
+                    .map(c -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime).map(sleep ->
                                     ofNullable(exceptionSupplier)
-                                            .map(supplier -> getFromArray(originalFunction, rPredicate, wait, sleep, supplier))
-                                            .orElseGet(() -> getFromArray(originalFunction, rPredicate, wait, sleep)))
+                                            .map(supplier -> getFromArray(originalFunction, c.get(), wait, sleep, supplier))
+                                            .orElseGet(() -> getFromArray(originalFunction, c.get(), wait, sleep)))
 
                                     .orElseGet(() -> ofNullable(exceptionSupplier)
-                                            .map(supplier -> getFromArray(originalFunction, rPredicate, wait, supplier))
-                                            .orElseGet(() -> getFromArray(originalFunction, rPredicate, wait))))
+                                            .map(supplier -> getFromArray(originalFunction, c.get(), wait, supplier))
+                                            .orElseGet(() -> getFromArray(originalFunction, c.get(), wait))))
 
                             .orElseGet(() -> ofNullable(exceptionSupplier)
-                                    .map(supplier -> getFromArray(originalFunction, rPredicate, supplier))
-                                    .orElseGet(() -> getFromArray(originalFunction, rPredicate))))
+                                    .map(supplier -> getFromArray(originalFunction, c.get(), supplier))
+                                    .orElseGet(() -> getFromArray(originalFunction, c.get()))))
 
                     .orElseGet(() -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime)
@@ -581,8 +600,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     /**
      * This class is designed to build and supply functions to get desired value using some array.
      *
-     * @param <T> is a type of an input value
-     * @param <R> is a type of a result value. Also it is a type of an item from array.
+     * @param <T>    is a type of an input value
+     * @param <R>    is a type of a result value. Also it is a type of an item from array.
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
     public static abstract class GetObjectFromArrayStepSupplier<T, R, THIS extends GetObjectFromArrayStepSupplier<T, R, THIS>>
@@ -597,9 +616,9 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     /**
      * This class is designed to build and supply chained functions to get desired value using some array.
      *
-     * @param <T> is a type of an input value
-     * @param <R> is a type of a result value. Also it is a type of an item from array.
-     * @param <M> is a type of a mediator value is used to get the result
+     * @param <T>    is a type of an input value
+     * @param <R>    is a type of a result value. Also it is a type of an item from array.
+     * @param <M>    is a type of a mediator value is used to get the result
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
     public static abstract class GetObjectFromArrayChainedStepSupplier<T, R, M, THIS extends GetObjectFromArrayChainedStepSupplier<T, R, M, THIS>>
@@ -638,19 +657,19 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         @Override
         protected Function<M, S> getEndFunction() {
             return ofNullable(getCriteria())
-                    .map(rPredicate -> ofNullable(timeToGet)
+                    .map(c -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime).map(sleep ->
                                     ofNullable(exceptionSupplier)
-                                            .map(supplier -> getIterable(originalFunction, rPredicate, wait, sleep, supplier))
-                                            .orElseGet(() -> getIterable(originalFunction, rPredicate, wait, sleep)))
+                                            .map(supplier -> getIterable(originalFunction, c.get(), wait, sleep, supplier))
+                                            .orElseGet(() -> getIterable(originalFunction, c.get(), wait, sleep)))
 
                                     .orElseGet(() -> ofNullable(exceptionSupplier)
-                                            .map(supplier -> getIterable(originalFunction, rPredicate, wait, supplier))
-                                            .orElseGet(() -> getIterable(originalFunction, rPredicate, wait))))
+                                            .map(supplier -> getIterable(originalFunction, c.get(), wait, supplier))
+                                            .orElseGet(() -> getIterable(originalFunction, c.get(), wait))))
 
                             .orElseGet(() -> ofNullable(exceptionSupplier)
-                                    .map(supplier -> getIterable(originalFunction, rPredicate, supplier))
-                                    .orElseGet(() -> getIterable(originalFunction, rPredicate))))
+                                    .map(supplier -> getIterable(originalFunction, c.get(), supplier))
+                                    .orElseGet(() -> getIterable(originalFunction, c.get()))))
 
                     .orElseGet(() -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime)
@@ -671,9 +690,9 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     /**
      * This class is designed to build and supply functions to get some desired iterable-value.
      *
-     * @param <T> is a type of an input value
-     * @param <S> is a type of resulted iterable
-     * @param <R> is a type of an an item from resulted iterable
+     * @param <T>    is a type of an input value
+     * @param <S>    is a type of resulted iterable
+     * @param <R>    is a type of an an item from resulted iterable
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
     public static abstract class GetIterableStepSupplier<T, S extends Iterable<R>, R, THIS extends GetIterableStepSupplier<T, S, R, THIS>>
@@ -688,10 +707,10 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     /**
      * This class is designed to build and supply chained functions to get some desired iterable-value.
      *
-     * @param <T> is a type of an input value
-     * @param <S> is a type of resulted iterable
-     * @param <M> is a type of a mediator value is used to get the result
-     * @param <R> is a type of an an item from resulted iterable
+     * @param <T>    is a type of an input value
+     * @param <S>    is a type of resulted iterable
+     * @param <M>    is a type of a mediator value is used to get the result
+     * @param <R>    is a type of an an item from resulted iterable
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
     public static abstract class GetIterableChainedStepSupplier<T, S extends Iterable<R>, M, R, THIS extends GetIterableChainedStepSupplier<T, S, M, R, THIS>>
@@ -730,19 +749,19 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         @Override
         protected Function<M, R[]> getEndFunction() {
             return ofNullable(getCriteria())
-                    .map(rPredicate -> ofNullable(timeToGet)
+                    .map(c -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime).map(sleep ->
                                     ofNullable(exceptionSupplier)
-                                            .map(supplier -> getArray(originalFunction, rPredicate, wait, sleep, supplier))
-                                            .orElseGet(() -> getArray(originalFunction, rPredicate, wait, sleep)))
+                                            .map(supplier -> getArray(originalFunction, c.get(), wait, sleep, supplier))
+                                            .orElseGet(() -> getArray(originalFunction, c.get(), wait, sleep)))
 
                                     .orElseGet(() -> ofNullable(exceptionSupplier)
-                                            .map(supplier -> getArray(originalFunction, rPredicate, wait, supplier))
-                                            .orElseGet(() -> getArray(originalFunction, rPredicate, wait))))
+                                            .map(supplier -> getArray(originalFunction, c.get(), wait, supplier))
+                                            .orElseGet(() -> getArray(originalFunction, c.get(), wait))))
 
                             .orElseGet(() -> ofNullable(exceptionSupplier)
-                                    .map(supplier -> getArray(originalFunction, rPredicate, supplier))
-                                    .orElseGet(() -> getArray(originalFunction, rPredicate))))
+                                    .map(supplier -> getArray(originalFunction, c.get(), supplier))
+                                    .orElseGet(() -> getArray(originalFunction, c.get()))))
 
                     .orElseGet(() -> ofNullable(timeToGet)
                             .map(wait -> ofNullable(sleepingTime)
@@ -763,8 +782,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     /**
      * This class is designed to build and supply functions to get some desired array-value.
      *
-     * @param <T> is a type of an input value
-     * @param <R> is a type of an an item from resulted array
+     * @param <T>    is a type of an input value
+     * @param <R>    is a type of an an item from resulted array
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
     public static abstract class GetArrayStepSupplier<T, R, THIS extends GetArrayStepSupplier<T, R, THIS>>
@@ -780,9 +799,9 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     /**
      * This class is designed to build and supply chained functions to get some desired array-value.
      *
-     * @param <T> is a type of an input value
-     * @param <M> is a type of a mediator value is used to get the result
-     * @param <R> is a type of an an item from resulted array
+     * @param <T>    is a type of an input value
+     * @param <M>    is a type of a mediator value is used to get the result
+     * @param <R>    is a type of an an item from resulted array
      * @param <THIS> this is the self-type. It is used for the method chaining.
      */
     public static abstract class GetArrayChainedStepSupplier<T, M, R, THIS extends GetArrayChainedStepSupplier<T, M, R, THIS>>

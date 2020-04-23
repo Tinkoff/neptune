@@ -8,6 +8,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
+import java.time.Duration;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -47,7 +48,7 @@ public final class GetSeleniumCookieSupplier extends SequentialGetStepSupplier
     }
 
     @Override
-    protected String getCriteriaDescription() {
-        return super.getCriteriaDescription();
+    public GetSeleniumCookieSupplier timeOut(Duration duration) {
+        return super.timeOut(duration);
     }
 }

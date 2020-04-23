@@ -1,18 +1,19 @@
 package ru.tinkoff.qa.neptune.selenium.functions.edit;
 
-import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+import org.openqa.selenium.SearchContext;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Editable;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
-import org.openqa.selenium.SearchContext;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.format;
 import static java.util.List.of;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.joining;
@@ -24,8 +25,6 @@ import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentConte
 public final class EditActionSupplier extends
         SequentialActionSupplier<SeleniumStepContext, Editable, EditActionSupplier> {
 
-    private static final String DESCRIPTION = "Edit element %s. Change value with [%s]";
-
     private final Object toSet;
 
     private EditActionSupplier(String description, Object value) {
@@ -34,7 +33,7 @@ public final class EditActionSupplier extends
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> String addDescriptionOfTheSetValue(T toBeSet) {
+    private static <T> String descriptionOfTheSetValue(T toBeSet) {
         checkArgument(nonNull(toBeSet), "The value to be used for the editing should not be null");
         var clazz = toBeSet.getClass();
 
@@ -50,7 +49,7 @@ public final class EditActionSupplier extends
         return stream.map(t -> {
             checkArgument(nonNull(t), "A null-value is defined to change value of an element");
             if (t.getClass().isEnum()) {
-                return ((Enum) t).name();
+                return ((Enum<?>) t).name();
             }
             return String.valueOf(t);
         }).collect(joining(","));
@@ -67,7 +66,7 @@ public final class EditActionSupplier extends
      */
     public static <R, S extends SearchContext & Editable<R>> EditActionSupplier valueOfThe(
             SearchSupplier<S> of, R value) {
-        return new EditActionSupplier(format(DESCRIPTION, of, addDescriptionOfTheSetValue(value)), value)
+        return new EditActionSupplier("Edit element " + of, value)
                 .performOn(of.get().compose(currentContent()));
     }
 
@@ -81,19 +80,15 @@ public final class EditActionSupplier extends
      * @return built edit action
      */
     public static <R, S extends SearchContext & Editable<R>> EditActionSupplier valueOfThe(S of, R value) {
-        return new EditActionSupplier(format(DESCRIPTION, of, addDescriptionOfTheSetValue(value)), value).performOn(of);
+        return new EditActionSupplier("Edit element " + of, value)
+                .performOn(of);
     }
 
-    public <T, Q extends SearchContext & Editable<T>> EditActionSupplier andValueOfThe(SearchSupplier<Q> of, T value) {
-        checkArgument(nonNull(of), "The searching for the editable element should be defined");
-        checkArgument(nonNull(value), "The value which is used to edit the element should be defined");
-        return mergeActionSequenceFrom(valueOfThe(of, value));
-    }
-
-    public <T, Q extends SearchContext & Editable<T>> EditActionSupplier andValueOfThe(Q of, T value) {
-        checkArgument(nonNull(of), "The editable element should be defined");
-        checkArgument(nonNull(value), "The value which is used to edit the element should be defined");
-        return mergeActionSequenceFrom(valueOfThe(of, value));
+    @Override
+    protected Map<String, String> formParameters() {
+        var result = new LinkedHashMap<String, String>();
+        result.put("Change value with", descriptionOfTheSetValue(toSet));
+        return result;
     }
 
     @Override
