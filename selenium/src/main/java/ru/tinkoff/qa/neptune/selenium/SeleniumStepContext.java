@@ -13,14 +13,16 @@ import ru.tinkoff.qa.neptune.selenium.functions.cookies.AddCookiesActionSupplier
 import ru.tinkoff.qa.neptune.selenium.functions.cookies.GetSeleniumCookieSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.edit.EditActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.java.script.GetJavaScriptResultSupplier;
-import ru.tinkoff.qa.neptune.selenium.functions.navigation.NavigationActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.SwitchActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert.AlertActionSupplier;
+import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
+import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 import ru.tinkoff.qa.neptune.selenium.functions.value.SequentialGetValueSupplier;
 import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
 
+import java.net.URL;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
@@ -35,6 +37,11 @@ import static java.time.Duration.ofMillis;
 import static java.util.Arrays.asList;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 import static ru.tinkoff.qa.neptune.selenium.functions.cookies.RemoveCookiesActionSupplier.deleteCookies;
+import static ru.tinkoff.qa.neptune.selenium.functions.navigation.Back.back;
+import static ru.tinkoff.qa.neptune.selenium.functions.navigation.Forward.forward;
+import static ru.tinkoff.qa.neptune.selenium.functions.navigation.GetCurrentUrlSupplier.currentUrl;
+import static ru.tinkoff.qa.neptune.selenium.functions.navigation.Refresh.refreshWindow;
+import static ru.tinkoff.qa.neptune.selenium.functions.navigation.ToUrl.toUrl;
 
 @CreateWith(provider = SeleniumParameterProvider.class)
 public class SeleniumStepContext extends Context<SeleniumStepContext> implements WrapsDriver, ContextRefreshable,
@@ -95,11 +102,6 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
 
     public SeleniumStepContext performSwitch(SwitchActionSupplier switchActionSupplier) {
         switchActionSupplier.get().accept(this);
-        return this;
-    }
-
-    public SeleniumStepContext navigate(NavigationActionSupplier<?> navigationActionSupplier) {
-        navigationActionSupplier.get().accept(this);
         return this;
     }
 
@@ -254,17 +256,6 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     }
 
     /**
-     * Returns a set of browser {@link Cookie}
-     *
-     * @param getCookies is how to get find cookies
-     * @return a set of {@link Cookie}
-     */
-    public Set<Cookie> get(GetSeleniumCookieSupplier getCookies) {
-        checkNotNull(getCookies, "It is necessary to define how to get browser cookies");
-        return getCookies.get().apply(this);
-    }
-
-    /**
      * Cleans browser's cookie jar.
      *
      * @return self-reference
@@ -340,6 +331,234 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     public SeleniumStepContext addCookies(Cookie... cookies) {
         return addCookies(asList(cookies));
     }
+
+    /**
+     * Gets URL of a page that loaded in the default (first) browser window/tab.
+     *
+     * @return string URL of a loaded page
+     */
+    public String getCurrentUrl() {
+        return currentUrl().get().apply(this);
+    }
+
+    /**
+     * Gets URL of a page that loaded in the browser window/tab.
+     *
+     * @param getWindow is how to find/get target window/tab to get an URL from
+     * @return string URL of a loaded page
+     */
+    public String getCurrentUrl(GetWindowSupplier getWindow) {
+        return currentUrl(getWindow).get().apply(this);
+    }
+
+    /**
+     * Gets URL of a page that loaded in the browser window/tab.
+     *
+     * @param window is a window to get an URL from
+     * @return {@link URL} of a loaded page
+     */
+    public String getCurrentUrl(Window window) {
+        return currentUrl(window).get().apply(this);
+    }
+
+    /**
+     * Performs navigation back in the default (first) browser window/tab.
+     *
+     * @return self-reference
+     */
+    public SeleniumStepContext navigateBack() {
+        back().get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs navigation back in the browser window/tab.
+     *
+     * @param windowSupplier is how to find/get target window/tab
+     * @return self-reference
+     */
+    public SeleniumStepContext navigateBack(GetWindowSupplier windowSupplier) {
+        back(windowSupplier).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs navigation back in the browser window/tab.
+     *
+     * @param window is a target window
+     * @return self-reference
+     */
+    public SeleniumStepContext navigateBack(Window window) {
+        back(window).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs navigation forward in the default (first) browser window/tab.
+     *
+     * @return self-reference
+     */
+    public SeleniumStepContext navigateForward() {
+        forward().get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs navigation forward in the browser window/tab.
+     *
+     * @param windowSupplier is how to find/get target window/tab
+     * @return self-reference
+     */
+    public SeleniumStepContext navigateForward(GetWindowSupplier windowSupplier) {
+        forward(windowSupplier).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs navigation forward in the browser window/tab.
+     *
+     * @param window is a target window
+     * @return self-reference
+     */
+    public SeleniumStepContext navigateForward(Window window) {
+        forward(window).get().accept(this);
+        return this;
+    }
+
+
+    /**
+     * Performs the refreshing of the default (first) browser window/tab.
+     *
+     * @return self-reference
+     */
+    public SeleniumStepContext refresh() {
+        refreshWindow().get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs the refreshing of the browser window/tab.
+     *
+     * @param windowSupplier is how to find/get target window/tab
+     * @return self-reference
+     */
+    public SeleniumStepContext refresh(GetWindowSupplier windowSupplier) {
+        refreshWindow(windowSupplier).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs the refreshing of the browser window/tab.
+     *
+     * @param window is a target window
+     * @return self-reference
+     */
+    public SeleniumStepContext refresh(Window window) {
+        refreshWindow(window).get().accept(this);
+        return this;
+    }
+
+
+    /**
+     * Performs navigation in the default (first) browser window/tab.
+     *
+     * @param url is a target URL
+     * @return self-reference
+     */
+    public SeleniumStepContext navigateTo(URL url) {
+        toUrl(url).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs navigation in the browser window/tab.
+     *
+     * @param url is a target URL
+     * @param in  is how to find/get target window/tab
+     * @return self-reference
+     */
+    public SeleniumStepContext navigateTo(URL url, GetWindowSupplier in) {
+        toUrl(in, url).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs navigation in the browser window/tab.
+     *
+     * @param url is a target URL
+     * @param in  is a target window
+     * @return self-reference
+     */
+    public SeleniumStepContext navigateTo(URL url, Window in) {
+        toUrl(in, url).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs navigation in the default (first) browser window/tab.
+     *
+     * @param url is a string value the url to navigate to. Also it may be a path relative to base web driver url.
+     *            It is possible when ability to navigate by relative path is enabled
+     * @return self-reference
+     * @see ru.tinkoff.qa.neptune.selenium.properties.URLProperties#BASE_WEB_DRIVER_URL_PROPERTY
+     * @see ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties#ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL
+     */
+    public SeleniumStepContext navigateTo(String url) {
+        toUrl(url).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs navigation in the browser window/tab.
+     *
+     * @param url is a string value the url to navigate to. Also it may be a path relative to base web driver url.
+     *            It is possible when ability to navigate by relative path is enabled
+     * @param in  is how to find/get target window/tab
+     * @return self-reference
+     * @see ru.tinkoff.qa.neptune.selenium.properties.URLProperties#BASE_WEB_DRIVER_URL_PROPERTY
+     * @see ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties#ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL
+     */
+    public SeleniumStepContext navigateTo(String url, GetWindowSupplier in) {
+        toUrl(in, url).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs navigation in the browser window/tab.
+     *
+     * @param url is a string value the url to navigate to. Also it may be a path relative to base web driver url.
+     *            It is possible when ability to navigate by relative path is enabled
+     * @param in  is a target window
+     * @return self-reference
+     * @see ru.tinkoff.qa.neptune.selenium.properties.URLProperties#BASE_WEB_DRIVER_URL_PROPERTY
+     * @see ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties#ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL
+     */
+    public SeleniumStepContext navigateTo(String url, Window in) {
+        toUrl(in, url).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Returns a set of browser {@link Cookie}
+     *
+     * @param getCookies is how to get find cookies
+     * @return a set of {@link Cookie}
+     */
+    public Set<Cookie> get(GetSeleniumCookieSupplier getCookies) {
+        return getCookies.get().apply(this);
+    }
+
+
+    /**
+     * Returns {@link Window} as a representation of a browser window/tab
+     *
+     * @param getWindow is a description of a window to get
+     * @return an instance of {@link Window}
+     */
+    public Window get(GetWindowSupplier getWindow) {
+        return getWindow.get().apply(this);
+    }
+
 
     /**
      * This method was added for backward compatibility temporary
