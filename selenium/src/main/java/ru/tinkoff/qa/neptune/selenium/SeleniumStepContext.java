@@ -56,6 +56,7 @@ import static ru.tinkoff.qa.neptune.selenium.functions.navigation.Refresh.refres
 import static ru.tinkoff.qa.neptune.selenium.functions.navigation.ToUrl.toUrl;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.SwitchActionSupplier.to;
 import static ru.tinkoff.qa.neptune.selenium.functions.windows.GetWindowTitleSupplier.titleOf;
+import static ru.tinkoff.qa.neptune.selenium.functions.windows.SetWindowPositionSupplier.setPositionOf;
 import static ru.tinkoff.qa.neptune.selenium.functions.windows.SetWindowPositionSupplier.setWindowPosition;
 
 @CreateWith(provider = SeleniumParameterProvider.class)
@@ -825,22 +826,26 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     /**
      * Performs the setting to new position of the browser window/tab.
      *
+     * @param x        is the X-coordinate of upper left corner of the window/tab
+     * @param y        is the Y-coordinate of upper left corner of the window/tab
      * @param supplier is how to find the browser window/tab
      * @return self-reference
      */
     public SeleniumStepContext changeWindowPosition(GetWindowSupplier supplier, int x, int y) {
-        CloseWindowActionSupplier.closeWindow(supplier).get().accept(this);
+        setPositionOf(supplier, new Point(x, y)).get().accept(this);
         return this;
     }
 
     /**
-     * Performs the closing of the browser window/tab.
+     * Performs the setting to new position of the browser window/tab.
      *
-     * @param window the browser window/tab to close
+     * @param x      is the X-coordinate of upper left corner of the window/tab
+     * @param y      is the Y-coordinate of upper left corner of the window/tab
+     * @param window the browser window/tab
      * @return self-reference
      */
-    public SeleniumStepContext closeWindow(Window window) {
-        CloseWindowActionSupplier.closeWindow(window).get().accept(this);
+    public SeleniumStepContext changeWindowPosition(Window window, int x, int y) {
+        setPositionOf(window, new Point(x, y)).get().accept(this);
         return this;
     }
 
