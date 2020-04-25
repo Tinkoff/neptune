@@ -18,7 +18,7 @@ public final class Forward extends SequentialActionSupplier<SeleniumStepContext,
     }
 
     /**
-     * Builds navigation forward in the first window.
+     * Builds navigation forward in the browser window/tab that active currently.
      *
      * @return built navigation action
      */

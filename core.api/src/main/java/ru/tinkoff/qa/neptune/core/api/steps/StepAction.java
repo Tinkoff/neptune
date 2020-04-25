@@ -51,7 +51,7 @@ public class StepAction<T> implements MakesCapturesOnFinishing<StepAction<T>> {
 
     public void accept(T t) {
         try {
-            fireEventStarting(description, parameters);
+            fireEventStarting("Perform: " + description, parameters);
             consumer.accept(t);
             if (catchSuccessEvent() && !Context.class.isAssignableFrom(consumer.getClass())) {
                 catchValue(t, captorFilters);

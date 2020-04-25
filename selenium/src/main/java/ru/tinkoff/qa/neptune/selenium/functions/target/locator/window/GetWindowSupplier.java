@@ -10,7 +10,9 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
 
 import java.time.Duration;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -19,6 +21,7 @@ import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationHMS;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITING_WINDOW_TIME_DURATION;
 
@@ -54,8 +57,8 @@ public final class GetWindowSupplier extends SequentialGetStepSupplier
 
     private static String buildDescription(Integer index) {
         return ofNullable(index)
-                .map(integer -> format("Window/Tab by index %s", index))
-                .orElse("Window/Tab");
+                .map(integer -> format("Browser window/tab [index %s]", index))
+                .orElse("Browser window/tab");
     }
 
     private static List<Window> getListOfWindows(WebDriver driver) {
@@ -93,6 +96,11 @@ public final class GetWindowSupplier extends SequentialGetStepSupplier
         return new GetWindowSupplier(index).from(currentContent());
     }
 
+    protected Map<String, String> formTimeoutForReport(Duration timeOut) {
+        var result = new LinkedHashMap<String, String>();
+        result.put("Time of the waiting for the browser window/tab", formatDurationHMS(timeOut.toMillis()));
+        return result;
+    }
 
     @Override
     public GetWindowSupplier criteria(Criteria<? super Window> condition) {

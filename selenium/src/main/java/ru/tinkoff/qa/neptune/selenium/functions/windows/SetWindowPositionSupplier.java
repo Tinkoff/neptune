@@ -1,13 +1,15 @@
-package ru.tinkoff.qa.neptune.selenium.functions.target.locator.window;
+package ru.tinkoff.qa.neptune.selenium.functions.windows;
 
-import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+import org.openqa.selenium.Point;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.StepParameter;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
-import org.openqa.selenium.Point;
+import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
+import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
 
@@ -15,10 +17,12 @@ import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Get
 @MakeFileCapturesOnFinishing
 public final class SetWindowPositionSupplier extends SequentialActionSupplier<SeleniumStepContext, Window, SetWindowPositionSupplier> {
 
+    @StepParameter("New position")
     private final Point position;
 
-    private SetWindowPositionSupplier(Point position, String windowDescription) {
-        super(format("Set position of the %s to %s", windowDescription, position));
+    private SetWindowPositionSupplier(Point position) {
+        super("Change position of the browser window/tab");
+        checkArgument(nonNull(position), "A new position should not be a null value");
         this.position = position;
     }
 
@@ -40,23 +44,22 @@ public final class SetWindowPositionSupplier extends SequentialActionSupplier<Se
      * @return Supplier of an action which changes window position.
      */
     public static SetWindowPositionSupplier setPositionOf(GetWindowSupplier supplier, Point position) {
-        return new SetWindowPositionSupplier(position, supplier.toString()).performOn(supplier);
+        return new SetWindowPositionSupplier(position).performOn(supplier);
     }
 
     /**
      * Builds an action which changes position of the window.
      *
-     * @param window to change position of
+     * @param window   to change position of
      * @param position is the new position of the window
      * @return Supplier of an action which changes window position.
      */
     public static SetWindowPositionSupplier setPositionOf(Window window, Point position) {
-        return new SetWindowPositionSupplier(position, window.toString()).performOn(window);
+        return new SetWindowPositionSupplier(position).performOn(window);
     }
 
     @Override
     protected void performActionOn(Window value) {
-        checkArgument(nonNull(position), "A new position should not be a null value");
         value.setPosition(position);
     }
 }

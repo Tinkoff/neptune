@@ -53,23 +53,6 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
     }
 
     protected Map<String, String> formPerformOnForReport() {
-        /*var result = new LinkedHashMap<String, String>();
-        var cls = toBePerformedOn.getClass();
-
-        if (SequentialGetStepSupplier.class.isAssignableFrom(cls)) {
-            result.put("Perform action on", fromParameterBySupplier((SequentialGetStepSupplier<?, ?, ?, ?, ?>) toBePerformedOn));
-            return result;
-        }
-        else if (StepFunction.class.isAssignableFrom(cls)) {
-            result.put("Perform action on", fromParameterByStepFunction((StepFunction<?, ?>) toBePerformedOn));
-            return result;
-        }
-        else {
-            if (isLoggable(toBePerformedOn)) {
-                result.put("Perform action on", valueOf(toBePerformedOn));
-            }
-            return result;
-        }*/
         var result = new LinkedHashMap<String, String>();
         if (isLoggable(toBePerformedOn)) {
             result.put("Perform action on", valueOf(toBePerformedOn));

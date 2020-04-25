@@ -1,9 +1,11 @@
-package ru.tinkoff.qa.neptune.selenium.functions.target.locator.window;
+package ru.tinkoff.qa.neptune.selenium.functions.windows;
 
-import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
-import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
+import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
 
@@ -11,7 +13,7 @@ public final class GetWindowPositionSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, Point, Window, GetWindowPositionSupplier> {
 
     private GetWindowPositionSupplier() {
-        super("Position of the window", WebDriver.Window::getPosition);
+        super("Position of the browser window/tab", WebDriver.Window::getPosition);
     }
 
     /**

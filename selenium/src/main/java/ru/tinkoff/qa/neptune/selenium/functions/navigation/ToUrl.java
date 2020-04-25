@@ -82,7 +82,7 @@ public final class ToUrl extends SequentialActionSupplier<SeleniumStepContext, W
     }
 
     /**
-     * Builds navigation to some URL in the first window.
+     * Builds navigation to some URL in the browser window/tab that active currently.
      *
      * @param url the url to navigate to.
      * @return built navigation action
@@ -92,7 +92,7 @@ public final class ToUrl extends SequentialActionSupplier<SeleniumStepContext, W
     }
 
     /**
-     * Builds navigation to some URL in the first window.
+     * Builds navigation to some URL in the browser window/tab that active currently.
      *
      * @param url is a string value the url to navigate to. Also it may be a path relative to base web driver url.
      *            It is possible when ability to navigate by relative path is enabled

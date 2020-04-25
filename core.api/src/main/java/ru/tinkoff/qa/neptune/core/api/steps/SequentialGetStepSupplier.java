@@ -73,8 +73,16 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     protected Map<String, String> getParameters() {
         var result = new LinkedHashMap<>(formParameters());
         result.putAll(formCriteriaReportParams(conditions));
-        ofNullable(timeToGet).ifPresent(duration -> result.putAll(formTimeoutForReport(duration)));
-        ofNullable(sleepingTime).ifPresent(duration -> result.putAll(formSleepTimeForReport(duration)));
+        ofNullable(timeToGet).ifPresent(duration -> {
+            if (duration.toMillis() > 0) {
+                result.putAll(formTimeoutForReport(duration));
+            }
+        });
+        ofNullable(sleepingTime).ifPresent(duration -> {
+            if (duration.toMillis() > 0) {
+                result.putAll(formSleepTimeForReport(duration));
+            }
+        });
         result.putAll(formFromParameter());
         return result;
     }

@@ -15,7 +15,7 @@ public final class GetCurrentUrlSupplier extends SequentialGetStepSupplier
     }
 
     /**
-     * Builds a function which returns url of the page loaded in the first window/tab.
+     * Builds a function which returns url of the page loaded in the browser window/tab that active currently.
      *
      * @return an instance of {@link GetCurrentUrlSupplier} which wraps a function. This function
      * returns url of the page loaded in the current window/tab.

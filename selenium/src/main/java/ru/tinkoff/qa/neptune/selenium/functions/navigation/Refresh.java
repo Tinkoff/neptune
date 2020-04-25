@@ -19,7 +19,7 @@ public final class Refresh extends SequentialActionSupplier<SeleniumStepContext,
     }
 
     /**
-     * Builds the refreshing in the first window.
+     * Builds the refreshing in the browser window/tab that active currently.
      *
      * @return built the refreshing action
      */

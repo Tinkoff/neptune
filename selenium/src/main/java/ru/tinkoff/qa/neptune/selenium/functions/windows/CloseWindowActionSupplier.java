@@ -1,17 +1,18 @@
-package ru.tinkoff.qa.neptune.selenium.functions.target.locator.window;
+package ru.tinkoff.qa.neptune.selenium.functions.windows;
 
-import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
+import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 
-import static java.lang.String.format;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
 
 @MakeFileCapturesOnFinishing
 public final class CloseWindowActionSupplier extends SequentialActionSupplier<SeleniumStepContext, Window, CloseWindowActionSupplier> {
 
-    private CloseWindowActionSupplier(String description) {
-        super(format("Close %s", description));
+    private CloseWindowActionSupplier() {
+        super("Close the browser window/tab");
     }
 
     /**
@@ -30,7 +31,7 @@ public final class CloseWindowActionSupplier extends SequentialActionSupplier<Se
      * @return Supplier of an action which closes the window.
      */
     public static CloseWindowActionSupplier closeWindow(GetWindowSupplier supplier) {
-        return new CloseWindowActionSupplier(supplier.toString()).performOn(supplier);
+        return new CloseWindowActionSupplier().performOn(supplier);
     }
 
     /**
@@ -40,7 +41,7 @@ public final class CloseWindowActionSupplier extends SequentialActionSupplier<Se
      * @return Supplier of an action which closes the window.
      */
     public static CloseWindowActionSupplier closeWindow(Window window) {
-        return new CloseWindowActionSupplier(window.toString()).performOn(window);
+        return new CloseWindowActionSupplier().performOn(window);
     }
 
     @Override

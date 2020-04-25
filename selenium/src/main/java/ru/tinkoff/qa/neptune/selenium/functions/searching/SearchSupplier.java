@@ -10,6 +10,8 @@ import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.*;
 
 import java.time.Duration;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -17,6 +19,7 @@ import java.util.function.Supplier;
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationHMS;
 import static ru.tinkoff.qa.neptune.selenium.api.widget.Widget.getWidgetName;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindLabeledWidgets.labeledWidgets;
@@ -50,6 +53,12 @@ public final class SearchSupplier<R extends SearchContext>
                     .orElse(description);
             return new NoSuchElementException(exceptionText);
         };
+    }
+
+    protected Map<String, String> formTimeoutForReport(Duration timeOut) {
+        var result = new LinkedHashMap<String, String>();
+        result.put("Time of the waiting for the element", formatDurationHMS(timeOut.toMillis()));
+        return result;
     }
 
 

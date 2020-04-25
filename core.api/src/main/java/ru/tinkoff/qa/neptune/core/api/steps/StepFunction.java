@@ -81,7 +81,7 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
                 && ((SequentialStepFunction<?, ?>) this).sequence.size() > 1);
         try {
             if (toReport) {
-                fireEventStarting("Get " + description, parameters);
+                fireEventStarting("Get: " + description, parameters);
             }
             R result = (R) function.apply(t);
             if (toReport) {

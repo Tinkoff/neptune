@@ -18,7 +18,7 @@ public final class Back extends SequentialActionSupplier<SeleniumStepContext, Wi
     }
 
     /**
-     * Builds navigation back in the first window.
+     * Builds navigation back in the browser window/tab that active currently.
      *
      * @return built navigation action
      */

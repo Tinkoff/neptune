@@ -1,7 +1,9 @@
-package ru.tinkoff.qa.neptune.selenium.functions.target.locator.window;
+package ru.tinkoff.qa.neptune.selenium.functions.windows;
 
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
+import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
 
@@ -9,7 +11,7 @@ public final class GetWindowTitleSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, String, Window, GetWindowTitleSupplier> {
 
     private GetWindowTitleSupplier() {
-        super("Title of the window", Window::getTitle);
+        super("Title of the browser window/tab", Window::getTitle);
     }
 
     /**

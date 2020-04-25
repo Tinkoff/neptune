@@ -97,7 +97,7 @@ public abstract class Step<T> {
         @Override
         public Void perform() {
             try {
-                fireEventStarting(toString(), emptyMap());
+                fireEventStarting("Perform: " + toString(), emptyMap());
                 stepRunnable.run();
                 return null;
             } catch (Throwable thrown) {
@@ -122,7 +122,7 @@ public abstract class Step<T> {
         @Override
         public T perform() {
             try {
-                fireEventStarting("Get " + toString(), emptyMap());
+                fireEventStarting("Get: " + toString(), emptyMap());
 
                 T result = stepSupplier.get();
                 if (isLoggable(result)) {

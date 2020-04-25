@@ -13,12 +13,15 @@ import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.*;
 
 import java.time.Duration;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static java.lang.String.format;
 import static java.lang.String.join;
+import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationHMS;
 import static ru.tinkoff.qa.neptune.selenium.api.widget.Widget.getWidgetName;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindLabeledWidgets.labeledWidgets;
@@ -39,6 +42,12 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
         if (FIND_ONLY_VISIBLE_ELEMENTS.get()) {
             criteria(visible());
         }
+    }
+
+    protected Map<String, String> formTimeoutForReport(Duration timeOut) {
+        var result = new LinkedHashMap<String, String>();
+        result.put("Time of the waiting for elements", formatDurationHMS(timeOut.toMillis()));
+        return result;
     }
 
     /**

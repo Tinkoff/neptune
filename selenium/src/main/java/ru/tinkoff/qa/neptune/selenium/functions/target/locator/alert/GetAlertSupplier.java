@@ -9,6 +9,8 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
 
 import java.time.Duration;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -16,6 +18,7 @@ import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationHMS;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITING_ALERT_TIME_DURATION;
 
@@ -23,7 +26,7 @@ public final class GetAlertSupplier extends SequentialGetStepSupplier.GetObjectC
         implements TargetLocatorSupplier<Alert> {
 
     private GetAlertSupplier() {
-        super("Present alert", webDriver -> webDriver.switchTo().alert());
+        super("Alert", webDriver -> webDriver.switchTo().alert());
         throwOnEmptyResult(noSuchAlert());
         timeOut(WAITING_ALERT_TIME_DURATION.get());
     }
@@ -38,6 +41,12 @@ public final class GetAlertSupplier extends SequentialGetStepSupplier.GetObjectC
             }
             return new NoAlertPresentException("No alert has been found");
         };
+    }
+
+    protected Map<String, String> formTimeoutForReport(Duration timeOut) {
+        var result = new LinkedHashMap<String, String>();
+        result.put("Time of the waiting for the alert", formatDurationHMS(timeOut.toMillis()));
+        return result;
     }
 
     @Override
