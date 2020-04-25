@@ -141,12 +141,12 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
 
                 var driver = (WebDriver) enhancer.create(c.getParameterTypes(), parameters);
 
-                ofNullable(proxy).ifPresent(browserMobProxy -> {
-                    if (browserMobProxy.isStarted()) {
-                        browserMobProxy.enableHarCaptureTypes(REQUEST_HEADERS, REQUEST_CONTENT,
+                ofNullable(proxy).ifPresent(browserUpProxy -> {
+                    if (browserUpProxy.isStarted()) {
+                        browserUpProxy.enableHarCaptureTypes(REQUEST_HEADERS, REQUEST_CONTENT,
                                 RESPONSE_HEADERS, RESPONSE_CONTENT);
 
-                        browserMobProxy.newHar();
+                        browserUpProxy.newHar();
                     }
                 });
 
@@ -212,9 +212,9 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
 
     public void shutDown() {
         ofNullable(driver).ifPresent(webDriver -> {
-            ofNullable(proxy).ifPresent(browserMobProxy -> {
-                if (browserMobProxy.isStarted()) {
-                    browserMobProxy.abort();
+            ofNullable(proxy).ifPresent(browserUpProxy -> {
+                if (browserUpProxy.isStarted()) {
+                    browserUpProxy.abort();
                 }
             });
 

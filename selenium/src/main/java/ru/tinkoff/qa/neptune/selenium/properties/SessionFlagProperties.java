@@ -57,9 +57,7 @@ public enum SessionFlagProperties implements BooleanValuePropertySupplier {
 
     /**
      * This enum item reads the property {@code 'use.browser.proxy'}. {@code true} value means that browser session
-     * will be proxied by locally instantiated {@link net.lightbody.bmp.BrowserMobProxy} server
-     *
-     * @see <a href="https://github.com/lightbody/browsermob-proxy">https://github.com/lightbody/browsermob-proxy</a>
+     * will be proxied by locally instantiated {@link com.browserup.bup.BrowserUpProxy} server
      */
     USE_BROWSER_PROXY("use.browser.proxy");
 

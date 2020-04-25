@@ -72,10 +72,10 @@ public class ProxyStartingTest {
 
         try {
             assertThat("WebDriver is alive", isDriverAlive(driver), is(true));
-            assertThat("BrowserMob proxy is instantiated", wrappedWebDriver.getProxy(), proxyMatcher);
+            assertThat("BrowserUp proxy is instantiated", wrappedWebDriver.getProxy(), proxyMatcher);
 
             if (wrappedWebDriver.getProxy() != null) {
-                assertThat("BrowserMob proxy server is started", wrappedWebDriver.getProxy().isStarted(), is(true));
+                assertThat("BrowserUp proxy server is started", wrappedWebDriver.getProxy().isStarted(), is(true));
             }
         } finally {
             wrappedWebDriver.shutDown();
@@ -93,8 +93,8 @@ public class ProxyStartingTest {
 
         try {
             assertThat("WebDriver is alive", isDriverAlive(driver), is(true));
-            assertThat("BrowserMob proxy is instantiated", wrappedWebDriver.getProxy(), notNullValue());
-            assertThat("BrowserMob proxy server is not started", wrappedWebDriver.getProxy().isStarted(), is(false));
+            assertThat("BrowserUp proxy is instantiated", wrappedWebDriver.getProxy(), notNullValue());
+            assertThat("BrowserUp proxy server is not started", wrappedWebDriver.getProxy().isStarted(), is(false));
         } finally {
             wrappedWebDriver.shutDown();
         }
