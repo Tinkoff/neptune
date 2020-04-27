@@ -4,10 +4,9 @@ import org.openqa.selenium.*;
 import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
-import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
-import ru.tinkoff.qa.neptune.core.api.steps.StepAction;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
+import ru.tinkoff.qa.neptune.selenium.api.widget.HasValue;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import ru.tinkoff.qa.neptune.selenium.functions.click.ClickActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.cookies.AddCookiesActionSupplier;
@@ -17,7 +16,6 @@ import ru.tinkoff.qa.neptune.selenium.functions.java.script.GetJavaScriptResultS
 import ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.active.element.GetActiveElementSupplier;
-import ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert.AlertActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert.GetAlertSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.content.DefaultContentSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.Frame;
@@ -25,7 +23,6 @@ import ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.GetFrameSup
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.parent.ParentFrameSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
-import ru.tinkoff.qa.neptune.selenium.functions.value.SequentialGetValueSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.windows.CloseWindowActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.windows.GetWindowPositionSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.windows.GetWindowSizeSupplier;
@@ -36,12 +33,8 @@ import java.net.URL;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.time.Duration.ofMillis;
 import static java.util.Arrays.asList;
@@ -55,9 +48,17 @@ import static ru.tinkoff.qa.neptune.selenium.functions.navigation.GetCurrentUrlS
 import static ru.tinkoff.qa.neptune.selenium.functions.navigation.Refresh.refreshWindow;
 import static ru.tinkoff.qa.neptune.selenium.functions.navigation.ToUrl.toUrl;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.SwitchActionSupplier.to;
+import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert.AcceptAlertActionSupplier.acceptAlert;
+import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert.DismissAlertActionSupplier.dismissAlert;
+import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert.SendKeysToAlertActionSupplier.sendKeysToAlert;
+import static ru.tinkoff.qa.neptune.selenium.functions.value.SequentialGetAttributeValueSupplier.attributeValue;
+import static ru.tinkoff.qa.neptune.selenium.functions.value.SequentialGetCSSValueSupplier.cssValue;
+import static ru.tinkoff.qa.neptune.selenium.functions.value.SequentialGetValueSupplier.ofThe;
 import static ru.tinkoff.qa.neptune.selenium.functions.windows.GetWindowTitleSupplier.titleOf;
 import static ru.tinkoff.qa.neptune.selenium.functions.windows.SetWindowPositionSupplier.setPositionOf;
 import static ru.tinkoff.qa.neptune.selenium.functions.windows.SetWindowPositionSupplier.setWindowPosition;
+import static ru.tinkoff.qa.neptune.selenium.functions.windows.SetWindowSizeSupplier.setSizeOf;
+import static ru.tinkoff.qa.neptune.selenium.functions.windows.SetWindowSizeSupplier.setWindowSize;
 
 @CreateWith(provider = SeleniumParameterProvider.class)
 public class SeleniumStepContext extends Context<SeleniumStepContext> implements WrapsDriver, ContextRefreshable,
@@ -92,10 +93,6 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
         return this;
     }
 
-    public <T> T getValue(SequentialGetValueSupplier<T> getValueSupplier) {
-        return getValueSupplier.get().apply(this);
-    }
-
     public SeleniumStepContext edit(EditActionSupplier editActionSupplier) {
         editActionSupplier.get().accept(this);
         return this;
@@ -107,13 +104,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @param javaScriptResultSupplier is which script and how to execute it
      * @return a result of js evaluation
      */
-    public Object getEvaluationOf(GetJavaScriptResultSupplier javaScriptResultSupplier) {
+    public Object evaluate(GetJavaScriptResultSupplier javaScriptResultSupplier) {
         return javaScriptResultSupplier.get().apply(this);
-    }
-
-    public SeleniumStepContext alert(AlertActionSupplier alertActionSupplier) {
-        alertActionSupplier.get().accept(this);
-        return this;
     }
 
 
@@ -851,6 +843,115 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
 
 
     /**
+     * Performs the setting to new size of the browser window/tab that active currently
+     *
+     * @param width  is new width of the window/tab
+     * @param height is new height of the window/tab
+     * @return self-reference
+     */
+    public SeleniumStepContext changeWindowSize(int width, int height) {
+        setWindowSize(new Dimension(width, height)).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs the setting to new size of the browser window/tab.
+     *
+     * @param supplier is how to find the browser window/tab
+     * @param width    is new width of the window/tab
+     * @param height   is new height of the window/tab
+     * @return self-reference
+     */
+    public SeleniumStepContext changeWindowSize(GetWindowSupplier supplier, int width, int height) {
+        setSizeOf(supplier, new Dimension(width, height)).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs the setting to new size of the browser window/tab.
+     *
+     * @param width  is new width of the window/tab
+     * @param height is new height of the window/tab
+     * @param window the browser window/tab
+     * @return self-reference
+     */
+    public SeleniumStepContext changeWindowSize(Window window, int width, int height) {
+        setSizeOf(window, new Dimension(width, height)).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs an accept-action. This action is performed on a browser alert.
+     *
+     * @param getAlert is description of an alert to accept
+     * @return self-reference
+     */
+    public SeleniumStepContext accept(GetAlertSupplier getAlert) {
+        acceptAlert(getAlert).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs an accept-action. This action is performed on a browser alert.
+     *
+     * @param alert is an alert to accept
+     * @return self-reference
+     */
+    public SeleniumStepContext accept(Alert alert) {
+        acceptAlert(alert).get().accept(this);
+        return this;
+    }
+
+
+    /**
+     * Performs an dismiss-action. This action is performed on a browser alert.
+     *
+     * @param getAlert is description of an alert to dismiss
+     * @return self-reference
+     */
+    public SeleniumStepContext dismiss(GetAlertSupplier getAlert) {
+        dismissAlert(getAlert).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs an dismiss-action. This action is performed on a browser alert.
+     *
+     * @param alert is an alert to dismiss
+     * @return self-reference
+     */
+    public SeleniumStepContext dismiss(Alert alert) {
+        dismissAlert(alert).get().accept(this);
+        return this;
+    }
+
+
+    /**
+     * Performs an send keys-action. This action is performed on a browser alert.
+     *
+     * @param getAlert is description of an alert to send keys
+     * @param keys     a is string/keys to send
+     * @return self-reference
+     */
+    public SeleniumStepContext alertSendKeys(GetAlertSupplier getAlert, String keys) {
+        sendKeysToAlert(getAlert, keys).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs an send keys-action. This action is performed on a browser alert.
+     *
+     * @param alert is an alert to send keys
+     * @param keys  is string/keys to send
+     * @return self-reference
+     */
+    public SeleniumStepContext alertSendKeys(Alert alert, String keys) {
+        sendKeysToAlert(alert, keys).get().accept(this);
+        return this;
+    }
+
+
+    /**
      * Returns title of the browser window/tab that active currently.
      *
      * @return window title
@@ -877,6 +978,97 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public String windowTitle(Window window) {
         return titleOf(window).get().apply(this);
+    }
+
+    /**
+     * Returns attribute value of an element of a page
+     *
+     * @param of   is how to find the element
+     * @param attr as a target attribute name
+     * @return attr value
+     */
+    public String attrValueOf(SearchSupplier<?> of, String attr) {
+        return attributeValue(attr).of(of).get().apply(this);
+    }
+
+    /**
+     * Returns attribute value of the element of a page
+     *
+     * @param of   is the widget to get attr value from
+     * @param attr as a target attribute name
+     * @return attr value
+     */
+    public String attrValueOf(Widget of, String attr) {
+        return attributeValue(attr).of(of).get().apply(this);
+    }
+
+    /**
+     * Returns attribute value of the element of a page
+     *
+     * @param of   is the web element to get attr value from
+     * @param attr as a target attribute name
+     * @return attr value
+     */
+    public String attrValueOf(WebElement of, String attr) {
+        return attributeValue(attr).of(of).get().apply(this);
+    }
+
+
+    /**
+     * Returns css value of an element of a page
+     *
+     * @param of          is how to find the element
+     * @param cssProperty as a target css name
+     * @return css value
+     */
+    public String cssValueOf(SearchSupplier<?> of, String cssProperty) {
+        return cssValue(cssProperty).of(of).get().apply(this);
+    }
+
+    /**
+     * Returns css value of the element of a page
+     *
+     * @param of          is the widget to get css value from
+     * @param cssProperty as a target css name
+     * @return css value
+     */
+    public String cssValueOf(Widget of, String cssProperty) {
+        return cssValue(cssProperty).of(of).get().apply(this);
+    }
+
+    /**
+     * Returns css value of the element of a page
+     *
+     * @param of          is the web element to get css value from
+     * @param cssProperty as a target css name
+     * @return css value
+     */
+    public String cssValueOf(WebElement of, String cssProperty) {
+        return cssValue(cssProperty).of(of).get().apply(this);
+    }
+
+    /**
+     * Returns value of an element of a page
+     *
+     * @param of  is how to find the element
+     * @param <T> is a type of value to be returned
+     * @param <R> is a type of an element that may have value of {@code T}
+     * @return value
+     */
+    public <T, R extends SearchContext & HasValue<T>> T valueOf(SearchSupplier<R> of) {
+        return ofThe(of).get().apply(this);
+    }
+
+    /**
+     * Returns value of the element of a page
+     *
+     * @param of  is the element that has value of type {@code T}
+     * @param <T> is a type of value to be returned
+     * @param <R> is a type of an element that may have value of {@code T}
+     * @return value
+     */
+    public <T, R extends SearchContext & HasValue<T>> T valueOf(R of) {
+        return ofThe(of).get().apply(this);
     }
 
 
@@ -920,43 +1112,5 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public Window get(GetWindowSupplier getWindow) {
         return getWindow.get().apply(this);
-    }
-
-
-    /**
-     * This method was added for backward compatibility temporary
-     */
-    @Deprecated(since = "0.11.2-ALPHA")
-    public <T> T get(Function<SeleniumStepContext, T> function) {
-        checkArgument(Objects.nonNull(function), "The function is not defined");
-        return function.apply(this);
-    }
-
-    /**
-     * This method was added for backward compatibility temporary
-     */
-    @Deprecated(since = "0.11.2-ALPHA")
-    public <T> T get(Supplier<Function<SeleniumStepContext, T>> functionSupplier) {
-        checkNotNull(functionSupplier, "Supplier of the value to get was not defined");
-        return this.get(functionSupplier.get());
-    }
-
-    /**
-     * This method was added for backward compatibility temporary
-     */
-    @Deprecated(since = "0.11.2-ALPHA")
-    public SeleniumStepContext perform(StepAction<SeleniumStepContext> actionConsumer) {
-        checkArgument(Objects.nonNull(actionConsumer), "Action is not defined");
-        actionConsumer.accept(this);
-        return this;
-    }
-
-    /**
-     * This method was added for backward compatibility temporary
-     */
-    @Deprecated(since = "0.11.2-ALPHA")
-    public SeleniumStepContext perform(SequentialActionSupplier<SeleniumStepContext, ?, ?> actionSupplier) {
-        checkNotNull(actionSupplier, "Supplier of the action was not defined");
-        return this.perform(actionSupplier.get());
     }
 }

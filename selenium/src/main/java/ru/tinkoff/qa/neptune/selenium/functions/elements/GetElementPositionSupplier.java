@@ -25,7 +25,7 @@ public final class GetElementPositionSupplier extends SequentialGetStepSupplier
                 return ((HasLocation) s).getLocation();
             }
 
-            throw new IllegalArgumentException("It is not possible to get position of " + s.toString());
+            throw new UnsupportedOperationException("It is not possible to get position of " + s.toString());
         });
     }
 

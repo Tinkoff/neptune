@@ -26,7 +26,7 @@ public final class GetAlertSupplier extends SequentialGetStepSupplier.GetObjectC
         implements TargetLocatorSupplier<Alert> {
 
     private GetAlertSupplier() {
-        super("Alert", webDriver -> webDriver.switchTo().alert());
+        super("Alert", webDriver -> new AlertImpl(webDriver.switchTo().alert()));
         throwOnEmptyResult(noSuchAlert());
         timeOut(WAITING_ALERT_TIME_DURATION.get());
     }

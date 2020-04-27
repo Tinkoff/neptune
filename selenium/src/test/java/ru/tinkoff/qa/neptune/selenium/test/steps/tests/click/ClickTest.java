@@ -19,7 +19,7 @@ import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
 public class ClickTest extends BaseWebDriverTest {
 
     @Test
-    public void clickOnWidgetBySearchCriteriaTest() {
+    public void test1() {
         seleniumSteps.click(on(button()));
         assertThat(COMMON_BUTTON1.getClickCount(), is(1));
 
@@ -36,7 +36,7 @@ public class ClickTest extends BaseWebDriverTest {
     }
 
     @Test
-    public void clickOnWidgetDirectlyTest() {
+    public void test2() {
         int clickCount = CUSTOM_LABELED_BUTTON1.getClickCount();
         Button button = seleniumSteps.find(button(BUTTON_LABEL_TEXT5));
         seleniumSteps.click(on(button));
@@ -50,7 +50,7 @@ public class ClickTest extends BaseWebDriverTest {
     }
 
     @Test
-    public void clickOnWebElementBySearchCriteriaTest() {
+    public void test3() {
         seleniumSteps.click(on(webElement(CHAINED_FIND_TAB)));
         assertThat(COMMON_LABELED_TAB1.getClickCount(), is(1));
 
@@ -64,7 +64,7 @@ public class ClickTest extends BaseWebDriverTest {
     }
 
     @Test
-    public void clickOnWebElementDirectlyTest() {
+    public void test4() {
         WebElement webElement = seleniumSteps.find(webElement(className(TAB_CLASS))
                 .criteria(attr(ATTR20, VALUE1))
                 .criteria(nested(webElements(CUSTOM_LABEL_BY).criteria(text(TAB_TEXT10)))));

@@ -5,19 +5,17 @@ import org.openqa.selenium.Alert;
 public class MockAlert implements Alert {
 
     public static final String TEXT_OF_ALERT = "Text of the mocked alert";
-    private boolean accepted;
-    private boolean dismissed;
-    private String sentKeys;
-    private boolean isSwitchedTo;
+    private static boolean accepted;
+    private static boolean dismissed;
+    private static String sentKeys;
+    private static boolean isSwitchedTo;
 
-    @Override
-    public void dismiss() {
-        dismissed = true;
+    public static boolean isAccepted() {
+        return accepted;
     }
 
-    @Override
-    public void accept() {
-        accepted = true;
+    public static void setAccepted(boolean value) {
+        accepted = value;
     }
 
     @Override
@@ -25,37 +23,42 @@ public class MockAlert implements Alert {
         return TEXT_OF_ALERT;
     }
 
-    @Override
-    public void sendKeys(String keysToSend) {
-        sentKeys = keysToSend;
-    }
-
-    public boolean isAccepted() {
-        return accepted;
-    }
-
-    public void setAccepted(boolean accepted) {
-        this.accepted = accepted;
-    }
-
-    public boolean isDismissed() {
+    public static boolean isDismissed() {
         return dismissed;
     }
 
-    public void setDismissed(boolean dismissed) {
-        this.dismissed = dismissed;
+    public static void setDismissed(boolean value) {
+        dismissed = value;
     }
 
-    public String getSentKeys() {
+    public static String getSentKeys() {
         return sentKeys;
     }
 
-    public boolean isSwitchedTo() {
+    public static void setSentKeys(String keys) {
+        sentKeys = keys;
+    }
+
+    public static boolean isSwitchedTo() {
         return isSwitchedTo;
     }
 
-    public Alert setSwitchedTo(boolean switchedTo) {
+    public static void setSwitchedTo(boolean switchedTo) {
         isSwitchedTo = switchedTo;
-        return this;
+    }
+
+    @Override
+    public void dismiss() {
+        setDismissed(true);
+    }
+
+    @Override
+    public void accept() {
+        setAccepted(true);
+    }
+
+    @Override
+    public void sendKeys(String keysToSend) {
+        setSentKeys(keysToSend);
     }
 }

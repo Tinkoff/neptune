@@ -13,7 +13,6 @@ import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchS
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.webElements;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.link;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
-import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.active.element.GetActiveElementSupplier.activeElement;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.BUTTON_TAG;
 import static ru.tinkoff.qa.neptune.selenium.test.captors.TestImageInjector.INJECTED;
 
@@ -49,14 +48,6 @@ public class WebElementCaptorTest extends BaseCaptorTest {
         assertThat(INJECTED.size(), is(1));
         assertThat(INJECTED, hasEntry(isA(BufferedImage.class),
                 equalTo("Screenshot taken from the list of elements")));
-    }
-
-    @Test
-    public void positiveTestOfScreenshotFromActiveElement() {
-        seleniumSteps.get(activeElement());
-        assertThat(INJECTED.size(), is(1));
-        assertThat(INJECTED, hasEntry(isA(BufferedImage.class),
-                equalTo("Screenshot taken from the element")));
     }
 
     @Test
@@ -97,21 +88,5 @@ public class WebElementCaptorTest extends BaseCaptorTest {
         seleniumSteps.find(links("fake link")
                 .timeOut(ofSeconds(1)));
         assertThat(INJECTED.size(), is(0));
-    }
-
-    @Test
-    public void negativeTestOfScreenshotFromActiveElement() {
-        seleniumSteps.get(activeElement());
-        INJECTED.clear();
-
-        try {
-            seleniumSteps.get(activeElement());
-        }
-        catch (NoSuchElementException ignored) {
-        }
-
-        assertThat(INJECTED.size(), is(1));
-        assertThat(INJECTED, hasEntry(isA(BufferedImage.class),
-                equalTo("Browser screenshot")));
     }
 }

@@ -25,7 +25,7 @@ public final class GetElementSizeSupplier extends SequentialGetStepSupplier
                 return ((HasSize) s).getSize();
             }
 
-            throw new IllegalArgumentException("It is not possible to get size of " + s.toString());
+            throw new UnsupportedOperationException("It is not possible to get size of " + s.toString());
         });
     }
 

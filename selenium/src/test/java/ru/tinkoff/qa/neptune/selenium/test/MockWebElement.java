@@ -7,12 +7,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.stream.Collectors.toList;
-import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.VALUE;
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
 import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.VALUE;
 
 public class MockWebElement implements WebElement, WrapsDriver {
 
@@ -53,7 +53,7 @@ public class MockWebElement implements WebElement, WrapsDriver {
         if (isFlag) {
             isSelected = !isSelected;
         }
-        clickCount++;
+        clickCount = clickCount + 1;
     }
 
     @Override
@@ -75,7 +75,7 @@ public class MockWebElement implements WebElement, WrapsDriver {
 
     @Override
     public void clear() {
-        if (attributes.keySet().contains(VALUE)) {
+        if (attributes.containsKey(VALUE)) {
             attributes.put(VALUE, EMPTY);
         }
     }

@@ -1,25 +1,30 @@
 package ru.tinkoff.qa.neptune.selenium.test.steps.tests.target.locator;
 
-import ru.tinkoff.qa.neptune.selenium.test.MockAlert;
-import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.NoAlertPresentException;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 
-import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
-import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert.AlertActionSupplier.accept;
-import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert.AlertActionSupplier.dismiss;
-import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert.AlertActionSupplier.sendKeys;
-import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert.GetAlertSupplier.alert;
-import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeUnitProperties.WAITING_ALERT_TIME_UNIT;
-import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeValueProperties.WAITING_ALERT_TIME_VALUE;
-import static ru.tinkoff.qa.neptune.selenium.test.MockAlert.TEXT_OF_ALERT;
 import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.fail;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
+import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert.GetAlertSupplier.alert;
+import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeUnitProperties.WAITING_ALERT_TIME_UNIT;
+import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeValueProperties.WAITING_ALERT_TIME_VALUE;
+import static ru.tinkoff.qa.neptune.selenium.test.MockAlert.*;
 
 public class AlertTest extends BaseWebDriverTest {
+
+    @BeforeMethod
+    public void beforeEveryTest() {
+        setSwitchedTo(false);
+        setSentKeys(null);
+        setDismissed(false);
+        setAccepted(false);
+    }
 
     @Test
     public void getAlertWithNoArgsTest() {
@@ -86,40 +91,40 @@ public class AlertTest extends BaseWebDriverTest {
 
     @Test
     public void acceptAlertBySearching() {
-        seleniumSteps.perform(accept(alert()));
-        assertThat(((MockAlert) seleniumSteps.get(alert())).isAccepted(), is(true));
+        seleniumSteps.accept(alert());
+        assertThat(isAccepted(), is(true));
     }
 
     @Test
     public void acceptAlert() {
         Alert alert = seleniumSteps.get(alert());
-        seleniumSteps.perform(accept(alert));
-        assertThat(((MockAlert) alert).isAccepted(), is(true));
+        seleniumSteps.accept(alert);
+        assertThat(isAccepted(), is(true));
     }
 
     @Test
     public void dismissAlertBySearching() {
-        seleniumSteps.perform(dismiss(alert()));
-        assertThat(((MockAlert) seleniumSteps.get(alert())).isDismissed(), is(true));
+        seleniumSteps.dismiss(alert());
+        assertThat(isDismissed(), is(true));
     }
 
     @Test
     public void dismissAlert() {
         Alert alert = seleniumSteps.get(alert());
-        seleniumSteps.perform(dismiss(alert));
-        assertThat(((MockAlert) alert).isDismissed(), is(true));
+        seleniumSteps.dismiss(alert);
+        assertThat(isDismissed(), is(true));
     }
 
     @Test
     public void sendTextAlertBySearching() {
-        seleniumSteps.perform(sendKeys(alert(), "123"));
-        assertThat(((MockAlert) seleniumSteps.get(alert())).getSentKeys(), is("123"));
+        seleniumSteps.alertSendKeys(alert(), "123");
+        assertThat(getSentKeys(), is("123"));
     }
 
     @Test
     public void sendTextAlert() {
         Alert alert = seleniumSteps.get(alert());
-        seleniumSteps.perform(sendKeys(alert, "123"));
-        assertThat(((MockAlert) alert).getSentKeys(), is("123"));
+        seleniumSteps.alertSendKeys(alert, "123");
+        assertThat(getSentKeys(), is("123"));
     }
 }

@@ -18,8 +18,10 @@ dependencies {
 }
 
 test {
-    useTestNG()
-    jvmArgs '-Xmx20484m', '-XX:MaxPermSize=1024m', '-XX:+HeapDumpOnOutOfMemoryError'
+    useTestNG() {
+        // runlist to executed. path is relative to current folder
+        suites 'src/test/resources/suite.xml'
+    }
 }
 
 task javadocJar(type: Jar) {

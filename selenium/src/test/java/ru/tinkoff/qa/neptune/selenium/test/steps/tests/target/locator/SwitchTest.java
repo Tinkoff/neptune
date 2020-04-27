@@ -5,7 +5,10 @@ import org.openqa.selenium.internal.WrapsElement;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.Frame;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
-import ru.tinkoff.qa.neptune.selenium.test.*;
+import ru.tinkoff.qa.neptune.selenium.test.ActiveWebElement;
+import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
+import ru.tinkoff.qa.neptune.selenium.test.MockWebDriver;
+import ru.tinkoff.qa.neptune.selenium.test.ValidFrameWebElement;
 import ru.tinkoff.qa.neptune.selenium.test.enums.FrameIndexes;
 import ru.tinkoff.qa.neptune.selenium.test.enums.FrameNames;
 
@@ -20,6 +23,8 @@ import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.content.De
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.GetFrameSupplier.frame;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.parent.ParentFrameSupplier.parentFrame;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
+import static ru.tinkoff.qa.neptune.selenium.test.MockAlert.isSwitchedTo;
+import static ru.tinkoff.qa.neptune.selenium.test.MockAlert.setSwitchedTo;
 import static ru.tinkoff.qa.neptune.selenium.test.enums.WindowHandles.HANDLE2;
 import static ru.tinkoff.qa.neptune.selenium.test.enums.WindowHandles.HANDLE3;
 
@@ -125,9 +130,9 @@ public class SwitchTest extends BaseWebDriverTest {
 
     @Test
     public void switchToAlertBySearching() {
+        setSwitchedTo(false);
         seleniumSteps.switchTo(alert());
-        assertThat(((MockTargetLocator) seleniumSteps.getWrappedDriver().switchTo()).getAlert().isSwitchedTo(),
-                is(true));
+        assertThat(isSwitchedTo(), is(true));
     }
 
     @Test
