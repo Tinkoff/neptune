@@ -6,7 +6,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.StepParameter;
 /**
  * Builds an action that moves the mouse from the current position (or 0,0) by the given offset.
  */
-public final class MouseMoveActionSupplier extends InteractiveAction {
+final class MouseMoveActionSupplier extends InteractiveAction {
 
     @StepParameter(value = "X offset")
     final int x;

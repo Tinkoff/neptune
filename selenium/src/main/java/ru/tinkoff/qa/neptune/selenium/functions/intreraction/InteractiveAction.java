@@ -53,7 +53,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @return an instance of {@link InteractiveAction}
      */
     public static InteractiveAction keyDown(WebElement target, CharSequence key) {
-        return new KeyDownActionSupplier.KeyDownOnAFoundElement(key, target);
+        return new KeyDownActionSupplier.KeyDownOnElementActionSupplier(key, target);
     }
 
     /**
@@ -65,7 +65,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @return an instance of {@link InteractiveAction}
      */
     public static InteractiveAction keyDown(Widget target, CharSequence key) {
-        return new KeyDownActionSupplier.KeyDownOnAFoundElement(key, target);
+        return new KeyDownActionSupplier.KeyDownOnElementActionSupplier(key, target);
     }
 
     /**
@@ -77,7 +77,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @return an instance of {@link InteractiveAction}
      */
     public static InteractiveAction keyDown(SearchSupplier<?> howToFind, CharSequence key) {
-        return new KeyDownActionSupplier.KeyDownOnElementToBeFound(key, howToFind);
+        return new KeyDownActionSupplier.KeyDownOnElementActionSupplier(key, howToFind);
     }
 
     /**
@@ -100,7 +100,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @return an instance of {@link InteractiveAction}
      */
     public static InteractiveAction keyUp(WebElement target, CharSequence key) {
-        return new KeyUpActionSupplier.KeyUpOnAFoundElement(key, target);
+        return new KeyUpActionSupplier.KeyUpOnElementActionSupplier(key, target);
     }
 
     /**
@@ -112,7 +112,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @return an instance of {@link InteractiveAction}
      */
     public static InteractiveAction keyUp(Widget target, CharSequence key) {
-        return new KeyUpActionSupplier.KeyUpOnAFoundElement(key, target);
+        return new KeyUpActionSupplier.KeyUpOnElementActionSupplier(key, target);
     }
 
     /**
@@ -124,7 +124,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @return an instance of {@link InteractiveAction}
      */
     public static InteractiveAction keyUp(SearchSupplier<?> howToFind, CharSequence key) {
-        return new KeyUpActionSupplier.KeyUpOnElementToBeFound(key, howToFind);
+        return new KeyUpActionSupplier.KeyUpOnElementActionSupplier(key, howToFind);
     }
 
     /**
@@ -145,7 +145,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @return an instance of {@link InteractiveAction}
      */
     public static InteractiveAction sendKeys(WebElement target, CharSequence... keys) {
-        return new SendKeysActionSupplier.SendKeysToAFoundElement(target, keys);
+        return new SendKeysActionSupplier.SendKeysToElementActionSupplier(target, keys);
     }
 
     /**
@@ -156,7 +156,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @return an instance of {@link InteractiveAction}
      */
     public static InteractiveAction sendKeys(Widget target, CharSequence... keys) {
-        return new SendKeysActionSupplier.SendKeysToAFoundElement(target, keys);
+        return new SendKeysActionSupplier.SendKeysToElementActionSupplier(target, keys);
     }
 
     /**
@@ -167,7 +167,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @return an instance of {@link InteractiveAction}
      */
     public static InteractiveAction sendKeys(SearchSupplier<?> howToFind, CharSequence... keys) {
-        return new SendKeysActionSupplier.SendKeysToElementToBeFound(howToFind, keys);
+        return new SendKeysActionSupplier.SendKeysToElementActionSupplier(howToFind, keys);
     }
 
     /**
@@ -186,7 +186,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @return an instance of {@link InteractiveAction}
      */
     public static InteractiveAction clickAndHold(WebElement target) {
-        return new ClickAndHoldActionSupplier.ClickAndHoldOnAFoundElement(target);
+        return new ClickAndHoldActionSupplier.ClickAndHoldOnElementActionSupplier(target);
     }
 
     /**
@@ -196,7 +196,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @return an instance of {@link InteractiveAction}
      */
     public static InteractiveAction clickAndHold(Widget target) {
-        return new ClickAndHoldActionSupplier.ClickAndHoldOnAFoundElement(target);
+        return new ClickAndHoldActionSupplier.ClickAndHoldOnElementActionSupplier(target);
     }
 
     /**
@@ -206,7 +206,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @return an instance of {@link InteractiveAction}
      */
     public static InteractiveAction clickAndHold(SearchSupplier<?> howToFind) {
-        return new ClickAndHoldActionSupplier.ClickAndHoldOnElementToBeFound(howToFind);
+        return new ClickAndHoldActionSupplier.ClickAndHoldOnElementActionSupplier(howToFind);
     }
 
     /**
@@ -225,7 +225,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @return an instance of {@link InteractiveAction}
      */
     public static InteractiveAction release(WebElement target) {
-        return new ReleaseActionSupplier.ReleaseAFoundElement(target);
+        return new ReleaseActionSupplier.ReleaseElementActionSupplier(target);
     }
 
     /**
@@ -235,7 +235,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @return an instance of {@link InteractiveAction}
      */
     public static InteractiveAction release(Widget target) {
-        return new ReleaseActionSupplier.ReleaseAFoundElement(target);
+        return new ReleaseActionSupplier.ReleaseElementActionSupplier(target);
     }
 
     /**
@@ -245,7 +245,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @return an instance of {@link InteractiveAction}
      */
     public static InteractiveAction release(SearchSupplier<?> howToFind) {
-        return new ReleaseActionSupplier.ReleaseAnElementToBeFound(howToFind);
+        return new ReleaseActionSupplier.ReleaseElementActionSupplier(howToFind);
     }
 
     /**
@@ -264,7 +264,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @return an instance of {@link InteractiveAction}
      */
     public static InteractiveAction click(WebElement target) {
-        return new ClickActionSupplier.ClickOnAFoundElement(target);
+        return new ClickActionSupplier.ClickOnElementActionSupplier(target);
     }
 
     /**
@@ -274,7 +274,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @return an instance of {@link InteractiveAction}
      */
     public static InteractiveAction click(Widget target) {
-        return new ClickActionSupplier.ClickOnAFoundElement(target);
+        return new ClickActionSupplier.ClickOnElementActionSupplier(target);
     }
 
     /**
@@ -284,7 +284,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @return an instance of {@link InteractiveAction}
      */
     public static InteractiveAction click(SearchSupplier<?> howToFind) {
-        return new ClickActionSupplier.ClickOnAnElementToBeFound(howToFind);
+        return new ClickActionSupplier.ClickOnElementActionSupplier(howToFind);
     }
 
     /**
@@ -298,7 +298,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @return an instance of {@link InteractiveAction}
      */
     public static InteractiveAction moveToElement(WebElement target, int xOffset, int yOffset) {
-        return new MoveToElementActionSupplier.MoveToAFoundElement(target, xOffset, yOffset);
+        return new MoveToElementActionSupplier(target, xOffset, yOffset);
     }
 
     /**
@@ -308,7 +308,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @return an instance of {@link InteractiveAction}
      */
     public static InteractiveAction moveToElement(WebElement target) {
-        return new MoveToElementActionSupplier.MoveToAFoundElement(target, null, null);
+        return new MoveToElementActionSupplier(target, null, null);
     }
 
     /**
@@ -322,7 +322,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @return an instance of {@link InteractiveAction}
      */
     public static InteractiveAction moveToElement(Widget target, int xOffset, int yOffset) {
-        return new MoveToElementActionSupplier.MoveToAFoundElement(target, xOffset, yOffset);
+        return new MoveToElementActionSupplier(target, xOffset, yOffset);
     }
 
     /**
@@ -332,7 +332,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @return an instance of {@link InteractiveAction}
      */
     public static InteractiveAction moveToElement(Widget target) {
-        return new MoveToElementActionSupplier.MoveToAFoundElement(target, null, null);
+        return new MoveToElementActionSupplier(target, null, null);
     }
 
     /**
@@ -346,7 +346,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @return an instance of {@link InteractiveAction}
      */
     public static InteractiveAction moveToElement(SearchSupplier<?> howToFind, int xOffset, int yOffset) {
-        return new MoveToElementActionSupplier.MoveToAnElementToBeFound(howToFind, xOffset, yOffset);
+        return new MoveToElementActionSupplier(howToFind, xOffset, yOffset);
     }
 
     /**
@@ -356,7 +356,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @return an instance of {@link InteractiveAction}
      */
     public static InteractiveAction moveToElement(SearchSupplier<?> howToFind) {
-        return new MoveToElementActionSupplier.MoveToAnElementToBeFound(howToFind, null, null);
+        return new MoveToElementActionSupplier(howToFind, null, null);
     }
 
     /**
@@ -388,7 +388,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @return an instance of {@link InteractiveAction}
      */
     public static InteractiveAction contextClick(WebElement target) {
-        return new ContextClickActionSupplier.ContextClickOnAFoundElement(target);
+        return new ContextClickActionSupplier.ContextClickOnElementActionSupplier(target);
     }
 
     /**
@@ -398,7 +398,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @return an instance of {@link InteractiveAction}
      */
     public static InteractiveAction contextClick(Widget target) {
-        return new ContextClickActionSupplier.ContextClickOnAFoundElement(target);
+        return new ContextClickActionSupplier.ContextClickOnElementActionSupplier(target);
     }
 
     /**
@@ -408,7 +408,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @return an instance of {@link InteractiveAction}
      */
     public static InteractiveAction contextClick(SearchSupplier<?> howToFind) {
-        return new ContextClickActionSupplier.ContextClickOnAnElementToBeFound(howToFind);
+        return new ContextClickActionSupplier.ContextClickOnElementActionSupplier(howToFind);
     }
 
 
@@ -428,7 +428,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @return an instance of {@link InteractiveAction}
      */
     public static InteractiveAction doubleClick(WebElement target) {
-        return new DoubleClickActionSupplier.DoubleClickOnAFoundElement(target);
+        return new DoubleClickActionSupplier.DoubleClickOnElementActionSupplier(target);
     }
 
     /**
@@ -438,7 +438,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @return an instance of {@link InteractiveAction}
      */
     public static InteractiveAction doubleClick(Widget target) {
-        return new DoubleClickActionSupplier.DoubleClickOnAFoundElement(target);
+        return new DoubleClickActionSupplier.DoubleClickOnElementActionSupplier(target);
     }
 
     /**
@@ -448,10 +448,169 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @return an instance of {@link InteractiveAction}
      */
     public static InteractiveAction doubleClick(SearchSupplier<?> howToFind) {
-        return new DoubleClickActionSupplier.DoubleClickOnAnElementToBeFound(howToFind);
+        return new DoubleClickActionSupplier.DoubleClickOnElementActionSupplier(howToFind);
     }
 
-    WebDriver getDriver() {
-        return driver;
+    /**
+     * Builds an action that performs click-and-hold at the location of the source element,
+     * moves by a given offset, then releases the mouse.
+     *
+     * @param source  element to emulate button down at.
+     * @param xOffset horizontal move offset.
+     * @param yOffset vertical move offset.
+     * @return an instance of {@link InteractiveAction}
+     */
+    public static InteractiveAction dragAndDropBy(WebElement source, int xOffset, int yOffset) {
+        return new DragAndDropByActionSupplier(source, xOffset, yOffset);
+    }
+
+    /**
+     * Builds an action that performs click-and-hold at the location of the source element,
+     * moves by a given offset, then releases the mouse.
+     *
+     * @param source  element to emulate button down at.
+     * @param xOffset horizontal move offset.
+     * @param yOffset vertical move offset.
+     * @return an instance of {@link InteractiveAction}
+     */
+    public static InteractiveAction dragAndDropBy(Widget source, int xOffset, int yOffset) {
+        return new DragAndDropByActionSupplier(source, xOffset, yOffset);
+    }
+
+    /**
+     * Builds an action that performs click-and-hold at the location of the source element,
+     * moves by a given offset, then releases the mouse.
+     *
+     * @param howToFindSourceElement is description of the element to be found
+     * @param xOffset                horizontal move offset.
+     * @param yOffset                vertical move offset.
+     * @return an instance of {@link InteractiveAction}
+     */
+    public static InteractiveAction dragAndDropBy(SearchSupplier<?> howToFindSourceElement, int xOffset, int yOffset) {
+        return new DragAndDropByActionSupplier(howToFindSourceElement, xOffset, yOffset);
+    }
+
+    /**
+     * Builds an action that performs click-and-hold at the location of the source element,
+     * moves to the location of the target element, then releases the mouse.
+     *
+     * @param source element to emulate button down at.
+     * @param target element to move to and release the mouse at.
+     * @return an instance of {@link InteractiveAction}
+     */
+    public static InteractiveAction dragAndDrop(WebElement source, WebElement target) {
+        return new DragAndDropActionSupplier(source, target);
+    }
+
+    /**
+     * Builds an action that performs click-and-hold at the location of the source element,
+     * moves to the location of the target element, then releases the mouse.
+     *
+     * @param source element to emulate button down at.
+     * @param target element to move to and release the mouse at.
+     * @return an instance of {@link InteractiveAction}
+     */
+    public static InteractiveAction dragAndDrop(Widget source, WebElement target) {
+        return new DragAndDropActionSupplier(source, target);
+    }
+
+    /**
+     * Builds an action that performs click-and-hold at the location of the source element,
+     * moves to the location of the target element, then releases the mouse.
+     *
+     * @param source element to emulate button down at.
+     * @param target element to move to and release the mouse at.
+     * @return an instance of {@link InteractiveAction}
+     */
+    public static InteractiveAction dragAndDrop(WebElement source, Widget target) {
+        return new DragAndDropActionSupplier(source, target);
+    }
+
+    /**
+     * Builds an action that performs click-and-hold at the location of the source element,
+     * moves to the location of the target element, then releases the mouse.
+     *
+     * @param source element to emulate button down at.
+     * @param target element to move to and release the mouse at.
+     * @return an instance of {@link InteractiveAction}
+     */
+    public static InteractiveAction dragAndDrop(Widget source, Widget target) {
+        return new DragAndDropActionSupplier(source, target);
+    }
+
+    /**
+     * Builds an action that performs click-and-hold at the location of the source element,
+     * moves to the location of the target element, then releases the mouse.
+     *
+     * @param source is description of the element to emulate button down at.
+     * @param target element to move to and release the mouse at.
+     * @return an instance of {@link InteractiveAction}
+     */
+    public static InteractiveAction dragAndDrop(SearchSupplier<?> source, WebElement target) {
+        return new DragAndDropActionSupplier(source, target);
+    }
+
+    /**
+     * Builds an action that performs click-and-hold at the location of the source element,
+     * moves to the location of the target element, then releases the mouse.
+     *
+     * @param source is description of the element to emulate button down at.
+     * @param target element to move to and release the mouse at.
+     * @return an instance of {@link InteractiveAction}
+     */
+    public static InteractiveAction dragAndDrop(SearchSupplier<?> source, Widget target) {
+        return new DragAndDropActionSupplier(source, target);
+    }
+
+    /**
+     * Builds an action that performs click-and-hold at the location of the source element,
+     * moves to the location of the target element, then releases the mouse.
+     *
+     * @param source element to emulate button down at.
+     * @param target is description of the element to move to and release the mouse at.
+     * @return an instance of {@link InteractiveAction}
+     */
+    public static InteractiveAction dragAndDrop(WebElement source, SearchSupplier<?> target) {
+        return new DragAndDropActionSupplier(source, target);
+    }
+
+    /**
+     * Builds an action that performs click-and-hold at the location of the source element,
+     * moves to the location of the target element, then releases the mouse.
+     *
+     * @param source element to emulate button down at.
+     * @param target is description of the element to move to and release the mouse at.
+     * @return an instance of {@link InteractiveAction}
+     */
+    public static InteractiveAction dragAndDrop(Widget source, SearchSupplier<?> target) {
+        return new DragAndDropActionSupplier(source, target);
+    }
+
+    /**
+     * Builds an action that performs click-and-hold at the location of the source element,
+     * moves to the location of the target element, then releases the mouse.
+     *
+     * @param source is description of the element to emulate button down at.
+     * @param target is description of the element to move to and release the mouse at.
+     * @return an instance of {@link InteractiveAction}
+     */
+    public static InteractiveAction dragAndDrop(SearchSupplier<?> source,
+                                                SearchSupplier<?> target) {
+        return new DragAndDropActionSupplier(source, target);
+    }
+
+    WebElement getElement(Object o) {
+        var cls = o.getClass();
+        if (WebElement.class.isAssignableFrom(cls)) {
+            return (WebElement) o;
+        } else if (Widget.class.isAssignableFrom(cls)) {
+            return ((Widget) o).getWrappedElement();
+        } else {
+            var sc = ((SearchSupplier<?>) o).get().apply(driver);
+            if (WebElement.class.isAssignableFrom(sc.getClass())) {
+                return (WebElement) sc;
+            }
+            return ((Widget) sc).getWrappedElement();
+        }
     }
 }

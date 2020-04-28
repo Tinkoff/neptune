@@ -1,18 +1,14 @@
 package ru.tinkoff.qa.neptune.selenium.functions.intreraction;
 
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import ru.tinkoff.qa.neptune.core.api.steps.StepParameter;
-import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
-import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Builds an action that performs the releasing of MODIFIER key.
  */
-public abstract class KeyUpActionSupplier extends InteractiveAction {
+abstract class KeyUpActionSupplier extends InteractiveAction {
 
     @StepParameter(value = "Modifier key", makeReadableBy = CharSequenceParameterValueGetter.class)
     final CharSequence modifierKey;
@@ -35,61 +31,20 @@ public abstract class KeyUpActionSupplier extends InteractiveAction {
         }
     }
 
-    static final class KeyUpOnAFoundElement extends KeyUpActionSupplier {
+    static final class KeyUpOnElementActionSupplier extends KeyUpActionSupplier {
 
         @StepParameter("Element")
-        private final SearchContext found;
+        private final Object e;
 
-        private KeyUpOnAFoundElement(CharSequence modifierKey, SearchContext found) {
+        KeyUpOnElementActionSupplier(CharSequence modifierKey, Object e) {
             super(modifierKey);
-            checkNotNull(found);
-            this.found = found;
-        }
-
-        KeyUpOnAFoundElement(CharSequence modifierKey, WebElement found) {
-            this(modifierKey, (SearchContext) found);
-        }
-
-        KeyUpOnAFoundElement(CharSequence modifierKey, Widget found) {
-            this(modifierKey, (SearchContext) found);
+            checkNotNull(e);
+            this.e = e;
         }
 
         @Override
         protected void performActionOn(Actions value) {
-            WebElement e;
-            if (WebElement.class.isAssignableFrom(found.getClass())) {
-                e = (WebElement) found;
-            } else {
-                e = ((Widget) found).getWrappedElement();
-            }
-
-            value.keyUp(e, modifierKey).perform();
-        }
-    }
-
-    static final class KeyUpOnElementToBeFound extends KeyUpActionSupplier {
-
-        @StepParameter("Element")
-        private final SearchSupplier<?> toFind;
-
-        KeyUpOnElementToBeFound(CharSequence modifierKey, SearchSupplier<?> toFind) {
-            super(modifierKey);
-            checkNotNull(toFind);
-            this.toFind = toFind;
-        }
-
-        @Override
-        protected void performActionOn(Actions value) {
-            var found = toFind.get().apply(getDriver());
-
-            WebElement e;
-            if (WebElement.class.isAssignableFrom(found.getClass())) {
-                e = (WebElement) found;
-            } else {
-                e = ((Widget) found).getWrappedElement();
-            }
-
-            value.keyUp(e, modifierKey).perform();
+            value.keyUp(getElement(e), modifierKey).perform();
         }
     }
 }
