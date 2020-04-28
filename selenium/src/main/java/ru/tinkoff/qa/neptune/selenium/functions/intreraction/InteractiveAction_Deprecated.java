@@ -99,49 +99,6 @@ public abstract class InteractiveAction_Deprecated extends SequentialActionSuppl
         }.performOn(currentContent());
     }
 
-    /**
-     * Builds an action that performs context click at the current mouse location
-     *
-     * @return an anonymous instance of {@link InteractiveAction_Deprecated}
-     */
-    public static InteractiveAction_Deprecated contextClick() {
-        return performActionOnWebDriverOnly("Context click on current mouse location", Actions::contextClick);
-    }
-
-    /**
-     * Builds an action that performs context click at the center of the given web element.
-     *
-     * @param target element to move to.
-     * @return an anonymous instance of {@link InteractiveAction_Deprecated}
-     */
-    public static InteractiveAction_Deprecated contextClick(WebElement target) {
-        return performActionOnWebElement(format("Context click on %s", target), target, Actions::contextClick);
-    }
-
-    /**
-     * Builds an action that performs context click at the center of the given widget element.
-     *
-     * @param target element to move to.
-     * @return an anonymous instance of {@link InteractiveAction_Deprecated}
-     * @see #contextClick(WebElement)
-     */
-    public static InteractiveAction_Deprecated contextClick(Widget target) {
-        checkArgument(nonNull(target), "Target widget should be a not null value");
-        return contextClick(target.getWrappedElement());
-    }
-
-    /**
-     * <p>Builds an action that clicks at the center of some element.</p>
-     *
-     * @param howToFind is the definition of a way how to find the target element
-     * @return an anonymous instance of {@link InteractiveAction_Deprecated}
-     * @see #contextClick(WebElement)
-     * @see #contextClick(Widget)
-     */
-    public static InteractiveAction_Deprecated contextClick(SearchSupplier<?> howToFind) {
-        return performActionWithDefinitionHowToFindElement(format("Context click on %s", howToFind),
-                howToFind, Actions::contextClick);
-    }
 
     /**
      * Builds an action that performs click-and-hold at the location of the source element,

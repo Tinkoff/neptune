@@ -233,7 +233,6 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      *
      * @param target to release the mouse button above.
      * @return an instance of {@link InteractiveAction}
-     * @see #release(WebElement)
      */
     public static InteractiveAction release(Widget target) {
         return new ReleaseActionSupplier.ReleaseAFoundElement(target);
@@ -244,8 +243,6 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      *
      * @param howToFind is description of the element to be found
      * @return an instance of {@link InteractiveAction}
-     * @see #release(WebElement)
-     * @see #release(Widget)
      */
     public static InteractiveAction release(SearchSupplier<?> howToFind) {
         return new ReleaseActionSupplier.ReleaseAnElementToBeFound(howToFind);
@@ -275,7 +272,6 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      *
      * @param target is the element to be clicked.
      * @return an instance of {@link InteractiveAction}
-     * @see #click(WebElement)
      */
     public static InteractiveAction click(Widget target) {
         return new ClickActionSupplier.ClickOnAFoundElement(target);
@@ -286,8 +282,6 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      *
      * @param howToFind is description of the element to be found
      * @return an instance of {@link InteractiveAction}
-     * @see #click(WebElement)
-     * @see #click(Widget)
      */
     public static InteractiveAction click(SearchSupplier<?> howToFind) {
         return new ClickActionSupplier.ClickOnAnElementToBeFound(howToFind);
@@ -372,10 +366,89 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      *
      * @param xOffset horizontal offset. A negative value means moving the mouse left.
      * @param yOffset vertical offset. A negative value means moving the mouse up.
-     * @return an anonymous instance of {@link InteractiveAction}
+     * @return an instance of {@link InteractiveAction}
      */
     public static InteractiveAction moveByOffset(int xOffset, int yOffset) {
         return new MouseMoveActionSupplier(xOffset, yOffset);
+    }
+
+    /**
+     * Builds an action that performs context click at the current mouse location
+     *
+     * @return an instance of {@link InteractiveAction}
+     */
+    public static InteractiveAction contextClick() {
+        return new ContextClickActionSupplier.ContextClickSimpleActionSupplier();
+    }
+
+    /**
+     * Builds an action that performs context click at the center of the given web element.
+     *
+     * @param target element to perform the context clicking.
+     * @return an instance of {@link InteractiveAction}
+     */
+    public static InteractiveAction contextClick(WebElement target) {
+        return new ContextClickActionSupplier.ContextClickOnAFoundElement(target);
+    }
+
+    /**
+     * Builds an action that performs context click at the center of the given widget element.
+     *
+     * @param target element to perform the context clicking.
+     * @return an instance of {@link InteractiveAction}
+     */
+    public static InteractiveAction contextClick(Widget target) {
+        return new ContextClickActionSupplier.ContextClickOnAFoundElement(target);
+    }
+
+    /**
+     * <p>Builds an action that performs context click at the center of some element.</p>
+     *
+     * @param howToFind is description of the element to be found
+     * @return an instance of {@link InteractiveAction}
+     */
+    public static InteractiveAction contextClick(SearchSupplier<?> howToFind) {
+        return new ContextClickActionSupplier.ContextClickOnAnElementToBeFound(howToFind);
+    }
+
+
+    /**
+     * Builds an action that performs double click at the current mouse location
+     *
+     * @return an instance of {@link InteractiveAction}
+     */
+    public static InteractiveAction doubleClick() {
+        return new DoubleClickActionSupplier.DoubleClickSimpleActionSupplier();
+    }
+
+    /**
+     * Builds an action that performs double click at the center of the given web element.
+     *
+     * @param target element to perform the double clicking.
+     * @return an instance of {@link InteractiveAction}
+     */
+    public static InteractiveAction doubleClick(WebElement target) {
+        return new DoubleClickActionSupplier.DoubleClickOnAFoundElement(target);
+    }
+
+    /**
+     * Builds an action that performs double click at the center of the given widget element.
+     *
+     * @param target element to perform the double clicking.
+     * @return an instance of {@link InteractiveAction}
+     */
+    public static InteractiveAction doubleClick(Widget target) {
+        return new DoubleClickActionSupplier.DoubleClickOnAFoundElement(target);
+    }
+
+    /**
+     * <p>Builds an action that performs double click at the center of some element.</p>
+     *
+     * @param howToFind is description of the element to be found
+     * @return an instance of {@link InteractiveAction}
+     */
+    public static InteractiveAction doubleClick(SearchSupplier<?> howToFind) {
+        return new DoubleClickActionSupplier.DoubleClickOnAnElementToBeFound(howToFind);
     }
 
     WebDriver getDriver() {
