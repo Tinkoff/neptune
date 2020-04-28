@@ -99,21 +99,6 @@ public abstract class InteractiveAction_Deprecated extends SequentialActionSuppl
         }.performOn(currentContent());
     }
 
-
-    /**
-     * Builds an action that moves the mouse from the current position (or 0,0) by the given offset. If the coordinates
-     * provided are outside the viewport (the mouse will end up outside the browser window) then
-     * the viewport is scrolled to match.
-     *
-     * @param xOffset horizontal offset. A negative value means moving the mouse left.
-     * @param yOffset vertical offset. A negative value means moving the mouse up.
-     * @return an anonymous instance of {@link InteractiveAction_Deprecated}
-     */
-    public static InteractiveAction_Deprecated moveByOffset(int xOffset, int yOffset) {
-        return performActionOnWebDriverOnly(getOffsetDescription("Moving mouse", xOffset, yOffset),
-                actions -> actions.moveByOffset(xOffset, yOffset));
-    }
-
     /**
      * Builds an action that performs context click at the current mouse location
      *

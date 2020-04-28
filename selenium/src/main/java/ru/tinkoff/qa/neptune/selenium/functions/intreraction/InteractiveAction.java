@@ -365,6 +365,19 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
         return new MoveToElementActionSupplier.MoveToAnElementToBeFound(howToFind, null, null);
     }
 
+    /**
+     * Builds an action that moves the mouse from the current position (or 0,0) by the given offset. If the coordinates
+     * provided are outside the viewport (the mouse will end up outside the browser window) then
+     * the viewport is scrolled to match.
+     *
+     * @param xOffset horizontal offset. A negative value means moving the mouse left.
+     * @param yOffset vertical offset. A negative value means moving the mouse up.
+     * @return an anonymous instance of {@link InteractiveAction}
+     */
+    public static InteractiveAction moveByOffset(int xOffset, int yOffset) {
+        return new MouseMoveActionSupplier(xOffset, yOffset);
+    }
+
     WebDriver getDriver() {
         return driver;
     }

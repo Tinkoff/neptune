@@ -21,7 +21,7 @@ public abstract class MoveToElementActionSupplier extends InteractiveAction {
     final Integer y;
 
     MoveToElementActionSupplier(Integer x, Integer y) {
-        super("Move to element");
+        super("Mouse move to element");
         this.x = x;
         this.y = y;
     }
