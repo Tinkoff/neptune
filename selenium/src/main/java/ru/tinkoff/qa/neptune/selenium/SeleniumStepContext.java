@@ -93,7 +93,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
         return this;
     }
 
-    public SeleniumStepContext edit(EditActionSupplier editActionSupplier) {
+    public SeleniumStepContext edit(EditActionSupplier<?> editActionSupplier) {
         editActionSupplier.get().accept(this);
         return this;
     }

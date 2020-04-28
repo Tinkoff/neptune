@@ -9,6 +9,7 @@ import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.SPACE;
+import static ru.tinkoff.qa.neptune.core.api.steps.StepParameter.ParameterValueReader.getParameterForStep;
 
 final class DefaultReportStepParameterFactory {
 
@@ -86,7 +87,7 @@ final class DefaultReportStepParameterFactory {
                             var value = field.get(toRead);
                             var param = field.getAnnotation(StepParameter.class);
                             ofNullable(value).ifPresentOrElse(
-                                    o -> result.put(param.value(), valueOf(value)),
+                                    o -> result.put(param.value(), getParameterForStep(value, param)),
                                     () -> {
                                         if (!param.doNotReportNullValues()) {
                                             result.put(param.value(), valueOf((Object) null));
