@@ -10,17 +10,18 @@
             <package name="ru.tinkoff.qa.neptune.selenium.test.steps.tests.presence.*"/>
             <package name="ru.tinkoff.qa.neptune.selenium.test.steps.tests.target.locator.*"/>
             <package name="ru.tinkoff.qa.neptune.selenium.test.steps.tests.value.*"/>
+            <package name="ru.tinkoff.qa.neptune.selenium.test.steps.tests.interaction.*"/>
         </packages>
     </test>
 
     <test name="Elements test">
         <classes>
-            <class name="ru.tinkoff.qa.neptune.selenium.test.steps.tests.scrolling.ScrollIntoViewTest"/>
-            <class name="ru.tinkoff.qa.neptune.selenium.test.steps.tests.searching.widgets.SearchForWidgetPositiveTest"/>
-            <class name="ru.tinkoff.qa.neptune.selenium.test.steps.tests.searching.SearchForWebElementPositiveTest"/>
-            <class name="ru.tinkoff.qa.neptune.selenium.test.steps.tests.searching.SearchForWebElementsPositiveTest"/>
-            <class name="ru.tinkoff.qa.neptune.selenium.test.steps.tests.searching.SearchForWebElementNegativeTest"/>
-            <class name="ru.tinkoff.qa.neptune.selenium.test.steps.tests.searching.SearchForWebElementsNegativeTest"/>
+            <class name="ru.tinkoff.qa.neptune.selenium.test.elements.scrolling.ScrollIntoViewTest"/>
+            <class name="ru.tinkoff.qa.neptune.selenium.test.elements.searching.widgets.SearchForWidgetPositiveTest"/>
+            <class name="ru.tinkoff.qa.neptune.selenium.test.elements.searching.SearchForWebElementPositiveTest"/>
+            <class name="ru.tinkoff.qa.neptune.selenium.test.elements.searching.SearchForWebElementsPositiveTest"/>
+            <class name="ru.tinkoff.qa.neptune.selenium.test.elements.searching.SearchForWebElementNegativeTest"/>
+            <class name="ru.tinkoff.qa.neptune.selenium.test.elements.searching.SearchForWebElementsNegativeTest"/>
         </classes>
     </test>
 

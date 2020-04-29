@@ -12,6 +12,7 @@ import ru.tinkoff.qa.neptune.selenium.functions.click.ClickActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.cookies.AddCookiesActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.cookies.GetSeleniumCookieSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.edit.EditActionSupplier;
+import ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction;
 import ru.tinkoff.qa.neptune.selenium.functions.java.script.GetJavaScriptResultSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
@@ -950,6 +951,16 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
         return this;
     }
 
+    /**
+     * Performs an interactive action.
+     *
+     * @param action description of the action to be performed
+     * @return self-reference
+     */
+    public SeleniumStepContext interactive(InteractiveAction action) {
+        action.get().accept(this);
+        return this;
+    }
 
     /**
      * Returns title of the browser window/tab that active currently.
