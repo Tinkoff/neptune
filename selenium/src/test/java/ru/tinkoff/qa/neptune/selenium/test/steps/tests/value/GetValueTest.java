@@ -5,13 +5,11 @@ import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.*;
 import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 
 import static java.lang.String.format;
-import static java.util.List.of;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.openqa.selenium.By.tagName;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.NOT;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
-import static ru.tinkoff.qa.neptune.selenium.functions.edit.EditActionSupplier.valueOfThe;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.*;
@@ -24,7 +22,7 @@ public class GetValueTest extends BaseWebDriverTest {
         assertThat(seleniumSteps.valueOf(textField(INPUT_LABEL_TEXT1)),
                 is(INPUT_TEXT5));
 
-        assertThat(seleniumSteps.edit(valueOfThe(textField(INPUT_LABEL_TEXT1), of(INPUT_TEXT4)))
+        assertThat(seleniumSteps.edit(textField(INPUT_LABEL_TEXT1), INPUT_TEXT4)
                         .valueOf(textField(INPUT_LABEL_TEXT1)),
                 is(INPUT_TEXT4));
 
@@ -32,8 +30,8 @@ public class GetValueTest extends BaseWebDriverTest {
                 emptyOrNullString());
 
         assertThat(seleniumSteps
-                        .edit(valueOfThe(textField().criteria(attr(ATTR8, VALUE4)), of(INPUT_TEXT1)))
-                        .edit(valueOfThe(textField(INPUT_LABEL_TEXT8, INPUT_LABEL_TEXT12), of(INPUT_TEXT2)))
+                        .edit(textField().criteria(attr(ATTR8, VALUE4)), INPUT_TEXT1)
+                        .edit(textField(INPUT_LABEL_TEXT8, INPUT_LABEL_TEXT12), INPUT_TEXT2)
                         .valueOf(textField().criteria(attr(ATTR8, VALUE4))),
                 is(INPUT_TEXT1));
 
@@ -43,7 +41,7 @@ public class GetValueTest extends BaseWebDriverTest {
         TextField nestedTextField = seleniumSteps.find(textField(INPUT_LABEL_TEXT5)
                 .foundFrom(table(TABLE_LABEL_TEXT5, TABLE_LABEL_TEXT9)));
 
-        assertThat(seleniumSteps.edit(valueOfThe(nestedTextField, of(INPUT_TEXT7)))
+        assertThat(seleniumSteps.edit(nestedTextField, INPUT_TEXT7)
                         .valueOf(nestedTextField),
                 is(INPUT_TEXT7));
     }
@@ -53,17 +51,17 @@ public class GetValueTest extends BaseWebDriverTest {
         assertThat(seleniumSteps.valueOf(flag(RADIOBUTTON_LABEL_TEXT4)),
                 is(false));
 
-        assertThat(seleniumSteps.edit(valueOfThe(flag(RADIOBUTTON_LABEL_TEXT4), false))
+        assertThat(seleniumSteps.edit(flag(RADIOBUTTON_LABEL_TEXT4), false)
                         .valueOf(flag(RADIOBUTTON_LABEL_TEXT4)),
                 is(false));
 
-        assertThat(seleniumSteps.edit(valueOfThe(flag(RADIOBUTTON_LABEL_TEXT4), true))
+        assertThat(seleniumSteps.edit(flag(RADIOBUTTON_LABEL_TEXT4), true)
                         .valueOf(flag(RADIOBUTTON_LABEL_TEXT4)),
                 is(true));
 
-        seleniumSteps.edit(valueOfThe(flag(CHECKBOX_LABEL_TEXT8, CHECKBOX_LABEL_TEXT12), true))
-                .edit(valueOfThe(flag(RADIOBUTTON_LABEL_TEXT2), true))
-                .edit(valueOfThe(flag().criteria(enabled()), true));
+        seleniumSteps.edit(flag(CHECKBOX_LABEL_TEXT8, CHECKBOX_LABEL_TEXT12), true)
+                .edit(flag(RADIOBUTTON_LABEL_TEXT2), true)
+                .edit(flag().criteria(enabled()), true);
 
         assertThat(seleniumSteps.valueOf(flag(CHECKBOX_LABEL_TEXT8, CHECKBOX_LABEL_TEXT12)),
                 is(true));
@@ -78,7 +76,7 @@ public class GetValueTest extends BaseWebDriverTest {
         Flag nestedFlag = seleniumSteps.find(flag(CHECKBOX_LABEL_TEXT5, CHECKBOX_LABEL_TEXT9)
                 .foundFrom(table(TABLE_LABEL_TEXT5, TABLE_LABEL_TEXT9)));
 
-        assertThat(seleniumSteps.edit(valueOfThe(nestedFlag, true))
+        assertThat(seleniumSteps.edit(nestedFlag, true)
                         .valueOf(nestedFlag),
                 is(true));
     }
@@ -88,17 +86,17 @@ public class GetValueTest extends BaseWebDriverTest {
         assertThat(seleniumSteps.valueOf(checkbox(CHECKBOX_LABEL_TEXT4)),
                 is(false));
 
-        assertThat(seleniumSteps.edit(valueOfThe(checkbox(CHECKBOX_LABEL_TEXT4), false))
+        assertThat(seleniumSteps.edit(checkbox(CHECKBOX_LABEL_TEXT4), false)
                         .valueOf(flag(CHECKBOX_LABEL_TEXT4)),
                 is(false));
 
-        assertThat(seleniumSteps.edit(valueOfThe(checkbox(CHECKBOX_LABEL_TEXT4), true))
+        assertThat(seleniumSteps.edit(checkbox(CHECKBOX_LABEL_TEXT4), true)
                         .valueOf(checkbox(CHECKBOX_LABEL_TEXT4)),
                 is(true));
 
-        seleniumSteps.edit(valueOfThe(checkbox(CHECKBOX_LABEL_TEXT7, CHECKBOX_LABEL_TEXT11), true))
-                .edit(valueOfThe(checkbox(CHECKBOX_LABEL_TEXT3), true))
-                .edit(valueOfThe(checkbox().criteria(NOT(enabled())), true));
+        seleniumSteps.edit(checkbox(CHECKBOX_LABEL_TEXT7, CHECKBOX_LABEL_TEXT11), true)
+                .edit(checkbox(CHECKBOX_LABEL_TEXT3), true)
+                .edit(checkbox().criteria(NOT(enabled())), true);
 
         assertThat(seleniumSteps.valueOf(checkbox(CHECKBOX_LABEL_TEXT7, CHECKBOX_LABEL_TEXT11)),
                 is(true));
@@ -111,7 +109,7 @@ public class GetValueTest extends BaseWebDriverTest {
 
         Flag.CheckBox checkbox = seleniumSteps.find(checkbox(CHECKBOX_LABEL_TEXT6, CHECKBOX_LABEL_TEXT10));
 
-        assertThat(seleniumSteps.edit(valueOfThe(checkbox, true))
+        assertThat(seleniumSteps.edit(checkbox, true)
                         .valueOf(checkbox),
                 is(true));
     }
@@ -121,17 +119,17 @@ public class GetValueTest extends BaseWebDriverTest {
         assertThat(seleniumSteps.valueOf(radioButton(RADIOBUTTON_LABEL_TEXT1)),
                 is(false));
 
-        assertThat(seleniumSteps.edit(valueOfThe(radioButton(RADIOBUTTON_LABEL_TEXT1), false))
+        assertThat(seleniumSteps.edit(radioButton(RADIOBUTTON_LABEL_TEXT1), false)
                         .valueOf(flag(RADIOBUTTON_LABEL_TEXT1)),
                 is(false));
 
-        assertThat(seleniumSteps.edit(valueOfThe(radioButton(RADIOBUTTON_LABEL_TEXT1), true))
+        assertThat(seleniumSteps.edit(radioButton(RADIOBUTTON_LABEL_TEXT1), true)
                         .valueOf(radioButton(RADIOBUTTON_LABEL_TEXT1)),
                 is(true));
 
-        seleniumSteps.edit(valueOfThe(radioButton(RADIOBUTTON_LABEL_TEXT7, RADIOBUTTON_LABEL_TEXT11), true))
-                .edit(valueOfThe(radioButton(RADIOBUTTON_LABEL_TEXT3), true))
-                .edit(valueOfThe(radioButton().criteria(visible()), true));
+        seleniumSteps.edit(radioButton(RADIOBUTTON_LABEL_TEXT7, RADIOBUTTON_LABEL_TEXT11), true)
+                .edit(radioButton(RADIOBUTTON_LABEL_TEXT3), true)
+                .edit(radioButton().criteria(visible()), true);
 
         assertThat(seleniumSteps.valueOf(radioButton(RADIOBUTTON_LABEL_TEXT7, RADIOBUTTON_LABEL_TEXT11)),
                 is(true));
@@ -144,7 +142,7 @@ public class GetValueTest extends BaseWebDriverTest {
 
         Flag.RadioButton radioButton = seleniumSteps.find(radioButton(RADIOBUTTON_LABEL_TEXT6, RADIOBUTTON_LABEL_TEXT10));
 
-        assertThat(seleniumSteps.edit(valueOfThe(radioButton, true)).valueOf(radioButton),
+        assertThat(seleniumSteps.edit(radioButton, true).valueOf(radioButton),
                 is(true));
     }
 
@@ -153,17 +151,17 @@ public class GetValueTest extends BaseWebDriverTest {
         assertThat(seleniumSteps.valueOf(select(SELECT_LABEL_TEXT2)),
                 emptyIterable());
 
-        assertThat(seleniumSteps.edit(valueOfThe(select(SELECT_LABEL_TEXT2), OPTION_TEXT18))
-                        .edit(valueOfThe(select(SELECT_LABEL_TEXT2), OPTION_TEXT16))
+        assertThat(seleniumSteps.edit(select(SELECT_LABEL_TEXT2), OPTION_TEXT18)
+                        .edit(select(SELECT_LABEL_TEXT2), OPTION_TEXT16)
                         .valueOf(select(SELECT_LABEL_TEXT2)),
                 contains(OPTION_TEXT16));
 
-        seleniumSteps.edit(valueOfThe(select(SELECT_LABEL_TEXT1, SELECT_LABEL_TEXT9), OPTION_TEXT27))
-                .edit(valueOfThe(select(SELECT_LABEL_TEXT1, SELECT_LABEL_TEXT9), OPTION_TEXT25))
-                .edit(valueOfThe(select(SELECT_LABEL_TEXT1, SELECT_LABEL_TEXT9), OPTION_TEXT26))
-                .edit(valueOfThe(select().criteria(attr(ATTR1, VALUE4)), OPTION_TEXT5))
-                .edit(valueOfThe(select().criteria(nested(webElements(tagName(OPTION)).criteria(text(OPTION_TEXT14)))), OPTION_TEXT15))
-                .edit(valueOfThe(select().criteria(nested(webElements(tagName(OPTION)).criteria(text(OPTION_TEXT14)))), OPTION_TEXT13));
+        seleniumSteps.edit(select(SELECT_LABEL_TEXT1, SELECT_LABEL_TEXT9), OPTION_TEXT27)
+                .edit(select(SELECT_LABEL_TEXT1, SELECT_LABEL_TEXT9), OPTION_TEXT25)
+                .edit(select(SELECT_LABEL_TEXT1, SELECT_LABEL_TEXT9), OPTION_TEXT26)
+                .edit(select().criteria(attr(ATTR1, VALUE4)), OPTION_TEXT5)
+                .edit(select().criteria(nested(webElements(tagName(OPTION)).criteria(text(OPTION_TEXT14)))), OPTION_TEXT15)
+                .edit(select().criteria(nested(webElements(tagName(OPTION)).criteria(text(OPTION_TEXT14)))), OPTION_TEXT13);
 
         assertThat(seleniumSteps.valueOf(select(SELECT_LABEL_TEXT1, SELECT_LABEL_TEXT9)),
                 contains(OPTION_TEXT25, OPTION_TEXT26, OPTION_TEXT27));
@@ -176,8 +174,8 @@ public class GetValueTest extends BaseWebDriverTest {
                 contains(OPTION_TEXT13));
 
         Select select = seleniumSteps.find(select(SELECT_LABEL_TEXT10));
-        assertThat(seleniumSteps.edit(valueOfThe(select, OPTION_TEXT29))
-                        .edit(valueOfThe(select, OPTION_TEXT28))
+        assertThat(seleniumSteps.edit(select, OPTION_TEXT29)
+                        .edit(select, OPTION_TEXT28)
                         .valueOf(select),
                 contains(OPTION_TEXT28, OPTION_TEXT29));
     }

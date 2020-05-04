@@ -4,14 +4,16 @@ import org.openqa.selenium.*;
 import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
+import ru.tinkoff.qa.neptune.selenium.api.widget.Clickable;
+import ru.tinkoff.qa.neptune.selenium.api.widget.Editable;
 import ru.tinkoff.qa.neptune.selenium.api.widget.HasValue;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
-import ru.tinkoff.qa.neptune.selenium.functions.click.ClickActionSupplier;
+import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.TextField;
 import ru.tinkoff.qa.neptune.selenium.functions.cookies.AddCookiesActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.cookies.GetSeleniumCookieSupplier;
-import ru.tinkoff.qa.neptune.selenium.functions.edit.EditActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction;
 import ru.tinkoff.qa.neptune.selenium.functions.java.script.GetJavaScriptResultSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier;
@@ -36,11 +38,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.time.Duration.ofMillis;
 import static java.util.Arrays.asList;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
+import static ru.tinkoff.qa.neptune.selenium.functions.click.ClickActionSupplier.on;
 import static ru.tinkoff.qa.neptune.selenium.functions.cookies.RemoveCookiesActionSupplier.deleteCookies;
+import static ru.tinkoff.qa.neptune.selenium.functions.edit.EditActionSupplier.valueOfThe;
 import static ru.tinkoff.qa.neptune.selenium.functions.elements.GetElementPositionSupplier.positionOfElement;
 import static ru.tinkoff.qa.neptune.selenium.functions.elements.GetElementSizeSupplier.elementSize;
 import static ru.tinkoff.qa.neptune.selenium.functions.navigation.Back.back;
@@ -89,13 +94,105 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
         return what.get().compose(currentContent()).apply(this);
     }
 
-    public SeleniumStepContext click(ClickActionSupplier clickActionSupplier) {
-        clickActionSupplier.get().accept(this);
+    /**
+     * Performs the clicking on a clickable widget
+     *
+     * @param toFind is description of a widget to be clicked
+     * @param <T>    is a type of a clickable {@link Widget}
+     * @return self-reference
+     */
+    public <T extends Widget & Clickable> SeleniumStepContext click(SearchSupplier<T> toFind) {
+        on(toFind).get().accept(this);
         return this;
     }
 
-    public SeleniumStepContext edit(EditActionSupplier<?> editActionSupplier) {
-        editActionSupplier.get().accept(this);
+    /**
+     * Performs the clicking on a web element
+     *
+     * @param toFind is description of a web element to be clicked
+     * @return self-reference
+     */
+    public SeleniumStepContext click(SequentialGetStepSupplier<SearchContext, WebElement, ?, ?, ?> toFind) {
+        on(toFind).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs the clicking on a clickable widget
+     *
+     * @param widget is a widget to be clicked
+     * @param <T>    is a type of a clickable {@link Widget}
+     * @return self-reference
+     */
+    public <T extends Widget & Clickable> SeleniumStepContext click(T widget) {
+        on(widget).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs the clicking on a web element
+     *
+     * @param element is a web element to be clicked
+     * @return self-reference
+     */
+    public SeleniumStepContext click(WebElement element) {
+        on(element).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs the editing of an editable widget.
+     *
+     * @param toFind is description of a widget to be edited
+     * @param value  is value used to perform the editing
+     * @param <R>    is a type of value used to perform the editing
+     * @param <T>    is a type of editable {@link Widget}
+     * @return self-reference
+     */
+    public <R, T extends Widget & Editable<R>> SeleniumStepContext edit(SearchSupplier<T> toFind, R value) {
+        valueOfThe(toFind, value).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs the editing of a text field.
+     *
+     * @param toFind is description of a text field
+     * @param value  is a sequence of strings/chars used to change value of text field
+     * @return self-reference
+     */
+    public SeleniumStepContext edit(SearchSupplier<TextField> toFind, CharSequence... value) {
+        checkNotNull(value);
+        checkArgument(value.length > 0, "");
+        valueOfThe(toFind, asList(value)).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs the editing of an editable widget.
+     *
+     * @param editable is a widget to be edited
+     * @param value    is value used to perform the editing
+     * @param <R>      is a type of value used to perform the editing
+     * @param <T>      is a type of editable {@link Widget}
+     * @return self-reference
+     */
+    public <R, T extends Widget & Editable<R>> SeleniumStepContext edit(T editable, R value) {
+        valueOfThe(editable, value).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs the editing of a text field.
+     *
+     * @param textField is a text field
+     * @param value     is a sequence of strings/chars used to change value of text field
+     * @return self-reference
+     */
+    public SeleniumStepContext edit(TextField textField, CharSequence... value) {
+        checkNotNull(value);
+        checkArgument(value.length > 0, "");
+        valueOfThe(textField, asList(value)).get().accept(this);
         return this;
     }
 

@@ -1,13 +1,13 @@
 package ru.tinkoff.qa.neptune.http.api;
 
 import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
+import ru.tinkoff.qa.neptune.core.api.steps.StepAction;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
 
 import java.net.CookieManager;
 import java.net.http.HttpClient;
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -61,7 +61,7 @@ public class HttpStepContext extends Context<HttpStepContext> implements Context
      * This method was added for backward compatibility temporary
      */
     @Deprecated(since = "0.11.2-ALPHA", forRemoval = true)
-    public HttpStepContext perform(Consumer<HttpStepContext> actionConsumer) {
+    public HttpStepContext perform(StepAction<HttpStepContext> actionConsumer) {
         checkArgument(Objects.nonNull(actionConsumer), "Action is not defined");
         actionConsumer.accept(this);
         return this;
@@ -71,7 +71,7 @@ public class HttpStepContext extends Context<HttpStepContext> implements Context
      * This method was added for backward compatibility temporary
      */
     @Deprecated(since = "0.11.2-ALPHA", forRemoval = true)
-    public HttpStepContext perform(Supplier<Consumer<HttpStepContext>> actionSupplier) {
+    public HttpStepContext perform(Supplier<StepAction<HttpStepContext>> actionSupplier) {
         checkNotNull(actionSupplier, "Supplier of the action was not defined");
         return this.perform(actionSupplier.get());
     }
