@@ -17,12 +17,14 @@ import javax.jdo.query.PersistableExpression;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext.inDataBase;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.SLEEPING_TIME;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.WAITING_FOR_SELECTION_RESULT_TIME;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.JDOPersistenceManagerByConnectionSupplierClass.getConnectionBySupplierClass;
@@ -46,9 +48,9 @@ public class SelectASingle<T> extends SequentialGetStepSupplier
 
     private final KeepResultPersistent resultPersistent;
     @StepParameter("Query")
-    Query<T, ?> query;
+    Query<T, ? extends List<T>> query;
 
-    private <S extends List<T>> SelectASingle(String description, KeepResultPersistent resultPersistent, Query<T, S> selectBy) {
+    private SelectASingle(String description, KeepResultPersistent resultPersistent, Query<T, ? extends List<T>> selectBy) {
         super(description, selectBy::execute);
         this.resultPersistent = resultPersistent;
         this.query = selectBy;
@@ -68,17 +70,20 @@ public class SelectASingle<T> extends SequentialGetStepSupplier
     public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectASingle<R> oneOf(Class<R> toSelect,
                                                                                                            JDOQLQueryParameters<R, Q> params) {
         var resultPersistent = new KeepResultPersistent();
-        var query = JDOQLQuery.<R>byJDOQLQuery(resultPersistent);
+        var jdoQuery = JDOQLQuery.<R>byJDOQLQuery(resultPersistent);
         return new SelectASingle<>(format("One of %s from data store", toSelect.getName()),
                 resultPersistent,
-                query)
-                .from(getConnectionByClass(toSelect).andThen(manager -> {
-                    var readableQuery = ofNullable(params)
-                            .map(parameters -> parameters.buildQuery(new ReadableJDOQuery<>(manager, toSelect)))
-                            .orElseGet(() -> new ReadableJDOQuery<>(manager, toSelect));
-                    query.setQuery(readableQuery);
-                    return manager;
-                }));
+                jdoQuery) {
+            @Override
+            public Function<DataBaseStepContext, R> get() {
+                var manager = getConnectionByClass(toSelect).apply(inDataBase());
+                var readableQuery = ofNullable(params)
+                        .map(parameters -> parameters.buildQuery(new ReadableJDOQuery<>(manager, toSelect)))
+                        .orElseGet(() -> new ReadableJDOQuery<>(manager, toSelect));
+                jdoQuery.setQuery(readableQuery);
+                return super.get();
+            }
+        }.from(getConnectionByClass(toSelect));
     }
 
     /**
@@ -90,19 +95,23 @@ public class SelectASingle<T> extends SequentialGetStepSupplier
      * @param <Q>          is a type of {@link PersistableExpression} that represents {@code T} in query
      * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle}
      */
-    public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectASingle<List<Object>> row(Class<R> toSelectFrom, JDOQLResultQueryParams<R, Q> params) {
+    public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectASingle<List<Object>> row(Class<R> toSelectFrom,
+                                                                                                                    JDOQLResultQueryParams<R, Q> params) {
         var resultPersistent = new KeepResultPersistent();
-        var query = JDOQLResultQuery.<R>byJDOQLResultQuery();
+        var jdoQuery = JDOQLResultQuery.<R>byJDOQLResultQuery();
         return new SelectASingle<>(format("One row of data from data store. The row is formed by an object of %s", toSelectFrom.getName()),
                 resultPersistent,
-                query)
-                .from(getConnectionByClass(toSelectFrom).andThen(manager -> {
-                    var readableQuery = ofNullable(params)
-                            .map(parameters -> parameters.buildQuery(new ReadableJDOQuery<>(manager, toSelectFrom)))
-                            .orElseGet(() -> new ReadableJDOQuery<>(manager, toSelectFrom));
-                    query.setQuery(readableQuery);
-                    return manager;
-                }));
+                jdoQuery) {
+            @Override
+            public Function<DataBaseStepContext, List<Object>> get() {
+                var manager = getConnectionByClass(toSelectFrom).apply(inDataBase());
+                var readableQuery = ofNullable(params)
+                        .map(parameters -> parameters.buildQuery(new ReadableJDOQuery<>(manager, toSelectFrom)))
+                        .orElseGet(() -> new ReadableJDOQuery<>(manager, toSelectFrom));
+                jdoQuery.setQuery(readableQuery);
+                return super.get();
+            }
+        }.from(getConnectionByClass(toSelectFrom));
     }
 
     /**

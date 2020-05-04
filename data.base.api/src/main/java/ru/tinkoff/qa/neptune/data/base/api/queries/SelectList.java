@@ -18,12 +18,14 @@ import javax.jdo.query.PersistableExpression;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext.inDataBase;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.SLEEPING_TIME;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.WAITING_FOR_SELECTION_RESULT_TIME;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.JDOPersistenceManagerByConnectionSupplierClass.getConnectionBySupplierClass;
@@ -47,7 +49,7 @@ public class SelectList<T, R extends List<T>> extends SequentialGetStepSupplier
 
     private final KeepResultPersistent resultPersistent;
     @StepParameter("Query")
-    private final Query<T, ?> query;
+    Query<T, R> query;
 
     private SelectList(String description, KeepResultPersistent resultPersistent, Query<T, R> selectBy) {
         super(description, selectBy::execute);
@@ -69,17 +71,20 @@ public class SelectList<T, R extends List<T>> extends SequentialGetStepSupplier
     public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectList<R, List<R>> listOf(Class<R> toSelect,
                                                                                                                   JDOQLQueryParameters<R, Q> params) {
         var resultPersistent = new KeepResultPersistent();
-        var query = JDOQLQuery.<R>byJDOQLQuery(resultPersistent);
+        var jdoQuery = JDOQLQuery.<R>byJDOQLQuery(resultPersistent);
         return new SelectList<>(format("List of %s from data store", toSelect.getName()),
                 resultPersistent,
-                query)
-                .from(getConnectionByClass(toSelect).andThen(manager -> {
-                    var readableQuery = ofNullable(params)
-                            .map(parameters -> parameters.buildQuery(new ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.ReadableJDOQuery<>(manager, toSelect)))
-                            .orElseGet(() -> new ReadableJDOQuery<>(manager, toSelect));
-                    query.setQuery(readableQuery);
-                    return manager;
-                }));
+                jdoQuery) {
+            @Override
+            public Function<DataBaseStepContext, List<R>> get() {
+                var manager = getConnectionByClass(toSelect).apply(inDataBase());
+                var readableQuery = ofNullable(params)
+                        .map(parameters -> parameters.buildQuery(new ReadableJDOQuery<>(manager, toSelect)))
+                        .orElseGet(() -> new ReadableJDOQuery<>(manager, toSelect));
+                jdoQuery.setQuery(readableQuery);
+                return super.get();
+            }
+        }.from(getConnectionByClass(toSelect));
     }
 
     /**
@@ -94,17 +99,20 @@ public class SelectList<T, R extends List<T>> extends SequentialGetStepSupplier
     public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectList<List<Object>, TableResultList> rows(Class<R> toSelectFrom,
                                                                                                                                    JDOQLResultQueryParams<R, Q> params) {
         var resultPersistent = new KeepResultPersistent();
-        var query = JDOQLResultQuery.<R>byJDOQLResultQuery();
+        var jdoQuery = JDOQLResultQuery.<R>byJDOQLResultQuery();
         return new SelectList<>(format("Rows of data from data store. Rows are formed by objects of %s", toSelectFrom.getName()),
                 resultPersistent,
-                query)
-                .from(getConnectionByClass(toSelectFrom).andThen(manager -> {
-                    var readableQuery = ofNullable(params)
-                            .map(parameters -> parameters.buildQuery(new ReadableJDOQuery<>(manager, toSelectFrom)))
-                            .orElseGet(() -> new ReadableJDOQuery<>(manager, toSelectFrom));
-                    query.setQuery(readableQuery);
-                    return manager;
-                }));
+                jdoQuery) {
+            @Override
+            public Function<DataBaseStepContext, TableResultList> get() {
+                var manager = getConnectionByClass(toSelectFrom).apply(inDataBase());
+                var readableQuery = ofNullable(params)
+                        .map(parameters -> parameters.buildQuery(new ReadableJDOQuery<>(manager, toSelectFrom)))
+                        .orElseGet(() -> new ReadableJDOQuery<>(manager, toSelectFrom));
+                jdoQuery.setQuery(readableQuery);
+                return super.get();
+            }
+        }.from(getConnectionByClass(toSelectFrom));
     }
 
     /**
