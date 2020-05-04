@@ -15,6 +15,9 @@ import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Get
 
 @MakeImageCapturesOnFinishing
 @MakeFileCapturesOnFinishing
+@SequentialActionSupplier.DefaultParameterNames(
+        performOn = "Window/tab to change position of"
+)
 public final class SetWindowPositionSupplier extends SequentialActionSupplier<SeleniumStepContext, Window, SetWindowPositionSupplier> {
 
     @StepParameter("New position")

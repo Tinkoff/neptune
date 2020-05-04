@@ -5,8 +5,9 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakesCapturesOnFin
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -14,13 +15,12 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.valueOf;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static ru.tinkoff.qa.neptune.core.api.steps.DefaultReportStepParameterFactory.readParameters;
 import static ru.tinkoff.qa.neptune.core.api.steps.StepAction.action;
-import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 /**
  * This class is designed to build actions to be performed on different objects.
@@ -31,13 +31,14 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
  * @param <THIS> is self-type.
  */
 @SuppressWarnings("unchecked")
+@SequentialActionSupplier.DefaultParameterNames
 public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActionSupplier<T, R, THIS>> implements Supplier<StepAction<T>>,
         MakesCapturesOnFinishing<THIS> {
 
     private final String actionDescription;
     private final List<CaptorFilterByProducedType> captorFilters = new ArrayList<>();
 
-    private Object toBePerformedOn;
+    Object toBePerformedOn;
 
     protected SequentialActionSupplier(String description) {
         checkArgument(!isBlank(description), "Description of the action should not be blank or null string value");
@@ -46,22 +47,7 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
     }
 
     protected Map<String, String> getParameters() {
-        var result = new LinkedHashMap<String, String>();
-        result.putAll(formPerformOnForReport());
-        result.putAll(formParameters());
-        return result;
-    }
-
-    protected Map<String, String> formPerformOnForReport() {
-        var result = new LinkedHashMap<String, String>();
-        if (isLoggable(toBePerformedOn)) {
-            result.put("Perform action on", valueOf(toBePerformedOn));
-        }
-        return result;
-    }
-
-    protected Map<String, String> formParameters() {
-        return new LinkedHashMap<>(readParameters(this, SequentialActionSupplier.class));
+        return DefaultReportStepParameterFactory.getParameters(this);
     }
 
     private StepAction<T> performOnPrivate(Object functionOrObject) {
@@ -232,5 +218,29 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
     public THIS onFinishMakeCaptureOfType(Class<?> typeOfCapture) {
         captorFilters.add(new CaptorFilterByProducedType(typeOfCapture));
         return (THIS) this;
+    }
+
+    /**
+     * This annotation is designed to mark subclasses of {@link SequentialActionSupplier}. It is
+     * used for the reading of values to perform an action on and for the forming of parameters
+     * of a resulted step-action.
+     *
+     * @see SequentialActionSupplier#performOn(Object)
+     * @see SequentialActionSupplier#performOn(Function)
+     * @see SequentialActionSupplier#performOn(SequentialGetStepSupplier)
+     */
+    @Retention(RUNTIME)
+    @Target({TYPE})
+    public @interface DefaultParameterNames {
+
+        /**
+         * Defines name of the perform on-parameter
+         *
+         * @return Defined name of the perform on-parameter
+         * @see SequentialActionSupplier#performOn(Object)
+         * @see SequentialActionSupplier#performOn(Function)
+         * @see SequentialActionSupplier#performOn(SequentialGetStepSupplier)
+         */
+        String performOn() default "Perform action on";
     }
 }

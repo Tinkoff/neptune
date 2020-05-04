@@ -9,6 +9,9 @@ import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
 
 @MakeFileCapturesOnFinishing
+@SequentialActionSupplier.DefaultParameterNames(
+        performOn = "Window/tab to close"
+)
 public final class CloseWindowActionSupplier extends SequentialActionSupplier<SeleniumStepContext, Window, CloseWindowActionSupplier> {
 
     private CloseWindowActionSupplier() {

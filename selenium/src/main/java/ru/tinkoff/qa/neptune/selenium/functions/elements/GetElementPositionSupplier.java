@@ -10,6 +10,9 @@ import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 
+@SequentialGetStepSupplier.DefaultParameterNames(
+        from = "Element to get position of"
+)
 public final class GetElementPositionSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, Point, SearchContext, GetElementPositionSupplier> {
 

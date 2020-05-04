@@ -10,9 +10,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
 
 import java.time.Duration;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -21,12 +19,15 @@ import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationHMS;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITING_WINDOW_TIME_DURATION;
 
 @MakeImageCapturesOnFinishing
 @MakeFileCapturesOnFinishing
+@SequentialGetStepSupplier.DefaultParameterNames(
+        timeOut = "Time of the waiting for the browser window/tab",
+        criteria = "Window criteria"
+)
 public final class GetWindowSupplier extends SequentialGetStepSupplier
         .GetObjectFromIterableChainedStepSupplier<SeleniumStepContext, Window, WebDriver, GetWindowSupplier>
         implements TargetLocatorSupplier<Window> {
@@ -94,12 +95,6 @@ public final class GetWindowSupplier extends SequentialGetStepSupplier
                 .map(integer -> integer >= 0)
                 .orElse(true), "Index should not be a negative value");
         return new GetWindowSupplier(index).from(currentContent());
-    }
-
-    protected Map<String, String> formTimeoutForReport(Duration timeOut) {
-        var result = new LinkedHashMap<String, String>();
-        result.put("Time of the waiting for the browser window/tab", formatDurationHMS(timeOut.toMillis()));
-        return result;
     }
 
     @Override

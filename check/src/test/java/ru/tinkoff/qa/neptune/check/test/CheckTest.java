@@ -27,35 +27,35 @@ public class CheckTest {
     }
 
     private static final List<String> EXPECTED_LOGGER_MESSAGES1 =
-            of("Verify Inspected value 4 has started",
-                    "Check Is integer. Assert: is <true> has started",
-                    "Get Is integer has started",
+            of("Perform: Verify Inspected value 4 has started",
+                    "Perform: Check Is integer. Assert: is <true> has started",
+                    "Get: Is integer has started",
                     "true has been returned",
                     "Event finished",
                     "Event finished",
-                    "Check Sqrt value. Assert: is <2.0> has started",
-                    "Get Sqrt value has started",
+                    "Perform: Check Sqrt value. Assert: is <2.0> has started",
+                    "Get: Sqrt value has started",
                     "2.0 has been returned",
                     "Event finished",
                     "Event finished",
                     "Event finished",
-                    "Verify Inspected value 5 has started",
-                    "Check Sqr value. Assert: is <25.0> has started",
-                    "Get Sqr value has started",
+                    "Perform: Verify Inspected value 5 has started",
+                    "Perform: Check Sqr value. Assert: is <25.0> has started",
+                    "Get: Sqr value has started",
                     "25.0 has been returned",
                     "Event finished",
                     "Event finished",
                     "Event finished");
 
     private static final List<String> EXPECTED_LOGGER_MESSAGES2 =
-            of("Verify Inspected value 9 has started",
-                    "Check Is integer. Assert: is <true> has started",
-                    "Get Is integer has started",
+            of("Perform: Verify Inspected value 9 has started",
+                    "Perform: Check Is integer. Assert: is <true> has started",
+                    "Get: Is integer has started",
                     "true has been returned",
                     "Event finished",
                     "Event finished",
-                    "Check Sqrt value. Assert: is <2.0> has started",
-                    "Get Sqrt value has started",
+                    "Perform: Check Sqrt value. Assert: is <2.0> has started",
+                    "Get: Sqrt value has started",
                     "3.0 has been returned",
                     "Event finished",
                     "java.lang.AssertionError has been thrown",
@@ -279,8 +279,8 @@ public class CheckTest {
         check("Given value", obj, match(nullValue()));
 
         assertThat(MESSAGES,
-                contains("Verify Given value has started",
-                        "Check object. Assert: null has started",
+                contains("Perform: Verify Given value has started",
+                        "Perform: Check object. Assert: null has started",
                         "Event finished",
                         "Event finished"));
     }
@@ -292,11 +292,11 @@ public class CheckTest {
                 match(is(3D)));
 
         assertThat(MESSAGES,
-                contains("Verify Sqrt value of 9 has started",
-                        "Get Sqrt value of 9 has started",
+                contains("Perform: Verify Sqrt value of 9 has started",
+                        "Get: Sqrt value of 9 has started",
                         "3.0 has been returned",
                         "Event finished",
-                        "Check object. Assert: is <3.0> has started",
+                        "Perform: Check object. Assert: is <3.0> has started",
                         "Event finished",
                         "Event finished"));
     }

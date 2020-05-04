@@ -6,11 +6,10 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 
-import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.fail;
-import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
+import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert.AlertCriteria.alertText;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert.GetAlertSupplier.alert;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeUnitProperties.WAITING_ALERT_TIME_UNIT;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeValueProperties.WAITING_ALERT_TIME_VALUE;
@@ -40,7 +39,7 @@ public class AlertTest extends BaseWebDriverTest {
     public void getAlertWithAllArgsTest() {
         setStartBenchMark();
         Alert alert = seleniumSteps.get(alert()
-                .criteria(condition(format("Alert with the text %s", TEXT_OF_ALERT), alert1 -> TEXT_OF_ALERT.equals(alert1.getText())))
+                .criteria(alertText(TEXT_OF_ALERT))
                 .timeOut(FIVE_SECONDS)
                 .pollingInterval(HALF_SECOND));
         setEndBenchMark();
@@ -53,13 +52,12 @@ public class AlertTest extends BaseWebDriverTest {
         setStartBenchMark();
         try {
             seleniumSteps.get(alert()
-                    .criteria(condition("Alert with the text 'some not existing text'", alert1 ->
-                            "some not existing text".equals(alert1.getText())))
+                    .criteria(alertText("some not existing text"))
                     .timeOut(FIVE_SECONDS)
                     .pollingInterval(HALF_SECOND));
         }
         catch (Exception e) {
-            assertThat(e.getMessage(), containsString("No alert that suits criteria 'Alert with the text 'some not existing text'' has been found"));
+            assertThat(e.getMessage(), containsString("No alert that suits criteria 'Alert has text 'some not existing text'' has been found"));
             throw e;
         }
         finally {
@@ -77,8 +75,7 @@ public class AlertTest extends BaseWebDriverTest {
         setStartBenchMark();
         try {
             seleniumSteps.get(alert()
-                    .criteria(condition("Alert with the text 'some not existing text'",
-                            alert1 -> "some not existing text".equals(alert1.getText()))));
+                    .criteria(alertText("some not existing text")));
         }
         finally {
             removeProperty(WAITING_ALERT_TIME_UNIT.getPropertyName());

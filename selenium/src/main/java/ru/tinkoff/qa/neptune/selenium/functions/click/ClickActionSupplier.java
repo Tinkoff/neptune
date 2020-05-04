@@ -16,6 +16,9 @@ import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentConte
 
 @MakeImageCapturesOnFinishing
 @MakeFileCapturesOnFinishing
+@SequentialActionSupplier.DefaultParameterNames(
+        performOn = "Element to click"
+)
 public final class ClickActionSupplier extends SequentialActionSupplier<SeleniumStepContext, SearchContext, ClickActionSupplier> {
 
     private static final String DESCRIPTION = "Click on %s";

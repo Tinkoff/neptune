@@ -59,21 +59,21 @@ public class DataBaseStepContext extends Context<DataBaseStepContext> implements
         jdoPersistenceManagerSet.forEach(JDOPersistenceManager::close);
     }
 
-    public final <T, R extends List<T>> R select(SelectList<?, R, ?> selectList) {
+    public final <T, R extends List<T>> R select(SelectList<?, R> selectList) {
         return selectList.get().apply(this);
     }
 
-    public final <T> T select(SelectASingle<T, ?, ?> selectOne) {
+    public final <T> T select(SelectASingle<T> selectOne) {
         return selectOne.get().apply(this);
     }
 
     @SafeVarargs
-    public final <T extends PersistableObject> T update(SelectASingle<T, ?, ?> howToSelect, UpdateExpression<T>... set) {
+    public final <T extends PersistableObject> T update(SelectASingle<T> howToSelect, UpdateExpression<T>... set) {
         return returnSingleWhenNecessary(updated(howToSelect, set).get().apply(this));
     }
 
     @SafeVarargs
-    public final <T extends PersistableObject> List<T> update(SelectList<?, List<T>, ?> howToSelect, UpdateExpression<T>... set) {
+    public final <T extends PersistableObject> List<T> update(SelectList<?, List<T>> howToSelect, UpdateExpression<T>... set) {
         return updated(howToSelect, set).get().apply(this);
     }
 
@@ -87,11 +87,11 @@ public class DataBaseStepContext extends Context<DataBaseStepContext> implements
         return returnSingleWhenNecessary(update(ofNullable(t).map(List::of).orElse(null), set));
     }
 
-    public final <T extends PersistableObject> T delete(SelectASingle<T, ?, ?> howToSelect) {
+    public final <T extends PersistableObject> T delete(SelectASingle<T> howToSelect) {
         return returnSingleWhenNecessary(deleted(howToSelect).get().apply(this));
     }
 
-    public final <T extends PersistableObject> List<T> delete(SelectList<T, List<T>, ?> howToSelect) {
+    public final <T extends PersistableObject> List<T> delete(SelectList<T, List<T>> howToSelect) {
         return deleted(howToSelect).get().apply(this);
     }
 

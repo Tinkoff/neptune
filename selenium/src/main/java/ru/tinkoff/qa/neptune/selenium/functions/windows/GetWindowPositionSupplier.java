@@ -9,6 +9,9 @@ import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
 
+@SequentialGetStepSupplier.DefaultParameterNames(
+        from = "Window/tab to get position of"
+)
 public final class GetWindowPositionSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, Point, Window, GetWindowPositionSupplier> {
 

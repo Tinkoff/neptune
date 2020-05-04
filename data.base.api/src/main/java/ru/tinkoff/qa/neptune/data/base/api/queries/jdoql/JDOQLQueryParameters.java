@@ -15,7 +15,7 @@ import static java.util.Optional.ofNullable;
  * @param <Q> is a type of {@link PersistableExpression} that represents {@code T} in a query
  */
 public final class JDOQLQueryParameters<T extends PersistableObject, Q extends PersistableExpression<T>>
-    extends JDOParameters<T, Q, JDOQLQueryParameters<T, Q>>{
+        extends JDOParameters<T, Q, JDOQLQueryParameters<T, Q>> {
 
     private JDOQLQueryParameters(Class<? extends Q> toUse) {
         super(toUse);

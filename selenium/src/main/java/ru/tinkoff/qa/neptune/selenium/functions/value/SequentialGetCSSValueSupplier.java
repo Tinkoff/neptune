@@ -13,13 +13,16 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 
+@SequentialGetStepSupplier.DefaultParameterNames(
+        from = "Element to get value of the css"
+)
 public final class SequentialGetCSSValueSupplier extends
         SequentialGetStepSupplier.GetObjectChainedStepSupplier<SeleniumStepContext, String, SearchContext, SequentialGetCSSValueSupplier> {
 
     private boolean isElementDefined;
 
     private SequentialGetCSSValueSupplier(String property) {
-        super(format("Value of the css property '%s'", property), searchContext -> {
+        super("Value of the css property '" + property + "'", searchContext -> {
             Class<? extends SearchContext> searchContextClass = searchContext.getClass();
             if (WebElement.class.isAssignableFrom(searchContextClass)) {
                 return ((WebElement) searchContext).getCssValue(property);

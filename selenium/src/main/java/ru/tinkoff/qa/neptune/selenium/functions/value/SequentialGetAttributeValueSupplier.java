@@ -13,13 +13,16 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 
+@SequentialGetStepSupplier.DefaultParameterNames(
+        from = "Element to get value of the attribute"
+)
 public final class SequentialGetAttributeValueSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, String, SearchContext, SequentialGetAttributeValueSupplier> {
 
     private boolean isElementDefined;
 
     private SequentialGetAttributeValueSupplier(String attr) {
-        super("Value of the attribute '%s'", searchContext -> {
+        super("Value of the attribute '" + attr + "'", searchContext -> {
             var searchContextClass = searchContext.getClass();
             if (WebElement.class.isAssignableFrom(searchContextClass)) {
                 return ((WebElement) searchContext).getAttribute(attr);

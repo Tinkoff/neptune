@@ -37,7 +37,7 @@ public final class IsLoggableUtil {
             return hasReadableDescription(toBeDescribed);
         }
 
-        return false;
+        return hasReadableDescription(toBeDescribed);
     }
 
     public static boolean hasReadableDescription(Object toBeDescribed) {

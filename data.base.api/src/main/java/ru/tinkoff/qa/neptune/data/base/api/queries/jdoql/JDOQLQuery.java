@@ -1,20 +1,26 @@
 package ru.tinkoff.qa.neptune.data.base.api.queries.jdoql;
 
+import org.datanucleus.api.jdo.JDOPersistenceManager;
 import ru.tinkoff.qa.neptune.data.base.api.IdSetter;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 import ru.tinkoff.qa.neptune.data.base.api.queries.KeepResultPersistent;
+import ru.tinkoff.qa.neptune.data.base.api.queries.Query;
 import ru.tinkoff.qa.neptune.data.base.api.result.ListOfPersistentObjects;
 
 import javax.jdo.JDOQLTypedQuery;
 import java.util.List;
-import java.util.function.Function;
+
+import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 /**
  * This class is designed to perform a query to select list of stored objects by {@link JDOQLTypedQuery}
+ *
  * @param <T> is a type of {@link PersistableObject} to be selected
  */
-public final class JDOQLQuery<T extends PersistableObject> implements Function<ReadableJDOQuery<T>, List<T>>, IdSetter {
+public final class JDOQLQuery<T extends PersistableObject> implements Query<T, List<T>>, IdSetter {
 
+    private ReadableJDOQuery<T> query;
     private final KeepResultPersistent keepResultPersistent;
 
     private JDOQLQuery(KeepResultPersistent keepResultPersistent) {
@@ -33,22 +39,30 @@ public final class JDOQLQuery<T extends PersistableObject> implements Function<R
     }
 
     @Override
-    public List<T> apply(ReadableJDOQuery<T> jdoqlTypedQuery) {
-        var list = jdoqlTypedQuery.executeList();
-        var manager = jdoqlTypedQuery.getPersistenceManager();
+    public List<T> execute(JDOPersistenceManager manager) {
+        var list = query.executeList();
 
         ListOfPersistentObjects<T> toReturn;
         if (!keepResultPersistent.toKeepOnPersistent()) {
             toReturn = new ListOfPersistentObjects<>(manager.detachCopyAll(list)) {
             };
             setRealIds(list, toReturn);
-        }
-        else {
+        } else {
             toReturn = new ListOfPersistentObjects<>(list) {
             };
         }
 
 
         return toReturn;
+    }
+
+    public void setQuery(ReadableJDOQuery<T> query) {
+        this.query = query;
+    }
+
+    public String toString() {
+        return ofNullable(query)
+                .map(r -> "JDO typed query " + r.getInternalQuery().toString())
+                .orElse(EMPTY);
     }
 }

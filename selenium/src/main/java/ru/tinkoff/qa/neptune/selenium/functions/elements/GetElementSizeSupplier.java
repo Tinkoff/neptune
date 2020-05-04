@@ -10,6 +10,9 @@ import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 
+@SequentialGetStepSupplier.DefaultParameterNames(
+        from = "Element to get size of"
+)
 public final class GetElementSizeSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, Dimension, SearchContext, GetElementSizeSupplier> {
 

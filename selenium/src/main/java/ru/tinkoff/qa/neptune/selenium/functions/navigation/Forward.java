@@ -11,6 +11,9 @@ import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Get
 
 @MakeImageCapturesOnFinishing
 @MakeFileCapturesOnFinishing
+@SequentialActionSupplier.DefaultParameterNames(
+        performOn = "Window/tab to perform navigation forward"
+)
 public final class Forward extends SequentialActionSupplier<SeleniumStepContext, Window, Forward> {
 
     private Forward() {

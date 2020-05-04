@@ -11,17 +11,17 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
 
 import java.time.Duration;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import static java.lang.String.format;
-import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationHMS;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.GetFrameFunction.*;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITING_FRAME_SWITCHING_DURATION;
 
 @MakeImageCapturesOnFinishing
 @MakeFileCapturesOnFinishing
+@SequentialGetStepSupplier.DefaultParameterNames(
+        timeOut = "Time of the waiting for the frame"
+)
 public final class GetFrameSupplier extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<SeleniumStepContext, Frame, WebDriver, GetFrameSupplier>
         implements TargetLocatorSupplier<Frame> {
 
@@ -76,13 +76,6 @@ public final class GetFrameSupplier extends SequentialGetStepSupplier.GetObjectC
     public static GetFrameSupplier frame(WrapsElement wrapsElement) {
         return new GetFrameSupplier(wrappedBy(wrapsElement)).from(currentContent());
     }
-
-    protected Map<String, String> formTimeoutForReport(Duration timeOut) {
-        var result = new LinkedHashMap<String, String>();
-        result.put("Time of the waiting for the frame", formatDurationHMS(timeOut.toMillis()));
-        return result;
-    }
-
 
     public GetFrameSupplier timeOut(Duration timeOut) {
         return super.timeOut(timeOut);

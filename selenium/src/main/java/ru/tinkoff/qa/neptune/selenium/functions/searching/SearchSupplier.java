@@ -10,8 +10,6 @@ import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.*;
 
 import java.time.Duration;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -19,7 +17,6 @@ import java.util.function.Supplier;
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationHMS;
 import static ru.tinkoff.qa.neptune.selenium.api.widget.Widget.getWidgetName;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindLabeledWidgets.labeledWidgets;
@@ -28,9 +25,13 @@ import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindWidgets.wid
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FIND_ONLY_VISIBLE_ELEMENTS;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMENT_WAITING_DURATION;
 
-@SuppressWarnings({"unused"})
 @MakeImageCapturesOnFinishing
 @MakeFileCapturesOnFinishing
+@SequentialGetStepSupplier.DefaultParameterNames(
+        timeOut = "Time of the waiting for the element",
+        from = "Parent element",
+        criteria = "Element criteria"
+)
 public final class SearchSupplier<R extends SearchContext>
         extends SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier<SearchContext, R, SearchContext, SearchSupplier<R>> {
 
@@ -53,12 +54,6 @@ public final class SearchSupplier<R extends SearchContext>
                     .orElse(description);
             return new NoSuchElementException(exceptionText);
         };
-    }
-
-    protected Map<String, String> formTimeoutForReport(Duration timeOut) {
-        var result = new LinkedHashMap<String, String>();
-        result.put("Time of the waiting for the element", formatDurationHMS(timeOut.toMillis()));
-        return result;
     }
 
 
@@ -106,7 +101,6 @@ public final class SearchSupplier<R extends SearchContext>
     public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, String... labels) {
         var labeledBy = labeled(labels);
         var labeledWidgets = labeledWidgets(tClass);
-        var stringLabels = join(",", labels);
         var search = new SearchSupplier<>(format("%s '%s'", getWidgetName(tClass), join(", ", labels)), labeledWidgets);
         return search.criteria(labeledBy);
     }

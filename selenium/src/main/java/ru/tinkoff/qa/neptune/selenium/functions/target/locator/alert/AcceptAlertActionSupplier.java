@@ -7,6 +7,9 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 /**
  * This class is designed to build an accept-action. This action is performed on a browser alert.
  */
+@SequentialActionSupplier.DefaultParameterNames(
+        performOn = "To accept"
+)
 public final class AcceptAlertActionSupplier extends SequentialActionSupplier<SeleniumStepContext, Alert, AcceptAlertActionSupplier> {
 
     private AcceptAlertActionSupplier() {

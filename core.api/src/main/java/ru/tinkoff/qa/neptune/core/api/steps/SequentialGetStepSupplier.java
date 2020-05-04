@@ -10,6 +10,8 @@ import ru.tinkoff.qa.neptune.core.api.exception.management.IgnoresThrowable;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 import java.time.Duration;
 import java.util.*;
 import java.util.function.Function;
@@ -18,20 +20,18 @@ import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.lang.String.valueOf;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationHMS;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.AND;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
-import static ru.tinkoff.qa.neptune.core.api.steps.DefaultReportStepParameterFactory.readParameters;
 import static ru.tinkoff.qa.neptune.core.api.steps.StepFunction.toGet;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromArray.getFromArray;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromIterable.getFromIterable;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSubArray.getArray;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSubIterable.getIterable;
-import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 /**
  * This class is designed to build and supply chained functions to get desired value.
@@ -44,6 +44,7 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
  * @param <THIS> this is the self-type. It is used for the method chaining.
  */
 @SuppressWarnings("unchecked")
+@SequentialGetStepSupplier.DefaultParameterNames
 public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends SequentialGetStepSupplier<T, R, M, P, THIS>> implements Cloneable,
         Supplier<Function<T, R>>, IgnoresThrowable<THIS>, MakesCapturesOnFinishing<THIS> {
 
@@ -57,7 +58,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
     private Criteria<P> condition;
 
-    private Object from;
+    Object from;
 
     Duration timeToGet;
 
@@ -71,55 +72,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     }
 
     protected Map<String, String> getParameters() {
-        var result = new LinkedHashMap<>(formParameters());
-        result.putAll(formCriteriaReportParams(conditions));
-        ofNullable(timeToGet).ifPresent(duration -> {
-            if (duration.toMillis() > 0) {
-                result.putAll(formTimeoutForReport(duration));
-            }
-        });
-        ofNullable(sleepingTime).ifPresent(duration -> {
-            if (duration.toMillis() > 0) {
-                result.putAll(formSleepTimeForReport(duration));
-            }
-        });
-        result.putAll(formFromParameter());
-        return result;
-    }
-
-    protected Map<String, String> formCriteriaReportParams(List<Criteria<P>> conditions) {
-        var result = new LinkedHashMap<String, String>();
-        int i = 0;
-        for (var c : conditions) {
-            var name = i == 0 ? "Result criteria" : "Result criteria " + (i + 1);
-            result.put(name, c.toString());
-            i++;
-        }
-        return result;
-    }
-
-    protected Map<String, String> formFromParameter() {
-        var result = new LinkedHashMap<String, String>();
-        if (isLoggable(from)) {
-            result.put("Get from", valueOf(from));
-        }
-        return result;
-    }
-
-    protected Map<String, String> formTimeoutForReport(Duration timeOut) {
-        var result = new LinkedHashMap<String, String>();
-        result.put("Timeout/time for retrying", formatDurationHMS(timeOut.toMillis()));
-        return result;
-    }
-
-    protected Map<String, String> formSleepTimeForReport(Duration sleepingTime) {
-        var result = new LinkedHashMap<String, String>();
-        result.put("Polling time", formatDurationHMS(sleepingTime.toMillis()));
-        return result;
-    }
-
-    protected Map<String, String> formParameters() {
-        return new LinkedHashMap<>(readParameters(this, SequentialGetStepSupplier.class));
+        return DefaultReportStepParameterFactory.getParameters(this);
     }
 
     /**
@@ -338,8 +291,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
             var endFunctionStep = toGet(description, endFunction);
             endFunctionStep.addIgnored(ignored);
             endFunctionStep.addCaptorFilters(captorFilters);
-            endFunctionStep.setParameters(getParameters());
             toBeReturned = endFunctionStep.compose(composeWith);
+            endFunctionStep.setParameters(getParameters());
         } else {
             toBeReturned = toGet(description, endFunction.compose(composeWith));
         }
@@ -833,5 +786,58 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         protected THIS from(SequentialGetStepSupplier<T, ? extends M, ?, ?, ?> from) {
             return super.from(from);
         }
+    }
+
+    /**
+     * This annotation is designed to mark subclasses of {@link SequentialGetStepSupplier}. It is
+     * used for the reading of timeouts, polling intervals, {@code from}-values, criteria and for the
+     * forming of parameters of a resulted step-function.
+     *
+     * @see SequentialGetStepSupplier#timeOut(Duration)
+     * @see SequentialGetStepSupplier#pollingInterval(Duration)
+     * @see SequentialGetStepSupplier#criteria(Criteria)
+     * @see SequentialGetStepSupplier#criteria(String, Predicate)
+     * @see SequentialGetStepSupplier#from(Object)
+     * @see SequentialGetStepSupplier#from(SequentialGetStepSupplier)
+     * @see SequentialGetStepSupplier#from(Function)
+     */
+    @Retention(RUNTIME)
+    @Target({TYPE})
+    public @interface DefaultParameterNames {
+
+        /**
+         * Defines name of the timeout-parameter
+         *
+         * @return Defined name of the timeout-parameter
+         * @see SequentialGetStepSupplier#timeOut(Duration)
+         */
+        String timeOut() default "Timeout/time for retrying";
+
+        /**
+         * Defines name of the polling/sleeping time-parameter
+         *
+         * @return Defined name of the polling/sleeping time-parameter
+         * @see SequentialGetStepSupplier#pollingInterval(Duration)
+         */
+        String pollingTime() default "Polling time";
+
+        /**
+         * Defines name of the criteria-parameter
+         *
+         * @return Defined name of the criteria-parameter
+         * @see SequentialGetStepSupplier#criteria(Criteria)
+         * @see SequentialGetStepSupplier#criteria(String, Predicate)
+         */
+        String criteria() default "Result criteria";
+
+        /**
+         * Defines name of the from-parameter
+         *
+         * @return Defined name of the from-parameter
+         * @see SequentialGetStepSupplier#from(Object)
+         * @see SequentialGetStepSupplier#from(SequentialGetStepSupplier)
+         * @see SequentialGetStepSupplier#from(Function)
+         */
+        String from() default "Result criteria";
     }
 }

@@ -11,6 +11,9 @@ import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Get
 
 @MakeImageCapturesOnFinishing
 @MakeFileCapturesOnFinishing
+@SequentialActionSupplier.DefaultParameterNames(
+        performOn = "Window/tab to perform navigation back"
+)
 public final class Back extends SequentialActionSupplier<SeleniumStepContext, Window, Back> {
 
     private Back() {

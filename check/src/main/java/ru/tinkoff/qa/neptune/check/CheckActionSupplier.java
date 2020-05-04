@@ -6,6 +6,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.StepAction;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -65,7 +66,16 @@ public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R,
         checkArgument(!isBlank(description), "Value description to be inspected should not be blank");
         new CheckActionSupplier<Step<T>, T>(description)
                 .matches(matchActions)
-                .performOn(Step::perform)
+                .performOn(new Function<>() {
+                    @Override
+                    public T apply(Step<T> tStep) {
+                        return tStep.perform();
+                    }
+
+                    public String toString() {
+                        return description;
+                    }
+                })
                 .get()
                 .accept(createStep(description, toGet));
     }

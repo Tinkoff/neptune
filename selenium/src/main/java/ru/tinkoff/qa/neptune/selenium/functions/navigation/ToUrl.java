@@ -22,6 +22,9 @@ import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_D
 
 @MakeImageCapturesOnFinishing
 @MakeFileCapturesOnFinishing
+@SequentialActionSupplier.DefaultParameterNames(
+        performOn = "Window/tab to perform navigation"
+)
 public final class ToUrl extends SequentialActionSupplier<SeleniumStepContext, Window, ToUrl> {
 
     @StepParameter("Navigate to")

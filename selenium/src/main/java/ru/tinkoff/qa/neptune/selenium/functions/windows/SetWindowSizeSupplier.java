@@ -13,6 +13,9 @@ import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Get
 
 @MakeImageCapturesOnFinishing
 @MakeFileCapturesOnFinishing
+@SequentialActionSupplier.DefaultParameterNames(
+        performOn = "Window/tab to change size of"
+)
 public final class SetWindowSizeSupplier extends SequentialActionSupplier<SeleniumStepContext, Window, SetWindowSizeSupplier> {
 
     @StepParameter("New Size")

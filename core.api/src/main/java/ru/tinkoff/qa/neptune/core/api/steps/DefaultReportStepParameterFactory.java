@@ -2,80 +2,26 @@ package ru.tinkoff.qa.neptune.core.api.steps;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import static java.lang.String.valueOf;
-import static java.lang.System.lineSeparator;
 import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.StringUtils.SPACE;
+import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationHMS;
 import static ru.tinkoff.qa.neptune.core.api.steps.StepParameter.ParameterValueReader.getParameterForStep;
+import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
-final class DefaultReportStepParameterFactory {
-
-    private static final String LINE_SEPARATOR = lineSeparator();
+/**
+ * This is util class that forms step parameters for logs and reporting tools
+ */
+public final class DefaultReportStepParameterFactory {
 
     private DefaultReportStepParameterFactory() {
         super();
     }
 
-    static <Q> String fromParameterBySupplier(SequentialGetStepSupplier<?, ?, ?, Q, ?> from) {
-        var strBuilder = new StringBuilder();
-
-        var supplier2 = (SequentialGetStepSupplier<?, ?, ?, Q, ?>) from;
-        var params = supplier2.formCriteriaReportParams(supplier2.conditions);
-        ofNullable(from.timeToGet).ifPresent(duration -> params.putAll(from.formTimeoutForReport(duration)));
-        ofNullable(from.sleepingTime).ifPresent(duration -> params.putAll(from.formSleepTimeForReport(duration)));
-        params.putAll(supplier2.formParameters());
-
-        strBuilder.append(supplier2.toString());
-        if (params.size() > 0) {
-            strBuilder.append(". Parameters:");
-            params.forEach((s, s2) -> strBuilder
-                    .append(LINE_SEPARATOR)
-                    .append(SPACE)
-                    .append(SPACE)
-                    .append(SPACE)
-                    .append(SPACE)
-                    .append(SPACE)
-                    .append(s)
-                    .append(" : ")
-                    .append(s2));
-        }
-
-        return strBuilder.toString();
-    }
-
-    static String fromParameterByStepFunction(StepFunction<?, ?> from) {
-        var strBuilder = new StringBuilder();
-        var cls = from.getClass();
-
-        Map<String, String> params;
-        if (StepFunction.SequentialStepFunction.class.isAssignableFrom(cls)) {
-            params = ((StepFunction<?, ?>) ((StepFunction.SequentialStepFunction<?, ?>) from).sequence.getLast()).getParameters();
-        } else {
-            params = from.getParameters();
-        }
-
-        strBuilder.append(from.toString());
-        if (params.size() > 0) {
-            strBuilder.append(". Parameters:");
-            params.forEach((s, s2) -> strBuilder
-                    .append(LINE_SEPARATOR)
-                    .append(SPACE)
-                    .append(SPACE)
-                    .append(SPACE)
-                    .append(SPACE)
-                    .append(SPACE)
-                    .append(s)
-                    .append(" : ")
-                    .append(s2));
-        }
-
-        return strBuilder.toString();
-    }
-
-    static Map<String, String> readParameters(Object toRead, Class<?> rootClassToStop) {
+    private static Map<String, String> readParameters(Object toRead, Class<?> rootClassToStop) {
         var result = new LinkedHashMap<String, String>();
         Class<?> cls = toRead.getClass();
         while (!cls.equals(rootClassToStop)) {
@@ -99,6 +45,76 @@ final class DefaultReportStepParameterFactory {
                     });
             cls = cls.getSuperclass();
         }
+        return result;
+    }
+
+    public static Map<String, String> getParameters(SequentialGetStepSupplier<?, ?, ?, ?, ?> supplier) {
+        var cls = (Class<?>) supplier.getClass();
+        var defaultParameters = ofNullable(cls.getAnnotation(SequentialGetStepSupplier.DefaultParameterNames.class))
+                .orElseGet(() -> {
+                    SequentialGetStepSupplier.DefaultParameterNames result = null;
+                    var clazz = cls;
+                    while (result == null) {
+                        clazz = clazz.getSuperclass();
+                        result = clazz.getAnnotation(SequentialGetStepSupplier.DefaultParameterNames.class);
+                    }
+                    return result;
+                });
+
+        var result = new LinkedHashMap<>(readParameters(supplier, SequentialGetStepSupplier.class));
+        int i = 0;
+        for (var c : supplier.conditions) {
+            var name = i == 0 ? defaultParameters.criteria() : defaultParameters.criteria() + " " + (i + 1);
+            result.put(name, c.toString());
+            i++;
+        }
+
+        ofNullable(supplier.timeToGet).ifPresent(duration -> {
+            if (duration.toMillis() > 0) {
+                result.put(defaultParameters.timeOut(), formatDurationHMS(duration.toMillis()));
+            }
+        });
+        ofNullable(supplier.sleepingTime).ifPresent(duration -> {
+            if (duration.toMillis() > 0) {
+                result.put(defaultParameters.pollingTime(), formatDurationHMS(duration.toMillis()));
+            }
+        });
+
+        if (isLoggable(supplier.from)) {
+            var fromCls = supplier.from.getClass();
+            if (Function.class.isAssignableFrom(fromCls) || SequentialGetStepSupplier.class.isAssignableFrom(fromCls)) {
+                result.put(defaultParameters.from(), supplier.from + " (is calculated while the step is executed)");
+            } else {
+                result.put(defaultParameters.from(), valueOf(supplier.from));
+            }
+        }
+
+        return result;
+    }
+
+    public static Map<String, String> getParameters(SequentialActionSupplier<?, ?, ?> supplier) {
+        var cls = (Class<?>) supplier.getClass();
+        var defaultParameters = ofNullable(cls.getAnnotation(SequentialActionSupplier.DefaultParameterNames.class))
+                .orElseGet(() -> {
+                    SequentialActionSupplier.DefaultParameterNames result = null;
+                    var clazz = cls;
+                    while (result == null) {
+                        clazz = clazz.getSuperclass();
+                        result = clazz.getAnnotation(SequentialActionSupplier.DefaultParameterNames.class);
+                    }
+                    return result;
+                });
+
+        var result = new LinkedHashMap<String, String>();
+        if (isLoggable(supplier.toBePerformedOn)) {
+            var fromCls = supplier.toBePerformedOn.getClass();
+            if (Function.class.isAssignableFrom(fromCls) || SequentialGetStepSupplier.class.isAssignableFrom(fromCls)) {
+                result.put(defaultParameters.performOn(), supplier.toBePerformedOn + " (is calculated while the step is executed)");
+            } else {
+                result.put(defaultParameters.performOn(), valueOf(supplier.toBePerformedOn));
+            }
+        }
+        result.putAll(readParameters(supplier, SequentialActionSupplier.class));
         return result;
     }
 }

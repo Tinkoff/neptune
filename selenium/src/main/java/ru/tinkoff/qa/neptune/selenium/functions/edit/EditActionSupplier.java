@@ -13,6 +13,9 @@ import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentConte
 
 @MakeImageCapturesOnFinishing
 @MakeFileCapturesOnFinishing
+@SequentialActionSupplier.DefaultParameterNames(
+        performOn = "Element to edit"
+)
 public final class EditActionSupplier<T> extends
         SequentialActionSupplier<SeleniumStepContext, Editable<T>, EditActionSupplier<T>> {
 

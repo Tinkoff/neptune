@@ -20,6 +20,7 @@ import static ru.tinkoff.qa.neptune.core.api.steps.StepFunction.toGet;
  * @param <R> is a generic type of {@link Matcher}
  */
 @MakeCaptureOnFinishing(typeOfCapture = Object.class)
+@SequentialActionSupplier.DefaultParameterNames(performOn = "Check evaluation result")
 public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchAction<T, R>> {
 
     @StepParameter("Match criteria")

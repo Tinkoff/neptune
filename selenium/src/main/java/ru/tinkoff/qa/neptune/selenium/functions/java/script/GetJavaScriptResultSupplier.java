@@ -24,6 +24,10 @@ import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentConte
 
 @MakeImageCapturesOnFinishing
 @MakeStringCapturesOnFinishing
+@SequentialGetStepSupplier.DefaultParameterNames(
+        timeOut = "Time to get the expected result",
+        criteria = "Criteria for evaluated result"
+)
 public final class GetJavaScriptResultSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, Object, WebDriver, GetJavaScriptResultSupplier> {
 
