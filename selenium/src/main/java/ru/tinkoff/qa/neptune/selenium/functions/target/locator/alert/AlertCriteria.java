@@ -42,25 +42,22 @@ public final class AlertCriteria {
     public static Criteria<Alert> alertTextMatches(String expression) {
         checkArgument(isNotBlank(expression), "Substring/RegEx pattern should be defined");
 
-        return condition(format("Alert has text that contains '%s' or fits regExp pattern '%s'", expression, expression), a -> {
-            var alertText = a.getText();
+        return condition(format("Alert has text that contains '%s' or fits regExp pattern '%s'", expression, expression), a ->
+                ofNullable(a.getText())
+                        .map(s -> {
+                            if (s.contains(expression)) {
+                                return true;
+                            }
 
-            return ofNullable(alertText)
-                    .map(s -> {
-                        if (s.contains(expression)) {
-                            return true;
-                        }
-
-                        try {
-                            var p = compile(expression);
-                            var mather = p.matcher(s);
-                            return mather.matches() || mather.find();
-                        } catch (Throwable thrown) {
-                            thrown.printStackTrace();
-                            return false;
-                        }
-                    })
-                    .orElse(false);
-        });
+                            try {
+                                var p = compile(expression);
+                                var mather = p.matcher(s);
+                                return mather.matches() || mather.find();
+                            } catch (Throwable thrown) {
+                                thrown.printStackTrace();
+                                return false;
+                            }
+                        })
+                        .orElse(false));
     }
 }

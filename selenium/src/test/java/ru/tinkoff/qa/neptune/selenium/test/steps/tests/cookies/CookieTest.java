@@ -11,7 +11,8 @@ import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
+import static ru.tinkoff.qa.neptune.selenium.functions.cookies.CommonBrowserCookieCriteria.cookieDomain;
+import static ru.tinkoff.qa.neptune.selenium.functions.cookies.CommonBrowserCookieCriteria.cookieIsSecure;
 import static ru.tinkoff.qa.neptune.selenium.functions.cookies.GetSeleniumCookieSupplier.cookies;
 
 public class CookieTest extends BaseWebDriverTest {
@@ -25,8 +26,8 @@ public class CookieTest extends BaseWebDriverTest {
     @Test(priority = 1)
     public void getCookieConditionalTest() {
         var cookies = seleniumSteps.get(cookies()
-                .criteria("Cookie has domain 'paypal.com' and isSecure = true", cookie -> cookie.getDomain()
-                        .equals("paypal.com") && cookie.isSecure()));
+                .criteria(cookieDomain("paypal.com"))
+                .criteria(cookieIsSecure()));
         assertThat(cookies, hasSize(1));
     }
 
@@ -44,12 +45,14 @@ public class CookieTest extends BaseWebDriverTest {
     @Test(priority = 3)
     public void removeCookiesWithSearchingTest() {
         var cookies = seleniumSteps.get(cookies()
-                .criteria("Cookie has domain 'paypal.com' and isSecure = true", cookie -> cookie
-                        .getDomain().equals("paypal.com")));
+                .criteria(cookieDomain("paypal.com"))
+                .criteria(cookieIsSecure()));
+
+        assert cookies.size() > 0;
 
         var cookies2 = seleniumSteps.removeCookies(
-                condition("Cookie has domain 'paypal.com' and isSecure = true",
-                        cookie -> cookie.getDomain().equals("paypal.com")))
+                cookieDomain("paypal.com"),
+                cookieIsSecure())
                 .get(cookies());
 
         assertThat(cookies2, not(hasItems(cookies.toArray(new Cookie[]{}))));

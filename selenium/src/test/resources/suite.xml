@@ -32,9 +32,11 @@
     </test>
 
     <test name="Creation of capabilities tests">
-        <packages>
-            <package name="ru.tinkoff.qa.neptune.selenium.test.capability.*"/>
-        </packages>
+        <classes>
+            <class name="ru.tinkoff.qa.neptune.selenium.test.capability.properties.DefaultCapabilityPropertiesTest"/>
+            <class name="ru.tinkoff.qa.neptune.selenium.test.capability.properties.NullCapabilityPropertiesTest"/>
+            <class name="ru.tinkoff.qa.neptune.selenium.test.capability.properties.WhenCapabilityPropertiesAreDefinedPreviously"/>
+        </classes>
     </test>
 
     <test name="Captors tests">

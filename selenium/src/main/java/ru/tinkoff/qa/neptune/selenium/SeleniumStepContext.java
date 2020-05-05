@@ -226,7 +226,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     /**
      * Checks whenever an element is present or not
      *
-     * @param toFind is how to find the element
+     * @param toFind is description of an element to be present
      * @return is element present|visible or not
      */
     public boolean presenceOf(SearchSupplier<?> toFind) {
@@ -239,7 +239,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     /**
      * Checks whenever an element is present or not
      *
-     * @param toFind       is how to find the element
+     * @param toFind       is description of an element to be present
      * @param errorMessage is a message of {@link NoSuchElementException} to be thrown when element is not present
      * @return is element present|visible or not
      */
@@ -254,7 +254,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     /**
      * Checks whenever elements is present or not
      *
-     * @param toFind is how to find elements
+     * @param toFind is description of elements to be present
      * @return are elements present|visible or not
      */
     public boolean presenceOf(MultipleSearchSupplier<?> toFind) {
@@ -267,7 +267,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     /**
      * Checks whenever elements is present or not
      *
-     * @param toFind       is how to find elements
+     * @param toFind       is description of elements to be present
      * @param errorMessage is a message of {@link NoSuchElementException} to be thrown when elements are not present
      * @return are elements present|visible or not
      */
@@ -278,6 +278,104 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
                 NoSuchElementException.class,
                 StaleElementReferenceException.class);
     }
+
+    /**
+     * Checks whenever window is present or not
+     *
+     * @param getWindow is a description of a window to be present
+     * @return is window present or not
+     */
+    public boolean presenceOf(GetWindowSupplier getWindow) {
+        return super.presenceOf(getWindow, NoSuchWindowException.class);
+    }
+
+    /**
+     * Checks whenever window is present or not
+     *
+     * @param getWindow    is a description of a window to be present
+     * @param errorMessage is a message of {@link NoSuchWindowException} to be thrown when expected window is
+     *                     not present
+     * @return is window present or not
+     */
+    public boolean presenceOf(GetWindowSupplier getWindow, String errorMessage) {
+        return super.presenceOf(getWindow,
+                () -> new NoSuchWindowException(errorMessage),
+                NoSuchWindowException.class);
+    }
+
+
+    /**
+     * Checks whenever frame is present or not
+     *
+     * @param getFrame is a description of a frame to be present
+     * @return is frame present or not
+     */
+    public boolean presenceOf(GetFrameSupplier getFrame) {
+        return super.presenceOf(getFrame, NoSuchFrameException.class);
+    }
+
+    /**
+     * Checks whenever frame is present or not
+     *
+     * @param getFrame     is a description of a frame to be present
+     * @param errorMessage is a message of {@link NoSuchFrameException} to be thrown when expected frame is
+     *                     not present
+     * @return is frame present or not
+     */
+    public boolean presenceOf(GetFrameSupplier getFrame, String errorMessage) {
+        return super.presenceOf(getFrame,
+                () -> new NoSuchFrameException(errorMessage),
+                NoSuchFrameException.class);
+    }
+
+
+    /**
+     * Checks whenever cookies are present or not
+     *
+     * @param getCookies is a description of cookies to be present
+     * @return are cookies present or not
+     */
+    public boolean presenceOf(GetSeleniumCookieSupplier getCookies) {
+        return super.presenceOf(getCookies);
+    }
+
+    /**
+     * Checks whenever cookies are present or not
+     *
+     * @param getCookies   is a description of cookies to be present
+     * @param errorMessage is a message of {@link NoSuchCookieException} to be thrown when expected cookies are
+     *                     not present
+     * @return are cookies present or not
+     */
+    public boolean presenceOf(GetSeleniumCookieSupplier getCookies, String errorMessage) {
+        return super.presenceOf(getCookies,
+                () -> new NoSuchCookieException(errorMessage));
+    }
+
+    /**
+     * Checks whenever alert is present or not
+     *
+     * @param getAlert is a description of an alert to be present
+     * @return is alert present or not
+     */
+    public boolean presenceOf(GetAlertSupplier getAlert) {
+        return super.presenceOf(getAlert, NoAlertPresentException.class);
+    }
+
+    /**
+     * Checks whenever alert is present or not
+     *
+     * @param getAlert     is a description of an alert to be present
+     * @param errorMessage is a message of {@link NoAlertPresentException} to be thrown when expected alert is
+     *                     not present
+     * @return is alert present or not
+     */
+    public boolean presenceOf(GetAlertSupplier getAlert, String errorMessage) {
+        return super.presenceOf(getAlert,
+                () -> new NoAlertPresentException(errorMessage),
+                NoAlertPresentException.class);
+    }
+
 
     /**
      * Checks whenever an element is absent or not
