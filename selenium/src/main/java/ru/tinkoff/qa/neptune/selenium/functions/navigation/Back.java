@@ -1,21 +1,27 @@
 package ru.tinkoff.qa.neptune.selenium.functions.navigation;
 
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 
-import static java.lang.String.format;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
 
-public final class Back extends NavigationActionSupplier<Back> {
+@MakeImageCapturesOnFinishing
+@MakeFileCapturesOnFinishing
+@SequentialActionSupplier.DefaultParameterNames(
+        performOn = "Window/tab to perform navigation back"
+)
+public final class Back extends SequentialActionSupplier<SeleniumStepContext, Window, Back> {
 
-    private static final String DESCRIPTION = "Navigate back in %s";
-
-    private Back(String description) {
-        super(description);
+    private Back() {
+        super("Navigate back");
     }
 
     /**
-     * Builds navigation back in the first window.
+     * Builds navigation back in the browser window/tab that active currently.
      *
      * @return built navigation action
      */
@@ -30,7 +36,7 @@ public final class Back extends NavigationActionSupplier<Back> {
      * @return built navigation action
      */
     public static Back back(GetWindowSupplier windowSupplier) {
-        return new Back(format(DESCRIPTION, windowSupplier)).performOn(windowSupplier);
+        return new Back().performOn(windowSupplier);
     }
 
     /**
@@ -40,7 +46,7 @@ public final class Back extends NavigationActionSupplier<Back> {
      * @return built navigation action
      */
     public static Back back(Window window) {
-        return new Back(format(DESCRIPTION, window)).performOn(window);
+        return new Back().performOn(window);
     }
 
     @Override

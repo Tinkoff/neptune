@@ -54,12 +54,12 @@ public final class WhereJunction {
         for (var be: expressions) {
             resultExpression = ofNullable(resultExpression)
                     .map(expr ->  {
-                        Expression leftQueryExpr = ((ExpressionImpl) expr).getQueryExpression();
-                        Expression rightQueryExpr = ((ExpressionImpl) be).getQueryExpression();
+                        Expression leftQueryExpr = ((ExpressionImpl<?>) expr).getQueryExpression();
+                        Expression rightQueryExpr = ((ExpressionImpl<?>) be).getQueryExpression();
 
-                        org.datanucleus.query.expression.Expression queryExpr =
+                        Expression queryExpr =
                                 new DyadicExpression(leftQueryExpr, operator, rightQueryExpr);
-                        return (BooleanExpression) new BooleanExpressionImpl(queryExpr);
+                        return (BooleanExpression) new BooleanExpressionImpl<>(queryExpr);
                     })
                     .orElse(be);
         }

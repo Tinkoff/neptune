@@ -16,8 +16,7 @@ import java.util.function.Supplier;
 
 import static java.lang.String.format;
 import static java.lang.String.join;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.selenium.api.widget.Widget.getWidgetName;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindLabeledWidgets.labeledWidgets;
@@ -26,9 +25,13 @@ import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindWidgets.wid
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FIND_ONLY_VISIBLE_ELEMENTS;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMENT_WAITING_DURATION;
 
-@SuppressWarnings({"unused"})
 @MakeImageCapturesOnFinishing
 @MakeFileCapturesOnFinishing
+@SequentialGetStepSupplier.DefaultParameterNames(
+        timeOut = "Time of the waiting for the element",
+        from = "Parent element",
+        criteria = "Element criteria"
+)
 public final class SearchSupplier<R extends SearchContext>
         extends SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier<SearchContext, R, SearchContext, SearchSupplier<R>> {
 
@@ -44,18 +47,15 @@ public final class SearchSupplier<R extends SearchContext>
     }
 
     private static Supplier<NoSuchElementException> noSuchElementException(SearchSupplier<?> supplier) {
-        return () -> new NoSuchElementException(format("Nothing was found. Attempt to get %s", supplier.toString()));
-    }
-
-    private static Supplier<String> criteriaDescription(SearchSupplier<?> search) {
         return () -> {
-            var criteria = search.getCriteriaDescription();
-            if (!isBlank(criteria)) {
-                return criteria;
-            }
-            return EMPTY;
+            var description = format("Nothing was found. Attempt to get %s", supplier.toString());
+            var exceptionText = ofNullable(supplier.getCriteria())
+                    .map(c -> format("%s. Criteria: %s", description, c.toString()))
+                    .orElse(description);
+            return new NoSuchElementException(exceptionText);
         };
     }
+
 
     /**
      * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
@@ -75,7 +75,7 @@ public final class SearchSupplier<R extends SearchContext>
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some {@link WebElement} found from the input value.
      *
-     * @param by locator strategy to find an element
+     * @param by   locator strategy to find an element
      * @param text that the desired element should have
      * @return an instance of {@link SearchSupplier}
      */
@@ -95,14 +95,13 @@ public final class SearchSupplier<R extends SearchContext>
      *               least one not abstract subclass that implements {@link Labeled} or be that class.
      * @param labels (texts of some elements or attributes inside or beside the widget) are used to
      *               find the widget.
-     * @param <T> the type of widget that should be found
+     * @param <T>    the type of widget that should be found
      * @return an instance of {@link SearchSupplier}
      */
     public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, String... labels) {
         var labeledBy = labeled(labels);
         var labeledWidgets = labeledWidgets(tClass);
-        var stringLabels = join(",", labels);
-        var search =  new SearchSupplier<>(format("%s '%s'", getWidgetName(tClass), join(", ", labels)), labeledWidgets);
+        var search = new SearchSupplier<>(format("%s '%s'", getWidgetName(tClass), join(", ", labels)), labeledWidgets);
         return search.criteria(labeledBy);
     }
 
@@ -110,9 +109,9 @@ public final class SearchSupplier<R extends SearchContext>
      * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some {@link Widget} found from the input value.
-
+     *
      * @param tClass is a class of an object to be returned
-     * @param <T> the type of widget to find
+     * @param <T>    the type of widget to find
      * @return an instance of {@link SearchSupplier}
      */
     public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass) {
@@ -384,7 +383,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Constructs the chained searching from some instance of {@link SearchContext}.
      *
      * @param from is a parent element.
-     * @param <Q> is a type of the parent element.
+     * @param <Q>  is a type of the parent element.
      * @return self-reference
      */
     public <Q extends SearchContext> SearchSupplier<R> foundFrom(SearchSupplier<Q> from) {
@@ -395,7 +394,7 @@ public final class SearchSupplier<R extends SearchContext>
      * Constructs the chained searching for some element.
      *
      * @param from is a parent element.
-     * @param <Q> is a type of the parent element.
+     * @param <Q>  is a type of the parent element.
      * @return self-reference
      */
     public <Q extends SearchContext> SearchSupplier<R> foundFrom(Q from) {
@@ -408,10 +407,10 @@ public final class SearchSupplier<R extends SearchContext>
      *
      * @param from is a function that takes some {@link SearchContext} as the input parameter and returns some
      *             found instance of {@link SearchContext}.
-     * @param <Q> is a type of the parent element.
+     * @param <Q>  is a type of the parent element.
      * @return self-reference
      */
-    public <Q extends SearchContext>  SearchSupplier<R> foundFrom(Function<SearchContext, Q> from) {
+    public <Q extends SearchContext> SearchSupplier<R> foundFrom(Function<SearchContext, Q> from) {
         return super.from(from);
     }
 

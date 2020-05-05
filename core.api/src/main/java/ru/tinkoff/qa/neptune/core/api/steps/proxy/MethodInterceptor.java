@@ -5,7 +5,7 @@ import net.bytebuddy.implementation.bind.annotation.Origin;
 import net.bytebuddy.implementation.bind.annotation.RuntimeType;
 import net.bytebuddy.implementation.bind.annotation.This;
 import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
-import ru.tinkoff.qa.neptune.core.api.concurency.ObjectContainer;
+import ru.tinkoff.qa.neptune.core.api.concurrency.ObjectContainer;
 import ru.tinkoff.qa.neptune.core.api.steps.context.ConstructorParameters;
 import ru.tinkoff.qa.neptune.core.api.utils.ConstructorUtil;
 

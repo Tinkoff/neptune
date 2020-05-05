@@ -19,7 +19,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import static org.openqa.selenium.Keys.ALT;
 import static org.openqa.selenium.Keys.CONTROL;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.keyDown;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.keyDown;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -41,7 +41,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import static org.openqa.selenium.By.*;
 import static org.openqa.selenium.Keys.ALT;
 import static org.openqa.selenium.Keys.CONTROL;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.keyDown;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.keyDown;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 
 public class MyTests /*...*/ {
@@ -66,7 +66,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import static org.openqa.selenium.Keys.ALT;
 import static org.openqa.selenium.Keys.CONTROL;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.keyDown;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.keyDown;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.button;
 
 public class MyTests /*...*/ {
@@ -92,7 +92,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import static org.openqa.selenium.By.*;
 import static org.openqa.selenium.Keys.ALT;
 import static org.openqa.selenium.Keys.CONTROL;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.keyDown;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.keyDown;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 
 public class MyTests /*...*/ {
@@ -118,7 +118,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import static org.openqa.selenium.By.*;
 import static org.openqa.selenium.Keys.ALT;
 import static org.openqa.selenium.Keys.CONTROL;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.keyDown;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.keyDown;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 
 public class MyTests /*...*/ {
@@ -143,7 +143,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import static org.openqa.selenium.Keys.ALT;
 import static org.openqa.selenium.Keys.CONTROL;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.keyUp;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.keyUp;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -165,7 +165,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import static org.openqa.selenium.By.*;
 import static org.openqa.selenium.Keys.ALT;
 import static org.openqa.selenium.Keys.CONTROL;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.keyUp;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.keyUp;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 
 public class MyTests /*...*/ {
@@ -190,7 +190,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import static org.openqa.selenium.Keys.ALT;
 import static org.openqa.selenium.Keys.CONTROL;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.keyUp;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.keyUp;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.button;
 
 public class MyTests /*...*/ {
@@ -216,7 +216,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import static org.openqa.selenium.By.*;
 import static org.openqa.selenium.Keys.ALT;
 import static org.openqa.selenium.Keys.CONTROL;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.keyUp;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.keyUp;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 
 public class MyTests /*...*/ {
@@ -242,7 +242,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import static org.openqa.selenium.By.*;
 import static org.openqa.selenium.Keys.ALT;
 import static org.openqa.selenium.Keys.CONTROL;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.keyUp;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.keyUp;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 
 public class MyTests /*...*/ {
@@ -266,7 +266,7 @@ public class MyTests /*...*/ {
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import static org.openqa.selenium.Keys.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.sendKeys;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.sendKeys;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -286,7 +286,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import static org.openqa.selenium.By.*;
 import static org.openqa.selenium.Keys.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.sendKeys;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.sendKeys;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 
 public class MyTests /*...*/ {
@@ -309,7 +309,7 @@ public class MyTests /*...*/ {
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import static org.openqa.selenium.Keys.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.sendKeys;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.sendKeys;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.textField;
 
 public class MyTests /*...*/ {
@@ -333,7 +333,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import static org.openqa.selenium.By.*;
 import static org.openqa.selenium.Keys.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.sendKeys;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.sendKeys;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 
 public class MyTests /*...*/ {
@@ -356,7 +356,7 @@ public class MyTests /*...*/ {
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import static org.openqa.selenium.Keys.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.sendKeys;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.sendKeys;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.textField;
 
 public class MyTests /*...*/ {
@@ -378,7 +378,7 @@ public class MyTests /*...*/ {
 //пример: простой клик мышью с задержкой
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.clickAndHold;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.clickAndHold;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -397,7 +397,7 @@ public class MyTests /*...*/ {
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import static org.openqa.selenium.By.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.clickAndHold;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.clickAndHold;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 
 public class MyTests /*...*/ {
@@ -419,7 +419,7 @@ public class MyTests /*...*/ {
 //На примере ссылки
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.clickAndHold;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.clickAndHold;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.link;
 
 public class MyTests /*...*/ {
@@ -442,7 +442,7 @@ public class MyTests /*...*/ {
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import static org.openqa.selenium.By.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.clickAndHold;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.clickAndHold;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 
 public class MyTests /*...*/ {
@@ -464,7 +464,7 @@ public class MyTests /*...*/ {
 //Указывается способ, как найти целевые виджеты
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.clickAndHold;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.clickAndHold;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.link;
 
 public class MyTests /*...*/ {
@@ -486,7 +486,7 @@ public class MyTests /*...*/ {
 //пример: простой клик мышью с задержкой
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.clickAndHold;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.clickAndHold;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -505,7 +505,7 @@ public class MyTests /*...*/ {
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import static org.openqa.selenium.By.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.clickAndHold;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.clickAndHold;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 
 public class MyTests /*...*/ {
@@ -527,7 +527,7 @@ public class MyTests /*...*/ {
 //На примере ссылки
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.clickAndHold;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.clickAndHold;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.link;
 
 public class MyTests /*...*/ {
@@ -550,7 +550,7 @@ public class MyTests /*...*/ {
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import static org.openqa.selenium.By.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.clickAndHold;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.clickAndHold;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 
 public class MyTests /*...*/ {
@@ -572,7 +572,7 @@ public class MyTests /*...*/ {
 //Указывается способ, как найти целевые виджеты
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.clickAndHold;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.clickAndHold;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.link;
 
 public class MyTests /*...*/ {
@@ -594,7 +594,7 @@ public class MyTests /*...*/ {
 //пример: освобождение левой кнопки мыши. Текущая позиция мыши.
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.release;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.release;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -613,7 +613,7 @@ public class MyTests /*...*/ {
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import static org.openqa.selenium.By.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.release;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.release;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 
 public class MyTests /*...*/ {
@@ -635,7 +635,7 @@ public class MyTests /*...*/ {
 //На примере ссылки
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.release;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.release;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.link;
 
 public class MyTests /*...*/ {
@@ -658,7 +658,7 @@ public class MyTests /*...*/ {
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import static org.openqa.selenium.By.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.release;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.release;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 
 public class MyTests /*...*/ {
@@ -680,7 +680,7 @@ public class MyTests /*...*/ {
 //Указывается способ, как найти целевые виджеты
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.release;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.release;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.link;
 
 public class MyTests /*...*/ {
@@ -702,7 +702,7 @@ public class MyTests /*...*/ {
 //пример: Клик левой кнопкой мыши. Текущая позиция мыши.
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.click;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.click;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -721,7 +721,7 @@ public class MyTests /*...*/ {
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import static org.openqa.selenium.By.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.click;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.click;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 
 public class MyTests /*...*/ {
@@ -743,7 +743,7 @@ public class MyTests /*...*/ {
 //На примере ссылки
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.click;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.click;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.link;
 
 public class MyTests /*...*/ {
@@ -766,7 +766,7 @@ public class MyTests /*...*/ {
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import static org.openqa.selenium.By.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.click;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.click;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 
 public class MyTests /*...*/ {
@@ -788,7 +788,7 @@ public class MyTests /*...*/ {
 //Указывается способ, как найти целевые виджеты
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.click;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.click;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.link;
 
 public class MyTests /*...*/ {
@@ -811,7 +811,7 @@ public class MyTests /*...*/ {
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import static org.openqa.selenium.By.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.moveToElement;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.moveToElement;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 
 public class MyTests /*...*/ {
@@ -833,7 +833,7 @@ public class MyTests /*...*/ {
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import static org.openqa.selenium.By.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.moveToElement;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.moveToElement;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 
 public class MyTests /*...*/ {
@@ -858,7 +858,7 @@ public class MyTests /*...*/ {
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import static org.openqa.selenium.By.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.moveToElement;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.moveToElement;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 
 public class MyTests /*...*/ {
@@ -880,7 +880,7 @@ public class MyTests /*...*/ {
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import static org.openqa.selenium.By.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.moveToElement;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.moveToElement;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 
 public class MyTests /*...*/ {
@@ -905,7 +905,7 @@ public class MyTests /*...*/ {
 //На примере ссылки
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.moveToElement;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.moveToElement;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.link;
 
 public class MyTests /*...*/ {
@@ -928,7 +928,7 @@ public class MyTests /*...*/ {
 //На примере ссылки
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.moveToElement;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.moveToElement;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.link;
 
 public class MyTests /*...*/ {
@@ -950,7 +950,7 @@ public class MyTests /*...*/ {
 //пример: Движение мыши относительно текущей позиции/левого верхнего угла страницы
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.moveByOffset;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.moveByOffset;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -972,7 +972,7 @@ public class MyTests /*...*/ {
 //пример: Клик правой кнопкой мыши (контекстный клик). Текущая позиция мыши.
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.contextClick;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.contextClick;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -991,7 +991,7 @@ public class MyTests /*...*/ {
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import static org.openqa.selenium.By.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.contextClick;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.contextClick;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 
 public class MyTests /*...*/ {
@@ -1013,7 +1013,7 @@ public class MyTests /*...*/ {
 //На примере ссылки
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.contextClick;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.contextClick;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.link;
 
 public class MyTests /*...*/ {
@@ -1036,7 +1036,7 @@ public class MyTests /*...*/ {
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import static org.openqa.selenium.By.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.contextClick;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.contextClick;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 
 public class MyTests /*...*/ {
@@ -1058,7 +1058,7 @@ public class MyTests /*...*/ {
 //Указывается способ, как найти целевые виджеты
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.contextClick;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.contextClick;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.link;
 
 public class MyTests /*...*/ {
@@ -1118,7 +1118,7 @@ public class MyTests /*...*/ {
 //пример: Клик правой кнопкой мыши (контекстный клик). Текущая позиция мыши.
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.contextClick;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.contextClick;
 
 public class MyTests /*...*/ {
     private SeleniumStepContext seleniumSteps;
@@ -1137,7 +1137,7 @@ public class MyTests /*...*/ {
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import static org.openqa.selenium.By.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.contextClick;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.contextClick;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 
 public class MyTests /*...*/ {
@@ -1159,7 +1159,7 @@ public class MyTests /*...*/ {
 //На примере ссылки
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.contextClick;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.contextClick;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.link;
 
 public class MyTests /*...*/ {
@@ -1182,7 +1182,7 @@ public class MyTests /*...*/ {
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import static org.openqa.selenium.By.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.contextClick;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.contextClick;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.webElement;
 
 public class MyTests /*...*/ {
@@ -1204,7 +1204,7 @@ public class MyTests /*...*/ {
 //Указывается способ, как найти целевые виджеты
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.contextClick;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction_Deprecated.contextClick;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.link;
 
 public class MyTests /*...*/ {
