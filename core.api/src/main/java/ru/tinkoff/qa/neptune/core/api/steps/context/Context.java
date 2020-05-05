@@ -46,7 +46,7 @@ public abstract class Context<THIS extends Context<THIS>> {
      * @param <T>           is a type that extends {@link Context}
      * @return a new proxy-instance
      */
-    protected static <T extends Context> T getInstance(Class<T> toInstantiate) {
+    protected static <T extends Context<?>> T getInstance(Class<T> toInstantiate) {
         checkNotNull(toInstantiate);
 
         var createWith = toInstantiate.getAnnotation(CreateWith.class);

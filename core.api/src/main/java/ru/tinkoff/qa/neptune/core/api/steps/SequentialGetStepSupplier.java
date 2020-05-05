@@ -828,7 +828,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
          * @see SequentialGetStepSupplier#criteria(Criteria)
          * @see SequentialGetStepSupplier#criteria(String, Predicate)
          */
-        String criteria() default "Result criteria";
+        String criteria() default "Criteria";
 
         /**
          * Defines name of the from-parameter
@@ -838,6 +838,6 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
          * @see SequentialGetStepSupplier#from(SequentialGetStepSupplier)
          * @see SequentialGetStepSupplier#from(Function)
          */
-        String from() default "Result criteria";
+        String from() default "Get from";
     }
 }
