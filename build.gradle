@@ -1,5 +1,5 @@
 ext {
-    globalVersion = '0.12.1-ALPHA'
+    globalVersion = '0.12.2-ALPHA'
 }
 
 subprojects {
@@ -30,8 +30,8 @@ subprojects {
         seleniumVersion = '3.141.59'
         allureVersion = '2.13.2'
         jacksonVersion = '2.10.3'
-        mavenDeployLogin = hasProperty('REPO_USER_NAME') ? REPO_USER_NAME : System.getenv('REPO_USER_NAME')
-        mavenDeployPassword = hasProperty('REPO_USER_PASSWORD') ? REPO_USER_PASSWORD : System.getenv('REPO_USER_PASSWORD')
+        mavenDeployLogin = REPO_USER_NAME
+        mavenDeployPassword = REPO_USER_PASSWORD
         globalVersion = version
     }
 
