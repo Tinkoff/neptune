@@ -37,7 +37,7 @@ public final class JDOQLQueryParameters<T extends PersistableObject, Q extends P
         return new JDOQLQueryParameters<>(toUse);
     }
 
-    public <M extends JDOQLTypedQuery<T>> M  buildQuery(M m) {
+    <M extends JDOQLTypedQuery<T>> M buildQuery(M m) {
         ofNullable(where).ifPresent(m::filter);
 
         if (nonNull(rangeStart) && nonNull(rangeEnd)) {
