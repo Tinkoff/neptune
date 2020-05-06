@@ -12,7 +12,7 @@ public class KeepResultPersistent {
         return toKeepOnPersistent;
     }
 
-    void setToKeepOnPersistent(boolean toKeepOnPersistent) {
+    public void setToKeepOnPersistent(boolean toKeepOnPersistent) {
         this.toKeepOnPersistent = toKeepOnPersistent;
     }
 }

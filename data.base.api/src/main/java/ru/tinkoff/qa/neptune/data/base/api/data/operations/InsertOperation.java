@@ -17,6 +17,7 @@ import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.util.List.copyOf;
 import static java.util.stream.Collectors.toList;
+import static ru.tinkoff.qa.neptune.data.base.api.PersistableObject.getTable;
 
 /**
  * This class is designed to builds step-functions that perform the inserting and return a result
@@ -39,7 +40,7 @@ public final class InsertOperation<T extends PersistableObject> extends DataOper
                 var result = new ListOfPersistentObjects<T>() {
                     public String toString() {
                         var resultStr = format("%s inserted object/objects", size());
-                        var tableList = stream().map(PersistableObject::fromTable)
+                        var tableList = stream().map(p -> getTable(p.getClass()))
                                 .filter(StringUtils::isNotBlank)
                                 .distinct()
                                 .collect(toList());

@@ -11,24 +11,25 @@ import ru.tinkoff.qa.neptune.data.base.api.NothingIsSelectedException;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionSupplier;
 import ru.tinkoff.qa.neptune.data.base.api.queries.ids.Id;
-import ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.*;
+import ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQueryParameters;
+import ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLResultQueryParams;
 
 import javax.jdo.query.PersistableExpression;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
-import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext.inDataBase;
+import static ru.tinkoff.qa.neptune.data.base.api.PersistableObject.getTable;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.SLEEPING_TIME;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.WAITING_FOR_SELECTION_RESULT_TIME;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.JDOPersistenceManagerByConnectionSupplierClass.getConnectionBySupplierClass;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.JDOPersistenceManagerByPersistableClass.getConnectionByClass;
+import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQuery.byJDOQLQuery;
+import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLResultQuery.byJDOQLResultQuery;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.sql.SqlQuery.bySql;
 
 
@@ -47,7 +48,8 @@ public class SelectASingle<T> extends SequentialGetStepSupplier
         .GetObjectFromIterableChainedStepSupplier<DataBaseStepContext, T, JDOPersistenceManager, SelectASingle<T>> {
 
     private final KeepResultPersistent resultPersistent;
-    @StepParameter("Query")
+
+    @StepParameter("By query")
     Query<T, ? extends List<T>> query;
 
     private SelectASingle(String description, KeepResultPersistent resultPersistent, Query<T, ? extends List<T>> selectBy) {
@@ -70,20 +72,10 @@ public class SelectASingle<T> extends SequentialGetStepSupplier
     public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectASingle<R> oneOf(Class<R> toSelect,
                                                                                                            JDOQLQueryParameters<R, Q> params) {
         var resultPersistent = new KeepResultPersistent();
-        var jdoQuery = JDOQLQuery.<R>byJDOQLQuery(resultPersistent);
-        return new SelectASingle<>(format("One of %s from data store", toSelect.getName()),
+        return new SelectASingle<>(format("One of '%s' from data store", getTable(toSelect)),
                 resultPersistent,
-                jdoQuery) {
-            @Override
-            public Function<DataBaseStepContext, R> get() {
-                var manager = getConnectionByClass(toSelect).apply(inDataBase());
-                var readableQuery = ofNullable(params)
-                        .map(parameters -> parameters.buildQuery(new ReadableJDOQuery<>(manager, toSelect)))
-                        .orElseGet(() -> new ReadableJDOQuery<>(manager, toSelect));
-                jdoQuery.setQuery(readableQuery);
-                return super.get();
-            }
-        }.from(getConnectionByClass(toSelect));
+                byJDOQLQuery(toSelect, params, resultPersistent))
+                .from(getConnectionByClass(toSelect));
     }
 
     /**
@@ -97,21 +89,10 @@ public class SelectASingle<T> extends SequentialGetStepSupplier
      */
     public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectASingle<List<Object>> row(Class<R> toSelectFrom,
                                                                                                                     JDOQLResultQueryParams<R, Q> params) {
-        var resultPersistent = new KeepResultPersistent();
-        var jdoQuery = JDOQLResultQuery.<R>byJDOQLResultQuery();
-        return new SelectASingle<>(format("One row of data from data store. The row is formed by an object of %s", toSelectFrom.getName()),
-                resultPersistent,
-                jdoQuery) {
-            @Override
-            public Function<DataBaseStepContext, List<Object>> get() {
-                var manager = getConnectionByClass(toSelectFrom).apply(inDataBase());
-                var readableQuery = ofNullable(params)
-                        .map(parameters -> parameters.buildQuery(new ReadableJDOQuery<>(manager, toSelectFrom)))
-                        .orElseGet(() -> new ReadableJDOQuery<>(manager, toSelectFrom));
-                jdoQuery.setQuery(readableQuery);
-                return super.get();
-            }
-        }.from(getConnectionByClass(toSelectFrom));
+        return new SelectASingle<>(format("One row of data from data store. The row is formed by a record of '%s'", getTable(toSelectFrom)),
+                null,
+                byJDOQLResultQuery(toSelectFrom, params))
+                .from(getConnectionByClass(toSelectFrom));
     }
 
     /**
@@ -135,7 +116,7 @@ public class SelectASingle<T> extends SequentialGetStepSupplier
      */
     public static <R extends PersistableObject> SelectASingle<R> oneOf(Class<R> toSelect, Id id) {
         var resultPersistent = new KeepResultPersistent();
-        return new SelectASingle<>(format("One of %s from data store", toSelect.getName()),
+        return new SelectASingle<>(format("One of '%s' from data store", getTable(toSelect)),
                 resultPersistent,
                 id.build(toSelect, resultPersistent))
                 .from(getConnectionByClass(toSelect));
@@ -159,7 +140,7 @@ public class SelectASingle<T> extends SequentialGetStepSupplier
                                                                        String sql,
                                                                        Object... parameters) {
         var resultPersistent = new KeepResultPersistent();
-        return new SelectASingle<>(format("One of %s from data store", toSelect.getName()),
+        return new SelectASingle<>(format("One of '%s' from data store", getTable(toSelect)),
                 resultPersistent,
                 bySql(toSelect, sql, resultPersistent, parameters))
                 .from(getConnectionByClass(toSelect));
@@ -183,7 +164,7 @@ public class SelectASingle<T> extends SequentialGetStepSupplier
                                                                        String sql,
                                                                        Map<String, ?> parameters) {
         var resultPersistent = new KeepResultPersistent();
-        return new SelectASingle<>(format("One of %s from data store", toSelect.getName()),
+        return new SelectASingle<>(format("One of '%s' from data store", getTable(toSelect)),
                 resultPersistent,
                 bySql(toSelect, sql, resultPersistent, parameters))
                 .from(getConnectionByClass(toSelect));

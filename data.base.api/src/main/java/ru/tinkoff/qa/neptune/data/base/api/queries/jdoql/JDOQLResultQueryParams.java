@@ -118,7 +118,7 @@ public class JDOQLResultQueryParams<T extends PersistableObject, Q extends Persi
     }
 
     @Override
-    public <M extends JDOQLTypedQuery<T>> M  buildQuery(M m) {
+    <M extends JDOQLTypedQuery<T>> M buildQuery(M m) {
         checkArgument(nonNull(resultFields) && resultFields.length > 0,
                 "At least one result field should be defined");
 

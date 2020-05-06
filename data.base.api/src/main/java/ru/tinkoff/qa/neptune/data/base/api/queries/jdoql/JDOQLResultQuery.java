@@ -7,6 +7,7 @@ import ru.tinkoff.qa.neptune.data.base.api.queries.Query;
 import ru.tinkoff.qa.neptune.data.base.api.result.TableResultList;
 
 import javax.jdo.JDOQLTypedQuery;
+import javax.jdo.query.PersistableExpression;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -15,7 +16,7 @@ import java.util.List;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static ru.tinkoff.qa.neptune.data.base.api.ConnectionDataReader.getConnection;
 
 /**
  * This class is designed to perform a query to select list of list. Each list item contains values of fields taken
@@ -23,31 +24,33 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
  *
  * @param <T> is a type of {@link PersistableObject} objects to take field values from
  */
-public class JDOQLResultQuery<T extends PersistableObject> implements Query<List<Object>, TableResultList>, IdSetter {
+public final class JDOQLResultQuery<T extends PersistableObject, Q extends PersistableExpression<T>> implements Query<List<Object>, TableResultList>, IdSetter {
 
-    private ReadableJDOQuery<T> query;
+    private final Class<T> tClass;
+    private final JDOQLResultQueryParams<T, Q> parameters;
 
-    private JDOQLResultQuery() {
-        super();
+    private JDOQLResultQuery(Class<T> tClass, JDOQLResultQueryParams<T, Q> parameters) {
+        this.tClass = tClass;
+        this.parameters = parameters;
     }
 
     /**
      * Creates an instance that performs a query to select list of field values taken from stored objects by {@link JDOQLTypedQuery}
      *
      * @param <T> is a type of {@link PersistableObject} objects to take field values from
-     * @return new {@link JDOQLResultQuery}
+     * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLResultQuery}
      */
-    public static <T extends PersistableObject> JDOQLResultQuery<T> byJDOQLResultQuery() {
-        return new JDOQLResultQuery<>();
-    }
-
-
-    public void setQuery(ReadableJDOQuery<T> query) {
-        this.query = query;
+    public static <T extends PersistableObject, Q extends PersistableExpression<T>> JDOQLResultQuery<T, Q> byJDOQLResultQuery(Class<T> tClass,
+                                                                                                                              JDOQLResultQueryParams<T, Q> parameters) {
+        return new JDOQLResultQuery<>(tClass, parameters);
     }
 
     @Override
     public TableResultList execute(JDOPersistenceManager jdoPersistenceManager) {
+        var query = ofNullable(parameters)
+                .map(p -> p.buildQuery(new ReadableJDOQuery<>(jdoPersistenceManager, tClass)))
+                .orElseGet(() -> new ReadableJDOQuery<>(jdoPersistenceManager, tClass));
+
         var result = query.executeInternalQuery(query.getInternalQuery());
         List<?> list = ofNullable(result)
                 .map(o -> {
@@ -106,8 +109,22 @@ public class JDOQLResultQuery<T extends PersistableObject> implements Query<List
     }
 
     public String toString() {
-        return ofNullable(query)
-                .map(r -> "JDO typed query " + r.getInternalQuery().toString())
-                .orElse(EMPTY);
+        JDOPersistenceManager manager;
+        try {
+            manager = getConnection(tClass).getPersistenceManager();
+        } catch (Exception e) {
+            return "<Impossible to build a query>";
+        }
+
+        try {
+            var query = ofNullable(parameters)
+                    .map(p -> p.buildQuery(new ReadableJDOQuery<>(manager, tClass)))
+                    .orElseGet(() -> new ReadableJDOQuery<>(manager, tClass));
+            return "JDO typed query " + query.getInternalQuery().toString();
+        } catch (Exception e) {
+            return "<Impossible to build a query>";
+        } finally {
+            manager.close();
+        }
     }
 }
