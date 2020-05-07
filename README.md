@@ -1,12 +1,15 @@
 # Neptune
-[![Version][version-badge]][version-link]
-[![CommitSince][commitsince-badge]][commitsince-link]
-[![Commit][commit-badge]][commit-link]
-
 [![Travis][build-badge]][build-link]
 
 [![License][license-badge]][license-link]
 ![Reposize][reposize-badge]
+
+[![OpenIssues][openissues-badge]][openissues-link]
+[![ClosedIssues][closedissues-badge]][closedissues-link]
+
+[![Version][version-badge]][version-link]
+[![CommitSince][commitsince-badge]][commitsince-link]
+[![Commit][commit-badge]][commit-link]
 
 
 [build-badge]: https://travis-ci.com/TinkoffCreditSystems/neptune.svg?branch=master
@@ -15,16 +18,22 @@
 [version-badge]: https://img.shields.io/github/v/tag/TinkoffCreditSystems/neptune?label=release
 [version-link]: https://github.com/TinkoffCreditSystems/neptune/releases
 
-[commitsince-badge]: https://img.shields.io/github/commits-since/TinkoffCreditSystems/neptune/0.12.1-ALPHA?color=green
+[commitsince-badge]: https://img.shields.io/github/commits-since/TinkoffCreditSystems/neptune/0.12.1-ALPHA
 [commitsince-link]: https://github.com/TinkoffCreditSystems/neptune/compare/0.12.1-ALPHA...master
 
-[commit-badge]: https://img.shields.io/github/last-commit/TinkoffCreditSystems/neptune/master?color=green
+[commit-badge]: https://img.shields.io/github/last-commit/TinkoffCreditSystems/neptune/master
 [commit-link]: https://github.com/TinkoffCreditSystems/neptune/commits/master
 
 [license-badge]: https://img.shields.io/github/license/TinkoffCreditSystems/neptune?color=9cf
 [license-link]: https://github.com/ArisAgnew/neptune/blob/master/LICENSE
 
 [reposize-badge]: https://img.shields.io/github/repo-size/TinkoffCreditSystems/neptune?color=9cf
+
+[openissues-badge]: https://img.shields.io/github/issues-raw/TinkoffCreditSystems/neptune
+[openissues-link]: https://github.com/TinkoffCreditSystems/neptune/issues?q=is%3Aopen+is%3Aissue
+
+[closedissues-badge]: https://img.shields.io/github/issues-closed-raw/TinkoffCreditSystems/neptune
+[closedissues-link]: https://github.com/TinkoffCreditSystems/neptune/issues?q=is%3Aissue+is%3Aclosed
 
 Test automation framework for automation of E2E tests.
 
