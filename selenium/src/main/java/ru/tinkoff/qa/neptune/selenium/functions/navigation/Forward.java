@@ -1,21 +1,27 @@
 package ru.tinkoff.qa.neptune.selenium.functions.navigation;
 
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 
-import static java.lang.String.format;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
 
-public final class Forward extends NavigationActionSupplier<Forward> {
+@MakeImageCapturesOnFinishing
+@MakeFileCapturesOnFinishing
+@SequentialActionSupplier.DefaultParameterNames(
+        performOn = "Window/tab to perform navigation forward"
+)
+public final class Forward extends SequentialActionSupplier<SeleniumStepContext, Window, Forward> {
 
-    private static final String DESCRIPTION = "Navigate forward in %s";
-
-    private Forward(String description) {
-        super(description);
+    private Forward() {
+        super("Navigate forward");
     }
 
     /**
-     * Builds navigation forward in the first window.
+     * Builds navigation forward in the browser window/tab that active currently.
      *
      * @return built navigation action
      */
@@ -30,7 +36,7 @@ public final class Forward extends NavigationActionSupplier<Forward> {
      * @return built navigation action
      */
     public static Forward forward(GetWindowSupplier windowSupplier) {
-        return new Forward(format(DESCRIPTION, windowSupplier)).performOn(windowSupplier);
+        return new Forward().performOn(windowSupplier);
     }
 
     /**
@@ -40,7 +46,7 @@ public final class Forward extends NavigationActionSupplier<Forward> {
      * @return built navigation action
      */
     public static Forward forward(Window window) {
-        return new Forward(format(DESCRIPTION, window)).performOn(window);
+        return new Forward().performOn(window);
     }
 
     @Override

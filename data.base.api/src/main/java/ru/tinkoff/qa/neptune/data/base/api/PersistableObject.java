@@ -6,7 +6,6 @@ import ru.tinkoff.qa.neptune.core.api.steps.LoggableObject;
 
 import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
-
 import java.util.Objects;
 
 import static java.lang.Boolean.parseBoolean;
@@ -25,9 +24,27 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
     @NotPersistent
     private Object $;
 
+    /**
+     * Returns table name
+     *
+     * @return name of the table or name of the class when this object is not received from the data store
+     */
+    public static <T extends PersistableObject> String getTable(Class<T> getFrom) {
+        var persistenceCapable = getFrom.getAnnotation(PersistenceCapable.class);
+        return ofNullable(persistenceCapable)
+                .map(persistenceCapable1 -> {
+                    var table = persistenceCapable1.table();
+                    if (isNotBlank(table)) {
+                        return table;
+                    }
+                    return format("class:%s <no table defined>", getFrom.getSimpleName());
+                })
+                .orElseGet(() -> format("class:%s <no table defined>", getFrom.getSimpleName()));
+    }
+
     @Override
     public String toString() {
-        var name = fromTable();
+        var name = getTable(this.getClass());
 
         return ofNullable(getRealId()).map(o -> {
             Object id;
@@ -121,25 +138,6 @@ public abstract class PersistableObject extends OrmObject implements Cloneable, 
                     return super.equalsByFields(o, DATA_NUCLEOUS_ENHANCED_FIELDS);
                 })
                 .orElse(false);
-    }
-
-    /**
-     * Returns table name
-     *
-     * @return name of the table or name of the class when this object is not received from the data store
-     */
-    public String fromTable() {
-        var persistenceCapable = this.getClass().getAnnotation(PersistenceCapable.class);
-        var thisClass = this.getClass();
-        return ofNullable(persistenceCapable)
-                .map(persistenceCapable1 -> {
-                    var table = persistenceCapable1.table();
-                    if (isNotBlank(table)) {
-                        return table;
-                    }
-                    return format("class:%s <no table defined>", thisClass.getSimpleName());
-                })
-                .orElseGet(() -> format("class:%s <no table defined>", thisClass.getSimpleName()));
     }
 
     public Object getRealId() {

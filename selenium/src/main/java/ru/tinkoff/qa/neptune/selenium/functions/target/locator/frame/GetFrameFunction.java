@@ -9,7 +9,7 @@ import java.util.function.Function;
 
 import static java.lang.String.format;
 
-public final class GetFrameFunction implements Function<WebDriver, Frame> {
+final class GetFrameFunction implements Function<WebDriver, Frame> {
 
     private final String description;
     private final Object frame;
@@ -25,7 +25,7 @@ public final class GetFrameFunction implements Function<WebDriver, Frame> {
      * @param index index of the frame to switch to.
      * @return instance of {@link Function}
      */
-    public static GetFrameFunction index(int index) {
+    static GetFrameFunction index(int index) {
         return new GetFrameFunction(format("by index %s", index), index);
     }
 
@@ -35,7 +35,7 @@ public final class GetFrameFunction implements Function<WebDriver, Frame> {
      * @param nameOrId name or id of the frame to switch to.
      * @return instance of {@link GetFrameSupplier}
      */
-    public static GetFrameFunction nameOrId(String nameOrId) {
+    static GetFrameFunction nameOrId(String nameOrId) {
         return new GetFrameFunction(format("by name or id %s", nameOrId), nameOrId);
     }
 
@@ -45,8 +45,8 @@ public final class GetFrameFunction implements Function<WebDriver, Frame> {
      * @param webElement is the frame element to switch to.
      * @return instance of {@link GetFrameSupplier}
      */
-    public static GetFrameFunction insideElement(WebElement webElement) {
-        return new GetFrameFunction(format("inside element %s", webElement), webElement);
+    static GetFrameFunction insideElement(WebElement webElement) {
+        return new GetFrameFunction(format("inside %s", webElement), webElement);
     }
 
     /**
@@ -55,8 +55,8 @@ public final class GetFrameFunction implements Function<WebDriver, Frame> {
      * @param wrapsElement is the wrapper of a frame element to switch to.
      * @return instance of {@link GetFrameSupplier}
      */
-    public static GetFrameFunction wrappedBy(WrapsElement wrapsElement) {
-        return new GetFrameFunction(format("inside element wrapped by %s", wrapsElement), wrapsElement);
+    static GetFrameFunction wrappedBy(WrapsElement wrapsElement) {
+        return new GetFrameFunction(format("inside %s", wrapsElement), wrapsElement);
     }
 
     String getDescription() {

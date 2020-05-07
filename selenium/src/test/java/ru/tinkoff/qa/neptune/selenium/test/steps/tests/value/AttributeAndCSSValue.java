@@ -13,49 +13,47 @@ import static org.openqa.selenium.By.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.webElements;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.value.SequentialGetAttributeValueSupplier.attributeValue;
-import static ru.tinkoff.qa.neptune.selenium.functions.value.SequentialGetCSSValueSupplier.cssValue;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
 
 public class AttributeAndCSSValue extends BaseWebDriverTest {
 
     @Test
     public void getAttributeValueByWidgetSearchCriteria() {
-        assertThat(seleniumSteps.get(attributeValue(HREF).of(link(LINK_LABEL_TEXT5))),
+        assertThat(seleniumSteps.attrValueOf(link(LINK_LABEL_TEXT5), HREF),
                 is(LINK_REFERENCE9));
     }
 
     @Test
     public void getAttributeValueByWebElementSearchCriteria() {
-        assertThat(seleniumSteps.get(attributeValue(HREF)
-                        .of(webElement(tagName(LINK_TAG))
-                                .criteria(attr(ATTR17, VALUE6)))),
+        assertThat(seleniumSteps.attrValueOf(webElement(tagName(LINK_TAG))
+                        .criteria(attr(ATTR17, VALUE6)), HREF),
                 is(LINK_REFERENCE8));
     }
 
     @Test
     public void getAttributeValueFromWidget() {
         Table table = seleniumSteps.find(table(TABLE_LABEL_TEXT1));
-        assertThat(seleniumSteps.get(attributeValue(ATTR3).of(table)),
+        assertThat(seleniumSteps.attrValueOf(table, ATTR3),
                 is(VALUE9));
     }
 
     @Test
     public void getAttributeValueFromWebElement() {
-        assertThat(seleniumSteps.get(attributeValue(ATTR18).of(CUSTOM_LABELED_LINK3)),
+        assertThat(seleniumSteps.attrValueOf(CUSTOM_LABELED_LINK3, ATTR18),
                 is(VALUE10));
     }
 
     @Test
     public void getAttributeNullValueByWidgetSearchCriteria() {
-        assertThat(seleniumSteps.get(attributeValue(ATTR19).of(link(LINK_LABEL_TEXT9))),
+        assertThat(seleniumSteps.attrValueOf(link(LINK_LABEL_TEXT9), ATTR19),
                 nullValue());
     }
 
     @Test
     public void getAttributeNullValueByWebElementSearchCriteria() {
-        assertThat(seleniumSteps.get(attributeValue(ATTR16).of(webElement(tagName(LINK_TAG))
-                        .criteria(nested(webElements(tagName(LABEL_TAG)).criteria(text(LINK_LABEL_TEXT1)))))),
+        assertThat(seleniumSteps.attrValueOf(webElement(tagName(LINK_TAG))
+                        .criteria(nested(webElements(tagName(LABEL_TAG)).criteria(text(LINK_LABEL_TEXT1)))),
+                ATTR16),
                 nullValue());
     }
 
@@ -64,52 +62,53 @@ public class AttributeAndCSSValue extends BaseWebDriverTest {
         Select select = seleniumSteps
                 .find(select(SELECT_LABEL_TEXT8, SELECT_LABEL_TEXT12)
                         .criteria(nested(webElements(className(ITEM_OPTION_CLASS)).criteria(text(OPTION_TEXT34)))));
-        assertThat(seleniumSteps.get(attributeValue(ATTR4).of(select)),
+        assertThat(seleniumSteps.attrValueOf(select, ATTR4),
                 nullValue());
     }
 
     @Test
     public void getAttributeNullValueFromWebElement() {
-        assertThat(seleniumSteps.get(attributeValue(ATTR18).of(COMMON_LABELED_TAB2)),
+        assertThat(seleniumSteps.attrValueOf(COMMON_LABELED_TAB2, ATTR18),
                 nullValue());
     }
 
     @Test
     public void getCSSValueByWidgetSearchCriteria() {
-        assertThat(seleniumSteps.get(cssValue(CSS20).of(link(LINK_LABEL_TEXT7))),
+        assertThat(seleniumSteps.cssValueOf(link(LINK_LABEL_TEXT7), CSS20),
                 is(CSS_VALUE10));
     }
 
     @Test
     public void getCSSValueByWebElementSearchCriteria() {
-        assertThat(seleniumSteps.get(cssValue(CSS20).of(webElement(cssSelector(CUSTOM_LINK_CSS))
-                        .criteria(attr(HREF, LINK_REFERENCE11)))),
+        assertThat(seleniumSteps.cssValueOf(webElement(cssSelector(CUSTOM_LINK_CSS))
+                        .criteria(attr(HREF, LINK_REFERENCE11)), CSS20),
                 is(CSS_VALUE10));
     }
 
     @Test
     public void getCSSValueFromWidget() {
         TextField textField = seleniumSteps.find(textField(INPUT_LABEL_TEXT3));
-        assertThat(seleniumSteps.get(cssValue(CSS8).of(textField)),
+        assertThat(seleniumSteps.cssValueOf(textField, CSS8),
                 is(CSS_VALUE8));
     }
 
     @Test
     public void getCSSValueFromWebElement() {
-        assertThat(seleniumSteps.get(cssValue(CSS15).of(CUSTOM_LABELED_LINK1)),
+        assertThat(seleniumSteps.cssValueOf(CUSTOM_LABELED_LINK1, CSS15),
                 is(CSS_VALUE7));
     }
 
     @Test
     public void getCSSNullValueByWidgetSearchCriteria() {
-        assertThat(seleniumSteps.get(cssValue(CSS10).of(textField(INPUT_LABEL_TEXT2))),
+        assertThat(seleniumSteps.cssValueOf(textField(INPUT_LABEL_TEXT2), CSS10),
                 nullValue());
     }
 
     @Test
     public void getCSSNullValueByWebElementSearchCriteria() {
-        assertThat(seleniumSteps.get(cssValue(CSS11).of(webElement(xpath(TEXT_FIELD_XPATH))
-                        .criteria(nested(webElements(tagName(LABEL_TAG)).criteria(text(INPUT_LABEL_TEXT4)))))),
+        assertThat(seleniumSteps.cssValueOf(webElement(xpath(TEXT_FIELD_XPATH))
+                        .criteria(nested(webElements(tagName(LABEL_TAG)).criteria(text(INPUT_LABEL_TEXT4)))),
+                CSS11),
                 nullValue());
     }
 
@@ -118,13 +117,13 @@ public class AttributeAndCSSValue extends BaseWebDriverTest {
         TextField textField = seleniumSteps
                 .find(textField(INPUT_LABEL_TEXT7, INPUT_LABEL_TEXT11)
                         .timeOut(FIVE_SECONDS));
-        assertThat(seleniumSteps.get(cssValue(CSS12).of(textField)),
+        assertThat(seleniumSteps.cssValueOf(textField, CSS12),
                 nullValue());
     }
 
     @Test
     public void getCSSNullValueFromWebElement() {
-        assertThat(seleniumSteps.get(cssValue(CSS16).of(COMMON_LABELED_TAB4)),
+        assertThat(seleniumSteps.cssValueOf(COMMON_LABELED_TAB4, CSS16),
                 nullValue());
     }
 }

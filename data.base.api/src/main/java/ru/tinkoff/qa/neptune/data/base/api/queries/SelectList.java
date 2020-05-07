@@ -5,6 +5,7 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOn
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.StepParameter;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 import ru.tinkoff.qa.neptune.data.base.api.NothingIsSelectedException;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
@@ -12,23 +13,18 @@ import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionSupplier;
 import ru.tinkoff.qa.neptune.data.base.api.queries.ids.Ids;
 import ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQueryParameters;
 import ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLResultQueryParams;
-import ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.ReadableJDOQuery;
 import ru.tinkoff.qa.neptune.data.base.api.result.TableResultList;
 
 import javax.jdo.query.PersistableExpression;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
-import static java.lang.String.valueOf;
-import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static ru.tinkoff.qa.neptune.core.api.steps.StepFunction.toGet;
+import static ru.tinkoff.qa.neptune.data.base.api.PersistableObject.getTable;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.SLEEPING_TIME;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.WAITING_FOR_SELECTION_RESULT_TIME;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.JDOPersistenceManagerByConnectionSupplierClass.getConnectionBySupplierClass;
@@ -41,19 +37,26 @@ import static ru.tinkoff.qa.neptune.data.base.api.queries.sql.SqlQuery.bySql;
  * This class is designed to select multiple objects from a data store.
  *
  * @param <T> is a type of retrieved values
- * @param <M> is a type of an object to get result from
+ * @param <R> is a type of a list of retrieved values
  */
 @MakeFileCapturesOnFinishing
 @MakeStringCapturesOnFinishing
-public class SelectList<T, R extends List<T>, M> extends SequentialGetStepSupplier
-        .GetIterableChainedStepSupplier<DataBaseStepContext, R, M, T, SelectList<T, R, M>> {
+@SequentialGetStepSupplier.DefaultParameterNames(
+        timeOut = "Time to get selected objects",
+        criteria = "Object criteria"
+)
+public class SelectList<T, R extends List<T>> extends SequentialGetStepSupplier
+        .GetIterableChainedStepSupplier<DataBaseStepContext, R, JDOPersistenceManager, T, SelectList<T, R>> {
 
     private final KeepResultPersistent resultPersistent;
 
-    private SelectList(String description,
-                       Function<M, R> originalFunction, KeepResultPersistent resultPersistent) {
-        super(description, originalFunction);
+    @StepParameter("By query")
+    Query<T, R> query;
+
+    private SelectList(String description, KeepResultPersistent resultPersistent, Query<T, R> selectBy) {
+        super(description, selectBy::execute);
         this.resultPersistent = resultPersistent;
+        this.query = selectBy;
         timeOut(WAITING_FOR_SELECTION_RESULT_TIME.get());
         pollingInterval(SLEEPING_TIME.get());
     }
@@ -65,26 +68,15 @@ public class SelectList<T, R extends List<T>, M> extends SequentialGetStepSuppli
      * @param params   is an instance of {@link JDOQLQueryParameters} that describes how to select desired objects
      * @param <R>      is a type of each {@link PersistableObject} from returned list
      * @param <Q>      is a type of {@link PersistableExpression} that represents {@code T} in query
-     * @return new {@link SelectList}
+     * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.SelectList}
      */
-    public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectList<R, List<R>, ReadableJDOQuery<R>> listOf(Class<R> toSelect,
-                                                                                                                                       JDOQLQueryParameters<R, Q> params) {
+    public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectList<R, List<R>> listOf(Class<R> toSelect,
+                                                                                                                  JDOQLQueryParameters<R, Q> params) {
         var resultPersistent = new KeepResultPersistent();
-        return new SelectList<R, List<R>, ReadableJDOQuery<R>>(format("List of %s by JDO typed query", toSelect.getName()),
-                byJDOQLQuery(resultPersistent), resultPersistent) {
-            protected Function<ReadableJDOQuery<R>, List<R>> getEndFunction() {
-                //TODO such implementation is for advanced reporting
-                //TODO jdo query should be turned into step parameter in a report
-                //TODO comment for further releases
-                return rReadableJDOQuery -> toGet(format("Result using JDO query %s",
-                        rReadableJDOQuery.getInternalQuery()),
-                        super.getEndFunction()).apply(rReadableJDOQuery);
-            }
-        }
-                .from(getConnectionByClass(toSelect).andThen(manager ->
-                        ofNullable(params)
-                                .map(parameters -> parameters.buildQuery(new ReadableJDOQuery<>(manager, toSelect)))
-                                .orElseGet(() -> new ReadableJDOQuery<>(manager, toSelect))));
+        return new SelectList<>(format("List of '%s' from data store", getTable(toSelect)),
+                resultPersistent,
+                byJDOQLQuery(toSelect, params, resultPersistent)).
+                from(getConnectionByClass(toSelect));
     }
 
     /**
@@ -94,26 +86,14 @@ public class SelectList<T, R extends List<T>, M> extends SequentialGetStepSuppli
      * @param params       is an instance of {@link JDOQLResultQueryParams} that describes how to select desired objects
      * @param <R>          is a type of each {@link PersistableObject} to take field values from
      * @param <Q>          is a type of {@link PersistableExpression} that represents {@code T} in query
-     * @return new {@link SelectList}
+     * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.SelectList}
      */
-    public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectList<List<Object>, TableResultList, ReadableJDOQuery<R>>
-    rows(Class<R> toSelectFrom,
-         JDOQLResultQueryParams<R, Q> params) {
-        return new SelectList<List<Object>, TableResultList, ReadableJDOQuery<R>>(format("Rows taken from %s by JDO query", toSelectFrom.getName()),
-                byJDOQLResultQuery(), null) {
-            protected Function<ReadableJDOQuery<R>, TableResultList> getEndFunction() {
-                //TODO such implementation is for advanced reporting
-                //TODO jdo query should be turned into step parameter in a report
-                //TODO comment for further releases
-                return rReadableJDOQuery -> toGet(format("Result using JDO query %s",
-                        rReadableJDOQuery.getInternalQuery()),
-                        super.getEndFunction()).apply(rReadableJDOQuery);
-            }
-        }
-                .from(getConnectionByClass(toSelectFrom).andThen(manager ->
-                        ofNullable(params)
-                                .map(parameters -> parameters.buildQuery(new ReadableJDOQuery<>(manager, toSelectFrom)))
-                                .orElseGet(() -> new ReadableJDOQuery<>(manager, toSelectFrom))));
+    public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectList<List<Object>, TableResultList> rows(Class<R> toSelectFrom,
+                                                                                                                                   JDOQLResultQueryParams<R, Q> params) {
+        return new SelectList<>(format("Rows of data from data store. Rows are formed by records of '%s'", getTable(toSelectFrom)),
+                null,
+                byJDOQLResultQuery(toSelectFrom, params))
+                .from(getConnectionByClass(toSelectFrom));
     }
 
     /**
@@ -121,9 +101,9 @@ public class SelectList<T, R extends List<T>, M> extends SequentialGetStepSuppli
      *
      * @param toSelect is a class of each {@link PersistableObject} from returned list
      * @param <R>      is a type of each {@link PersistableObject} from returned list
-     * @return new {@link SelectList}
+     * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.SelectList}
      */
-    public static <R extends PersistableObject> SelectList<R, List<R>, ReadableJDOQuery<R>> listOf(Class<R> toSelect) {
+    public static <R extends PersistableObject> SelectList<R, List<R>> listOf(Class<R> toSelect) {
         return listOf(toSelect, (JDOQLQueryParameters<R, PersistableExpression<R>>) null);
     }
 
@@ -133,17 +113,14 @@ public class SelectList<T, R extends List<T>, M> extends SequentialGetStepSuppli
      * @param toSelect is a class of each {@link PersistableObject} from returned list
      * @param ids      is a wrapper of known ids used to find desired objects
      * @param <R>      is a type of each {@link PersistableObject} from returned list
-     * @return new {@link SelectList}
+     * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.SelectList}
      */
-    public static <R extends PersistableObject> SelectList<R, List<R>, JDOPersistenceManager> listOf(Class<R> toSelect,
-                                                                                                     Ids ids) {
-        //TODO ids should be turned into step parameter in a report
-        //TODO comment for further releases
+    public static <R extends PersistableObject> SelectList<R, List<R>> listOf(Class<R> toSelect,
+                                                                              Ids ids) {
         var resultPersistent = new KeepResultPersistent();
-        return new SelectList<>(format("List of %s by ids %s",
-                toSelect.getName(),
-                ids),
-                ids.build(toSelect, resultPersistent), resultPersistent)
+        return new SelectList<>(format("List of '%s' from data store", getTable(toSelect)),
+                resultPersistent,
+                ids.build(toSelect, resultPersistent))
                 .from(getConnectionByClass(toSelect));
     }
 
@@ -159,20 +136,15 @@ public class SelectList<T, R extends List<T>, M> extends SequentialGetStepSuppli
      *                   {@code 'Select * from Persons where Some_Field=?'}
      *                   </p>
      * @param <R>        is a type of each {@link PersistableObject} from returned list
-     * @return new {@link SelectList}
+     * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.SelectList}
      */
-    public static <R extends PersistableObject> SelectList<R, List<R>, JDOPersistenceManager> listOf(Class<R> toSelect,
-                                                                                                     String sql,
-                                                                                                     Object... parameters) {
-        //TODO sql + parameters should be turned into step parameters in a report
-        //TODO comment for further releases
+    public static <R extends PersistableObject> SelectList<R, List<R>> listOf(Class<R> toSelect,
+                                                                              String sql,
+                                                                              Object... parameters) {
         var resultPersistent = new KeepResultPersistent();
-        return new SelectList<>(format("List of %s by query '%s'. " +
-                        "Parameters: %s",
-                toSelect.getName(),
-                sql,
-                Arrays.toString(parameters)),
-                bySql(toSelect, sql, resultPersistent, parameters), resultPersistent)
+        return new SelectList<>(format("List of '%s' from data store", getTable(toSelect)),
+                resultPersistent,
+                bySql(toSelect, sql, resultPersistent, parameters))
                 .from(getConnectionByClass(toSelect));
     }
 
@@ -188,20 +160,15 @@ public class SelectList<T, R extends List<T>, M> extends SequentialGetStepSuppli
      *                   {@code 'Select * from Persons where Some_Field=:paramName'}
      *                   </p>
      * @param <R>        is a type of each {@link PersistableObject} from returned list
-     * @return new {@link SelectList}
+     * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.SelectList}
      */
-    public static <R extends PersistableObject> SelectList<R, List<R>, JDOPersistenceManager> listOf(Class<R> toSelect,
-                                                                                                     String sql,
-                                                                                                     Map<String, ?> parameters) {
-        //TODO sql + parameters should be turned into step parameters in a report
-        //TODO comment for further releases
+    public static <R extends PersistableObject> SelectList<R, List<R>> listOf(Class<R> toSelect,
+                                                                              String sql,
+                                                                              Map<String, ?> parameters) {
         var resultPersistent = new KeepResultPersistent();
-        return new SelectList<>(format("List of %s by query '%s'. " +
-                        "Parameters: %s",
-                toSelect.getName(),
-                sql,
-                valueOf(parameters)),
-                bySql(toSelect, sql, resultPersistent, parameters), resultPersistent)
+        return new SelectList<>(format("List of '%s' from data store", getTable(toSelect)),
+                resultPersistent,
+                bySql(toSelect, sql, resultPersistent, parameters))
                 .from(getConnectionByClass(toSelect));
     }
 
@@ -216,20 +183,14 @@ public class SelectList<T, R extends List<T>, M> extends SequentialGetStepSuppli
      *                   {@code 'Select * from Persons where Some_Field=?'}
      *                   </p>
      * @param <R>        is a type of {@link DBConnectionSupplier}
-     * @return new {@link SelectList}
+     * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.SelectList}
      */
-    public static <R extends DBConnectionSupplier> SelectList<List<Object>, TableResultList, JDOPersistenceManager> rows(String sql,
-                                                                                                                         Class<R> connection,
-                                                                                                                         Object... parameters) {
-        //TODO sql + parameters should be turned into step parameters in a report
-        //TODO comment for further releases
-        return new SelectList<>(format("Rows by query %s. " +
-                        "The connection is described by %s. " +
-                        "Parameters: %s",
-                sql,
-                connection.getName(),
-                Arrays.toString(parameters)),
-                bySql(sql, parameters), null)
+    public static <R extends DBConnectionSupplier> SelectList<List<Object>, TableResultList> rows(String sql,
+                                                                                                  Class<R> connection,
+                                                                                                  Object... parameters) {
+        return new SelectList<>("Rows of raw data from data store",
+                null,
+                bySql(sql, parameters))
                 .from(getConnectionBySupplierClass(connection));
     }
 
@@ -244,40 +205,34 @@ public class SelectList<T, R extends List<T>, M> extends SequentialGetStepSuppli
      *                   {@code 'Select * from Persons where Some_Field=:paramName'}
      *                   </p>
      * @param <R>        is a type of {@link DBConnectionSupplier}
-     * @return new {@link SelectList}
+     * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.SelectList}
      */
-    public static <R extends DBConnectionSupplier> SelectList<List<Object>, TableResultList, JDOPersistenceManager> rows(String sql,
-                                                                                                                         Class<R> connection,
-                                                                                                                         Map<String, ?> parameters) {
-        //TODO sql + parameters should be turned into step parameters in a report
-        //TODO comment for further releases
-        return new SelectList<>(format("Rows by query %s. " +
-                        "The connection is described by %s. " +
-                        "Parameters: %s",
-                sql,
-                connection.getName(),
-                valueOf(parameters)),
-                bySql(sql, parameters), null)
+    public static <R extends DBConnectionSupplier> SelectList<List<Object>, TableResultList> rows(String sql,
+                                                                                                  Class<R> connection,
+                                                                                                  Map<String, ?> parameters) {
+        return new SelectList<>("Rows of raw data from data store",
+                null,
+                bySql(sql, parameters))
                 .from(getConnectionBySupplierClass(connection));
     }
 
     @Override
-    public SelectList<T, R, M> timeOut(Duration timeOut) {
+    public SelectList<T, R> timeOut(Duration timeOut) {
         return super.timeOut(timeOut);
     }
 
     @Override
-    public SelectList<T, R, M> pollingInterval(Duration pollingTime) {
+    public SelectList<T, R> pollingInterval(Duration pollingTime) {
         return super.pollingInterval(pollingTime);
     }
 
     @Override
-    public SelectList<T, R, M> criteria(Criteria<? super T> criteria) {
+    public SelectList<T, R> criteria(Criteria<? super T> criteria) {
         return super.criteria(criteria);
     }
 
     @Override
-    public SelectList<T, R, M> criteria(String conditionDescription, Predicate<? super T> condition) {
+    public SelectList<T, R> criteria(String conditionDescription, Predicate<? super T> condition) {
         return super.criteria(conditionDescription, condition);
     }
 
@@ -287,7 +242,7 @@ public class SelectList<T, R extends List<T>, M> extends SequentialGetStepSuppli
      * @param errorText as a text of the thrown exception
      * @return self reference
      */
-    public SelectList<T, R, M> throwWhenResultEmpty(String errorText) {
+    public SelectList<T, R> throwWhenResultEmpty(String errorText) {
         checkArgument(isNotBlank(errorText), "Please define not blank exception text");
         return super.throwOnEmptyResult(() -> new NothingIsSelectedException(errorText));
     }

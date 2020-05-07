@@ -12,7 +12,7 @@ import javax.jdo.PersistenceManager;
  *
  * @param <T> is a type of values to select by the query
  */
-public class ReadableJDOQuery<T extends PersistableObject> extends JDOQLTypedQueryImpl<T> {
+class ReadableJDOQuery<T extends PersistableObject> extends JDOQLTypedQueryImpl<T> {
     /**
      * Constructor for a typesafe query.
      *

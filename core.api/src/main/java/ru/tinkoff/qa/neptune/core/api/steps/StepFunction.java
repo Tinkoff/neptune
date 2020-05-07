@@ -10,16 +10,16 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Collections.emptyMap;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.*;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchFailureEvent;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchSuccessEvent;
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static java.lang.String.format;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 @SuppressWarnings("unchecked")
 public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<StepFunction<T, R>>,
@@ -30,6 +30,7 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
     private boolean toReport = true;
     private final Set<Class<? extends Throwable>> ignored = new HashSet<>();
     private final Set<CaptorFilterByProducedType> captorFilters = new HashSet<>();
+    private Map<String, String> parameters = emptyMap();
 
     StepFunction(String description, Function<T, R> function) {
         checkArgument(nonNull(function), "Function should be defined");
@@ -77,10 +78,10 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
     public R apply(T t) {
         var thisClass = this.getClass();
         var isComplex = (SequentialStepFunction.class.isAssignableFrom(thisClass)
-                && ((SequentialStepFunction) this).sequence.size() > 1);
+                && ((SequentialStepFunction<?, ?>) this).sequence.size() > 1);
         try {
             if (toReport) {
-                fireEventStarting(format("Get %s", description));
+                fireEventStarting("Get: " + description, parameters);
             }
             R result = (R) function.apply(t);
             if (toReport) {
@@ -266,6 +267,15 @@ public class StepFunction<T, R> implements Function<T, R>, IgnoresThrowable<Step
      */
     public StepFunction<T, R> turnReportingOn() {
         toReport = true;
+        return this;
+    }
+
+    Map<String, String> getParameters() {
+        return parameters;
+    }
+
+    StepFunction<T, R> setParameters(Map<String, String> parameters) {
+        this.parameters = parameters;
         return this;
     }
 

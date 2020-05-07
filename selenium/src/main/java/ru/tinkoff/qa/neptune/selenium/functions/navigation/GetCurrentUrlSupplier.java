@@ -7,6 +7,9 @@ import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
 
+@SequentialGetStepSupplier.DefaultParameterNames(
+        from = "Window/tab to get URL string value from"
+)
 public final class GetCurrentUrlSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, String, Window, GetCurrentUrlSupplier> {
 
@@ -15,7 +18,7 @@ public final class GetCurrentUrlSupplier extends SequentialGetStepSupplier
     }
 
     /**
-     * Builds a function which returns url of the page loaded in the first window/tab.
+     * Builds a function which returns url of the page loaded in the browser window/tab that active currently.
      *
      * @return an instance of {@link GetCurrentUrlSupplier} which wraps a function. This function
      * returns url of the page loaded in the current window/tab.
@@ -31,17 +34,18 @@ public final class GetCurrentUrlSupplier extends SequentialGetStepSupplier
      * @return an instance of {@link GetCurrentUrlSupplier} which wraps a function. This function
      * returns url of the page loaded in some window/tab which should be got by criteria.
      */
-    public static GetCurrentUrlSupplier currentUrlOf(GetWindowSupplier from) {
+    public static GetCurrentUrlSupplier currentUrl(GetWindowSupplier from) {
         return new GetCurrentUrlSupplier().from(from);
     }
 
     /**
      * Builds a function which returns url of the page loaded in the window/tab.
+     *
      * @param from is the window where loaded url should be taken
      * @return n instance of {@link GetCurrentUrlSupplier} which wraps a function. This function
      * returns url of the page loaded in the window/tab.
      */
-    public static GetCurrentUrlSupplier currentUrlOf(Window from) {
+    public static GetCurrentUrlSupplier currentUrl(Window from) {
         return new GetCurrentUrlSupplier().from(from);
     }
 }

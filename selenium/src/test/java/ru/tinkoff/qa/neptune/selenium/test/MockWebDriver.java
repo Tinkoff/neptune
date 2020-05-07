@@ -1,21 +1,25 @@
 package ru.tinkoff.qa.neptune.selenium.test;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Interactive;
+import org.openqa.selenium.interactions.Sequence;
 import ru.tinkoff.qa.neptune.selenium.test.enums.Scripts;
 import ru.tinkoff.qa.neptune.selenium.test.enums.URLs;
 import ru.tinkoff.qa.neptune.selenium.test.enums.WindowHandles;
-import org.apache.commons.lang3.ArrayUtils;
-import org.openqa.selenium.*;
-import org.openqa.selenium.NoSuchElementException;
 
 import java.util.*;
 
-import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.getFakeDOM;
-import static ru.tinkoff.qa.neptune.selenium.test.enums.URLs.*;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.getFakeDOM;
+import static ru.tinkoff.qa.neptune.selenium.test.SequenceSpy.setActions;
+import static ru.tinkoff.qa.neptune.selenium.test.enums.URLs.BLANK;
+import static ru.tinkoff.qa.neptune.selenium.test.enums.URLs.values;
 
-public class MockWebDriver implements WebDriver, JavascriptExecutor, TakesScreenshot {
+public class MockWebDriver implements WebDriver, JavascriptExecutor, TakesScreenshot, Interactive {
 
     private final MockTargetLocator targetLocator = new MockTargetLocator(this);
     private final MockNavigation navigation = new MockNavigation(this);
@@ -221,5 +225,14 @@ public class MockWebDriver implements WebDriver, JavascriptExecutor, TakesScreen
                 "Tb7c5MtNvtzky02+3OTLTb7c5MtNvtzky02+3OTLTb7c5MtNvtzky02+3OTLTb7c5MtNvtzky02+\n" +
                 "3OTLTb7MJpM/U7hf1q6DGbAAAAAASUVORK5CYII=";
         return target.convertFromBase64Png(base64EncodedPng);
+    }
+
+    @Override
+    public void perform(Collection<Sequence> actions) {
+        setActions(actions);
+    }
+
+    @Override
+    public void resetInputState() {
     }
 }

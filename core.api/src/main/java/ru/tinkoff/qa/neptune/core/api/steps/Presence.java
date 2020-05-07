@@ -6,12 +6,12 @@ import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
@@ -22,7 +22,7 @@ public final class Presence<T extends Context> extends SequentialGetStepSupplier
     private final Set<Class<? extends Throwable>> ignored2 = new HashSet<>();
 
     private Presence(Function<T, ?> toBePresent) {
-        super(format("Presence of [%s]", isLoggable(toBePresent) ? toBePresent.toString() : "<not described value>"),
+        super("Presence of " + (isLoggable(toBePresent) ? toBePresent.toString() : "<not described value>"),
                 o -> ofNullable(o)
                         .map(o1 -> {
                             Class<?> clazz = o1.getClass();
@@ -66,7 +66,7 @@ public final class Presence<T extends Context> extends SequentialGetStepSupplier
      * @param <T>      is a type of {@link Context}
      * @return an instance of {@link Presence}.
      */
-    public static <T extends Context> Presence<T> presence(Function<T, ?> function) {
+    public static <T extends Context<?>> Presence<T> presence(Function<T, ?> function) {
         checkArgument(nonNull(function), "Function should not be a null-value");
         return new Presence<>(function);
     }
@@ -87,7 +87,7 @@ public final class Presence<T extends Context> extends SequentialGetStepSupplier
     protected Function<T, Object> preparePreFunction() {
         var preFunction = super.preparePreFunction();
         if (StepFunction.class.isAssignableFrom(preFunction.getClass())) {
-            ((StepFunction) preFunction).addIgnored(ignored2);
+            ((StepFunction<?, ?>) preFunction).addIgnored(ignored2);
         }
         return ((Function<Object, Object>) o -> ofNullable(o).orElse(false))
                 .compose(preFunction);
@@ -131,5 +131,10 @@ public final class Presence<T extends Context> extends SequentialGetStepSupplier
      */
     public Presence<T> throwIfNotPresent(Supplier<? extends RuntimeException> exceptionSupplier) {
         return throwOnEmptyResult(exceptionSupplier);
+    }
+
+    @Override
+    protected Map<String, String> getParameters() {
+        return ((StepFunction<?, ?>) from).getParameters();
     }
 }

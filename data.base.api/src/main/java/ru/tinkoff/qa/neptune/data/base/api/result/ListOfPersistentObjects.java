@@ -10,6 +10,7 @@ import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static ru.tinkoff.qa.neptune.data.base.api.PersistableObject.getTable;
 
 /**
  * This collection contains only {@link PersistableObject}'s and provides specific string description.
@@ -30,12 +31,11 @@ public class ListOfPersistentObjects<T extends PersistableObject> extends ArrayL
     public String toString() {
         var resultStr =  format("%s objects/object", size());
 
-        var tableList = stream().map(PersistableObject::fromTable)
+        var tableList = stream().map(p -> getTable(p.getClass()))
                 .map(s -> {
                     if (isNotBlank(s)) {
                         return s;
-                    }
-                    else {
+                    } else {
                         return "<No table information>";
                     }
                 })

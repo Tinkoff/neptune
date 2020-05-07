@@ -143,9 +143,9 @@ public abstract class JDOParameters<T extends PersistableObject, Q extends Persi
     /**
      * Constructs/Adds details to a query
      *
-     * @param m an instance of {@link JDOQLTypedQuery} to be constructed/detailed
+     * @param m   an instance of {@link JDOQLTypedQuery} to be constructed/detailed
      * @param <M> is a type of {@link JDOQLTypedQuery} to be constructed/detailed
      * @return constructed/detailed query
      */
-    public abstract <M extends JDOQLTypedQuery<T>> M  buildQuery(M m);
+    abstract <M extends JDOQLTypedQuery<T>> M buildQuery(M m);
 }
