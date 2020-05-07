@@ -1,13 +1,13 @@
 # Neptune
 [![Travis][build-badge]][build-link]
-[![Release][release-badge]][release-link]
+[![Version][version-badge]][version-link]
 [![Commit][commit-badge]][commit-link]
 
 [build-badge]: https://travis-ci.com/TinkoffCreditSystems/neptune.svg?branch=master
 [build-link]: https://travis-ci.com/TinkoffCreditSystems/neptune
 
-[release-badge]: https://img.shields.io/github/v/tag/TinkoffCreditSystems/neptune?label=version
-[release-link]: https://github.com/TinkoffCreditSystems/neptune/releases
+[version-badge]: https://img.shields.io/github/v/tag/TinkoffCreditSystems/neptune?label=version
+[version-link]: https://github.com/TinkoffCreditSystems/neptune/releases
 
 [commit-badge]: https://img.shields.io/github/last-commit/TinkoffCreditSystems/neptune/master?color=orange
 [commit-link]: https://github.com/TinkoffCreditSystems/neptune/commits/master
