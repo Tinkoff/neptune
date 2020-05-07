@@ -1,15 +1,19 @@
 # Neptune
 [![Travis][build-badge]][build-link]
 [![Version][version-badge]][version-link]
+[![CommitSince][commitsince-badge]][commitsince-link]
 [![Commit][commit-badge]][commit-link]
 
 [build-badge]: https://travis-ci.com/TinkoffCreditSystems/neptune.svg?branch=master
 [build-link]: https://travis-ci.com/TinkoffCreditSystems/neptune
 
-[version-badge]: https://img.shields.io/github/v/tag/TinkoffCreditSystems/neptune?label=version
+[version-badge]: https://img.shields.io/github/v/tag/TinkoffCreditSystems/neptune?label=release
 [version-link]: https://github.com/TinkoffCreditSystems/neptune/releases
 
-[commit-badge]: https://img.shields.io/github/last-commit/TinkoffCreditSystems/neptune/master?color=orange
+[commitsince-badge]: https://img.shields.io/github/commits-since/TinkoffCreditSystems/neptune/0.12.1-ALPHA?color=green
+[commitsince-link]: https://github.com/TinkoffCreditSystems/neptune/compare/0.12.1-ALPHA...master
+
+[commit-badge]: https://img.shields.io/github/last-commit/TinkoffCreditSystems/neptune/master?color=green
 [commit-link]: https://github.com/TinkoffCreditSystems/neptune/commits/master
 
 Test automation framework for automation of E2E tests.
