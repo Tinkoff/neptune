@@ -1,26 +1,33 @@
 package ru.tinkoff.qa.neptune.selenium.functions.navigation;
 
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 
-import static java.lang.String.format;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
 
-public final class Refresh extends NavigationActionSupplier<Refresh> {
+@MakeImageCapturesOnFinishing
+@MakeFileCapturesOnFinishing
+@SequentialActionSupplier.DefaultParameterNames(
+        performOn = "Window/tab to perform the refreshing"
+)
+public final class Refresh extends SequentialActionSupplier<SeleniumStepContext, Window, Refresh> {
 
-    private static final String DESCRIPTION = "Refresh %s";
 
-    private Refresh(String description) {
-        super(description);
+    private Refresh() {
+        super("Refresh window/tab");
     }
 
     /**
-     * Builds the refreshing in the first window.
+     * Builds the refreshing in the browser window/tab that active currently.
      *
      * @return built the refreshing action
      */
-    public static Refresh refresh() {
-        return refresh(window());
+    public static Refresh refreshWindow() {
+        return refreshWindow(window());
     }
 
     /**
@@ -29,8 +36,8 @@ public final class Refresh extends NavigationActionSupplier<Refresh> {
      * @param windowSupplier is how to get the window where the refreshing should be performed
      * @return built the refreshing action
      */
-    public static Refresh refresh(GetWindowSupplier windowSupplier) {
-        return new Refresh(format(DESCRIPTION, windowSupplier)).performOn(windowSupplier);
+    public static Refresh refreshWindow(GetWindowSupplier windowSupplier) {
+        return new Refresh().performOn(windowSupplier);
     }
 
     /**
@@ -39,8 +46,8 @@ public final class Refresh extends NavigationActionSupplier<Refresh> {
      * @param window is the window where the refreshing should be performed
      * @return built the refreshing action
      */
-    public static Refresh refresh(Window window) {
-        return new Refresh(format(DESCRIPTION, window)).performOn(window);
+    public static Refresh refreshWindow(Window window) {
+        return new Refresh().performOn(window);
     }
 
     @Override

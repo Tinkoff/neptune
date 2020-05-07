@@ -1,26 +1,28 @@
 package ru.tinkoff.qa.neptune.selenium.functions.value;
 
+import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.WebElement;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.api.widget.HasCssValue;
-import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.WebElement;
 
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 import static java.lang.String.format;
+import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 
+@SequentialGetStepSupplier.DefaultParameterNames(
+        from = "Element to get value of the css"
+)
 public final class SequentialGetCSSValueSupplier extends
         SequentialGetStepSupplier.GetObjectChainedStepSupplier<SeleniumStepContext, String, SearchContext, SequentialGetCSSValueSupplier> {
 
     private boolean isElementDefined;
 
     private SequentialGetCSSValueSupplier(String property) {
-        super(format("Value of the css property '%s'", property), searchContext -> {
+        super("Value of the css property '" + property + "'", searchContext -> {
             Class<? extends SearchContext> searchContextClass = searchContext.getClass();
             if (WebElement.class.isAssignableFrom(searchContextClass)) {
                 return ((WebElement) searchContext).getCssValue(property);
@@ -50,42 +52,20 @@ public final class SequentialGetCSSValueSupplier extends
 
     /**
      * Adds an element to get value of the css property
+     *
      * @param e is the element to get value of the css property
      * @return self-reference
      */
-    public SequentialGetCSSValueSupplier of(WebElement e) {
+    public SequentialGetCSSValueSupplier of(SearchContext e) {
         isElementDefined = true;
         return super.from(e);
     }
 
     /**
      * Adds an element to get value of the css property
-     * @param widget is the widget to get value of the css property
-     * @return self-reference
-     */
-    public SequentialGetCSSValueSupplier of(Widget widget) {
-        isElementDefined = true;
-        return super.from(widget);
-    }
-
-    /**
-     * Adds an element to get value of the css property
-     * @param t instance of some type which provides ability to get value of the css property.
-     * @param <T> subtype of {@link SearchContext} which provides ability to get value of the css property.
-     * @return self-reference
-     */
-    public <T extends SearchContext & HasCssValue> SequentialGetCSSValueSupplier of(T t) {
-        isElementDefined = true;
-        return super.from(t);
-    }
-
-    /**
-     * Adds an element to get value of the css property
+     *
      * @param searchSupplier is how to find the element to get value of the css property.
-     *                       It is expected that result of the wrapped function is some instance of {@link WebElement}
-     *                       or some class which implements {@link SearchContext} and {@link HasCssValue}. Otherwise
-     *                       evaluation of the css value throws {@link UnsupportedOperationException}.
-     * @param <T> subtype of {@link SearchContext} which provides ability to get value of the css property.
+     * @param <T>            subtype of {@link SearchContext} which provides ability to get value of the css property.
      * @return self-reference
      */
     public <T extends SearchContext> SequentialGetCSSValueSupplier of(SearchSupplier<T> searchSupplier) {

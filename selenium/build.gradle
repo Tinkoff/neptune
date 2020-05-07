@@ -12,14 +12,16 @@ dependencies {
         exclude group: 'com.google.code.gson', module: 'gson'
         exclude group: 'net.bytebuddy', module:'byte-buddy'
     }
-    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.23.4'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '3.3.3'
     compile group: 'cglib', name: 'cglib', version: '3.3.0'
-    compile group: 'org.jsoup', name: 'jsoup', version: '1.12.2'
+    compile group: 'org.jsoup', name: 'jsoup', version: '1.13.1'
 }
 
 test {
-    useTestNG()
-    jvmArgs '-Xmx20484m', '-XX:MaxPermSize=1024m', '-XX:+HeapDumpOnOutOfMemoryError'
+    useTestNG() {
+        // runlist to executed. path is relative to current folder
+        suites 'src/test/resources/suite.xml'
+    }
 }
 
 task javadocJar(type: Jar) {

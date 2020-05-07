@@ -4,6 +4,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 import com.google.gson.GsonBuilder;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -44,26 +45,23 @@ public class CustomRequestBodyTest extends BaseHttpTest {
             "<wstxns3:C1 xmlns:wstxns3=\"http://www.test.com\">true</wstxns3:C1></BodyObject>";
 
     private static final String REQUEST_BODY_XML_FOR_DOCUMENT = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"no\"?><a><b/><c/></a>";
-    private static final String REQUEST_BODY_HTML_FOR_DOCUMENT = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n" +
+    private static final Document DOCUMENT = Jsoup.parse("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n" +
             "<html>\n" +
-            " <head> \n" +
-            "  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\"> \n" +
-            "  <title>Login Page</title> \n" +
-            " </head> \n" +
-            " <body> \n" +
-            "  <div id=\"login\" class=\"simple\"> \n" +
-            "   <form action=\"login.do\">\n" +
-            "     Username : \n" +
-            "    <input id=\"username\" type=\"text\">\n" +
-            "    <br> Password : \n" +
-            "    <input id=\"password\" type=\"password\">\n" +
-            "    <br> \n" +
-            "    <input id=\"submit\" type=\"submit\"> \n" +
-            "    <input id=\"reset\" type=\"reset\"> \n" +
-            "   </form> \n" +
-            "  </div>  \n" +
-            " </body>\n" +
-            "</html>";
+            "    <head>\n" +
+            "        <meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\">\n" +
+            "        <title>Login Page</title>\n" +
+            "    </head>\n" +
+            "    <body>\n" +
+            "        <div id=\"login\" class=\"simple\" >\n" +
+            "            <form action=\"login.do\">\n" +
+            "                Username : <input id=\"username\" type=\"text\" /><br>\n" +
+            "                Password : <input id=\"password\" type=\"password\" /><br>\n" +
+            "                <input id=\"submit\" type=\"submit\" />\n" +
+            "                <input id=\"reset\" type=\"reset\" />\n" +
+            "            </form>\n" +
+            "        </div>\n" +
+            "    </body>\n" +
+            "</html>");
 
     private static final String REQUEST_BODY_URL_UNLOADED = "param1=value1&param2=value2";
     private static final String REQUEST_BODY_URL_UNLOADED2 = "chip%26dale=rescue+rangers&how+to+get+water=2H2+%2B+O2+%3D+2H2O";
@@ -105,7 +103,7 @@ public class CustomRequestBodyTest extends BaseHttpTest {
                 request()
                         .withMethod("POST")
                         .withHeader("Content-Type", "multipart/form-data")
-                        .withBody(REQUEST_BODY_HTML_FOR_DOCUMENT)
+                        .withBody(DOCUMENT.outerHtml())
                         .withPath(PATH_DOCUMENT_HTML))
                 .respond(response().withBody(DOCUMENT_HTML_HAS_BEEN_SUCCESSFULLY_POSTED));
 
@@ -143,24 +141,6 @@ public class CustomRequestBodyTest extends BaseHttpTest {
         params2.put("chip&dale", "rescue rangers");
         params2.put("how to get water", "2H2 + O2 = 2H2O");
 
-        var htmlDoc = Jsoup.parse("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n" +
-                "<html>\n" +
-                "    <head>\n" +
-                "        <meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\">\n" +
-                "        <title>Login Page</title>\n" +
-                "    </head>\n" +
-                "    <body>\n" +
-                "        <div id=\"login\" class=\"simple\" >\n" +
-                "            <form action=\"login.do\">\n" +
-                "                Username : <input id=\"username\" type=\"text\" /><br>\n" +
-                "                Password : <input id=\"password\" type=\"password\" /><br>\n" +
-                "                <input id=\"submit\" type=\"submit\" />\n" +
-                "                <input id=\"reset\" type=\"reset\" />\n" +
-                "            </form>\n" +
-                "        </div>\n" +
-                "    </body>\n" +
-                "</html>");
-
         return new Object[][]{
                 {PATH_TO_GSON,
                         jsonStringBody(BODY_OBJECT, new GsonBuilder()),
@@ -178,7 +158,7 @@ public class CustomRequestBodyTest extends BaseHttpTest {
                         DOCUMENT_XML_HAS_BEEN_SUCCESSFULLY_POSTED},
 
                 {PATH_DOCUMENT_HTML,
-                        documentStringBody(htmlDoc),
+                        documentStringBody(DOCUMENT),
                         "multipart/form-data",
                         DOCUMENT_HTML_HAS_BEEN_SUCCESSFULLY_POSTED},
 

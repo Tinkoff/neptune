@@ -1,0 +1,48 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Selenium test suite">
+
+    <test name="Step tests">
+        <packages>
+            <package name="ru.tinkoff.qa.neptune.selenium.test.steps.tests.click.*"/>
+            <package name="ru.tinkoff.qa.neptune.selenium.test.steps.tests.cookies.*"/>
+            <package name="ru.tinkoff.qa.neptune.selenium.test.steps.tests.java.script.*"/>
+            <package name="ru.tinkoff.qa.neptune.selenium.test.steps.tests.navigation.*"/>
+            <package name="ru.tinkoff.qa.neptune.selenium.test.steps.tests.presence.*"/>
+            <package name="ru.tinkoff.qa.neptune.selenium.test.steps.tests.target.locator.*"/>
+            <package name="ru.tinkoff.qa.neptune.selenium.test.steps.tests.value.*"/>
+            <package name="ru.tinkoff.qa.neptune.selenium.test.steps.tests.interaction.*"/>
+        </packages>
+    </test>
+
+    <test name="Elements test">
+        <classes>
+            <class name="ru.tinkoff.qa.neptune.selenium.test.elements.scrolling.ScrollIntoViewTest"/>
+            <class name="ru.tinkoff.qa.neptune.selenium.test.elements.searching.widgets.SearchForWidgetPositiveTest"/>
+            <class name="ru.tinkoff.qa.neptune.selenium.test.elements.searching.SearchForWebElementPositiveTest"/>
+            <class name="ru.tinkoff.qa.neptune.selenium.test.elements.searching.SearchForWebElementsPositiveTest"/>
+            <class name="ru.tinkoff.qa.neptune.selenium.test.elements.searching.SearchForWebElementNegativeTest"/>
+            <class name="ru.tinkoff.qa.neptune.selenium.test.elements.searching.SearchForWebElementsNegativeTest"/>
+        </classes>
+    </test>
+
+    <test name="Starting of web driver tests">
+        <packages>
+            <package name="ru.tinkoff.qa.neptune.selenium.test.webdriver.starting.*"/>
+        </packages>
+    </test>
+
+    <test name="Creation of capabilities tests">
+        <classes>
+            <class name="ru.tinkoff.qa.neptune.selenium.test.capability.properties.DefaultCapabilityPropertiesTest"/>
+            <class name="ru.tinkoff.qa.neptune.selenium.test.capability.properties.NullCapabilityPropertiesTest"/>
+            <class name="ru.tinkoff.qa.neptune.selenium.test.capability.properties.WhenCapabilityPropertiesAreDefinedPreviously"/>
+        </classes>
+    </test>
+
+    <test name="Captors tests">
+        <packages>
+            <package name="ru.tinkoff.qa.neptune.selenium.test.captors.*"/>
+        </packages>
+    </test>
+
+</suite>

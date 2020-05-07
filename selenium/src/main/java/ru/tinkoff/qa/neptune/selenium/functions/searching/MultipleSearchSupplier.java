@@ -16,12 +16,9 @@ import java.time.Duration;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 import static java.lang.String.format;
 import static java.lang.String.join;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.selenium.api.widget.Widget.getWidgetName;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindLabeledWidgets.labeledWidgets;
@@ -31,6 +28,11 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMEN
 @SuppressWarnings({"unused"})
 @MakeImageCapturesOnFinishing
 @MakeFileCapturesOnFinishing
+@SequentialGetStepSupplier.DefaultParameterNames(
+        timeOut = "Time of the waiting for elements",
+        from = "Parent element",
+        criteria = "Element criteria"
+)
 public final class MultipleSearchSupplier<R extends SearchContext> extends
         SequentialGetStepSupplier.GetIterableChainedStepSupplier<SearchContext, List<R>, SearchContext, R, MultipleSearchSupplier<R>> {
 
@@ -42,16 +44,6 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
         if (FIND_ONLY_VISIBLE_ELEMENTS.get()) {
             criteria(visible());
         }
-    }
-
-    private static Supplier<String> criteriaDescription(MultipleSearchSupplier<?> search) {
-        return () -> {
-            var criteria = search.getCriteriaDescription();
-            if (!isBlank(criteria)) {
-                return criteria;
-            }
-            return EMPTY;
-        };
     }
 
     /**
@@ -72,7 +64,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some list of {@link WebElement} found from the input value.
      *
-     * @param by locator strategy to find elements
+     * @param by   locator strategy to find elements
      * @param text that desired elements should have
      * @return an instance of {@link MultipleSearchSupplier}
      */
@@ -92,13 +84,13 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      *               not abstract subclass that implements {@link Labeled} or be that class.
      * @param labels (texts of some elements or attributes inside or beside the widget) are used to
      *               find widgets.
-     * @param <T> the type of widgets which should be found
+     * @param <T>    the type of widgets which should be found
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass, String... labels) {
         var labeledBy = labeled(labels);
         var labeledWidgets = labeledWidgets(tClass);
-        var search =  new MultipleSearchSupplier<>(format("List of %s '%s'", getWidgetName(tClass), join(",", labels)), labeledWidgets);
+        var search = new MultipleSearchSupplier<>(format("List of %s '%s'", getWidgetName(tClass), join(",", labels)), labeledWidgets);
         return search.criteria(labeledBy);
     }
 
@@ -108,7 +100,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of {@link Widget} found from the input value.
      *
      * @param tClass is a class of objects to be returned
-     * @param <T> the type of widgets which should be found
+     * @param <T>    the type of widgets which should be found
      * @return an instance of {@link MultipleSearchSupplier}
      */
     public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass) {
@@ -379,7 +371,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Constructs the chained searching from some instance of {@link SearchContext}.
      *
      * @param from is how to find some elements from a parent element.
-     * @param <Q> is a type of the parent element.
+     * @param <Q>  is a type of the parent element.
      * @return self-reference
      */
     public <Q extends SearchContext> MultipleSearchSupplier<R> foundFrom(SearchSupplier<Q> from) {
@@ -390,7 +382,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * Constructs the chained searching from some instance of {@link SearchContext}.
      *
      * @param from is a parent element.
-     * @param <Q> is a type of the parent element.
+     * @param <Q>  is a type of the parent element.
      * @return self-reference
      */
     public <Q extends SearchContext> MultipleSearchSupplier<R> foundFrom(Q from) {
@@ -403,10 +395,10 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      *
      * @param from is a function which takes some {@link SearchContext} as the input parameter and returns some
      *             list of found instances of {@link SearchContext}.
-     * @param <Q> is a type of the parent element.
+     * @param <Q>  is a type of the parent element.
      * @return self-reference
      */
-    public <Q extends SearchContext>  MultipleSearchSupplier<R> foundFrom(Function<SearchContext, Q> from) {
+    public <Q extends SearchContext> MultipleSearchSupplier<R> foundFrom(Function<SearchContext, Q> from) {
         return super.from(from);
     }
 
