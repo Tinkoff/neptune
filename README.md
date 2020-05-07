@@ -21,7 +21,7 @@
 [commitsince-badge]: https://img.shields.io/github/commits-since/TinkoffCreditSystems/neptune/0.12.1-ALPHA
 [commitsince-link]: https://github.com/TinkoffCreditSystems/neptune/compare/0.12.1-ALPHA...master
 
-[commit-badge]: https://img.shields.io/github/last-commit/TinkoffCreditSystems/neptune/master
+[commit-badge]: https://img.shields.io/github/last-commit/TinkoffCreditSystems/neptune/master?color=blue
 [commit-link]: https://github.com/TinkoffCreditSystems/neptune/commits/master
 
 [license-badge]: https://img.shields.io/github/license/TinkoffCreditSystems/neptune?color=9cf
