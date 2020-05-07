@@ -6,7 +6,7 @@
 [build-badge]: https://travis-ci.com/TinkoffCreditSystems/neptune.svg?branch=master
 [build-link]: https://travis-ci.com/TinkoffCreditSystems/neptune
 
-[version-badge]: https://img.shields.io/github/v/release/TinkoffCreditSystems/neptune?label=release
+[version-badge]: https://img.shields.io/github/v/tag/TinkoffCreditSystems/neptune?label=release
 [version-link]: https://github.com/TinkoffCreditSystems/neptune/releases
 
 [commit-badge]: https://img.shields.io/github/last-commit/TinkoffCreditSystems/neptune/master?color=orange
