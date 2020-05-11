@@ -1,5 +1,5 @@
 ru.tinkoff.qa.neptune.core.api.cleaning
-ru.tinkoff.qa.neptune.core.api.concurency
+ru.tinkoff.qa.neptune.core.api.concurrency
 ru.tinkoff.qa.neptune.core.api.event.firing
 ru.tinkoff.qa.neptune.core.api.event.firing.annotation
 ru.tinkoff.qa.neptune.core.api.event.firing.captors
