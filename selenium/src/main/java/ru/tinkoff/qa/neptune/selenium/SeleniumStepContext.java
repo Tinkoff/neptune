@@ -159,9 +159,10 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      *
      * @param toFind is description of a text field
      * @param value  is a sequence of strings/chars used to change value of text field
+     * @param <T>    is a type of text field
      * @return self-reference
      */
-    public SeleniumStepContext edit(SearchSupplier<TextField> toFind, CharSequence... value) {
+    public <T extends TextField> SeleniumStepContext edit(SearchSupplier<T> toFind, CharSequence... value) {
         checkNotNull(value);
         checkArgument(value.length > 0, "");
         valueOfThe(toFind, asList(value)).get().accept(this);
