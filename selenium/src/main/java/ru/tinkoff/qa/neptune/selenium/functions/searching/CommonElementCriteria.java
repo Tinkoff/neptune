@@ -145,8 +145,8 @@ public final class CommonElementCriteria {
 
                         try {
                             var p = compile(expression);
-                            var matcher = p.matcher(s);
-                            return matcher.matches() || matcher.find();
+                            var mather = p.matcher(s);
+                            return mather.matches() || mather.find();
                         } catch (Throwable thrown) {
                             thrown.printStackTrace();
                             return false;
@@ -230,8 +230,8 @@ public final class CommonElementCriteria {
 
                         try {
                             var p = compile(expression);
-                            var matcher = p.matcher(s);
-                            return matcher.matches() || matcher.find();
+                            var mather = p.matcher(s);
+                            return mather.matches() || mather.find();
                         } catch (Throwable thrown) {
                             thrown.printStackTrace();
                             return false;
@@ -315,8 +315,8 @@ public final class CommonElementCriteria {
 
                         try {
                             var p = compile(expression);
-                            var matcher = p.matcher(s);
-                            return matcher.matches() || matcher.find();
+                            var mather = p.matcher(s);
+                            return mather.matches() || mather.find();
                         } catch (Throwable thrown) {
                             thrown.printStackTrace();
                             return false;
