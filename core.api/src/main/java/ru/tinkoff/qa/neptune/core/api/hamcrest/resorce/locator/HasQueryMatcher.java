@@ -15,7 +15,7 @@ public final class HasQueryMatcher<T> extends ResourceLocatorMatcher<T, String> 
     }
 
     /**
-     * Creates matcher that verifier the query of an URL
+     * Creates matcher that verifies the query of an URL
      *
      * @param queryMather that checks the query value
      * @return new {@link HasQueryMatcher}
@@ -25,7 +25,7 @@ public final class HasQueryMatcher<T> extends ResourceLocatorMatcher<T, String> 
     }
 
     /**
-     * Creates matcher that verifier the query of an URL
+     * Creates matcher that verifies the query of an URL
      *
      * @param query is the expected value of the query
      * @return new {@link HasQueryMatcher}
@@ -35,7 +35,7 @@ public final class HasQueryMatcher<T> extends ResourceLocatorMatcher<T, String> 
     }
 
     /**
-     * Creates matcher that verifier the query of an URI
+     * Creates matcher that verifies the query of an URI
      *
      * @param queryMather that checks the query value
      * @return new {@link HasQueryMatcher}
@@ -45,7 +45,7 @@ public final class HasQueryMatcher<T> extends ResourceLocatorMatcher<T, String> 
     }
 
     /**
-     * Creates matcher that verifier the query of an URI
+     * Creates matcher that verifies the query of an URI
      *
      * @param query is the expected value of the query
      * @return new {@link HasQueryMatcher}

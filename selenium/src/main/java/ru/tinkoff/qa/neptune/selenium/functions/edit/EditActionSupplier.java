@@ -1,59 +1,30 @@
 package ru.tinkoff.qa.neptune.selenium.functions.edit;
 
-import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+import org.openqa.selenium.SearchContext;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.StepParameter;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Editable;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
-import org.openqa.selenium.SearchContext;
 
-import java.util.Arrays;
-import java.util.stream.Stream;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.format;
-import static java.util.List.of;
-import static java.util.Objects.nonNull;
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.StreamSupport.stream;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 
 @MakeImageCapturesOnFinishing
 @MakeFileCapturesOnFinishing
-public final class EditActionSupplier extends
-        SequentialActionSupplier<SeleniumStepContext, Editable, EditActionSupplier> {
+@SequentialActionSupplier.DefaultParameterNames(
+        performOn = "Element to edit"
+)
+public final class EditActionSupplier<T> extends
+        SequentialActionSupplier<SeleniumStepContext, Editable<T>, EditActionSupplier<T>> {
 
-    private static final String DESCRIPTION = "Edit element %s. Change value with [%s]";
+    @StepParameter(value = "Change value with", makeReadableBy = EditParameterValueGetter.class)
+    private final T toSet;
 
-    private final Object toSet;
-
-    private EditActionSupplier(String description, Object value) {
+    private EditActionSupplier(String description, T value) {
         super(description);
         toSet = value;
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T> String addDescriptionOfTheSetValue(T toBeSet) {
-        checkArgument(nonNull(toBeSet), "The value to be used for the editing should not be null");
-        var clazz = toBeSet.getClass();
-
-        Stream<T> stream;
-        if (Iterable.class.isAssignableFrom(clazz)) {
-            stream = stream(((Iterable<T>) toBeSet).spliterator(), false);
-        } else if (clazz.isArray()) {
-            stream = Arrays.stream((T[]) toBeSet);
-        } else {
-            stream = of(toBeSet).stream();
-        }
-
-        return stream.map(t -> {
-            checkArgument(nonNull(t), "A null-value is defined to change value of an element");
-            if (t.getClass().isEnum()) {
-                return ((Enum) t).name();
-            }
-            return String.valueOf(t);
-        }).collect(joining(","));
     }
 
     /**
@@ -65,9 +36,9 @@ public final class EditActionSupplier extends
      * @param <S>   if the type of editable element
      * @return built edit action
      */
-    public static <R, S extends SearchContext & Editable<R>> EditActionSupplier valueOfThe(
+    public static <R, S extends SearchContext & Editable<R>> EditActionSupplier<R> valueOfThe(
             SearchSupplier<S> of, R value) {
-        return new EditActionSupplier(format(DESCRIPTION, of, addDescriptionOfTheSetValue(value)), value)
+        return new EditActionSupplier<>("Edit element " + of, value)
                 .performOn(of.get().compose(currentContent()));
     }
 
@@ -80,25 +51,13 @@ public final class EditActionSupplier extends
      * @param <S>   if the type of editable element
      * @return built edit action
      */
-    public static <R, S extends SearchContext & Editable<R>> EditActionSupplier valueOfThe(S of, R value) {
-        return new EditActionSupplier(format(DESCRIPTION, of, addDescriptionOfTheSetValue(value)), value).performOn(of);
-    }
-
-    public <T, Q extends SearchContext & Editable<T>> EditActionSupplier andValueOfThe(SearchSupplier<Q> of, T value) {
-        checkArgument(nonNull(of), "The searching for the editable element should be defined");
-        checkArgument(nonNull(value), "The value which is used to edit the element should be defined");
-        return mergeActionSequenceFrom(valueOfThe(of, value));
-    }
-
-    public <T, Q extends SearchContext & Editable<T>> EditActionSupplier andValueOfThe(Q of, T value) {
-        checkArgument(nonNull(of), "The editable element should be defined");
-        checkArgument(nonNull(value), "The value which is used to edit the element should be defined");
-        return mergeActionSequenceFrom(valueOfThe(of, value));
+    public static <R, S extends SearchContext & Editable<R>> EditActionSupplier<R> valueOfThe(S of, R value) {
+        return new EditActionSupplier<>("Edit element " + of, value)
+                .performOn(of);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    protected void performActionOn(Editable value) {
+    protected void performActionOn(Editable<T> value) {
         value.edit(toSet);
     }
 }

@@ -15,7 +15,7 @@ public final class HasUserInfoMatcher<T> extends ResourceLocatorMatcher<T, Strin
     }
 
     /**
-     * Creates matcher that verifier the user info of an URL
+     * Creates matcher that verifies the user info of an URL
      *
      * @param userInfoMather that checks the user info value
      * @return new {@link HasUserInfoMatcher}
@@ -25,7 +25,7 @@ public final class HasUserInfoMatcher<T> extends ResourceLocatorMatcher<T, Strin
     }
 
     /**
-     * Creates matcher that verifier the user info of an URL
+     * Creates matcher that verifies the user info of an URL
      *
      * @param userInfo is the expected value of the user info
      * @return new {@link HasUserInfoMatcher}
@@ -35,7 +35,7 @@ public final class HasUserInfoMatcher<T> extends ResourceLocatorMatcher<T, Strin
     }
 
     /**
-     * Creates matcher that verifier the user info of an URI
+     * Creates matcher that verifies the user info of an URI
      *
      * @param userInfoMather that checks the user info value
      * @return new {@link HasUserInfoMatcher}
@@ -45,7 +45,7 @@ public final class HasUserInfoMatcher<T> extends ResourceLocatorMatcher<T, Strin
     }
 
     /**
-     * Creates matcher that verifier the user info of an URI
+     * Creates matcher that verifies the user info of an URI
      *
      * @param userInfo is the expected value of the user info
      * @return new {@link HasUserInfoMatcher}

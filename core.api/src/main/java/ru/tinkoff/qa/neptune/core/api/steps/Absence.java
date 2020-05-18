@@ -5,24 +5,26 @@ import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 
 import java.lang.reflect.Array;
 import java.time.Duration;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.format;
 import static java.time.Duration.ofMillis;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationHMS;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.fireReturnedValue;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 @SuppressWarnings("unchecked")
-public final class Absence<T extends Context> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<T, Boolean, Object, Absence<T>> {
+public final class Absence<T extends Context<?>> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<T, Boolean, Object, Absence<T>> {
 
     private Object received;
 
     private Absence(Function<T, ?> toBeAbsent) {
-        super(format("Absence of [%s]", isLoggable(toBeAbsent) ? toBeAbsent.toString() : "<not described value>"),
+        super("Absence of " + (isLoggable(toBeAbsent) ? toBeAbsent.toString() : "<not described value>"),
                 o -> ofNullable(o)
                         .map(o1 -> {
                             Class<?> clazz = o1.getClass();
@@ -36,8 +38,7 @@ public final class Absence<T extends Context> extends SequentialGetStepSupplier.
         StepFunction<T, ?> expectedToBeAbsent;
         if (StepFunction.class.isAssignableFrom(toBeAbsent.getClass())) {
             expectedToBeAbsent = ((StepFunction<T, ?>) toBeAbsent);
-        }
-        else {
+        } else {
             expectedToBeAbsent = new StepFunction<>(isLoggable(toBeAbsent) ?
                     toBeAbsent.toString() :
                     "<not described value>",
@@ -61,7 +62,7 @@ public final class Absence<T extends Context> extends SequentialGetStepSupplier.
      * @param <T>      is a type of {@link Context}
      * @return an instance of {@link Absence}.
      */
-    public static <T extends Context> Absence<T> absence(Function<T, ?> function) {
+    public static <T extends Context<?>> Absence<T> absence(Function<T, ?> function) {
         checkArgument(nonNull(function), "Function should not be a null-value");
         return new Absence<>(function);
     }
@@ -70,11 +71,11 @@ public final class Absence<T extends Context> extends SequentialGetStepSupplier.
      * Creates an instance of {@link Absence}.
      *
      * @param toBeAbsent as a supplier of a function. If the result of {@link Function#apply(Object)} is {@code null},
-     *                    it is an empty iterable/array or it is {@link Boolean} {@code false} then this is considered absent.
-     * @param <T>         is a type of {@link Context}
+     *                   it is an empty iterable/array or it is {@link Boolean} {@code false} then this is considered absent.
+     * @param <T>        is a type of {@link Context}
      * @return an instance of {@link Absence}.
      */
-    public static <T extends Context> Absence<T> absence(SequentialGetStepSupplier<T, ?, ?, ?, ?> toBeAbsent) {
+    public static <T extends Context<?>> Absence<T> absence(SequentialGetStepSupplier<T, ?, ?, ?, ?> toBeAbsent) {
         checkArgument(nonNull(toBeAbsent), "Supplier of a function should not be a null-value");
         return new Absence<>(toBeAbsent);
     }
@@ -102,7 +103,7 @@ public final class Absence<T extends Context> extends SequentialGetStepSupplier.
                 }
 
                 if (Iterable.class.isAssignableFrom(clazz)) {
-                    if (Iterables.size((Iterable) result) == 0) {
+                    if (Iterables.size((Iterable<?>) result) == 0) {
                         return true;
                     }
                 }
@@ -137,10 +138,6 @@ public final class Absence<T extends Context> extends SequentialGetStepSupplier.
         };
     }
 
-    protected String prepareStepDescription() {
-        return toString();
-    }
-
     /**
      * This method defines the time to wait for the value is absent.
      * <p>WARNING!</p>
@@ -165,5 +162,12 @@ public final class Absence<T extends Context> extends SequentialGetStepSupplier.
      */
     public Absence<T> throwIfPresent(String exceptionMessage) {
         return throwOnEmptyResult(() -> new IllegalStateException(exceptionMessage));
+    }
+
+    @Override
+    protected Map<String, String> getParameters() {
+        var result = new LinkedHashMap<>(((StepFunction<?, ?>) from).getParameters());
+        result.put("Time of the waiting for absence", formatDurationHMS(this.timeToGet.toMillis()));
+        return result;
     }
 }

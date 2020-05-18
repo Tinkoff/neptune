@@ -1,22 +1,21 @@
 package ru.tinkoff.qa.neptune.selenium.test;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.openqa.selenium.*;
 import ru.tinkoff.qa.neptune.selenium.test.enums.FrameIndexes;
 import ru.tinkoff.qa.neptune.selenium.test.enums.FrameNames;
 import ru.tinkoff.qa.neptune.selenium.test.enums.WindowHandles;
-import org.apache.commons.lang3.ArrayUtils;
-import org.openqa.selenium.*;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import static ru.tinkoff.qa.neptune.selenium.test.enums.WindowHandles.HANDLE1;
-import static ru.tinkoff.qa.neptune.selenium.test.enums.WindowHandles.HANDLE2;
-import static ru.tinkoff.qa.neptune.selenium.test.enums.WindowHandles.HANDLE3;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.ArrayUtils.contains;
+import static ru.tinkoff.qa.neptune.selenium.test.MockAlert.setSwitchedTo;
+import static ru.tinkoff.qa.neptune.selenium.test.enums.WindowHandles.*;
 
 public class MockTargetLocator implements WebDriver.TargetLocator {
 
@@ -90,7 +89,11 @@ public class MockTargetLocator implements WebDriver.TargetLocator {
 
     @Override
     public Alert alert() {
-        return alert.setSwitchedTo(true);
+        try {
+            return alert;
+        } finally {
+            setSwitchedTo(true);
+        }
     }
 
     public MockAlert getAlert() {

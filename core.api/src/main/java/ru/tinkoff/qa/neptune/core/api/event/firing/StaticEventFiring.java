@@ -4,6 +4,7 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.CaptorFilterByProd
 import ru.tinkoff.qa.neptune.core.api.utils.SPIUtil;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static java.util.Optional.ofNullable;
@@ -49,9 +50,9 @@ public class StaticEventFiring {
                 });
     }
 
-    public static void fireEventStarting(String message) {
+    public static void fireEventStarting(String message, Map<String, String> parameters) {
         initEventLoggersIfNecessary().forEach(eventLogger ->
-                eventLogger.fireTheEventStarting(message));
+                eventLogger.fireTheEventStarting(message, parameters));
     }
 
     public static void fireThrownException(Throwable throwable) {

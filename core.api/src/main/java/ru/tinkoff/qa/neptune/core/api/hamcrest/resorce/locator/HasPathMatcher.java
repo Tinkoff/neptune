@@ -15,7 +15,7 @@ public final class HasPathMatcher<T> extends ResourceLocatorMatcher<T, String> {
     }
 
     /**
-     * Creates matcher that verifier the path of an URL
+     * Creates matcher that verifies the path of an URL
      *
      * @param pathMather that checks the path value
      * @return new {@link HasPathMatcher}
@@ -25,7 +25,7 @@ public final class HasPathMatcher<T> extends ResourceLocatorMatcher<T, String> {
     }
 
     /**
-     * Creates matcher that verifier the path of an URL
+     * Creates matcher that verifies the path of an URL
      *
      * @param path is the expected value of the path
      * @return new {@link HasPathMatcher}
@@ -35,7 +35,7 @@ public final class HasPathMatcher<T> extends ResourceLocatorMatcher<T, String> {
     }
 
     /**
-     * Creates matcher that verifier the path of an URI
+     * Creates matcher that verifies the path of an URI
      *
      * @param pathMather that checks the path value
      * @return new {@link HasPathMatcher}
@@ -45,7 +45,7 @@ public final class HasPathMatcher<T> extends ResourceLocatorMatcher<T, String> {
     }
 
     /**
-     * Creates matcher that verifier the path of an URI
+     * Creates matcher that verifies the path of an URI
      *
      * @param path is the expected value of the path
      * @return new {@link HasPathMatcher}

@@ -5,6 +5,7 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOn
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.StepParameter;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 import ru.tinkoff.qa.neptune.data.base.api.NothingIsSelectedException;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
@@ -12,23 +13,17 @@ import ru.tinkoff.qa.neptune.data.base.api.connection.data.DBConnectionSupplier;
 import ru.tinkoff.qa.neptune.data.base.api.queries.ids.Id;
 import ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQueryParameters;
 import ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLResultQueryParams;
-import ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.ReadableJDOQuery;
-import ru.tinkoff.qa.neptune.data.base.api.result.TableResultList;
 
 import javax.jdo.query.PersistableExpression;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
-import static java.lang.String.valueOf;
-import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static ru.tinkoff.qa.neptune.core.api.steps.StepFunction.toGet;
+import static ru.tinkoff.qa.neptune.data.base.api.PersistableObject.getTable;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.SLEEPING_TIME;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.WAITING_FOR_SELECTION_RESULT_TIME;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.JDOPersistenceManagerByConnectionSupplierClass.getConnectionBySupplierClass;
@@ -37,22 +32,30 @@ import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLQuery.byJDO
 import static ru.tinkoff.qa.neptune.data.base.api.queries.jdoql.JDOQLResultQuery.byJDOQLResultQuery;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.sql.SqlQuery.bySql;
 
+
 /**
  * This class is designed to select a single object from a data store.
  *
  * @param <T> is a type of retrieved value
- * @param <M> is a type of an object to get result from
  */
 @MakeFileCapturesOnFinishing
 @MakeStringCapturesOnFinishing
-public class SelectASingle<T, R extends List<T>, M> extends SequentialGetStepSupplier
-        .GetObjectFromIterableChainedStepSupplier<DataBaseStepContext, T, M, SelectASingle<T, R, M>> {
+@SequentialGetStepSupplier.DefaultParameterNames(
+        timeOut = "Time to get selected object",
+        criteria = "Object criteria"
+)
+public class SelectASingle<T> extends SequentialGetStepSupplier
+        .GetObjectFromIterableChainedStepSupplier<DataBaseStepContext, T, JDOPersistenceManager, SelectASingle<T>> {
 
     private final KeepResultPersistent resultPersistent;
 
-    private SelectASingle(String description, Function<M, R> originalFunction, KeepResultPersistent resultPersistent) {
-        super(description, originalFunction);
+    @StepParameter("By query")
+    Query<T, ? extends List<T>> query;
+
+    private SelectASingle(String description, KeepResultPersistent resultPersistent, Query<T, ? extends List<T>> selectBy) {
+        super(description, selectBy::execute);
         this.resultPersistent = resultPersistent;
+        this.query = selectBy;
         timeOut(WAITING_FOR_SELECTION_RESULT_TIME.get());
         pollingInterval(SLEEPING_TIME.get());
     }
@@ -64,26 +67,15 @@ public class SelectASingle<T, R extends List<T>, M> extends SequentialGetStepSup
      * @param params   is an instance of {@link JDOQLQueryParameters} that describes how to select desired object
      * @param <R>      is a type of resulted {@link PersistableObject} to be returned
      * @param <Q>      is a type of {@link PersistableExpression} that represents {@code T} in query
-     * @return new {@link SelectASingle}
+     * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle}
      */
-    public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectASingle<R, List<R>, ReadableJDOQuery<R>> oneOf(Class<R> toSelect,
-                                                                                                                                         JDOQLQueryParameters<R, Q> params) {
+    public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectASingle<R> oneOf(Class<R> toSelect,
+                                                                                                           JDOQLQueryParameters<R, Q> params) {
         var resultPersistent = new KeepResultPersistent();
-        return new SelectASingle<R, List<R>, ReadableJDOQuery<R>>(format("One of %s by JDO typed query", toSelect.getName()),
-                byJDOQLQuery(resultPersistent), resultPersistent) {
-            protected Function<ReadableJDOQuery<R>, R> getEndFunction() {
-                //TODO such implementation is for advanced reporting
-                //TODO jdo query should be turned into step parameter in a report
-                //TODO comment for further releases
-                return rReadableJDOQuery -> toGet(format("Result using JDO query %s",
-                        rReadableJDOQuery.getInternalQuery()),
-                        super.getEndFunction()).apply(rReadableJDOQuery);
-            }
-        }
-                .from(getConnectionByClass(toSelect).andThen(manager ->
-                        ofNullable(params)
-                                .map(parameters -> parameters.buildQuery(new ReadableJDOQuery<>(manager, toSelect)))
-                                .orElseGet(() -> new ReadableJDOQuery<>(manager, toSelect))));
+        return new SelectASingle<>(format("One of '%s' from data store", getTable(toSelect)),
+                resultPersistent,
+                byJDOQLQuery(toSelect, params, resultPersistent))
+                .from(getConnectionByClass(toSelect));
     }
 
     /**
@@ -93,26 +85,14 @@ public class SelectASingle<T, R extends List<T>, M> extends SequentialGetStepSup
      * @param params       is an instance of {@link JDOQLResultQueryParams} that describes how to select desired object
      * @param <R>          is a type of resulted {@link PersistableObject} to take field values from
      * @param <Q>          is a type of {@link PersistableExpression} that represents {@code T} in query
-     * @return new {@link SelectASingle}
+     * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle}
      */
-    public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectASingle<List<Object>, TableResultList, ReadableJDOQuery<R>>
-    row(Class<R> toSelectFrom,
-        JDOQLResultQueryParams<R, Q> params) {
-        return new SelectASingle<List<Object>, TableResultList, ReadableJDOQuery<R>>(format("One row taken from %s by JDO query", toSelectFrom.getName()),
-                byJDOQLResultQuery(), null) {
-            protected Function<ReadableJDOQuery<R>, List<Object>> getEndFunction() {
-                //TODO such implementation is for advanced reporting
-                //TODO jdo query should be turned into step parameter in a report
-                //TODO comment for further releases
-                return rReadableJDOQuery -> toGet(format("Result using JDO query %s",
-                        rReadableJDOQuery.getInternalQuery()),
-                        super.getEndFunction()).apply(rReadableJDOQuery);
-            }
-        }
-                .from(getConnectionByClass(toSelectFrom).andThen(manager ->
-                        ofNullable(params)
-                                .map(parameters -> parameters.buildQuery(new ReadableJDOQuery<>(manager, toSelectFrom)))
-                                .orElseGet(() -> new ReadableJDOQuery<>(manager, toSelectFrom))));
+    public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectASingle<List<Object>> row(Class<R> toSelectFrom,
+                                                                                                                    JDOQLResultQueryParams<R, Q> params) {
+        return new SelectASingle<>(format("One row of data from data store. The row is formed by a record of '%s'", getTable(toSelectFrom)),
+                null,
+                byJDOQLResultQuery(toSelectFrom, params))
+                .from(getConnectionByClass(toSelectFrom));
     }
 
     /**
@@ -120,10 +100,10 @@ public class SelectASingle<T, R extends List<T>, M> extends SequentialGetStepSup
      *
      * @param toSelect is a class of resulted {@link PersistableObject} to be returned
      * @param <R>      is a type of resulted {@link PersistableObject} to be returned
-     * @return new {@link SelectASingle}
+     * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle}
      */
-    public static <R extends PersistableObject> SelectASingle<R, List<R>, ReadableJDOQuery<R>> oneOf(Class<R> toSelect) {
-        return oneOf(toSelect, (JDOQLQueryParameters<R, PersistableExpression<R>>) null);
+    public static <R extends PersistableObject> SelectASingle<R> oneOf(Class<R> toSelect) {
+        return oneOf(toSelect, (JDOQLQueryParameters<R, ?>) null);
     }
 
     /**
@@ -132,16 +112,13 @@ public class SelectASingle<T, R extends List<T>, M> extends SequentialGetStepSup
      * @param toSelect is a class of resulted {@link PersistableObject} to be returned
      * @param id       is a wrapper of known id used to find the desired object
      * @param <R>      is a type of resulted {@link PersistableObject} to be returned
-     * @return new {@link SelectASingle}
+     * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle}
      */
-    public static <R extends PersistableObject> SelectASingle<R, List<R>, JDOPersistenceManager> oneOf(Class<R> toSelect,
-                                                                                                       Id id) {
-        //TODO id should be turned into step parameter in a report
-        //TODO comment for further releases
+    public static <R extends PersistableObject> SelectASingle<R> oneOf(Class<R> toSelect, Id id) {
         var resultPersistent = new KeepResultPersistent();
-        return new SelectASingle<>(format("One of %s by id %s",
-                toSelect.getName(), id),
-                id.build(toSelect, resultPersistent), resultPersistent)
+        return new SelectASingle<>(format("One of '%s' from data store", getTable(toSelect)),
+                resultPersistent,
+                id.build(toSelect, resultPersistent))
                 .from(getConnectionByClass(toSelect));
     }
 
@@ -157,20 +134,15 @@ public class SelectASingle<T, R extends List<T>, M> extends SequentialGetStepSup
      *                   {@code 'Select * from Persons where Some_Field=?'}
      *                   </p>
      * @param <R>        is a type of resulted {@link PersistableObject} to be returned
-     * @return new {@link SelectASingle}
+     * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle}
      */
-    public static <R extends PersistableObject> SelectASingle<R, List<R>, JDOPersistenceManager> oneOf(Class<R> toSelect,
-                                                                                                       String sql,
-                                                                                                       Object... parameters) {
-        //TODO sql + parameters should be turned into step parameters in a report
-        //TODO comment for further releases
+    public static <R extends PersistableObject> SelectASingle<R> oneOf(Class<R> toSelect,
+                                                                       String sql,
+                                                                       Object... parameters) {
         var resultPersistent = new KeepResultPersistent();
-        return new SelectASingle<>(format("One of %s by query '%s'. " +
-                        "Parameters: %s",
-                toSelect.getName(),
-                sql,
-                Arrays.toString(parameters)),
-                bySql(toSelect, sql, resultPersistent, parameters), resultPersistent)
+        return new SelectASingle<>(format("One of '%s' from data store", getTable(toSelect)),
+                resultPersistent,
+                bySql(toSelect, sql, resultPersistent, parameters))
                 .from(getConnectionByClass(toSelect));
     }
 
@@ -186,20 +158,15 @@ public class SelectASingle<T, R extends List<T>, M> extends SequentialGetStepSup
      *                   {@code 'Select * from Persons where Some_Field=:paramName'}
      *                   </p>
      * @param <R>        is a type of resulted {@link PersistableObject} to be returned
-     * @return new {@link SelectASingle}
+     * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle}
      */
-    public static <R extends PersistableObject> SelectASingle<R, List<R>, JDOPersistenceManager> oneOf(Class<R> toSelect,
-                                                                                                       String sql,
-                                                                                                       Map<String, ?> parameters) {
-        //TODO sql + parameters should be turned into step parameters in a report
-        //TODO comment for further releases
+    public static <R extends PersistableObject> SelectASingle<R> oneOf(Class<R> toSelect,
+                                                                       String sql,
+                                                                       Map<String, ?> parameters) {
         var resultPersistent = new KeepResultPersistent();
-        return new SelectASingle<>(format("One of %s by query '%s'. " +
-                        "Parameters: %s",
-                toSelect.getName(),
-                sql,
-                valueOf(parameters)),
-                bySql(toSelect, sql, resultPersistent, parameters), resultPersistent)
+        return new SelectASingle<>(format("One of '%s' from data store", getTable(toSelect)),
+                resultPersistent,
+                bySql(toSelect, sql, resultPersistent, parameters))
                 .from(getConnectionByClass(toSelect));
     }
 
@@ -214,21 +181,14 @@ public class SelectASingle<T, R extends List<T>, M> extends SequentialGetStepSup
      *                   {@code 'Select * from Persons where Some_Field=?'}
      *                   </p>
      * @param <R>        is a type of {@link DBConnectionSupplier}
-     * @return new {@link SelectASingle}
+     * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle}
      */
-    public static <R extends DBConnectionSupplier> SelectASingle<List<Object>, TableResultList, JDOPersistenceManager>
-    row(String sql,
-        Class<R> connection,
-        Object... parameters) {
-        //TODO sql + parameters should be turned into step parameters in a report
-        //TODO comment for further releases
-        return new SelectASingle<>(format("One row by query %s. " +
-                        "The connection is described by %s. " +
-                        "Parameters: %s",
-                sql,
-                connection.getName(),
-                Arrays.toString(parameters)),
-                bySql(sql, parameters), null)
+    public static <R extends DBConnectionSupplier> SelectASingle<List<Object>> row(String sql,
+                                                                                   Class<R> connection,
+                                                                                   Object... parameters) {
+        return new SelectASingle<>("One row of raw data from data store",
+                null,
+                bySql(sql, parameters))
                 .from(getConnectionBySupplierClass(connection));
     }
 
@@ -243,41 +203,34 @@ public class SelectASingle<T, R extends List<T>, M> extends SequentialGetStepSup
      *                   {@code 'Select * from Persons where Some_Field=:paramName'}
      *                   </p>
      * @param <R>        is a type of {@link DBConnectionSupplier}
-     * @return new {@link SelectASingle}
+     * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle}
      */
-    public static <R extends DBConnectionSupplier> SelectASingle<List<Object>, TableResultList, JDOPersistenceManager>
-    row(String sql,
-        Class<R> connection,
-        Map<String, ?> parameters) {
-        //TODO sql + parameters should be turned into step parameters in a report
-        //TODO comment for further releases
-        return new SelectASingle<>(format("One row by query %s. " +
-                        "The connection is described by %s. " +
-                        "Parameters: %s",
-                sql,
-                connection.getName(),
-                valueOf(parameters)),
-                bySql(sql, parameters), null)
+    public static <R extends DBConnectionSupplier> SelectASingle<List<Object>> row(String sql,
+                                                                                   Class<R> connection,
+                                                                                   Map<String, ?> parameters) {
+        return new SelectASingle<>("One row of raw data from data store",
+                null,
+                bySql(sql, parameters))
                 .from(getConnectionBySupplierClass(connection));
     }
 
     @Override
-    public SelectASingle<T, R, M> timeOut(Duration timeOut) {
+    public SelectASingle<T> timeOut(Duration timeOut) {
         return super.timeOut(timeOut);
     }
 
     @Override
-    public SelectASingle<T, R, M> pollingInterval(Duration pollingTime) {
+    public SelectASingle<T> pollingInterval(Duration pollingTime) {
         return super.pollingInterval(pollingTime);
     }
 
     @Override
-    public SelectASingle<T, R, M> criteria(Criteria<? super T> criteria) {
+    public SelectASingle<T> criteria(Criteria<? super T> criteria) {
         return super.criteria(criteria);
     }
 
     @Override
-    public SelectASingle<T, R, M> criteria(String conditionDescription, Predicate<? super T> condition) {
+    public SelectASingle<T> criteria(String conditionDescription, Predicate<? super T> condition) {
         return super.criteria(conditionDescription, condition);
     }
 
@@ -287,11 +240,10 @@ public class SelectASingle<T, R extends List<T>, M> extends SequentialGetStepSup
      * @param errorText as a text of the thrown exception
      * @return self reference
      */
-    public SelectASingle<T, R, M> throwWhenResultEmpty(String errorText) {
+    public SelectASingle<T> throwWhenResultEmpty(String errorText) {
         checkArgument(isNotBlank(errorText), "Please define not blank exception text");
         return super.throwOnEmptyResult(() -> new NothingIsSelectedException(errorText));
     }
-
 
     KeepResultPersistent getResultPersistent() {
         return resultPersistent;

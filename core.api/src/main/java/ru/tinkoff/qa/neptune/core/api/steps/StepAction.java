@@ -8,22 +8,24 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import static java.lang.System.lineSeparator;
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Collections.emptyMap;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.*;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchFailureEvent;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchSuccessEvent;
-import static com.google.common.base.Preconditions.checkArgument;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
-public class StepAction<T> implements Consumer<T>, MakesCapturesOnFinishing<StepAction<T>> {
+public class StepAction<T> implements MakesCapturesOnFinishing<StepAction<T>> {
 
     private final String description;
     private final Consumer<T> consumer;
     private final Set<CaptorFilterByProducedType> captorFilters = new HashSet<>();
+    private Map<String, String> parameters = emptyMap();
 
     StepAction(String description, Consumer<T> consumer) {
         checkArgument(nonNull(consumer), "Consumer should be defined");
@@ -37,8 +39,8 @@ public class StepAction<T> implements Consumer<T>, MakesCapturesOnFinishing<Step
      * supposed to perform some action.
      *
      * @param description string narration of the action
-     * @param consumer which performs the action
-     * @param <T> type of accepted value
+     * @param consumer    which performs the action
+     * @param <T>         type of accepted value
      * @return a new consumer with the given string description. Description is returned
      * by the {@link #toString()} method.
      */
@@ -47,23 +49,20 @@ public class StepAction<T> implements Consumer<T>, MakesCapturesOnFinishing<Step
     }
 
 
-    @Override
     public void accept(T t) {
         try {
-            fireEventStarting(description);
+            fireEventStarting("Perform: " + description, parameters);
             consumer.accept(t);
             if (catchSuccessEvent() && !Context.class.isAssignableFrom(consumer.getClass())) {
                 catchValue(t, captorFilters);
             }
-        }
-        catch (Throwable thrown) {
+        } catch (Throwable thrown) {
             fireThrownException(thrown);
             if (catchFailureEvent() && !StepAction.class.isAssignableFrom(consumer.getClass())) {
                 catchValue(t, captorFilters);
             }
             throw thrown;
-        }
-        finally {
+        } finally {
             fireEventFinishing();
         }
     }
@@ -71,10 +70,6 @@ public class StepAction<T> implements Consumer<T>, MakesCapturesOnFinishing<Step
     @Override
     public String toString() {
         return description;
-    }
-
-    public Consumer<T> andThen(Consumer<? super T> afterAction)  {
-        return new ChainedStepAction<>(this, afterAction);
     }
 
     void addCaptorFilters(List<CaptorFilterByProducedType> captorFilters) {
@@ -169,40 +164,8 @@ public class StepAction<T> implements Consumer<T>, MakesCapturesOnFinishing<Step
         return this;
     }
 
-    private static class ChainedStepAction<T> implements Consumer<T> {
-
-        private final Consumer<? super T> before;
-        private final Consumer<? super T> after;
-
-        private ChainedStepAction(Consumer<? super T> before, Consumer<? super T> after) {
-            var clazz1 = before.getClass();
-            var clazz2 = after.getClass();
-            checkArgument(StepAction.class.isAssignableFrom(clazz1)
-                            || ChainedStepAction.class.isAssignableFrom(clazz1),
-                    "It seems given consumer doesn't describe any before-action. Use method " +
-                            "StoryWriter.action to describe the before-action to perform");
-            checkArgument(StepAction.class.isAssignableFrom(clazz2)
-                            || ChainedStepAction.class.isAssignableFrom(clazz2),
-                    "It seems given consumer doesn't describe any after-action. Use method " +
-                            "StoryWriter.action to describe the after-action to perform");
-            this.before = before;
-            this.after = after;
-        }
-
-        @Override
-        public String toString() {
-            return before.toString() + lineSeparator() + after.toString();
-        }
-
-        @Override
-        public void accept(T t) {
-            before.accept(t);
-            after.accept(t);
-        }
-
-        @Override
-        public Consumer<T> andThen(Consumer<? super T> after) {
-            return new ChainedStepAction<>(this, after);
-        }
+    StepAction<T> setParameters(Map<String, String> parameters) {
+        this.parameters = parameters;
+        return this;
     }
 }

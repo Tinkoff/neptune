@@ -4,6 +4,7 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.EventLogger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static java.lang.String.format;
 
@@ -12,7 +13,7 @@ public class TestEventLogger implements EventLogger {
     public static final List<String> MESSAGES = new ArrayList<>();
 
     @Override
-    public void fireTheEventStarting(String message) {
+    public void fireTheEventStarting(String message, Map<String, String> params) {
         String msg = format("%s has started", message);
         MESSAGES.add(msg);
     }

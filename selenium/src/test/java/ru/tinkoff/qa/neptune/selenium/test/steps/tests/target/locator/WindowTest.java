@@ -13,15 +13,7 @@ import static java.time.Duration.ofSeconds;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.fail;
-import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.SwitchActionSupplier.to;
-import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.CloseWindowActionSupplier.closeWindow;
-import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowPositionSupplier.positionOf;
-import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowPositionSupplier.windowPosition;
-import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSizeSupplier.sizeOf;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
-import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowTitleSupplier.titleOf;
-import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.SetWindowPositionSupplier.setPositionOf;
-import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.SetWindowSizeSupplier.setSizeOf;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.WindowCriteria.titleMatches;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.WindowCriteria.urlMatches;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeUnitProperties.WAITING_WINDOW_TIME_UNIT;
@@ -127,9 +119,9 @@ public class WindowTest extends BaseWebDriverTest {
 
     @Test(expectedExceptions = NoSuchWindowException.class)
     public void closeWindowBySearchCriteriaTest() {
-        seleniumSteps.perform(closeWindow(window(2)
+        seleniumSteps.closeWindow(window(2)
                 .criteria(titleMatches("^.*\\b(Github)\\b.*$"))
-                .criteria(urlMatches("^.*\\b(github)\\b.*$"))));
+                .criteria(urlMatches("^.*\\b(github)\\b.*$")));
         assertThat(seleniumSteps.get(window(0)).isPresent(), is(true));
         assertThat(seleniumSteps.get(window(1)).isPresent(), is(true));
         seleniumSteps.get(window(2)
@@ -142,7 +134,7 @@ public class WindowTest extends BaseWebDriverTest {
         Window foundWindow = seleniumSteps.get(window(2)
                 .criteria(titleMatches("^.*\\b(Github)\\b.*$"))
                 .criteria(urlMatches("^.*\\b(github)\\b.*$")));
-        seleniumSteps.perform(closeWindow(foundWindow));
+        seleniumSteps.closeWindow(foundWindow);
 
         assertThat(foundWindow.isPresent(), is(false));
         assertThat(seleniumSteps.get(window(0)).isPresent(), is(true));
@@ -153,19 +145,19 @@ public class WindowTest extends BaseWebDriverTest {
 
     @Test
     public void switchToWindowBySearchCriteriaTest() {
-        seleniumSteps.performSwitch(to(window(2)
+        seleniumSteps.switchTo(window(2)
                 .criteria(titleMatches("^.*\\b(Github)\\b.*$"))
-                .criteria(urlMatches("^.*\\b(github)\\b.*$"))));
+                .criteria(urlMatches("^.*\\b(github)\\b.*$")));
         assertThat(seleniumSteps.getWrappedDriver().getWindowHandle(), is(HANDLE3.getHandle()));
         assertThat(seleniumSteps.getWrappedDriver().getCurrentUrl(), is(GITHUB.getUrl()));
         assertThat(seleniumSteps.getWrappedDriver().getTitle(), is(GITHUB.getTitle()));
 
-        seleniumSteps.performSwitch(to(window(0)));
+        seleniumSteps.switchTo(window(0));
         assertThat(seleniumSteps.getWrappedDriver().getWindowHandle(), is(HANDLE1.getHandle()));
         assertThat(seleniumSteps.getWrappedDriver().getCurrentUrl(), is(GOOGLE.getUrl()));
         assertThat(seleniumSteps.getWrappedDriver().getTitle(), is(GOOGLE.getTitle()));
 
-        seleniumSteps.performSwitch(to(window(1)));
+        seleniumSteps.switchTo(window(1));
         assertThat(seleniumSteps.getWrappedDriver().getWindowHandle(), is(HANDLE2.getHandle()));
         assertThat(seleniumSteps.getWrappedDriver().getCurrentUrl(), is(FACEBOOK.getUrl()));
         assertThat(seleniumSteps.getWrappedDriver().getTitle(), is(FACEBOOK.getTitle()));
@@ -173,12 +165,11 @@ public class WindowTest extends BaseWebDriverTest {
 
     @Test(dependsOnMethods = "switchToWindowBySearchCriteriaTest")
     public void switchToWindowBySearchCriteriaChainedTest() {
-        seleniumSteps.performSwitch(to(window(2)
+        seleniumSteps.switchTo(window(2)
                 .criteria(titleMatches("^.*\\b(Github)\\b.*$"))
-                .criteria(urlMatches("^.*\\b(github)\\b.*$"))))
-
-                .performSwitch(to(window(1)))
-                .performSwitch(to(window(0)));
+                .criteria(urlMatches("^.*\\b(github)\\b.*$")))
+                .switchTo(window(1))
+                .switchTo(window(0));
 
         assertThat(seleniumSteps.getWrappedDriver().getWindowHandle(), is(HANDLE1.getHandle()));
         assertThat(seleniumSteps.getWrappedDriver().getCurrentUrl(), is(GOOGLE.getUrl()));
@@ -194,17 +185,17 @@ public class WindowTest extends BaseWebDriverTest {
         Window window2 = seleniumSteps.get(window(0));
         Window window3 = seleniumSteps.get(window(1));
 
-        seleniumSteps.performSwitch(to(window));
+        seleniumSteps.switchTo(window);
         assertThat(seleniumSteps.getWrappedDriver().getWindowHandle(), is(HANDLE3.getHandle()));
         assertThat(seleniumSteps.getWrappedDriver().getCurrentUrl(), is(GITHUB.getUrl()));
         assertThat(seleniumSteps.getWrappedDriver().getTitle(), is(GITHUB.getTitle()));
 
-        seleniumSteps.performSwitch(to(window2));
+        seleniumSteps.switchTo(window2);
         assertThat(seleniumSteps.getWrappedDriver().getWindowHandle(), is(HANDLE1.getHandle()));
         assertThat(seleniumSteps.getWrappedDriver().getCurrentUrl(), is(GOOGLE.getUrl()));
         assertThat(seleniumSteps.getWrappedDriver().getTitle(), is(GOOGLE.getTitle()));
 
-        seleniumSteps.performSwitch(to(window3));
+        seleniumSteps.switchTo(window3);
         assertThat(seleniumSteps.getWrappedDriver().getWindowHandle(), is(HANDLE2.getHandle()));
         assertThat(seleniumSteps.getWrappedDriver().getCurrentUrl(), is(FACEBOOK.getUrl()));
         assertThat(seleniumSteps.getWrappedDriver().getTitle(), is(FACEBOOK.getTitle()));
@@ -218,9 +209,9 @@ public class WindowTest extends BaseWebDriverTest {
         Window window2 = seleniumSteps.get(window(0));
         Window window3 = seleniumSteps.get(window(1));
 
-        seleniumSteps.performSwitch(to(window))
-                .performSwitch(to(window3))
-                .performSwitch(to(window2));
+        seleniumSteps.switchTo(window)
+                .switchTo(window3)
+                .switchTo(window2);
 
         assertThat(seleniumSteps.getWrappedDriver().getWindowHandle(), is(HANDLE1.getHandle()));
         assertThat(seleniumSteps.getWrappedDriver().getCurrentUrl(), is(GOOGLE.getUrl()));
@@ -229,53 +220,53 @@ public class WindowTest extends BaseWebDriverTest {
 
     @Test
     public void sizeOfWindowBySearchingTest() {
-        seleniumSteps.perform(setSizeOf(window(1), new Dimension(1001, 1002)));
-        assertThat(seleniumSteps.get(sizeOf(window(1))), equalTo(new Dimension(1001, 1002)));
+        seleniumSteps.changeWindowSize(window(1), 1001, 1002);
+        assertThat(seleniumSteps.sizeOf(window(1)), equalTo(new Dimension(1001, 1002)));
     }
 
     @Test
     public void sizeOfWindowTest() {
         Window window = seleniumSteps.get(window(2));
-        seleniumSteps.perform(setSizeOf(window, new Dimension(1001, 1002)));
+        seleniumSteps.changeWindowSize(window, 1001, 1002);
         assertThat(window.getSize(), equalTo(new Dimension(1001, 1002)));
-        assertThat(seleniumSteps.get(sizeOf(window(2))), equalTo(new Dimension(1001, 1002)));
+        assertThat(seleniumSteps.sizeOf(window(2)), equalTo(new Dimension(1001, 1002)));
     }
 
     @Test
     public void sizeOfTheFirstWindowTest() {
         Window window = seleniumSteps.get(window());
-        seleniumSteps.perform(setSizeOf(window(), new Dimension(1001, 1002)));
+        seleniumSteps.changeWindowSize(window(), 1001, 1002);
         assertThat(window.getSize(), equalTo(new Dimension(1001, 1002)));
-        assertThat(seleniumSteps.get(sizeOf(window())), equalTo(new Dimension(1001, 1002)));
+        assertThat(seleniumSteps.sizeOf(window()), equalTo(new Dimension(1001, 1002)));
     }
 
     @Test
     public void positionOfWindowBySearchingTest() {
-        seleniumSteps.perform(setPositionOf(window(1), new Point(1001, 1002)));
-        assertThat(seleniumSteps.get(positionOf(window(1))), equalTo(new Point(1001, 1002)));
+        seleniumSteps.changeWindowPosition(window(1), 1001, 1002);
+        assertThat(seleniumSteps.positionOf(window(1)), equalTo(new Point(1001, 1002)));
     }
 
     @Test
     public void positionOfWindowTest() {
         Window window = seleniumSteps.get(window(2));
-        seleniumSteps.perform(setPositionOf(window, new Point(1001, 1002)));
+        seleniumSteps.changeWindowPosition(window, 1001, 1002);
         assertThat(window.getPosition(), equalTo(new Point(1001, 1002)));
-        assertThat(seleniumSteps.get(positionOf(window(2))), equalTo(new Point(1001, 1002)));
+        assertThat(seleniumSteps.positionOf(window(2)), equalTo(new Point(1001, 1002)));
     }
 
     @Test
     public void positionOfTheFirstWindowTest() {
         Window window = seleniumSteps.get(window());
-        seleniumSteps.perform(setPositionOf(window(), new Point(1001, 1002)));
+        seleniumSteps.changeWindowPosition(window(), 1001, 1002);
         assertThat(window.getPosition(), equalTo(new Point(1001, 1002)));
-        assertThat(seleniumSteps.get(windowPosition()), equalTo(new Point(1001, 1002)));
+        assertThat(seleniumSteps.windowPosition(), equalTo(new Point(1001, 1002)));
     }
 
     @Test
     public void getWindowTitleBySearchingTest() {
-        assertThat(seleniumSteps.get(titleOf(window())), is(GOOGLE.getTitle()));
-        assertThat(seleniumSteps.get(titleOf(window(1))), is(FACEBOOK.getTitle()));
-        assertThat(seleniumSteps.get(titleOf(window(2))), is(GITHUB.getTitle()));
+        assertThat(seleniumSteps.windowTitle(window()), is(GOOGLE.getTitle()));
+        assertThat(seleniumSteps.windowTitle(window(1)), is(FACEBOOK.getTitle()));
+        assertThat(seleniumSteps.windowTitle(window(2)), is(GITHUB.getTitle()));
     }
 
     @Test
@@ -284,8 +275,8 @@ public class WindowTest extends BaseWebDriverTest {
         Window window2 = seleniumSteps.get(window(1));
         Window window3 = seleniumSteps.get(window(2));
 
-        assertThat(seleniumSteps.get(titleOf(window)), is(GOOGLE.getTitle()));
-        assertThat(seleniumSteps.get(titleOf(window2)), is(FACEBOOK.getTitle()));
-        assertThat(seleniumSteps.get(titleOf(window3)), is(GITHUB.getTitle()));
+        assertThat(seleniumSteps.windowTitle(window), is(GOOGLE.getTitle()));
+        assertThat(seleniumSteps.windowTitle(window2), is(FACEBOOK.getTitle()));
+        assertThat(seleniumSteps.windowTitle(window3), is(GITHUB.getTitle()));
     }
 }

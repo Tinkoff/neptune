@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
@@ -16,10 +17,14 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
  */
 public final class UpdateExpression<T extends PersistableObject> {
 
-    private Consumer<T> updateAction;
+    private final String description;
+    private final Consumer<T> updateAction;
 
-    private UpdateExpression() {
-        super();
+    private UpdateExpression(String description, Consumer<T> updateAction) {
+        checkArgument(isNotBlank(description), "Description of an update action should not be a null or blank string");
+        checkArgument(nonNull(updateAction), "Please define an update action");
+        this.description = description;
+        this.updateAction = updateAction;
     }
 
     /**
@@ -39,36 +44,15 @@ public final class UpdateExpression<T extends PersistableObject> {
      * @return a new {@link UpdateExpression}
      */
     public static <T extends PersistableObject> UpdateExpression<T> change(String description, Consumer<T> setAction) {
-        return new UpdateExpression<T>().set(description, setAction);
+        return new UpdateExpression<>(description, setAction);
     }
 
-    private UpdateExpression<T> set(String description, Consumer<T> setAction) {
-        checkArgument(isNotBlank(description), "Description of an update action should not be a null or blank string");
-        checkArgument(nonNull(setAction), "Please define an update action");
-        updateAction = new Consumer<>() {
-            @Override
-            public void accept(T t) {
-                setAction.accept(t);
-            }
-
-            @Override
-            public String toString() {
-                return description;
-            }
-        };
-        return this;
+    @Override
+    public String toString() {
+        return description;
     }
 
-    Consumer<List<T>> getUpdateAction() {
-        return new Consumer<>() {
-            @Override
-            public void accept(List<T> ts) {
-                ts.forEach(updateAction);
-            }
-
-            public String toString() {
-                return updateAction.toString();
-            }
-        };
+    void performUpdate(List<T> toUpdate) {
+        ofNullable(toUpdate).ifPresent(ts -> ts.forEach(updateAction));
     }
 }
