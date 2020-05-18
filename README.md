@@ -51,7 +51,7 @@ Module documentatation:
 [Issues to be fixed/Requred features](https://github.com/TinkoffCreditSystems/neptune/issues)
 [Change list](https://github.com/TinkoffCreditSystems/neptune/releases)
 
-Owners: [@TikhomirovSergey](https://github.com/ArisAgnew), [@ArisAgnew](https://github.com/ArisAgnew), [@AndrewCharykov](https://github.com/AndrewCharykov)
+Owners: [@TikhomirovSergey](https://github.com/TikhomirovSergey), [@ArisAgnew](https://github.com/ArisAgnew), [@AndrewCharykov](https://github.com/AndrewCharykov)
 
 First public BETA-versions are coming soon 
 

@@ -1,5 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium;
 
+import com.browserup.bup.BrowserUpProxy;
+import com.browserup.harreader.model.HarEntry;
 import org.openqa.selenium.*;
 import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import ru.tinkoff.qa.neptune.core.api.cleaning.Stoppable;
@@ -15,6 +17,7 @@ import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.TextField;
 import ru.tinkoff.qa.neptune.selenium.functions.cookies.AddCookiesActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.cookies.GetSeleniumCookieSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction;
+import ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.BrowserProxyGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.java.script.GetJavaScriptResultSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
@@ -84,6 +87,10 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     @Override
     public WebDriver getWrappedDriver() {
         return wrappedWebDriver.getWrappedDriver();
+    }
+
+    public BrowserUpProxy getProxy() {
+        return wrappedWebDriver.getProxy();
     }
 
     public <R extends SearchContext> R find(SearchSupplier<R> what) {
@@ -197,6 +204,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
         return this;
     }
 
+
     /**
      * Returns a result of js evaluation.
      *
@@ -205,6 +213,12 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public Object evaluate(GetJavaScriptResultSupplier javaScriptResultSupplier) {
         return javaScriptResultSupplier.get().apply(this);
+    }
+
+          
+    public List<HarEntry> get(BrowserProxyGetStepSupplier browserProxy) {
+        checkArgument(Objects.nonNull(browserProxy), "Browser proxy supplier is not defined");
+        return browserProxy.get().apply(this);
     }
 
 

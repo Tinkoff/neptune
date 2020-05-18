@@ -64,7 +64,7 @@ task aggregatedJavadocs(type: Javadoc, description: 'Generate javadocs from all 
     options.author true
     options.links 'http://download.oracle.com/javase/9/docs/api/'
     options.addStringOption 'Xdoclint:none', '-quiet'
-    destinationDir  = file("${buildDir}/../../neptune.documentation/javadocs/")
+    destinationDir = file("${buildDir}/../../neptune.documentation/javadocs/")
     options.memberLevel = JavadocMemberLevel.PROTECTED
     options.bottom = "Copyright &copy; 2020 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
 
