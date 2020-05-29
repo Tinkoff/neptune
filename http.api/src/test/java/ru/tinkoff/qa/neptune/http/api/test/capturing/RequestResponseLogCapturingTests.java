@@ -27,7 +27,7 @@ import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapture
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
 import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromBodyStepSupplier.asIs;
-import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromBodyStepSupplier.object;
+import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromBodyStepSupplier.asObject;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.bodyMatches;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
 import static ru.tinkoff.qa.neptune.http.api.test.capturing.LogInjector.clearLogs;
@@ -217,7 +217,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
     public void test8(CapturedEvents toCatch, Matcher<List<String>> matcher) {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch.name());
 
-        http().bodyData(object("Number value",
+        http().bodyData(asObject("Number value",
                 GET(CORRECT_URI),
                 ofString(),
                 Integer::parseInt)
@@ -232,7 +232,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch.name());
 
         try {
-            http().bodyData(object("Number value", GET(CORRECT_URI), ofString(), Integer::parseInt)
+            http().bodyData(asObject("Number value", GET(CORRECT_URI), ofString(), Integer::parseInt)
                     .retryTimeOut(ofSeconds(5))
                     .addIgnored(Throwable.class)
                     .throwIfNoDesiredDataReceived("Test exception"));

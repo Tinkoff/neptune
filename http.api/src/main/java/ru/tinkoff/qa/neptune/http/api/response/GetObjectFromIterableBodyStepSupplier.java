@@ -55,9 +55,9 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetO
      * @param <S>         if a type of {@link Iterable} of R
      * @return an instance of {@link GetObjectFromIterableWhenResponseReceived}
      */
-    public static <T, R, S extends Iterable<R>> GetObjectFromIterableWhenResponseReceived<T, R> oneOfIterable(String description,
-                                                                                                              HttpResponse<T> received,
-                                                                                                              Function<T, S> f) {
+    public static <T, R, S extends Iterable<R>> GetObjectFromIterableWhenResponseReceived<T, R> asOneOfIterable(String description,
+                                                                                                                HttpResponse<T> received,
+                                                                                                                Function<T, S> f) {
         return new GetObjectFromIterableWhenResponseReceived<>(description, received, f);
     }
 
@@ -74,10 +74,10 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetO
      * @param <S>            if a type of {@link Iterable} of R
      * @return an instance of {@link GetObjectFromIterableWhenResponseReceived}
      */
-    public static <T, R, S extends Iterable<R>> GetObjectFromIterableWhenResponseReceiving<T, R> oneOfIterable(String description,
-                                                                                                               RequestBuilder requestBuilder,
-                                                                                                               HttpResponse.BodyHandler<T> handler,
-                                                                                                               Function<T, S> f) {
+    public static <T, R, S extends Iterable<R>> GetObjectFromIterableWhenResponseReceiving<T, R> asOneOfIterable(String description,
+                                                                                                                 RequestBuilder requestBuilder,
+                                                                                                                 HttpResponse.BodyHandler<T> handler,
+                                                                                                                 Function<T, S> f) {
         return new GetObjectFromIterableWhenResponseReceiving<>(description, response(requestBuilder, handler), f);
     }
 
@@ -92,8 +92,8 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetO
      * @param <S>         if a type of {@link Iterable} of response body
      * @return an instance of {@link GetObjectFromIterableWhenResponseReceived}
      */
-    public static <R, S extends Iterable<R>> GetObjectFromIterableWhenResponseReceived<S, R> oneOfIterable(String description,
-                                                                                                           HttpResponse<S> received) {
+    public static <R, S extends Iterable<R>> GetObjectFromIterableWhenResponseReceived<S, R> asOneOfIterable(String description,
+                                                                                                             HttpResponse<S> received) {
         return new GetObjectFromIterableWhenResponseReceived<>(description, received, rs -> rs);
     }
 
@@ -108,9 +108,9 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetO
      * @param <S>            if a type of {@link Iterable} of response body
      * @return an instance of {@link GetObjectFromIterableWhenResponseReceived}
      */
-    public static <R, S extends Iterable<R>> GetObjectFromIterableWhenResponseReceiving<S, R> oneOfIterable(String description,
-                                                                                                            RequestBuilder requestBuilder,
-                                                                                                            HttpResponse.BodyHandler<S> handler) {
+    public static <R, S extends Iterable<R>> GetObjectFromIterableWhenResponseReceiving<S, R> asOneOfIterable(String description,
+                                                                                                              RequestBuilder requestBuilder,
+                                                                                                              HttpResponse.BodyHandler<S> handler) {
         return new GetObjectFromIterableWhenResponseReceiving<>(description, response(requestBuilder, handler), rs -> rs);
     }
 

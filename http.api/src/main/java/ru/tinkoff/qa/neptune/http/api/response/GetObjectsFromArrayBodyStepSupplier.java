@@ -52,9 +52,9 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
      * @param <R>         is a type of an item of resulted array
      * @return an instance of {@link GetObjectsFromArrayWhenResponseReceived}
      */
-    public static <T, R> GetObjectsFromArrayWhenResponseReceived<T, R> array(String description,
-                                                                             HttpResponse<T> received,
-                                                                             Function<T, R[]> f) {
+    public static <T, R> GetObjectsFromArrayWhenResponseReceived<T, R> asArray(String description,
+                                                                               HttpResponse<T> received,
+                                                                               Function<T, R[]> f) {
         return new GetObjectsFromArrayWhenResponseReceived<>(description, received, f);
     }
 
@@ -70,10 +70,10 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
      * @param <R>            is a type of an item of resulted array
      * @return an instance of {@link GetObjectsFromArrayWhenResponseReceiving}
      */
-    public static <T, R> GetObjectsFromArrayWhenResponseReceiving<T, R> array(String description,
-                                                                              RequestBuilder requestBuilder,
-                                                                              HttpResponse.BodyHandler<T> handler,
-                                                                              Function<T, R[]> f) {
+    public static <T, R> GetObjectsFromArrayWhenResponseReceiving<T, R> asArray(String description,
+                                                                                RequestBuilder requestBuilder,
+                                                                                HttpResponse.BodyHandler<T> handler,
+                                                                                Function<T, R[]> f) {
         return new GetObjectsFromArrayWhenResponseReceiving<>(description, response(requestBuilder, handler), f);
     }
 
@@ -87,8 +87,8 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
      * @param <R>         is a type of an item of array of response body
      * @return an instance of {@link GetObjectsFromArrayWhenResponseReceived}
      */
-    public static <R> GetObjectsFromArrayWhenResponseReceived<R[], R> array(String description,
-                                                                            HttpResponse<R[]> received) {
+    public static <R> GetObjectsFromArrayWhenResponseReceived<R[], R> asArray(String description,
+                                                                              HttpResponse<R[]> received) {
         return new GetObjectsFromArrayWhenResponseReceived<>(description, received, rs -> rs);
     }
 
@@ -102,9 +102,9 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
      * @param <R>            is a type of an item of array of response body
      * @return an instance of {@link GetObjectsFromArrayWhenResponseReceiving}
      */
-    public static <R> GetObjectsFromArrayWhenResponseReceiving<R[], R> array(String description,
-                                                                             RequestBuilder requestBuilder,
-                                                                             HttpResponse.BodyHandler<R[]> handler) {
+    public static <R> GetObjectsFromArrayWhenResponseReceiving<R[], R> asArray(String description,
+                                                                               RequestBuilder requestBuilder,
+                                                                               HttpResponse.BodyHandler<R[]> handler) {
         return new GetObjectsFromArrayWhenResponseReceiving<>(description, response(requestBuilder, handler), rs -> rs);
     }
 

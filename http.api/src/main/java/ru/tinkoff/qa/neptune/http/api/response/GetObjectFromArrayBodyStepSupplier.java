@@ -53,9 +53,9 @@ public abstract class GetObjectFromArrayBodyStepSupplier<T, R, S extends GetObje
      * @param <R>         is a type of resulted object
      * @return an instance of {@link GetObjectFromArrayWhenResponseReceived}
      */
-    public static <T, R> GetObjectFromArrayWhenResponseReceived<T, R> oneOfArray(String description,
-                                                                                 HttpResponse<T> received,
-                                                                                 Function<T, R[]> f) {
+    public static <T, R> GetObjectFromArrayWhenResponseReceived<T, R> asOneOfArray(String description,
+                                                                                   HttpResponse<T> received,
+                                                                                   Function<T, R[]> f) {
         return new GetObjectFromArrayWhenResponseReceived<>(description, received, f);
     }
 
@@ -71,10 +71,10 @@ public abstract class GetObjectFromArrayBodyStepSupplier<T, R, S extends GetObje
      * @param <R>            is a type of resulted object
      * @return an instance of {@link GetObjectFromArrayWhenResponseReceived}
      */
-    public static <T, R> GetObjectFromArrayWhenResponseReceiving<T, R> oneOfArray(String description,
-                                                                                  RequestBuilder requestBuilder,
-                                                                                  HttpResponse.BodyHandler<T> handler,
-                                                                                  Function<T, R[]> f) {
+    public static <T, R> GetObjectFromArrayWhenResponseReceiving<T, R> asOneOfArray(String description,
+                                                                                    RequestBuilder requestBuilder,
+                                                                                    HttpResponse.BodyHandler<T> handler,
+                                                                                    Function<T, R[]> f) {
         return new GetObjectFromArrayWhenResponseReceiving<>(description, response(requestBuilder, handler), f);
     }
 
@@ -88,8 +88,8 @@ public abstract class GetObjectFromArrayBodyStepSupplier<T, R, S extends GetObje
      * @param <R>         is a type of an item of array of response body
      * @return an instance of {@link GetObjectFromArrayWhenResponseReceived}
      */
-    public static <R> GetObjectFromArrayWhenResponseReceived<R[], R> oneOfArray(String description,
-                                                                                HttpResponse<R[]> received) {
+    public static <R> GetObjectFromArrayWhenResponseReceived<R[], R> asOneOfArray(String description,
+                                                                                  HttpResponse<R[]> received) {
         return new GetObjectFromArrayWhenResponseReceived<>(description, received, rs -> rs);
     }
 
@@ -103,9 +103,9 @@ public abstract class GetObjectFromArrayBodyStepSupplier<T, R, S extends GetObje
      * @param <R>            is a type of an item of array of response body
      * @return an instance of {@link GetObjectFromArrayWhenResponseReceived}
      */
-    public static <R> GetObjectFromArrayWhenResponseReceiving<R[], R> oneOfArray(String description,
-                                                                                 RequestBuilder requestBuilder,
-                                                                                 HttpResponse.BodyHandler<R[]> handler) {
+    public static <R> GetObjectFromArrayWhenResponseReceiving<R[], R> asOneOfArray(String description,
+                                                                                   RequestBuilder requestBuilder,
+                                                                                   HttpResponse.BodyHandler<R[]> handler) {
         return new GetObjectFromArrayWhenResponseReceiving<>(description, response(requestBuilder, handler), rs -> rs);
     }
 

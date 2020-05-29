@@ -52,9 +52,9 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
      * @param <R>         is a type of resulted object
      * @return an instance of {@link GetObjectWhenResponseReceived}
      */
-    public static <T, R> GetObjectWhenResponseReceived<T, R> object(String description,
-                                                                    HttpResponse<T> received,
-                                                                    Function<T, R> f) {
+    public static <T, R> GetObjectWhenResponseReceived<T, R> asObject(String description,
+                                                                      HttpResponse<T> received,
+                                                                      Function<T, R> f) {
         return new GetObjectWhenResponseReceived<>(description, received, f);
     }
 
@@ -67,7 +67,7 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
      * @return an instance of {@link GetObjectWhenResponseReceived}
      */
     public static <T> GetObjectWhenResponseReceived<T, T> asIs(HttpResponse<T> received) {
-        return object("Body of http response", received, t -> t);
+        return asObject("Body of http response", received, t -> t);
     }
 
     /**
@@ -82,10 +82,10 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
      * @param <R>            is a type of resulted object
      * @return an instance of {@link GetObjectWhenResponseReceiving}
      */
-    public static <T, R> GetObjectWhenResponseReceiving<T, R> object(String description,
-                                                                     RequestBuilder requestBuilder,
-                                                                     HttpResponse.BodyHandler<T> handler,
-                                                                     Function<T, R> f) {
+    public static <T, R> GetObjectWhenResponseReceiving<T, R> asObject(String description,
+                                                                       RequestBuilder requestBuilder,
+                                                                       HttpResponse.BodyHandler<T> handler,
+                                                                       Function<T, R> f) {
         return new GetObjectWhenResponseReceiving<>(description, response(requestBuilder, handler), f);
     }
 
@@ -100,7 +100,7 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
      */
     public static <T> GetObjectWhenResponseReceiving<T, T> asIs(RequestBuilder requestBuilder,
                                                                 HttpResponse.BodyHandler<T> handler) {
-        return object("Body of http response", requestBuilder, handler, t -> t);
+        return asObject("Body of http response", requestBuilder, handler, t -> t);
     }
 
     @Override
