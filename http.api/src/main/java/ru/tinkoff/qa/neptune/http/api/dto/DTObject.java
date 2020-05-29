@@ -10,9 +10,7 @@ public abstract class DTObject {
     public abstract String serialize();
 
     @Override
-    public String toString() {
-        return serialize();
-    }
+    public abstract String toString();
 
 
     @Override

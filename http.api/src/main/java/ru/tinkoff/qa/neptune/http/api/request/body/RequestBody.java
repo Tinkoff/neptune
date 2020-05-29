@@ -30,4 +30,7 @@ public abstract class RequestBody<T> {
     public T body() {
         return body;
     }
+
+    @Override
+    public abstract String toString();
 }

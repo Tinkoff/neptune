@@ -10,12 +10,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockserver.matchers.Times.exactly;
 import static org.mockserver.model.HttpRequest.request;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.CommonBodyPublishers.stringBody;
-import static ru.tinkoff.qa.neptune.http.api.request.DeleteRequest.DELETE;
-import static ru.tinkoff.qa.neptune.http.api.request.GetRequest.GET;
-import static ru.tinkoff.qa.neptune.http.api.request.MethodRequest.METHOD;
-import static ru.tinkoff.qa.neptune.http.api.request.PostRequest.POST;
-import static ru.tinkoff.qa.neptune.http.api.request.PutRequest.PUT;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.*;
 
 public class HttpResponseTest extends BaseHttpTest {
 
@@ -39,14 +34,14 @@ public class HttpResponseTest extends BaseHttpTest {
     @Test
     public void postResponseTest() {
         prepareResponse("POST", "Hello post method");
-        var response = http().responseOf(POST(URI, stringBody("Test body")), ofString());
+        var response = http().responseOf(POST(URI, "Test body"), ofString());
         assertThat(response.body(), is("Hello post method"));
     }
 
     @Test
     public void putResponseTest() {
         prepareResponse("PUT", "Hello put method");
-        var response = http().responseOf(PUT(URI, stringBody("Test body")), ofString());
+        var response = http().responseOf(PUT(URI, "Test body"), ofString());
         assertThat(response.body(), is("Hello put method"));
     }
 
@@ -60,7 +55,7 @@ public class HttpResponseTest extends BaseHttpTest {
     @Test
     public void methodResponseTest() {
         prepareResponse("CUSTOM_METHOD", "Hello custom method");
-        var response = http().responseOf(METHOD(URI, "CUSTOM_METHOD"), ofString());
+        var response = http().responseOf(METHOD("CUSTOM_METHOD", URI), ofString());
         assertThat(response.body(), is("Hello custom method"));
     }
 }

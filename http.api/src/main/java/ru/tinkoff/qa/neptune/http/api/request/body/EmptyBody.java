@@ -2,9 +2,9 @@ package ru.tinkoff.qa.neptune.http.api.request.body;
 
 import java.net.http.HttpRequest;
 
-import static ru.tinkoff.qa.neptune.http.api.request.CommonBodyPublishers.empty;
+import static java.net.http.HttpRequest.BodyPublishers.noBody;
 
-class EmptyBody extends RequestBody<Void> {
+final class EmptyBody extends RequestBody<Void> {
 
     EmptyBody() {
         super(null);
@@ -12,6 +12,11 @@ class EmptyBody extends RequestBody<Void> {
 
     @Override
     public HttpRequest.BodyPublisher createPublisher() {
-        return empty();
+        return noBody();
+    }
+
+    @Override
+    public String toString() {
+        return "<empty>";
     }
 }

@@ -25,10 +25,10 @@ import static org.testng.Assert.fail;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents.*;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.DO_CAPTURES_OF_INSTANCE;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.request.GetRequest.GET;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
+import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromBodyStepSupplier.asIs;
 import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromBodyStepSupplier.object;
-import static ru.tinkoff.qa.neptune.http.api.response.GetResponseDataStepSupplier.body;
-import static ru.tinkoff.qa.neptune.http.api.response.GetResponseDataStepSupplier.bodyData;
+import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.bodyMatches;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseCriteria.statusCode;
 import static ru.tinkoff.qa.neptune.http.api.test.capturing.LogInjector.clearLogs;
 import static ru.tinkoff.qa.neptune.http.api.test.capturing.LogInjector.getLog;
@@ -70,21 +70,21 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
                         containsString("Logs that have been captured during the sending of a request"),
                         equalTo("Response\n" +
                                 "Status code: 200\r\n" +
-                                "Request data: \r\n" +
-                                " - URI: http://127.0.0.1:1080/success.html \r\n" +
-                                " - Method: GET \r\n" +
-                                " - Headers: java.net.http.HttpHeaders@0 { {} } \r\n" +
-                                " - Expect continue: false \r\n"))},
+                                "Response URI: http://127.0.0.1:1080/success.html\r\n" +
+                                "Corresponding request: http://127.0.0.1:1080/success.html GET\r\n" +
+                                "Response headers: {connection=[keep-alive], content-length=[7]}\r\n"),
+                        equalTo("Response Body. String\n" +
+                                "SUCCESS"))},
                 {FAILURE, anyOf(empty(), nullValue())},
                 {SUCCESS_AND_FAILURE, containsInAnyOrder(
                         containsString("Logs that have been captured during the sending of a request"),
-                        equalTo("Response\n" +
+                        containsString("Response\n" +
                                 "Status code: 200\r\n" +
-                                "Request data: \r\n" +
-                                " - URI: http://127.0.0.1:1080/success.html \r\n" +
-                                " - Method: GET \r\n" +
-                                " - Headers: java.net.http.HttpHeaders@0 { {} } \r\n" +
-                                " - Expect continue: false \r\n"))}
+                                "Response URI: http://127.0.0.1:1080/success.html\r\n" +
+                                "Corresponding request: http://127.0.0.1:1080/success.html GET\r\n" +
+                                "Response headers: {connection=[keep-alive], content-length=[7]}\r\n"),
+                        equalTo("Response Body. String\n" +
+                                "SUCCESS"))}
         };
     }
 
@@ -105,20 +105,20 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
                         containsString("Logs that have been captured during the sending of a request"),
                         equalTo("Response\n" +
                                 "Status code: 200\r\n" +
-                                "Request data: \r\n" +
-                                " - URI: http://127.0.0.1:1080/success.html \r\n" +
-                                " - Method: GET \r\n" +
-                                " - Headers: java.net.http.HttpHeaders@0 { {} } \r\n" +
-                                " - Expect continue: false \r\n"))},
+                                "Response URI: http://127.0.0.1:1080/success.html\r\n" +
+                                "Corresponding request: http://127.0.0.1:1080/success.html GET\r\n" +
+                                "Response headers: {connection=[keep-alive], content-length=[7]}\r\n"),
+                        equalTo("Response Body. String\n" +
+                                "SUCCESS"))},
                 {SUCCESS_AND_FAILURE, containsInAnyOrder(
                         containsString("Logs that have been captured during the sending of a request"),
                         equalTo("Response\n" +
                                 "Status code: 200\r\n" +
-                                "Request data: \r\n" +
-                                " - URI: http://127.0.0.1:1080/success.html \r\n" +
-                                " - Method: GET \r\n" +
-                                " - Headers: java.net.http.HttpHeaders@0 { {} } \r\n" +
-                                " - Expect continue: false \r\n"))},
+                                "Response URI: http://127.0.0.1:1080/success.html\r\n" +
+                                "Corresponding request: http://127.0.0.1:1080/success.html GET\r\n" +
+                                "Response headers: {connection=[keep-alive], content-length=[7]}\r\n"),
+                        equalTo("Response Body. String\n" +
+                                "SUCCESS"))},
         };
     }
 
@@ -155,27 +155,30 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
     @Test(dataProvider = "data1")
     public void test3(CapturedEvents toCatch, Matcher<List<String>> matcher) {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch.name());
-        http().get(body(GET(CORRECT_URI), ofString()));
+        http().bodyData(asIs(GET(CORRECT_URI), ofString()));
         assertThat(getLog(), matcher);
     }
 
     @Test(dataProvider = "data1")
     public void test4(CapturedEvents toCatch, Matcher<List<String>> matcher) {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch.name());
-        http().get(body(GET(CORRECT_URI), ofString())
-                .dataCriteria("equals FAILURE", "FAILURE"::equals)
-                .timeOut(ofSeconds(5)));
+
+        http().bodyData(asIs(GET(CORRECT_URI), ofString())
+                .responseCriteria(bodyMatches("equals FAILURE", "FAILURE"::equals))
+                .retryTimeOut(ofSeconds(5)));
+
         assertThat(getLog(), matcher);
     }
 
     @Test(dataProvider = "data3", expectedExceptions = DesiredDataHasNotBeenReceivedException.class)
     public void test5(CapturedEvents toCatch, Matcher<List<String>> matcher) {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch.name());
+
         try {
-            http().get(body(GET(CORRECT_URI), ofString())
-                    .dataCriteria("equals FAILURE", "FAILURE"::equals)
-                    .timeOut(ofSeconds(5))
-                    .throwWhenNothing("Test exception"));
+            http().bodyData(asIs(GET(CORRECT_URI), ofString())
+                    .responseCriteria(bodyMatches("equals FAILURE", "FAILURE"::equals))
+                    .retryTimeOut(ofSeconds(5))
+                    .throwIfNoDesiredDataReceived("Test exception"));
         } catch (Throwable t) {
             assertThat(getLog(), matcher);
             throw t;
@@ -186,11 +189,12 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
     @Test(dataProvider = "data3", expectedExceptions = DesiredDataHasNotBeenReceivedException.class)
     public void test6(CapturedEvents toCatch, Matcher<List<String>> matcher) {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch.name());
+
         try {
-            http().get(body(GET(CORRECT_URI), ofString())
-                    .timeOut(ofSeconds(5))
+            http().bodyData(asIs(GET(CORRECT_URI), ofString())
+                    .retryTimeOut(ofSeconds(5))
                     .responseCriteria(statusCode(404))
-                    .throwWhenNothing("Test exception"));
+                    .throwIfNoDesiredDataReceived("Test exception"));
         } catch (Throwable t) {
             assertThat(getLog(), matcher);
             throw t;
@@ -201,9 +205,11 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
     @Test(dataProvider = "data4")
     public void test7(CapturedEvents toCatch, Matcher<List<String>> matcher) {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch.name());
-        http().get(body(GET(INCORRECT_URI).timeout(ofSeconds(1)),
+
+        http().bodyData(asIs(GET(INCORRECT_URI).timeout(ofSeconds(1)),
                 ofString())
                 .addIgnored(Throwable.class));
+
         assertThat(getLog(), matcher);
     }
 
@@ -211,9 +217,11 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
     public void test8(CapturedEvents toCatch, Matcher<List<String>> matcher) {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch.name());
 
-        http().get(bodyData(GET(CORRECT_URI), ofString(),
-                object("Number value", Integer::parseInt))
-                .timeOut(ofSeconds(5))
+        http().bodyData(object("Number value",
+                GET(CORRECT_URI),
+                ofString(),
+                Integer::parseInt)
+                .retryTimeOut(ofSeconds(5))
                 .addIgnored(Throwable.class));
 
         assertThat(getLog(), matcher);
@@ -224,11 +232,10 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch.name());
 
         try {
-            http().get(bodyData(GET(CORRECT_URI), ofString(),
-                    object("Number value", Integer::parseInt))
-                    .timeOut(ofSeconds(5))
+            http().bodyData(object("Number value", GET(CORRECT_URI), ofString(), Integer::parseInt)
+                    .retryTimeOut(ofSeconds(5))
                     .addIgnored(Throwable.class)
-                    .throwWhenNothing("Test exception"));
+                    .throwIfNoDesiredDataReceived("Test exception"));
         } catch (Throwable t) {
             assertThat(getLog(), matcher);
             throw t;
@@ -241,10 +248,10 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
     public void test10(CapturedEvents toCatch, Matcher<List<String>> matcher) {
         DO_CAPTURES_OF_INSTANCE.accept(toCatch.name());
         try {
-            http().get(body(GET(INCORRECT_URI).timeout(ofSeconds(1)), ofString())
+            http().bodyData(asIs(GET(INCORRECT_URI).timeout(ofSeconds(1)), ofString())
                     .addIgnored(Throwable.class)
-                    .timeOut(ofSeconds(5))
-                    .throwWhenNothing("Test exception"));
+                    .retryTimeOut(ofSeconds(5))
+                    .throwIfNoDesiredDataReceived("Test exception"));
         } catch (Throwable t) {
             assertThat(getLog(), matcher);
             throw t;

@@ -11,7 +11,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
 
-class URLEncodedForm extends RequestBody<String> {
+public final class URLEncodedForm extends RequestBody<String> {
 
     URLEncodedForm(Map<String, String> formParameters) {
         super(ofNullable(formParameters)
@@ -33,5 +33,10 @@ class URLEncodedForm extends RequestBody<String> {
     @Override
     public HttpRequest.BodyPublisher createPublisher() {
         return ofString(super.body());
+    }
+
+    @Override
+    public String toString() {
+        return body();
     }
 }

@@ -34,7 +34,7 @@ public final class IsLoggableUtil {
         }
 
         if (LoggableObject.class.isAssignableFrom(clazz)) {
-            return hasReadableDescription(toBeDescribed);
+            return true;
         }
 
         return hasReadableDescription(toBeDescribed);

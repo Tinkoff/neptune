@@ -22,6 +22,15 @@ public class MapCaptor extends StringCaptor<Map<?, ?>> {
         super("Resulted map");
     }
 
+    /**
+     * Constructor for situations when it is necessary to override the class
+     *
+     * @param message is a name of attachment
+     */
+    protected MapCaptor(String message) {
+        super(message);
+    }
+
     private String stringValueOf(Object o) {
         return ofNullable(o)
                 .map(o1 -> {

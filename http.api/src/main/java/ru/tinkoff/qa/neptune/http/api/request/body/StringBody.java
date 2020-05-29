@@ -6,7 +6,7 @@ import java.nio.charset.Charset;
 import static java.net.http.HttpRequest.BodyPublishers.ofString;
 import static java.util.Optional.ofNullable;
 
-class StringBody extends RequestBody<String> {
+public final class StringBody extends RequestBody<String> {
 
     private final Charset charset;
 
@@ -23,5 +23,10 @@ class StringBody extends RequestBody<String> {
     @Override
     public String body() {
         return new String(super.body().getBytes(charset));
+    }
+
+    @Override
+    public String toString() {
+        return body();
     }
 }

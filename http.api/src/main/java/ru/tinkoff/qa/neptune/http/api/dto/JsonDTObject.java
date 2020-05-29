@@ -17,4 +17,13 @@ public class JsonDTObject extends DTObject {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public String toString() {
+        try {
+            return JSON.getMapper().writerWithDefaultPrettyPrinter().writeValueAsString(this);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -7,7 +7,7 @@ import static java.net.http.HttpRequest.BodyPublishers.ofByteArray;
 import static java.util.Arrays.copyOfRange;
 import static java.util.Objects.checkFromIndexSize;
 
-class ByteArrayBody extends RequestBody<byte[]> {
+final class ByteArrayBody extends RequestBody<byte[]> {
 
     private final Integer length;
     private final Integer offset;
@@ -42,5 +42,10 @@ class ByteArrayBody extends RequestBody<byte[]> {
         }
 
         return copyOfRange(super.body(), offset, length);
+    }
+
+    @Override
+    public String toString() {
+        return "Byte array. Length: " + body().length;
     }
 }

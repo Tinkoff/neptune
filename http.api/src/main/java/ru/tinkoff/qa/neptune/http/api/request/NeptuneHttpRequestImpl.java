@@ -9,8 +9,6 @@ import java.net.http.HttpRequest;
 import java.time.Duration;
 import java.util.Optional;
 
-import static java.util.Optional.ofNullable;
-
 /**
  * Wraps java {@link HttpRequest} and its body
  */
@@ -64,10 +62,8 @@ public final class NeptuneHttpRequestImpl extends HttpRequest {
      *
      * @return request body
      */
-    public Object body() {
-        return ofNullable(body)
-                .map(RequestBody::body)
-                .orElse(null);
+    public RequestBody<?> body() {
+        return body;
     }
 
     @Override

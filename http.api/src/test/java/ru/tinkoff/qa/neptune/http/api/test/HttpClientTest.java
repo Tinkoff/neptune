@@ -18,7 +18,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.concurrent.Executor;
 
-import static java.lang.String.format;
 import static java.lang.String.valueOf;
 import static java.lang.System.getProperties;
 import static java.lang.System.setProperty;
@@ -35,9 +34,6 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockserver.model.HttpRequest.request;
-import static ru.tinkoff.qa.neptune.http.api.HttpCookiesActionSupplier.addToCookies;
-import static ru.tinkoff.qa.neptune.http.api.HttpCookiesActionSupplier.clearCookieStore;
-import static ru.tinkoff.qa.neptune.http.api.HttpGetCachedCookiesSupplier.cachedCookies;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpAuthenticatorProperty.DEFAULT_HTTP_AUTHENTICATOR_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpCookieManagerProperty.DEFAULT_HTTP_COOKIE_MANAGER_PROPERTY;
@@ -50,7 +46,7 @@ import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpSslContextPro
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpSslParametersProperty.DEFAULT_HTTP_SSL_PARAMETERS_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.time.DefaultConnectTimeOutUnitProperty.DEFAULT_CONNECT_TIME_UNIT_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.time.DefaultConnectTimeOutValueProperty.DEFAULT_CONNECT_TIME_VALUE_PROPERTY;
-import static ru.tinkoff.qa.neptune.http.api.request.GetRequest.GET;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
 
 public class HttpClientTest extends BaseHttpTest {
 
@@ -73,7 +69,7 @@ public class HttpClientTest extends BaseHttpTest {
     private static final ProxySelector DEFAULT_PROXY_SELECTOR = new TestProxySelector();
     private static final HttpClient.Redirect DEFAULT_REDIRECT = ALWAYS;
     private static final SSLContext DEFAULT_SSL_CONTEXT = getSSLContext();
-    private static final SSLParameters DEFAULT_SSL_PARAMETERS= new SSLParameters(new String[]{"1", "2", "3"});
+    private static final SSLParameters DEFAULT_SSL_PARAMETERS = new SSLParameters(new String[]{"1", "2", "3"});
 
     private static SSLContext getSSLContext() {
         try {
@@ -109,7 +105,7 @@ public class HttpClientTest extends BaseHttpTest {
     }
 
     @Test
-    public void useHttpClientWithProperties()  {
+    public void useHttpClientWithProperties() {
         setProperty(DEFAULT_CONNECT_TIME_UNIT_PROPERTY.getPropertyName(), DEFAULT_CONNECT_CHRONO_UNIT.name());
         setProperty(DEFAULT_CONNECT_TIME_VALUE_PROPERTY.getPropertyName(), valueOf(DEFAULT_CONNECT_TIME_VALUE));
         setProperty(DEFAULT_HTTP_AUTHENTICATOR_PROPERTY.getPropertyName(), TestAuthenticatorSupplier.class.getName());
@@ -135,8 +131,7 @@ public class HttpClientTest extends BaseHttpTest {
             assertThat(client.sslContext(), equalTo(DEFAULT_SSL_CONTEXT));
             assertThat(client.sslParameters().getCipherSuites(), arrayContaining("1", "2", "3"));
             assertThat(client.version(), is(DEFAULT_VERSION));
-        }
-        finally {
+        } finally {
             getProperties().remove(DEFAULT_CONNECT_TIME_UNIT_PROPERTY.getPropertyName());
             getProperties().remove(DEFAULT_CONNECT_TIME_VALUE_PROPERTY.getPropertyName());
             getProperties().remove(DEFAULT_HTTP_AUTHENTICATOR_PROPERTY.getPropertyName());
@@ -156,8 +151,8 @@ public class HttpClientTest extends BaseHttpTest {
         var httpCookie = new HttpCookie("TestSetUpCookieName",
                 "TestSetUpCookieValue");
 
-        http().perform(addToCookies(null, httpCookie));
-        assertThat(http().get(cachedCookies()), hasItem(httpCookie));
+        http().addCookies(httpCookie);
+        assertThat(http().getCookies(), hasItem(httpCookie));
     }
 
     @Test
@@ -165,8 +160,9 @@ public class HttpClientTest extends BaseHttpTest {
         var httpCookie = new HttpCookie("TestSetUpCookieName",
                 "TestSetUpCookieValue");
 
-        http().perform(addToCookies(null, httpCookie));
-        http().perform(clearCookieStore());
+        http().addCookies(httpCookie);
+        http().removeCookies();
+        assertThat(http().getCookies(), emptyIterable());
     }
 
     @Test
@@ -177,7 +173,7 @@ public class HttpClientTest extends BaseHttpTest {
                         .withPath("/query"))
                 .respond(HttpResponse.response().withBody("Hello query"));
 
-        var response = http().responseOf(GET(format("%s/query", REQUEST_URI))
+        var response = http().responseOf(GET(REQUEST_URI + "/query")
                 .queryParam("date", "01-01-1980")
                 .queryParam("some word", "Word and word again"), ofString());
 

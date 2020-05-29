@@ -18,4 +18,13 @@ public class XmlDTObject extends DTObject {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public String toString() {
+        try {
+            return XML.getMapper().writerWithDefaultPrettyPrinter().writeValueAsString(this);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

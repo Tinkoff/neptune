@@ -7,14 +7,19 @@ import java.net.http.HttpRequest;
 import static java.net.http.HttpRequest.BodyPublishers.ofString;
 import static java.util.Optional.ofNullable;
 
-class JSoupHtmlBody extends RequestBody<String> {
+public final class JSoupDocumentBody extends RequestBody<String> {
 
-    protected JSoupHtmlBody(Document body) {
+    protected JSoupDocumentBody(Document body) {
         super(ofNullable(body).map(Document::outerHtml).orElseThrow());
     }
 
     @Override
     public HttpRequest.BodyPublisher createPublisher() {
         return ofString(super.body());
+    }
+
+    @Override
+    public String toString() {
+        return body();
     }
 }

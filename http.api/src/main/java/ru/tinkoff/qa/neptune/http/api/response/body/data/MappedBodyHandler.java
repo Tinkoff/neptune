@@ -1,18 +1,20 @@
 package ru.tinkoff.qa.neptune.http.api.response.body.data;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.GsonBuilder;
+import ru.tinkoff.qa.neptune.http.api.dto.JsonDTObject;
+import ru.tinkoff.qa.neptune.http.api.dto.XmlDTObject;
 
 import javax.xml.parsers.DocumentBuilder;
 import java.net.http.HttpResponse;
+import java.util.Collection;
 import java.util.function.Function;
 
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
 import static java.net.http.HttpResponse.BodySubscribers.mapping;
 import static org.glassfish.jersey.internal.guava.Preconditions.checkNotNull;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.FromJson.getFromJson;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.GetDocument.getDocument;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.GetMapped.getMapped;
+import static ru.tinkoff.qa.neptune.http.api.mapper.DefaultBodyMappers.JSON;
+import static ru.tinkoff.qa.neptune.http.api.mapper.DefaultBodyMappers.XML;
 
 public class MappedBodyHandler<S, T> implements HttpResponse.BodyHandler<T> {
 
@@ -41,40 +43,53 @@ public class MappedBodyHandler<S, T> implements HttpResponse.BodyHandler<T> {
         return new MappedBodyHandler<>(upstreamBodyHandler, mapper);
     }
 
-    /**
-     * Creates a new body handler to convert a response body to an object deserialized by {@link com.google.gson.Gson}.
-     * It is considered that response has a body of json format.
-     *
-     * @param toReturn is a class of an object to be deserialized from json
-     * @param builder  an instance of {@link GsonBuilder}
-     * @param <T>      is a type of an object to be deserialized from json
-     * @return a new {@link MappedBodyHandler}
-     */
-    public static <T> MappedBodyHandler<String, T> json(Class<T> toReturn, GsonBuilder builder) {
-        return mapped(ofString(), getFromJson(toReturn, builder));
+
+    public static <T> MappedBodyHandler<String, T> deserialized(Class<T> toReturn, ObjectMapper mapper) {
+        return mapped(ofString(), new Deserialized<>(toReturn, mapper));
     }
 
-    /**
-     * Creates a new body handler to convert a response body to an object deserialized by {@link com.google.gson.Gson}.
-     * It is considered that response has a body of json format.
-     *
-     * @param toReturn is a class of an object to be deserialized from json
-     * @param <T>      is a type of an object to be deserialized from json
-     * @return a new {@link MappedBodyHandler}
-     */
+    public static <T> MappedBodyHandler<String, T> deserialized(TypeReference<T> toReturn, ObjectMapper mapper) {
+        return mapped(ofString(), new Deserialized<>(toReturn, mapper));
+    }
+
     public static <T> MappedBodyHandler<String, T> json(Class<T> toReturn) {
-        return mapped(ofString(), getFromJson(toReturn));
+        return deserialized(toReturn, JSON.getMapper());
     }
 
-    /**
-     * Creates a new body handler to convert a response body to a {@link org.w3c.dom.Document}.
-     * It is considered that response has a body of xml or html format.
-     *
-     * @param documentBuilder an instance of {@link DocumentBuilder}
-     * @return a new {@link MappedBodyHandler}
-     */
-    public static MappedBodyHandler<String, org.w3c.dom.Document> document(DocumentBuilder documentBuilder) {
-        return mapped(ofString(), getDocument(documentBuilder));
+    public static <T> MappedBodyHandler<String, T> json(TypeReference<T> toReturn) {
+        return deserialized(toReturn, JSON.getMapper());
+    }
+
+    public static <T extends JsonDTObject> MappedBodyHandler<String, T> jsonDTO(Class<T> toReturn) {
+        return json(toReturn);
+    }
+
+    public static <T extends JsonDTObject, R extends Collection<T>> MappedBodyHandler<String, R> jsonDTOs(TypeReference<R> toReturn) {
+        return json(toReturn);
+    }
+
+    public static <T> MappedBodyHandler<String, T> xml(Class<T> toReturn) {
+        return deserialized(toReturn, XML.getMapper());
+    }
+
+    public static <T> MappedBodyHandler<String, T> xml(TypeReference<T> toReturn) {
+        return deserialized(toReturn, XML.getMapper());
+    }
+
+    public static <T extends XmlDTObject> MappedBodyHandler<String, T> xmlDTO(Class<T> toReturn) {
+        return xml(toReturn);
+    }
+
+    public static <T extends XmlDTObject, R extends Collection<T>> MappedBodyHandler<String, R> xmlDTOs(TypeReference<R> toReturn) {
+        return xml(toReturn);
+    }
+
+    public static MappedBodyHandler<String, org.w3c.dom.Document> w3cDocument() {
+        return mapped(ofString(), new W3CDocument());
+    }
+
+    public static MappedBodyHandler<String, org.w3c.dom.Document> w3cDocument(DocumentBuilder documentBuilder) {
+        return mapped(ofString(), new W3CDocument(documentBuilder));
     }
 
     /**
@@ -83,36 +98,10 @@ public class MappedBodyHandler<S, T> implements HttpResponse.BodyHandler<T> {
      *
      * @return a new {@link MappedBodyHandler}
      */
-    public static MappedBodyHandler<String, org.jsoup.nodes.Document> document() {
-        return mapped(ofString(), getDocument());
+    public static MappedBodyHandler<String, org.jsoup.nodes.Document> jsoupDocument() {
+        return mapped(ofString(), new JSoupDocument());
     }
 
-    /**
-     * Creates a new body handler to convert a response body to an object deserialized by {@link ObjectMapper}
-     * It is considered that response has a body of xml/json/any other format readable by defined object of
-     * {@link ObjectMapper}.
-     *
-     * @param toReturn is a class of an object to be deserialized from the response body
-     * @param mapper   is an instance of {@link ObjectMapper}
-     * @param <T>      is a type of an object to be deserialized from the response body
-     * @return a new {@link MappedBodyHandler}
-     */
-    public static <T> MappedBodyHandler<String, T> mappedByJackson(Class<T> toReturn, ObjectMapper mapper) {
-        return mapped(ofString(), getMapped(toReturn, mapper));
-    }
-
-    /**
-     * Creates a new body handler to convert a response body to an object deserialized by {@link ObjectMapper}
-     * It is considered that response has a body of xml/json/any other format readable by by default object of
-     * {@link ObjectMapper}.
-     *
-     * @param toReturn is a class of an object to be deserialized from the response body
-     * @param <T>      is a type of an object to be deserialized from the response body
-     * @return a new {@link MappedBodyHandler}
-     */
-    public static <T> MappedBodyHandler<String, T> mappedByJackson(Class<T> toReturn) {
-        return mapped(ofString(), getMapped(toReturn));
-    }
 
     @Override
     public HttpResponse.BodySubscriber<T> apply(HttpResponse.ResponseInfo responseInfo) {

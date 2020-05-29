@@ -199,7 +199,7 @@ public final class CommonBrowserCookieCriteria {
 
     /**
      * The checking of a browser cookie. It is used to filter secure cookies.
-     * The sample below shows how to made inverted criteria
+     * The sample below shows how to make inverted criteria
      * <p>
      * {@code NOT(cookieIsSecure())}
      * </p>
@@ -214,7 +214,7 @@ public final class CommonBrowserCookieCriteria {
 
     /**
      * The checking of a browser cookie. It is used to filter http-only cookies.
-     * The sample below shows how to made inverted criteria
+     * The sample below shows how to make inverted criteria
      * <p>
      * {@code NOT(cookieIsHttpOnly())}
      * </p>

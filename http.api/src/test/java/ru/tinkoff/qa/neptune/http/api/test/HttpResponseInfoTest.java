@@ -23,9 +23,8 @@ import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasPreviousRespon
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasStatusCode.hasStatusCode;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasURI.hasURI;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasVersion.hasVersion;
-import static ru.tinkoff.qa.neptune.http.api.request.CommonBodyPublishers.stringBody;
-import static ru.tinkoff.qa.neptune.http.api.request.GetRequest.GET;
-import static ru.tinkoff.qa.neptune.http.api.request.PostRequest.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
 
 public class HttpResponseInfoTest extends BaseHttpTest {
 
@@ -37,8 +36,7 @@ public class HttpResponseInfoTest extends BaseHttpTest {
                         .withPath("/testStatusCode.html"), exactly(1))
                 .respond(response().withBody("SUCCESS"));
 
-        assertThat(http().responseOf(GET(format("%s/testStatusCode.html", REQUEST_URI)),
-                ofString()),
+        assertThat(http().responseOf(GET(REQUEST_URI + "/testStatusCode.html"), ofString()),
                 hasStatusCode(200));
     }
 
@@ -52,8 +50,7 @@ public class HttpResponseInfoTest extends BaseHttpTest {
                 .respond(response().withBody("SUCCESS"));
 
 
-        assertThat(http().responseOf(POST(format("%s/header2.html", REQUEST_URI),
-                stringBody("Request body"))),
+        assertThat(http().responseOf(POST(REQUEST_URI + "/header2.html", "Request body")),
                 allOf(
                         hasHeader("connection", contains("keep-alive")),
                         hasHeader("content-length", of("7")),

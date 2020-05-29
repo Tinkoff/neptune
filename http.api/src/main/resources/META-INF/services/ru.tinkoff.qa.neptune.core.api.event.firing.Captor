@@ -1,5 +1,11 @@
 ru.tinkoff.qa.neptune.http.api.captors.ResponseFileCaptor
-ru.tinkoff.qa.neptune.http.api.captors.ResponseJsonCaptor
-ru.tinkoff.qa.neptune.http.api.captors.ResponseXmlCaptor
+ru.tinkoff.qa.neptune.http.api.captors.ResponseDTOCaptor
 ru.tinkoff.qa.neptune.http.api.captors.RequestResponseLogCaptor
 ru.tinkoff.qa.neptune.http.api.captors.ResponseCaptor
+ru.tinkoff.qa.neptune.http.api.captors.ResponseJSoupDocumentCaptor
+ru.tinkoff.qa.neptune.http.api.captors.ResponseW3CDocumentCaptor
+ru.tinkoff.qa.neptune.http.api.captors.ResponseStringCaptor
+ru.tinkoff.qa.neptune.http.api.captors.ResponseJsonDTOsCaptor
+ru.tinkoff.qa.neptune.http.api.captors.ResponseXMLDTOsCaptor
+ru.tinkoff.qa.neptune.http.api.captors.ResponseObjectsBodyCaptor
+ru.tinkoff.qa.neptune.http.api.captors.ResponseMapBodyCaptor

@@ -6,13 +6,22 @@ import java.util.Map;
 
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
-import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.hasReadableDescription;
+import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 public class CollectionCaptor extends IterableCaptor<List<?>> {
 
     public CollectionCaptor() {
-        super("Resulted collection");
+        this("Resulted collection");
+    }
+
+    /**
+     * Constructor for situations when it is necessary to override the class
+     *
+     * @param message is a name of attachment
+     */
+    protected CollectionCaptor(String message) {
+        super(message);
     }
 
     @Override

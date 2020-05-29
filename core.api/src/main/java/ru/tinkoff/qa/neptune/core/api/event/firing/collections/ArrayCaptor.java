@@ -12,7 +12,16 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 public class ArrayCaptor extends IterableCaptor<List<?>> {
 
     public ArrayCaptor() {
-        super("Resulted array");
+        this("Resulted array");
+    }
+
+    /**
+     * Constructor for situations when it is necessary to override the class
+     *
+     * @param message is a name of attachment
+     */
+    protected ArrayCaptor(String message) {
+        super(message);
     }
 
     @Override

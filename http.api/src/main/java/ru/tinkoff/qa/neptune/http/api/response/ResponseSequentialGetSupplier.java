@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.http.api.response;
 
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.CaptorFilterByProducedType;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
@@ -7,10 +8,19 @@ import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 
+import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static java.lang.String.format;
+import static java.lang.String.valueOf;
+import static java.util.Set.of;
+import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationHMS;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchFailureEvent;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchSuccessEvent;
 
 /**
  * Builds a step-function that receives http response
@@ -19,12 +29,35 @@ import static java.lang.String.format;
  */
 @MakeStringCapturesOnFinishing
 @MakeFileCapturesOnFinishing
-public class ResponseSequentialGetSupplier<T> extends SequentialGetStepSupplier.GetObjectStepSupplier<HttpStepContext, HttpResponse<T>,
+@SequentialGetStepSupplier.DefaultParameterNames(
+        criteria = "Response criteria"
+)
+public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSupplier.GetObjectStepSupplier<HttpStepContext, HttpResponse<T>,
         ResponseSequentialGetSupplier<T>> {
 
-    private ResponseSequentialGetSupplier(RequestBuilder requestBuilder, HttpResponse.BodyHandler<T> bodyHandler) {
-        super(format("Response of [%s]", requestBuilder),
-                new ForResponseFunction<>(requestBuilder, bodyHandler));
+    private final ResponseExecutionInfo info;
+    private final HttpRequest request;
+    private boolean toReport = true;
+
+    private ResponseSequentialGetSupplier(RequestBuilder requestBuilder,
+                                          HttpResponse.BodyHandler<T> bodyHandler,
+                                          ResponseExecutionInfo info) {
+        super("Http Response", httpStepContext -> {
+            try {
+                info.setLastReceived(null);
+                info.startExecutionLogging();
+                var received = httpStepContext.getCurrentClient().send(requestBuilder.build(), bodyHandler);
+                info.setLastReceived(received);
+                return received;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            } finally {
+                info.stopExecutionLogging();
+            }
+        });
+        request = requestBuilder.build();
+        this.info = info;
+
     }
 
     /**
@@ -37,7 +70,7 @@ public class ResponseSequentialGetSupplier<T> extends SequentialGetStepSupplier.
      * @return an instance of {@link ResponseSequentialGetSupplier}
      */
     public static <T> ResponseSequentialGetSupplier<T> response(RequestBuilder requestBuilder, HttpResponse.BodyHandler<T> bodyHandler) {
-        return new ResponseSequentialGetSupplier<>(requestBuilder, bodyHandler);
+        return new ResponseSequentialGetSupplier<>(requestBuilder, bodyHandler, new ResponseExecutionInfo());
     }
 
     @Override
@@ -51,12 +84,64 @@ public class ResponseSequentialGetSupplier<T> extends SequentialGetStepSupplier.
     }
 
     @Override
-    protected String prepareStepDescription() {
-        return super.prepareStepDescription();
+    protected Function<HttpStepContext, HttpResponse<T>> getEndFunction() {
+        return httpStepContext -> {
+            boolean success = false;
+            try {
+                var result = super.getEndFunction().apply(httpStepContext);
+                success = true;
+                return result;
+            } finally {
+                if ((toReport && success && catchSuccessEvent()) || (toReport && !success && catchFailureEvent())) {
+                    catchValue(info, of(new CaptorFilterByProducedType(Object.class)));
+                }
+            }
+        };
+    }
+
+    ResponseExecutionInfo getInfo() {
+        return info;
+    }
+
+    ResponseSequentialGetSupplier<T> toNotReport() {
+        toReport = false;
+        return this;
     }
 
     @Override
-    protected ForResponseFunction<T> getOriginalFunction() {
-        return (ForResponseFunction<T>) super.getOriginalFunction();
+    public Function<HttpStepContext, HttpResponse<T>> get() {
+        if (!toReport) {
+            return getEndFunction();
+        }
+        return super.get();
+    }
+
+    @Override
+    protected Map<String, String> getParameters() {
+        var params = new LinkedHashMap<String, String>();
+        params.put("Endpoint URI", request.uri().toString());
+        params.put("Method", request.method());
+
+        var headerMap = request.headers().map();
+        if (headerMap.size() > 0) {
+            params.put("Headers", headerMap.toString());
+        }
+
+        request.timeout().ifPresent(d ->
+                params.put("Timeout", formatDurationHMS(d.toMillis())));
+
+        params.put("Expect Continue", valueOf(request.expectContinue()));
+
+        request.version().ifPresent(v ->
+                params.put("Version", v.toString()));
+
+        return params;
+    }
+
+    @Override
+    protected ResponseSequentialGetSupplier<T> clone() {
+        var result = super.clone();
+        result.toReport = true;
+        return result;
     }
 }

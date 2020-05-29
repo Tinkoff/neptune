@@ -3,8 +3,8 @@ package ru.tinkoff.qa.neptune.http.api.request.body;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.tinkoff.qa.neptune.http.api.dto.DTObject;
 import ru.tinkoff.qa.neptune.http.api.mapper.DefaultBodyMappers;
-import ru.tinkoff.qa.neptune.http.api.properties.mapper.DefaultJsonDTObjectMapper;
-import ru.tinkoff.qa.neptune.http.api.properties.mapper.DefaultXmlDTObjectMapper;
+import ru.tinkoff.qa.neptune.http.api.properties.mapper.DefaultJsonObjectMapper;
+import ru.tinkoff.qa.neptune.http.api.properties.mapper.DefaultXmlObjectMapper;
 
 import java.io.File;
 import java.io.InputStream;
@@ -145,7 +145,7 @@ public final class RequestBodyFactory {
      * @return an instance of {@link RequestBody}
      */
     public static RequestBody<String> body(org.jsoup.nodes.Document body) {
-        return new JSoupHtmlBody(body);
+        return new JSoupDocumentBody(body);
     }
 
     /**
@@ -178,8 +178,8 @@ public final class RequestBodyFactory {
      * @param body   object to be serialized
      * @return an instance of {@link RequestBody}
      * @see DefaultBodyMappers
-     * @see DefaultJsonDTObjectMapper
-     * @see DefaultXmlDTObjectMapper
+     * @see DefaultJsonObjectMapper
+     * @see DefaultXmlObjectMapper
      */
     public static RequestBody<String> body(DefaultBodyMappers mapper, Object body) {
         return body(mapper.getMapper(), body);

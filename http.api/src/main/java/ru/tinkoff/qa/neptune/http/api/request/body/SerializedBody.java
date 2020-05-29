@@ -8,7 +8,7 @@ import java.net.http.HttpRequest;
 import static java.net.http.HttpRequest.BodyPublishers.ofString;
 import static java.util.Optional.ofNullable;
 
-class SerializedBody extends RequestBody<String> {
+public final class SerializedBody extends RequestBody<String> {
 
     private SerializedBody(String serialized) {
         super(ofNullable(serialized)
@@ -27,7 +27,7 @@ class SerializedBody extends RequestBody<String> {
 
     private static String serialize(ObjectMapper mapper, Object body) {
         try {
-            return mapper.writeValueAsString(body);
+            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(body);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -36,5 +36,10 @@ class SerializedBody extends RequestBody<String> {
     @Override
     public HttpRequest.BodyPublisher createPublisher() {
         return ofString(super.body());
+    }
+
+    @Override
+    public String toString() {
+        return body();
     }
 }

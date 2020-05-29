@@ -13,7 +13,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.net.http.HttpRequest.BodyPublishers.ofString;
 import static java.util.Objects.nonNull;
 
-class W3CDocumentBody extends RequestBody<String> {
+public final class W3CDocumentBody extends RequestBody<String> {
 
     W3CDocumentBody(Document body) {
         super(transform(body));
@@ -39,5 +39,10 @@ class W3CDocumentBody extends RequestBody<String> {
     @Override
     public HttpRequest.BodyPublisher createPublisher() {
         return ofString(super.body());
+    }
+
+    @Override
+    public String toString() {
+        return body();
     }
 }

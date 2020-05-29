@@ -6,7 +6,7 @@ import java.net.http.HttpRequest;
 import static java.net.http.HttpRequest.BodyPublishers.ofInputStream;
 import static java.util.Optional.ofNullable;
 
-class StreamBody extends RequestBody<InputStream> {
+final class StreamBody extends RequestBody<InputStream> {
 
     StreamBody(InputStream body) {
         super(ofNullable(body).orElseThrow());
@@ -15,5 +15,16 @@ class StreamBody extends RequestBody<InputStream> {
     @Override
     public HttpRequest.BodyPublisher createPublisher() {
         return ofInputStream(this::body);
+    }
+
+    @Override
+    public String toString() {
+        var stream = body();
+
+        try {
+            return "Input stream body. Length/available length " + stream.readAllBytes().length;
+        } catch (Exception e) {
+            return "Input stream body. Length of the byte array is not available currently";
+        }
     }
 }

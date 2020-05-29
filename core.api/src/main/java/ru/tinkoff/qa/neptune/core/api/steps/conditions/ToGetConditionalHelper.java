@@ -2,8 +2,11 @@ package ru.tinkoff.qa.neptune.core.api.steps.conditions;
 
 import javax.annotation.Nullable;
 import java.time.Duration;
+import java.util.Collection;
 import java.util.Objects;
-import java.util.function.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.System.currentTimeMillis;
@@ -31,7 +34,7 @@ final class ToGetConditionalHelper {
         return condition;
     }
 
-    static <T, R>  Function<T, R> checkFunction(Function<T, R> function) {
+    static <T, R> Function<T, R> checkFunction(Function<T, R> function) {
         checkArgument(nonNull(function), "Function is not defined.");
         return function;
     }
@@ -64,11 +67,26 @@ final class ToGetConditionalHelper {
         return exceptionSupplier;
     }
 
+    private static boolean toBeIgnored(Throwable throwable, Collection<Class<? extends Throwable>> toIgnore) {
+        var cls = throwable.getClass();
+        if (RuntimeException.class.equals(cls)) {
+            var cause = throwable.getCause();
+            return ofNullable(cause)
+                    .map(throwable1 -> toBeIgnored(throwable1, toIgnore))
+                    .orElse(false);
+        }
+
+        return toIgnore
+                .stream()
+                .anyMatch(aClass -> aClass.isAssignableFrom(cls));
+    }
+
     static <T, F> Function<T, F> fluentWaitFunction(Function<T, F> originalFunction,
                                                     @Nullable Duration waitingTime,
                                                     @Nullable Duration sleepingTime,
                                                     Predicate<F> till,
-                                                    @Nullable Supplier<? extends RuntimeException> exceptionOnTimeOut) {
+                                                    @Nullable Supplier<? extends RuntimeException> exceptionOnTimeOut,
+                                                    Collection<Class<? extends Throwable>> toIgnore) {
         var timeOut = ofNullable(waitingTime).orElseGet(() -> ofMillis(0));
         var sleeping = ofNullable(sleepingTime).orElseGet(() -> ofMillis(50));
 
@@ -78,7 +96,17 @@ final class ToGetConditionalHelper {
             F f = null;
             var suitable = false;
             while (currentTimeMillis() < endMillis && !(suitable)) {
-                suitable = till.test(f = originalFunction.apply(t));
+                try {
+                    f = originalFunction.apply(t);
+                } catch (Throwable throwable) {
+                    if (toBeIgnored(throwable, toIgnore)) {
+                        f = null;
+                    } else {
+                        throw throwable;
+                    }
+                }
+
+                suitable = till.test(f);
                 try {
                     sleep(sleeping.toMillis());
                 } catch (InterruptedException e) {
@@ -92,7 +120,7 @@ final class ToGetConditionalHelper {
             }
 
             return (F) ofNullable(exceptionOnTimeOut).map(exceptionSupplier1 -> {
-                throw exceptionOnTimeOut.get();
+                throw exceptionSupplier1.get();
             }).orElse(f);
         };
     }
