@@ -39,7 +39,7 @@ import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSuppl
 public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetObjectFromIterableBodyStepSupplier<T, R, S>>
         extends SequentialGetStepSupplier.GetObjectFromIterableStepSupplier<HttpStepContext, R, S> {
 
-    private <S extends Iterable<R>> GetObjectFromIterableBodyStepSupplier(String description, Function<HttpStepContext, S> f) {
+    private <Q extends Iterable<R>> GetObjectFromIterableBodyStepSupplier(String description, Function<HttpStepContext, Q> f) {
         super(description, f);
     }
 
