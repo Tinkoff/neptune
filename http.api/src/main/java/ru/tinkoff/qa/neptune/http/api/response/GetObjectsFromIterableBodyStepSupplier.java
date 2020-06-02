@@ -225,6 +225,7 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
             return httpStepContext -> {
                 boolean success = false;
                 try {
+                    catchValue(getResponse.getRequest().body(), of(new CaptorFilterByProducedType(Object.class)));
                     var result = super.getEndFunction().apply(httpStepContext);
                     success = true;
                     return result;

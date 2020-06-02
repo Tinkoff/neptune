@@ -9,6 +9,7 @@ import ru.tinkoff.qa.neptune.http.api.properties.mapper.DefaultXmlObjectMapper;
 import ru.tinkoff.qa.neptune.http.api.request.body.RequestBody;
 
 import javax.ws.rs.core.UriBuilder;
+import javax.xml.transform.Transformer;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
@@ -195,6 +196,18 @@ public abstract class RequestBuilder {
     }
 
     /**
+     * Creates a builder of a POST http request. W3C {@link org.w3c.dom.Document} is used as string content
+     *
+     * @param endPoint    is a target endpoint
+     * @param body        is a document that is used as a request body
+     * @param transformer is a document transformer
+     * @return a POST request builder.
+     */
+    public static RequestBuilder POST(URI endPoint, org.w3c.dom.Document body, Transformer transformer) {
+        return POST(endPoint, body(body, transformer));
+    }
+
+    /**
      * Creates a builder of a POST http request. Html {@link org.jsoup.nodes.Document body} is used as string content.
      *
      * @param endPoint is a target endpoint
@@ -369,6 +382,18 @@ public abstract class RequestBuilder {
      */
     public static RequestBuilder POST(URL endPointUrl, Map<String, String> body) {
         return POST(toURI(endPointUrl), body);
+    }
+
+    /**
+     * Creates a builder of a POST http request. W3C {@link org.w3c.dom.Document} is used as string content
+     *
+     * @param endPointUrl is a URL of target endpoint
+     * @param body        is a document that is used as a request body\
+     * @param transformer is a document transformer
+     * @return a POST request builder.
+     */
+    public static RequestBuilder POST(URL endPointUrl, org.w3c.dom.Document body, Transformer transformer) {
+        return POST(toURI(endPointUrl), body, transformer);
     }
 
     /**
@@ -568,6 +593,18 @@ public abstract class RequestBuilder {
      */
     public static RequestBuilder POST(String uriStr, org.w3c.dom.Document body) {
         return POST(create(uriStr), body);
+    }
+
+    /**
+     * Creates a builder of a POST http request. W3C {@link org.w3c.dom.Document} is used as string content
+     *
+     * @param uriStr      is a string value of URI of target endpoint
+     * @param body        is a document that is used as a request body
+     * @param transformer is a document transformer
+     * @return a POST request builder.
+     */
+    public static RequestBuilder POST(String uriStr, org.w3c.dom.Document body, Transformer transformer) {
+        return POST(create(uriStr), body, transformer);
     }
 
     /**
@@ -836,6 +873,18 @@ public abstract class RequestBuilder {
     }
 
     /**
+     * Creates a builder of a PUT http request. W3C {@link org.w3c.dom.Document} is used as string content
+     *
+     * @param endPoint    is a target endpoint
+     * @param body        is a document that is used as a request body
+     * @param transformer is a document transformer
+     * @return a PUT request builder.
+     */
+    public static RequestBuilder PUT(URI endPoint, org.w3c.dom.Document body, Transformer transformer) {
+        return PUT(endPoint, body(body, transformer));
+    }
+
+    /**
      * Creates a builder of a PUT http request. Html {@link org.jsoup.nodes.Document body} is used as string content.
      *
      * @param endPoint is a target endpoint
@@ -1024,6 +1073,18 @@ public abstract class RequestBuilder {
     }
 
     /**
+     * Creates a builder of a PUT http request. W3C {@link org.w3c.dom.Document} is used as string content
+     *
+     * @param endPointUrl is a URL of target endpoint
+     * @param body        is a document that is used as a request body
+     * @param transformer is a document transformer
+     * @return a PUT request builder.
+     */
+    public static RequestBuilder PUT(URL endPointUrl, org.w3c.dom.Document body, Transformer transformer) {
+        return PUT(toURI(endPointUrl), body, transformer);
+    }
+
+    /**
      * Creates a builder of a PUT http request. Html {@link org.jsoup.nodes.Document body} is used as string content.
      *
      * @param endPointUrl is a URL of target endpoint
@@ -1209,6 +1270,18 @@ public abstract class RequestBuilder {
      */
     public static RequestBuilder PUT(String uriStr, org.w3c.dom.Document body) {
         return PUT(create(uriStr), body);
+    }
+
+    /**
+     * Creates a builder of a PUT http request. W3C {@link org.w3c.dom.Document} is used as string content
+     *
+     * @param uriStr      is a string value of URI of target endpoint
+     * @param body        is a document that is used as a request body
+     * @param transformer is a document transformer
+     * @return a PUT request builder.
+     */
+    public static RequestBuilder PUT(String uriStr, org.w3c.dom.Document body, Transformer transformer) {
+        return PUT(create(uriStr), body, transformer);
     }
 
     /**
@@ -1419,6 +1492,20 @@ public abstract class RequestBuilder {
     }
 
     /**
+     * Creates a builder of a fluent http request. W3C {@link org.w3c.dom.Document} is used as string content
+     *
+     * @param method      is a name of http method
+     * @param endPoint    is a target endpoint
+     * @param body        is a document that is used as a request body
+     * @param transformer is a document transformer
+     * @return a fluent http request builder.
+     */
+    public static RequestBuilder METHOD(String method, URI endPoint, org.w3c.dom.Document body, Transformer transformer) {
+        return METHOD(method, endPoint, body(body, transformer));
+    }
+
+
+    /**
      * Creates a builder of a fluent http request. Html {@link org.jsoup.nodes.Document body} is used as string content.
      *
      * @param method   is a name of http method
@@ -1623,6 +1710,19 @@ public abstract class RequestBuilder {
     }
 
     /**
+     * Creates a builder of a fluent http request. W3C {@link org.w3c.dom.Document} is used as string content
+     *
+     * @param method      is a name of http method
+     * @param endPointUrl is a URL of target endpoint
+     * @param body        is a document that is used as a request body
+     * @param transformer is a document transformer
+     * @return a fluent http request builder.
+     */
+    public static RequestBuilder METHOD(String method, URL endPointUrl, org.w3c.dom.Document body, Transformer transformer) {
+        return METHOD(method, toURI(endPointUrl), body, transformer);
+    }
+
+    /**
      * Creates a builder of a fluent http request. Html {@link org.jsoup.nodes.Document body} is used as string content.
      *
      * @param method      is a name of http method
@@ -1824,6 +1924,19 @@ public abstract class RequestBuilder {
      */
     public static RequestBuilder METHOD(String method, String uriStr, org.w3c.dom.Document body) {
         return METHOD(method, create(uriStr), body);
+    }
+
+    /**
+     * Creates a builder of a fluent http request. W3C {@link org.w3c.dom.Document} is used as string content
+     *
+     * @param method      is a name of http method
+     * @param uriStr      is a string value of URI of target endpoint
+     * @param body        is a document that is used as a request body
+     * @param transformer is a document transformer
+     * @return a fluent http request builder.
+     */
+    public static RequestBuilder METHOD(String method, String uriStr, org.w3c.dom.Document body, Transformer transformer) {
+        return METHOD(method, create(uriStr), body, transformer);
     }
 
     /**

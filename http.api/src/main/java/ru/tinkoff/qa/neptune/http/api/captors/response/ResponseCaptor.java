@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.http.api.captors;
+package ru.tinkoff.qa.neptune.http.api.captors.response;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.StringCaptor;
 
@@ -12,7 +12,7 @@ import java.util.Date;
 import static java.lang.System.lineSeparator;
 import static java.util.Optional.ofNullable;
 
-public class ResponseCaptor extends StringCaptor<HttpResponse<?>> {
+public final class ResponseCaptor extends StringCaptor<HttpResponse<?>> {
 
     private static final String LINE_SEPARATOR = lineSeparator();
 

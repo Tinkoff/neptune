@@ -6,7 +6,9 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCaptures
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
+import ru.tinkoff.qa.neptune.http.api.request.NeptuneHttpRequestImpl;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
+import ru.tinkoff.qa.neptune.http.api.request.body.*;
 
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -16,6 +18,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static java.lang.String.valueOf;
+import static java.util.Optional.ofNullable;
 import static java.util.Set.of;
 import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationHMS;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
@@ -86,6 +89,9 @@ public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSup
     @Override
     protected Function<HttpStepContext, HttpResponse<T>> getEndFunction() {
         return httpStepContext -> {
+            if (toReport) {
+                catchValue(getRequest().body(), of(new CaptorFilterByProducedType(Object.class)));
+            }
             boolean success = false;
             try {
                 var result = super.getEndFunction().apply(httpStepContext);
@@ -135,6 +141,26 @@ public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSup
         request.version().ifPresent(v ->
                 params.put("Version", v.toString()));
 
+        ofNullable(getRequest().body())
+                .ifPresent(b -> {
+                    var cls = b.getClass();
+                    if (!cls.equals(JSoupDocumentBody.class)
+                            && !cls.equals(SerializedBody.class)
+                            && !cls.equals(StringBody.class)
+                            && !cls.equals(URLEncodedForm.class)
+                            && !cls.equals(W3CDocumentBody.class)) {
+                        params.put("Request body", b.toString());
+                        return;
+                    }
+
+                    if (cls.equals(StringBody.class)) {
+                        var stringBody = ((StringBody) b).body();
+                        if (stringBody.length() <= 50) {
+                            params.put("Request body", stringBody);
+                        }
+                    }
+                });
+
         return params;
     }
 
@@ -143,5 +169,9 @@ public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSup
         var result = super.clone();
         result.toReport = true;
         return result;
+    }
+
+    NeptuneHttpRequestImpl getRequest() {
+        return (NeptuneHttpRequestImpl) request;
     }
 }

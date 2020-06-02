@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.http.api.captors;
+package ru.tinkoff.qa.neptune.http.api.captors.response;
 
 import java.net.http.HttpResponse;
 import java.util.ArrayList;

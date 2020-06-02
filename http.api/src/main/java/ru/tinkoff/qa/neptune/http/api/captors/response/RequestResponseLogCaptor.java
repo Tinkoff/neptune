@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.http.api.captors;
+package ru.tinkoff.qa.neptune.http.api.captors.response;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.StringCaptor;
 import ru.tinkoff.qa.neptune.http.api.response.RequestResponseLogCollector;
@@ -9,7 +9,7 @@ import java.util.logging.SimpleFormatter;
 
 import static java.lang.System.lineSeparator;
 
-public class RequestResponseLogCaptor extends StringCaptor<List<RequestResponseLogCollector>> {
+public final class RequestResponseLogCaptor extends StringCaptor<List<RequestResponseLogCollector>> {
 
     private static final String LINE_SEPARATOR = lineSeparator();
 

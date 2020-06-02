@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.http.api.captors;
+package ru.tinkoff.qa.neptune.http.api.captors.response;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.StringCaptor;
 
@@ -6,7 +6,7 @@ import java.net.http.HttpResponse;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-public class ResponseStringCaptor extends StringCaptor<HttpResponse<String>> implements BaseResponseObjectBodyCaptor<String> {
+public final class ResponseStringCaptor extends StringCaptor<HttpResponse<String>> implements BaseResponseObjectBodyCaptor<String> {
 
     public ResponseStringCaptor() {
         super("Response Body. String");

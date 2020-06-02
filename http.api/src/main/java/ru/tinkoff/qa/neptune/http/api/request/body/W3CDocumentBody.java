@@ -2,7 +2,8 @@ package ru.tinkoff.qa.neptune.http.api.request.body;
 
 import org.w3c.dom.Document;
 
-import javax.xml.transform.TransformerException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -10,6 +11,7 @@ import java.io.StringWriter;
 import java.net.http.HttpRequest;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.net.http.HttpRequest.BodyPublishers.ofString;
 import static java.util.Objects.nonNull;
 
@@ -19,11 +21,15 @@ public final class W3CDocumentBody extends RequestBody<String> {
         super(transform(body));
     }
 
-    private static String transform(Document document) {
+    W3CDocumentBody(Document body, Transformer transformer) {
+        super(transform(body, transformer));
+    }
+
+    private static String transform(Document document, Transformer transformer) {
         checkArgument(nonNull(document), "Document should not be a null value");
+        checkNotNull(transformer);
 
         try {
-            var transformer = TransformerFactory.newInstance().newTransformer();
             var domSource = new DOMSource(document);
             var sw = new StringWriter();
 
@@ -31,7 +37,15 @@ public final class W3CDocumentBody extends RequestBody<String> {
 
             transformer.transform(domSource, sr);
             return sw.toString();
-        } catch (TransformerException e) {
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static String transform(Document document) {
+        try {
+            return transform(document, TransformerFactory.newInstance().newTransformer());
+        } catch (TransformerConfigurationException e) {
             throw new RuntimeException(e);
         }
     }

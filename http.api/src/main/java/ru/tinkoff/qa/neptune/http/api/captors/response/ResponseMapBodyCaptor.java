@@ -1,11 +1,11 @@
-package ru.tinkoff.qa.neptune.http.api.captors;
+package ru.tinkoff.qa.neptune.http.api.captors.response;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.collections.MapCaptor;
 
 import java.util.Map;
 
 @SuppressWarnings("rawtypes")
-public class ResponseMapBodyCaptor extends MapCaptor implements BaseResponseObjectBodyCaptor<Map> {
+public final class ResponseMapBodyCaptor extends MapCaptor implements BaseResponseObjectBodyCaptor<Map> {
 
     public ResponseMapBodyCaptor() {
         super("Response Body. Map");

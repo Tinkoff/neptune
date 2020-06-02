@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.http.api.captors;
+package ru.tinkoff.qa.neptune.http.api.captors.response;
 
 import org.jsoup.nodes.Document;
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.FileCaptor;
@@ -11,7 +11,7 @@ import static java.nio.charset.Charset.defaultCharset;
 import static java.util.UUID.randomUUID;
 import static org.apache.commons.io.FileUtils.writeStringToFile;
 
-public class ResponseJSoupDocumentCaptor extends FileCaptor<HttpResponse<Document>> implements BaseResponseObjectBodyCaptor<Document> {
+public final class ResponseJSoupDocumentCaptor extends FileCaptor<HttpResponse<Document>> implements BaseResponseObjectBodyCaptor<Document> {
 
     public ResponseJSoupDocumentCaptor() {
         super("Response Body. JSoup document");

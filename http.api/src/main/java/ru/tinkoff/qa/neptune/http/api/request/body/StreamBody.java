@@ -22,7 +22,7 @@ final class StreamBody extends RequestBody<InputStream> {
         var stream = body();
 
         try {
-            return "Input stream body. Length/available length " + stream.readAllBytes().length;
+            return "Input stream body. Available length of a byte array at the moment is " + stream.available();
         } catch (Exception e) {
             return "Input stream body. Length of the byte array is not available currently";
         }

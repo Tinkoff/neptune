@@ -14,6 +14,7 @@ public final class FileBody extends RequestBody<File> {
     FileBody(File body) {
         super(body);
         checkNotNull(body);
+        checkArgument(!body.isDirectory(), "Directory should not be defined as a body of http request");
         checkArgument(body.exists(), "File " + body.getAbsolutePath() + " doesn't exists");
     }
 

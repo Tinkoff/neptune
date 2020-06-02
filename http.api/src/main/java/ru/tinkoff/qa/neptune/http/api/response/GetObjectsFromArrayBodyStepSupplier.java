@@ -218,6 +218,7 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
             return httpStepContext -> {
                 boolean success = false;
                 try {
+                    catchValue(getResponse.getRequest().body(), of(new CaptorFilterByProducedType(Object.class)));
                     var result = super.getEndFunction().apply(httpStepContext);
                     success = true;
                     return result;

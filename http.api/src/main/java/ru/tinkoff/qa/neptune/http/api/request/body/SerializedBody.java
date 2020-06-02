@@ -10,22 +10,34 @@ import static java.util.Optional.ofNullable;
 
 public final class SerializedBody extends RequestBody<String> {
 
-    private SerializedBody(String serialized) {
+    private final String toStringExpr;
+
+    private SerializedBody(String serialized, String toStringExpr) {
         super(ofNullable(serialized)
                 .orElseThrow());
+        this.toStringExpr = toStringExpr;
     }
 
     SerializedBody(DTObject body) {
         this(ofNullable(body)
-                .map(DTObject::serialize)
-                .orElseThrow());
+                        .map(DTObject::serialize)
+                        .orElseThrow(),
+                body.toString());
     }
 
     SerializedBody(ObjectMapper mapper, Object body) {
-        this(serialize(mapper, body));
+        this(serialize(mapper, body), serializePretty(mapper, body));
     }
 
     private static String serialize(ObjectMapper mapper, Object body) {
+        try {
+            return mapper.writeValueAsString(body);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static String serializePretty(ObjectMapper mapper, Object body) {
         try {
             return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(body);
         } catch (Exception e) {
@@ -40,6 +52,6 @@ public final class SerializedBody extends RequestBody<String> {
 
     @Override
     public String toString() {
-        return body();
+        return toStringExpr;
     }
 }

@@ -210,6 +210,7 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
             return httpStepContext -> {
                 boolean success = false;
                 try {
+                    catchValue(getResponse.getRequest().body(), of(new CaptorFilterByProducedType(Object.class)));
                     var result = super.getEndFunction().apply(httpStepContext);
                     success = true;
                     return result;
