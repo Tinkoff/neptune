@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.http.api.mapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 import ru.tinkoff.qa.neptune.http.api.properties.mapper.DefaultJsonObjectMapper;
@@ -43,11 +44,17 @@ public enum DefaultBodyMappers {
             return ofNullable(DEFAULT_XML_OBJECT_MAPPER.get())
                     .map(s -> ofNullable(s.get())
                             .map(xmlMapper -> {
-                                if (xmlMapper
-                                        .getRegisteredModuleIds()
+                                var moduleIds = xmlMapper.getRegisteredModuleIds();
+                                if (moduleIds
                                         .stream()
                                         .noneMatch(o -> Objects.equals(String.valueOf(o), JaxbAnnotationModule.class.getName()))) {
                                     xmlMapper.registerModule(new JaxbAnnotationModule());
+                                }
+
+                                if (moduleIds
+                                        .stream()
+                                        .noneMatch(o -> Objects.equals(String.valueOf(o), JacksonXmlModule.class.getName()))) {
+                                    xmlMapper.registerModule(new JacksonXmlModule());
                                 }
                                 return xmlMapper;
                             })
@@ -58,6 +65,7 @@ public enum DefaultBodyMappers {
                     .orElseGet(() -> {
                         var mapper = new XmlMapper();
                         mapper.registerModule(new JaxbAnnotationModule());
+                        mapper.registerModule(new JacksonXmlModule());
                         return mapper;
                     });
         }
