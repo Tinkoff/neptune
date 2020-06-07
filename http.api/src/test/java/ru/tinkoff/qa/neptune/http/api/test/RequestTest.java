@@ -57,7 +57,7 @@ public class RequestTest {
     }
 
     @Test
-    public void test3() throws Exception {
+    public void test3() {
         var request = PUT("https://www.google.com/")
                 .tuneWith(RequestTuner1.class, RequestTuner1.class, RequestTuner2.class)
                 .build();
