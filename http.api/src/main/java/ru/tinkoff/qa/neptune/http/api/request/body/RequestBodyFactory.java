@@ -5,6 +5,7 @@ import ru.tinkoff.qa.neptune.http.api.dto.DTObject;
 import ru.tinkoff.qa.neptune.http.api.mapper.DefaultBodyMappers;
 import ru.tinkoff.qa.neptune.http.api.properties.mapper.DefaultJsonObjectMapper;
 import ru.tinkoff.qa.neptune.http.api.properties.mapper.DefaultXmlObjectMapper;
+import ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart;
 
 import javax.xml.transform.Transformer;
 import java.io.File;
@@ -195,5 +196,16 @@ public final class RequestBodyFactory {
      */
     public static RequestBody<String> body(DefaultBodyMappers mapper, Object body) {
         return body(mapper.getMapper(), body);
+    }
+
+    /**
+     * Creates a body of http request. The body consists of several parts.
+     *
+     * @param boundary  is a separator between parts
+     * @param bodyParts parts of a complex body
+     * @return an instance of {@link RequestBody}
+     */
+    public static RequestBody<BodyPart[]> body(String boundary, BodyPart... bodyParts) {
+        return new MultiPartBody(boundary, bodyParts);
     }
 }

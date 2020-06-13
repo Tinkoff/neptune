@@ -10,10 +10,10 @@ import ru.tinkoff.qa.neptune.http.api.test.request.body.XmlBodyObject;
 
 import java.net.http.HttpResponse;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.*;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasBody.hasBody;
 import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
@@ -60,29 +60,17 @@ public class CustomResponseBodyTest extends BaseHttpTest {
 
     @BeforeClass
     public static void prepareMock() {
-        clientAndServer.when(
-                request()
-                        .withMethod("GET")
-                        .withPath(PATH_TO_GSON))
-                .respond(response().withBody(RESPONSE_GSON));
+        stubFor(get(urlPathEqualTo(PATH_TO_GSON))
+                .willReturn(aResponse().withBody(RESPONSE_GSON)));
 
-        clientAndServer.when(
-                request()
-                        .withMethod("GET")
-                        .withPath(PATH_TO_JACKSON))
-                .respond(response().withBody(RESPONSE_MAPPED));
+        stubFor(get(urlPathEqualTo(PATH_TO_JACKSON))
+                .willReturn(aResponse().withBody(RESPONSE_MAPPED)));
 
-        clientAndServer.when(
-                request()
-                        .withMethod("GET")
-                        .withPath(PATH_DOCUMENT_XML))
-                .respond(response().withBody(XML_FOR_DOCUMENT));
+        stubFor(get(urlPathEqualTo(PATH_DOCUMENT_XML))
+                .willReturn(aResponse().withBody(XML_FOR_DOCUMENT)));
 
-        clientAndServer.when(
-                request()
-                        .withMethod("GET")
-                        .withPath(PATH_DOCUMENT_HTML))
-                .respond(response().withBody(HTML_FOR_DOCUMENT));
+        stubFor(get(urlPathEqualTo(PATH_DOCUMENT_HTML))
+                .willReturn(aResponse().withBody(HTML_FOR_DOCUMENT)));
     }
 
     @DataProvider

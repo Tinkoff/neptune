@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.http.api.test;
 
-import org.mockserver.model.Cookie;
-import org.mockserver.model.HttpResponse;
+import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
@@ -18,6 +17,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.concurrent.Executor;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.lang.String.valueOf;
 import static java.lang.System.getProperties;
 import static java.lang.System.setProperty;
@@ -32,8 +32,8 @@ import static java.time.Duration.of;
 import static java.time.Duration.ofSeconds;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.*;
-import static org.mockserver.model.HttpRequest.request;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpAuthenticatorProperty.DEFAULT_HTTP_AUTHENTICATOR_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpCookieManagerProperty.DEFAULT_HTTP_COOKIE_MANAGER_PROPERTY;
@@ -81,12 +81,10 @@ public class HttpClientTest extends BaseHttpTest {
 
     @BeforeClass
     public void beforeClass() {
-        clientAndServer.when(
-                request()
-                        .withMethod("GET")
-                        .withPath("/index.html"))
-                .respond(HttpResponse.response().withBody("Hello")
-                        .withCookie(new Cookie("TestCookieName", "TestCookieValue")));
+        stubFor(get(urlPathEqualTo("/index.html"))
+                .willReturn(aResponse()
+                        .withBody("Hello")
+                        .withHeader("Set-Cookie", "TestCookieName=TestCookieValue")));
     }
 
     @Test
@@ -167,19 +165,16 @@ public class HttpClientTest extends BaseHttpTest {
 
     @Test
     public void queryParameterTest() throws Throwable {
-        clientAndServer.when(
-                request()
-                        .withMethod("GET")
-                        .withPath("/query"))
-                .respond(HttpResponse.response().withBody("Hello query"));
+        stubFor(get(urlPathEqualTo("/query"))
+                .willReturn(aResponse().withBody("Hello query")));
 
         var response = http().responseOf(GET(REQUEST_URI + "/query")
                 .queryParam("date", "01-01-1980")
                 .queryParam("some word", "Word and word again"), ofString());
 
         assertThat(response.body(),
-                equalTo("Hello query"));
-        assertThat(response.uri(), equalTo(new URI("http://127.0.0.1:1080/query?date=" + encode("01-01-1980", UTF_8) + "&"
+                Matchers.equalTo("Hello query"));
+        assertThat(response.uri(), equalTo(new URI("http://127.0.0.1:8089/query?date=" + encode("01-01-1980", UTF_8) + "&"
                 + encode("some word", UTF_8) + "=" + encode("Word and word again", UTF_8))));
     }
 

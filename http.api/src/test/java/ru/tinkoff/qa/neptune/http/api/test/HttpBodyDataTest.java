@@ -4,6 +4,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.http.api.response.DesiredDataHasNotBeenReceivedException;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.lang.System.currentTimeMillis;
 import static java.net.URI.create;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
@@ -11,8 +12,6 @@ import static java.time.Duration.ofMillis;
 import static java.time.Duration.ofSeconds;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
 import static org.testng.FileAssert.fail;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
@@ -29,17 +28,11 @@ public class HttpBodyDataTest extends BaseHttpTest {
 
     @BeforeClass
     public static void beforeClass() {
-        clientAndServer.when(
-                request()
-                        .withMethod("GET")
-                        .withPath("/data.html"))
-                .respond(response().withBody("<?xml version=\"1.0\" encoding=\"utf-8\"?><a><b></b><c></c></a>"));
+        stubFor(get(urlPathEqualTo("/data.html"))
+                .willReturn(aResponse().withBody("<?xml version=\"1.0\" encoding=\"utf-8\"?><a><b></b><c></c></a>")));
 
-        clientAndServer.when(
-                request()
-                        .withMethod("GET")
-                        .withPath("/badData.html"))
-                .respond(response().withBody("<?xml version=\"1.0\" encoding=\"utf-8\"?<b></b><c></c></a"));
+        stubFor(get(urlPathEqualTo("/badData.html"))
+                .willReturn(aResponse().withBody("<?xml version=\"1.0\" encoding=\"utf-8\"?<b></b><c></c></a")));
         //malformed xml
     }
 

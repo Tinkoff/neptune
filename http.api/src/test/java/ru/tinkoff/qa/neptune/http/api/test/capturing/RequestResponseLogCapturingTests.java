@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.http.api.test.capturing;
 
 import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.testng.annotations.*;
 import ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents;
 import ru.tinkoff.qa.neptune.http.api.response.DesiredDataHasNotBeenReceivedException;
@@ -11,16 +12,14 @@ import java.net.URI;
 import java.util.List;
 import java.util.Random;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.http.Fault.MALFORMED_RESPONSE_CHUNK;
 import static java.lang.System.getProperties;
 import static java.net.URI.create;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
 import static java.time.Duration.ofSeconds;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.mockserver.matchers.Times.unlimited;
-import static org.mockserver.model.HttpError.error;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
 import static org.testng.Assert.fail;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents.*;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.DO_CAPTURES_OF_INSTANCE;
@@ -40,22 +39,16 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
 
     @BeforeClass
     public void beforeClass() {
-        clientAndServer.when(
-                request()
-                        .withMethod("GET")
-                        .withPath("/success.html"), unlimited())
-                .respond(response()
-                        .withBody("SUCCESS")
-                        .withStatusCode(200));
+        stubFor(get(urlPathEqualTo("/success.html"))
+                .willReturn(aResponse().withBody("SUCCESS").withStatus(200)));
 
         var randomByteArray = new byte[25];
         new Random().nextBytes(randomByteArray);
 
-        clientAndServer.when(
-                request().withPath("/failure.html"))
-                .error(error().withDropConnection(false)
-                        .withResponseBytes(randomByteArray)
-                );
+        stubFor(get(urlPathEqualTo("/failure.html"))
+                .willReturn(serverError()
+                        .withFault(MALFORMED_RESPONSE_CHUNK)
+                        .withBody(randomByteArray)));
     }
 
     @BeforeMethod
@@ -68,22 +61,22 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
         return new Object[][]{
                 {SUCCESS, containsInAnyOrder(
                         containsString("Logs that have been captured during the sending of a request"),
-                        equalTo("Response\n" +
+                        containsString("Response\n" +
                                 "Status code: 200\r\n" +
-                                "Response URI: http://127.0.0.1:1080/success.html\r\n" +
-                                "Corresponding request: http://127.0.0.1:1080/success.html GET\r\n" +
-                                "Response headers: {connection=[keep-alive], content-length=[7]}\r\n"),
-                        equalTo("Response Body. String\n" +
+                                "Response URI: http://127.0.0.1:8089/success.html\r\n" +
+                                "Corresponding request: http://127.0.0.1:8089/success.html GET\r\n" +
+                                "Response headers:"),
+                        Matchers.equalTo("Response Body. String\n" +
                                 "SUCCESS"))},
                 {FAILURE, anyOf(empty(), nullValue())},
                 {SUCCESS_AND_FAILURE, containsInAnyOrder(
                         containsString("Logs that have been captured during the sending of a request"),
                         containsString("Response\n" +
                                 "Status code: 200\r\n" +
-                                "Response URI: http://127.0.0.1:1080/success.html\r\n" +
-                                "Corresponding request: http://127.0.0.1:1080/success.html GET\r\n" +
-                                "Response headers: {connection=[keep-alive], content-length=[7]}\r\n"),
-                        equalTo("Response Body. String\n" +
+                                "Response URI: http://127.0.0.1:8089/success.html\r\n" +
+                                "Corresponding request: http://127.0.0.1:8089/success.html GET\r\n" +
+                                "Response headers:"),
+                        Matchers.equalTo("Response Body. String\n" +
                                 "SUCCESS"))}
         };
     }
@@ -103,21 +96,21 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
                 {SUCCESS, anyOf(empty(), nullValue())},
                 {FAILURE, containsInAnyOrder(
                         containsString("Logs that have been captured during the sending of a request"),
-                        equalTo("Response\n" +
+                        containsString("Response\n" +
                                 "Status code: 200\r\n" +
-                                "Response URI: http://127.0.0.1:1080/success.html\r\n" +
-                                "Corresponding request: http://127.0.0.1:1080/success.html GET\r\n" +
-                                "Response headers: {connection=[keep-alive], content-length=[7]}\r\n"),
-                        equalTo("Response Body. String\n" +
+                                "Response URI: http://127.0.0.1:8089/success.html\r\n" +
+                                "Corresponding request: http://127.0.0.1:8089/success.html GET\r\n" +
+                                "Response headers:"),
+                        Matchers.equalTo("Response Body. String\n" +
                                 "SUCCESS"))},
                 {SUCCESS_AND_FAILURE, containsInAnyOrder(
                         containsString("Logs that have been captured during the sending of a request"),
-                        equalTo("Response\n" +
+                        containsString("Response\n" +
                                 "Status code: 200\r\n" +
-                                "Response URI: http://127.0.0.1:1080/success.html\r\n" +
-                                "Corresponding request: http://127.0.0.1:1080/success.html GET\r\n" +
-                                "Response headers: {connection=[keep-alive], content-length=[7]}\r\n"),
-                        equalTo("Response Body. String\n" +
+                                "Response URI: http://127.0.0.1:8089/success.html\r\n" +
+                                "Corresponding request: http://127.0.0.1:8089/success.html GET\r\n" +
+                                "Response headers:"),
+                        Matchers.equalTo("Response Body. String\n" +
                                 "SUCCESS"))},
         };
     }

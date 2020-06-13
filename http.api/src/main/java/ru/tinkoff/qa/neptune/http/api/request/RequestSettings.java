@@ -52,43 +52,12 @@ public interface RequestSettings<T extends RequestSettings<T>> {
      * <p></p>
      * Description was taken from Java documents.
      *
-     * @param name  the header name
-     * @param value the header value
+     * @param name   the header name
+     * @param values the header values
      * @return instance of {@code T}
-     * @throws IllegalArgumentException if the header name or value is not
-     *                                  valid, see <a href="https://tools.ietf.org/html/rfc7230#section-3.2">
-     *                                  RFC 7230 section-3.2</a>, or the header name or value is restricted
-     *                                  by the implementation.
-     * @implNote An implementation may choose to restrict some header names
-     * or values, as the HTTP Client may determine their value itself.
-     * For example, "Content-Length", which will be determined by
-     * the request Publisher. In such a case, an implementation of
-     * {@code HttpRequest.Builder} may choose to throw an
-     * {@code IllegalArgumentException} if such a header is passed
-     * to the builder.
+     * @see <a href="https://tools.ietf.org/html/rfc7230#section-3.2"> RFC 7230 section-3.2</a>
      */
-    T header(String name, String value);
-
-    /**
-     * Adds the given name value pairs to the set of headers for this
-     * request. The supplied {@code String} instances must alternate as
-     * header names and header values.
-     * To add several values to the same name then the same name must
-     * be supplied with each new value.
-     *
-     * <p></p>
-     * Description was taken from Java documents.
-     *
-     * @param headers the list of name value pairs
-     * @return instance of {@code T}
-     * @throws IllegalArgumentException if there are an odd number of
-     *                                  parameters, or if a header name or value is not valid, see
-     *                                  <a href="https://tools.ietf.org/html/rfc7230#section-3.2">
-     *                                  RFC 7230 section-3.2</a>, or a header name or value is
-     *                                  {@linkplain #header(String, String) restricted} by the
-     *                                  implementation.
-     */
-    T headers(String... headers);
+    T header(String name, String... values);
 
     /**
      * Sets a timeout for this request. If the response is not received
@@ -109,24 +78,6 @@ public interface RequestSettings<T extends RequestSettings<T>> {
      * @throws IllegalArgumentException if the duration is non-positive
      */
     T timeout(Duration duration);
-
-    /**
-     * Sets the given name value pair to the set of headers for this
-     * request. This overwrites any previously set values for name.
-     *
-     * <p></p>
-     * Description was taken from Java documents.
-     *
-     * @param name  the header name
-     * @param value the header value
-     * @return instance of {@code T}
-     * @throws IllegalArgumentException if the header name or value is not valid,
-     *                                  see <a href="https://tools.ietf.org/html/rfc7230#section-3.2">
-     *                                  RFC 7230 section-3.2</a>, or the header name or value is
-     *                                  {@linkplain #header(String, String) restricted} by the
-     *                                  implementation.
-     */
-    T setHeader(String name, String value);
 
     /**
      * Adds query parameter to the given URI

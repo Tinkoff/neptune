@@ -7,8 +7,9 @@ public class RequestTuner2 implements RequestTuner {
 
     @Override
     public void setUp(RequestSettings<?> requestSettings) {
-        requestSettings.headers("header2", "one more value", "header3", "one more value again")
-                .setHeader("header1", "abc")
+        requestSettings.header("header2", "one more value")
+                .header("header3", "one more value again")
+                .header("header1", "abc")
                 .header("header1", "one more value");
     }
 }

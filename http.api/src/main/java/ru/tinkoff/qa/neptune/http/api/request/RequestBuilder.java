@@ -6,7 +6,9 @@ import ru.tinkoff.qa.neptune.http.api.dto.DTObject;
 import ru.tinkoff.qa.neptune.http.api.mapper.DefaultBodyMappers;
 import ru.tinkoff.qa.neptune.http.api.properties.mapper.DefaultJsonObjectMapper;
 import ru.tinkoff.qa.neptune.http.api.properties.mapper.DefaultXmlObjectMapper;
+import ru.tinkoff.qa.neptune.http.api.request.body.MultiPartBody;
 import ru.tinkoff.qa.neptune.http.api.request.body.RequestBody;
+import ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart;
 
 import javax.ws.rs.core.UriBuilder;
 import javax.xml.transform.Transformer;
@@ -20,13 +22,15 @@ import java.net.http.HttpRequest;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.CASE_INSENSITIVE_ORDER;
 import static java.net.URI.create;
 import static java.util.stream.StreamSupport.stream;
+import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
+import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.glassfish.jersey.internal.guava.Preconditions.checkArgument;
 import static ru.tinkoff.qa.neptune.http.api.request.body.RequestBodyFactory.body;
@@ -35,6 +39,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
     final HttpRequest.Builder builder;
     private final UriBuilder uriBuilder = new JerseyUriBuilder();
     final RequestBody<?> body;
+    private final TreeMap<String, List<String>> headersMap = new TreeMap<>(CASE_INSENSITIVE_ORDER);
 
     private RequestBuilder(URI endPoint, RequestBody<?> body) {
         checkNotNull(endPoint);
@@ -258,6 +263,29 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
         return POST(endPoint, body(mapper, body));
     }
 
+    /**
+     * Creates a builder of a POST http request with multipart body.
+     *
+     * @param endPoint is a target endpoint
+     * @param boundary is a boundary between body parts
+     * @param parts    are parts of multipart body
+     * @return a POST request builder.
+     */
+    public static RequestBuilder POST(URI endPoint, String boundary, BodyPart... parts) {
+        return POST(endPoint, body(boundary, parts));
+    }
+
+    /**
+     * Creates a builder of a POST http request with multipart body.
+     *
+     * @param endPoint is a target endpoint
+     * @param parts    are parts of multipart body
+     * @return a POST request builder.
+     */
+    public static RequestBuilder POST(URI endPoint, BodyPart... parts) {
+        return POST(endPoint, body(randomAlphanumeric(15), parts));
+    }
+
 
     /**
      * Creates a builder of a POST http request.
@@ -456,6 +484,29 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     public static RequestBuilder POST(URL endPointUrl, DefaultBodyMappers mapper, Object body) {
         return POST(toURI(endPointUrl), mapper, body);
+    }
+
+    /**
+     * Creates a builder of a POST http request with multipart body.
+     *
+     * @param endPointUrl is a URL of target endpoint
+     * @param boundary    is a boundary between body parts
+     * @param parts       are parts of multipart body
+     * @return a POST request builder.
+     */
+    public static RequestBuilder POST(URL endPointUrl, String boundary, BodyPart... parts) {
+        return POST(toURI(endPointUrl), boundary, parts);
+    }
+
+    /**
+     * Creates a builder of a POST http request with multipart body.
+     *
+     * @param endPointUrl is a URL of target endpoint
+     * @param parts       are parts of multipart body
+     * @return a POST request builder.
+     */
+    public static RequestBuilder POST(URL endPointUrl, BodyPart... parts) {
+        return POST(toURI(endPointUrl), parts);
     }
 
 
@@ -658,6 +709,29 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
         return POST(create(uriStr), mapper, body);
     }
 
+    /**
+     * Creates a builder of a POST http request with multipart body.
+     *
+     * @param uriStr   is a string value of URI of target endpoint
+     * @param boundary is a boundary between body parts
+     * @param parts    are parts of multipart body
+     * @return a POST request builder.
+     */
+    public static RequestBuilder POST(String uriStr, String boundary, BodyPart... parts) {
+        return POST(create(uriStr), boundary, parts);
+    }
+
+    /**
+     * Creates a builder of a POST http request with multipart body.
+     *
+     * @param uriStr is a string value of URI of target endpoint
+     * @param parts  are parts of multipart body
+     * @return a POST request builder.
+     */
+    public static RequestBuilder POST(String uriStr, BodyPart... parts) {
+        return POST(create(uriStr), parts);
+    }
+
 
     /**
      * Creates a builder of a GET http request.
@@ -721,6 +795,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
     }
 
     /**
+     * ------------
      * Creates a builder of a DELETE http request.
      *
      * @param uriStr is a string value of URI of target endpoint
@@ -935,6 +1010,29 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
         return PUT(endPoint, body(mapper, body));
     }
 
+    /**
+     * Creates a builder of a PUT http request with multipart body.
+     *
+     * @param endPoint is a target endpoint
+     * @param boundary is a boundary between body parts
+     * @param parts    are parts of multipart body
+     * @return a PUT request builder.
+     */
+    public static RequestBuilder PUT(URI endPoint, String boundary, BodyPart... parts) {
+        return PUT(endPoint, body(boundary, parts));
+    }
+
+    /**
+     * Creates a builder of a PUT http request with multipart body.
+     *
+     * @param endPoint is a target endpoint
+     * @param parts    are parts of multipart body
+     * @return a PUT request builder.
+     */
+    public static RequestBuilder PUT(URI endPoint, BodyPart... parts) {
+        return PUT(endPoint, body(randomAlphanumeric(15), parts));
+    }
+
 
     /**
      * Creates a builder of a PUT http request.
@@ -1135,6 +1233,29 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
         return PUT(toURI(endPointUrl), mapper, body);
     }
 
+    /**
+     * Creates a builder of a PUT http request with multipart body.
+     *
+     * @param endPointUrl is a URL of target endpoint
+     * @param boundary    is a boundary between body parts
+     * @param parts       are parts of multipart body
+     * @return a PUT request builder.
+     */
+    public static RequestBuilder PUT(URL endPointUrl, String boundary, BodyPart... parts) {
+        return PUT(toURI(endPointUrl), boundary, parts);
+    }
+
+    /**
+     * Creates a builder of a PUT http request with multipart body.
+     *
+     * @param endPointUrl is a URL of target endpoint
+     * @param parts       are parts of multipart body
+     * @return a PUT request builder.
+     */
+    public static RequestBuilder PUT(URL endPointUrl, BodyPart... parts) {
+        return PUT(toURI(endPointUrl), parts);
+    }
+
 
     /**
      * Creates a builder of a PUT http request.
@@ -1333,6 +1454,29 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     public static RequestBuilder PUT(String uriStr, DefaultBodyMappers mapper, Object body) {
         return PUT(create(uriStr), mapper, body);
+    }
+
+    /**
+     * Creates a builder of a PUT http request with multipart body.
+     *
+     * @param uriStr   is a string value of URI of target endpoint
+     * @param boundary is a boundary between body parts
+     * @param parts    are parts of multipart body
+     * @return a PUT request builder.
+     */
+    public static RequestBuilder PUT(String uriStr, String boundary, BodyPart... parts) {
+        return PUT(create(uriStr), boundary, parts);
+    }
+
+    /**
+     * Creates a builder of a PUT http request with multipart body.
+     *
+     * @param uriStr is a string value of URI of target endpoint
+     * @param parts  are parts of multipart body
+     * @return a PUT request builder.
+     */
+    public static RequestBuilder PUT(String uriStr, BodyPart... parts) {
+        return PUT(create(uriStr), parts);
     }
 
 
@@ -1560,6 +1704,31 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
         return METHOD(method, endPoint, body(mapper, body));
     }
 
+    /**
+     * Creates a builder of a fluent http request with multipart body.
+     *
+     * @param method   is a name of http method
+     * @param endPoint is a target endpoint
+     * @param boundary is a boundary between body parts
+     * @param parts    are parts of multipart body
+     * @return a fluent http request builder.
+     */
+    public static RequestBuilder METHOD(String method, URI endPoint, String boundary, BodyPart... parts) {
+        return METHOD(method, endPoint, body(boundary, parts));
+    }
+
+    /**
+     * Creates a builder of a fluent http request with multipart body.
+     *
+     * @param method   is a name of http method
+     * @param endPoint is a target endpoint
+     * @param parts    are parts of multipart body
+     * @return a fluent http request builder.
+     */
+    public static RequestBuilder METHOD(String method, URI endPoint, BodyPart... parts) {
+        return METHOD(method, endPoint, body(randomAlphanumeric(15), parts));
+    }
+
 
     /**
      * Creates a builder of a fluent http request.
@@ -1775,6 +1944,31 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      */
     public static RequestBuilder METHOD(String method, URL endPointUrl, DefaultBodyMappers mapper, Object body) {
         return METHOD(method, toURI(endPointUrl), mapper, body);
+    }
+
+    /**
+     * Creates a builder of a fluent http request with multipart body.
+     *
+     * @param method      is a name of http method
+     * @param endPointUrl is a URL of target endpoint
+     * @param boundary    is a boundary between body parts
+     * @param parts       are parts of multipart body
+     * @return a fluent http request builder.
+     */
+    public static RequestBuilder METHOD(String method, URL endPointUrl, String boundary, BodyPart... parts) {
+        return METHOD(method, toURI(endPointUrl), boundary, parts);
+    }
+
+    /**
+     * Creates a builder of a fluent http request with multipart body.
+     *
+     * @param method      is a name of http method
+     * @param endPointUrl is a URL of target endpoint
+     * @param parts       are parts of multipart body
+     * @return a fluent http request builder.
+     */
+    public static RequestBuilder METHOD(String method, URL endPointUrl, BodyPart... parts) {
+        return METHOD(method, toURI(endPointUrl), parts);
     }
 
 
@@ -1994,6 +2188,31 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
         return METHOD(method, create(uriStr), mapper, body);
     }
 
+    /**
+     * Creates a builder of a fluent http request with multipart body.
+     *
+     * @param method   is a name of http method
+     * @param uriStr   is a string value of URI of target endpoint
+     * @param boundary is a boundary between body parts
+     * @param parts    are parts of multipart body
+     * @return a fluent http request builder.
+     */
+    public static RequestBuilder METHOD(String method, String uriStr, String boundary, BodyPart... parts) {
+        return METHOD(method, create(uriStr), boundary, parts);
+    }
+
+    /**
+     * Creates a builder of a fluent http request with multipart body.
+     *
+     * @param method is a name of http method
+     * @param uriStr is a string value of URI of target endpoint
+     * @param parts  are parts of multipart body
+     * @return a fluent http request builder.
+     */
+    public static RequestBuilder METHOD(String method, String uriStr, BodyPart... parts) {
+        return METHOD(method, create(uriStr), parts);
+    }
+
 
     abstract void defineRequestMethodAndBody();
 
@@ -2010,26 +2229,15 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
     }
 
     @Override
-    public RequestBuilder header(String name, String value) {
-        builder.header(name, value);
-        return this;
-    }
-
-    @Override
-    public RequestBuilder headers(String... headers) {
-        builder.headers(headers);
+    public RequestBuilder header(String name, String... values) {
+        var list = headersMap.computeIfAbsent(name, k -> new ArrayList<>());
+        list.addAll(List.of(values));
         return this;
     }
 
     @Override
     public RequestBuilder timeout(Duration duration) {
         builder.timeout(duration);
-        return this;
-    }
-
-    @Override
-    public RequestBuilder setHeader(String name, String value) {
-        builder.setHeader(name, value);
         return this;
     }
 
@@ -2094,7 +2302,21 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
 
 
     public HttpRequest build() {
-        return new NeptuneHttpRequestImpl(builder.uri(uriBuilder.build()).build(), body);
+        var newBuilder = builder.copy();
+
+        headersMap.forEach((s, strings) -> {
+            var valueList = new ArrayList<>(strings);
+            if (equalsIgnoreCase(s, "Content-Type")
+                    && valueList.size() > 0
+                    && (body != null && body instanceof MultiPartBody)) {
+                var val = valueList.get(0);
+                valueList.set(0, val + ";boundary=------------" + ((MultiPartBody) body).getBoundary());
+            }
+
+            valueList.forEach(s1 -> newBuilder.header(s, s1));
+        });
+
+        return new NeptuneHttpRequestImpl(newBuilder.uri(uriBuilder.build()).build(), body);
     }
 
 
