@@ -13,19 +13,25 @@ import ru.tinkoff.qa.neptune.http.api.test.request.body.XmlBodyObject;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.file.Files.readAllBytes;
+import static org.apache.commons.io.FileUtils.writeStringToFile;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasBody.hasBody;
 import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart.bodyPart;
+import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.ContentTransferEncoding.BINARY;
 
 public class CustomRequestBodyTest extends BaseHttpTest {
 
@@ -54,23 +60,31 @@ public class CustomRequestBodyTest extends BaseHttpTest {
             "        </div>\n" +
             "    </body>\n" +
             "</html>");
+
+    private static final File TEST_FILE = getTestFile();
+
     private static final Map<String, String> FORM_PARAMS = new LinkedHashMap<>() {
         {
             put("param1", "value1");
             put("param2", "value2");
         }
     };
+
     private static final Map<String, String> FORM_PARAMS2 = new LinkedHashMap<>() {
         {
             put("chip&dale", "rescue rangers");
             put("how to get water", "2H2 + O2 = 2H2O");
         }
     };
+
+
     private static final String PATH_TO_GSON = "/gson";
     private static final String PATH_TO_XML = "/jackson_xml";
     private static final String PATH_DOCUMENT_XML = "/document_xml";
     private static final String PATH_DOCUMENT_HTML = "/document_html";
     private static final String PATH_URL_UNLOADED = "/urlencoded";
+    private static final String PATH_MULTI_PART = "/multipart";
+
     private static final String REQUEST_BODY_GSON = "{\"A\":\"Some String\",\"B\":666,\"C\":true}";
     private static final String REQUEST_BODY_MAPPED = "<XmlBodyObject><wstxns1:A1 xmlns:wstxns1=\"http://www.test.com\">Some String</wstxns1:A1>" +
             "<wstxns2:B1 xmlns:wstxns2=\"http://www.test.com\">666</wstxns2:B1>" +
@@ -86,6 +100,7 @@ public class CustomRequestBodyTest extends BaseHttpTest {
     private static final String DOCUMENT_XML_HAS_BEEN_SUCCESSFULLY_POSTED = "Document xml has been successfully posted";
     private static final String DOCUMENT_HTML_HAS_BEEN_SUCCESSFULLY_POSTED = "Document html has been successfully posted";
     private static final String FORM_HAS_BEEN_SUCCESSFULLY_POSTED = "Form has been successfully posted";
+    private static final String MULTIPART_SUCCESSFULLY_POSTED = "Multipart successfully posted";
 
     private static org.w3c.dom.Document prepareW3CDocument() {
         var documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -98,59 +113,81 @@ public class CustomRequestBodyTest extends BaseHttpTest {
         }
     }
 
+    private static File getTestFile() {
+        var f = new File("test.txt");
+        try {
+            if (!f.createNewFile()) {
+                throw new IllegalStateException("Test file is not created");
+            }
+            f.deleteOnExit();
+            writeStringToFile(f, "Test text", UTF_8);
+            return f;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @BeforeClass
-    public static void beforeClass() {
-        clientAndServer.when(
-                request()
-                        .withMethod("POST")
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(REQUEST_BODY_GSON)
-                        .withPath(PATH_TO_GSON))
-                .respond(response().withBody(JSON_HAS_BEEN_SUCCESSFULLY_POSTED));
+    public static void beforeClass() throws Exception {
+        stubFor(post(urlPathEqualTo(PATH_TO_GSON))
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalTo(REQUEST_BODY_GSON))
+                .willReturn(aResponse().withBody(JSON_HAS_BEEN_SUCCESSFULLY_POSTED)));
 
-        clientAndServer.when(
-                request()
-                        .withMethod("POST")
-                        .withHeader("Content-Type", "application/xml")
-                        .withBody(REQUEST_BODY_MAPPED)
-                        .withPath(PATH_TO_XML))
-                .respond(response().withBody(JACKSON_XML_HAS_BEEN_SUCCESSFULLY_POSTED));
+        stubFor(post(urlPathEqualTo(PATH_TO_XML))
+                .withHeader("Content-Type", equalTo("application/xml"))
+                .withRequestBody(equalTo(REQUEST_BODY_MAPPED))
+                .willReturn(aResponse().withBody(JACKSON_XML_HAS_BEEN_SUCCESSFULLY_POSTED)));
 
-        clientAndServer.when(
-                request()
-                        .withMethod("POST")
-                        .withHeader("Content-Type", "application/xml")
-                        .withBody(REQUEST_BODY_XML_FOR_DOCUMENT)
-                        .withPath(PATH_DOCUMENT_XML))
-                .respond(response().withBody(DOCUMENT_XML_HAS_BEEN_SUCCESSFULLY_POSTED));
+        stubFor(post(urlPathEqualTo(PATH_DOCUMENT_XML))
+                .withHeader("Content-Type", equalTo("application/xml"))
+                .withRequestBody(equalTo(REQUEST_BODY_XML_FOR_DOCUMENT))
+                .willReturn(aResponse().withBody(DOCUMENT_XML_HAS_BEEN_SUCCESSFULLY_POSTED)));
 
-        clientAndServer.when(
-                request()
-                        .withMethod("POST")
-                        .withHeader("Content-Type", "multipart/form-data")
-                        .withBody(JSOUP_DOCUMENT.outerHtml())
-                        .withPath(PATH_DOCUMENT_HTML))
-                .respond(response().withBody(DOCUMENT_HTML_HAS_BEEN_SUCCESSFULLY_POSTED));
+        stubFor(post(urlPathEqualTo(PATH_DOCUMENT_HTML))
+                .withHeader("Content-Type", equalTo("application/xhtml+xml"))
+                .withRequestBody(equalTo(JSOUP_DOCUMENT.outerHtml()))
+                .willReturn(aResponse().withBody(DOCUMENT_HTML_HAS_BEEN_SUCCESSFULLY_POSTED)));
 
-        clientAndServer.when(
-                request()
-                        .withMethod("POST")
-                        .withHeader("Content-Type", "application/x-www-form-urlencoded")
-                        .withBody(REQUEST_BODY_URL_UNLOADED)
-                        .withPath(PATH_URL_UNLOADED))
-                .respond(response().withBody(FORM_HAS_BEEN_SUCCESSFULLY_POSTED));
+        stubFor(post(urlPathEqualTo(PATH_URL_UNLOADED))
+                .withHeader("Content-Type", equalTo("application/x-www-form-urlencoded"))
+                .withRequestBody(equalTo(REQUEST_BODY_URL_UNLOADED))
+                .willReturn(aResponse().withBody(FORM_HAS_BEEN_SUCCESSFULLY_POSTED)));
 
-        clientAndServer.when(
-                request()
-                        .withMethod("POST")
-                        .withHeader("Content-Type", "application/x-www-form-urlencoded")
-                        .withBody(REQUEST_BODY_URL_UNLOADED2)
-                        .withPath(PATH_URL_UNLOADED))
-                .respond(response().withBody(FORM_HAS_BEEN_SUCCESSFULLY_POSTED));
+        stubFor(post(urlPathEqualTo(PATH_URL_UNLOADED))
+                .withHeader("Content-Type", equalTo("application/x-www-form-urlencoded"))
+                .withRequestBody(equalTo(REQUEST_BODY_URL_UNLOADED2))
+                .willReturn(aResponse().withBody(FORM_HAS_BEEN_SUCCESSFULLY_POSTED)));
+
+        stubFor(post(urlPathEqualTo(PATH_MULTI_PART))
+                .withHeader("Content-Type", containing("multipart/form-data"))
+                .withMultipartRequestBody(aMultipart()
+                        .withName("testFile")
+                        .withHeader("Content-Disposition", containing("filename=\"test_file.txt\""))
+                        .withHeader("Content-Type", containing("application/octet-stream"))
+                        .withBody(binaryEqualTo(readAllBytes(TEST_FILE.toPath())))).
+
+                        withMultipartRequestBody(aMultipart()
+                                .withName("testFile2")
+                                .withHeader("Content-Disposition", containing("filename=\"" + TEST_FILE.getName() + "\""))
+                                .withHeader("Content-Type", equalTo("text/plain"))
+                                .withBody(binaryEqualTo(readAllBytes(TEST_FILE.toPath())))).
+
+                        withMultipartRequestBody(aMultipart()
+                                .withName("testBytes")
+                                .withHeader("Content-Type", containing("application/octet-stream"))
+                                .withHeader("Content-Transfer-Encoding", equalTo(BINARY.toString()))
+                                .withBody(binaryEqualTo(new byte[]{1, 2, 3}))).
+
+                        withMultipartRequestBody(aMultipart()
+                                .withName("testJson")
+                                .withHeader("Content-Type", containing("application/json"))
+                                .withBody(containing(BODY_JSON_OBJECT.serialize())))
+                .willReturn(aResponse().withBody(MULTIPART_SUCCESSFULLY_POSTED)));
     }
 
     @DataProvider
-    public static Object[][] data() {
+    public static Object[][] data() throws Exception {
 
         return new Object[][]{
                 {POST(REQUEST_URI + PATH_TO_GSON, BODY_JSON_OBJECT)
@@ -166,7 +203,7 @@ public class CustomRequestBodyTest extends BaseHttpTest {
                         DOCUMENT_XML_HAS_BEEN_SUCCESSFULLY_POSTED},
 
                 {POST(REQUEST_URI + PATH_DOCUMENT_HTML, JSOUP_DOCUMENT)
-                        .header("Content-Type", "multipart/form-data"),
+                        .header("Content-Type", "application/xhtml+xml"),
                         DOCUMENT_HTML_HAS_BEEN_SUCCESSFULLY_POSTED},
 
                 {POST(REQUEST_URI + PATH_URL_UNLOADED, FORM_PARAMS)
@@ -176,6 +213,16 @@ public class CustomRequestBodyTest extends BaseHttpTest {
                 {POST(REQUEST_URI + PATH_URL_UNLOADED, FORM_PARAMS2)
                         .header("Content-Type", "application/x-www-form-urlencoded"),
                         FORM_HAS_BEEN_SUCCESSFULLY_POSTED},
+
+                {POST(REQUEST_URI + PATH_MULTI_PART,
+                        bodyPart(TEST_FILE, "testFile", "test_file.txt", false),
+                        bodyPart(TEST_FILE, "testFile2", true, true),
+                        bodyPart(new byte[]{1, 2, 3}, "testBytes").setContentTransferEncoding(BINARY),
+                        bodyPart(new FileInputStream(TEST_FILE), "testFile2", TEST_FILE.getName()).setContentType("text/plain"),
+                        bodyPart(BODY_JSON_OBJECT, "testJson").setContentType("application/json"))
+                        .header("Content-Type", "multipart/form-data"),
+                        MULTIPART_SUCCESSFULLY_POSTED}
+
         };
     }
 

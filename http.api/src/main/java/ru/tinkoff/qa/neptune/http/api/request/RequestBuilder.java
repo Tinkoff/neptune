@@ -2310,7 +2310,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
                     && valueList.size() > 0
                     && (body != null && body instanceof MultiPartBody)) {
                 var val = valueList.get(0);
-                valueList.set(0, val + ";boundary=------------" + ((MultiPartBody) body).getBoundary());
+                valueList.set(0, val + ";boundary=" + ((MultiPartBody) body).getBoundary());
             }
 
             valueList.forEach(s1 -> newBuilder.header(s, s1));

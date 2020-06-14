@@ -5,7 +5,9 @@ import ru.tinkoff.qa.neptune.http.api.request.body.FileBody;
 
 import java.io.File;
 
-public final class FileRequestBodyCaptor extends FileCaptor<FileBody> implements BaseRequestBodyCaptor<FileBody> {
+import static java.util.List.of;
+
+public final class FileRequestBodyCaptor extends FileCaptor<FileBody> implements BaseRequestBodyCaptor {
 
     public FileRequestBodyCaptor() {
         super("Request body. File");
@@ -18,6 +20,6 @@ public final class FileRequestBodyCaptor extends FileCaptor<FileBody> implements
 
     @Override
     public FileBody getCaptured(Object toBeCaptured) {
-        return getCaptured(toBeCaptured, FileBody.class);
+        return (FileBody) getCaptured(toBeCaptured, of(FileBody.class));
     }
 }

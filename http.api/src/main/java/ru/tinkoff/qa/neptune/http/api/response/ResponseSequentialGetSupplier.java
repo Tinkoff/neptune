@@ -148,7 +148,8 @@ public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSup
                             && !cls.equals(SerializedBody.class)
                             && !cls.equals(StringBody.class)
                             && !cls.equals(URLEncodedForm.class)
-                            && !cls.equals(W3CDocumentBody.class)) {
+                            && !cls.equals(W3CDocumentBody.class)
+                            && !cls.equals(MultiPartBody.class)) {
                         params.put("Request body", b.toString());
                         return;
                     }

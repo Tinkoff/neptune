@@ -518,7 +518,7 @@ public abstract class BodyPart {
         }
 
         if (isNotBlank(contentTransferEncoding)) {
-            contentInfo = contentInfo + "content-transfer-encoding: " + contentTransferEncoding + "\r\n";
+            contentInfo = contentInfo + "Content-Transfer-Encoding: " + contentTransferEncoding + "\r\n";
         }
 
         return contentInfo;

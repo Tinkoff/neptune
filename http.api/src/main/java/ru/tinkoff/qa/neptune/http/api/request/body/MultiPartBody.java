@@ -30,19 +30,19 @@ public final class MultiPartBody extends RequestBody<BodyPart[]> {
     public HttpRequest.BodyPublisher createPublisher() {
         var byteArrays = new ArrayList<byte[]>();
         stream(body()).forEach(bodyPart -> {
-            byteArrays.addAll(bodyPart.content("------------" + boundary));
+            byteArrays.addAll(bodyPart.content("--" + boundary));
         });
-        byteArrays.add(("------------" + boundary + "--").getBytes(UTF_8));
+        byteArrays.add(("--" + boundary + "--").getBytes(UTF_8));
         return ofByteArrays(byteArrays);
     }
 
     @Override
     public String toString() {
         var builder = new StringBuilder();
-        stream(body()).forEach(bodyPart -> builder.append("------------")
+        stream(body()).forEach(bodyPart -> builder.append("--")
                 .append(boundary).append("\r\n")
                 .append(bodyPart.toString()));
-        return builder.append("------------")
+        return builder.append("--")
                 .append(boundary)
                 .append("--")
                 .toString();

@@ -3,12 +3,13 @@ package ru.tinkoff.qa.neptune.http.api.captors.request;
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.StringCaptor;
 import ru.tinkoff.qa.neptune.http.api.request.body.StringBody;
 
+import static java.util.List.of;
 import static java.util.Optional.ofNullable;
 
-public final class StringRequestBodyCaptor extends StringCaptor<StringBody> implements BaseRequestBodyCaptor<StringBody> {
+public final class StringRequestBodyCaptor extends StringCaptor<StringBody> implements BaseRequestBodyCaptor {
 
     public StringRequestBodyCaptor() {
-        super("Request body. String value");
+        super("Request string body");
     }
 
     @Override
@@ -18,7 +19,7 @@ public final class StringRequestBodyCaptor extends StringCaptor<StringBody> impl
 
     @Override
     public StringBody getCaptured(Object toBeCaptured) {
-        var stringBody = getCaptured(toBeCaptured, StringBody.class);
+        var stringBody = (StringBody) getCaptured(toBeCaptured, of(StringBody.class));
 
         return ofNullable(stringBody)
                 .map(b -> {
