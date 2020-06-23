@@ -1,9 +1,15 @@
 package ru.tinkoff.qa.neptune.http.api.request.body.multipart;
 
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.body.multipart.MultiPartBody;
+
 /**
  * Types of content transfer encodings
  */
 public enum ContentTransferEncoding {
+    /**
+     * Is used as the default value of {@link MultiPartBody#contentTransferEncoding()}
+     */
+    NOT_DEFINED(""),
     /**
      * is for {@code 7bit}
      */

@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 import static java.lang.System.lineSeparator;
+import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 
 public final class ResponseCaptor extends StringCaptor<HttpResponse<?>> {
@@ -110,7 +111,7 @@ public final class ResponseCaptor extends StringCaptor<HttpResponse<?>> {
             }
 
             var certs = sslSession.getLocalCertificates();
-            if (certs.length > 0) {
+            if (nonNull(certs) && certs.length > 0) {
                 logSSL(Arrays.toString(certs), "SSL local certificates", stringBuilder);
             }
 
