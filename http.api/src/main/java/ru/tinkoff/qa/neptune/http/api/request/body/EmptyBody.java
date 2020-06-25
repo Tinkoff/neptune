@@ -4,7 +4,7 @@ import java.net.http.HttpRequest;
 
 import static java.net.http.HttpRequest.BodyPublishers.noBody;
 
-final class EmptyBody extends RequestBody<Void> {
+public final class EmptyBody extends RequestBody<Void> {
 
     EmptyBody() {
         super(null);

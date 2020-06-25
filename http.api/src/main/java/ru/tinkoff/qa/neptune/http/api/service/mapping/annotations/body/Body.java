@@ -19,4 +19,12 @@ public @interface Body {
      * @return format of http request body.
      */
     BodyDataFormat format() default NONE;
+
+    /**
+     * Is used for cases when body object is json or xml
+     *
+     * @return array of mixin classes
+     * @see com.fasterxml.jackson.databind.ObjectMapper#addMixIn(Class, Class)
+     */
+    Class[] mixIns() default {};
 }

@@ -7,14 +7,16 @@ import static java.net.http.HttpRequest.BodyPublishers.ofByteArray;
 import static java.util.Arrays.copyOfRange;
 import static java.util.Objects.checkFromIndexSize;
 
-final class ByteArrayBody extends RequestBody<byte[]> {
+public final class ByteArrayBody extends RequestBody<byte[]> {
 
     private final Integer length;
     private final Integer offset;
 
     private ByteArrayBody(byte[] body, Integer length, Integer offset) {
         super(body);
-        checkFromIndexSize(offset, length, body.length);
+        if (length != null && offset != null) {
+            checkFromIndexSize(offset, length, body.length);
+        }
         this.length = length;
         this.offset = offset;
     }

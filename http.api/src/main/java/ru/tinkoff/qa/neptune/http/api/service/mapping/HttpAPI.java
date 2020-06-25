@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.http.api.service.mapping;
 
+import ru.tinkoff.qa.neptune.core.api.properties.url.URLValuePropertySupplier;
 import ru.tinkoff.qa.neptune.http.api.properties.DefaultEndPointOfTargetAPIProperty;
 import ru.tinkoff.qa.neptune.http.api.request.RequestTuner;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.Header;
@@ -69,7 +70,7 @@ import static ru.tinkoff.qa.neptune.http.api.properties.DefaultEndPointOfTargetA
  *
  * @param <T> is a type of interface that extends {@link HttpAPI}
  */
-public interface HttpAPI<T extends HttpAPI> {
+public interface HttpAPI<T extends HttpAPI<T>> {
 
     /**
      * Creates an instance of an interface that extends {@link HttpAPI}.
@@ -116,6 +117,20 @@ public interface HttpAPI<T extends HttpAPI> {
     }
 
     /**
+     * Creates an instance of an interface that extends {@link HttpAPI}. It uses a value
+     * that is defined by some property as root URI. This value should consist of protocol/scheme,
+     * host/ip and port only.
+     *
+     * @param toCreate    is an interface to instantiate
+     * @param urlProperty is an instance that reads a property and get an {@link URL}
+     * @param <T>         is a type of resulted instance
+     * @return is an instance of an interface that extends {@link HttpAPI}
+     */
+    static <T extends HttpAPI<T>> T createAPI(Class<T> toCreate, URLValuePropertySupplier urlProperty) {
+        return createAPI(toCreate, urlProperty.get());
+    }
+
+    /**
      * Creates an instance of an interface that extends {@link HttpAPI}. It uses a value defined by
      * {@link DefaultEndPointOfTargetAPIProperty#DEFAULT_END_POINT_OF_TARGET_API_PROPERTY} as root URI.
      *
@@ -124,7 +139,7 @@ public interface HttpAPI<T extends HttpAPI> {
      * @return is an instance of an interface that extends {@link HttpAPI}
      */
     static <T extends HttpAPI<T>> T createAPI(Class<T> toCreate) {
-        return createAPI(toCreate, DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.get());
+        return createAPI(toCreate, DEFAULT_END_POINT_OF_TARGET_API_PROPERTY);
     }
 
     /**

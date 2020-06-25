@@ -31,6 +31,14 @@ public @interface MultiPartBody {
     BodyDataFormat format() default NONE;
 
     /**
+     * Is used for cases when body object is json or xml
+     *
+     * @return array of mixin classes
+     * @see com.fasterxml.jackson.databind.ObjectMapper#addMixIn(Class, Class)
+     */
+    Class[] mixIns() default {};
+
+    /**
      * @return value of {@code Content-Transfer-Encoding}
      */
     ContentTransferEncoding contentTransferEncoding() default NOT_DEFINED;

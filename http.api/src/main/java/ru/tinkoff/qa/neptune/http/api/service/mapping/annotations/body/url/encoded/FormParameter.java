@@ -16,5 +16,5 @@ public @interface FormParameter {
     /**
      * @return name of a form parameter
      */
-    String name();
+    String value();
 }

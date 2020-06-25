@@ -70,7 +70,8 @@ public final class BodyParameterAnnotationReader {
                 parameters,
                 (ps, params) -> ofNullable(params[0])
                         .map(o -> {
-                            var bodyValue = ps[0].getAnnotation(Body.class).format().format(o);
+                            var a = ps[0].getAnnotation(Body.class);
+                            var bodyValue = a.format().format(o, a.mixIns());
                             var cls = bodyValue.getClass();
 
                             if (String.class.isAssignableFrom(cls)) {
@@ -101,7 +102,7 @@ public final class BodyParameterAnnotationReader {
                                 return body((org.w3c.dom.Document) bodyValue);
                             }
 
-                            if (org.w3c.dom.Document.class.isAssignableFrom(cls)) {
+                            if (org.jsoup.nodes.Document.class.isAssignableFrom(cls)) {
                                 return body((org.jsoup.nodes.Document) bodyValue);
                             }
 
@@ -134,7 +135,7 @@ public final class BodyParameterAnnotationReader {
                     var form = new LinkedHashMap<String, String>();
                     for (int i = 0; i < ps.length; i++) {
                         var formParameter = ps[i].getAnnotation(FormParameter.class);
-                        ofNullable(params[i]).ifPresent(o -> form.put(formParameter.name(), valueOf(o)));
+                        ofNullable(params[i]).ifPresent(o -> form.put(formParameter.value(), valueOf(o)));
                     }
                     if (form.size() > 0) {
                         return body(form);
@@ -158,7 +159,7 @@ public final class BodyParameterAnnotationReader {
 
                         ofNullable(params[i])
                                 .ifPresent(o -> {
-                                    var bodyValue = part.format().format(o);
+                                    var bodyValue = part.format().format(o, part.mixIns());
                                     var cls = bodyValue.getClass();
 
                                     BodyPart bp;

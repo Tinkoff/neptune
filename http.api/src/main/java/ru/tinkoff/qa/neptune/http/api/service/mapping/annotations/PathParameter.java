@@ -69,8 +69,8 @@ public @interface PathParameter {
                         for (int i = 0; i < ps.length; i++) {
                             var pathVariable = ps[i].getAnnotation(PathParameter.class).value();
                             if (map.get(pathVariable) != null) {
-                                throw new UnsupportedOperationException("Path variable '%s' is defined more than once. " +
-                                        "This is not supported");
+                                throw new UnsupportedOperationException(format("Path variable '%s' is defined more than once. " +
+                                        "This is not supported", pathVariable));
                             }
                             map.put(pathVariable, encode(valueOf(params[i]), UTF_8));
                         }
@@ -81,13 +81,15 @@ public @interface PathParameter {
                             var s2 = e.getValue();
 
                             var pattern = "{" + s + "}";
-                            if (s.indexOf(result, result.indexOf(pattern) + pattern.length()) > -1) {
-                                throw new IllegalArgumentException(format("Path variable %s is defined more than once " +
-                                                "in %s of %s",
-                                        pattern,
-                                        URIPath.class.getName(),
-                                        toRead));
+                            if (!rawPath.contains(pattern)) {
+                                throw new IllegalArgumentException(format("Path variable '%s' is not defined by %s. " +
+                                                "Value that was defined by %s: %s",
+                                        s,
+                                        URIPath.class.getSimpleName(),
+                                        URIPath.class.getSimpleName(),
+                                        rawPath));
                             }
+
                             result = result.replace(pattern, s2);
                         }
 

@@ -8,7 +8,7 @@ import static java.net.http.HttpRequest.BodyPublishers.ofInputStream;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
-final class StreamSuppliedBody extends RequestBody<Supplier<InputStream>> {
+public final class StreamSuppliedBody extends RequestBody<Supplier<InputStream>> {
 
     StreamSuppliedBody(Supplier<InputStream> body) {
         super(ofNullable(body).orElseThrow());

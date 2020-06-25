@@ -3,13 +3,13 @@ package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Stream;
 
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.StreamSupport.stream;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.ParameterAnnotationTransformer.getFromMethod;
 
 /**
@@ -53,9 +53,75 @@ public @interface QueryParameter {
                             }
 
                             var paramName = ps[i].getAnnotation(QueryParameter.class).value();
-                            map.computeIfAbsent(paramName,
-                                    s -> new LinkedList<>())
-                                    .add(value);
+                            var list = map.computeIfAbsent(paramName,
+                                    s -> new LinkedList<>());
+
+                            var cls = value.getClass();
+                            if (Iterable.class.isAssignableFrom(cls)) {
+                                list.addAll(stream(((Iterable<?>) value).spliterator(), false).collect(toList()));
+                            } else if (cls.isArray()) {
+                                Stream<?> stream;
+                                Object[] result;
+                                if (cls.getComponentType().isPrimitive()) {
+                                    if (byte[].class.equals(cls)) {
+                                        var byteArray = (byte[]) value;
+                                        result = new Byte[byteArray.length];
+                                        for (var j = 0; j < byteArray.length; j++) {
+                                            result[j] = byteArray[j];
+                                        }
+                                    } else if (short[].class.equals(cls)) {
+                                        var shortArray = (short[]) value;
+                                        result = new Short[shortArray.length];
+                                        for (var j = 0; j < shortArray.length; j++) {
+                                            result[j] = shortArray[j];
+                                        }
+                                    } else if (int[].class.equals(cls)) {
+                                        var intArray = (int[]) value;
+                                        result = new Integer[intArray.length];
+                                        for (var j = 0; j < intArray.length; j++) {
+                                            result[j] = intArray[j];
+                                        }
+                                    } else if (long[].class.equals(cls)) {
+                                        var longArray = (long[]) value;
+                                        result = new Long[longArray.length];
+                                        for (var j = 0; j < longArray.length; j++) {
+                                            result[j] = longArray[j];
+                                        }
+                                    } else if (float[].class.equals(cls)) {
+                                        var floatArray = (float[]) value;
+                                        result = new Float[floatArray.length];
+                                        for (var j = 0; j < floatArray.length; j++) {
+                                            result[j] = floatArray[j];
+                                        }
+                                    } else if (double[].class.equals(cls)) {
+                                        var doubleArray = (double[]) value;
+                                        result = new Double[doubleArray.length];
+                                        for (var j = 0; j < doubleArray.length; j++) {
+                                            result[j] = doubleArray[j];
+                                        }
+                                    } else if (boolean[].class.equals(cls)) {
+                                        var booleanArray = (boolean[]) value;
+                                        result = new Boolean[booleanArray.length];
+                                        for (var j = 0; j < booleanArray.length; j++) {
+                                            result[j] = booleanArray[j];
+                                        }
+                                    } else {
+                                        var charArray = (char[]) value;
+                                        result = new Character[charArray.length];
+                                        for (var j = 0; j < charArray.length; j++) {
+                                            result[j] = charArray[j];
+                                        }
+                                    }
+
+                                    stream = Arrays.stream(result);
+                                } else {
+                                    stream = Arrays.stream((Object[]) value);
+                                }
+
+                                list.addAll(stream.collect(toList()));
+                            } else {
+                                list.add(value);
+                            }
                         }
 
                         if (map.size() > 0) {

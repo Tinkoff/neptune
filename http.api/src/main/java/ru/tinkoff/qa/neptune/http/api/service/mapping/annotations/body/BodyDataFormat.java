@@ -4,6 +4,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import ru.tinkoff.qa.neptune.http.api.mapper.DefaultBodyMappers;
 
+import java.util.Optional;
+
+import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 
 public enum BodyDataFormat {
@@ -12,7 +15,7 @@ public enum BodyDataFormat {
      */
     NONE {
         @Override
-        public Object format(Object object) {
+        public Object format(Object object, Class<?>... mixIns) {
             return object;
         }
     },
@@ -24,11 +27,16 @@ public enum BodyDataFormat {
      */
     XML {
         @Override
-        public String format(Object object) {
+        public String format(Object object, Class<?>... mixIns) {
             return ofNullable(object)
                     .map(o -> {
                         try {
-                            return DefaultBodyMappers.XML.getMapper().writeValueAsString(o);
+                            var copy = DefaultBodyMappers.XML
+                                    .getMapper()
+                                    .copy();
+
+                            stream(mixIns).forEach(aClass -> copy.addMixIn(object.getClass(), aClass));
+                            return copy.writeValueAsString(o);
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -44,11 +52,16 @@ public enum BodyDataFormat {
      */
     JSON {
         @Override
-        public String format(Object object) {
+        public String format(Object object, Class<?>... mixIns) {
             return ofNullable(object)
                     .map(o -> {
                         try {
-                            return DefaultBodyMappers.JSON.getMapper().writeValueAsString(o);
+                            var copy = DefaultBodyMappers.JSON
+                                    .getMapper()
+                                    .copy();
+
+                            stream(mixIns).forEach(aClass -> copy.addMixIn(object.getClass(), aClass));
+                            return copy.writeValueAsString(o);
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -64,12 +77,12 @@ public enum BodyDataFormat {
      */
     HTML {
         @Override
-        public Document format(Object object) {
-            return ofNullable(object).flatMap(o -> ofNullable(o)
+        public Document format(Object object, Class<?>... ignored) {
+            return ofNullable(object).flatMap(o -> Optional.of(o)
                     .map(o1 -> Jsoup.parse(String.valueOf(o))))
                     .orElse(null);
         }
     };
 
-    public abstract Object format(Object object);
+    public abstract Object format(Object object, Class<?>... mixIns);
 }

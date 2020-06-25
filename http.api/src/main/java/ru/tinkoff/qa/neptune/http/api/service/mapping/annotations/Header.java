@@ -57,7 +57,11 @@ public @interface Header {
                     .computeIfAbsent(header.name(), s -> new LinkedList<>())
                     .addAll(asList(header.headerValues())));
 
-            return map;
+            if (map.size() > 0) {
+                return map;
+            }
+
+            return null;
         }
     }
 }

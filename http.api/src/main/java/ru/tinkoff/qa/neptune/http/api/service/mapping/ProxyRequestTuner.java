@@ -5,6 +5,7 @@ import ru.tinkoff.qa.neptune.http.api.request.RequestTuner;
 
 import java.lang.reflect.Method;
 
+import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.Header.HeaderReader.readHeaders;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.QueryParameter.QueryParameterReader.readQueryParameters;
 
@@ -23,7 +24,7 @@ class ProxyRequestTuner implements RequestTuner {
         var headers = readHeaders(method);
         var queryParams = readQueryParameters(method, invocationParams);
 
-        headers.forEach((s, strings) -> requestSettings.header(s, strings.toArray(new String[]{})));
-        queryParams.forEach((s, objects) -> requestSettings.queryParam(s, objects.toArray()));
+        ofNullable(headers).ifPresent(m -> m.forEach((s, strings) -> requestSettings.header(s, strings.toArray(new String[]{}))));
+        ofNullable(queryParams).ifPresent(m -> m.forEach((s, objects) -> requestSettings.queryParam(s, objects.toArray())));
     }
 }

@@ -6,7 +6,7 @@ import java.net.http.HttpRequest;
 import static java.net.http.HttpRequest.BodyPublishers.ofInputStream;
 import static java.util.Optional.ofNullable;
 
-final class StreamBody extends RequestBody<InputStream> {
+public final class StreamBody extends RequestBody<InputStream> {
 
     StreamBody(InputStream body) {
         super(ofNullable(body).orElseThrow());

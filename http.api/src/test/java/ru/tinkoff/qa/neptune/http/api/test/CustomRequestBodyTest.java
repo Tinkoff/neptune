@@ -25,6 +25,7 @@ import static java.net.http.HttpResponse.BodyHandlers.ofString;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.readAllBytes;
 import static org.apache.commons.io.FileUtils.writeStringToFile;
+import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
@@ -115,7 +116,7 @@ public class CustomRequestBodyTest extends BaseHttpTest {
     }
 
     private static File getTestFile() {
-        var f = new File("test.txt");
+        var f = new File(randomAlphanumeric(15) + ".txt");
         try {
             if (!f.createNewFile()) {
                 throw new IllegalStateException("Test file is not created");
