@@ -121,6 +121,9 @@ public class RequestTest {
                 {methodMappingAPI.putSomething(), "PUT", true},
                 {methodMappingAPI.deleteSomething(), "DELETE", false},
                 {methodMappingAPI.patchSomething(), "PATCH", true},
+                {methodMappingAPI.headSomething(), "HEAD", true},
+                {methodMappingAPI.optionsSomething(), "OPTIONS", true},
+                {methodMappingAPI.traceSomething(), "TRACE", true},
         };
     }
 
@@ -462,6 +465,8 @@ public class RequestTest {
                         new Object[]{"ABC", 2, true},
                         TEST_FILE.toPath(),
                         new byte[]{1, 2, 3},
+                        TEST_FILE.toPath(),
+                        new byte[]{1, 2, 3},
                         TEST_FILE.toPath())
                 .build())
                 .body()
@@ -470,7 +475,7 @@ public class RequestTest {
         assertThat(body, instanceOf(BodyPart[].class));
 
         var parts = (BodyPart[]) body;
-        assertThat(parts, arrayWithSize(5));
+        assertThat(parts, arrayWithSize(7));
 
         assertThat(parts[0].toString(), is("Content-Disposition: form-data;name=\"test_file\"\r\n" +
                 "Content-Type: application/octet-stream\r\n" +
@@ -490,6 +495,14 @@ public class RequestTest {
 
         assertThat(parts[4].toString(), is("Content-Disposition: form-data;name=\"test_file3\"\r\n" +
                 "Content-Type: text/plain\r\n" +
+                "Content: File " + TEST_FILE.getAbsolutePath() + " of size " + TEST_FILE.length() + "(bytes)\r\n"));
+
+        assertThat(parts[5].toString(), is("Content-Disposition: form-data;name=\"test_binary2\";filename=\"tezzt_file\"\r\n" +
+                "Content-Type: application/octet-stream\r\n" +
+                "Content: Byte array of length 3\r\n"));
+
+        assertThat(parts[6].toString(), is("Content-Disposition: form-data;name=\"test_file4\";filename=\"tezzt_file\"\r\n" +
+                "Content-Type: application/octet-stream\r\n" +
                 "Content: File " + TEST_FILE.getAbsolutePath() + " of size " + TEST_FILE.length() + "(bytes)\r\n"));
     }
 }

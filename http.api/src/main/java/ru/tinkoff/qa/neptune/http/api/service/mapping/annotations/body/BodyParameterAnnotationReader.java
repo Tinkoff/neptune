@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -144,6 +145,18 @@ public final class BodyParameterAnnotationReader {
                 });
     }
 
+    private static void verifyFileDefinition(DefineFileName d, Parameter param, Method toRead) {
+        if (d.useGivenFileName() && isNotBlank(d.fileName())) {
+            throw new UnsupportedOperationException(format("Only one of 'useGivenFileName' or 'fileName' " +
+                            "(not both) should " +
+                            "be defined by '%s' for the parameter '%s' " +
+                            "of the method '%s'",
+                    DefineFileName.class.getSimpleName(),
+                    param.toString(),
+                    toRead));
+        }
+    }
+
     private static RequestBody<?> getMultipartBody(Method toRead, Object[] parameters) {
         return getFromMethod(toRead,
                 MultiPartBody.class,
@@ -152,9 +165,10 @@ public final class BodyParameterAnnotationReader {
                     var partList = new ArrayList<BodyPart>();
 
                     for (int i = 0; i < ps.length; i++) {
-                        var part = ps[i].getAnnotation(MultiPartBody.class);
-                        var defineFile = ps[i].getAnnotation(DefineFileName.class);
-                        var defineContent = ps[i].getAnnotation(DefineContentType.class);
+                        var param = ps[i];
+                        var part = param.getAnnotation(MultiPartBody.class);
+                        var defineFile = param.getAnnotation(DefineFileName.class);
+                        var defineContent = param.getAnnotation(DefineContentType.class);
 
 
                         ofNullable(params[i])
@@ -164,43 +178,93 @@ public final class BodyParameterAnnotationReader {
 
                                     BodyPart bp;
                                     if (String.class.isAssignableFrom(cls)) {
-                                        bp = defineFile != null
-                                                ? bodyPart((String) bodyValue, part.name(), randomAlphanumeric(20))
-                                                : bodyPart((String) bodyValue, part.name());
+                                        bp = ofNullable(defineFile)
+                                                .map(d -> {
+                                                    var f = d.fileName();
+                                                    if (isNotBlank(f)) {
+                                                        return bodyPart((String) bodyValue, part.name(), f);
+                                                    }
+                                                    return bodyPart((String) bodyValue, part.name(), randomAlphanumeric(20));
+                                                })
+                                                .orElseGet(() -> bodyPart((String) bodyValue, part.name()));
+
                                     } else if (byte[].class.isAssignableFrom(cls)) {
-                                        bp = defineFile != null
-                                                ? bodyPart((byte[]) bodyValue, part.name(), randomAlphanumeric(20))
-                                                : bodyPart((byte[]) bodyValue, part.name());
+                                        bp = ofNullable(defineFile)
+                                                .map(d -> {
+                                                    var f = d.fileName();
+                                                    if (isNotBlank(f)) {
+                                                        return bodyPart((byte[]) bodyValue, part.name(), f);
+                                                    }
+                                                    return bodyPart((byte[]) bodyValue, part.name(), randomAlphanumeric(20));
+                                                })
+                                                .orElseGet(() -> bodyPart((byte[]) bodyValue, part.name()));
+
                                     } else if (InputStream.class.isAssignableFrom(cls)) {
-                                        bp = defineFile != null
-                                                ? bodyPart((InputStream) bodyValue, part.name(), randomAlphanumeric(20))
-                                                : bodyPart((InputStream) bodyValue, part.name());
+                                        bp = ofNullable(defineFile)
+                                                .map(d -> {
+                                                    var f = d.fileName();
+                                                    if (isNotBlank(f)) {
+                                                        return bodyPart((InputStream) bodyValue, part.name(), f);
+                                                    }
+                                                    return bodyPart((InputStream) bodyValue, part.name(), randomAlphanumeric(20));
+                                                })
+                                                .orElseGet(() -> bodyPart((InputStream) bodyValue, part.name()));
+
                                     } else if (DTObject.class.isAssignableFrom(cls)) {
-                                        bp = defineFile != null
-                                                ? bodyPart((DTObject) bodyValue, part.name(), randomAlphanumeric(20))
-                                                : bodyPart((DTObject) bodyValue, part.name());
+                                        bp = ofNullable(defineFile)
+                                                .map(d -> {
+                                                    var f = d.fileName();
+                                                    if (isNotBlank(f)) {
+                                                        return bodyPart((DTObject) bodyValue, part.name(), f);
+                                                    }
+                                                    return bodyPart((DTObject) bodyValue, part.name(), randomAlphanumeric(20));
+                                                })
+                                                .orElseGet(() -> bodyPart((DTObject) bodyValue, part.name()));
+
                                     } else if (File.class.isAssignableFrom(cls)) {
                                         bp = ofNullable(defineFile)
                                                 .map(d -> {
+                                                    verifyFileDefinition(d, param, toRead);
+
                                                     if (d.useGivenFileName()) {
                                                         return bodyPart((File) bodyValue, part.name(), true, nonNull(defineContent));
                                                     }
+
+                                                    if (isNotBlank(d.fileName())) {
+                                                        return bodyPart((File) bodyValue, part.name(), d.fileName(), nonNull(defineContent));
+                                                    }
+
                                                     return bodyPart((File) bodyValue, part.name(), randomAlphanumeric(20), nonNull(defineContent));
                                                 })
                                                 .orElseGet(() -> bodyPart((File) bodyValue, part.name(), false, nonNull(defineContent)));
+
                                     } else if (Path.class.isAssignableFrom(cls)) {
                                         bp = ofNullable(defineFile)
                                                 .map(d -> {
+                                                    verifyFileDefinition(d, param, toRead);
+
                                                     if (d.useGivenFileName()) {
                                                         return bodyPart((Path) bodyValue, part.name(), true, nonNull(defineContent));
                                                     }
+
+                                                    if (isNotBlank(d.fileName())) {
+                                                        return bodyPart((Path) bodyValue, part.name(), d.fileName(), nonNull(defineContent));
+                                                    }
+
                                                     return bodyPart((Path) bodyValue, part.name(), randomAlphanumeric(20), nonNull(defineContent));
                                                 })
                                                 .orElseGet(() -> bodyPart((Path) bodyValue, part.name(), false, nonNull(defineContent)));
+
                                     } else {
-                                        bp = defineFile != null
-                                                ? bodyPart(bodyValue, part.name(), randomAlphanumeric(20))
-                                                : bodyPart(bodyValue, part.name());
+                                        bp = ofNullable(defineFile)
+                                                .map(d -> {
+                                                    var f = d.fileName();
+                                                    if (isNotBlank(f)) {
+                                                        return bodyPart(bodyValue, part.name(), f);
+                                                    }
+                                                    return bodyPart(bodyValue, part.name(), randomAlphanumeric(20));
+                                                })
+                                                .orElseGet(() -> bodyPart(bodyValue, part.name()));
                                     }
 
                                     if (nonNull(defineContent) && isNotBlank(defineContent.contentType())) {

@@ -8,6 +8,7 @@ import java.nio.file.Path;
 
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 /**
  * Marks a parameter of a {@link java.lang.reflect.Method}. It is used to define {@code filename}
@@ -21,6 +22,21 @@ public @interface DefineFileName {
     /**
      * @return to use name of a file as a {@code filename} or not. It has sense when
      * type of a {@link Parameter} is {@link File}/{@link Path}
+     * <p>
+     * WARNING!!!!
+     * It should not be used when type of an argument is {@link File} ar {@link Path} and
+     * {@link #fileName()} is not empty
+     * </p>
      */
     boolean useGivenFileName() default false;
+
+    /**
+     * @return canstant value of a filename of a part.
+     * <p>
+     * WARNING!!!!
+     * It should not be used when type of an argument is {@link File} ar {@link Path} and
+     * {@link #useGivenFileName()} is {@code 'true'}
+     * </p>
+     */
+    String fileName() default EMPTY;
 }

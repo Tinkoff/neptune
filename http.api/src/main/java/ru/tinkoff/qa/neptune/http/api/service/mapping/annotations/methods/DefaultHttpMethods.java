@@ -20,7 +20,7 @@ public enum DefaultHttpMethods {
         }
     },
     /**
-     * Is for GET-methods
+     * Is for GET-method
      */
     GET("GET") {
         @Override
@@ -31,7 +31,7 @@ public enum DefaultHttpMethods {
         }
     },
     /**
-     * Is for POST-methods
+     * Is for POST-method
      */
     POST("POST") {
         @Override
@@ -42,7 +42,7 @@ public enum DefaultHttpMethods {
         }
     },
     /**
-     * Is for PUT-methods
+     * Is for PUT-method
      */
     PUT("PUT") {
         @Override
@@ -53,7 +53,7 @@ public enum DefaultHttpMethods {
         }
     },
     /**
-     * Is for DELETE-methods
+     * Is for DELETE-method
      */
     DELETE("DELETE") {
         @Override
@@ -62,7 +62,27 @@ public enum DefaultHttpMethods {
                     .map(b -> METHOD(this.toString(), uri, b))
                     .orElseGet(() -> DELETE(uri));
         }
-    };
+    },
+
+    /**
+     * Is for OPTIONS-method
+     */
+    OPTIONS("OPTIONS"),
+
+    /**
+     * Is for HEAD-method
+     */
+    HEAD("HEAD"),
+
+    /**
+     * Is for PATCH-method
+     */
+    PATCH("PATCH"),
+
+    /**
+     * Is for TRACE-method
+     */
+    TRACE("TRACE");
 
     private final String name;
 
@@ -75,5 +95,9 @@ public enum DefaultHttpMethods {
         return name;
     }
 
-    abstract RequestBuilder prepareRequestBuilder(URI uri, RequestBody<?> body);
+    RequestBuilder prepareRequestBuilder(URI uri, RequestBody<?> body) {
+        return ofNullable(body)
+                .map(b -> METHOD(toString(), uri, b))
+                .orElseGet(() -> METHOD(toString(), uri));
+    }
 }

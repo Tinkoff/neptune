@@ -41,8 +41,17 @@ public interface MethodMappingAPI extends HttpAPI<MethodMappingAPI> {
     @HttpMethod(httpMethod = DELETE)
     RequestBuilder deleteSomething();
 
-    @HttpMethod(httpMethodStr = "PATCH")
+    @HttpMethod(httpMethod = PATCH)
     RequestBuilder patchSomething();
+
+    @HttpMethod(httpMethod = HEAD)
+    RequestBuilder headSomething();
+
+    @HttpMethod(httpMethod = OPTIONS)
+    RequestBuilder optionsSomething();
+
+    @HttpMethod(httpMethod = TRACE)
+    RequestBuilder traceSomething();
 
     @Header(name = "header1", headerValues = {"abc", "one more value"})
     @Header(name = "header2", headerValues = "one more value")
@@ -194,5 +203,12 @@ public interface MethodMappingAPI extends HttpAPI<MethodMappingAPI> {
                                  @DefineContentType byte[] binary,
 
                                  @MultiPartBody(name = "test_file3")
-                                 @DefineContentType Path path2);
+                                 @DefineContentType Path path2,
+
+                                 @MultiPartBody(name = "test_binary2")
+                                 @DefineFileName(fileName = "tezzt_file")
+                                 @DefineContentType byte[] binary2,
+
+                                 @MultiPartBody(name = "test_file4")
+                                 @DefineFileName(fileName = "tezzt_file") Path path3);
 }
