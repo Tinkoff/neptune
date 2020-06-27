@@ -53,6 +53,9 @@ public interface MethodMappingAPI extends HttpAPI<MethodMappingAPI> {
     @HttpMethod(httpMethod = TRACE)
     RequestBuilder traceSomething();
 
+    @HttpMethod(httpMethodStr = "CUSTOM_METHOD")
+    RequestBuilder customMethod();
+
     @Header(name = "header1", headerValues = {"abc", "one more value"})
     @Header(name = "header2", headerValues = "one more value")
     @Header(name = "header3", headerValues = "one more value again")

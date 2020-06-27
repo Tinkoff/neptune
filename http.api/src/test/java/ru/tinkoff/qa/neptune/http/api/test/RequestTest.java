@@ -124,6 +124,7 @@ public class RequestTest {
                 {methodMappingAPI.headSomething(), "HEAD", true},
                 {methodMappingAPI.optionsSomething(), "OPTIONS", true},
                 {methodMappingAPI.traceSomething(), "TRACE", true},
+                {methodMappingAPI.customMethod(), "CUSTOM_METHOD", true},
         };
     }
 
