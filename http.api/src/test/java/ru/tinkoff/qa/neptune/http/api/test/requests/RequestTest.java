@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.http.api.test;
+package ru.tinkoff.qa.neptune.http.api.test.requests;
 
 import org.hamcrest.Matcher;
 import org.jsoup.Jsoup;
@@ -12,9 +12,9 @@ import ru.tinkoff.qa.neptune.http.api.request.NeptuneHttpRequestImpl;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 import ru.tinkoff.qa.neptune.http.api.request.body.*;
 import ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart;
-import ru.tinkoff.qa.neptune.http.api.test.mapping.MethodMappingAPI;
 import ru.tinkoff.qa.neptune.http.api.test.request.body.JsonBodyObject;
 import ru.tinkoff.qa.neptune.http.api.test.request.body.XmlBodyObject;
+import ru.tinkoff.qa.neptune.http.api.test.requests.mapping.SomeMappedAPI;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -23,16 +23,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.URI;
-import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static java.lang.System.getProperties;
-import static java.net.http.HttpClient.Version.HTTP_2;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.time.Duration.ofSeconds;
 import static java.util.List.of;
-import static java.util.Optional.ofNullable;
 import static org.apache.commons.io.FileUtils.writeStringToFile;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -45,9 +41,9 @@ import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasPortMat
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasQueryMatcher.uriHasQuery;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasSchemeMatcher.uriHasScheme;
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultEndPointOfTargetAPIProperty.DEFAULT_END_POINT_OF_TARGET_API_PROPERTY;
-import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.*;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI.createAPI;
 
+@Deprecated
 public class RequestTest {
 
     private final static URI TEST_URI = URI.create("http://127.0.0.1:8089");
@@ -114,102 +110,60 @@ public class RequestTest {
         }
     }
 
-    private static Object[][] prepareDataForMethodMapping(MethodMappingAPI methodMappingAPI) {
+    private static Object[][] prepareDataForPathMapping(SomeMappedAPI someMappedAPI) {
         return new Object[][]{
-                {methodMappingAPI.postSomething(), "POST", true},
-                {methodMappingAPI.getSomething(), "GET", false},
-                {methodMappingAPI.putSomething(), "PUT", true},
-                {methodMappingAPI.deleteSomething(), "DELETE", false},
-                {methodMappingAPI.patchSomething(), "PATCH", true},
-                {methodMappingAPI.headSomething(), "HEAD", true},
-                {methodMappingAPI.optionsSomething(), "OPTIONS", true},
-                {methodMappingAPI.traceSomething(), "TRACE", true},
-                {methodMappingAPI.customMethod(), "CUSTOM_METHOD", true},
-        };
-    }
-
-    private static Object[][] prepareDataForPathMapping(MethodMappingAPI methodMappingAPI) {
-        return new Object[][]{
-                {methodMappingAPI.getSomethingWithConstantPath(),
+                {someMappedAPI.getSomethingWithConstantPath(),
                         uriHasPath("/path/to/target/end/point"),
                         "/path/to/target/end/point"},
-                {methodMappingAPI.getSomethingWithVariablePath("Start path", 1.5F, "Кириллический текст"),
+                {someMappedAPI.getSomethingWithVariablePath("Start path", 1.5F, "Кириллический текст"),
                         uriHasPath("/Start+path/1.5/and/then/Кириллический+текст/end/point"),
                         "/Start+path/1.5/and/then/%D0%9A%D0%B8%D1%80%D0%B8%D0%BB%D0%BB%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9+%D1%82%D0%B5%D0%BA%D1%81%D1%82/end/point"},
-                {methodMappingAPI.getSomethingWithVariablePath("Start", "Next"),
+                {someMappedAPI.getSomethingWithVariablePath("Start", "Next"),
                         uriHasPath("/Start/Next/and/then/Next/end/point"),
                         "/Start/Next/and/then/Next/end/point"},
         };
     }
 
-    private static Object[][] prepareDataForQueryMapping(MethodMappingAPI methodMappingAPI) {
+    private static Object[][] prepareDataForQueryMapping(SomeMappedAPI someMappedAPI) {
         return new Object[][]{
-                {methodMappingAPI.getSomethingWithQuery("val1", 3, "Hello world", true),
+                {someMappedAPI.getSomethingWithQuery("val1", 3, "Hello world", true),
                         equalTo("/"),
                         equalTo("param1=val1&param1=3&param1=Hello+world&param2=true")},
 
-                {methodMappingAPI.getSomethingWithQueryAndPath("val1", 3, "Hello world", true),
+                {someMappedAPI.getSomethingWithQueryAndPath("val1", 3, "Hello world", true),
                         equalTo("/path/to/target/end/point"),
                         equalTo("param1=val1&param1=3&param1=Hello+world&param2=true")},
 
 
-                {methodMappingAPI.getSomethingWithQuery(of("val1", 3, "Hello world"), true),
+                {someMappedAPI.getSomethingWithQuery(of("val1", 3, "Hello world"), true),
                         equalTo("/"),
                         equalTo("param1=val1&param1=3&param1=Hello+world&param2=true")},
 
-                {methodMappingAPI.getSomethingWithQueryAndPath(of("val1", 3, "Hello world"), true),
+                {someMappedAPI.getSomethingWithQueryAndPath(of("val1", 3, "Hello world"), true),
                         equalTo("/path/to/target/end/point"),
                         equalTo("param1=val1&param1=3&param1=Hello+world&param2=true")},
 
-                {methodMappingAPI.getSomethingWithQuery(new Object[]{"val1", 3, "Hello world"}, true),
+                {someMappedAPI.getSomethingWithQuery(new Object[]{"val1", 3, "Hello world"}, true),
                         equalTo("/"),
                         equalTo("param1=val1&param1=3&param1=Hello+world&param2=true")},
 
-                {methodMappingAPI.getSomethingWithQueryAndPath(new Object[]{"val1", 3, "Hello world"}, true),
+                {someMappedAPI.getSomethingWithQueryAndPath(new Object[]{"val1", 3, "Hello world"}, true),
                         equalTo("/path/to/target/end/point"),
                         equalTo("param1=val1&param1=3&param1=Hello+world&param2=true")},
 
-                {methodMappingAPI.getSomethingWithQuery(new int[]{1, 2, 3}, true),
+                {someMappedAPI.getSomethingWithQuery(new int[]{1, 2, 3}, true),
                         equalTo("/"),
                         equalTo("param1=1&param1=2&param1=3&param2=true")},
 
-                {methodMappingAPI.getSomethingWithQueryAndPath(new int[]{1, 2, 3}, true),
+                {someMappedAPI.getSomethingWithQueryAndPath(new int[]{1, 2, 3}, true),
                         equalTo("/path/to/target/end/point"),
                         equalTo("param1=1&param1=2&param1=3&param2=true")},
         };
-    }
-
-    @DataProvider
-    public static Object[][] data() {
-        return new Object[][]{
-                {POST("https://www.google.com/"), "POST", nullValue()},
-                {POST("https://www.google.com/", "Some body"), "POST", equalTo("Some body")},
-                {GET("https://www.google.com/"), "GET", nullValue()},
-                {DELETE("https://www.google.com/"), "DELETE", nullValue()},
-                {PUT("https://www.google.com/"), "PUT", nullValue()},
-                {PUT("https://www.google.com/", "Some body"), "PUT", equalTo("Some body")},
-                {METHOD("CUSTOM_METHOD", "https://www.google.com/", "Some body"), "CUSTOM_METHOD", equalTo("Some body")},
-        };
-    }
-
-    @DataProvider
-    public static Object[][] data2() {
-        return prepareDataForMethodMapping(createAPI(MethodMappingAPI.class, TEST_URI));
-    }
-
-    @DataProvider
-    public static Object[][] data3() {
-        try {
-            DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.accept("http://127.0.0.1:8089");
-            return prepareDataForMethodMapping(createAPI(MethodMappingAPI.class));
-        } finally {
-            getProperties().remove(DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.getPropertyName());
-        }
     }
 
     @DataProvider
     public static Object[][] data9() throws Exception {
-        var methodMappingAPI = createAPI(MethodMappingAPI.class, TEST_URI);
+        var methodMappingAPI = createAPI(SomeMappedAPI.class, TEST_URI);
         return new Object[][]{
                 {methodMappingAPI.postSomeBody("ABC"), StringBody.class},
                 {methodMappingAPI.postSomeBody(null), EmptyBody.class},
@@ -235,7 +189,7 @@ public class RequestTest {
 
     @DataProvider
     public static Object[][] data10() throws Exception {
-        var methodMappingAPI = createAPI(MethodMappingAPI.class, TEST_URI);
+        var methodMappingAPI = createAPI(SomeMappedAPI.class, TEST_URI);
         return new Object[][]{
                 {methodMappingAPI.postListJson(of("val1", 3, "Hello world")), StringBody.class, "[\"val1\",3,\"Hello world\"]"},
                 {methodMappingAPI.postXmlMap(FORM_PARAMS), StringBody.class, "<TestObject><param1>value1</param1><param2>value2</param2></TestObject>"},
@@ -246,14 +200,14 @@ public class RequestTest {
 
     @DataProvider
     public Object[][] data4() {
-        return prepareDataForPathMapping(createAPI(MethodMappingAPI.class, TEST_URI));
+        return prepareDataForPathMapping(createAPI(SomeMappedAPI.class, TEST_URI));
     }
 
     @DataProvider
     public Object[][] data5() {
         try {
             DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.accept("http://127.0.0.1:8089");
-            return prepareDataForPathMapping(createAPI(MethodMappingAPI.class));
+            return prepareDataForPathMapping(createAPI(SomeMappedAPI.class));
         } finally {
             getProperties().remove(DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.getPropertyName());
         }
@@ -261,14 +215,14 @@ public class RequestTest {
 
     @DataProvider
     public Object[][] data6() {
-        return prepareDataForQueryMapping(createAPI(MethodMappingAPI.class, TEST_URI));
+        return prepareDataForQueryMapping(createAPI(SomeMappedAPI.class, TEST_URI));
     }
 
     @DataProvider
     public Object[][] data7() {
         try {
             DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.accept("http://127.0.0.1:8089");
-            return prepareDataForQueryMapping(createAPI(MethodMappingAPI.class));
+            return prepareDataForQueryMapping(createAPI(SomeMappedAPI.class));
         } finally {
             getProperties().remove(DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.getPropertyName());
         }
@@ -276,7 +230,7 @@ public class RequestTest {
 
     @DataProvider
     public Object[][] data8() {
-        var methodMappingAPI = createAPI(MethodMappingAPI.class, TEST_URI);
+        var methodMappingAPI = createAPI(SomeMappedAPI.class, TEST_URI);
         return new Object[][]{
                 {methodMappingAPI.postSomeBody("ABC"), "POST"},
                 {methodMappingAPI.getSomeBody("ABC"), "GET"},
@@ -284,101 +238,6 @@ public class RequestTest {
                 {methodMappingAPI.deleteBody("ABC"), "DELETE"},
                 {methodMappingAPI.patchSomeBody("ABC"), "PATCH"},
         };
-    }
-
-
-    @Test(dataProvider = "data")
-    public void test1(RequestBuilder builder, String method, Matcher<Object> matcher) {
-        var request = builder
-                .header("header1", "abc")
-                .header("header1", "one more value")
-                .queryParam("param", "val1", 3, "Hello world")
-                .timeout(ofSeconds(2))
-                .version(HTTP_2)
-                .expectContinue(true)
-                .header("header2", "one more value")
-                .header("header3", "one more value again")
-                .build();
-
-        assertThat(request, instanceOf(NeptuneHttpRequestImpl.class));
-        assertThat(request.uri(), is(URI.create("https://www.google.com/?param=val1&param=3&param=Hello+world")));
-        assertThat(request.version().orElse(null), is(HTTP_2));
-        assertThat(request.timeout().orElse(null), is(ofSeconds(2)));
-        assertThat(request.expectContinue(), is(true));
-        assertThat(request.headers().map(), allOf(hasEntry("header1", of("abc", "one more value")),
-                hasEntry("header2", of("one more value")),
-                hasEntry("header3", of("one more value again"))));
-        assertThat(request.method(), is(method));
-
-        var body = ofNullable(((NeptuneHttpRequestImpl) request).body())
-                .map(RequestBody::body)
-                .orElse(null);
-        assertThat(body, matcher);
-    }
-
-    @Test
-    public void test2() throws Exception {
-        var request = METHOD("Some_method", new URL("https://www.google.com/"))
-                .tuneWith(new RequestTuner1(), new RequestTuner2())
-                .build();
-
-        assertThat(request, instanceOf(NeptuneHttpRequestImpl.class));
-        assertThat(request.uri(), is(URI.create("https://www.google.com/?param=val1&param=3&param=Hello+world")));
-        assertThat(request.version().orElse(null), is(HTTP_2));
-        assertThat(request.timeout().orElse(null), is(ofSeconds(2)));
-        assertThat(request.expectContinue(), is(true));
-        assertThat(request.headers().map(), allOf(hasEntry("header1", of("abc", "one more value")),
-                hasEntry("header2", of("one more value")),
-                hasEntry("header3", of("one more value again"))));
-        assertThat(request.method(), is("Some_method"));
-    }
-
-    @Test
-    public void test3() {
-        var request = PUT("https://www.google.com/")
-                .tuneWith(RequestTuner1.class, RequestTuner1.class, RequestTuner2.class)
-                .build();
-
-        assertThat(request, instanceOf(NeptuneHttpRequestImpl.class));
-        assertThat(request.uri(), is(URI.create("https://www.google.com/?param=val1&param=3&param=Hello+world")));
-        assertThat(request.version().orElse(null), is(HTTP_2));
-        assertThat(request.timeout().orElse(null), is(ofSeconds(2)));
-        assertThat(request.expectContinue(), is(true));
-        assertThat(request.headers().map(), allOf(hasEntry("header1", of("abc", "one more value")),
-                hasEntry("header2", of("one more value")),
-                hasEntry("header3", of("one more value again"))));
-        assertThat(request.method(), is("PUT"));
-    }
-
-    @Test(dataProvider = "data2")
-    public void test4(RequestBuilder builder, String method, boolean isBodyPresent) {
-        var r = builder.build();
-        assertThat(r.method(), is(method));
-        assertThat(r.uri(), is(URI.create("http://127.0.0.1:8089")));
-
-        var r2 = (NeptuneHttpRequestImpl) r;
-        var body = r2.body();
-        if (isBodyPresent) {
-            assertThat(body, instanceOf(RequestBody.class));
-            assertThat(body.body(), nullValue());
-        } else {
-            assertThat(body, nullValue());
-        }
-    }
-
-    @Test(dataProvider = "data3")
-    public void test5(RequestBuilder builder, String method, boolean isBodyPresent) {
-        test4(builder, method, isBodyPresent);
-    }
-
-    @Test
-    public void test6() {
-        var methodMappingAPI = createAPI(MethodMappingAPI.class, TEST_URI);
-        var r = methodMappingAPI.postSomethingWithHeaders().build();
-
-        assertThat(r.headers().map(), allOf(hasEntry("header1", of("abc", "one more value")),
-                hasEntry("header2", of("one more value")),
-                hasEntry("header3", of("one more value again"))));
     }
 
     @Test(dataProvider = "data4")
@@ -400,7 +259,7 @@ public class RequestTest {
             expectedExceptionsMessageRegExp = ".*['Path variable 'third' is not defined by URIPath. " +
                     "Value that was defined by URIPath']")
     public void test9() {
-        var methodMappingAPI = createAPI(MethodMappingAPI.class, TEST_URI);
+        var methodMappingAPI = createAPI(SomeMappedAPI.class, TEST_URI);
         methodMappingAPI.getSomethingWithVariablePathFailed("StartPath",
                 1.5F,
                 "EndPath");
@@ -410,7 +269,7 @@ public class RequestTest {
     @Test(expectedExceptions = UnsupportedOperationException.class,
             expectedExceptionsMessageRegExp = ".*['Path variable 'next' is defined more than once. This is not supported']")
     public void test10() {
-        var methodMappingAPI = createAPI(MethodMappingAPI.class, TEST_URI);
+        var methodMappingAPI = createAPI(SomeMappedAPI.class, TEST_URI);
         methodMappingAPI.getSomethingWithVariablePathFailed("StartPath",
                 1.5F,
                 true);
@@ -461,7 +320,7 @@ public class RequestTest {
 
     @Test
     public void test16() {
-        var body = ((NeptuneHttpRequestImpl) createAPI(MethodMappingAPI.class, TEST_URI)
+        var body = ((NeptuneHttpRequestImpl) createAPI(SomeMappedAPI.class, TEST_URI)
                 .postMultipart(TEST_FILE,
                         new Object[]{"ABC", 2, true},
                         TEST_FILE.toPath(),

@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.http.api.test.mapping;
+package ru.tinkoff.qa.neptune.http.api.test.requests.mapping;
 
 import javax.xml.bind.annotation.XmlRootElement;
 

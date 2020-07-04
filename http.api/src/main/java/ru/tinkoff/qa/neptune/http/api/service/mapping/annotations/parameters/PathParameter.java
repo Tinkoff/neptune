@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations;
+package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters;
 
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.URIPath;
 
@@ -16,7 +16,7 @@ import static java.net.URLEncoder.encode;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.ParameterAnnotationTransformer.getFromMethod;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterAnnotationReader.getFromMethod;
 
 /**
  * Marks a parameter of a {@link java.lang.reflect.Method} those variable value

@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.body;
+package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

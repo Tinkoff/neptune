@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.http.api.request.body.multipart;
 
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.body.multipart.MultiPartBody;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.MultiPartBody;
 
 /**
  * Types of content transfer encodings

@@ -1,12 +1,12 @@
-package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.body;
+package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body;
 
 import ru.tinkoff.qa.neptune.http.api.dto.DTObject;
 import ru.tinkoff.qa.neptune.http.api.request.body.RequestBody;
 import ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.body.multipart.DefineContentType;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.body.multipart.DefineFileName;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.body.multipart.MultiPartBody;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.body.url.encoded.FormParameter;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.DefineContentType;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.DefineFileName;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.MultiPartBody;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.url.encoded.FormParameter;
 
 import java.io.File;
 import java.io.InputStream;
@@ -28,7 +28,7 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.http.api.request.body.RequestBodyFactory.body;
 import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart.bodyPart;
-import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.ParameterAnnotationTransformer.getFromMethod;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterAnnotationReader.getFromMethod;
 
 /**
  * Util class that reads parameters of a {@link java.lang.reflect.Method} and

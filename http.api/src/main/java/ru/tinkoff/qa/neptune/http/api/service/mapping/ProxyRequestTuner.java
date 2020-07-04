@@ -6,8 +6,9 @@ import ru.tinkoff.qa.neptune.http.api.request.RequestTuner;
 import java.lang.reflect.Method;
 
 import static java.util.Optional.ofNullable;
-import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.Header.HeaderReader.readHeaders;
-import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.QueryParameter.QueryParameterReader.readQueryParameters;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.Header.HeaderReader.readHeaders;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.HeaderParameter.HeaderParameterReader.readHeaderParameters;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.QueryParameter.QueryParameterReader.readQueryParameters;
 
 class ProxyRequestTuner implements RequestTuner {
 
@@ -23,8 +24,10 @@ class ProxyRequestTuner implements RequestTuner {
     public void setUp(RequestSettings<?> requestSettings) {
         var headers = readHeaders(method);
         var queryParams = readQueryParameters(method, invocationParams);
+        var headerParams = readHeaderParameters(method, invocationParams);
 
         ofNullable(headers).ifPresent(m -> m.forEach((s, strings) -> requestSettings.header(s, strings.toArray(new String[]{}))));
         ofNullable(queryParams).ifPresent(m -> m.forEach((s, objects) -> requestSettings.queryParam(s, objects.toArray())));
+        ofNullable(headerParams).ifPresent(m -> m.forEach((s, strings) -> requestSettings.header(s, strings.toArray(new String[]{}))));
     }
 }

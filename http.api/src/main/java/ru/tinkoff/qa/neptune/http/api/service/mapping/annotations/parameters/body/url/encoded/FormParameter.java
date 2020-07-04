@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.body.url.encoded;
+package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.url.encoded;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

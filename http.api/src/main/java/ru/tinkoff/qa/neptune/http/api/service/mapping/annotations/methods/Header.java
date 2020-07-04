@@ -1,6 +1,7 @@
-package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations;
+package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods;
 
 import ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.HeaderParameter;
 
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
@@ -17,8 +18,8 @@ import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 
 /**
- * Marks methods of {@link HttpAPI}. It defines http headers
- * of resulted http request.
+ * Marks methods of {@link HttpAPI}. It defines http constant headers (such as {@code 'Content-Type'})
+ * of resulted http request. {@link HeaderParameter} is recommended to use when value is variable.
  */
 @Retention(RUNTIME)
 @Repeatable(Headers.class)

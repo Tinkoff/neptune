@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.http.api.test.mapping;
+package ru.tinkoff.qa.neptune.http.api.test.requests.mapping;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 

@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations;
+package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

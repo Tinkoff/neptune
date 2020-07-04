@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.http.api.test;
+package ru.tinkoff.qa.neptune.http.api.test.requests;
 
 import ru.tinkoff.qa.neptune.http.api.request.RequestSettings;
 import ru.tinkoff.qa.neptune.http.api.request.RequestTuner;

@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations;
+package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -10,7 +10,7 @@ import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.StreamSupport.stream;
-import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.ParameterAnnotationTransformer.getFromMethod;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterAnnotationReader.getFromMethod;
 
 /**
  * Marks a parameter of a {@link java.lang.reflect.Method} those variable value
