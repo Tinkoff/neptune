@@ -5,22 +5,29 @@ import ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Arrays.stream;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.ArrayUtils.add;
+import static org.apache.commons.lang3.ArrayUtils.toObject;
 
 /**
  * Util that transforms annotations of parameters of a {@link java.lang.reflect.Method} into
  * required objects.
  */
-public final class ParameterAnnotationReader {
+public final class ParameterUtil {
 
-    private ParameterAnnotationReader() {
+    private ParameterUtil() {
         super();
     }
 
@@ -112,5 +119,113 @@ public final class ParameterAnnotationReader {
                     }
                 })
                 .orElse(null);
+    }
+
+    /**
+     * Transforms object to {@link Map}
+     *
+     * @param value object to be transformed to map
+     * @return a map when an object is {@link Map} or a class or subclass of the given
+     * object is annotated by {@link MethodParameter}. It returns {@code null} otherwise.
+     */
+    public static Map<?, ?> objectToMap(Object value) {
+        var cls = value.getClass();
+
+        if (Map.class.isAssignableFrom(cls)) {
+            return (Map<?, ?>) value;
+        }
+
+        if (isAMethodParameter(cls)) {
+            var result = new LinkedHashMap<String, Object>();
+            while (!cls.equals(Object.class)) {
+                var fs = cls.getDeclaredFields();
+                for (var f : fs) {
+                    f.setAccessible(true);
+                    try {
+                        var v = f.get(value);
+                        ofNullable(v).ifPresent(o -> {
+                            var clazz = o.getClass();
+                            Object val;
+                            if (clazz.isArray()) {
+                                val = toStream(o).collect(toList());
+                            } else {
+                                val = o;
+                            }
+                            result.put(f.getName(), val);
+                        });
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                cls = cls.getSuperclass();
+            }
+            return result;
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns an object transformed into {@link Stream}.
+     *
+     * @param value to be transformed into stream.
+     * @return a stream when the given value is array or iterable.
+     * It returns {@code null} otherwise.
+     */
+    public static Stream<?> toStream(Object value) {
+        var cls = value.getClass();
+        Stream<?> stream = null;
+
+        if (cls.isArray()) {
+            Object[] result;
+            if (cls.getComponentType().isPrimitive()) {
+                if (byte[].class.equals(cls)) {
+                    result = toObject((byte[]) value);
+                } else if (short[].class.equals(cls)) {
+                    result = toObject((short[]) value);
+                } else if (int[].class.equals(cls)) {
+                    result = toObject((int[]) value);
+                } else if (long[].class.equals(cls)) {
+                    result = toObject((long[]) value);
+                } else if (float[].class.equals(cls)) {
+                    result = toObject((float[]) value);
+                } else if (double[].class.equals(cls)) {
+                    result = toObject((double[]) value);
+                } else if (boolean[].class.equals(cls)) {
+                    result = toObject((boolean[]) value);
+                } else {
+                    result = toObject((char[]) value);
+                }
+
+                stream = stream(result);
+            } else {
+                stream = stream((Object[]) value);
+            }
+        } else if (Iterable.class.isAssignableFrom(cls)) {
+            stream = StreamSupport.stream(((Iterable<?>) value).spliterator(), false);
+        }
+
+        return ofNullable(stream)
+                .map(s -> s.filter(Objects::nonNull))
+                .orElse(null);
+    }
+
+    /**
+     * Checks is a class represents a parameter (header, query parameter or path variable)
+     * of http request or not.
+     *
+     * @param cls is a class to check
+     * @return is a class represents method parameter or not
+     */
+    private static boolean isAMethodParameter(Class<?> cls) {
+        var superCls = cls;
+        var isMethodParameter = superCls.getAnnotation(MethodParameter.class) != null;
+
+        while (!isMethodParameter && !superCls.equals(Object.class)) {
+            superCls = superCls.getSuperclass();
+            isMethodParameter = superCls.getAnnotation(MethodParameter.class) != null;
+        }
+
+        return isMethodParameter;
     }
 }

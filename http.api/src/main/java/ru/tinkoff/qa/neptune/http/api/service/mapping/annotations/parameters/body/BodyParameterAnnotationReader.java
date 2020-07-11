@@ -28,7 +28,7 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.http.api.request.body.RequestBodyFactory.body;
 import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart.bodyPart;
-import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterAnnotationReader.getFromMethod;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil.getFromMethod;
 
 /**
  * Util class that reads parameters of a {@link java.lang.reflect.Method} and

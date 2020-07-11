@@ -14,8 +14,8 @@ import static java.lang.String.format;
 import static java.lang.invoke.MethodHandles.lookup;
 import static java.util.Arrays.asList;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMethod.HttpMethodFactory.createRequestBuilder;
-import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.PathParameter.PathParameterReader.readPathParameters;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.BodyParameterAnnotationReader.readBodies;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.path.PathParameter.PathParameterReader.readPathParameters;
 
 class HttpAPIProxyHandler implements InvocationHandler {
 

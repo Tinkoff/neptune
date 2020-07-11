@@ -6,7 +6,6 @@ import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMethod;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.URIPath;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.PathParameter;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.QueryParameter;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.Body;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.DefineContentType;
@@ -28,33 +27,6 @@ import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.paramet
 
 @Deprecated
 public interface SomeMappedAPI extends HttpAPI<SomeMappedAPI> {
-
-    @HttpMethod(httpMethod = GET)
-    @URIPath("path/to/target/end/point")
-    RequestBuilder getSomethingWithConstantPath();
-
-    @HttpMethod(httpMethod = GET)
-    @URIPath("{path begin}/{next}/and/then/{third}/end/point")
-    RequestBuilder getSomethingWithVariablePath(@PathParameter("path begin") String start,
-                                                @PathParameter("next") float next,
-                                                @PathParameter("third") String third);
-
-    @HttpMethod(httpMethod = GET)
-    @URIPath("{path begin}/{next}/and/then/{next}/end/point")
-    RequestBuilder getSomethingWithVariablePath(@PathParameter("path begin") String start,
-                                                @PathParameter("next") String next);
-
-    @HttpMethod(httpMethod = GET)
-    @URIPath("{path begin}/{next}/and/then/third/end/point")
-    RequestBuilder getSomethingWithVariablePathFailed(@PathParameter("path begin") String start,
-                                                      @PathParameter("next") float next,
-                                                      @PathParameter("third") String third);
-
-    @HttpMethod(httpMethod = GET)
-    @URIPath("{path begin}/{next}/and/then/third/end/point")
-    RequestBuilder getSomethingWithVariablePathFailed(@PathParameter("path begin") String start,
-                                                      @PathParameter("next") float next,
-                                                      @PathParameter("next") boolean third);
 
     @HttpMethod(httpMethod = GET)
     RequestBuilder getSomethingWithQuery(@QueryParameter("param1") String value1,

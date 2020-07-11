@@ -6,13 +6,13 @@ import ru.tinkoff.qa.neptune.http.api.request.RequestTuner;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.Header;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMethod;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.URIPath;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.PathParameter;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.QueryParameter;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.Body;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.DefineContentType;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.DefineFileName;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.MultiPartBody;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.url.encoded.FormParameter;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.path.PathParameter;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -51,7 +51,7 @@ import static ru.tinkoff.qa.neptune.http.api.properties.DefaultEndPointOfTargetA
  *         <li>Parameters of methods may be annotated by {@link PathParameter} to mark parameters of a method
  *         whose values define URI-path to requested endpoint. At this case {@link URIPath#value()} should have
  *         a substring like {@code '{path_variable}'} or {@code 'begin/{path_variable}/path/to/end/point'} that corresponds
- *         with declared {@link PathParameter#value()} {@code '@PathParameter("path_variable")'}</li>
+ *         with declared {@link PathParameter#name()} {@code '@PathParameter("path_variable")'}</li>
  *
  *         <li>Parameters of methods may be annotated by {@link Body}. It marks a parameter those value is used
  *         as a body of resulted http request. This annotation should be used once per method. Combinations

@@ -7,7 +7,6 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasPathMatcher;
 import ru.tinkoff.qa.neptune.http.api.request.NeptuneHttpRequestImpl;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 import ru.tinkoff.qa.neptune.http.api.request.body.*;
@@ -34,7 +33,6 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.Is.is;
-import static org.testng.Assert.fail;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasHostMatcher.uriHasHost;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasPathMatcher.uriHasPath;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasPortMatcher.uriHasPort;
@@ -108,20 +106,6 @@ public class RequestTest {
         } catch (ParserConfigurationException | SAXException | IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private static Object[][] prepareDataForPathMapping(SomeMappedAPI someMappedAPI) {
-        return new Object[][]{
-                {someMappedAPI.getSomethingWithConstantPath(),
-                        uriHasPath("/path/to/target/end/point"),
-                        "/path/to/target/end/point"},
-                {someMappedAPI.getSomethingWithVariablePath("Start path", 1.5F, "Кириллический текст"),
-                        uriHasPath("/Start+path/1.5/and/then/Кириллический+текст/end/point"),
-                        "/Start+path/1.5/and/then/%D0%9A%D0%B8%D1%80%D0%B8%D0%BB%D0%BB%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9+%D1%82%D0%B5%D0%BA%D1%81%D1%82/end/point"},
-                {someMappedAPI.getSomethingWithVariablePath("Start", "Next"),
-                        uriHasPath("/Start/Next/and/then/Next/end/point"),
-                        "/Start/Next/and/then/Next/end/point"},
-        };
     }
 
     private static Object[][] prepareDataForQueryMapping(SomeMappedAPI someMappedAPI) {
@@ -199,21 +183,6 @@ public class RequestTest {
     }
 
     @DataProvider
-    public Object[][] data4() {
-        return prepareDataForPathMapping(createAPI(SomeMappedAPI.class, TEST_URI));
-    }
-
-    @DataProvider
-    public Object[][] data5() {
-        try {
-            DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.accept("http://127.0.0.1:8089");
-            return prepareDataForPathMapping(createAPI(SomeMappedAPI.class));
-        } finally {
-            getProperties().remove(DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.getPropertyName());
-        }
-    }
-
-    @DataProvider
     public Object[][] data6() {
         return prepareDataForQueryMapping(createAPI(SomeMappedAPI.class, TEST_URI));
     }
@@ -238,42 +207,6 @@ public class RequestTest {
                 {methodMappingAPI.deleteBody("ABC"), "DELETE"},
                 {methodMappingAPI.patchSomeBody("ABC"), "PATCH"},
         };
-    }
-
-    @Test(dataProvider = "data4")
-    public void test7(RequestBuilder builder, HasPathMatcher<URI> pathMatcher, String rawPath) {
-        var uri = builder.build().uri();
-        assertThat(uri, uriHasScheme("http"));
-        assertThat(uri, uriHasHost("127.0.0.1"));
-        assertThat(uri, uriHasPort(8089));
-        assertThat(uri, pathMatcher);
-        assertThat(uri.toString(), endsWith(rawPath));
-    }
-
-    @Test(dataProvider = "data5")
-    public void test8(RequestBuilder builder, HasPathMatcher<URI> pathMatcher, String rawPath) {
-        test7(builder, pathMatcher, rawPath);
-    }
-
-    @Test(expectedExceptions = IllegalArgumentException.class,
-            expectedExceptionsMessageRegExp = ".*['Path variable 'third' is not defined by URIPath. " +
-                    "Value that was defined by URIPath']")
-    public void test9() {
-        var methodMappingAPI = createAPI(SomeMappedAPI.class, TEST_URI);
-        methodMappingAPI.getSomethingWithVariablePathFailed("StartPath",
-                1.5F,
-                "EndPath");
-        fail("Exception was expected");
-    }
-
-    @Test(expectedExceptions = UnsupportedOperationException.class,
-            expectedExceptionsMessageRegExp = ".*['Path variable 'next' is defined more than once. This is not supported']")
-    public void test10() {
-        var methodMappingAPI = createAPI(SomeMappedAPI.class, TEST_URI);
-        methodMappingAPI.getSomethingWithVariablePathFailed("StartPath",
-                1.5F,
-                true);
-        fail("Exception was expected");
     }
 
     @Test(dataProvider = "data6")

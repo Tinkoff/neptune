@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods;
 
 import ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.HeaderParameter;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.header.HeaderParameter;
 
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;

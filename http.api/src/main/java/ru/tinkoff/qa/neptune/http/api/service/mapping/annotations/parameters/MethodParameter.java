@@ -13,34 +13,4 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Target(TYPE)
 public @interface MethodParameter {
-
-    /**
-     * Checks is a class represents a parameter (header, query parameter or path variable)
-     * of http request or not.
-     */
-    final class MethodParameterDetector {
-
-        private MethodParameterDetector() {
-            super();
-        }
-
-        /**
-         * Checks is a class represents a parameter (header, query parameter or path variable)
-         * of http request or not.
-         *
-         * @param cls is a class to check
-         * @return is a class represents method parameter or not
-         */
-        public static boolean isAMethodParameter(Class<?> cls) {
-            var superCls = cls;
-            var isMethodParameter = superCls.getAnnotation(MethodParameter.class) != null;
-
-            while (!isMethodParameter && !superCls.equals(Object.class)) {
-                superCls = superCls.getSuperclass();
-                isMethodParameter = superCls.getAnnotation(MethodParameter.class) != null;
-            }
-
-            return isMethodParameter;
-        }
-    }
 }

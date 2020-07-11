@@ -7,8 +7,8 @@ import java.lang.reflect.Method;
 
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.Header.HeaderReader.readHeaders;
-import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.HeaderParameter.HeaderParameterReader.readHeaderParameters;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.QueryParameter.QueryParameterReader.readQueryParameters;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.header.HeaderParameter.HeaderParameterReader.readHeaderParameters;
 
 class ProxyRequestTuner implements RequestTuner {
 

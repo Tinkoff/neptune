@@ -38,12 +38,12 @@ public class MethodMappingTest {
     }
 
     @DataProvider
-    public static Object[][] data2() {
+    public static Object[][] data1() {
         return prepareDataForMethodMapping(createAPI(MethodMapping.class, TEST_URI));
     }
 
     @DataProvider
-    public static Object[][] data3() {
+    public static Object[][] data2() {
         try {
             DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.accept("http://127.0.0.1:8089");
             return prepareDataForMethodMapping(createAPI(MethodMapping.class));
@@ -52,7 +52,7 @@ public class MethodMappingTest {
         }
     }
 
-    @Test(dataProvider = "data2")
+    @Test(dataProvider = "data1")
     public void test1(RequestBuilder builder, String method, boolean isBodyPresent) {
         var r = builder.build();
         assertThat(r.method(), is(method));
@@ -68,7 +68,7 @@ public class MethodMappingTest {
         }
     }
 
-    @Test(dataProvider = "data3")
+    @Test(dataProvider = "data2")
     public void test2(RequestBuilder builder, String method, boolean isBodyPresent) {
         test1(builder, method, isBodyPresent);
     }
