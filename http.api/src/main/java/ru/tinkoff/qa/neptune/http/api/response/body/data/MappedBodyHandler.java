@@ -10,9 +10,9 @@ import java.net.http.HttpResponse;
 import java.util.Collection;
 import java.util.function.Function;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
 import static java.net.http.HttpResponse.BodySubscribers.mapping;
-import static org.glassfish.jersey.internal.guava.Preconditions.checkNotNull;
 import static ru.tinkoff.qa.neptune.http.api.mapper.DefaultBodyMappers.JSON;
 import static ru.tinkoff.qa.neptune.http.api.mapper.DefaultBodyMappers.XML;
 

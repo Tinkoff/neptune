@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.http.api.test.requests;
 
-import org.hamcrest.Matcher;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.testng.annotations.DataProvider;
@@ -25,7 +24,6 @@ import java.net.URI;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static java.lang.System.getProperties;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.List.of;
 import static org.apache.commons.io.FileUtils.writeStringToFile;
@@ -33,12 +31,6 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.Is.is;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasHostMatcher.uriHasHost;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasPathMatcher.uriHasPath;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasPortMatcher.uriHasPort;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasQueryMatcher.uriHasQuery;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasSchemeMatcher.uriHasScheme;
-import static ru.tinkoff.qa.neptune.http.api.properties.DefaultEndPointOfTargetAPIProperty.DEFAULT_END_POINT_OF_TARGET_API_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI.createAPI;
 
 @Deprecated
@@ -108,43 +100,6 @@ public class RequestTest {
         }
     }
 
-    private static Object[][] prepareDataForQueryMapping(SomeMappedAPI someMappedAPI) {
-        return new Object[][]{
-                {someMappedAPI.getSomethingWithQuery("val1", 3, "Hello world", true),
-                        equalTo("/"),
-                        equalTo("param1=val1&param1=3&param1=Hello+world&param2=true")},
-
-                {someMappedAPI.getSomethingWithQueryAndPath("val1", 3, "Hello world", true),
-                        equalTo("/path/to/target/end/point"),
-                        equalTo("param1=val1&param1=3&param1=Hello+world&param2=true")},
-
-
-                {someMappedAPI.getSomethingWithQuery(of("val1", 3, "Hello world"), true),
-                        equalTo("/"),
-                        equalTo("param1=val1&param1=3&param1=Hello+world&param2=true")},
-
-                {someMappedAPI.getSomethingWithQueryAndPath(of("val1", 3, "Hello world"), true),
-                        equalTo("/path/to/target/end/point"),
-                        equalTo("param1=val1&param1=3&param1=Hello+world&param2=true")},
-
-                {someMappedAPI.getSomethingWithQuery(new Object[]{"val1", 3, "Hello world"}, true),
-                        equalTo("/"),
-                        equalTo("param1=val1&param1=3&param1=Hello+world&param2=true")},
-
-                {someMappedAPI.getSomethingWithQueryAndPath(new Object[]{"val1", 3, "Hello world"}, true),
-                        equalTo("/path/to/target/end/point"),
-                        equalTo("param1=val1&param1=3&param1=Hello+world&param2=true")},
-
-                {someMappedAPI.getSomethingWithQuery(new int[]{1, 2, 3}, true),
-                        equalTo("/"),
-                        equalTo("param1=1&param1=2&param1=3&param2=true")},
-
-                {someMappedAPI.getSomethingWithQueryAndPath(new int[]{1, 2, 3}, true),
-                        equalTo("/path/to/target/end/point"),
-                        equalTo("param1=1&param1=2&param1=3&param2=true")},
-        };
-    }
-
     @DataProvider
     public static Object[][] data9() throws Exception {
         var methodMappingAPI = createAPI(SomeMappedAPI.class, TEST_URI);
@@ -183,21 +138,6 @@ public class RequestTest {
     }
 
     @DataProvider
-    public Object[][] data6() {
-        return prepareDataForQueryMapping(createAPI(SomeMappedAPI.class, TEST_URI));
-    }
-
-    @DataProvider
-    public Object[][] data7() {
-        try {
-            DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.accept("http://127.0.0.1:8089");
-            return prepareDataForQueryMapping(createAPI(SomeMappedAPI.class));
-        } finally {
-            getProperties().remove(DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.getPropertyName());
-        }
-    }
-
-    @DataProvider
     public Object[][] data8() {
         var methodMappingAPI = createAPI(SomeMappedAPI.class, TEST_URI);
         return new Object[][]{
@@ -207,21 +147,6 @@ public class RequestTest {
                 {methodMappingAPI.deleteBody("ABC"), "DELETE"},
                 {methodMappingAPI.patchSomeBody("ABC"), "PATCH"},
         };
-    }
-
-    @Test(dataProvider = "data6")
-    public void test11(RequestBuilder builder, Matcher<String> pathMatcher, Matcher<String> queryMather) {
-        var uri = builder.build().uri();
-        assertThat(uri, uriHasScheme("http"));
-        assertThat(uri, uriHasHost("127.0.0.1"));
-        assertThat(uri, uriHasPort(8089));
-        assertThat(uri, uriHasPath(pathMatcher));
-        assertThat(uri, uriHasQuery(queryMather));
-    }
-
-    @Test(dataProvider = "data7")
-    public void test12(RequestBuilder builder, Matcher<String> pathMatcher, Matcher<String> queryMather) {
-        test11(builder, pathMatcher, queryMather);
     }
 
     @Test(dataProvider = "data8")

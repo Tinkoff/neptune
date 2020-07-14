@@ -6,13 +6,13 @@ import ru.tinkoff.qa.neptune.http.api.request.RequestTuner;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.Header;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMethod;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.URIPath;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.QueryParameter;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.Body;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.DefineContentType;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.DefineFileName;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.MultiPartBody;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.url.encoded.FormParameter;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.path.PathParameter;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.query.QueryParameter;
 
 import java.net.URI;
 import java.net.URISyntaxException;

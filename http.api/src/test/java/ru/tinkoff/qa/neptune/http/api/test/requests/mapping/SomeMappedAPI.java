@@ -5,8 +5,6 @@ import ru.tinkoff.qa.neptune.http.api.dto.XmlDTObject;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMethod;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.URIPath;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.QueryParameter;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.Body;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.DefineContentType;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.DefineFileName;
@@ -27,46 +25,6 @@ import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.paramet
 
 @Deprecated
 public interface SomeMappedAPI extends HttpAPI<SomeMappedAPI> {
-
-    @HttpMethod(httpMethod = GET)
-    RequestBuilder getSomethingWithQuery(@QueryParameter("param1") String value1,
-                                         @QueryParameter("param1") int value2,
-                                         @QueryParameter("param1") String value3,
-                                         @QueryParameter("param2") Boolean value4);
-
-    @HttpMethod(httpMethod = GET)
-    @URIPath("path/to/target/end/point")
-    RequestBuilder getSomethingWithQueryAndPath(@QueryParameter("param1") String value1,
-                                                @QueryParameter("param1") int value2,
-                                                @QueryParameter("param1") String value3,
-                                                @QueryParameter("param2") Boolean value4);
-
-    @HttpMethod(httpMethod = GET)
-    RequestBuilder getSomethingWithQuery(@QueryParameter("param1") List<Object> param1,
-                                         @QueryParameter("param2") Boolean param2);
-
-    @HttpMethod(httpMethod = GET)
-    @URIPath("path/to/target/end/point")
-    RequestBuilder getSomethingWithQueryAndPath(@QueryParameter("param1") List<Object> param1,
-                                                @QueryParameter("param2") Boolean param2);
-
-    @HttpMethod(httpMethod = GET)
-    RequestBuilder getSomethingWithQuery(@QueryParameter("param1") Object[] param1,
-                                         @QueryParameter("param2") Boolean param2);
-
-    @HttpMethod(httpMethod = GET)
-    @URIPath("path/to/target/end/point")
-    RequestBuilder getSomethingWithQueryAndPath(@QueryParameter("param1") Object[] param1,
-                                                @QueryParameter("param2") Boolean param2);
-
-    @HttpMethod(httpMethod = GET)
-    RequestBuilder getSomethingWithQuery(@QueryParameter("param1") int[] param1,
-                                         @QueryParameter("param2") Boolean param2);
-
-    @HttpMethod(httpMethod = GET)
-    @URIPath("path/to/target/end/point")
-    RequestBuilder getSomethingWithQueryAndPath(@QueryParameter("param1") int[] param1,
-                                                @QueryParameter("param2") Boolean param2);
 
     @HttpMethod(httpMethod = POST)
     RequestBuilder postSomeBody(@Body String body);

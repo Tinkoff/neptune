@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.http.api.request;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.glassfish.jersey.uri.internal.JerseyUriBuilder;
 import ru.tinkoff.qa.neptune.http.api.dto.DTObject;
 import ru.tinkoff.qa.neptune.http.api.mapper.DefaultBodyMappers;
 import ru.tinkoff.qa.neptune.http.api.properties.mapper.DefaultJsonObjectMapper;
@@ -10,7 +9,6 @@ import ru.tinkoff.qa.neptune.http.api.request.body.MultiPartBody;
 import ru.tinkoff.qa.neptune.http.api.request.body.RequestBody;
 import ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart;
 
-import javax.ws.rs.core.UriBuilder;
 import javax.xml.transform.Transformer;
 import java.io.File;
 import java.io.InputStream;
@@ -25,6 +23,7 @@ import java.time.Duration;
 import java.util.*;
 import java.util.function.Supplier;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.CASE_INSENSITIVE_ORDER;
 import static java.net.URI.create;
@@ -32,19 +31,19 @@ import static java.util.stream.StreamSupport.stream;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.glassfish.jersey.internal.guava.Preconditions.checkArgument;
 import static ru.tinkoff.qa.neptune.http.api.request.body.RequestBodyFactory.body;
 
 public abstract class RequestBuilder implements RequestSettings<RequestBuilder> {
     final HttpRequest.Builder builder;
-    private final UriBuilder uriBuilder = new JerseyUriBuilder();
+    private final QueryBuilder queryBuilder = new QueryBuilder();
     final RequestBody<?> body;
     private final TreeMap<String, List<String>> headersMap = new TreeMap<>(CASE_INSENSITIVE_ORDER);
+    private final URI endPoint;
 
     private RequestBuilder(URI endPoint, RequestBody<?> body) {
         checkNotNull(endPoint);
+        this.endPoint = endPoint;
         builder = HttpRequest.newBuilder();
-        uriBuilder.uri(endPoint);
         this.body = body;
         defineRequestMethodAndBody();
     }
@@ -2243,7 +2242,13 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
 
     @Override
     public RequestBuilder queryParam(String name, final Object... values) {
-        uriBuilder.queryParam(name, values);
+        queryBuilder.addParameter(name, values);
+        return this;
+    }
+
+    @Override
+    public RequestBuilder queryPart(String queryFragment) {
+        queryBuilder.addQueryPart(queryFragment);
         return this;
     }
 
@@ -2316,7 +2321,7 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
             valueList.forEach(s1 -> newBuilder.header(s, s1));
         });
 
-        return new NeptuneHttpRequestImpl(newBuilder.uri(uriBuilder.build()).build(), body);
+        return new NeptuneHttpRequestImpl(newBuilder.uri(queryBuilder.appendURI(endPoint)).build(), body);
     }
 
 

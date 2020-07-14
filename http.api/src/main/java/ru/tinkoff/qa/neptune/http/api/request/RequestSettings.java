@@ -87,4 +87,11 @@ public interface RequestSettings<T extends RequestSettings<T>> {
      * @return instance of {@code T}
      */
     T queryParam(String name, final Object... values);
+
+    /**
+     * This method adds custom query part. The value may contain non ASCII characters.
+     *
+     * @return instance of {@code T}
+     */
+    T queryPart(String queryFragment);
 }

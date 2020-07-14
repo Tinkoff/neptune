@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.http.api.response;
 
-import com.google.common.base.Preconditions;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 
 import java.net.URI;
@@ -11,14 +10,14 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
 import static java.net.URI.create;
 import static java.util.Objects.nonNull;
 import static java.util.regex.Pattern.compile;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.glassfish.jersey.internal.guava.Preconditions.checkArgument;
-import static org.glassfish.jersey.internal.guava.Preconditions.checkNotNull;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 
 public final class ResponseCriteria {
@@ -98,7 +97,7 @@ public final class ResponseCriteria {
      * @return criteria.
      */
     public static <T> Criteria<HttpResponse<T>> uriMatches(String expression) {
-        Preconditions.checkArgument(isNotBlank(expression), "Http response URI expression should be defined");
+        checkArgument(isNotBlank(expression), "Http response URI expression should be defined");
 
         return condition(format("response URI contains '%s' or meets regExp pattern '%s'", expression, expression), r -> {
             var uri = valueOf(r.uri());
@@ -276,7 +275,7 @@ public final class ResponseCriteria {
      * @return criteria.
      */
     public static <T> Criteria<HttpResponse<T>> responseURIPort(int port) {
-        Preconditions.checkArgument(port > 0, "Port value should be greater than 0");
+        checkArgument(port > 0, "Port value should be greater than 0");
         return condition(format("Response URI port is '%s'", port), r -> {
             try {
                 return r.uri().getPort() == port;

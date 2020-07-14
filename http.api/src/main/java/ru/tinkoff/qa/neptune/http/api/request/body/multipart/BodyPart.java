@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.probeContentType;
 import static java.nio.file.Files.readAllBytes;
@@ -19,7 +20,6 @@ import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.ArrayUtils.addAll;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.glassfish.jersey.internal.guava.Preconditions.checkArgument;
 
 public abstract class BodyPart {
 
