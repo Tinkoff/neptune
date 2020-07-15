@@ -1,13 +1,12 @@
 package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.query;
 
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static com.google.common.collect.ImmutableList.of;
 import static java.lang.String.format;
-import static java.util.Map.entry;
-import static java.util.Map.ofEntries;
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.joining;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil.objectToMap;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil.toStream;
 
@@ -26,18 +25,12 @@ public enum QueryStyles {
      */
     FORM {
         @Override
-        Object arrayValue(Stream<?> valueSource, String varName, boolean explode) {
-            if (explode) {
-                return ofEntries(entry(varName, valueSource.toArray()));
-            }
-
-            return varName + "=" + valueSource
-                    .map(String::valueOf)
-                    .collect(joining(","));
+        List<QueryTriplet> arrayValue(Stream<?> valueSource, String varName, boolean explode) {
+            return of(new QueryTriplet(varName, explode, valueSource.toArray()));
         }
 
         @Override
-        Object mapValue(Map<?, ?> map, String varName, boolean explode) {
+        List<QueryTriplet> mapValue(Map<?, ?> map, String varName, boolean explode) {
             return null;
         }
     },
@@ -61,11 +54,9 @@ public enum QueryStyles {
      *                            string part of a query
      * @param parameterName       is a name of a query parameter
      * @param explode             to explode value or not
-     * @return {@link Map} where keys are names of a parameters and values are arrays of parameter values.
-     * Also it may return {@link String} that is formed part of a query.
-     * All these things depend on a style and ability to explode value.
+     * @return a list of {@link QueryTriplet}.
      */
-    Object getQueryParameterValue(Object queryParameterValue, String parameterName, boolean explode) {
+    List<QueryTriplet> getQueryParameterValue(Object queryParameterValue, String parameterName, boolean explode) {
         var stream = toStream(queryParameterValue);
         if (stream != null) {
             return arrayValue(stream,
@@ -75,22 +66,22 @@ public enum QueryStyles {
 
         return ofNullable(objectToMap(queryParameterValue))
                 .map(map -> mapValue(map, parameterName, explode))
-                .orElseGet(() -> ofEntries(entry(parameterName, new Object[]{queryParameterValue})));
+                .orElseGet(() -> of(new QueryTriplet(parameterName, explode, queryParameterValue)));
 
     }
 
-    Object arrayValue(Stream<?> valueSource,
-                      String varName,
-                      boolean explode) {
+    List<QueryTriplet> arrayValue(Stream<?> valueSource,
+                                  String varName,
+                                  boolean explode) {
         throw new UnsupportedOperationException(format("Query parameter %s doesn't support array/collection values " +
                         "due to defined style: %s",
                 varName,
                 name()));
     }
 
-    Object mapValue(Map<?, ?> map,
-                    String varName,
-                    boolean explode) {
+    List<QueryTriplet> mapValue(Map<?, ?> map,
+                                String varName,
+                                boolean explode) {
         throw new UnsupportedOperationException(format("Query parameter %s doesn't support object values " +
                         "due to defined style: %s",
                 varName,

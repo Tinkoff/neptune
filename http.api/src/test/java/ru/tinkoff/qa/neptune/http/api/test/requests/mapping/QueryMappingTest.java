@@ -31,7 +31,7 @@ public class QueryMappingTest {
 
     private static Object[][] prepareDataForQueryMapping(QueryMapping someMappedAPI) {
         return new Object[][]{
-                /*{someMappedAPI.getSomethingWithQuery("val1", 3, "Hello world", true),
+                {someMappedAPI.getSomethingWithQuery("val1", 3, "Hello world", true),
                         equalTo("/"),
                         equalTo("param1=val1&param1=3&param1=Hello+world&param2=true")},
 
@@ -62,11 +62,11 @@ public class QueryMappingTest {
 
                 {someMappedAPI.getSomethingWithQueryAndPath(new int[]{1, 2, 3}, true),
                         equalTo("/path/to/target/end/point"),
-                        equalTo("param1=1&param1=2&param1=3&param2=true")},*/
+                        equalTo("param1=1&param1=2&param1=3&param2=true")},
 
-                {someMappedAPI.getSomethingWithQueryAndPathSNE(of(1, "Кирилица", false, of("ABC", "АБВ", 1, false)), true),
+                {someMappedAPI.getSomethingWithQueryAndPathSNE(of(1, "Кирилица", false, of("Hello world", "АБВ", 1, false)), true),
                         equalTo("/path/to/target/end/point"),
-                        equalTo("param1=1,%D0%9A%D0%B8%D1%80%D0%B8%D0%BB%D0%B8%D1%86%D0%B0,false&param2=true")},
+                        equalTo("param1=1,%D0%9A%D0%B8%D1%80%D0%B8%D0%BB%D0%B8%D1%86%D0%B0,false,Hello+world,%D0%90%D0%91%D0%92,1,false&param2=true")},
         };
     }
 

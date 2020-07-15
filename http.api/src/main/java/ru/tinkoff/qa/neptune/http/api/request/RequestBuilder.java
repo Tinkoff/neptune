@@ -2241,14 +2241,8 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
     }
 
     @Override
-    public RequestBuilder queryParam(String name, final Object... values) {
-        queryBuilder.addParameter(name, values);
-        return this;
-    }
-
-    @Override
-    public RequestBuilder queryPart(String queryFragment) {
-        queryBuilder.addQueryPart(queryFragment);
+    public RequestBuilder queryParam(String name, boolean toExpand, Object... values) {
+        queryBuilder.addParameter(name, toExpand, values);
         return this;
     }
 

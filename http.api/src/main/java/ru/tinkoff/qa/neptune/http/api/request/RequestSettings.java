@@ -80,18 +80,26 @@ public interface RequestSettings<T extends RequestSettings<T>> {
     T timeout(Duration duration);
 
     /**
-     * Adds query parameter to the given URI
+     * Appends query parameter.
+     *
+     * @param name     parameter name
+     * @param toExpand is to expand multiple value of the parameter or not.
+     *                 When it is not expanded then value is transformed into a comma-separated string.
+     * @param values   array of values of the the parameter. The method is designed to accept
+     *                 primitive values, objects of primitive wrappers, strings, arrays and
+     *                 collections of mentioned types. Any value may contain non ASCII characters.
+     * @return instance of {@code T}
+     */
+    T queryParam(String name, boolean toExpand, Object... values);
+
+    /**
+     * Appends query parameter. It expands multiple value of the parameter by default.
      *
      * @param name   parameter name
      * @param values values of the parameter
      * @return instance of {@code T}
      */
-    T queryParam(String name, final Object... values);
-
-    /**
-     * This method adds custom query part. The value may contain non ASCII characters.
-     *
-     * @return instance of {@code T}
-     */
-    T queryPart(String queryFragment);
+    default T queryParam(String name, final Object... values) {
+        return queryParam(name, true, values);
+    }
 }

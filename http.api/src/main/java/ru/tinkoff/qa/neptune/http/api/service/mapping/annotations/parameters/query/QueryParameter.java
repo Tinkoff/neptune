@@ -61,16 +61,14 @@ public @interface QueryParameter {
          *
          * @param toRead     is a method to be read
          * @param parameters parameters of current invocation of the method
-         * @return a list. It may contain {@link Map} where keys are names of a parameters and values are arrays of parameter values.
-         * Also it may contain {@link String} that is formed part of a query.
-         * All these things depend on styles of query parameters and abilities to explode values.
+         * @return a list of {@link QueryTriplet}.
          */
-        public static List<Object> readQueryParameters(Method toRead, Object[] parameters) {
+        public static List<QueryTriplet> readQueryParameters(Method toRead, Object[] parameters) {
             return getFromMethod(toRead,
                     QueryParameter.class,
                     parameters,
                     (ps, params) -> {
-                        var resultList = new LinkedList<>();
+                        var resultList = new LinkedList<QueryTriplet>();
 
                         for (int i = 0; i < ps.length; i++) {
                             var queryParameter = ps[i].getAnnotation(QueryParameter.class);
@@ -87,7 +85,7 @@ public @interface QueryParameter {
                             var queryPart = queryParameter.style().getQueryParameterValue(value,
                                     queryParameter.name(),
                                     toExpandValue(queryParameter));
-                            resultList.add(queryPart);
+                            resultList.addAll(queryPart);
                         }
 
                         if (resultList.size() > 0) {

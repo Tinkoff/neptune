@@ -5,13 +5,12 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static java.lang.String.join;
-import static java.net.URLEncoder.encode;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.List.of;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil.objectToMap;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil.toStream;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.path.PathEncodingUtil.getEncoded;
 
 /**
  * Path parameters support the following style values:
@@ -111,18 +110,10 @@ public enum PathStyles {
         }
     };
 
-    private static String getEncoded(Object o) {
-        return ofNullable(toStream(o))
-                .map(stream -> stream.map(o1 ->
-                        encode(String.valueOf(o1), UTF_8))
-                        .collect(joining(",")))
-                .orElseGet(() -> encode(String.valueOf(o), UTF_8));
-    }
-
     String getPathValue(Object pathVarValue, String varName, boolean explode) {
         var stream = toStream(pathVarValue);
         if (stream != null) {
-            return arrayValue(stream.map(PathStyles::getEncoded),
+            return arrayValue(stream.map(PathEncodingUtil::getEncoded),
                     varName,
                     explode);
         }

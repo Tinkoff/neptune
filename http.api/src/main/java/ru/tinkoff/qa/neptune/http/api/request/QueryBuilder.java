@@ -2,151 +2,101 @@ package ru.tinkoff.qa.neptune.http.api.request;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.ByteBuffer;
 import java.util.*;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
+import static java.net.URLEncoder.encode;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.ArrayUtils.toObject;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil.toStream;
 
 class QueryBuilder {
 
-    private static final int RADIX = 16;
-    private static final BitSet URLENCODER = new BitSet(256);
-    private static final BitSet URIC = new BitSet(256);
-    private static final BitSet RESERVED = new BitSet(256);
-    private static final BitSet UNRESERVED = new BitSet(256);
+    private final Set<NameAndValue> queries = new LinkedHashSet<>();
 
-    static {
-        // unreserved chars
-        // alpha characters
-        for (int i = 'a'; i <= 'z'; i++) {
-            UNRESERVED.set(i);
-        }
-        for (int i = 'A'; i <= 'Z'; i++) {
-            UNRESERVED.set(i);
-        }
-        // numeric characters
-        for (int i = '0'; i <= '9'; i++) {
-            UNRESERVED.set(i);
-        }
-        UNRESERVED.set('_'); // these are the charactes of the "mark" list
-        UNRESERVED.set('-');
-        UNRESERVED.set('.');
-        UNRESERVED.set('*');
-        URLENCODER.or(UNRESERVED); // skip remaining unreserved characters
-        UNRESERVED.set('!');
-        UNRESERVED.set('~');
-        UNRESERVED.set('\'');
-        UNRESERVED.set('(');
-        UNRESERVED.set(')');
+    private static Stream<?> prepareStreamOfObjects(Object value) {
+        var cls = value.getClass();
 
-        RESERVED.set(';');
-        RESERVED.set('/');
-        RESERVED.set('?');
-        RESERVED.set(':');
-        RESERVED.set('@');
-        RESERVED.set('&');
-        RESERVED.set('=');
-        RESERVED.set('+');
-        RESERVED.set('$');
-        RESERVED.set(',');
-        RESERVED.set('['); // added by RFC 2732
-        RESERVED.set(']'); // added by RFC 2732
+        if (cls.isArray()) {
+            Object[] result;
+            if (cls.getComponentType().isPrimitive()) {
+                if (byte[].class.equals(cls)) {
+                    result = toObject((byte[]) value);
+                } else if (short[].class.equals(cls)) {
+                    result = toObject((short[]) value);
+                } else if (int[].class.equals(cls)) {
+                    result = toObject((int[]) value);
+                } else if (long[].class.equals(cls)) {
+                    result = toObject((long[]) value);
+                } else if (float[].class.equals(cls)) {
+                    result = toObject((float[]) value);
+                } else if (double[].class.equals(cls)) {
+                    result = toObject((double[]) value);
+                } else if (boolean[].class.equals(cls)) {
+                    result = toObject((boolean[]) value);
+                } else {
+                    result = toObject((char[]) value);
+                }
 
-        URIC.or(RESERVED);
-        URIC.or(UNRESERVED);
-    }
-
-    private final Set<Object> queries = new LinkedHashSet<>();
-
-    private static String urlEncode(final String content,
-                                    final BitSet safechars,
-                                    final boolean blankAsPlus) {
-        if (content == null) {
-            return null;
-        }
-
-        final StringBuilder buf = new StringBuilder();
-        final ByteBuffer bb = UTF_8.encode(content);
-        while (bb.hasRemaining()) {
-            final int b = bb.get() & 0xff;
-            if (safechars.get(b)) {
-                buf.append((char) b);
-            } else if (blankAsPlus && b == ' ') {
-                buf.append('+');
+                return stream(result);
             } else {
-                buf.append("%");
-                final char hex1 = Character.toUpperCase(Character.forDigit((b >> 4) & 0xF, RADIX));
-                final char hex2 = Character.toUpperCase(Character.forDigit(b & 0xF, RADIX));
-                buf.append(hex1);
-                buf.append(hex2);
+                return stream((Object[]) value);
             }
+        } else if (Iterable.class.isAssignableFrom(cls)) {
+            return StreamSupport.stream(((Iterable<?>) value).spliterator(), false);
         }
-        return buf.toString();
+
+        return null;
     }
 
-    void addParameter(String name, final Object... values) {
-        checkNotNull(name);
+    private static Stream<String> toStream(Object value) {
+        return ofNullable(prepareStreamOfObjects(value))
+                .map(stream -> stream.map(o -> {
+                    var streamToTransform = prepareStreamOfObjects(o);
+                    if (streamToTransform == null) {
+                        return encode(valueOf(o), UTF_8);
+                    }
+
+                    return streamToTransform
+                            .map(o1 -> encode(valueOf(o1), UTF_8))
+                            .collect(joining(","));
+                }))
+                .orElseGet(() -> toStream(new Object[]{value}));
+    }
+
+    void addParameter(String name, boolean toExpand, Object... values) {
+        checkArgument(isNotBlank(name), "Name of the parameter should not be null/blank");
         checkNotNull(values);
         checkArgument(values.length > 0,
                 format("It is necessary to define at least one value of the parameter '%s'", name));
 
         var nameValue = (NameAndValue) queries.stream()
-                .filter(o -> (o instanceof NameAndValue) && Objects.equals(((NameAndValue) o).getName(), name))
+                .filter(o -> Objects.equals(o.getName(), name))
                 .findFirst()
                 .orElse(null);
 
         if (nameValue == null) {
-            nameValue = new NameAndValue(name);
+            nameValue = new NameAndValue(name, toExpand);
             queries.add(nameValue);
         }
 
         nameValue.addValues(values);
     }
 
-    void addQueryPart(String queryFragment) {
-        checkArgument(isNotBlank(queryFragment), "A query part to add should not be null or blank");
-        queries.add(queryFragment);
-    }
-
     URI appendURI(URI uri) {
         checkNotNull(uri);
         var query = queries.stream()
-                .map(o -> {
-                    if (o instanceof String) {
-                        return urlEncode(valueOf(o), URIC, false);
-                    }
-
-                    if (o instanceof NameAndValue) {
-                        var nameAndValue = (NameAndValue) o;
-                        var encodedName = urlEncode(nameAndValue.getName(), URLENCODER, true);
-                        return nameAndValue.getValues()
-                                .stream()
-                                .map(o1 -> {
-                                    var stream = toStream(o1);
-                                    return ofNullable(stream)
-                                            .map(stream1 -> encodedName + "="
-                                                    + urlEncode(stream1
-                                                    .map(String::valueOf)
-                                                    .collect(joining(",")), URIC, false))
-                                            .orElseGet(() -> encodedName + "=" + urlEncode(valueOf(o1), URLENCODER, true));
-                                })
-                                .collect(joining("&"));
-                    }
-
-                    return null;
-                })
-                .filter(Objects::nonNull)
+                .map(NameAndValue::toString)
                 .collect(joining("&"));
 
         if (isBlank(query)) {
@@ -174,13 +124,11 @@ class QueryBuilder {
 
         private final String name;
         private final List<Object> values = new LinkedList<>();
+        private final boolean toExpand;
 
-        private NameAndValue(String name) {
+        private NameAndValue(String name, boolean toExpand) {
             this.name = name;
-        }
-
-        String getName() {
-            return name;
+            this.toExpand = toExpand;
         }
 
         void addValues(Object... values) {
@@ -192,8 +140,20 @@ class QueryBuilder {
                     .collect(toList()));
         }
 
-        List<Object> getValues() {
-            return values;
+        String getName() {
+            return name;
+        }
+
+        public String toString() {
+            var stingEncodedValues = toStream(values);
+            if (toExpand) {
+                return stingEncodedValues
+                        .map(s -> name + "=" + s)
+                        .collect(joining("&"));
+            } else {
+                return stingEncodedValues
+                        .collect(joining(",", name + "=", ""));
+            }
         }
     }
 }
