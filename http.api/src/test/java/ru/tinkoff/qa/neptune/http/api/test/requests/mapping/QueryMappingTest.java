@@ -7,10 +7,13 @@ import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMethod;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.URIPath;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.MethodParameter;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.query.QueryParameter;
 
 import java.net.URI;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.lang.System.getProperties;
 import static java.util.List.of;
@@ -28,6 +31,62 @@ import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods
 public class QueryMappingTest {
 
     private final static URI TEST_URI = URI.create("http://127.0.0.1:8089");
+
+    private final static Map<String, Object> LOW_LEVEL_MAP = new LinkedHashMap<>() {
+        {
+            put("someNum3", 3);
+            put("someString3", "string3");
+            put("someArray3", new Object[]{1, 2, 3, 3});
+        }
+    };
+
+    private final static Map<String, Object> MID_LEVEL_MAP = new LinkedHashMap<>() {
+        {
+            put("someNum2", 2);
+            put("someString2", "string2");
+            put("someArray2", new Object[]{1, 2, 3, 3});
+            put("nested2", LOW_LEVEL_MAP);
+        }
+    };
+
+    private final static Map<String, Object> MID_LEVEL_MAP2 = new LinkedHashMap<>() {
+        {
+            put("someNum4", 4);
+            put("someArray4", new Object[]{1, 2, 3, 3});
+            put("someString4", "string4");
+            put("nested4", LOW_LEVEL_MAP);
+        }
+    };
+
+    private final static Map<String, Object> HIGH_LEVEL_MAP = new LinkedHashMap<>() {
+        {
+            put("someNum", 1);
+            put("someString", "string1");
+            put("someArray", List.of("ABCD", "EF GH", "АБВГ Д"));
+            put("nested", MID_LEVEL_MAP);
+            put("nestedNext", MID_LEVEL_MAP2);
+        }
+    };
+
+    private final static QueryParameterObject3 LOW_LEVEL_NESTED_OBJECT = new QueryParameterObject3()
+            .setSomeNum(3)
+            .setSomeString("string3")
+            .setSomeArray(new Integer[]{1, 2, 3, 3});
+
+    private final static QueryParameterObject QUERY_PARAMETER_OBJECT = new QueryParameterObject()
+            .setSomeNum(1)
+            .setSomeString("string1")
+            .setSomeArray(of("ABCD", "EF GH", "АБВГ Д"))
+            .setNested(new QueryParameterObject2()
+                    .setSomeNum(2)
+                    .setSomeString("string2")
+                    .setSomeArray(new Integer[]{1, 2, 3, 3})
+                    .setNested(LOW_LEVEL_NESTED_OBJECT))
+            .setNestedNext(new QueryParameterObject4()
+                    .setSomeNum(4)
+                    .setSomeString("string4")
+                    .setSomeArray(new Integer[]{1, 2, 3, 3})
+                    .setNested(LOW_LEVEL_NESTED_OBJECT));
 
     private static Object[][] prepareDataForQueryMapping(QueryMapping someMappedAPI) {
         return new Object[][]{
@@ -67,6 +126,29 @@ public class QueryMappingTest {
                 {someMappedAPI.getSomethingWithQueryAndPathSNE(of(1, "Кирилица", false, of("Hello world", "АБВ", 1, false)), true),
                         equalTo("/path/to/target/end/point"),
                         equalTo("param1=1,%D0%9A%D0%B8%D1%80%D0%B8%D0%BB%D0%B8%D1%86%D0%B0,false,Hello+world,%D0%90%D0%91%D0%92,1,false&param2=true")},
+
+                {someMappedAPI.getSomethingWithQueryAndPathSE(HIGH_LEVEL_MAP, true),
+                        equalTo("/path/to/target/end/point"),
+                        equalTo("someNum=1&someString=string1&someArray=ABCD,EF+GH,%D0%90%D0%91%D0%92%D0%93+%D0%94&nested=someNum2,2,someString2,string2,someArray2,1,2,3,3"
+                                + "&nestedNext=someNum4,4,someArray4,1,2,3,3,someString4,string4"
+                                + "&param2=true")},
+
+                {someMappedAPI.getSomethingWithQueryAndPathSNE(HIGH_LEVEL_MAP, true),
+                        equalTo("/path/to/target/end/point"),
+                        equalTo("param1=someNum,1,someString,string1,someArray,ABCD,EF+GH,%D0%90%D0%91%D0%92%D0%93+%D0%94"
+                                + "&param2=true")},
+
+
+                {someMappedAPI.getSomethingWithQueryAndPathSE(QUERY_PARAMETER_OBJECT, true),
+                        equalTo("/path/to/target/end/point"),
+                        equalTo("someNum=1&someString=string1&someArray=ABCD,EF+GH,%D0%90%D0%91%D0%92%D0%93+%D0%94&nested=someNum2,2,someString2,string2,someArray2,1,2,3,3"
+                                + "&nestedNext=someNum4,4,someArray4,1,2,3,3,someString4,string4"
+                                + "&param2=true")},
+
+                {someMappedAPI.getSomethingWithQueryAndPathSNE(QUERY_PARAMETER_OBJECT, true),
+                        equalTo("/path/to/target/end/point"),
+                        equalTo("param1=someNum,1,someString,string1,someArray,ABCD,EF+GH,%D0%90%D0%91%D0%92%D0%93+%D0%94"
+                                + "&param2=true")}
         };
     }
 
@@ -152,5 +234,154 @@ public class QueryMappingTest {
         @URIPath("path/to/target/end/point")
         RequestBuilder getSomethingWithQueryAndPathSE(@QueryParameter(name = "param1") Object param1,
                                                       @QueryParameter(name = "param2") Boolean param2);
+
+        @HttpMethod(httpMethod = GET)
+        @URIPath("path/to/target/end/point")
+        RequestBuilder getSomethingWithQueryAndPathSNE(@QueryParameter(name = "param1", explode = false) Object param1,
+                                                       @QueryParameter(name = "param2") Boolean param2);
+    }
+
+    @MethodParameter
+    private static class QueryParameterObject {
+        private Integer someNum;
+
+        private String someString;
+
+        private List<String> someArray;
+
+        private QueryParameterObject2 nested;
+
+        private QueryParameterObject4 nestedNext;
+
+        public Integer getSomeNum() {
+            return someNum;
+        }
+
+        public QueryParameterObject setSomeNum(Integer someNum) {
+            this.someNum = someNum;
+            return this;
+        }
+
+        public String getSomeString() {
+            return someString;
+        }
+
+        public QueryParameterObject setSomeString(String someString) {
+            this.someString = someString;
+            return this;
+        }
+
+        public List<String> getSomeArray() {
+            return someArray;
+        }
+
+        public QueryParameterObject setSomeArray(List<String> someArray) {
+            this.someArray = someArray;
+            return this;
+        }
+
+        public QueryParameterObject2 getNested() {
+            return nested;
+        }
+
+        public QueryParameterObject setNested(QueryParameterObject2 nested) {
+            this.nested = nested;
+            return this;
+        }
+
+        public QueryParameterObject4 getNestedNext() {
+            return nestedNext;
+        }
+
+        public QueryParameterObject setNestedNext(QueryParameterObject4 nestedNext) {
+            this.nestedNext = nestedNext;
+            return this;
+        }
+    }
+
+    @MethodParameter
+    private static class QueryParameterObject2 {
+        Integer someNum2;
+
+        String someString2;
+
+        Integer[] someArray2;
+
+        QueryParameterObject3 nested2;
+
+        public QueryParameterObject2 setSomeNum(Integer someNum) {
+            this.someNum2 = someNum;
+            return this;
+        }
+
+        public QueryParameterObject2 setSomeString(String someString) {
+            this.someString2 = someString;
+            return this;
+        }
+
+        public QueryParameterObject2 setSomeArray(Integer[] someArray) {
+            this.someArray2 = someArray;
+            return this;
+        }
+
+        public QueryParameterObject2 setNested(QueryParameterObject3 nested) {
+            this.nested2 = nested;
+            return this;
+        }
+    }
+
+    @MethodParameter
+    private static class QueryParameterObject3 {
+        Integer someNum3;
+
+        String someString3;
+
+        Integer[] someArray3;
+
+        public QueryParameterObject3 setSomeNum(Integer someNum) {
+            this.someNum3 = someNum;
+            return this;
+        }
+
+        public QueryParameterObject3 setSomeString(String someString) {
+            this.someString3 = someString;
+            return this;
+        }
+
+        public QueryParameterObject3 setSomeArray(Integer[] someArray) {
+            this.someArray3 = someArray;
+            return this;
+        }
+    }
+
+    @MethodParameter
+    private static class QueryParameterObject4 {
+        Integer someNum4;
+
+        Integer[] someArray4;
+
+        String someString4;
+
+        QueryParameterObject3 nested4;
+
+        public QueryParameterObject4 setSomeNum(Integer someNum) {
+            this.someNum4 = someNum;
+            return this;
+        }
+
+        public QueryParameterObject4 setSomeString(String someString) {
+            this.someString4 = someString;
+            return this;
+        }
+
+        public QueryParameterObject4 setSomeArray(Integer[] someArray) {
+            this.someArray4 = someArray;
+            return this;
+        }
+
+        public QueryParameterObject4 setNested(QueryParameterObject3 nested) {
+            this.nested4 = nested;
+            return this;
+        }
     }
 }

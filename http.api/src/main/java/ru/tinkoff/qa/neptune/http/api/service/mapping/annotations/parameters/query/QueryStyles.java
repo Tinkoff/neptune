@@ -1,12 +1,15 @@
 package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.query;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.google.common.collect.ImmutableList.of;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.ArrayUtils.addAll;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil.objectToMap;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil.toStream;
 
@@ -31,21 +34,63 @@ public enum QueryStyles {
 
         @Override
         List<QueryTriplet> mapValue(Map<?, ?> map, String varName, boolean explode) {
-            return null;
+            var result = new LinkedList<QueryTriplet>();
+            if (explode) {
+                map.forEach((o, o2) -> result.add(new QueryTriplet(String.valueOf(o), false, getObjectFlat(o2))));
+            } else {
+                result.add(new QueryTriplet(varName,
+                        false,
+                        getObjectFlat(map
+                                .entrySet()
+                                .stream()
+                                .filter(entry -> objectToMap(entry.getValue()) == null)
+                                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))));
+            }
+            return result;
         }
     },
     /**
      * Space delimited - space-separated array values
      */
-    SPACE_DELIMITED,
+    SPACE_DELIMITED {
+        List<QueryTriplet> arrayValue(Stream<?> valueSource, String varName, boolean explode) {
+            return null;
+        }
+    },
     /**
      * Pipe delimited – pipeline-separated array values
      */
-    PIPE_DELIMITED,
+    PIPE_DELIMITED {
+        List<QueryTriplet> arrayValue(Stream<?> valueSource, String varName, boolean explode) {
+            return null;
+        }
+    },
     /**
      * Deep object – a simple way of rendering nested objects using form parameters (applies to objects only)
      */
-    DEEP_OBJECT;
+    DEEP_OBJECT {
+        List<QueryTriplet> mapValue(Map<?, ?> map,
+                                    String varName,
+                                    boolean explode) {
+            return null;
+        }
+    };
+
+    private static Object[] getObjectFlat(Object object) {
+        var map = objectToMap(object);
+        if (map != null) {
+            var result = new Object[]{};
+            for (var e : map.entrySet()) {
+                var v = e.getValue();
+                if (objectToMap(v) == null) {
+                    result = addAll(result, e.getKey(), e.getValue());
+                }
+            }
+            return result;
+        } else {
+            return new Object[]{object};
+        }
+    }
 
     /**
      * Returns a a representation of a query parameter or query part
