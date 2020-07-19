@@ -1,17 +1,21 @@
 package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.query;
 
+import ru.tinkoff.qa.neptune.http.api.request.QueryValueDelimiters;
+
 /**
  * It is a POGO for the query parameter transferring.
  */
-public class QueryTriplet {
+public class Query {
 
     private final String name;
     private final boolean toExpand;
+    private final QueryValueDelimiters delimiter;
     private final Object[] params;
 
-    QueryTriplet(String name, boolean toExpand, Object... params) {
+    Query(String name, boolean toExpand, QueryValueDelimiters delimiter, Object... params) {
         this.name = name;
         this.toExpand = toExpand;
+        this.delimiter = delimiter;
         this.params = params;
     }
 
@@ -32,7 +36,14 @@ public class QueryTriplet {
     /**
      * @return values of the query parameter
      */
-    public Object[] getParams() {
+    public Object[] getValues() {
         return params;
+    }
+
+    /**
+     * @return delimiter for not exploded values
+     */
+    public QueryValueDelimiters getDelimiter() {
+        return delimiter;
     }
 }

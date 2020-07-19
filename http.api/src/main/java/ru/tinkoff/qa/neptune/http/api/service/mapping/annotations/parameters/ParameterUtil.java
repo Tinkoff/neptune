@@ -217,7 +217,7 @@ public final class ParameterUtil {
      * @param cls is a class to check
      * @return is a class represents method parameter or not
      */
-    private static boolean isAMethodParameter(Class<?> cls) {
+    public static boolean isAMethodParameter(Class<?> cls) {
         var superCls = cls;
         var isMethodParameter = superCls.getAnnotation(MethodParameter.class) != null;
 

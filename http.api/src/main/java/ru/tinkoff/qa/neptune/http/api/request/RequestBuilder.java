@@ -2241,8 +2241,14 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
     }
 
     @Override
-    public RequestBuilder queryParam(String name, boolean toExpand, Object... values) {
-        queryBuilder.addParameter(name, toExpand, values);
+    public RequestBuilder queryParam(String name, QueryValueDelimiters delimiter, Object... values) {
+        queryBuilder.addParameter(name, false, delimiter, values);
+        return this;
+    }
+
+    @Override
+    public RequestBuilder queryParam(String name, Object... values) {
+        queryBuilder.addParameter(name, true, null, values);
         return this;
     }
 

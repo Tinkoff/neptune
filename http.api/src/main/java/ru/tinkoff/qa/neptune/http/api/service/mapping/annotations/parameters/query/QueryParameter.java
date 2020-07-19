@@ -61,14 +61,14 @@ public @interface QueryParameter {
          *
          * @param toRead     is a method to be read
          * @param parameters parameters of current invocation of the method
-         * @return a list of {@link QueryTriplet}.
+         * @return a list of {@link Query}.
          */
-        public static List<QueryTriplet> readQueryParameters(Method toRead, Object[] parameters) {
+        public static List<Query> readQueryParameters(Method toRead, Object[] parameters) {
             return getFromMethod(toRead,
                     QueryParameter.class,
                     parameters,
                     (ps, params) -> {
-                        var resultList = new LinkedList<QueryTriplet>();
+                        var resultList = new LinkedList<Query>();
 
                         for (int i = 0; i < ps.length; i++) {
                             var queryParameter = ps[i].getAnnotation(QueryParameter.class);

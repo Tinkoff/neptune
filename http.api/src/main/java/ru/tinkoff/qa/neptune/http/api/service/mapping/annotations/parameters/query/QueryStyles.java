@@ -1,17 +1,19 @@
 package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.query;
 
+import com.google.common.annotations.Beta;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.google.common.collect.ImmutableList.of;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.ArrayUtils.addAll;
-import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil.objectToMap;
-import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil.toStream;
+import static ru.tinkoff.qa.neptune.http.api.request.QueryValueDelimiters.*;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil.*;
 
 /**
  * Query parameters support the following style values:
@@ -28,51 +30,76 @@ public enum QueryStyles {
      */
     FORM {
         @Override
-        List<QueryTriplet> arrayValue(Stream<?> valueSource, String varName, boolean explode) {
-            return of(new QueryTriplet(varName, explode, valueSource.toArray()));
+        List<Query> arrayValue(Stream<?> valueSource, String varName, boolean explode) {
+            return of(new Query(varName, explode, explode ? null : COMMA, valueSource.toArray()));
         }
 
         @Override
-        List<QueryTriplet> mapValue(Map<?, ?> map, String varName, boolean explode) {
-            var result = new LinkedList<QueryTriplet>();
+        List<Query> mapValue(Map<?, ?> map, String varName, boolean explode) {
+            var result = new LinkedList<Query>();
             if (explode) {
-                map.forEach((o, o2) -> result.add(new QueryTriplet(String.valueOf(o), false, getObjectFlat(o2))));
+                map.forEach((o, o2) -> result.add(new Query(String.valueOf(o), false, COMMA, getObjectFlat(o2))));
             } else {
-                result.add(new QueryTriplet(varName,
+                result.add(new Query(varName,
                         false,
-                        getObjectFlat(map
-                                .entrySet()
+                        COMMA,
+                        getObjectFlat(map.entrySet()
                                 .stream()
-                                .filter(entry -> objectToMap(entry.getValue()) == null)
-                                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))));
+                                .filter(entry -> {
+                                    var cls = entry.getValue().getClass();
+                                    return !Map.class.isAssignableFrom(cls) && !isAMethodParameter(cls);
+                                })
+                                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue)))));
             }
             return result;
         }
     },
     /**
-     * Space delimited - space-separated array values
+     * Space delimited - space-separated array values. Has effect only for non-exploded arrays.
      */
     SPACE_DELIMITED {
-        List<QueryTriplet> arrayValue(Stream<?> valueSource, String varName, boolean explode) {
-            return null;
+        List<Query> arrayValue(Stream<?> valueSource, String varName, boolean explode) {
+            if (!explode) {
+                return of(new Query(varName, false, SPACE, valueSource.toArray()));
+            }
+            return FORM.arrayValue(valueSource, varName, true);
         }
     },
     /**
-     * Pipe delimited – pipeline-separated array values
+     * Pipe delimited – pipeline-separated array values. Has effect only for non-exploded arrays.
      */
     PIPE_DELIMITED {
-        List<QueryTriplet> arrayValue(Stream<?> valueSource, String varName, boolean explode) {
-            return null;
+        List<Query> arrayValue(Stream<?> valueSource, String varName, boolean explode) {
+            if (!explode) {
+                return of(new Query(varName, false, PIPE, valueSource.toArray()));
+            }
+            return FORM.arrayValue(valueSource, varName, true);
         }
     },
     /**
      * Deep object – a simple way of rendering nested objects using form parameters (applies to objects only)
      */
+    @Beta
     DEEP_OBJECT {
-        List<QueryTriplet> mapValue(Map<?, ?> map,
-                                    String varName,
-                                    boolean explode) {
-            return null;
+        List<Query> mapValue(Map<?, ?> map,
+                             String varName,
+                             boolean explode) {
+            var result = new LinkedList<Query>();
+            map.entrySet()
+                    .stream()
+                    .filter(entry -> {
+                        var cls = entry.getValue().getClass();
+                        return !Map.class.isAssignableFrom(cls) && !isAMethodParameter(cls)
+                                && !cls.isArray() && !Iterable.class.isAssignableFrom(cls);
+                    })
+                    .forEach(entry -> result
+                            .add(new Query(varName + "[" + entry.getKey() + "]",
+                                    true,
+                                    null,
+                                    getObjectFlat(entry.getValue()))));
+
+
+            return result;
         }
     };
 
@@ -99,9 +126,9 @@ public enum QueryStyles {
      *                            string part of a query
      * @param parameterName       is a name of a query parameter
      * @param explode             to explode value or not
-     * @return a list of {@link QueryTriplet}.
+     * @return a list of {@link Query}.
      */
-    List<QueryTriplet> getQueryParameterValue(Object queryParameterValue, String parameterName, boolean explode) {
+    List<Query> getQueryParameterValue(Object queryParameterValue, String parameterName, boolean explode) {
         var stream = toStream(queryParameterValue);
         if (stream != null) {
             return arrayValue(stream,
@@ -111,22 +138,22 @@ public enum QueryStyles {
 
         return ofNullable(objectToMap(queryParameterValue))
                 .map(map -> mapValue(map, parameterName, explode))
-                .orElseGet(() -> of(new QueryTriplet(parameterName, explode, queryParameterValue)));
+                .orElseGet(() -> arrayValue(of(queryParameterValue).stream(), parameterName, explode));
 
     }
 
-    List<QueryTriplet> arrayValue(Stream<?> valueSource,
-                                  String varName,
-                                  boolean explode) {
+    List<Query> arrayValue(Stream<?> valueSource,
+                           String varName,
+                           boolean explode) {
         throw new UnsupportedOperationException(format("Query parameter %s doesn't support array/collection values " +
                         "due to defined style: %s",
                 varName,
                 name()));
     }
 
-    List<QueryTriplet> mapValue(Map<?, ?> map,
-                                String varName,
-                                boolean explode) {
+    List<Query> mapValue(Map<?, ?> map,
+                         String varName,
+                         boolean explode) {
         throw new UnsupportedOperationException(format("Query parameter %s doesn't support object values " +
                         "due to defined style: %s",
                 varName,

@@ -59,22 +59,10 @@ class QueryBuilder {
         return null;
     }
 
-    private static Stream<String> toStream(Object value) {
-        return ofNullable(prepareStreamOfObjects(value))
-                .map(stream -> stream.map(o -> {
-                    var streamToTransform = prepareStreamOfObjects(o);
-                    if (streamToTransform == null) {
-                        return encode(valueOf(o), UTF_8);
-                    }
-
-                    return streamToTransform
-                            .map(o1 -> encode(valueOf(o1), UTF_8))
-                            .collect(joining(","));
-                }))
-                .orElseGet(() -> toStream(new Object[]{value}));
-    }
-
-    void addParameter(String name, boolean toExpand, Object... values) {
+    void addParameter(String name,
+                      boolean toExpand,
+                      QueryValueDelimiters delimiter,
+                      Object... values) {
         checkArgument(isNotBlank(name), "Name of the parameter should not be null/blank");
         checkNotNull(values);
         checkArgument(values.length > 0,
@@ -86,7 +74,7 @@ class QueryBuilder {
                 .orElse(null);
 
         if (nameValue == null) {
-            nameValue = new NameAndValue(name, toExpand);
+            nameValue = new NameAndValue(name, toExpand, delimiter);
             queries.add(nameValue);
         }
 
@@ -125,10 +113,27 @@ class QueryBuilder {
         private final String name;
         private final List<Object> values = new LinkedList<>();
         private final boolean toExpand;
+        private final QueryValueDelimiters delimiter;
 
-        private NameAndValue(String name, boolean toExpand) {
+        private NameAndValue(String name, boolean toExpand, QueryValueDelimiters delimiter) {
             this.name = name;
             this.toExpand = toExpand;
+            this.delimiter = delimiter;
+        }
+
+        private static Stream<String> toStream(Object value) {
+            return ofNullable(prepareStreamOfObjects(value))
+                    .map(stream -> stream.map(o -> {
+                        var streamToTransform = prepareStreamOfObjects(o);
+                        if (streamToTransform == null) {
+                            return encode(valueOf(o), UTF_8);
+                        }
+
+                        return streamToTransform
+                                .map(o1 -> encode(valueOf(o1), UTF_8))
+                                .collect(joining(","));
+                    }))
+                    .orElseGet(() -> toStream(new Object[]{value}));
         }
 
         void addValues(Object... values) {
@@ -152,7 +157,7 @@ class QueryBuilder {
                         .collect(joining("&"));
             } else {
                 return stingEncodedValues
-                        .collect(joining(",", name + "=", ""));
+                        .collect(joining(delimiter.toString(), name + "=", ""));
             }
         }
     }

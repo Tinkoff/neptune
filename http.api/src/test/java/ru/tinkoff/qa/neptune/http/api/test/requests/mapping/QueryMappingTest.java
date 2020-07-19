@@ -27,6 +27,7 @@ import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasSchemeM
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultEndPointOfTargetAPIProperty.DEFAULT_END_POINT_OF_TARGET_API_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI.createAPI;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.DefaultHttpMethods.GET;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.query.QueryStyles.*;
 
 public class QueryMappingTest {
 
@@ -123,32 +124,48 @@ public class QueryMappingTest {
                         equalTo("/path/to/target/end/point"),
                         equalTo("param1=1&param1=2&param1=3&param2=true")},
 
-                {someMappedAPI.getSomethingWithQueryAndPathSNE(of(1, "Кирилица", false, of("Hello world", "АБВ", 1, false)), true),
+                {someMappedAPI.getSomethingWithQueryAndPathFNE(of(1, "Кирилица", false, of("Hello world", "АБВ", 1, false)), true),
                         equalTo("/path/to/target/end/point"),
                         equalTo("param1=1,%D0%9A%D0%B8%D1%80%D0%B8%D0%BB%D0%B8%D1%86%D0%B0,false,Hello+world,%D0%90%D0%91%D0%92,1,false&param2=true")},
 
-                {someMappedAPI.getSomethingWithQueryAndPathSE(HIGH_LEVEL_MAP, true),
+                {someMappedAPI.getSomethingWithQueryAndPathFE(HIGH_LEVEL_MAP, true),
                         equalTo("/path/to/target/end/point"),
                         equalTo("someNum=1&someString=string1&someArray=ABCD,EF+GH,%D0%90%D0%91%D0%92%D0%93+%D0%94&nested=someNum2,2,someString2,string2,someArray2,1,2,3,3"
                                 + "&nestedNext=someNum4,4,someArray4,1,2,3,3,someString4,string4"
                                 + "&param2=true")},
 
-                {someMappedAPI.getSomethingWithQueryAndPathSNE(HIGH_LEVEL_MAP, true),
+                {someMappedAPI.getSomethingWithQueryAndPathFNE(HIGH_LEVEL_MAP, true),
                         equalTo("/path/to/target/end/point"),
                         equalTo("param1=someNum,1,someString,string1,someArray,ABCD,EF+GH,%D0%90%D0%91%D0%92%D0%93+%D0%94"
                                 + "&param2=true")},
 
 
-                {someMappedAPI.getSomethingWithQueryAndPathSE(QUERY_PARAMETER_OBJECT, true),
+                {someMappedAPI.getSomethingWithQueryAndPathFE(QUERY_PARAMETER_OBJECT, true),
                         equalTo("/path/to/target/end/point"),
                         equalTo("someNum=1&someString=string1&someArray=ABCD,EF+GH,%D0%90%D0%91%D0%92%D0%93+%D0%94&nested=someNum2,2,someString2,string2,someArray2,1,2,3,3"
                                 + "&nestedNext=someNum4,4,someArray4,1,2,3,3,someString4,string4"
                                 + "&param2=true")},
 
-                {someMappedAPI.getSomethingWithQueryAndPathSNE(QUERY_PARAMETER_OBJECT, true),
+                {someMappedAPI.getSomethingWithQueryAndPathFNE(QUERY_PARAMETER_OBJECT, true),
                         equalTo("/path/to/target/end/point"),
                         equalTo("param1=someNum,1,someString,string1,someArray,ABCD,EF+GH,%D0%90%D0%91%D0%92%D0%93+%D0%94"
-                                + "&param2=true")}
+                                + "&param2=true")},
+
+                {someMappedAPI.getSomethingWithQueryAndPathSNE(new Object[]{1, "Кирилица", false, of("Hello world", "АБВ", 1, false)}, true),
+                        equalTo("/path/to/target/end/point"),
+                        equalTo("param1=1%20%D0%9A%D0%B8%D1%80%D0%B8%D0%BB%D0%B8%D1%86%D0%B0%20false%20Hello+world,%D0%90%D0%91%D0%92,1,false&param2=true")},
+
+                {someMappedAPI.getSomethingWithQueryAndPathPNE(new Object[]{1, "Кирилица", false, of("Hello world", "АБВ", 1, false)}, true),
+                        equalTo("/path/to/target/end/point"),
+                        equalTo("param1=1%7C%D0%9A%D0%B8%D1%80%D0%B8%D0%BB%D0%B8%D1%86%D0%B0%7Cfalse%7CHello+world,%D0%90%D0%91%D0%92,1,false&param2=true")},
+
+                {someMappedAPI.getSomethingWithQueryAndPathDE(HIGH_LEVEL_MAP, true),
+                        equalTo("/path/to/target/end/point"),
+                        equalTo("param1[someNum]=1&param1[someString]=string1&param2=true")},
+
+                {someMappedAPI.getSomethingWithQueryAndPathDE(QUERY_PARAMETER_OBJECT, true),
+                        equalTo("/path/to/target/end/point"),
+                        equalTo("param1[someNum]=1&param1[someString]=string1&param2=true")},
         };
     }
 
@@ -224,21 +241,37 @@ public class QueryMappingTest {
         RequestBuilder getSomethingWithQueryAndPath(@QueryParameter(name = "param1") int[] param1,
                                                     @QueryParameter(name = "param2") Boolean param2);
 
-
         @HttpMethod(httpMethod = GET)
         @URIPath("path/to/target/end/point")
-        RequestBuilder getSomethingWithQueryAndPathSNE(@QueryParameter(name = "param1", explode = false) List<Object> param1,
+        RequestBuilder getSomethingWithQueryAndPathFNE(@QueryParameter(name = "param1", explode = false) List<Object> param1,
                                                        @QueryParameter(name = "param2") Boolean param2);
 
         @HttpMethod(httpMethod = GET)
         @URIPath("path/to/target/end/point")
-        RequestBuilder getSomethingWithQueryAndPathSE(@QueryParameter(name = "param1") Object param1,
+        RequestBuilder getSomethingWithQueryAndPathFE(@QueryParameter(name = "param1") Object param1,
                                                       @QueryParameter(name = "param2") Boolean param2);
 
         @HttpMethod(httpMethod = GET)
         @URIPath("path/to/target/end/point")
-        RequestBuilder getSomethingWithQueryAndPathSNE(@QueryParameter(name = "param1", explode = false) Object param1,
+        RequestBuilder getSomethingWithQueryAndPathFNE(@QueryParameter(name = "param1", explode = false) Object param1,
                                                        @QueryParameter(name = "param2") Boolean param2);
+
+        @HttpMethod(httpMethod = GET)
+        @URIPath("path/to/target/end/point")
+        RequestBuilder getSomethingWithQueryAndPathSNE(
+                @QueryParameter(name = "param1", style = SPACE_DELIMITED, explode = false) Object[] param1,
+                @QueryParameter(name = "param2") Boolean param2);
+
+        @HttpMethod(httpMethod = GET)
+        @URIPath("path/to/target/end/point")
+        RequestBuilder getSomethingWithQueryAndPathPNE(
+                @QueryParameter(name = "param1", style = PIPE_DELIMITED, explode = false) Object[] param1,
+                @QueryParameter(name = "param2") Boolean param2);
+
+        @HttpMethod(httpMethod = GET)
+        @URIPath("path/to/target/end/point")
+        RequestBuilder getSomethingWithQueryAndPathDE(@QueryParameter(name = "param1", style = DEEP_OBJECT) Object param1,
+                                                      @QueryParameter(name = "param2") Boolean param2);
     }
 
     @MethodParameter
@@ -253,9 +286,6 @@ public class QueryMappingTest {
 
         private QueryParameterObject4 nestedNext;
 
-        public Integer getSomeNum() {
-            return someNum;
-        }
 
         public QueryParameterObject setSomeNum(Integer someNum) {
             this.someNum = someNum;
@@ -271,26 +301,14 @@ public class QueryMappingTest {
             return this;
         }
 
-        public List<String> getSomeArray() {
-            return someArray;
-        }
-
         public QueryParameterObject setSomeArray(List<String> someArray) {
             this.someArray = someArray;
             return this;
         }
 
-        public QueryParameterObject2 getNested() {
-            return nested;
-        }
-
         public QueryParameterObject setNested(QueryParameterObject2 nested) {
             this.nested = nested;
             return this;
-        }
-
-        public QueryParameterObject4 getNestedNext() {
-            return nestedNext;
         }
 
         public QueryParameterObject setNestedNext(QueryParameterObject4 nestedNext) {

@@ -80,26 +80,26 @@ public interface RequestSettings<T extends RequestSettings<T>> {
     T timeout(Duration duration);
 
     /**
-     * Appends query parameter.
+     * Appends query parameter. Appends query parameter. It gets value of the parameter joined into one string,
+     * where given values are separated by delimiter.
      *
-     * @param name     parameter name
-     * @param toExpand is to expand multiple value of the parameter or not.
-     *                 When it is not expanded then value is transformed into a comma-separated string.
-     * @param values   array of values of the the parameter. The method is designed to accept
-     *                 primitive values, objects of primitive wrappers, strings, arrays and
-     *                 collections of mentioned types. Any value may contain non ASCII characters.
+     * @param name      parameter name
+     * @param delimiter is a delimiter/separator of values.
+     * @param values    array of values of the the parameter. The method is designed to accept
+     *                  primitive values, objects of primitive wrappers, strings, arrays and
+     *                  collections of mentioned types. Any value may contain non ASCII characters.
      * @return instance of {@code T}
      */
-    T queryParam(String name, boolean toExpand, Object... values);
+    T queryParam(String name, QueryValueDelimiters delimiter, Object... values);
 
     /**
-     * Appends query parameter. It expands multiple value of the parameter by default.
+     * Appends query parameter. It explodes multiple value of the parameter by default.
      *
      * @param name   parameter name
-     * @param values values of the parameter
+     * @param values array of values of the the parameter. The method is designed to accept
+     *               primitive values, objects of primitive wrappers, strings, arrays and
+     *               collections of mentioned types. Any value may contain non ASCII characters.
      * @return instance of {@code T}
      */
-    default T queryParam(String name, final Object... values) {
-        return queryParam(name, true, values);
-    }
+    T queryParam(String name, Object... values);
 }
