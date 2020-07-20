@@ -10,12 +10,14 @@ public class Query {
     private final String name;
     private final boolean toExpand;
     private final QueryValueDelimiters delimiter;
+    private final boolean allowReserved;
     private final Object[] params;
 
-    Query(String name, boolean toExpand, QueryValueDelimiters delimiter, Object... params) {
+    Query(String name, boolean toExpand, QueryValueDelimiters delimiter, boolean allowReserved, Object... params) {
         this.name = name;
         this.toExpand = toExpand;
         this.delimiter = delimiter;
+        this.allowReserved = allowReserved;
         this.params = params;
     }
 
@@ -45,5 +47,12 @@ public class Query {
      */
     public QueryValueDelimiters getDelimiter() {
         return delimiter;
+    }
+
+    /**
+     * @return to keep reserved characters not encoded or not
+     */
+    public boolean isAllowReserved() {
+        return allowReserved;
     }
 }

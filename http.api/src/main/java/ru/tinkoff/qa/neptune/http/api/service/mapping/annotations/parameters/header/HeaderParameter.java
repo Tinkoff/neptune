@@ -59,7 +59,7 @@ public @interface HeaderParameter {
     boolean required() default false;
 
     /**
-     * @return @return to explode parameter value or not. Default value is {@code false}.
+     * @return to explode parameter value or not. Default value is {@code false}.
      * This has an effect when parameter value has type {@link Map} or type of some POJO.
      */
     @ToExpand

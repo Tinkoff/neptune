@@ -65,7 +65,7 @@ public @interface PathParameter {
     boolean required() default true;
 
     /**
-     * @return @return to explode parameter value or not. Default value is {@code false}.
+     * @return to explode parameter value or not. Default value is {@code false}.
      * This has an effect when parameter value has type {@link Map} or type of some POJO.
      */
     @ToExpand

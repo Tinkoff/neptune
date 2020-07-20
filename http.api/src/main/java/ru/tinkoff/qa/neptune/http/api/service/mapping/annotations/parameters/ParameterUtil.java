@@ -98,6 +98,20 @@ public final class ParameterUtil {
         return returnBoolean(a, ToExpand.class);
     }
 
+    /**
+     * Reads an annotation and returns information about a {@link Parameter}.
+     * This is information about necessity to keep reserved characters as is.
+     * <p>
+     * It searches for a method annotated by {@link AllowReserved}.
+     * {@code null} value also may be returned when there is no method annotated by {@link AllowReserved}
+     *
+     * @param a is an annotation to read
+     * @return {@code true} or {@code false} or {@code null} when there is no method annotated by {@link AllowReserved}.
+     */
+    public static Boolean toAllowReserved(Annotation a) {
+        return returnBoolean(a, AllowReserved.class);
+    }
+
     private static <T extends Annotation> Boolean returnBoolean(Annotation a, Class<T> toFind) {
         checkNotNull(a);
         checkNotNull(toFind);

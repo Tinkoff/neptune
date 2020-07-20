@@ -33,9 +33,9 @@ class ProxyRequestTuner implements RequestTuner {
         ofNullable(queryParams).ifPresent(objects ->
                 objects.forEach(o -> {
                     if (o.isToExpand()) {
-                        requestSettings.queryParam(o.getName(), o.getValues());
+                        requestSettings.queryParam(o.getName(), o.isAllowReserved(), o.getValues());
                     } else {
-                        requestSettings.queryParam(o.getName(), o.getDelimiter(), o.getValues());
+                        requestSettings.queryParam(o.getName(), o.getDelimiter(), o.isAllowReserved(), o.getValues());
                     }
                 }));
 

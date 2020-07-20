@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.query;
 
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.AllowReserved;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.Required;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ToExpand;
 
@@ -38,11 +39,20 @@ public @interface QueryParameter {
     boolean required() default true;
 
     /**
-     * @return @return to explode parameter value or not. Default value is {@code true}.
+     * @return to explode parameter value or not. Default value is {@code true}.
      * This has an effect when parameter value has type {@link Map} or type of some POJO.
      */
     @ToExpand
     boolean explode() default true;
+
+
+    /**
+     * @return to percent-encode reserved characters or not. These characters are kept as they are
+     * when it is {@code true}
+     */
+    @AllowReserved
+    boolean allowReserved() default false;
+
 
     /**
      * @return style of a query parameter. Default is {@link QueryStyles#FORM}
@@ -84,7 +94,8 @@ public @interface QueryParameter {
 
                             var queryPart = queryParameter.style().getQueryParameterValue(value,
                                     queryParameter.name(),
-                                    toExpandValue(queryParameter));
+                                    toExpandValue(queryParameter),
+                                    toAllowReserved(queryParameter));
                             resultList.addAll(queryPart);
                         }
 

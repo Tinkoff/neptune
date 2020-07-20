@@ -30,26 +30,32 @@ public enum QueryStyles {
      */
     FORM {
         @Override
-        List<Query> arrayValue(Stream<?> valueSource, String varName, boolean explode) {
-            return of(new Query(varName, explode, explode ? null : COMMA, valueSource.toArray()));
+        List<Query> arrayValue(Stream<?> valueSource,
+                               String varName,
+                               boolean explode,
+                               boolean allowReserved) {
+            return of(new Query(varName, explode, explode ? null : COMMA, allowReserved, valueSource.toArray()));
         }
 
         @Override
-        List<Query> mapValue(Map<?, ?> map, String varName, boolean explode) {
+        List<Query> mapValue(Map<?, ?> map,
+                             String varName,
+                             boolean explode,
+                             boolean allowReserved) {
             var result = new LinkedList<Query>();
             if (explode) {
-                map.forEach((o, o2) -> result.add(new Query(String.valueOf(o), false, COMMA, getObjectFlat(o2))));
+                map.forEach((o, o2) -> result.add(new Query(String.valueOf(o), false, COMMA, allowReserved, getObjectFlat(o2))));
             } else {
                 result.add(new Query(varName,
                         false,
                         COMMA,
-                        getObjectFlat(map.entrySet()
-                                .stream()
-                                .filter(entry -> {
-                                    var cls = entry.getValue().getClass();
-                                    return !Map.class.isAssignableFrom(cls) && !isAMethodParameter(cls);
-                                })
-                                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue)))));
+                        allowReserved, getObjectFlat(map.entrySet()
+                        .stream()
+                        .filter(entry -> {
+                            var cls = entry.getValue().getClass();
+                            return !Map.class.isAssignableFrom(cls) && !isAMethodParameter(cls);
+                        })
+                        .collect(toMap(Map.Entry::getKey, Map.Entry::getValue)))));
             }
             return result;
         }
@@ -58,22 +64,28 @@ public enum QueryStyles {
      * Space delimited - space-separated array values. Has effect only for non-exploded arrays.
      */
     SPACE_DELIMITED {
-        List<Query> arrayValue(Stream<?> valueSource, String varName, boolean explode) {
+        List<Query> arrayValue(Stream<?> valueSource,
+                               String varName,
+                               boolean explode,
+                               boolean allowReserved) {
             if (!explode) {
-                return of(new Query(varName, false, SPACE, valueSource.toArray()));
+                return of(new Query(varName, false, SPACE, allowReserved, valueSource.toArray()));
             }
-            return FORM.arrayValue(valueSource, varName, true);
+            return FORM.arrayValue(valueSource, varName, true, allowReserved);
         }
     },
     /**
      * Pipe delimited – pipeline-separated array values. Has effect only for non-exploded arrays.
      */
     PIPE_DELIMITED {
-        List<Query> arrayValue(Stream<?> valueSource, String varName, boolean explode) {
+        List<Query> arrayValue(Stream<?> valueSource,
+                               String varName,
+                               boolean explode,
+                               boolean allowReserved) {
             if (!explode) {
-                return of(new Query(varName, false, PIPE, valueSource.toArray()));
+                return of(new Query(varName, false, PIPE, allowReserved, valueSource.toArray()));
             }
-            return FORM.arrayValue(valueSource, varName, true);
+            return FORM.arrayValue(valueSource, varName, true, allowReserved);
         }
     },
     /**
@@ -81,9 +93,11 @@ public enum QueryStyles {
      */
     @Beta
     DEEP_OBJECT {
+        @Override
         List<Query> mapValue(Map<?, ?> map,
                              String varName,
-                             boolean explode) {
+                             boolean explode,
+                             boolean allowReserved) {
             var result = new LinkedList<Query>();
             map.entrySet()
                     .stream()
@@ -96,7 +110,7 @@ public enum QueryStyles {
                             .add(new Query(varName + "[" + entry.getKey() + "]",
                                     true,
                                     null,
-                                    getObjectFlat(entry.getValue()))));
+                                    allowReserved, getObjectFlat(entry.getValue()))));
 
 
             return result;
@@ -128,23 +142,28 @@ public enum QueryStyles {
      * @param explode             to explode value or not
      * @return a list of {@link Query}.
      */
-    List<Query> getQueryParameterValue(Object queryParameterValue, String parameterName, boolean explode) {
+    List<Query> getQueryParameterValue(Object queryParameterValue,
+                                       String parameterName,
+                                       boolean explode,
+                                       boolean allowReserved) {
         var stream = toStream(queryParameterValue);
         if (stream != null) {
             return arrayValue(stream,
                     parameterName,
-                    explode);
+                    explode,
+                    allowReserved);
         }
 
         return ofNullable(objectToMap(queryParameterValue))
-                .map(map -> mapValue(map, parameterName, explode))
-                .orElseGet(() -> arrayValue(of(queryParameterValue).stream(), parameterName, explode));
+                .map(map -> mapValue(map, parameterName, explode, allowReserved))
+                .orElseGet(() -> arrayValue(of(queryParameterValue).stream(), parameterName, explode, allowReserved));
 
     }
 
     List<Query> arrayValue(Stream<?> valueSource,
                            String varName,
-                           boolean explode) {
+                           boolean explode,
+                           boolean allowReserved) {
         throw new UnsupportedOperationException(format("Query parameter %s doesn't support array/collection values " +
                         "due to defined style: %s",
                 varName,
@@ -153,7 +172,8 @@ public enum QueryStyles {
 
     List<Query> mapValue(Map<?, ?> map,
                          String varName,
-                         boolean explode) {
+                         boolean explode,
+                         boolean allowReserved) {
         throw new UnsupportedOperationException(format("Query parameter %s doesn't support object values " +
                         "due to defined style: %s",
                 varName,

@@ -2241,14 +2241,14 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
     }
 
     @Override
-    public RequestBuilder queryParam(String name, QueryValueDelimiters delimiter, Object... values) {
-        queryBuilder.addParameter(name, false, delimiter, values);
+    public RequestBuilder queryParam(String name, QueryValueDelimiters delimiter, boolean allowReserved, Object... values) {
+        queryBuilder.addParameter(name, false, delimiter, allowReserved, values);
         return this;
     }
 
     @Override
-    public RequestBuilder queryParam(String name, Object... values) {
-        queryBuilder.addParameter(name, true, null, values);
+    public RequestBuilder queryParam(String name, boolean allowReserved, Object... values) {
+        queryBuilder.addParameter(name, true, null, allowReserved, values);
         return this;
     }
 
