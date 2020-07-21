@@ -8,6 +8,7 @@ import ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMethod;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.URIPath;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.MethodParameter;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterFieldName;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.query.QueryParameter;
 
 import java.net.URI;
@@ -63,7 +64,7 @@ public class QueryMappingTest {
 
     private final static Map<String, Object> HIGH_LEVEL_MAP = new LinkedHashMap<>() {
         {
-            put("someNum", 1);
+            put("someNumber", 1);
             put("someString", "string[1]");
             put("someArray", List.of("ABCD?", "EF:GH", "АБВГ Д&="));
             put("nested", MID_LEVEL_MAP);
@@ -143,51 +144,51 @@ public class QueryMappingTest {
 
                 {someMappedAPI.getSomethingWithQueryAndPathFE(HIGH_LEVEL_MAP, true),
                         equalTo("/path/to/target/end/point"),
-                        equalTo("someNum=1&someString=string%5B1%5D&someArray=ABCD%3F,EF%3AGH,%D0%90%D0%91%D0%92%D0%93+%D0%94%26%3D" +
+                        equalTo("someNumber=1&someString=string%5B1%5D&someArray=ABCD%3F,EF%3AGH,%D0%90%D0%91%D0%92%D0%93+%D0%94%26%3D" +
                                 "&nested=someNum2,2,someString2,string2,someArray2,1,2,3,3" +
                                 "&nestedNext=someNum4,4,someArray4,1,2,3,3,someString4,string4%24%2F%3D" +
                                 "&param2=true")},
 
                 {someMappedAPI.getSomethingWithQueryAndPathFEAR(HIGH_LEVEL_MAP, true),
                         equalTo("/path/to/target/end/point"),
-                        equalTo("someNum=1&someString=string[1]&someArray=ABCD?,EF:GH,%D0%90%D0%91%D0%92%D0%93+%D0%94&=" +
+                        equalTo("someNumber=1&someString=string[1]&someArray=ABCD?,EF:GH,%D0%90%D0%91%D0%92%D0%93+%D0%94&=" +
                                 "&nested=someNum2,2,someString2,string2,someArray2,1,2,3,3" +
                                 "&nestedNext=someNum4,4,someArray4,1,2,3,3,someString4,string4$/=" +
                                 "&param2=true")},
 
                 {someMappedAPI.getSomethingWithQueryAndPathFNE(HIGH_LEVEL_MAP, true),
                         equalTo("/path/to/target/end/point"),
-                        equalTo("param1=someNum,1,someString,string%5B1%5D,someArray,ABCD%3F,EF%3AGH,%D0%90%D0%91%D0%92%D0%93+%D0%94%26%3D" +
+                        equalTo("param1=someNumber,1,someString,string%5B1%5D,someArray,ABCD%3F,EF%3AGH,%D0%90%D0%91%D0%92%D0%93+%D0%94%26%3D" +
                                 "&param2=true")},
 
                 {someMappedAPI.getSomethingWithQueryAndPathFNEAR(HIGH_LEVEL_MAP, true),
                         equalTo("/path/to/target/end/point"),
-                        equalTo("param1=someNum,1,someString,string[1],someArray,ABCD?,EF:GH,%D0%90%D0%91%D0%92%D0%93+%D0%94&=" +
+                        equalTo("param1=someNumber,1,someString,string[1],someArray,ABCD?,EF:GH,%D0%90%D0%91%D0%92%D0%93+%D0%94&=" +
                                 "&param2=true")},
 
 
                 {someMappedAPI.getSomethingWithQueryAndPathFE(QUERY_PARAMETER_OBJECT, true),
                         equalTo("/path/to/target/end/point"),
-                        equalTo("someNum=1&someString=string%5B1%5D&someArray=ABCD%3F,EF%3AGH,%D0%90%D0%91%D0%92%D0%93+%D0%94%26%3D" +
+                        equalTo("someNumber=1&someString=string%5B1%5D&someArray=ABCD%3F,EF%3AGH,%D0%90%D0%91%D0%92%D0%93+%D0%94%26%3D" +
                                 "&nested=someNum2,2,someString2,string2,someArray2,1,2,3,3" +
                                 "&nestedNext=someNum4,4,someArray4,1,2,3,3,someString4,string4%24%2F%3D" +
                                 "&param2=true")},
 
                 {someMappedAPI.getSomethingWithQueryAndPathFEAR(QUERY_PARAMETER_OBJECT, true),
                         equalTo("/path/to/target/end/point"),
-                        equalTo("someNum=1&someString=string[1]&someArray=ABCD?,EF:GH,%D0%90%D0%91%D0%92%D0%93+%D0%94&=" +
+                        equalTo("someNumber=1&someString=string[1]&someArray=ABCD?,EF:GH,%D0%90%D0%91%D0%92%D0%93+%D0%94&=" +
                                 "&nested=someNum2,2,someString2,string2,someArray2,1,2,3,3" +
                                 "&nestedNext=someNum4,4,someArray4,1,2,3,3,someString4,string4$/=" +
                                 "&param2=true")},
 
                 {someMappedAPI.getSomethingWithQueryAndPathFNE(QUERY_PARAMETER_OBJECT, true),
                         equalTo("/path/to/target/end/point"),
-                        equalTo("param1=someNum,1,someString,string%5B1%5D,someArray,ABCD%3F,EF%3AGH,%D0%90%D0%91%D0%92%D0%93+%D0%94%26%3D" +
+                        equalTo("param1=someNumber,1,someString,string%5B1%5D,someArray,ABCD%3F,EF%3AGH,%D0%90%D0%91%D0%92%D0%93+%D0%94%26%3D" +
                                 "&param2=true")},
 
                 {someMappedAPI.getSomethingWithQueryAndPathFNEAR(QUERY_PARAMETER_OBJECT, true),
                         equalTo("/path/to/target/end/point"),
-                        equalTo("param1=someNum,1,someString,string[1],someArray,ABCD?,EF:GH,%D0%90%D0%91%D0%92%D0%93+%D0%94&=" +
+                        equalTo("param1=someNumber,1,someString,string[1],someArray,ABCD?,EF:GH,%D0%90%D0%91%D0%92%D0%93+%D0%94&=" +
                                 "&param2=true")},
 
                 {someMappedAPI.getSomethingWithQueryAndPathSNE(new Object[]{1, "Кирилица$@", false, of("Hello world:??", "АБВ", 1, false)}, true),
@@ -204,19 +205,19 @@ public class QueryMappingTest {
 
                 {someMappedAPI.getSomethingWithQueryAndPathDE(HIGH_LEVEL_MAP, true),
                         equalTo("/path/to/target/end/point"),
-                        equalTo("param1[someNum]=1&param1[someString]=string%5B1%5D&param2=true")},
+                        equalTo("param1[someNumber]=1&param1[someString]=string%5B1%5D&param2=true")},
 
                 {someMappedAPI.getSomethingWithQueryAndPathDEAR(HIGH_LEVEL_MAP, true),
                         equalTo("/path/to/target/end/point"),
-                        equalTo("param1[someNum]=1&param1[someString]=string[1]&param2=true")},
+                        equalTo("param1[someNumber]=1&param1[someString]=string[1]&param2=true")},
 
                 {someMappedAPI.getSomethingWithQueryAndPathDE(QUERY_PARAMETER_OBJECT, true),
                         equalTo("/path/to/target/end/point"),
-                        equalTo("param1[someNum]=1&param1[someString]=string%5B1%5D&param2=true")},
+                        equalTo("param1[someNumber]=1&param1[someString]=string%5B1%5D&param2=true")},
 
                 {someMappedAPI.getSomethingWithQueryAndPathDEAR(QUERY_PARAMETER_OBJECT, true),
                         equalTo("/path/to/target/end/point"),
-                        equalTo("param1[someNum]=1&param1[someString]=string[1]&param2=true")}
+                        equalTo("param1[someNumber]=1&param1[someString]=string[1]&param2=true")}
         };
     }
 
@@ -382,6 +383,8 @@ public class QueryMappingTest {
 
     @MethodParameter
     private static class QueryParameterObject {
+
+        @ParameterFieldName("someNumber")
         private Integer someNum;
 
         private String someString;

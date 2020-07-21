@@ -165,7 +165,10 @@ public final class ParameterUtil {
                             } else {
                                 val = o;
                             }
-                            result.put(f.getName(), val);
+                            result.put(ofNullable(f.getAnnotation(ParameterFieldName.class))
+                                            .map(ParameterFieldName::value)
+                                            .orElseGet(f::getName),
+                                    val);
                         });
                     } catch (Exception e) {
                         throw new RuntimeException(e);

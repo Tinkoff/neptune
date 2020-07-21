@@ -64,14 +64,14 @@ public class CustomRequestBodyTest extends BaseHttpTest {
 
     private static final File TEST_FILE = getTestFile();
 
-    private static final Map<String, String> FORM_PARAMS = new LinkedHashMap<>() {
+    private static final Map<String, Object> FORM_PARAMS = new LinkedHashMap<>() {
         {
             put("param1", "value1");
             put("param2", "value2");
         }
     };
 
-    private static final Map<String, String> FORM_PARAMS2 = new LinkedHashMap<>() {
+    private static final Map<String, Object> FORM_PARAMS2 = new LinkedHashMap<>() {
         {
             put("chip&dale", "rescue rangers");
             put("how to get water", "2H2 + O2 = 2H2O");
@@ -94,7 +94,7 @@ public class CustomRequestBodyTest extends BaseHttpTest {
     private static final org.w3c.dom.Document W3C_DOCUMENT = prepareW3CDocument();
 
     private static final String REQUEST_BODY_URL_UNLOADED = "param1=value1&param2=value2";
-    private static final String REQUEST_BODY_URL_UNLOADED2 = "chip%26dale=rescue+rangers&how+to+get+water=2H2+%2B+O2+%3D+2H2O";
+    private static final String REQUEST_BODY_URL_UNLOADED2 = "chip&dale=rescue+rangers&how+to+get+water=2H2+%2B+O2+%3D+2H2O";
 
     private static final String JSON_HAS_BEEN_SUCCESSFULLY_POSTED = "Json has been successfully posted";
     private static final String JACKSON_XML_HAS_BEEN_SUCCESSFULLY_POSTED = "Jackson xml has been successfully posted";

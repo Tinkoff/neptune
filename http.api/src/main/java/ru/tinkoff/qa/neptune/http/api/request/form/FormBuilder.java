@@ -75,9 +75,33 @@ public abstract class FormBuilder {
     }
 
     /**
+     * Adds a form parameter.
+     *
+     * @param name  is a name of a form parameter
+     * @param value is a value to set with no encoding
+     */
+    protected void addParameter(String name,
+                                Object value) {
+        checkArgument(isNotBlank(name), "Name of the parameter should not be null/blank");
+        checkNotNull(value);
+
+        var nameValue = (NameAndValue) parameters.stream()
+                .filter(o -> Objects.equals(o.getName(), name))
+                .findFirst()
+                .orElse(null);
+
+        if (nameValue == null) {
+            nameValue = new NameAndValue(name, true, null, true, true);
+            parameters.add(nameValue);
+        }
+
+        nameValue.addValues(value);
+    }
+
+    /**
      * @return build form for further usage
      */
-    public String buildForm() {
+    protected String buildForm() {
         return parameters.stream()
                 .map(NameAndValue::toString)
                 .collect(joining("&"));

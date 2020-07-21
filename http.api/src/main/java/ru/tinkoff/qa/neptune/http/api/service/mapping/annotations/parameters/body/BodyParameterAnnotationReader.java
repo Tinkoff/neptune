@@ -133,7 +133,7 @@ public final class BodyParameterAnnotationReader {
                 FormParameter.class,
                 parameters,
                 (ps, params) -> {
-                    var form = new LinkedHashMap<String, String>();
+                    var form = new LinkedHashMap<String, Object>();
                     for (int i = 0; i < ps.length; i++) {
                         var formParameter = ps[i].getAnnotation(FormParameter.class);
                         ofNullable(params[i]).ifPresent(o -> form.put(formParameter.value(), valueOf(o)));

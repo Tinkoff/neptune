@@ -8,7 +8,7 @@ import java.net.URISyntaxException;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-class QueryBuilder extends FormBuilder {
+final class QueryBuilder extends FormBuilder {
 
     protected void addParameter(String name,
                                 boolean toExpand,

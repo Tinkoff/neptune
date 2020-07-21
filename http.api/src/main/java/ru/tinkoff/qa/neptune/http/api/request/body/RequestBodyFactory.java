@@ -6,6 +6,7 @@ import ru.tinkoff.qa.neptune.http.api.mapper.DefaultBodyMappers;
 import ru.tinkoff.qa.neptune.http.api.properties.mapper.DefaultJsonObjectMapper;
 import ru.tinkoff.qa.neptune.http.api.properties.mapper.DefaultXmlObjectMapper;
 import ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart;
+import ru.tinkoff.qa.neptune.http.api.request.body.url.encoded.FormParameter;
 import ru.tinkoff.qa.neptune.http.api.request.body.url.encoded.URLEncodedForm;
 
 import javax.xml.transform.Transformer;
@@ -127,7 +128,17 @@ public final class RequestBodyFactory {
      * @param formParameters is a map of parameter names and values
      * @return an instance of {@link RequestBody}
      */
-    public static RequestBody<String> body(Map<String, String> formParameters) {
+    public static RequestBody<String> body(Map<String, Object> formParameters) {
+        return new URLEncodedForm(formParameters);
+    }
+
+    /**
+     * Creates a body of {@code application/x-www-form-urlencoded} format.
+     *
+     * @param formParameters array of form parameters
+     * @return an instance of {@link RequestBody}
+     */
+    public static RequestBody<String> body(FormParameter... formParameters) {
         return new URLEncodedForm(formParameters);
     }
 

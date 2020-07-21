@@ -2,34 +2,54 @@ package ru.tinkoff.qa.neptune.http.api.request.body.url.encoded;
 
 import ru.tinkoff.qa.neptune.http.api.request.body.RequestBody;
 
-import java.io.UnsupportedEncodingException;
 import java.net.http.HttpRequest;
 import java.util.Map;
 
-import static java.lang.String.format;
-import static java.net.URLEncoder.encode;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.net.http.HttpRequest.BodyPublishers.ofString;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.joining;
+import static java.util.Arrays.stream;
+import static ru.tinkoff.qa.neptune.http.api.request.body.url.encoded.FormParameter.formParameter;
 
 public final class URLEncodedForm extends RequestBody<String> {
 
-    public URLEncodedForm(Map<String, String> formParameters) {
-        super(ofNullable(formParameters)
-                .map(m -> m.entrySet()
-                        .stream()
-                        .map(entry -> {
-                            try {
-                                return format("%s=%s",
-                                        encode(entry.getKey(), UTF_8.toString()),
-                                        encode(entry.getValue(), UTF_8.toString()));
-                            } catch (UnsupportedEncodingException e) {
-                                throw new RuntimeException(e);
-                            }
-                        })
-                        .collect(joining("&")))
-                .orElseThrow());
+    private URLEncodedForm(URLEncodedFormBuilder builder) {
+        super(builder.buildForm());
+    }
+
+    public URLEncodedForm(FormParameter... formParameters) {
+        this(createBuilder(formParameters));
+    }
+
+    public URLEncodedForm(Map<String, Object> formParameters) {
+        this(formParameters
+                .entrySet()
+                .stream()
+                .map(e -> formParameter(e.getKey(),
+                        true,
+                        null,
+                        false,
+                        e.getValue()))
+                .toArray(FormParameter[]::new));
+    }
+
+    private static URLEncodedFormBuilder createBuilder(FormParameter... formParameters) {
+        var builder = new URLEncodedFormBuilder();
+        checkNotNull(formParameters);
+        checkArgument(formParameters.length > 0, "Should be defined at least one parameter.");
+        stream(formParameters).forEach(formParameter -> {
+            if (formParameter.isToNotEncodeValue()) {
+                builder.addParameter(formParameter.getName(), formParameter.getValues()[0]);
+            } else {
+                builder.addParameter(formParameter.getName(),
+                        formParameter.isToExpand(),
+                        formParameter.getDelimiter(),
+                        formParameter.isAllowReserved(),
+                        formParameter.getValues());
+            }
+        });
+
+        return builder;
     }
 
     @Override
