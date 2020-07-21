@@ -92,7 +92,7 @@ public interface RequestSettings<T extends RequestSettings<T>> {
      *                      collections of mentioned types. Any value may contain non ASCII characters.
      * @return instance of {@code T}
      */
-    T queryParam(String name, QueryValueDelimiters delimiter, boolean allowReserved, Object... values);
+    T queryParam(String name, FormValueDelimiters delimiter, boolean allowReserved, Object... values);
 
     /**
      * Appends query parameter. Appends query parameter. It gets value of the parameter joined into one string,
@@ -106,7 +106,7 @@ public interface RequestSettings<T extends RequestSettings<T>> {
      *                  collections of mentioned types. Any value may contain non ASCII characters.
      * @return instance of {@code T}
      */
-    default T queryParam(String name, QueryValueDelimiters delimiter, Object... values) {
+    default T queryParam(String name, FormValueDelimiters delimiter, Object... values) {
         return queryParam(name, delimiter, false, values);
     }
 

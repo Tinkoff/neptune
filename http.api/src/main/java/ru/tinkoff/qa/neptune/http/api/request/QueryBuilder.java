@@ -12,7 +12,7 @@ final class QueryBuilder extends FormBuilder {
 
     protected void addParameter(String name,
                                 boolean toExpand,
-                                QueryValueDelimiters delimiter,
+                                FormValueDelimiters delimiter,
                                 boolean allowReserved,
                                 Object... values) {
         super.addParameter(name, toExpand, delimiter, allowReserved, values);

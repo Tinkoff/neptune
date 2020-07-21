@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.query;
+package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form;
 
 import com.google.common.annotations.Beta;
 
@@ -12,11 +12,11 @@ import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.ArrayUtils.addAll;
-import static ru.tinkoff.qa.neptune.http.api.request.QueryValueDelimiters.*;
+import static ru.tinkoff.qa.neptune.http.api.request.FormValueDelimiters.*;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil.*;
 
 /**
- * Query parameters support the following style values:
+ * Form parameters support the following style values:
  * <ul>
  *     <li>Form - ampersand-separated values, also known as form-style query expansion.</li>
  *     <li>Space delimited - space-separated array values.</li>
@@ -24,29 +24,29 @@ import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.paramet
  *     <li>Deep object – a simple way of rendering nested objects using form parameters (applies to objects only).</li>
  * </ul>
  */
-public enum QueryStyles {
+public enum FormStyles {
     /**
      * Form (default) - ampersand-separated values, also known as form-style query expansion.
      */
     FORM {
         @Override
-        List<Query> arrayValue(Stream<?> valueSource,
-                               String varName,
-                               boolean explode,
-                               boolean allowReserved) {
-            return of(new Query(varName, explode, explode ? null : COMMA, allowReserved, valueSource.toArray()));
+        List<ReadFormParameter> arrayValue(Stream<?> valueSource,
+                                           String varName,
+                                           boolean explode,
+                                           boolean allowReserved) {
+            return of(new ReadFormParameter(varName, explode, explode ? null : COMMA, allowReserved, valueSource.toArray()));
         }
 
         @Override
-        List<Query> mapValue(Map<?, ?> map,
-                             String varName,
-                             boolean explode,
-                             boolean allowReserved) {
-            var result = new LinkedList<Query>();
+        List<ReadFormParameter> mapValue(Map<?, ?> map,
+                                         String varName,
+                                         boolean explode,
+                                         boolean allowReserved) {
+            var result = new LinkedList<ReadFormParameter>();
             if (explode) {
-                map.forEach((o, o2) -> result.add(new Query(String.valueOf(o), false, COMMA, allowReserved, getObjectFlat(o2))));
+                map.forEach((o, o2) -> result.add(new ReadFormParameter(String.valueOf(o), false, COMMA, allowReserved, getObjectFlat(o2))));
             } else {
-                result.add(new Query(varName,
+                result.add(new ReadFormParameter(varName,
                         false,
                         COMMA,
                         allowReserved, getObjectFlat(map.entrySet()
@@ -64,12 +64,12 @@ public enum QueryStyles {
      * Space delimited - space-separated array values. Has effect only for non-exploded arrays.
      */
     SPACE_DELIMITED {
-        List<Query> arrayValue(Stream<?> valueSource,
-                               String varName,
-                               boolean explode,
-                               boolean allowReserved) {
+        List<ReadFormParameter> arrayValue(Stream<?> valueSource,
+                                           String varName,
+                                           boolean explode,
+                                           boolean allowReserved) {
             if (!explode) {
-                return of(new Query(varName, false, SPACE, allowReserved, valueSource.toArray()));
+                return of(new ReadFormParameter(varName, false, SPACE, allowReserved, valueSource.toArray()));
             }
             return FORM.arrayValue(valueSource, varName, true, allowReserved);
         }
@@ -78,12 +78,12 @@ public enum QueryStyles {
      * Pipe delimited – pipeline-separated array values. Has effect only for non-exploded arrays.
      */
     PIPE_DELIMITED {
-        List<Query> arrayValue(Stream<?> valueSource,
-                               String varName,
-                               boolean explode,
-                               boolean allowReserved) {
+        List<ReadFormParameter> arrayValue(Stream<?> valueSource,
+                                           String varName,
+                                           boolean explode,
+                                           boolean allowReserved) {
             if (!explode) {
-                return of(new Query(varName, false, PIPE, allowReserved, valueSource.toArray()));
+                return of(new ReadFormParameter(varName, false, PIPE, allowReserved, valueSource.toArray()));
             }
             return FORM.arrayValue(valueSource, varName, true, allowReserved);
         }
@@ -94,11 +94,11 @@ public enum QueryStyles {
     @Beta
     DEEP_OBJECT {
         @Override
-        List<Query> mapValue(Map<?, ?> map,
-                             String varName,
-                             boolean explode,
-                             boolean allowReserved) {
-            var result = new LinkedList<Query>();
+        List<ReadFormParameter> mapValue(Map<?, ?> map,
+                                         String varName,
+                                         boolean explode,
+                                         boolean allowReserved) {
+            var result = new LinkedList<ReadFormParameter>();
             map.entrySet()
                     .stream()
                     .filter(entry -> {
@@ -107,7 +107,7 @@ public enum QueryStyles {
                                 && !cls.isArray() && !Iterable.class.isAssignableFrom(cls);
                     })
                     .forEach(entry -> result
-                            .add(new Query(varName + "[" + entry.getKey() + "]",
+                            .add(new ReadFormParameter(varName + "[" + entry.getKey() + "]",
                                     true,
                                     null,
                                     allowReserved, getObjectFlat(entry.getValue()))));
@@ -140,12 +140,12 @@ public enum QueryStyles {
      *                            string part of a query
      * @param parameterName       is a name of a query parameter
      * @param explode             to explode value or not
-     * @return a list of {@link Query}.
+     * @return a list of {@link ReadFormParameter}.
      */
-    List<Query> getQueryParameterValue(Object queryParameterValue,
-                                       String parameterName,
-                                       boolean explode,
-                                       boolean allowReserved) {
+    public List<ReadFormParameter> getFormParameters(Object queryParameterValue,
+                                                     String parameterName,
+                                                     boolean explode,
+                                                     boolean allowReserved) {
         var stream = toStream(queryParameterValue);
         if (stream != null) {
             return arrayValue(stream,
@@ -160,21 +160,21 @@ public enum QueryStyles {
 
     }
 
-    List<Query> arrayValue(Stream<?> valueSource,
-                           String varName,
-                           boolean explode,
-                           boolean allowReserved) {
-        throw new UnsupportedOperationException(format("Query parameter %s doesn't support array/collection values " +
+    List<ReadFormParameter> arrayValue(Stream<?> valueSource,
+                                       String varName,
+                                       boolean explode,
+                                       boolean allowReserved) {
+        throw new UnsupportedOperationException(format("Form parameter %s doesn't support array/collection values " +
                         "due to defined style: %s",
                 varName,
                 name()));
     }
 
-    List<Query> mapValue(Map<?, ?> map,
-                         String varName,
-                         boolean explode,
-                         boolean allowReserved) {
-        throw new UnsupportedOperationException(format("Query parameter %s doesn't support object values " +
+    List<ReadFormParameter> mapValue(Map<?, ?> map,
+                                     String varName,
+                                     boolean explode,
+                                     boolean allowReserved) {
+        throw new UnsupportedOperationException(format("Form parameter %s doesn't support object values " +
                         "due to defined style: %s",
                 varName,
                 name()));

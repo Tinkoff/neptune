@@ -1,9 +1,9 @@
 package ru.tinkoff.qa.neptune.http.api.request;
 
 /**
- * Delimiters of not exploded values of http query parameter.
+ * Delimiters of not exploded values of http forms.
  */
-public enum QueryValueDelimiters {
+public enum FormValueDelimiters {
     /**
      * For comma-separated values
      */
@@ -19,7 +19,7 @@ public enum QueryValueDelimiters {
 
     private final String delimiter;
 
-    QueryValueDelimiters(String delimiter) {
+    FormValueDelimiters(String delimiter) {
         this.delimiter = delimiter;
     }
 

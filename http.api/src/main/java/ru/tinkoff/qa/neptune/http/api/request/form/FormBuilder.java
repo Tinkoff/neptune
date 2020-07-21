@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.http.api.request.form;
 
-import ru.tinkoff.qa.neptune.http.api.request.QueryValueDelimiters;
+import ru.tinkoff.qa.neptune.http.api.request.FormValueDelimiters;
 
 import java.net.URLEncoder;
 import java.util.*;
@@ -53,7 +53,7 @@ public abstract class FormBuilder {
      */
     protected void addParameter(String name,
                                 boolean toExpand,
-                                QueryValueDelimiters delimiter,
+                                FormValueDelimiters delimiter,
                                 boolean allowReserved,
                                 Object... values) {
         checkArgument(isNotBlank(name), "Name of the parameter should not be null/blank");
@@ -115,13 +115,13 @@ public abstract class FormBuilder {
         private final String name;
         private final List<Object> values = new LinkedList<>();
         private final boolean toExpand;
-        private final QueryValueDelimiters delimiter;
+        private final FormValueDelimiters delimiter;
         private final boolean allowReserved;
         private final boolean toNotEncodeValue;
 
         protected NameAndValue(String name,
                                boolean toExpand,
-                               QueryValueDelimiters delimiter,
+                               FormValueDelimiters delimiter,
                                boolean allowReserved,
                                boolean toNotEncodeValue) {
             this.name = name;

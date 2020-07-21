@@ -1,22 +1,24 @@
 package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.query;
 
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.AllowReserved;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.MethodParameter;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.Required;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ToExpand;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form.FormParam;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form.ReadFormParameter;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import static java.lang.String.format;
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
-import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil.*;
-import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.query.QueryStyles.FORM;
+import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil.getFromMethod;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil.isRequired;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form.FormStyles.FORM;
 
 /**
  * Marks a parameter of a {@link java.lang.reflect.Method} those variable value
@@ -56,27 +58,6 @@ public @interface QueryParameter {
     boolean required() default true;
 
     /**
-     * @return to explode parameter value or not. Default value is {@code true}.
-     * This has an effect when parameter value has type {@link Map} or type of some POJO.
-     */
-    @ToExpand
-    boolean explode() default true;
-
-
-    /**
-     * @return to percent-encode reserved characters or not. These characters are kept as they are
-     * when it is {@code true}
-     */
-    @AllowReserved
-    boolean allowReserved() default false;
-
-
-    /**
-     * @return style of a query parameter. Default is {@link QueryStyles#FORM}
-     */
-    QueryStyles style() default FORM;
-
-    /**
      * Util class that reads parameters of a {@link java.lang.reflect.Method} and
      * forms parameters of a query of http request
      */
@@ -88,17 +69,19 @@ public @interface QueryParameter {
          *
          * @param toRead     is a method to be read
          * @param parameters parameters of current invocation of the method
-         * @return a list of {@link Query}.
+         * @return a list of {@link ReadFormParameter}.
          */
-        public static List<Query> readQueryParameters(Method toRead, Object[] parameters) {
+        public static List<ReadFormParameter> readQueryParameters(Method toRead, Object[] parameters) {
             return getFromMethod(toRead,
                     QueryParameter.class,
                     parameters,
                     (ps, params) -> {
-                        var resultList = new LinkedList<Query>();
+                        var resultList = new LinkedList<ReadFormParameter>();
 
                         for (int i = 0; i < ps.length; i++) {
                             var queryParameter = ps[i].getAnnotation(QueryParameter.class);
+                            var formParameter = ps[i].getAnnotation(FormParam.class);
+
                             var value = params[i];
                             if (value == null) {
                                 if (isRequired(queryParameter)) {
@@ -109,10 +92,22 @@ public @interface QueryParameter {
                                 continue;
                             }
 
-                            var queryPart = queryParameter.style().getQueryParameterValue(value,
+                            var style = ofNullable(formParameter)
+                                    .map(FormParam::style)
+                                    .orElse(FORM);
+
+                            var toExplode = ofNullable(formParameter)
+                                    .map(ParameterUtil::toExpandValue)
+                                    .orElse(true);
+
+                            var allowReserved = ofNullable(formParameter)
+                                    .map(ParameterUtil::toAllowReserved)
+                                    .orElse(false);
+
+                            var queryPart = style.getFormParameters(value,
                                     queryParameter.name(),
-                                    toExpandValue(queryParameter),
-                                    toAllowReserved(queryParameter));
+                                    toExplode,
+                                    allowReserved);
                             resultList.addAll(queryPart);
                         }
 

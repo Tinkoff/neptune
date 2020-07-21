@@ -9,6 +9,7 @@ import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMe
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.URIPath;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.MethodParameter;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterFieldName;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form.FormParam;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.query.QueryParameter;
 
 import java.net.URI;
@@ -30,7 +31,7 @@ import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasSchemeM
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultEndPointOfTargetAPIProperty.DEFAULT_END_POINT_OF_TARGET_API_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI.createAPI;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.DefaultHttpMethods.GET;
-import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.query.QueryStyles.*;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form.FormStyles.*;
 
 public class QueryMappingTest {
 
@@ -313,17 +314,20 @@ public class QueryMappingTest {
 
         @HttpMethod(httpMethod = GET)
         @URIPath("path/to/target/end/point")
-        RequestBuilder getSomethingWithQueryAndPathFNE(@QueryParameter(name = "param1", explode = false) List<Object> param1,
+        RequestBuilder getSomethingWithQueryAndPathFNE(@QueryParameter(name = "param1")
+                                                       @FormParam(explode = false) List<Object> param1,
                                                        @QueryParameter(name = "param2") Boolean param2);
 
         @HttpMethod(httpMethod = GET)
         @URIPath("path/to/target/end/point")
-        RequestBuilder getSomethingWithQueryAndPathFEAR(@QueryParameter(name = "param1", allowReserved = true) List<Object> param1,
+        RequestBuilder getSomethingWithQueryAndPathFEAR(@QueryParameter(name = "param1")
+                                                        @FormParam(allowReserved = true) List<Object> param1,
                                                         @QueryParameter(name = "param2") Boolean param2);
 
         @HttpMethod(httpMethod = GET)
         @URIPath("path/to/target/end/point")
-        RequestBuilder getSomethingWithQueryAndPathFNEAR(@QueryParameter(name = "param1", explode = false, allowReserved = true) List<Object> param1,
+        RequestBuilder getSomethingWithQueryAndPathFNEAR(@QueryParameter(name = "param1")
+                                                         @FormParam(explode = false, allowReserved = true) List<Object> param1,
                                                          @QueryParameter(name = "param2") Boolean param2);
 
         @HttpMethod(httpMethod = GET)
@@ -333,45 +337,53 @@ public class QueryMappingTest {
 
         @HttpMethod(httpMethod = GET)
         @URIPath("path/to/target/end/point")
-        RequestBuilder getSomethingWithQueryAndPathFNE(@QueryParameter(name = "param1", explode = false) Object param1,
+        RequestBuilder getSomethingWithQueryAndPathFNE(@QueryParameter(name = "param1")
+                                                       @FormParam(explode = false) Object param1,
                                                        @QueryParameter(name = "param2") Boolean param2);
 
         @HttpMethod(httpMethod = GET)
         @URIPath("path/to/target/end/point")
-        RequestBuilder getSomethingWithQueryAndPathFEAR(@QueryParameter(name = "param1", allowReserved = true) Object param1,
+        RequestBuilder getSomethingWithQueryAndPathFEAR(@QueryParameter(name = "param1")
+                                                        @FormParam(allowReserved = true) Object param1,
                                                         @QueryParameter(name = "param2") Boolean param2);
 
         @HttpMethod(httpMethod = GET)
         @URIPath("path/to/target/end/point")
-        RequestBuilder getSomethingWithQueryAndPathFNEAR(@QueryParameter(name = "param1", explode = false, allowReserved = true) Object param1,
+        RequestBuilder getSomethingWithQueryAndPathFNEAR(@QueryParameter(name = "param1")
+                                                         @FormParam(explode = false, allowReserved = true) Object param1,
                                                          @QueryParameter(name = "param2") Boolean param2);
 
         @HttpMethod(httpMethod = GET)
         @URIPath("path/to/target/end/point")
         RequestBuilder getSomethingWithQueryAndPathSNE(
-                @QueryParameter(name = "param1", style = SPACE_DELIMITED, explode = false) Object[] param1,
+                @QueryParameter(name = "param1")
+                @FormParam(style = SPACE_DELIMITED, explode = false) Object[] param1,
                 @QueryParameter(name = "param2") Boolean param2);
 
         @HttpMethod(httpMethod = GET)
         @URIPath("path/to/target/end/point")
         RequestBuilder getSomethingWithQueryAndPathSNEAR(
-                @QueryParameter(name = "param1", style = SPACE_DELIMITED, explode = false, allowReserved = true) Object[] param1,
+                @QueryParameter(name = "param1")
+                @FormParam(style = SPACE_DELIMITED, explode = false, allowReserved = true) Object[] param1,
                 @QueryParameter(name = "param2") Boolean param2);
 
         @HttpMethod(httpMethod = GET)
         @URIPath("path/to/target/end/point")
         RequestBuilder getSomethingWithQueryAndPathPNE(
-                @QueryParameter(name = "param1", style = PIPE_DELIMITED, explode = false) Object[] param1,
+                @QueryParameter(name = "param1")
+                @FormParam(style = PIPE_DELIMITED, explode = false) Object[] param1,
                 @QueryParameter(name = "param2") Boolean param2);
 
         @HttpMethod(httpMethod = GET)
         @URIPath("path/to/target/end/point")
-        RequestBuilder getSomethingWithQueryAndPathDE(@QueryParameter(name = "param1", style = DEEP_OBJECT) Object param1,
+        RequestBuilder getSomethingWithQueryAndPathDE(@QueryParameter(name = "param1")
+                                                      @FormParam(style = DEEP_OBJECT) Object param1,
                                                       @QueryParameter(name = "param2") Boolean param2);
 
         @HttpMethod(httpMethod = GET)
         @URIPath("path/to/target/end/point")
-        RequestBuilder getSomethingWithQueryAndPathDEAR(@QueryParameter(name = "param1", style = DEEP_OBJECT, allowReserved = true) Object param1,
+        RequestBuilder getSomethingWithQueryAndPathDEAR(@QueryParameter(name = "param1")
+                                                        @FormParam(style = DEEP_OBJECT, allowReserved = true) Object param1,
                                                         @QueryParameter(name = "param2") Boolean param2);
 
         @HttpMethod(httpMethod = GET)

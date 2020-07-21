@@ -1,19 +1,19 @@
-package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.query;
+package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form;
 
-import ru.tinkoff.qa.neptune.http.api.request.QueryValueDelimiters;
+import ru.tinkoff.qa.neptune.http.api.request.FormValueDelimiters;
 
 /**
  * It is a POGO for the query parameter transferring.
  */
-public class Query {
+public class ReadFormParameter {
 
     private final String name;
     private final boolean toExpand;
-    private final QueryValueDelimiters delimiter;
+    private final FormValueDelimiters delimiter;
     private final boolean allowReserved;
     private final Object[] params;
 
-    Query(String name, boolean toExpand, QueryValueDelimiters delimiter, boolean allowReserved, Object... params) {
+    ReadFormParameter(String name, boolean toExpand, FormValueDelimiters delimiter, boolean allowReserved, Object... params) {
         this.name = name;
         this.toExpand = toExpand;
         this.delimiter = delimiter;
@@ -45,7 +45,7 @@ public class Query {
     /**
      * @return delimiter for not exploded values
      */
-    public QueryValueDelimiters getDelimiter() {
+    public FormValueDelimiters getDelimiter() {
         return delimiter;
     }
 

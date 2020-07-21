@@ -3,7 +3,7 @@ package ru.tinkoff.qa.neptune.http.api.request.body.url.encoded;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.tinkoff.qa.neptune.http.api.mapper.DefaultBodyMappers;
-import ru.tinkoff.qa.neptune.http.api.request.QueryValueDelimiters;
+import ru.tinkoff.qa.neptune.http.api.request.FormValueDelimiters;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -15,13 +15,13 @@ public final class FormParameter {
     private final String name;
     private final Object[] values;
     private final boolean toExpand;
-    private final QueryValueDelimiters delimiter;
+    private final FormValueDelimiters delimiter;
     private final boolean allowReserved;
     private final boolean toNotEncodeValue;
 
     private FormParameter(String name,
                           boolean toExpand,
-                          QueryValueDelimiters delimiter,
+                          FormValueDelimiters delimiter,
                           boolean allowReserved,
                           boolean toNotEncodeValue,
                           Object... values) {
@@ -45,7 +45,7 @@ public final class FormParameter {
      */
     public static FormParameter formParameter(String name,
                                               boolean toExpand,
-                                              QueryValueDelimiters delimiter,
+                                              FormValueDelimiters delimiter,
                                               boolean allowReserved,
                                               Object... values) {
         return new FormParameter(name,
@@ -107,7 +107,7 @@ public final class FormParameter {
         return toExpand;
     }
 
-    QueryValueDelimiters getDelimiter() {
+    FormValueDelimiters getDelimiter() {
         return delimiter;
     }
 

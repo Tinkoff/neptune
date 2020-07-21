@@ -6,7 +6,7 @@ import ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.DefineContentType;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.DefineFileName;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.MultiPartBody;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.url.encoded.FormParameter;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.url.encoded.URLEncodedParameter;
 
 import java.io.File;
 import java.io.InputStream;
@@ -55,7 +55,7 @@ public final class BodyParameterAnnotationReader {
                         return getBody(toRead, parameters);
                     }
 
-                    if (FormParameter.class.isAssignableFrom(aClass)) {
+                    if (URLEncodedParameter.class.isAssignableFrom(aClass)) {
                         return getForm(toRead, parameters);
                     }
 
@@ -130,12 +130,12 @@ public final class BodyParameterAnnotationReader {
 
     private static RequestBody<?> getForm(Method toRead, Object[] parameters) {
         return getFromMethod(toRead,
-                FormParameter.class,
+                URLEncodedParameter.class,
                 parameters,
                 (ps, params) -> {
                     var form = new LinkedHashMap<String, Object>();
                     for (int i = 0; i < ps.length; i++) {
-                        var formParameter = ps[i].getAnnotation(FormParameter.class);
+                        var formParameter = ps[i].getAnnotation(URLEncodedParameter.class);
                         ofNullable(params[i]).ifPresent(o -> form.put(formParameter.value(), valueOf(o)));
                     }
                     if (form.size() > 0) {
@@ -288,7 +288,7 @@ public final class BodyParameterAnnotationReader {
                 parameterValues, (ps, ignored) -> ps);
 
         var formParameters = getFromMethod(m,
-                FormParameter.class,
+                URLEncodedParameter.class,
                 parameterValues, (ps, ignored) -> ps);
 
         var multiParts = getFromMethod(m,
@@ -301,7 +301,7 @@ public final class BodyParameterAnnotationReader {
             throw new IllegalStateException(format("Only one of %s, %s or %s should annotate parameters of the %s. Combinations of " +
                             "listed annotations are not allowed",
                     Body.class.getName(),
-                    FormParameter.class.getName(),
+                    URLEncodedParameter.class.getName(),
                     MultiPartBody.class.getName(),
                     m));
         }
@@ -317,7 +317,7 @@ public final class BodyParameterAnnotationReader {
         }
 
         if (nonNull(formParameters)) {
-            return FormParameter.class;
+            return URLEncodedParameter.class;
         }
 
         if (nonNull(multiParts)) {

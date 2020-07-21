@@ -9,7 +9,7 @@ import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.bod
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.DefineContentType;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.DefineFileName;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.MultiPartBody;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.url.encoded.FormParameter;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.url.encoded.URLEncodedParameter;
 
 import java.io.File;
 import java.io.InputStream;
@@ -84,9 +84,9 @@ public interface SomeMappedAPI extends HttpAPI<SomeMappedAPI> {
     RequestBuilder postXmlArray(@Body(format = XML, mixIns = ArrayMixIn.class) Object... body);
 
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postForm(@FormParameter("form_string_param1") String param1,
-                            @FormParameter("form_int_param2") int param2,
-                            @FormParameter("form_bool_param3") boolean param3);
+    RequestBuilder postForm(@URLEncodedParameter("form_string_param1") String param1,
+                            @URLEncodedParameter("form_int_param2") int param2,
+                            @URLEncodedParameter("form_bool_param3") boolean param3);
 
     @HttpMethod(httpMethod = POST)
     RequestBuilder postMultipart(@MultiPartBody(name = "test_file", contentTransferEncoding = BINARY) File file,

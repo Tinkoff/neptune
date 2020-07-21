@@ -10,7 +10,7 @@ import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.bod
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.DefineContentType;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.DefineFileName;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.MultiPartBody;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.url.encoded.FormParameter;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.url.encoded.URLEncodedParameter;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.path.PathParameter;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.query.QueryParameter;
 
@@ -55,14 +55,14 @@ import static ru.tinkoff.qa.neptune.http.api.properties.DefaultEndPointOfTargetA
  *
  *         <li>Parameters of methods may be annotated by {@link Body}. It marks a parameter those value is used
  *         as a body of resulted http request. This annotation should be used once per method. Combinations
- *         with {@link FormParameter} or with {@link MultiPartBody} are not allowed.</li>
+ *         with {@link URLEncodedParameter} or with {@link MultiPartBody} are not allowed.</li>
  *
- *         <li>Parameters of methods may be annotated by {@link FormParameter}. It marks parameters those values are used
+ *         <li>Parameters of methods may be annotated by {@link URLEncodedParameter}. It marks parameters those values are used
  *         as values in url-encoded form-body of resulted http request. Combinations with {@link Body} or with {@link MultiPartBody}
  *         are not allowed.</li>
  *
  *         <li>Parameters of methods may be annotated by {@link MultiPartBody}. It marks parameters those values are used
- *         as parts of a multipart body of resulted http request. Combinations with {@link Body} or with {@link FormParameter}
+ *         as parts of a multipart body of resulted http request. Combinations with {@link Body} or with {@link URLEncodedParameter}
  *         are not allowed. Information given by the annotation may be supplemented by {@link DefineFileName} and/or
  *         {@link DefineContentType}</li>
  *     </ul>
