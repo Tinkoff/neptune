@@ -10,6 +10,7 @@ import ru.tinkoff.qa.neptune.http.api.request.NeptuneHttpRequestImpl;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 import ru.tinkoff.qa.neptune.http.api.request.body.*;
 import ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart;
+import ru.tinkoff.qa.neptune.http.api.request.body.url.encoded.URLEncodedForm;
 import ru.tinkoff.qa.neptune.http.api.test.request.body.JsonBodyObject;
 import ru.tinkoff.qa.neptune.http.api.test.request.body.XmlBodyObject;
 import ru.tinkoff.qa.neptune.http.api.test.requests.mapping.SomeMappedAPI;

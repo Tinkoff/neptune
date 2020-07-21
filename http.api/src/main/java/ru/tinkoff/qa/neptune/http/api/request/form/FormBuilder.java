@@ -51,11 +51,11 @@ public abstract class FormBuilder {
      * @param allowReserved allows to use reserved character not encoded or not
      * @param values        values of the defined parameter
      */
-    public void addParameter(String name,
-                             boolean toExpand,
-                             QueryValueDelimiters delimiter,
-                             boolean allowReserved,
-                             Object... values) {
+    protected void addParameter(String name,
+                                boolean toExpand,
+                                QueryValueDelimiters delimiter,
+                                boolean allowReserved,
+                                Object... values) {
         checkArgument(isNotBlank(name), "Name of the parameter should not be null/blank");
         checkNotNull(values);
         checkArgument(values.length > 0,
@@ -67,7 +67,7 @@ public abstract class FormBuilder {
                 .orElse(null);
 
         if (nameValue == null) {
-            nameValue = new NameAndValue(name, toExpand, delimiter, allowReserved);
+            nameValue = new NameAndValue(name, toExpand, delimiter, allowReserved, false);
             parameters.add(nameValue);
         }
 
@@ -93,12 +93,18 @@ public abstract class FormBuilder {
         private final boolean toExpand;
         private final QueryValueDelimiters delimiter;
         private final boolean allowReserved;
+        private final boolean toNotEncodeValue;
 
-        protected NameAndValue(String name, boolean toExpand, QueryValueDelimiters delimiter, boolean allowReserved) {
+        protected NameAndValue(String name,
+                               boolean toExpand,
+                               QueryValueDelimiters delimiter,
+                               boolean allowReserved,
+                               boolean toNotEncodeValue) {
             this.name = name;
             this.toExpand = toExpand;
             this.delimiter = delimiter;
             this.allowReserved = allowReserved;
+            this.toNotEncodeValue = toNotEncodeValue;
         }
 
         private static Stream<?> prepareStreamOfObjects(Object value) {
@@ -136,7 +142,12 @@ public abstract class FormBuilder {
             return null;
         }
 
-        private static String encode(String toBeEncoded, boolean allowReserved) {
+        private static String encode(String toBeEncoded, boolean toNotEncodeValue, boolean allowReserved) {
+
+            if (toNotEncodeValue) {
+                return toBeEncoded;
+            }
+
             if (!allowReserved) {
                 return URLEncoder.encode(toBeEncoded, UTF_8);
             }
@@ -153,19 +164,19 @@ public abstract class FormBuilder {
             return builder.toString();
         }
 
-        private static Stream<String> toStream(Object value, boolean allowReserved) {
+        private static Stream<String> toStream(Object value, boolean toNotEncodeValue, boolean allowReserved) {
             return ofNullable(prepareStreamOfObjects(value))
                     .map(stream -> stream.map(o -> {
                         var streamToTransform = prepareStreamOfObjects(o);
                         if (streamToTransform == null) {
-                            return encode(valueOf(o), allowReserved);
+                            return encode(valueOf(o), toNotEncodeValue, allowReserved);
                         }
 
                         return streamToTransform
-                                .map(o1 -> encode(valueOf(o1), allowReserved))
+                                .map(o1 -> encode(valueOf(o1), toNotEncodeValue, allowReserved))
                                 .collect(joining(","));
                     }))
-                    .orElseGet(() -> toStream(new Object[]{value}, allowReserved));
+                    .orElseGet(() -> toStream(new Object[]{value}, toNotEncodeValue, allowReserved));
         }
 
         /**
@@ -190,8 +201,8 @@ public abstract class FormBuilder {
         }
 
         public String toString() {
-            var stingEncodedValues = toStream(values, allowReserved);
-            var encodedName = encode(name, true);
+            var stingEncodedValues = toStream(values, toNotEncodeValue, allowReserved);
+            var encodedName = encode(name, false, true);
             if (toExpand) {
                 return stingEncodedValues
                         .map(s -> encodedName + "=" + s)

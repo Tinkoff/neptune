@@ -6,6 +6,7 @@ import ru.tinkoff.qa.neptune.http.api.mapper.DefaultBodyMappers;
 import ru.tinkoff.qa.neptune.http.api.properties.mapper.DefaultJsonObjectMapper;
 import ru.tinkoff.qa.neptune.http.api.properties.mapper.DefaultXmlObjectMapper;
 import ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart;
+import ru.tinkoff.qa.neptune.http.api.request.body.url.encoded.URLEncodedForm;
 
 import javax.xml.transform.Transformer;
 import java.io.File;

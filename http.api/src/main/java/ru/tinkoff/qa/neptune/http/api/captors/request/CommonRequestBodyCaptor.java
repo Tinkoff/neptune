@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.http.api.captors.request;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.StringCaptor;
 import ru.tinkoff.qa.neptune.http.api.request.body.*;
+import ru.tinkoff.qa.neptune.http.api.request.body.url.encoded.URLEncodedForm;
 
 import static java.util.List.of;
 

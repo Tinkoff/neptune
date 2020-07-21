@@ -121,7 +121,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
 
         var stop = currentTimeMillis();
         var time = stop - start;
-        assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 700));
+        assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 850));
         assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
     }
 
@@ -164,7 +164,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
 
         var stop = currentTimeMillis();
         var time = stop - start;
-        assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 700));
+        assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 850));
         assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
     }
 
@@ -260,7 +260,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
 
         var stop = currentTimeMillis();
         var time = stop - start;
-        assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 700));
+        assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 850));
         assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
     }
 
@@ -306,7 +306,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
 
         var stop = currentTimeMillis();
         var time = stop - start;
-        assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 700));
+        assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 850));
         assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
     }
 
@@ -403,7 +403,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
 
         var stop = currentTimeMillis();
         var time = stop - start;
-        assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 700));
+        assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 850));
         assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
     }
 
@@ -446,7 +446,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
 
         var stop = currentTimeMillis();
         var time = stop - start;
-        assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 700));
+        assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 850));
         assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
     }
 
@@ -542,7 +542,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
 
         var stop = currentTimeMillis();
         var time = stop - start;
-        assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 700));
+        assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 850));
         assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
     }
 
@@ -585,7 +585,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
 
         var stop = currentTimeMillis();
         var time = stop - start;
-        assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 700));
+        assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 850));
         assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
     }
 
@@ -682,7 +682,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
 
         var stop = currentTimeMillis();
         var time = stop - start;
-        assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 700));
+        assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 850));
         assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
     }
 
@@ -725,7 +725,7 @@ public class HttpBodyDataTest extends BaseHttpTest {
 
         var stop = currentTimeMillis();
         var time = stop - start;
-        assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 700));
+        assertThat(time, lessThanOrEqualTo(ofSeconds(5).toMillis() + 850));
         assertThat(time, greaterThanOrEqualTo(ofSeconds(5).toMillis()));
     }
 }

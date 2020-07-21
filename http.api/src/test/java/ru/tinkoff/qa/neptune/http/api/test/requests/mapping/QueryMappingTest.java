@@ -19,6 +19,8 @@ import static java.lang.System.getProperties;
 import static java.util.List.of;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.testng.Assert.fail;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasHostMatcher.uriHasHost;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasPathMatcher.uriHasPath;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasPortMatcher.uriHasPort;
@@ -248,6 +250,24 @@ public class QueryMappingTest {
         test1(builder, pathMatcher, queryMather);
     }
 
+    @Test(expectedExceptions = IllegalArgumentException.class,
+            expectedExceptionsMessageRegExp = ".*['Query parameter 'param2' requires value that differs from null']")
+    public void test3() {
+        createAPI(QueryMapping.class, TEST_URI).getSomethingWithQueryRequired(null, null, null);
+        fail("Exception was expected");
+    }
+
+    @Test
+    public void test4() {
+        var query = createAPI(QueryMapping.class, TEST_URI)
+                .getSomethingWithQueryRequired(null, "My String", null)
+                .build()
+                .uri()
+                .getQuery();
+
+        assertThat(query, is("param2=My+String"));
+    }
+
     private interface QueryMapping extends HttpAPI<QueryMapping> {
 
         @HttpMethod(httpMethod = GET)
@@ -352,6 +372,12 @@ public class QueryMappingTest {
         @URIPath("path/to/target/end/point")
         RequestBuilder getSomethingWithQueryAndPathDEAR(@QueryParameter(name = "param1", style = DEEP_OBJECT, allowReserved = true) Object param1,
                                                         @QueryParameter(name = "param2") Boolean param2);
+
+        @HttpMethod(httpMethod = GET)
+        @URIPath("path/to/target/end/point")
+        RequestBuilder getSomethingWithQueryRequired(@QueryParameter(name = "param1", required = false) Object param1,
+                                                     @QueryParameter(name = "param2") Object param2,
+                                                     @QueryParameter(name = "param2", required = false) Object param3);
     }
 
     @MethodParameter

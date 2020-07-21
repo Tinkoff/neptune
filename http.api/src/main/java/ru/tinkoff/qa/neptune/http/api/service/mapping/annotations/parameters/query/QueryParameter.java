@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.query;
 
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.AllowReserved;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.MethodParameter;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.Required;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ToExpand;
 
@@ -20,6 +21,22 @@ import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.paramet
 /**
  * Marks a parameter of a {@link java.lang.reflect.Method} those variable value
  * is used for the forming of a query part of a request URI.
+ * <p>
+ * Required types:
+ *     <ul>
+ *         <li>primitive</li>
+ *         <li>primitive wrappers</li>
+ *         <li>{@link String}</li>
+ *         <li>Any object whose string representation may be read as a query parameter value correctly. See {@link Object#toString()}</li>
+ *         <li>Arrays of types described above</li>
+ *         <li>Iterable of described above</li>
+ *         <li>Maps of keys and values of types described above</li>
+ *         <li>A POJO whose class has fields of following types: primitive types, primitive wrappers,
+ *         {@link String}, any type of an object whose string representation may be read as a part of a query parameter
+ *         value correctly, see {@link Object#toString()}, arrays and iterables of listed types. Class of a POJO should be annotated
+ *         by {@link MethodParameter}</li>
+ *     </ul>
+ * </p>
  */
 @Retention(RUNTIME)
 @Target(PARAMETER)

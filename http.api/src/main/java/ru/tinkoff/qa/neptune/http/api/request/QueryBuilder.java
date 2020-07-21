@@ -10,6 +10,14 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 class QueryBuilder extends FormBuilder {
 
+    protected void addParameter(String name,
+                                boolean toExpand,
+                                QueryValueDelimiters delimiter,
+                                boolean allowReserved,
+                                Object... values) {
+        super.addParameter(name, toExpand, delimiter, allowReserved, values);
+    }
+
     URI appendURI(URI uri) {
         checkNotNull(uri);
         var query = buildForm();
@@ -32,6 +40,5 @@ class QueryBuilder extends FormBuilder {
                 throw new RuntimeException(e);
             }
         }
-
     }
 }

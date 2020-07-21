@@ -9,6 +9,7 @@ import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
 import ru.tinkoff.qa.neptune.http.api.request.NeptuneHttpRequestImpl;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 import ru.tinkoff.qa.neptune.http.api.request.body.*;
+import ru.tinkoff.qa.neptune.http.api.request.body.url.encoded.URLEncodedForm;
 
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;

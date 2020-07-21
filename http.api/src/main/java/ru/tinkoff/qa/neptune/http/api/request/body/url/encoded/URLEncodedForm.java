@@ -1,4 +1,6 @@
-package ru.tinkoff.qa.neptune.http.api.request.body;
+package ru.tinkoff.qa.neptune.http.api.request.body.url.encoded;
+
+import ru.tinkoff.qa.neptune.http.api.request.body.RequestBody;
 
 import java.io.UnsupportedEncodingException;
 import java.net.http.HttpRequest;
@@ -13,7 +15,7 @@ import static java.util.stream.Collectors.joining;
 
 public final class URLEncodedForm extends RequestBody<String> {
 
-    URLEncodedForm(Map<String, String> formParameters) {
+    public URLEncodedForm(Map<String, String> formParameters) {
         super(ofNullable(formParameters)
                 .map(m -> m.entrySet()
                         .stream()
