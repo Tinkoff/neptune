@@ -26,8 +26,6 @@ public final class URLEncodedForm extends RequestBody<String> {
                 .entrySet()
                 .stream()
                 .map(e -> formParameter(e.getKey(),
-                        true,
-                        null,
                         false,
                         e.getValue()))
                 .toArray(FormParameter[]::new));

@@ -1,7 +1,5 @@
 package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form;
 
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.AllowReserved;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ToExpand;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.url.encoded.URLEncodedParameter;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.query.QueryParameter;
 
@@ -29,7 +27,6 @@ public @interface FormParam {
      * @return to explode parameter value or not. Default value is {@code true}.
      * This has an effect when parameter value has type {@link Map} or type of some POJO.
      */
-    @ToExpand
     boolean explode() default true;
 
 
@@ -37,7 +34,6 @@ public @interface FormParam {
      * @return to percent-encode reserved characters or not. These characters are kept as they are
      * when it is {@code true}
      */
-    @AllowReserved
     boolean allowReserved() default false;
 
 

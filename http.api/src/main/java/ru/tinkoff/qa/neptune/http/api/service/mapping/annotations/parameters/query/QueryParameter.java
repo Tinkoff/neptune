@@ -1,8 +1,6 @@
 package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.query;
 
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.MethodParameter;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.Required;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form.FormParam;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form.ReadFormParameter;
 
@@ -17,7 +15,6 @@ import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil.getFromMethod;
-import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil.isRequired;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form.FormStyles.FORM;
 
 /**
@@ -54,7 +51,6 @@ public @interface QueryParameter {
      * It allows or doesn't allow {@code null} values of a parameter on a method
      * invocation.
      */
-    @Required
     boolean required() default true;
 
     /**
@@ -84,7 +80,7 @@ public @interface QueryParameter {
 
                             var value = params[i];
                             if (value == null) {
-                                if (isRequired(queryParameter)) {
+                                if (queryParameter.required()) {
                                     throw new IllegalArgumentException(format("Query parameter '%s' requires value " +
                                                     "that differs from null",
                                             queryParameter.name()));
@@ -97,11 +93,11 @@ public @interface QueryParameter {
                                     .orElse(FORM);
 
                             var toExplode = ofNullable(formParameter)
-                                    .map(ParameterUtil::toExpandValue)
+                                    .map(FormParam::explode)
                                     .orElse(true);
 
                             var allowReserved = ofNullable(formParameter)
-                                    .map(ParameterUtil::toAllowReserved)
+                                    .map(FormParam::allowReserved)
                                     .orElse(false);
 
                             var queryPart = style.getFormParameters(value,

@@ -32,7 +32,6 @@ import static ru.tinkoff.qa.neptune.http.api.request.body.RequestBodyFactory.bod
 import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart.bodyPart;
 import static ru.tinkoff.qa.neptune.http.api.request.body.url.encoded.FormParameter.formParameter;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil.getFromMethod;
-import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil.isRequired;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.BodyDataFormat.NONE;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form.FormStyles.FORM;
 
@@ -154,7 +153,7 @@ public final class BodyParameterAnnotationReader {
                                 return body(valueOf(bodyValue));
                             })
                             .orElseGet(() -> {
-                                if (isRequired(a)) {
+                                if (a.isRequired()) {
                                     throw new IllegalArgumentException(format("Method %s requires body that differs from null", toRead));
                                 }
                                 return null;
@@ -174,7 +173,7 @@ public final class BodyParameterAnnotationReader {
 
                         var value = ofNullable(params[i])
                                 .orElseGet(() -> {
-                                    if (isRequired(urlEncodedParam)) {
+                                    if (urlEncodedParam.isRequired()) {
                                         throw new IllegalArgumentException(format("Method %s requires form parameter %s that differs from null",
                                                 toRead,
                                                 urlEncodedParam.name()));
@@ -257,110 +256,116 @@ public final class BodyParameterAnnotationReader {
                         var part = param.getAnnotation(MultiPartBody.class);
                         var defineFile = param.getAnnotation(DefineFileName.class);
                         var defineContent = param.getAnnotation(DefineContentType.class);
-
+                        var index = i;
 
                         ofNullable(params[i])
-                                .ifPresent(o -> {
-                                    var bodyValue = part.format().format(o, part.mixIns());
-                                    var cls = bodyValue.getClass();
+                                .ifPresentOrElse(o -> {
+                                            var bodyValue = formatObject(o, ps[index]);
+                                            var cls = bodyValue.getClass();
 
-                                    BodyPart bp;
-                                    if (String.class.isAssignableFrom(cls)) {
-                                        bp = ofNullable(defineFile)
-                                                .map(d -> {
-                                                    var f = d.fileName();
-                                                    if (isNotBlank(f)) {
-                                                        return bodyPart((String) bodyValue, part.name(), f);
-                                                    }
-                                                    return bodyPart((String) bodyValue, part.name(), randomAlphanumeric(20));
-                                                })
-                                                .orElseGet(() -> bodyPart((String) bodyValue, part.name()));
+                                            BodyPart bp;
+                                            if (String.class.isAssignableFrom(cls)) {
+                                                bp = ofNullable(defineFile)
+                                                        .map(d -> {
+                                                            var f = d.fileName();
+                                                            if (isNotBlank(f)) {
+                                                                return bodyPart((String) bodyValue, part.name(), f);
+                                                            }
+                                                            return bodyPart((String) bodyValue, part.name(), randomAlphanumeric(20));
+                                                        })
+                                                        .orElseGet(() -> bodyPart((String) bodyValue, part.name()));
 
-                                    } else if (byte[].class.isAssignableFrom(cls)) {
-                                        bp = ofNullable(defineFile)
-                                                .map(d -> {
-                                                    var f = d.fileName();
-                                                    if (isNotBlank(f)) {
-                                                        return bodyPart((byte[]) bodyValue, part.name(), f);
-                                                    }
-                                                    return bodyPart((byte[]) bodyValue, part.name(), randomAlphanumeric(20));
-                                                })
-                                                .orElseGet(() -> bodyPart((byte[]) bodyValue, part.name()));
+                                            } else if (byte[].class.isAssignableFrom(cls)) {
+                                                bp = ofNullable(defineFile)
+                                                        .map(d -> {
+                                                            var f = d.fileName();
+                                                            if (isNotBlank(f)) {
+                                                                return bodyPart((byte[]) bodyValue, part.name(), f);
+                                                            }
+                                                            return bodyPart((byte[]) bodyValue, part.name(), randomAlphanumeric(20));
+                                                        })
+                                                        .orElseGet(() -> bodyPart((byte[]) bodyValue, part.name()));
 
-                                    } else if (InputStream.class.isAssignableFrom(cls)) {
-                                        bp = ofNullable(defineFile)
-                                                .map(d -> {
-                                                    var f = d.fileName();
-                                                    if (isNotBlank(f)) {
-                                                        return bodyPart((InputStream) bodyValue, part.name(), f);
-                                                    }
-                                                    return bodyPart((InputStream) bodyValue, part.name(), randomAlphanumeric(20));
-                                                })
-                                                .orElseGet(() -> bodyPart((InputStream) bodyValue, part.name()));
+                                            } else if (InputStream.class.isAssignableFrom(cls)) {
+                                                bp = ofNullable(defineFile)
+                                                        .map(d -> {
+                                                            var f = d.fileName();
+                                                            if (isNotBlank(f)) {
+                                                                return bodyPart((InputStream) bodyValue, part.name(), f);
+                                                            }
+                                                            return bodyPart((InputStream) bodyValue, part.name(), randomAlphanumeric(20));
+                                                        })
+                                                        .orElseGet(() -> bodyPart((InputStream) bodyValue, part.name()));
 
-                                    } else if (DTObject.class.isAssignableFrom(cls)) {
-                                        bp = ofNullable(defineFile)
-                                                .map(d -> {
-                                                    var f = d.fileName();
-                                                    if (isNotBlank(f)) {
-                                                        return bodyPart((DTObject) bodyValue, part.name(), f);
-                                                    }
-                                                    return bodyPart((DTObject) bodyValue, part.name(), randomAlphanumeric(20));
-                                                })
-                                                .orElseGet(() -> bodyPart((DTObject) bodyValue, part.name()));
+                                            } else if (DTObject.class.isAssignableFrom(cls)) {
+                                                bp = ofNullable(defineFile)
+                                                        .map(d -> {
+                                                            var f = d.fileName();
+                                                            if (isNotBlank(f)) {
+                                                                return bodyPart((DTObject) bodyValue, part.name(), f);
+                                                            }
+                                                            return bodyPart((DTObject) bodyValue, part.name(), randomAlphanumeric(20));
+                                                        })
+                                                        .orElseGet(() -> bodyPart((DTObject) bodyValue, part.name()));
 
-                                    } else if (File.class.isAssignableFrom(cls)) {
-                                        bp = ofNullable(defineFile)
-                                                .map(d -> {
-                                                    verifyFileDefinition(d, param, toRead);
+                                            } else if (File.class.isAssignableFrom(cls)) {
+                                                bp = ofNullable(defineFile)
+                                                        .map(d -> {
+                                                            verifyFileDefinition(d, param, toRead);
 
-                                                    if (d.useGivenFileName()) {
-                                                        return bodyPart((File) bodyValue, part.name(), true, nonNull(defineContent));
-                                                    }
+                                                            if (d.useGivenFileName()) {
+                                                                return bodyPart((File) bodyValue, part.name(), true, nonNull(defineContent));
+                                                            }
 
-                                                    if (isNotBlank(d.fileName())) {
-                                                        return bodyPart((File) bodyValue, part.name(), d.fileName(), nonNull(defineContent));
-                                                    }
+                                                            if (isNotBlank(d.fileName())) {
+                                                                return bodyPart((File) bodyValue, part.name(), d.fileName(), nonNull(defineContent));
+                                                            }
 
-                                                    return bodyPart((File) bodyValue, part.name(), randomAlphanumeric(20), nonNull(defineContent));
-                                                })
-                                                .orElseGet(() -> bodyPart((File) bodyValue, part.name(), false, nonNull(defineContent)));
+                                                            return bodyPart((File) bodyValue, part.name(), randomAlphanumeric(20), nonNull(defineContent));
+                                                        })
+                                                        .orElseGet(() -> bodyPart((File) bodyValue, part.name(), false, nonNull(defineContent)));
 
-                                    } else if (Path.class.isAssignableFrom(cls)) {
-                                        bp = ofNullable(defineFile)
-                                                .map(d -> {
-                                                    verifyFileDefinition(d, param, toRead);
+                                            } else if (Path.class.isAssignableFrom(cls)) {
+                                                bp = ofNullable(defineFile)
+                                                        .map(d -> {
+                                                            verifyFileDefinition(d, param, toRead);
 
-                                                    if (d.useGivenFileName()) {
-                                                        return bodyPart((Path) bodyValue, part.name(), true, nonNull(defineContent));
-                                                    }
+                                                            if (d.useGivenFileName()) {
+                                                                return bodyPart((Path) bodyValue, part.name(), true, nonNull(defineContent));
+                                                            }
 
-                                                    if (isNotBlank(d.fileName())) {
-                                                        return bodyPart((Path) bodyValue, part.name(), d.fileName(), nonNull(defineContent));
-                                                    }
+                                                            if (isNotBlank(d.fileName())) {
+                                                                return bodyPart((Path) bodyValue, part.name(), d.fileName(), nonNull(defineContent));
+                                                            }
 
-                                                    return bodyPart((Path) bodyValue, part.name(), randomAlphanumeric(20), nonNull(defineContent));
-                                                })
-                                                .orElseGet(() -> bodyPart((Path) bodyValue, part.name(), false, nonNull(defineContent)));
+                                                            return bodyPart((Path) bodyValue, part.name(), randomAlphanumeric(20), nonNull(defineContent));
+                                                        })
+                                                        .orElseGet(() -> bodyPart((Path) bodyValue, part.name(), false, nonNull(defineContent)));
 
-                                    } else {
-                                        bp = ofNullable(defineFile)
-                                                .map(d -> {
-                                                    var f = d.fileName();
-                                                    if (isNotBlank(f)) {
-                                                        return bodyPart(bodyValue, part.name(), f);
-                                                    }
-                                                    return bodyPart(bodyValue, part.name(), randomAlphanumeric(20));
-                                                })
-                                                .orElseGet(() -> bodyPart(bodyValue, part.name()));
-                                    }
+                                            } else {
+                                                bp = ofNullable(defineFile)
+                                                        .map(d -> {
+                                                            var f = d.fileName();
+                                                            if (isNotBlank(f)) {
+                                                                return bodyPart(bodyValue, part.name(), f);
+                                                            }
+                                                            return bodyPart(bodyValue, part.name(), randomAlphanumeric(20));
+                                                        })
+                                                        .orElseGet(() -> bodyPart(bodyValue, part.name()));
+                                            }
 
-                                    if (nonNull(defineContent) && isNotBlank(defineContent.contentType())) {
-                                        bp = bp.setContentType(defineContent.contentType());
-                                    }
+                                            if (nonNull(defineContent) && isNotBlank(defineContent.contentType())) {
+                                                bp = bp.setContentType(defineContent.contentType());
+                                            }
 
-                                    partList.add(bp.setContentTransferEncoding(part.contentTransferEncoding()));
-                                });
+                                            partList.add(bp.setContentTransferEncoding(part.contentTransferEncoding()));
+                                        },
+                                        () -> {
+                                            if (part.isRequired()) {
+                                                throw new IllegalArgumentException("%s requires value of the body part %s " +
+                                                        "that differs from null");
+                                            }
+                                        });
                     }
 
                     if (partList.size() > 0) {

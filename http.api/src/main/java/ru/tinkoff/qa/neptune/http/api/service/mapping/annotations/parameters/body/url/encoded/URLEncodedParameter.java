@@ -1,7 +1,5 @@
 package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.url.encoded;
 
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.Required;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -25,6 +23,5 @@ public @interface URLEncodedParameter {
      * It allows or doesn't allow {@code null} values of a parameter on a method
      * invocation.
      */
-    @Required
     boolean isRequired() default true;
 }

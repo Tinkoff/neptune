@@ -3,8 +3,6 @@ package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.pa
 import org.apache.commons.lang3.StringUtils;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.URIPath;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.MethodParameter;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.Required;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ToExpand;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -24,7 +22,6 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.*;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil.getFromMethod;
-import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil.isRequired;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.path.PathStyles.SIMPLE;
 
 /**
@@ -61,14 +58,12 @@ public @interface PathParameter {
      * It allows or doesn't allow {@code null} values of a parameter on a method
      * invocation.
      */
-    @Required
     boolean required() default true;
 
     /**
      * @return to explode parameter value or not. Default value is {@code false}.
      * This has an effect when parameter value has type {@link Map} or type of some POJO.
      */
-    @ToExpand
     boolean explode() default false;
 
     /**
@@ -174,7 +169,7 @@ public @interface PathParameter {
                                                     annotation.explode()
                                             ))
                                             .orElseGet(() -> {
-                                                if (isRequired(annotation)) {
+                                                if (annotation.required()) {
                                                     throw new IllegalArgumentException(format("Path variable '%s' requires value " +
                                                                     "that differs from null",
                                                             annotation.name()));

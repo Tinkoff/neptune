@@ -1,8 +1,6 @@
 package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.header;
 
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.MethodParameter;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.Required;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ToExpand;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -55,14 +53,12 @@ public @interface HeaderParameter {
      * It allows or doesn't allow {@code null} values of a parameter on a method
      * invocation.
      */
-    @Required
     boolean required() default false;
 
     /**
      * @return to explode parameter value or not. Default value is {@code false}.
      * This has an effect when parameter value has type {@link Map} or type of some POJO.
      */
-    @ToExpand
     boolean explode() default false;
 
     /**
@@ -95,7 +91,7 @@ public @interface HeaderParameter {
                             var value = params[i];
 
                             if (value == null) {
-                                if (isRequired(parameter)) {
+                                if (parameter.required()) {
                                     throw new IllegalArgumentException(format("Header '%s' requires value " +
                                                     "that differs from null",
                                             parameter.headerName()));
@@ -121,7 +117,7 @@ public @interface HeaderParameter {
             }
 
             return ofNullable(objectToMap(value))
-                    .map(map -> mapToHeader(map, toExpandValue(parameter)))
+                    .map(map -> mapToHeader(map, parameter.explode()))
                     .orElseGet(() -> of(valueOf(value)));
         }
 
