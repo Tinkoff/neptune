@@ -18,7 +18,7 @@ import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.paramet
 /**
  * Form parameters support the following style values:
  * <ul>
- *     <li>Form - ampersand-separated values, also known as form-style query expansion.</li>
+ *     <li>Form - ampersand-separated values, also known as form-style expansion.</li>
  *     <li>Space delimited - space-separated array values.</li>
  *     <li>Pipe delimited – pipeline-separated array values.</li>
  *     <li>Deep object – a simple way of rendering nested objects using form parameters (applies to objects only).</li>
@@ -26,7 +26,7 @@ import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.paramet
  */
 public enum FormStyles {
     /**
-     * Form (default) - ampersand-separated values, also known as form-style query expansion.
+     * Form (default) - ampersand-separated values, also known as form-style expansion.
      */
     FORM {
         @Override
@@ -134,19 +134,18 @@ public enum FormStyles {
     }
 
     /**
-     * Returns a a representation of a query parameter or query part
+     * Returns a representations of form parameters
      *
-     * @param queryParameterValue a value to be transformed into query parameter and its values/
-     *                            string part of a query
-     * @param parameterName       is a name of a query parameter
-     * @param explode             to explode value or not
+     * @param value         a value to be transformed into form parameter and its values
+     * @param parameterName is a name of a form parameter
+     * @param explode       to explode value or not
      * @return a list of {@link ReadFormParameter}.
      */
-    public List<ReadFormParameter> getFormParameters(Object queryParameterValue,
+    public List<ReadFormParameter> getFormParameters(Object value,
                                                      String parameterName,
                                                      boolean explode,
                                                      boolean allowReserved) {
-        var stream = toStream(queryParameterValue);
+        var stream = toStream(value);
         if (stream != null) {
             return arrayValue(stream,
                     parameterName,
@@ -154,9 +153,9 @@ public enum FormStyles {
                     allowReserved);
         }
 
-        return ofNullable(objectToMap(queryParameterValue))
+        return ofNullable(objectToMap(value))
                 .map(map -> mapValue(map, parameterName, explode, allowReserved))
-                .orElseGet(() -> arrayValue(of(queryParameterValue).stream(), parameterName, explode, allowReserved));
+                .orElseGet(() -> arrayValue(of(value).stream(), parameterName, explode, allowReserved));
 
     }
 

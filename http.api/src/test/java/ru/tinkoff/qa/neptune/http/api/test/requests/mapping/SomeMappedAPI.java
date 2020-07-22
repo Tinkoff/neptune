@@ -1,32 +1,11 @@
 package ru.tinkoff.qa.neptune.http.api.test.requests.mapping;
 
-import ru.tinkoff.qa.neptune.http.api.dto.JsonDTObject;
-import ru.tinkoff.qa.neptune.http.api.dto.XmlDTObject;
-import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMethod;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.Body;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.DefineContentType;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.DefineFileName;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.MultiPartBody;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.url.encoded.URLEncodedParameter;
-
-import java.io.File;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
-
-import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.ContentTransferEncoding.BINARY;
-import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.DefaultHttpMethods.*;
-import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.BodyDataFormat.JSON;
-import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.BodyDataFormat.XML;
 
 @Deprecated
 public interface SomeMappedAPI extends HttpAPI<SomeMappedAPI> {
 
-    @HttpMethod(httpMethod = POST)
+    /*@HttpMethod(httpMethod = POST)
     RequestBuilder postSomeBody(@Body String body);
 
     @HttpMethod(httpMethod = GET)
@@ -110,5 +89,5 @@ public interface SomeMappedAPI extends HttpAPI<SomeMappedAPI> {
                                  @DefineContentType byte[] binary2,
 
                                  @MultiPartBody(name = "test_file4")
-                                 @DefineFileName(fileName = "tezzt_file") Path path3);
+                                 @DefineFileName(fileName = "tezzt_file") Path path3);*/
 }

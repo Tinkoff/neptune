@@ -1,43 +1,9 @@
 package ru.tinkoff.qa.neptune.http.api.test.requests;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import ru.tinkoff.qa.neptune.http.api.request.NeptuneHttpRequestImpl;
-import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
-import ru.tinkoff.qa.neptune.http.api.request.body.*;
-import ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart;
-import ru.tinkoff.qa.neptune.http.api.request.body.url.encoded.URLEncodedForm;
-import ru.tinkoff.qa.neptune.http.api.test.request.body.JsonBodyObject;
-import ru.tinkoff.qa.neptune.http.api.test.request.body.XmlBodyObject;
-import ru.tinkoff.qa.neptune.http.api.test.requests.mapping.SomeMappedAPI;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.StringReader;
-import java.net.URI;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.List.of;
-import static org.apache.commons.io.FileUtils.writeStringToFile;
-import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.hamcrest.core.Is.is;
-import static ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI.createAPI;
-
 @Deprecated
 public class RequestTest {
 
-    private final static URI TEST_URI = URI.create("http://127.0.0.1:8089");
+    /*private final static URI TEST_URI = URI.create("http://127.0.0.1:8089");
     private static final File TEST_FILE = getTestFile();
 
     private static final JsonBodyObject BODY_JSON_OBJECT = new JsonBodyObject().setA("Some String")
@@ -102,32 +68,6 @@ public class RequestTest {
     }
 
     @DataProvider
-    public static Object[][] data9() throws Exception {
-        var methodMappingAPI = createAPI(SomeMappedAPI.class, TEST_URI);
-        return new Object[][]{
-                {methodMappingAPI.postSomeBody("ABC"), StringBody.class},
-                {methodMappingAPI.postSomeBody(null), EmptyBody.class},
-                {methodMappingAPI.postByteBody("ABC".getBytes()), ByteArrayBody.class},
-                {methodMappingAPI.postFileBody(TEST_FILE), FileBody.class},
-                {methodMappingAPI.postFileBody(TEST_FILE.toPath()), FileBody.class},
-                {methodMappingAPI.postJsoupBody(JSOUP_DOCUMENT), JSoupDocumentBody.class},
-                {methodMappingAPI.postW3CBody(W3C_DOCUMENT), W3CDocumentBody.class},
-                {methodMappingAPI.postMap(FORM_PARAMS), URLEncodedForm.class},
-                {methodMappingAPI.postStream(new FileInputStream(TEST_FILE)), StreamBody.class},
-                {methodMappingAPI.postSupplier(() -> {
-                    try {
-                        return new FileInputStream(TEST_FILE);
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                }), StreamSuppliedBody.class},
-                {methodMappingAPI.postJson(BODY_JSON_OBJECT), SerializedBody.class},
-                {methodMappingAPI.postXml(BODY_XML_OBJECT), SerializedBody.class},
-                {methodMappingAPI.postBoolean(true), StringBody.class},
-        };
-    }
-
-    @DataProvider
     public static Object[][] data10() throws Exception {
         var methodMappingAPI = createAPI(SomeMappedAPI.class, TEST_URI);
         return new Object[][]{
@@ -136,36 +76,6 @@ public class RequestTest {
                 {methodMappingAPI.postXmlArray("Test", 1, true), StringBody.class, "<Root xmlns=\"http://www.example.com\"><item>Test</item><item>1</item><item>true</item></Root>"},
                 {methodMappingAPI.postForm("ABC", 2, true), URLEncodedForm.class, "form_string_param1=ABC&form_int_param2=2&form_bool_param3=true"},
         };
-    }
-
-    @DataProvider
-    public Object[][] data8() {
-        var methodMappingAPI = createAPI(SomeMappedAPI.class, TEST_URI);
-        return new Object[][]{
-                {methodMappingAPI.postSomeBody("ABC"), "POST"},
-                {methodMappingAPI.getSomeBody("ABC"), "GET"},
-                {methodMappingAPI.putSomeBody("ABC"), "PUT"},
-                {methodMappingAPI.deleteBody("ABC"), "DELETE"},
-                {methodMappingAPI.patchSomeBody("ABC"), "PATCH"},
-        };
-    }
-
-    @Test(dataProvider = "data8")
-    public void test13(RequestBuilder builder, String method) {
-        var r = builder.build();
-        assertThat(r.method(), is(method));
-
-        var body = ((NeptuneHttpRequestImpl) r).body();
-        assertThat(body, notNullValue());
-        assertThat(body.body(), notNullValue());
-    }
-
-    @Test(dataProvider = "data9")
-    public void test14(RequestBuilder builder, Class<?> bodyClass) {
-        var r = builder.build();
-
-        var body = ((NeptuneHttpRequestImpl) r).body();
-        assertThat(body, instanceOf(bodyClass));
     }
 
     @Test(dataProvider = "data10")
@@ -223,5 +133,5 @@ public class RequestTest {
         assertThat(parts[6].toString(), is("Content-Disposition: form-data;name=\"test_file4\";filename=\"tezzt_file\"\r\n" +
                 "Content-Type: application/octet-stream\r\n" +
                 "Content: File " + TEST_FILE.getAbsolutePath() + " of size " + TEST_FILE.length() + "(bytes)\r\n"));
-    }
+    }*/
 }

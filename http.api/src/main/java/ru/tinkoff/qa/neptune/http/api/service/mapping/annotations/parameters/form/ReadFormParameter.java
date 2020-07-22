@@ -3,7 +3,7 @@ package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.fo
 import ru.tinkoff.qa.neptune.http.api.request.FormValueDelimiters;
 
 /**
- * It is a POGO for the query parameter transferring.
+ * It is a POGO for the form parameter transferring.
  */
 public class ReadFormParameter {
 
@@ -22,21 +22,21 @@ public class ReadFormParameter {
     }
 
     /**
-     * @return name of a query parameter
+     * @return name of a form parameter
      */
     public String getName() {
         return name;
     }
 
     /**
-     * @return to expand or not expand values of the query parameter
+     * @return to expand or not expand values of the form parameter
      */
     public boolean isToExpand() {
         return toExpand;
     }
 
     /**
-     * @return values of the query parameter
+     * @return values of the form parameter
      */
     public Object[] getValues() {
         return params;

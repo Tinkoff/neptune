@@ -3,10 +3,12 @@ package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.bo
 import ru.tinkoff.qa.neptune.http.api.dto.DTObject;
 import ru.tinkoff.qa.neptune.http.api.request.body.RequestBody;
 import ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart;
+import ru.tinkoff.qa.neptune.http.api.request.body.url.encoded.FormParameter;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.DefineContentType;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.DefineFileName;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.MultiPartBody;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.url.encoded.URLEncodedParameter;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form.FormParam;
 
 import java.io.File;
 import java.io.InputStream;
@@ -15,7 +17,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -28,7 +30,11 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.http.api.request.body.RequestBodyFactory.body;
 import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart.bodyPart;
+import static ru.tinkoff.qa.neptune.http.api.request.body.url.encoded.FormParameter.formParameter;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil.getFromMethod;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil.isRequired;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.BodyDataFormat.NONE;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form.FormStyles.FORM;
 
 /**
  * Util class that reads parameters of a {@link java.lang.reflect.Method} and
@@ -64,68 +70,96 @@ public final class BodyParameterAnnotationReader {
                 .orElse(null);
     }
 
+    private static Object formatObject(Object o, Parameter p) {
+        var f = p.getAnnotation(BodyParamFormat.class);
+
+        var format = ofNullable(f)
+                .map(BodyParamFormat::format)
+                .orElse(NONE);
+
+        var mixIns = ofNullable(f)
+                .map(BodyParamFormat::mixIns)
+                .orElseGet(() -> new Class[]{});
+
+        return format.format(o, mixIns);
+    }
+
     @SuppressWarnings("unchecked")
     private static RequestBody<?> getBody(Method toRead, Object[] parameters) {
         return getFromMethod(toRead,
                 Body.class,
                 parameters,
-                (ps, params) -> ofNullable(params[0])
-                        .map(o -> {
-                            var a = ps[0].getAnnotation(Body.class);
-                            var bodyValue = a.format().format(o, a.mixIns());
-                            var cls = bodyValue.getClass();
+                (ps, params) -> {
+                    var a = ps[0].getAnnotation(Body.class);
+                    return ofNullable(params[0])
+                            .map(o -> {
+                                var bodyValue = formatObject(o, ps[0]);
+                                var cls = bodyValue.getClass();
 
-                            if (String.class.isAssignableFrom(cls)) {
-                                return body((String) bodyValue);
-                            }
+                                if (String.class.isAssignableFrom(cls)) {
+                                    return body((String) bodyValue);
+                                }
 
-                            if (byte[].class.isAssignableFrom(cls)) {
-                                return body((byte[]) bodyValue);
-                            }
+                                if (byte[].class.isAssignableFrom(cls)) {
+                                    return body((byte[]) bodyValue);
+                                }
 
-                            if (File.class.isAssignableFrom(cls)) {
-                                return body((File) bodyValue);
-                            }
+                                if (File.class.isAssignableFrom(cls)) {
+                                    return body((File) bodyValue);
+                                }
 
-                            if (Path.class.isAssignableFrom(cls)) {
-                                return body((Path) bodyValue);
-                            }
+                                if (Path.class.isAssignableFrom(cls)) {
+                                    return body((Path) bodyValue);
+                                }
 
-                            if (InputStream.class.isAssignableFrom(cls)) {
-                                return body((InputStream) bodyValue);
-                            }
+                                if (InputStream.class.isAssignableFrom(cls)) {
+                                    return body((InputStream) bodyValue);
+                                }
 
-                            if (Supplier.class.isAssignableFrom(cls)) {
-                                return body((Supplier<InputStream>) bodyValue);
-                            }
+                                if (Supplier.class.isAssignableFrom(cls)) {
+                                    return body((Supplier<InputStream>) bodyValue);
+                                }
 
-                            if (org.w3c.dom.Document.class.isAssignableFrom(cls)) {
-                                return body((org.w3c.dom.Document) bodyValue);
-                            }
+                                if (org.w3c.dom.Document.class.isAssignableFrom(cls)) {
+                                    return body((org.w3c.dom.Document) bodyValue);
+                                }
 
-                            if (org.jsoup.nodes.Document.class.isAssignableFrom(cls)) {
-                                return body((org.jsoup.nodes.Document) bodyValue);
-                            }
+                                if (org.jsoup.nodes.Document.class.isAssignableFrom(cls)) {
+                                    return body((org.jsoup.nodes.Document) bodyValue);
+                                }
 
-                            if (org.w3c.dom.Document.class.isAssignableFrom(cls)) {
-                                return body((org.jsoup.nodes.Document) bodyValue);
-                            }
+                                if (org.w3c.dom.Document.class.isAssignableFrom(cls)) {
+                                    return body((org.jsoup.nodes.Document) bodyValue);
+                                }
 
-                            if (DTObject.class.isAssignableFrom(cls)) {
-                                return body((DTObject) bodyValue);
-                            }
+                                if (DTObject.class.isAssignableFrom(cls)) {
+                                    return body((DTObject) bodyValue);
+                                }
 
-                            if (Map.class.isAssignableFrom(cls)) {
-                                return body(((Map<?, ?>) bodyValue)
-                                        .entrySet()
-                                        .stream()
-                                        .collect(toMap(entry -> valueOf(entry.getKey()),
-                                                entry -> valueOf(entry.getValue()))));
-                            }
+                                if (Map.class.isAssignableFrom(cls)) {
+                                    return body(((Map<?, ?>) bodyValue)
+                                            .entrySet()
+                                            .stream()
+                                            .collect(toMap(entry -> valueOf(entry.getKey()), Map.Entry::getValue)));
+                                }
 
-                            return body(valueOf(bodyValue));
-                        })
-                        .orElse(null));
+                                if (FormParameter[].class.isAssignableFrom(cls)) {
+                                    return body((FormParameter[]) bodyValue);
+                                }
+
+                                if (FormParameter.class.isAssignableFrom(cls)) {
+                                    return body((FormParameter) bodyValue);
+                                }
+
+                                return body(valueOf(bodyValue));
+                            })
+                            .orElseGet(() -> {
+                                if (isRequired(a)) {
+                                    throw new IllegalArgumentException(format("Method %s requires body that differs from null", toRead));
+                                }
+                                return null;
+                            });
+                });
     }
 
     private static RequestBody<?> getForm(Method toRead, Object[] parameters) {
@@ -133,13 +167,55 @@ public final class BodyParameterAnnotationReader {
                 URLEncodedParameter.class,
                 parameters,
                 (ps, params) -> {
-                    var form = new LinkedHashMap<String, Object>();
+                    var form = new LinkedList<FormParameter>();
+
                     for (int i = 0; i < ps.length; i++) {
-                        var formParameter = ps[i].getAnnotation(URLEncodedParameter.class);
-                        ofNullable(params[i]).ifPresent(o -> form.put(formParameter.value(), valueOf(o)));
+                        var urlEncodedParam = ps[i].getAnnotation(URLEncodedParameter.class);
+
+                        var value = ofNullable(params[i])
+                                .orElseGet(() -> {
+                                    if (isRequired(urlEncodedParam)) {
+                                        throw new IllegalArgumentException(format("Method %s requires form parameter %s that differs from null",
+                                                toRead,
+                                                urlEncodedParam.name()));
+                                    }
+
+                                    return null;
+                                });
+
+                        if (value == null) {
+                            continue;
+                        }
+
+                        var format = ps[i].getAnnotation(BodyParamFormat.class);
+                        var formParam = ps[i].getAnnotation(FormParam.class);
+
+                        if (format != null && formParam != null) {
+                            throw new IllegalArgumentException(format("Only one of %s and %s is allowed. Method %s. " +
+                                            "Parameter %s is annotated by both annotations",
+                                    BodyParamFormat.class.getSimpleName(),
+                                    FormParam.class.getSimpleName(),
+                                    toRead,
+                                    urlEncodedParam.name()));
+                        }
+
+                        if (format != null) {
+                            form.add(formParameter(urlEncodedParam.name(), formatObject(value, ps[i]));
+                        }
+
+                        if (formParam != null || format == null) {
+                            ofNullable(formParam)
+                                    .map(FormParam::style)
+                                    .orElse(FORM)
+                                    .getFormParameters(value,
+                                            )
+                        }
+
+                        ofNullable(params[i]).ifPresent(o -> form.put(formParameter.name(), valueOf(o)));
                     }
+
                     if (form.size() > 0) {
-                        return body(form);
+                        return body(form.toArray(new FormParameter[]{}));
                     }
                     return null;
                 });

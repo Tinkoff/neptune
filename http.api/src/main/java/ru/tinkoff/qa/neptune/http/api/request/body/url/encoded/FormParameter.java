@@ -34,22 +34,39 @@ public final class FormParameter {
     }
 
     /**
-     * Creates a parameter with encoded values.
+     * Creates a parameter with encoded and exploded values.
      *
      * @param name          is a parameter name
-     * @param toExpand      to expand value or not
+     * @param allowReserved allows to use reserved character not encoded or not
+     * @param values        values of the defined parameter
+     * @return an instance of {@link FormParameter}
+     */
+    public static FormParameter formParameter(String name,
+                                              boolean allowReserved,
+                                              Object... values) {
+        return new FormParameter(name,
+                true,
+                null,
+                allowReserved,
+                false,
+                values);
+    }
+
+    /**
+     * Creates a parameter with encoded and not exploded values.
+     *
+     * @param name          is a parameter name
      * @param delimiter     is a delimiter of array/iterable value
      * @param allowReserved allows to use reserved character not encoded or not
      * @param values        values of the defined parameter
      * @return an instance of {@link FormParameter}
      */
     public static FormParameter formParameter(String name,
-                                              boolean toExpand,
                                               FormValueDelimiters delimiter,
                                               boolean allowReserved,
                                               Object... values) {
         return new FormParameter(name,
-                toExpand,
+                false,
                 delimiter,
                 allowReserved,
                 false,
@@ -70,12 +87,7 @@ public final class FormParameter {
         checkNotNull(mapper);
         checkNotNull(value);
         try {
-            return new FormParameter(name,
-                    true,
-                    null,
-                    true,
-                    false,
-                    mapper.writeValueAsString(value));
+            return formParameter(name, mapper.writeValueAsString(value));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -93,6 +105,24 @@ public final class FormParameter {
                                               DefaultBodyMappers mapper,
                                               Object value) {
         return formParameter(name, mapper.getMapper(), value);
+    }
+
+    /**
+     * Creates a parameter with not encoded values.
+     *
+     * @param name  is a parameter name
+     * @param value is a value of the defined parameter
+     * @return an instance of {@link FormParameter}
+     */
+    public static FormParameter formParameter(String name,
+                                              Object value) {
+        checkNotNull(value);
+        return new FormParameter(name,
+                true,
+                null,
+                true,
+                true,
+                value);
     }
 
     boolean isAllowReserved() {
