@@ -200,7 +200,7 @@ public final class BodyParameterAnnotationReader {
                         }
 
                         if (format != null) {
-                            form.add(formParameter(urlEncodedParam.name(), formatObject(value, ps[i]));
+                            form.add(formParameter(urlEncodedParam.name(), formatObject(value, ps[i])));
                         }
 
                         if (formParam != null || format == null) {
@@ -208,10 +208,22 @@ public final class BodyParameterAnnotationReader {
                                     .map(FormParam::style)
                                     .orElse(FORM)
                                     .getFormParameters(value,
-                                            )
+                                            urlEncodedParam.name(),
+                                            formParam == null || formParam.explode(),
+                                            formParam != null && formParam.allowReserved())
+                                    .forEach(p -> {
+                                        if (p.isToExpand()) {
+                                            form.add(formParameter(urlEncodedParam.name(),
+                                                    p.isAllowReserved(),
+                                                    p.getValues()));
+                                        } else {
+                                            form.add(formParameter(urlEncodedParam.name(),
+                                                    p.getDelimiter(),
+                                                    p.isAllowReserved(),
+                                                    p.getValues()));
+                                        }
+                                    });
                         }
-
-                        ofNullable(params[i]).ifPresent(o -> form.put(formParameter.name(), valueOf(o)));
                     }
 
                     if (form.size() > 0) {
