@@ -18,14 +18,13 @@ import java.lang.reflect.Parameter;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.function.Supplier;
 
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toMap;
+import static java.util.stream.StreamSupport.stream;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.http.api.request.body.RequestBodyFactory.body;
@@ -135,19 +134,23 @@ public final class BodyParameterAnnotationReader {
                                     return body((DTObject) bodyValue);
                                 }
 
-                                if (Map.class.isAssignableFrom(cls)) {
-                                    return body(((Map<?, ?>) bodyValue)
-                                            .entrySet()
-                                            .stream()
-                                            .collect(toMap(entry -> valueOf(entry.getKey()), Map.Entry::getValue)));
-                                }
-
                                 if (FormParameter[].class.isAssignableFrom(cls)) {
                                     return body((FormParameter[]) bodyValue);
                                 }
 
                                 if (FormParameter.class.isAssignableFrom(cls)) {
                                     return body((FormParameter) bodyValue);
+                                }
+
+                                if (Iterable.class.isAssignableFrom(cls)) {
+                                    var formParameters = stream(((Iterable<?>) bodyValue).spliterator(), false)
+                                            .filter(o1 -> o1 instanceof FormParameter)
+                                            .map(o1 -> (FormParameter) o1)
+                                            .toArray(FormParameter[]::new);
+
+                                    if (formParameters.length > 0) {
+                                        return body(formParameters);
+                                    }
                                 }
 
                                 return body(valueOf(bodyValue));

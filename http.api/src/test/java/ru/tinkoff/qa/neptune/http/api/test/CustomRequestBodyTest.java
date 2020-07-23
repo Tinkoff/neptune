@@ -33,6 +33,7 @@ import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasBody.hasBody;
 import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
 import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart.bodyPart;
 import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.ContentTransferEncoding.BINARY;
+import static ru.tinkoff.qa.neptune.http.api.request.body.url.encoded.FormParameter.formParameter;
 
 public class CustomRequestBodyTest extends BaseHttpTest {
 
@@ -207,11 +208,15 @@ public class CustomRequestBodyTest extends BaseHttpTest {
                         .header("Content-Type", "application/xhtml+xml"),
                         DOCUMENT_HTML_HAS_BEEN_SUCCESSFULLY_POSTED},
 
-                {POST(REQUEST_URI + PATH_URL_UNLOADED, FORM_PARAMS)
+                {POST(REQUEST_URI + PATH_URL_UNLOADED,
+                        formParameter("param1", false, "value1"),
+                        formParameter("param2", false, "value2"))
                         .header("Content-Type", "application/x-www-form-urlencoded"),
                         FORM_HAS_BEEN_SUCCESSFULLY_POSTED},
 
-                {POST(REQUEST_URI + PATH_URL_UNLOADED, FORM_PARAMS2)
+                {POST(REQUEST_URI + PATH_URL_UNLOADED,
+                        formParameter("chip&dale", false, "rescue rangers"),
+                        formParameter("how to get water", false, "2H2 + O2 = 2H2O"))
                         .header("Content-Type", "application/x-www-form-urlencoded"),
                         FORM_HAS_BEEN_SUCCESSFULLY_POSTED},
 

@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
-import java.util.Map;
 import java.util.function.Supplier;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -120,16 +119,6 @@ public final class RequestBodyFactory {
      */
     public static RequestBody<Supplier<InputStream>> body(Supplier<InputStream> body) {
         return new StreamSuppliedBody(body);
-    }
-
-    /**
-     * Creates a body of {@code application/x-www-form-urlencoded} format.
-     *
-     * @param formParameters is a map of parameter names and values
-     * @return an instance of {@link RequestBody}
-     */
-    public static RequestBody<String> body(Map<String, Object> formParameters) {
-        return new URLEncodedForm(formParameters);
     }
 
     /**

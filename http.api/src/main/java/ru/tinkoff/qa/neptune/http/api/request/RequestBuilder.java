@@ -21,7 +21,10 @@ import java.net.http.HttpRequest;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.TreeMap;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -178,16 +181,6 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
         return POST(endPoint, body(body));
     }
 
-    /**
-     * Creates a builder of a POST http request with body of {@code application/x-www-form-urlencoded} format.
-     *
-     * @param endPoint is a target endpoint
-     * @param body     is a map of parameter names and values
-     * @return a POST request builder.
-     */
-    public static RequestBuilder POST(URI endPoint, Map<String, Object> body) {
-        return POST(endPoint, body(body));
-    }
 
     /**
      * Creates a builder of a POST http request with body of {@code application/x-www-form-urlencoded} format.
@@ -416,17 +409,6 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      * Creates a builder of a POST http request with body of {@code application/x-www-form-urlencoded} format.
      *
      * @param endPointUrl is a URL of target endpoint
-     * @param body        is a map of parameter names and values
-     * @return a POST request builder.
-     */
-    public static RequestBuilder POST(URL endPointUrl, Map<String, Object> body) {
-        return POST(toURI(endPointUrl), body);
-    }
-
-    /**
-     * Creates a builder of a POST http request with body of {@code application/x-www-form-urlencoded} format.
-     *
-     * @param endPointUrl is a URL of target endpoint
      * @param body        array of form parameters
      * @return a POST request builder.
      */
@@ -643,17 +625,6 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      * @return a POST request builder.
      */
     public static RequestBuilder POST(String uriStr, Supplier<InputStream> body) {
-        return POST(create(uriStr), body);
-    }
-
-    /**
-     * Creates a builder of a POST http request with body of {@code application/x-www-form-urlencoded} format.
-     *
-     * @param uriStr is a string value of URI of target endpoint
-     * @param body   is a map of parameter names and values
-     * @return a POST request builder.
-     */
-    public static RequestBuilder POST(String uriStr, Map<String, Object> body) {
         return POST(create(uriStr), body);
     }
 
@@ -962,17 +933,6 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      * Creates a builder of a PUT http request with body of {@code application/x-www-form-urlencoded} format.
      *
      * @param endPoint is a target endpoint
-     * @param body     is a map of parameter names and values
-     * @return a PUT request builder.
-     */
-    public static RequestBuilder PUT(URI endPoint, Map<String, Object> body) {
-        return PUT(endPoint, body(body));
-    }
-
-    /**
-     * Creates a builder of a PUT http request with body of {@code application/x-www-form-urlencoded} format.
-     *
-     * @param endPoint is a target endpoint
      * @param body     array of form parameters
      * @return a PUT request builder.
      */
@@ -1196,17 +1156,6 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      * Creates a builder of a PUT http request with body of {@code application/x-www-form-urlencoded} format.
      *
      * @param endPointUrl is a URL of target endpoint
-     * @param body        is a map of parameter names and values
-     * @return a PUT request builder.
-     */
-    public static RequestBuilder PUT(URL endPointUrl, Map<String, Object> body) {
-        return PUT(toURI(endPointUrl), body);
-    }
-
-    /**
-     * Creates a builder of a PUT http request with body of {@code application/x-www-form-urlencoded} format.
-     *
-     * @param endPointUrl is a URL of target endpoint
      * @param body        array of form parameters
      * @return a PUT request builder.
      */
@@ -1423,17 +1372,6 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      * @return a PUT request builder.
      */
     public static RequestBuilder PUT(String uriStr, Supplier<InputStream> body) {
-        return PUT(create(uriStr), body);
-    }
-
-    /**
-     * Creates a builder of a PUT http request with body of {@code application/x-www-form-urlencoded} format.
-     *
-     * @param uriStr is a string value of URI of target endpoint
-     * @param body   is a map of parameter names and values
-     * @return a PUT request builder.
-     */
-    public static RequestBuilder PUT(String uriStr, Map<String, Object> body) {
         return PUT(create(uriStr), body);
     }
 
@@ -1674,18 +1612,6 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      * @return a fluent http request builder.
      */
     public static RequestBuilder METHOD(String method, URI endPoint, Supplier<InputStream> body) {
-        return METHOD(method, endPoint, body(body));
-    }
-
-    /**
-     * Creates a builder of a fluent http request with body of {@code application/x-www-form-urlencoded} format.
-     *
-     * @param method   is a name of http method
-     * @param endPoint is a target endpoint
-     * @param body     is a map of parameter names and values
-     * @return a fluent http request builder.
-     */
-    public static RequestBuilder METHOD(String method, URI endPoint, Map<String, Object> body) {
         return METHOD(method, endPoint, body(body));
     }
 
@@ -1937,18 +1863,6 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      *
      * @param method      is a name of http method
      * @param endPointUrl is a URL of target endpoint
-     * @param body        is a map of parameter names and values
-     * @return a fluent http request builder.
-     */
-    public static RequestBuilder METHOD(String method, URL endPointUrl, Map<String, Object> body) {
-        return METHOD(method, toURI(endPointUrl), body);
-    }
-
-    /**
-     * Creates a builder of a fluent http request with body of {@code application/x-www-form-urlencoded} format.
-     *
-     * @param method      is a name of http method
-     * @param endPointUrl is a URL of target endpoint
      * @param body        array of form parameters
      * @return a fluent http request builder.
      */
@@ -2183,18 +2097,6 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      * @return a fluent http request builder.
      */
     public static RequestBuilder METHOD(String method, String uriStr, Supplier<InputStream> body) {
-        return METHOD(method, create(uriStr), body);
-    }
-
-    /**
-     * Creates a builder of a fluent http request with body of {@code application/x-www-form-urlencoded} format.
-     *
-     * @param method is a name of http method
-     * @param uriStr is a string value of URI of target endpoint
-     * @param body   is a map of parameter names and values
-     * @return a fluent http request builder.
-     */
-    public static RequestBuilder METHOD(String method, String uriStr, Map<String, Object> body) {
         return METHOD(method, create(uriStr), body);
     }
 

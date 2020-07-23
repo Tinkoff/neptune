@@ -133,6 +133,9 @@ public class BodyMappingTest {
                         URLEncodedForm.class},
                 {methodMappingAPI.postForm(formParameter("param1", SPACE, false, 1, 2)),
                         URLEncodedForm.class},
+                {methodMappingAPI.postForm(List.of(formParameter("param1", SPACE, false, 1, 2),
+                        formParameter("param2", true, 3, 4, 5))),
+                        URLEncodedForm.class},
                 {methodMappingAPI.postStream(new FileInputStream(TEST_FILE)), StreamBody.class},
                 {methodMappingAPI.postSupplier(() -> {
                     try {
@@ -163,6 +166,19 @@ public class BodyMappingTest {
         };
     }
 
+    @DataProvider
+    public static Object[][] data3() {
+        var methodMappingAPI = createAPI(BodyMapping.class, TEST_URI);
+        return new Object[][]{
+                {methodMappingAPI.postListJson(List.of("val1", 3, "Hello world")), StringBody.class, "[\"val1\",3,\"Hello world\"]"},
+                {methodMappingAPI.postXmlMap(FORM_PARAMS), StringBody.class, "<TestObject><param1>value1</param1><param2>value2</param2><param3>1</param3><param3>true</param3><param3>Кирилица</param3><param3>Hello world</param3></TestObject>"},
+                {methodMappingAPI.postXmlArray("Test", 1, true), StringBody.class, "<Root xmlns=\"http://www.example.com\"><item>Test</item><item>1</item><item>true</item></Root>"},
+                {methodMappingAPI.postForm("ABC", 2, true), URLEncodedForm.class, "form_string_param1=ABC&form_int_param2=2&form_bool_param3=true"},
+                {methodMappingAPI.postForm(FORM_PARAMS), URLEncodedForm.class, "form_string_param1=ABC&form_int_param2=2&form_bool_param3=true"},
+        };
+    }
+
+
     @Test(dataProvider = "data1")
     public void test1(RequestBuilder builder, String method) {
         var r = builder.build();
@@ -179,6 +195,15 @@ public class BodyMappingTest {
 
         var body = ((NeptuneHttpRequestImpl) r).body();
         assertThat(body, instanceOf(bodyClass));
+    }
+
+    @Test(dataProvider = "data3")
+    public void test3(RequestBuilder builder, Class<?> bodyClass, String body) {
+        var r = builder.build();
+
+        var rBody = ((NeptuneHttpRequestImpl) r).body();
+        assertThat(rBody, instanceOf(bodyClass));
+        assertThat(rBody.body(), is(body));
     }
 
 
@@ -236,6 +261,9 @@ public class BodyMappingTest {
         RequestBuilder postForm(@Body FormParameter body);
 
         @HttpMethod(httpMethod = POST)
+        RequestBuilder postForm(@Body List<FormParameter> body);
+
+        @HttpMethod(httpMethod = POST)
         RequestBuilder postStream(@Body InputStream body);
 
         @HttpMethod(httpMethod = POST)
@@ -265,10 +293,12 @@ public class BodyMappingTest {
                                 @URLEncodedParameter(name = "form_bool_param3") boolean param3);
 
         @HttpMethod(httpMethod = POST)
+        RequestBuilder postForm(@Body Map<?, ?> form);
+
+        @HttpMethod(httpMethod = POST)
         RequestBuilder postMultipart(@MultiPartBody(name = "test_file", contentTransferEncoding = BINARY) File file,
-                                     @MultiPartBody(name = "test_xml",
-                                             format = XML,
-                                             mixIns = ArrayMixIn.class)
+                                     @MultiPartBody(name = "test_xml")
+                                     @BodyParamFormat(format = XML, mixIns = ArrayMixIn.class)
                                      @DefineContentType(contentType = "application/xml") Object[] array,
 
                                      @MultiPartBody(name = "test_file2")

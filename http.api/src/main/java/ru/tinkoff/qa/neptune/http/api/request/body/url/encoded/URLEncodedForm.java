@@ -3,13 +3,11 @@ package ru.tinkoff.qa.neptune.http.api.request.body.url.encoded;
 import ru.tinkoff.qa.neptune.http.api.request.body.RequestBody;
 
 import java.net.http.HttpRequest;
-import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.net.http.HttpRequest.BodyPublishers.ofString;
 import static java.util.Arrays.stream;
-import static ru.tinkoff.qa.neptune.http.api.request.body.url.encoded.FormParameter.formParameter;
 
 public final class URLEncodedForm extends RequestBody<String> {
 
@@ -19,16 +17,6 @@ public final class URLEncodedForm extends RequestBody<String> {
 
     public URLEncodedForm(FormParameter... formParameters) {
         this(createBuilder(formParameters));
-    }
-
-    public URLEncodedForm(Map<String, Object> formParameters) {
-        this(formParameters
-                .entrySet()
-                .stream()
-                .map(e -> formParameter(e.getKey(),
-                        false,
-                        e.getValue()))
-                .toArray(FormParameter[]::new));
     }
 
     private static URLEncodedFormBuilder createBuilder(FormParameter... formParameters) {
