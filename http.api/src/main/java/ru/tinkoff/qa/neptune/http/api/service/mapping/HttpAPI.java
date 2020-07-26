@@ -156,5 +156,5 @@ public interface HttpAPI<T extends HttpAPI<T>> {
      * @param requestTuner a class those instance defines parameters of resulted objects of {@link ru.tinkoff.qa.neptune.http.api.request.RequestBuilder}
      * @return is supposed to return self-reference
      */
-    T useForRequestBuilding(Class<RequestTuner> requestTuner);
+    T useForRequestBuilding(Class<? extends RequestTuner> requestTuner);
 }

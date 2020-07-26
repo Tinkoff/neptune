@@ -215,11 +215,11 @@ public final class BodyParameterAnnotationReader {
                                             formParam != null && formParam.allowReserved())
                                     .forEach(p -> {
                                         if (p.isToExpand()) {
-                                            form.add(formParameter(urlEncodedParam.name(),
+                                            form.add(formParameter(p.getName(),
                                                     p.isAllowReserved(),
                                                     p.getValues()));
                                         } else {
-                                            form.add(formParameter(urlEncodedParam.name(),
+                                            form.add(formParameter(p.getName(),
                                                     p.getDelimiter(),
                                                     p.isAllowReserved(),
                                                     p.getValues()));

@@ -3,13 +3,8 @@ package ru.tinkoff.qa.neptune.http.api.test.requests.mapping;
 import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.Header;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMethod;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.MethodParameter;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.header.HeaderParameter;
 import ru.tinkoff.qa.neptune.http.api.test.BaseHttpTest;
+import ru.tinkoff.qa.neptune.http.api.test.requests.RequestTuner2;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -26,7 +21,6 @@ import static org.testng.Assert.fail;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.response.GetObjectFromBodyStepSupplier.asIs;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI.createAPI;
-import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.DefaultHttpMethods.POST;
 
 public class HeaderMappingTest extends BaseHttpTest {
 
@@ -132,99 +126,42 @@ public class HeaderMappingTest extends BaseHttpTest {
         fail("Exception was expected");
     }
 
-    private interface HeaderMapping extends HttpAPI<HeaderMapping> {
+    @Test
+    public void test5() {
+        var rb = methodMappingAPI.postSomethingWithHeadersDefault();
+        var r = rb.build();
+        var headerMap = r.headers().map();
 
-        @Header(name = "header1", headerValues = {"abc", "one more value"})
-        @Header(name = "header2", headerValues = "one more value")
-        @Header(name = "header3", headerValues = "one more value again")
-        @HttpMethod(httpMethod = POST)
-        RequestBuilder postSomethingWithHeaders();
-
-        @Header(name = "header1", headerValues = {"abc"})
-        @Header(name = "header2", headerValues = "one more value")
-        @Header(name = "header3", headerValues = "one more value again")
-        @HttpMethod(httpMethod = POST)
-        RequestBuilder postSomethingWithHeaders(@HeaderParameter(headerName = "header1") String header1,
-                                                @HeaderParameter(headerName = "digitHeader") int digitHeader,
-                                                @HeaderParameter(headerName = "digitHeader") Integer digitHeader2,
-                                                @HeaderParameter(headerName = "digitHeader") Float digitHeader3,
-                                                @HeaderParameter(headerName = "arrayHeader") Object[] array,
-                                                @HeaderParameter(headerName = "iterable") Iterable<Object> iterable,
-                                                @HeaderParameter(headerName = "simpleMap") Map<?, ?> map1,
-                                                @HeaderParameter(headerName = "explodedMap", explode = true) Map<?, ?> map2,
-                                                @HeaderParameter(headerName = "simpleObject") HeaderParameterObject o1,
-                                                @HeaderParameter(headerName = "explodedObject", explode = true) HeaderParameterObject o2);
-
-        @Header(name = "header1", headerValues = {"abc", "one more value"})
-        @Header(name = "header2", headerValues = "one more value")
-        @Header(name = "header3", headerValues = "one more value again")
-        @HttpMethod(httpMethod = POST)
-        RequestBuilder postSomethingWithHeaders(@HeaderParameter(headerName = "notRequired1") Object notRequired1,
-                                                @HeaderParameter(headerName = "notRequired2") Object notRequired2);
-
-        @Header(name = "header1", headerValues = {"abc", "one more value"})
-        @Header(name = "header2", headerValues = "one more value")
-        @Header(name = "header3", headerValues = "one more value again")
-        @HttpMethod(httpMethod = POST)
-        RequestBuilder postSomethingWithHeaders(@HeaderParameter(headerName = "required", required = true) Object requiredHeader);
+        assertThat(headerMap, hasEntry(Matchers.equalTo("required"), contains("5")));
     }
 
-    @MethodParameter
-    private static class HeaderParameterObject {
+    @Test
+    public void test6() {
+        var rb = createAPI(HeaderMapping.class, REQUEST_URI)
+                .useForRequestBuilding(RequestTuner2.class)
+                .postSomethingWithHeadersDefault();
 
-        private String someString;
+        var r = rb.build();
+        var headerMap = r.headers().map();
 
-        private Number someNum;
+        assertThat(headerMap, hasEntry(Matchers.equalTo("header1"), contains("abc", "one more value")));
+        assertThat(headerMap, hasEntry(Matchers.equalTo("header2"), contains("one more value")));
+        assertThat(headerMap, hasEntry(Matchers.equalTo("header3"), contains("one more value again")));
+        assertThat(headerMap, hasEntry(Matchers.equalTo("required"), contains("5")));
+    }
 
-        private Boolean someBool;
+    @Test
+    public void test7() {
+        var rb = createAPI(HeaderMapping.class, REQUEST_URI)
+                .useForRequestBuilding(new RequestTuner2())
+                .postSomethingWithHeadersDefault();
 
-        private Object nullable;
+        var r = rb.build();
+        var headerMap = r.headers().map();
 
-        private Object[] someArray;
-
-        public String getSomeString() {
-            return someString;
-        }
-
-        public HeaderParameterObject setSomeString(String someString) {
-            this.someString = someString;
-            return this;
-        }
-
-        public Number getSomeNum() {
-            return someNum;
-        }
-
-        public HeaderParameterObject setSomeNum(Number someNum) {
-            this.someNum = someNum;
-            return this;
-        }
-
-        public Boolean getSomeBool() {
-            return someBool;
-        }
-
-        public HeaderParameterObject setSomeBool(Boolean someBool) {
-            this.someBool = someBool;
-            return this;
-        }
-
-        public Object getNullable() {
-            return nullable;
-        }
-
-        public HeaderParameterObject setNullable(Object nullable) {
-            this.nullable = nullable;
-            return this;
-        }
-
-        public Object[] getSomeArray() {
-            return someArray;
-        }
-
-        public HeaderParameterObject setSomeArray(Object[] someArray) {
-            this.someArray = someArray;
-            return this;
-        }
+        assertThat(headerMap, hasEntry(Matchers.equalTo("header1"), contains("abc", "one more value")));
+        assertThat(headerMap, hasEntry(Matchers.equalTo("header2"), contains("one more value")));
+        assertThat(headerMap, hasEntry(Matchers.equalTo("header3"), contains("one more value again")));
+        assertThat(headerMap, hasEntry(Matchers.equalTo("required"), contains("5")));
     }
 }
