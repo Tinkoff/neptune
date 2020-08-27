@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.http.api.request.body;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ru.tinkoff.qa.neptune.http.api.dto.DTObject;
 
 import java.net.http.HttpRequest;
 
@@ -13,16 +12,8 @@ public final class SerializedBody extends RequestBody<String> {
     private final String toStringExpr;
 
     private SerializedBody(String serialized, String toStringExpr) {
-        super(ofNullable(serialized)
-                .orElseThrow());
+        super(ofNullable(serialized).orElseThrow());
         this.toStringExpr = toStringExpr;
-    }
-
-    SerializedBody(DTObject body) {
-        this(ofNullable(body)
-                        .map(DTObject::serialize)
-                        .orElseThrow(),
-                body.toString());
     }
 
     SerializedBody(ObjectMapper mapper, Object body) {

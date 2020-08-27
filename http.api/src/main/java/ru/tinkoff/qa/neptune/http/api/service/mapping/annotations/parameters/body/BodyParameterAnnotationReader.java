@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body;
 
-import ru.tinkoff.qa.neptune.http.api.dto.DTObject;
 import ru.tinkoff.qa.neptune.http.api.request.body.RequestBody;
 import ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart;
 import ru.tinkoff.qa.neptune.http.api.request.body.url.encoded.FormParameter;
@@ -128,10 +127,6 @@ public final class BodyParameterAnnotationReader {
 
                                 if (org.w3c.dom.Document.class.isAssignableFrom(cls)) {
                                     return body((org.jsoup.nodes.Document) bodyValue);
-                                }
-
-                                if (DTObject.class.isAssignableFrom(cls)) {
-                                    return body((DTObject) bodyValue);
                                 }
 
                                 if (FormParameter[].class.isAssignableFrom(cls)) {
@@ -299,17 +294,6 @@ public final class BodyParameterAnnotationReader {
                                                             return bodyPart((InputStream) bodyValue, part.name(), randomAlphanumeric(20));
                                                         })
                                                         .orElseGet(() -> bodyPart((InputStream) bodyValue, part.name()));
-
-                                            } else if (DTObject.class.isAssignableFrom(cls)) {
-                                                bp = ofNullable(defineFile)
-                                                        .map(d -> {
-                                                            var f = d.fileName();
-                                                            if (isNotBlank(f)) {
-                                                                return bodyPart((DTObject) bodyValue, part.name(), f);
-                                                            }
-                                                            return bodyPart((DTObject) bodyValue, part.name(), randomAlphanumeric(20));
-                                                        })
-                                                        .orElseGet(() -> bodyPart((DTObject) bodyValue, part.name()));
 
                                             } else if (File.class.isAssignableFrom(cls)) {
                                                 bp = ofNullable(defineFile)

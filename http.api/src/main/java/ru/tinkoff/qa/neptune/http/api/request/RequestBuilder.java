@@ -1,8 +1,7 @@
 package ru.tinkoff.qa.neptune.http.api.request;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ru.tinkoff.qa.neptune.http.api.dto.DTObject;
-import ru.tinkoff.qa.neptune.http.api.mapper.DefaultBodyMappers;
+import ru.tinkoff.qa.neptune.http.api.mapping.DefaultMapper;
 import ru.tinkoff.qa.neptune.http.api.properties.mapper.DefaultJsonObjectMapper;
 import ru.tinkoff.qa.neptune.http.api.properties.mapper.DefaultXmlObjectMapper;
 import ru.tinkoff.qa.neptune.http.api.request.body.MultiPartBody;
@@ -231,17 +230,6 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      * Creates a builder of a POST http request. An object is transformed into json/xml string body.
      *
      * @param endPoint is a target endpoint
-     * @param body     object to be serialized
-     * @return a POST request builder.
-     */
-    public static RequestBuilder POST(URI endPoint, DTObject body) {
-        return POST(endPoint, body(body));
-    }
-
-    /**
-     * Creates a builder of a POST http request. An object is transformed into json/xml string body.
-     *
-     * @param endPoint is a target endpoint
      * @param mapper   is an instance of {@link ObjectMapper} that is used to transform object
      *                 into json/xml string
      * @param body     object to be serialized
@@ -259,11 +247,11 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      *                 into json/xml string.
      * @param body     object to be serialized
      * @return a POST request builder.
-     * @see DefaultBodyMappers
+     * @see DefaultMapper
      * @see DefaultJsonObjectMapper
      * @see DefaultXmlObjectMapper
      */
-    public static RequestBuilder POST(URI endPoint, DefaultBodyMappers mapper, Object body) {
+    public static RequestBuilder POST(URI endPoint, DefaultMapper mapper, Object body) {
         return POST(endPoint, body(mapper, body));
     }
 
@@ -454,17 +442,6 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      * Creates a builder of a POST http request. An object is transformed into json/xml string body.
      *
      * @param endPointUrl is a URL of target endpoint
-     * @param body        object to be serialized
-     * @return a POST request builder.
-     */
-    public static RequestBuilder POST(URL endPointUrl, DTObject body) {
-        return POST(toURI(endPointUrl), body);
-    }
-
-    /**
-     * Creates a builder of a POST http request. An object is transformed into json/xml string body.
-     *
-     * @param endPointUrl is a URL of target endpoint
      * @param mapper      is an instance of {@link ObjectMapper} that is used to transform object
      *                    into json/xml string
      * @param body        object to be serialized
@@ -482,11 +459,11 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      *                    into json/xml string.
      * @param body        object to be serialized
      * @return a POST request builder.
-     * @see DefaultBodyMappers
+     * @see DefaultMapper
      * @see DefaultJsonObjectMapper
      * @see DefaultXmlObjectMapper
      */
-    public static RequestBuilder POST(URL endPointUrl, DefaultBodyMappers mapper, Object body) {
+    public static RequestBuilder POST(URL endPointUrl, DefaultMapper mapper, Object body) {
         return POST(toURI(endPointUrl), mapper, body);
     }
 
@@ -677,17 +654,6 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      * Creates a builder of a POST http request. An object is transformed into json/xml string body.
      *
      * @param uriStr is a string value of URI of target endpoint
-     * @param body   object to be serialized
-     * @return a POST request builder.
-     */
-    public static RequestBuilder POST(String uriStr, DTObject body) {
-        return POST(create(uriStr), body);
-    }
-
-    /**
-     * Creates a builder of a POST http request. An object is transformed into json/xml string body.
-     *
-     * @param uriStr is a string value of URI of target endpoint
      * @param mapper is an instance of {@link ObjectMapper} that is used to transform object
      *               into json/xml string
      * @param body   object to be serialized
@@ -705,11 +671,11 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      *               into json/xml string.
      * @param body   object to be serialized
      * @return a POST request builder.
-     * @see DefaultBodyMappers
+     * @see DefaultMapper
      * @see DefaultJsonObjectMapper
      * @see DefaultXmlObjectMapper
      */
-    public static RequestBuilder POST(String uriStr, DefaultBodyMappers mapper, Object body) {
+    public static RequestBuilder POST(String uriStr, DefaultMapper mapper, Object body) {
         return POST(create(uriStr), mapper, body);
     }
 
@@ -974,16 +940,6 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
         return PUT(endPoint, body(body));
     }
 
-    /**
-     * Creates a builder of a PUT http request. An object is transformed into json/xml string body.
-     *
-     * @param endPoint is a target endpoint
-     * @param body     object to be serialized
-     * @return a PUT request builder.
-     */
-    public static RequestBuilder PUT(URI endPoint, DTObject body) {
-        return PUT(endPoint, body(body));
-    }
 
     /**
      * Creates a builder of a PUT http request. An object is transformed into json/xml string body.
@@ -1006,11 +962,11 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      *                 into json/xml string.
      * @param body     object to be serialized
      * @return a PUT request builder.
-     * @see DefaultBodyMappers
+     * @see DefaultMapper
      * @see DefaultJsonObjectMapper
      * @see DefaultXmlObjectMapper
      */
-    public static RequestBuilder PUT(URI endPoint, DefaultBodyMappers mapper, Object body) {
+    public static RequestBuilder PUT(URI endPoint, DefaultMapper mapper, Object body) {
         return PUT(endPoint, body(mapper, body));
     }
 
@@ -1201,17 +1157,6 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      * Creates a builder of a PUT http request. An object is transformed into json/xml string body.
      *
      * @param endPointUrl is a URL of target endpoint
-     * @param body        object to be serialized
-     * @return a PUT request builder.
-     */
-    public static RequestBuilder PUT(URL endPointUrl, DTObject body) {
-        return PUT(toURI(endPointUrl), body);
-    }
-
-    /**
-     * Creates a builder of a PUT http request. An object is transformed into json/xml string body.
-     *
-     * @param endPointUrl is a URL of target endpoint
      * @param mapper      is an instance of {@link ObjectMapper} that is used to transform object
      *                    into json/xml string
      * @param body        object to be serialized
@@ -1229,11 +1174,11 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      *                    into json/xml string.
      * @param body        object to be serialized
      * @return a PUT request builder.
-     * @see DefaultBodyMappers
+     * @see DefaultMapper
      * @see DefaultJsonObjectMapper
      * @see DefaultXmlObjectMapper
      */
-    public static RequestBuilder PUT(URL endPointUrl, DefaultBodyMappers mapper, Object body) {
+    public static RequestBuilder PUT(URL endPointUrl, DefaultMapper mapper, Object body) {
         return PUT(toURI(endPointUrl), mapper, body);
     }
 
@@ -1424,17 +1369,6 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      * Creates a builder of a PUT http request. An object is transformed into json/xml string body.
      *
      * @param uriStr is a string value of URI of target endpoint
-     * @param body   object to be serialized
-     * @return a PUT request builder.
-     */
-    public static RequestBuilder PUT(String uriStr, DTObject body) {
-        return PUT(create(uriStr), body);
-    }
-
-    /**
-     * Creates a builder of a PUT http request. An object is transformed into json/xml string body.
-     *
-     * @param uriStr is a string value of URI of target endpoint
      * @param mapper is an instance of {@link ObjectMapper} that is used to transform object
      *               into json/xml string
      * @param body   object to be serialized
@@ -1452,11 +1386,11 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      *               into json/xml string.
      * @param body   object to be serialized
      * @return a PUT request builder.
-     * @see DefaultBodyMappers
+     * @see DefaultMapper
      * @see DefaultJsonObjectMapper
      * @see DefaultXmlObjectMapper
      */
-    public static RequestBuilder PUT(String uriStr, DefaultBodyMappers mapper, Object body) {
+    public static RequestBuilder PUT(String uriStr, DefaultMapper mapper, Object body) {
         return PUT(create(uriStr), mapper, body);
     }
 
@@ -1670,18 +1604,6 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      *
      * @param method   is a name of http method
      * @param endPoint is a target endpoint
-     * @param body     object to be serialized
-     * @return a fluent http request builder.
-     */
-    public static RequestBuilder METHOD(String method, URI endPoint, DTObject body) {
-        return METHOD(method, endPoint, body(body));
-    }
-
-    /**
-     * Creates a builder of a fluent http request. An object is transformed into json/xml string body.
-     *
-     * @param method   is a name of http method
-     * @param endPoint is a target endpoint
      * @param mapper   is an instance of {@link ObjectMapper} that is used to transform object
      *                 into json/xml string
      * @param body     object to be serialized
@@ -1700,11 +1622,11 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      *                 into json/xml string.
      * @param body     object to be serialized
      * @return a fluent http request builder.
-     * @see DefaultBodyMappers
+     * @see DefaultMapper
      * @see DefaultJsonObjectMapper
      * @see DefaultXmlObjectMapper
      */
-    public static RequestBuilder METHOD(String method, URI endPoint, DefaultBodyMappers mapper, Object body) {
+    public static RequestBuilder METHOD(String method, URI endPoint, DefaultMapper mapper, Object body) {
         return METHOD(method, endPoint, body(mapper, body));
     }
 
@@ -1912,18 +1834,6 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      *
      * @param method      is a name of http method
      * @param endPointUrl is a URL of target endpoint
-     * @param body        object to be serialized
-     * @return a fluent http request builder.
-     */
-    public static RequestBuilder METHOD(String method, URL endPointUrl, DTObject body) {
-        return METHOD(method, toURI(endPointUrl), body);
-    }
-
-    /**
-     * Creates a builder of a fluent http request. An object is transformed into json/xml string body.
-     *
-     * @param method      is a name of http method
-     * @param endPointUrl is a URL of target endpoint
      * @param mapper      is an instance of {@link ObjectMapper} that is used to transform object
      *                    into json/xml string
      * @param body        object to be serialized
@@ -1942,11 +1852,11 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      *                    into json/xml string.
      * @param body        object to be serialized
      * @return a fluent http request builder.
-     * @see DefaultBodyMappers
+     * @see DefaultMapper
      * @see DefaultJsonObjectMapper
      * @see DefaultXmlObjectMapper
      */
-    public static RequestBuilder METHOD(String method, URL endPointUrl, DefaultBodyMappers mapper, Object body) {
+    public static RequestBuilder METHOD(String method, URL endPointUrl, DefaultMapper mapper, Object body) {
         return METHOD(method, toURI(endPointUrl), mapper, body);
     }
 
@@ -2154,18 +2064,6 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      *
      * @param method is a name of http method
      * @param uriStr is a string value of URI of target endpoint
-     * @param body   object to be serialized
-     * @return a fluent http request builder.
-     */
-    public static RequestBuilder METHOD(String method, String uriStr, DTObject body) {
-        return METHOD(method, create(uriStr), body);
-    }
-
-    /**
-     * Creates a builder of a fluent http request. An object is transformed into json/xml string body.
-     *
-     * @param method is a name of http method
-     * @param uriStr is a string value of URI of target endpoint
      * @param mapper is an instance of {@link ObjectMapper} that is used to transform object
      *               into json/xml string
      * @param body   object to be serialized
@@ -2184,11 +2082,11 @@ public abstract class RequestBuilder implements RequestSettings<RequestBuilder> 
      *               into json/xml string.
      * @param body   object to be serialized
      * @return a fluent http request builder.
-     * @see DefaultBodyMappers
+     * @see DefaultMapper
      * @see DefaultJsonObjectMapper
      * @see DefaultXmlObjectMapper
      */
-    public static RequestBuilder METHOD(String method, String uriStr, DefaultBodyMappers mapper, Object body) {
+    public static RequestBuilder METHOD(String method, String uriStr, DefaultMapper mapper, Object body) {
         return METHOD(method, create(uriStr), mapper, body);
     }
 

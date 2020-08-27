@@ -2,19 +2,16 @@ package ru.tinkoff.qa.neptune.http.api.response.body.data;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ru.tinkoff.qa.neptune.http.api.dto.JsonDTObject;
-import ru.tinkoff.qa.neptune.http.api.dto.XmlDTObject;
 
 import javax.xml.parsers.DocumentBuilder;
 import java.net.http.HttpResponse;
-import java.util.Collection;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
 import static java.net.http.HttpResponse.BodySubscribers.mapping;
-import static ru.tinkoff.qa.neptune.http.api.mapper.DefaultBodyMappers.JSON;
-import static ru.tinkoff.qa.neptune.http.api.mapper.DefaultBodyMappers.XML;
+import static ru.tinkoff.qa.neptune.http.api.mapping.DefaultMapper.JSON;
+import static ru.tinkoff.qa.neptune.http.api.mapping.DefaultMapper.XML;
 
 public class MappedBodyHandler<S, T> implements HttpResponse.BodyHandler<T> {
 
@@ -60,28 +57,12 @@ public class MappedBodyHandler<S, T> implements HttpResponse.BodyHandler<T> {
         return deserialized(toReturn, JSON.getMapper());
     }
 
-    public static <T extends JsonDTObject> MappedBodyHandler<String, T> jsonDTO(Class<T> toReturn) {
-        return json(toReturn);
-    }
-
-    public static <T extends JsonDTObject, R extends Collection<T>> MappedBodyHandler<String, R> jsonDTOs(TypeReference<R> toReturn) {
-        return json(toReturn);
-    }
-
     public static <T> MappedBodyHandler<String, T> xml(Class<T> toReturn) {
         return deserialized(toReturn, XML.getMapper());
     }
 
     public static <T> MappedBodyHandler<String, T> xml(TypeReference<T> toReturn) {
         return deserialized(toReturn, XML.getMapper());
-    }
-
-    public static <T extends XmlDTObject> MappedBodyHandler<String, T> xmlDTO(Class<T> toReturn) {
-        return xml(toReturn);
-    }
-
-    public static <T extends XmlDTObject, R extends Collection<T>> MappedBodyHandler<String, R> xmlDTOs(TypeReference<R> toReturn) {
-        return xml(toReturn);
     }
 
     public static MappedBodyHandler<String, org.w3c.dom.Document> w3cDocument() {

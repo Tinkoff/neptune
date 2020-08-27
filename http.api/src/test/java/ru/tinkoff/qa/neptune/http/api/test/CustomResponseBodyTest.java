@@ -5,8 +5,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.w3c.dom.Document;
-import ru.tinkoff.qa.neptune.http.api.test.request.body.JsonBodyObject;
-import ru.tinkoff.qa.neptune.http.api.test.request.body.XmlBodyObject;
+import ru.tinkoff.qa.neptune.http.api.test.request.body.BodyObject;
 
 import java.net.http.HttpResponse;
 
@@ -21,18 +20,14 @@ import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandle
 
 public class CustomResponseBodyTest extends BaseHttpTest {
 
-    private static final JsonBodyObject JSON_BODY_OBJECT = new JsonBodyObject().setA("Some String 2")
-            .setB(777)
-            .setC(false);
-
-    private static final XmlBodyObject XML_BODY_OBJECT = new XmlBodyObject().setA("Some String 2")
+    private static final BodyObject BODY_OBJECT = new BodyObject().setA("Some String 2")
             .setB(777)
             .setC(false);
 
     private static final String RESPONSE_GSON = "{\"A\":\"Some String 2\",\"B\":777,\"C\":false}";
-    private static final String RESPONSE_MAPPED = "<XmlBodyObject><wstxns1:A1 xmlns:wstxns1=\"http://www.test.com\">Some String 2</wstxns1:A1>" +
+    private static final String RESPONSE_MAPPED = "<BodyObject><wstxns1:A1 xmlns:wstxns1=\"http://www.test.com\">Some String 2</wstxns1:A1>" +
             "<wstxns2:B1 xmlns:wstxns2=\"http://www.test.com\">777</wstxns2:B1>" +
-            "<wstxns3:C1 xmlns:wstxns3=\"http://www.test.com\">false</wstxns3:C1></XmlBodyObject>";
+            "<wstxns3:C1 xmlns:wstxns3=\"http://www.test.com\">false</wstxns3:C1></BodyObject>";
 
     private static final String XML_FOR_DOCUMENT = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"no\"?><a><b/><c/></a>";
     private static final String HTML_FOR_DOCUMENT = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n" +
@@ -77,12 +72,12 @@ public class CustomResponseBodyTest extends BaseHttpTest {
     public static Object[][] data() {
         return new Object[][]{
                 {PATH_TO_GSON,
-                        jsonDTO(JsonBodyObject.class),
-                        equalTo(JSON_BODY_OBJECT)},
+                        json(BodyObject.class),
+                        equalTo(BODY_OBJECT)},
 
                 {PATH_TO_JACKSON,
-                        xmlDTO(XmlBodyObject.class),
-                        equalTo(XML_BODY_OBJECT)},
+                        xml(BodyObject.class),
+                        equalTo(BODY_OBJECT)},
 
                 {PATH_DOCUMENT_XML,
                         w3cDocument(),
@@ -97,9 +92,9 @@ public class CustomResponseBodyTest extends BaseHttpTest {
     @DataProvider
     public static Object[][] data2() {
         return new Object[][]{
-                {PATH_TO_GSON, xmlDTO(XmlBodyObject.class)},
+                {PATH_TO_GSON, xml(BodyObject.class)},
                 {PATH_TO_GSON, w3cDocument()},
-                {PATH_DOCUMENT_XML, jsonDTO(JsonBodyObject.class)},
+                {PATH_DOCUMENT_XML, json(BodyObject.class)},
         };
     }
 

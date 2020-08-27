@@ -2,7 +2,7 @@ package ru.tinkoff.qa.neptune.http.api.request.body.url.encoded;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ru.tinkoff.qa.neptune.http.api.mapper.DefaultBodyMappers;
+import ru.tinkoff.qa.neptune.http.api.mapping.DefaultMapper;
 import ru.tinkoff.qa.neptune.http.api.request.FormValueDelimiters;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -97,12 +97,12 @@ public final class FormParameter {
      * Creates a parameter with not encoded values.
      *
      * @param name   is a parameter name
-     * @param mapper is an item of {@link DefaultBodyMappers} that serializes value of the parameter
+     * @param mapper is an item of {@link DefaultMapper} that serializes value of the parameter
      * @param value  is a value of the defined parameter
      * @return an instance of {@link FormParameter}
      */
     public static FormParameter formParameter(String name,
-                                              DefaultBodyMappers mapper,
+                                              DefaultMapper mapper,
                                               Object value) {
         return formParameter(name, mapper.getMapper(), value);
     }

@@ -3,8 +3,7 @@ package ru.tinkoff.qa.neptune.http.api.request.body.multipart;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ru.tinkoff.qa.neptune.http.api.dto.DTObject;
-import ru.tinkoff.qa.neptune.http.api.mapper.DefaultBodyMappers;
+import ru.tinkoff.qa.neptune.http.api.mapping.DefaultMapper;
 
 import java.io.File;
 import java.io.InputStream;
@@ -288,45 +287,6 @@ public abstract class BodyPart {
         return bodyPart(content, (String) null, null);
     }
 
-    /**
-     * Defines a part of a request body as a string by an object of {@link DTObject}.
-     * It needs to define {@code Content-Type} if it is necessary.
-     * It is possible to do by invocation of {@link #setContentType(String)}.
-     *
-     * @param dto      is an object of {@link DTObject} that defines string content of a part
-     * @param name     is a name of a part
-     * @param fileName is filename of a part
-     * @return an instance of {@link BodyPart}
-     */
-    public static BodyPart bodyPart(DTObject dto, String name, String fileName) {
-        return bodyPart(dto.serialize(), name, fileName);
-    }
-
-    /**
-     * Defines a part of a request body as a string by an object of {@link DTObject}.
-     * It needs to define {@code Content-Type} if it is necessary.
-     * It is possible to do by invocation of {@link #setContentType(String)}.
-     *
-     * @param dto  is an object of {@link DTObject} that defines string content of a part
-     * @param name is a name of a part
-     * @return an instance of {@link BodyPart}
-     */
-    public static BodyPart bodyPart(DTObject dto, String name) {
-        return bodyPart(dto.serialize(), name, null);
-    }
-
-    /**
-     * Defines a part of a request body as a string by an object of {@link DTObject}.
-     * It needs to define {@code Content-Type} if it is necessary.
-     * It is possible to do by invocation of {@link #setContentType(String)}.
-     *
-     * @param dto is an object of {@link DTObject} that defines string content of a part
-     * @return an instance of {@link BodyPart}
-     */
-    public static BodyPart bodyPart(DTObject dto) {
-        return bodyPart(dto.serialize(), (String) null, null);
-    }
-
 
     /**
      * Defines a part of a request body as a string by an object serialized by {@link ObjectMapper}.
@@ -385,52 +345,52 @@ public abstract class BodyPart {
 
     /**
      * Defines a part of a request body as a string by an object serialized by {@link ObjectMapper}. This mapper
-     * is available by one of items of the enum {@link DefaultBodyMappers}.
+     * is available by one of items of the enum {@link DefaultMapper}.
      * It needs to define {@code Content-Type} if it is necessary.
      * It is possible to do by invocation of {@link #setContentType(String)}.
      *
      * @param o        is an object to be serialized
      * @param mapper   is an {@link ObjectMapper} that performs serialization. This mapper
-     *                 is available by one of items of the enum {@link DefaultBodyMappers}.
+     *                 is available by one of items of the enum {@link DefaultMapper}.
      * @param name     is a name of a part
      * @param fileName is filename of a part
      * @return an instance of {@link BodyPart}
-     * @see DefaultBodyMappers#getMapper()
+     * @see DefaultMapper#getMapper()
      */
-    public static BodyPart bodyPart(Object o, DefaultBodyMappers mapper, String name, String fileName) {
+    public static BodyPart bodyPart(Object o, DefaultMapper mapper, String name, String fileName) {
         return bodyPart(o, mapper.getMapper(), name, fileName);
     }
 
     /**
      * Defines a part of a request body as a string by an object serialized by {@link ObjectMapper}. This mapper
-     * is available by one of items of the enum {@link DefaultBodyMappers}.
+     * is available by one of items of the enum {@link DefaultMapper}.
      * It needs to define {@code Content-Type} if it is necessary.
      * It is possible to do by invocation of {@link #setContentType(String)}.
      *
      * @param o      is an object to be serialized
      * @param mapper is an {@link ObjectMapper} that performs serialization. This mapper
-     *               is available by one of items of the enum {@link DefaultBodyMappers}.
+     *               is available by one of items of the enum {@link DefaultMapper}.
      * @param name   is a name of a part
      * @return an instance of {@link BodyPart}
-     * @see DefaultBodyMappers#getMapper()
+     * @see DefaultMapper#getMapper()
      */
-    public static BodyPart bodyPart(Object o, DefaultBodyMappers mapper, String name) {
+    public static BodyPart bodyPart(Object o, DefaultMapper mapper, String name) {
         return bodyPart(o, mapper.getMapper(), name, null);
     }
 
     /**
      * Defines a part of a request body as a string by an object serialized by {@link ObjectMapper}. This mapper
-     * is available by one of items of the enum {@link DefaultBodyMappers}.
+     * is available by one of items of the enum {@link DefaultMapper}.
      * It needs to define {@code Content-Type} if it is necessary.
      * It is possible to do by invocation of {@link #setContentType(String)}.
      *
      * @param o      is an object to be serialized
      * @param mapper is an {@link ObjectMapper} that performs serialization. This mapper
-     *               is available by one of items of the enum {@link DefaultBodyMappers}.
+     *               is available by one of items of the enum {@link DefaultMapper}.
      * @return an instance of {@link BodyPart}
-     * @see DefaultBodyMappers#getMapper()
+     * @see DefaultMapper#getMapper()
      */
-    public static BodyPart bodyPart(Object o, DefaultBodyMappers mapper) {
+    public static BodyPart bodyPart(Object o, DefaultMapper mapper) {
         return bodyPart(o, mapper.getMapper(), null, null);
     }
 

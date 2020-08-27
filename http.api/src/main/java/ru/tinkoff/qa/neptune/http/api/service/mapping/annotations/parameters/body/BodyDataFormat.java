@@ -2,7 +2,7 @@ package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.bo
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import ru.tinkoff.qa.neptune.http.api.mapper.DefaultBodyMappers;
+import ru.tinkoff.qa.neptune.http.api.mapping.DefaultMapper;
 
 import java.util.Optional;
 
@@ -21,9 +21,7 @@ public enum BodyDataFormat {
     },
 
     /**
-     * This item is designed to return json-formatted string. This sting is created
-     * when it is necessary to pass objects that differ from {@link ru.tinkoff.qa.neptune.http.api.dto.JsonDTObject}
-     * as json bodies of http requests.
+     * This item is designed to return xml-formatted string
      */
     XML {
         @Override
@@ -31,7 +29,7 @@ public enum BodyDataFormat {
             return ofNullable(object)
                     .map(o -> {
                         try {
-                            var copy = DefaultBodyMappers.XML
+                            var copy = DefaultMapper.XML
                                     .getMapper()
                                     .copy();
 
@@ -46,9 +44,7 @@ public enum BodyDataFormat {
     },
 
     /**
-     * This item is designed to return xml-formatted string. This sting is created
-     * when it is necessary to pass objects that differ from {@link ru.tinkoff.qa.neptune.http.api.dto.XmlDTObject}
-     * as xml bodies of http requests.
+     * This item is designed to return json-formatted string
      */
     JSON {
         @Override
@@ -56,7 +52,7 @@ public enum BodyDataFormat {
             return ofNullable(object)
                     .map(o -> {
                         try {
-                            var copy = DefaultBodyMappers.JSON
+                            var copy = DefaultMapper.JSON
                                     .getMapper()
                                     .copy();
 

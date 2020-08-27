@@ -1,8 +1,7 @@
 package ru.tinkoff.qa.neptune.http.api.request.body;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ru.tinkoff.qa.neptune.http.api.dto.DTObject;
-import ru.tinkoff.qa.neptune.http.api.mapper.DefaultBodyMappers;
+import ru.tinkoff.qa.neptune.http.api.mapping.DefaultMapper;
 import ru.tinkoff.qa.neptune.http.api.properties.mapper.DefaultJsonObjectMapper;
 import ru.tinkoff.qa.neptune.http.api.properties.mapper.DefaultXmlObjectMapper;
 import ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart;
@@ -165,16 +164,6 @@ public final class RequestBodyFactory {
     /**
      * Creates a body of http request. An object is transformed into json/xml string body.
      *
-     * @param body object to be serialized
-     * @return an instance of {@link RequestBody}
-     */
-    public static RequestBody<String> body(DTObject body) {
-        return new SerializedBody(body);
-    }
-
-    /**
-     * Creates a body of http request. An object is transformed into json/xml string body.
-     *
      * @param mapper is an instance of {@link ObjectMapper} that is used to transform object
      *               into json/xml string
      * @param body   object to be serialized
@@ -191,11 +180,11 @@ public final class RequestBodyFactory {
      *               into json/xml string.
      * @param body   object to be serialized
      * @return an instance of {@link RequestBody}
-     * @see DefaultBodyMappers
+     * @see DefaultMapper
      * @see DefaultJsonObjectMapper
      * @see DefaultXmlObjectMapper
      */
-    public static RequestBody<String> body(DefaultBodyMappers mapper, Object body) {
+    public static RequestBody<String> body(DefaultMapper mapper, Object body) {
         return body(mapper.getMapper(), body);
     }
 

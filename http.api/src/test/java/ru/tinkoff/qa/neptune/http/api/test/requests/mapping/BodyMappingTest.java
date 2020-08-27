@@ -6,9 +6,8 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import ru.tinkoff.qa.neptune.http.api.dto.JsonDTObject;
-import ru.tinkoff.qa.neptune.http.api.dto.XmlDTObject;
-import ru.tinkoff.qa.neptune.http.api.mapper.DefaultBodyMappers;
+import ru.tinkoff.qa.neptune.http.api.mapping.DefaultMapper;
+import ru.tinkoff.qa.neptune.http.api.mapping.MappedObject;
 import ru.tinkoff.qa.neptune.http.api.request.NeptuneHttpRequestImpl;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 import ru.tinkoff.qa.neptune.http.api.request.body.*;
@@ -26,8 +25,7 @@ import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.bod
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.MultiPartBody;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.url.encoded.URLEncodedParameter;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form.FormParam;
-import ru.tinkoff.qa.neptune.http.api.test.request.body.JsonBodyObject;
-import ru.tinkoff.qa.neptune.http.api.test.request.body.XmlBodyObject;
+import ru.tinkoff.qa.neptune.http.api.test.request.body.BodyObject;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -62,11 +60,7 @@ public class BodyMappingTest {
     private final static URI TEST_URI = URI.create("http://127.0.0.1:8089");
     private static final File TEST_FILE = getTestFile();
 
-    private static final JsonBodyObject BODY_JSON_OBJECT = new JsonBodyObject().setA("Some String")
-            .setB(666)
-            .setC(true);
-
-    private static final XmlBodyObject BODY_XML_OBJECT = new XmlBodyObject().setA("Some String")
+    private static final BodyObject BODY_OBJECT = new BodyObject().setA("Some String")
             .setB(666)
             .setC(true);
 
@@ -208,8 +202,8 @@ public class BodyMappingTest {
                         throw new RuntimeException(e);
                     }
                 }), StreamSuppliedBody.class},
-                {methodMappingAPI.postJson(BODY_JSON_OBJECT), SerializedBody.class},
-                {methodMappingAPI.postXml(BODY_XML_OBJECT), SerializedBody.class},
+                {methodMappingAPI.postJson(BODY_OBJECT), StringBody.class},
+                {methodMappingAPI.postXml(BODY_OBJECT), StringBody.class},
                 {methodMappingAPI.postBoolean(true), StringBody.class},
         };
     }
@@ -429,7 +423,7 @@ public class BodyMappingTest {
                         URLEncodedForm.class,
                         "form_string_param1=ABC+%D0%90%D0%91%D0%92@%25&&form_int_param2=2&form_bool_param3=true"},
 
-                {methodMappingAPI.postForm(List.of(formParameter("form_object_param1", DefaultBodyMappers.JSON, SOME_MAP),
+                {methodMappingAPI.postForm(List.of(formParameter("form_object_param1", DefaultMapper.JSON, SOME_MAP),
                         formParameter("form_int_param2", 2),
                         formParameter("form_bool_param3", true))),
                         URLEncodedForm.class,
@@ -644,10 +638,10 @@ public class BodyMappingTest {
         RequestBuilder postSupplier(@Body Supplier<InputStream> body);
 
         @HttpMethod(httpMethod = POST)
-        RequestBuilder postJson(@Body JsonDTObject body);
+        RequestBuilder postJson(@Body @BodyParamFormat(format = JSON) MappedObject body);
 
         @HttpMethod(httpMethod = POST)
-        RequestBuilder postXml(@Body XmlDTObject body);
+        RequestBuilder postXml(@Body @BodyParamFormat(format = XML) MappedObject body);
 
         @HttpMethod(httpMethod = POST)
         RequestBuilder postBoolean(@Body Boolean body);

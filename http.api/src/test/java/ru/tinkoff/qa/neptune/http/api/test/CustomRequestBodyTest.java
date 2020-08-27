@@ -8,8 +8,7 @@ import org.testng.annotations.Test;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
-import ru.tinkoff.qa.neptune.http.api.test.request.body.JsonBodyObject;
-import ru.tinkoff.qa.neptune.http.api.test.request.body.XmlBodyObject;
+import ru.tinkoff.qa.neptune.http.api.test.request.body.BodyObject;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -17,8 +16,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
@@ -30,6 +27,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasBody.hasBody;
+import static ru.tinkoff.qa.neptune.http.api.mapping.DefaultMapper.JSON;
+import static ru.tinkoff.qa.neptune.http.api.mapping.DefaultMapper.XML;
 import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
 import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart.bodyPart;
 import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.ContentTransferEncoding.BINARY;
@@ -37,11 +36,7 @@ import static ru.tinkoff.qa.neptune.http.api.request.body.url.encoded.FormParame
 
 public class CustomRequestBodyTest extends BaseHttpTest {
 
-    private static final JsonBodyObject BODY_JSON_OBJECT = new JsonBodyObject().setA("Some String")
-            .setB(666)
-            .setC(true);
-
-    private static final XmlBodyObject BODY_XML_OBJECT = new XmlBodyObject().setA("Some String")
+    private static final BodyObject BODY_OBJECT = new BodyObject().setA("Some String")
             .setB(666)
             .setC(true);
 
@@ -65,20 +60,6 @@ public class CustomRequestBodyTest extends BaseHttpTest {
 
     private static final File TEST_FILE = getTestFile();
 
-    private static final Map<String, Object> FORM_PARAMS = new LinkedHashMap<>() {
-        {
-            put("param1", "value1");
-            put("param2", "value2");
-        }
-    };
-
-    private static final Map<String, Object> FORM_PARAMS2 = new LinkedHashMap<>() {
-        {
-            put("chip&dale", "rescue rangers");
-            put("how to get water", "2H2 + O2 = 2H2O");
-        }
-    };
-
 
     private static final String PATH_TO_GSON = "/gson";
     private static final String PATH_TO_XML = "/jackson_xml";
@@ -88,9 +69,9 @@ public class CustomRequestBodyTest extends BaseHttpTest {
     private static final String PATH_MULTI_PART = "/multipart";
 
     private static final String REQUEST_BODY_GSON = "{\"A\":\"Some String\",\"B\":666,\"C\":true}";
-    private static final String REQUEST_BODY_MAPPED = "<XmlBodyObject><wstxns1:A1 xmlns:wstxns1=\"http://www.test.com\">Some String</wstxns1:A1>" +
+    private static final String REQUEST_BODY_MAPPED = "<BodyObject><wstxns1:A1 xmlns:wstxns1=\"http://www.test.com\">Some String</wstxns1:A1>" +
             "<wstxns2:B1 xmlns:wstxns2=\"http://www.test.com\">666</wstxns2:B1>" +
-            "<wstxns3:C1 xmlns:wstxns3=\"http://www.test.com\">true</wstxns3:C1></XmlBodyObject>";
+            "<wstxns3:C1 xmlns:wstxns3=\"http://www.test.com\">true</wstxns3:C1></BodyObject>";
     private static final String REQUEST_BODY_XML_FOR_DOCUMENT = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"no\"?><a><b/><c/></a>";
     private static final org.w3c.dom.Document W3C_DOCUMENT = prepareW3CDocument();
 
@@ -184,7 +165,7 @@ public class CustomRequestBodyTest extends BaseHttpTest {
                         withMultipartRequestBody(aMultipart()
                                 .withName("testJson")
                                 .withHeader("Content-Type", containing("application/json"))
-                                .withBody(containing(BODY_JSON_OBJECT.serialize())))
+                                .withBody(containing(JSON.getMapper().writeValueAsString(BODY_OBJECT))))
                 .willReturn(aResponse().withBody(MULTIPART_SUCCESSFULLY_POSTED)));
     }
 
@@ -192,11 +173,11 @@ public class CustomRequestBodyTest extends BaseHttpTest {
     public static Object[][] data() throws Exception {
 
         return new Object[][]{
-                {POST(REQUEST_URI + PATH_TO_GSON, BODY_JSON_OBJECT)
+                {POST(REQUEST_URI + PATH_TO_GSON, JSON, BODY_OBJECT)
                         .header("Content-Type", "application/json"),
                         JSON_HAS_BEEN_SUCCESSFULLY_POSTED},
 
-                {POST(REQUEST_URI + PATH_TO_XML, BODY_XML_OBJECT)
+                {POST(REQUEST_URI + PATH_TO_XML, XML, BODY_OBJECT)
                         .header("Content-Type", "application/xml"),
                         JACKSON_XML_HAS_BEEN_SUCCESSFULLY_POSTED},
 
@@ -225,7 +206,7 @@ public class CustomRequestBodyTest extends BaseHttpTest {
                         bodyPart(TEST_FILE, "testFile2", true, true),
                         bodyPart(new byte[]{1, 2, 3}, "testBytes").setContentTransferEncoding(BINARY),
                         bodyPart(new FileInputStream(TEST_FILE), "testFile2", TEST_FILE.getName()).setContentType("text/plain"),
-                        bodyPart(BODY_JSON_OBJECT, "testJson").setContentType("application/json"))
+                        bodyPart(BODY_OBJECT, JSON, "testJson").setContentType("application/json"))
                         .header("Content-Type", "multipart/form-data"),
                         MULTIPART_SUCCESSFULLY_POSTED}
 

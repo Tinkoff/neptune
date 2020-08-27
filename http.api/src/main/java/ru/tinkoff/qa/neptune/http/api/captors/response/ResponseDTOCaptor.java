@@ -1,18 +1,18 @@
 package ru.tinkoff.qa.neptune.http.api.captors.response;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.StringCaptor;
-import ru.tinkoff.qa.neptune.http.api.dto.DTObject;
+import ru.tinkoff.qa.neptune.http.api.mapping.MappedObject;
 
 import java.net.http.HttpResponse;
 
-public final class ResponseDTOCaptor extends StringCaptor<HttpResponse<DTObject>> implements BaseResponseObjectBodyCaptor<DTObject> {
+public final class ResponseDTOCaptor extends StringCaptor<HttpResponse<MappedObject>> implements BaseResponseObjectBodyCaptor<MappedObject> {
 
     public ResponseDTOCaptor() {
-        super("Response Body. Dto");
+        super("Response Body. DTO. Described as JSON string");
     }
 
     @Override
-    public StringBuilder getData(HttpResponse<DTObject> caught) {
+    public StringBuilder getData(HttpResponse<MappedObject> caught) {
         try {
             return new StringBuilder(caught.toString());
         } catch (Exception e) {
@@ -22,7 +22,7 @@ public final class ResponseDTOCaptor extends StringCaptor<HttpResponse<DTObject>
     }
 
     @Override
-    public HttpResponse<DTObject> getCaptured(Object toBeCaptured) {
-        return getCaptured(toBeCaptured, DTObject.class);
+    public HttpResponse<MappedObject> getCaptured(Object toBeCaptured) {
+        return getCaptured(toBeCaptured, MappedObject.class);
     }
 }
