@@ -1,7 +1,5 @@
 package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.header;
 
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.MethodParameter;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.lang.reflect.Method;
@@ -34,8 +32,8 @@ import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.paramet
  *         <li>Maps of keys and values of types described above</li>
  *         <li>A POJO whose class has fields of following types: primitive types, primitive wrappers,
  *         {@link String}, any type of an object whose string representation may be read as header
- *         value correctly, see {@link Object#toString()}, arrays and iterables of listed types. Class of a POJO should be annotated
- *         by {@link MethodParameter}</li>
+ *         value correctly, see {@link Object#toString()}, arrays and iterables of listed types. Class of a POJO should
+ *         extend {@link ru.tinkoff.qa.neptune.http.api.mapping.MappedObject}</li>
  *     </ul>
  * </p>
  */

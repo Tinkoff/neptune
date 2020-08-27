@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.query;
 
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.MethodParameter;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form.FormParam;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form.ReadFormParameter;
 
@@ -32,8 +31,8 @@ import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.paramet
  *         <li>Maps of keys and values of types described above</li>
  *         <li>A POJO whose class has fields of following types: primitive types, primitive wrappers,
  *         {@link String}, any type of an object whose string representation may be read as a part of a query parameter
- *         value correctly, see {@link Object#toString()}, arrays and iterables of listed types. Class of a POJO should be annotated
- *         by {@link MethodParameter}</li>
+ *         value correctly, see {@link Object#toString()}, arrays and iterables of listed types. Class of a POJO should
+ *         extend {@link ru.tinkoff.qa.neptune.http.api.mapping.MappedObject}</li>
  *     </ul>
  * </p>
  */

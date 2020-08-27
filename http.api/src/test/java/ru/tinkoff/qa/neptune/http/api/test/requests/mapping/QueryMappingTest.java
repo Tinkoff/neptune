@@ -1,14 +1,15 @@
 package ru.tinkoff.qa.neptune.http.api.test.requests.mapping;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.hamcrest.Matcher;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.http.api.mapping.MappedObject;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMethod;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.URIPath;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.MethodParameter;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterFieldName;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form.FormParam;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.query.QueryParameter;
 
@@ -393,10 +394,10 @@ public class QueryMappingTest {
                                                      @QueryParameter(name = "param2", required = false) Object param3);
     }
 
-    @MethodParameter
-    private static class QueryParameterObject {
+    @JsonPropertyOrder({"someNumber", "someString", "someArray", "nested", "nestedNext"})
+    private static class QueryParameterObject extends MappedObject {
 
-        @ParameterFieldName("someNumber")
+        @JsonProperty("someNumber")
         private Integer someNum;
 
         private String someString;
@@ -436,10 +437,25 @@ public class QueryMappingTest {
             this.nestedNext = nestedNext;
             return this;
         }
+
+        public Integer getSomeNum() {
+            return someNum;
+        }
+
+        public List<String> getSomeArray() {
+            return someArray;
+        }
+
+        public QueryParameterObject2 getNested() {
+            return nested;
+        }
+
+        public QueryParameterObject4 getNestedNext() {
+            return nestedNext;
+        }
     }
 
-    @MethodParameter
-    private static class QueryParameterObject2 {
+    private static class QueryParameterObject2 extends MappedObject {
         Integer someNum2;
 
         String someString2;
@@ -467,10 +483,25 @@ public class QueryMappingTest {
             this.nested2 = nested;
             return this;
         }
+
+        public Integer getSomeNum2() {
+            return someNum2;
+        }
+
+        public Integer[] getSomeArray2() {
+            return someArray2;
+        }
+
+        public QueryParameterObject3 getNested2() {
+            return nested2;
+        }
+
+        public String getSomeString2() {
+            return someString2;
+        }
     }
 
-    @MethodParameter
-    private static class QueryParameterObject3 {
+    private static class QueryParameterObject3 extends MappedObject {
         Integer someNum3;
 
         String someString3;
@@ -491,10 +522,21 @@ public class QueryMappingTest {
             this.someArray3 = someArray;
             return this;
         }
+
+        public Integer getSomeNum3() {
+            return someNum3;
+        }
+
+        public Integer[] getSomeArray3() {
+            return someArray3;
+        }
+
+        public String getSomeString3() {
+            return someString3;
+        }
     }
 
-    @MethodParameter
-    private static class QueryParameterObject4 {
+    private static class QueryParameterObject4 extends MappedObject {
         Integer someNum4;
 
         Integer[] someArray4;
@@ -521,6 +563,22 @@ public class QueryMappingTest {
         public QueryParameterObject4 setNested(QueryParameterObject3 nested) {
             this.nested4 = nested;
             return this;
+        }
+
+        public Integer getSomeNum4() {
+            return someNum4;
+        }
+
+        public Integer[] getSomeArray4() {
+            return someArray4;
+        }
+
+        public QueryParameterObject3 getNested4() {
+            return nested4;
+        }
+
+        public String getSomeString4() {
+            return someString4;
         }
     }
 }

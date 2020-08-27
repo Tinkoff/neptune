@@ -3,11 +3,11 @@ package ru.tinkoff.qa.neptune.http.api.test.requests.mapping;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasPathMatcher;
+import ru.tinkoff.qa.neptune.http.api.mapping.MappedObject;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMethod;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.URIPath;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.MethodParameter;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.path.PathParameter;
 
 import java.net.URI;
@@ -403,8 +403,7 @@ public class PathMappingTest {
                                                           @PathParameter(name = "next") float next);
     }
 
-    @MethodParameter
-    private static class PathParameterObject {
+    private static class PathParameterObject extends MappedObject {
 
         private String someString;
 

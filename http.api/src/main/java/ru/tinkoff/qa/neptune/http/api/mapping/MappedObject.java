@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Map;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static ru.tinkoff.qa.neptune.http.api.mapping.DefaultMapper.JSON;
 
@@ -43,8 +44,13 @@ public abstract class MappedObject {
      */
     public Map<String, Object> toMap() {
         try {
-            return new ObjectMapper().readValue(toString(), new TypeReference<>() {
-            });
+            var m = JSON.getMapper().setSerializationInclusion(NON_NULL);
+            var s = m.writerWithDefaultPrettyPrinter().writeValueAsString(this);
+
+            return new ObjectMapper()
+                    .setSerializationInclusion(NON_NULL)
+                    .readValue(s, new TypeReference<>() {
+                    });
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

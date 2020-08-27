@@ -1,9 +1,8 @@
 package ru.tinkoff.qa.neptune.http.api.test.requests.mapping;
 
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.MethodParameter;
+import ru.tinkoff.qa.neptune.http.api.mapping.MappedObject;
 
-@MethodParameter
-public class HeaderParameterObject {
+public class HeaderParameterObject extends MappedObject {
     private String someString;
 
     private Number someNum;

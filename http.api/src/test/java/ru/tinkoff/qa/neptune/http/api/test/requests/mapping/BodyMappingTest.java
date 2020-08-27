@@ -1,5 +1,7 @@
 package ru.tinkoff.qa.neptune.http.api.test.requests.mapping;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.testng.annotations.DataProvider;
@@ -16,8 +18,6 @@ import ru.tinkoff.qa.neptune.http.api.request.body.url.encoded.FormParameter;
 import ru.tinkoff.qa.neptune.http.api.request.body.url.encoded.URLEncodedForm;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMethod;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.MethodParameter;
-import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterFieldName;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.Body;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.BodyParamFormat;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.DefineContentType;
@@ -747,10 +747,10 @@ public class BodyMappingTest {
                                      @DefineFileName(fileName = "tezzt_file") Path path3);
     }
 
-    @MethodParameter
-    private static class BodyFormParameterObject {
+    @JsonPropertyOrder({"someNumber", "someString", "someArray", "nested", "nestedNext"})
+    private static class BodyFormParameterObject extends MappedObject {
 
-        @ParameterFieldName("someNumber")
+        @JsonProperty("someNumber")
         private Integer someNum;
 
         private String someString;
@@ -760,16 +760,6 @@ public class BodyMappingTest {
         private BodyFormParameterObject2 nested;
 
         private BodyFormParameterObject4 nestedNext;
-
-
-        public BodyFormParameterObject setSomeNum(Integer someNum) {
-            this.someNum = someNum;
-            return this;
-        }
-
-        public String getSomeString() {
-            return someString;
-        }
 
         public BodyFormParameterObject setSomeString(String someString) {
             this.someString = someString;
@@ -790,10 +780,35 @@ public class BodyMappingTest {
             this.nestedNext = nestedNext;
             return this;
         }
+
+        public Integer getSomeNum() {
+            return someNum;
+        }
+
+        public BodyFormParameterObject setSomeNum(Integer someNum) {
+            this.someNum = someNum;
+            return this;
+        }
+
+        public String getSomeString() {
+            return someString;
+        }
+
+
+        public List<String> getSomeArray() {
+            return someArray;
+        }
+
+        public BodyFormParameterObject2 getNested() {
+            return nested;
+        }
+
+        public BodyFormParameterObject4 getNestedNext() {
+            return nestedNext;
+        }
     }
 
-    @MethodParameter
-    private static class BodyFormParameterObject2 {
+    private static class BodyFormParameterObject2 extends MappedObject {
         Integer someNum2;
 
         String someString2;
@@ -821,10 +836,26 @@ public class BodyMappingTest {
             this.nested2 = nested;
             return this;
         }
+
+        public Integer getSomeNum2() {
+            return someNum2;
+        }
+
+        public String getSomeString2() {
+            return someString2;
+        }
+
+
+        public Integer[] getSomeArray2() {
+            return someArray2;
+        }
+
+        public BodyFormParameterObject3 getNested2() {
+            return nested2;
+        }
     }
 
-    @MethodParameter
-    private static class BodyFormParameterObject3 {
+    private static class BodyFormParameterObject3 extends MappedObject {
         Integer someNum3;
 
         String someString3;
@@ -845,10 +876,22 @@ public class BodyMappingTest {
             this.someArray3 = someArray;
             return this;
         }
+
+        public Integer getSomeNum3() {
+            return someNum3;
+        }
+
+        public String getSomeString3() {
+            return someString3;
+        }
+
+
+        public Integer[] getSomeArray3() {
+            return someArray3;
+        }
     }
 
-    @MethodParameter
-    private static class BodyFormParameterObject4 {
+    private static class BodyFormParameterObject4 extends MappedObject {
         Integer someNum4;
 
         Integer[] someArray4;
@@ -875,6 +918,23 @@ public class BodyMappingTest {
         public BodyFormParameterObject4 setNested(BodyFormParameterObject3 nested) {
             this.nested4 = nested;
             return this;
+        }
+
+        public Integer getSomeNum4() {
+            return someNum4;
+        }
+
+        public String getSomeString4() {
+            return someString4;
+        }
+
+
+        public Integer[] getSomeArray4() {
+            return someArray4;
+        }
+
+        public BodyFormParameterObject3 getNested4() {
+            return nested4;
         }
     }
 }

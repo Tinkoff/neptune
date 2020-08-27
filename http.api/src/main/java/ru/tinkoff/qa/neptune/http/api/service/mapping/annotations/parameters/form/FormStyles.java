@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form;
 
 import com.google.common.annotations.Beta;
+import ru.tinkoff.qa.neptune.http.api.mapping.MappedObject;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -13,7 +14,8 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.ArrayUtils.addAll;
 import static ru.tinkoff.qa.neptune.http.api.request.FormValueDelimiters.*;
-import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil.*;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil.objectToMap;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil.toStream;
 
 /**
  * Form parameters support the following style values:
@@ -53,7 +55,7 @@ public enum FormStyles {
                         .stream()
                         .filter(entry -> {
                             var cls = entry.getValue().getClass();
-                            return !Map.class.isAssignableFrom(cls) && !isAMethodParameter(cls);
+                            return !Map.class.isAssignableFrom(cls) && !MappedObject.class.isAssignableFrom(cls);
                         })
                         .collect(toMap(Map.Entry::getKey, Map.Entry::getValue)))));
             }
@@ -103,7 +105,7 @@ public enum FormStyles {
                     .stream()
                     .filter(entry -> {
                         var cls = entry.getValue().getClass();
-                        return !Map.class.isAssignableFrom(cls) && !isAMethodParameter(cls)
+                        return !Map.class.isAssignableFrom(cls) && !MappedObject.class.isAssignableFrom(cls)
                                 && !cls.isArray() && !Iterable.class.isAssignableFrom(cls);
                     })
                     .forEach(entry -> result
