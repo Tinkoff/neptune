@@ -9,6 +9,7 @@ import java.net.URI;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.lang.System.getProperties;
+import static java.lang.System.lineSeparator;
 import static java.net.URI.create;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -24,6 +25,7 @@ import static ru.tinkoff.qa.neptune.http.api.test.capturing.LogInjector.getLog;
 public class RequestResponseMultiThreadLogCapturingTests extends BaseHttpTest {
 
     private static final URI CORRECT_URI = create(REQUEST_URI + "/success2.html");
+    private static final String LINE_SEPARATOR = lineSeparator();
 
     @BeforeClass
     public void beforeClass() {
@@ -45,9 +47,9 @@ public class RequestResponseMultiThreadLogCapturingTests extends BaseHttpTest {
         assertThat(getLog(), hasItems(
                 containsString("Logs that have been captured during the sending of a request"),
                 containsString("Response\n" +
-                        "Status code: 200\r\n" +
-                        "Response URI: http://127.0.0.1:8089/success2.html\r\n" +
-                        "Corresponding request: http://127.0.0.1:8089/success2.html GET\r\n" +
+                        "Status code: 200" + LINE_SEPARATOR +
+                        "Response URI: http://127.0.0.1:8089/success2.html" + LINE_SEPARATOR +
+                        "Corresponding request: http://127.0.0.1:8089/success2.html GET" + LINE_SEPARATOR +
                         "Response headers:")));
     }
 }

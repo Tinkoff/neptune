@@ -15,6 +15,7 @@ import java.util.Random;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.http.Fault.MALFORMED_RESPONSE_CHUNK;
 import static java.lang.System.getProperties;
+import static java.lang.System.lineSeparator;
 import static java.net.URI.create;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
 import static java.time.Duration.ofSeconds;
@@ -36,6 +37,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
 
     private static final URI CORRECT_URI = create(REQUEST_URI + "/success.html");
     private static final URI INCORRECT_URI = create(REQUEST_URI + "/failure.html");
+    private static final String LINE_SEPARATOR = lineSeparator();
 
     @BeforeClass
     public void beforeClass() {
@@ -62,9 +64,9 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
                 {SUCCESS, containsInAnyOrder(
                         containsString("Logs that have been captured during the sending of a request"),
                         containsString("Response\n" +
-                                "Status code: 200\r\n" +
-                                "Response URI: http://127.0.0.1:8089/success.html\r\n" +
-                                "Corresponding request: http://127.0.0.1:8089/success.html GET\r\n" +
+                                "Status code: 200" + LINE_SEPARATOR +
+                                "Response URI: http://127.0.0.1:8089/success.html" + LINE_SEPARATOR +
+                                "Corresponding request: http://127.0.0.1:8089/success.html GET" + LINE_SEPARATOR +
                                 "Response headers:"),
                         Matchers.equalTo("Response Body. String\n" +
                                 "SUCCESS"))},
@@ -72,9 +74,9 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
                 {SUCCESS_AND_FAILURE, containsInAnyOrder(
                         containsString("Logs that have been captured during the sending of a request"),
                         containsString("Response\n" +
-                                "Status code: 200\r\n" +
-                                "Response URI: http://127.0.0.1:8089/success.html\r\n" +
-                                "Corresponding request: http://127.0.0.1:8089/success.html GET\r\n" +
+                                "Status code: 200" + LINE_SEPARATOR +
+                                "Response URI: http://127.0.0.1:8089/success.html" + LINE_SEPARATOR +
+                                "Corresponding request: http://127.0.0.1:8089/success.html GET" + LINE_SEPARATOR +
                                 "Response headers:"),
                         Matchers.equalTo("Response Body. String\n" +
                                 "SUCCESS"))}
@@ -97,18 +99,18 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
                 {FAILURE, containsInAnyOrder(
                         containsString("Logs that have been captured during the sending of a request"),
                         containsString("Response\n" +
-                                "Status code: 200\r\n" +
-                                "Response URI: http://127.0.0.1:8089/success.html\r\n" +
-                                "Corresponding request: http://127.0.0.1:8089/success.html GET\r\n" +
+                                "Status code: 200" + LINE_SEPARATOR +
+                                "Response URI: http://127.0.0.1:8089/success.html" + LINE_SEPARATOR +
+                                "Corresponding request: http://127.0.0.1:8089/success.html GET" + LINE_SEPARATOR +
                                 "Response headers:"),
                         Matchers.equalTo("Response Body. String\n" +
                                 "SUCCESS"))},
                 {SUCCESS_AND_FAILURE, containsInAnyOrder(
                         containsString("Logs that have been captured during the sending of a request"),
                         containsString("Response\n" +
-                                "Status code: 200\r\n" +
-                                "Response URI: http://127.0.0.1:8089/success.html\r\n" +
-                                "Corresponding request: http://127.0.0.1:8089/success.html GET\r\n" +
+                                "Status code: 200" + LINE_SEPARATOR +
+                                "Response URI: http://127.0.0.1:8089/success.html" + LINE_SEPARATOR +
+                                "Corresponding request: http://127.0.0.1:8089/success.html GET" + LINE_SEPARATOR +
                                 "Response headers:"),
                         Matchers.equalTo("Response Body. String\n" +
                                 "SUCCESS"))},
