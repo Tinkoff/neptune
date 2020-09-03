@@ -3,6 +3,7 @@
 */
 {{#discriminator}}{{>typeInfoAnnotation}}{{/discriminator}}
 {{>xmlAnnotation}}
+@JsonPropertyOrder({{braces "left"}}{{#vars}} "{{{name}}}",{{/vars}}{{braces "right"}})
 public class {{classname}} {{#parent}}extends {{{parent}}}{{/parent}}{{^parent}}extends MappedObject{{/parent}} {
 {{#vars}}
     {{#isEnum}}
