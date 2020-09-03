@@ -10,7 +10,7 @@ public class RequestTuner1 implements RequestTuner {
 
     @Override
     public void setUp(RequestSettings<?> requestSettings) {
-        requestSettings.queryParam("param", "val1", 3, "Hello world")
+        requestSettings.queryParam("param", false, "val1", 3, "Hello world")
                 .timeout(ofSeconds(2))
                 .version(HTTP_2)
                 .expectContinue(true);

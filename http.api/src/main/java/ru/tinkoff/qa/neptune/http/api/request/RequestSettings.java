@@ -95,22 +95,6 @@ public interface RequestSettings<T extends RequestSettings<T>> {
     T queryParam(String name, FormValueDelimiters delimiter, boolean allowReserved, Object... values);
 
     /**
-     * Appends query parameter. Appends query parameter. It gets value of the parameter joined into one string,
-     * where given values are separated by delimiter. It doesn't allow to keep reserved characters not encoded
-     * by default.
-     *
-     * @param name      parameter name
-     * @param delimiter is a delimiter/separator of values.
-     * @param values    array of values of the the parameter. The method is designed to accept
-     *                  primitive values, objects of primitive wrappers, strings, arrays and
-     *                  collections of mentioned types. Any value may contain non ASCII characters.
-     * @return instance of {@code T}
-     */
-    default T queryParam(String name, FormValueDelimiters delimiter, Object... values) {
-        return queryParam(name, delimiter, false, values);
-    }
-
-    /**
      * Appends query parameter. It explodes multiple value of the parameter by default.
      *
      * @param name          parameter name
@@ -122,18 +106,4 @@ public interface RequestSettings<T extends RequestSettings<T>> {
      * @return instance of {@code T}
      */
     T queryParam(String name, boolean allowReserved, Object... values);
-
-    /**
-     * Appends query parameter. It explodes multiple value of the parameter by default. It doesn't allow to keep
-     * reserved characters not encoded by default.
-     *
-     * @param name   parameter name
-     * @param values array of values of the the parameter. The method is designed to accept
-     *               primitive values, objects of primitive wrappers, strings, arrays and
-     *               collections of mentioned types. Any value may contain non ASCII characters.
-     * @return instance of {@code T}
-     */
-    default T queryParam(String name, Object... values) {
-        return queryParam(name, false, values);
-    }
 }

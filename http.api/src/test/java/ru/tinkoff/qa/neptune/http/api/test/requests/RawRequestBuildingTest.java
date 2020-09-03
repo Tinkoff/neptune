@@ -39,7 +39,7 @@ public class RawRequestBuildingTest {
         var request = builder
                 .header("header1", "abc")
                 .header("header1", "one more value")
-                .queryParam("param", "val1", 3, "Hello world")
+                .queryParam("param", false, "val1", 3, "Hello world")
                 .timeout(ofSeconds(2))
                 .version(HTTP_2)
                 .expectContinue(true)

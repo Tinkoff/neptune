@@ -169,8 +169,8 @@ public class HttpClientTest extends BaseHttpTest {
                 .willReturn(aResponse().withBody("Hello query")));
 
         var response = http().responseOf(GET(REQUEST_URI + "/query")
-                .queryParam("date", "01-01-1980")
-                .queryParam("some word", "Word and word again"), ofString());
+                .queryParam("date", false, "01-01-1980")
+                .queryParam("some word", false, "Word and word again"), ofString());
 
         assertThat(response.body(),
                 Matchers.equalTo("Hello query"));
