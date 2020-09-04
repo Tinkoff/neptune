@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 final class QueryBuilder extends FormBuilder {
 
@@ -30,17 +31,22 @@ final class QueryBuilder extends FormBuilder {
             var resultQuery = uri.getQuery();
             resultQuery = isBlank(resultQuery) ? query : resultQuery + "&" + query;
             try {
-                var resultUri = new URI(uri.getScheme(),
+                var newURI = new URI(uri.getScheme(),
                         uri.getUserInfo(),
                         uri.getHost(),
                         uri.getPort(),
-                        path, resultQuery,
-                        uri.getFragment());
-                var f = URI.class.getDeclaredField("query");
-                f.setAccessible(true);
-                f.set(resultUri, resultQuery);
-                return resultUri;
-            } catch (URISyntaxException | NoSuchFieldException | IllegalAccessException e) {
+                        path, null, null).toString();
+
+                if (isNotBlank(resultQuery)) {
+                    newURI = newURI + "?" + resultQuery;
+                }
+
+                if (isNotBlank(uri.getFragment())) {
+                    newURI = newURI + "#" + uri.getFragment();
+                }
+
+                return new URI(newURI);
+            } catch (URISyntaxException e) {
                 throw new RuntimeException(e);
             }
         }
