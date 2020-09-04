@@ -27,7 +27,6 @@ import static org.testng.Assert.fail;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasHostMatcher.uriHasHost;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasPathMatcher.uriHasPath;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasPortMatcher.uriHasPort;
-import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasQueryMatcher.uriHasQuery;
 import static ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.HasSchemeMatcher.uriHasScheme;
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultEndPointOfTargetAPIProperty.DEFAULT_END_POINT_OF_TARGET_API_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI.createAPI;
@@ -245,7 +244,7 @@ public class QueryMappingTest {
         assertThat(uri, uriHasHost("127.0.0.1"));
         assertThat(uri, uriHasPort(8089));
         assertThat(uri, uriHasPath(pathMatcher));
-        assertThat(uri, uriHasQuery(queryMather));
+        assertThat(uri.getRawQuery(), is(queryMather));
     }
 
     @Test(dataProvider = "data2")

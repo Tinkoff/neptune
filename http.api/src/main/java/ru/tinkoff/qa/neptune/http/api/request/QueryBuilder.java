@@ -30,13 +30,17 @@ final class QueryBuilder extends FormBuilder {
             var resultQuery = uri.getQuery();
             resultQuery = isBlank(resultQuery) ? query : resultQuery + "&" + query;
             try {
-                return new URI(uri.getScheme(),
+                var resultUri = new URI(uri.getScheme(),
                         uri.getUserInfo(),
                         uri.getHost(),
                         uri.getPort(),
                         path, resultQuery,
                         uri.getFragment());
-            } catch (URISyntaxException e) {
+                var f = URI.class.getDeclaredField("query");
+                f.setAccessible(true);
+                f.set(resultUri, resultQuery);
+                return resultUri;
+            } catch (URISyntaxException | NoSuchFieldException | IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
         }
