@@ -1,15 +1,20 @@
 package ru.tinkoff.qa.neptune.http.api.captors.response;
 
-import ru.tinkoff.qa.neptune.core.api.event.firing.captors.StringCaptor;
+import ru.tinkoff.qa.neptune.core.api.event.firing.captors.FileCaptor;
 import ru.tinkoff.qa.neptune.http.api.response.RequestResponseLogCollector;
 import ru.tinkoff.qa.neptune.http.api.response.ResponseExecutionInfo;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.logging.SimpleFormatter;
 
+import static java.io.File.createTempFile;
 import static java.lang.System.lineSeparator;
+import static java.util.UUID.randomUUID;
 
-public final class RequestResponseLogCaptor extends StringCaptor<List<RequestResponseLogCollector>> {
+public final class RequestResponseLogCaptor extends FileCaptor<List<RequestResponseLogCollector>> {
 
     private static final String LINE_SEPARATOR = lineSeparator();
 
@@ -18,8 +23,9 @@ public final class RequestResponseLogCaptor extends StringCaptor<List<RequestRes
     }
 
     @Override
-    public StringBuilder getData(List<RequestResponseLogCollector> caught) {
+    public File getData(List<RequestResponseLogCollector> caught) {
         var result = new StringBuilder();
+        var randomUUID = randomUUID();
         var logMessageFormatter = new SimpleFormatter();
 
         int i = 0;
@@ -30,7 +36,16 @@ public final class RequestResponseLogCaptor extends StringCaptor<List<RequestRes
                     .append(logMessageFormatter.format(logRecord))
                     .append(LINE_SEPARATOR));
         }
-        return result;
+        try {
+            var tmpFile = createTempFile("test", ".txt");
+            var writer = new FileWriter(tmpFile);
+            writer.write(result.toString());
+            writer.close();
+            tmpFile.deleteOnExit();
+            return tmpFile;
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     @Override

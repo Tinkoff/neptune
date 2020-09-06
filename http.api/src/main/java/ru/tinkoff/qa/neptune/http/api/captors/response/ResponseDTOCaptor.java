@@ -14,7 +14,7 @@ public final class ResponseDTOCaptor extends StringCaptor<HttpResponse<MappedObj
     @Override
     public StringBuilder getData(HttpResponse<MappedObject> caught) {
         try {
-            return new StringBuilder(caught.toString());
+            return new StringBuilder(caught.body().toString());
         } catch (Exception e) {
             e.printStackTrace();
             return null;

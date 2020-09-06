@@ -3,7 +3,6 @@ package ru.tinkoff.qa.neptune.http.api.response;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.CaptorFilterByProducedType;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeCaptureOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
-import ru.tinkoff.qa.neptune.core.api.steps.DefaultReportStepParameterFactory;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
@@ -17,6 +16,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Optional.ofNullable;
 import static java.util.Set.of;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchFailureEvent;
@@ -234,7 +234,7 @@ public abstract class GetObjectFromArrayBodyStepSupplier<T, R, S extends GetObje
         @Override
         protected Map<String, String> getParameters() {
             var result = new LinkedHashMap<>(super.getParameters());
-            result.putAll(DefaultReportStepParameterFactory.getParameters(getResponse));
+            ofNullable(getResponse).ifPresent(t -> result.putAll(t.getParameters()));
             return result;
         }
     }
