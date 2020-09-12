@@ -4,6 +4,7 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.CaptorFilterByProd
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeCaptureOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.StepParameter;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 
@@ -142,14 +143,19 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
      * @param <R> is a type of an element of resulted iterable
      * @param <S> is a type of resulted iterable
      */
+    @SuppressWarnings("unused")
     public static final class GetObjectsFromIterableWhenResponseReceived<T, R, S extends Iterable<R>>
             extends GetObjectsFromIterableBodyStepSupplier<T, R, S, GetObjectsFromIterableWhenResponseReceived<T, R, S>> {
+
+        @StepParameter("From body of received http response")
+        private final HttpResponse<T> response;
 
         private GetObjectsFromIterableWhenResponseReceived(String description,
                                                            HttpResponse<T> response,
                                                            Function<T, S> f) {
             super(description, f.compose(ignored -> response.body()));
             checkNotNull(response);
+            this.response = response;
         }
     }
 

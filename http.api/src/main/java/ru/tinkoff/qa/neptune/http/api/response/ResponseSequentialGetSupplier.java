@@ -125,6 +125,8 @@ public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSup
 
     @Override
     protected Map<String, String> getParameters() {
+        var p = super.getParameters();
+
         var params = new LinkedHashMap<String, String>();
         params.put("Endpoint URI", request.uri().toString());
         params.put("Method", request.method());
@@ -162,7 +164,7 @@ public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSup
                         }
                     }
                 });
-
+        params.putAll(p);
         return params;
     }
 
