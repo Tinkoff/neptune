@@ -25,7 +25,7 @@ public final class RequestResponseLogCaptor extends FileCaptor<List<RequestRespo
     @Override
     public File getData(List<RequestResponseLogCollector> caught) {
         var result = new StringBuilder();
-        var randomUUID = randomUUID();
+        var randomUUID = randomUUID().toString();
         var logMessageFormatter = new SimpleFormatter();
 
         int i = 0;
@@ -37,7 +37,7 @@ public final class RequestResponseLogCaptor extends FileCaptor<List<RequestRespo
                     .append(LINE_SEPARATOR));
         }
         try {
-            var tmpFile = createTempFile("test", ".txt");
+            var tmpFile = createTempFile(randomUUID, ".txt");
             var writer = new FileWriter(tmpFile);
             writer.write(result.toString());
             writer.close();

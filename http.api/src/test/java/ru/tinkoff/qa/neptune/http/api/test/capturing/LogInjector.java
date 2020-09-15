@@ -9,8 +9,8 @@ import static java.util.Optional.ofNullable;
 
 public class LogInjector implements CapturedStringInjector {
 
-    private final static ThreadLocal<List<String>> LOGS = new ThreadLocal<>();
-    private final static List<List<String>> LOG_LIST = new ArrayList<>();
+    final static ThreadLocal<List<String>> LOGS = new ThreadLocal<>();
+    final static List<List<String>> LOG_LIST = new ArrayList<>();
 
     static void clearLogs() {
         LOG_LIST.forEach(List::clear);
