@@ -1,7 +1,5 @@
 package ru.tinkoff.qa.neptune.data.base.api.result;
 
-import ru.tinkoff.qa.neptune.core.api.steps.LoggableObject;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -17,7 +15,7 @@ import static java.util.stream.Collectors.toList;
  * This collection contains results of SQL/JDO selection. This result contains values of data store table/
  * {@link ru.tinkoff.qa.neptune.data.base.api.PersistableObject} fields.
  */
-public class TableResultList extends ArrayList<List<Object>> implements LoggableObject {
+public class TableResultList extends ArrayList<List<Object>> {
 
     protected TableResultList(List<List<Object>> from) {
         super(toRows(from));

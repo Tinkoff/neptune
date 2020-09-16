@@ -1,12 +1,11 @@
 package ru.tinkoff.qa.neptune.selenium.functions.searching;
 
 import org.openqa.selenium.SearchContext;
-import ru.tinkoff.qa.neptune.core.api.steps.LoggableObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-class LoggableElementList<T extends SearchContext> extends ArrayList<T> implements LoggableObject {
+class LoggableElementList<T extends SearchContext> extends ArrayList<T> {
     LoggableElementList() {
         super();
     }

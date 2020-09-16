@@ -11,7 +11,6 @@ import static java.lang.String.valueOf;
 import static java.lang.System.lineSeparator;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
-import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.hasReadableDescription;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 public class MapCaptor extends StringCaptor<Map<?, ?>> {
@@ -71,9 +70,7 @@ public class MapCaptor extends StringCaptor<Map<?, ?>> {
             Class<?> keyClazz;
             Class<?> valueClazz;
             return (isLoggable(key)
-                    || hasReadableDescription(key))
-                    || (isLoggable(value)
-                    || hasReadableDescription(value)
+                    || (isLoggable(value))
                     || (keyClazz = key.getClass()).isArray()
                     || Iterable.class.isAssignableFrom(keyClazz)
                     || Map.class.isAssignableFrom(keyClazz)

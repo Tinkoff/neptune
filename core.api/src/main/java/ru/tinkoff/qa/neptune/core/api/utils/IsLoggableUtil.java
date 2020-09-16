@@ -1,14 +1,6 @@
 package ru.tinkoff.qa.neptune.core.api.utils;
 
-import ru.tinkoff.qa.neptune.core.api.steps.LoggableObject;
-
-import java.util.function.*;
-
-import static java.lang.Integer.toHexString;
-import static java.lang.String.format;
-import static java.lang.String.valueOf;
 import static org.apache.commons.lang3.ClassUtils.isPrimitiveOrWrapper;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public final class IsLoggableUtil {
 
@@ -27,22 +19,17 @@ public final class IsLoggableUtil {
             return true;
         }
 
-        if (Function.class.isAssignableFrom(clazz) || BiFunction.class.isAssignableFrom(clazz) ||
-                Consumer.class.isAssignableFrom(clazz) || BiConsumer.class.isAssignableFrom(clazz)
-                || Predicate.class.isAssignableFrom(clazz) || Supplier.class.isAssignableFrom(clazz)) {
-            return hasReadableDescription(toBeDescribed);
+        var cls = clazz;
+        while (!clazz.equals(Object.class)) {
+            try {
+                cls.getDeclaredMethod("toString");
+                return true;
+            } catch (NoSuchMethodException e) {
+                cls = cls.getSuperclass();
+            }
         }
 
-        if (LoggableObject.class.isAssignableFrom(clazz)) {
-            return true;
-        }
-
-        return hasReadableDescription(toBeDescribed);
+        return false;
     }
 
-    public static boolean hasReadableDescription(Object toBeDescribed) {
-        var stringDescription = valueOf(toBeDescribed);
-        return !isBlank(stringDescription) && !valueOf(toBeDescribed).equals(format("%s@%s", toBeDescribed.getClass().getName(),
-                toHexString(toBeDescribed.hashCode())));
-    }
 }

@@ -3,7 +3,6 @@ package ru.tinkoff.qa.neptune.selenium.api.widget;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.internal.WrapsElement;
-import ru.tinkoff.qa.neptune.core.api.steps.LoggableObject;
 
 import java.util.List;
 
@@ -21,7 +20,7 @@ import static ru.tinkoff.qa.neptune.selenium.api.widget.Priority.LOWEST;
  */
 @Priority(LOWEST)
 public abstract class Widget implements WrapsElement, SearchContext, HasAttribute,
-        IsEnabled, IsVisible, HasSize, HasRectangle, HasLocation, HasCssValue, LoggableObject {
+        IsEnabled, IsVisible, HasSize, HasRectangle, HasLocation, HasCssValue {
 
     private final SearchContext wrappedElement;
 
