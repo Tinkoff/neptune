@@ -20,7 +20,7 @@ public final class IsLoggableUtil {
         }
 
         var cls = clazz;
-        while (!clazz.equals(Object.class)) {
+        while (!cls.equals(Object.class)) {
             try {
                 cls.getDeclaredMethod("toString");
                 return true;
