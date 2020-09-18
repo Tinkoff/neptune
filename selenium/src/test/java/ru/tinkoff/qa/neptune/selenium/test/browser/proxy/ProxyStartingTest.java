@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.test.browser.proxy;
 
+import com.browserup.harreader.model.HarEntry;
 import org.hamcrest.Matcher;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -10,6 +11,7 @@ import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
 import ru.tinkoff.qa.neptune.selenium.test.capability.suppliers.ChromeSettingsSupplierHeadless;
 import ru.tinkoff.qa.neptune.selenium.test.capability.suppliers.ChromeSettingsSupplierWithDefinedProxy;
 
+import java.util.List;
 import java.util.Map;
 
 import static java.util.Map.entry;
@@ -50,16 +52,6 @@ public class ProxyStartingTest {
         PROPERTIES_TO_SET_BEFORE.forEach(System::setProperty);
     }
 
-    @AfterClass(alwaysRun = true)
-    public void tearDownProperties() {
-        PROPERTIES_TO_SET_BEFORE.keySet().forEach(s -> System.getProperties().remove(s));
-    }
-
-    @AfterMethod(alwaysRun = true)
-    public void tearDownProxyProperty() {
-        System.getProperties().remove(USE_BROWSER_PROXY.getPropertyName());
-    }
-
     @Test(dataProvider = "testData")
     public void useBrowserProxyPropertyTest(String propertyValue, Matcher<Object> proxyMatcher) {
         if (propertyValue != null) {
@@ -98,5 +90,34 @@ public class ProxyStartingTest {
         } finally {
             wrappedWebDriver.shutDown();
         }
+    }
+
+    @Test
+    public void refreshContextTest() {
+        System.setProperty(USE_BROWSER_PROXY.getPropertyName(), "true");
+
+        WrappedWebDriver wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
+                new SeleniumParameterProvider().provide().getParameterValues()[0]);
+        WebDriver driver = wrappedWebDriver.getWrappedDriver();
+
+        driver.get("https://yandex.ru");
+
+        List<HarEntry> harEntries = wrappedWebDriver.getProxy().getHar().getLog().getEntries();
+
+        wrappedWebDriver.refreshContext();
+
+        assertThat("HAR entries list",
+                wrappedWebDriver.getProxy().getHar().getLog().getEntries(),
+                hasItems(not(harEntries.toArray())));
+    }
+
+    @AfterMethod(alwaysRun = true)
+    public void tearDownProxyProperty() {
+        System.getProperties().remove(USE_BROWSER_PROXY.getPropertyName());
+    }
+
+    @AfterClass(alwaysRun = true)
+    public void tearDownProperties() {
+        PROPERTIES_TO_SET_BEFORE.keySet().forEach(s -> System.getProperties().remove(s));
     }
 }

@@ -97,14 +97,12 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
                 if (!capabilities.asMap().containsKey(CapabilityType.PROXY)) {
                     proxy.start();
 
-                    Proxy seleniumProxy = new Proxy();
-                    seleniumProxy.setProxyType(MANUAL);
-
                     String hostIp = new NetworkUtils().getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
 
+                    Proxy seleniumProxy = new Proxy();
+                    seleniumProxy.setProxyType(MANUAL);
                     seleniumProxy.setHttpProxy(hostIp + ":" + proxy.getPort());
                     seleniumProxy.setSslProxy(hostIp + ":" + proxy.getPort());
-                    seleniumProxy.setFtpProxy(hostIp + ":" + proxy.getPort());
 
                     capabilities.setCapability(CapabilityType.PROXY, seleniumProxy);
                     capabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
@@ -143,8 +141,8 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
 
                 ofNullable(proxy).ifPresent(browserUpProxy -> {
                     if (browserUpProxy.isStarted()) {
-                        browserUpProxy.enableHarCaptureTypes(REQUEST_HEADERS, REQUEST_CONTENT,
-                                RESPONSE_HEADERS, RESPONSE_CONTENT);
+                        browserUpProxy.enableHarCaptureTypes(REQUEST_HEADERS, REQUEST_CONTENT, REQUEST_COOKIES,
+                                RESPONSE_HEADERS, RESPONSE_CONTENT, RESPONSE_COOKIES);
 
                         browserUpProxy.newHar();
                     }
@@ -198,6 +196,11 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
             ofNullable(BASE_WEB_DRIVER_URL_PROPERTY.get()).ifPresent(url ->
                     driver.get(url.toString()));
         }
+
+        ofNullable(proxy).ifPresent(browserUpProxy -> {
+            browserUpProxy.endHar();
+            browserUpProxy.newHar();
+        });
     }
 
     @Override
@@ -214,6 +217,7 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
         ofNullable(driver).ifPresent(webDriver -> {
             ofNullable(proxy).ifPresent(browserUpProxy -> {
                 if (browserUpProxy.isStarted()) {
+                    browserUpProxy.endHar();
                     browserUpProxy.abort();
                 }
             });

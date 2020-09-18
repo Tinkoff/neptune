@@ -14,10 +14,10 @@ import ru.tinkoff.qa.neptune.selenium.api.widget.Editable;
 import ru.tinkoff.qa.neptune.selenium.api.widget.HasValue;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.TextField;
+import ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.BrowserProxyGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.cookies.AddCookiesActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.cookies.GetSeleniumCookieSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction;
-import ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.BrowserProxyGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.java.script.GetJavaScriptResultSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
@@ -39,6 +39,7 @@ import java.net.URL;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -215,18 +216,21 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
         return javaScriptResultSupplier.get().apply(this);
     }
 
-          
-    public List<HarEntry> get(BrowserProxyGetStepSupplier browserProxy) {
-        checkArgument(Objects.nonNull(browserProxy), "Browser proxy supplier is not defined");
-        return browserProxy.get().apply(this);
+    /**
+     * Returns captured browser network traffic
+     *
+     * @param browserProxyGetStepSupplier is description of traffic to be returned
+     * @return list of proxied requests
+     */
+    public List<HarEntry> get(BrowserProxyGetStepSupplier browserProxyGetStepSupplier) {
+        checkArgument(Objects.nonNull(browserProxyGetStepSupplier), "Browser proxy supplier is not defined");
+        return browserProxyGetStepSupplier.get().apply(this);
     }
-
 
     @Override
     public void refreshContext() {
         wrappedWebDriver.refreshContext();
     }
-
 
     @Override
     public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
