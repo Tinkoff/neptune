@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.core.api.steps;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
@@ -31,10 +32,10 @@ public class PresenceTest {
             presenceTestContext -> null);
 
     private static final Function<PresenceTestContext, Object> RETURNS_OBJECT_ARRAY = toGet("Object array",
-            presenceTestContext -> new Object[] {1, "String"});
+            presenceTestContext -> new Object[]{1, "String"});
 
     private static final Function<PresenceTestContext, Object> RETURNS_EMPTY_ARRAY = toGet("Empty array",
-            presenceTestContext -> new String[] {});
+            presenceTestContext -> new String[]{});
 
     private static final Function<PresenceTestContext, Object> RETURNS_OBJECT_ITERABLE = toGet("Object iterable",
             presenceTestContext -> of(1, "String"));
@@ -57,7 +58,9 @@ public class PresenceTest {
     private static final PresenceTestContext presenceTestContext = new PresenceTestContext();
 
     private static final Function<PresenceTestContext, Object> PRODUCES_EXPECTED_EXCEPTIONS = toGet("Expected exception",
-            presenceTestContext -> { throw EXPECTED_EXCEPTION_TO_BE_THROWN;});
+            presenceTestContext -> {
+                throw EXPECTED_EXCEPTION_TO_BE_THROWN;
+            });
 
     @Test
     public void testOfFunctionWhichReturnsValue() {
@@ -167,7 +170,7 @@ public class PresenceTest {
     @Test
     public void testOfGetSupplierWhichThrowsIgnoredException() {
         assertThat(presenceTestContext.presenceOf(new TestGetSupplier(PRODUCES_IGNORED_EXCEPTIONS),
-                IGNORED_EXCEPTIONS.toArray(new Class[]{})),
+                IGNORED_EXCEPTIONS),
                 is(false));
     }
 
@@ -175,7 +178,7 @@ public class PresenceTest {
             expectedExceptionsMessageRegExp = "Expected exception to be thrown")
     public void testOfGetSupplierWhichThrowsExpectedException() {
         assertThat(presenceTestContext.presenceOf(new TestGetSupplier(PRODUCES_EXPECTED_EXCEPTIONS),
-                IGNORED_EXCEPTIONS.toArray(new Class[]{})),
+                IGNORED_EXCEPTIONS),
                 is(false));
     }
 
@@ -206,8 +209,8 @@ public class PresenceTest {
     private static class PresenceTestContext extends Context<PresenceTestContext> {
 
         boolean presence(Function<PresenceTestContext, ?> toBePresent,
-                                Supplier<? extends RuntimeException> exceptionSupplier,
-                                Class<? extends Throwable>... toIgnore) {
+                         Supplier<? extends RuntimeException> exceptionSupplier,
+                         Class<? extends Throwable>... toIgnore) {
             return super.presenceOf(toBePresent, exceptionSupplier, toIgnore);
         }
 
@@ -215,12 +218,26 @@ public class PresenceTest {
          * Retrieves whenever some object is present or not.
          *
          * @param toBePresent is a function that retrieves a value
-         * @param toIgnore which exceptions should be ignored during evaluation of {@code toBePresent}
+         * @param toIgnore    which exceptions should be ignored during evaluation of {@code toBePresent}
          * @return is desired object present or not
          */
         boolean presence(Function<PresenceTestContext, ?> toBePresent,
-                                Class<? extends Throwable>... toIgnore) {
+                         Class<? extends Throwable>... toIgnore) {
             return super.presenceOf(toBePresent, toIgnore);
+        }
+
+        protected boolean presenceOf(SequentialGetStepSupplier<PresenceTestContext, ?, ?, ?, ?> toBePresent) {
+            return super.presenceOf(toBePresent);
+        }
+
+        protected boolean presenceOf(SequentialGetStepSupplier<PresenceTestContext, ?, ?, ?, ?> toBePresent,
+                                     Collection<Class<? extends Throwable>> toIgnore) {
+            return super.presenceOf(toBePresent, toIgnore.toArray(new Class[]{}));
+        }
+
+        protected final boolean presenceOf(SequentialGetStepSupplier<PresenceTestContext, ?, ?, ?, ?> toBePresent,
+                                           Supplier<? extends RuntimeException> exceptionSupplier) {
+            return super.presenceOf(toBePresent, exceptionSupplier);
         }
     }
 }
