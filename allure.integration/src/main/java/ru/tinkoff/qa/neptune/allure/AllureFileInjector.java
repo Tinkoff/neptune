@@ -9,24 +9,15 @@ import java.io.FileNotFoundException;
 
 import static com.google.common.io.Files.getFileExtension;
 import static io.qameta.allure.Allure.addAttachment;
-import static java.nio.file.Files.probeContentType;
-import static java.util.Optional.ofNullable;
 
 public class AllureFileInjector implements CapturedFileInjector {
 
     @Override
     public void inject(File toBeInjected, String message) {
-        String contentType = null;
         try {
-            contentType = ofNullable(probeContentType(toBeInjected.toPath())).orElse(null);
-        } catch (Exception ignored) {
-        }
-
-        try {
-            addAttachment(message, contentType, new FileInputStream(toBeInjected),
-                    getFileExtension(toBeInjected.getAbsolutePath()));
-        } catch (FileNotFoundException e) {
-            throw new AllureResultsWriteException(e.getMessage(), e);
+            addAttachment(message, null, new FileInputStream(toBeInjected), getFileExtension(toBeInjected.getAbsolutePath()));
+        } catch (FileNotFoundException var4) {
+            throw new AllureResultsWriteException(var4.getMessage(), var4);
         }
     }
 }

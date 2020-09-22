@@ -33,7 +33,7 @@ public final class ResponseFileCaptor extends FileCaptor<HttpResponse<Path>> imp
         var absolutePath = file.getAbsolutePath();
         try {
             var tempFile = createTempFile(format("%s_%s", getNameWithoutExtension(absolutePath), uuid),
-                    getFileExtension(absolutePath));
+                    "." + getFileExtension(absolutePath));
             tempFile.deleteOnExit();
             copyFile(file, tempFile);
             return tempFile;
