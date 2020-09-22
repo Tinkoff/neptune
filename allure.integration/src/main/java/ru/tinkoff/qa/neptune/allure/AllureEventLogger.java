@@ -19,9 +19,9 @@ import static io.qameta.allure.model.Status.BROKEN;
 import static io.qameta.allure.model.Status.PASSED;
 import static io.qameta.allure.util.ResultsUtils.getStatus;
 import static io.qameta.allure.util.ResultsUtils.getStatusDetails;
-import static java.lang.String.valueOf;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Collectors.toList;
+import static ru.tinkoff.qa.neptune.core.api.utils.ToArrayUtil.stringValueOfObjectOrArray;
 
 public class AllureEventLogger implements EventLogger {
 
@@ -80,7 +80,7 @@ public class AllureEventLogger implements EventLogger {
                 .getParameters()
                 .add(new Parameter()
                         .setName("RETURNED VALUE")
-                        .setValue(valueOf(returned))));
+                        .setValue(stringValueOfObjectOrArray(returned))));
         results.put(uuid, PASSED);
     }
 

@@ -7,6 +7,7 @@ import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
+import static ru.tinkoff.qa.neptune.core.api.utils.ToArrayUtil.toArray;
 
 public class ArrayCaptor extends IterableCaptor<List<?>> {
 
@@ -30,7 +31,7 @@ public class ArrayCaptor extends IterableCaptor<List<?>> {
             return null;
         }
 
-        var result = stream(((Object[]) toBeCaptured))
+        var result = stream(toArray(toBeCaptured))
                 .filter(o -> {
                     var clazz = ofNullable(o)
                             .map(Object::getClass)

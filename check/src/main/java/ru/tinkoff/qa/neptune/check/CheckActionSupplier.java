@@ -19,6 +19,7 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.core.api.steps.Step.createStep;
+import static ru.tinkoff.qa.neptune.core.api.utils.ToArrayUtil.stringValueOfObjectOrArray;
 
 public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R, T, CheckActionSupplier<R, T>> {
 
@@ -91,7 +92,7 @@ public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R,
      */
     @SafeVarargs
     public static <T> void check(T t, MatchAction<T, ?>... matchActions) {
-        new CheckActionSupplier<T, T>(format("Inspected value %s", t))
+        new CheckActionSupplier<T, T>(format("Inspected value %s", stringValueOfObjectOrArray(t)))
                 .matches(matchActions)
                 .performOn(o -> o)
                 .get().accept(t);

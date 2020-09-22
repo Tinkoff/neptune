@@ -15,7 +15,7 @@ import static java.util.Arrays.stream;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.ArrayUtils.add;
-import static org.apache.commons.lang3.ArrayUtils.toObject;
+import static ru.tinkoff.qa.neptune.core.api.utils.ToArrayUtil.toArray;
 
 /**
  * Util that transforms annotations of parameters of a {@link java.lang.reflect.Method} into
@@ -97,30 +97,7 @@ public final class ParameterUtil {
         Stream<?> stream = null;
 
         if (cls.isArray()) {
-            Object[] result;
-            if (cls.getComponentType().isPrimitive()) {
-                if (byte[].class.equals(cls)) {
-                    result = toObject((byte[]) value);
-                } else if (short[].class.equals(cls)) {
-                    result = toObject((short[]) value);
-                } else if (int[].class.equals(cls)) {
-                    result = toObject((int[]) value);
-                } else if (long[].class.equals(cls)) {
-                    result = toObject((long[]) value);
-                } else if (float[].class.equals(cls)) {
-                    result = toObject((float[]) value);
-                } else if (double[].class.equals(cls)) {
-                    result = toObject((double[]) value);
-                } else if (boolean[].class.equals(cls)) {
-                    result = toObject((boolean[]) value);
-                } else {
-                    result = toObject((char[]) value);
-                }
-
-                stream = stream(result);
-            } else {
-                stream = stream((Object[]) value);
-            }
+            stream = stream(toArray(value));
         } else if (Iterable.class.isAssignableFrom(cls)) {
             stream = StreamSupport.stream(((Iterable<?>) value).spliterator(), false);
         }
