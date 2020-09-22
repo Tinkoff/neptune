@@ -11,7 +11,7 @@ import static ru.tinkoff.qa.neptune.http.api.mapping.DefaultMapper.JSON;
 public final class ResponseDTOs extends StringCaptor<List<MappedObject>> implements BaseResponseObjectsBodyCaptor<MappedObject> {
 
     public ResponseDTOs() {
-        super("Response Body. DTO collection. Described as JSON array");
+        super("Response Body. DTO collection. Described by json-formatted string");
     }
 
     @Override

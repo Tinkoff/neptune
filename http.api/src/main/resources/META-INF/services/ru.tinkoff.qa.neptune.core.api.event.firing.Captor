@@ -11,3 +11,4 @@ ru.tinkoff.qa.neptune.http.api.captors.response.ResponseMapBodyCaptor
 ru.tinkoff.qa.neptune.http.api.captors.request.FileRequestBodyCaptor
 ru.tinkoff.qa.neptune.http.api.captors.request.StringRequestBodyCaptor
 ru.tinkoff.qa.neptune.http.api.captors.request.CommonRequestBodyCaptor
+ru.tinkoff.qa.neptune.http.api.captors.request.MultiPartRequestBodyCaptor

@@ -8,7 +8,7 @@ import java.net.http.HttpResponse;
 public final class ResponseDTOCaptor extends StringCaptor<HttpResponse<MappedObject>> implements BaseResponseObjectBodyCaptor<MappedObject> {
 
     public ResponseDTOCaptor() {
-        super("Response Body. DTO. Described as JSON string");
+        super("Response Body. DTO. Described by json-formatted string");
     }
 
     @Override

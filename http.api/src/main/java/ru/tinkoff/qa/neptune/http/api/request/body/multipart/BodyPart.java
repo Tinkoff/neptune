@@ -501,7 +501,27 @@ public abstract class BodyPart {
     public List<byte[]> content(String boundary) {
         var list = new ArrayList<byte[]>();
         list.add((boundary + "\r\n" + getPartInfo() + "\r\n").getBytes(UTF_8));
-        list.add(addAll(bytes, "\r\n" .getBytes(UTF_8)));
+        list.add(addAll(bytes, "\r\n".getBytes(UTF_8)));
         return list;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public String getContentTransferEncoding() {
+        return contentTransferEncoding;
+    }
+
+    public byte[] getBytes() {
+        return bytes;
     }
 }
