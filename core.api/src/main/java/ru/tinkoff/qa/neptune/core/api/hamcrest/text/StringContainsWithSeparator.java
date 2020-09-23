@@ -17,10 +17,10 @@ import static org.hamcrest.Matchers.hasItem;
  */
 public final class StringContainsWithSeparator extends TypeSafeDiagnosingMatcher<String> {
 
-    private final Matcher<? super Iterable<? super String>> toContain;
+    private final Matcher<? super Iterable<String>> toContain;
     private final String separator;
 
-    private StringContainsWithSeparator(Matcher<? super Iterable<? super String>> toContain, String separator) {
+    private StringContainsWithSeparator(Matcher<? super Iterable<String>> toContain, String separator) {
         checkArgument(isNotBlank(separator), "Separator is blank");
         checkNotNull(toContain, "Matcher is not defined");
         this.toContain = toContain;
@@ -35,7 +35,7 @@ public final class StringContainsWithSeparator extends TypeSafeDiagnosingMatcher
      * @param separator is string separator
      * @return new {@link StringContainsWithSeparator}
      */
-    public static StringContainsWithSeparator containsStringsSeparatedBy(Matcher<? super Iterable<? super String>> matcher, String separator) {
+    public static StringContainsWithSeparator containsStringsSeparatedBy(Matcher<? super Iterable<String>> matcher, String separator) {
         return new StringContainsWithSeparator(matcher, separator);
     }
 

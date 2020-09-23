@@ -1,0 +1,1 @@
+{{#isBodyParam}}        @Body{{^required}}(isRequired = false){{/required}}{{#vendorExtensions.x-body_param_format}} @BodyParamFormat(format = {{{vendorExtensions.x-body_param_format}}}){{/vendorExtensions.x-body_param_format}} {{{dataType}}} {{paramName}}{{#hasMore}},{{/hasMore}}{{/isBodyParam}}

@@ -1,0 +1,19 @@
+package {{package}};
+
+{{#imports}}import {{import}};
+{{/imports}}
+{{#models}}
+{{#model}}
+{{#isEnum}}
+{{>enumOuterClass}}
+{{/isEnum}}
+{{^isEnum}}
+{{^parent}}import ru.tinkoff.qa.neptune.http.api.mapping.MappedObject;{{/parent}}
+{{#withXml}}
+import com.fasterxml.jackson.dataformat.xml.annotation.*;
+{{/withXml}}
+
+{{>pojo}}
+{{/isEnum}}
+{{/model}}
+{{/models}}

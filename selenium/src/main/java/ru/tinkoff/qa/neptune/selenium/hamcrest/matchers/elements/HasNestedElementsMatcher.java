@@ -1,17 +1,21 @@
 package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.elements;
 
-import ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier;
-import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.openqa.selenium.SearchContext;
+import ru.tinkoff.qa.neptune.core.api.steps.StepFunction;
+import ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier;
+import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
+
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.lang.System.lineSeparator;
 import static java.util.Arrays.stream;
 import static java.util.Objects.nonNull;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
 
 public final class HasNestedElementsMatcher<T extends SearchContext> extends TypeSafeDiagnosingMatcher<T> {
 
@@ -26,8 +30,9 @@ public final class HasNestedElementsMatcher<T extends SearchContext> extends Typ
 
     /**
      * Creates a new instance of {@link HasNestedElementsMatcher} and defines the way to find expected nested elements.
+     *
      * @param search is the way to find desired nested elements.
-     * @param <T> is the type of an instance of {@link SearchContext}.
+     * @param <T>    is the type of an instance of {@link SearchContext}.
      * @return created instance of {@link HasNestedElementsMatcher}
      */
     public static <T extends SearchContext> HasNestedElementsMatcher<T> hasNestedElements(MultipleSearchSupplier<?> search) {
@@ -36,6 +41,7 @@ public final class HasNestedElementsMatcher<T extends SearchContext> extends Typ
 
     /**
      * Sets expected count of nested elements.
+     *
      * @param count is expected count of nested elements
      * @return self-reference.
      */
@@ -47,6 +53,7 @@ public final class HasNestedElementsMatcher<T extends SearchContext> extends Typ
 
     /**
      * Sets criteria to check the count of found elements.
+     *
      * @param matcher is criteria to check the count of found elements
      * @return self-reference.
      */
@@ -59,7 +66,9 @@ public final class HasNestedElementsMatcher<T extends SearchContext> extends Typ
     @Override
     protected boolean matchesSafely(T item, Description mismatchDescription) {
         try {
-            var foundSize = search.get().apply(item).size();
+            var f = (StepFunction<SearchContext, ? extends List<?>>) search.get();
+            f.turnReportingOff();
+            var foundSize = f.apply(item).size();
 
             if (!expectedCount.matches(foundSize)) {
                 mismatchDescription.appendText(format("actual count %s of found items doesn't meet the criteria %s",
@@ -67,15 +76,14 @@ public final class HasNestedElementsMatcher<T extends SearchContext> extends Typ
                 return false;
             }
             return true;
-        }
-        catch (Throwable e) {
+        } catch (Throwable e) {
             mismatchDescription.appendText("The attempt to find nested elements has failed. Something went wrong." + LINE_SEPARATOR)
                     .appendText(format("Caught throwable: %s%s", e.getClass().getName(), LINE_SEPARATOR))
                     .appendText("Stack trace:" + LINE_SEPARATOR);
 
             stream(e.getStackTrace())
                     .forEach(stackTraceElement -> mismatchDescription.appendText(format("%s%s",
-                    stackTraceElement.toString(), LINE_SEPARATOR)));
+                            stackTraceElement.toString(), LINE_SEPARATOR)));
             return false;
         }
     }

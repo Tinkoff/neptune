@@ -93,10 +93,6 @@ public final class Presence<T extends Context> extends SequentialGetStepSupplier
                 .compose(preFunction);
     }
 
-    protected String prepareStepDescription() {
-        return toString();
-    }
-
     protected Function<Object, Boolean> getEndFunction() {
         return o -> {
             var result = super.getEndFunction().apply(o);

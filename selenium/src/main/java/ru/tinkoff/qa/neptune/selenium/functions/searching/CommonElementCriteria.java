@@ -4,7 +4,6 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsElement;
-import ru.tinkoff.qa.neptune.core.api.exception.management.IgnoresThrowable;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.StepFunction;
 import ru.tinkoff.qa.neptune.core.api.steps.TurnsRetortingOff;
@@ -380,10 +379,15 @@ public final class CommonElementCriteria {
     @SuppressWarnings("unchecked")
     public static <T extends SearchContext> Criteria<T> nested(SearchSupplier<?> howToFind) {
         checkArgument(nonNull(howToFind), "The way how to find nested elements should be defined");
-        var func = ((IgnoresThrowable<StepFunction<SearchContext, SearchContext>>) howToFind.clone().timeOut(ofMillis(0)).get())
-                .addIgnored(NoSuchElementException.class);
+        var func = (StepFunction<SearchContext, ? extends SearchContext>) howToFind.clone().timeOut(ofMillis(0)).get();
         func.turnReportingOff();
-        return condition(format("has nested %s", howToFind), t -> func.apply(t) != null);
+        return condition(format("has nested %s", howToFind), t -> {
+            try {
+                return func.apply(t) != null;
+            } catch (NoSuchElementException e) {
+                return false;
+            }
+        });
     }
 
     static <T extends SearchContext> Criteria<T> labeled(String... labels) {

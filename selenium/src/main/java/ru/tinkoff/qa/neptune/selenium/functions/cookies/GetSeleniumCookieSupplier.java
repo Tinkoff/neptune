@@ -19,7 +19,10 @@ import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentConte
  */
 @MakeStringCapturesOnFinishing
 @MakeFileCapturesOnFinishing
-@SequentialGetStepSupplier.DefaultParameterNames(criteria = "Cookie criteria", timeOut = "Time to get cookies")
+@SequentialGetStepSupplier.DefaultParameterNames(
+        criteria = "Cookie criteria",
+        timeOut = "Time to find cookies"
+)
 public final class GetSeleniumCookieSupplier extends SequentialGetStepSupplier
         .GetIterableChainedStepSupplier<SeleniumStepContext, Set<Cookie>, WebDriver, Cookie, GetSeleniumCookieSupplier> {
 

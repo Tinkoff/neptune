@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.http.api.test;
 
-import org.mockserver.model.Cookie;
-import org.mockserver.model.HttpResponse;
+import org.hamcrest.Matchers;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
@@ -18,7 +17,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.concurrent.Executor;
 
-import static java.lang.String.format;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.lang.String.valueOf;
 import static java.lang.System.getProperties;
 import static java.lang.System.setProperty;
@@ -33,17 +32,11 @@ import static java.time.Duration.of;
 import static java.time.Duration.ofSeconds;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.*;
-import static org.mockserver.model.HttpRequest.request;
-import static ru.tinkoff.qa.neptune.http.api.HttpCookiesActionSupplier.addToCookies;
-import static ru.tinkoff.qa.neptune.http.api.HttpCookiesActionSupplier.clearCookieStore;
-import static ru.tinkoff.qa.neptune.http.api.HttpGetCachedCookiesSupplier.cachedCookies;
-import static ru.tinkoff.qa.neptune.http.api.HttpResponseSequentialGetSupplier.responseOf;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.PreparedHttpRequest.GET;
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpAuthenticatorProperty.DEFAULT_HTTP_AUTHENTICATOR_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpCookieManagerProperty.DEFAULT_HTTP_COOKIE_MANAGER_PROPERTY;
-import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpDomainToRespondProperty.DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpExecutorProperty.DEFAULT_HTTP_EXECUTOR_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpPriorityProperty.DEFAULT_HTTP_PRIORITY_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpProtocolVersionProperty.DEFAULT_HTTP_PROTOCOL_VERSION_PROPERTY;
@@ -53,6 +46,7 @@ import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpSslContextPro
 import static ru.tinkoff.qa.neptune.http.api.properties.DefaultHttpSslParametersProperty.DEFAULT_HTTP_SSL_PARAMETERS_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.time.DefaultConnectTimeOutUnitProperty.DEFAULT_CONNECT_TIME_UNIT_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.time.DefaultConnectTimeOutValueProperty.DEFAULT_CONNECT_TIME_VALUE_PROPERTY;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
 
 public class HttpClientTest extends BaseHttpTest {
 
@@ -75,7 +69,7 @@ public class HttpClientTest extends BaseHttpTest {
     private static final ProxySelector DEFAULT_PROXY_SELECTOR = new TestProxySelector();
     private static final HttpClient.Redirect DEFAULT_REDIRECT = ALWAYS;
     private static final SSLContext DEFAULT_SSL_CONTEXT = getSSLContext();
-    private static final SSLParameters DEFAULT_SSL_PARAMETERS= new SSLParameters(new String[]{"1", "2", "3"});
+    private static final SSLParameters DEFAULT_SSL_PARAMETERS = new SSLParameters(new String[]{"1", "2", "3"});
 
     private static SSLContext getSSLContext() {
         try {
@@ -87,12 +81,10 @@ public class HttpClientTest extends BaseHttpTest {
 
     @BeforeClass
     public void beforeClass() {
-        clientAndServer.when(
-                request()
-                        .withMethod("GET")
-                        .withPath("/index.html"))
-                .respond(HttpResponse.response().withBody("Hello")
-                        .withCookie(new Cookie("TestCookieName", "TestCookieValue")));
+        stubFor(get(urlPathEqualTo("/index.html"))
+                .willReturn(aResponse()
+                        .withBody("Hello")
+                        .withHeader("Set-Cookie", "TestCookieName=TestCookieValue")));
     }
 
     @Test
@@ -111,7 +103,7 @@ public class HttpClientTest extends BaseHttpTest {
     }
 
     @Test
-    public void useHttpClientWithProperties()  {
+    public void useHttpClientWithProperties() {
         setProperty(DEFAULT_CONNECT_TIME_UNIT_PROPERTY.getPropertyName(), DEFAULT_CONNECT_CHRONO_UNIT.name());
         setProperty(DEFAULT_CONNECT_TIME_VALUE_PROPERTY.getPropertyName(), valueOf(DEFAULT_CONNECT_TIME_VALUE));
         setProperty(DEFAULT_HTTP_AUTHENTICATOR_PROPERTY.getPropertyName(), TestAuthenticatorSupplier.class.getName());
@@ -137,8 +129,7 @@ public class HttpClientTest extends BaseHttpTest {
             assertThat(client.sslContext(), equalTo(DEFAULT_SSL_CONTEXT));
             assertThat(client.sslParameters().getCipherSuites(), arrayContaining("1", "2", "3"));
             assertThat(client.version(), is(DEFAULT_VERSION));
-        }
-        finally {
+        } finally {
             getProperties().remove(DEFAULT_CONNECT_TIME_UNIT_PROPERTY.getPropertyName());
             getProperties().remove(DEFAULT_CONNECT_TIME_VALUE_PROPERTY.getPropertyName());
             getProperties().remove(DEFAULT_HTTP_AUTHENTICATOR_PROPERTY.getPropertyName());
@@ -154,25 +145,12 @@ public class HttpClientTest extends BaseHttpTest {
     }
 
     @Test
-    public void abilityToUseRelativeURIPathTest() {
-        setProperty(DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY.getPropertyName(), REQUEST_URI);
-
-        try {
-            assertThat(http().get(responseOf(GET("/index.html"), ofString())).body(),
-                    equalTo("Hello"));
-        }
-        finally {
-            getProperties().remove(DEFAULT_HTTP_DOMAIN_TO_RESPOND_PROPERTY.getPropertyName());
-        }
-    }
-
-    @Test
     public void addCookieTest() {
         var httpCookie = new HttpCookie("TestSetUpCookieName",
                 "TestSetUpCookieValue");
 
-        http().perform(addToCookies(null, httpCookie));
-        assertThat(http().get(cachedCookies()), hasItem(httpCookie));
+        http().addCookies(httpCookie);
+        assertThat(http().getCookies(), hasItem(httpCookie));
     }
 
     @Test
@@ -180,25 +158,23 @@ public class HttpClientTest extends BaseHttpTest {
         var httpCookie = new HttpCookie("TestSetUpCookieName",
                 "TestSetUpCookieValue");
 
-        http().perform(addToCookies(null, httpCookie));
-        http().perform(clearCookieStore());
+        http().addCookies(httpCookie);
+        http().removeCookies();
+        assertThat(http().getCookies(), emptyIterable());
     }
 
     @Test
     public void queryParameterTest() throws Throwable {
-        clientAndServer.when(
-                request()
-                        .withMethod("GET")
-                        .withPath("/query"))
-                .respond(HttpResponse.response().withBody("Hello query"));
+        stubFor(get(urlPathEqualTo("/query"))
+                .willReturn(aResponse().withBody("Hello query")));
 
-        var response = http().get(responseOf(GET(format("%s/query", REQUEST_URI))
-                .queryParam("date", "01-01-1980")
-                .queryParam("some word", "Word and word again"), ofString()));
+        var response = http().responseOf(GET(REQUEST_URI + "/query")
+                .queryParam("date", false, "01-01-1980")
+                .queryParam("some word", false, "Word and word again"), ofString());
 
         assertThat(response.body(),
-                equalTo("Hello query"));
-        assertThat(response.uri(), equalTo(new URI("http://127.0.0.1:1080/query?date=" + encode("01-01-1980", UTF_8) + "&"
+                Matchers.equalTo("Hello query"));
+        assertThat(response.uri(), equalTo(new URI("http://127.0.0.1:8089/query?date=" + encode("01-01-1980", UTF_8) + "&"
                 + encode("some word", UTF_8) + "=" + encode("Word and word again", UTF_8))));
     }
 

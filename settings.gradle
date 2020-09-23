@@ -7,3 +7,5 @@ include 'allure.integration'
 include 'allure.testng.bridge'
 include 'data.base.api'
 include 'http.api'
+include 'neptune.swagger.codegen'
+

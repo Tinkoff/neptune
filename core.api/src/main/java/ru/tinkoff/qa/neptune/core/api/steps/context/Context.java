@@ -111,9 +111,9 @@ public abstract class Context<THIS extends Context<THIS>> {
      * @return is desired object present or not
      */
     @SafeVarargs
-    public final boolean presenceOf(SequentialGetStepSupplier<THIS, ?, ?, ?, ?> toBePresent,
-                                    Supplier<? extends RuntimeException> exceptionSupplier,
-                                    Class<? extends Throwable>... toIgnore) {
+    protected final boolean presenceOf(SequentialGetStepSupplier<THIS, ?, ?, ?, ?> toBePresent,
+                                       Supplier<? extends RuntimeException> exceptionSupplier,
+                                       Class<? extends Throwable>... toIgnore) {
 
         return presence(toBePresent)
                 .addIgnored(ignoredExceptions(toIgnore))
@@ -130,8 +130,8 @@ public abstract class Context<THIS extends Context<THIS>> {
      * @return is desired object present or not
      */
     @SafeVarargs
-    public final boolean presenceOf(SequentialGetStepSupplier<THIS, ?, ?, ?, ?> toBePresent,
-                                    Class<? extends Throwable>... toIgnore) {
+    protected final boolean presenceOf(SequentialGetStepSupplier<THIS, ?, ?, ?, ?> toBePresent,
+                                       Class<? extends Throwable>... toIgnore) {
         return presence(toBePresent)
                 .addIgnored(ignoredExceptions(toIgnore))
                 .get()
@@ -181,8 +181,8 @@ public abstract class Context<THIS extends Context<THIS>> {
      *                   then it is ignored in favour of a time defined by the method.
      * @return is an object absent or not
      */
-    public final boolean absenceOf(SequentialGetStepSupplier<THIS, ?, ?, ?, ?> toBeAbsent,
-                                   Duration timeOut) {
+    protected final boolean absenceOf(SequentialGetStepSupplier<THIS, ?, ?, ?, ?> toBeAbsent,
+                                      Duration timeOut) {
         return absence(toBeAbsent).timeOut(timeOut).get().apply((THIS) this);
     }
 
@@ -195,9 +195,9 @@ public abstract class Context<THIS extends Context<THIS>> {
      * @param exceptionMessage is a message of {@link IllegalStateException} to be thrown when value is present
      * @return is an object absent or not
      */
-    public final boolean absenceOf(SequentialGetStepSupplier<THIS, ?, ?, ?, ?> toBeAbsent,
-                                   Duration timeOut,
-                                   String exceptionMessage) {
+    protected final boolean absenceOf(SequentialGetStepSupplier<THIS, ?, ?, ?, ?> toBeAbsent,
+                                      Duration timeOut,
+                                      String exceptionMessage) {
         return absence(toBeAbsent).throwIfPresent(exceptionMessage).timeOut(timeOut).get().apply((THIS) this);
     }
 

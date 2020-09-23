@@ -9,6 +9,7 @@ import ru.tinkoff.qa.neptune.data.base.api.data.operations.UpdateExpression;
 import ru.tinkoff.qa.neptune.data.base.api.queries.SelectASingle;
 import ru.tinkoff.qa.neptune.data.base.api.queries.SelectList;
 
+import java.time.Duration;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -121,5 +122,29 @@ public class DataBaseStepContext extends Context<DataBaseStepContext> implements
     public final <T extends PersistableObject> T insert(T toInsert) {
         checkArgument(nonNull(toInsert), "Object to be inserted should be defined as a value that differs from null");
         return returnSingleWhenNecessary(insert(of(toInsert)));
+    }
+
+    public final boolean presenceOf(SelectList<?, ?> selectList) {
+        return super.presenceOf(selectList);
+    }
+
+    public final boolean presenceOf(SelectASingle<?> selectOne) {
+        return super.presenceOf(selectOne);
+    }
+
+    public final boolean absenceOf(SelectList<?, ?> selectList, Duration timeOut) {
+        return super.absenceOf(selectList, timeOut);
+    }
+
+    public final boolean absenceOf(SelectList<?, ?> selectList, Duration timeOut, String exceptionMessage) {
+        return super.absenceOf(selectList, timeOut, exceptionMessage);
+    }
+
+    public final boolean absenceOf(SelectASingle<?> selectOne, Duration timeOut) {
+        return super.absenceOf(selectOne, timeOut);
+    }
+
+    public final boolean absenceOf(SelectASingle<?> selectOne, Duration timeOut, String exceptionMessage) {
+        return super.absenceOf(selectOne, timeOut, exceptionMessage);
     }
 }

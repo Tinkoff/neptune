@@ -1,34 +1,21 @@
 package ru.tinkoff.qa.neptune.http.api.test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 import org.hamcrest.Matcher;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.w3c.dom.Document;
-import ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler;
 import ru.tinkoff.qa.neptune.http.api.test.request.body.BodyObject;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.util.function.Function;
+import java.net.http.HttpResponse;
 
-import static java.net.http.HttpResponse.BodyHandlers.discarding;
-import static java.net.http.HttpResponse.BodyHandlers.ofString;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.*;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
-import static ru.tinkoff.qa.neptune.http.api.HttpGetObjectFromResponseBody.bodyDataOf;
-import static ru.tinkoff.qa.neptune.http.api.HttpResponseSequentialGetSupplier.responseOf;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
-import static ru.tinkoff.qa.neptune.http.api.PreparedHttpRequest.GET;
 import static ru.tinkoff.qa.neptune.http.api.hamcrest.response.HasBody.hasBody;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.FromJson.getFromJson;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.GetDocument.getDocument;
-import static ru.tinkoff.qa.neptune.http.api.response.body.data.GetMapped.getMapped;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
 import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.*;
 
 public class CustomResponseBodyTest extends BaseHttpTest {
@@ -66,132 +53,63 @@ public class CustomResponseBodyTest extends BaseHttpTest {
     private static final String PATH_DOCUMENT_XML = "/document_xml";
     private static final String PATH_DOCUMENT_HTML = "/document_html";
 
-    private static ObjectMapper mapper;
-    private static DocumentBuilder documentBuilder;
-
     @BeforeClass
     public static void prepareMock() {
-        clientAndServer.when(
-                request()
-                        .withMethod("GET")
-                        .withPath(PATH_TO_GSON))
-                .respond(response().withBody(RESPONSE_GSON));
+        stubFor(get(urlPathEqualTo(PATH_TO_GSON))
+                .willReturn(aResponse().withBody(RESPONSE_GSON)));
 
-        clientAndServer.when(
-                request()
-                        .withMethod("GET")
-                        .withPath(PATH_TO_JACKSON))
-                .respond(response().withBody(RESPONSE_MAPPED));
+        stubFor(get(urlPathEqualTo(PATH_TO_JACKSON))
+                .willReturn(aResponse().withBody(RESPONSE_MAPPED)));
 
-        clientAndServer.when(
-                request()
-                        .withMethod("GET")
-                        .withPath(PATH_DOCUMENT_XML))
-                .respond(response().withBody(XML_FOR_DOCUMENT));
+        stubFor(get(urlPathEqualTo(PATH_DOCUMENT_XML))
+                .willReturn(aResponse().withBody(XML_FOR_DOCUMENT)));
 
-        clientAndServer.when(
-                request()
-                        .withMethod("GET")
-                        .withPath(PATH_DOCUMENT_HTML))
-                .respond(response().withBody(HTML_FOR_DOCUMENT));
-    }
-
-    @BeforeClass
-    public static void prepareExpectedResults() throws Exception {
-        var documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        documentBuilder = documentBuilderFactory.newDocumentBuilder();
-
-        var module = new JaxbAnnotationModule();
-        mapper = new XmlMapper().registerModule(module);
+        stubFor(get(urlPathEqualTo(PATH_DOCUMENT_HTML))
+                .willReturn(aResponse().withBody(HTML_FOR_DOCUMENT)));
     }
 
     @DataProvider
     public static Object[][] data() {
         return new Object[][]{
                 {PATH_TO_GSON,
-                        "Object created by Gson",
-                        getFromJson(BodyObject.class),
+                        json(BodyObject.class),
                         equalTo(BODY_OBJECT)},
 
                 {PATH_TO_JACKSON,
-                        "Object created by Jackson",
-                        getMapped(BodyObject.class, mapper),
+                        xml(BodyObject.class),
                         equalTo(BODY_OBJECT)},
 
                 {PATH_DOCUMENT_XML,
-                        "xml Document",
-                        getDocument(documentBuilder),
+                        w3cDocument(),
                         instanceOf(Document.class)},
 
                 {PATH_DOCUMENT_HTML,
-                        "html Document",
-                        getDocument(),
+                        jsoupDocument(),
                         instanceOf(org.jsoup.nodes.Document.class)},
         };
-    }
-
-    @Test(dataProvider = "data")
-    public void customResponseBodyTest(String urlPath,
-                                       String toGetDescription,
-                                       Function<String, ?> howToGet,
-                                       Matcher<? super Object> matcher) {
-        assertThat(http().get(bodyDataOf(responseOf(
-                GET(REQUEST_URI + urlPath),
-                ofString()),
-                toGetDescription,
-                howToGet)),
-                matcher);
     }
 
     @DataProvider
     public static Object[][] data2() {
         return new Object[][]{
-                {PATH_TO_GSON,
-                        json(BodyObject.class),
-                        equalTo(BODY_OBJECT)},
-
-                {PATH_TO_JACKSON,
-                        mappedByJackson(BodyObject.class, mapper),
-                        equalTo(BODY_OBJECT)},
-
-                {PATH_DOCUMENT_XML,
-                        document(documentBuilder),
-                        instanceOf(Document.class)},
-
-                {PATH_DOCUMENT_HTML,
-                        document(),
-                        instanceOf(org.jsoup.nodes.Document.class)},
+                {PATH_TO_GSON, xml(BodyObject.class)},
+                {PATH_TO_GSON, w3cDocument()},
+                {PATH_DOCUMENT_XML, json(BodyObject.class)},
         };
     }
 
-
-
-    @Test(dataProvider = "data2")
+    @Test(dataProvider = "data")
     public <T> void customResponseBodyTest2(String urlPath,
-                                            MappedBodyHandler<?, T> handler,
+                                            HttpResponse.BodyHandler<T> handler,
                                             Matcher<? super T> matcher) {
-        assertThat(http().get(responseOf(GET(REQUEST_URI + urlPath), handler)),
+        assertThat(http().responseOf(GET(REQUEST_URI + urlPath), handler),
                 hasBody(matcher));
     }
 
-    @DataProvider
-    public static Object[][] data3() {
-        return new Object[][]{
-                {PATH_TO_GSON,
-                        mappedByJackson(BodyObject.class, mapper)},
-
-                {PATH_TO_GSON,
-                        document(documentBuilder)},
-
-                {PATH_DOCUMENT_XML,
-                        json(BodyObject.class)},
-        };
-    }
-
-    @Test(dataProvider = "data3")
+    @Test(dataProvider = "data2")
     public <T> void negativeTest(String urlPath,
-                                 MappedBodyHandler<?, T> handler) {
-        assertThat(http().get(responseOf(GET(REQUEST_URI + urlPath), handler)),
+                                 HttpResponse.BodyHandler<T> handler) {
+        assertThat(http().responseOf(GET(REQUEST_URI + urlPath), handler),
                 hasBody(nullValue()));
     }
 }

@@ -7,12 +7,20 @@ import java.util.Map;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
-import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.hasReadableDescription;
 
 public class CollectionCaptor extends IterableCaptor<List<?>> {
 
     public CollectionCaptor() {
-        super("Resulted collection");
+        this("Resulted collection");
+    }
+
+    /**
+     * Constructor for situations when it is necessary to override the class
+     *
+     * @param message is a name of attachment
+     */
+    protected CollectionCaptor(String message) {
+        super(message);
     }
 
     @Override
@@ -29,7 +37,6 @@ public class CollectionCaptor extends IterableCaptor<List<?>> {
                             .orElse(null);
 
                     return isLoggable(o)
-                            || hasReadableDescription(o)
                             || ofNullable(clazz).map(aClass -> aClass.isArray()
                             || Iterable.class.isAssignableFrom(aClass)
                             || Map.class.isAssignableFrom(aClass)).orElse(false);
