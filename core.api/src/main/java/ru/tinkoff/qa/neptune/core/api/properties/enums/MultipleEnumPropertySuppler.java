@@ -5,7 +5,6 @@ import ru.tinkoff.qa.neptune.core.api.properties.PropertySupplier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
-import java.util.function.IntFunction;
 
 import static com.google.common.reflect.TypeToken.of;
 import static java.lang.String.format;
@@ -20,10 +19,14 @@ import static java.util.stream.Collectors.toMap;
  *
  * @param <T> is a type of enum.
  */
-public interface MultipleEnumPropertySuppler<T extends Enum> extends PropertySupplier<List<T>> {
+public interface MultipleEnumPropertySuppler<T extends Enum<?>> extends PropertySupplier<List<T>> {
 
     @SuppressWarnings("unchecked")
-    private List<T> findValue(String... names) {
+    @Override
+    default List<T> parse(String value) {
+        var names = stream(value.split(",")).map(String::trim)
+                .toArray(String[]::new);
+
         Class<?> cls = this.getClass();
         Type[] interfaces;
         Type enumSupplier;
@@ -49,16 +52,5 @@ public interface MultipleEnumPropertySuppler<T extends Enum> extends PropertySup
             return null;
         }
         return result;
-    }
-
-    /**
-     * This method reads value of the property and converts it to a constant declared by some enum.
-     * The valid format of property value is a comma-separated string.
-     *
-     * @return list of enum constants.
-     */
-    default List<T> get() {
-        return returnOptionalFromEnvironment().map(s -> findValue(stream(s.split(",")).map(String::trim)
-                .toArray((IntFunction<String[]>) String[]::new))).orElse(null);
     }
 }

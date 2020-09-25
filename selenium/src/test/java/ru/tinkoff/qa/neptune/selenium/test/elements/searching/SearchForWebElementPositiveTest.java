@@ -32,12 +32,12 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
 
     @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findWebElementFirstLevelOnlyVisibleImplicitConditionTest() {
-        setProperty(FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName(), "true");
+        setProperty(FIND_ONLY_VISIBLE_ELEMENTS.getName(), "true");
         try {
             WebElement webElement = seleniumSteps.find(webElement(tagName(BUTTON_TAG)));
             assertThat(webElement, equalTo(COMMON_BUTTON2));
         } finally {
-            removeProperty(FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName());
+            removeProperty(FIND_ONLY_VISIBLE_ELEMENTS.getName());
         }
     }
 
@@ -53,8 +53,8 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
 
     @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findWebElementFirstLevelOnlyWhenTimeIsDefinedImplicitlyTest() {
-        setProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName(), "SECONDS");
-        setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "5");
+        setProperty(ELEMENT_WAITING_TIME_UNIT.getName(), "SECONDS");
+        setProperty(ELEMENT_WAITING_TIME_VALUE.getName(), "5");
         try {
             setStartBenchMark();
             WebElement webElement = seleniumSteps.find(webElement(tagName(TABLE)));
@@ -62,8 +62,8 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
             assertThat(getTimeDifference(), lessThan(HALF_SECOND.toMillis()));
             assertThat(webElement, equalTo(COMMON_LABELED_TABLE1));
         } finally {
-            removeProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
-            removeProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName());
+            removeProperty(ELEMENT_WAITING_TIME_UNIT.getName());
+            removeProperty(ELEMENT_WAITING_TIME_VALUE.getName());
         }
     }
 
@@ -76,13 +76,13 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
 
     @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findWebElementChainedOnlyVisibleImplicitConditionTest() {
-        setProperty(FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName(), "true");
+        setProperty(FIND_ONLY_VISIBLE_ELEMENTS.getName(), "true");
         try {
             WebElement webElement = seleniumSteps.find(webElement(className(CUSTOM_BUTTON_CLASS))
                     .foundFrom(webElement(className(SPREAD_SHEET_CLASS))));
             assertThat(webElement, equalTo(CUSTOM_LABELED_BUTTON1));
         } finally {
-            removeProperty(FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName());
+            removeProperty(FIND_ONLY_VISIBLE_ELEMENTS.getName());
         }
     }
 
@@ -100,8 +100,8 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
 
     @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findWebElementChainedOnlyWhenTimeIsDefinedImplicitlyTest() {
-        setProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName(), "SECONDS");
-        setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "5");
+        setProperty(ELEMENT_WAITING_TIME_UNIT.getName(), "SECONDS");
+        setProperty(ELEMENT_WAITING_TIME_VALUE.getName(), "5");
         try {
             setStartBenchMark();
             WebElement webElement = seleniumSteps.find(webElement(className(CUSTOM_BUTTON_CLASS))
@@ -110,8 +110,8 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
             assertThat(getTimeDifference(), lessThan(HALF_SECOND.toMillis()));
             assertThat(webElement, equalTo(CUSTOM_LABELED_BUTTON1));
         } finally {
-            removeProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
-            removeProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName());
+            removeProperty(ELEMENT_WAITING_TIME_UNIT.getName());
+            removeProperty(ELEMENT_WAITING_TIME_VALUE.getName());
         }
     }
 
@@ -125,7 +125,7 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
 
     @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findWebElementFromAnotherOnlyVisibleImplicitConditionTest() {
-        setProperty(FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName(), "true");
+        setProperty(FIND_ONLY_VISIBLE_ELEMENTS.getName(), "true");
         try {
             WebElement spreadSheet = seleniumSteps.find(webElement(className(SPREAD_SHEET_CLASS)));
             assertThat(spreadSheet.isDisplayed(), is(true));
@@ -133,7 +133,7 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
                     .foundFrom(spreadSheet));
             assertThat(webElement, equalTo(CUSTOM_LABELED_BUTTON1));
         } finally {
-            removeProperty(FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName());
+            removeProperty(FIND_ONLY_VISIBLE_ELEMENTS.getName());
         }
     }
 
@@ -151,8 +151,8 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
 
     @Test(retryAnalyzer = RetryAnalyzer.class)
     public void findWebElementFromAnotherOnlyWhenTimeIsDefinedImplicitlyTest() {
-        setProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName(), "SECONDS");
-        setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "5");
+        setProperty(ELEMENT_WAITING_TIME_UNIT.getName(), "SECONDS");
+        setProperty(ELEMENT_WAITING_TIME_VALUE.getName(), "5");
         try {
             WebElement spreadSheet = seleniumSteps.find(webElement(className(SPREAD_SHEET_CLASS)));
             setStartBenchMark();
@@ -162,8 +162,8 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
             assertThat(getTimeDifference(), lessThan(HALF_SECOND.toMillis()));
             assertThat(webElement, equalTo(CUSTOM_LABELED_BUTTON1));
         } finally {
-            removeProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
-            removeProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName());
+            removeProperty(ELEMENT_WAITING_TIME_UNIT.getName());
+            removeProperty(ELEMENT_WAITING_TIME_VALUE.getName());
         }
     }
 
@@ -252,8 +252,8 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
     public void findElementByCriteriaWithTimeDefinedImplicitlyTest(By by,
                                                                    Criteria<WebElement> criteria,
                                                                    WebElement expected) {
-        setProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName(), "SECONDS");
-        setProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "5");
+        setProperty(ELEMENT_WAITING_TIME_UNIT.getName(), "SECONDS");
+        setProperty(ELEMENT_WAITING_TIME_VALUE.getName(), "5");
         try {
             setStartBenchMark();
             WebElement webElement = seleniumSteps.find(webElement(by).criteria(criteria));
@@ -263,8 +263,8 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
                             .or(closeTo(new BigDecimal(ONE_SECOND.toMillis()), new BigDecimal(200))));
             assertThat(webElement, equalTo(expected));
         } finally {
-            removeProperty(ELEMENT_WAITING_TIME_UNIT.getPropertyName());
-            removeProperty(ELEMENT_WAITING_TIME_VALUE.getPropertyName());
+            removeProperty(ELEMENT_WAITING_TIME_UNIT.getName());
+            removeProperty(ELEMENT_WAITING_TIME_VALUE.getName());
         }
     }
 }

@@ -104,17 +104,17 @@ public class HttpClientTest extends BaseHttpTest {
 
     @Test
     public void useHttpClientWithProperties() {
-        setProperty(DEFAULT_CONNECT_TIME_UNIT_PROPERTY.getPropertyName(), DEFAULT_CONNECT_CHRONO_UNIT.name());
-        setProperty(DEFAULT_CONNECT_TIME_VALUE_PROPERTY.getPropertyName(), valueOf(DEFAULT_CONNECT_TIME_VALUE));
-        setProperty(DEFAULT_HTTP_AUTHENTICATOR_PROPERTY.getPropertyName(), TestAuthenticatorSupplier.class.getName());
-        setProperty(DEFAULT_HTTP_COOKIE_MANAGER_PROPERTY.getPropertyName(), TestCookieHandlerSupplier.class.getName());
-        setProperty(DEFAULT_HTTP_EXECUTOR_PROPERTY.getPropertyName(), TestExecutorSupplier.class.getName());
-        setProperty(DEFAULT_HTTP_PRIORITY_PROPERTY.getPropertyName(), valueOf(DEFAULT_PRIORITY));
-        setProperty(DEFAULT_HTTP_PROTOCOL_VERSION_PROPERTY.getPropertyName(), DEFAULT_VERSION.name());
-        setProperty(DEFAULT_HTTP_PROXY_SELECTOR_PROPERTY.getPropertyName(), TestProxySelectorSupplier.class.getName());
-        setProperty(DEFAULT_HTTP_REDIRECT_PROPERTY.getPropertyName(), DEFAULT_REDIRECT.name());
-        setProperty(DEFAULT_HTTP_SSL_CONTEXT_PROPERTY.getPropertyName(), TestSslContextSupplier.class.getName());
-        setProperty(DEFAULT_HTTP_SSL_PARAMETERS_PROPERTY.getPropertyName(), TestSslParametersSupplier.class.getName());
+        setProperty(DEFAULT_CONNECT_TIME_UNIT_PROPERTY.getName(), DEFAULT_CONNECT_CHRONO_UNIT.name());
+        setProperty(DEFAULT_CONNECT_TIME_VALUE_PROPERTY.getName(), valueOf(DEFAULT_CONNECT_TIME_VALUE));
+        setProperty(DEFAULT_HTTP_AUTHENTICATOR_PROPERTY.getName(), TestAuthenticatorSupplier.class.getName());
+        setProperty(DEFAULT_HTTP_COOKIE_MANAGER_PROPERTY.getName(), TestCookieHandlerSupplier.class.getName());
+        setProperty(DEFAULT_HTTP_EXECUTOR_PROPERTY.getName(), TestExecutorSupplier.class.getName());
+        setProperty(DEFAULT_HTTP_PRIORITY_PROPERTY.getName(), valueOf(DEFAULT_PRIORITY));
+        setProperty(DEFAULT_HTTP_PROTOCOL_VERSION_PROPERTY.getName(), DEFAULT_VERSION.name());
+        setProperty(DEFAULT_HTTP_PROXY_SELECTOR_PROPERTY.getName(), TestProxySelectorSupplier.class.getName());
+        setProperty(DEFAULT_HTTP_REDIRECT_PROPERTY.getName(), DEFAULT_REDIRECT.name());
+        setProperty(DEFAULT_HTTP_SSL_CONTEXT_PROPERTY.getName(), TestSslContextSupplier.class.getName());
+        setProperty(DEFAULT_HTTP_SSL_PARAMETERS_PROPERTY.getName(), TestSslParametersSupplier.class.getName());
 
         try {
             var newContext = new HttpStepContext((HttpClient.Builder) new HttpStepsParameterProvider().provide().getParameterValues()[0]);
@@ -130,17 +130,17 @@ public class HttpClientTest extends BaseHttpTest {
             assertThat(client.sslParameters().getCipherSuites(), arrayContaining("1", "2", "3"));
             assertThat(client.version(), is(DEFAULT_VERSION));
         } finally {
-            getProperties().remove(DEFAULT_CONNECT_TIME_UNIT_PROPERTY.getPropertyName());
-            getProperties().remove(DEFAULT_CONNECT_TIME_VALUE_PROPERTY.getPropertyName());
-            getProperties().remove(DEFAULT_HTTP_AUTHENTICATOR_PROPERTY.getPropertyName());
-            getProperties().remove(DEFAULT_HTTP_COOKIE_MANAGER_PROPERTY.getPropertyName());
-            getProperties().remove(DEFAULT_HTTP_EXECUTOR_PROPERTY.getPropertyName());
-            getProperties().remove(DEFAULT_HTTP_PRIORITY_PROPERTY.getPropertyName());
-            getProperties().remove(DEFAULT_HTTP_PROTOCOL_VERSION_PROPERTY.getPropertyName());
-            getProperties().remove(DEFAULT_HTTP_PROXY_SELECTOR_PROPERTY.getPropertyName());
-            getProperties().remove(DEFAULT_HTTP_REDIRECT_PROPERTY.getPropertyName());
-            getProperties().remove(DEFAULT_HTTP_SSL_CONTEXT_PROPERTY.getPropertyName());
-            getProperties().remove(DEFAULT_HTTP_SSL_PARAMETERS_PROPERTY.getPropertyName());
+            getProperties().remove(DEFAULT_CONNECT_TIME_UNIT_PROPERTY.getName());
+            getProperties().remove(DEFAULT_CONNECT_TIME_VALUE_PROPERTY.getName());
+            getProperties().remove(DEFAULT_HTTP_AUTHENTICATOR_PROPERTY.getName());
+            getProperties().remove(DEFAULT_HTTP_COOKIE_MANAGER_PROPERTY.getName());
+            getProperties().remove(DEFAULT_HTTP_EXECUTOR_PROPERTY.getName());
+            getProperties().remove(DEFAULT_HTTP_PRIORITY_PROPERTY.getName());
+            getProperties().remove(DEFAULT_HTTP_PROTOCOL_VERSION_PROPERTY.getName());
+            getProperties().remove(DEFAULT_HTTP_PROXY_SELECTOR_PROPERTY.getName());
+            getProperties().remove(DEFAULT_HTTP_REDIRECT_PROPERTY.getName());
+            getProperties().remove(DEFAULT_HTTP_SSL_CONTEXT_PROPERTY.getName());
+            getProperties().remove(DEFAULT_HTTP_SSL_PARAMETERS_PROPERTY.getName());
         }
     }
 

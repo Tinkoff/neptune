@@ -8,8 +8,11 @@ import ru.tinkoff.qa.neptune.core.api.properties.PropertySupplier;
 public interface BooleanValuePropertySupplier extends PropertySupplier<Boolean> {
 
     @Override
-    default Boolean get() {
-        return returnOptionalFromEnvironment()
-                .map(Boolean::parseBoolean).orElse(false);
+    default Boolean parse(String value) {
+        return Boolean.parseBoolean(value);
+    }
+
+    default Boolean returnIfNull() {
+        return false;
     }
 }

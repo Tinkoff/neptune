@@ -15,14 +15,11 @@ public abstract class DurationSupplier implements Supplier<Duration> {
 
     private final EnumPropertySuppler<ChronoUnit> durationUnitPropertySupplier;
     private final LongValuePropertySupplier durationValuePropertySupplier;
-    private final Duration returnWhenNotDefined;
 
     protected DurationSupplier(EnumPropertySuppler<ChronoUnit> durationUnitPropertySupplier,
-                               LongValuePropertySupplier durationValuePropertySupplier, Duration returnWhenNotDefined) {
-        checkArgument(nonNull(returnWhenNotDefined), "Default duration value should be defined");
+                               LongValuePropertySupplier durationValuePropertySupplier) {
         checkArgument(nonNull(durationUnitPropertySupplier), "A supplier of time unit should be defined");
         checkArgument(nonNull(durationValuePropertySupplier), "A supplier of time value should be defined");
-        this.returnWhenNotDefined = returnWhenNotDefined;
         this.durationUnitPropertySupplier = durationUnitPropertySupplier;
         this.durationValuePropertySupplier = durationValuePropertySupplier;
     }
@@ -35,7 +32,7 @@ public abstract class DurationSupplier implements Supplier<Duration> {
      */
     public Duration get() {
         if (durationUnitPropertySupplier.get() == null || durationValuePropertySupplier.get() == null) {
-            return returnWhenNotDefined;
+            return null;
         }
         return of(durationValuePropertySupplier.get(), durationUnitPropertySupplier.get());
     }

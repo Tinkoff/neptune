@@ -18,17 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CHROME;
-import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CommonCapabilityProperties.*;
-import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.FIREFOX;
-import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.*;
-import static ru.tinkoff.qa.neptune.core.api.properties.GeneralPropertyInitializer.PROPERTIES;
-import static ru.tinkoff.qa.neptune.core.api.properties.GeneralPropertyInitializer.refreshProperties;
-import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDriverProperty.SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY;
-import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
-import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.REMOTE_WEB_DRIVER_URL_PROPERTY;
-import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeUnitProperties.*;
-import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeValueProperties.*;
 import static java.lang.String.format;
 import static java.util.Map.entry;
 import static org.apache.commons.io.FileUtils.forceDelete;
@@ -36,6 +25,17 @@ import static org.apache.commons.io.FileUtils.getFile;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.openqa.selenium.Platform.LINUX;
+import static ru.tinkoff.qa.neptune.core.api.properties.GeneralPropertyInitializer.PROPERTIES;
+import static ru.tinkoff.qa.neptune.core.api.properties.GeneralPropertyInitializer.refreshProperties;
+import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CHROME;
+import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CommonCapabilityProperties.*;
+import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.FIREFOX;
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.*;
+import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDriverProperty.SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY;
+import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
+import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.REMOTE_WEB_DRIVER_URL_PROPERTY;
+import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeUnitProperties.*;
+import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeValueProperties.*;
 
 /**
  * For the testing of the case if all properties are defined in selenium.properties.
@@ -44,27 +44,27 @@ import static org.openqa.selenium.Platform.LINUX;
 public class DefaultCapabilityPropertiesTest {
 
     private static final Map<String, String> properties = Map
-            .ofEntries(entry(ELEMENT_WAITING_TIME_UNIT.getPropertyName(), "MINUTES"),
-                    entry(WAITING_ALERT_TIME_UNIT.getPropertyName(), "SECONDS"),
-                    entry(WAITING_WINDOW_TIME_UNIT.getPropertyName(), "MILLIS"),
-                    entry(WAITING_FRAME_SWITCHING_TIME_UNIT.getPropertyName(), "SECONDS"),
-                    entry(ELEMENT_WAITING_TIME_VALUE.getPropertyName(), "3"),
-                    entry(WAITING_ALERT_TIME_VALUE.getPropertyName(), "45"),
-                    entry(WAITING_WINDOW_TIME_VALUE.getPropertyName(), "1500"),
-                    entry(WAITING_FRAME_SWITCHING_TIME_VALUE.getPropertyName(), "100"),
-                    entry(REMOTE_WEB_DRIVER_URL_PROPERTY.getPropertyName(), "https://www.youtube.com"),
-                    entry(BASE_WEB_DRIVER_URL_PROPERTY.getPropertyName(), "http://www.google.com"),
-                    entry(BROWSER_NAME.getPropertyName(), "firefox"),
-                    entry(PLATFORM_NAME.getPropertyName(), "Linux"),
-                    entry(SUPPORTS_JAVASCRIPT.getPropertyName(), "false"),
-                    entry(BROWSER_VERSION.getPropertyName(), "60"),
-                    entry(CHROME.getPropertyName(), ChromeSettingsSupplierWithExperimentalOption.class.getName()
+            .ofEntries(entry(ELEMENT_WAITING_TIME_UNIT.getName(), "MINUTES"),
+                    entry(WAITING_ALERT_TIME_UNIT.getName(), "SECONDS"),
+                    entry(WAITING_WINDOW_TIME_UNIT.getName(), "MILLIS"),
+                    entry(WAITING_FRAME_SWITCHING_TIME_UNIT.getName(), "SECONDS"),
+                    entry(ELEMENT_WAITING_TIME_VALUE.getName(), "3"),
+                    entry(WAITING_ALERT_TIME_VALUE.getName(), "45"),
+                    entry(WAITING_WINDOW_TIME_VALUE.getName(), "1500"),
+                    entry(WAITING_FRAME_SWITCHING_TIME_VALUE.getName(), "100"),
+                    entry(REMOTE_WEB_DRIVER_URL_PROPERTY.getName(), "https://www.youtube.com"),
+                    entry(BASE_WEB_DRIVER_URL_PROPERTY.getName(), "http://www.google.com"),
+                    entry(BROWSER_NAME.getName(), "firefox"),
+                    entry(PLATFORM_NAME.getName(), "Linux"),
+                    entry(SUPPORTS_JAVASCRIPT.getName(), "false"),
+                    entry(BROWSER_VERSION.getName(), "60"),
+                    entry(CHROME.getName(), ChromeSettingsSupplierWithExperimentalOption.class.getName()
                             + "," + ChromeSettingsSupplierWithBinary.class.getName()),
-                    entry(CLEAR_WEB_DRIVER_COOKIES.getPropertyName(), "true"),
-                    entry(FIND_ONLY_VISIBLE_ELEMENTS.getPropertyName(), "true"),
-                    entry(GET_BACK_TO_BASE_URL.getPropertyName(), "true"),
-                    entry(KEEP_WEB_DRIVER_SESSION_OPENED.getPropertyName(), "true"),
-                    entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getPropertyName(), "CHROME_DRIVER"));
+                    entry(CLEAR_WEB_DRIVER_COOKIES.getName(), "true"),
+                    entry(FIND_ONLY_VISIBLE_ELEMENTS.getName(), "true"),
+                    entry(GET_BACK_TO_BASE_URL.getName(), "true"),
+                    entry(KEEP_WEB_DRIVER_SESSION_OPENED.getName(), "true"),
+                    entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getName(), "CHROME_DRIVER"));
 
     @BeforeClass
     public void beforeTests() throws Exception {
@@ -80,19 +80,19 @@ public class DefaultCapabilityPropertiesTest {
 
     @Test
     public void testOfCommonCapabilityProperties() {
-        assertThat(format("Property %s", BROWSER_NAME.getPropertyName()),
+        assertThat(format("Property %s", BROWSER_NAME.getName()),
                 BROWSER_NAME.get(),
                 is(BrowserType.FIREFOX));
 
-        assertThat(format("Property %s", PLATFORM_NAME.getPropertyName()),
+        assertThat(format("Property %s", PLATFORM_NAME.getName()),
                 PLATFORM_NAME.get(),
                 is("Linux"));
 
-        assertThat(format("Property %s", SUPPORTS_JAVASCRIPT.getPropertyName()),
+        assertThat(format("Property %s", SUPPORTS_JAVASCRIPT.getName()),
                 SUPPORTS_JAVASCRIPT.get(),
                 is(false));
 
-        assertThat(format("Property %s", BROWSER_VERSION.getPropertyName()),
+        assertThat(format("Property %s", BROWSER_VERSION.getName()),
                 BROWSER_VERSION.get(),
                 is("60"));
     }

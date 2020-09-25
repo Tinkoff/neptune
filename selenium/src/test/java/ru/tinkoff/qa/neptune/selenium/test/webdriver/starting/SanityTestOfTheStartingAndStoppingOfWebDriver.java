@@ -60,11 +60,11 @@ public class SanityTestOfTheStartingAndStoppingOfWebDriver {
     }
 
     /*private static Map.Entry<String, String> desiredDriver(SupportedWebDrivers supportedWebDriver) {
-        return entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getPropertyName(), supportedWebDriver.name());
+        return entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getName(), supportedWebDriver.name());
     }
 
     private static Map.Entry<String, String> browserType(String browserType) {
-        return entry(BROWSER_NAME.getPropertyName(), browserType);
+        return entry(BROWSER_NAME.getName(), browserType);
     }*/
 
     private static SeleniumServer startServer(int port) {
@@ -82,12 +82,12 @@ public class SanityTestOfTheStartingAndStoppingOfWebDriver {
     @DataProvider
     public Object[][] testData() {
         return new Object[][]{
-                {ofEntries(entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getPropertyName(), CHROME_DRIVER.name()),
-                        entry(CHROME.getPropertyName(), ChromeSettingsSupplierHeadless.class.getName())),
+                {ofEntries(entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getName(), CHROME_DRIVER.name()),
+                        entry(CHROME.getName(), ChromeSettingsSupplierHeadless.class.getName())),
                         ChromeDriver.class, null},
-                {ofEntries(entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getPropertyName(), REMOTE_DRIVER.name()),
-                        entry(REMOTE.getPropertyName(), ChromeSettingsSupplierHeadless.class.getName()),
-                        entry(BROWSER_NAME.getPropertyName(), BrowserType.CHROME)), RemoteWebDriver.class,
+                {ofEntries(entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getName(), REMOTE_DRIVER.name()),
+                        entry(REMOTE.getName(), ChromeSettingsSupplierHeadless.class.getName()),
+                        entry(BROWSER_NAME.getName(), BrowserType.CHROME)), RemoteWebDriver.class,
                         BrowserType.CHROME},
 
         };
@@ -130,10 +130,10 @@ public class SanityTestOfTheStartingAndStoppingOfWebDriver {
         URL url = new URL(format(DEFAULT_LOCAL_HOST, port));
 
         Map<String, String> properties = new HashMap<>(ofEntries(
-                entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getPropertyName(), REMOTE_DRIVER.name()),
-                entry(REMOTE.getPropertyName(), ChromeSettingsSupplierHeadless.class.getName()),
-                entry(BROWSER_NAME.getPropertyName(), BrowserType.CHROME),
-                entry(REMOTE_WEB_DRIVER_URL_PROPERTY.getPropertyName(), url.toString())));
+                entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getName(), REMOTE_DRIVER.name()),
+                entry(REMOTE.getName(), ChromeSettingsSupplierHeadless.class.getName()),
+                entry(BROWSER_NAME.getName(), BrowserType.CHROME),
+                entry(REMOTE_WEB_DRIVER_URL_PROPERTY.getName(), url.toString())));
         properties.forEach(System::setProperty);
         server = startServer(port);
 
@@ -164,9 +164,9 @@ public class SanityTestOfTheStartingAndStoppingOfWebDriver {
     @Test
     public void startSessionWithBaseURL() {
         Map<String, String> properties = new HashMap<>(ofEntries(
-                entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getPropertyName(), CHROME_DRIVER.name()),
-                entry(CHROME.getPropertyName(), ChromeSettingsSupplierHeadless.class.getName()),
-                entry(BASE_WEB_DRIVER_URL_PROPERTY.getPropertyName(), "https://github.com/")));
+                entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getName(), CHROME_DRIVER.name()),
+                entry(CHROME.getName(), ChromeSettingsSupplierHeadless.class.getName()),
+                entry(BASE_WEB_DRIVER_URL_PROPERTY.getName(), "https://github.com/")));
         properties.forEach(System::setProperty);
 
         WrappedWebDriver wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)

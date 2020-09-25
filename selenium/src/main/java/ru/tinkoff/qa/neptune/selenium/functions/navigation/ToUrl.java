@@ -53,11 +53,11 @@ public final class ToUrl extends SequentialActionSupplier<SeleniumStepContext, W
                         })
                         .orElseThrow(() -> new IllegalArgumentException(format("It is impossible to navigate by URL %s. " +
                                         "This value is not a valid URL and the property %s is not defined", url,
-                                BASE_WEB_DRIVER_URL_PROPERTY.getPropertyName())));
+                                BASE_WEB_DRIVER_URL_PROPERTY.getName())));
             } else {
                 throw new IllegalArgumentException(format("It is impossible to navigate by URL %s. " +
                                 "This value is not a valid URL and the property %s is not defined/its value is %s", url,
-                        ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL.getPropertyName(), false));
+                        ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL.getName(), false));
             }
         }
     }

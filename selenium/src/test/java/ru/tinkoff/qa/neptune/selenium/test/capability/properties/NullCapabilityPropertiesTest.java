@@ -8,14 +8,13 @@ import org.testng.annotations.Test;
 
 import java.util.Map;
 
-import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CHROME;
-import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CommonCapabilityProperties.*;
-import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CommonCapabilityProperties.BROWSER_VERSION;
-import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.FIREFOX;
 import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.openqa.selenium.Platform.LINUX;
+import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CHROME;
+import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CommonCapabilityProperties.*;
+import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.FIREFOX;
 
 /**
  * For the testing of the case if all properties are not defined in any way.
@@ -24,19 +23,19 @@ public class NullCapabilityPropertiesTest {
 
     @Test
     public void testOfCommonCapabilityProperties() {
-        assertThat(format("Property %s", BROWSER_NAME.getPropertyName()),
+        assertThat(format("Property %s", BROWSER_NAME.getName()),
                 BROWSER_NAME.get(),
                 nullValue());
 
-        assertThat(format("Property %s", PLATFORM_NAME.getPropertyName()),
+        assertThat(format("Property %s", PLATFORM_NAME.getName()),
                 PLATFORM_NAME.get(),
                 nullValue());
 
-        assertThat(format("Property %s", SUPPORTS_JAVASCRIPT.getPropertyName()),
+        assertThat(format("Property %s", SUPPORTS_JAVASCRIPT.getName()),
                 SUPPORTS_JAVASCRIPT.get(),
                 is(true));
 
-        assertThat(format("Property %s", BROWSER_VERSION.getPropertyName()),
+        assertThat(format("Property %s", BROWSER_VERSION.getName()),
                 BROWSER_VERSION.get(),
                 nullValue());
     }

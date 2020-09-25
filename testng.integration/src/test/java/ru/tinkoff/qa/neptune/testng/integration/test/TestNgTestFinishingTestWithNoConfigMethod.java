@@ -56,7 +56,7 @@ public class TestNgTestFinishingTestWithNoConfigMethod {
             assertThat(ContextClass2.getRefreshCount(), is(0));
         }
         finally {
-            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getPropertyName());
+            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getName());
         }
     }
 
@@ -68,7 +68,7 @@ public class TestNgTestFinishingTestWithNoConfigMethod {
             assertThat(ContextClass2.getRefreshCount(), is(0));
         }
         finally {
-            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getPropertyName());
+            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getName());
         }
     }
 
@@ -80,7 +80,7 @@ public class TestNgTestFinishingTestWithNoConfigMethod {
             assertThat(ContextClass2.getRefreshCount(), is(0));
         }
         finally {
-            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getPropertyName());
+            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getName());
         }
     }
 
@@ -92,7 +92,7 @@ public class TestNgTestFinishingTestWithNoConfigMethod {
             assertThat(ContextClass2.getRefreshCount(), is(0));
         }
         finally {
-            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getPropertyName());
+            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getName());
         }
     }
 
@@ -105,7 +105,7 @@ public class TestNgTestFinishingTestWithNoConfigMethod {
             assertThat(ContextClass2.getRefreshCount(), is(3));
         }
         finally {
-            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getPropertyName());
+            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getName());
         }
     }
 }

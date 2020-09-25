@@ -1,17 +1,17 @@
 package ru.tinkoff.qa.neptune.http.api.properties.time;
 
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyDefaultValue;
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyDescription;
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
 import ru.tinkoff.qa.neptune.core.api.properties.longs.LongValuePropertySupplier;
 
-/**
- * This class is designed to read value of the property {@code 'default.http.connect.time.value'} and convert it to
- * long value. This is the value of connection timeout.
- */
+@PropertyDescription(description = "Value of default time to connect to http service",
+        section = "Http client. Connection")
+@PropertyName("DEFAULT_HTTP_CONNECTION_TIME")
+@PropertyDefaultValue("5")
 public final class DefaultConnectTimeOutValueProperty implements LongValuePropertySupplier {
-
-    private static final String DEFAULT_HTTP_CONNECT_TIME_VALUE = "default.http.connect.time.value";
-
     /**
-     * This instance reads value of the property {@code 'default.http.connect.time.value'} and converts it to
+     * This instance reads value of the property {@code 'DEFAULT_HTTP_CONNECTION_TIME'} and converts it to
      * long value. This is the value of connection timeout.
      */
     public static final DefaultConnectTimeOutValueProperty
@@ -19,10 +19,5 @@ public final class DefaultConnectTimeOutValueProperty implements LongValueProper
 
     private DefaultConnectTimeOutValueProperty() {
         super();
-    }
-
-    @Override
-    public String getPropertyName() {
-        return DEFAULT_HTTP_CONNECT_TIME_VALUE;
     }
 }

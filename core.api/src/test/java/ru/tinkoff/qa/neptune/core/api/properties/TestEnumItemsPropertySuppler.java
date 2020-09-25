@@ -7,7 +7,7 @@ public class TestEnumItemsPropertySuppler implements MultipleEnumPropertySuppler
     static final String TEST_ENUM_ITEMS_PROPERTY = "test.enum.items.property";
 
     @Override
-    public String getPropertyName() {
+    public String getName() {
         return TEST_ENUM_ITEMS_PROPERTY;
     }
 }

@@ -1,34 +1,32 @@
 package ru.tinkoff.qa.neptune.selenium.test.webdriver.starting;
 
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.testng.annotations.*;
 import ru.tinkoff.qa.neptune.core.api.properties.PropertySupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumParameterProvider;
 import ru.tinkoff.qa.neptune.selenium.WrappedWebDriver;
 import ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties;
 import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.testng.annotations.*;
 import ru.tinkoff.qa.neptune.selenium.test.capability.suppliers.ChromeSettingsSupplierHeadless;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static java.util.Map.ofEntries;
-import static org.hamcrest.Matchers.*;
-import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CHROME;
-import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.CLEAR_WEB_DRIVER_COOKIES;
-import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.GET_BACK_TO_BASE_URL;
-import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.KEEP_WEB_DRIVER_SESSION_OPENED;
-import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDriverProperty.SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY;
-import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers.CHROME_DRIVER;
-import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 import static java.lang.System.setProperty;
 import static java.lang.Thread.sleep;
 import static java.util.Map.entry;
+import static java.util.Map.ofEntries;
 import static java.util.Optional.ofNullable;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CHROME;
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.*;
+import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDriverProperty.SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY;
+import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers.CHROME_DRIVER;
+import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 
 /**
  * This is the integration test which is supposed to be run on some local environment.
@@ -54,9 +52,9 @@ public class RefreshingTest {
     private final String GITHUB = "https://github.com/";
 
     private final Map<String, String> PROPERTIES_TO_SET_BEFORE =
-            ofEntries(entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getPropertyName(), CHROME_DRIVER.name()),
-                    entry(BASE_WEB_DRIVER_URL_PROPERTY.getPropertyName(), "https://github.com"),
-                    entry(CHROME.getPropertyName(), ChromeSettingsSupplierHeadless.class.getName()));
+            ofEntries(entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getName(), CHROME_DRIVER.name()),
+                    entry(BASE_WEB_DRIVER_URL_PROPERTY.getName(), "https://github.com"),
+                    entry(CHROME.getName(), ChromeSettingsSupplierHeadless.class.getName()));
 
     private final List<PropertySupplier<Boolean>> FLAGS =
             List.of(KEEP_WEB_DRIVER_SESSION_OPENED,
@@ -98,7 +96,7 @@ public class RefreshingTest {
 
     @BeforeMethod
     public void beforeTest() {
-        FLAGS.forEach(s -> System.getProperties().remove(s.getPropertyName()));
+        FLAGS.forEach(s -> System.getProperties().remove(s.getName()));
     }
 
     @Test(priority = 1)
@@ -110,9 +108,9 @@ public class RefreshingTest {
 
     @Test(priority = 1)
     public void toNotKeepSessionOpenedTest() {
-        setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getPropertyName(), "false");
-        setProperty(CLEAR_WEB_DRIVER_COOKIES.getPropertyName(), "true");
-        setProperty(GET_BACK_TO_BASE_URL.getPropertyName(), "true");
+        setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getName(), "false");
+        setProperty(CLEAR_WEB_DRIVER_COOKIES.getName(), "true");
+        setProperty(GET_BACK_TO_BASE_URL.getName(), "true");
 
         WebDriver webDriver = prepareWrappedWebDriver();
         wrappedWebDriver.refreshContext();
@@ -121,7 +119,7 @@ public class RefreshingTest {
 
     @Test(priority = 1)
     public void toKeepSessionAliveWithNoOtherOptionTest() throws InterruptedException {
-        setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getPropertyName(), "true");
+        setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getName(), "true");
 
         WebDriver webDriver = prepareWrappedWebDriver();
         wrappedWebDriver.refreshContext();
@@ -135,8 +133,8 @@ public class RefreshingTest {
                 webDriver.manage().getCookies().size(),
                 greaterThan(0));
 
-        setProperty(CLEAR_WEB_DRIVER_COOKIES.getPropertyName(), "false");
-        setProperty(GET_BACK_TO_BASE_URL.getPropertyName(), "false");
+        setProperty(CLEAR_WEB_DRIVER_COOKIES.getName(), "false");
+        setProperty(GET_BACK_TO_BASE_URL.getName(), "false");
         wrappedWebDriver.refreshContext();
         sleep(1000);
 
@@ -151,8 +149,8 @@ public class RefreshingTest {
 
     @Test(priority = 1)
     public void toKeepSessionAliveWithGettingBackToBaseUrlTest() throws InterruptedException {
-        setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getPropertyName(), "true");
-        setProperty(GET_BACK_TO_BASE_URL.getPropertyName(), "true");
+        setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getName(), "true");
+        setProperty(GET_BACK_TO_BASE_URL.getName(), "true");
 
         WebDriver webDriver = prepareWrappedWebDriver();
         wrappedWebDriver.refreshContext();
@@ -166,7 +164,7 @@ public class RefreshingTest {
                 webDriver.manage().getCookies().size(),
                 greaterThan(0));
 
-        setProperty(CLEAR_WEB_DRIVER_COOKIES.getPropertyName(), "false");
+        setProperty(CLEAR_WEB_DRIVER_COOKIES.getName(), "false");
         wrappedWebDriver.refreshContext();
         sleep(1000);
 
@@ -181,8 +179,8 @@ public class RefreshingTest {
 
     @Test(priority = 1)
     public void toKeepSessionAliveWithCookieRemovalTest() throws InterruptedException {
-        setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getPropertyName(), "true");
-        setProperty(CLEAR_WEB_DRIVER_COOKIES.getPropertyName(), "true");
+        setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getName(), "true");
+        setProperty(CLEAR_WEB_DRIVER_COOKIES.getName(), "true");
 
         WebDriver webDriver = prepareWrappedWebDriver();
         Set<Cookie> cookies = webDriver.manage().getCookies();
@@ -197,7 +195,7 @@ public class RefreshingTest {
                 webDriver.manage().getCookies().size(),
                 lessThan(cookies.size()));
 
-        setProperty(GET_BACK_TO_BASE_URL.getPropertyName(), "false");
+        setProperty(GET_BACK_TO_BASE_URL.getName(), "false");
         webDriver.get(SELENIUM);
         wrappedWebDriver.refreshContext();
         sleep(1000);
@@ -213,7 +211,7 @@ public class RefreshingTest {
 
     @Test(priority = 1)
     public void dynamicalChangeOfOptionsTest() throws InterruptedException {
-        setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getPropertyName(), "true");
+        setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getName(), "true");
 
         WebDriver webDriver = prepareWrappedWebDriver();
         Set<Cookie> cookies = webDriver.manage().getCookies();
@@ -228,7 +226,7 @@ public class RefreshingTest {
                 webDriver.manage().getCookies().size(),
                 equalTo(cookies.size()));
 
-        setProperty(GET_BACK_TO_BASE_URL.getPropertyName(), "true");
+        setProperty(GET_BACK_TO_BASE_URL.getName(), "true");
         cookies = webDriver.manage().getCookies();
         wrappedWebDriver.refreshContext();
         sleep(1000);
@@ -242,8 +240,8 @@ public class RefreshingTest {
                 equalTo(cookies.size()));
 
         webDriver.get(SELENIUM);
-        setProperty(GET_BACK_TO_BASE_URL.getPropertyName(), "false");
-        setProperty(CLEAR_WEB_DRIVER_COOKIES.getPropertyName(), "true");
+        setProperty(GET_BACK_TO_BASE_URL.getName(), "false");
+        setProperty(CLEAR_WEB_DRIVER_COOKIES.getName(), "true");
         cookies = webDriver.manage().getCookies();
         wrappedWebDriver.refreshContext();
         sleep(1000);
@@ -256,7 +254,7 @@ public class RefreshingTest {
                 webDriver.manage().getCookies().size(),
                 lessThan(cookies.size()));
 
-        setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getPropertyName(), "false");
+        setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getName(), "false");
         wrappedWebDriver.refreshContext();
         assertThat("Is driver dead", !isDriverAlive(webDriver), is(true));
     }

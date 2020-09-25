@@ -14,11 +14,26 @@ import static ru.tinkoff.qa.neptune.core.api.properties.GeneralPropertyInitializ
 
 /**
  * Interface to construct classes which read property values
+ *
  * @param <T> type of read values
  */
 public interface PropertySupplier<T> extends Supplier<T>, Consumer<String> {
 
-    default Optional<String> returnOptionalFromEnvironment() {
+    private static PropertyDefaultValue getPropertyDefaultValue(PropertySupplier<?> supplier) {
+        var clz = supplier.getClass().isAnonymousClass() ? supplier.getClass().getSuperclass() : supplier.getClass();
+
+        if (clz.isEnum()) {
+            try {
+                return clz.getDeclaredField(((Enum<?>) supplier).name()).getAnnotation(PropertyDefaultValue.class);
+            } catch (NoSuchFieldException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            return clz.getAnnotation(PropertyDefaultValue.class);
+        }
+    }
+
+    private Optional<String> returnOptionalFromEnvironment() {
         return ofNullable(getPropertyValue());
     }
 
@@ -26,23 +41,66 @@ public interface PropertySupplier<T> extends Supplier<T>, Consumer<String> {
         if (!arePropertiesRead()) {
             refreshProperties();
         }
-        var property = getPropertyName();
+        var property = getName();
         return ofNullable(System.getenv(property))
                 .orElseGet(() -> System.getProperty(property));
     }
 
     /**
-     * This method is supposed to return some property name
-     * @return name of some property
-     */
-    String getPropertyName();
-
-    /**
      * Sets a new value of some system property
+     *
      * @param value is the new value
      */
     default void accept(String value) {
-        checkArgument(!isBlank(value), format("New value of the '%s' should not be blank", getPropertyName()));
-        setProperty(getPropertyName(), value);
+        var name = getName();
+        checkArgument(!isBlank(value), format("New value of the '%s' should not be blank", name));
+        setProperty(name, value);
+    }
+
+    default String getName() {
+        var clz = this.getClass().isAnonymousClass() ? this.getClass().getSuperclass() : this.getClass();
+
+        PropertyName propertyName;
+        if (clz.isEnum()) {
+            try {
+                propertyName = clz.getDeclaredField(((Enum<?>) this).name()).getAnnotation(PropertyName.class);
+            } catch (NoSuchFieldException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            propertyName = clz.getAnnotation(PropertyName.class);
+        }
+
+
+        return ofNullable(propertyName)
+                .map(PropertyName::value)
+                .orElseThrow(() -> {
+                    if (!clz.isEnum()) {
+                        return new IllegalArgumentException(format("The class %s is not annotated by %s",
+                                clz.getSimpleName(),
+                                PropertyName.class.getSimpleName()));
+                    }
+
+                    return new IllegalArgumentException(format("The field %s the enum %s is not annotated by %s",
+                            ((Enum<?>) this).name(),
+                            clz.getSimpleName(),
+                            PropertyName.class.getSimpleName()));
+                });
+    }
+
+    @Override
+    default T get() {
+        var thisRef = this;
+        return returnOptionalFromEnvironment()
+                .map(this::parse)
+                .orElseGet(() -> ofNullable(getPropertyDefaultValue(thisRef))
+                        .map(v -> parse(v.value()))
+                        .orElseGet(this::returnIfNull));
+    }
+
+    T parse(String value);
+
+    default T returnIfNull() {
+        return null;
     }
 }

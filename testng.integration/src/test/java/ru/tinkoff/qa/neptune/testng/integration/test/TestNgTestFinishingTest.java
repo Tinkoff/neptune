@@ -65,7 +65,7 @@ public class TestNgTestFinishingTest {
             assertThat(ContextClass2.getRefreshCount(), is(1));
         }
         finally {
-            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getPropertyName());
+            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getName());
         }
     }
 
@@ -77,7 +77,7 @@ public class TestNgTestFinishingTest {
             assertThat(ContextClass2.getRefreshCount(), is(1));
         }
         finally {
-            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getPropertyName());
+            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getName());
         }
     }
 
@@ -89,7 +89,7 @@ public class TestNgTestFinishingTest {
             assertThat(ContextClass2.getRefreshCount(), is(2));
         }
         finally {
-            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getPropertyName());
+            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getName());
         }
     }
 
@@ -101,7 +101,7 @@ public class TestNgTestFinishingTest {
             assertThat(ContextClass2.getRefreshCount(), is(9));
         }
         finally {
-            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getPropertyName());
+            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getName());
         }
     }
 
@@ -114,7 +114,7 @@ public class TestNgTestFinishingTest {
             assertThat(ContextClass2.getRefreshCount(), is(9));
         }
         finally {
-            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getPropertyName());
+            System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getName());
         }
     }
 

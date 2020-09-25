@@ -7,7 +7,7 @@ public class TestURLValuePropertySupplier implements URLValuePropertySupplier {
     static final String TEST_URL_PROPERTY = "test.url.property";
 
     @Override
-    public String getPropertyName() {
+    public String getName() {
         return TEST_URL_PROPERTY;
     }
 }

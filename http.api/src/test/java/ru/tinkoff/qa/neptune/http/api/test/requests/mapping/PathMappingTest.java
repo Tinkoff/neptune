@@ -218,7 +218,7 @@ public class PathMappingTest {
             DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.accept("http://127.0.0.1:8089");
             return prepareDataForPathMapping(createAPI(PathMapping.class));
         } finally {
-            getProperties().remove(DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.getPropertyName());
+            getProperties().remove(DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.getName());
         }
     }
 
