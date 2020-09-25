@@ -95,34 +95,47 @@ public final class GeneralPropertyInitializer {
                 .orElse(null);
     }
 
-    private static void setUpProperties(Properties prop) {
+    private static synchronized void setUpProperties(Properties prop) {
         prop.forEach((key, value) -> checkSystemPropertyAndFillIfNecessary(valueOf(key),
                 nonNull(value) ? valueOf(value) : EMPTY));
     }
 
     private static Properties mergeProperties(Properties properties1, Properties properties2) {
-        properties2.forEach((key, value) -> {
-            properties1.setProperty(valueOf(key), valueOf(value));
-        });
+        properties2.forEach((key, value) -> properties1.setProperty(valueOf(key), valueOf(value)));
         return properties1;
     }
 
-    private static synchronized void refreshProperties(InputStream global, InputStream local) {
-        if (isNull(global) && isNull(local)) {
-            return;
+    /**
+     * @return properties defined in {@link GeneralPropertyInitializer#GLOBAL_PROPERTIES}
+     */
+    public static Properties getGlobalProperties() {
+        return propertiesFromStream(findGlobalProperties());
+    }
+
+    /**
+     * @return properties defined in {@link GeneralPropertyInitializer#PROPERTIES}
+     */
+    public static Properties getLocalProperties() {
+        return propertiesFromStream(findLocalProperties());
+    }
+
+    /**
+     * @return merged properties defined in {@link GeneralPropertyInitializer#PROPERTIES} and {@link GeneralPropertyInitializer#GLOBAL_PROPERTIES}
+     */
+    public static Properties getAllProperties() {
+        var globalProps = getGlobalProperties();
+        var localProps = getLocalProperties();
+
+        if (isNull(globalProps) && isNull(localProps)) {
+            return null;
         }
 
-        var globalProperties = propertiesFromStream(global);
-        var localProperties = propertiesFromStream(local);
-
-        if (isNull(globalProperties)) {
-            setUpProperties(localProperties);
-        }
-        else if (isNull(localProperties)) {
-            setUpProperties(globalProperties);
-        }
-        else {
-            setUpProperties(mergeProperties(globalProperties, localProperties));
+        if (isNull(globalProps)) {
+            return localProps;
+        } else if (isNull(localProps)) {
+            return globalProps;
+        } else {
+            return mergeProperties(globalProps, localProps);
         }
     }
 
@@ -131,10 +144,7 @@ public final class GeneralPropertyInitializer {
      * and instantiates system properties.
      */
     public static synchronized void refreshProperties() {
-        //Firstly we try to read properties from resources
-        var global = findGlobalProperties();
-        var local = findLocalProperties();
-        refreshProperties(global, local);
+        ofNullable(getAllProperties()).ifPresent(GeneralPropertyInitializer::setUpProperties);
         arePropertiesRead = true;
     }
 
