@@ -197,10 +197,7 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
                     driver.get(url.toString()));
         }
 
-        ofNullable(proxy).ifPresent(browserUpProxy -> {
-            browserUpProxy.endHar();
-            browserUpProxy.newHar();
-        });
+        ofNullable(proxy).ifPresent(BrowserUpProxy::newHar);
     }
 
     @Override
