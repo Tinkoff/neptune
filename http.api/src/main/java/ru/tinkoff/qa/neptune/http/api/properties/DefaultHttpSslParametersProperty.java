@@ -7,8 +7,8 @@ import ru.tinkoff.qa.neptune.core.api.properties.object.ObjectPropertySupplier;
 import javax.net.ssl.SSLParameters;
 import java.util.function.Supplier;
 
-@PropertyDescription(description = "Defines full name of a class which extends DefaultHttpSslParametersProperty.SslParametersSupplier and whose objects " +
-        "supply instances of javax.net.ssl.SSLParameters",
+@PropertyDescription(description = {"Defines full name of a class which extends DefaultHttpSslParametersProperty.SslParametersSupplier and whose objects",
+        "supply instances of javax.net.ssl.SSLParameters"},
         section = "Http client. General")
 @PropertyName("DEFAULT_HTTP_SSL_PARAMETERS")
 public final class DefaultHttpSslParametersProperty implements ObjectPropertySupplier<DefaultHttpSslParametersProperty.SslParametersSupplier> {

@@ -8,8 +8,8 @@ import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
 
-@PropertyDescription(description = "Defines full name of a class which extends DefaultHttpExecutorProperty.ExecutorSupplier and whose objects " +
-        "supply instances of java.util.concurrent.Executor",
+@PropertyDescription(description = {"Defines full name of a class which extends DefaultHttpExecutorProperty.ExecutorSupplier",
+        "and whose objects supply instances of java.util.concurrent.Executor"},
         section = "Http client. General")
 @PropertyName("DEFAULT_HTTP_EXECUTOR")
 public final class DefaultHttpExecutorProperty implements ObjectPropertySupplier<DefaultHttpExecutorProperty.ExecutorSupplier> {

@@ -39,14 +39,15 @@ public final class WaitingForQueryResultDuration extends DurationSupplier {
     }
 
     public enum QueryTimeUnitProperties implements EnumPropertySuppler<ChronoUnit> {
-        @PropertyDescription(description = "Time unit (see java.time.temporal.ChronoUnit) of default time of the waiting for something is present in a data store",
+        @PropertyDescription(description = {"Time unit (see java.time.temporal.ChronoUnit) of default time",
+                "of the waiting for something is present in a data store"},
                 section = "Data base. Getting the result. Waiting time")
         @PropertyName("WAITING_DB_SELECTION_RESULT_TIME_UNIT")
         @PropertyDefaultValue("SECONDS")
         WAITING_FOR_SELECTION_RESULT_TIME_UNIT,
 
-        @PropertyDescription(description = "Time unit (see java.time.temporal.ChronoUnit) of default time " +
-                "of the sleeping between attempts to get something from a data store",
+        @PropertyDescription(description = {"Time unit (see java.time.temporal.ChronoUnit) of default time",
+                "of the sleeping between attempts to get something from a data store"},
                 section = "Data base. Getting the result. Sleeping time")
         @PropertyName("SLEEPING_DB_SELECTION_RESULT_TIME_UNIT")
         @PropertyDefaultValue("MILLIS")

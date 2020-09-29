@@ -56,16 +56,16 @@ public final class WaitingProperties extends DurationSupplier {
 
 
     public enum TimeUnitProperties implements EnumPropertySuppler<ChronoUnit> {
-        @PropertyDescription(description = "This property needs to define time of the waiting for some web elements " +
-                "are present and suit some criteria. " +
-                "See java.time.temporal.ChronoUnit",
+        @PropertyDescription(description = {"This property needs to define time of the waiting for some web elements",
+                "are present and suit some criteria",
+                "See java.time.temporal.ChronoUnit"},
                 section = "Selenium. Waiting for elements.")
         @PropertyName("WAITING_FOR_ELEMENTS_TIME_UNIT")
         @PropertyDefaultValue("MINUTES")
         ELEMENT_WAITING_TIME_UNIT,
 
-        @PropertyDescription(description = "This property needs to define time of the waiting for appearance of an alert. " +
-                "See java.time.temporal.ChronoUnit",
+        @PropertyDescription(description = {"This property needs to define time of the waiting for appearance of an alert",
+                "See java.time.temporal.ChronoUnit"},
                 section = "Selenium. Waiting for alerts.")
         @PropertyName("WAITING_FOR_ALERTS_TIME_UNIT")
         @PropertyDefaultValue("MINUTES")
@@ -78,22 +78,22 @@ public final class WaitingProperties extends DurationSupplier {
          *
          * @see ChronoUnit
          */
-        @PropertyDescription(description = "This property needs to define time of the waiting for appearance of a browser window/tab. " +
-                "See java.time.temporal.ChronoUnit",
+        @PropertyDescription(description = {"This property needs to define time of the waiting for appearance of a browser window/tab",
+                "See java.time.temporal.ChronoUnit"},
                 section = "Selenium. Waiting for windows.")
         @PropertyName("WAITING_FOR_WINDOWS_TIME_UNIT")
         @PropertyDefaultValue("MINUTES")
         WAITING_WINDOW_TIME_UNIT,
 
-        @PropertyDescription(description = "This property needs to define time of the waiting for the switching to some frame succeeded. " +
-                "See java.time.temporal.ChronoUnit",
+        @PropertyDescription(description = {"This property needs to define time of the waiting for the switching to some frame succeeded",
+                "See java.time.temporal.ChronoUnit"},
                 section = "Selenium. Waiting for frames.")
         @PropertyName("WAITING_FOR_FRAME_SWITCHING_TIME_UNIT")
         @PropertyDefaultValue("MINUTES")
         WAITING_FRAME_SWITCHING_TIME_UNIT,
 
-        @PropertyDescription(description = "This property needs to define time of the waiting for a page is loaded. " +
-                "See java.time.temporal.ChronoUnit",
+        @PropertyDescription(description = {"This property needs to define time of the waiting for a page is loaded",
+                "See java.time.temporal.ChronoUnit"},
                 section = "Selenium. Waiting for page is loaded.")
         @PropertyName("WAITING_FOR_PAGE_LOADED_TIME_UNIT")
         @PropertyDefaultValue("MINUTES")
@@ -101,8 +101,8 @@ public final class WaitingProperties extends DurationSupplier {
     }
 
     public enum TimeValueProperties implements LongValuePropertySupplier {
-        @PropertyDescription(description = "This property needs to define time of the waiting for some web elements " +
-                "are present and suit some criteria",
+        @PropertyDescription(description = {"This property needs to define time of the waiting for some web elements",
+                "are present and suit some criteria"},
                 section = "Selenium. Waiting for elements.")
         @PropertyName("WAITING_FOR_ELEMENTS_TIME")
         @PropertyDefaultValue("1")

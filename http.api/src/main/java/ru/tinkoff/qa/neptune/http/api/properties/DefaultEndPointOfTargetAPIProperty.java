@@ -4,8 +4,8 @@ import ru.tinkoff.qa.neptune.core.api.properties.PropertyDescription;
 import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
 import ru.tinkoff.qa.neptune.core.api.properties.url.URLValuePropertySupplier;
 
-@PropertyDescription(description = "Default URI of an application to connect. It is recommended to define it " +
-        "as an URI which consists of schema, host and port",
+@PropertyDescription(description = {"Default URI of an application to connect",
+        "It is recommended to define it as an URI which consists of schema, host and port"},
         section = "Http client. Endpoint")
 @PropertyName("END_POINT_OF_TARGET_API")
 public final class DefaultEndPointOfTargetAPIProperty implements URLValuePropertySupplier {

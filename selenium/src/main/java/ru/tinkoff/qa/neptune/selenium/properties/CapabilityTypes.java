@@ -24,10 +24,10 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public enum CapabilityTypes implements PropertySupplier<MutableCapabilities> {
 
-    @PropertyDescription(description = "Defines full names of classes that implement CapabilitySettingSupplier<MutableCapabilities> " +
-            "whose instances create and supplement capabilities " +
-            "for the starting of RemoteWebDriver. " +
-            "It is possible to define multiple comma-separated value.",
+    @PropertyDescription(description = {"Defines full names of classes that implement CapabilitySettingSupplier<MutableCapabilities>",
+            "whose instances create and supplement capabilities",
+            "for the starting of RemoteWebDriver",
+            "It is possible to define multiple comma-separated value"},
             section = "Selenium. Capabilities")
     @PropertyName("REMOTE_CAPABILITY_SUPPLIERS")
     REMOTE(() -> {
@@ -66,50 +66,50 @@ public enum CapabilityTypes implements PropertySupplier<MutableCapabilities> {
         return new MutableCapabilities();
     }),
 
-    @PropertyDescription(description = "Defines full names of classes that implement CapabilitySettingSupplier<ChromeOptions> " +
-            "whose instances create and supplement ChromeOptions " +
-            "for the starting of ChromeDriver. " +
-            "It is possible to define multiple comma-separated value.",
+    @PropertyDescription(description = {"Defines full names of classes that implement CapabilitySettingSupplier<ChromeOptions>",
+            "whose instances create and supplement ChromeOptions",
+            "for the starting of ChromeDriver",
+            "It is possible to define multiple comma-separated value"},
             section = "Selenium. Capabilities")
     @PropertyName("CHROME_CAPABILITY_SUPPLIERS")
     CHROME(ChromeOptions::new),
 
-    @PropertyDescription(description = "Defines full names of classes that implement CapabilitySettingSupplier<EdgeOptions> " +
-            "whose instances create and supplement EdgeOptions " +
-            "for the starting of EdgeDriver. " +
-            "It is possible to define multiple comma-separated value.",
+    @PropertyDescription(description = {"Defines full names of classes that implement CapabilitySettingSupplier<EdgeOptions>",
+            "whose instances create and supplement EdgeOptions",
+            "for the starting of EdgeDriver",
+            "It is possible to define multiple comma-separated value"},
             section = "Selenium. Capabilities")
     @PropertyName("EDGE_CAPABILITY_SUPPLIERS")
     EDGE(EdgeOptions::new),
 
-    @PropertyDescription(description = "Defines full names of classes that implement CapabilitySettingSupplier<FirefoxOptions> " +
-            "whose instances create and supplement FirefoxOptions " +
-            "for the starting of FirefoxDriver. " +
-            "It is possible to define multiple comma-separated value.",
+    @PropertyDescription(description = {"Defines full names of classes that implement CapabilitySettingSupplier<FirefoxOptions>",
+            "whose instances create and supplement FirefoxOptions",
+            "for the starting of FirefoxDriver",
+            "It is possible to define multiple comma-separated value"},
             section = "Selenium. Capabilities")
     @PropertyName("FIREFOX_CAPABILITY_SUPPLIERS")
     FIREFOX(FirefoxOptions::new),
 
-    @PropertyDescription(description = "Defines full names of classes that implement CapabilitySettingSupplier<InternetExplorerOptions> " +
-            "whose instances create and supplement InternetExplorerOptions " +
-            "for the starting of InternetExplorerDriver. " +
-            "It is possible to define multiple comma-separated value.",
+    @PropertyDescription(description = {"Defines full names of classes that implement CapabilitySettingSupplier<InternetExplorerOptions>",
+            "whose instances create and supplement InternetExplorerOptions",
+            "for the starting of InternetExplorerDriver",
+            "It is possible to define multiple comma-separated value"},
             section = "Selenium. Capabilities")
     @PropertyName("IE_CAPABILITY_SUPPLIERS")
     IE(InternetExplorerOptions::new),
 
-    @PropertyDescription(description = "Defines full names of classes that implement CapabilitySettingSupplier<OperaOptions> " +
-            "whose instances create and supplement OperaOptions " +
-            "for the starting of OperaDriver. " +
-            "It is possible to define multiple comma-separated value.",
+    @PropertyDescription(description = {"Defines full names of classes that implement CapabilitySettingSupplier<OperaOptions>",
+            "whose instances create and supplement OperaOptions",
+            "for the starting of OperaDriver",
+            "It is possible to define multiple comma-separated value"},
             section = "Selenium. Capabilities")
     @PropertyName("OPERA_CAPABILITY_SUPPLIERS")
     OPERA(OperaOptions::new),
 
-    @PropertyDescription(description = "Defines full names of classes that implement CapabilitySettingSupplier<SafariOptions> " +
-            "whose instances create and supplement SafariOptions " +
-            "for the starting of SafariDriver. " +
-            "It is possible to define multiple comma-separated value.",
+    @PropertyDescription(description = {"Defines full names of classes that implement CapabilitySettingSupplier<SafariOptions>",
+            "whose instances create and supplement SafariOptions",
+            "for the starting of SafariDriver",
+            "It is possible to define multiple comma-separated value"},
             section = "Selenium. Capabilities")
     @PropertyName("OPERA_CAPABILITY_SUPPLIERS")
     SAFARI(SafariOptions::new);
@@ -152,8 +152,8 @@ public enum CapabilityTypes implements PropertySupplier<MutableCapabilities> {
     }
 
     public enum CommonCapabilityProperties implements PropertySupplier<Object> {
-        @PropertyDescription(description = "Defines the capability 'browserName'. " +
-                "It has sense when value of the property 'WEB_DRIVER_TO_LAUNCH' is 'REMOTE_DRIVER'",
+        @PropertyDescription(description = {"Defines the capability 'browserName'",
+                "It has sense when value of the property 'WEB_DRIVER_TO_LAUNCH' is 'REMOTE_DRIVER'"},
                 section = "Selenium. Capabilities")
         @PropertyName("WEB_DRIVER_CAPABILITY_BROWSER_NAME")
         BROWSER_NAME,

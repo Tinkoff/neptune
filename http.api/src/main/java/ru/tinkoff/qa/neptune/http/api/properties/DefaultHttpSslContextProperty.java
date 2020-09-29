@@ -7,8 +7,8 @@ import ru.tinkoff.qa.neptune.core.api.properties.object.ObjectPropertySupplier;
 import javax.net.ssl.SSLContext;
 import java.util.function.Supplier;
 
-@PropertyDescription(description = "Defines full name of a class which extends DefaultHttpSslContextProperty.SslContextSupplier and whose objects " +
-        "supply instances of javax.net.ssl.SSLContext",
+@PropertyDescription(description = {"Defines full name of a class which extends DefaultHttpSslContextProperty.SslContextSupplier and whose objects",
+        "supply instances of javax.net.ssl.SSLContext"},
         section = "Http client. General")
 @PropertyName("DEFAULT_HTTP_SSL_CONTEXT")
 public final class DefaultHttpSslContextProperty implements ObjectPropertySupplier<DefaultHttpSslContextProperty.SslContextSupplier> {

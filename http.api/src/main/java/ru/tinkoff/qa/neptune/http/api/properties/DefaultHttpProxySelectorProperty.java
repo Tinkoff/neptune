@@ -7,8 +7,8 @@ import ru.tinkoff.qa.neptune.core.api.properties.object.ObjectPropertySupplier;
 import java.net.ProxySelector;
 import java.util.function.Supplier;
 
-@PropertyDescription(description = "Defines full name of a class which extends DefaultHttpProxySelectorProperty.ProxySelectorSupplier and whose objects " +
-        "supply instances of java.net.ProxySelector",
+@PropertyDescription(description = {"Defines full name of a class which extends DefaultHttpProxySelectorProperty.ProxySelectorSupplier",
+        "and whose objects supply instances of java.net.ProxySelector"},
         section = "Http client. General")
 @PropertyName("DEFAULT_HTTP_PROXY_SELECTOR")
 public final class DefaultHttpProxySelectorProperty implements ObjectPropertySupplier<DefaultHttpProxySelectorProperty.ProxySelectorSupplier> {

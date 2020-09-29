@@ -7,7 +7,9 @@ import ru.tinkoff.qa.neptune.core.api.properties.enums.EnumPropertySuppler;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents.*;
 
-@PropertyDescription(description = "Defines events to make log attachments. Available values: SUCCESS, FAILURE, SUCCESS_AND_FAILURE",
+@PropertyDescription(description = {
+        "Defines events to make log attachments",
+        "Available values: SUCCESS, FAILURE, SUCCESS_AND_FAILURE"},
         section = "General properties. Report captures/Attachments")
 @PropertyName("DO_CAPTURES_OF")
 public final class DoCapturesOf implements EnumPropertySuppler<CapturedEvents> {

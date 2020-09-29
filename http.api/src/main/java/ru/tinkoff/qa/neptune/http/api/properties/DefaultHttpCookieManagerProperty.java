@@ -8,8 +8,8 @@ import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.util.function.Supplier;
 
-@PropertyDescription(description = "Defines full name of a class which extends DefaultHttpCookieManagerProperty.CookieManagerSupplier and whose objects " +
-        "supply instances of java.net.CookieManager",
+@PropertyDescription(description = {"Defines full name of a class which extends DefaultHttpCookieManagerProperty.CookieManagerSupplier",
+        "and whose objects supply instances of java.net.CookieManager"},
         section = "Http client. General")
 @PropertyName("DEFAULT_HTTP_COOKIE_HANDLER")
 public final class DefaultHttpCookieManagerProperty implements ObjectPropertySupplier<DefaultHttpCookieManagerProperty.CookieManagerSupplier> {

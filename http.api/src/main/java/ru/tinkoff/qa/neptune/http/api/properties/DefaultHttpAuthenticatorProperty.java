@@ -7,8 +7,8 @@ import ru.tinkoff.qa.neptune.core.api.properties.object.ObjectPropertySupplier;
 import java.net.Authenticator;
 import java.util.function.Supplier;
 
-@PropertyDescription(description = "Defines full name of a class which extends DefaultHttpAuthenticatorProperty.AuthenticatorSupplier and whose objects " +
-        "supply instances of java.net.Authenticator",
+@PropertyDescription(description = {"Defines full name of a class which extends DefaultHttpAuthenticatorProperty.AuthenticatorSupplier",
+        "and whose objects supply instances of java.net.Authenticator"},
         section = "Http client. General")
 @PropertyName("DEFAULT_HTTP_AUTHENTICATOR")
 public final class DefaultHttpAuthenticatorProperty implements ObjectPropertySupplier<DefaultHttpAuthenticatorProperty.AuthenticatorSupplier> {
