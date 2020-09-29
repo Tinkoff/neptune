@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.core.api.properties.general.resorces;
 
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyDefaultValue;
 import ru.tinkoff.qa.neptune.core.api.properties.PropertyDescription;
 import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
 import ru.tinkoff.qa.neptune.core.api.properties.duration.DurationSupplier;
@@ -39,6 +40,7 @@ public class FreeResourcesOnInactivityAfter extends DurationSupplier {
             "It have sense when value of the property 'TO_FREE_RESOURCES_ON_INACTIVITY' is 'true'"},
             section = "General properties. Resource management")
     @PropertyName("TO_FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_UNIT")
+    @PropertyDefaultValue("SECONDS")
     public static class FreeResourcesOnInactivityAfterTimeUnit implements EnumPropertySuppler<ChronoUnit> {
 
         private FreeResourcesOnInactivityAfterTimeUnit() {
@@ -56,6 +58,7 @@ public class FreeResourcesOnInactivityAfter extends DurationSupplier {
             "It have sense when value of the property 'TO_FREE_RESOURCES_ON_INACTIVITY' is 'true'"},
             section = "General properties. Resource management")
     @PropertyName("TO_FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_VALUE")
+    @PropertyDefaultValue("30")
     public static class FreeResourcesOnInactivityAfterTimeValue implements LongValuePropertySupplier {
 
         private FreeResourcesOnInactivityAfterTimeValue() {
