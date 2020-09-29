@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.Map;
 
-import static java.lang.String.format;
+import static ru.tinkoff.qa.neptune.core.api.utils.ToArrayUtil.stringValueOfObjectOrArray;
 
 public class DefaultConsoleEventLogger implements EventLogger {
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
@@ -35,7 +35,7 @@ public class DefaultConsoleEventLogger implements EventLogger {
 
     @Override
     public void fireReturnedValue(Object returned) {
-        System.out.println(format("Returned: %s", returned));
+        System.out.printf("Returned: %s%n", stringValueOfObjectOrArray(returned));
     }
 
     @Override

@@ -1,0 +1,90 @@
+/**
+* {{#description}}{{{description}}}{{/description}}{{^description}}{{classname}}{{/description}}
+*/
+{{#discriminator}}{{>typeInfoAnnotation}}{{/discriminator}}
+{{>xmlAnnotation}}
+@JsonPropertyOrder({{braces "left"}}{{#vars}} "{{{name}}}",{{/vars}}{{braces "right"}})
+public class {{classname}} {{#parent}}extends {{{parent}}}{{/parent}}{{^parent}}extends MappedObject{{/parent}} {
+{{#vars}}
+    {{#isEnum}}
+        {{^isContainer}}
+{{>enumClass}}
+        {{/isContainer}}
+    {{/isEnum}}
+    {{#items.isEnum}}
+      {{#items}}
+      {{^isContainer}}
+{{>enumClass}}
+      {{/isContainer}}
+      {{/items}}
+    {{/items.isEnum}}
+    @JsonProperty("{{baseName}}")
+    {{#withXml}}
+{{>xmlFieldAnnotation}}
+    {{/withXml}}
+  {{#isContainer}}
+    private {{{datatypeWithEnum}}} {{name}}{{#required}} = {{{defaultValue}}}{{/required}}{{^required}}{{/required}};
+  {{/isContainer}}
+  {{^isContainer}}
+    private {{{datatypeWithEnum}}} {{name}}{{#required}} = {{{defaultValue}}}{{/required}}{{^required}}{{/required}};
+  {{/isContainer}}
+
+  {{/vars}}
+  {{#vars}}
+    public {{classname}} {{name}}({{{datatypeWithEnum}}} {{name}}) {
+        this.{{name}} = {{name}};
+        return this;
+    }
+  {{#isListContainer}}
+
+    public {{classname}} add{{nameInCamelCase}}Item({{{items.datatypeWithEnum}}} {{name}}Item) {
+    {{^required}}
+        if (this.{{name}} == null) {
+            this.{{name}} = {{{defaultValue}}};
+        }
+    {{/required}}
+        this.{{name}}.add({{name}}Item);
+        return this;
+    }
+  {{/isListContainer}}
+  {{#isMapContainer}}
+
+    public {{classname}} put{{nameInCamelCase}}Item(String key, {{{items.datatypeWithEnum}}} {{name}}Item) {
+    {{^required}}
+        if (this.{{name}} == null) {
+            this.{{name}} = {{{defaultValue}}};
+        }
+    {{/required}}
+        this.{{name}}.put(key, {{name}}Item);
+        return this;
+    }
+  {{/isMapContainer}}
+
+    /**
+  {{#description}}
+    * {{{description}}}
+  {{/description}}
+  {{^description}}
+    * Get {{name}}
+  {{/description}}
+  {{#minimum}}
+    * minimum: {{minimum}}
+  {{/minimum}}
+  {{#maximum}}
+    * maximum: {{maximum}}
+  {{/maximum}}
+    * @return {{name}}
+    **/
+ {{#vendorExtensions.extraAnnotation}}
+  {{{vendorExtensions.extraAnnotation}}}
+  {{/vendorExtensions.extraAnnotation}}
+{{#useBeanValidation}}{{>beanValidation}}{{/useBeanValidation}}    public {{{datatypeWithEnum}}} {{#isBoolean}}is{{/isBoolean}}{{getter}}() {
+        return {{name}};
+    }
+
+    public void {{setter}}({{{datatypeWithEnum}}} {{name}}) {
+        this.{{name}} = {{name}};
+    }
+
+  {{/vars}}
+}

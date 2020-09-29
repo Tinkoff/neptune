@@ -4,14 +4,16 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static java.util.Arrays.asList;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
-import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetConditionalHelper.fluentWaitFunction;
+import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetConditionalHelper.*;
 
 @SuppressWarnings("unchecked")
 public final class ToGetSubArray {
@@ -24,14 +26,15 @@ public final class ToGetSubArray {
                                                  Predicate<? super R> condition,
                                                  Duration waitingTime,
                                                  Duration sleepingTime,
-                                                 Supplier<? extends RuntimeException> exceptionSupplier) {
+                                                 Supplier<? extends RuntimeException> exceptionSupplier,
+                                                 Collection<Class<? extends Throwable>> toIgnore) {
         return fluentWaitFunction(t ->
                         ofNullable(function.apply(t)).map(rs -> {
                             var subResult = Arrays.stream(rs).filter(r -> {
                                 try {
-                                    return !ToGetConditionalHelper.notNullAnd(condition).test(r);
+                                    return !notNullAnd(condition).test(r);
                                 } catch (Throwable t1) {
-                                    return !ToGetConditionalHelper.printErrorAndFalse(t1);
+                                    return !printErrorAndFalse(t1);
                                 }
                             }).collect(toList());
 
@@ -41,7 +44,7 @@ public final class ToGetSubArray {
                             }
                             return result;
                         }).orElse(null),
-                waitingTime, sleepingTime, rs -> nonNull(rs) && rs.length > 0, exceptionSupplier);
+                waitingTime, sleepingTime, rs -> nonNull(rs) && rs.length > 0, exceptionSupplier, toIgnore);
     }
 
     /**
@@ -55,6 +58,7 @@ public final class ToGetSubArray {
      *                          expected valuable result
      * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                          expiration
+     * @param toIgnore          classes of exception to be ignored during execution
      * @param <T>               is a type of input value
      * @param <R>               is a type of target values
      * @return a function. The result function returns an array of elements which differ from null
@@ -65,9 +69,14 @@ public final class ToGetSubArray {
                                                    Predicate<? super R> condition,
                                                    Duration waitingTime,
                                                    Duration sleepingTime,
-                                                   Supplier<? extends RuntimeException> exceptionSupplier) {
-        return array(ToGetConditionalHelper.checkFunction(function), ToGetConditionalHelper.checkCondition(condition), ToGetConditionalHelper.checkWaitingTime(waitingTime), ToGetConditionalHelper.checkSleepingTime(sleepingTime),
-                ToGetConditionalHelper.checkExceptionSupplier(exceptionSupplier));
+                                                   Supplier<? extends RuntimeException> exceptionSupplier,
+                                                   Class<? extends Throwable>... toIgnore) {
+        return array(checkFunction(function),
+                checkCondition(condition),
+                checkWaitingTime(waitingTime),
+                checkSleepingTime(sleepingTime),
+                checkExceptionSupplier(exceptionSupplier),
+                asList(toIgnore));
     }
 
     /**
@@ -79,6 +88,7 @@ public final class ToGetSubArray {
      *                          expected valuable result
      * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                          expiration
+     * @param toIgnore          classes of exception to be ignored during execution
      * @param <T>               is a type of input value
      * @param <R>               is a type of target values
      * @return a function. The result function returns an array of elements which differ from null.
@@ -88,9 +98,14 @@ public final class ToGetSubArray {
     public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
                                                    Duration waitingTime,
                                                    Duration sleepingTime,
-                                                   Supplier<? extends RuntimeException> exceptionSupplier) {
-        return array(ToGetConditionalHelper.checkFunction(function), (Predicate<? super R>) ToGetConditionalHelper.AS_IS, ToGetConditionalHelper.checkWaitingTime(waitingTime), ToGetConditionalHelper.checkSleepingTime(sleepingTime),
-                ToGetConditionalHelper.checkExceptionSupplier(exceptionSupplier));
+                                                   Supplier<? extends RuntimeException> exceptionSupplier,
+                                                   Class<? extends Throwable>... toIgnore) {
+        return array(checkFunction(function),
+                (Predicate<? super R>) AS_IS,
+                checkWaitingTime(waitingTime),
+                checkSleepingTime(sleepingTime),
+                checkExceptionSupplier(exceptionSupplier),
+                asList(toIgnore));
     }
 
     /**
@@ -102,6 +117,7 @@ public final class ToGetSubArray {
      * @param waitingTime       is a duration of the waiting for valuable result
      * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                          expiration
+     * @param toIgnore          classes of exception to be ignored during execution
      * @param <T>               is a type of input value
      * @param <R>               is a type of target values
      * @return a function. The result function returns an array of elements which differ from null
@@ -111,9 +127,14 @@ public final class ToGetSubArray {
     public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
                                                    Predicate<? super R> condition,
                                                    Duration waitingTime,
-                                                   Supplier<? extends RuntimeException> exceptionSupplier) {
-        return array(ToGetConditionalHelper.checkFunction(function), ToGetConditionalHelper.checkCondition(condition), ToGetConditionalHelper.checkWaitingTime(waitingTime), null,
-                ToGetConditionalHelper.checkExceptionSupplier(exceptionSupplier));
+                                                   Supplier<? extends RuntimeException> exceptionSupplier,
+                                                   Class<? extends Throwable>... toIgnore) {
+        return array(checkFunction(function),
+                checkCondition(condition),
+                checkWaitingTime(waitingTime),
+                null,
+                checkExceptionSupplier(exceptionSupplier),
+                asList(toIgnore));
     }
 
     /**
@@ -123,6 +144,7 @@ public final class ToGetSubArray {
      * @param waitingTime       is a duration of the waiting for valuable result
      * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                          expiration
+     * @param toIgnore          classes of exception to be ignored during execution
      * @param <T>               is a type of input value
      * @param <R>               is a type of target values
      * @return a function. The result function returns an array of elements which differ from null.
@@ -131,9 +153,14 @@ public final class ToGetSubArray {
      */
     public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
                                                    Duration waitingTime,
-                                                   Supplier<? extends RuntimeException> exceptionSupplier) {
-        return array(ToGetConditionalHelper.checkFunction(function), (Predicate<? super R>) ToGetConditionalHelper.AS_IS, ToGetConditionalHelper.checkWaitingTime(waitingTime), null,
-                ToGetConditionalHelper.checkExceptionSupplier(exceptionSupplier));
+                                                   Supplier<? extends RuntimeException> exceptionSupplier,
+                                                   Class<? extends Throwable>... toIgnore) {
+        return array(checkFunction(function),
+                (Predicate<? super R>) AS_IS,
+                checkWaitingTime(waitingTime),
+                null,
+                checkExceptionSupplier(exceptionSupplier),
+                asList(toIgnore));
     }
 
     /**
@@ -144,6 +171,7 @@ public final class ToGetSubArray {
      * @param condition         predicate which is used to find some target value
      * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                          expiration
+     * @param toIgnore          classes of exception to be ignored during execution
      * @param <T>               is a type of input value
      * @param <R>               is a type of target values
      * @return a function. The result function returns an array of elements which differ from null
@@ -152,9 +180,14 @@ public final class ToGetSubArray {
      */
     public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
                                                    Predicate<? super R> condition,
-                                                   Supplier<? extends RuntimeException> exceptionSupplier) {
-        return array(ToGetConditionalHelper.checkFunction(function), ToGetConditionalHelper.checkCondition(condition), null, null,
-                ToGetConditionalHelper.checkExceptionSupplier(exceptionSupplier));
+                                                   Supplier<? extends RuntimeException> exceptionSupplier,
+                                                   Class<? extends Throwable>... toIgnore) {
+        return array(checkFunction(function),
+                checkCondition(condition),
+                null,
+                null,
+                checkExceptionSupplier(exceptionSupplier),
+                asList(toIgnore));
     }
 
     /**
@@ -163,6 +196,7 @@ public final class ToGetSubArray {
      * @param function          function which should return an array
      * @param exceptionSupplier is a supplier which returns the exception to be thrown on the waiting time
      *                          expiration
+     * @param toIgnore          classes of exception to be ignored during execution
      * @param <T>               is a type of input value
      * @param <R>               is a type of target values
      * @return a function. The result function returns an array of elements which differ from null.
@@ -170,9 +204,14 @@ public final class ToGetSubArray {
      * array is null or has no elements or all elements are {@code null}.
      */
     public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
-                                                   Supplier<? extends RuntimeException> exceptionSupplier) {
-        return array(ToGetConditionalHelper.checkFunction(function), (Predicate<? super R>) ToGetConditionalHelper.AS_IS, null, null,
-                ToGetConditionalHelper.checkExceptionSupplier(exceptionSupplier));
+                                                   Supplier<? extends RuntimeException> exceptionSupplier,
+                                                   Class<? extends Throwable>... toIgnore) {
+        return array(checkFunction(function),
+                (Predicate<? super R>) AS_IS,
+                null,
+                null,
+                checkExceptionSupplier(exceptionSupplier),
+                asList(toIgnore));
     }
 
     /**
@@ -184,6 +223,7 @@ public final class ToGetSubArray {
      * @param waitingTime  is a duration of the waiting for valuable result
      * @param sleepingTime is a duration of the sleeping between attempts to get
      *                     expected valuable result
+     * @param toIgnore     classes of exception to be ignored during execution
      * @param <T>          is a type of input value
      * @param <R>          is a type of target values
      * @return a function. The result function returns an array of elements which differ from null
@@ -193,9 +233,14 @@ public final class ToGetSubArray {
     public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
                                                    Predicate<? super R> condition,
                                                    Duration waitingTime,
-                                                   Duration sleepingTime) {
-        return array(ToGetConditionalHelper.checkFunction(function), ToGetConditionalHelper.checkCondition(condition), ToGetConditionalHelper.checkWaitingTime(waitingTime), ToGetConditionalHelper.checkSleepingTime(sleepingTime),
-                null);
+                                                   Duration sleepingTime,
+                                                   Class<? extends Throwable>... toIgnore) {
+        return array(checkFunction(function),
+                checkCondition(condition),
+                checkWaitingTime(waitingTime),
+                checkSleepingTime(sleepingTime),
+                null,
+                asList(toIgnore));
     }
 
     /**
@@ -205,6 +250,7 @@ public final class ToGetSubArray {
      * @param waitingTime  is a duration of the waiting for valuable result
      * @param sleepingTime is a duration of the sleeping between attempts to get
      *                     expected valuable result
+     * @param toIgnore     classes of exception to be ignored during execution
      * @param <T>          is a type of input value
      * @param <R>          is a type of target values
      * @return a function. The result function returns an array of elements which differ from null.
@@ -213,9 +259,14 @@ public final class ToGetSubArray {
      */
     public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
                                                    Duration waitingTime,
-                                                   Duration sleepingTime) {
-        return array(ToGetConditionalHelper.checkFunction(function), (Predicate<? super R>) ToGetConditionalHelper.AS_IS, ToGetConditionalHelper.checkWaitingTime(waitingTime), ToGetConditionalHelper.checkSleepingTime(sleepingTime),
-                null);
+                                                   Duration sleepingTime,
+                                                   Class<? extends Throwable>... toIgnore) {
+        return array(checkFunction(function),
+                (Predicate<? super R>) AS_IS,
+                checkWaitingTime(waitingTime),
+                checkSleepingTime(sleepingTime),
+                null,
+                asList(toIgnore));
     }
 
     /**
@@ -225,6 +276,7 @@ public final class ToGetSubArray {
      * @param function    function which should return {@link Iterable}
      * @param condition   predicate which is used to find some target value
      * @param waitingTime is a duration of the waiting for valuable result
+     * @param toIgnore    classes of exception to be ignored during execution
      * @param <T>         is a type of input value
      * @param <R>         is a type of target values
      * @return a function. The result function returns an array of elements which differ from null
@@ -233,9 +285,14 @@ public final class ToGetSubArray {
      */
     public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
                                                    Predicate<? super R> condition,
-                                                   Duration waitingTime) {
-        return array(ToGetConditionalHelper.checkFunction(function), ToGetConditionalHelper.checkCondition(condition), ToGetConditionalHelper.checkWaitingTime(waitingTime), null,
-                null);
+                                                   Duration waitingTime,
+                                                   Class<? extends Throwable>... toIgnore) {
+        return array(checkFunction(function),
+                checkCondition(condition),
+                checkWaitingTime(waitingTime),
+                null,
+                null,
+                asList(toIgnore));
     }
 
     /**
@@ -243,6 +300,7 @@ public final class ToGetSubArray {
      *
      * @param function    function which should return {@link Iterable}
      * @param waitingTime is a duration of the waiting for valuable result
+     * @param toIgnore    classes of exception to be ignored during execution
      * @param <T>         is a type of input value
      * @param <R>         is a type of target values
      * @return a function. The result function returns an array of elements which differ from null.
@@ -250,8 +308,14 @@ public final class ToGetSubArray {
      * array is null or has no elements or all elements are {@code null}.
      */
     public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
-                                                   Duration waitingTime) {
-        return array(ToGetConditionalHelper.checkFunction(function), (Predicate<? super R>) ToGetConditionalHelper.AS_IS, ToGetConditionalHelper.checkWaitingTime(waitingTime), null, null);
+                                                   Duration waitingTime,
+                                                   Class<? extends Throwable>... toIgnore) {
+        return array(checkFunction(function),
+                (Predicate<? super R>) AS_IS,
+                checkWaitingTime(waitingTime),
+                null,
+                null,
+                asList(toIgnore));
     }
 
     /**
@@ -260,6 +324,7 @@ public final class ToGetSubArray {
      *
      * @param function  which should return an array.
      * @param condition which is used to find target values.
+     * @param toIgnore  classes of exception to be ignored during execution
      * @param <T>       is a type of input value
      * @param <R>       is a type of target values
      * @return a function. The result function returns sub-array of found values from array.
@@ -267,7 +332,34 @@ public final class ToGetSubArray {
      * returned otherwise. It depends on result of the {@link Function#apply(Object)}
      */
     public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
-                                                   Predicate<? super R> condition) {
-        return array(ToGetConditionalHelper.checkFunction(function), ToGetConditionalHelper.checkCondition(condition), null, null, null);
+                                                   Predicate<? super R> condition,
+                                                   Class<? extends Throwable>... toIgnore) {
+        return array(checkFunction(function),
+                checkCondition(condition),
+                null,
+                null,
+                null,
+                asList(toIgnore));
+    }
+
+    /**
+     * This method returns a function.The result function returns an array of elements which differ from {@code null.}
+     *
+     * @param function which should return an array.
+     * @param toIgnore classes of exception to be ignored during execution
+     * @param <T>      is a type of input value
+     * @param <R>      is a type of target values
+     * @return a function. The result function returns sub-array of found values from array.
+     * The result function will return values if something is found. Empty array or {@code null} are
+     * returned otherwise. It depends on result of the {@link Function#apply(Object)}
+     */
+    public static <T, R> Function<T, R[]> getArray(Function<T, R[]> function,
+                                                   Class<? extends Throwable>... toIgnore) {
+        return array(checkFunction(function),
+                (Predicate<? super R>) AS_IS,
+                null,
+                null,
+                null,
+                asList(toIgnore));
     }
 }

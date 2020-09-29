@@ -1,0 +1,1 @@
+{{#isPathParam}}        @PathParameter(name = "{{baseName}}"{{#required}}{{/required}}{{^required}}, required = false{{/required}}{{#vendorExtensions.x-explode}}, explode = true{{/vendorExtensions.x-explode}}{{#vendorExtensions.x-style}}, style = {{{vendorExtensions.x-style}}}{{/vendorExtensions.x-style}}) {{{dataType}}} {{{paramName}}}{{#hasMore}},{{/hasMore}}{{/isPathParam}}

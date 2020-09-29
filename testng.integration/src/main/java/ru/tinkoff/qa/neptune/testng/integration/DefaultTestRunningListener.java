@@ -109,7 +109,7 @@ public final class DefaultTestRunningListener implements IInvokedMethodListener 
             var name = isNotBlank(test.description()) ? test.description() : reflectionMethod.getName();
             var status = method.getTestResult().getStatus();
             var params = testResult.getParameters();
-            var stringParams =stream(params).map(o -> {
+            var stringParams = stream(params).map(o -> {
                 if (o == null) {
                     return valueOf(o);
                 }

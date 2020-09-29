@@ -3,17 +3,20 @@ package ru.tinkoff.qa.neptune.selenium.functions.cookies;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.DefaultReportStepParameterFactory;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.StepParameter;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import java.time.Duration;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Arrays.stream;
+import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.AND;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 import static ru.tinkoff.qa.neptune.selenium.functions.cookies.GetSeleniumCookieSupplier.cookies;
 
@@ -85,39 +88,23 @@ public abstract class RemoveCookiesActionSupplier<T>
      */
     private static final class RemoveFoundCookies extends RemoveCookiesActionSupplier<Set<Cookie>> {
 
-        @StepParameter("Criteria to find cookies for removal")
-        private final Criteria<Cookie> toBeRemoved;
-        @StepParameter(value = "Time to find cookies for removal", doNotReportNullValues = true)
-        private final Duration timeToFindCookies;
+        private final GetSeleniumCookieSupplier getCookies;
         private WebDriver driver;
 
         @SafeVarargs
         private RemoveFoundCookies(Duration timeToFindCookies, Criteria<Cookie>... toBeRemoved) {
             super("Remove cookies");
-
-            this.toBeRemoved = ofNullable(toBeRemoved)
-                    .map(criteria -> {
-                        checkArgument(
-                                criteria.length > 0,
-                                "It is necessary to define at least one criteria to find cookies for removal"
-                        );
-
-                        if (criteria.length == 1) {
-                            return criteria[0];
-                        }
-                        return AND(criteria);
-                    })
-                    .orElseThrow(() -> new IllegalArgumentException("It is necessary to define at least " +
-                            "one criteria to find cookies for removal"));
-
-            this.timeToFindCookies = timeToFindCookies;
+            checkArgument(nonNull(toBeRemoved) && toBeRemoved.length > 0,
+                    "It is necessary to define at least one criteria to find cookies for removal");
+            var getCookies = cookies();
+            stream(toBeRemoved).forEach(getCookies::criteria);
+            ofNullable(timeToFindCookies).ifPresent(getCookies::timeOut);
+            this.getCookies = getCookies;
 
             performOn(seleniumStepContext -> {
                 var driver = seleniumStepContext.getWrappedDriver();
                 try {
-                    var getCookies = cookies().criteria(this.toBeRemoved);
-                    ofNullable(this.timeToFindCookies).ifPresent(getCookies::timeOut);
-                    return seleniumStepContext.get(getCookies);
+                    return seleniumStepContext.get(this.getCookies);
                 } finally {
                     this.driver = driver;
                 }
@@ -128,6 +115,11 @@ public abstract class RemoveCookiesActionSupplier<T>
         protected void performActionOn(Set<Cookie> value) {
             var options = driver.manage();
             value.forEach(options::deleteCookie);
+        }
+
+        @Override
+        protected Map<String, String> getParameters() {
+            return DefaultReportStepParameterFactory.getParameters(getCookies);
         }
     }
 
@@ -141,15 +133,9 @@ public abstract class RemoveCookiesActionSupplier<T>
 
         private RemoveDefinedCookies(Collection<Cookie> toBeRemoved) {
             super("Remove cookies");
-            cookies = ofNullable(toBeRemoved)
-                    .map(c -> {
-                        checkArgument(
-                                c.size() > 0,
-                                "It is necessary to define at least one criteria to find cookies for removal"
-                        );
-                        return c;
-                    })
-                    .orElseThrow(() -> new IllegalArgumentException("It is necessary to define cookies for removal"));
+            checkArgument(nonNull(toBeRemoved) && toBeRemoved.size() > 0,
+                    "It is necessary to define at least one cookie for removal");
+            cookies = toBeRemoved;
             performOn(currentContent());
         }
 

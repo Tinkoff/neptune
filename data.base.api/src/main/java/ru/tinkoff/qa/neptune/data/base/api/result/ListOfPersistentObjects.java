@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.data.base.api.result;
 
-import ru.tinkoff.qa.neptune.core.api.steps.LoggableObject;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ import static ru.tinkoff.qa.neptune.data.base.api.PersistableObject.getTable;
  *
  * @param <T> is a type of items
  */
-public class ListOfPersistentObjects<T extends PersistableObject> extends ArrayList<T> implements LoggableObject {
+public class ListOfPersistentObjects<T extends PersistableObject> extends ArrayList<T> {
 
     protected ListOfPersistentObjects() {
         super();

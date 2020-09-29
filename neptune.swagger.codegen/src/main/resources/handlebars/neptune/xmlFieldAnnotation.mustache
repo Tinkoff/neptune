@@ -1,0 +1,9 @@
+{{#isListContainer}}
+{{#vendorExtensions.x-is-xml-wrapped}}
+    @JacksonXmlElementWrapper(localName = "{{vendorExtensions.x-xml-wrapper-name}}"{{#vendorExtensions.x-xml-wrapper-namespace}}, namespace = "{{vendorExtensions.x-xml-wrapper-namespace}}"{{/vendorExtensions.x-xml-wrapper-namespace}})
+{{/vendorExtensions.x-is-xml-wrapped}}
+{{^vendorExtensions.x-is-xml-wrapped}}
+    @JacksonXmlElementWrapper(useWrapping = false)
+{{/vendorExtensions.x-is-xml-wrapped}}
+{{/isListContainer}}
+    @JacksonXmlProperty({{#vendorExtensions.x-is-xml-attribute}}isAttribute = true, {{/vendorExtensions.x-is-xml-attribute}}{{#vendorExtensions.x-xml-property-namespace}}namespace="{{vendorExtensions.x-xml-property-namespace}}", {{/vendorExtensions.x-xml-property-namespace}}localName = "{{vendorExtensions.x-xml-property-name}}")

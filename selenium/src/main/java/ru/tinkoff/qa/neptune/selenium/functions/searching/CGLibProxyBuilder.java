@@ -4,7 +4,6 @@ import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import org.objenesis.ObjenesisStd;
-import ru.tinkoff.qa.neptune.core.api.steps.LoggableObject;
 
 import static net.sf.cglib.proxy.Enhancer.registerCallbacks;
 
@@ -25,10 +24,6 @@ class CGLibProxyBuilder {
         enhancer.setUseCache(false);
         enhancer.setCallbackType(interceptor.getClass());
         enhancer.setSuperclass(tClass);
-
-        if (!LoggableObject.class.isAssignableFrom(tClass)) {
-            enhancer.setInterfaces(new Class[] {LoggableObject.class});
-        }
 
         var proxyClass = enhancer.createClass();
         registerCallbacks(proxyClass, new Callback[]{interceptor});

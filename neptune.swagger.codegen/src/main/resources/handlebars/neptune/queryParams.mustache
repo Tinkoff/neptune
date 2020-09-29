@@ -1,0 +1,1 @@
+{{#isQueryParam}}        @QueryParameter(name = "{{baseName}}"{{#required}}{{/required}}{{^required}}, required = false{{/required}}){{#vendorExtensions.x-form_parameter}}{{>formParamAnnotation}}{{/vendorExtensions.x-form_parameter}} {{{dataType}}} {{{paramName}}}{{#hasMore}},{{/hasMore}}{{/isQueryParam}}

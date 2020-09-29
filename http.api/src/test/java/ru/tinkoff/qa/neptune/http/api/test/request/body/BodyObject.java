@@ -1,27 +1,24 @@
 package ru.tinkoff.qa.neptune.http.api.test.request.body;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import ru.tinkoff.qa.neptune.http.api.mapping.MappedObject;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-import java.util.Objects;
-
-import static java.util.Objects.nonNull;
-
 @XmlType(namespace = "http://www.example.com")
-public class BodyObject {
+public class BodyObject extends MappedObject {
 
-    @SerializedName("A")
     @XmlElement(namespace = "http://www.test.com", name = "A1")
+    @JsonProperty("A")
     private String a;
 
-    @SerializedName("B")
     @XmlElement(namespace = "http://www.test.com", name = "B1")
+    @JsonProperty("B")
     private Integer b;
 
-    @SerializedName("C")
     @XmlElement(namespace = "http://www.test.com", name = "C1")
+    @JsonProperty("C")
     private Boolean c;
 
     public String getA() {
@@ -50,13 +47,5 @@ public class BodyObject {
     public BodyObject setC(Boolean c) {
         this.c = c;
         return this;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return nonNull(o) && BodyObject.class.equals(o.getClass())
-                && Objects.equals(this.a, ((BodyObject) o).a)
-                && Objects.equals(this.b, ((BodyObject) o).b)
-                && Objects.equals(this.c, ((BodyObject) o).c);
     }
 }
