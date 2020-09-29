@@ -133,7 +133,7 @@ public final class WaitingProperties extends DurationSupplier {
 
 
         @PropertyDescription(description = "This property needs to define time of the waiting for a page is loaded",
-                section = "Waiting for page is loaded.")
+                section = "Selenium. Waiting for page is loaded.")
         @PropertyName("WAITING_FOR_PAGE_LOADED_TIME")
         @PropertyDefaultValue("1")
         WAITING_FOR_PAGE_LOADED_TIME_VALUE
