@@ -111,7 +111,7 @@ public enum CapabilityTypes implements PropertySupplier<MutableCapabilities> {
             "for the starting of SafariDriver",
             "It is possible to define multiple comma-separated value"},
             section = "Selenium. Capabilities")
-    @PropertyName("OPERA_CAPABILITY_SUPPLIERS")
+    @PropertyName("SAFARI_CAPABILITY_SUPPLIERS")
     SAFARI(SafariOptions::new);
 
     private final CapabilityReader capabilityReader;
