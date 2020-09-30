@@ -58,9 +58,9 @@ public class ConcurrencyTest {
         thread1.stop();
         thread2.stop();
 
-        clearProperty(TO_FREE_RESOURCES_ON_INACTIVITY_PROPERTY.getPropertyName());
-        clearProperty(FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_UNIT.getPropertyName());
-        clearProperty(FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_VALUE.getPropertyName());
+        clearProperty(TO_FREE_RESOURCES_ON_INACTIVITY_PROPERTY.getName());
+        clearProperty(FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_UNIT.getName());
+        clearProperty(FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_VALUE.getName());
     }
 
     @Test(groups = "basic")
@@ -111,7 +111,7 @@ public class ConcurrencyTest {
 
     @Test(dependsOnGroups = "basic", priority = 1)
     public void resourcesFreeByDefaultTest() throws Exception {
-        setProperty(TO_FREE_RESOURCES_ON_INACTIVITY_PROPERTY.getPropertyName(), "true");
+        setProperty(TO_FREE_RESOURCES_ON_INACTIVITY_PROPERTY.getName(), "true");
         thread2.stop();
         sleep(1000);
 
@@ -136,9 +136,9 @@ public class ConcurrencyTest {
 
     @Test(dependsOnGroups = "basic", priority = 1)
     public void resourcesFreeAfterDefinedTimeTest() throws Exception {
-        setProperty(TO_FREE_RESOURCES_ON_INACTIVITY_PROPERTY.getPropertyName(), "true");
-        setProperty(FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_UNIT.getPropertyName(), "SECONDS");
-        setProperty(FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_VALUE.getPropertyName(), "5");
+        setProperty(TO_FREE_RESOURCES_ON_INACTIVITY_PROPERTY.getName(), "true");
+        setProperty(FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_UNIT.getName(), "SECONDS");
+        setProperty(FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_VALUE.getName(), "5");
         thread2.stop();
         sleep(1000);
 
@@ -163,9 +163,9 @@ public class ConcurrencyTest {
 
     @Test(dependsOnMethods = {"resourcesFreeByDefaultTest", "resourcesFreeAfterDefinedTimeTest", "resourcesStillBusyTest"})
     public void resourcesAreBusyAgain() throws Exception {
-        setProperty(TO_FREE_RESOURCES_ON_INACTIVITY_PROPERTY.getPropertyName(), "true");
-        setProperty(FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_UNIT.getPropertyName(), "SECONDS");
-        setProperty(FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_VALUE.getPropertyName(), "1");
+        setProperty(TO_FREE_RESOURCES_ON_INACTIVITY_PROPERTY.getName(), "true");
+        setProperty(FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_UNIT.getName(), "SECONDS");
+        setProperty(FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_VALUE.getName(), "1");
 
         thread2.stop();
         sleep(1500);

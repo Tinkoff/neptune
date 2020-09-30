@@ -1,40 +1,22 @@
 package ru.tinkoff.qa.neptune.testng.integration.properties;
 
-import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyDefaultValue;
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyDescription;
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
 import ru.tinkoff.qa.neptune.core.api.properties.enums.MultipleEnumPropertySuppler;
 
-import java.util.List;
-
-import static java.util.List.of;
-import static java.util.Optional.ofNullable;
-
+@PropertyDescription(description = {"Defines when (which methods) it is necessary to refresh contexts/resources,",
+        "e.g. back to the base browser page, renew db/http connections etc.",
+        "Available values: SUITE_STARTING, ALL_TEST_STARTING, CLASS_STARTING, GROUP_STARTING, BEFORE_METHOD_STARTING, METHOD_STARTING" +
+                "It is possible to define multiple comma-separated value"},
+        section = "TestNG properties")
+@PropertyName("TESTNG_REFRESH_BEFORE")
+@PropertyDefaultValue("METHOD_STARTING")
 public final class TestNGRefreshStrategyProperty implements MultipleEnumPropertySuppler<RefreshEachTimeBefore> {
 
-    private static final String PROPERTY_NAME = "testng.refresh.before";
     public static final TestNGRefreshStrategyProperty REFRESH_STRATEGY_PROPERTY = new TestNGRefreshStrategyProperty();
 
     private TestNGRefreshStrategyProperty() {
         super();
-    }
-
-    @Override
-    public String getPropertyName() {
-        return PROPERTY_NAME;
-    }
-
-    /**
-     * This method returns a list filled by elements of {@link RefreshEachTimeBefore}. These elements
-     * should be defined by the property {@code 'testng.refresh.before'} as a comma-separated string of elements names
-     * taken from the {@link RefreshEachTimeBefore}. When the property is not defined then a list filled by
-     * {@link RefreshEachTimeBefore#METHOD_STARTING} is
-     * returned.
-     *
-     * @return list of defined strategies how to invoke the
-     * {@link ContextRefreshable#refreshContext()}. Each strategy is described by
-     * elements of the {@link RefreshEachTimeBefore}.
-     */
-    @Override
-    public List<RefreshEachTimeBefore> get() {
-        return ofNullable(MultipleEnumPropertySuppler.super.get()).orElseGet(() -> of(RefreshEachTimeBefore.METHOD_STARTING));
     }
 }

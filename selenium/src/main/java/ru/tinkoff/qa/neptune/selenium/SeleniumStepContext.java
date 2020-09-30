@@ -467,7 +467,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     }
 
     /**
-     * Checks whenever an element is absent or not
+     * Checks whenever elements are absent or not
      *
      * @param toBeAbsent       is how to find elements
      * @param timeOut          is a time to wait for elements are absent.
@@ -485,6 +485,100 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
                         .compose(currentContent()),
                 timeOut,
                 exceptionMessage);
+    }
+
+    /**
+     * Checks whenever window is absent or not
+     *
+     * @param toBeAbsent is a description of a window to be absent
+     * @param timeOut    is a time to wait for a window is absent.
+     * @return is window absent or not
+     */
+    public boolean absenceOf(GetWindowSupplier toBeAbsent, Duration timeOut) {
+        return super.absenceOf(toBeAbsent, timeOut);
+    }
+
+    /**
+     * Checks whenever window is absent or not
+     *
+     * @param toBeAbsent   is a description of a window to be absent
+     * @param timeOut      is a time to wait for a window is absent.
+     * @param errorMessage is a message of {@link IllegalStateException} to be thrown when a window is present still
+     * @return is window absent or not
+     */
+    public boolean absenceOf(GetWindowSupplier toBeAbsent, Duration timeOut, String errorMessage) {
+        return super.absenceOf(toBeAbsent, timeOut, errorMessage);
+    }
+
+
+    /**
+     * Checks whenever frame is absent or not
+     *
+     * @param toBeAbsent is a description of a frame to be absent
+     * @param timeOut    is a time to wait for a frame is absent.
+     * @return is frame absent or not
+     */
+    public boolean absenceOf(GetFrameSupplier toBeAbsent, Duration timeOut) {
+        return super.absenceOf(toBeAbsent, timeOut);
+    }
+
+    /**
+     * Checks whenever frame is absent or not
+     *
+     * @param toBeAbsent   is a description of a frame to be absent
+     * @param timeOut      is a time to wait for a frame is absent.
+     * @param errorMessage is a message of {@link IllegalStateException} to be thrown when a frame is present still
+     * @return is frame absent or not
+     */
+    public boolean absenceOf(GetFrameSupplier toBeAbsent, Duration timeOut, String errorMessage) {
+        return super.absenceOf(toBeAbsent, timeOut, errorMessage);
+    }
+
+
+    /**
+     * Checks whenever cookies are absent or not
+     *
+     * @param toBeAbsent is a description of cookies to be absent
+     * @param timeOut    is a time to wait for cookies are absent.
+     * @return are cookies absent or not
+     */
+    public boolean absenceOf(GetSeleniumCookieSupplier toBeAbsent, Duration timeOut) {
+        return super.absenceOf(toBeAbsent, timeOut);
+    }
+
+    /**
+     * Checks whenever cookies are absent or not
+     *
+     * @param toBeAbsent   is a description of cookies to be absent
+     * @param timeOut      is a time to wait for cookies are absent.
+     * @param errorMessage is a message of {@link IllegalStateException} to be thrown when cookies are present still
+     * @return are cookies absent or not
+     */
+    public boolean absenceOf(GetSeleniumCookieSupplier toBeAbsent, Duration timeOut, String errorMessage) {
+        return super.absenceOf(toBeAbsent, timeOut, errorMessage);
+    }
+
+    /**
+     * Checks whenever alert is absent or not
+     *
+     * @param toBeAbsent is a description of an alert to be absent
+     * @param timeOut    is a time to wait for an alert is absent.
+     * @return is alert absent or not
+     */
+    public boolean absenceOf(GetAlertSupplier toBeAbsent, Duration timeOut) {
+        return super.absenceOf(toBeAbsent, timeOut);
+    }
+
+    /**
+     * Checks whenever alert is absent or not
+     *
+     * @param toBeAbsent   is a description of an alert to be absent
+     * @param timeOut      is a time to wait for an alert is absent.
+     * @param errorMessage is a message of {@link IllegalStateException} to be thrown when an alert is present still
+     * @return is alert absent or not
+     */
+    public boolean absenceOf(GetAlertSupplier toBeAbsent, Duration timeOut, String errorMessage) {
+        return super.absenceOf(toBeAbsent, timeOut, errorMessage);
     }
 
     /**

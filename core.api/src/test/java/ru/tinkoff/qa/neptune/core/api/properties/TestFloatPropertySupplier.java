@@ -7,7 +7,7 @@ public class TestFloatPropertySupplier implements FloatValuePropertySupplier {
     static final String TEST_FLOAT_PROPERTY = "test.float.property";
 
     @Override
-    public String getPropertyName() {
+    public String getName() {
         return TEST_FLOAT_PROPERTY;
     }
 }

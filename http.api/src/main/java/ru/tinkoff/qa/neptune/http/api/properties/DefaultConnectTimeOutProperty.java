@@ -1,24 +1,23 @@
 package ru.tinkoff.qa.neptune.http.api.properties;
 
+import ru.tinkoff.qa.neptune.core.api.properties.duration.DurationSupplier;
 import ru.tinkoff.qa.neptune.core.api.properties.enums.EnumPropertySuppler;
 import ru.tinkoff.qa.neptune.core.api.properties.longs.LongValuePropertySupplier;
-import ru.tinkoff.qa.neptune.core.api.properties.duration.DurationSupplier;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
-import static java.time.Duration.ofSeconds;
 import static ru.tinkoff.qa.neptune.http.api.properties.time.DefaultConnectTimeOutUnitProperty.DEFAULT_CONNECT_TIME_UNIT_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.time.DefaultConnectTimeOutValueProperty.DEFAULT_CONNECT_TIME_VALUE_PROPERTY;
 
 /**
- * This class is designed to read values of properties {@code 'default.http.connect.time.unit'} and
- * {@code 'default.http.connect.time.value'} convert it to {@link Duration}.
+ * This class is designed to read values of properties {@code 'DEFAULT_HTTP_CONNECTION_TIME_UNIT'} and
+ * {@code 'DEFAULT_HTTP_CONNECTION_TIME'} convert it to {@link Duration}.
  */
 public final class DefaultConnectTimeOutProperty extends DurationSupplier {
 
     /**
-     * Reads properties {@code 'default.http.connect.time.unit'} and {@code 'default.http.connect.time.value'}
+     * Reads properties {@code 'DEFAULT_HTTP_CONNECTION_TIME_UNIT'} and {@code 'DEFAULT_HTTP_CONNECTION_TIME'}
      * and builds an instance of {@link Duration}. When any of properties is not defined then it builds a duration of
      * 5 seconds.
      */
@@ -28,6 +27,6 @@ public final class DefaultConnectTimeOutProperty extends DurationSupplier {
 
     private DefaultConnectTimeOutProperty(EnumPropertySuppler<ChronoUnit> durationUnitPropertySupplier,
                                           LongValuePropertySupplier durationValuePropertySupplier) {
-        super(durationUnitPropertySupplier, durationValuePropertySupplier, ofSeconds(5));
+        super(durationUnitPropertySupplier, durationValuePropertySupplier);
     }
 }

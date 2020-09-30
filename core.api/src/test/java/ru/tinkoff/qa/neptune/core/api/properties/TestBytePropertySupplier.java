@@ -7,7 +7,7 @@ public class TestBytePropertySupplier implements ByteValuePropertySupplier {
     static final String TEST_BYTE_PROPERTY = "test.byte.property";
 
     @Override
-    public String getPropertyName() {
+    public String getName() {
         return TEST_BYTE_PROPERTY;
     }
 }

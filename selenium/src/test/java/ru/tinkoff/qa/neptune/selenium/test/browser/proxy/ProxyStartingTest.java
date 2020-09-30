@@ -26,8 +26,8 @@ import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers.CHRO
 public class ProxyStartingTest {
 
     private final Map<String, String> PROPERTIES_TO_SET_BEFORE =
-            ofEntries(entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getPropertyName(), CHROME_DRIVER.name()),
-                    entry(CHROME.getPropertyName(), ChromeSettingsSupplierHeadless.class.getName()));
+            ofEntries(entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getName(), CHROME_DRIVER.name()),
+                    entry(CHROME.getName(), ChromeSettingsSupplierHeadless.class.getName()));
 
     private static boolean isDriverAlive(WebDriver driver) {
         try {
@@ -55,7 +55,7 @@ public class ProxyStartingTest {
     @Test(dataProvider = "testData")
     public void useBrowserProxyPropertyTest(String propertyValue, Matcher<Object> proxyMatcher) {
         if (propertyValue != null) {
-            System.setProperty(USE_BROWSER_PROXY.getPropertyName(), propertyValue);
+            System.setProperty(USE_BROWSER_PROXY.getName(), propertyValue);
         }
 
         WrappedWebDriver wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
@@ -76,8 +76,8 @@ public class ProxyStartingTest {
 
     @Test
     public void skipProxyIfAlreadyExistsTest() {
-        System.setProperty(USE_BROWSER_PROXY.getPropertyName(), "true");
-        System.setProperty(CHROME.getPropertyName(), ChromeSettingsSupplierWithDefinedProxy.class.getName());
+        System.setProperty(USE_BROWSER_PROXY.getName(), "true");
+        System.setProperty(CHROME.getName(), ChromeSettingsSupplierWithDefinedProxy.class.getName());
 
         WrappedWebDriver wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
                 new SeleniumParameterProvider().provide().getParameterValues()[0]);
@@ -94,7 +94,7 @@ public class ProxyStartingTest {
 
     @Test
     public void refreshContextTest() {
-        System.setProperty(USE_BROWSER_PROXY.getPropertyName(), "true");
+        System.setProperty(USE_BROWSER_PROXY.getName(), "true");
 
         WrappedWebDriver wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
                 new SeleniumParameterProvider().provide().getParameterValues()[0]);
@@ -113,7 +113,7 @@ public class ProxyStartingTest {
 
     @AfterMethod(alwaysRun = true)
     public void tearDownProxyProperty() {
-        System.getProperties().remove(USE_BROWSER_PROXY.getPropertyName());
+        System.getProperties().remove(USE_BROWSER_PROXY.getName());
     }
 
     @AfterClass(alwaysRun = true)

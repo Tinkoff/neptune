@@ -14,10 +14,11 @@ import static java.util.Arrays.stream;
  *
  * @param <T> is a type of enum.
  */
-public interface EnumPropertySuppler<T extends Enum> extends PropertySupplier<T> {
+public interface EnumPropertySuppler<T extends Enum<?>> extends PropertySupplier<T> {
 
     @SuppressWarnings("unchecked")
-    private T findValue(String name) {
+    @Override
+    default T parse(String name) {
         Class<?> cls = this.getClass();
         Type[] interfaces;
         Type enumSupplier;
@@ -34,14 +35,5 @@ public interface EnumPropertySuppler<T extends Enum> extends PropertySupplier<T>
         return stream(enumType.getEnumConstants()).filter(t -> name.trim().equals(t.name()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(format("Unknown constant %s from enum %s", name, enumType.getName())));
-    }
-
-    /**
-     * This method reads value of the property and converts it to a constant declared by some enum.
-     *
-     * @return some enum constant.
-     */
-    default T get() {
-        return returnOptionalFromEnvironment().map(this::findValue).orElse(null);
     }
 }

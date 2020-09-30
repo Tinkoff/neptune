@@ -1,8 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.properties;
 
 import org.openqa.selenium.MutableCapabilities;
-import ru.tinkoff.qa.neptune.core.api.properties.PropertySupplier;
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
@@ -11,6 +9,10 @@ import org.openqa.selenium.opera.OperaOptions;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.safari.SafariOptions;
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyDefaultValue;
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyDescription;
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
+import ru.tinkoff.qa.neptune.core.api.properties.PropertySupplier;
 import ru.tinkoff.qa.neptune.core.api.properties.object.MultipleObjectPropertySupplier;
 
 import java.util.List;
@@ -21,26 +23,19 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public enum CapabilityTypes implements PropertySupplier<MutableCapabilities> {
-    /**
-     * Capabilities for the starting of {@link org.openqa.selenium.remote.RemoteWebDriver}
-     * Creates {@link Capabilities} using following properties:
-     *     <p>{@code web.driver.capability.browserName} to define browser. This is the required property
-     *     <p>{@code web.driver.capability.platformName} to define name of a supported platform.
-     *     Windows, Linux etc. This is not the required property. @see org.openqa.selenium.Platform
-     *     <p>{@code web.driver.capability.javascriptEnabled} to enable or to disable js. Possible values are
-     *     {@code true} or {@code false}. By default js is enabled. This is not the required property.
-     *     <p>{@code web.driver.capability.browserVersion} to define a version of browser. This is not the required
-     *     property.
-     *     <p>{@code remote.capability.suppliers} to define additional capabilities. It is a string with name of a
-     *     supplier.
-     *     @see CapabilitySettingSupplier
-     */
-    REMOTE("remote", () -> {
+
+    @PropertyDescription(description = {"Defines full names of classes that implement CapabilitySettingSupplier<MutableCapabilities>",
+            "whose instances create and supplement capabilities",
+            "for the starting of RemoteWebDriver",
+            "It is possible to define multiple comma-separated value"},
+            section = "Selenium. Capabilities")
+    @PropertyName("REMOTE_CAPABILITY_SUPPLIERS")
+    REMOTE(() -> {
         var browserName = CommonCapabilityProperties.BROWSER_NAME.get();
         if (browserName == null ||
                 isBlank(String.valueOf(browserName))) {
             throw new IllegalArgumentException(format("The property %s should be defined",
-                    CommonCapabilityProperties.BROWSER_NAME.getPropertyName()));
+                    CommonCapabilityProperties.BROWSER_NAME.getName()));
         }
 
         var browserNameString = String.valueOf(browserName);
@@ -71,105 +66,60 @@ public enum CapabilityTypes implements PropertySupplier<MutableCapabilities> {
         return new MutableCapabilities();
     }),
 
-    /**
-     * Capabilities for the starting of {@link org.openqa.selenium.chrome.ChromeDriver}
-     * Creates {@link Capabilities} using following properties:
-     *     <p>{@code web.driver.capability.platformName} to define name of a supported platform.
-     *     Windows, Linux etc. This is not the required property. @see org.openqa.selenium.Platform
-     *     <p>{@code web.driver.capability.javascriptEnabled} to enable or to disable js. Possible values are
-     *     {@code true} or {@code false}. By default js is enabled. This is not the required property.
-     *     <p>{@code web.driver.capability.browserVersion} to define a version of browser. This is not the required
-     *     property.
-     *     <p>{@code chrome.capability.suppliers} to define additional capabilities. It is a string with name of a
-     *     supplier.
-     *     @see CapabilitySettingSupplier
-     */
-    CHROME("chrome", ChromeOptions::new),
+    @PropertyDescription(description = {"Defines full names of classes that implement CapabilitySettingSupplier<ChromeOptions>",
+            "whose instances create and supplement ChromeOptions",
+            "for the starting of ChromeDriver",
+            "It is possible to define multiple comma-separated value"},
+            section = "Selenium. Capabilities")
+    @PropertyName("CHROME_CAPABILITY_SUPPLIERS")
+    CHROME(ChromeOptions::new),
 
-    /**
-     * Capabilities for the starting of {@link org.openqa.selenium.edge.EdgeDriver}
-     * Creates {@link Capabilities} using following properties:
-     *     <p>{@code web.driver.capability.platformName} to define name of a supported platform.
-     *     Windows, Linux etc. This is not the required property. @see org.openqa.selenium.Platform
-     *     <p>{@code web.driver.capability.javascriptEnabled} to enable or to disable js. Possible values are
-     *     {@code true} or {@code false}. By default js is enabled. This is not the required property.
-     *     <p>{@code web.driver.capability.browserVersion} to define a version of browser. This is not the required
-     *     property.
-     *     <p>{@code edge.capability.suppliers} to define additional capabilities. It is a string with name of a
-     *     supplier.
-     *     @see CapabilitySettingSupplier
-     */
-    EDGE("edge", EdgeOptions::new),
+    @PropertyDescription(description = {"Defines full names of classes that implement CapabilitySettingSupplier<EdgeOptions>",
+            "whose instances create and supplement EdgeOptions",
+            "for the starting of EdgeDriver",
+            "It is possible to define multiple comma-separated value"},
+            section = "Selenium. Capabilities")
+    @PropertyName("EDGE_CAPABILITY_SUPPLIERS")
+    EDGE(EdgeOptions::new),
 
-    /**
-     * Capabilities for the starting of {@link org.openqa.selenium.firefox.FirefoxDriver}
-     * Creates {@link Capabilities} using following properties:
-     *     <p>{@code web.driver.capability.platformName} to define name of a supported platform.
-     *     Windows, Linux etc. This is not the required property. @see org.openqa.selenium.Platform
-     *     <p>{@code web.driver.capability.javascriptEnabled} to enable or to disable js. Possible values are
-     *     {@code true} or {@code false}. By default js is enabled. This is not the required property.
-     *     <p>{@code web.driver.capability.browserVersion} to define a version of browser. This is not the required
-     *     property.
-     *     <p>{@code firefox.capability.suppliers} to define additional capabilities. It is a string with name of a
-     *     supplier.
-     *     @see CapabilitySettingSupplier
-     */
-    FIREFOX("firefox", FirefoxOptions::new),
+    @PropertyDescription(description = {"Defines full names of classes that implement CapabilitySettingSupplier<FirefoxOptions>",
+            "whose instances create and supplement FirefoxOptions",
+            "for the starting of FirefoxDriver",
+            "It is possible to define multiple comma-separated value"},
+            section = "Selenium. Capabilities")
+    @PropertyName("FIREFOX_CAPABILITY_SUPPLIERS")
+    FIREFOX(FirefoxOptions::new),
 
-    /**
-     * Capabilities for the starting of {@link org.openqa.selenium.ie.InternetExplorerDriver}
-     * Creates {@link Capabilities} using following properties:
-     *     <p>{@code web.driver.capability.platformName} to define name of a supported platform.
-     *     Windows, Linux etc. This is not the required property. @see org.openqa.selenium.Platform
-     *     <p>{@code web.driver.capability.javascriptEnabled} to enable or to disable js. Possible values are
-     *     {@code true} or {@code false}. By default js is enabled. This is not the required property.
-     *     <p>{@code web.driver.capability.browserVersion} to define a version of browser. This is not the required
-     *     property.
-     *     <p>{@code ie.capability.suppliers} to define additional capabilities. It is a string with name of a
-     *     supplier.
-     *     @see CapabilitySettingSupplier
-     */
-    IE("ie", InternetExplorerOptions::new),
+    @PropertyDescription(description = {"Defines full names of classes that implement CapabilitySettingSupplier<InternetExplorerOptions>",
+            "whose instances create and supplement InternetExplorerOptions",
+            "for the starting of InternetExplorerDriver",
+            "It is possible to define multiple comma-separated value"},
+            section = "Selenium. Capabilities")
+    @PropertyName("IE_CAPABILITY_SUPPLIERS")
+    IE(InternetExplorerOptions::new),
 
-    /**
-     * Capabilities for the starting of {@link org.openqa.selenium.opera.OperaDriver}
-     * Creates {@link Capabilities} using following properties:
-     *     <p>{@code web.driver.capability.platformName} to define name of a supported platform.
-     *     Windows, Linux etc. This is not the required property. @see org.openqa.selenium.Platform
-     *     <p>{@code web.driver.capability.javascriptEnabled} to enable or to disable js. Possible values are
-     *     {@code true} or {@code false}. By default js is enabled. This is not the required property.
-     *     <p>{@code web.driver.capability.browserVersion} to define a version of browser. This is not the required
-     *     property.
-     *     <p>{@code opera.capability.suppliers} to define additional capabilities. It is a string with name of a
-     *     supplier.
-     *     @see CapabilitySettingSupplier
-     */
-    OPERA("opera", OperaOptions::new),
+    @PropertyDescription(description = {"Defines full names of classes that implement CapabilitySettingSupplier<OperaOptions>",
+            "whose instances create and supplement OperaOptions",
+            "for the starting of OperaDriver",
+            "It is possible to define multiple comma-separated value"},
+            section = "Selenium. Capabilities")
+    @PropertyName("OPERA_CAPABILITY_SUPPLIERS")
+    OPERA(OperaOptions::new),
 
-    /**
-     * Capabilities for the starting of {@link org.openqa.selenium.safari.SafariDriver}
-     * Creates {@link Capabilities} using following properties:
-     *     <p>{@code web.driver.capability.platformName} to define name of a supported platform.
-     *     Windows, Linux etc. This is not the required property. @see org.openqa.selenium.Platform
-     *     <p>{@code web.driver.capability.javascriptEnabled} to enable or to disable js. Possible values are
-     *     {@code true} or {@code false}. By default js is enabled. This is not the required property.
-     *     <p>{@code web.driver.capability.browserVersion} to define a version of browser. This is not the required
-     *     property.
-     *     <p>{@code safari.capability.suppliers} to define additional capabilities. It is a string with name of a
-     *     supplier.
-     *     @see CapabilitySettingSupplier
-     */
-    SAFARI("safari", SafariOptions::new);
+    @PropertyDescription(description = {"Defines full names of classes that implement CapabilitySettingSupplier<SafariOptions>",
+            "whose instances create and supplement SafariOptions",
+            "for the starting of SafariDriver",
+            "It is possible to define multiple comma-separated value"},
+            section = "Selenium. Capabilities")
+    @PropertyName("SAFARI_CAPABILITY_SUPPLIERS")
+    SAFARI(SafariOptions::new);
 
-    private static final String CAPABILITY_SUPPLIERS = "capability.suppliers";
-    private final String name;
     private final CapabilityReader capabilityReader;
     private final Supplier<MutableCapabilities> startingCapabilitiesSupplier;
 
 
-    CapabilityTypes(String name, Supplier<MutableCapabilities> startingCapabilitiesSupplier) {
-        this.name = format("%s.%s", name, CAPABILITY_SUPPLIERS);
-        capabilityReader = new CapabilityReader();
+    CapabilityTypes(Supplier<MutableCapabilities> startingCapabilitiesSupplier) {
+        capabilityReader = new CapabilityReader(this);
         this.startingCapabilitiesSupplier = startingCapabilitiesSupplier;
     }
 
@@ -192,70 +142,65 @@ public enum CapabilityTypes implements PropertySupplier<MutableCapabilities> {
         return desiredCapabilities;
     }
 
+    /**
+     * It does nothing
+     */
+    @Deprecated
     @Override
-    public String getPropertyName() {
-        return name;
-    }
-
-    private class CapabilityReader implements MultipleObjectPropertySupplier<CapabilitySettingSupplier<MutableCapabilities>> {
-        @Override
-        public String getPropertyName() {
-            return name;
-        }
+    public MutableCapabilities parse(String value) {
+        return null;
     }
 
     public enum CommonCapabilityProperties implements PropertySupplier<Object> {
-        /**
-         * Reads property {@code web.driver.capability.browserName} and returns string value.
-         * Should be the same as following:
-         *     <p>{@link BrowserType#CHROME}
-         *     <p>{@link BrowserType#EDGE}
-         *     <p>{@link BrowserType#FIREFOX}
-         *     <p>{@link BrowserType#IEXPLORE}
-         *     <p>{@link BrowserType#OPERA_BLINK}
-         *     <p>{@link BrowserType#SAFARI}
-         *
-         * It has sense to define value of the property when value of the property {@link SupportedWebDriverProperty#SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY}
-         * is {@link SupportedWebDrivers#REMOTE_DRIVER}
-         */
-        BROWSER_NAME(format("web.driver.capability.%s", CapabilityType.BROWSER_NAME)),
+        @PropertyDescription(description = {"Defines the capability 'browserName'",
+                "It has sense when value of the property 'WEB_DRIVER_TO_LAUNCH' is 'REMOTE_DRIVER'"},
+                section = "Selenium. Capabilities")
+        @PropertyName("WEB_DRIVER_CAPABILITY_BROWSER_NAME")
+        BROWSER_NAME,
 
         /**
          * Reads property {@code web.driver.capability.platformName} and returns string value.
          * Should be the same as an item of {@link org.openqa.selenium.Platform}
          */
-        PLATFORM_NAME(format("web.driver.capability.%s", CapabilityType.PLATFORM_NAME)),
+        @PropertyDescription(description = "Defines the capability 'platformName'",
+                section = "Selenium. Capabilities")
+        @PropertyName("WEB_DRIVER_CAPABILITY_PLATFORM_NAME")
+        PLATFORM_NAME,
 
-        /**
-         * Reads property {@code web.driver.capability.javascriptEnabled} and returns boolean value.
-         * Should be {@code true} or {@code false}. By default it returns {@code true}.
-         */
-        SUPPORTS_JAVASCRIPT(format("web.driver.capability.%s", CapabilityType.SUPPORTS_JAVASCRIPT)) {
+        @PropertyDescription(description = "Defines the capability 'javascriptEnabled'",
+                section = "Selenium. Capabilities")
+        @PropertyName("WEB_DRIVER_CAPABILITY_SUPPORTS_JAVASCRIPT")
+        @PropertyDefaultValue("true")
+        SUPPORTS_JAVASCRIPT {
             @Override
-                public Boolean get() {
-                return returnOptionalFromEnvironment().map(Boolean::parseBoolean).orElse(true);
+            public Boolean parse(String value) {
+                return Boolean.parseBoolean(value);
             }
         },
 
-        /**
-         * Reads property {@code web.driver.capability.browserVersion} and returns string value.
-         */
-        BROWSER_VERSION(format("web.driver.capability.%s", CapabilityType.BROWSER_VERSION));
+        @PropertyDescription(description = "Defines the capability 'browserVersion'",
+                section = "Selenium. Capabilities")
+        @PropertyName("WEB_DRIVER_CAPABILITY_BROWSER_VERSION")
+        BROWSER_VERSION;
 
-        private final String name;
 
-        CommonCapabilityProperties(String name) {
-            this.name = name;
+        @Override
+        public Object parse(String value) {
+            return value;
+        }
+    }
+
+    private static class CapabilityReader implements MultipleObjectPropertySupplier<CapabilitySettingSupplier<MutableCapabilities>> {
+
+        private final CapabilityTypes type;
+
+        private CapabilityReader(CapabilityTypes type) {
+            this.type = type;
         }
 
         @Override
-        public String getPropertyName() {
-            return name;
-        }
-
-        @Override
-        public Object get() {
-            return returnOptionalFromEnvironment().orElse(null);
+        public String getName() {
+            return type.getName();
         }
     }
 }

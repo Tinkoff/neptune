@@ -24,25 +24,24 @@ import static java.lang.String.format;
 @SuppressWarnings("unchecked")
 public interface ObjectPropertySupplier<T extends Supplier<?>> extends PropertySupplier<T> {
 
-    default T get() {
-        return returnOptionalFromEnvironment().map(s -> {
-            try {
-                var clazz = ((Class<T>) forName(s));
-                var c = clazz.getConstructor();
-                c.setAccessible(true);
-                return c.newInstance();
-            } catch (ClassNotFoundException e) {
-                throw new IllegalArgumentException(format("Class %s is not found", s), e);
-            } catch (ClassCastException e) {
-                throw new IllegalArgumentException(format("It is impossible to use an instance of the class %s as a value of the property %s",
-                        s,
-                        getPropertyName()), e);
-            } catch (NoSuchMethodException e) {
-                throw new IllegalArgumentException(format("Class %s has no default constructor", s), e);
-            } catch (IllegalAccessException| InstantiationException| InvocationTargetException e) {
-                throw new IllegalArgumentException(format("It is impossible to create an instance of %s for some reason", s),
-                        e);
-            }
-        }).orElse(null);
+    @Override
+    default T parse(String s) {
+        try {
+            var clazz = ((Class<T>) forName(s));
+            var c = clazz.getConstructor();
+            c.setAccessible(true);
+            return c.newInstance();
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException(format("Class %s is not found", s), e);
+        } catch (ClassCastException e) {
+            throw new IllegalArgumentException(format("It is impossible to use an instance of the class %s as a value of the property %s",
+                    s,
+                    getName()), e);
+        } catch (NoSuchMethodException e) {
+            throw new IllegalArgumentException(format("Class %s has no default constructor", s), e);
+        } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            throw new IllegalArgumentException(format("It is impossible to create an instance of %s for some reason", s),
+                    e);
+        }
     }
 }

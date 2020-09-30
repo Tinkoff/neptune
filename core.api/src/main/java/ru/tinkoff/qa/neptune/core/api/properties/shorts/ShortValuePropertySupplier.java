@@ -7,9 +7,7 @@ import ru.tinkoff.qa.neptune.core.api.properties.PropertySupplier;
  */
 public interface ShortValuePropertySupplier extends PropertySupplier<Short> {
     @Override
-    default Short get() {
-        return returnOptionalFromEnvironment()
-                .map(Short::parseShort)
-                .orElse(null);
+    default Short parse(String value) {
+        return Short.parseShort(value);
     }
 }

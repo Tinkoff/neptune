@@ -11,15 +11,11 @@ import java.net.URL;
 public interface URLValuePropertySupplier extends PropertySupplier<URL> {
 
     @Override
-    default URL get() {
-        return returnOptionalFromEnvironment()
-                .map(s -> {
-                    try {
-                        return new URL(s);
-                    } catch (MalformedURLException e) {
-                        throw new IllegalArgumentException(e.getMessage(), e);
-                    }
-                })
-                .orElse(null);
+    default URL parse(String s) {
+        try {
+            return new URL(s);
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException(e.getMessage(), e);
+        }
     }
 }

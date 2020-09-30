@@ -9,7 +9,7 @@ public class TestObjectSupplier implements ObjectPropertySupplier<Supplier<Objec
     static final String TEST_OBJECT_PROPERTY = "test.object.property";
 
     @Override
-    public String getPropertyName() {
+    public String getName() {
         return TEST_OBJECT_PROPERTY;
     }
 }

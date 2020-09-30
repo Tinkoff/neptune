@@ -25,6 +25,6 @@ public class BaseCaptorTest extends BaseWebDriverTest {
 
     @AfterClass
     public static void afterClass() {
-        getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
+        getProperties().remove(DO_CAPTURES_OF_INSTANCE.getName());
     }
 }

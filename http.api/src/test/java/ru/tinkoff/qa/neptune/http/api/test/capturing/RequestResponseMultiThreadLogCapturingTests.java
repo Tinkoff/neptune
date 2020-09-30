@@ -37,7 +37,7 @@ public class RequestResponseMultiThreadLogCapturingTests extends BaseHttpTest {
 
     @AfterClass
     public void afterClass() {
-        getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
+        getProperties().remove(DO_CAPTURES_OF_INSTANCE.getName());
     }
 
     @Test(threadPoolSize = 6, invocationCount = 6)

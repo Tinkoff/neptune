@@ -33,10 +33,10 @@ import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_D
 public class BrowserProxyStepTest {
 
     private final Map<String, String> PROPERTIES_TO_SET_BEFORE =
-            ofEntries(entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getPropertyName(), CHROME_DRIVER.name()),
-                    entry(BASE_WEB_DRIVER_URL_PROPERTY.getPropertyName(), "https://www.google.ru"),
-                    entry(USE_BROWSER_PROXY.getPropertyName(), "true"),
-                    entry(CHROME.getPropertyName(), ChromeSettingsSupplierForProxy.class.getName())
+            ofEntries(entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getName(), CHROME_DRIVER.name()),
+                    entry(BASE_WEB_DRIVER_URL_PROPERTY.getName(), "https://www.google.ru"),
+                    entry(USE_BROWSER_PROXY.getName(), "true"),
+                    entry(CHROME.getName(), ChromeSettingsSupplierForProxy.class.getName())
             );
 
     private SeleniumStepContext seleniumSteps;

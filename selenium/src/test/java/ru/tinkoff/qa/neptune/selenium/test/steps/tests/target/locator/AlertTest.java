@@ -70,16 +70,15 @@ public class AlertTest extends BaseWebDriverTest {
 
     @Test(expectedExceptions = NoAlertPresentException.class)
     public void getAlertWithWithWaitingTimeDefinedImplicitlyTest() {
-        setProperty(WAITING_ALERT_TIME_UNIT.getPropertyName(), "SECONDS");
-        setProperty(WAITING_ALERT_TIME_VALUE.getPropertyName(), "5");
+        setProperty(WAITING_ALERT_TIME_UNIT.getName(), "SECONDS");
+        setProperty(WAITING_ALERT_TIME_VALUE.getName(), "5");
         setStartBenchMark();
         try {
             seleniumSteps.get(alert()
                     .criteria(alertText("some not existing text")));
-        }
-        finally {
-            removeProperty(WAITING_ALERT_TIME_UNIT.getPropertyName());
-            removeProperty(WAITING_ALERT_TIME_VALUE.getPropertyName());
+        } finally {
+            removeProperty(WAITING_ALERT_TIME_UNIT.getName());
+            removeProperty(WAITING_ALERT_TIME_VALUE.getName());
             setEndBenchMark();
             assertThat(getTimeDifference(), greaterThanOrEqualTo(FIVE_SECONDS.toMillis()));
             assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThan(HALF_SECOND.toMillis()));

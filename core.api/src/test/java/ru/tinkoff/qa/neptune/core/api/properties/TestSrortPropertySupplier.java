@@ -7,7 +7,7 @@ public class TestSrortPropertySupplier implements ShortValuePropertySupplier {
     static final String TEST_SHORT_PROPERTY = "test.short.property";
 
     @Override
-    public String getPropertyName() {
+    public String getName() {
         return TEST_SHORT_PROPERTY;
     }
 }

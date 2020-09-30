@@ -115,7 +115,7 @@ public class EventFiringTest {
                     TestCapturedFileInjector.messages,
                     emptyIterable());
         } finally {
-            getProperties().remove(DoCapturesOf.DO_CAPTURES_OF_INSTANCE.getPropertyName());
+            getProperties().remove(DoCapturesOf.DO_CAPTURES_OF_INSTANCE.getName());
         }
     }
 
@@ -140,7 +140,7 @@ public class EventFiringTest {
                     TestCapturedFileInjector.messages,
                     emptyIterable());
         } finally {
-            getProperties().remove(DoCapturesOf.DO_CAPTURES_OF_INSTANCE.getPropertyName());
+            getProperties().remove(DoCapturesOf.DO_CAPTURES_OF_INSTANCE.getName());
         }
     }
 
@@ -180,7 +180,7 @@ public class EventFiringTest {
                     TestCapturedFileInjector.messages,
                     emptyIterable());
         } finally {
-            getProperties().remove(DoCapturesOf.DO_CAPTURES_OF_INSTANCE.getPropertyName());
+            getProperties().remove(DoCapturesOf.DO_CAPTURES_OF_INSTANCE.getName());
         }
     }
 

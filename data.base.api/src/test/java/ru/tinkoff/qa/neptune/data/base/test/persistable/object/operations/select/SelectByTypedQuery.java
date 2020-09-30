@@ -322,8 +322,8 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
             assertThat(end - start, greaterThanOrEqualTo(twoSeconds.toMillis()));
             assertThat(end - start - twoSeconds.toMillis(), lessThanOrEqualTo(500L));
         } finally {
-            System.getProperties().remove(WAITING_FOR_SELECTION_RESULT_TIME_UNIT.getPropertyName());
-            System.getProperties().remove(WAITING_FOR_SELECTION_RESULT_TIME_VALUE.getPropertyName());
+            System.getProperties().remove(WAITING_FOR_SELECTION_RESULT_TIME_UNIT.getName());
+            System.getProperties().remove(WAITING_FOR_SELECTION_RESULT_TIME_VALUE.getName());
         }
     }
 
@@ -344,8 +344,8 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
             assertThat(end - start, greaterThanOrEqualTo(twoSeconds.toMillis()));
             assertThat(end - start - twoSeconds.toMillis(), lessThanOrEqualTo(500L));
         } finally {
-            System.getProperties().remove(WAITING_FOR_SELECTION_RESULT_TIME_UNIT.getPropertyName());
-            System.getProperties().remove(WAITING_FOR_SELECTION_RESULT_TIME_VALUE.getPropertyName());
+            System.getProperties().remove(WAITING_FOR_SELECTION_RESULT_TIME_UNIT.getName());
+            System.getProperties().remove(WAITING_FOR_SELECTION_RESULT_TIME_VALUE.getName());
         }
     }
 
@@ -425,8 +425,8 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
             assertThat(end - start, greaterThanOrEqualTo(twoSeconds.toMillis()));
             assertThat(end - start - twoSeconds.toMillis(), lessThanOrEqualTo(500L));
         } finally {
-            System.getProperties().remove(WAITING_FOR_SELECTION_RESULT_TIME_UNIT.getPropertyName());
-            System.getProperties().remove(WAITING_FOR_SELECTION_RESULT_TIME_VALUE.getPropertyName());
+            System.getProperties().remove(WAITING_FOR_SELECTION_RESULT_TIME_UNIT.getName());
+            System.getProperties().remove(WAITING_FOR_SELECTION_RESULT_TIME_VALUE.getName());
         }
     }
 
@@ -448,8 +448,8 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
             assertThat(end - start, greaterThanOrEqualTo(twoSeconds.toMillis()));
             assertThat(end - start - twoSeconds.toMillis(), lessThanOrEqualTo(500L));
         } finally {
-            System.getProperties().remove(WAITING_FOR_SELECTION_RESULT_TIME_UNIT.getPropertyName());
-            System.getProperties().remove(WAITING_FOR_SELECTION_RESULT_TIME_VALUE.getPropertyName());
+            System.getProperties().remove(WAITING_FOR_SELECTION_RESULT_TIME_UNIT.getName());
+            System.getProperties().remove(WAITING_FOR_SELECTION_RESULT_TIME_VALUE.getName());
         }
     }
 

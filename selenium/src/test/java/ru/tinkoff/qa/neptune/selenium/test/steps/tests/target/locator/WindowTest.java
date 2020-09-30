@@ -100,16 +100,16 @@ public class WindowTest extends BaseWebDriverTest {
     @Test(expectedExceptions = NoSuchWindowException.class)
     public void negativeTestWithTimeDefinedImplicitly() {
         try {
-            setProperty(WAITING_WINDOW_TIME_UNIT.getPropertyName(), "SECONDS");
-            setProperty(WAITING_WINDOW_TIME_VALUE.getPropertyName(), "5");
+            setProperty(WAITING_WINDOW_TIME_UNIT.getName(), "SECONDS");
+            setProperty(WAITING_WINDOW_TIME_VALUE.getName(), "5");
             setStartBenchMark();
             seleniumSteps.get(window(1)
                     .criteria(titleMatches("^.*\\b(Github)\\b.*$"))
                     .criteria(urlMatches("^.*\\b(github)\\b.*$")));
         } finally {
             setEndBenchMark();
-            removeProperty(WAITING_WINDOW_TIME_UNIT.getPropertyName());
-            removeProperty(WAITING_WINDOW_TIME_VALUE.getPropertyName());
+            removeProperty(WAITING_WINDOW_TIME_UNIT.getName());
+            removeProperty(WAITING_WINDOW_TIME_VALUE.getName());
             assertThat(getTimeDifference(), greaterThanOrEqualTo(FIVE_SECONDS.toMillis()));
             assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThan(HALF_SECOND.toMillis()));
         }
