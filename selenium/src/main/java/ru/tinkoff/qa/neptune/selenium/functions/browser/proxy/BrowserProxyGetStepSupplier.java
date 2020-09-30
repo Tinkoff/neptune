@@ -7,6 +7,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -26,7 +27,7 @@ public class BrowserProxyGetStepSupplier extends SequentialGetStepSupplier.GetIt
 
                             return har.getLog().getEntries();
                         })
-                        .orElseGet(List::of));
+                        .orElseGet(ArrayList::new));
     }
 
     public static BrowserProxyGetStepSupplier proxiedRequests() {

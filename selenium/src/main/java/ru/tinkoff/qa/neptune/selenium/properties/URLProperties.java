@@ -10,11 +10,15 @@ public enum URLProperties implements URLValuePropertySupplier {
      * a new remote session of {@link org.openqa.selenium.WebDriver}
      */
     @PropertyDescription(description = "Defines URL of a remote server (Selenium Grid, Selenoid etc.) to start a new browser remotely",
-            section = "Selenium. URLS")
+            section = "Selenium. URLs")
     @PropertyName("REMOTE_WEB_DRIVER_URL")
     REMOTE_WEB_DRIVER_URL_PROPERTY,
 
-    @PropertyDescription(description = "Defines default application URL", section = "Selenium. URLS")
+    @PropertyDescription(description = "Defines default application URL", section = "Selenium. URLs")
     @PropertyName("BASE_WEB_DRIVER_URL")
-    BASE_WEB_DRIVER_URL_PROPERTY
+    BASE_WEB_DRIVER_URL_PROPERTY,
+
+    @PropertyDescription(description = "Defines external proxy url", section = "Selenium. URLs")
+    @PropertyName("PROXY_URL_PROPERTY")
+    PROXY_URL_PROPERTY
 }

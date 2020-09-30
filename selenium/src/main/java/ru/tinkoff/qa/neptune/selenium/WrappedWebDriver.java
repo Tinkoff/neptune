@@ -13,6 +13,7 @@ import org.openqa.selenium.remote.server.SeleniumServer;
 import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
 
+import java.net.InetSocketAddress;
 import java.net.URL;
 
 import static com.browserup.bup.proxy.CaptureType.*;
@@ -26,6 +27,7 @@ import static org.openqa.selenium.net.PortProber.findFreePort;
 import static ru.tinkoff.qa.neptune.core.api.utils.ConstructorUtil.findSuitableConstructor;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.*;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
+import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.PROXY_URL_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITING_FOR_PAGE_LOADED_DURATION;
 
 public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
@@ -94,16 +96,27 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
                         .findFirst()
                         .orElseThrow(() -> new IllegalStateException("Browser mutable capabilities not found"));
 
+                Proxy seleniumProxy = new Proxy();
+                seleniumProxy.setProxyType(MANUAL);
+
                 if (!capabilities.asMap().containsKey(CapabilityType.PROXY)) {
+                    ofNullable(PROXY_URL_PROPERTY.get()).ifPresent(proxyUrl ->
+                            proxy.setChainedProxy(new InetSocketAddress(proxyUrl.getHost(), proxyUrl.getPort())));
+
                     proxy.start();
 
                     String hostIp = new NetworkUtils().getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
 
-                    Proxy seleniumProxy = new Proxy();
-                    seleniumProxy.setProxyType(MANUAL);
                     seleniumProxy.setHttpProxy(hostIp + ":" + proxy.getPort());
                     seleniumProxy.setSslProxy(hostIp + ":" + proxy.getPort());
+                } else {
+                    ofNullable(PROXY_URL_PROPERTY.get()).ifPresent(proxyUrl -> {
+                        seleniumProxy.setHttpProxy(proxyUrl.getHost() + ":" + proxyUrl.getPort());
+                        seleniumProxy.setSslProxy(proxyUrl.getHost() + ":" + proxyUrl.getPort());
+                    });
+                }
 
+                if (seleniumProxy.getHttpProxy() != null) {
                     capabilities.setCapability(CapabilityType.PROXY, seleniumProxy);
                     capabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
                     capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
