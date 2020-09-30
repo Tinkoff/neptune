@@ -8,7 +8,9 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
+import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.StreamSupport;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.Boolean.parseBoolean;
@@ -18,6 +20,7 @@ import static java.util.Map.Entry.comparingByKey;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static org.apache.commons.lang3.ArrayUtils.addAll;
 import static org.apache.commons.lang3.StringUtils.*;
 import static ru.tinkoff.qa.neptune.core.api.properties.GeneralPropertyInitializer.*;
 
@@ -56,13 +59,20 @@ public class NeptunePropertyGenerator {
             directory = new File(args[2]);
         }
 
+        var dirPath = directory.toPath();
+        var path = new String[]{dirPath.getRoot().toString()};
+
+        path = addAll(path, StreamSupport.stream(dirPath.spliterator(), false)
+                .map(Path::toString)
+                .toArray(String[]::new));
+
         checkArgument(directory.exists(), "File " + directory.getAbsolutePath() + " doesn't exist");
         checkArgument(directory.isDirectory(), "File " + directory.getAbsolutePath() + " is not a directory");
 
         var isGlobal = parseBoolean(args[0]);
         var properties = getPropertyFile(directory, isGlobal);
-        var all = ofNullable(getAllProperties()).orElseGet(Properties::new);
-        var global = ofNullable(getGlobalProperties()).orElseGet(Properties::new);
+        var all = ofNullable(getAllProperties(path)).orElseGet(Properties::new);
+        var global = ofNullable(getGlobalProperties(path)).orElseGet(Properties::new);
 
         var propertyMap = isGlobal ? getPropertiesMetaMap(global) : getPropertiesMetaMap(all);
         var propertyList = new ArrayList<Property>();
