@@ -16,5 +16,9 @@ public enum URLProperties implements URLValuePropertySupplier {
 
     @PropertyDescription(description = "Defines default application URL", section = "Selenium. URLS")
     @PropertyName("BASE_WEB_DRIVER_URL")
-    BASE_WEB_DRIVER_URL_PROPERTY
+    BASE_WEB_DRIVER_URL_PROPERTY,
+
+    @PropertyDescription(description = "Defines external proxy url", section = "Selenium. URLs")
+    @PropertyName("PROXY_URL_PROPERTY")
+    PROXY_URL_PROPERTY
 }

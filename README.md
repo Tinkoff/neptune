@@ -25,7 +25,7 @@
 [commit-link]: https://github.com/TinkoffCreditSystems/neptune/commits/master
 
 [license-badge]: https://img.shields.io/github/license/TinkoffCreditSystems/neptune?color=9cf
-[license-link]: https://github.com/ArisAgnew/neptune/blob/master/LICENSE
+[license-link]: https://github.com/TinkoffCreditSystems/neptune/blob/master/LICENSE
 
 [reposize-badge]: https://img.shields.io/github/repo-size/TinkoffCreditSystems/neptune?color=9cf
 

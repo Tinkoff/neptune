@@ -37,5 +37,10 @@ public enum SessionFlagProperties implements BooleanValuePropertySupplier {
             "with only part of an url. It should be relative to value defined by 'BASE_WEB_DRIVER_URL'"},
             section = "Selenium. Session flags")
     @PropertyName("ENABLE_TO_NAVIGATE_BY_RELATIVE_URL")
-    ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL
+    ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL,
+
+    @PropertyDescription(description = {"It means that WebDriver session will be using browser proxy"},
+            section = "Selenium. Session flags")
+    @PropertyName("USE_BROWSER_PROXY")
+    USE_BROWSER_PROXY
 }
