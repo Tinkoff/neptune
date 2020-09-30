@@ -108,7 +108,7 @@ public class CheckTest {
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES1.toArray()));
         } finally {
-            getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
+            getProperties().remove(DO_CAPTURES_OF_INSTANCE.getName());
         }
     }
 
@@ -135,7 +135,7 @@ public class CheckTest {
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES1.toArray()));
         } finally {
-            getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
+            getProperties().remove(DO_CAPTURES_OF_INSTANCE.getName());
         }
     }
 
@@ -167,7 +167,7 @@ public class CheckTest {
             assertThat(MESSAGES,
                     contains(EXPECTED_LOGGER_MESSAGES1.toArray()));
         } finally {
-            getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
+            getProperties().remove(DO_CAPTURES_OF_INSTANCE.getName());
         }
     }
 
@@ -209,7 +209,7 @@ public class CheckTest {
                             number -> sqrt(number.doubleValue()),
                             is(2D)));
         } finally {
-            getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
+            getProperties().remove(DO_CAPTURES_OF_INSTANCE.getName());
             assertThat(DefaultListLogger.messages,
                     contains("Value true",
                             "Value 9",
@@ -236,7 +236,7 @@ public class CheckTest {
                             number -> sqrt(number.doubleValue()),
                             is(2D)));
         } finally {
-            getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
+            getProperties().remove(DO_CAPTURES_OF_INSTANCE.getName());
             assertThat(DefaultListLogger.messages,
                     contains("Value 9"));
 
@@ -260,7 +260,7 @@ public class CheckTest {
                             number -> sqrt(number.doubleValue()),
                             is(2D)));
         } finally {
-            getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
+            getProperties().remove(DO_CAPTURES_OF_INSTANCE.getName());
             assertThat(DefaultListLogger.messages,
                     contains("Value true",
                             "Value 9",

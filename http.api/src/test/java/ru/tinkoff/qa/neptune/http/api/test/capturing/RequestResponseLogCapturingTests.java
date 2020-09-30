@@ -257,6 +257,6 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
 
     @AfterMethod
     public void afterMethod() {
-        getProperties().remove(DO_CAPTURES_OF_INSTANCE.getPropertyName());
+        getProperties().remove(DO_CAPTURES_OF_INSTANCE.getName());
     }
 }

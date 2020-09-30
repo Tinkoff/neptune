@@ -27,8 +27,9 @@ import static java.util.stream.Collectors.toList;
 @SuppressWarnings("unchecked")
 public interface MultipleObjectPropertySupplier<T extends Supplier<?>> extends PropertySupplier<List<T>> {
 
-    default List<T> get() {
-        return returnOptionalFromEnvironment().map(s -> stream(s.split(",")).map(s1 -> {
+    @Override
+    default List<T> parse(String s) {
+        return stream(s.split(",")).map(s1 -> {
             try {
                 var clazz = ((Class<T>) forName(s1));
                 var c = clazz.getConstructor();
@@ -39,13 +40,13 @@ public interface MultipleObjectPropertySupplier<T extends Supplier<?>> extends P
             } catch (ClassCastException e) {
                 throw new IllegalArgumentException(format("It is impossible to use an instance of the class %s as one of values of the property %s",
                         s1,
-                        getPropertyName()), e);
+                        getName()), e);
             } catch (NoSuchMethodException e) {
                 throw new IllegalArgumentException(format("Class %s has no default constructor", s1), e);
-            } catch (IllegalAccessException| InstantiationException| InvocationTargetException e) {
+            } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
                 throw new IllegalArgumentException(format("It is impossible to create an instance of %s for some reason", s1),
                         e);
             }
-        }).collect(toList())).orElse(null);
+        }).collect(toList());
     }
 }

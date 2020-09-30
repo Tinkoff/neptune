@@ -7,7 +7,7 @@ public class TestLongPropertySupplier implements LongValuePropertySupplier {
     static final String TEST_LONG_PROPERTY = "test.long.property";
 
     @Override
-    public String getPropertyName() {
+    public String getName() {
         return TEST_LONG_PROPERTY;
     }
 }

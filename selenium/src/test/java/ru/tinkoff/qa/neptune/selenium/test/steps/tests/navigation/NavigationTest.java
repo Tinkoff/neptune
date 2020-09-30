@@ -44,7 +44,7 @@ public class NavigationTest extends BaseWebDriverTest {
 
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "It is impossible to navigate by URL /index.html. This value is not a valid URL and the " +
-                    "property enable.ability.to.navigate.by.relative.url is not defined/its value is false")
+                    "property ENABLE_TO_NAVIGATE_BY_RELATIVE_URL is not defined/its value is false")
     public void invalidNavigationByRelativeUrl() {
         seleniumSteps.navigateTo("/index.html");
         assertThat(seleniumSteps.getCurrentUrl(), endsWith("/index.html"));
@@ -52,29 +52,28 @@ public class NavigationTest extends BaseWebDriverTest {
 
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "It is impossible to navigate by URL /index.html. " +
-                    "This value is not a valid URL and the property base.web.driver.url is not defined")
+                    "This value is not a valid URL and the property BASE_WEB_DRIVER_URL is not defined")
     public void invalidNavigationByRelativeUrl2() {
-        System.setProperty(ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL.getPropertyName(), "true");
+        System.setProperty(ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL.getName(), "true");
         try {
             seleniumSteps.navigateTo("/index.html");
             assertThat(seleniumSteps.getCurrentUrl(), endsWith("/index.html"));
         }
         finally {
-            getProperties().remove(GET_BACK_TO_BASE_URL.getPropertyName());
+            getProperties().remove(GET_BACK_TO_BASE_URL.getName());
         }
     }
 
     @Test
     public void validNavigationByRelativeUrl() {
-        System.setProperty(BASE_WEB_DRIVER_URL_PROPERTY.getPropertyName(), GITHUB.getUrl());
-        System.setProperty(ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL.getPropertyName(), "true");
+        System.setProperty(BASE_WEB_DRIVER_URL_PROPERTY.getName(), GITHUB.getUrl());
+        System.setProperty(ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL.getName(), "true");
         try {
             seleniumSteps.navigateTo("/index.html");
             assertThat(seleniumSteps.getCurrentUrl(), containsString(GITHUB.getUrl()));
-        }
-        finally {
-            getProperties().remove(BASE_WEB_DRIVER_URL_PROPERTY.getPropertyName());
-            getProperties().remove(GET_BACK_TO_BASE_URL.getPropertyName());
+        } finally {
+            getProperties().remove(BASE_WEB_DRIVER_URL_PROPERTY.getName());
+            getProperties().remove(GET_BACK_TO_BASE_URL.getName());
         }
     }
 

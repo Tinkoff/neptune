@@ -7,7 +7,7 @@ public class TestBooleanPropertySupplier implements BooleanValuePropertySupplier
     static final String TEST_BOOLEAN_PROPERTY = "test.boolean.property";
 
     @Override
-    public String getPropertyName() {
+    public String getName() {
         return TEST_BOOLEAN_PROPERTY;
     }
 }

@@ -68,8 +68,8 @@ public class FrameTest extends BaseWebDriverTest {
     @Test
     public void frameIndexWithTimeDefinedImplicitlyPositiveTest() {
         FrameIndexes index1 = getRandomEnumItem(FrameIndexes.values());
-        setProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getPropertyName(), "SECONDS");
-        setProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getPropertyName(), "5");
+        setProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getName(), "SECONDS");
+        setProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getName(), "5");
         try {
             setStartBenchMark();
             Frame frame1 = seleniumSteps.get(frame(index1.getIndex()));
@@ -78,8 +78,8 @@ public class FrameTest extends BaseWebDriverTest {
             assertThat(((MockWebDriver) seleniumSteps.switchTo(frame1).getWrappedDriver()).getCurrentFrame(), is(index1.getIndex()));
             assertThat(getTimeDifference(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
         } finally {
-            removeProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getPropertyName());
-            removeProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getPropertyName());
+            removeProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getName());
+            removeProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getName());
         }
     }
 
@@ -101,8 +101,8 @@ public class FrameTest extends BaseWebDriverTest {
 
     @Test(expectedExceptions = NoSuchFrameException.class)
     public void frameIndexNegativeWithTimeDefinedImplicitlyTest() {
-        setProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getPropertyName(), "SECONDS");
-        setProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getPropertyName(), "5");
+        setProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getName(), "SECONDS");
+        setProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getName(), "5");
         try {
             setStartBenchMark();
             seleniumSteps.get(frame(100));
@@ -111,8 +111,8 @@ public class FrameTest extends BaseWebDriverTest {
             throw e;
         } finally {
             setEndBenchMark();
-            removeProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getPropertyName());
-            removeProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getPropertyName());
+            removeProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getName());
+            removeProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getName());
             assertThat(getTimeDifference(), greaterThanOrEqualTo(FIVE_SECONDS.toMillis()));
             assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
         }
@@ -158,8 +158,8 @@ public class FrameTest extends BaseWebDriverTest {
     @Test
     public void frameNameOrIdWithTimeDefinedImplicitlyPositiveTest() {
         FrameNames name1 = getRandomEnumItem(FrameNames.values());
-        setProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getPropertyName(), "SECONDS");
-        setProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getPropertyName(), "5");
+        setProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getName(), "SECONDS");
+        setProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getName(), "5");
         try {
             setStartBenchMark();
             Frame frame1 = seleniumSteps.get(frame(name1.getNameOrId()));
@@ -168,8 +168,8 @@ public class FrameTest extends BaseWebDriverTest {
             assertThat(((MockWebDriver) seleniumSteps.switchTo(frame1).getWrappedDriver()).getCurrentFrame(), is(name1.getNameOrId()));
             assertThat(getTimeDifference(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
         } finally {
-            removeProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getPropertyName());
-            removeProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getPropertyName());
+            removeProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getName());
+            removeProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getName());
         }
     }
 
@@ -190,8 +190,8 @@ public class FrameTest extends BaseWebDriverTest {
 
     @Test(expectedExceptions = NoSuchFrameException.class)
     public void frameNameOrIdNegativeWithTimeDefinedImplicitlyTest() {
-        setProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getPropertyName(), "SECONDS");
-        setProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getPropertyName(), "5");
+        setProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getName(), "SECONDS");
+        setProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getName(), "5");
         try {
             setStartBenchMark();
             seleniumSteps.get(frame("some name"));
@@ -200,8 +200,8 @@ public class FrameTest extends BaseWebDriverTest {
             throw e;
         } finally {
             setEndBenchMark();
-            removeProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getPropertyName());
-            removeProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getPropertyName());
+            removeProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getName());
+            removeProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getName());
             assertThat(getTimeDifference(), greaterThanOrEqualTo(FIVE_SECONDS.toMillis()));
             assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
         }
@@ -246,8 +246,8 @@ public class FrameTest extends BaseWebDriverTest {
     @Test
     public void frameWebElementWithTimeDefinedImplicitlyPositiveTest() {
         ValidFrameWebElement element1 = new ValidFrameWebElement();
-        setProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getPropertyName(), "SECONDS");
-        setProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getPropertyName(), "5");
+        setProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getName(), "SECONDS");
+        setProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getName(), "5");
         try {
             setStartBenchMark();
             Frame frame1 = seleniumSteps.get(frame(element1));
@@ -256,8 +256,8 @@ public class FrameTest extends BaseWebDriverTest {
             assertThat(((MockWebDriver) seleniumSteps.switchTo(frame1).getWrappedDriver()).getCurrentFrame(), is(element1));
             assertThat(getTimeDifference(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
         } finally {
-            removeProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getPropertyName());
-            removeProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getPropertyName());
+            removeProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getName());
+            removeProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getName());
         }
     }
 
@@ -279,8 +279,8 @@ public class FrameTest extends BaseWebDriverTest {
 
     @Test(expectedExceptions = NoSuchFrameException.class)
     public void frameWebElementNegativeWithTimeDefinedImplicitlyTest() {
-        setProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getPropertyName(), "SECONDS");
-        setProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getPropertyName(), "5");
+        setProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getName(), "SECONDS");
+        setProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getName(), "5");
         try {
             setStartBenchMark();
             seleniumSteps.get(frame(new InvalidFrameWebElement()));
@@ -289,8 +289,8 @@ public class FrameTest extends BaseWebDriverTest {
             throw e;
         } finally {
             setEndBenchMark();
-            removeProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getPropertyName());
-            removeProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getPropertyName());
+            removeProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getName());
+            removeProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getName());
             assertThat(getTimeDifference(), greaterThanOrEqualTo(FIVE_SECONDS.toMillis()));
             assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
         }
@@ -385,8 +385,8 @@ public class FrameTest extends BaseWebDriverTest {
             }
         };
 
-        setProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getPropertyName(), "SECONDS");
-        setProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getPropertyName(), "5");
+        setProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getName(), "SECONDS");
+        setProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getName(), "5");
         try {
             setStartBenchMark();
             Frame frame1 = seleniumSteps.get(frame(wrapsElement1));
@@ -395,8 +395,8 @@ public class FrameTest extends BaseWebDriverTest {
             assertThat(((MockWebDriver) seleniumSteps.switchTo(frame1).getWrappedDriver()).getCurrentFrame(), is(element1));
             assertThat(getTimeDifference(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
         } finally {
-            removeProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getPropertyName());
-            removeProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getPropertyName());
+            removeProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getName());
+            removeProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getName());
         }
     }
 
@@ -428,8 +428,8 @@ public class FrameTest extends BaseWebDriverTest {
 
     @Test(expectedExceptions = NoSuchFrameException.class)
     public void frameWrappedElementNegativeWithTimeDefinedImplicitlyTest() {
-        setProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getPropertyName(), "SECONDS");
-        setProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getPropertyName(), "5");
+        setProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getName(), "SECONDS");
+        setProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getName(), "5");
         try {
             setStartBenchMark();
             seleniumSteps.get(frame(new WrapsElement() {
@@ -449,8 +449,8 @@ public class FrameTest extends BaseWebDriverTest {
             throw e;
         } finally {
             setEndBenchMark();
-            removeProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getPropertyName());
-            removeProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getPropertyName());
+            removeProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getName());
+            removeProperty(WAITING_FRAME_SWITCHING_TIME_VALUE.getName());
             assertThat(getTimeDifference(), greaterThanOrEqualTo(FIVE_SECONDS.toMillis()));
             assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
         }

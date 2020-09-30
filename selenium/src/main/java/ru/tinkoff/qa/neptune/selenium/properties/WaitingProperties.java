@@ -1,166 +1,141 @@
 package ru.tinkoff.qa.neptune.selenium.properties;
 
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyDefaultValue;
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyDescription;
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
+import ru.tinkoff.qa.neptune.core.api.properties.duration.DurationSupplier;
 import ru.tinkoff.qa.neptune.core.api.properties.enums.EnumPropertySuppler;
 import ru.tinkoff.qa.neptune.core.api.properties.longs.LongValuePropertySupplier;
-import ru.tinkoff.qa.neptune.core.api.properties.duration.DurationSupplier;
 
-import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeUnitProperties.*;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.TimeValueProperties.*;
-import static java.time.Duration.of;
-import static java.time.temporal.ChronoUnit.MINUTES;
 
 public final class WaitingProperties extends DurationSupplier {
     /**
      * Returns duration of the waiting for some web elements
-     * are present and suit some criteria. When {@code "waiting.for.elements.time.unit"} or
-     * {@code "waiting.for.elements.time"} are not defined then it returns 1 minute.
+     * are present and suit some criteria. When {@code "WAITING_FOR_ELEMENTS_TIME_UNIT"} or
+     * {@code "WAITING_FOR_ELEMENTS_TIME"} are not defined then it returns 1 minute.
      * Otherwise it returns defined duration value.
      */
-    public static final WaitingProperties ELEMENT_WAITING_DURATION = new WaitingProperties(ELEMENT_WAITING_TIME_UNIT,
-            ELEMENT_WAITING_TIME_VALUE, of(1, MINUTES));
+    public static final WaitingProperties ELEMENT_WAITING_DURATION = new WaitingProperties(ELEMENT_WAITING_TIME_UNIT, ELEMENT_WAITING_TIME_VALUE);
 
     /**
      * Returns duration of the waiting for appearance of an alert.
-     * When {@code "waiting.alert.time.unit"} or {@code "waiting.alert.time"}
+     * When {@code "WAITING_FOR_ALERTS_TIME_UNIT"} or {@code "WAITING_FOR_ALERTS_TIME"}
      * are not defined then it returns 1 minute. Otherwise it returns defined duration value.
      */
-    public static final WaitingProperties WAITING_ALERT_TIME_DURATION = new WaitingProperties(WAITING_ALERT_TIME_UNIT,
-            WAITING_ALERT_TIME_VALUE, of(1, MINUTES));
+    public static final WaitingProperties WAITING_ALERT_TIME_DURATION = new WaitingProperties(WAITING_ALERT_TIME_UNIT, WAITING_ALERT_TIME_VALUE);
 
     /**
      * Returns duration of the waiting for some window.
-     * When {@code "waiting.window.time.unit"} or {@code "waiting.window..time"}
+     * When {@code "WAITING_FOR_WINDOWS_TIME_UNIT"} or {@code "WAITING_FOR_WINDOWS_TIME"}
      * are not defined then it returns 1 minute. Otherwise it returns defined duration value.
      */
-    public static final WaitingProperties WAITING_WINDOW_TIME_DURATION = new WaitingProperties(WAITING_WINDOW_TIME_UNIT,
-            WAITING_WINDOW_TIME_VALUE, of(1, MINUTES));
+    public static final WaitingProperties WAITING_WINDOW_TIME_DURATION = new WaitingProperties(WAITING_WINDOW_TIME_UNIT, WAITING_WINDOW_TIME_VALUE);
 
     /**
      * Returns duration of the waiting for the switching to some frame succeeded.
-     * When {@code "waiting.frame.switching.time.unit"} or {@code "waiting.frame.switching.time"}
+     * When {@code "WAITING_FOR_FRAME_SWITCHING_TIME_UNIT"} or {@code "WAITING_FOR_FRAME_SWITCHING_TIME"}
      * are not defined then it returns 1 minute. Otherwise it returns defined duration value.
      */
-    public static final WaitingProperties WAITING_FRAME_SWITCHING_DURATION = new WaitingProperties(WAITING_FRAME_SWITCHING_TIME_UNIT,
-            WAITING_FRAME_SWITCHING_TIME_VALUE, of(1, MINUTES));
+    public static final WaitingProperties WAITING_FRAME_SWITCHING_DURATION = new WaitingProperties(WAITING_FRAME_SWITCHING_TIME_UNIT, WAITING_FRAME_SWITCHING_TIME_VALUE);
 
     /**
      * Returns duration of the waiting for waiting for a page is loaded.
-     * When {@code "waiting.for.page.loaded.time.unit"} or {@code "waiting.for.page.loaded.time"}
+     * When {@code "WAITING_FOR_PAGE_LOADED_TIME_UNIT"} or {@code "WAITING_FOR_PAGE_LOADED_TIME"}
      * are not defined then it returns 1 minute. Otherwise it returns defined duration value.
      */
-    public static final WaitingProperties WAITING_FOR_PAGE_LOADED_DURATION = new WaitingProperties(WAITING_FOR_PAGE_LOADED_TIME_UNIT,
-            WAITING_FOR_PAGE_LOADED_TIME_VALUE, of(1, MINUTES));
+    public static final WaitingProperties WAITING_FOR_PAGE_LOADED_DURATION = new WaitingProperties(WAITING_FOR_PAGE_LOADED_TIME_UNIT, WAITING_FOR_PAGE_LOADED_TIME_VALUE);
 
     private WaitingProperties(TimeUnitProperties durationUnitPropertySupplier,
-                              TimeValueProperties durationValuePropertySupplier,
-                              Duration returnWhenNotDefined) {
-        super(durationUnitPropertySupplier, durationValuePropertySupplier, returnWhenNotDefined);
+                              TimeValueProperties durationValuePropertySupplier) {
+        super(durationUnitPropertySupplier, durationValuePropertySupplier);
     }
 
 
     public enum TimeUnitProperties implements EnumPropertySuppler<ChronoUnit> {
-        /**
-         * Reads property {@code "waiting.for.elements.time.unit"}.
-         * This property is needed to define time of the waiting for some web elements
-         * are present and suit some criteria. Returns read value
-         * or {@code null} when nothing is defined
-         * @see ChronoUnit
-         */
-        ELEMENT_WAITING_TIME_UNIT("waiting.for.elements.time.unit"),
+        @PropertyDescription(description = {"This property needs to define time of the waiting for some web elements",
+                "are present and suit some criteria",
+                "See java.time.temporal.ChronoUnit"},
+                section = "Selenium. Waiting for elements.")
+        @PropertyName("WAITING_FOR_ELEMENTS_TIME_UNIT")
+        @PropertyDefaultValue("MINUTES")
+        ELEMENT_WAITING_TIME_UNIT,
+
+        @PropertyDescription(description = {"This property needs to define time of the waiting for appearance of an alert",
+                "See java.time.temporal.ChronoUnit"},
+                section = "Selenium. Waiting for alerts.")
+        @PropertyName("WAITING_FOR_ALERTS_TIME_UNIT")
+        @PropertyDefaultValue("MINUTES")
+        WAITING_ALERT_TIME_UNIT,
 
         /**
-         * Reads property {@code "waiting.alert.time.unit"}.
-         * This property is needed to define time of the waiting for appearance
-         * of an alert. Returns read value or {@code null} when nothing is defined
-         * @see ChronoUnit
-         */
-        WAITING_ALERT_TIME_UNIT("waiting.alert.time.unit"),
-
-        /**
-         * Reads property {@code "waiting.window.time.unit"}.
+         * Reads property {@code "WAITING_FOR_WINDOWS_TIME_UNIT"}.
          * This property is needed to define time of the waiting for some window.
          * Returns read value or {@code null} when nothing is defined
+         *
          * @see ChronoUnit
          */
-        WAITING_WINDOW_TIME_UNIT("waiting.window.time.unit"),
+        @PropertyDescription(description = {"This property needs to define time of the waiting for appearance of a browser window/tab",
+                "See java.time.temporal.ChronoUnit"},
+                section = "Selenium. Waiting for windows.")
+        @PropertyName("WAITING_FOR_WINDOWS_TIME_UNIT")
+        @PropertyDefaultValue("MINUTES")
+        WAITING_WINDOW_TIME_UNIT,
 
-        /**
-         * Reads property {@code "waiting.frame.switching.time.unit"}.
-         * This property is needed to define time of the waiting for the switching to some frame succeeded.
-         * Returns read value or {@code null} when nothing is defined
-         * @see ChronoUnit
-         */
-        WAITING_FRAME_SWITCHING_TIME_UNIT("waiting.frame.switching.time.unit"),
+        @PropertyDescription(description = {"This property needs to define time of the waiting for the switching to some frame succeeded",
+                "See java.time.temporal.ChronoUnit"},
+                section = "Selenium. Waiting for frames.")
+        @PropertyName("WAITING_FOR_FRAME_SWITCHING_TIME_UNIT")
+        @PropertyDefaultValue("MINUTES")
+        WAITING_FRAME_SWITCHING_TIME_UNIT,
 
-        /**
-         * Reads property {@code "waiting.for.page.loaded.time.unit"}.
-         * This property is needed to define time of the waiting for a page is loaded.
-         * Returns read value or {@code null} when nothing is defined
-         * @see ChronoUnit
-         */
-        WAITING_FOR_PAGE_LOADED_TIME_UNIT("waiting.for.page.loaded.time.unit");
-
-        private final String propertyName;
-
-        TimeUnitProperties(String propertyName) {
-            this.propertyName = propertyName;
-        }
-
-        @Override
-        public String getPropertyName() {
-            return propertyName;
-        }
+        @PropertyDescription(description = {"This property needs to define time of the waiting for a page is loaded",
+                "See java.time.temporal.ChronoUnit"},
+                section = "Selenium. Waiting for page is loaded.")
+        @PropertyName("WAITING_FOR_PAGE_LOADED_TIME_UNIT")
+        @PropertyDefaultValue("MINUTES")
+        WAITING_FOR_PAGE_LOADED_TIME_UNIT
     }
 
     public enum TimeValueProperties implements LongValuePropertySupplier {
-        /**
-         * Reads property {@code "waiting.for.elements.time"}.
-         * This property is needed to define time of the waiting for some web elements
-         * are present and suit some criteria.
-         * Returns read value or {@code null} if nothing is defined.
-         */
-        ELEMENT_WAITING_TIME_VALUE("waiting.for.elements.time"),
+        @PropertyDescription(description = {"This property needs to define time of the waiting for some web elements",
+                "are present and suit some criteria"},
+                section = "Selenium. Waiting for elements.")
+        @PropertyName("WAITING_FOR_ELEMENTS_TIME")
+        @PropertyDefaultValue("1")
+        ELEMENT_WAITING_TIME_VALUE,
+
+        @PropertyDescription(description = "This property needs to define time of the waiting for appearance of an alert",
+                section = "Selenium. Waiting for alerts.")
+        @PropertyName("WAITING_FOR_ALERTS_TIME")
+        @PropertyDefaultValue("1")
+        WAITING_ALERT_TIME_VALUE,
+
+        @PropertyDescription(description = "This property needs to define time of the waiting for appearance of a browser window/tab",
+                section = "Selenium. Waiting for windows.")
+        @PropertyName("WAITING_FOR_WINDOWS_TIME")
+        @PropertyDefaultValue("1")
+        WAITING_WINDOW_TIME_VALUE,
 
         /**
-         * Reads property {@code "waiting.alert.time"}.
-         * This property is needed to define time of the waiting for appearance
-         * of an alert. Returns read value or {@code null} if nothing is defined.
-         */
-        WAITING_ALERT_TIME_VALUE("waiting.alert.time"),
-
-        /**
-         * Reads property {@code "waiting.window.time"}.
-         * This property is needed to define time of the waiting for some window.
-         * Returns read value or {@code null} if nothing is defined.
-         */
-        WAITING_WINDOW_TIME_VALUE("waiting.window.time"),
-
-        /**
-         * Reads property {@code "waiting.frame.switching.time"}.
+         * Reads property {@code "WAITING_FOR_FRAME_SWITCHING_TIME"}.
          * This property is needed to define time of the waiting for the switching to some frame succeeded.
          * Returns read value or {@code null} if nothing is defined.
          */
-        WAITING_FRAME_SWITCHING_TIME_VALUE("waiting.frame.switching.time"),
+        @PropertyDescription(description = "This property needs to define time of the waiting for the switching to some frame succeeded",
+                section = "Selenium. Waiting for frames.")
+        @PropertyName("WAITING_FOR_FRAME_SWITCHING_TIME")
+        @PropertyDefaultValue("1")
+        WAITING_FRAME_SWITCHING_TIME_VALUE,
 
-        /**
-         * Reads property {@code "waiting.for.page.loaded.time"}.
-         * This property is needed to define time of the waiting for  a page is loaded.
-         * Returns read value or {@code null} if nothing is defined.
-         */
-        WAITING_FOR_PAGE_LOADED_TIME_VALUE("waiting.for.page.loaded.time");
 
-        private final String propertyName;
-
-        TimeValueProperties(String propertyName) {
-            this.propertyName = propertyName;
-        }
-
-        @Override
-        public String getPropertyName() {
-            return propertyName;
-        }
+        @PropertyDescription(description = "This property needs to define time of the waiting for a page is loaded",
+                section = "Selenium. Waiting for page is loaded.")
+        @PropertyName("WAITING_FOR_PAGE_LOADED_TIME")
+        @PropertyDefaultValue("1")
+        WAITING_FOR_PAGE_LOADED_TIME_VALUE
     }
 }

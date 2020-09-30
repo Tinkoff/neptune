@@ -7,7 +7,7 @@ public class TestDoublePropertySupplier implements DoubleValuePropertySupplier {
     static final String TEST_DOUBLE_PROPERTY = "test.double.property";
 
     @Override
-    public String getPropertyName() {
+    public String getName() {
         return TEST_DOUBLE_PROPERTY;
     }
 }
