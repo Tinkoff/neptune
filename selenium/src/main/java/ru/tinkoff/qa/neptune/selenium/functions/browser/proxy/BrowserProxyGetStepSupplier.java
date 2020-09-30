@@ -55,6 +55,6 @@ public class BrowserProxyGetStepSupplier extends SequentialGetStepSupplier.GetIt
     }
 
     public BrowserProxyGetStepSupplier throwOnEmptyResult(String exceptionMessage) {
-        return throwOnEmptyResult(() -> new IllegalStateException(exceptionMessage));
+        return super.throwOnEmptyResult(() -> new IllegalStateException(exceptionMessage));
     }
 }
