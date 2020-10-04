@@ -30,7 +30,7 @@ public @interface APIUses {
     /**
      * @return Subclass of {@link HttpAPI} to apply a setting
      */
-    Class<? extends HttpAPI<?>> usedBy();
+    Class<? extends HttpAPI> usedBy();
 
     /**
      * @return to use th setting by subclasses of a class defined by {@link #usedBy()}
@@ -41,7 +41,7 @@ public @interface APIUses {
      * @return which classes should be excluded by the setting applying.
      * It has sense when {@link #isUsedBySubclasses()} is {@code true}
      */
-    Class<? extends HttpAPI<?>>[] exclude() default {};
+    Class<? extends HttpAPI>[] exclude() default {};
 
     class UsedByAPIReader {
 
