@@ -14,6 +14,7 @@ import static java.lang.String.format;
 import static java.lang.invoke.MethodHandles.lookup;
 import static java.lang.invoke.MethodHandles.privateLookupIn;
 import static java.util.Arrays.asList;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.APIUses.UsedByAPIReader.getRequestTuners;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMethod.HttpMethodFactory.createRequestBuilder;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.BodyParameterAnnotationReader.readBodies;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.path.PathParameter.PathParameterReader.readPathParameters;
@@ -25,9 +26,10 @@ class HttpAPIProxyHandler implements InvocationHandler {
     private final List<Object> requestTuners = new LinkedList<>();
     private final URI rootURI;
 
-    HttpAPIProxyHandler(URI rootURI) {
+    HttpAPIProxyHandler(URI rootURI, Class<? extends HttpAPI<?>> getBoundTunersFrom) {
         checkNotNull(rootURI);
         this.rootURI = rootURI;
+        requestTuners.addAll(getRequestTuners(getBoundTunersFrom));
     }
 
     @Override
