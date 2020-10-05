@@ -121,8 +121,7 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
             if (browserUpProxy != null) {
                 browserUpProxy.start();
 
-//                String hostIp = new NetworkUtils().getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
-                String hostIp = "http://localhost";
+                String hostIp = new NetworkUtils().getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
 
                 seleniumProxy.setHttpProxy(hostIp + ":" + browserUpProxy.getPort());
                 seleniumProxy.setSslProxy(hostIp + ":" + browserUpProxy.getPort());
