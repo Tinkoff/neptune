@@ -14,6 +14,7 @@ import static java.lang.String.format;
 import static java.lang.invoke.MethodHandles.lookup;
 import static java.lang.invoke.MethodHandles.privateLookupIn;
 import static java.util.Arrays.asList;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.APIUses.UsedByAPIReader.getRequestTuners;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMethod.HttpMethodFactory.createRequestBuilder;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.BodyParameterAnnotationReader.readBodies;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.path.PathParameter.PathParameterReader.readPathParameters;
@@ -25,9 +26,10 @@ class HttpAPIProxyHandler implements InvocationHandler {
     private final List<Object> requestTuners = new LinkedList<>();
     private final URI rootURI;
 
-    HttpAPIProxyHandler(URI rootURI) {
+    HttpAPIProxyHandler(URI rootURI, Class<? extends HttpAPI<?>> getBoundTunersFrom) {
         checkNotNull(rootURI);
         this.rootURI = rootURI;
+        requestTuners.addAll(getRequestTuners(getBoundTunersFrom));
     }
 
     @Override
@@ -46,6 +48,10 @@ class HttpAPIProxyHandler implements InvocationHandler {
                 requestTuners.add(args[0]);
             }
             return proxy;
+        }
+
+        if ("toString".equals(method.getName()) && method.getParameterTypes().length == 0) {
+            return method.getDeclaringClass().getSimpleName() + " base URI " + rootURI;
         }
 
         if (RequestBuilder.class.isAssignableFrom(method.getReturnType())) {
@@ -76,10 +82,18 @@ class HttpAPIProxyHandler implements InvocationHandler {
             return request;
         }
 
-        throw new UnsupportedOperationException(format("Only methods that return %s or " +
-                        "default methods are supported. Method %s is not supported",
-                RequestBuilder.class.getName(),
-                method));
+        Method m;
+        try {
+            m = Object.class.getDeclaredMethod(method.getName(), method.getParameterTypes());
+        } catch (Exception e) {
+            throw new UnsupportedOperationException(format("Only methods that return %s " +
+                            ", default methods and methods declared by %s are supported. Method %s is not supported",
+                    RequestBuilder.class.getName(),
+                    Object.class.getName(),
+                    method));
+        }
 
+        m.setAccessible(true);
+        return m.invoke(this, args);
     }
 }

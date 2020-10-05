@@ -22,7 +22,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.ClassLoader.getSystemClassLoader;
 import static java.lang.reflect.Proxy.newProxyInstance;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static ru.tinkoff.qa.neptune.http.api.properties.DefaultEndPointOfTargetAPIProperty.DEFAULT_END_POINT_OF_TARGET_API_PROPERTY;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.APIUses.UsedByAPIReader.getDefaultURLProperty;
 
 
 /**
@@ -84,7 +84,7 @@ public interface HttpAPI<T extends HttpAPI<T>> {
     static <T extends HttpAPI<T>> T createAPI(Class<T> toCreate, URI uri) {
         return (T) newProxyInstance(getSystemClassLoader(),
                 new Class[]{toCreate},
-                new HttpAPIProxyHandler(uri));
+                new HttpAPIProxyHandler(uri, toCreate));
     }
 
     /**
@@ -132,6 +132,8 @@ public interface HttpAPI<T extends HttpAPI<T>> {
 
     /**
      * Creates an instance of an interface that extends {@link HttpAPI}. It uses a value defined by
+     * the property which is bound by {@link APIUses} to the class. When there is no such property
+     * then it uses
      * {@link DefaultEndPointOfTargetAPIProperty#DEFAULT_END_POINT_OF_TARGET_API_PROPERTY} as root URI.
      *
      * @param toCreate is an interface to instantiate
@@ -139,7 +141,7 @@ public interface HttpAPI<T extends HttpAPI<T>> {
      * @return is an instance of an interface that extends {@link HttpAPI}
      */
     static <T extends HttpAPI<T>> T createAPI(Class<T> toCreate) {
-        return createAPI(toCreate, DEFAULT_END_POINT_OF_TARGET_API_PROPERTY);
+        return createAPI(toCreate, getDefaultURLProperty(toCreate));
     }
 
     /**
