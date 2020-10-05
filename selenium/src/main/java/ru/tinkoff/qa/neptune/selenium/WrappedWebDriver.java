@@ -38,18 +38,18 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
     private static URL serverUrl;
 
     private final SupportedWebDrivers supportedWebDriver;
-    private final BrowserUpProxy proxy;
+    private final BrowserUpProxy browserUpProxy;
     private WebDriver driver;
     private boolean isWebDriverInstalled;
 
     public WrappedWebDriver(SupportedWebDrivers supportedWebDriver) {
         this.supportedWebDriver = supportedWebDriver;
 
-        if (ofNullable(USE_BROWSER_PROXY.get()).orElse(false)) {
-            proxy = new BrowserUpProxyServer();
-            proxy.setTrustAllServers(true);
+        if (USE_BROWSER_PROXY.get()) {
+            browserUpProxy = new BrowserUpProxyServer();
+            browserUpProxy.setTrustAllServers(true);
         } else {
-            proxy = null;
+            browserUpProxy = null;
         }
     }
 
@@ -90,41 +90,51 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
             Object[] parameters;
             Object[] arguments = supportedWebDriver.get();
 
-            if (proxy != null) {
-                MutableCapabilities capabilities = (MutableCapabilities) stream(arguments)
-                        .filter(arg -> MutableCapabilities.class.isAssignableFrom(arg.getClass()))
-                        .findFirst()
-                        .orElseThrow(() -> new IllegalStateException("Browser mutable capabilities not found"));
+            MutableCapabilities capabilities = (MutableCapabilities) stream(arguments)
+                    .filter(arg -> MutableCapabilities.class.isAssignableFrom(arg.getClass()))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException("Browser mutable capabilities not found"));
 
-                Proxy seleniumProxy = new Proxy();
-                seleniumProxy.setProxyType(MANUAL);
+            Proxy seleniumProxy = new Proxy();
+            seleniumProxy.setProxyType(MANUAL);
 
-                if (!capabilities.asMap().containsKey(CapabilityType.PROXY)) {
-                    ofNullable(PROXY_URL_PROPERTY.get()).ifPresent(proxyUrl ->
-                            proxy.setChainedProxy(new InetSocketAddress(proxyUrl.getHost(), proxyUrl.getPort())));
+            Object proxyCapability = capabilities.asMap().get(CapabilityType.PROXY);
 
-                    proxy.start();
+            if (proxyCapability != null
+                    && Proxy.class.isAssignableFrom(proxyCapability.getClass())
+                    && ((Proxy) proxyCapability).getProxyType().equals(MANUAL)) {
+                Proxy existingSeleniumProxy = (Proxy) proxyCapability;
+                String[] proxyUrl = existingSeleniumProxy.getHttpProxy().split(":");
 
-                    String hostIp = new NetworkUtils().getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
-
-                    seleniumProxy.setHttpProxy(hostIp + ":" + proxy.getPort());
-                    seleniumProxy.setSslProxy(hostIp + ":" + proxy.getPort());
+                if (browserUpProxy != null) {
+                    browserUpProxy.setChainedProxy(new InetSocketAddress(proxyUrl[0], Integer.parseInt(proxyUrl[1])));
                 } else {
-                    ofNullable(PROXY_URL_PROPERTY.get()).ifPresent(proxyUrl -> {
-                        seleniumProxy.setHttpProxy(proxyUrl.getHost() + ":" + proxyUrl.getPort());
-                        seleniumProxy.setSslProxy(proxyUrl.getHost() + ":" + proxyUrl.getPort());
-                    });
+                    seleniumProxy = existingSeleniumProxy;
                 }
+            } else {
+                if (browserUpProxy != null) {
+                    ofNullable(PROXY_URL_PROPERTY.get()).ifPresent(proxyUrl ->
+                            browserUpProxy.setChainedProxy(new InetSocketAddress(proxyUrl.getHost(), proxyUrl.getPort())));
+                }
+            }
 
-                if (seleniumProxy.getHttpProxy() != null) {
-                    capabilities.setCapability(CapabilityType.PROXY, seleniumProxy);
-                    capabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
-                    capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+            if (browserUpProxy != null) {
+                browserUpProxy.start();
 
-                    for (var i = 0; i < arguments.length; i++) {
-                        if (MutableCapabilities.class.isAssignableFrom(arguments[i].getClass())) {
-                            arguments[i] = capabilities;
-                        }
+                String hostIp = new NetworkUtils().getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
+
+                seleniumProxy.setHttpProxy(hostIp + ":" + browserUpProxy.getPort());
+                seleniumProxy.setSslProxy(hostIp + ":" + browserUpProxy.getPort());
+            }
+
+            if (seleniumProxy.getHttpProxy() != null) {
+                capabilities.setCapability(CapabilityType.PROXY, seleniumProxy);
+                capabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
+                capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+
+                for (var i = 0; i < arguments.length; i++) {
+                    if (MutableCapabilities.class.isAssignableFrom(arguments[i].getClass())) {
+                        arguments[i] = capabilities;
                     }
                 }
             }
@@ -152,7 +162,7 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
 
                 var driver = (WebDriver) enhancer.create(c.getParameterTypes(), parameters);
 
-                ofNullable(proxy).ifPresent(browserUpProxy -> {
+                ofNullable(browserUpProxy).ifPresent(browserUpProxy -> {
                     if (browserUpProxy.isStarted()) {
                         browserUpProxy.enableHarCaptureTypes(REQUEST_HEADERS, REQUEST_CONTENT, REQUEST_COOKIES,
                                 RESPONSE_HEADERS, RESPONSE_CONTENT, RESPONSE_COOKIES);
@@ -210,7 +220,7 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
                     driver.get(url.toString()));
         }
 
-        ofNullable(proxy).ifPresent(BrowserUpProxy::newHar);
+        ofNullable(browserUpProxy).ifPresent(BrowserUpProxy::newHar);
     }
 
     @Override
@@ -220,12 +230,12 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
     }
 
     public BrowserUpProxy getProxy() {
-        return proxy;
+        return browserUpProxy;
     }
 
     public void shutDown() {
         ofNullable(driver).ifPresent(webDriver -> {
-            ofNullable(proxy).ifPresent(browserUpProxy -> {
+            ofNullable(browserUpProxy).ifPresent(browserUpProxy -> {
                 if (browserUpProxy.isStarted()) {
                     browserUpProxy.endHar();
                     browserUpProxy.abort();

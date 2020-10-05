@@ -30,7 +30,7 @@ public final class BrowserProxyCriteria {
      * @param url is the url request is supposed to have
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> requestUrl(String url) {
+    public static Criteria<HarEntry> recordedRequestUrl(String url) {
         checkArgument(isNotBlank(url), "URL should be defined");
 
         return condition(format("request url equals to '%s'", url), entry -> {
@@ -47,7 +47,7 @@ public final class BrowserProxyCriteria {
      *                      the RegExp the url is predicted to match
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> requestUrlMatches(String urlExpression) {
+    public static Criteria<HarEntry> recordedRequestUrlMatches(String urlExpression) {
         checkArgument(isNotBlank(urlExpression), "URL Substring/RegExp should be defined");
 
         return condition(format("request url contains '%s' or fits regExp pattern '%s'", urlExpression, urlExpression), entry -> {
@@ -79,7 +79,7 @@ public final class BrowserProxyCriteria {
      * @param method is the name of HTTP method request is supposed to have
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> requestMethod(HttpMethod method) {
+    public static Criteria<HarEntry> recordedRequestMethod(HttpMethod method) {
         checkArgument(nonNull(method), "Method should be defined");
 
         return condition(format("request with method '%s'", method), entry -> {
@@ -95,7 +95,7 @@ public final class BrowserProxyCriteria {
      * @param version is the HTTP version request is supposed to have
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> requestHttpVersion(HttpClient.Version version) {
+    public static Criteria<HarEntry> recordedRequestHttpVersion(HttpClient.Version version) {
         checkArgument(nonNull(version), "Http version should be defined");
 
         return condition(format("request with HTTP version '%s'", version), entry -> {
@@ -111,7 +111,7 @@ public final class BrowserProxyCriteria {
      * @param version is the HTTP version response is supposed to have
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> responseHttpVersion(HttpClient.Version version) {
+    public static Criteria<HarEntry> recordedResponseHttpVersion(HttpClient.Version version) {
         checkArgument(nonNull(version), "Http version should be defined");
 
         return condition(format("response with HTTP version '%s'", version), entry -> {
@@ -127,7 +127,7 @@ public final class BrowserProxyCriteria {
      * @param params is the {@link HarQueryParam} list of query parameters request is supposed to have
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> requestQueryParams(List<HarQueryParam> params) {
+    public static Criteria<HarEntry> recordedRequestQueryParams(List<HarQueryParam> params) {
         checkArgument(nonNull(params), "Query params list should be defined");
         checkArgument(params.size() > 0, "Query params list can'entry be empty");
 
@@ -146,7 +146,7 @@ public final class BrowserProxyCriteria {
      * @param params is the {@link HarQueryParam} list of query parameters request is supposed to contain
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> requestContainsQueryParams(List<HarQueryParam> params) {
+    public static Criteria<HarEntry> recordedRequestContainsQueryParams(List<HarQueryParam> params) {
         checkArgument(nonNull(params), "Query params list should be defined");
         checkArgument(params.size() > 0, "Query params list can'entry be empty");
 
@@ -165,7 +165,7 @@ public final class BrowserProxyCriteria {
      * @param headers is the {@link HarHeader} list of headers request is supposed to have
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> requestHeaders(List<HarHeader> headers) {
+    public static Criteria<HarEntry> recordedRequestHeaders(List<HarHeader> headers) {
         checkArgument(nonNull(headers), "Request headers list should be defined");
         checkArgument(headers.size() > 0, "Request headers list can'entry be empty");
 
@@ -184,7 +184,7 @@ public final class BrowserProxyCriteria {
      * @param headers headers is the {@link HarHeader} list of headers request is supposed to contain
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> requestHeadersContains(List<HarHeader> headers) {
+    public static Criteria<HarEntry> recordedRequestHeadersContains(List<HarHeader> headers) {
         checkArgument(nonNull(headers), "Request headers list should be defined");
         checkArgument(headers.size() > 0, "Request headers list can'entry be empty");
 
@@ -203,7 +203,7 @@ public final class BrowserProxyCriteria {
      * @param headers headers is the {@link HarHeader} list of headers response is supposed to have
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> responseHeaders(List<HarHeader> headers) {
+    public static Criteria<HarEntry> recordedResponseHeaders(List<HarHeader> headers) {
         checkArgument(nonNull(headers), "Response headers list should be defined");
         checkArgument(headers.size() > 0, "Response headers list can'entry be empty");
 
@@ -222,7 +222,7 @@ public final class BrowserProxyCriteria {
      * @param headers headers is the {@link HarHeader} list of headers response is supposed to contain
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> responseHeadersContains(List<HarHeader> headers) {
+    public static Criteria<HarEntry> recordedResponseHeadersContains(List<HarHeader> headers) {
         checkArgument(nonNull(headers), "Response headers list should be defined");
         checkArgument(headers.size() > 0, "Response headers list can'entry be empty");
 
@@ -242,7 +242,7 @@ public final class BrowserProxyCriteria {
      * @param value is the value of header request is supposed to have
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> requestHeader(String name, String value) {
+    public static Criteria<HarEntry> recordedRequestHeader(String name, String value) {
         checkArgument(isNotBlank(name), "Request header name should be defined");
         checkArgument(isNotBlank(value), "Request header value should be defined");
 
@@ -266,7 +266,7 @@ public final class BrowserProxyCriteria {
      *                        the RegExp the header value is predicted to match
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> requestHeaderMatches(String name, String valueExpression) {
+    public static Criteria<HarEntry> recordedRequestHeaderMatches(String name, String valueExpression) {
         checkArgument(isNotBlank(name), "Request header name should be defined");
         checkArgument(isNotBlank(valueExpression), "Request header value substring/RegExp should be defined");
 
@@ -301,7 +301,7 @@ public final class BrowserProxyCriteria {
      * @param value is the value of header response is supposed to have
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> responseHeader(String name, String value) {
+    public static Criteria<HarEntry> recordedResponseHeader(String name, String value) {
         checkArgument(isNotBlank(name), "Response header name should be defined");
         checkArgument(isNotBlank(value), "Response header value should be defined");
 
@@ -325,7 +325,7 @@ public final class BrowserProxyCriteria {
      *                        the RegExp the header value is predicted to match
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> responseHeaderMatches(String name, String valueExpression) {
+    public static Criteria<HarEntry> recordedResponseHeaderMatches(String name, String valueExpression) {
         checkArgument(isNotBlank(name), "Response header name should be defined");
         checkArgument(isNotBlank(valueExpression), "Response header value substring/RegExp should be defined");
 
@@ -359,7 +359,7 @@ public final class BrowserProxyCriteria {
      * @param body is the body request is supposed to have
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> requestBody(String body) {
+    public static Criteria<HarEntry> recordedRequestBody(String body) {
         checkArgument(isNotBlank(body), "Request body should be defined");
 
         return condition(format("request has body '%s'", body), entry -> {
@@ -377,7 +377,7 @@ public final class BrowserProxyCriteria {
      * @param body is the body response is supposed to have
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> responseBody(String body) {
+    public static Criteria<HarEntry> recordedResponseBody(String body) {
         checkArgument(isNotBlank(body), "Response body should be defined");
 
         return condition(format("response has body '%s'", body), entry -> {
@@ -396,7 +396,7 @@ public final class BrowserProxyCriteria {
      *                       the RegExp the request body is predicted to match
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> requestBodyMatches(String bodyExpression) {
+    public static Criteria<HarEntry> recordedRequestBodyMatches(String bodyExpression) {
         checkArgument(isNotBlank(bodyExpression), "Request body substring/RegExp should be defined");
 
         return condition(format("request body contains substring/matches RegExp '%s'", bodyExpression), entry -> {
@@ -429,7 +429,7 @@ public final class BrowserProxyCriteria {
      *                       the RegExp the response body is predicted to match
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> responseBodyMatches(String bodyExpression) {
+    public static Criteria<HarEntry> recordedResponseBodyMatches(String bodyExpression) {
         checkArgument(isNotBlank(bodyExpression), "Response body substring/RegExp should be defined");
 
         return condition(format("response body contains substring/matches RegExp '%s'", bodyExpression), entry -> {
@@ -461,7 +461,7 @@ public final class BrowserProxyCriteria {
      * @param status is the status code response is supposed to have
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> responseStatusCode(Integer status) {
+    public static Criteria<HarEntry> recordedResponseStatusCode(Integer status) {
         checkArgument(nonNull(status), "Status code should be defined");
 
         return condition(format("response status code is '%s'", status), entry -> {
@@ -477,7 +477,7 @@ public final class BrowserProxyCriteria {
      * @param date is the datetime after which the request was to be sent
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> startedDateTimeAfter(Date date) {
+    public static Criteria<HarEntry> recordedStartedDateTimeAfter(Date date) {
         checkArgument(nonNull(date), "Date should be defined");
 
         return condition(format("request was sent after %s", date), entry -> {
@@ -493,7 +493,7 @@ public final class BrowserProxyCriteria {
      * @param date is the datetime before which the request was to be sent
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> startedDateTimeBefore(Date date) {
+    public static Criteria<HarEntry> recordedStartedDateTimeBefore(Date date) {
         checkArgument(nonNull(date), "Date should be defined");
 
         return condition(format("request was sent before %s", date), entry -> {
@@ -509,7 +509,7 @@ public final class BrowserProxyCriteria {
      * @param millis is the number of milliseconds longer than which the duration of the request is supposed to be
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> durationLongerThan(Long millis) {
+    public static Criteria<HarEntry> recordedDurationLongerThan(Long millis) {
         checkArgument(nonNull(millis), "Duration must be defined");
         checkArgument(millis > 0, "Duration should be positive");
 
@@ -526,7 +526,7 @@ public final class BrowserProxyCriteria {
      * @param millis is the number of milliseconds shorter than which the duration of the request is supposed to be
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> durationShorterThan(Long millis) {
+    public static Criteria<HarEntry> recordedDurationShorterThan(Long millis) {
         checkArgument(nonNull(millis), "Duration must be defined");
         checkArgument(millis > 0, "Duration should be positive");
 

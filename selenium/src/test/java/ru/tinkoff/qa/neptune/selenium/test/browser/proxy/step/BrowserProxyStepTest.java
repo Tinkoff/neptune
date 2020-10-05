@@ -34,7 +34,7 @@ public class BrowserProxyStepTest {
 
     private final Map<String, String> PROPERTIES_TO_SET_BEFORE =
             ofEntries(entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getName(), CHROME_DRIVER.name()),
-                    entry(BASE_WEB_DRIVER_URL_PROPERTY.getName(), "https://www.google.ru"),
+                    entry(BASE_WEB_DRIVER_URL_PROPERTY.getName(), "https://www.google.com"),
                     entry(USE_BROWSER_PROXY.getName(), "true"),
                     entry(CHROME.getName(), ChromeSettingsSupplierForProxy.class.getName())
             );
@@ -68,16 +68,16 @@ public class BrowserProxyStepTest {
 
         List<HarEntry> requests = seleniumSteps
                 .get(proxiedRequests()
-                        .criteria(requestMethod(GET))
-                        .criteria(responseStatusCode(200))
-                        .criteria(requestUrl("https://www.google.ru/")));
+                        .criteria(recordedRequestMethod(GET))
+                        .criteria(recordedResponseStatusCode(200))
+                        .criteria(recordedRequestUrlMatches("https://www.google.com")));
 
-        assertThat("Proxy with filter captured only one request", requests, hasSize(1));
+        assertThat("Proxy with filter captured only one request", requests, hasSize(greaterThanOrEqualTo(1)));
         assertThat("Captured entries have GET HTTP, status code 200 and same url", requests,
                 allOf(
                         everyItem(requestHasMethod(GET)),
                         everyItem(responseHasStatusCode(200)),
-                        everyItem(requestHasUrl("https://www.google.ru/"))
+                        everyItem(requestHasUrl(containsString("https://www.google.com")))
                 ));
     }
 

@@ -26,7 +26,7 @@ public class BrowserProxyStepNegativeTest {
 
     private final Map<String, String> PROPERTIES_TO_SET_BEFORE =
             ofEntries(entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getName(), CHROME_DRIVER.name()),
-                    entry(BASE_WEB_DRIVER_URL_PROPERTY.getName(), "https://www.google.ru"),
+                    entry(BASE_WEB_DRIVER_URL_PROPERTY.getName(), "https://www.google.com"),
                     entry(USE_BROWSER_PROXY.getName(), "false"),
                     entry(CHROME.getName(), ChromeSettingsSupplierForProxy.class.getName())
             );
