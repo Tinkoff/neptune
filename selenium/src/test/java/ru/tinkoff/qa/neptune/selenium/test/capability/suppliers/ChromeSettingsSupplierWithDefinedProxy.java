@@ -17,7 +17,10 @@ public class ChromeSettingsSupplierWithDefinedProxy implements CapabilitySetting
             Proxy tempProxy = ClientUtil.createSeleniumProxy(new InetSocketAddress("127.0.0.1", 8089));
 
             chromeOptions.setCapability(CapabilityType.PROXY, tempProxy);
-            chromeOptions.addArguments("--headless");
+            chromeOptions.addArguments("--headless")
+                    .addArguments("--disable-extensions")
+                    .addArguments("--accept-insecure-localhost")
+                    .addArguments("--ignore-certificate-errors");
         };
     }
 }
