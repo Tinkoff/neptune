@@ -9,7 +9,7 @@ dependencies {
 uploadArchives {
     repositories {
         mavenDeployer {
-            repository(url: 'http://nexus.tcsbank.ru/content/repositories/tcs-qa') {
+            repository(url: 'https://nexus-new.tcsbank.ru/repository/mvn-bigops-qa') {
                 authentication(userName: mavenDeployLogin, password: mavenDeployPassword)
             }
 
