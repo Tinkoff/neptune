@@ -1,7 +1,7 @@
 dependencies {
     compile project(':core.api')
     compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: seleniumVersion
-    compile (group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '4.2.0') {
+    compile (group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '4.2.2') {
         exclude group: 'org.seleniumhq.selenium'
         exclude group: 'org.apache.commons', module: 'commons-lang3'
         exclude group: 'org.jsoup', module: 'jsoup'
