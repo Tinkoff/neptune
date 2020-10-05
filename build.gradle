@@ -55,6 +55,8 @@ subprojects {
 
         testLogging {
             events "PASSED", "STARTED", "FAILED", "SKIPPED"
+            exceptionFormat "full"
+            showStackTraces true
         }
     }
 }

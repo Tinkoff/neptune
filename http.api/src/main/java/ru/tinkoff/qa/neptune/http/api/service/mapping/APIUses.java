@@ -45,11 +45,18 @@ public @interface APIUses {
 
     class UsedByAPIReader {
 
+        private static final List<Class<URLValuePropertySupplier>> URL_PROPERTIES = new ClassGraph()
+                .enableAllInfo()
+                .scan().getClassesImplementing(URLValuePropertySupplier.class.getName())
+                .loadClasses(URLValuePropertySupplier.class);
+
+        private static final List<Class<RequestTuner>> REQUEST_TUNERS = new ClassGraph()
+                .enableAllInfo()
+                .scan().getClassesImplementing(RequestTuner.class.getName())
+                .loadClasses(RequestTuner.class);
+
         static URLValuePropertySupplier getDefaultURLProperty(Class<? extends HttpAPI<?>> toBindWith) {
-            return new ClassGraph()
-                    .enableAllInfo()
-                    .scan().getClassesImplementing(URLValuePropertySupplier.class.getName())
-                    .loadClasses(URLValuePropertySupplier.class)
+            return URL_PROPERTIES
                     .stream()
                     .filter(c -> {
                         var a = c.getAnnotationsByType(APIUses.class);
@@ -90,10 +97,7 @@ public @interface APIUses {
         }
 
         static List<Class<RequestTuner>> getRequestTuners(Class<? extends HttpAPI<?>> toBindWith) {
-            return new ClassGraph()
-                    .enableAllInfo()
-                    .scan().getClassesImplementing(RequestTuner.class.getName())
-                    .loadClasses(RequestTuner.class)
+            return REQUEST_TUNERS
                     .stream()
                     .filter(c -> {
                         var a = c.getAnnotationsByType(APIUses.class);

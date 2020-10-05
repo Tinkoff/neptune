@@ -50,6 +50,10 @@ class HttpAPIProxyHandler implements InvocationHandler {
             return proxy;
         }
 
+        if ("toString".equals(method.getName()) && method.getParameterTypes().length == 0) {
+            return method.getDeclaringClass().getSimpleName() + " base URI " + rootURI;
+        }
+
         if (RequestBuilder.class.isAssignableFrom(method.getReturnType())) {
 
             if (method.isDefault()) {
@@ -78,10 +82,18 @@ class HttpAPIProxyHandler implements InvocationHandler {
             return request;
         }
 
-        throw new UnsupportedOperationException(format("Only methods that return %s or " +
-                        "default methods are supported. Method %s is not supported",
-                RequestBuilder.class.getName(),
-                method));
+        Method m;
+        try {
+            m = Object.class.getDeclaredMethod(method.getName(), method.getParameterTypes());
+        } catch (Exception e) {
+            throw new UnsupportedOperationException(format("Only methods that return %s " +
+                            ", default methods and methods declared by %s are supported. Method %s is not supported",
+                    RequestBuilder.class.getName(),
+                    Object.class.getName(),
+                    method));
+        }
 
+        m.setAccessible(true);
+        return m.invoke(this, args);
     }
 }
