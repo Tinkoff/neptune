@@ -1,11 +1,11 @@
 ru.tinkoff.qa.neptune.core.api.cleaning
 ru.tinkoff.qa.neptune.core.api.concurrency
+ru.tinkoff.qa.neptune.core.api.dependency.injection
 ru.tinkoff.qa.neptune.core.api.event.firing
 ru.tinkoff.qa.neptune.core.api.event.firing.annotation
 ru.tinkoff.qa.neptune.core.api.event.firing.captors
 ru.tinkoff.qa.neptune.core.api.event.firing.collections
 ru.tinkoff.qa.neptune.core.api.event.firing.console
-ru.tinkoff.qa.neptune.core.api.exception.management
 ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator
 ru.tinkoff.qa.neptune.core.api.hamcrest.text
 ru.tinkoff.qa.neptune.core.api.properties
@@ -21,6 +21,7 @@ ru.tinkoff.qa.neptune.core.api.properties.integers
 ru.tinkoff.qa.neptune.core.api.properties.longs
 ru.tinkoff.qa.neptune.core.api.properties.object
 ru.tinkoff.qa.neptune.core.api.properties.shorts
+ru.tinkoff.qa.neptune.core.api.properties.string
 ru.tinkoff.qa.neptune.core.api.properties.url
 ru.tinkoff.qa.neptune.core.api.steps
 ru.tinkoff.qa.neptune.core.api.steps.conditions
