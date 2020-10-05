@@ -3,7 +3,7 @@ jdk: oraclejdk11
 
 os: linux
 
-dist: trusty
+dist: focal
 
 addons:
   chrome: stable
