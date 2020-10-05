@@ -8,7 +8,7 @@ import org.testng.annotations.*;
 import ru.tinkoff.qa.neptune.selenium.SeleniumParameterProvider;
 import ru.tinkoff.qa.neptune.selenium.WrappedWebDriver;
 import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
-import ru.tinkoff.qa.neptune.selenium.test.capability.suppliers.ChromeSettingsSupplierHeadless;
+import ru.tinkoff.qa.neptune.selenium.test.capability.suppliers.ChromeSettingsSupplierForProxy;
 
 import java.util.List;
 import java.util.Map;
@@ -26,7 +26,7 @@ public class ProxyStartingTest {
 
     private final Map<String, String> PROPERTIES_TO_SET_BEFORE =
             ofEntries(entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getName(), CHROME_DRIVER.name()),
-                    entry(CHROME.getName(), ChromeSettingsSupplierHeadless.class.getName()));
+                    entry(CHROME.getName(), ChromeSettingsSupplierForProxy.class.getName()));
 
     private static boolean isDriverAlive(WebDriver driver) {
         try {

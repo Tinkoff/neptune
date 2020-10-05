@@ -8,7 +8,7 @@ import org.testng.annotations.*;
 import ru.tinkoff.qa.neptune.selenium.SeleniumParameterProvider;
 import ru.tinkoff.qa.neptune.selenium.WrappedWebDriver;
 import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
-import ru.tinkoff.qa.neptune.selenium.test.capability.suppliers.ChromeSettingsSupplierHeadless;
+import ru.tinkoff.qa.neptune.selenium.test.capability.suppliers.ChromeSettingsSupplierForProxy;
 import ru.tinkoff.qa.neptune.selenium.test.capability.suppliers.ChromeSettingsSupplierWithDefinedProxy;
 
 import java.util.Map;
@@ -30,7 +30,7 @@ public class ChainedProxyTest {
 
     private final Map<String, String> PROPERTIES_TO_SET_BEFORE =
             ofEntries(entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getName(), CHROME_DRIVER.name()),
-                    entry(CHROME.getName(), ChromeSettingsSupplierHeadless.class.getName()),
+                    entry(CHROME.getName(), ChromeSettingsSupplierForProxy.class.getName()),
                     entry(BASE_WEB_DRIVER_URL_PROPERTY.getName(), "https://www.google.com"),
                     entry(USE_BROWSER_PROXY.getName(), "true"));
 
