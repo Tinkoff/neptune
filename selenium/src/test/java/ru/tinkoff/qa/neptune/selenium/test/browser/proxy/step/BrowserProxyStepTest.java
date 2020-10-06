@@ -61,7 +61,7 @@ public class BrowserProxyStepTest {
     public void proxyGetStepSupplierCriteriaTest() throws InterruptedException {
         seleniumSteps.getWrappedDriver();
 
-        seleniumSteps.startNewProxyRecording()
+        seleniumSteps.startOverProxyRecording()
                 .refresh();
 
         sleep(5000);

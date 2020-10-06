@@ -231,7 +231,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      *
      * @return self-reference
      */
-    public SeleniumStepContext startNewProxyRecording() {
+    public SeleniumStepContext startOverProxyRecording() {
         checkNotNull(wrappedWebDriver.getProxy(), "Browser proxy is not instantiated");
         checkArgument(wrappedWebDriver.getProxy().isStarted(), "Browser proxy is not started");
 

@@ -90,51 +90,45 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
             Object[] parameters;
             Object[] arguments = supportedWebDriver.get();
 
-            MutableCapabilities capabilities = (MutableCapabilities) stream(arguments)
-                    .filter(arg -> MutableCapabilities.class.isAssignableFrom(arg.getClass()))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalStateException("Browser mutable capabilities not found"));
+            if (browserUpProxy != null) {
+                MutableCapabilities capabilities = (MutableCapabilities) stream(arguments)
+                        .filter(arg -> MutableCapabilities.class.isAssignableFrom(arg.getClass()))
+                        .findFirst()
+                        .orElseThrow(() -> new IllegalStateException("Browser mutable capabilities not found"));
 
-            Proxy seleniumProxy = new Proxy();
-            seleniumProxy.setProxyType(MANUAL);
+                Proxy seleniumProxy = new Proxy();
+                seleniumProxy.setProxyType(MANUAL);
 
-            Object proxyCapability = capabilities.asMap().get(CapabilityType.PROXY);
+                Object proxyCapability = capabilities.asMap().get(CapabilityType.PROXY);
 
-            if (proxyCapability != null
-                    && Proxy.class.isAssignableFrom(proxyCapability.getClass())
-                    && ((Proxy) proxyCapability).getProxyType().equals(MANUAL)) {
-                Proxy existingSeleniumProxy = (Proxy) proxyCapability;
-                String[] proxyUrl = existingSeleniumProxy.getHttpProxy().split(":");
+                if (proxyCapability != null
+                        && Proxy.class.isAssignableFrom(proxyCapability.getClass())
+                        && ((Proxy) proxyCapability).getProxyType().equals(MANUAL)) {
+                    Proxy existingSeleniumProxy = (Proxy) proxyCapability;
+                    String[] proxyUrl = existingSeleniumProxy.getHttpProxy().split(":");
 
-                if (browserUpProxy != null) {
                     browserUpProxy.setChainedProxy(new InetSocketAddress(proxyUrl[0], Integer.parseInt(proxyUrl[1])));
                 } else {
-                    seleniumProxy = existingSeleniumProxy;
-                }
-            } else {
-                if (browserUpProxy != null) {
                     ofNullable(PROXY_URL_PROPERTY.get()).ifPresent(proxyUrl ->
                             browserUpProxy.setChainedProxy(new InetSocketAddress(proxyUrl.getHost(), proxyUrl.getPort())));
                 }
-            }
 
-            if (browserUpProxy != null) {
                 browserUpProxy.start();
 
                 String hostIp = new NetworkUtils().getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
 
                 seleniumProxy.setHttpProxy(hostIp + ":" + browserUpProxy.getPort());
                 seleniumProxy.setSslProxy(hostIp + ":" + browserUpProxy.getPort());
-            }
 
-            if (seleniumProxy.getHttpProxy() != null) {
-                capabilities.setCapability(CapabilityType.PROXY, seleniumProxy);
-                capabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
-                capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+                if (seleniumProxy.getHttpProxy() != null) {
+                    capabilities.setCapability(CapabilityType.PROXY, seleniumProxy);
+                    capabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
+                    capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
 
-                for (var i = 0; i < arguments.length; i++) {
-                    if (MutableCapabilities.class.isAssignableFrom(arguments[i].getClass())) {
-                        arguments[i] = capabilities;
+                    for (var i = 0; i < arguments.length; i++) {
+                        if (MutableCapabilities.class.isAssignableFrom(arguments[i].getClass())) {
+                            arguments[i] = capabilities;
+                        }
                     }
                 }
             }
