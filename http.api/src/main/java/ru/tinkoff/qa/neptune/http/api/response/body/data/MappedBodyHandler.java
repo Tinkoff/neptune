@@ -18,7 +18,7 @@ public class MappedBodyHandler<S, T> implements HttpResponse.BodyHandler<T> {
     private final HttpResponse.BodyHandler<S> upstreamBodyHandler;
     private final Function<S, T> mapper;
 
-    private MappedBodyHandler(HttpResponse.BodyHandler<S> upstreamBodyHandler, Function<S, T> mapper) {
+    protected MappedBodyHandler(HttpResponse.BodyHandler<S> upstreamBodyHandler, Function<S, T> mapper) {
         checkNotNull(upstreamBodyHandler, "Upstream body handler should be defined");
         checkNotNull(mapper, "Mapping function should be defined");
 
