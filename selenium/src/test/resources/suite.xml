@@ -45,4 +45,10 @@
         </packages>
     </test>
 
+    <test name="Browser proxy tests">
+        <packages>
+            <package name="ru.tinkoff.qa.neptune.selenium.test.browser.proxy.*"/>
+        </packages>
+    </test>
+
 </suite>
