@@ -108,14 +108,11 @@ public class NeptunePropertyGenerator {
 
         try (var output = new BufferedWriter(writer)) {
             output.write("#Neptune properties and some properties of JDK or 3rd party frameworks are defined there");
-            output.newLine();
-            output.newLine();
 
             propHashMap.forEach((s, properties) -> {
                 try {
                     output.newLine();
                     output.write("#===========================" + s);
-                    output.newLine();
 
                     for (var p : properties) {
                         for (var c : p.getComment()) {
@@ -126,9 +123,6 @@ public class NeptunePropertyGenerator {
                         }
                         output.newLine();
                         output.write(p.getNameForFile() + "=" + p.getValue());
-
-                        output.newLine();
-                        output.newLine();
                     }
                 } catch (Throwable t) {
                     throw new RuntimeException(t);

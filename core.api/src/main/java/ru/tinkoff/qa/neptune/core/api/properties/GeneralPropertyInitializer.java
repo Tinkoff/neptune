@@ -8,6 +8,7 @@ import static java.lang.ClassLoader.getSystemClassLoader;
 import static java.lang.String.valueOf;
 import static java.lang.System.getProperty;
 import static java.lang.System.setProperty;
+import static java.lang.Thread.currentThread;
 import static java.util.Arrays.copyOfRange;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -26,10 +27,15 @@ public final class GeneralPropertyInitializer {
         super();
     }
 
+    private static InputStream getResourceInputStream(String name) {
+        return ofNullable(getSystemClassLoader()
+                .getResourceAsStream(name))
+                .orElseGet(() -> currentThread().getContextClassLoader().getResourceAsStream(name));
+    }
+
     private static synchronized InputStream findGlobalProperties(String... path) {
         if (path == null || path.length == 0) {
-            return ofNullable(getSystemClassLoader()
-                    .getResourceAsStream(GLOBAL_PROPERTIES))
+            return ofNullable(getResourceInputStream(GLOBAL_PROPERTIES))
                     .orElseGet(() -> {
                         //try to find it in the root directory of the project
                         var f = new File(GLOBAL_PROPERTIES).getAbsoluteFile();
@@ -74,8 +80,7 @@ public final class GeneralPropertyInitializer {
 
     private static synchronized InputStream findLocalProperties(String... path) {
         if (path == null || path.length == 0) {
-            return ofNullable(getSystemClassLoader()
-                    .getResourceAsStream(PROPERTIES))
+            return ofNullable(getResourceInputStream(PROPERTIES))
                     .orElseGet(() -> {
                         //try to find it in the root directory of the project/module
                         var f = new File(PROPERTIES);
