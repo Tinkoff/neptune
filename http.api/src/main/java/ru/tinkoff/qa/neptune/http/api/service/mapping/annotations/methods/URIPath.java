@@ -15,8 +15,6 @@ public @interface URIPath {
 
     /**
      * @return a path to requested endpoint.
-     * <P>WARNING</P>
-     * This value should not start with {@code '/'}
      */
     String value();
 }
