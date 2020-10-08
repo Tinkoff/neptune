@@ -81,11 +81,5 @@ public class {{classname}} {{#parent}}extends {{{parent}}}{{/parent}}{{^parent}}
 {{#useBeanValidation}}{{>beanValidation}}{{/useBeanValidation}}    public {{{datatypeWithEnum}}} {{#isBoolean}}is{{/isBoolean}}{{getter}}() {
         return {{name}};
     }
-
-    public {{classname}} {{setter}}({{{datatypeWithEnum}}} {{name}}) {
-        this.{{name}} = {{name}};
-        return this;
-    }
-
   {{/vars}}
 }
