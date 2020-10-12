@@ -12,15 +12,15 @@ public class {{classname}} {{#parent}}extends {{{parent}}}{{/parent}}{{^parent}}
         {{/isContainer}}
     {{/isEnum}}
     {{#items.isEnum}}
-      {{#items}}
-      {{^isContainer}}
-{{>enumClass}}
-      {{/isContainer}}
-      {{/items}}
+        {{#items}}
+            {{^isContainer}}
+                {{>enumClass}}
+            {{/isContainer}}
+        {{/items}}
     {{/items.isEnum}}
     @JsonProperty("{{baseName}}")
     {{#withXml}}
-{{>xmlFieldAnnotation}}
+        {{>xmlFieldAnnotation}}
     {{/withXml}}
     {{#isContainer}}
         {{^required}}@JsonInclude(JsonInclude.Include.NON_NULL){{/required}}
@@ -48,14 +48,14 @@ return new {{classname}}(){{#vars}}
 
         public {{classname}} add{{nameInCamelCase}}Item({{{items.datatypeWithEnum}}} {{name}}Item) {
         {{^required}}
-        if (this.{{name}} == null) {
+            if (this.{{name}} == null) {
             this.{{name}} = {{{defaultValue}}};
-        }
-    {{/required}}
+            }
+        {{/required}}
         this.{{name}}.add({{name}}Item);
         return this;
-    }
-  {{/isListContainer}}
+        }
+    {{/isListContainer}}
   {{#isMapContainer}}
 
     public {{classname}} put{{nameInCamelCase}}Item(String key, {{{items.datatypeWithEnum}}} {{name}}Item) {
