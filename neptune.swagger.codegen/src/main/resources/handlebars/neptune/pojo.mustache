@@ -23,13 +23,22 @@ public class {{classname}} {{#parent}}extends {{{parent}}}{{/parent}}{{^parent}}
 {{>xmlFieldAnnotation}}
     {{/withXml}}
   {{#isContainer}}
+    {{^required}}@JsonInclude(JsonInclude.Include.NON_NULL){{/required}}
     private {{{datatypeWithEnum}}} {{name}}{{#required}} = {{{defaultValue}}}{{/required}}{{^required}}{{/required}};
   {{/isContainer}}
   {{^isContainer}}
+    {{^required}}@JsonInclude(JsonInclude.Include.NON_NULL){{/required}}
     private {{{datatypeWithEnum}}} {{name}}{{#required}} = {{{defaultValue}}}{{/required}}{{^required}}{{/required}};
   {{/isContainer}}
 
   {{/vars}}
+
+    public static {{classname}} new{{classname}}({{#vars}}{{#required}}{{{datatypeWithEnum}}} {{name}}{{/required}}{{/vars}}) {
+        return new {{classname}}(){{#vars}}
+            {{#required}}.{{name}}({{name}}){{/required}}
+        {{/vars}};
+    }
+
   {{#vars}}
     public {{classname}} {{name}}({{{datatypeWithEnum}}} {{name}}) {
         this.{{name}} = {{name}};
