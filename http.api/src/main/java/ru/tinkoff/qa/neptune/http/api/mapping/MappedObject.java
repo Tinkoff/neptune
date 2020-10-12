@@ -4,9 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.builder.EqualsBuilder.reflectionEquals;
 import static ru.tinkoff.qa.neptune.http.api.mapping.DefaultMapper.JSON;
 
@@ -44,13 +45,18 @@ public abstract class MappedObject {
      */
     public Map<String, Object> toMap() {
         try {
-            var m = JSON.getMapper().setSerializationInclusion(NON_NULL);
-            var s = m.writerWithDefaultPrettyPrinter().writeValueAsString(this);
-
-            return new ObjectMapper()
-                    .setSerializationInclusion(NON_NULL)
-                    .readValue(s, new TypeReference<>() {
+            var s = JSON.getMapper().writeValueAsString(this);
+            var map = new ObjectMapper()
+                    .readValue(s, new TypeReference<Map<String, Object>>() {
                     });
+
+            var result = new LinkedHashMap<>(map);
+            map.forEach((k, v) -> {
+                if (isNull(v)) {
+                    result.remove(k);
+                }
+            });
+            return result;
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

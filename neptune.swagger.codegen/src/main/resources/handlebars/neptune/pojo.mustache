@@ -22,23 +22,32 @@ public class {{classname}} {{#parent}}extends {{{parent}}}{{/parent}}{{^parent}}
     {{#withXml}}
 {{>xmlFieldAnnotation}}
     {{/withXml}}
-  {{#isContainer}}
-    private {{{datatypeWithEnum}}} {{name}}{{#required}} = {{{defaultValue}}}{{/required}}{{^required}}{{/required}};
-  {{/isContainer}}
-  {{^isContainer}}
-    private {{{datatypeWithEnum}}} {{name}}{{#required}} = {{{defaultValue}}}{{/required}}{{^required}}{{/required}};
-  {{/isContainer}}
+    {{#isContainer}}
+        {{^required}}@JsonInclude(JsonInclude.Include.NON_NULL){{/required}}
+        private {{{datatypeWithEnum}}} {{name}}{{#required}} = {{{defaultValue}}}{{/required}}{{^required}}{{/required}};
+    {{/isContainer}}
+    {{^isContainer}}
+        {{^required}}@JsonInclude(JsonInclude.Include.NON_NULL){{/required}}
+        private {{{datatypeWithEnum}}} {{name}}{{#required}} = {{{defaultValue}}}{{/required}}{{^required}}{{/required}};
+    {{/isContainer}}
 
-  {{/vars}}
-  {{#vars}}
+{{/vars}}
+
+public static {{classname}} new{{classname}}({{#vars}}{{#required}}{{{datatypeWithEnum}}} {{name}}{{/required}}{{/vars}}) {
+return new {{classname}}(){{#vars}}
+    {{#required}}.{{name}}({{name}}){{/required}}
+{{/vars}};
+}
+
+{{#vars}}
     public {{classname}} {{name}}({{{datatypeWithEnum}}} {{name}}) {
-        this.{{name}} = {{name}};
-        return this;
+    this.{{name}} = {{name}};
+    return this;
     }
-  {{#isListContainer}}
+    {{#isListContainer}}
 
-    public {{classname}} add{{nameInCamelCase}}Item({{{items.datatypeWithEnum}}} {{name}}Item) {
-    {{^required}}
+        public {{classname}} add{{nameInCamelCase}}Item({{{items.datatypeWithEnum}}} {{name}}Item) {
+        {{^required}}
         if (this.{{name}} == null) {
             this.{{name}} = {{{defaultValue}}};
         }
