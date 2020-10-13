@@ -21,6 +21,7 @@ public interface {{classname}} extends HttpAPI<{{classname}}> {
 
     /**
     * {{{summary}}}
+    * {{#isDeprecated}}This method is deprecated and it s going to be unavailable{{/isDeprecated}}
     * Notes: {{{notes}}}
     * <p>Response codes:</p>
     * <ul>
@@ -35,7 +36,8 @@ public interface {{classname}} extends HttpAPI<{{classname}}> {
     */
     @HttpMethod(httpMethod = {{httpMethod}})
     @URIPath(value = "{{{path}}}") {{#contentType}}
-    @Header(name = "Content-Type", headerValues = "{{{contentType}}}"){{/contentType}}
+    @Header(name = "Content-Type", headerValues = "{{{contentType}}}"){{/contentType}}{{#isDeprecated}}
+    @Deprecated(forRemoval = true){{/isDeprecated}}
     RequestBuilder {{operationId}}(
 {{#parameters}}{{>queryParams}}{{>pathParams}}{{>headerParams}}{{>bodyParams}}{{>formParams}}{{/parameters}}
     );

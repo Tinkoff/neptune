@@ -910,10 +910,13 @@ public class NeptuneGenerator extends AbstractJavaCodegen {
         improveXml(codegenModel, schema);
         ofNullable(codegenModel.getAllVars())
                 .flatMap(codegenProperties -> codegenProperties
-                .stream()
-                .filter(CodegenProperty::getRequired)
-                .findAny()).ifPresent(codegenProperty -> codegenProperty
-                .vendorExtensions.put(X_IS_FIRST_REQUIRED_PROPERTY, true));
+                        .stream()
+                        .filter(CodegenProperty::getRequired)
+                        .findAny())
+                .ifPresent(codegenProperty -> {
+                    codegenProperty.vendorExtensions.put(X_IS_FIRST_REQUIRED_PROPERTY, true);
+                    codegenModel.vendorExtensions.put(X_IS_FIRST_REQUIRED_PROPERTY, true);
+                });
         return codegenModel;
     }
 

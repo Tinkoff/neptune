@@ -30,12 +30,17 @@ public class {{classname}} {{#parent}}extends {{{parent}}}{{/parent}}{{^parent}}
   {{/isContainer}}
 
   {{/vars}}
-
+    {{#vendorExtensions.x-is-first-required-property}}/**
+    * Creates a new object of {{classname}} and may be used instead of constructor{{#vars}}{{#required}}
+    * @param {{{name}}} is a required field. {{#description}}{{{description}}}{{/description}}{{/required}}{{/vars}}
+    *
+    * @return a new object of {{classname}}
+    **/
     public static {{classname}} new{{classname}}({{#vars}}{{#required}}{{^vendorExtensions.x-is-first-required-property}},{{/vendorExtensions.x-is-first-required-property}}
         {{{datatypeWithEnum}}} {{{name}}}{{/required}}{{/vars}}) {
-        return new {{classname}}(){{#vars}}
-            {{#required}}.{{name}}({{name}}){{/required}}{{/vars}};
-    }
+        return new {{classname}}(){{#vars}}{{#required}}
+            .{{name}}({{name}}){{/required}}{{/vars}};
+    }{{/vendorExtensions.x-is-first-required-property}}
 
   {{#vars}}
     public {{classname}} {{name}}({{{datatypeWithEnum}}} {{name}}) {
