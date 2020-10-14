@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.http.api.cookies;
 
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
-import ru.tinkoff.qa.neptune.core.api.steps.DefaultReportStepParameterFactory;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.StepParameter;
 
@@ -10,7 +9,6 @@ import java.net.CookieStore;
 import java.net.HttpCookie;
 import java.net.URI;
 import java.util.Collection;
-import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Arrays.stream;
@@ -115,11 +113,6 @@ public abstract class DeleteHttpCookiesActionSupplier<R, S extends DeleteHttpCoo
             var found = getHttpCookies.get().apply(value);
             var cookieStore = value.getCookieStore();
             found.forEach(httpCookie -> cookieStore.remove(null, httpCookie));
-        }
-
-        @Override
-        protected Map<String, String> getParameters() {
-            return DefaultReportStepParameterFactory.getParameters(getHttpCookies);
         }
     }
 }

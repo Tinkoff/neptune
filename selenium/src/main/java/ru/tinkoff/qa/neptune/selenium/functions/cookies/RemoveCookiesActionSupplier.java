@@ -3,14 +3,12 @@ package ru.tinkoff.qa.neptune.selenium.functions.cookies;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
-import ru.tinkoff.qa.neptune.core.api.steps.DefaultReportStepParameterFactory;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.StepParameter;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import java.time.Duration;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -115,11 +113,6 @@ public abstract class RemoveCookiesActionSupplier<T>
         protected void performActionOn(Set<Cookie> value) {
             var options = driver.manage();
             value.forEach(options::deleteCookie);
-        }
-
-        @Override
-        protected Map<String, String> getParameters() {
-            return DefaultReportStepParameterFactory.getParameters(getCookies);
         }
     }
 

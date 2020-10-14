@@ -19,10 +19,12 @@ import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.valueOf;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationHMS;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.AND;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 import static ru.tinkoff.qa.neptune.core.api.steps.StepFunction.toGet;
@@ -31,6 +33,7 @@ import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromIte
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSubArray.getArray;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSubIterable.getIterable;
+import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 /**
  * This class is designed to build and supply chained functions to get desired value.
@@ -45,7 +48,7 @@ import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSubIterable.g
 @SuppressWarnings("unchecked")
 @SequentialGetStepSupplier.DefaultParameterNames
 public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends SequentialGetStepSupplier<T, R, M, P, THIS>> implements Cloneable,
-        Supplier<Function<T, R>>, MakesCapturesOnFinishing<THIS> {
+        Supplier<Function<T, R>>, MakesCapturesOnFinishing<THIS>, StepParameterPojo {
 
     private final String description;
 
@@ -70,8 +73,50 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         MakesCapturesOnFinishing.makeCaptureSettings(this);
     }
 
-    protected Map<String, String> getParameters() {
-        return DefaultReportStepParameterFactory.getParameters(this);
+    @Override
+    public Map<String, String> getParameters() {
+        var result = new LinkedHashMap<>(StepParameterPojo.super.getParameters());
+        var cls = (Class<?>) this.getClass();
+
+        var defaultParameters = ofNullable(cls.getAnnotation(SequentialGetStepSupplier.DefaultParameterNames.class))
+                .orElseGet(() -> {
+                    SequentialGetStepSupplier.DefaultParameterNames parameterNames = null;
+                    var clazz = cls;
+                    while (parameterNames == null) {
+                        clazz = clazz.getSuperclass();
+                        parameterNames = clazz.getAnnotation(SequentialGetStepSupplier.DefaultParameterNames.class);
+                    }
+                    return parameterNames;
+                });
+
+        int i = 0;
+        for (var c : conditions) {
+            var name = i == 0 ? defaultParameters.criteria() : defaultParameters.criteria() + " " + (i + 1);
+            result.put(name, c.toString());
+            i++;
+        }
+
+        ofNullable(timeToGet).ifPresent(duration -> {
+            if (duration.toMillis() > 0) {
+                result.put(defaultParameters.timeOut(), formatDurationHMS(duration.toMillis()));
+            }
+        });
+        ofNullable(sleepingTime).ifPresent(duration -> {
+            if (duration.toMillis() > 0) {
+                result.put(defaultParameters.pollingTime(), formatDurationHMS(duration.toMillis()));
+            }
+        });
+
+        if (isLoggable(from) && nonNull(from)) {
+            var fromCls = from.getClass();
+            if (Function.class.isAssignableFrom(fromCls) || SequentialGetStepSupplier.class.isAssignableFrom(fromCls)) {
+                result.put(defaultParameters.from(), from + " (is calculated while the step is executed)");
+            } else {
+                result.put(defaultParameters.from(), valueOf(from));
+            }
+        }
+
+        return result;
     }
 
     /**
