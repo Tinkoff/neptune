@@ -17,7 +17,7 @@ import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 @SuppressWarnings("unchecked")
-public final class Presence<T extends Context> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<T, Boolean, Object, Presence<T>> {
+public final class Presence<T extends Context<?>> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<T, Boolean, Object, Presence<T>> {
 
     private final Set<Class<? extends Throwable>> ignored2 = new HashSet<>();
 
@@ -32,7 +32,7 @@ public final class Presence<T extends Context> extends SequentialGetStepSupplier
                             }
 
                             if (Iterable.class.isAssignableFrom(clazz)) {
-                                return Iterables.size((Iterable) o1) > 0;
+                                return Iterables.size((Iterable<?>) o1) > 0;
                             }
 
                             if (clazz.isArray()) {
@@ -79,7 +79,7 @@ public final class Presence<T extends Context> extends SequentialGetStepSupplier
      * @param <T>         is a type of {@link Context}
      * @return an instance of {@link Presence}.
      */
-    public static <T extends Context> Presence<T> presence(SequentialGetStepSupplier<T, ?, ?, ?, ?> toBePresent) {
+    public static <T extends Context<?>> Presence<T> presence(SequentialGetStepSupplier<T, ?, ?, ?, ?> toBePresent) {
         checkArgument(nonNull(toBePresent), "Supplier of a function should not be a null-value");
         return new Presence<>(toBePresent);
     }
@@ -130,7 +130,7 @@ public final class Presence<T extends Context> extends SequentialGetStepSupplier
     }
 
     @Override
-    protected Map<String, String> getParameters() {
+    public Map<String, String> getParameters() {
         return ((StepFunction<?, ?>) from).getParameters();
     }
 }

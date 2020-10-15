@@ -2,12 +2,14 @@ package ru.tinkoff.qa.neptune.core.api.steps;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.CaptorFilterByProducedType;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakesCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -15,12 +17,14 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.lang.String.valueOf;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.core.api.steps.StepAction.action;
+import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 /**
  * This class is designed to build actions to be performed on different objects.
@@ -33,7 +37,7 @@ import static ru.tinkoff.qa.neptune.core.api.steps.StepAction.action;
 @SuppressWarnings("unchecked")
 @SequentialActionSupplier.DefaultParameterNames
 public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActionSupplier<T, R, THIS>> implements Supplier<StepAction<T>>,
-        MakesCapturesOnFinishing<THIS> {
+        MakesCapturesOnFinishing<THIS>, StepParameterPojo {
 
     private final String actionDescription;
     private final List<CaptorFilterByProducedType> captorFilters = new ArrayList<>();
@@ -46,8 +50,32 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
         MakesCapturesOnFinishing.makeCaptureSettings(this);
     }
 
-    protected Map<String, String> getParameters() {
-        return DefaultReportStepParameterFactory.getParameters(this);
+    @Override
+    public Map<String, String> getParameters() {
+        var cls = (Class<?>) this.getClass();
+        var defaultParameters = ofNullable(cls.getAnnotation(SequentialActionSupplier.DefaultParameterNames.class))
+                .orElseGet(() -> {
+                    SequentialActionSupplier.DefaultParameterNames result = null;
+                    var clazz = cls;
+                    while (result == null) {
+                        clazz = clazz.getSuperclass();
+                        result = clazz.getAnnotation(SequentialActionSupplier.DefaultParameterNames.class);
+                    }
+                    return result;
+                });
+
+        var result = new LinkedHashMap<String, String>();
+        if (isLoggable(toBePerformedOn) && nonNull(toBePerformedOn)) {
+            var fromCls = toBePerformedOn.getClass();
+            if (Function.class.isAssignableFrom(fromCls) || SequentialGetStepSupplier.class.isAssignableFrom(fromCls)) {
+                result.put(defaultParameters.performOn(), toBePerformedOn + " (is calculated while the step is executed)");
+            } else {
+                result.put(defaultParameters.performOn(), valueOf(toBePerformedOn));
+            }
+        }
+
+        result.putAll(StepParameterPojo.super.getParameters());
+        return result;
     }
 
     private StepAction<T> performOnPrivate(Object functionOrObject) {

@@ -2,9 +2,8 @@ package ru.tinkoff.qa.neptune.data.base.api.data.operations;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.steps.DefaultReportStepParameterFactory;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
-import ru.tinkoff.qa.neptune.core.api.steps.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 import ru.tinkoff.qa.neptune.data.base.api.queries.ResultPersistentManager;
@@ -14,7 +13,6 @@ import ru.tinkoff.qa.neptune.data.base.api.result.ListOfPersistentObjects;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -87,7 +85,7 @@ public abstract class DeleteOperation<T extends PersistableObject, R extends Del
         private static final ResultPersistentManager RESULT_PERSISTENT_MANAGER = new ResultPersistentManager() {
         };
 
-        private final SequentialGetStepSupplier<DataBaseStepContext, ?, ?, ?, ?> howToSelect;
+        final SequentialGetStepSupplier<DataBaseStepContext, ?, ?, ?, ?> howToSelect;
 
         private DeleteBySelection(SequentialGetStepSupplier<DataBaseStepContext, ?, ?, ?, ?> howToSelect) {
             super();
@@ -111,13 +109,6 @@ public abstract class DeleteOperation<T extends PersistableObject, R extends Del
                 var list = ofNullable(result).map(List::of).orElseGet(List::of);
                 return getMap(context, list);
             });
-        }
-
-        @Override
-        protected Map<String, String> getParameters() {
-            var result = super.getParameters();
-            result.putAll(DefaultReportStepParameterFactory.getParameters(howToSelect));
-            return result;
         }
     }
 }

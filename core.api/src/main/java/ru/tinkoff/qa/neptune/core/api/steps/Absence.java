@@ -5,19 +5,17 @@ import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 
 import java.lang.reflect.Array;
 import java.time.Duration;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.time.Duration.ofMillis;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationHMS;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.fireReturnedValue;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
+@SequentialGetStepSupplier.DefaultParameterNames(timeOut = "Time of the waiting for absence")
 @SuppressWarnings("unchecked")
 public final class Absence<T extends Context<?>> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<T, Boolean, Object, Absence<T>> {
 
@@ -162,12 +160,5 @@ public final class Absence<T extends Context<?>> extends SequentialGetStepSuppli
      */
     public Absence<T> throwIfPresent(String exceptionMessage) {
         return throwOnEmptyResult(() -> new IllegalStateException(exceptionMessage));
-    }
-
-    @Override
-    protected Map<String, String> getParameters() {
-        var result = new LinkedHashMap<>(((StepFunction<?, ?>) from).getParameters());
-        result.put("Time of the waiting for absence", formatDurationHMS(this.timeToGet.toMillis()));
-        return result;
     }
 }
