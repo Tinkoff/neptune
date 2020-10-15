@@ -6,6 +6,7 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakesCapturesOnFin
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.FileCaptor;
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.ImageCaptor;
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.StringCaptor;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 
 import java.awt.image.BufferedImage;
 import java.io.File;

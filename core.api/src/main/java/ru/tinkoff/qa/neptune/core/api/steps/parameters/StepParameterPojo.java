@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.core.api.steps;
+package ru.tinkoff.qa.neptune.core.api.steps.parameters;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -7,7 +7,7 @@ import static java.lang.String.valueOf;
 import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
-import static ru.tinkoff.qa.neptune.core.api.steps.StepParameter.ParameterValueReader.getParameterForStep;
+import static ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter.ParameterValueReader.getParameterForStep;
 
 /**
  * A POJO that wraps parameters of steps

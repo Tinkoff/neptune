@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.core.api.steps;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.CaptorFilterByProducedType;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakesCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 
 import java.awt.image.BufferedImage;
 import java.io.File;

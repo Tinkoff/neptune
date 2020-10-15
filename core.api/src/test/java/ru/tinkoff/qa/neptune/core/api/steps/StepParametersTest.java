@@ -3,6 +3,8 @@ package ru.tinkoff.qa.neptune.core.api.steps;
 import org.hamcrest.Matcher;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterWrapper;
 
 import java.time.Duration;
 import java.util.Map;
@@ -607,7 +609,7 @@ public class StepParametersTest {
         }
     }
 
-    private static class ParamObj implements StepParameterPojo {
+    private static class ParamObj extends StepParameterWrapper {
 
         @StepParameter("Pojo Parameter 1")
         private Boolean param1;
