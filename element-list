@@ -29,6 +29,7 @@ ru.tinkoff.qa.neptune.core.api.properties.url
 ru.tinkoff.qa.neptune.core.api.steps
 ru.tinkoff.qa.neptune.core.api.steps.conditions
 ru.tinkoff.qa.neptune.core.api.steps.context
+ru.tinkoff.qa.neptune.core.api.steps.parameters
 ru.tinkoff.qa.neptune.core.api.steps.proxy
 ru.tinkoff.qa.neptune.core.api.utils
 ru.tinkoff.qa.neptune.data.base.api
