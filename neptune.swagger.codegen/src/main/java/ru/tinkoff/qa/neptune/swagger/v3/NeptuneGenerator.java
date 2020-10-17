@@ -461,7 +461,7 @@ public class NeptuneGenerator extends AbstractJavaCodegen {
     }
 
     private void init() {
-        outputFolder = "generated-code/javaMicronaut";
+        outputFolder = "generated-code/neptune.http";
         apiPackage = "io.swagger.api";
         modelPackage = "io.swagger.model";
         invokerPackage = "io.swagger.api";
@@ -922,19 +922,11 @@ public class NeptuneGenerator extends AbstractJavaCodegen {
 
     @Override
     public String apiFileFolder() {
-        var outputRoot = outputFolder;
-        if (!outputRoot.endsWith(sourceFolder) && !outputRoot.endsWith(testFolder)) {
-            outputRoot = outputFolder + "/" + sourceFolder;
-        }
-        return outputRoot + "/" + apiPackage().replace('.', '/');
+        return outputFolder + "/" + apiPackage().replace('.', '/');
     }
 
     @Override
     public String modelFileFolder() {
-        var outputRoot = outputFolder;
-        if (!outputRoot.endsWith(sourceFolder) && !outputRoot.endsWith(testFolder)) {
-            outputRoot = outputFolder + "/" + sourceFolder;
-        }
-        return outputRoot + "/" + modelPackage().replace('.', '/');
+        return outputFolder + "/" + modelPackage().replace('.', '/');
     }
 }
