@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.StreamSupport;
@@ -139,7 +138,7 @@ public class NeptunePropertyGenerator {
                 .scan().getClassesImplementing(PropertySupplier.class.getName())
                 .loadClasses(PropertySupplier.class)
                 .forEach(cls -> {
-                    if (!cls.isEnum()) {
+                    if (!cls.isEnum() && cls.getAnnotation(ExcludeFromExport.class) == null) {
                         var list = propertyMap.computeIfAbsent(getSection(cls), s -> new LinkedList<>());
                         var p = getProperty(cls, props);
                         ofNullable(p).ifPresent(list::add);
@@ -147,7 +146,7 @@ public class NeptunePropertyGenerator {
                     }
 
                     stream(cls.getDeclaredFields())
-                            .filter(Field::isEnumConstant)
+                            .filter(field -> field.isEnumConstant() && field.getAnnotation(ExcludeFromExport.class) == null)
                             .forEach(field -> {
                                 field.setAccessible(true);
                                 var list = propertyMap.computeIfAbsent(getSection(field), s -> new LinkedList<>());
