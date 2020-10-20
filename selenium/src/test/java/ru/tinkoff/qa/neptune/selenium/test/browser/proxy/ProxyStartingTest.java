@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.selenium.test.browser.proxy;
 
-import com.browserup.harreader.model.HarEntry;
 import org.hamcrest.Matcher;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -10,7 +9,6 @@ import ru.tinkoff.qa.neptune.selenium.WrappedWebDriver;
 import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
 import ru.tinkoff.qa.neptune.selenium.test.capability.suppliers.ChromeSettingsSupplierForProxy;
 
-import java.util.List;
 import java.util.Map;
 
 import static java.util.Map.entry;
@@ -83,13 +81,11 @@ public class ProxyStartingTest {
 
         driver.get("https://google.com");
 
-        List<HarEntry> harEntries = wrappedWebDriver.getProxy().getHar().getLog().getEntries();
-
         wrappedWebDriver.refreshContext();
 
-        assertThat("HAR entries list",
-                wrappedWebDriver.getProxy().getHar().getLog().getEntries(),
-                hasItems(not(harEntries.toArray())));
+        assertThat("Browser proxy",
+                wrappedWebDriver.getProxy(),
+                nullValue());
     }
 
     @AfterMethod(alwaysRun = true)
