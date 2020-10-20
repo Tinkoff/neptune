@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.functions.intreraction;
 
 import org.openqa.selenium.Keys;
-import ru.tinkoff.qa.neptune.core.api.steps.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;

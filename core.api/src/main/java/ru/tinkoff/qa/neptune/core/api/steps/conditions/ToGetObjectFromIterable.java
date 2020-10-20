@@ -10,7 +10,6 @@ import java.util.function.Supplier;
 
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
-import static java.util.stream.StreamSupport.stream;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetConditionalHelper.*;
 
 @SuppressWarnings("unchecked")
@@ -27,15 +26,19 @@ public final class ToGetObjectFromIterable {
                                                                                    @Nullable Supplier<? extends RuntimeException> exceptionSupplier,
                                                                                    Collection<Class<? extends Throwable>> toIgnore) {
         return fluentWaitFunction(t ->
-                        ofNullable(function.apply(t)).flatMap(v -> stream(v.spliterator(), false)
-                                .filter(r -> {
-                                    try {
-                                        return notNullAnd(condition).test(r);
-                                    } catch (Throwable t1) {
-                                        return printErrorAndFalse(t1);
+                        ofNullable(function.apply(t))
+                                .map(rs -> {
+                                    for (var r : rs) {
+                                        try {
+                                            if (notNullAnd(condition).test(r)) {
+                                                return r;
+                                            }
+                                        } catch (Throwable t1) {
+                                            printErrorAndFalse(t1);
+                                        }
                                     }
+                                    return null;
                                 })
-                                .findFirst())
                                 .orElse(null),
                 waitingTime, sleepingTime, Objects::nonNull, exceptionSupplier, toIgnore);
     }

@@ -8,18 +8,20 @@ package {{package}};
 {{#imports}}import {{import}};
 {{/imports}}
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.*;
 
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.DefaultHttpMethods.*;
 
 {{#operations}}
-public interface {{classname}} {
+public interface {{classname}} extends HttpAPI<{{classname}}> {
 
 {{#operation}}
 {{#contents}}
 
     /**
     * {{{summary}}}
+    * {{#isDeprecated}}This method is deprecated and it s going to be unavailable{{/isDeprecated}}
     * Notes: {{{notes}}}
     * <p>Response codes:</p>
     * <ul>
@@ -34,7 +36,8 @@ public interface {{classname}} {
     */
     @HttpMethod(httpMethod = {{httpMethod}})
     @URIPath(value = "{{{path}}}") {{#contentType}}
-    @Header(name = "Content-Type", headerValues = "{{{contentType}}}"){{/contentType}}
+    @Header(name = "Content-Type", headerValues = "{{{contentType}}}"){{/contentType}}{{#isDeprecated}}
+    @Deprecated(forRemoval = true){{/isDeprecated}}
     RequestBuilder {{operationId}}(
 {{#parameters}}{{>queryParams}}{{>pathParams}}{{>headerParams}}{{>bodyParams}}{{>formParams}}{{/parameters}}
     );

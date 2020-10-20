@@ -40,6 +40,7 @@ public class NeptuneGenerator extends AbstractJavaCodegen {
     private static final String X_XML_WRAPPER_NAME = "x-xml-wrapper-name";
     private static final String X_XML_WRAPPER_NAMESPACE = "x-xml-wrapper-namespace";
     private static final String X_IS_XML_ATTRIBUTE = "x-is-xml-attribute";
+    private static final String X_IS_FIRST_REQUIRED_PROPERTY = "x-is-first-required-property";
     private final Map<String, CodegenModel> handledModels = new HashMap<>();
     // source folder where to write the files
     protected String apiVersion = "1.0.0";
@@ -406,7 +407,7 @@ public class NeptuneGenerator extends AbstractJavaCodegen {
                 }
 
                 if (isAttribute) {
-                    codegenProperty.vendorExtensions.put(X_IS_XML_ATTRIBUTE, true);
+                    codegenProperty.vendorExtensions.put(X_IS_FIRST_REQUIRED_PROPERTY, true);
                 }
             });
         }
@@ -460,7 +461,7 @@ public class NeptuneGenerator extends AbstractJavaCodegen {
     }
 
     private void init() {
-        outputFolder = "generated-code/javaMicronaut";
+        outputFolder = "generated-code/neptune.http";
         apiPackage = "io.swagger.api";
         modelPackage = "io.swagger.model";
         invokerPackage = "io.swagger.api";
@@ -907,24 +908,25 @@ public class NeptuneGenerator extends AbstractJavaCodegen {
         });
 
         improveXml(codegenModel, schema);
+        ofNullable(codegenModel.getAllVars())
+                .flatMap(codegenProperties -> codegenProperties
+                        .stream()
+                        .filter(CodegenProperty::getRequired)
+                        .findAny())
+                .ifPresent(codegenProperty -> {
+                    codegenProperty.vendorExtensions.put(X_IS_FIRST_REQUIRED_PROPERTY, true);
+                    codegenModel.vendorExtensions.put(X_IS_FIRST_REQUIRED_PROPERTY, true);
+                });
         return codegenModel;
     }
 
     @Override
     public String apiFileFolder() {
-        var outputRoot = outputFolder;
-        if (!outputRoot.endsWith(sourceFolder) && !outputRoot.endsWith(testFolder)) {
-            outputRoot = outputFolder + "/" + sourceFolder;
-        }
-        return outputRoot + "/" + apiPackage().replace('.', '/');
+        return outputFolder + "/" + apiPackage().replace('.', '/');
     }
 
     @Override
     public String modelFileFolder() {
-        var outputRoot = outputFolder;
-        if (!outputRoot.endsWith(sourceFolder) && !outputRoot.endsWith(testFolder)) {
-            outputRoot = outputFolder + "/" + sourceFolder;
-        }
-        return outputRoot + "/" + modelPackage().replace('.', '/');
+        return outputFolder + "/" + modelPackage().replace('.', '/');
     }
 }

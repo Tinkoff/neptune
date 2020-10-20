@@ -5,20 +5,17 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.CaptorFilterByProd
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeCaptureOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
-import ru.tinkoff.qa.neptune.core.api.steps.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 
 import java.net.http.HttpResponse;
 import java.time.Duration;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.Optional.ofNullable;
 import static java.util.Set.of;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchFailureEvent;
@@ -148,7 +145,7 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetO
             extends GetObjectFromIterableBodyStepSupplier<T, R, GetObjectFromIterableWhenResponseReceived<T, R>> {
 
         @StepParameter("From body of received http response")
-        private final HttpResponse<T> response;
+        final HttpResponse<T> response;
 
         private <S extends Iterable<R>> GetObjectFromIterableWhenResponseReceived(String description,
                                                                                   HttpResponse<T> response,
@@ -241,13 +238,6 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetO
                     }
                 }
             };
-        }
-
-        @Override
-        protected Map<String, String> getParameters() {
-            var result = new LinkedHashMap<>(super.getParameters());
-            ofNullable(getResponse).ifPresent(t -> result.putAll(t.getParameters()));
-            return result;
         }
     }
 }

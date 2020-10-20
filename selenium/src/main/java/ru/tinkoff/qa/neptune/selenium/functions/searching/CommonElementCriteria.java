@@ -6,7 +6,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsElement;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.StepFunction;
-import ru.tinkoff.qa.neptune.core.api.steps.TurnsRetortingOff;
 import ru.tinkoff.qa.neptune.selenium.api.widget.*;
 
 import java.time.Duration;
@@ -338,9 +337,7 @@ public final class CommonElementCriteria {
     public static <T extends SearchContext> Criteria<T> nested(MultipleSearchSupplier<?> howToFind) {
         checkArgument(nonNull(howToFind), "The way how to find nested elements should be defined");
         var func = howToFind.clone().timeOut(ofMillis(0)).get();
-        if (TurnsRetortingOff.class.isAssignableFrom(func.getClass())) {
-            ((TurnsRetortingOff<?>) func).turnReportingOff();
-        }
+        ((StepFunction<?, ?>) func).turnReportingOff();
         return condition(format("has nested %s", howToFind), t -> func.apply(t).size() > 0);
     }
 
@@ -359,9 +356,7 @@ public final class CommonElementCriteria {
         checkArgument(nonNull(howToFind), "The way how to find nested elements should be defined");
         checkArgument(expected >= 0, "Count of expected nested elements can't be a negative or zero value.");
         var func = howToFind.clone().timeOut(ofMillis(0)).get();
-        if (TurnsRetortingOff.class.isAssignableFrom(func.getClass())) {
-            ((TurnsRetortingOff<?>) func).turnReportingOff();
-        }
+        ((StepFunction<?, ?>) func).turnReportingOff();
         return condition(format("has %s nested %s", expected, howToFind),
                 t -> func.apply(t).size() == expected);
     }

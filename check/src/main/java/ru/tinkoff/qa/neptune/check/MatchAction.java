@@ -3,7 +3,7 @@ package ru.tinkoff.qa.neptune.check;
 import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeCaptureOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
-import ru.tinkoff.qa.neptune.core.api.steps.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 
 import java.util.function.Function;
 

@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.StreamSupport;
@@ -108,14 +107,11 @@ public class NeptunePropertyGenerator {
 
         try (var output = new BufferedWriter(writer)) {
             output.write("#Neptune properties and some properties of JDK or 3rd party frameworks are defined there");
-            output.newLine();
-            output.newLine();
 
             propHashMap.forEach((s, properties) -> {
                 try {
                     output.newLine();
                     output.write("#===========================" + s);
-                    output.newLine();
 
                     for (var p : properties) {
                         for (var c : p.getComment()) {
@@ -126,9 +122,6 @@ public class NeptunePropertyGenerator {
                         }
                         output.newLine();
                         output.write(p.getNameForFile() + "=" + p.getValue());
-
-                        output.newLine();
-                        output.newLine();
                     }
                 } catch (Throwable t) {
                     throw new RuntimeException(t);
@@ -145,7 +138,7 @@ public class NeptunePropertyGenerator {
                 .scan().getClassesImplementing(PropertySupplier.class.getName())
                 .loadClasses(PropertySupplier.class)
                 .forEach(cls -> {
-                    if (!cls.isEnum()) {
+                    if (!cls.isEnum() && cls.getAnnotation(ExcludeFromExport.class) == null) {
                         var list = propertyMap.computeIfAbsent(getSection(cls), s -> new LinkedList<>());
                         var p = getProperty(cls, props);
                         ofNullable(p).ifPresent(list::add);
@@ -153,7 +146,7 @@ public class NeptunePropertyGenerator {
                     }
 
                     stream(cls.getDeclaredFields())
-                            .filter(Field::isEnumConstant)
+                            .filter(field -> field.isEnumConstant() && field.getAnnotation(ExcludeFromExport.class) == null)
                             .forEach(field -> {
                                 field.setAccessible(true);
                                 var list = propertyMap.computeIfAbsent(getSection(field), s -> new LinkedList<>());

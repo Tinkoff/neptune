@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.functions.intreraction;
 
 import org.openqa.selenium.Keys;
-import ru.tinkoff.qa.neptune.core.api.steps.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 
 public final class CharSequenceParameterValueGetter implements StepParameter.ParameterValueGetter<CharSequence> {
 

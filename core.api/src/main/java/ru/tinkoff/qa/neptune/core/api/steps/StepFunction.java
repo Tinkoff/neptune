@@ -22,7 +22,7 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 @SuppressWarnings("unchecked")
 public class StepFunction<T, R> implements Function<T, R>,
-        MakesCapturesOnFinishing<StepFunction<T, R>>, TurnsRetortingOff<StepFunction<T, R>> {
+        MakesCapturesOnFinishing<StepFunction<T, R>> {
 
     String description;
     Function<Object, Object> function;

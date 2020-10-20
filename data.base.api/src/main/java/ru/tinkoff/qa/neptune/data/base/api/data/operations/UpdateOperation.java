@@ -4,9 +4,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.datanucleus.api.jdo.JDOPersistenceManager;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.steps.DefaultReportStepParameterFactory;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
-import ru.tinkoff.qa.neptune.core.api.steps.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 import ru.tinkoff.qa.neptune.data.base.api.IdSetter;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
@@ -114,7 +113,7 @@ public abstract class UpdateOperation<T extends PersistableObject, R extends Upd
     }
 
     @Override
-    protected Map<String, String> getParameters() {
+    public Map<String, String> getParameters() {
         var result = super.getParameters();
         int i = 0;
         for (UpdateExpression<?> u : updates) {
@@ -150,7 +149,7 @@ public abstract class UpdateOperation<T extends PersistableObject, R extends Upd
         private static final ResultPersistentManager RESULT_PERSISTENT_MANAGER = new ResultPersistentManager() {
         };
 
-        private final SequentialGetStepSupplier<DataBaseStepContext, ?, ?, ?, ?> howToSelect;
+        final SequentialGetStepSupplier<DataBaseStepContext, ?, ?, ?, ?> howToSelect;
 
         @SafeVarargs
         private UpdateBySelection(SequentialGetStepSupplier<DataBaseStepContext, ?, ?, ?, ?> howToSelect, UpdateExpression<T>... set) {
@@ -177,13 +176,6 @@ public abstract class UpdateOperation<T extends PersistableObject, R extends Upd
                 var list = ofNullable(result).map(List::of).orElseGet(List::of);
                 return getMap(dataBaseStepContext, list);
             });
-        }
-
-        @Override
-        protected Map<String, String> getParameters() {
-            var result = super.getParameters();
-            result.putAll(DefaultReportStepParameterFactory.getParameters(howToSelect));
-            return result;
         }
     }
 }

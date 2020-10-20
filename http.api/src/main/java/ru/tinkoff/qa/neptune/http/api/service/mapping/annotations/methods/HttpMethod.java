@@ -80,7 +80,7 @@ public @interface HttpMethod {
                         }
 
                         var requestURI = ofNullable(path)
-                                .map(s -> URI.create(uri.toString() + "/" + path))
+                                .map(s -> URI.create(uri.toString() + (path.startsWith("/") ? path: "/" + path)))
                                 .orElse(uri);
 
                         if (methodEnum != NON_DEFINED) {

@@ -8,6 +8,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Retention(RUNTIME)
 @Target(TYPE)
-@interface APIUsesRepeatable {
+public @interface APIUsesRepeatable {
     APIUses[] value();
 }

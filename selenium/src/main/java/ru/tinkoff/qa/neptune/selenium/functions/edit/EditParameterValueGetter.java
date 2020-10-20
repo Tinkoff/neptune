@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.functions.edit;
 
-import ru.tinkoff.qa.neptune.core.api.steps.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 
 import java.util.Arrays;
 import java.util.stream.Stream;

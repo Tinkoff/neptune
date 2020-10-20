@@ -6,20 +6,13 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 /**
- * Used by subclasses of {@link PropertySupplier} to define descriptions of properties.
+ * Used by subclasses of {@link PropertySupplier} to mark them excluded from the forming of {@link GeneralPropertyInitializer#PROPERTIES}
+ * and {@link GeneralPropertyInitializer#GLOBAL_PROPERTIES}. These properties are supposed to be instantiated another way.
  * It is recommended to annotate types and fields of enums which implement {@link PropertySupplier}.
- * It has sense when a type/field is not annotated by {@link ExcludeFromExport}
  */
 @Retention(RUNTIME)
 @Target({TYPE, FIELD})
-public @interface PropertyDescription {
-    /**
-     * @return description of a property. May be defined by multiple string
-     */
-    String[] description();
-
-    String section() default EMPTY;
+public @interface ExcludeFromExport {
 }
