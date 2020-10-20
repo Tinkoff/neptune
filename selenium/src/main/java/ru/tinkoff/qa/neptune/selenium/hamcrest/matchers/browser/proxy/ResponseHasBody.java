@@ -10,7 +10,7 @@ import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatche
 import static java.lang.String.format;
 import static org.hamcrest.Matchers.is;
 
-public class ResponseHasBody<T> extends TypeSafeDiagnosingMatcher<HarEntry> {
+public final class ResponseHasBody<T> extends TypeSafeDiagnosingMatcher<HarEntry> {
 
     private final Matcher<? super T> bodyMatcher;
     private final ObjectMapper objectMapper;
