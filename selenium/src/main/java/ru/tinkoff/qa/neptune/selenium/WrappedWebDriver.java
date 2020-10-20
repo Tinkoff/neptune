@@ -38,19 +38,12 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
     private static URL serverUrl;
 
     private final SupportedWebDrivers supportedWebDriver;
-    private final BrowserUpProxy browserUpProxy;
+    private BrowserUpProxy browserUpProxy;
     private WebDriver driver;
     private boolean isWebDriverInstalled;
 
     public WrappedWebDriver(SupportedWebDrivers supportedWebDriver) {
         this.supportedWebDriver = supportedWebDriver;
-
-        if (USE_BROWSER_PROXY.get()) {
-            browserUpProxy = new BrowserUpProxyServer();
-            browserUpProxy.setTrustAllServers(true);
-        } else {
-            browserUpProxy = null;
-        }
     }
 
     private static synchronized void initServerLocally() {
@@ -90,7 +83,10 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
             Object[] parameters;
             Object[] arguments = supportedWebDriver.get();
 
-            if (browserUpProxy != null) {
+            if (USE_BROWSER_PROXY.get()) {
+                browserUpProxy = new BrowserUpProxyServer();
+                browserUpProxy.setTrustAllServers(true);
+
                 MutableCapabilities capabilities = (MutableCapabilities) stream(arguments)
                         .filter(arg -> MutableCapabilities.class.isAssignableFrom(arg.getClass()))
                         .findFirst()
@@ -183,6 +179,7 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
     @Override
     public void refreshContext() {
         if (driver == null) {
+            browserUpProxy = null;
             return;
         }
 
@@ -196,12 +193,14 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
 
         if (!isAlive) {
             driver = null;
+            browserUpProxy = null;
             return;
         }
 
         if (!KEEP_WEB_DRIVER_SESSION_OPENED.get()) {
             driver.quit();
             driver = null;
+            browserUpProxy = null;
             return;
         }
 
@@ -231,7 +230,6 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
         ofNullable(driver).ifPresent(webDriver -> {
             ofNullable(browserUpProxy).ifPresent(browserUpProxy -> {
                 if (browserUpProxy.isStarted()) {
-                    browserUpProxy.endHar();
                     browserUpProxy.abort();
                 }
             });
