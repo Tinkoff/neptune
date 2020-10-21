@@ -1,6 +1,8 @@
 package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy;
 
 import com.browserup.harreader.model.HarEntry;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
@@ -8,32 +10,62 @@ import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatche
 import static java.lang.String.format;
 import static org.hamcrest.Matchers.is;
 
-public final class ResponseHasBody extends TypeSafeDiagnosingMatcher<HarEntry> {
+public final class ResponseHasBody<T> extends TypeSafeDiagnosingMatcher<HarEntry> {
 
-    private final Matcher<? super String> bodyMatcher;
+    private final Matcher<? super T> bodyMatcher;
+    private final ObjectMapper objectMapper;
+    private final Class<?> objectClass;
 
-    private ResponseHasBody(Matcher<? super String> bodyMatcher) {
+    private ResponseHasBody(Matcher<? super T> bodyMatcher, ObjectMapper objectMapper, Class<?> objectClass) {
         this.bodyMatcher = bodyMatcher;
+        this.objectMapper = objectMapper;
+        this.objectClass = objectClass;
     }
 
     /**
-     * Creates matcher that checks body of the response.
+     * Creates matcher that checks deserialized body of the response.
      *
-     * @param bodyMatcher criteria that describes response body
+     * @param bodyMatcher is the criteria that describes response body
+     * @param <T>         is the type of deserialized body
      * @return a new instance of {@link ResponseHasBody}
      */
-    public static ResponseHasBody responseHasBody(Matcher<? super String> bodyMatcher) {
-        return new ResponseHasBody(bodyMatcher);
+    public static <T> ResponseHasBody<T> responseHasBody(Matcher<? super T> bodyMatcher) {
+        return new ResponseHasBody<>(bodyMatcher, new ObjectMapper(), bodyMatcher.getClass());
     }
 
     /**
-     * Creates matcher that checks body of the response.
+     * Creates matcher that checks deserialized body of the response.
+     *
+     * @param bodyMatcher  is the criteria that describes response body
+     * @param objectMapper is the Jackson mapper which will deserialize actual response body
+     * @param <T>          is the type of deserialized body
+     * @return a new instance of {@link ResponseHasBody}
+     */
+    public static <T> ResponseHasBody<T> responseHasBody(Matcher<? super T> bodyMatcher, ObjectMapper objectMapper) {
+        return new ResponseHasBody<>(bodyMatcher, objectMapper, bodyMatcher.getClass());
+    }
+
+    /**
+     * Creates matcher that checks deserialized body of the response.
      *
      * @param body is the expected body of the response
+     * @param <T>  is the type of deserialized body
      * @return a new instance of {@link ResponseHasBody}
      */
-    public static ResponseHasBody responseHasBody(String body) {
-        return new ResponseHasBody(is(body));
+    public static <T> ResponseHasBody<T> responseHasBody(T body) {
+        return new ResponseHasBody<>(is(body), new ObjectMapper(), body.getClass());
+    }
+
+    /**
+     * Creates matcher that checks deserialized body of the response.
+     *
+     * @param body         is the expected body of the response
+     * @param objectMapper is the Jackson mapper which will deserialize actual response body
+     * @param <T>          is the type of deserialized body
+     * @return a new instance of {@link ResponseHasBody}
+     */
+    public static <T> ResponseHasBody<T> responseHasBody(T body, ObjectMapper objectMapper) {
+        return new ResponseHasBody<>(is(body), objectMapper, body.getClass());
     }
 
     @Override
@@ -46,12 +78,19 @@ public final class ResponseHasBody extends TypeSafeDiagnosingMatcher<HarEntry> {
         var content = item.getResponse().getContent();
 
         if (content == null) {
-            mismatchDescription.appendText("Response body is null");
+            mismatchDescription.appendText("Request body is null");
             return false;
         }
 
         var responseBody = content.getText();
-        var result = bodyMatcher.matches(responseBody);
+
+        boolean result;
+
+        try {
+            result = bodyMatcher.matches(objectMapper.readValue(responseBody, objectClass));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
         if (!result) {
             bodyMatcher.describeMismatch(responseBody, mismatchDescription);
