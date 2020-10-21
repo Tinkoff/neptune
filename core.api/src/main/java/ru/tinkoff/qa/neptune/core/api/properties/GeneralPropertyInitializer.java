@@ -6,7 +6,7 @@ import java.util.Properties;
 
 import static java.lang.ClassLoader.getSystemClassLoader;
 import static java.lang.String.valueOf;
-import static java.lang.System.getProperty;
+import static java.lang.System.getProperties;
 import static java.lang.System.setProperty;
 import static java.lang.Thread.currentThread;
 import static java.util.Arrays.copyOfRange;
@@ -120,13 +120,10 @@ public final class GeneralPropertyInitializer {
         if (isBlank(valueToSet)) {
             return;
         }
-
-        ofNullable(getProperty(propertyName))
-                .ifPresentOrElse(s -> {
-                    if (isBlank(s)) {
-                        setProperty(propertyName, valueToSet);
-                    }
-                }, () -> setProperty(propertyName, valueToSet));
+        if (getProperties().containsKey(propertyName)) {
+            return;
+        }
+        setProperty(propertyName, valueToSet);
     }
 
     private static Properties propertiesFromStream(InputStream is) {
