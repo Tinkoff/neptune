@@ -22,7 +22,8 @@ public class PropertyBindingTest {
     public static Object[][] testData() {
         return new Object[][]{
                 {createAPI(ServiceAPI3.class)},
-                {createAPI(ServiceAPI4.class)}
+                {createAPI(ServiceAPI4.class)},
+                {createAPI(ServiceAPI6.class)}
         };
     }
 
