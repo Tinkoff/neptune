@@ -64,7 +64,6 @@ public class WhenCapabilityPropertiesAreDefinedPreviously {
                             + "," + ChromeSettingsSupplierWithBinary.class.getName()),
                     entry(CLEAR_WEB_DRIVER_COOKIES.getName(), "true"),
                     entry(FIND_ONLY_VISIBLE_ELEMENTS.getName(), "true"),
-                    entry(GET_BACK_TO_BASE_URL.getName(), "true"),
                     entry(KEEP_WEB_DRIVER_SESSION_OPENED.getName(), "true"),
                     entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getName(), "CHROME_DRIVER"));
 
@@ -85,7 +84,6 @@ public class WhenCapabilityPropertiesAreDefinedPreviously {
         System.setProperty(PLATFORM_NAME.getName(), "Mac");
         System.setProperty(SUPPORTS_JAVASCRIPT.getName(), "true");
 
-        System.setProperty(GET_BACK_TO_BASE_URL.getName(), "FALSE");
         System.setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getName(), "false");
 
         System.setProperty(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getName(), "FIREFOX_DRIVER");

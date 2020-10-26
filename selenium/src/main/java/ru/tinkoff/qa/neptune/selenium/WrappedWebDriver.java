@@ -208,11 +208,6 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
             driver.manage().deleteAllCookies();
         }
 
-        if (GET_BACK_TO_BASE_URL.get()) {
-            ofNullable(BASE_WEB_DRIVER_URL_PROPERTY.get()).ifPresent(url ->
-                    driver.get(url.toString()));
-        }
-
         ofNullable(browserUpProxy).ifPresent(BrowserUpProxy::newHar);
     }
 

@@ -823,10 +823,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * Performs navigation in the default browser window/tab that active currently.
      *
      * @param url is a string value the url to navigate to. Also it may be a path relative to base web driver url.
-     *            It is possible when ability to navigate by relative path is enabled
      * @return self-reference
      * @see ru.tinkoff.qa.neptune.selenium.properties.URLProperties#BASE_WEB_DRIVER_URL_PROPERTY
-     * @see ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties#ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL
      */
     public SeleniumStepContext navigateTo(String url) {
         toUrl(url).get().accept(this);
@@ -837,11 +835,9 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * Performs navigation in the browser window/tab.
      *
      * @param url is a string value the url to navigate to. Also it may be a path relative to base web driver url.
-     *            It is possible when ability to navigate by relative path is enabled
      * @param in  is how to find/get target window/tab
      * @return self-reference
      * @see ru.tinkoff.qa.neptune.selenium.properties.URLProperties#BASE_WEB_DRIVER_URL_PROPERTY
-     * @see ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties#ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL
      */
     public SeleniumStepContext navigateTo(String url, GetWindowSupplier in) {
         toUrl(in, url).get().accept(this);
@@ -852,11 +848,9 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * Performs navigation in the browser window/tab.
      *
      * @param url is a string value the url to navigate to. Also it may be a path relative to base web driver url.
-     *            It is possible when ability to navigate by relative path is enabled
      * @param in  is a target window
      * @return self-reference
      * @see ru.tinkoff.qa.neptune.selenium.properties.URLProperties#BASE_WEB_DRIVER_URL_PROPERTY
-     * @see ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties#ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL
      */
     public SeleniumStepContext navigateTo(String url, Window in) {
         toUrl(in, url).get().accept(this);
