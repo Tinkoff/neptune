@@ -51,4 +51,9 @@
         </packages>
     </test>
 
+    <test name="Hooks test">
+        <packages>
+            <package name="ru.tinkoff.qa.neptune.selenium.test.hooks.*"/>
+        </packages>
+    </test>
 </suite>

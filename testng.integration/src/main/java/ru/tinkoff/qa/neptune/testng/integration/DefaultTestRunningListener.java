@@ -8,6 +8,7 @@ import org.testng.ITestResult;
 import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
+import ru.tinkoff.qa.neptune.core.api.hooks.ExecutionHook;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 import ru.tinkoff.qa.neptune.testng.integration.properties.RefreshEachTimeBefore;
 
@@ -16,7 +17,6 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.lang.String.format;
 import static java.lang.String.valueOf;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
@@ -24,6 +24,7 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.testng.ITestResult.*;
+import static ru.tinkoff.qa.neptune.core.api.hooks.ExecutionHook.getHooks;
 import static ru.tinkoff.qa.neptune.testng.integration.properties.TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY;
 
 public final class DefaultTestRunningListener implements IInvokedMethodListener {
@@ -37,6 +38,7 @@ public final class DefaultTestRunningListener implements IInvokedMethodListener 
             .stream()
             .filter(ContextRefreshable.class::isAssignableFrom)
             .collect(toList());
+    private final List<ExecutionHook> hooks = getHooks();
 
     private static boolean isIgnored(Method method) {
         Class<?> declaredBy;
@@ -72,7 +74,7 @@ public final class DefaultTestRunningListener implements IInvokedMethodListener 
         ofNullable(previouslyRefreshed.get())
                 .ifPresentOrElse(method1 -> {}, () -> {
                     if (stream(method.getAnnotations()).anyMatch(annotation -> annotationToRefreshBefore
-                            .contains(((Annotation) annotation).annotationType()))) {
+                            .contains(annotation.annotationType()))) {
                         REFRESHABLE_CONTEXTS.forEach(ContextRefreshable::refreshContext);
                         previouslyRefreshed.set(method);
                     }
@@ -95,10 +97,13 @@ public final class DefaultTestRunningListener implements IInvokedMethodListener 
 
             System.out.println();
             System.out.println();
-            System.out.println(format("TEST '%s' HAS STARTED WITH PARAMETERS: %s", name, Arrays.toString(params)));
+            System.out.printf("TEST '%s' HAS STARTED WITH PARAMETERS: %s%n", name, Arrays.toString(params));
             System.out.println();
             System.out.println();
         });
+
+        hooks.forEach(executionHook -> executionHook
+                .executeMethodHook(reflectionMethod, testResult.getInstance(), method.isTestMethod()));
     }
 
     @Override
@@ -128,7 +133,7 @@ public final class DefaultTestRunningListener implements IInvokedMethodListener 
 
             System.out.println();
             System.out.println();
-            System.out.println(format("TEST '%s' HAS FINISHED WITH PARAMETERS: %s", name, stringParams));
+            System.out.printf("TEST '%s' HAS FINISHED WITH PARAMETERS: %s%n", name, stringParams);
             switch (status) {
                 case FAILURE:
                     System.err.println("STATUS: FAILED. Exception:");

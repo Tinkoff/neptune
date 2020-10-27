@@ -16,8 +16,7 @@ import java.util.List;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.core.api.concurrency.ObjectContainer.getAllObjects;
 import static ru.tinkoff.qa.neptune.testng.integration.properties.RefreshEachTimeBefore.*;
 import static ru.tinkoff.qa.neptune.testng.integration.properties.TestNGRefreshStrategyProperty.REFRESH_STRATEGY_PROPERTY;
@@ -112,10 +111,16 @@ public class TestNgTestFinishingTest {
         try {
             runBeforeTheChecking();
             assertThat(ContextClass2.getRefreshCount(), is(9));
-        }
-        finally {
+        } finally {
             System.getProperties().remove(REFRESH_STRATEGY_PROPERTY.getName());
         }
+    }
+
+    @Test
+    public void hookTest() {
+        TestHook.count = 0;
+        runBeforeTheChecking();
+        assertThat(TestHook.count, greaterThan(0));
     }
 
     @AfterClass

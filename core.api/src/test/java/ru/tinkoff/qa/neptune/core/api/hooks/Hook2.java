@@ -6,7 +6,7 @@ import java.lang.reflect.Method;
 public class Hook2 implements ExecutionHook {
 
     @Override
-    public void executeMethodHook(Method method, Object on, Class<?> classOfTarget) {
+    public void executeMethodHook(Method method, Object on, boolean isTest) {
 
     }
 }

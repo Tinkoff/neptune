@@ -27,9 +27,9 @@ public interface ExecutionHook {
     /**
      * Method to be executed before some other method
      *
-     * @param method        method to be executed after this hook
-     * @param on            is an object from which {@code method} is invoked
-     * @param classOfTarget is a class of an {@code object} from which {@code method} is invoked
+     * @param method method to be executed after this hook
+     * @param on     is an object from which {@code method} is invoked
+     * @param isTest is it test method or not
      */
-    void executeMethodHook(Method method, Object on, Class<?> classOfTarget);
+    void executeMethodHook(Method method, Object on, boolean isTest);
 }
