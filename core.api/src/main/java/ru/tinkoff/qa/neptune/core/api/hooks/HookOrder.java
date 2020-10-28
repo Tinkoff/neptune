@@ -8,7 +8,7 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * This annotation is designed to help to manage order of invocation of the {@link ExecutionHook#executeMethodHook(Method, Object, Class)}
+ * This annotation is designed to help to manage order of invocation of the {@link ExecutionHook#executeMethodHook(Method, Object, boolean)}
  */
 @Retention(RUNTIME)
 @Target(TYPE)
