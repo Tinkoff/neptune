@@ -11,6 +11,7 @@ ru.tinkoff.qa.neptune.core.api.event.firing.collections
 ru.tinkoff.qa.neptune.core.api.event.firing.console
 ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator
 ru.tinkoff.qa.neptune.core.api.hamcrest.text
+ru.tinkoff.qa.neptune.core.api.hooks
 ru.tinkoff.qa.neptune.core.api.properties
 ru.tinkoff.qa.neptune.core.api.properties.booleans
 ru.tinkoff.qa.neptune.core.api.properties.bytes
@@ -97,6 +98,7 @@ ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy
 ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.elements
 ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.url
 ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.window
+ru.tinkoff.qa.neptune.selenium.hooks
 ru.tinkoff.qa.neptune.selenium.properties
 ru.tinkoff.qa.neptune.swagger.v3
 ru.tinkoff.qa.neptune.testng.integration

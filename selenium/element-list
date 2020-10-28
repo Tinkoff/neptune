@@ -26,4 +26,5 @@ ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy
 ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.elements
 ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.url
 ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.window
+ru.tinkoff.qa.neptune.selenium.hooks
 ru.tinkoff.qa.neptune.selenium.properties
