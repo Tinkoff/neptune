@@ -29,6 +29,7 @@ public class MockWebDriver implements WebDriver, JavascriptExecutor, TakesScreen
     private boolean isSwitchedToDefaultContent;
     private boolean isSwitchedToParentFrame;
     private Object currentFrame;
+    public String lastNavigationURLAsIs;
 
     final Map<String, LinkedList<URLs>> handlesAndUrlHistory = new HashMap<>() {
         {
@@ -83,6 +84,7 @@ public class MockWebDriver implements WebDriver, JavascriptExecutor, TakesScreen
                 .orElseThrow(() -> new IllegalArgumentException(format("Unknown url %s", url)));
         addUrlToHistory(handle, urlEnum);
         changeCurrentUrl(handle, urlEnum);
+        lastNavigationURLAsIs = url;
     }
 
     @Override

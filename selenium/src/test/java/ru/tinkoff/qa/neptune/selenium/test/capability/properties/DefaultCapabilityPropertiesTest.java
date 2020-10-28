@@ -62,7 +62,6 @@ public class DefaultCapabilityPropertiesTest {
                             + "," + ChromeSettingsSupplierWithBinary.class.getName()),
                     entry(CLEAR_WEB_DRIVER_COOKIES.getName(), "true"),
                     entry(FIND_ONLY_VISIBLE_ELEMENTS.getName(), "true"),
-                    entry(GET_BACK_TO_BASE_URL.getName(), "true"),
                     entry(KEEP_WEB_DRIVER_SESSION_OPENED.getName(), "true"),
                     entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getName(), "CHROME_DRIVER"));
 

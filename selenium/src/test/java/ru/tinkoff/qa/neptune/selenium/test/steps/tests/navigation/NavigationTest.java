@@ -9,8 +9,6 @@ import static java.lang.System.getProperties;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
-import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL;
-import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.GET_BACK_TO_BASE_URL;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.test.enums.URLs.*;
 import static ru.tinkoff.qa.neptune.selenium.test.enums.WindowHandles.*;
@@ -18,13 +16,13 @@ import static ru.tinkoff.qa.neptune.selenium.test.enums.WindowHandles.*;
 public class NavigationTest extends BaseWebDriverTest {
 
     @Test
-    public void navigationInTheFirstWindow() {
+    public void test1() {
         seleniumSteps.navigateTo(PAY_PAL.getUrl());
         assertThat(seleniumSteps.getCurrentUrl(), is(PAY_PAL.getUrl()));
     }
 
     @Test
-    public void navigationInWindowBySearching() {
+    public void test2() {
         seleniumSteps.navigateTo(DEEZER.getUrl(), window(1));
         assertThat(seleniumSteps.getCurrentUrl(window(1)), is(DEEZER.getUrl()));
 
@@ -33,7 +31,7 @@ public class NavigationTest extends BaseWebDriverTest {
     }
 
     @Test
-    public void navigationInTheWindow() {
+    public void test3() {
         Window window = seleniumSteps.get(window(2));
 
         seleniumSteps.navigateTo(YOUTUBE.getUrl(), window);
@@ -44,41 +42,26 @@ public class NavigationTest extends BaseWebDriverTest {
 
     @Test(expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "It is impossible to navigate by URL /index.html. This value is not a valid URL and the " +
-                    "property ENABLE_TO_NAVIGATE_BY_RELATIVE_URL is not defined/its value is false")
-    public void invalidNavigationByRelativeUrl() {
+                    "property BASE_WEB_DRIVER_URL is not defined")
+    public void test4() {
         seleniumSteps.navigateTo("/index.html");
         assertThat(seleniumSteps.getCurrentUrl(), endsWith("/index.html"));
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class,
-            expectedExceptionsMessageRegExp = "It is impossible to navigate by URL /index.html. " +
-                    "This value is not a valid URL and the property BASE_WEB_DRIVER_URL is not defined")
-    public void invalidNavigationByRelativeUrl2() {
-        System.setProperty(ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL.getName(), "true");
-        try {
-            seleniumSteps.navigateTo("/index.html");
-            assertThat(seleniumSteps.getCurrentUrl(), endsWith("/index.html"));
-        }
-        finally {
-            getProperties().remove(GET_BACK_TO_BASE_URL.getName());
-        }
-    }
 
     @Test
-    public void validNavigationByRelativeUrl() {
+    public void test5() {
         System.setProperty(BASE_WEB_DRIVER_URL_PROPERTY.getName(), GITHUB.getUrl());
-        System.setProperty(ENABLE_ABILITY_TO_NAVIGATE_BY_RELATIVE_URL.getName(), "true");
         try {
             seleniumSteps.navigateTo("/index.html");
             assertThat(seleniumSteps.getCurrentUrl(), containsString(GITHUB.getUrl()));
         } finally {
             getProperties().remove(BASE_WEB_DRIVER_URL_PROPERTY.getName());
-            getProperties().remove(GET_BACK_TO_BASE_URL.getName());
         }
     }
 
     @Test
-    public void chainedNavigationTest() {
+    public void test6() {
         Window window = seleniumSteps.get(window(2));
 
         seleniumSteps.navigateTo(PAY_PAL.getUrl())
@@ -92,8 +75,8 @@ public class NavigationTest extends BaseWebDriverTest {
         assertThat(window.getCurrentUrl(), is(YOUTUBE.getUrl()));
     }
 
-    @Test(dependsOnMethods = "navigationInTheFirstWindow")
-    public void backForwardFirstWindowTest() {
+    @Test
+    public void test7() {
         Window first = seleniumSteps.get(window());
         seleniumSteps.navigateTo(GOOGLE.getUrl())
                 .navigateTo(GITHUB.getUrl())
@@ -151,8 +134,8 @@ public class NavigationTest extends BaseWebDriverTest {
         assertThat(first.getCurrentUrl(), is(YOUTUBE.getUrl()));
     }
 
-    @Test(dependsOnMethods = "navigationInWindowBySearching")
-    public void backForwardInWindowBySearchingTest() {
+    @Test
+    public void test8() {
         Window second = seleniumSteps.get(window(1));
         seleniumSteps.navigateTo(GOOGLE.getUrl(), window(1))
                 .navigateTo(GITHUB.getUrl(), window(1))
@@ -210,8 +193,8 @@ public class NavigationTest extends BaseWebDriverTest {
         assertThat(second.getCurrentUrl(), is(YOUTUBE.getUrl()));
     }
 
-    @Test(dependsOnMethods = "navigationInWindowBySearching")
-    public void backForwardInTheWindowTest() {
+    @Test
+    public void test9() {
         Window third = seleniumSteps.get(window(2));
         seleniumSteps.navigateTo(GOOGLE.getUrl(), third)
                 .navigateTo(GITHUB.getUrl(), third)
@@ -270,7 +253,7 @@ public class NavigationTest extends BaseWebDriverTest {
     }
 
     @Test
-    public void chainedBackForwardTest() {
+    public void test10() {
         Window thirdWindow = seleniumSteps.get(window(2));
         seleniumSteps.navigateTo(GOOGLE.getUrl())
                 .navigateTo(GITHUB.getUrl())
@@ -295,14 +278,14 @@ public class NavigationTest extends BaseWebDriverTest {
     }
 
     @Test
-    public void refreshFirstTest() {
+    public void test11() {
         seleniumSteps.refresh();
         assertThat(((MockWindow) seleniumSteps.getWrappedDriver().manage().window()).isRefreshed(),
                 is(true));
     }
 
     @Test
-    public void refreshWindowBySearching() {
+    public void test12() {
         seleniumSteps.refresh(window(1));
         seleniumSteps.getWrappedDriver().switchTo().window(HANDLE2.getHandle());
 
@@ -311,7 +294,7 @@ public class NavigationTest extends BaseWebDriverTest {
     }
 
     @Test
-    public void refreshTheWindow() {
+    public void test13() {
         Window window = seleniumSteps.get(window(2));
         seleniumSteps.refresh(window);
 
@@ -322,7 +305,7 @@ public class NavigationTest extends BaseWebDriverTest {
     }
 
     @Test
-    public void chainedRefreshTest() {
+    public void test14() {
         Window window = seleniumSteps.get(window(2));
         seleniumSteps.refresh(window(1)).refresh(window);
 
