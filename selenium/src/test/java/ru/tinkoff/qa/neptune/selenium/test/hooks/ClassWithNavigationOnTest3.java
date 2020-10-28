@@ -3,7 +3,7 @@ package ru.tinkoff.qa.neptune.selenium.test.hooks;
 import ru.tinkoff.qa.neptune.selenium.hooks.BrowserUrlVariable;
 import ru.tinkoff.qa.neptune.selenium.hooks.DefaultBrowserPage;
 import ru.tinkoff.qa.neptune.selenium.hooks.ForceNavigation;
-import ru.tinkoff.qa.neptune.selenium.hooks.PreventGettingBackToDefaultPage;
+import ru.tinkoff.qa.neptune.selenium.hooks.PreventNavigationToDefaultURL;
 
 @DefaultBrowserPage(at = "https://www.google.com/?p={parameter1}" +
         "&p2={parameter2}" +
@@ -36,7 +36,7 @@ public class ClassWithNavigationOnTest3 {
 
     }
 
-    @PreventGettingBackToDefaultPage
+    @PreventNavigationToDefaultURL
     public void test2() {
 
     }
@@ -48,7 +48,7 @@ public class ClassWithNavigationOnTest3 {
             "&p5={parameter5}" +
             "&p6={parameter6}" +
             "&p7={parameter7}")
-    @PreventGettingBackToDefaultPage
+    @PreventNavigationToDefaultURL
     public void test3() {
 
     }

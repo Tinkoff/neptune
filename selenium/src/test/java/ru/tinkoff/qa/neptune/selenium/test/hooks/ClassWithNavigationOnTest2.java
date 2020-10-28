@@ -2,7 +2,7 @@ package ru.tinkoff.qa.neptune.selenium.test.hooks;
 
 import ru.tinkoff.qa.neptune.selenium.hooks.DefaultBrowserPage;
 import ru.tinkoff.qa.neptune.selenium.hooks.ForceNavigation;
-import ru.tinkoff.qa.neptune.selenium.hooks.PreventGettingBackToDefaultPage;
+import ru.tinkoff.qa.neptune.selenium.hooks.PreventNavigationToDefaultURL;
 
 import static ru.tinkoff.qa.neptune.selenium.hooks.DefaultNavigationStrategies.ON_EVERY_METHOD;
 
@@ -13,7 +13,7 @@ public class ClassWithNavigationOnTest2 {
 
     }
 
-    @PreventGettingBackToDefaultPage
+    @PreventNavigationToDefaultURL
     public void test2() {
 
     }

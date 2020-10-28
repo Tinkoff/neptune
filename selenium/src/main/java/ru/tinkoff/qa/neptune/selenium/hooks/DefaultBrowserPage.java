@@ -50,7 +50,7 @@ public @interface DefaultBrowserPage {
          *     <li>Class is annotated by {@link DefaultBrowserPage}</li>
          *     <li>The given method is a test-method and {@link #when()} is {@link DefaultNavigationStrategies#ON_EVERY_TEST}</li>
          *     <li>...or {@link #when()} is {@link DefaultNavigationStrategies#ON_EVERY_METHOD}</li>
-         *     <li>The method os not annotated by {@link PreventGettingBackToDefaultPage}</li>
+         *     <li>The method os not annotated by {@link PreventNavigationToDefaultURL}</li>
          *     <li>The method is not annotated by {@link ForceNavigation}</li>
          * </ul>
          * Otherwise it returns {@code null}
@@ -59,7 +59,7 @@ public @interface DefaultBrowserPage {
             checkNotNull(o);
             checkNotNull(method);
 
-            if (method.getAnnotation(ForceNavigation.class) != null || method.getAnnotation(PreventGettingBackToDefaultPage.class) != null) {
+            if (method.getAnnotation(ForceNavigation.class) != null || method.getAnnotation(PreventNavigationToDefaultURL.class) != null) {
                 return null;
             }
 
