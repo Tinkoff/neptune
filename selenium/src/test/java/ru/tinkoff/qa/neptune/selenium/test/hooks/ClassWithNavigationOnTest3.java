@@ -5,14 +5,21 @@ import ru.tinkoff.qa.neptune.selenium.hooks.DefaultBrowserPage;
 import ru.tinkoff.qa.neptune.selenium.hooks.ForceNavigation;
 import ru.tinkoff.qa.neptune.selenium.hooks.PreventNavigationToDefaultURL;
 
-@DefaultBrowserPage(at = "https://www.google.com/?p={parameter1}" +
-        "&p2={parameter2}" +
-        "&p3={parameter3}" +
-        "&p4={parameter4}" +
-        "&p5={parameter5}" +
-        "&p6={parameter6}" +
-        "&p7={parameter7}")
+@DefaultBrowserPage(rootUrlAt = "https://www.{host1}",
+        pathAt = "/{parameter1}" +
+                "/{parameter2}" +
+                "/{parameter3}",
+        queryAt = "?&p4={parameter4}" +
+                "&p5={parameter5}" +
+                "&p6={parameter6}" +
+                "&p7={parameter7}")
 public class ClassWithNavigationOnTest3 {
+
+    @BrowserUrlVariable
+    private final String host1 = "google.com";
+
+    @BrowserUrlVariable(toEncode = true)
+    private final String host2 = "github.com/рф";
 
     @BrowserUrlVariable(name = "parameter1")
     private final int p1 = 1;
@@ -41,13 +48,14 @@ public class ClassWithNavigationOnTest3 {
 
     }
 
-    @ForceNavigation(to = "https://github.com/?p={parameter1}" +
-            "&p2={parameter2}" +
-            "&p3={parameter3}" +
-            "&p4={parameter4}" +
-            "&p5={parameter5}" +
-            "&p6={parameter6}" +
-            "&p7={parameter7}")
+    @ForceNavigation(rootUrlTo = "https://{host2}",
+            pathTo = "{parameter1}" +
+                    "/{parameter2}" +
+                    "/{parameter3}",
+            queryTo = "&p4={parameter4}" +
+                    "&p5={parameter5}" +
+                    "&p6={parameter6}" +
+                    "&p7={parameter7}")
     @PreventNavigationToDefaultURL
     public void test3() {
 

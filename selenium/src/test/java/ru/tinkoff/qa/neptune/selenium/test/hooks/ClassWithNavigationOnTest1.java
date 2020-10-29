@@ -4,7 +4,7 @@ import ru.tinkoff.qa.neptune.selenium.hooks.DefaultBrowserPage;
 import ru.tinkoff.qa.neptune.selenium.hooks.ForceNavigation;
 import ru.tinkoff.qa.neptune.selenium.hooks.PreventNavigationToDefaultURL;
 
-@DefaultBrowserPage(at = "https://www.google.com/")
+@DefaultBrowserPage(rootUrlAt = "https://www.google.com")
 public class ClassWithNavigationOnTest1 {
 
     public void test1() {
@@ -16,7 +16,7 @@ public class ClassWithNavigationOnTest1 {
 
     }
 
-    @ForceNavigation(to = "https://github.com/")
+    @ForceNavigation(rootUrlTo = "https://github.com")
     public void test3() {
 
     }

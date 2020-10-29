@@ -31,11 +31,11 @@ public class NavigationHookTest extends BaseWebDriverTest {
     public static Object[][] data() {
         return new Object[][]{
                 {O1, emptyOrNullString(), false},
-                {O2, equalTo("https://www.google.com/"), false},
+                {O2, equalTo("https://www.google.com"), false},
                 {O3, emptyOrNullString(), false},
-                {O1, equalTo("https://www.google.com/"), true},
-                {O2, equalTo("https://www.google.com/"), true},
-                {O3, equalTo("https://www.google.com/?p=1&p2=ABC &p3=ABC+&p4=1&p5=ABC &p6=ABCD+&p7=ABCDE+"), true},
+                {O1, equalTo("https://www.google.com"), true},
+                {O2, equalTo("https://www.google.com"), true},
+                {O3, equalTo("https://www.google.com/1/ABC%20/ABC%20?&p4=1&p5=ABC &p6=ABCD+&p7=ABCDE+"), true},
         };
     }
 
@@ -54,12 +54,12 @@ public class NavigationHookTest extends BaseWebDriverTest {
     @DataProvider
     public static Object[][] data3() {
         return new Object[][]{
-                {O1, equalTo("https://github.com/"), false},
-                {O2, equalTo("https://github.com/"), false},
-                {O3, equalTo("https://github.com/?p=1&p2=ABC &p3=ABC+&p4=1&p5=ABC &p6=ABCD+&p7=ABCDE+"), false},
-                {O1, equalTo("https://github.com/"), true},
-                {O2, equalTo("https://github.com/"), true},
-                {O3, equalTo("https://github.com/?p=1&p2=ABC &p3=ABC+&p4=1&p5=ABC &p6=ABCD+&p7=ABCDE+"), true},
+                {O1, equalTo("https://github.com"), false},
+                {O2, equalTo("https://github.com"), false},
+                {O3, equalTo("https://github.com/рф/1/ABC%20/ABC%20?&p4=1&p5=ABC &p6=ABCD+&p7=ABCDE+"), false},
+                {O1, equalTo("https://github.com"), true},
+                {O2, equalTo("https://github.com"), true},
+                {O3, equalTo("https://github.com/рф/1/ABC%20/ABC%20?&p4=1&p5=ABC &p6=ABCD+&p7=ABCDE+"), true},
         };
     }
 

@@ -36,7 +36,7 @@ public @interface BrowserUrlVariable {
     String name() default EMPTY;
 
     /**
-     * Should be value url-encoded or not
+     * Should be value url-encoded or not. This parameter is ignored by root URLs.
      */
     boolean toEncode() default false;
 
