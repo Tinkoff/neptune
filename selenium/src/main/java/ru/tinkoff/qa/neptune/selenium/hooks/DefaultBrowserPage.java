@@ -10,7 +10,7 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static ru.tinkoff.qa.neptune.selenium.hooks.BrowserUrlVariableReader.pageToNavigate;
+import static ru.tinkoff.qa.neptune.selenium.hooks.BrowserUrlCreator.createBrowserUrl;
 import static ru.tinkoff.qa.neptune.selenium.hooks.DefaultNavigationStrategies.ON_EVERY_TEST;
 
 /**
@@ -21,25 +21,10 @@ import static ru.tinkoff.qa.neptune.selenium.hooks.DefaultNavigationStrategies.O
 public @interface DefaultBrowserPage {
 
     /**
-     * @return default root URL (schema, host and port when it is necessary) to navigate to.
-     * String value may contain substrings between braces. This is for variables.
+     * @return default URL to navigate to. String value may contain substrings between braces. This is for variables.
      * @see BrowserUrlVariable
      */
-    String rootUrlAt() default EMPTY;
-
-    /**
-     * @return a path of a default URL to navigate to.  String value may contain substrings between braces.
-     * This is for variables.
-     * @see BrowserUrlVariable
-     */
-    String pathAt() default EMPTY;
-
-    /**
-     * @return a query of a default URL to navigate to.  String value may contain substrings between braces.
-     * This is for variables.
-     * @see BrowserUrlVariable
-     */
-    String queryAt() default EMPTY;
+    String at() default EMPTY;
 
     /**
      * @return when navigation to the page should be performed
@@ -91,10 +76,8 @@ public @interface DefaultBrowserPage {
                 return null;
             }
 
-            if (isBlank(a.rootUrlAt()) && isBlank(a.pathAt()) && isBlank(a.queryAt())) {
-                throw new IllegalArgumentException(format("Any of DefaultBrowserPage.rootUrlAt, DefaultBrowserPage.pathAt or " +
-                                "DefaultBrowserPage.queryAt should be defined. " +
-                                "Please improve %s",
+            if (isBlank(a.at())) {
+                throw new IllegalArgumentException(format("DefaultBrowserPage.at should be defined. Please improve %s",
                         method));
             }
 
@@ -102,7 +85,7 @@ public @interface DefaultBrowserPage {
                 return null;
             }
 
-            return pageToNavigate(o, a.rootUrlAt(), a.pathAt(), a.queryAt());
+            return createBrowserUrl(o, a.at());
         }
     }
 }

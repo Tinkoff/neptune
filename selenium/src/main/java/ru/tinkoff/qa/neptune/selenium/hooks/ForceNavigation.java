@@ -10,7 +10,7 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static ru.tinkoff.qa.neptune.selenium.hooks.BrowserUrlVariableReader.pageToNavigate;
+import static ru.tinkoff.qa.neptune.selenium.hooks.BrowserUrlCreator.createBrowserUrl;
 
 /**
  * Defines a browser URL to force the navigating to
@@ -20,25 +20,10 @@ import static ru.tinkoff.qa.neptune.selenium.hooks.BrowserUrlVariableReader.page
 public @interface ForceNavigation {
 
     /**
-     * @return root URL (schema, host and port when it is necessary) to navigate to.
-     * String value may contain substrings between braces. This is for variables.
+     * @return URL to navigate to. String value may contain substrings between braces. This is for variables.
      * @see BrowserUrlVariable
      */
-    String rootUrlTo() default EMPTY;
-
-    /**
-     * @return a path of an URL to navigate to.  String value may contain substrings between braces.
-     * This is for variables.
-     * @see BrowserUrlVariable
-     */
-    String pathTo() default EMPTY;
-
-    /**
-     * @return a query of an URL to navigate to.  String value may contain substrings between braces.
-     * This is for variables.
-     * @see BrowserUrlVariable
-     */
-    String queryTo() default EMPTY;
+    String to() default EMPTY;
 
     /**
      * Util class that reads metadata of some method and returns value of navigation URL
@@ -64,14 +49,12 @@ public @interface ForceNavigation {
                 return null;
             }
 
-            if (isBlank(a.rootUrlTo()) && isBlank(a.pathTo()) && isBlank(a.queryTo())) {
-                throw new IllegalArgumentException(format("Any of ForceNavigation.rootUrlTo, ForceNavigation.pathTo or " +
-                                "ForceNavigation.queryTo should be defined. " +
-                                "Please improve %s",
+            if (isBlank(a.to())) {
+                throw new IllegalArgumentException(format("ForceNavigation.to should be defined. Please improve %s",
                         method));
             }
 
-            return pageToNavigate(o, a.rootUrlTo(), a.pathTo(), a.queryTo());
+            return createBrowserUrl(o, a.to());
         }
     }
 }
