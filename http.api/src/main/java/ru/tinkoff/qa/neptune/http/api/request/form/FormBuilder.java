@@ -2,7 +2,6 @@ package ru.tinkoff.qa.neptune.http.api.request.form;
 
 import ru.tinkoff.qa.neptune.http.api.request.FormValueDelimiters;
 
-import java.net.URLEncoder;
 import java.util.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -11,33 +10,19 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.ArrayUtils.toObject;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static ru.tinkoff.qa.neptune.core.api.utils.URLEncodeUtil.encodeQuerySubstring;
 
 /**
  * This is the abstract class that is designed to support the building
  * of query parts/{@code application/x-www-form-urlencoded}-bodies of http requests.
  */
 public abstract class FormBuilder {
-
-    private final static List<String> RESERVED = List.of(";",
-            "/",
-            "?",
-            ":",
-            "@",
-            "&",
-            "=",
-            "+",
-            "$",
-            ",",
-            "[",
-            "]",
-            "'");
 
     private final Set<NameAndValue> parameters = new LinkedHashSet<>();
 
@@ -172,20 +157,7 @@ public abstract class FormBuilder {
                 return toBeEncoded;
             }
 
-            if (!allowReserved) {
-                return URLEncoder.encode(toBeEncoded, UTF_8);
-            }
-
-            var builder = new StringBuilder();
-            stream(toBeEncoded.split(""))
-                    .forEach(s -> {
-                        if (!RESERVED.contains(s)) {
-                            builder.append(URLEncoder.encode(s, UTF_8));
-                        } else {
-                            builder.append(s);
-                        }
-                    });
-            return builder.toString();
+            return encodeQuerySubstring(toBeEncoded, allowReserved);
         }
 
         private static Stream<String> toStream(Object value, boolean toNotEncodeValue, boolean allowReserved) {

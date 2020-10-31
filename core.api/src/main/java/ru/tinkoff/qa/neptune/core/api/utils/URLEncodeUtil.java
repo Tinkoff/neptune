@@ -1,15 +1,32 @@
-package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.path;
+package ru.tinkoff.qa.neptune.core.api.utils;
 
+import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.util.BitSet;
+import java.util.List;
 
 import static java.lang.String.valueOf;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.joining;
-import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil.toStream;
+import static java.util.Arrays.stream;
 
-final class PathEncodingUtil {
+/**
+ * Util class that helps to encode parts of UPL/URI correctly.
+ */
+public final class URLEncodeUtil {
+
+    private final static List<String> RESERVED = List.of(";",
+            "/",
+            "?",
+            ":",
+            "@",
+            "&",
+            "=",
+            "+",
+            "$",
+            ",",
+            "[",
+            "]",
+            "'");
 
     private static final BitSet UNRESERVED = new BitSet(256);
     private static final BitSet PATHSAFE = new BitSet(256);
@@ -52,11 +69,44 @@ final class PathEncodingUtil {
         PATHSAFE.set(',');
     }
 
-    private PathEncodingUtil() {
+    private URLEncodeUtil() {
         super();
     }
 
-    private static String encodePathSegment(Object content) {
+    /**
+     * Encodes a string that is supposed to be a substring of a query of an URI/URL. It is strongly recommended
+     * to use simple strings instead of pieces of values concatenated by reserved characters
+     *
+     * @param toBeEncoded   is a string which is supposed to be a substring of a query of an URI/URL
+     * @param allowReserved allow to keep reserved character as they are or not
+     * @return encoded string
+     */
+    public static String encodeQuerySubstring(String toBeEncoded, boolean allowReserved) {
+
+        if (!allowReserved) {
+            return URLEncoder.encode(toBeEncoded, UTF_8);
+        }
+
+        var builder = new StringBuilder();
+        stream(toBeEncoded.split(""))
+                .forEach(s -> {
+                    if (!RESERVED.contains(s)) {
+                        builder.append(URLEncoder.encode(s, UTF_8));
+                    } else {
+                        builder.append(s);
+                    }
+                });
+        return builder.toString();
+    }
+
+    /**
+     * Encodes a string that is supposed to be a substring of a path of an URI/URL. It is strongly recommended
+     * to use simple strings instead of pieces of values concatenated by {@code '/'}
+     *
+     * @param content is a string which is supposed to be a substring of a path of an URI/URL
+     * @return encoded string
+     */
+    public static String encodePathSubstring(Object content) {
         if (content == null) {
             return null;
         }
@@ -76,13 +126,5 @@ final class PathEncodingUtil {
             }
         }
         return buf.toString();
-    }
-
-    static String getEncoded(Object o) {
-        return ofNullable(toStream(o))
-                .map(stream -> stream
-                        .map(PathEncodingUtil::encodePathSegment)
-                        .collect(joining(",")))
-                .orElseGet(() -> encodePathSegment(o));
     }
 }

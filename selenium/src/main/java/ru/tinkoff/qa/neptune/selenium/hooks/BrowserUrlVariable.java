@@ -36,9 +36,9 @@ public @interface BrowserUrlVariable {
     String name() default EMPTY;
 
     /**
-     * Should be value url-encoded or not
+     * Should be value url-encoded or not for queries of URLs.
      */
-    boolean toEncode() default false;
+    boolean toEncodeForQueries() default false;
 
     /**
      * @return name of a field whose non-null value should used as a value of the URL-variable
