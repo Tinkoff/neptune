@@ -17,6 +17,7 @@ public enum SessionFlagProperties implements BooleanValuePropertySupplier {
     KEEP_WEB_DRIVER_SESSION_OPENED,
 
     @PropertyDescription(description = {"It means that it will try to clear WebDriver cookies after the test running has finished if 'true'",
+            "except values provided by the 'REQUIRED_COOKIE_PROVIDERS' property",
             "This option has sense if KEEP_WEB_DRIVER_SESSION_OPENED has value 'true'"},
             section = "Selenium. Session flags")
     @PropertyName("CLEAR_WEB_DRIVER_COOKIES")

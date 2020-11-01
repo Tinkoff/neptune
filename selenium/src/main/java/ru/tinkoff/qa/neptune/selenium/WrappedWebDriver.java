@@ -25,6 +25,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.openqa.selenium.Proxy.ProxyType.MANUAL;
 import static org.openqa.selenium.net.PortProber.findFreePort;
 import static ru.tinkoff.qa.neptune.core.api.utils.ConstructorUtil.findSuitableConstructor;
+import static ru.tinkoff.qa.neptune.selenium.properties.RequiredCookieProviders.REQUIRED_COOKIE_PROVIDERS;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.*;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.PROXY_URL_PROPERTY;
@@ -76,6 +77,15 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
             serverStarted = false;
         } catch (Throwable ignored) {
         }
+    }
+
+    private static void initCookies(WebDriver driver) {
+        ofNullable(REQUIRED_COOKIE_PROVIDERS.get()).ifPresent(requiredCookieSuppliers ->
+                requiredCookieSuppliers.forEach(requiredCookieSupplier ->
+                        ofNullable(requiredCookieSupplier.get()).ifPresent(cookies -> {
+                            var manage = driver.manage();
+                            cookies.forEach(manage::addCookie);
+                        })));
     }
 
     private void initDriverIfNecessary() {
@@ -161,6 +171,7 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
                     }
                 });
 
+                initCookies(driver);
                 ofNullable(BASE_WEB_DRIVER_URL_PROPERTY.get())
                         .ifPresent(url -> driver.get(url.toString()));
                 if (FORCE_WINDOW_MAXIMIZING_ON_START.get()) {
@@ -169,6 +180,7 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
 
                 driver.manage().timeouts().pageLoadTimeout(WAITING_FOR_PAGE_LOADED_DURATION.get().toMillis(),
                         MILLISECONDS);
+
                 return driver;
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -206,6 +218,7 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
 
         if (CLEAR_WEB_DRIVER_COOKIES.get()) {
             driver.manage().deleteAllCookies();
+            initCookies(driver);
         }
 
         ofNullable(browserUpProxy).ifPresent(BrowserUpProxy::newHar);
