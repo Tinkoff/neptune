@@ -9,6 +9,7 @@ import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
 import org.openqa.selenium.*;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.UnreachableBrowserException;
 import org.openqa.selenium.remote.server.SeleniumServer;
 import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
@@ -29,6 +30,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.*;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.PROXY_URL_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITING_FOR_PAGE_LOADED_DURATION;
+import static ru.tinkoff.qa.neptune.selenium.properties.WebDriverTunersProperty.WEB_DRIVER_TUNERS_PROPERTY;
 
 public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
 
@@ -41,6 +43,7 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
     private BrowserUpProxy browserUpProxy;
     private WebDriver driver;
     private boolean isWebDriverInstalled;
+    private boolean refreshed;
 
     public WrappedWebDriver(SupportedWebDrivers supportedWebDriver) {
         this.supportedWebDriver = supportedWebDriver;
@@ -78,118 +81,137 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
         }
     }
 
-    private void initDriverIfNecessary() {
-        driver = ofNullable(driver).orElseGet(() -> {
-            Object[] parameters;
-            Object[] arguments = supportedWebDriver.get();
-
-            if (USE_BROWSER_PROXY.get()) {
-                browserUpProxy = new BrowserUpProxyServer();
-                browserUpProxy.setTrustAllServers(true);
-
-                MutableCapabilities capabilities = (MutableCapabilities) stream(arguments)
-                        .filter(arg -> MutableCapabilities.class.isAssignableFrom(arg.getClass()))
-                        .findFirst()
-                        .orElseThrow(() -> new IllegalStateException("Browser mutable capabilities not found"));
-
-                Proxy seleniumProxy = new Proxy();
-                seleniumProxy.setProxyType(MANUAL);
-
-                Object proxyCapability = capabilities.asMap().get(CapabilityType.PROXY);
-
-                if (proxyCapability != null
-                        && Proxy.class.isAssignableFrom(proxyCapability.getClass())
-                        && ((Proxy) proxyCapability).getProxyType().equals(MANUAL)) {
-                    Proxy existingSeleniumProxy = (Proxy) proxyCapability;
-                    String[] proxyUrl = existingSeleniumProxy.getHttpProxy().split(":");
-
-                    browserUpProxy.setChainedProxy(new InetSocketAddress(proxyUrl[0], Integer.parseInt(proxyUrl[1])));
-                } else {
-                    ofNullable(PROXY_URL_PROPERTY.get()).ifPresent(proxyUrl ->
-                            browserUpProxy.setChainedProxy(new InetSocketAddress(proxyUrl.getHost(), proxyUrl.getPort())));
-                }
-
-                browserUpProxy.start();
-
-                String hostIp = new NetworkUtils().getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
-
-                seleniumProxy.setHttpProxy(hostIp + ":" + browserUpProxy.getPort());
-                seleniumProxy.setSslProxy(hostIp + ":" + browserUpProxy.getPort());
-
-                if (seleniumProxy.getHttpProxy() != null) {
-                    capabilities.setCapability(CapabilityType.PROXY, seleniumProxy);
-                    capabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
-                    capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
-
-                    for (var i = 0; i < arguments.length; i++) {
-                        if (MutableCapabilities.class.isAssignableFrom(arguments[i].getClass())) {
-                            arguments[i] = capabilities;
-                        }
-                    }
-                }
-            }
-
-            if (supportedWebDriver.requiresRemoteUrl() && supportedWebDriver.getRemoteURL() == null) {
-                initServerLocally();
-                parameters = ArrayUtils.addAll(new Object[]{serverUrl}, arguments);
-            } else {
-                parameters = arguments;
-            }
-
-            try {
-                var c = findSuitableConstructor(supportedWebDriver.getWebDriverClass(),
-                        parameters);
-
-                if (!isWebDriverInstalled) {
-                    ofNullable(supportedWebDriver.getWebDriverManager())
-                            .ifPresent(WebDriverManager::setup);
-                    isWebDriverInstalled = true;
-                }
-
-                var enhancer = new Enhancer();
-                enhancer.setSuperclass(supportedWebDriver.getWebDriverClass());
-                enhancer.setCallback(new WebDriverMethodInterceptor());
-
-                var driver = (WebDriver) enhancer.create(c.getParameterTypes(), parameters);
-
-                ofNullable(browserUpProxy).ifPresent(browserUpProxy -> {
-                    if (browserUpProxy.isStarted()) {
-                        browserUpProxy.enableHarCaptureTypes(REQUEST_HEADERS, REQUEST_CONTENT, REQUEST_COOKIES,
-                                RESPONSE_HEADERS, RESPONSE_CONTENT, RESPONSE_COOKIES);
-
-                        browserUpProxy.newHar();
-                    }
-                });
-
-                ofNullable(BASE_WEB_DRIVER_URL_PROPERTY.get())
-                        .ifPresent(url -> driver.get(url.toString()));
-                if (FORCE_WINDOW_MAXIMIZING_ON_START.get()) {
-                    driver.manage().window().maximize();
-                }
-
-                driver.manage().timeouts().pageLoadTimeout(WAITING_FOR_PAGE_LOADED_DURATION.get().toMillis(),
-                        MILLISECONDS);
-                return driver;
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+    private static void applySettings(WebDriver webDriver, boolean isNewSession) {
+        ofNullable(WEB_DRIVER_TUNERS_PROPERTY.get())
+                .ifPresent(suppliers -> suppliers.forEach(webDriverTunerSupplier -> ofNullable(webDriverTunerSupplier.get())
+                        .ifPresent(webDriverTuner -> webDriverTuner.tuneDriver(webDriver, isNewSession))));
     }
 
-    @Override
-    public void refreshContext() {
-        if (driver == null) {
-            browserUpProxy = null;
+    private synchronized void initDriverIfNecessary() {
+        if (isAlive()) {
             return;
         }
 
-        boolean isAlive;
+        Object[] parameters;
+        Object[] arguments = supportedWebDriver.get();
+
+        if (USE_BROWSER_PROXY.get()) {
+            browserUpProxy = new BrowserUpProxyServer();
+            browserUpProxy.setTrustAllServers(true);
+
+            MutableCapabilities capabilities = (MutableCapabilities) stream(arguments)
+                    .filter(arg -> MutableCapabilities.class.isAssignableFrom(arg.getClass()))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException("Browser mutable capabilities not found"));
+
+            Proxy seleniumProxy = new Proxy();
+            seleniumProxy.setProxyType(MANUAL);
+
+            Object proxyCapability = capabilities.asMap().get(CapabilityType.PROXY);
+
+            if (proxyCapability != null
+                    && Proxy.class.isAssignableFrom(proxyCapability.getClass())
+                    && ((Proxy) proxyCapability).getProxyType().equals(MANUAL)) {
+                Proxy existingSeleniumProxy = (Proxy) proxyCapability;
+                String[] proxyUrl = existingSeleniumProxy.getHttpProxy().split(":");
+
+                browserUpProxy.setChainedProxy(new InetSocketAddress(proxyUrl[0], Integer.parseInt(proxyUrl[1])));
+            } else {
+                ofNullable(PROXY_URL_PROPERTY.get()).ifPresent(proxyUrl ->
+                        browserUpProxy.setChainedProxy(new InetSocketAddress(proxyUrl.getHost(), proxyUrl.getPort())));
+            }
+
+            browserUpProxy.start();
+
+            String hostIp = new NetworkUtils().getIp4NonLoopbackAddressOfThisMachine().getHostAddress();
+
+            seleniumProxy.setHttpProxy(hostIp + ":" + browserUpProxy.getPort());
+            seleniumProxy.setSslProxy(hostIp + ":" + browserUpProxy.getPort());
+
+            if (seleniumProxy.getHttpProxy() != null) {
+                capabilities.setCapability(CapabilityType.PROXY, seleniumProxy);
+                capabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
+                capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+
+                for (var i = 0; i < arguments.length; i++) {
+                    if (MutableCapabilities.class.isAssignableFrom(arguments[i].getClass())) {
+                        arguments[i] = capabilities;
+                    }
+                }
+            }
+        }
+
+        if (supportedWebDriver.requiresRemoteUrl() && supportedWebDriver.getRemoteURL() == null) {
+            initServerLocally();
+            parameters = ArrayUtils.addAll(new Object[]{serverUrl}, arguments);
+        } else {
+            parameters = arguments;
+        }
+
+        try {
+            var c = findSuitableConstructor(supportedWebDriver.getWebDriverClass(),
+                    parameters);
+
+            if (!isWebDriverInstalled) {
+                ofNullable(supportedWebDriver.getWebDriverManager())
+                        .ifPresent(WebDriverManager::setup);
+                isWebDriverInstalled = true;
+            }
+
+            var enhancer = new Enhancer();
+            enhancer.setSuperclass(supportedWebDriver.getWebDriverClass());
+            enhancer.setCallback(new WebDriverMethodInterceptor());
+
+            var driver = (WebDriver) enhancer.create(c.getParameterTypes(), parameters);
+
+            ofNullable(browserUpProxy).ifPresent(browserUpProxy -> {
+                if (browserUpProxy.isStarted()) {
+                    browserUpProxy.enableHarCaptureTypes(REQUEST_HEADERS, REQUEST_CONTENT, REQUEST_COOKIES,
+                            RESPONSE_HEADERS, RESPONSE_CONTENT, RESPONSE_COOKIES);
+
+                    browserUpProxy.newHar();
+                }
+            });
+
+            applySettings(driver, true);
+            ofNullable(BASE_WEB_DRIVER_URL_PROPERTY.get())
+                    .ifPresent(url -> driver.get(url.toString()));
+            if (FORCE_WINDOW_MAXIMIZING_ON_START.get()) {
+                driver.manage().window().maximize();
+            }
+
+            driver.manage().timeouts().pageLoadTimeout(WAITING_FOR_PAGE_LOADED_DURATION.get().toMillis(),
+                    MILLISECONDS);
+
+            this.driver = driver;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            refreshed = false;
+        }
+    }
+
+    private boolean isAlive() {
+        if (driver == null) {
+            return false;
+        }
+
         try {
             driver.getCurrentUrl();
-            isAlive = true;
-        } catch (WebDriverException e) {
-            isAlive = false;
+            return true;
+        } catch (UnreachableBrowserException | NoSuchSessionException e1) {
+            return false;
+        } catch (Exception e) {
+            if (e.getClass().equals(WebDriverException.class)) {
+                return true;
+            }
+            throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public synchronized void refreshContext() {
+        boolean isAlive = isAlive();
 
         if (!isAlive) {
             driver = null;
@@ -204,16 +226,17 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
             return;
         }
 
-        if (CLEAR_WEB_DRIVER_COOKIES.get()) {
-            driver.manage().deleteAllCookies();
-        }
-
         ofNullable(browserUpProxy).ifPresent(BrowserUpProxy::newHar);
+        refreshed = true;
     }
 
     @Override
-    public WebDriver getWrappedDriver() {
+    public synchronized WebDriver getWrappedDriver() {
         initDriverIfNecessary();
+        if (refreshed) {
+            applySettings(driver, false);
+            refreshed = false;
+        }
         return driver;
     }
 

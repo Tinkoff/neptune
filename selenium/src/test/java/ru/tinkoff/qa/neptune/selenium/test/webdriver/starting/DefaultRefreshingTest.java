@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.selenium.test.webdriver.starting;
 
-import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.testng.annotations.*;
@@ -13,21 +12,22 @@ import ru.tinkoff.qa.neptune.selenium.test.capability.suppliers.ChromeSettingsSu
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static java.lang.System.setProperty;
-import static java.lang.Thread.sleep;
+import static java.util.List.of;
 import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
 import static java.util.Optional.ofNullable;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.is;
 import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CHROME;
-import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.CLEAR_WEB_DRIVER_COOKIES;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.KEEP_WEB_DRIVER_SESSION_OPENED;
 import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDriverProperty.SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers.CHROME_DRIVER;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
+import static ru.tinkoff.qa.neptune.selenium.properties.WebDriverTunersProperty.WEB_DRIVER_TUNERS_PROPERTY;
+import static ru.tinkoff.qa.neptune.selenium.test.webdriver.starting.TestWebDriverTunerSupplier.TEST_WEB_DRIVER_TUNER;
 
 /**
  * This is the integration test which is supposed to be run on some local environment.
@@ -39,14 +39,11 @@ import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_D
  * {@link SessionFlagProperties#KEEP_WEB_DRIVER_SESSION_OPENED}
  *
  * to make sure that {@link WrappedWebDriver} doesn't ignore
- * {@link SessionFlagProperties#CLEAR_WEB_DRIVER_COOKIES}
- *
- * to make sure that {@link WrappedWebDriver} doesn't ignore
  *
  * Requirements:
  * Installed Chrome
  */
-public class RefreshingTest {
+public class DefaultRefreshingTest {
 
     private final String SELENIUM = "https://github.com/SeleniumHQ/selenium";
 
@@ -55,9 +52,7 @@ public class RefreshingTest {
                     entry(BASE_WEB_DRIVER_URL_PROPERTY.getName(), "https://github.com"),
                     entry(CHROME.getName(), ChromeSettingsSupplierHeadless.class.getName()));
 
-    private final List<PropertySupplier<Boolean>> FLAGS =
-            List.of(KEEP_WEB_DRIVER_SESSION_OPENED,
-                    CLEAR_WEB_DRIVER_COOKIES);
+    private final List<PropertySupplier<?>> PROPS = of(KEEP_WEB_DRIVER_SESSION_OPENED, WEB_DRIVER_TUNERS_PROPERTY);
 
     private WrappedWebDriver wrappedWebDriver;
 
@@ -95,85 +90,106 @@ public class RefreshingTest {
 
     @BeforeMethod
     public void beforeTest() {
-        FLAGS.forEach(s -> System.getProperties().remove(s.getName()));
+        TEST_WEB_DRIVER_TUNER.actions.clear();
+        PROPS.forEach(s -> System.getProperties().remove(s.getName()));
     }
 
-    @Test(priority = 1)
-    public void nothingIsDefinedTest() {
+    @Test
+    public void test1() {
         WebDriver webDriver = prepareWrappedWebDriver();
         wrappedWebDriver.refreshContext();
         assertThat("Is driver dead", !isDriverAlive(webDriver), is(true));
     }
 
-    @Test(priority = 1)
-    public void toNotKeepSessionOpenedTest() {
+    @Test
+    public void test2() {
         setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getName(), "false");
-        setProperty(CLEAR_WEB_DRIVER_COOKIES.getName(), "true");
 
         WebDriver webDriver = prepareWrappedWebDriver();
         wrappedWebDriver.refreshContext();
         assertThat("Is driver dead", !isDriverAlive(webDriver), is(true));
     }
 
-    @Test(priority = 1)
-    public void toKeepSessionAliveWithNoOtherOptionTest() throws InterruptedException {
+    @Test
+    public void test3() {
         setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getName(), "true");
 
         WebDriver webDriver = prepareWrappedWebDriver();
         wrappedWebDriver.refreshContext();
-        sleep(1000);
 
         assertThat("Is driver alive", isDriverAlive(webDriver), is(true));
         assertThat("Current url",
                 webDriver.getCurrentUrl(),
                 is(SELENIUM));
-        assertThat("Are cookies there",
-                webDriver.manage().getCookies().size(),
-                greaterThan(0));
-
-        setProperty(CLEAR_WEB_DRIVER_COOKIES.getName(), "false");
-        wrappedWebDriver.refreshContext();
-        sleep(1000);
-
-        assertThat("Is driver alive", isDriverAlive(webDriver), is(true));
-        assertThat("Current url",
-                webDriver.getCurrentUrl(),
-                is(SELENIUM));
-        assertThat("Are cookies there",
-                webDriver.manage().getCookies().size(),
-                greaterThan(0));
     }
 
-    @Test(priority = 1)
-    public void toKeepSessionAliveWithCookieRemovalTest() throws InterruptedException {
+    @Test
+    public void test4() {
+        setProperty(WEB_DRIVER_TUNERS_PROPERTY.getName(), TestWebDriverTunerSupplier.class.getName());
+        wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
+                new SeleniumParameterProvider().provide().getParameterValues()[0]);
+        wrappedWebDriver.getWrappedDriver();
+        wrappedWebDriver.refreshContext();
+        wrappedWebDriver.getWrappedDriver();
+
+
+        assertThat("Registered tune actions",
+                TEST_WEB_DRIVER_TUNER.actions,
+                contains("created",
+                        "created"));
+    }
+
+    @Test
+    public void test5() {
+        setProperty(WEB_DRIVER_TUNERS_PROPERTY.getName(), TestWebDriverTunerSupplier.class.getName());
         setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getName(), "true");
-        setProperty(CLEAR_WEB_DRIVER_COOKIES.getName(), "true");
 
-        WebDriver webDriver = prepareWrappedWebDriver();
-        Set<Cookie> cookies = webDriver.manage().getCookies();
+        wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
+                new SeleniumParameterProvider().provide().getParameterValues()[0]);
+        wrappedWebDriver.getWrappedDriver();
         wrappedWebDriver.refreshContext();
-        sleep(1000);
+        wrappedWebDriver.getWrappedDriver();
 
-        assertThat("Is driver alive", isDriverAlive(webDriver), is(true));
-        assertThat("Current url",
-                webDriver.getCurrentUrl(),
-                is(SELENIUM));
-        assertThat("Are cookies there",
-                webDriver.manage().getCookies().size(),
-                lessThan(cookies.size()));
-
-        webDriver.get(SELENIUM);
-        wrappedWebDriver.refreshContext();
-        sleep(1000);
-
-        assertThat("Is driver alive", isDriverAlive(webDriver), is(true));
-        assertThat("Current url",
-                webDriver.getCurrentUrl(),
-                is(SELENIUM));
-        assertThat("Are cookies there",
-                webDriver.manage().getCookies().size(),
-                lessThan(cookies.size()));
+        assertThat("Registered tune actions",
+                TEST_WEB_DRIVER_TUNER.actions,
+                contains("created",
+                        "refreshed"));
     }
+
+    @Test
+    public void test6() {
+        setProperty(WEB_DRIVER_TUNERS_PROPERTY.getName(), TestWebDriverTunerSupplier.class.getName());
+        wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
+                new SeleniumParameterProvider().provide().getParameterValues()[0]);
+
+        wrappedWebDriver.getWrappedDriver();
+        wrappedWebDriver.shutDown();
+        wrappedWebDriver.getWrappedDriver();
+
+        assertThat("Registered tune actions",
+                TEST_WEB_DRIVER_TUNER.actions,
+                contains("created",
+                        "created"));
+    }
+
+    @Test
+    public void test7() {
+        setProperty(WEB_DRIVER_TUNERS_PROPERTY.getName(), TestWebDriverTunerSupplier.class.getName());
+        setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getName(), "true");
+
+        wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
+                new SeleniumParameterProvider().provide().getParameterValues()[0]);
+        wrappedWebDriver.getWrappedDriver();
+        wrappedWebDriver.shutDown();
+        wrappedWebDriver.refreshContext();
+        wrappedWebDriver.getWrappedDriver();
+
+        assertThat("Registered tune actions",
+                TEST_WEB_DRIVER_TUNER.actions,
+                contains("created",
+                        "created"));
+    }
+
 
     @AfterMethod
     public void afterTest() {
@@ -183,6 +199,6 @@ public class RefreshingTest {
     @AfterClass
     public void tearDown() {
         PROPERTIES_TO_SET_BEFORE.keySet().forEach(s -> System.getProperties().remove(s));
-        FLAGS.forEach(s -> System.getProperties().remove(s));
+        PROPS.forEach(s -> System.getProperties().remove(s));
     }
 }
