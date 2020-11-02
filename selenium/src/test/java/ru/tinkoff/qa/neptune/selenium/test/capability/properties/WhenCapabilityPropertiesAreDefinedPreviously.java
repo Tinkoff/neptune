@@ -31,7 +31,8 @@ import static ru.tinkoff.qa.neptune.core.api.properties.GeneralPropertyInitializ
 import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CHROME;
 import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CommonCapabilityProperties.*;
 import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.FIREFOX;
-import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.*;
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FIND_ONLY_VISIBLE_ELEMENTS;
+import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.KEEP_WEB_DRIVER_SESSION_OPENED;
 import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDriverProperty.SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.REMOTE_WEB_DRIVER_URL_PROPERTY;
@@ -62,7 +63,6 @@ public class WhenCapabilityPropertiesAreDefinedPreviously {
                     entry(BROWSER_VERSION.getName(), "60"),
                     entry(CHROME.getName(), ChromeSettingsSupplierWithExperimentalOption.class.getName()
                             + "," + ChromeSettingsSupplierWithBinary.class.getName()),
-                    entry(CLEAR_WEB_DRIVER_COOKIES.getName(), "true"),
                     entry(FIND_ONLY_VISIBLE_ELEMENTS.getName(), "true"),
                     entry(KEEP_WEB_DRIVER_SESSION_OPENED.getName(), "true"),
                     entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getName(), "CHROME_DRIVER"));
