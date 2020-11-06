@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.http.api.properties;
+package ru.tinkoff.qa.neptune.http.api.properties.time;
 
 import ru.tinkoff.qa.neptune.core.api.properties.duration.DurationSupplier;
 import ru.tinkoff.qa.neptune.core.api.properties.enums.EnumPropertySuppler;

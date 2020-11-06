@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.http.api.service.mapping;
 
 import ru.tinkoff.qa.neptune.core.api.properties.url.URLValuePropertySupplier;
-import ru.tinkoff.qa.neptune.http.api.properties.DefaultEndPointOfTargetAPIProperty;
+import ru.tinkoff.qa.neptune.http.api.properties.end.point.DefaultEndPointOfTargetAPIProperty;
 import ru.tinkoff.qa.neptune.http.api.request.RequestTuner;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.Header;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMethod;

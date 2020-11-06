@@ -1,5 +1,6 @@
-package ru.tinkoff.qa.neptune.http.api.properties;
+package ru.tinkoff.qa.neptune.http.api.properties.ssl;
 
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyDefaultValue;
 import ru.tinkoff.qa.neptune.core.api.properties.PropertyDescription;
 import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
 import ru.tinkoff.qa.neptune.core.api.properties.object.ObjectPropertySupplier;
@@ -11,6 +12,7 @@ import java.util.function.Supplier;
         "supply instances of javax.net.ssl.SSLContext"},
         section = "Http client. General")
 @PropertyName("DEFAULT_HTTP_SSL_CONTEXT")
+@PropertyDefaultValue("ru.tinkoff.qa.neptune.http.api.properties.ssl.AllTrustedSslContextSupplier")
 public final class DefaultHttpSslContextProperty implements ObjectPropertySupplier<DefaultHttpSslContextProperty.SslContextSupplier> {
     /**
      * This instance reads value of the property {@code 'DEFAULT_HTTP_SSL_CONTEXT'} and returns a {@link Supplier}
