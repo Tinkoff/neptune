@@ -49,8 +49,16 @@ ru.tinkoff.qa.neptune.http.api.captors.response
 ru.tinkoff.qa.neptune.http.api.cookies
 ru.tinkoff.qa.neptune.http.api.hamcrest.response
 ru.tinkoff.qa.neptune.http.api.mapping
-ru.tinkoff.qa.neptune.http.api.properties
+ru.tinkoff.qa.neptune.http.api.properties.authentification
+ru.tinkoff.qa.neptune.http.api.properties.cookies
+ru.tinkoff.qa.neptune.http.api.properties.end.point
+ru.tinkoff.qa.neptune.http.api.properties.executor
 ru.tinkoff.qa.neptune.http.api.properties.mapper
+ru.tinkoff.qa.neptune.http.api.properties.priority
+ru.tinkoff.qa.neptune.http.api.properties.protocol.version
+ru.tinkoff.qa.neptune.http.api.properties.proxy
+ru.tinkoff.qa.neptune.http.api.properties.redirect
+ru.tinkoff.qa.neptune.http.api.properties.ssl
 ru.tinkoff.qa.neptune.http.api.properties.time
 ru.tinkoff.qa.neptune.http.api.request
 ru.tinkoff.qa.neptune.http.api.request.body
