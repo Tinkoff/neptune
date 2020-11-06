@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.http.api.properties;
+package ru.tinkoff.qa.neptune.http.api.properties.authentification;
 
 import ru.tinkoff.qa.neptune.core.api.properties.PropertyDescription;
 import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;

@@ -14,6 +14,7 @@ import java.util.*;
 import static io.swagger.codegen.v3.CodegenConstants.*;
 import static io.swagger.codegen.v3.generators.handlebars.ExtensionHelper.getBooleanValue;
 import static java.lang.String.valueOf;
+import static java.lang.System.setProperty;
 import static java.util.Arrays.asList;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
@@ -79,6 +80,7 @@ public class NeptuneGenerator extends AbstractJavaCodegen {
         additionalProperties.put("apiVersion", apiVersion);
         init();
         setWithXml(true);
+        setProperty("io.swagger.v3.parser.util.RemoteUrl.trustAll", "true");
     }
 
     private static String getStyle(Enum<?> style) {
