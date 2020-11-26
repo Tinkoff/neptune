@@ -26,7 +26,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.KE
 import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDriverProperty.SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers.CHROME_DRIVER;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
-import static ru.tinkoff.qa.neptune.selenium.properties.WebDriverTunersProperty.WEB_DRIVER_TUNERS_PROPERTY;
+import static ru.tinkoff.qa.neptune.selenium.properties.WebDriverCredentialsProperty.WEB_DRIVER_CREDENTIALS_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.test.webdriver.starting.TestWebDriverTunerSupplier.TEST_WEB_DRIVER_TUNER;
 
 /**
@@ -52,7 +52,7 @@ public class DefaultRefreshingTest {
                     entry(BASE_WEB_DRIVER_URL_PROPERTY.getName(), "https://github.com"),
                     entry(CHROME.getName(), ChromeSettingsSupplierHeadless.class.getName()));
 
-    private final List<PropertySupplier<?>> PROPS = of(KEEP_WEB_DRIVER_SESSION_OPENED, WEB_DRIVER_TUNERS_PROPERTY);
+    private final List<PropertySupplier<?>> PROPS = of(KEEP_WEB_DRIVER_SESSION_OPENED, WEB_DRIVER_CREDENTIALS_PROPERTY);
 
     private WrappedWebDriver wrappedWebDriver;
 
@@ -125,7 +125,7 @@ public class DefaultRefreshingTest {
 
     @Test
     public void test4() {
-        setProperty(WEB_DRIVER_TUNERS_PROPERTY.getName(), TestWebDriverTunerSupplier.class.getName());
+        setProperty(WEB_DRIVER_CREDENTIALS_PROPERTY.getName(), TestWebDriverTunerSupplier.class.getName());
         wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
                 new SeleniumParameterProvider().provide().getParameterValues()[0]);
         wrappedWebDriver.getWrappedDriver();
@@ -141,7 +141,7 @@ public class DefaultRefreshingTest {
 
     @Test
     public void test5() {
-        setProperty(WEB_DRIVER_TUNERS_PROPERTY.getName(), TestWebDriverTunerSupplier.class.getName());
+        setProperty(WEB_DRIVER_CREDENTIALS_PROPERTY.getName(), TestWebDriverTunerSupplier.class.getName());
         setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getName(), "true");
 
         wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
@@ -158,7 +158,7 @@ public class DefaultRefreshingTest {
 
     @Test
     public void test6() {
-        setProperty(WEB_DRIVER_TUNERS_PROPERTY.getName(), TestWebDriverTunerSupplier.class.getName());
+        setProperty(WEB_DRIVER_CREDENTIALS_PROPERTY.getName(), TestWebDriverTunerSupplier.class.getName());
         wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
                 new SeleniumParameterProvider().provide().getParameterValues()[0]);
 
@@ -174,7 +174,7 @@ public class DefaultRefreshingTest {
 
     @Test
     public void test7() {
-        setProperty(WEB_DRIVER_TUNERS_PROPERTY.getName(), TestWebDriverTunerSupplier.class.getName());
+        setProperty(WEB_DRIVER_CREDENTIALS_PROPERTY.getName(), TestWebDriverTunerSupplier.class.getName());
         setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getName(), "true");
 
         wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
