@@ -1,8 +1,8 @@
-#Интеграция с Allure Framework и TestNG
+# Интеграция с Allure Framework и TestNG
 
 Данный модуль используется для связывания функциональности **Neptune**, **Allure framework** и **TestNG**.
 
-#Maven
+## Maven
 
 В pom.xml
 
@@ -17,7 +17,7 @@
     </dependencies>
 ```
 
-#Gradle
+## Gradle
 
 ```groovy
     dependencies {
