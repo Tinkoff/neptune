@@ -19,6 +19,8 @@
 
 ## Gradle
 
+В build.gradle
+
 ```groovy
     dependencies {
         testCompile group: 'ru.tinkoff.qa.neptune', name: 'allure.testng.bridge', version: LATEST_RELEASE_OR_BETA_VERSION    
