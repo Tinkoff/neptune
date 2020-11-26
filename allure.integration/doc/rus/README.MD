@@ -1,8 +1,8 @@
-#Интеграция с Allure Framework
+# Интеграция с Allure Framework
 
 Данный модуль используется для формирования данных для посдедующего построения Allure-отчетов
 
-#Maven
+## Maven
 
 В pom.xml
 
@@ -17,7 +17,7 @@
     </dependencies>
 ```
 
-#Gradle
+## Gradle
 
 ```groovy
     dependencies {
