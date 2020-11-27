@@ -67,7 +67,7 @@ public abstract class BrowserCredentials<T> {
         areCredentialsChanged = areCredentialsDifferent(credentials);
     }
 
-    abstract boolean areCredentialsDifferent(T credentials);
+    protected abstract boolean areCredentialsDifferent(T credentials);
 
     /**
      * Performs login/authentication in a browser.
@@ -75,7 +75,7 @@ public abstract class BrowserCredentials<T> {
      * @param webDriver    is an instance of opened browser represented by {@link WebDriver}
      * @param isNewSession is it a new browser session or not
      */
-    abstract void authentication(WebDriver webDriver, boolean isNewSession);
+    protected abstract void authentication(WebDriver webDriver, boolean isNewSession);
 
     void performAuthentication(WebDriver webDriver, boolean isNewSession) {
         authentication(webDriver, isNewSession);
