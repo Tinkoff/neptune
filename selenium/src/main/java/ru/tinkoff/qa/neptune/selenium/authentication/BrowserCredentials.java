@@ -67,6 +67,13 @@ public abstract class BrowserCredentials<T> {
         areCredentialsChanged = areCredentialsDifferent(credentials);
     }
 
+    /**
+     * Checks credentials if it something new or same as previous
+     *
+     * @param credentials is an object that represents credentials
+     * @return {@code true} when {@code credentials} differs from previously passed.
+     * {@code false} is returned otherwise
+     */
     protected abstract boolean areCredentialsDifferent(T credentials);
 
     /**
