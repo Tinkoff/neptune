@@ -218,7 +218,7 @@ public class LoginAndPasswordCredentialsSupplier implements Supplier<LoginAndPas
 ```
 
 Заполняем свойство [WEB_DRIVER_CREDENTIALS](./SETTINGS.MD#WEB_DRIVER_CREDENTIALS). Подробнее о свойствах, которые возвращают объекты 
-- см. [статью](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
+см. [статью](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
 
 ```properties
 WEB_DRIVER_CREDENTIALS=org.my.project.LoginAndPasswordCredentialsSupplier
