@@ -133,7 +133,7 @@ public class SomeTest extends BaseIntegrationFrontEndTest {
 выполнялись подготовительные методы или тесты, которым браузер был не нужен, и их выполнение заняло продолжительное время.
 Если такое случилось, возможно переоткрыть браузер, но и авторизоваться тоже придется заново.   
 
-- субъективно, но кому-то может не травиться то, что в логе или отчете о выполнении теста есть строчки о том, 
+- субъективно, но кому-то может не нравиться то, что в логе или отчете о выполнении теста есть строчки о том, 
 как пользователь авторизуется. Это может отвлекать и смещать фокус внимания с полезной информации. Что если 
 нам просто достаточно видеть запись, что вход в систему через интерфейс прошел успешно?
 
@@ -157,7 +157,7 @@ import static ru.tinkoff.qa.neptune.core.api.steps.Step.$;
  */
 public class LoginAndPasswordCredentials extends BrowserCredentials<Credentials> {
 
-    //здесь мы запоминаем предыдущие креды
+    //здесь мы запоминаем текущие креды
     private Credentials currentCredentials;
 
     /**
@@ -196,5 +196,93 @@ public class LoginAndPasswordCredentials extends BrowserCredentials<Credentials>
         });
     }
 }
+```
+Затем добавим еще класс
+
+```java
+package org.my.project;
+
+import java.util.function.Supplier;
+
+public class LoginAndPasswordCredentialsSupplier implements Supplier<LoginAndPasswordCredentials> {
+
+    @Override
+    public LoginAndPasswordCredentials get() {
+        var creds = new LoginAndPasswordCredentials();
+        //наш класс LoginAndPasswordCredentials может содержать дополнительную логику
+        //в зависимости от окружения, она может быть применена
+        return creds;
+    }
+}
 
 ```
+
+Заполняем свойство [WEB_DRIVER_CREDENTIALS](./SETTINGS.MD#WEB_DRIVER_CREDENTIALS). Подробнее о свойствах, которые возвращают объекты 
+- см. [статью](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
+
+```properties
+WEB_DRIVER_CREDENTIALS=org.my.project.LoginAndPasswordCredentialsSupplier
+```
+
+И теперь достаточно
+
+```java
+import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
+import static ru.tinkoff.qa.neptune.selenium.authentication.BrowserCredentials.changeBrowserLogin;
+
+public class SomeTest {
+
+    @Test
+    public void test() {
+        //тут мы просто даем указания, что через браузер должен быть
+        //выполнен вход в приложение под пользователем JOHN_DOE
+        //сам логин здесь не происходит
+        changeBrowserLogin(JOHN_DOE);
+        
+        //Вот тут-то, прямо перед выполнением навигации 
+        //по относительному пути /my/desired/path вход в приложение
+        //под пользователем JOHN_DOE будет выполнен.
+        //После логина, произойдет переход по ссылке 
+        inBrowser().navigateTo("/my/desired/path")
+        //дальнейшая тестовая логика
+    } 
+   
+}
+```
+
+или так
+
+```java
+import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
+import static ru.tinkoff.qa.neptune.selenium.authentication.BrowserCredentials.changeBrowserLogin;
+
+public class SomeTest {
+    
+    @BeforeClass
+    public void preparationMethod() {
+        //тут мы просто даем указания, что через браузер должен быть
+        //выполнен вход в приложение под пользователем JOHN_DOE
+        //сам логин здесь не происходит
+        changeBrowserLogin(JOHN_DOE);
+    }
+
+    //далее идут подготовки или тесты, не требующие браузер,
+    //чье выполнение занимает продолжительное время
+
+    @Test
+    public void test() {        
+        //Вот тут-то, прямо перед выполнением навигации 
+        //по относительному пути /my/desired/path вход в приложение
+        //под пользователем JOHN_DOE будет выполнен.
+        //После логина, произойдет переход по ссылке 
+        inBrowser().navigateTo("/my/desired/path")
+        //дальнейшая тестовая логика
+    } 
+   
+}
+```
+
+## Можно избавиться от явного вызова `changeBrowserLogin`
+
+Для этого надо реализовать [хук](./../../../core.api/doc/rus/HOOKS.MD). И не забыть выставить его приоритет
+от 1 до 9, т.к. [уже реализованный хук с навигацией по страницам](./NAVIGATION.MD#Хук) имеет приоритет `10`. 

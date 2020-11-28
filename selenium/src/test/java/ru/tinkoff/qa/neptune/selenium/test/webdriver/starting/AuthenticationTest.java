@@ -111,6 +111,21 @@ public class AuthenticationTest extends BaseWebDriverTest {
         assertThat(TestBrowserCredentials.isANewSession, Matchers.is(false));
     }
 
+    @Test(dependsOnGroups = "NO CREDENTIALS", dependsOnMethods = "test5")
+    public void test7() {
+        WEB_DRIVER_CREDENTIALS_PROPERTY.accept("ru.tinkoff.qa.neptune.selenium.test.webdriver.starting.CredSupplier");
+        changeBrowserLogin("ABC");
+        getDriver();
+        wrappedWebDriver.getWrappedDriver();
+        assertThat(TestBrowserCredentials.hasLoginPerformed, Matchers.is(true));
+        assertThat(TestBrowserCredentials.isANewSession, Matchers.is(true));
+
+        changeBrowserLogin(null);
+        wrappedWebDriver.getWrappedDriver();
+        assertThat(TestBrowserCredentials.hasLoginPerformed, Matchers.is(true));
+        assertThat(TestBrowserCredentials.isANewSession, Matchers.is(false));
+    }
+
     @AfterClass
     public void tearDown() {
         PROPERTIES_TO_SET_BEFORE.keySet().forEach(s -> System.getProperties().remove(s));
