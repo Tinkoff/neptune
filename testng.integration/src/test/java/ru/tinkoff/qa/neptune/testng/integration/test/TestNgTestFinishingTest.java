@@ -70,7 +70,7 @@ public class TestNgTestFinishingTest {
 
     @Test
     public void whenRefreshingStrategyIsBeforeTest() {
-        REFRESH_STRATEGY_PROPERTY.accept(ALL_TEST_STARTING.name());
+        REFRESH_STRATEGY_PROPERTY.accept(TEST_STARTING.name());
         try {
             runBeforeTheChecking();
             assertThat(ContextClass2.getRefreshCount(), is(1));
