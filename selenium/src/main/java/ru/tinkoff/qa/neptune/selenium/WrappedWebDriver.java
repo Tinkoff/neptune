@@ -12,6 +12,7 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 import org.openqa.selenium.remote.server.SeleniumServer;
 import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
+import ru.tinkoff.qa.neptune.selenium.authentication.AuthenticationPerformer;
 import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
 
 import java.net.InetSocketAddress;
@@ -30,7 +31,6 @@ import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.*;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.PROXY_URL_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITING_FOR_PAGE_LOADED_DURATION;
-import static ru.tinkoff.qa.neptune.selenium.properties.WebDriverTunersProperty.WEB_DRIVER_TUNERS_PROPERTY;
 
 public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
 
@@ -43,7 +43,7 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
     private BrowserUpProxy browserUpProxy;
     private WebDriver driver;
     private boolean isWebDriverInstalled;
-    private boolean refreshed;
+    private final AuthenticationPerformer authenticationPerformer = new AuthenticationPerformer();
 
     public WrappedWebDriver(SupportedWebDrivers supportedWebDriver) {
         this.supportedWebDriver = supportedWebDriver;
@@ -81,15 +81,9 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
         }
     }
 
-    private static void applySettings(WebDriver webDriver, boolean isNewSession) {
-        ofNullable(WEB_DRIVER_TUNERS_PROPERTY.get())
-                .ifPresent(suppliers -> suppliers.forEach(webDriverTunerSupplier -> ofNullable(webDriverTunerSupplier.get())
-                        .ifPresent(webDriverTuner -> webDriverTuner.tuneDriver(webDriver, isNewSession))));
-    }
-
-    private synchronized void initDriverIfNecessary() {
+    private synchronized boolean isNewSession() {
         if (isAlive()) {
-            return;
+            return false;
         }
 
         Object[] parameters;
@@ -173,7 +167,7 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
                 }
             });
 
-            applySettings(driver, true);
+            authenticationPerformer.performAuthentication(driver, true);
             ofNullable(BASE_WEB_DRIVER_URL_PROPERTY.get())
                     .ifPresent(url -> driver.get(url.toString()));
             if (FORCE_WINDOW_MAXIMIZING_ON_START.get()) {
@@ -184,10 +178,9 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
                     MILLISECONDS);
 
             this.driver = driver;
+            return true;
         } catch (Exception e) {
             throw new RuntimeException(e);
-        } finally {
-            refreshed = false;
         }
     }
 
@@ -227,15 +220,12 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
         }
 
         ofNullable(browserUpProxy).ifPresent(BrowserUpProxy::newHar);
-        refreshed = true;
     }
 
     @Override
     public synchronized WebDriver getWrappedDriver() {
-        initDriverIfNecessary();
-        if (refreshed) {
-            applySettings(driver, false);
-            refreshed = false;
+        if (!isNewSession()) {
+            authenticationPerformer.performAuthentication(driver, false);
         }
         return driver;
     }
