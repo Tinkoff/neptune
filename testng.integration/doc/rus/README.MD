@@ -248,7 +248,7 @@ public class DependencyInjectionTest extends BaseTestNgTest {
 
     private int a; //во всех тестах поле 'a' должно быть равно 1
     private int b;  //во всех тестах поле 'b' должно быть равно 2
-    private int c;  //во всех тестах поле 'c' должно быть равно 2
+    private int c;  //во всех тестах поле 'c' должно быть равно 3
     private Integer d;
 
     @Test
