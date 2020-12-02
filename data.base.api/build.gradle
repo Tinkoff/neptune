@@ -68,7 +68,6 @@ uploadArchives {
 }
 
 task javadocJar(type: Jar) {
-    classifier = 'javadoc'
     from javadoc
 }
 
@@ -77,7 +76,6 @@ javadoc {
 }
 
 task sourcesJar(type: Jar) {
-    classifier = 'sources'
     from sourceSets.main.allSource
 }
 
