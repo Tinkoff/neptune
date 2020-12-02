@@ -19,6 +19,7 @@ import static java.util.Arrays.asList;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static org.slf4j.LoggerFactory.getLogger;
 
 public class NeptuneGenerator extends AbstractJavaCodegen {
 
@@ -605,12 +606,14 @@ public class NeptuneGenerator extends AbstractJavaCodegen {
 
         setWithXml(true);
 
-        System.out.println("Starting the swagger code generating");
-        System.out.printf("Input spec: %s%n", getInputSpec());
-        System.out.printf("Input url: %s%n", getInputURL());
+        var logger = getLogger(NeptuneGenerator.class);
 
-        System.out.println("Additional properties:");
-        additionalProperties.forEach((s, o) -> System.out.printf("%s = %s", s, 0));
+        logger.info("Starting the swagger code generating");
+        logger.info("Input url: " + getInputURL());
+
+        logger.info("Additional properties:");
+        additionalProperties.forEach((s, o) -> logger.info(s + " = " + o));
+        logger.info("Input spec: " + getInputSpec());
     }
 
     private void prepareNeptuneAnnotations() {
