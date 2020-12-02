@@ -72,10 +72,6 @@ task javadocJar(type: Jar) {
     from javadoc
 }
 
-javadoc {
-    exclude('**/ru/tinkoff/qa/neptune/data/base/api/test/**')
-}
-
 task sourcesJar(type: Jar) {
     classifier = 'sources'
     from sourceSets.main.allSource
