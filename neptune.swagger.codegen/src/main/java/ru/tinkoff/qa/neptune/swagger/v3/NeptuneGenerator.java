@@ -613,7 +613,6 @@ public class NeptuneGenerator extends AbstractJavaCodegen {
 
         logger.info("Additional properties:");
         additionalProperties.forEach((s, o) -> logger.info(s + " = " + o));
-        logger.info("Input spec: " + getInputSpec());
     }
 
     private void prepareNeptuneAnnotations() {
