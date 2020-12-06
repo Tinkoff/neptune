@@ -142,3 +142,164 @@
 
 Но все же
 
+### Если сгенерированный код должен лежать в test
+
+```groovy
+buildscript {
+    repositories {
+        mavenCentral()
+
+        maven {
+            url "Указываем другие необходимые репозитории maven"
+        }
+    }
+    dependencies {
+        classpath('io.swagger.codegen.v3:swagger-codegen-maven-plugin:3.0.23') //Или выше
+        classpath('ru.tinkoff.qa.neptune:neptune.swagger.codegen:LATEST_RELEASE_OR_BETA_VERSION')
+    }
+}
+
+plugins {
+    id 'java'
+}
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+
+    maven {
+        url "Указываем другие необходимые репозитории maven"
+    }
+}
+
+dependencies {
+    testCompile group: 'ru.tinkoff.qa.neptune', name: 'http.api', version: 'LATEST_RELEASE_OR_BETA_VERSION'
+}
+
+import io.swagger.codegen.v3.CodegenConfigLoader
+import io.swagger.codegen.v3.DefaultGenerator
+import io.swagger.codegen.v3.ClientOptInput
+import io.swagger.codegen.v3.ClientOpts
+import io.swagger.v3.parser.OpenAPIV3Parser
+
+task generateAPI {
+    doLast {
+        System.setProperty("io.swagger.v3.parser.util.RemoteUrl.trustAll", "true"); //Желательно указать, если спецификация лежит удаленно
+        //и генерация кода не доверяет сертификату
+        def openAPI = new OpenAPIV3Parser().readLocation('URL-путь до json спецификации от swagger', null, null).getOpenAPI()
+
+        def clientOpts = new ClientOptInput().openAPI(openAPI)
+        def codegenConfig = CodegenConfigLoader.forName('neptune')
+        codegenConfig.setOutputDir(project.rootDir.toString() + '/src/test/java') //или путь до любой директории, которая не должна 
+        //попасть в сборку
+        clientOpts.setConfig(codegenConfig)
+
+        def clientOps = new ClientOpts()
+        clientOps.setProperties([
+                'apiPackage'       : 'org.my.group.my.test.api', //Название пакета, где будут созданы классы, моделирующие API
+                'modelPackage'     : 'org.my.group.my.test.dto', //Название пакета, где будут созданы классы, описывающие DTO
+        ])
+        clientOpts.setOpts(clientOps)
+
+        def generator = new DefaultGenerator().opts(clientOpts)
+        generator.generate()
+    }
+}
+
+//выстраиваем последовательность задач gradle
+compileTestJava {
+    dependsOn(generateAPI)
+}
+
+
+```
+
+
+### Если сгенерированный код должен лежать в main
+
+```groovy
+buildscript {
+    repositories {
+        mavenCentral()
+
+        maven {
+            url "Указываем другие необходимые репозитории maven"
+        }
+    }
+    dependencies {
+        classpath('io.swagger.codegen.v3:swagger-codegen-maven-plugin:3.0.23')  //Или выше
+        classpath('ru.tinkoff.qa.neptune:neptune.swagger.codegen:LATEST_RELEASE_OR_BETA_VERSION')
+    }
+}
+
+plugins {
+    id 'java'
+}
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+
+    maven {
+        url "Указываем другие необходимые репозитории maven"
+    }
+}
+
+dependencies {
+    compile group: 'ru.tinkoff.qa.neptune', name: 'http.api', version: 'LATEST_RELEASE_OR_BETA_VERSION'
+}
+
+import io.swagger.codegen.v3.CodegenConfigLoader
+import io.swagger.codegen.v3.DefaultGenerator
+import io.swagger.codegen.v3.ClientOptInput
+import io.swagger.codegen.v3.ClientOpts
+import io.swagger.v3.parser.OpenAPIV3Parser
+
+task generateAPI {
+    doLast {
+        System.setProperty("io.swagger.v3.parser.util.RemoteUrl.trustAll", "true"); //Желательно указать, если спецификация лежит удаленно
+        //и генерация кода не доверяет сертификату
+        def openAPI = new OpenAPIV3Parser().readLocation('URL-путь до json спецификации от swagger', null, null).getOpenAPI()
+
+        def clientOpts = new ClientOptInput().openAPI(openAPI)
+        def codegenConfig = CodegenConfigLoader.forName('neptune')
+        codegenConfig.setOutputDir(project.rootDir.toString() + '/src/main/java') //или путь до любой директории, которая должна 
+        //попасть в сборку
+        
+        clientOpts.setConfig(codegenConfig)
+
+        def clientOps = new ClientOpts()
+        clientOps.setProperties([
+                'apiPackage'       : 'org.my.group.my.api', //Название пакета, где будут созданы классы, моделирующие API
+                'modelPackage'     : 'org.my.group.my.dto', //Название пакета, где будут созданы классы, описывающие DTO
+        ])
+        clientOpts.setOpts(clientOps)
+
+        def generator = new DefaultGenerator().opts(clientOpts)
+        generator.generate()
+    }
+}
+
+//выстраиваем последовательность задач gradle
+compileJava {
+    dependsOn(generateAPI)
+}
+
+```
+
+## Стоит иметь в виду
+
+- поддерживается только `com.fasterxml.jackson.*` в качестве инструмента сериализации/десериализации
+- поддерживается `java.util.Date` для работы с датами
+
+
