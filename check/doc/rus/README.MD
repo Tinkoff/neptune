@@ -198,3 +198,11 @@ public class MyTest {
     
 }
 ```
+
+## Дополнительные матчеры, которые предоставляет Neptune
+
+[Матчеры общего назначения. URL\URI](./../../../core.api/doc/rus/HAMCREST.MD)
+
+[Матчеры для валидации ответов http](./../../../http.api/doc/rus/HAMCREST.MD)
+
+[Матчеры для front end вэб-приложений](./../../../selenium/doc/rus/HAMCREST.MD)
