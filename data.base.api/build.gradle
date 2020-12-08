@@ -1,13 +1,13 @@
 
 dependencies {
     compile project(':core.api')
-    compile group: 'org.datanucleus', name: 'datanucleus-rdbms', version: '5.2.4'
+    compile group: 'org.datanucleus', name: 'datanucleus-rdbms', version: '5.2.5'
     compile group: 'org.datanucleus', name: 'datanucleus-jdo-query', version: '5.0.9'
     compile group: 'org.datanucleus', name: 'datanucleus-api-jdo', version: '5.2.4'
-    compile group: 'org.datanucleus', name: 'datanucleus-core', version: '5.2.4'
+    compile group: 'org.datanucleus', name: 'datanucleus-core', version: '5.2.5'
     compile group: 'org.datanucleus', name: 'javax.jdo', version: '3.2.0-m13'
     compile group: 'javax.annotation', name: 'javax.annotation-api', version: '1.3.2'
-    compile group: 'org.apache.ant', name: 'ant', version: '1.10.7'
+    compile group: 'org.apache.ant', name: 'ant', version: '1.10.9'
     testCompile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.32.3.2'
     testAnnotationProcessor 'org.datanucleus:datanucleus-jdo-query:5.0.9'
     testAnnotationProcessor group: 'org.datanucleus', name: 'javax.jdo', version: '3.2.0-m13'
@@ -70,10 +70,6 @@ uploadArchives {
 task javadocJar(type: Jar) {
     classifier = 'javadoc'
     from javadoc
-}
-
-javadoc {
-    exclude('**/ru/tinkoff/qa/neptune/data/base/api/test/**')
 }
 
 task sourcesJar(type: Jar) {

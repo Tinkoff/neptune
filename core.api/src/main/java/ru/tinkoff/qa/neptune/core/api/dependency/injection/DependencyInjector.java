@@ -49,14 +49,16 @@ public interface DependencyInjector {
                         var injector = c.newInstance();
                         stream(fields2).forEach(f -> {
                             var m = f.getModifiers();
+                            f.setAccessible(true);
+                            var type = f.getType();
 
-                            if (!isStatic(m) && !isFinal(m) && injector.toSet(f)) {
-                                f.setAccessible(true);
-                                try {
+                            try {
+                                var val = f.get(o);
+                                if (!isStatic(m) && !isFinal(m) && injector.toSet(f) && (type.isPrimitive() || val == null)) {
                                     f.set(o, injector.getValueToSet(f));
-                                } catch (IllegalAccessException e) {
-                                    throw new RuntimeException(e);
                                 }
+                            } catch (IllegalAccessException e) {
+                                throw new RuntimeException(e);
                             }
                         });
 

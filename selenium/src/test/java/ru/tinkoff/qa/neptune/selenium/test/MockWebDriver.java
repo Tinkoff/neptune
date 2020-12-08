@@ -29,6 +29,7 @@ public class MockWebDriver implements WebDriver, JavascriptExecutor, TakesScreen
     private boolean isSwitchedToDefaultContent;
     private boolean isSwitchedToParentFrame;
     private Object currentFrame;
+    public String lastNavigationURLAsIs;
 
     final Map<String, LinkedList<URLs>> handlesAndUrlHistory = new HashMap<>() {
         {
@@ -78,11 +79,12 @@ public class MockWebDriver implements WebDriver, JavascriptExecutor, TakesScreen
         URLs urlEnum = stream(values())
                 .filter(urLs ->
                         !urLs.equals(BLANK) &&
-                                (url.equals(urLs.getUrl()) || url.contains(urLs.getUrl()))
+                                (url.equals(urLs.getUrl()) || url.contains(urLs.getUrl()) || urLs.getUrl().startsWith(url))
                 ).findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(format("Unknown url %s", url)));
         addUrlToHistory(handle, urlEnum);
         changeCurrentUrl(handle, urlEnum);
+        lastNavigationURLAsIs = url;
     }
 
     @Override

@@ -4,7 +4,7 @@ dependencies {
     compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-parameter-names', version: jacksonVersion
     compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: jacksonVersion
     compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: jacksonVersion
-    testCompile "com.github.tomakehurst:wiremock-jre8-standalone:2.26.3"
+    testCompile "com.github.tomakehurst:wiremock-jre8-standalone:2.27.2"
 }
 
 task javadocJar(type: Jar) {
@@ -16,7 +16,6 @@ task sourcesJar(type: Jar) {
     classifier = 'sources'
     from sourceSets.main.allSource
 }
-
 artifacts {
     archives jar, javadocJar, sourcesJar
 }

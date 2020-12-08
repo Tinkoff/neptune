@@ -1,6 +1,6 @@
 dependencies {
-    compile group: 'io.swagger.codegen.v3', name: 'swagger-codegen', version: '3.0.22'
-    compile group: 'io.swagger.codegen.v3', name: 'swagger-codegen-generators', version: '1.0.22'
+    compile group: 'io.swagger.codegen.v3', name: 'swagger-codegen', version: '3.0.23'
+    compile group: 'io.swagger.codegen.v3', name: 'swagger-codegen-generators', version: '1.0.23'
 }
 
 task javadocJar(type: Jar) {
@@ -59,7 +59,7 @@ uploadArchives {
 javadoc {
     destinationDir = file("${buildDir}/../../../neptune.documentation/javadocs/$project.name")
 
-    title = "Neptune Check API. v$globalVersion"
+    title = "Neptune Swagger integration API. v$globalVersion"
     options.author true
     options.links 'http://download.oracle.com/javase/9/docs/api/'
     options.addStringOption 'Xdoclint:none', '-quiet'

@@ -1,4 +1,4 @@
-<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
 <suite name="Selenium test suite">
 
     <test name="Step tests">
@@ -51,4 +51,9 @@
         </packages>
     </test>
 
+    <test name="Hooks test">
+        <packages>
+            <package name="ru.tinkoff.qa.neptune.selenium.test.hooks.*"/>
+        </packages>
+    </test>
 </suite>

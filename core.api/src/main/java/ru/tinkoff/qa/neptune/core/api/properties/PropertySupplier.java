@@ -9,6 +9,7 @@ import static java.lang.String.format;
 import static java.lang.System.setProperty;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.properties.GeneralPropertyInitializer.arePropertiesRead;
 import static ru.tinkoff.qa.neptune.core.api.properties.GeneralPropertyInitializer.refreshProperties;
 
@@ -33,17 +34,29 @@ public interface PropertySupplier<T> extends Supplier<T>, Consumer<String> {
         }
     }
 
-    private Optional<String> returnOptionalFromEnvironment() {
-        return ofNullable(getPropertyValue());
+    private Optional<String> returnOptionalFromEnvironment(String property) {
+        return ofNullable(getPropertyValue(property));
     }
 
-    private String getPropertyValue() {
+    private String getPropertyValue(String property) {
         if (!arePropertiesRead()) {
             refreshProperties();
         }
-        var property = getName();
-        return ofNullable(System.getenv(property))
-                .orElseGet(() -> System.getProperty(property));
+
+        var value = System.getenv(property);
+        if (isBlank(value)) {
+            value = System.getProperty(property);
+        }
+
+        if (isNotBlank(value)) {
+            return value;
+        }
+
+        return null;
+    }
+
+    private boolean isPropertyDefined(String property) {
+        return System.getenv().containsKey(property) || System.getProperties().containsKey(property);
     }
 
     /**
@@ -91,11 +104,18 @@ public interface PropertySupplier<T> extends Supplier<T>, Consumer<String> {
     @Override
     default T get() {
         var thisRef = this;
-        return returnOptionalFromEnvironment()
+        var property = getName();
+        return returnOptionalFromEnvironment(property)
                 .map(this::parse)
-                .orElseGet(() -> ofNullable(getPropertyDefaultValue(thisRef))
-                        .map(v -> parse(v.value()))
-                        .orElseGet(this::returnIfNull));
+                .orElseGet(() -> {
+                    if (isPropertyDefined(property)) {
+                        return returnIfNull();
+                    }
+
+                    return ofNullable(getPropertyDefaultValue(thisRef))
+                            .map(v -> parse(v.value()))
+                            .orElseGet(this::returnIfNull);
+                });
     }
 
     T parse(String value);

@@ -1,5 +1,7 @@
 package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.path;
 
+import ru.tinkoff.qa.neptune.core.api.utils.URLEncodeUtil;
+
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -8,9 +10,9 @@ import static java.lang.String.join;
 import static java.util.List.of;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
+import static ru.tinkoff.qa.neptune.core.api.utils.URLEncodeUtil.encodePathSubstring;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil.objectToMap;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil.toStream;
-import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.path.PathEncodingUtil.getEncoded;
 
 /**
  * Path parameters support the following style values:
@@ -110,10 +112,18 @@ public enum PathStyles {
         }
     };
 
+    static String getEncoded(Object o) {
+        return ofNullable(toStream(o))
+                .map(stream -> stream
+                        .map(URLEncodeUtil::encodePathSubstring)
+                        .collect(joining(",")))
+                .orElseGet(() -> encodePathSubstring(o));
+    }
+
     String getPathValue(Object pathVarValue, String varName, boolean explode) {
         var stream = toStream(pathVarValue);
         if (stream != null) {
-            return arrayValue(stream.map(PathEncodingUtil::getEncoded),
+            return arrayValue(stream.map(PathStyles::getEncoded),
                     varName,
                     explode);
         }
