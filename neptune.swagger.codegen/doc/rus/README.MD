@@ -5,10 +5,9 @@
 
 ## Maven
 
-<details>
-  <summary>Если сгенерированный код должен лежать в test</summary>
-
 ### Если сгенерированный код должен лежать в test
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -74,10 +73,9 @@
 
 </details>
 
-<details>
-  <summary>Если сгенерированный код должен лежать в main</summary>
-
 ### Если сгенерированный код должен лежать в main
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -151,10 +149,9 @@
 
 Но все же
 
-<details>
-  <summary>Если сгенерированный код должен лежать в test</summary>
-
 ### Если сгенерированный код должен лежать в test
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
 
 ```groovy
 buildscript {
@@ -232,10 +229,9 @@ compileTestJava {
 ```
 </details>
 
-<details>
-  <summary>Если сгенерированный код должен лежать в main</summary>
-
 ### Если сгенерированный код должен лежать в main
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
 
 ```groovy
 buildscript {

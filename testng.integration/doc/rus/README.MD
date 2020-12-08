@@ -45,10 +45,10 @@ public class MyTest extends BaseTestNgTest {
 }
 ```
 
-<details>
-  <summary>Настройки</summary>
-
 ## Настройки
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
 [Подробнее о механизме настроек](./../../../core.api/doc/rus/SETTINGS.MD)
 
 Подробнее [о контекстах](./../../../core.api/doc/rus/IDEA.MD#Контекст) и об их [обновлении](./../../../core.api/doc/rus/REFRESHING_STOPPING.MD#Обновление)
@@ -233,10 +233,9 @@ TESTNG_REFRESH_BEFORE=BEFORE_METHOD_STARTING,METHOD_STARTING
 
 </details>
 
-<details>
-  <summary>Внедрение зависимостей</summary>
-
 ## Внедрение зависимостей
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
 
 Для инициализации полей, принадлежащих тестовому классу, вполне допустимо использовать методы, отмеченные аннотациями `@Before*`. Но что если из 
 раза в раз приходится инициализировать схожий набор полей одним и тем же способом? Один из выходов - наследование тестовых классов друг от друга.

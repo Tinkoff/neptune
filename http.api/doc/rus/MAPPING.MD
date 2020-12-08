@@ -1,17 +1,18 @@
 
-
-<details>
-    <summary>Внедрение зависимостей</summary>
-
 ## Внедрение зависимостей
+<details>
+    <summary>Нажми, чтобы прочесть</summary>
+
 </details>
 
-<details>
-    <summary>Использование корневых URL</summary>
-
 ## Дефолтный корневой URL
+<details>
+    <summary>Нажми, чтобы прочесть</summary>
 
+</details>
 
 ## Недефолтные корневые URL
+<details>
+    <summary>Нажми, чтобы прочесть</summary>
 
 </details>

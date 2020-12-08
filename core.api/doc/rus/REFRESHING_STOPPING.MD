@@ -1,12 +1,12 @@
 
-<details>
-  <summary>Обновление</summary>
-
 ## Обновление
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
 </details>
 
-<details>
-  <summary>Сброс/Остановка</summary>
-
 ## Сброс/Остановка
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
 </details>

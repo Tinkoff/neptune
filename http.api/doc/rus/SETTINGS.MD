@@ -5,10 +5,9 @@
 Следующие настройки могут быть включены в `neptune.global.properties` или в `neptune.properties`, или использованы в качестве свойств\переменных окружения в той среде,
 в которой запускаются тесты:
 
-<details>
-  <summary>DEFAULT_HTTP_AUTHENTICATOR</summary>
-
 ## DEFAULT_HTTP_AUTHENTICATOR
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
 
 Настройка предоставляет объект `java.net.Authenticator`, подготовленный нужным образом, и который используется http клиентом по умолчанию.
 
@@ -55,10 +54,9 @@ public class SomeClass {
 
 </details>
 
-<details>
-  <summary>DEFAULT_HTTP_COOKIE_HANDLER</summary>
-
 ## DEFAULT_HTTP_COOKIE_HANDLER
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
 
 Настройка предоставляет объект `java.net.CookieManager`, подготовленный нужным образом, и который используется http клиентом по умолчанию.
 
@@ -108,10 +106,9 @@ public class SomeClass {
 
 </details>
 
-<details>
-  <summary>DEFAULT_HTTP_EXECUTOR</summary>
-
 ## DEFAULT_HTTP_EXECUTOR
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
 
 Настройка предоставляет объект `java.util.concurrent.Executor`, подготовленный нужным образом, и который используется http клиентом по умолчанию.
 
@@ -157,10 +154,9 @@ public class SomeClass {
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
 </details>
 
-<details>
-  <summary>DEFAULT_HTTP_PRIORITY</summary>
-
 ## DEFAULT_HTTP_PRIORITY
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
 
 Настройка определяет приоритет запросов, отправляемых http-клиентом. Актуально для HTTP 2.0. Значение должно быть в диапазоне 
 от 1 до 256 (включительно).
@@ -189,10 +185,9 @@ public class SomeClass {
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-чисел)
 </details>
 
-<details>
-  <summary>DEFAULT_HTTP_PROTOCOL_VERSION</summary>
-
 ## DEFAULT_HTTP_PROTOCOL_VERSION
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
 
 Настройка указывает версию http-протокола. Доступные значения - `HTTP_1_1` и `HTTP_2` - объекты перечисления `java.net.http.HttpClient.Version`.
 
@@ -222,11 +217,9 @@ public class SomeClass {
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-объектов-перечислений)
 </details>
 
-
-<details>
-  <summary>DEFAULT_HTTP_PROXY_SELECTOR</summary>
-
 ## DEFAULT_HTTP_PROXY_SELECTOR
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
 
 Настройка предоставляет объект `java.net.ProxySelector`, подготовленный нужным образом, и который используется http клиентом по умолчанию.
 
@@ -272,10 +265,9 @@ public class SomeClass {
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
 </details>
 
-<details>
-  <summary>DEFAULT_HTTP_REDIRECT_POLICY</summary>
-
 ## DEFAULT_HTTP_REDIRECT_POLICY
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
 
 Настройка политику перенаправления http-запросов по умолчанию. Доступные значения - `NEVER`, `ALWAYS` и `NORMAL` - объекты перечисления `java.net.http.HttpClient.Redirect`.
 
@@ -305,10 +297,9 @@ public class SomeClass {
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-объектов-перечислений)
 </details>
 
-<details>
-  <summary>DEFAULT_HTTP_SSL_CONTEXT</summary>
-
 ## DEFAULT_HTTP_SSL_CONTEXT
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
 
 Настройка предоставляет объект `javax.net.ssl.SSLContext`, подготовленный нужным образом, и который используется http клиентом по умолчанию.
 
@@ -357,10 +348,9 @@ public class SomeClass {
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
 </details>
 
-<details>
-  <summary>DEFAULT_HTTP_SSL_PARAMETERS</summary>
-
 ## DEFAULT_HTTP_SSL_PARAMETERS
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
 
 Настройка предоставляет объект `javax.net.ssl.SSLParameters`, подготовленный нужным образом, и который используется http клиентом по умолчанию.
 
@@ -406,10 +396,9 @@ public class SomeClass {
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
 </details>
 
-<details>
-  <summary>Время подключения http-клиента к сервису по умолчанию</summary>
-
 ## Время подключения http-клиента к сервису по умолчанию
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
 
 Свойства `DEFAULT_HTTP_CONNECTION_TIME_UNIT` и `DEFAULT_HTTP_CONNECTION_TIME` определяют время подключения http-клиента к сервису по умолчанию.
 Для свойства `DEFAULT_HTTP_CONNECTION_TIME_UNIT` следует указать значение, соответствующее одному из элементов перечисления `java.time.temporal.ChronoUnit`,
@@ -440,12 +429,11 @@ public class SomeClass {
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-величины-продолжительности)
 </details>
 
-<details>
-  <summary>Сериализация и де-сериализация тел http запросов и ответов</summary>
-
 ## Сериализация и де-сериализация тел http запросов и ответов
 
 ### JSON. DEFAULT_JSON_MAPPER
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
 
 Настройка предоставляет объект `com.fasterxml.jackson.databind.ObjectMapper`, подготовленный нужным образом. Этот объект будет 
 использован по умолчанию для де-сериализации JSON-тел ответов сервисов на http-запросы и сериализации тел http-запросов в JSON.
@@ -492,8 +480,12 @@ public class SomeClass {
 }
 ```
 
+[Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
+</details>
 
 ### XML. DEFAULT_XML_MAPPER
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
 
 Настройка предоставляет объект `com.fasterxml.jackson.dataformat.xml.XmlMapper`, подготовленный нужным образом. Этот объект будет
 использован по умолчанию для де-сериализации XML-тел ответов сервисов на http-запросы и сериализации тел http-запросов в XML.
@@ -543,10 +535,9 @@ public class SomeClass {
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
 </details>
 
-<details>
-    <summary>Дефолтный корневой URL тестируемых сервисов</summary>
-
 ## END_POINT_OF_TARGET_API
+<details>
+    <summary>Нажми, чтобы прочесть</summary>
 
 Настройка указывает URL сервисов по умолчанию. Это корневой адрес приложения/приложений, обычно в формате `<схема\протокол>`://`<хост>`:<`порт если есть`>.
 
@@ -579,10 +570,9 @@ public class SomeClass {
 
 </details>
 
-<details>
-    <summary>Http лог</summary>
-
 ## Http лог
+<details>
+    <summary>Нажми, чтобы прочесть</summary>
 
 Neptune не имеет на поддержке такого свойства. `jdk.httpclient.HttpClient.log` - это стандартное свойство/настройка Java начиная с 11 версии.
 Но его точно так же можно указать в `neptune.global.properties` или в `neptune.properties`.
