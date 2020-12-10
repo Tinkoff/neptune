@@ -58,7 +58,7 @@ public final class CommonBrowserCookieCriteria {
                             try {
                                 var p = compile(expression);
                                 var mather = p.matcher(s);
-                                return mather.matches() || mather.find();
+                                return mather.matches();
                             } catch (Throwable thrown) {
                                 thrown.printStackTrace();
                                 return false;
@@ -101,7 +101,7 @@ public final class CommonBrowserCookieCriteria {
                             try {
                                 var p = compile(expression);
                                 var mather = p.matcher(s);
-                                return mather.matches() || mather.find();
+                                return mather.matches();
                             } catch (Throwable thrown) {
                                 thrown.printStackTrace();
                                 return false;
@@ -144,7 +144,7 @@ public final class CommonBrowserCookieCriteria {
                             try {
                                 var p = compile(expression);
                                 var mather = p.matcher(s);
-                                return mather.matches() || mather.find();
+                                return mather.matches();
                             } catch (Throwable thrown) {
                                 thrown.printStackTrace();
                                 return false;
@@ -187,7 +187,7 @@ public final class CommonBrowserCookieCriteria {
                             try {
                                 var p = compile(expression);
                                 var mather = p.matcher(s);
-                                return mather.matches() || mather.find();
+                                return mather.matches();
                             } catch (Throwable thrown) {
                                 thrown.printStackTrace();
                                 return false;
