@@ -1161,7 +1161,9 @@ public class MyTest {
 
 ```java
 import java.net.URI;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
+import static ru.tinkoff.qa.neptune.http.api.mapping.DefaultMapper.JSON;
 import static ru.tinkoff.qa.neptune.http.api.request.FormValueDelimiters.COMMA;
 import static ru.tinkoff.qa.neptune.http.api.request.FormValueDelimiters.SPACE;
 import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
@@ -1188,11 +1190,217 @@ public class MyTest {
                 //у которых зарезервированные символы (allowReserved=true) не будут перекодированы,
                 //и сами значения будут объединены в одну строку с запятой в качестве 
                 //разделителя, т.к. delimiter=COMMA
-                formParameter("param4", COMMA, true, "value1@%&", "value2@%&")));
+                formParameter("param4", COMMA, true, "value1@%&", "value2@%&")),
+                //передается параметр формы param5, у которого значение представлено в JSON-формате
+                //без перекодировки зарезервированных символов
+                formParameter("param5", new ObjectMapper(), someObject),
+                //передается параметр формы param6, у которого значение представлено в JSON-формате
+                //без перекодировки зарезервированных символов
+                formParameter("param6", JSON, someObject));
+    }
+}
+```
+
+Для случая с `param6` см. [JSON DEFAULT_JSON_MAPPER](./SETTINGS.MD#JSON-DEFAULT_JSON_MAPPER) и [XML DEFAULT_XML_MAPPER](./SETTINGS.MD#XML-DEFAULT_XML_MAPPER)
+
+</details>
+
+### org.w3c.dom.Document.
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+```java
+import org.w3c.dom.Document;
+
+import java.net.URI;
+
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
+        Document doc; //Считаем что значение как-то инициализируется
+        http().responseOf(POST(endPoint, doc));
     }
 }
 
 ```
+
+```java
+import org.w3c.dom.Document;
+
+import javax.xml.transform.Transformer;
+import java.net.URI;
+
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
+        Document doc; //Считаем что значение как-то инициализируется
+        Transformer transformer; //Считаем что значение как-то инициализируется
+        http().responseOf(POST(endPoint, doc, transformer));
+    }
+}
+
+```
+</details>
+
+### org.jsoup.nodes.Document.
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+```java
+import org.jsoup.nodes.Document;
+import java.net.URI;
+
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
+        Document doc; //Считаем что значение как-то инициализируется
+        http().responseOf(POST(endPoint, doc));
+    }
+}
+
+```
+</details>
+
+### Сериализованные объекты
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+Объекты, как правило, сериализуются в JSON или XML строки, чтобы быть переданными в качестве тела запроса
+
+```java
+import java.net.URI;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
+        //Сериализация объекта в JSON-строку и передача в качестве тела
+        http().responseOf(POST(endPoint, new ObjectMapper(), someObject));
+    }
+}
+```
+
+```java
+import java.net.URI;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
+        //Сериализация объекта в XML-строку и передача в качестве тела
+        http().responseOf(POST(endPoint, new XmlMapper(), someObject));
+    }
+}
+```
+
+```java
+import java.net.URI;
+
+import static ru.tinkoff.qa.neptune.http.api.mapping.DefaultMapper.JSON;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
+        //Сериализация объекта в JSON-строку и передача в качестве тела
+        http().responseOf(POST(endPoint, JSON, someObject));
+    }
+}
+```
+
+```java
+import java.net.URI;
+
+import static ru.tinkoff.qa.neptune.http.api.mapping.DefaultMapper.XML;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
+        //Сериализация объекта в XML-строку и передача в качестве тела
+        http().responseOf(POST(endPoint, XML, someObject));
+    }
+}
+```
+
+Про элементы перечисления `ru.tinkoff.qa.neptune.http.api.mapping.DefaultMapper` см. [JSON DEFAULT_JSON_MAPPER](./SETTINGS.MD#JSON-DEFAULT_JSON_MAPPER) и [XML DEFAULT_XML_MAPPER](./SETTINGS.MD#XML-DEFAULT_XML_MAPPER)
+</details>
+
+### Multipart
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+```java
+import java.net.URI;
+
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
+        //Сериализация объекта в JSON-строку и передача в качестве тела
+        
+    }
+}
+```
+
+```java
+import java.net.URI;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
+        //Сериализация объекта в XML-строку и передача в качестве тела
+        
+    }
+}
+```
+
+</details>
+
+### Описываем свой собственный формат тела запроса
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
 
 </details>
 
