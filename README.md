@@ -3,7 +3,6 @@
 [![Neptune-master Status](https://github.com/TinkoffCreditSystems/neptune/workflows/gradle-ci/badge.svg)](https://github.com/TinkoffCreditSystems/neptune/actions)
 
 [![License][license-badge]][license-link]
-![Reposize][reposize-badge]
 
 [![OpenIssues][openissues-badge]][openissues-link]
 [![ClosedIssues][closedissues-badge]][closedissues-link]
