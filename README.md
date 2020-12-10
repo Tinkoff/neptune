@@ -1,5 +1,6 @@
 # Neptune
-[![Actions Status](https://xxx.execute-api.us-west-2.amazonaws.com/production/badge/TinkoffCreditSystems/neptune)](https://xxx.execute-api.us-west-2.amazonaws.com/production/results/TinkoffCreditSystems/neptune)
+
+[![Neptune-master Status](https://github.com/TinkoffCreditSystems/neptune/workflows/gradle-ci/badge.svg)](https://github.com/TinkoffCreditSystems/neptune/actions)
 
 [![License][license-badge]][license-link]
 ![Reposize][reposize-badge]
