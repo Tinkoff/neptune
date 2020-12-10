@@ -1,5 +1,5 @@
 # Neptune
-[![Actions Status](https://xxx.execute-api.us-west-2.amazonaws.com/production/badge/TinkoffCreditSystems/neptune)](https://xxx.execute-api.us-west-2.amazonaws.com/production/results/{owner}/{repo})
+[![Actions Status](https://xxx.execute-api.us-west-2.amazonaws.com/production/badge/TinkoffCreditSystems/neptune)](https://xxx.execute-api.us-west-2.amazonaws.com/production/results/TinkoffCreditSystems/neptune)
 
 [![License][license-badge]][license-link]
 ![Reposize][reposize-badge]
