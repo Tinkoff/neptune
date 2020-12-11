@@ -1368,15 +1368,18 @@ public class MyTest {
 ```java
 import java.net.URI;
 
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart.bodyPart;
 
 public class MyTest {
 
     @Test
     public void myTest() {
         var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Сериализация объекта в JSON-строку и передача в качестве тела
-        
+        http().responseOf(POST(endPoint,
+                bodyPart(new byte[]{1, 2, 3}, "testBytes"),
+                bodyPart(new byte[]{4, 5, 6}, "testBytes2")));
     }
 }
 ```
@@ -1384,23 +1387,380 @@ public class MyTest {
 ```java
 import java.net.URI;
 
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart.bodyPart;
+import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
+
 public class MyTest {
 
     @Test
     public void myTest() {
         var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        //Сериализация объекта в XML-строку и передача в качестве тела
+        http().responseOf(POST(endPoint,
+                randomAlphanumeric(15), //На тот случай когда разделитель нужно указать явно
+                bodyPart(new byte[]{1, 2, 3}, "testBytes"),
+                bodyPart(new byte[]{4, 5, 6}, "testBytes2")));
+    }
+}
+```
+</details>
+
+#### Форматы
+
+- **Массив байтов**  
+    <details>
+       <summary>Нажми, чтобы прочесть</summary>
+      
+    ```java        
+        import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart.bodyPart;
         
+        public class MyTest {
+        
+            @Test
+            public void myTest() {
+                //просто массив
+                //по умолчанию тип контента application/octet-stream
+                bodyPart(new byte[] {1, 2, 3});
+                //массив и имя части
+                //по умолчанию тип контента application/octet-stream  
+                bodyPart(new byte[] {1, 2, 3}, "partName");
+                //массив, имя части и filename части
+                //по умолчанию тип контента application/octet-stream  
+                bodyPart(new byte[] {1, 2, 3}, "partName", "fileName.txt");
+            }
+        }
+    ```
+    </details>
+
+- **Поток данных. InputStream**
+    <details>
+       <summary>Нажми, чтобы прочесть</summary>
+    
+    ```java
+    import java.io.InputStream;
+    
+    import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart.bodyPart;
+    
+    public class MyTest {
+    
+        @Test
+        public void myTest() {
+            InputStream inputStream;//представим, что значение присвоено
+            //простая передача
+            //по умолчанию тип контента application/octet-stream  
+            bodyPart(inputStream);
+            //поток данных и имя части
+            //по умолчанию тип контента application/octet-stream  
+            bodyPart(inputStream, "partName");
+            //поток данных, имя части и filename части
+            //по умолчанию тип контента application/octet-stream  
+            bodyPart(inputStream, "partName", "fileName.txt");
+        }
+    }
+    ```
+  </details>
+  
+- **Файл**
+    <details>
+       <summary>Нажми, чтобы прочесть</summary>
+    
+    ```java
+    import java.io.File;
+    import java.nio.file.Path;
+    
+    import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart.bodyPart;
+    
+    public class MyTest {
+    
+        @Test
+        public void myTest() {
+            File file; //представим, что значение присвоено
+            Path path; //представим, что значение присвоено
+    
+            //простая передача файла
+            //calculateContentType=true означает, что тип контента будет вычислен
+            //когда значение false - указывается значение по умолчанию - application/octet-stream  
+            bodyPart(file, true);
+            //передача файла с указанием имени части
+            //setFileName=true означает, что имя файла будет использоваться как fileMame части,
+            //когда значение false - часть уходит в запрос без fileMame
+            //calculateContentType=true означает, что тип контента будет вычислен
+            //когда значение false - указывается значение по умолчанию - application/octet-stream  
+            bodyPart(file, "partName", true,  true);
+            //передача файла с указанием имени части и со свободным указанием любого filename части
+            //calculateContentType=true означает, что тип контента будет вычислен
+            //когда значение false - указывается значение по умолчанию - application/octet-stream  
+            bodyPart(file, "partName", "fileName.txt",  true);
+    
+            //простая передача файла
+            //calculateContentType=true означает, что тип контента будет вычислен
+            //когда значение false - указывается значение по умолчанию - application/octet-stream  
+            bodyPart(path, true);
+            //передача файла с указанием имени части
+            //setFileName=true означает, что имя файла будет использоваться как fileMame части,
+            //когда значение false - часть уходит в запрос без fileMame
+            //calculateContentType=true означает, что тип контента будет вычислен
+            //когда значение false - указывается значение по умолчанию - application/octet-stream  
+            bodyPart(path, "partName", true,  true);
+            //передача файла с указанием имени части и со свободным указанием любого filename части
+            //calculateContentType=true означает, что тип контента будет вычислен
+            //когда значение false - указывается значение по умолчанию - application/octet-stream  
+            bodyPart(path, "partName", "fileName.txt",  true);
+        }
+    }
+    ```
+    </details>
+
+- **Строка/текст**
+    <details>
+       <summary>Нажми, чтобы прочесть</summary>
+
+    ```java        
+        import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart.bodyPart;
+        
+        public class MyTest {
+        
+            @Test
+            public void myTest() {
+                //просто текст
+                bodyPart("Some text");
+                //текст и имя части
+                bodyPart("Some text", "partName");
+                //текст, имя части и filename части
+                bodyPart("Some text", "partName", "fileName.txt");
+            }
+        }
+    ```
+    </details>
+
+- **Сериализованный объект**
+
+    <details>
+        <summary>Нажми, чтобы прочесть</summary>
+    
+    ```java
+        import com.fasterxml.jackson.databind.ObjectMapper;
+        import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+
+        import static ru.tinkoff.qa.neptune.http.api.mapping.DefaultMapper.JSON;
+        import static ru.tinkoff.qa.neptune.http.api.mapping.DefaultMapper.XML;
+        import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart.bodyPart;
+        
+        public class MyTest {
+
+            @Test
+            public void myTest() {
+                //объект, сериализованный в JSON-строку 
+                bodyPart(someObject, new ObjectMapper());
+                //объект, сериализованный в JSON-строку, и имя части
+                bodyPart(someObject, new ObjectMapper(), "partName");
+                //объект, сериализованный в JSON-строку, имя части и filename части
+                bodyPart(someObject, new ObjectMapper(), "partName", "fileName.json");
+
+                //объект, сериализованный в XML-строку 
+                bodyPart(someObject, new XmlMapper());
+                //объект, сериализованный в XML-строку, и имя части
+                bodyPart(someObject, new XmlMapper(), "partName");
+                //объект, сериализованный в XML-строку, имя части и filename части
+                bodyPart(someObject, new XmlMapper(), "partName", "fileName.xml");
+
+                //объект, сериализованный в JSON-строку 
+                bodyPart(someObject, JSON);
+                //объект, сериализованный в JSON-строку, и имя части
+                bodyPart(someObject, JSON, "partName");
+                //объект, сериализованный в JSON-строку, имя части и filename части
+                bodyPart(someObject, JSON, "partName", "fileName.json");
+
+                //объект, сериализованный в XML-строку 
+                bodyPart(someObject, XML);
+                //объект, сериализованный в XML-строку, и имя части
+                bodyPart(someObject, XML, "partName");
+                //объект, сериализованный в XML-строку, имя части и filename части
+                bodyPart(someObject, XML, "partName", "fileName.xml");
+            }
+        }
+    ```
+    Про элементы перечисления `ru.tinkoff.qa.neptune.http.api.mapping.DefaultMapper` см. [JSON DEFAULT_JSON_MAPPER](./SETTINGS.MD#JSON-DEFAULT_JSON_MAPPER) и [XML DEFAULT_XML_MAPPER](./SETTINGS.MD#XML-DEFAULT_XML_MAPPER)
+    </details>
+- **Строковое представление объекта Java**
+    <details>
+       <summary>Нажми, чтобы прочесть</summary>
+
+    ```java        
+        import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart.bodyPart;
+        
+        public class MyTest {
+        
+            @Test
+            public void myTest() {
+                //просто объект, строковое представление которого будет использовано
+                bodyPart(someObject);
+                //объект, строковое представление которого будет использовано, и имя части 
+                bodyPart(someObject, "partName");
+                //объект, строковое представление которого будет использовано, имя части и filename части 
+                bodyPart(someObject, "partName", "fileName.txt");
+            }
+        }
+    ```
+    </details>
+
+#### Дополнительные настройки
+<details>
+    <summary>Нажми, чтобы прочесть</summary>
+    
+```java
+
+import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.ContentTransferEncoding.BINARY;
+import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart.bodyPart;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        //Продемонстрированные ниже настройки опциональны,
+        //их не обязательно каждый раз указывать
+        bodyPart(/*Параметры*/)
+                //Указывается тип контента
+                //т.е. заголовок Content-Type
+                .setContentType("application/octet-stream")
+                //Заголовок Content-Transfer-Encoding.
+                //Возможные варианты в перечислении
+                //ru.tinkoff.qa.neptune.http.api.request.body.multipart.ContentTransferEncoding
+                .setContentTransferEncoding(BINARY);
+    }
+}
+```
+</details>
+
+### Описываем свой собственный формат тела запроса
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+Предположим, у нас есть POST запрос, который принимает в качестве тела строку определенного формата, сформированную из даты. 
+В принципе, задача решается просто
+
+```java
+import java.net.URI;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
+        
+        var date = new Date(); //(1)
+        var format = new SimpleDateFormat(/*Параметры конструктора*/); // 2)
+        
+        http().responseOf(POST(endPoint, format.format(date)));
     }
 }
 ```
 
-</details>
+Предположим, действия 1 и 2 встречаются в наборе тестов очень часто, и для удобства написания кода и его поддержки нужно 
+описать свой собственный формат тела. Тогда
 
-### Описываем свой собственный формат тела запроса
+```java
+package org.my.pack;
 
-<details>
-  <summary>Нажми, чтобы прочесть</summary>
+import java.net.http.HttpRequest;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import ru.tinkoff.qa.neptune.http.api.request.body.RequestBody;
+
+import static java.net.http.HttpRequest.BodyPublishers.ofString;
+
+//Объявляем класс и наследуем его от RequestBody с указанием типа, 
+//который объекты которого принимаются в качестве даты
+public class DateBody extends RequestBody<Date> {
+
+    private static final SimpleDateFormat FORMAT = new SimpleDateFormat();
+
+    protected DateBody(Date body) {
+        super(body);
+    }
+
+    //необязательно писать этот метод, можно сделать конструктор public 
+    public static RequestBody<Date> dateBody(Date body) {
+        return new DateBody(body);
+    }
+
+    //В этом методе наше "тело" должно превратиться в объект 
+    //HttpRequest.BodyPublisher
+    @Override
+    public HttpRequest.BodyPublisher createPublisher() {
+        return ofString(FORMAT.format(super.body()));
+    }
+
+    @Override
+    public String toString() {
+        return FORMAT.format(super.body());
+    }
+}
+```
+
+И теперь
+
+```java
+import java.net.URI;
+import java.util.Date;
+
+import static org.my.pack.DateBody.dateBody;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");        
+        http().responseOf(POST(endPoint, dateBody(new Date())));
+    }
+}
+```
+
+или 
+
+```java
+import java.util.Date;
+
+import static org.my.pack.DateBody.dateBody;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        http().responseOf(POST("http://my.api.com/some/path?q1=val1&q2=val2", dateBody(new Date())));
+    }
+}
+```
+
+или 
+
+```java
+import java.net.URL;
+import java.util.Date;
+
+import static org.my.pack.DateBody.dateBody;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    @Test
+    public void myTest() throws Exception {
+        var endPoint = new URL("http://my.api.com/some/path?q1=val1&q2=val2");       
+        http().responseOf(POST(endPoint, dateBody(new Date())));
+    }
+}
+```
 
 </details>
 
