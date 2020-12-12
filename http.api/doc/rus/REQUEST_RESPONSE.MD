@@ -1765,6 +1765,234 @@ public class MyTest {
 </details>
 
 ## Отправка настроенного http-запроса. На примере GET-запроса
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+```java
+import java.net.URI;
+
+import static java.net.http.HttpClient.Version.HTTP_2;
+import static ru.tinkoff.qa.neptune.http.api.request.FormValueDelimiters.PIPE;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");        
+        http().responseOf(GET(endPoint)
+                //Все перечисленное ниже не является обязательным для каждого отравляемого запроса
+                //Указываем заголовок/свойство запроса и передаем множественное значение 
+                .header("header1", "some value", "one more value")
+                //Указываем заголовок/свойство запроса и передаем одиночное значение 
+                .header("header2", "some value")
+                //Указываем дополнительный параметр query-части запроса,
+                //передаем множественное значение. Точно так же можем передать и одиночное значение.
+                //Зарезервированные символы в переданных значениях (allowReserved=false) будут перекодированы
+                .queryParam("param1", false, "val1", 3, "Hello world")
+                //Указываем дополнительный параметр query-части запроса,
+                //передаем множественное значение. Точно так же можем передать и одиночное значение.
+                //Зарезервированные символы в переданных значениях  (allowReserved=true) не будут перекодированы
+                .queryParam("param2", true, "val1%&", 3, "Hello world")
+                //Указываем дополнительный параметр query-части запроса,
+                //передаем множественное значение. Точно так же можем передать и одиночное значение.
+                //Зарезервированные символы в переданных значениях  (allowReserved=true) не будут перекодированы.
+                //Переданные значения будут объединены в одну строку с '|' (%7C) в качестве 
+                //разделителя, т.к. delimiter=PIPE
+                .queryParam("param3", PIPE, true, "val1%&", 3, "Hello world")
+                //Время чтобы подключиться к серверу приложения 2 секунды
+                .timeout(ofSeconds(2))
+                //Используемая версия http протокола
+                .version(HTTP_2)
+                //Ожидать от сервера приложения ответ 100 (Continue) перед полной отправкой 
+                //запроса
+                .expectContinue(true));
+    }
+}
+```
+
+О вызовах методов `timeout` и `version`. Если для всех запросов используется одна и та же версия протокола, и/или верхняя планка времени подключения к 
+серверу приложения одна и та же, то частого вызова этих методов можно избежать. См.[DEFAULT_HTTP_PROTOCOL_VERSION](./SETTINGS.MD#DEFAULT_HTTP_PROTOCOL_VERSION) или 
+[Время подключения http-клиента к сервису по умолчанию](./SETTINGS.MD#Время-подключения-http-клиента-к-сервису-по-умолчанию) 
+
+Что если одни и те же или похожие настройки для запросов встречаются часто? Тут можно порекомендовать 2 варианта решения. 
+
+Первый вариант
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.http.api.request.RequestTuner;
+
+public class MyRequestTuner implements RequestTuner {
+    
+  //Тут можно спрятать алгоритм настройки отправляемого http-запроса  
+  @Override
+  public void setUp(RequestSettings<?> requestSettings) {
+    //Пример ниже демонстрирует, как настроить запрос, используя постоянные значения.
+    //Точно так же можно настроить запрос, используя вычислимые в данный момент значения.
+    requestSettings
+            .header("header1", "some value", "one more value")
+            .header("header2", "some value")
+            .queryParam("param1", false, "val1", 3, "Hello world")
+            .queryParam("param2", true, "val1%&", 3, "Hello world")
+            .queryParam("param3", PIPE, true, "val1%&", 3, "Hello world")
+            .timeout(ofSeconds(2))
+            .version(HTTP_2)
+            .expectContinue(true);
+  }
+}
+
+```
+
+И тогда 
+
+```java
+import java.net.URI;
+import org.my.pack.MyRequestTuner;
+
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");        
+        http().responseOf(GET(endPoint)
+                //вызывается общий алгоритм настройки
+                .tuneWith(new MyRequestTuner()));
+    }
+}
+```
+
+или
+
+```java
+import java.net.URI;
+import org.my.pack.MyRequestTuner;
+
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");        
+        http().responseOf(GET(endPoint)
+                //вызывается общий алгоритм настройки
+                //Можно использовать класс, если у него не объявлено никакого конструктора,
+                //или объявлен public конструктор без параметров
+                .tuneWith(MyRequestTuner.class));
+    }
+}
+```
+
+Если надо использовать более одного алгоритма настройки, которые не конфликтуют друг с другом, тогда
+
+```java
+import java.net.URI;
+
+import org.my.pack.MyRequestTuner;
+import org.my.pack.MyRequestTuner2;
+
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");        
+        http().responseOf(GET(endPoint)
+                //вызываются общие алгоритмы настройки
+                .tuneWith(new MyRequestTuner(), new MyRequestTuner2()));
+    }
+}
+```
+
+или 
+
+```java
+//тоже самое, что пример выше, просто более читаемо написано
+import java.net.URI;
+
+import org.my.pack.MyRequestTuner;
+import org.my.pack.MyRequestTuner2;
+
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");        
+        http().responseOf(GET(endPoint)
+                //вызываются общие алгоритмы настройки
+                .tuneWith(new MyRequestTuner())
+                .tuneWith(new MyRequestTuner2()));
+    }
+}
+```
+
+или
+
+```java
+import java.net.URI;
+
+import org.my.pack.MyRequestTuner;
+import org.my.pack.MyRequestTuner2;
+
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");        
+        http().responseOf(GET(endPoint)
+                //вызываются общие алгоритмы настройки
+                //Можно использовать классы, если у них не объявлено никаких конструкторов,
+                //или объявлены public конструкторы без параметров
+                .tuneWith(MyRequestTuner.class, MyRequestTuner2.class));
+    }
+}
+```
+
+или
+
+```java
+//тоже самое, что пример выше, просто более читаемо написано
+import java.net.URI;
+
+import org.my.pack.MyRequestTuner;
+import org.my.pack.MyRequestTuner2;
+
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");        
+        http().responseOf(GET(endPoint)
+                //вызываются общие алгоритмы настройки
+                //Можно использовать классы, если у них не объявлено никаких конструкторов,
+                //или объявлены public конструкторы без параметров
+                .tuneWith(MyRequestTuner.class)
+                .tuneWith(MyRequestTuner2.class));
+    }
+}
+```
+
+Второй вариант подробно описан в [Мэппинг http-сервисов](./MAPPING.MD)
+
+</details>
 
 ## Получение данных тела ответа на http-запрос. На примере POST-запроса
 
