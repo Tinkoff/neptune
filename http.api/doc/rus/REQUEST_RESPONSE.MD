@@ -12,7 +12,7 @@ import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
-    
+
     @Test
     public void myTest() {
         //Выполняем POST-запрос. Endpoint указывается в виде строки полностью.
@@ -29,7 +29,7 @@ import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
-    
+
     @Test
     public void myTest() {
         //Выполняем POST-запрос. Endpoint указывается в виде строки полностью.
@@ -65,7 +65,7 @@ import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
-    
+
     @Test
     public void myTest() {
         //Выполняем POST-запрос. Endpoint указывается в виде строки полностью.
@@ -104,7 +104,7 @@ import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
-    
+
     @Test
     public void myTest() {
         var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
@@ -146,7 +146,7 @@ import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
-    
+
     @Test
     public void myTest() {
         var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
@@ -228,7 +228,7 @@ import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
-    
+
     @Test
     public void myTest() {
         var endPoint = new URL("http://my.api.com/some/path?q1=val1&q2=val2");
@@ -253,7 +253,7 @@ import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
-    
+
     @Test
     public void myTest() {
         //Выполняем GET-запрос. Endpoint указывается в виде строки полностью.
@@ -263,7 +263,6 @@ public class MyTest {
 }
 
 ```
-
 
 ```java
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
@@ -389,7 +388,7 @@ import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.PUT;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
-    
+
     @Test
     public void myTest() {
         //Выполняем PUT-запрос. Endpoint указывается в виде строки полностью.
@@ -425,7 +424,7 @@ import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.PUT;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
-    
+
     @Test
     public void myTest() {
         //Выполняем PUT-запрос. Endpoint указывается в виде строки полностью.
@@ -464,7 +463,7 @@ import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.PUT;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
-    
+
     @Test
     public void myTest() {
         var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
@@ -506,7 +505,7 @@ import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.PUT;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
-    
+
     @Test
     public void myTest() {
         var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
@@ -588,7 +587,7 @@ import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.PUT;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
-    
+
     @Test
     public void myTest() {
         var endPoint = new URL("http://my.api.com/some/path?q1=val1&q2=val2");
@@ -613,7 +612,7 @@ import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.DELETE;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
-    
+
     @Test
     public void myTest() {
         //Выполняем DELETE-запрос. Endpoint указывается в виде строки полностью.
@@ -623,7 +622,6 @@ public class MyTest {
 }
 
 ```
-
 
 ```java
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
@@ -727,17 +725,17 @@ public class MyTest {
 <details>
   <summary>Нажми, чтобы прочесть</summary>
 
-Выше перечислены варианты использования типовых http-методов (POST, GET, PUT, DELETE). Но есть еще такие методы, как TRACE, HEAD и т.п.
-Они реже используются. Чисто теоретически, можно реализовать свой собственный метод протокола http. Так же, из собственной практики, встречаются
-нетипичные примеры использования методов POST, GET, PUT или DELETE. Например, DELETE-метод с отправкой тела.  Для подобных случаев предусмотрены
-следующие варианты
+Выше перечислены варианты использования типовых http-методов (POST, GET, PUT, DELETE). Но есть еще такие методы, как
+TRACE, HEAD и т.п. Они реже используются. Чисто теоретически, можно реализовать свой собственный метод протокола http.
+Так же, из собственной практики, встречаются нетипичные примеры использования методов POST, GET, PUT или DELETE.
+Например, DELETE-метод с отправкой тела. Для подобных случаев предусмотрены следующие варианты
 
 ```java
 import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.METHOD;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
-    
+
     @Test
     public void myTest() {
         //Выполняем некий SOME_METHOD-запрос. Endpoint указывается в виде строки полностью.
@@ -754,7 +752,7 @@ import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.METHOD;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
-    
+
     @Test
     public void myTest() {
         //Выполняем некий SOME_METHOD-запрос. Endpoint указывается в виде строки полностью.
@@ -790,7 +788,7 @@ import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.METHOD;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
-    
+
     @Test
     public void myTest() {
         //Выполняем некий SOME_METHOD-запрос. Endpoint указывается в виде строки полностью.
@@ -829,7 +827,7 @@ import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.METHOD;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
-    
+
     @Test
     public void myTest() {
         var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
@@ -871,7 +869,7 @@ import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.METHOD;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
-    
+
     @Test
     public void myTest() {
         var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
@@ -953,7 +951,7 @@ import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.METHOD;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
-    
+
     @Test
     public void myTest() {
         var endPoint = new URL("http://my.api.com/some/path?q1=val1&q2=val2");
@@ -970,10 +968,11 @@ public class MyTest {
 
 ## Тело запроса. На примере POST-запроса
 
-Примеры выше демонстрируют, что некоторые http запросы (в основном POST и PUT) передают какую-то информацию в виде тела запроса.
-Ниже описание того, в каком формате эта информация может быть передана.
+Примеры выше демонстрируют, что некоторые http запросы (в основном POST и PUT) передают какую-то информацию в виде тела
+запроса. Ниже описание того, в каком формате эта информация может быть передана.
 
 ### Массив байтов
+
 <details>
   <summary>Нажми, чтобы прочесть</summary>
 
@@ -984,11 +983,11 @@ import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
-    
+
     @Test
     public void myTest() {
         var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        var body = new byte[] {/*Какой-то контент*/};
+        var body = new byte[]{/*Какой-то контент*/};
         http().responseOf(POST(endPoint, body));
     }
 }
@@ -1002,11 +1001,11 @@ import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
 import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 
 public class MyTest {
-    
+
     @Test
     public void myTest() {
         var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        var body = new byte[] {/*Какой-то контент*/};
+        var body = new byte[]{/*Какой-то контент*/};
         int requiredLength; //Нужная длина под-массива, который надо передать
         int offset; //Смещение относительно начала всего массива body
         http().responseOf(POST(endPoint, body, requiredLength, offset));
@@ -1059,8 +1058,8 @@ public class MyTest {
 }
 
 ```
-</details>
 
+</details>
 
 ### Строка/Текст
 
@@ -1102,6 +1101,7 @@ public class MyTest {
 }
 
 ```
+
 </details>
 
 ### Поток данных. InputStream.
@@ -1152,6 +1152,7 @@ public class MyTest {
 }
 
 ```
+
 </details>
 
 ### Форма. application/x-www-form-urlencoded.
@@ -1161,6 +1162,7 @@ public class MyTest {
 
 ```java
 import java.net.URI;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static ru.tinkoff.qa.neptune.http.api.mapping.DefaultMapper.JSON;
@@ -1201,7 +1203,8 @@ public class MyTest {
 }
 ```
 
-Для случая с `param6` см. [JSON DEFAULT_JSON_MAPPER](./SETTINGS.MD#JSON-DEFAULT_JSON_MAPPER) и [XML DEFAULT_XML_MAPPER](./SETTINGS.MD#XML-DEFAULT_XML_MAPPER)
+Для случая с `param6` см. [JSON DEFAULT_JSON_MAPPER](./SETTINGS.MD#JSON-DEFAULT_JSON_MAPPER)
+и [XML DEFAULT_XML_MAPPER](./SETTINGS.MD#XML-DEFAULT_XML_MAPPER)
 
 </details>
 
@@ -1251,6 +1254,7 @@ public class MyTest {
 }
 
 ```
+
 </details>
 
 ### org.jsoup.nodes.Document.
@@ -1260,6 +1264,7 @@ public class MyTest {
 
 ```java
 import org.jsoup.nodes.Document;
+
 import java.net.URI;
 
 import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
@@ -1276,6 +1281,7 @@ public class MyTest {
 }
 
 ```
+
 </details>
 
 ### Сериализованные объекты
@@ -1287,6 +1293,7 @@ public class MyTest {
 
 ```java
 import java.net.URI;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
@@ -1305,6 +1312,7 @@ public class MyTest {
 
 ```java
 import java.net.URI;
+
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
@@ -1357,7 +1365,9 @@ public class MyTest {
 }
 ```
 
-Про элементы перечисления `ru.tinkoff.qa.neptune.http.api.mapping.DefaultMapper` см. [JSON DEFAULT_JSON_MAPPER](./SETTINGS.MD#JSON-DEFAULT_JSON_MAPPER) и [XML DEFAULT_XML_MAPPER](./SETTINGS.MD#XML-DEFAULT_XML_MAPPER)
+Про элементы перечисления `ru.tinkoff.qa.neptune.http.api.mapping.DefaultMapper`
+см. [JSON DEFAULT_JSON_MAPPER](./SETTINGS.MD#JSON-DEFAULT_JSON_MAPPER)
+и [XML DEFAULT_XML_MAPPER](./SETTINGS.MD#XML-DEFAULT_XML_MAPPER)
 </details>
 
 ### Multipart
@@ -1404,14 +1414,15 @@ public class MyTest {
     }
 }
 ```
+
 </details>
 
 #### Форматы
 
-- **Массив байтов**  
+- **Массив байтов**
     <details>
        <summary>Нажми, чтобы прочесть</summary>
-      
+
     ```java        
         import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.BodyPart.bodyPart;
         
@@ -1436,7 +1447,7 @@ public class MyTest {
 - **Поток данных. InputStream**
     <details>
        <summary>Нажми, чтобы прочесть</summary>
-    
+
     ```java
     import java.io.InputStream;
     
@@ -1460,11 +1471,11 @@ public class MyTest {
     }
     ```
   </details>
-  
+
 - **Файл**
     <details>
        <summary>Нажми, чтобы прочесть</summary>
-    
+
     ```java
     import java.io.File;
     import java.nio.file.Path;
@@ -1538,7 +1549,7 @@ public class MyTest {
 
     <details>
         <summary>Нажми, чтобы прочесть</summary>
-    
+
     ```java
         import com.fasterxml.jackson.databind.ObjectMapper;
         import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -1581,7 +1592,9 @@ public class MyTest {
             }
         }
     ```
-    Про элементы перечисления `ru.tinkoff.qa.neptune.http.api.mapping.DefaultMapper` см. [JSON DEFAULT_JSON_MAPPER](./SETTINGS.MD#JSON-DEFAULT_JSON_MAPPER) и [XML DEFAULT_XML_MAPPER](./SETTINGS.MD#XML-DEFAULT_XML_MAPPER)
+  Про элементы перечисления `ru.tinkoff.qa.neptune.http.api.mapping.DefaultMapper`
+  см. [JSON DEFAULT_JSON_MAPPER](./SETTINGS.MD#JSON-DEFAULT_JSON_MAPPER)
+  и [XML DEFAULT_XML_MAPPER](./SETTINGS.MD#XML-DEFAULT_XML_MAPPER)
     </details>
 - **Строковое представление объекта Java**
     <details>
@@ -1606,9 +1619,10 @@ public class MyTest {
     </details>
 
 #### Дополнительные настройки
+
 <details>
     <summary>Нажми, чтобы прочесть</summary>
-    
+
 ```java
 
 import static ru.tinkoff.qa.neptune.http.api.request.body.multipart.ContentTransferEncoding.BINARY;
@@ -1631,14 +1645,16 @@ public class MyTest {
     }
 }
 ```
+
 </details>
 
 ### Описываем свой собственный формат тела запроса
+
 <details>
   <summary>Нажми, чтобы прочесть</summary>
 
-Предположим, у нас есть POST запрос, который принимает в качестве тела строку определенного формата, сформированную из даты. 
-В принципе, задача решается просто
+Предположим, у нас есть POST запрос, который принимает в качестве тела строку определенного формата, сформированную из
+даты. В принципе, задача решается просто
 
 ```java
 import java.net.URI;
@@ -1653,16 +1669,16 @@ public class MyTest {
     @Test
     public void myTest() {
         var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
-        
+
         var date = new Date(); //(1)
         var format = new SimpleDateFormat(/*Параметры конструктора*/); // 2)
-        
+
         http().responseOf(POST(endPoint, format.format(date)));
     }
 }
 ```
 
-Предположим, действия 1 и 2 встречаются в наборе тестов очень часто, и для удобства написания кода и его поддержки нужно 
+Предположим, действия 1 и 2 встречаются в наборе тестов очень часто, и для удобства написания кода и его поддержки нужно
 описать свой собственный формат тела. Тогда
 
 ```java
@@ -1671,6 +1687,7 @@ package org.my.pack;
 import java.net.http.HttpRequest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import ru.tinkoff.qa.neptune.http.api.request.body.RequestBody;
 
 import static java.net.http.HttpRequest.BodyPublishers.ofString;
@@ -1718,13 +1735,13 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");        
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
         http().responseOf(POST(endPoint, dateBody(new Date())));
     }
 }
 ```
 
-или 
+или
 
 ```java
 import java.util.Date;
@@ -1742,7 +1759,7 @@ public class MyTest {
 }
 ```
 
-или 
+или
 
 ```java
 import java.net.URL;
@@ -1756,7 +1773,7 @@ public class MyTest {
 
     @Test
     public void myTest() throws Exception {
-        var endPoint = new URL("http://my.api.com/some/path?q1=val1&q2=val2");       
+        var endPoint = new URL("http://my.api.com/some/path?q1=val1&q2=val2");
         http().responseOf(POST(endPoint, dateBody(new Date())));
     }
 }
@@ -1765,6 +1782,7 @@ public class MyTest {
 </details>
 
 ## Отправка настроенного http-запроса. На примере GET-запроса
+
 <details>
   <summary>Нажми, чтобы прочесть</summary>
 
@@ -1780,7 +1798,7 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");        
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
         http().responseOf(GET(endPoint)
                 //Все перечисленное ниже не является обязательным для каждого отравляемого запроса
                 //Указываем заголовок/свойство запроса и передаем множественное значение 
@@ -1812,11 +1830,13 @@ public class MyTest {
 }
 ```
 
-О вызовах методов `timeout` и `version`. Если для всех запросов используется одна и та же версия протокола, и/или верхняя планка времени подключения к 
-серверу приложения одна и та же, то частого вызова этих методов можно избежать. См.[DEFAULT_HTTP_PROTOCOL_VERSION](./SETTINGS.MD#DEFAULT_HTTP_PROTOCOL_VERSION) или 
-[Время подключения http-клиента к сервису по умолчанию](./SETTINGS.MD#Время-подключения-http-клиента-к-сервису-по-умолчанию) 
+О вызовах методов `timeout` и `version`. Если для всех запросов используется одна и та же версия протокола, и/или
+верхняя планка времени подключения к серверу приложения одна и та же, то частого вызова этих методов можно избежать.
+См.[DEFAULT_HTTP_PROTOCOL_VERSION](./SETTINGS.MD#DEFAULT_HTTP_PROTOCOL_VERSION) или
+[Время подключения http-клиента к сервису по умолчанию](./SETTINGS.MD#Время-подключения-http-клиента-к-сервису-по-умолчанию)
 
-Что если одни и те же или похожие настройки для запросов встречаются часто? Тут можно порекомендовать 2 варианта решения. 
+Что если одни и те же или похожие настройки для запросов встречаются часто? Тут можно порекомендовать 2 варианта
+решения.
 
 Первый вариант
 
@@ -1826,30 +1846,31 @@ package org.my.pack;
 import ru.tinkoff.qa.neptune.http.api.request.RequestTuner;
 
 public class MyRequestTuner implements RequestTuner {
-    
-  //Тут можно спрятать алгоритм настройки отправляемого http-запроса  
-  @Override
-  public void setUp(RequestSettings<?> requestSettings) {
-    //Пример ниже демонстрирует, как настроить запрос, используя постоянные значения.
-    //Точно так же можно настроить запрос, используя вычислимые в данный момент значения.
-    requestSettings
-            .header("header1", "some value", "one more value")
-            .header("header2", "some value")
-            .queryParam("param1", false, "val1", 3, "Hello world")
-            .queryParam("param2", true, "val1%&", 3, "Hello world")
-            .queryParam("param3", PIPE, true, "val1%&", 3, "Hello world")
-            .timeout(ofSeconds(2))
-            .version(HTTP_2)
-            .expectContinue(true);
-  }
+
+    //Тут можно спрятать алгоритм настройки отправляемого http-запроса  
+    @Override
+    public void setUp(RequestSettings<?> requestSettings) {
+        //Пример ниже демонстрирует, как настроить запрос, используя постоянные значения.
+        //Точно так же можно настроить запрос, используя вычислимые в данный момент значения.
+        requestSettings
+                .header("header1", "some value", "one more value")
+                .header("header2", "some value")
+                .queryParam("param1", false, "val1", 3, "Hello world")
+                .queryParam("param2", true, "val1%&", 3, "Hello world")
+                .queryParam("param3", PIPE, true, "val1%&", 3, "Hello world")
+                .timeout(ofSeconds(2))
+                .version(HTTP_2)
+                .expectContinue(true);
+    }
 }
 
 ```
 
-И тогда 
+И тогда
 
 ```java
 import java.net.URI;
+
 import org.my.pack.MyRequestTuner;
 
 import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
@@ -1859,7 +1880,7 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");        
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
         http().responseOf(GET(endPoint)
                 //вызывается общий алгоритм настройки
                 .tuneWith(new MyRequestTuner()));
@@ -1871,6 +1892,7 @@ public class MyTest {
 
 ```java
 import java.net.URI;
+
 import org.my.pack.MyRequestTuner;
 
 import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.GET;
@@ -1880,7 +1902,7 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");        
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
         http().responseOf(GET(endPoint)
                 //вызывается общий алгоритм настройки
                 //Можно использовать класс, если у него не объявлено никакого конструктора,
@@ -1905,7 +1927,7 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");        
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
         http().responseOf(GET(endPoint)
                 //вызываются общие алгоритмы настройки
                 .tuneWith(new MyRequestTuner(), new MyRequestTuner2()));
@@ -1913,10 +1935,11 @@ public class MyTest {
 }
 ```
 
-или 
+или
 
 ```java
 //тоже самое, что пример выше, просто более читаемо написано
+
 import java.net.URI;
 
 import org.my.pack.MyRequestTuner;
@@ -1929,7 +1952,7 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");        
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
         http().responseOf(GET(endPoint)
                 //вызываются общие алгоритмы настройки
                 .tuneWith(new MyRequestTuner())
@@ -1953,7 +1976,7 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");        
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
         http().responseOf(GET(endPoint)
                 //вызываются общие алгоритмы настройки
                 //Можно использовать классы, если у них не объявлено никаких конструкторов,
@@ -1967,6 +1990,7 @@ public class MyTest {
 
 ```java
 //тоже самое, что пример выше, просто более читаемо написано
+
 import java.net.URI;
 
 import org.my.pack.MyRequestTuner;
@@ -1979,7 +2003,7 @@ public class MyTest {
 
     @Test
     public void myTest() {
-        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");        
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
         http().responseOf(GET(endPoint)
                 //вызываются общие алгоритмы настройки
                 //Можно использовать классы, если у них не объявлено никаких конструкторов,
@@ -1996,3 +2020,416 @@ public class MyTest {
 
 ## Получение данных тела ответа на http-запрос. На примере POST-запроса
 
+### Формат тела ответа
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+Интеграция Neptune с нативным Java http клиентом предоставляет возможность свободно интерпретировать информацию, которая
+возвращается в теле ответа на http-запрос. Для этого используются объекты `java.net.http.HttpResponse.BodyHandler`.
+
+```java
+import java.net.URI;
+import java.net.http.HttpResponse;
+
+import static java.net.http.HttpResponse.BodyHandlers.ofString;
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
+        HttpResponse<String> response = http().responseOf(POST(endPoint, "String body"),
+                //Ответ вернется c телом, интерпретированным/прочитанным как текст
+                ofString());
+
+        String body = response.body();
+    }
+}
+```
+
+Если нужно отправить запрос, при этом тело http-ответа значения не имеет, тогда
+
+```java
+import java.net.URI;
+import java.net.http.HttpResponse;
+
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        //java.net.http.HttpResponse.BodyHandler не указывается.
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
+        //На самом деле, ответ на этот запрос может иметь тело, 
+        //но в данном примере оно просто не будет прочитано,
+        //и вернется ответ с пустым телом
+        HttpResponse<Void> response = http().responseOf(POST(endPoint, "String body"));
+    }
+}
+```
+
+Способы создания объектов `java.net.http.HttpResponse.BodyHandler`, которые предоставляет Java, можно
+посмотреть [тут](https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpResponse.BodyHandlers.html)
+.
+
+Далее список возможностей, которые предоставляет Neptune.
+</details>
+
+#### Объекты, десериализованные из JSON-строки
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+```java
+import java.net.URI;
+import java.net.http.HttpResponse;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.deserialized;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
+        HttpResponse<SomeClass> response = http().responseOf(POST(endPoint, "String body"),
+                //Предполагается, что тело ответа может быть прочитано как JSON-строка,
+                //которую можно десериализовать в объект класса SomeClass
+                //При этом используется настроенный и переданный явно объект класса ObjectMapper
+                deserialized(SomeClass.class, new ObjectMapper()));
+
+        SomeClass body = response.body();
+    }
+}
+```
+
+или
+
+```java
+import java.net.URI;
+import java.net.http.HttpResponse;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.deserialized;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
+        HttpResponse<SomeClass> response = http().responseOf(POST(endPoint, "String body"),
+                //Предполагается, что тело ответа может быть прочитано как JSON-строка,
+                //которую можно десериализовать в объект SomeClass.
+                //При этом используется настроенный и переданный явно объект класса ObjectMapper
+                deserialized(new TypeReference<SomeClass>() {
+                }, new ObjectMapper()));
+
+        SomeClass body = response.body();
+    }
+}
+```
+
+или
+
+```java
+import java.net.URI;
+import java.net.http.HttpResponse;
+
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
+        HttpResponse<SomeClass> response = http().responseOf(POST(endPoint, "String body"),
+                //Предполагается, что тело ответа может быть прочитано как JSON-строка,
+                //которую можно десериализовать в объект класса SomeClass
+                //При этом используется настроенный алгоритм сериализации/десериализации по умолчанию
+                json(SomeClass.class));
+
+        SomeClass body = response.body();
+    }
+}
+```
+
+или
+
+```java
+import java.net.URI;
+import java.net.http.HttpResponse;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.json;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
+        HttpResponse<SomeClass> response = http().responseOf(POST(endPoint, "String body"),
+                //Предполагается, что тело ответа может быть прочитано как JSON-строка,
+                //которую можно десериализовать в объект SomeClass
+                //При этом используется настроенный алгоритм сериализации/десериализации по умолчанию
+                json(new TypeReference<SomeClass>() {
+                }));
+
+        SomeClass body = response.body();
+    }
+}
+```
+
+Про два последних способа. В качестве дополнения можно
+прочитать [JSON DEFAULT_JSON_MAPPER](./SETTINGS.MD#JSON-DEFAULT_JSON_MAPPER)
+
+</details>
+
+#### Объекты, десериализованные из XML-строки
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+```java
+import java.net.URI;
+import java.net.http.HttpResponse;
+
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.deserialized;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
+        HttpResponse<SomeClass> response = http().responseOf(POST(endPoint, "String body"),
+                //Предполагается, что тело ответа может быть прочитано как XML-строка,
+                //которую можно десериализовать в объект класса SomeClass
+                //При этом используется настроенный и переданный явно объект класса XmlMapper
+                deserialized(SomeClass.class, new XmlMapper()));
+
+        SomeClass body = response.body();
+    }
+}
+```
+
+или
+
+```java
+import java.net.URI;
+import java.net.http.HttpResponse;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.deserialized;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
+        HttpResponse<SomeClass> response = http().responseOf(POST(endPoint, "String body"),
+                //Предполагается, что тело ответа может быть прочитано как XML-строка,
+                //которую можно десериализовать в объект SomeClass
+                //При этом используется настроенный и переданный явно объект класса XmlMapper
+                deserialized(new TypeReference<SomeClass>() {
+                }, new XmlMapper()));
+
+        SomeClass body = response.body();
+    }
+}
+```
+
+или
+
+```java
+import java.net.URI;
+import java.net.http.HttpResponse;
+
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.xml;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
+        HttpResponse<SomeClass> response = http().responseOf(POST(endPoint, "String body"),
+                //Предполагается, что тело ответа может быть прочитано как XML-строка,
+                //которую можно десериализовать в объект класса SomeClass
+                //При этом используется настроенный алгоритм сериализации/десериализации по умолчанию
+                xml(SomeClass.class));
+
+        SomeClass body = response.body();
+    }
+}
+```
+
+или
+
+```java
+import java.net.URI;
+import java.net.http.HttpResponse;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.xml;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
+        HttpResponse<SomeClass> response = http().responseOf(POST(endPoint, "String body"),
+                //Предполагается, что тело ответа может быть прочитано как XML-строка,
+                //которую можно десериализовать в объект SomeClass
+                //При этом используется настроенный алгоритм сериализации/десериализации по умолчанию
+                xml(new TypeReference<SomeClass>() {
+                }));
+
+        SomeClass body = response.body();
+    }
+}
+```
+
+Про два последних способа. В качестве дополнения можно
+прочитать [XML DEFAULT_XML_MAPPER](./SETTINGS.MD#XML-DEFAULT_XML_MAPPER)
+
+</details>
+
+#### org.w3c.dom.Document
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+```java
+import java.net.URI;
+import java.net.http.HttpResponse;
+
+import org.w3c.dom.Document;
+
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.w3cDocument;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
+        HttpResponse<Document> response = http().responseOf(POST(endPoint, "String body"),
+                //Предполагается, что тело ответа может быть прочитано как строка,
+                //которую можно преобразовать в org.w3c.dom.Document
+                w3cDocument());
+
+        Document body = response.body();
+    }
+}
+```
+
+или
+
+```java
+import java.net.URI;
+import java.net.http.HttpResponse;
+
+import org.w3c.dom.Document;
+
+import javax.xml.parsers.DocumentBuilder;
+
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.w3cDocument;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
+        DocumentBuilder builder; //Представим, что значение присвоено 
+
+        HttpResponse<Document> response = http().responseOf(POST(endPoint, "String body"),
+                //Предполагается, что тело ответа может быть прочитано как строка,
+                //которую можно преобразовать в org.w3c.dom.Document
+                //Объект DocumentBuilder нужен для уточнения алгоритма преобразования
+                w3cDocument(builder));
+
+        Document body = response.body();
+    }
+}
+```
+
+</details>
+
+#### org.jsoup.nodes.Document
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+```java
+import java.net.URI;
+import java.net.http.HttpResponse;
+
+import org.jsoup.nodes.Document;
+
+import static ru.tinkoff.qa.neptune.http.api.request.RequestBuilder.POST;
+import static ru.tinkoff.qa.neptune.http.api.response.body.data.MappedBodyHandler.jsoupDocument;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com/some/path?q1=val1&q2=val2");
+        HttpResponse<Document> response = http().responseOf(POST(endPoint, "String body"),
+                //Предполагается, что тело ответа может быть прочитано как строка,
+                //которую можно преобразовать в org.jsoup.nodes.Document
+                jsoupDocument());
+
+        Document body = response.body();
+    }
+}
+```
+
+</details>
+
+#### Описание своего формата
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+
+</details>
+
+### Варианты получения данных тела ответа
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+
+</details>
