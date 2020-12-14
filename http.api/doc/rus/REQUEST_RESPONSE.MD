@@ -2615,8 +2615,6 @@ public class BodyObject {
 <details>
   <summary>Нажми, чтобы прочесть</summary>
 
-Начало [здесь](./REQUEST_RESPONSE.MD#Варианты-получения-данных-тела-ответа.-На-примере-GET)
-
 ```java
 import java.net.URI;
 
@@ -2763,8 +2761,6 @@ public class MyTest {
 
 <details>
   <summary>Нажми, чтобы прочесть</summary>
-
-Начало [здесь](./REQUEST_RESPONSE.MD#Варианты-получения-данных-тела-ответа.-На-примере-GET)
 
 ```java
 import java.net.URI;
@@ -2937,8 +2933,6 @@ public class MyTest {
 <details>
   <summary>Нажми, чтобы прочесть</summary>
 
-Начало [здесь](./REQUEST_RESPONSE.MD#Варианты-получения-данных-тела-ответа.-На-примере-GET)
-
 ```java
 import java.net.URI;
 
@@ -3108,7 +3102,6 @@ public class MyTest {
 <details>
   <summary>Нажми, чтобы прочесть</summary>
 
-Начало [здесь](./REQUEST_RESPONSE.MD#Варианты-получения-данных-тела-ответа.-На-примере-GET)
 ```java
 import java.net.URI;
 
@@ -3279,8 +3272,6 @@ public class MyTest {
 <details>
   <summary>Нажми, чтобы прочесть</summary>
 
-Начало [здесь](./REQUEST_RESPONSE.MD#Варианты-получения-данных-тела-ответа.-На-примере-GET)
-
 ```java
 import java.net.URI;
 
@@ -3444,5 +3435,4 @@ public class MyTest {
     }
 }
 ```
-
 </details>
