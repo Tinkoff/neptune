@@ -350,13 +350,13 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
     //то получится следующий путь: /some/path/to/.ABC
     @URIPath("/some/path/to/{target}")
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething2(@PathParameter(name = "target", style = LABEL) String pathArgument); //данный параметр обязателен 
+    RequestBuilder postSomething2(@PathParameter(name = "target", style = LABEL) String pathArgument);
 
     //Если в качестве target передать строку `ABC`
     //то получится следующий путь: /some/path/to/;target=ABC
     @URIPath("/some/path/to/{target}")
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething3(@PathParameter(name = "target", style = MATRIX) String pathArgument); //данный параметр обязателен 
+    RequestBuilder postSomething3(@PathParameter(name = "target", style = MATRIX) String pathArgument);
 }
 ```
 
