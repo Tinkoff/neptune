@@ -316,31 +316,20 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 
     //Формирует path-часть для URI запроса
     //В данном примере продемонстрирована ситуация, когда путь имеет переменную часть
-    @URIPath("/some/path/to/{target}")
-    @HttpMethod(httpMethod = POST)
-    //переменная часть, имя должно совпадать с названием, заключенным в {}  
-    RequestBuilder postSomething(@PathParameter(name = "target") String pathArgument); //данный параметр обязателен 
-
-
-    @URIPath("/some/path/to/{target}/{optional}")
+    //Имена параметров пути должны соответствовать тому, что заключено в {}.
+    //Каждый параметр сигнатуры метода, который отвечает за мэппинг пути, должен иметь уникальное имя 
+    //параметра пути.
+    @URIPath("/some/path/to/{target}/{target2}/{optional}")
     @HttpMethod(httpMethod = POST)
     RequestBuilder postSomething(
-            @PathParameter(name = "target") String pathArgument,
-            @PathParameter(name = "optional", required = false) String pathOptArgument //данный параметр не является 
+            @PathParameter(name = "target") String pathArgument, //данный параметр обязателен 
+            @PathParameter(name = "optional", required = false) Integer pathOptArgument, //данный параметр не является 
             //обязательным. Это значит, если его значение будет == null, то из пути будет исключена часть, 
             //представленная как {optional}
+            @PathParameter(name = "target2") SomeObjClass pathArgument //можно передать 
+            // какой-либо объект. В данном примере должно соблюдаться  условие: строковое представление объекта
+            // (вызов метода toString()) должно быть корректно интерпретировано как часть пути
     );
-
-
-    @URIPath("/some/path/to/{target}")
-    @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething(@PathParameter(name = "target") Integer pathArgument); //данный параметр обязателен 
-
-    @URIPath("/some/path/to/{target}")
-    @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething(@PathParameter(name = "target") SomeObjClass pathArgument); //можно передать 
-    // какой-либо объект. В данном примере должно соблюдаться  условие: строковое представление объекта
-    // (вызов метода toString()) должно быть корректно интерпретировано как часть пути
 
     //В представленных выше примерах в path-выражение будут подставлены строковые значения переданных объектов
     //Ниже менее типовые варианты 
@@ -558,6 +547,17 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
     @HttpMethod(httpMethod = POST)
     RequestBuilder postSomething4(@PathParameter(name = "objParam", style = MATRIX, explode = true) Object array);
 }
+```
+
+</details>
+
+### Запрос (Query-часть URI запроса)
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+```java
+
 ```
 
 </details>
