@@ -185,81 +185,7 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 ```
 
 Могут быть ситуации, когда в качестве заголовка нужно передать некоторый POJO, который наследует
-`ru.tinkoff.qa.neptune.http.api.mapping.MappedObject`, или объект `java.util.Map`.
-
-```java
-import java.util.Map;
-
-import ru.tinkoff.qa.neptune.http.api.mapping.MappedObject;
-
-public class SomeClass {
-
-    //Map, который собираемся передать как заголовок
-    private final Map<?, ?> headerMap = new LinkedHashMap<>() {
-        {
-            put("someString", "String value");
-            put("someNum", 10.1111D);
-            put("someBool", true);
-            put("someArray", List.of(1, "ABC", true));
-        }
-    };
-
-    //объект, который будет передан как заголовок. Идентичен Map'у выше
-    private final HeaderParameterObject testHeaderObject = new HeaderParameterObject().setSomeString("String value")
-            .setSomeNum(10.1111D)
-            .setSomeBool(true)
-            .setSomeArray(new Object[]{1, "ABC", true});
-
-    //модель объекта-заголовка
-    public class HeaderParameterObject extends MappedObject {
-        private String someString;
-
-        private Number someNum;
-
-        private Boolean someBool;
-
-        private Object[] someArray;
-
-        public String getSomeString() {
-            return someString;
-        }
-
-        public HeaderParameterObject setSomeString(String someString) {
-            this.someString = someString;
-            return this;
-        }
-
-        public Number getSomeNum() {
-            return someNum;
-        }
-
-        public HeaderParameterObject setSomeNum(Number someNum) {
-            this.someNum = someNum;
-            return this;
-        }
-
-        public Boolean getSomeBool() {
-            return someBool;
-        }
-
-        public HeaderParameterObject setSomeBool(Boolean someBool) {
-            this.someBool = someBool;
-            return this;
-        }
-
-        public Object[] getSomeArray() {
-            return someArray;
-        }
-
-        public HeaderParameterObject setSomeArray(Object[] someArray) {
-            this.someArray = someArray;
-            return this;
-        }
-    }
-}
-```
-
-Тогда
+`ru.tinkoff.qa.neptune.http.api.mapping.MappedObject`, или объект `java.util.Map`. Тогда
 
 ```java
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
@@ -273,18 +199,18 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 
     @HttpMethod(httpMethod = POST)
     RequestBuilder postSomething(
-            //Если передать объект Map выше, то он будет преобразован в строку вида
-            //`someString,String value,someNum,10.1111,someBool,true,someArray,1,ABC,true`
+            //Если передать объект Map, то он будет преобразован в строку вида
+            //`key1,value1,key2,value2` и т.д
             @HeaderParameter(headerName = "header1") Map<?, ?> mapArg1,
-            //аналогично примеру выше
-            @HeaderParameter(headerName = "header2") HeaderParameterObject intArg2,
             //explode = true означает "развернуть" объект
-            //Если передать объект Map выше, то он будет преобразован в строку вида
-            //`"someString=String value,someNum=10.1111,someBool=true,someArray=1,ABC,true"`
-            @HeaderParameter(headerName = "header3", explode = true) Map<?, ?> mapArg1,
-            //аналогично примеру выше
-            @HeaderParameter(headerName = "header4", explode = true) HeaderParameterObject intArg2
+            //Если передать объект Map, то он будет преобразован в строку вида
+            //`key1=value1,key2=value2` и т.д
+            @HeaderParameter(headerName = "header2", explode = true) Map<?, ?> mapArg2
     );
+
+    //Все тоже самое будет работать и для наследника 
+    // ru.tinkoff.qa.neptune.http.api.mapping.MappedObjectru.tinkoff.qa.neptune.http.api.mapping.MappedObject
+    //только вместо ключей будут использованы представления полей
 }
 ```
 
@@ -326,7 +252,7 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
             @PathParameter(name = "optional", required = false) Integer pathOptArgument, //данный параметр не является 
             //обязательным. Это значит, если его значение будет == null, то из пути будет исключена часть, 
             //представленная как {optional}
-            @PathParameter(name = "target2") SomeObjClass pathArgument //можно передать 
+            @PathParameter(name = "target2") SomeObjClass pathObjArgument //можно передать 
             // какой-либо объект. В данном примере должно соблюдаться  условие: строковое представление объекта
             // (вызов метода toString()) должно быть корректно интерпретировано как часть пути
     );
@@ -364,118 +290,37 @@ import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.paramet
 
 public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 
-    //Если в качестве arrayParam передать массив new Object[] {1,2,"АБВ","ABC",true}
-    //то получится следующий путь 
-    //Без кодировки: /some/path/to/1,2,АБВ,ABC,true
-    //С кодировкой: /some/path/to/1,2,%D0%90%D0%91%D0%92,ABC,true
+    //Получится путь вида
+    ///some/path/to/elem1,elem2,elem3
     @URIPath("/some/path/to/{arrayParam}")
     @HttpMethod(httpMethod = POST)
     RequestBuilder postSomething(@PathParameter(name = "arrayParam") Object[] array);
 
-    //Если в качестве arrayParam передать массив new Object[] {1,2,"АБВ","ABC",true}
-    //то получится следующий путь 
-    //Без кодировки: /some/path/to/.1.2.АБВ.ABC.true
-    //С кодировкой:  /some/path/to/.1.2.%D0%90%D0%91%D0%92.ABC.true
+    //Получится путь вида
+    ///some/path/to/.elem1.elem2.elem3
     @URIPath("/some/path/to/{arrayParam}")
     @HttpMethod(httpMethod = POST)
     RequestBuilder postSomething2(@PathParameter(name = "arrayParam", style = LABEL) Object[] array);
 
-    //Если в качестве arrayParam передать массив new Object[] {1,2,"АБВ","ABC",true}
-    //то получится следующий путь 
-    //Без кодировки: /some/path/to/;arrayParam=1,2,АБВ,ABC,true
-    //С кодировкой:  /some/path/to/;arrayParam=1,2,%D0%90%D0%91%D0%92,ABC,true
+    //Получится путь вида
+    ///some/path/to/;arrayParam=elem1,elem2,elem3
     @URIPath("/some/path/to/{arrayParam}")
     @HttpMethod(httpMethod = POST)
     RequestBuilder postSomething3(@PathParameter(name = "arrayParam", style = MATRIX) Object[] array);
 
     //explode = true означает "развернуть" объект
-    //Если в качестве arrayParam передать массив new Object[] {1,2,"АБВ","ABC",true}
-    //то получится следующий путь 
-    //Без кодировки: /some/path/to/;arrayParam=1;arrayParam=2;arrayParam=АБВ;arrayParam=ABC;arrayParam=true
-    //С кодировкой:  /some/path/to/;arrayParam=1;arrayParam=2;arrayParam=%D0%90%D0%91%D0%92;arrayParam=ABC;arrayParam=true
+    //Получится путь вида
+    ///some/path/to/;arrayParam=elem1;arrayParam=elem2;arrayParam=elem3
     @URIPath("/some/path/to/{arrayParam}")
     @HttpMethod(httpMethod = POST)
     RequestBuilder postSomething3(@PathParameter(name = "arrayParam", style = MATRIX, explode = true) Object[] array);
+
+    //Зарезервированные символы перекодируются
 }
 ```
 
 Могут быть ситуации, когда в качестве параметра пути нужно передать некоторый POJO, который наследует
-`ru.tinkoff.qa.neptune.http.api.mapping.MappedObject`, или объект `java.util.Map`.
-
-```java
-import java.util.Map;
-
-import ru.tinkoff.qa.neptune.http.api.mapping.MappedObject;
-
-public class SomeClass {
-
-    //Map, который собираемся передать как параметр пути
-    private static final Map<?, ?> pathParamMap = new LinkedHashMap<>() {
-        {
-            put("someString", "String value");
-            put("someNum", 10.1111D);
-            put("someBool", true);
-            put("someList", new Object[]{1, "ABC", "АБВ", true});
-        }
-    };
-
-    //объект, который будет передан как параметр пути. Идентичен Map'у выше
-    private final HeaderParameterObject testHeaderObject = new HeaderParameterObject().setSomeString("String value")
-            .setSomeNum(10.1111D)
-            .setSomeBool(true)
-            .setSomeArray(new Object[]{1, "ABC", true});
-
-    //модель объекта-параметра пути
-    public static class PathParameterObject extends MappedObject {
-
-        private String someString;
-
-        private Number someNum;
-
-        private Boolean someBool;
-
-        private List<Object> someList;
-
-        public String getSomeString() {
-            return someString;
-        }
-
-        public PathParameterObject setSomeString(String someString) {
-            this.someString = someString;
-            return this;
-        }
-
-        public Number getSomeNum() {
-            return someNum;
-        }
-
-        public PathParameterObject setSomeNum(Number someNum) {
-            this.someNum = someNum;
-            return this;
-        }
-
-        public Boolean getSomeBool() {
-            return someBool;
-        }
-
-        public PathParameterObject setSomeBool(Boolean someBool) {
-            this.someBool = someBool;
-            return this;
-        }
-
-        public List<Object> getSomeList() {
-            return someList;
-        }
-
-        public PathParameterObject setSomeList(List<Object> someList) {
-            this.someList = someList;
-            return this;
-        }
-    }
-}
-```
-
-Тогда
+`ru.tinkoff.qa.neptune.http.api.mapping.MappedObject`, или объект `java.util.Map`. Тогда
 
 ```java
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
@@ -490,62 +335,50 @@ import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.paramet
 
 public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 
-    //Если в качестве objParam передать Map выше
-    //то получится следующий путь 
-    //Без кодировки: /some/path/to/someString,String value,someNum,10.1111,someBool,true,someList,1,ABC,АБВ,true
-    //С кодировкой: /some/path/to/someString,String%20value,someNum,10.1111,someBool,true,someList,1,ABC,%D0%90%D0%91%D0%92,true
-    //Тоже самое получится, если передать объект класса PathParameterObject, см. выше
+    //Получится путь вида
+    ///some/path/to/key1,value1,key2,value2,key3,value3
     @URIPath("/some/path/to/{objParam}")
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething(@PathParameter(name = "objParam") Object array);
+    RequestBuilder postSomething(@PathParameter(name = "objParam") Map<?, ?> map);
 
     //explode = true означает "развернуть" объект
-    //Если в качестве objParam передать Map выше
-    //то получится следующий путь 
-    //Без кодировки: /some/path/to/someString=String value,someNum=10.1111,someBool=true,someList=1,ABC,АБВ,true
-    //С кодировкой: /some/path/to/someString=String%20value,someNum=10.1111,someBool=true,someList=1,ABC,%D0%90%D0%91%D0%92,true
-    //Тоже самое получится, если передать объект класса PathParameterObject, см. выше
+    //Получится путь вида
+    ///some/path/to/key1=value1,key2=value2,key3=value3
     @URIPath("/some/path/to/{objParam}")
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething2(@PathParameter(name = "objParam", explode = true) Object array);
+    RequestBuilder postSomething2(@PathParameter(name = "objParam", explode = true) Map<?, ?> map);
 
-    //Если в качестве objParam передать Map выше
-    //то получится следующий путь 
-    //Без кодировки: /some/path/to/.someString.String value.someNum.10.1111.someBool.true.someList.1,ABC,АБВ,true
-    //С кодировкой: /some/path/to/.someString.String%20value.someNum.10.1111.someBool.true.someList.1,ABC,%D0%90%D0%91%D0%92,true
-    //Тоже самое получится, если передать объект класса PathParameterObject, см. выше
+    //Получится путь вида
+    ///some/path/to/.key1.value1.key2.value2.key3.value3
     @URIPath("/some/path/to/{objParam}")
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething3(@PathParameter(name = "objParam", style = LABEL) Object array);
+    RequestBuilder postSomething3(@PathParameter(name = "objParam", style = LABEL) Map<?, ?> map);
 
     //explode = true означает "развернуть" объект
-    //Если в качестве objParam передать Map выше
-    //то получится следующий путь 
-    //Без кодировки: /some/path/to/.someString=String value.someNum=10.1111.someBool=true.someList=1,ABC,АБВ,true
-    //С кодировкой: /some/path/to/.someString=String%20value.someNum=10.1111.someBool=true.someList=1,ABC,%D0%90%D0%91%D0%92,true
-    //Тоже самое получится, если передать объект класса PathParameterObject, см. выше
+    //Получится путь вида
+    ///some/path/to/.key1=value1.key2=value2.key3=value3
     @URIPath("/some/path/to/{objParam}")
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething4(@PathParameter(name = "objParam", style = LABEL, explode = true) Object array);
+    RequestBuilder postSomething4(@PathParameter(name = "objParam", style = LABEL, explode = true) Map<?, ?> map);
 
-    //Если в качестве objParam передать Map выше
-    //то получится следующий путь 
-    //Без кодировки: /some/path/to/;objParam=someString,String value,someNum,10.1111,someBool,true,someList,1,ABC,АБВ,true
-    //С кодировкой: /some/path/to/;objParam=someString,String%20value,someNum,10.1111,someBool,true,someList,1,ABC,%D0%90%D0%91%D0%92,true
-    //Тоже самое получится, если передать объект класса PathParameterObject, см. выше
+    //Получится путь вида
+    ///some/path/to/;objParam=key1,value1,key2,value2,key3,value3
     @URIPath("/some/path/to/{objParam}")
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething3(@PathParameter(name = "objParam", style = MATRIX) Object array);
+    RequestBuilder postSomething3(@PathParameter(name = "objParam", style = MATRIX) Map<?, ?> map);
 
     //explode = true означает "развернуть" объект
-    //Если в качестве objParam передать Map выше
-    //то получится следующий путь 
-    //Без кодировки: /some/path/to/;someString=String value;someNum=10.1111;someBool=true;someList=1,ABC,АБВ,true
-    //С кодировкой: /some/path/to/;someString=String%20value;someNum=10.1111;someBool=true;someList=1,ABC,%D0%90%D0%91%D0%92,true
-    //Тоже самое получится, если передать объект класса PathParameterObject, см. выше
+    //Получится путь вида
+    ///some/path/to/;key1=value1;key2=value2;key3=value3
     @URIPath("/some/path/to/{objParam}")
     @HttpMethod(httpMethod = POST)
-    RequestBuilder postSomething4(@PathParameter(name = "objParam", style = MATRIX, explode = true) Object array);
+    RequestBuilder postSomething4(@PathParameter(name = "objParam", style = MATRIX, explode = true) Map<?, ?> map);
+
+    //Все тоже самое будет работать и для наследника 
+    // ru.tinkoff.qa.neptune.http.api.mapping.MappedObjectru.tinkoff.qa.neptune.http.api.mapping.MappedObject
+    //только вместо ключей будут использованы представления полей  
+
+    //Зарезервированные символы перекодируются
 }
 ```
 
@@ -557,8 +390,157 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
   <summary>Нажми, чтобы прочесть</summary>
 
 ```java
+import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMethod;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form.FormParam;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.query.QueryParameter;
 
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.DefaultHttpMethods.POST;
+
+public interface ServiceAPI extends HttpAPI<ServiceAPI> {
+
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postSomething(
+            @QueryParameter(name = "param1") String queryArgument, //данный параметр обязателен 
+            @QueryParameter(name = "param2", required = false) Integer queryOptArgument, //данный параметр не является 
+            //обязательным. Это значит, если его значение будет == null, то в запрос он не будет добавлен
+            @QueryParameter(name = "param3") SomeObjClass queryObjArgument, //можно передать 
+            // какой-либо объект. В данном примере должно соблюдаться  условие: строковое представление объекта
+            // (вызов метода toString()) должно быть корректно интерпретировано как значение параметра запроса
+            //-------------------------------------------------------------------------------------------------
+            //Если строка содержит в себе зарезервированные символы, то эти символы не будут 
+            //перекодированы в query-части URI-запроса
+            @QueryParameter(name = "param4") @FormParam(allowReserved = true) String queryReservedArgument
+    );
+}
 ```
+
+Могут быть ситуации, когда в качестве параметра пути нужно передать массив или коллекцию. Тогда
+
+```java
+import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMethod;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form.FormParam;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.query.QueryParameter;
+
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.DefaultHttpMethods.POST;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form.FormStyles.SPACE_DELIMITED;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form.FormStyles.PIPE;
+
+public interface ServiceAPI extends HttpAPI<ServiceAPI> {
+
+    //Получится следующий параметр запроса (arrayParam)
+    //arrayParam=elem1&arrayParam=elem2&arrayParam=elem3
+    //Зарезервированные символы в значениях будут перекодированы
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postSomething(@QueryParameter(name = "arrayParam") Object[] array);
+
+    //Получится следующий параметр запроса (arrayParam)
+    //arrayParam=elem1&arrayParam=elem2&arrayParam=elem3
+    //Зарезервированные символы в значениях будут сохранены
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postSomething2(@QueryParameter(name = "arrayParam") @FormParam(allowReserved = true) Object[] array);
+
+    //explode = false означает, что объект-массив будет как-бы "сжат", т.е. записан в одну строку с запятой 
+    // в качестве разделителя 
+    // 
+    //Получится следующий параметр запроса (arrayParam)
+    //arrayParam=elem1,elem2,elem3
+    //Зарезервированные символы в значениях будут перекодированы
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postSomething3(@QueryParameter(name = "arrayParam") @FormParam(explode = false) Object[] array);
+
+    //Аналогично примеру postSomething3.
+    //Зарезервированные символы в значениях будут сохранены
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postSomething4(@QueryParameter(name = "arrayParam")
+                                  @FormParam(explode = false, allowReserved = true) Object[] array);
+
+    //Аналогично примеру postSomething3. Параметр запроса arrayParam будет записан 
+    //в одну строку с пробелом ("%20") в качестве разделителя. 
+    // Если  explode = true, то style будет проигнорирован. И результат будет аналогичен postSomething
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postSomething5(@QueryParameter(name = "arrayParam")
+                                  @FormParam(style = SPACE_DELIMITED, explode = false) Object[] array);
+
+    //Аналогично примеру postSomething3. Параметр запроса arrayParam будет записан 
+    //в одну строку с пробелом ("%20") в качестве разделителя и с сохранением зарезервированных символов как есть. 
+    // Если  explode = true, то style будет проигнорирован. И результат будет аналогичен postSomething2
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postSomething6(@QueryParameter(name = "arrayParam")
+                                  @FormParam(style = SPACE_DELIMITED, explode = false, allowReserved = true) Object[] array);
+
+    //Аналогично примеру postSomething3. Параметр запроса arrayParam будет записан 
+    //в одну строку с вертикальной чертой ("%7C") в качестве разделителя. 
+    // Если  explode = true, то style будет проигнорирован. И результат будет аналогичен postSomething
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postSomething7(@QueryParameter(name = "arrayParam")
+                                  @FormParam(style = PIPE, explode = false) Object[] array);
+
+    //Аналогично примеру postSomething3. Параметр запроса arrayParam будет записан 
+    //в одну строку с вертикальной чертой ("%7C") в качестве разделителя и с сохранением зарезервированных символов как есть. 
+    // Если  explode = true, то style будет проигнорирован. И результат будет аналогичен postSomething2
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postSomething6(@QueryParameter(name = "arrayParam")
+                                  @FormParam(style = PIPE, explode = false, allowReserved = true) Object[] array);
+}
+```
+
+Могут быть ситуации, когда в качестве параметра query-части нужно передать некоторый POJO, который наследует
+`ru.tinkoff.qa.neptune.http.api.mapping.MappedObject`, или объект `java.util.Map` тогда
+
+```java
+import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMethod;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form.FormParam;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.query.QueryParameter;
+
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.DefaultHttpMethods.POST;
+
+public interface ServiceAPI extends HttpAPI<ServiceAPI> {
+
+    //Запрос будет выглядеть как строка вида key1=value1&key2=value2 и т.д. 
+    //Зарезервированные символы в значениях будут перекодированы
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postSomething(@QueryParameter(name = "objParam") Map<?, ?> map);
+
+    //Запрос будет выглядеть как строка вида key1=value1&key2=value2 и т.д. 
+    //Зарезервированные символы в значениях будут сохранены
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postSomething2(@QueryParameter(name = "objParam") @FormParam(allowReserved = true) Map<?, ?> map);
+
+    //Запрос будет выглядеть как строка вида objParam=key1,value1,key2,value2 и т.д. 
+    //Зарезервированные символы в значениях будут перекодированы
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postSomething3(@QueryParameter(name = "objParam") @FormParam(explode = false) Map<?, ?> map);
+
+    //Запрос будет выглядеть как строка вида objParam=key1,value1,key2,value2 и т.д. 
+    //Зарезервированные символы в значениях будут сохранены
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postSomething4(@QueryParameter(name = "objParam")
+                                  @FormParam(explode = false, allowReserved = true) Map<?, ?> map);
+
+    //Все тоже самое будет работать и для наследника 
+    // ru.tinkoff.qa.neptune.http.api.mapping.MappedObjectru.tinkoff.qa.neptune.http.api.mapping.MappedObject
+    //только вместо ключей будут использованы представления полей
+}
+```
+
+`@FormParam(style = SPACE_DELIMITED)` и `@FormParam(style = PIPE)` нельзя использовать для `MappedObject`
+и `java.util.Map`. Существует еще один стиль формы -
+`ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form.FormStyles.DEEP_OBJECT`. Он был разработан
+специально для таких случаев. Но пока есть сложности, связанные с представлением объектов разной вложенности для разного
+рода back-end'ов. В данный момент использовать этот стиль не рекомендуется, _это тема для доработки/разработки фичи._
+
+</details>
+
+### Тело
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
 
 </details>
 
