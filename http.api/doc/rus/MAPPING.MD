@@ -131,7 +131,7 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 
 </details>
 
-### Заголовки (Header)
+### Заголовки
 
 <details>
   <summary>Нажми, чтобы прочесть</summary>
@@ -216,7 +216,7 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 
 </details>
 
-### Путь (Path-часть URI запроса)
+### Путь
 
 <details>
   <summary>Нажми, чтобы прочесть</summary>
@@ -384,7 +384,7 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 
 </details>
 
-### Запрос (Query-часть URI запроса)
+### Запрос
 
 <details>
   <summary>Нажми, чтобы прочесть</summary>
@@ -427,7 +427,7 @@ import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.que
 
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.DefaultHttpMethods.POST;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form.FormStyles.SPACE_DELIMITED;
-import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form.FormStyles.PIPE;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form.FormStyles.PIPE_DELIMITED;
 
 public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 
@@ -477,14 +477,14 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
     // Если  explode = true, то style будет проигнорирован. И результат будет аналогичен postSomething
     @HttpMethod(httpMethod = POST)
     RequestBuilder postSomething7(@QueryParameter(name = "arrayParam")
-                                  @FormParam(style = PIPE, explode = false) Object[] array);
+                                  @FormParam(style = PIPE_DELIMITED, explode = false) Object[] array);
 
     //Аналогично примеру postSomething3. Параметр запроса arrayParam будет записан 
     //в одну строку с вертикальной чертой ("%7C") в качестве разделителя и с сохранением зарезервированных символов как есть. 
     // Если  explode = true, то style будет проигнорирован. И результат будет аналогичен postSomething2
     @HttpMethod(httpMethod = POST)
     RequestBuilder postSomething6(@QueryParameter(name = "arrayParam")
-                                  @FormParam(style = PIPE, explode = false, allowReserved = true) Object[] array);
+                                  @FormParam(style = PIPE_DELIMITED, explode = false, allowReserved = true) Object[] array);
 }
 ```
 
@@ -529,7 +529,7 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 }
 ```
 
-`@FormParam(style = SPACE_DELIMITED)` и `@FormParam(style = PIPE)` нельзя использовать для `MappedObject`
+`@FormParam(style = SPACE_DELIMITED)` и `@FormParam(style = PIPE_DELIMITED)` нельзя использовать для `MappedObject`
 и `java.util.Map`. Существует еще один стиль формы -
 `ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form.FormStyles.DEEP_OBJECT`. Он был разработан
 специально для таких случаев. Но пока есть сложности, связанные с представлением объектов разной вложенности для разного
@@ -540,10 +540,270 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 ### Тело
 
 О поддерживаемых форматах тел http-запросов можно прочитать [тут](REQUEST_RESPONSE.MD#Тело-запроса-на-примере-POST).
-Мэппинг поддерживает все описанные форматы, кроме пользовательских. Задача: [#211](https://github.com/TinkoffCreditSystems/neptune/issues/211)
+Мэппинг поддерживает все описанные форматы, кроме пользовательских.
+Задача: [#211](https://github.com/TinkoffCreditSystems/neptune/issues/211)
 
 <details>
   <summary>Нажми, чтобы прочесть</summary>
+
+Любое тело запроса, кроме `multipart/form-data` можно представить в модели следующим образом
+
+```java
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.util.List;
+
+import ru.tinkoff.qa.neptune.http.api.mapping.MappedObject;
+import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMethod;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.Body;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.BodyParamFormat;
+
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.DefaultHttpMethods.POST;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.BodyDataFormat.JSON;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.BodyDataFormat.XML;
+
+public interface ServiceAPI extends HttpAPI<ServiceAPI> {
+
+    //передача текста в качестве тела POST-запроса
+    //параметр обязателен. Значение не должно == null
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postStringBody(@Body String body);
+
+    //передача текста в качестве тела POST-запроса
+    //параметр необязателен (isRequired = false). Если значение == null, то будет отправлен запрос с пустым телом
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postStringBody2(@Body(isRequired = false) String body);
+
+    //передача массива байтов в качестве тела POST-запроса
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postByteBody(@Body byte[] body);
+
+    //передача файла в качестве тела POST-запроса
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postFileBody(@Body File body);
+
+    //передача файла в качестве тела POST-запроса
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postFileBody(@Body Path body);
+
+    //передача объекта org.jsoup.nodes.Document в качестве тела POST-запроса
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postJsoupBody(@Body org.jsoup.nodes.Document body);
+
+    //передача объекта org.w3c.dom.Document в качестве тела POST-запроса
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postW3CBody(@Body org.w3c.dom.Document body);
+
+    //вариант передачи данных application/x-www-form-urlencoded
+    //такой способ может пригодиться, когда передается неструктурированный 
+    //и не имеющий четких правил и ограничений набор параметров формы
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postForm(@Body FormParameter... body);
+
+    //вариант передачи данных application/x-www-form-urlencoded
+    //такой способ может пригодиться, когда передается 
+    //и не имеющий четких правил и ограничений параметр формы
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postForm(@Body FormParameter body);
+
+    //вариант передачи данных application/x-www-form-urlencoded
+    //такой способ может пригодиться, когда передается неструктурированный 
+    //и не имеющий четких правил и ограничений набор параметров формы
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postForm(@Body List<FormParameter> body);
+
+    //передача потока данных в качестве тела POST-запроса
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postStream(@Body InputStream body);
+
+    //передача потока данных в качестве тела POST-запроса
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postSupplier(@Body Supplier<InputStream> body);
+
+    //передача сериализованного в JSON-строку объекта в качестве тела POST-запроса
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postJson(@Body @BodyParamFormat(format = JSON) SomeObject body);
+
+    //передача сериализованного в XML-строку объекта в качестве тела POST-запроса
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postXml(@Body @BodyParamFormat(format = XML) SomeObject body);
+
+    //передача сериализованного в JSON-строку объекта в качестве тела POST-запроса
+    //В данном примере упрощенно представлен пример использования MappedObject в качестве тела запроса
+    //Данный способ является более предпочтительным
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postJson(@Body @BodyParamFormat(format = JSON) MappedObject body);
+
+    //передача сериализованного в XML-строку объекта в качестве тела POST-запроса
+    //В данном примере упрощенно представлен пример использования MappedObject в качестве тела запроса
+    //Данный способ является более предпочтительным
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postXml(@Body @BodyParamFormat(format = XML) MappedObject body);
+
+    //передача сериализованного в строку JSON-array формата объекта в качестве тела POST-запроса
+    //Тоже самое актуально для массивов
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postListJson(@Body @BodyParamFormat(format = JSON) List<Object> body);
+
+    //передача сериализованного в JSON-строку объекта в качестве тела POST-запроса
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postJsonMixin(@Body @BodyParamFormat(format = JSON, mixIns = MixInClass1.class) SomeObject body);
+
+    //передача сериализованного в XML-строку объекта в качестве тела POST-запроса
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postXmlMixin(@Body @BodyParamFormat(format = XML, mixIns = MixInClass2.class) SomeObject body);
+
+    //передача строкового представления объекта класса SomeObject в качестве тела POST-запроса
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postSomeBody(@Body SomeObject body);
+}
+```
+
+Примеры `postJsonMixin` и `postXmlMixin` -
+читать [Jackson Mixins](https://github.com/FasterXML/jackson-docs/wiki/JacksonMixInAnnotations)
+
+**Ниже примеры для тел формата `application/x-www-form-urlencoded`**
+
+```java
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.util.List;
+
+import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMethod;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.url.encoded.URLEncodedParameter;
+
+public interface ServiceAPI extends HttpAPI<ServiceAPI> {
+
+    //Передаваемая форма состоит из 3-х параметров: 
+    // - form_object_param1 - обязательный. В качестве значения будет использовано строковое представление объекта 
+    // - form_int_param2 - необязательный. Если в качестве значения будет передан null, тогда параметр будет исключен из формы 
+    // - form_str_param3 - обязательный
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postForm(@URLEncodedParameter(name = "form_object_param1") Object param1,
+                            @URLEncodedParameter(name = "form_int_param2", isRequired = false) Integer param2,
+                            @URLEncodedParameter(name = "form_str_param3") String param3);
+}
+```
+
+Для параметров `application/x-www-form-urlencoded`-форм действуют те же правила, что и для query-частей запросов.
+Поэтому аннотацию `@URLEncodedParameter` можно комбинировать с аннотацией `@FormParam`. Примеры и схематичные результаты
+того, что получается, см в главе про [запросы](#Запрос).
+
+Так же можно передавать параметры формы в специфическом формате - JSON или XML. В этом случае можно комбинировать
+аннотацию `@URLEncodedParameter`
+с `@BodyParamFormat`. См. примеры использования аннотации `@Body` выше.
+
+Комбинация всех трех аннотаций `@URLEncodedParameter`, `@FormParam`, `@BodyParamFormat` - <font color='red'>не
+работает</font>.
+
+```java
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.util.List;
+
+import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMethod;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.url.encoded.URLEncodedParameter;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.BodyParamFormat;
+
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.BodyDataFormat.JSON;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form.FormStyles.PIPE_DELIMITED;
+
+public interface ServiceAPI extends HttpAPI<ServiceAPI> {
+
+    //Передаваемая форма состоит из 3-х параметров: 
+    // - form_object_param1 - обязательный. В качестве значения будет использовано строковое представление объекта 
+    // - form_int_param2 - необязательный. Если в качестве значения будет передан null, тогда параметр будет исключен из формы 
+    // - form_map_param3 - обязательный. Значение параметра будет записано в одну строку с вертикальной чертой ("%7C") в качестве 
+    // разделителя и с перекодировкой зарезервированных символов. 
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postForm(@URLEncodedParameter(name = "form_object_param1") Object param1,
+                            @URLEncodedParameter(name = "form_int_param2", isRequired = false) Integer param2,
+                            @URLEncodedParameter(name = "form_map_param3")
+                            @FormParam(style = PIPE_DELIMITED, explode = false) Map<?, ?> param3);
+
+    //Передаваемая форма состоит из 3-х параметров: 
+    // - form_object_param1 - обязательный. В качестве значения будет использовано строковое представление объекта 
+    // - form_int_param2 - необязательный. Если в качестве значения будет передан null, тогда параметр будет исключен из формы 
+    // - form_map_param3 - обязательный. Значение параметра будет записано в виде строки JSON-формата.
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postForm2(@URLEncodedParameter(name = "form_object_param1") Object param1,
+                             @URLEncodedParameter(name = "form_int_param2", isRequired = false) Integer param2,
+                             @URLEncodedParameter(name = "form_map_param3")
+                             @BodyParamFormat(format = JSON) Map<?, ?> param3);
+}
+```
+
+**Ниже примеры для тел формата `multipart/form-data`**
+
+```java
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.util.List;
+
+import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMethod;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.MultiPartBody;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.BodyParamFormat;
+
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.BodyDataFormat.JSON;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form.FormStyles.PIPE_DELIMITED;
+
+public interface ServiceAPI extends HttpAPI<ServiceAPI> {
+
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postMultipart(
+            @MultiPartBody(name = "test_file", contentTransferEncoding = BINARY) File file, //Указываем имя части 'test_file'
+            //Передаем файл 
+            //и указываем заголовок Content-Transfer-Encoding со значением 'binary'
+
+            @MultiPartBody(name = "test_json") //Указываем имя части 'test_json'
+            @BodyParamFormat(format = JSON) //Объект будет сериализован в json-строку
+            //Заголовку Content-Type будет присвоено значение `application/json`
+            @DefineContentType(contentType = "application/json") SomeObjectClass someObject,
+
+            @MultiPartBody(name = "test_binary") //Указываем имя части 'test_binary'
+            @DefineFileName(fileName = "tezzt_file") //Присваиваем fileName части значение tezzt_file
+            @DefineContentType byte[] binary, //Передаем массив байтов
+
+            @MultiPartBody(name = "test_file2") //Указываем имя части 'test_file2'
+            @DefineFileName(useGivenFileName = true) Path path, //в качестве fileName будет использовано имя 
+            //переданного файла. Опция useGivenFileName=true работает для аргументов типа File и Path
+
+            @MultiPartBody(name = "test_binary2") //Указываем имя части 'test_binary2'
+            @DefineFileName //Присваиваем fileName части случайно сгенерированное значение
+            @DefineContentType byte[] binary2, //Передаем массив байтов
+
+            @MultiPartBody(name = "test_file3") //Указываем имя части 'test_file3'
+            @DefineContentType Path path2, //Передаем файл
+            //Выше продемонстрированные примеры - примеры обязательных параметров
+
+            @MultiPartBody(name = "test_file4", isRequired = false) //Пример необязательного параметра
+            @DefineFileName(fileName = "tezzt_file") Path path3); //Это часть может быть не включена в составное тело 
+            //если значение параметра == null
+
+  //В качестве аргументов, моделирующих части multipart/form-data-тел, могут использоваться аргументы типов 
+  //String, byte[], File, Path, InputStream. Любые другие типы так же могут быть использованы при условии
+  //что нужно передать строковые представления этих объектов, или эти объекты будут сериализованы в JSON/XML.
+}
+```
+
+</details>
+
+## Инициализация объектов моделей сервисов в клиентском коде
+
+<details>
+    <summary>Нажми, чтобы прочесть</summary>
 
 </details>
 
