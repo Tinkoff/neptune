@@ -539,6 +539,9 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 
 ### Тело
 
+О поддерживаемых форматах тел http-запросов можно прочитать [тут](REQUEST_RESPONSE.MD#Тело-запроса.-На-примере-POST-запроса). 
+Мэппинг поддерживает все описанные форматы, кроме пользовательских. Задача: #211
+
 <details>
   <summary>Нажми, чтобы прочесть</summary>
 
