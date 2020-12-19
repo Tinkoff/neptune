@@ -714,6 +714,7 @@ import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMe
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.url.encoded.URLEncodedParameter;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.BodyParamFormat;
 
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.DefaultHttpMethods.POST;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.BodyDataFormat.JSON;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form.FormStyles.PIPE_DELIMITED;
 
@@ -756,6 +757,7 @@ import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMe
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.MultiPartBody;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.BodyParamFormat;
 
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.DefaultHttpMethods.POST;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.BodyDataFormat.JSON;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.form.FormStyles.PIPE_DELIMITED;
 
@@ -790,34 +792,449 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 
             @MultiPartBody(name = "test_file4", isRequired = false) //Пример необязательного параметра
             @DefineFileName(fileName = "tezzt_file") Path path3); //Это часть может быть не включена в составное тело 
-            //если значение параметра == null
+    //если значение параметра == null
 
-  //В качестве аргументов, моделирующих части multipart/form-data-тел, могут использоваться аргументы типов 
-  //String, byte[], File, Path, InputStream. Любые другие типы так же могут быть использованы при условии
-  //что нужно передать строковые представления этих объектов, или эти объекты будут сериализованы в JSON/XML.
+    //В качестве аргументов, моделирующих части multipart/form-data-тел, могут использоваться аргументы типов 
+    //String, byte[], File, Path, InputStream. Любые другие типы так же могут быть использованы при условии
+    //что нужно передать строковые представления этих объектов, или эти объекты будут сериализованы в JSON/XML.
 }
 ```
 
 </details>
 
-## Инициализация объектов моделей сервисов в клиентском коде
+## Инициализация объектов моделей сервисов в клиентском коде и их использование
+
+Важно предварительно ознакомиться:
+
+- [Отправка настроенного http-запроса на примере GET](./REQUEST_RESPONSE.MD#Отправка-настроенного-http-запроса-на-примере-GET)
+- [Получение данных тела ответа на http запрос](./REQUEST_RESPONSE.MD#Получение-данных-тела-ответа-на-http-запрос)
+
+Предположим, мы описали API нескольких сервисов. Пусть они выглядят так (для наглядности).
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.Body;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMethod;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.URIPath;
+
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.DefaultHttpMethods.POST;
+
+public interface ServiceAPI1 extends HttpAPI<ServiceAPI1> {
+
+    @URIPath("/path/to/point1")
+    @HttpMethod(httpMethod = POST)
+    RequestBuilder postSomething(@Body String text);
+
+    //Другие методы тоже как-то описаны
+}
+```
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMethod;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.URIPath;
+
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.DefaultHttpMethods.GET;
+
+public interface ServiceAPI2 extends HttpAPI<ServiceAPI2> {
+
+    @URIPath("/path/to/{point}")
+    @HttpMethod(httpMethod = GET)
+    RequestBuilder getSomething(@PathParameter(name = "point") String point);
+
+    //Другие методы тоже как-то описаны
+}
+```
+
+Ниже примеры того, как создавать объекты классов, моделирующих API тестируемых back-end'ов, и использовать их в
+клиентском коде / коде тестов.
 
 <details>
     <summary>Нажми, чтобы прочесть</summary>
+
+```java
+import java.net.URI;
+import java.net.http.HttpResponse;
+
+import org.my.pack.*;
+
+import static java.net.http.HttpResponse.BodyHandlers.ofString;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI.createAPI;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com");
+        //так же endPoint можно передать как String и java.net.URL
+        //ВАЖНО: передаваемое значение должно быть следующего вида - `схема\протокол`://`хост`:`порт если есть`
+
+        var service1 = createAPI(ServiceAPI1.class, endPoint); //пример инициализации переменных
+        var service2 = createAPI(ServiceAPI2.class, endPoint); //можно инициализировать как поля 
+
+
+        HttpResponse<String> response1 = http().responseOf(
+                service1.postSomething("Some text"),
+                //Ответ вернется c телом, интерпретированным/прочитанным как текст
+                ofString());
+
+        HttpResponse<String> response2 = http().responseOf(
+                service2.getSomething("endPoint"),
+                //Ответ вернется c телом, интерпретированным/прочитанным как текст
+                ofString());
+    }
+}
+```
+
+На самом деле не все можно описать с помощью средств мэппинга. Например то что клиент должен дожидаться ответ с кодом
+100 от сервера, или то что необходима версия http протокола 2.0 для общения с одним из сервисов (напомню, что свойство
+[DEFAULT_HTTP_PROTOCOL_VERSION](./SETTINGS.MD#default_http_protocol_version), определяет версию протокола обобщенно,
+как-бы для всех сервисов). Ниже пример того, как это можно настроить.
+
+```java
+import java.net.URI;
+import java.net.http.HttpResponse;
+
+import org.my.pack.*;
+
+import static java.net.http.HttpClient.Version.HTTP_2;
+import static java.net.http.HttpResponse.BodyHandlers.ofString;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI.createAPI;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com");
+
+        var service1 = createAPI(ServiceAPI1.class, endPoint);
+        var service2 = createAPI(ServiceAPI2.class, endPoint);
+
+
+        HttpResponse<String> response1 = http().responseOf(
+                service1.postSomething("Some text").expectContinue(true),
+                ofString());
+
+        HttpResponse<String> response2 = http().responseOf(
+                service2.getSomething("endPoint").version(HTTP_2),
+                ofString());
+    }
+}
+```
+
+Это может быть неудобно, когда выполняется часто для одних и тех же сервисов.
+В [Отправка настроенного http-запроса на примере GET](./REQUEST_RESPONSE.MD#Отправка-настроенного-http-запроса-на-примере-GET)
+описан пример использования интерфейса `ru.tinkoff.qa.neptune.http.api.request.RequestTuner`. Можно выполнять мэппинг
+классов, реализующих этот интерфейс на классы, моделирующие API тестируемых сервисов.
+
+```java
+import org.my.pack.*;
+
+import ru.tinkoff.qa.neptune.http.api.request.RequestSettings;
+import ru.tinkoff.qa.neptune.http.api.request.RequestTuner;
+
+public class RequestTuner1 implements RequestTuner {
+
+    @Override
+    public void setUp(RequestSettings<?> requestSettings) {
+        requestSettings.expectContinue(true);
+    }
+}
+```
+
+```java
+import org.my.pack.*;
+
+import ru.tinkoff.qa.neptune.http.api.request.RequestSettings;
+import ru.tinkoff.qa.neptune.http.api.request.RequestTuner;
+
+import static java.net.http.HttpClient.Version.HTTP_2;
+
+public class RequestTuner2 implements RequestTuner {
+
+    @Override
+    public void setUp(RequestSettings<?> requestSettings) {
+        requestSettings.version(HTTP_2);
+    }
+}
+```
+
+и тогда
+
+```java
+import java.net.URI;
+import java.net.http.HttpResponse;
+
+import org.my.pack.*;
+
+import static java.net.http.HttpClient.Version.HTTP_2;
+import static java.net.http.HttpResponse.BodyHandlers.ofString;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI.createAPI;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com");
+
+        //Через метод useForRequestBuilding можно указать несколько классов, через запятую. Классы можно указывать
+        //если они имеют публичные конструкторы без параметров, или не имеют объявленных конструкторов совсем
+        var service1 = createAPI(ServiceAPI1.class, endPoint).useForRequestBuilding(RequestTuner1.class);
+        //В противном случае, можно создавать объекты и передавать объекты классов
+        var service2 = createAPI(ServiceAPI2.class, endPoint).useForRequestBuilding(RequestTuner2.class);
+
+
+        HttpResponse<String> response1 = http().responseOf(
+                service1.postSomething("Some text"),
+                ofString());
+
+        HttpResponse<String> response2 = http().responseOf(
+                service2.getSomething("endPoint"),
+                ofString());
+    }
+}
+```
+
+Можно выполнять мэппинг классов, реализующих интерфейс `ru.tinkoff.qa.neptune.http.api.request.RequestTuner` на классы,
+моделирующие API тестируемых сервисов.
+
+```java
+import org.my.pack.*;
+
+import ru.tinkoff.qa.neptune.http.api.request.RequestSettings;
+import ru.tinkoff.qa.neptune.http.api.request.RequestTuner;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.APIUses;
+
+@APIUses(usedBy = ServiceAPI1.class) //жесткая привязка к определенному классу
+//если что-то похожее нужно для еще одного сервиса то
+//@APIUses(usedBy = SomeAPI.class)
+public class RequestTuner1 implements RequestTuner {
+    //на реализации фокусироваться не будем
+}
+```
+
+```java
+import org.my.pack.*;
+
+import ru.tinkoff.qa.neptune.http.api.request.RequestSettings;
+import ru.tinkoff.qa.neptune.http.api.request.RequestTuner;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.APIUses;
+
+import static java.net.http.HttpClient.Version.HTTP_2;
+
+//Еще один вариант привязки, чем-то напоминает wildcard
+@APIUses(usedBy = HttpAPI.class, //указывается обобщенный интерфейс, моделирующий API сервисов
+        isUsedBySubclasses = true, //указываем, что применимо для интерфейсов-наследников
+        exclude = ServiceAPI1.class) //кроме перечисленных, имеет смысл если isUsedBySubclasses = true
+public class RequestTuner2 implements RequestTuner {
+    //на реализации фокусироваться не будем
+}
+```
+
+И тогда
+
+```java
+import java.net.URI;
+import java.net.http.HttpResponse;
+
+import org.my.pack.*;
+
+import static java.net.http.HttpResponse.BodyHandlers.ofString;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI.createAPI;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        var endPoint = URI.create("http://my.api.com");
+
+        var service1 = createAPI(ServiceAPI1.class, endPoint);
+        var service2 = createAPI(ServiceAPI2.class, endPoint);
+
+
+        HttpResponse<String> response1 = http().responseOf(
+                service1.postSomething("Some text"),
+                ofString());
+
+        HttpResponse<String> response2 = http().responseOf(
+                service2.getSomething("endPoint"),
+                ofString());
+    }
+}
+```
 
 </details>
 
-## Дефолтный корневой URL
+### Дефолтный корневой URL
 
 <details>
     <summary>Нажми, чтобы прочесть</summary>
+
+То что надо прочитать о [END_POINT_OF_TARGET_API](SETTINGS.MD#end_point_of_target_api). Предположим, что все сервисы
+работают на одном и том же хосте+порте, и это отражено в свойстве `END_POINT_OF_TARGET_API`
+
+Тогда
+
+```java
+import java.net.http.HttpResponse;
+
+import org.my.pack.*;
+
+import static java.net.http.HttpResponse.BodyHandlers.ofString;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI.createAPI;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+        //var endPoint = URI.create("http://my.api.com");
+        //можно больше не указывать
+
+        var service1 = createAPI(ServiceAPI1.class);
+        var service2 = createAPI(ServiceAPI2.class);
+
+
+        HttpResponse<String> response1 = http().responseOf(
+                service1.postSomething("Some text"),
+                ofString());
+
+        HttpResponse<String> response2 = http().responseOf(
+                service2.getSomething("endPoint"),
+                ofString());
+    }
+}
+```
 
 </details>
 
-## Недефолтные корневые URL
+### Недефолтные корневые URL
 
 <details>
     <summary>Нажми, чтобы прочесть</summary>
+
+А что если `ServiceAPI1` и `ServiceAPI2` всегда на разных хостах/портах?
+
+Необходимо прочитать:
+
+- [Механизм работы со свойствами/переменными окружения](./../../../core.api/doc/rus/SETTINGS.MD) - полезно в целом
+- [Свойства для создания и возврата объектов URL](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов-URL)
+    - полезно прочитать в частности
+
+Добавим возможность указывать/читать свойства/переменные окружения, и при чтении представлять их значения в виде
+URL/URI.
+
+```java
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyDefaultValue;
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
+import ru.tinkoff.qa.neptune.core.api.properties.url.URLValuePropertySupplier;
+
+public enum ServiceRoot implements URLValuePropertySupplier {
+    @PropertyDefaultValue("http://host1:1111") //Корневой URI/URL, используемый на дефлтном окружении/при отладке
+    @PropertyName("ROOT_OF_SERVICE1") //Название свойства/переменной окружения
+    SERVICE1,
+
+    @PropertyDefaultValue("http://host2:2222") //Корневой URI/URL, используемый на дефлтном окружении/при отладке
+    @PropertyName("ROOT_OF_SERVICE2") //Название свойства/переменной окружения
+    SERVICE2
+}
+```
+
+И тогда 
+
+```java
+import java.net.http.HttpResponse;
+
+import org.my.pack.*;
+
+import static java.net.http.HttpResponse.BodyHandlers.ofString;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI.createAPI;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+
+        var service1 = createAPI(ServiceAPI1.class, SERVICE1); //Указываем элементы, 
+        var service2 = createAPI(ServiceAPI2.class, SERVICE2); //предоставляющие доступ к новым свойствам.
+
+        HttpResponse<String> response1 = http().responseOf(
+                service1.postSomething("Some text"),
+                ofString());
+
+        HttpResponse<String> response2 = http().responseOf(
+                service2.getSomething("endPoint"),
+                ofString());
+    }
+}
+```
+
+Можно выполнять мэппинг новых свойств на классы, моделирующие API тестируемых сервисов.
+
+```java
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyDefaultValue;
+import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
+import ru.tinkoff.qa.neptune.core.api.properties.url.URLValuePropertySupplier;
+import ru.tinkoff.qa.neptune.http.api.service.mapping.APIUses;
+
+public enum ServiceRoot implements URLValuePropertySupplier {
+    @PropertyDefaultValue("http://host1:1111") //Корневой URI/URL, используемый на дефлтном окружении/при отладке
+    @PropertyName("ROOT_OF_SERVICE1") //Название свойства/переменной окружения
+    @APIUses(usedBy = ServiceAPI1.class) //жесткая привязка к определенному классу
+    //если что-то похожее нужно для еще одного сервиса то
+    //@APIUses(usedBy = SomeAPI.class)
+    SERVICE1,
+
+    @PropertyDefaultValue("http://host2:2222") //Корневой URI/URL, используемый на дефлтном окружении/при отладке
+    @PropertyName("ROOT_OF_SERVICE2") //Название свойства/переменной окружения
+    //Еще один вариант привязки, чем-то напоминает wildcard
+    @APIUses(usedBy = HttpAPI.class, //указывается обобщенный интерфейс, моделирующий API сервисов
+            isUsedBySubclasses = true, //указываем, что применимо для интерфейсов-наследников
+            exclude = ServiceAPI1.class) //кроме перечисленных, имеет смысл если isUsedBySubclasses = true
+    SERVICE2
+}
+```
+
+И тогда
+
+```java
+import java.net.http.HttpResponse;
+
+import org.my.pack.*;
+
+import static java.net.http.HttpResponse.BodyHandlers.ofString;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+import static ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI.createAPI;
+
+public class MyTest {
+
+    @Test
+    public void myTest() {
+
+        var service1 = createAPI(ServiceAPI1.class); //Указываем элементы, 
+        var service2 = createAPI(ServiceAPI2.class); //предоставляющие доступ к новым свойствам.
+
+        HttpResponse<String> response1 = http().responseOf(
+                service1.postSomething("Some text"),
+                ofString());
+
+        HttpResponse<String> response2 = http().responseOf(
+                service2.getSomething("endPoint"),
+                ofString());
+    }
+}
+```
 
 </details>
 
