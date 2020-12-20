@@ -802,6 +802,77 @@ public interface ServiceAPI extends HttpAPI<ServiceAPI> {
 
 </details>
 
+### Мэппинг Dto
+
+DTO - Data Transferring Object, т.е. объекты, которые моделируют параметры Path и Query - частей URI http-запросов, а
+так же заголовки запросов, тела запросов и ответов на отправленные запросы.
+
+Как было сказано выше, для описания таких объектов рекомендуется наследовать
+класс `ru.tinkoff.qa.neptune.http.api.mapping.MappedObject`:
+
+- данные объекты имеют механизмы конвертации в объект `java.util.Map`
+- обеспечивают единообразие и использование объектов одного и того же класса в качестве разных (по назначению)
+  параметров http-запросов.
+
+Пример ниже
+
+<details>
+  <summary>Нажми, чтобы прочесть</summary>
+
+```java
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.dataformat.xml.annotation.*;
+import ru.tinkoff.qa.neptune.http.api.mapping.MappedObject;
+
+//Данный объект может быть использован как тело запроса/ответа,
+//так и как параметр запроса/пути или заголовок. 
+//Для мэппинга полей используются аннотации из пакета com.fasterxml.jackson.annotation
+//Если один и тот же объект сериализуется как в JSON, так и в XML строку, 
+//то можно совместно использовать как аннотации из com.fasterxml.jackson.annotation, 
+//так и из пакета com.fasterxml.jackson.dataformat.xml.annotation или 
+// javax.xml.bind.annotation
+@JsonPropertyOrder({"someNumber", "someString", "someArray", "nested", "nestedNext"})
+public class SomeDto extends MappedObject {
+
+    @JsonProperty("someNumber")
+    private Integer someNum;
+
+    private String someString;
+
+    private List<String> someArray;
+
+
+    public SomeDto setSomeNum(Integer someNum) {
+        this.someNum = someNum;
+        return this;
+    }
+
+    public String getSomeString() {
+        return someString;
+    }
+
+    public SomeDto setSomeString(String someString) {
+        this.someString = someString;
+        return this;
+    }
+
+    public SomeDto setSomeArray(List<String> someArray) {
+        this.someArray = someArray;
+        return this;
+    }
+
+    public Integer getSomeNum() {
+        return someNum;
+    }
+
+    public List<String> getSomeArray() {
+        return someArray;
+    }
+}
+```
+
+</details>
+
 ## Инициализация объектов моделей сервисов в клиентском коде и их использование
 
 Важно предварительно ознакомиться:
@@ -1150,7 +1221,7 @@ public enum ServiceRoot implements URLValuePropertySupplier {
 }
 ```
 
-И тогда 
+И тогда
 
 ```java
 import java.net.http.HttpResponse;
@@ -1221,9 +1292,8 @@ public class MyTest {
 
     @Test
     public void myTest() {
-
-        var service1 = createAPI(ServiceAPI1.class); //Указываем элементы, 
-        var service2 = createAPI(ServiceAPI2.class); //предоставляющие доступ к новым свойствам.
+        var service1 = createAPI(ServiceAPI1.class);
+        var service2 = createAPI(ServiceAPI2.class);
 
         HttpResponse<String> response1 = http().responseOf(
                 service1.postSomething("Some text"),
@@ -1240,7 +1310,62 @@ public class MyTest {
 
 ## Внедрение зависимостей
 
+Основная статья - [внедрения зависимостей](./../../../core.api/doc/rus/DEPENDENCY_INJECTION.MD).
+
+Модули, интегрирующие Neptune c фреймворком тестирования, имеют возможности использования механизмов внедрения
+зависимостей:
+
+- [Testng](./../../../testng.integration/doc/rus/README.MD)
+-
+JUnit5. [Интеграция с JUnit 5 не реализована, задача на реализацию](https://github.com/TinkoffCreditSystems/neptune/issues/31)
+- Cucumber
+  JVM. [Интеграция с Cucumber JVM не реализована, задача на реализацию](https://github.com/TinkoffCreditSystems/neptune/issues/32)
+
+Интеграция Neptune и нативного http-клиента Java имеет свой механизм внедрения зависимостей, позволяющий
+инициализировать объекты классов, моделирующих http API тестируемых приложений.
+
 <details>
     <summary>Нажми, чтобы прочесть</summary>
 
+```java
+import java.net.http.HttpResponse;
+
+import org.my.pack.*;
+
+import static java.net.http.HttpResponse.BodyHandlers.ofString;
+import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
+
+public class MyTest {
+
+    //Для того, чтобы поля были проинициализированы корректно,
+    //Необходимо указать значения свойства END_POINT_OF_TARGET_API. 
+    //Либо создать свои настройки, указывающие на корневой URI API тестируемых приложений,
+    //выполнить привязку этих настроек к классам-моделям ServiceAPI1 и ServiceAPI2.
+    //Если есть необходимость использовать RequestTuner для какого либо/всех приложений - 
+    //реализовать и выполнить привязку к моделирующим классам.
+    private ServiceAPI1 service1;
+    private ServiceAPI2 service1;
+
+    @Test
+    public void myTest() {
+        HttpResponse<String> response1 = http().responseOf(
+                service1.postSomething("Some text"),
+                ofString());
+
+        HttpResponse<String> response2 = http().responseOf(
+                service2.getSomething("endPoint"),
+                ofString());
+    }
+}
+```
+
+Все необходимое описано в данном документе.
+
 </details>
+
+## Интеграция мэппинга со Swagger 3.x.
+
+Если используется [Swagger 3.0](https://swagger.io/specification/) для описания http API тестируемых приложений, то
+совсем не нужно выполнять ручную работу для того, чтобы клиентский код мог взаимодействовать с ними/тестировать их.
+Существует
+[интеграция](), позволяющая создавать описанные выше модели автоматически.
