@@ -1315,7 +1315,7 @@ public class MyTest {
 Модули, интегрирующие Neptune c фреймворком тестирования, имеют возможности использования механизмов внедрения
 зависимостей:
 
-- [Testng](./../../../testng.integration/doc/rus/README.MD)
+- [Testng](./../../../testng.integration/doc/rus/README.MD)  
 - JUnit5. [Интеграция с JUnit 5 не реализована, задача на реализацию](https://github.com/TinkoffCreditSystems/neptune/issues/31)
 - Cucumber JVM. [Интеграция с Cucumber JVM не реализована, задача на реализацию](https://github.com/TinkoffCreditSystems/neptune/issues/32)
 
