@@ -212,7 +212,7 @@ import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 public class MyTest {
 
     @Test
-    public void myTest() {
+    public void myTest() throws Exception {
         var endPoint = new URL("http://my.api.com/some/path?q1=val1&q2=val2");
         //Выполняем POST-запрос. Endpoint указывается в виде URL.
         //Запрос без тела/с пустым телом
@@ -233,7 +233,7 @@ import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 public class MyTest {
 
     @Test
-    public void myTest() {
+    public void myTest() throws Exception {
         var endPoint = new URL("http://my.api.com/some/path?q1=val1&q2=val2");
         //Выполняем POST-запрос. Endpoint указывается в виде URL.
         //Запрос с телом, переданным как текст 
@@ -352,7 +352,7 @@ import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 public class MyTest {
 
     @Test
-    public void myTest() {
+    public void myTest() throws Exception {
         var endPoint = new URL("http://my.api.com/some/path?q1=val1&q2=val2");
         //Выполняем GET-запрос. Endpoint указывается в виде URL.
         //Ответ вернется c телом, интерпретированным/прочитанным как текст
@@ -571,7 +571,7 @@ import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 public class MyTest {
 
     @Test
-    public void myTest() {
+    public void myTest() throws Exception  {
         var endPoint = new URL("http://my.api.com/some/path?q1=val1&q2=val2");
         //Выполняем PUT-запрос. Endpoint указывается в виде URL.
         //Запрос без тела/с пустым телом
@@ -592,7 +592,7 @@ import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 public class MyTest {
 
     @Test
-    public void myTest() {
+    public void myTest() throws Exception {
         var endPoint = new URL("http://my.api.com/some/path?q1=val1&q2=val2");
         //Выполняем PUT-запрос. Endpoint указывается в виде URL.
         //Запрос с телом, переданным как текст 
@@ -711,7 +711,7 @@ import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 public class MyTest {
 
     @Test
-    public void myTest() {
+    public void myTest() throws Exception {
         var endPoint = new URL("http://my.api.com/some/path?q1=val1&q2=val2");
         //Выполняем DELETE-запрос. Endpoint указывается в виде URL.
         //Ответ вернется c телом, интерпретированным/прочитанным как текст
@@ -935,7 +935,7 @@ import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 public class MyTest {
 
     @Test
-    public void myTest() {
+    public void myTest() throws Exception {
         var endPoint = new URL("http://my.api.com/some/path?q1=val1&q2=val2");
         //Выполняем некий SOME_METHOD-запрос. Endpoint указывается в виде URL.
         //Запрос без тела/с пустым телом
@@ -956,7 +956,7 @@ import static ru.tinkoff.qa.neptune.http.api.HttpStepContext.http;
 public class MyTest {
 
     @Test
-    public void myTest() {
+    public void myTest() throws Exception {
         var endPoint = new URL("http://my.api.com/some/path?q1=val1&q2=val2");
         //Выполняем некий SOME_METHOD-запрос. Endpoint указывается в виде URL.
         //Запрос с телом, переданным как текст 

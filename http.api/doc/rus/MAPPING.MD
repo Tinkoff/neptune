@@ -945,7 +945,7 @@ public class MyTest {
     public void myTest() {
         var endPoint = URI.create("http://my.api.com");
         //так же endPoint можно передать как String и java.net.URL
-        //ВАЖНО: передаваемое значение должно быть следующего вида - `схема\протокол`://`хост`:`порт если есть`
+        //ВАЖНО: передаваемое значение должно быть следующего вида - `схема\протокол`://`хост`:`порт если есть/фрагмент/пути/если/надо`
 
         var service1 = createAPI(ServiceAPI1.class, endPoint); //пример инициализации переменных
         var service2 = createAPI(ServiceAPI2.class, endPoint); //можно инициализировать как поля 
