@@ -13,6 +13,7 @@ import static java.time.Duration.ofSeconds;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.fail;
+import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.currentWindow;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.WindowCriteria.titleMatches;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.WindowCriteria.urlMatches;
@@ -216,6 +217,9 @@ public class WindowTest extends BaseWebDriverTest {
         assertThat(seleniumSteps.getWrappedDriver().getWindowHandle(), is(HANDLE1.getHandle()));
         assertThat(seleniumSteps.getWrappedDriver().getCurrentUrl(), is(GOOGLE.getUrl()));
         assertThat(seleniumSteps.getWrappedDriver().getTitle(), is(GOOGLE.getTitle()));
+
+        assertThat(seleniumSteps.get(currentWindow()).getCurrentUrl(), is(GOOGLE.getUrl()));
+        assertThat(seleniumSteps.get(currentWindow()).getTitle(), is(GOOGLE.getTitle()));
     }
 
     @Test

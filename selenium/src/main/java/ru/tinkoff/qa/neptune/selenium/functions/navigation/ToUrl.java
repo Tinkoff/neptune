@@ -16,7 +16,7 @@ import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
+import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.currentWindow;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 
 @MakeImageCapturesOnFinishing
@@ -84,7 +84,7 @@ public final class ToUrl extends SequentialActionSupplier<SeleniumStepContext, W
      * @return built navigation action
      */
     public static ToUrl toUrl(URL url) {
-        return toUrl(window(), url);
+        return toUrl(currentWindow(), url);
     }
 
     /**

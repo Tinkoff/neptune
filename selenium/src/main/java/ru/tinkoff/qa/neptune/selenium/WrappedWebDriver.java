@@ -27,6 +27,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.openqa.selenium.Proxy.ProxyType.MANUAL;
 import static org.openqa.selenium.net.PortProber.findFreePort;
 import static ru.tinkoff.qa.neptune.core.api.utils.ConstructorUtil.findSuitableConstructor;
+import static ru.tinkoff.qa.neptune.selenium.content.management.ContentManagementCommand.getCurrentCommand;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.*;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.PROXY_URL_PROPERTY;
@@ -167,7 +168,6 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
                 }
             });
 
-            authenticationPerformer.performAuthentication(driver, true);
             ofNullable(BASE_WEB_DRIVER_URL_PROPERTY.get())
                     .ifPresent(url -> driver.get(url.toString()));
             if (FORCE_WINDOW_MAXIMIZING_ON_START.get()) {
@@ -176,6 +176,8 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
 
             driver.manage().timeouts().pageLoadTimeout(WAITING_FOR_PAGE_LOADED_DURATION.get().toMillis(),
                     MILLISECONDS);
+
+            authenticationPerformer.performAuthentication(driver, true);
 
             this.driver = driver;
             return true;
@@ -194,9 +196,19 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
             return true;
         } catch (UnreachableBrowserException | NoSuchSessionException e1) {
             return false;
+        } catch (WebDriverException e2) {
+            return true;
         } catch (Exception e) {
-            if (e.getClass().equals(WebDriverException.class)) {
-                return true;
+            var cause = e.getCause();
+            while (nonNull(cause)) {
+                var causeClass = cause.getClass();
+                if (causeClass.equals(UnreachableBrowserException.class) || causeClass.equals(NoSuchSessionException.class)) {
+                    return false;
+                }
+                if (causeClass.equals(WebDriverException.class)) {
+                    return true;
+                }
+                cause = cause.getCause();
             }
             throw new RuntimeException(e);
         }
@@ -227,6 +239,13 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
         if (!isNewSession()) {
             authenticationPerformer.performAuthentication(driver, false);
         }
+
+        ofNullable(getCurrentCommand()).ifPresent(
+                contentManagementCommand -> contentManagementCommand
+                        .get()
+                        .accept(driver)
+        );
+
         return driver;
     }
 

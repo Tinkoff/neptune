@@ -14,6 +14,8 @@ import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.ArrayUtils.contains;
+import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.FRAME_ELEMENT_VALID1;
+import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.FRAME_ELEMENT_VALID2;
 import static ru.tinkoff.qa.neptune.selenium.test.MockAlert.setSwitchedTo;
 import static ru.tinkoff.qa.neptune.selenium.test.enums.WindowHandles.*;
 
@@ -54,10 +56,10 @@ public class MockTargetLocator implements WebDriver.TargetLocator {
 
     @Override
     public WebDriver frame(WebElement frameElement) {
-        if (frameElement instanceof ValidFrameWebElement) {
+        if (FRAME_ELEMENT_VALID1.equals(frameElement) || FRAME_ELEMENT_VALID2.equals(frameElement)) {
             return driver.setFrame(frameElement);
         }
-        throw new NoSuchFrameException(format("There is no frame found inside %s", frameElement.getClass().getSimpleName()));
+        throw new NoSuchFrameException(format("There is no frame found inside %s", frameElement.toString()));
     }
 
     @Override

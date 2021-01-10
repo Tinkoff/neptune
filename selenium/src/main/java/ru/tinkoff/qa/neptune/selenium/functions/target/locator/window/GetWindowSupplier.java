@@ -6,19 +6,19 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOn
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.format;
+import static com.google.common.collect.ImmutableList.of;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITING_WINDOW_TIME_DURATION;
 
@@ -32,34 +32,14 @@ public final class GetWindowSupplier extends SequentialGetStepSupplier
         .GetObjectFromIterableChainedStepSupplier<SeleniumStepContext, Window, WebDriver, GetWindowSupplier>
         implements TargetLocatorSupplier<Window> {
 
-    private GetWindowSupplier(Integer index) {
-        super(buildDescription(index), driver -> ofNullable(index)
-                .map(intIndex -> ofNullable(getWindowByIndex(driver, intIndex))
-                        .map(List::of)
-                        .orElseGet(List::of))
-                .orElseGet(() -> getListOfWindows(driver)));
+    @StepParameter("Window number/index")
+    private Integer index;
+
+    private GetWindowSupplier(String description, Function<WebDriver, List<Window>> function, Integer index) {
+        super(description, function);
         timeOut(WAITING_WINDOW_TIME_DURATION.get());
-        throwOnEmptyResult(() -> {
-            String errorDescription = "Window/tab was not found";
-            errorDescription = format("%s%s", errorDescription, ofNullable(index)
-                    .map(integer -> format(". By index %s", integer)).orElse(EMPTY)).trim();
-
-            var description = ofNullable(getCriteria())
-                    .map(Criteria::toString)
-                    .orElse(EMPTY);
-            if (!isBlank(description)) {
-                errorDescription = format("%s. Criteria:%s", errorDescription, description);
-            }
-
-            return new NoSuchWindowException(errorDescription);
-        });
-    }
-
-
-    private static String buildDescription(Integer index) {
-        return ofNullable(index)
-                .map(integer -> format("Browser window/tab [index %s]", index))
-                .orElse("Browser window/tab");
+        throwOnEmptyResult(() -> new NoSuchWindowException("Window/tab was not found"));
+        this.index = index;
     }
 
     private static List<Window> getListOfWindows(WebDriver driver) {
@@ -76,12 +56,18 @@ public final class GetWindowSupplier extends SequentialGetStepSupplier
     }
 
     /**
-     * Creates an instance of {@link GetWindowSupplier} to get a browser window/tab
+     * Creates an instance of {@link GetWindowSupplier} to get any browser window/tab.
+     * When {@link #criteria(Criteria)} or {@link #criteria(String, Predicate)} are defined
+     * then it returns the first browser window that matches defined criteria. Otherwise
+     * it returns most likely the first browser window/tab.
      *
      * @return an instance of {@link GetWindowSupplier}
      */
     public static GetWindowSupplier window() {
-        return window(null);
+        return new GetWindowSupplier("Browser window/tab",
+                GetWindowSupplier::getListOfWindows,
+                null)
+                .from(currentContent());
     }
 
     /**
@@ -90,11 +76,27 @@ public final class GetWindowSupplier extends SequentialGetStepSupplier
      * @param index an index of the window/tab to get. Starts from 0.
      * @return an instance of {@link GetWindowSupplier}
      */
-    public static GetWindowSupplier window(Integer index) {
-        checkArgument(ofNullable(index)
-                .map(integer -> integer >= 0)
-                .orElse(true), "Index should not be a negative value");
-        return new GetWindowSupplier(index).from(currentContent());
+    public static GetWindowSupplier window(int index) {
+        checkArgument(index >= 0, "Index should not be a negative value");
+        return new GetWindowSupplier("Browser window/tab",
+                webDriver -> ofNullable(getWindowByIndex(webDriver, index))
+                        .map(List::of)
+                        .orElseGet(List::of), index)
+                .from(currentContent());
+    }
+
+    /**
+     * Creates an instance of {@link GetWindowSupplier} to get current browser window/tab.
+     * When {@link #criteria(Criteria)} or {@link #criteria(String, Predicate)} are defined
+     * then it returns current browser window/tab after it matches criteria. Otherwise it
+     * returns current browser window/tab immediately.
+     *
+     * @return an instance of {@link GetWindowSupplier}
+     */
+    public static GetWindowSupplier currentWindow() {
+        return new GetWindowSupplier("Current browser window/tab",
+                webDriver -> of(new DefaultWindow(webDriver.getWindowHandle(), webDriver)), null)
+                .from(currentContent());
     }
 
     @Override

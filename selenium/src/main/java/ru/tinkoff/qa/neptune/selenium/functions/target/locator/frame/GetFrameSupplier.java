@@ -1,9 +1,8 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.WrapsElement;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
@@ -56,25 +55,14 @@ public final class GetFrameSupplier extends SequentialGetStepSupplier.GetObjectC
     }
 
     /**
-     * Creates instance of {@link GetFrameSupplier} that creates a function. This function switches to some frame-element.
+     * Creates instance of {@link GetFrameSupplier} that creates a function. This function switches to some frame by defined
+     * locator of a frame-element.
      *
-     * @param webElement is a frame element
+     * @param by is a {@link By}-strategy which describes how to find a frame-element to switch to
      * @return instance of {@link GetFrameSupplier}
      */
-    public static GetFrameSupplier frame(WebElement webElement) {
-        return new GetFrameSupplier(insideElement(webElement)).from(currentContent());
-    }
-
-
-    /**
-     * Creates instance of {@link GetFrameSupplier} that creates a function. This function switches to some wrapped
-     * frame-element.
-     *
-     * @param wrapsElement something that wraps frame-element
-     * @return instance of {@link GetFrameSupplier}
-     */
-    public static GetFrameSupplier frame(WrapsElement wrapsElement) {
-        return new GetFrameSupplier(wrappedBy(wrapsElement)).from(currentContent());
+    public static GetFrameSupplier frame(By by) {
+        return new GetFrameSupplier(by(by)).from(currentContent());
     }
 
     public GetFrameSupplier timeOut(Duration timeOut) {

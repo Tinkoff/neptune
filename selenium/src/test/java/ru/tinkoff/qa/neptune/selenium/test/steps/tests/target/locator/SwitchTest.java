@@ -1,14 +1,11 @@
 package ru.tinkoff.qa.neptune.selenium.test.steps.tests.target.locator;
 
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.WrapsElement;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.Frame;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 import ru.tinkoff.qa.neptune.selenium.test.ActiveWebElement;
 import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 import ru.tinkoff.qa.neptune.selenium.test.MockWebDriver;
-import ru.tinkoff.qa.neptune.selenium.test.ValidFrameWebElement;
 import ru.tinkoff.qa.neptune.selenium.test.enums.FrameIndexes;
 import ru.tinkoff.qa.neptune.selenium.test.enums.FrameNames;
 
@@ -17,12 +14,14 @@ import java.util.Random;
 import static org.apache.commons.lang3.ArrayUtils.removeElements;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.openqa.selenium.By.tagName;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.active.element.GetActiveElementSupplier.activeElement;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert.GetAlertSupplier.alert;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.content.DefaultContentSupplier.defaultContent;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.GetFrameSupplier.frame;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.parent.ParentFrameSupplier.parentFrame;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
+import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.FRAME_ELEMENT_VALID1;
 import static ru.tinkoff.qa.neptune.selenium.test.MockAlert.isSwitchedTo;
 import static ru.tinkoff.qa.neptune.selenium.test.MockAlert.setSwitchedTo;
 import static ru.tinkoff.qa.neptune.selenium.test.enums.WindowHandles.HANDLE2;
@@ -88,44 +87,17 @@ public class SwitchTest extends BaseWebDriverTest {
 
     @Test
     public void switchToFrameByWebElementBySearchingTest() {
-        WebElement element = new ValidFrameWebElement();
-        seleniumSteps.switchTo(frame(element));
-
-        assertThat(((MockWebDriver) seleniumSteps.getWrappedDriver()).getCurrentFrame(), is(element));
+        seleniumSteps.switchTo(frame(tagName("valid_frame1")));
+        assertThat(((MockWebDriver) seleniumSteps.getWrappedDriver()).getCurrentFrame(), is(FRAME_ELEMENT_VALID1));
     }
 
     @Test
     public void switchToFrameByWebElement() {
-        WebElement element1 = new ValidFrameWebElement();
-        WebElement element2 = new ValidFrameWebElement();
-
-        Frame frame = seleniumSteps.get(frame(element1));
-        seleniumSteps.get(frame(element2));
+        Frame frame = seleniumSteps.get(frame(tagName("valid_frame1")));
+        seleniumSteps.get(frame(tagName("valid_frame2")));
 
         seleniumSteps.switchTo(frame);
-        assertThat(((MockWebDriver) seleniumSteps.getWrappedDriver()).getCurrentFrame(), is(element1));
-    }
-
-    @Test
-    public void switchToFrameByWrappedElementBySearchingTest() {
-        WebElement element = new ValidFrameWebElement();
-        seleniumSteps.switchTo(frame((WrapsElement) () -> element));
-        assertThat(((MockWebDriver) seleniumSteps.getWrappedDriver()).getCurrentFrame(), is(element));
-    }
-
-    @Test
-    public void switchToFrameByWrappedElement() {
-        WebElement element1 = new ValidFrameWebElement();
-        WebElement element2 = new ValidFrameWebElement();
-
-        WrapsElement wrapsElement1 = () -> element1;
-        WrapsElement wrapsElement2 = () -> element2;
-
-        Frame frame = seleniumSteps.get(frame(wrapsElement1));
-        seleniumSteps.get(frame(wrapsElement2));
-
-        seleniumSteps.switchTo(frame);
-        assertThat(((MockWebDriver) seleniumSteps.getWrappedDriver()).getCurrentFrame(), is(element1));
+        assertThat(((MockWebDriver) seleniumSteps.getWrappedDriver()).getCurrentFrame(), is(FRAME_ELEMENT_VALID1));
     }
 
     @Test

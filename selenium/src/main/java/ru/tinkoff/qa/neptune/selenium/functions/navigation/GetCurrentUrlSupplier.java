@@ -5,7 +5,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
+import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.currentWindow;
 
 @SequentialGetStepSupplier.DefaultParameterNames(
         from = "Window/tab to get URL string value from"
@@ -24,7 +24,7 @@ public final class GetCurrentUrlSupplier extends SequentialGetStepSupplier
      * returns url of the page loaded in the current window/tab.
      */
     public static GetCurrentUrlSupplier currentUrl() {
-        return new GetCurrentUrlSupplier().from(window());
+        return new GetCurrentUrlSupplier().from(currentWindow());
     }
 
     /**
