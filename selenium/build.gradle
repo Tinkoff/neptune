@@ -13,7 +13,6 @@ dependencies {
         exclude group: 'net.bytebuddy', module:'byte-buddy'
     }
     testCompile group: 'org.mockito', name: 'mockito-core', version: '3.5.15'
-    testImplementation('org.mockito:mockito-inline:3.5.15')
     compile group: 'cglib', name: 'cglib', version: '3.3.0'
     compile group: 'org.jsoup', name: 'jsoup', version: '1.13.1'
     compile group: 'com.browserup', name: 'browserup-proxy-core', version: '2.1.1'

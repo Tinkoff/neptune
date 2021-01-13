@@ -10,7 +10,7 @@ import static ru.tinkoff.qa.neptune.selenium.content.management.BrowserContentUs
 /**
  * This annotation marks a class to define how often default content management strategy
  * should be used. Default content management strategy is defined by {@link SwitchToWindow},
- * {@link NavigateTo} and {@link SwitchToFrame} annotations on a class.
+ * {@link Navigate} and {@link SwitchToFrame} annotations on a class.
  */
 @Retention(RUNTIME)
 @Target({TYPE})

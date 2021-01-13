@@ -5,7 +5,6 @@ import org.testng.annotations.*;
 import ru.tinkoff.qa.neptune.selenium.SeleniumParameterProvider;
 import ru.tinkoff.qa.neptune.selenium.WrappedWebDriver;
 import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
-import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 import ru.tinkoff.qa.neptune.selenium.test.capability.suppliers.ChromeSettingsSupplierHeadless;
 
 import java.util.Map;
@@ -20,7 +19,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDriverProper
 import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers.CHROME_DRIVER;
 import static ru.tinkoff.qa.neptune.selenium.properties.WebDriverCredentialsProperty.WEB_DRIVER_CREDENTIALS_PROPERTY;
 
-public class AuthenticationTest extends BaseWebDriverTest {
+public class AuthenticationTest {
 
     private final Map<String, String> PROPERTIES_TO_SET_BEFORE =
             ofEntries(entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getName(), CHROME_DRIVER.name()),

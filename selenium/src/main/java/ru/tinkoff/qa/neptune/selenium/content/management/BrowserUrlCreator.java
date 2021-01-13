@@ -1,7 +1,5 @@
 package ru.tinkoff.qa.neptune.selenium.content.management;
 
-import ru.tinkoff.qa.neptune.selenium.hooks.BrowserUrlVariable;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +43,7 @@ final class BrowserUrlCreator {
 
         while (!clz.equals(Object.class)) {
             fields.addAll(stream(clz.getDeclaredFields())
-                    .filter(field -> field.getAnnotationsByType(ru.tinkoff.qa.neptune.selenium.hooks.BrowserUrlVariable.class).length > 0)
+                    .filter(field -> field.getAnnotationsByType(BrowserUrlVariable.class).length > 0)
                     .collect(toList()));
             clz = clz.getSuperclass();
         }
@@ -55,7 +53,7 @@ final class BrowserUrlCreator {
         for (var p : patternParams) {
             fields.stream()
                     .filter(field -> {
-                        var variables = field.getAnnotationsByType(ru.tinkoff.qa.neptune.selenium.hooks.BrowserUrlVariable.class);
+                        var variables = field.getAnnotationsByType(BrowserUrlVariable.class);
                         return stream(variables).anyMatch(browserUrlVariable -> browserUrlVariable.name().equals(p)
                                 || (isBlank(browserUrlVariable.name()) && field.getName().equals(p)));
                     })

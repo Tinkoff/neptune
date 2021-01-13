@@ -15,7 +15,7 @@ import static ru.tinkoff.qa.neptune.selenium.content.management.BrowserUrlCreato
  */
 @Retention(RUNTIME)
 @Target({METHOD, TYPE})
-public @interface NavigateTo {
+public @interface Navigate {
 
     /**
      * @return URL to navigate to. String value may contain substrings between braces. This is for variables.
@@ -36,7 +36,7 @@ public @interface NavigateTo {
          * @param o                is an object whose field values are used as values of URL-variables.
          * @param annotatedElement is a method to get navigation URL for. Also it may be a class
          *                         to get default navigation URL for.
-         * @return string value of navigation URL when {@code annotatedElement} is annotated by {@link NavigateTo}.
+         * @return string value of navigation URL when {@code annotatedElement} is annotated by {@link Navigate}.
          * Otherwise it returns {@code null}
          * @see BrowserUrlVariable
          */
@@ -44,7 +44,7 @@ public @interface NavigateTo {
             checkNotNull(o);
             checkNotNull(annotatedElement);
 
-            var a = annotatedElement.getAnnotation(NavigateTo.class);
+            var a = annotatedElement.getAnnotation(Navigate.class);
             if (a == null) {
                 return null;
             }

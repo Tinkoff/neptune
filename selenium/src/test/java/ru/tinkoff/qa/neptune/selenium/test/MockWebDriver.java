@@ -18,6 +18,7 @@ import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.getFakeDOM;
 import static ru.tinkoff.qa.neptune.selenium.test.SequenceSpy.setActions;
 import static ru.tinkoff.qa.neptune.selenium.test.enums.URLs.BLANK;
 import static ru.tinkoff.qa.neptune.selenium.test.enums.URLs.values;
+import static ru.tinkoff.qa.neptune.selenium.test.enums.WindowHandles.HANDLE1;
 
 public class MockWebDriver implements WebDriver, JavascriptExecutor, TakesScreenshot, Interactive {
 
@@ -33,7 +34,7 @@ public class MockWebDriver implements WebDriver, JavascriptExecutor, TakesScreen
 
     final Map<String, LinkedList<URLs>> handlesAndUrlHistory = new HashMap<>() {
         {
-            put(WindowHandles.HANDLE1.getHandle(), new LinkedList<>(List.of(BLANK)));
+            put(HANDLE1.getHandle(), new LinkedList<>(List.of(BLANK)));
             put(WindowHandles.HANDLE2.getHandle(), new LinkedList<>(List.of(BLANK)));
             put(WindowHandles.HANDLE3.getHandle(), new LinkedList<>(List.of(BLANK)));
         }
@@ -41,7 +42,7 @@ public class MockWebDriver implements WebDriver, JavascriptExecutor, TakesScreen
 
     final Map<String, URLs> currentUrls = new HashMap<>() {
         {
-            put(WindowHandles.HANDLE1.getHandle(), BLANK);
+            put(HANDLE1.getHandle(), BLANK);
             put(WindowHandles.HANDLE2.getHandle(), BLANK);
             put(WindowHandles.HANDLE3.getHandle(), BLANK);
         }
@@ -56,10 +57,9 @@ public class MockWebDriver implements WebDriver, JavascriptExecutor, TakesScreen
         this(getFakeDOM());
     }
 
-    private String getMockHandle() {
+    public String getMockHandle() {
         return ofNullable(targetLocator.currentHandle)
-                .orElseThrow(() ->
-                        new WebDriverException("The window which was in focus before has been closed"));
+                .orElse(HANDLE1.getHandle());
     }
 
     private void addUrlToHistory(String handle, URLs url) {

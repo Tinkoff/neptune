@@ -1,14 +1,15 @@
 package ru.tinkoff.qa.neptune.selenium.test.hooks;
 
 import ru.tinkoff.qa.neptune.selenium.content.management.Navigate;
+import ru.tinkoff.qa.neptune.selenium.content.management.SwitchToFrame;
 
 @Navigate(to = "https://www.google.com")
-public class ClassWithNavigationOnTest1 {
+public class ClassWithNavigationOnTest7 {
 
+    @SwitchToFrame(index = 1)
     public void test1() {
     }
 
-    @Navigate(to = "https://github.com")
     public void test2() {
     }
 }

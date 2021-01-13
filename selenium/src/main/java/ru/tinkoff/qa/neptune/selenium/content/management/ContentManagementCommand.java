@@ -8,10 +8,11 @@ import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowS
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.function.Supplier;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.currentWindow;
 
@@ -20,19 +21,20 @@ public final class ContentManagementCommand extends SequentialActionSupplier<Web
     private static final ThreadLocal<ContentManagementCommand> CURRENT_COMMAND = new ThreadLocal<>();
 
     private GetWindowSupplier getWindowSupplier;
-    private String navigateTo;
+    private Supplier<String> navigateTo;
     private List<GetFrameSupplier> getFrameSuppliers;
     private boolean isExecuted;
 
-    protected ContentManagementCommand() {
+    ContentManagementCommand() {
         super("Change active browser content");
+        performOn(driver -> driver);
     }
 
     private static <T extends SequentialGetStepSupplier<?, ?, WebDriver, ?, ?>> T
     setDriver(T setTo, WebDriver driver) {
         var tClass = setTo.getClass();
         try {
-            var m = tClass.getMethod("from", Object.class);
+            var m = SequentialGetStepSupplier.class.getDeclaredMethod("from", Object.class);
             m.setAccessible(true);
             m.invoke(setTo, driver);
             return setTo;
@@ -48,7 +50,6 @@ public final class ContentManagementCommand extends SequentialActionSupplier<Web
     }
 
     static void setCurrentCommand(ContentManagementCommand currentCommand) {
-        checkNotNull(currentCommand);
         CURRENT_COMMAND.set(currentCommand);
     }
 
@@ -58,11 +59,11 @@ public final class ContentManagementCommand extends SequentialActionSupplier<Web
                 .map(w -> inBrowser().get(setDriver(w, value)))
                 .orElse(null);
 
-        if (isNotBlank(navigateTo)) {
+        ofNullable(navigateTo).ifPresent(s -> {
             var w = ofNullable(window)
                     .orElseGet(() -> inBrowser().get(setDriver(currentWindow(), value)));
-            inBrowser().navigateTo(navigateTo, w);
-        }
+            inBrowser().navigateTo(s.get(), w);
+        });
 
 
         ofNullable(getFrameSuppliers).ifPresent(ss -> {
@@ -73,22 +74,39 @@ public final class ContentManagementCommand extends SequentialActionSupplier<Web
         isExecuted = true;
     }
 
-    ContentManagementCommand setGetWindowSupplier(GetWindowSupplier getWindowSupplier) {
+    ContentManagementCommand setWindowSupplier(GetWindowSupplier getWindowSupplier) {
         this.getWindowSupplier = getWindowSupplier;
         return this;
     }
 
-    ContentManagementCommand setNavigateTo(String navigateTo) {
+    ContentManagementCommand setNavigateTo(Supplier<String> navigateTo) {
         this.navigateTo = navigateTo;
         return this;
     }
 
-    ContentManagementCommand setGetFrameSuppliers(List<GetFrameSupplier> getFrameSuppliers) {
+    ContentManagementCommand setFrameSuppliers(List<GetFrameSupplier> getFrameSuppliers) {
         this.getFrameSuppliers = getFrameSuppliers;
         return this;
     }
 
     boolean isExecuted() {
         return isExecuted;
+    }
+
+    ContentManagementCommand mergeTo(ContentManagementCommand mergeTo) {
+        if (nonNull(getWindowSupplier) && isNull(mergeTo.getWindowSupplier)) {
+            mergeTo.setWindowSupplier(getWindowSupplier);
+        }
+
+        if (nonNull(navigateTo) && isNull(mergeTo.navigateTo)) {
+            mergeTo.setNavigateTo(navigateTo);
+        }
+
+        if (nonNull(getFrameSuppliers) && isNull(mergeTo.getFrameSuppliers)) {
+            mergeTo.setFrameSuppliers(getFrameSuppliers);
+        }
+
+        isExecuted = true;
+        return mergeTo;
     }
 }
