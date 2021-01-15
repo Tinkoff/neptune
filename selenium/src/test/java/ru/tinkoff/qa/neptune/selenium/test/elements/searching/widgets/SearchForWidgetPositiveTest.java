@@ -38,7 +38,7 @@ public class SearchForWidgetPositiveTest extends BaseWebDriverTest {
                         .timeOut(FIVE_SECONDS), COMMON_LABELED_BUTTON1,
                         LabeledButton.class},
 
-                {button(BUTTON_LABEL_TEXT10, BUTTON_LABEL_TEXT6), CUSTOM_LABELED_BUTTON2,
+                {button(BUTTON_LABEL_TEXT6), CUSTOM_LABELED_BUTTON2,
                         CustomizedButton.class},
 
 
@@ -186,14 +186,14 @@ public class SearchForWidgetPositiveTest extends BaseWebDriverTest {
                         CustomizedButton.class},
 
 
-                {button(BUTTON_LABEL_TEXT6, BUTTON_LABEL_TEXT10)
+                {button(BUTTON_LABEL_TEXT10)
                         .foundFrom(tableRow())
                         .foundFrom(table(TABLE_LABEL_TEXT6)),
 
                         CUSTOM_LABELED_BUTTON2,
                         CustomizedButton.class},
 
-                {button(BUTTON_LABEL_TEXT5, BUTTON_LABEL_TEXT9)
+                {button(BUTTON_LABEL_TEXT9)
                         .timeOut(FIVE_SECONDS)
                         .foundFrom(tableCell().criteria("Cell should be equal to " + CELL_TEXT73,
                                 tableCell -> CELL_TEXT73.equals(tableCell.getValue())))

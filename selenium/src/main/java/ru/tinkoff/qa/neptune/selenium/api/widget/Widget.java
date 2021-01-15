@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.selenium.api.widget;
 
-import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.internal.WrapsElement;
 
@@ -8,7 +7,6 @@ import java.util.List;
 
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
-import static java.util.stream.Collectors.joining;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.selenium.api.widget.Priority.LOWEST;
@@ -31,7 +29,7 @@ public abstract class Widget implements WrapsElement, SearchContext, HasAttribut
     public static String getWidgetName(Class<? extends Widget> classOfAWidget) {
         Class<?> clazz = classOfAWidget;
         while (!clazz.equals(Widget.class)) {
-            var name =  clazz.getAnnotation(Name.class);
+            var name = clazz.getAnnotation(Name.class);
             if (nonNull(name)) {
                 return name.value();
             }
@@ -95,36 +93,27 @@ public abstract class Widget implements WrapsElement, SearchContext, HasAttribut
         var widgetName = getWidgetName(thisClazz);
 
         try {
-            String text = null;
-            if (Labeled.class.isAssignableFrom(thisClazz)) {
-                text = ((Labeled) this).labels().stream()
-                        .filter(StringUtils::isNotBlank)
-                        .map(String::trim)
-                        .distinct()
-                        .collect(joining(", "));
-            }
+            String text;
+            var elementText = getWrappedElement().getText().trim();
 
-            if (isBlank(text)) {
-                var elementText = getWrappedElement().getText().trim();
-
-                if (isBlank(elementText)) {
-                    text =  EMPTY;
-                }
-                else if (elementText.length() < 30) {
-                    text = elementText;
-                }
-                else {
-                    text = format("%s s...", elementText.substring(0, 30));
-                }
+            if (isBlank(elementText)) {
+                text = EMPTY;
+            } else if (elementText.length() < 30) {
+                text = elementText;
+            } else {
+                text = format("%s...", elementText.substring(0, 30));
             }
 
             if (isBlank(text)) {
                 return widgetName;
             }
             return format("%s [%s]", widgetName, text);
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             return widgetName;
         }
+    }
+
+    public Widget selfReference() {
+        return this;
     }
 }

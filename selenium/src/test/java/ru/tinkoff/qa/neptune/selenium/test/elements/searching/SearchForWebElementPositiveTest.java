@@ -210,10 +210,6 @@ public class SearchForWebElementPositiveTest extends BaseWebDriverTest {
 
                 {xpath(RADIO_BUTTON_XPATH), NOT(cssMatches(CSS18, CSS_VALUE9)), COMMON_RADIOBUTTON1},
 
-                {xpath(TEXT_FIELD_XPATH), text(INPUT_TEXT2), COMMON_TEXT_INPUT2},
-
-                {xpath(TEXT_FIELD_XPATH), NOT(text(INPUT_TEXT2)), COMMON_LABELED_INPUT1},
-
                 {xpath(TEXT_FIELD_XPATH), textMatches(INPUT_TEXT2), COMMON_TEXT_INPUT2},
 
                 {xpath(TEXT_FIELD_XPATH), NOT(textMatches(INPUT_TEXT2)), COMMON_LABELED_INPUT1}

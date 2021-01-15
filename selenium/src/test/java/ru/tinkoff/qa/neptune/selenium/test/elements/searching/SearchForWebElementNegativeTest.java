@@ -488,14 +488,6 @@ public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
                         expectedDescriptionOfNotFoundElementError(xpath(RADIO_BUTTON_XPATH),
                                 NOT(cssMatches(CSS18, "value")))},
 
-                {INVISIBLE_SPAN_BY, text(VISIBLE_DIV),
-                        expectedDescriptionOfNotFoundElementError(INVISIBLE_SPAN_BY,
-                                text(VISIBLE_DIV))},
-
-                {VISIBLE_DIV_BY, NOT(text(VISIBLE_DIV)),
-                        expectedDescriptionOfNotFoundElementError(VISIBLE_DIV_BY,
-                                NOT(text(VISIBLE_DIV)))},
-
                 {INVISIBLE_SPAN_BY, textMatches("div"),
                         expectedDescriptionOfNotFoundElementError(INVISIBLE_SPAN_BY,
                                 textMatches("div"))},

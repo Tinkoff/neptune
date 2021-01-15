@@ -1,9 +1,8 @@
 package ru.tinkoff.qa.neptune.selenium.test.elements.searching.widgets.table;
 
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
-import ru.tinkoff.qa.neptune.selenium.api.widget.Labeled;
+import ru.tinkoff.qa.neptune.selenium.api.widget.Label;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Name;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Table;
 
@@ -14,16 +13,13 @@ import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.By.className;
+import static org.openqa.selenium.By.xpath;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
 import static ru.tinkoff.qa.neptune.selenium.test.elements.searching.widgets.WidgetNames.SPREADSHEET_TABLE;
 
 @Name(SPREADSHEET_TABLE)
 @FindBy(className = SPREAD_SHEET_CLASS)
-public class SpreadsheetTable extends Table implements Labeled {
-
-    @FindAll({@FindBy(xpath = LABEL_XPATH),
-            @FindBy(xpath = LABEL_XPATH2)})
-    private List<WebElement> labels;
+public class SpreadsheetTable extends Table {
 
     @FindBy(className = HEADLINE_CLASS)
     private WebElement headerElement;
@@ -35,14 +31,19 @@ public class SpreadsheetTable extends Table implements Labeled {
         super(wrappedElement);
     }
 
-    @Override
-    public List<String> labels() {
-        return labels.stream().map(WebElement::getText).collect(toList());
+    @Label
+    public String label1() {
+        return findElements(xpath(LABEL_XPATH)).get(0).getText();
+    }
+
+    @Label
+    public String label12() {
+        return findElements(xpath(LABEL_XPATH2)).get(1).getText();
     }
 
     @Override
     public Map<String, List<String>> getValue() {
-        List<String> header =  headerElement.findElements(className(CELL_CLASS))
+        List<String> header = headerElement.findElements(className(CELL_CLASS))
                 .stream().map(WebElement::getText).collect(toList());
         List<List<String>> rows = rowElements.stream().map(webElement -> webElement.findElements(className(CELL_CLASS)))
                 .collect(toList())
