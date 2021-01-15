@@ -5,14 +5,13 @@ import ru.tinkoff.qa.neptune.selenium.content.management.Navigate;
 import ru.tinkoff.qa.neptune.selenium.content.management.SwitchToFrame;
 import ru.tinkoff.qa.neptune.selenium.content.management.SwitchToWindow;
 
-import static org.openqa.selenium.support.How.TAG_NAME;
 import static ru.tinkoff.qa.neptune.selenium.content.management.BrowserContentUsage.FOR_EVERY_METHOD;
 
-@SwitchToFrame(index = 1)
-@HowToUseDefaultBrowserContent(howOften = FOR_EVERY_METHOD)
-public class ClassWithSwitchingToFrameTest2 {
+@SwitchToWindow(index = 1)
+@HowToUseDefaultBrowserContent(howOften = FOR_EVERY_METHOD, addWindowParams = true)
+public class ClassWithSwitchingToWindowTest3 {
 
-    @SwitchToWindow(index = 1)
+    @SwitchToFrame(index = 1)
     public void test1() {
     }
 
@@ -20,9 +19,12 @@ public class ClassWithSwitchingToFrameTest2 {
     public void test2() {
     }
 
-    @SwitchToWindow(index = 2)
-    @SwitchToFrame(howToFindFrameElement = TAG_NAME, locatorValue = "valid_frame1")
+    @SwitchToWindow(index = 2, title = "^.*\\b(Github)\\b.*$", url = "^.*\\b(github)\\b.*$")
+    @SwitchToFrame(index = 2)
     public void test3() {
 
+    }
+
+    public void test4() {
     }
 }

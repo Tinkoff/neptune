@@ -1,14 +1,14 @@
 package ru.tinkoff.qa.neptune.selenium.test.hooks;
 
+import ru.tinkoff.qa.neptune.selenium.content.management.HowToUseDefaultBrowserContent;
 import ru.tinkoff.qa.neptune.selenium.content.management.Navigate;
 import ru.tinkoff.qa.neptune.selenium.content.management.SwitchToFrame;
 import ru.tinkoff.qa.neptune.selenium.content.management.SwitchToWindow;
-import ru.tinkoff.qa.neptune.selenium.content.management.UseDefaultBrowserContent;
 
 import static ru.tinkoff.qa.neptune.selenium.content.management.BrowserContentUsage.FOR_EVERY_METHOD;
 
 @SwitchToWindow(index = 1)
-@UseDefaultBrowserContent(FOR_EVERY_METHOD)
+@HowToUseDefaultBrowserContent(howOften = FOR_EVERY_METHOD)
 public class ClassWithSwitchingToWindowTest2 {
 
     @SwitchToFrame(index = 1)
@@ -23,5 +23,8 @@ public class ClassWithSwitchingToWindowTest2 {
     @SwitchToFrame(index = 2)
     public void test3() {
 
+    }
+
+    public void test4() {
     }
 }

@@ -25,6 +25,10 @@ public final class ContentManagementCommand extends SequentialActionSupplier<Web
     private List<GetFrameSupplier> getFrameSuppliers;
     private boolean isExecuted;
 
+    private boolean addNavigationParams;
+    private boolean addWindowParams;
+    private boolean addFrameParams;
+
     ContentManagementCommand() {
         super("Change active browser content");
         performOn(driver -> driver);
@@ -94,19 +98,35 @@ public final class ContentManagementCommand extends SequentialActionSupplier<Web
     }
 
     ContentManagementCommand mergeTo(ContentManagementCommand mergeTo) {
-        if (nonNull(getWindowSupplier) && isNull(mergeTo.getWindowSupplier)) {
+        if (nonNull(getWindowSupplier) && isNull(mergeTo.getWindowSupplier) && addWindowParams) {
             mergeTo.setWindowSupplier(getWindowSupplier);
+            isExecuted = true;
         }
 
-        if (nonNull(navigateTo) && isNull(mergeTo.navigateTo)) {
+        if (nonNull(navigateTo) && isNull(mergeTo.navigateTo) && addNavigationParams) {
             mergeTo.setNavigateTo(navigateTo);
+            isExecuted = true;
         }
 
-        if (nonNull(getFrameSuppliers) && isNull(mergeTo.getFrameSuppliers)) {
+        if (nonNull(getFrameSuppliers) && isNull(mergeTo.getFrameSuppliers) && addFrameParams) {
             mergeTo.setFrameSuppliers(getFrameSuppliers);
+            isExecuted = true;
         }
-
-        isExecuted = true;
         return mergeTo;
+    }
+
+    ContentManagementCommand setAddNavigationParams(boolean addNavigationParams) {
+        this.addNavigationParams = addNavigationParams;
+        return this;
+    }
+
+    ContentManagementCommand setAddWindowParams(boolean addWindowParams) {
+        this.addWindowParams = addWindowParams;
+        return this;
+    }
+
+    ContentManagementCommand setAddFrameParams(boolean addFrameParams) {
+        this.addFrameParams = addFrameParams;
+        return this;
     }
 }

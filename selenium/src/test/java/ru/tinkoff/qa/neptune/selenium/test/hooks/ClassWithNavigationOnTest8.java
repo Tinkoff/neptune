@@ -2,17 +2,16 @@ package ru.tinkoff.qa.neptune.selenium.test.hooks;
 
 import ru.tinkoff.qa.neptune.selenium.content.management.HowToUseDefaultBrowserContent;
 import ru.tinkoff.qa.neptune.selenium.content.management.Navigate;
-
-import static ru.tinkoff.qa.neptune.selenium.content.management.BrowserContentUsage.FOR_EVERY_METHOD;
+import ru.tinkoff.qa.neptune.selenium.content.management.SwitchToFrame;
 
 @Navigate(to = "https://www.google.com")
-@HowToUseDefaultBrowserContent(howOften = FOR_EVERY_METHOD)
-public class ClassWithNavigationOnTest2 {
+@HowToUseDefaultBrowserContent(addNavigationParams = true)
+public class ClassWithNavigationOnTest8 {
 
+    @SwitchToFrame(index = 1)
     public void test1() {
     }
 
-    @Navigate(to = "https://github.com")
-    public void test3() {
+    public void test2() {
     }
 }

@@ -24,6 +24,7 @@ public class SwitchToWindowHookTest extends BaseWebDriverTest {
     private static final ContentManagementHook hook = new ContentManagementHook();
     private static final ClassWithSwitchingToWindowTest1 O1 = new ClassWithSwitchingToWindowTest1();
     private static final ClassWithSwitchingToWindowTest2 O2 = new ClassWithSwitchingToWindowTest2();
+    private static final ClassWithSwitchingToWindowTest3 O3 = new ClassWithSwitchingToWindowTest3();
 
     private static Method getMethod(Object o, String method) throws NoSuchMethodException {
         return o.getClass().getDeclaredMethod(method);
@@ -34,9 +35,14 @@ public class SwitchToWindowHookTest extends BaseWebDriverTest {
         return new Object[][]{
                 {O1, "test1", HANDLE2.getHandle()},
                 {O1, "test2", HANDLE3.getHandle()},
-                {O2, "test1", HANDLE2.getHandle()},
-                {O2, "test2", HANDLE2.getHandle()},
+                {O2, "test1", HANDLE1.getHandle()},
+                {O2, "test2", HANDLE1.getHandle()},
                 {O2, "test3", HANDLE3.getHandle()},
+                {O2, "test4", HANDLE2.getHandle()},
+                {O3, "test1", HANDLE2.getHandle()},
+                {O3, "test2", HANDLE2.getHandle()},
+                {O3, "test3", HANDLE3.getHandle()},
+                {O3, "test4", HANDLE2.getHandle()},
         };
     }
 
@@ -46,6 +52,7 @@ public class SwitchToWindowHookTest extends BaseWebDriverTest {
         driver.switchTo().window(HANDLE1.getHandle()).get(GOOGLE.getUrl());
         driver.switchTo().window(HANDLE2.getHandle()).get(FACEBOOK.getUrl());
         driver.switchTo().window(HANDLE3.getHandle()).get(GITHUB.getUrl());
+        driver.switchTo().window(HANDLE1.getHandle());
     }
 
     @Test(dataProvider = "data")

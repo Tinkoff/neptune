@@ -24,6 +24,7 @@ public class NavigationHookTest extends BaseWebDriverTest {
     private static final ClassWithNavigationOnTest5 O5 = new ClassWithNavigationOnTest5();
     private static final ClassWithNavigationOnTest6 O6 = new ClassWithNavigationOnTest6();
     private static final ClassWithNavigationOnTest7 O7 = new ClassWithNavigationOnTest7();
+    private static final ClassWithNavigationOnTest8 O8 = new ClassWithNavigationOnTest8();
 
     private static final ContentManagementHook hook = new ContentManagementHook();
 
@@ -37,8 +38,10 @@ public class NavigationHookTest extends BaseWebDriverTest {
                 {O1, "test1", true, equalTo("https://www.google.com")},
                 {O1, "test1", false, anything()},
                 {O1, "test2", true, equalTo("https://github.com")},
-                {O7, "test1", true, equalTo("https://www.google.com")},
-                {O7, "test2", false, anything()}
+                {O7, "test1", true, emptyOrNullString()},
+                {O7, "test2", true, equalTo("https://www.google.com")},
+                {O8, "test1", true, equalTo("https://www.google.com")},
+                {O8, "test2", false, anything()}
         };
     }
 

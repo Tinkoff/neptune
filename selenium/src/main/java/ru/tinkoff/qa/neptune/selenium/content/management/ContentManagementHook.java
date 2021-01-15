@@ -81,12 +81,13 @@ public final class ContentManagementHook implements ExecutionHook {
                     .orElse(null);
         }
 
-        var usage = ofNullable(getFromClass(cls, getContentUsage())).orElse(ONCE);
+        var usage = getFromClass(cls, getContentUsage());
         var getWindow = getFromClass(cls, getWindow());
         var navigationURLSupplier = getFromClass(cls, on, getNavigationURL());
         var switchesToFrames = getFromClass(cls, getFrameSwitches());
 
-        usageMap.put(cls, usage);
+        var howOften = ofNullable(usage).map(HowToUseDefaultBrowserContent::howOften).orElse(ONCE);
+        usageMap.put(cls, howOften);
         if (isNull(getWindow) && isNull(navigationURLSupplier) && isNull(switchesToFrames)) {
             return null;
         }
@@ -94,11 +95,14 @@ public final class ContentManagementHook implements ExecutionHook {
         var command = new ContentManagementCommand()
                 .setWindowSupplier(getWindow)
                 .setNavigateTo(navigationURLSupplier)
-                .setFrameSuppliers(switchesToFrames);
+                .setFrameSuppliers(switchesToFrames)
+                .setAddNavigationParams(ofNullable(usage).map(HowToUseDefaultBrowserContent::addNavigationParams).orElse(false))
+                .setAddWindowParams(ofNullable(usage).map(HowToUseDefaultBrowserContent::addWindowParams).orElse(false))
+                .setAddFrameParams(ofNullable(usage).map(HowToUseDefaultBrowserContent::addFrameParams).orElse(false));
 
         defaultCommands.put(cls, command);
 
-        if (!isTest && usage.equals(FOR_EVERY_TEST_METHOD)) {
+        if (!isTest && howOften.equals(FOR_EVERY_TEST_METHOD)) {
             return null;
         }
 
@@ -135,17 +139,15 @@ public final class ContentManagementHook implements ExecutionHook {
         setCurrentCommand(defaultCommand.mergeTo(methodCommand));
     }
 
-    static class GetContentUsage<T extends AnnotatedElement> implements Function<T, BrowserContentUsage> {
+    static class GetContentUsage<T extends AnnotatedElement> implements Function<T, HowToUseDefaultBrowserContent> {
 
         static <T extends AnnotatedElement> GetContentUsage<T> getContentUsage() {
             return new GetContentUsage<>();
         }
 
         @Override
-        public BrowserContentUsage apply(T annotatedElement) {
-            return ofNullable(annotatedElement.getAnnotation(UseDefaultBrowserContent.class))
-                    .map(UseDefaultBrowserContent::value)
-                    .orElse(null);
+        public HowToUseDefaultBrowserContent apply(T annotatedElement) {
+            return annotatedElement.getAnnotation(HowToUseDefaultBrowserContent.class);
         }
     }
 
