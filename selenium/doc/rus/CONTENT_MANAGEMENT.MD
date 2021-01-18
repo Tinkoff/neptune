@@ -28,7 +28,7 @@ import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.GetF
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
 
 public class Tezt {
-    
+
     @Test
     public void test1() {
         inBrowser().navigateTo("/some/path") //навигация на нужную страницу используя полный URL или относительный путь  
@@ -36,7 +36,7 @@ public class Tezt {
                 .edit(textField("Some field"), "Some value")
                 .edit(checkBox("Some flag"), true)
                 .click(button("Submit"));
-        
+
         //далее проверка или дальнейшие действия
     }
 
@@ -44,7 +44,7 @@ public class Tezt {
     public void test2() {
         //предположим, тесты идут последовательно, каждый предыдущий тест меняет страницу,
         //и почти во всех случаях надо возвращаться к одному и тому же контенту.
-        inBrowser().navigateTo("/some/path") 
+        inBrowser().navigateTo("/some/path")
                 .switchTo(frame(0)) //выполняем тоже самое, что в test1
                 .edit(textField("Some field2"), "Some value2")
                 .edit(radioButton("Some flag2"), true)
@@ -84,19 +84,24 @@ public class Tezt {
 Логичный вариант исправления похож на то, что ниже
 
 ```java
+import static org.openqa.selenium.By.*;
+import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.GetFrameSupplier.frame;
+import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
+
 public class Tezt {
-    
+
     /**
      * Данный вариант хорош, если все тесты идут последовательно
      * на одной и той же странице
      * и каждый каждый проходящий тест не меняет загруженный контент, т.е. нет необходимости 
      * перед каждым тестом перезагружать одну и ту же страницу.
-     * 
-    @BeforeClass
-    public void prepareClass() {
-        inBrowser().navigateTo("/some/path")
-                .switchTo(frame(0)); 
-    }*/
+     *
+     @BeforeClass public void prepareClass() {
+     inBrowser().navigateTo("/some/path")
+     .switchTo(frame(0)); 
+     }*/
 
     //предположим, тесты идут последовательно, каждый предыдущий тест меняет страницу,
     //и почти во всех случаях надо возвращаться к одному и тому же контенту.
@@ -105,7 +110,7 @@ public class Tezt {
         inBrowser().navigateTo("/some/path") //навигация на нужную страницу используя полный URL или относительный путь
                 .switchTo(frame(0)); //когда страница загрузилась и нужно переключиться в нулевой iframe 
     }
-    
+
     @Test
     public void test1() {
         inBrowser().edit(textField("Some field"), "Some value")
@@ -159,28 +164,309 @@ public class Tezt {
   не был восстановлен. Поэтому происходит повторение подготовительного действия в `test4`. Исправить можно следующим
   образом
 
-```java
-public class Tezt {
-    
-    @BeforeMethod
-    public void prepare() {
-        inBrowser().navigateTo("/some/path") 
-                .switchTo(frame(0));
-    }
-    
-    //тесты
+  ```java
+  public class Tezt {
+      
+      @BeforeMethod
+      public void prepare() {
+          inBrowser().navigateTo("/some/path") 
+                  .switchTo(frame(0));
+      }
+      
+      //тесты
+  
+      @AfterMethod
+      public void after() { //после каждого теста устанавливаем 
+          //фокус на основном браузерном окне/вкладке
+          inBrowser().switchTo(window(0));
+      }
+  }
+  ```
 
-    @AfterMethod
-    public void after() { //после каждого теста устанавливаем 
-        //фокус на основном браузерном окне/вкладке
-        inBrowser().switchTo(window(0));
+  Но такая реализация не оптимальна. Как вариант, можно организовать методы в группы (Testng) или использовать тэги (
+  JUnit5). Но есть ли более простые способы?
+
+- при запуске теста на удаленном окружении, например на [selenoid](https://aerokube.com/selenoid/latest/) или
+  [Selenium Grid](https://www.selenium.dev/documentation/en/grid/), может возникнуть ситуация, когда сессия WebDriver
+  закрывается спустя какое-то время из-за отсутствия активности. Такая ситуация возможна когда удаленное окружение
+  настроено соответствующим образом (так было надо) и между `prepare()` и тестовым методом, требующим открытый браузер,
+  выполнялись подготовительные методы или тесты, которым браузер был не нужен, и их выполнение заняло продолжительное
+  время. Если такое случилось, возможно переоткрыть браузер, но и авторизоваться тоже придется заново.
+
+- недостатки, которые вы сами могли бы добавить...
+
+</details>
+
+## Решение, которое предлагает neptune
+
+```java
+import ru.tinkoff.qa.neptune.selenium.content.management.Navigate;
+import ru.tinkoff.qa.neptune.selenium.content.management.SwitchToFrame;
+import ru.tinkoff.qa.neptune.selenium.content.management.SwitchToWindow;
+import ru.tinkoff.qa.neptune.selenium.content.management.UseDefaultBrowserContent;
+
+import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
+import static ru.tinkoff.qa.neptune.selenium.content.management.BrowserContentUsage.FOR_EVERY_TEST_METHOD;
+
+//Над классом определяется дефолтный контент, который следует загружать в каждом тесте
+@Navigate(to = "/some/path") //здесь указывается полный URL или относительный фрагмент URL страницы, 
+// которую надо загрузить
+@SwitchToFrame(index = 0) //Здесь указывается индекс фрейма, в который нужно переключиться
+//Ниже описывается то, как используется дефолтный контент, описанный выше
+@UseDefaultBrowserContent(howOften = FOR_EVERY_TEST_METHOD, //загружается в каждом тесте 
+        addFrameParams = true) //Параметры фрейма, в который следует переключаться, и который описан выше,
+//будут применены ко всем методам
+//для которых указан контент для тестирования, но не указаны параметры фрейма.
+//В данном примере это - `test4`
+public class Tezt {
+
+    @Test //Данный тест загружает контент, описанный в шапке класса
+    public void test1() {
+        inBrowser()//контент будет загружен перед выполнением метода `edit` 
+                .edit(textField("Some field"), "Some value")
+                .edit(checkBox("Some flag"), true)
+                .click(button("Submit"));
+
+        //далее проверка или дальнейшие действия
+    }
+
+    @Test //Данный тест загружает контент, описанный в шапке класса
+    public void test2() {
+        inBrowser() //контент будет загружен перед выполнением метода `edit` 
+                .edit(textField("Some field2"), "Some value2")
+                .edit(radioButton("Some flag2"), true)
+                .click(button("Submit"));
+    }
+
+    //тесты идут последовательно. Предположим, этот тест зависит от предыдущего
+    //действия предыдущего теста привели к тому, что надо переключиться в новое окно/вкладку браузера
+    //и переключиться в другой iframe
+    @Test //для данного теста описан его специфический контент
+    @SwitchToWindow(index = 1) //указываем в какое браузерное окно следует переключаться
+    @SwitchToFrame(xpath = "./some/xpath") //тут описан специфический фрейм для переключения. 
+    // Параметры, описанные в шапке класса, тут неприменимы
+    public void test3() {
+        inBrowser();//контент будет загружен перед выполнением любого метода объекта, что возвращается inBrowser()
+
+        //далее действия и проверка
+    }
+
+    //тесты идут последовательно.
+    //Предположим что после test3 нужно вернуться в основное окно/вкладку браузера, где загружено приложение,
+    //и перезагрузить дефолтный контент, который нам надо протестировать
+    @Test
+    @SwitchToWindow(index = 0) //указываем в какое браузерное окно следует переключаться
+    @Navigate(to = "/some/path") //т.к. в шапке класса мы не указывали, нужно ли применять параметры навигации 
+    //для специфического для теста контента в тех случаях, когда навигация не указана,
+    //то нужно нужно повторить @SwitchToWindow(index = 0)
+    //В данном случае, `test3` нам мешает использовать дефолтный URL для навигации
+    //А переключение во фрейм `@SwitchToFrame(index = 0)` произойдет. Для данного контента фрейм не указан
+    public void test4() {
+        inBrowser();//контент будет загружен перед выполнением любого метода объекта, что возвращается inBrowser()
+
+        //далее действия и проверка
     }
 }
 ```
 
-Но такая реализация не оптимальна. Как вариант, можно организовать методы в группы (Testng) или использовать тэги (
-JUnit5). Но есть ли более простые способы?
+Подробности ниже
 
--
+### Аннотация @SwitchToWindow
+
+<details>
+    <summary>Нажми, чтобы прочесть</summary>
+
+Данная аннотация описывает, в какое окно/вкладку браузера следует переключиться.
+
+```java
+//@SwitchToWindow(index = 1) 
+// Указывает, что надо переключиться во второе окно. Нумерация с 0
+```
+
+```java
+//@SwitchToWindow(url = "https://github.com") 
+//Указывает, что надо переключиться в любую браузерную вкладку/окно, где загружена страница https://github.com
+```
+
+```java
+//@SwitchToWindow(title = "Github inc") 
+//Указывает, что надо переключиться в любую браузерную вкладку/окно, где загружена страница c заголовком Github inc
+```
+
+```java
+//@SwitchToWindow(url = "https://github.com", title = "Github inc") 
+//Комбинация двух вариантов выше
+```
+
+```java
+//@SwitchToWindow(index = 1, url = "https://github.com", title = "Github inc") 
+//Комбинация всех вариантов выше. Т.е. переключиться во переключиться во второе окно, когда/если в нем 
+//загружена страница https://github.com с заголовком Github inc
+```
+
+```java
+//@SwitchToWindow(title = "^.*\\b(Github)\\b.*$", url = "^.*\\b(github)\\b.*$") 
+//так же можно использовать как фрагменты строк, так и регулярные выражения для url и/или заголовка
+```
+
+```java
+//import static java.time.temporal.ChronoUnit.MINUTES;
+
+//@SwitchToWindow(index = 1, waitingTime = 1, waitingTimeUnit = MINUTES) 
+//Если требуется некоторое время ожидания, пока нужное браузерное окно/вкладка не появится, 
+//то есть возможность указать время
+//waitingTimeUnit - для уточнения, в каких единицах указывать время ожидания
+//если его не заполнять - считается в секундах
+```
+
+```java
+import ru.tinkoff.qa.neptune.selenium.content.management.SwitchToWindow;
+
+//Обозначает, что переключение в это окно/вкладку произойдет один раз,
+//или будет происходить в каждом тестовом методе или любом методе (тестовом и подготовительном)
+//при первом вызове внутри этого метода браузерного шага. 
+//Частота зависит от настройки @UseDefaultBrowserContent
+@SwitchToWindow(url = "https://github.com", title = "Github inc")
+public class Tezt {
+
+    //Специфическое окно для данного теста
+    //данную аннотацию можно применять и к подготовительному методу, если для него нужен браузер
+    @Test
+    @SwitchToWindow(index = 1)
+    public void test1() {
+
+    }
+
+}
+```
+
+В присутствии данной аннотации первое, что будет происходить — переключение в указанное браузерное окно/вкладку.
+
+</details>
+
+### Аннотация @Navigate
+
+<details>
+    <summary>Нажми, чтобы прочесть</summary>
+
+
+
+</details>
+
+### Аннотация @SwitchToFrame
+
+<details>
+    <summary>Нажми, чтобы прочесть</summary>
+
+Данная аннотация описывает, в какой фрейм следует переключаться.
+
+```java
+//@SwitchToFrame(index = 1) 
+//переключение во фрейм по индексу
+```
+
+```java
+//@SwitchToFrame(nameOrId = "someNameOrId") 
+//переключение во фрейм по имени или id
+```
+
+```java
+//@SwitchToFrame(tagName = "iframe") 
+//переключение во фрейм используя локатор элемента, внутри которого фрейм находится
+//Данный пример похож на использование аннотации @FindBy. Содержит те же самые варианты локаторов
+```
+
+```java
+//@SwitchToFrame(index = 1, waitingTime = 1, waitingTimeUnit = MINUTES) 
+//Если требуется некоторое время ожидания, пока фрейм не появится на странице и станет доступным для переключения, 
+//то есть возможность указать время
+//waitingTimeUnit - для уточнения, в каких единицах указывать время ожидания
+//если его не заполнять - считается в секундах
+```
+
+Так же можно указать путь из фреймов
+
+```java
+//@SwitchToFrame(index = 1)
+//@SwitchToFrame(tagName = "iframe") 
+//@SwitchToFrame(index = 1, waitingTime = 1, waitingTimeUnit = MINUTES)
+//Если используются одновременно несколько  аннотаций, то они образуют путь из фреймов, 
+//в которые происходит последовательное переключение
+//Следует помнить, что этот путь всегда АБСОЛЮТНЫЙ.
+```
+
+```java
+import ru.tinkoff.qa.neptune.selenium.content.management.SwitchToFrame;
+
+//Обозначает, что переключение в этот фрейм произойдет один раз,
+//или будет происходить в каждом тестовом методе или любом методе (тестовом и подготовительном)
+//при первом вызове внутри этого метода браузерного шага. 
+//Частота зависит от настройки @UseDefaultBrowserContent
+@SwitchToFrame(index = 1)
+public class Tezt {
+
+    //Специфический фрейм для данного теста
+    //данную аннотацию можно применять и к подготовительному методу, если для него нужен браузер
+    @Test
+    @SwitchToFrame(nameOrId = "someNameOrId")
+    public void test1() {
+
+    }
+
+}
+```
+
+Если указаны аннотации `@SwitchToFrame` и/или `SwitchToWindow`/`@Navigate`, то переключение фо фрейм произойдет после
+переключения в окно/вкладку и навигации на нужную страницу.
+
+</details>
+
+### Аннотация @UseDefaultBrowserContent
+
+<details>
+    <summary>Нажми, чтобы прочесть</summary>
+
+С помощью данной аннотации описывается то, каким образом используется дефолтный контент.
+
+Ниже примеры
+
+```java
+import ru.tinkoff.qa.neptune.selenium.content.management.Navigate;
+
+import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
+
+@Navigate(to = "/some/path") //переход по ссылке произойдет один раз
+//Эквивалентный вариант - UseDefaultBrowserContent(howOften = ONCE)
+public class Tezzt {
+
+    //некая подготовка данных в браузере
+    @BeforeClass
+    public void beforeClass() {
+        inBrowser() //навигация на нужную страницу произойдет здесь
+                .edit(textField("Some field"), "Some value")
+                .edit(checkBox("Some flag"), true);
+        //далеедальнейшие действия
+    }
+
+    @Test 
+    public void test1() {
+        inBrowser() //остаемся на загруженной/измененной ранее странице
+                .edit(textField("Some field2"), "Some value2")
+                .edit(checkBox("Some flag2"), true)
+                .click(button("Submit2"));
+
+        //далее проверка или дальнейшие действия
+    }
+
+    @Test
+    public void test2() {
+        inBrowser() //остаемся на загруженной/измененной ранее странице
+                .edit(textField("Some field3"), "Some value3")
+                .edit(radioButton("Some flag3"), true)
+                .click(button("Submit3"));
+    }
+}
+
+```
 
 </details>

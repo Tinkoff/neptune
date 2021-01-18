@@ -211,6 +211,31 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
     /**
      * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
      * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found toggles.
+     *
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<Flag.Toggle> toggles() {
+        return widgets(Flag.Toggle.class);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found toggles.
+     *
+     * @param textOrLabel text which is used to find toggles by full element text matching. Also texts of labels
+     *                    are used to find elements.
+     * @return an instance of {@link MultipleSearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
+     */
+    public static MultipleSearchSupplier<Flag.Toggle> toggles(String textOrLabel) {
+        return widgets(Flag.Toggle.class, textOrLabel);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found links.
      *
      * @return an instance of {@link MultipleSearchSupplier}
@@ -431,6 +456,81 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      */
     public static MultipleSearchSupplier<TableCell> tableCells(String textOrLabel) {
         return widgets(TableCell.class, textOrLabel);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found text elements.
+     *
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<TextElement> textElements() {
+        return widgets(TextElement.class);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found text elements.
+     *
+     * @param text text which is used to find text elements by full element text matching
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<TextElement> textElements(String text) {
+        return widgets(TextElement.class, text);
+    }
+
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found forms.
+     *
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<Form> forms() {
+        return widgets(Form.class);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found forms.
+     *
+     * @param textOrLabel text which is used to find forms by full element text matching. Also texts of labels
+     *                    are used to find elements.
+     * @return an instance of {@link MultipleSearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
+     */
+    public static MultipleSearchSupplier<Form> forms(String textOrLabel) {
+        return widgets(Form.class, textOrLabel);
+    }
+
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found grouping elements.
+     *
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<ElementGroup> groups() {
+        return widgets(ElementGroup.class);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found grouping elements.
+     *
+     * @param textOrLabel text which is used to find grouping elements by full element text matching. Also texts of labels
+     *                    are used to find elements.
+     * @return an instance of {@link MultipleSearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
+     */
+    public static MultipleSearchSupplier<ElementGroup> groups(String textOrLabel) {
+        return widgets(ElementGroup.class, textOrLabel);
     }
 
     /**

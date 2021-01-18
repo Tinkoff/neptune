@@ -14,7 +14,7 @@ import static ru.tinkoff.qa.neptune.selenium.content.management.BrowserContentUs
  */
 @Retention(RUNTIME)
 @Target({TYPE})
-public @interface HowToUseDefaultBrowserContent {
+public @interface UseDefaultBrowserContent {
     /**
      * @return an element that describes how often default content management strategy
      * should be used

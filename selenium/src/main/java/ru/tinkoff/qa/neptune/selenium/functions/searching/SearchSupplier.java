@@ -219,6 +219,33 @@ public final class SearchSupplier<R extends SearchContext>
         return widget(Flag.RadioButton.class, textOrLabel);
     }
 
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some toggle.
+     *
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Flag.Toggle> toggle() {
+        return widget(Flag.Toggle.class);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some toggle.
+     *
+     * @param textOrLabel text which is used to find a toggle by full element text matching. Also texts of labels
+     *                    are used to find a toggle.
+     * @return an instance of {@link SearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
+     */
+    public static SearchSupplier<Flag.Toggle> toggle(String textOrLabel) {
+        return widget(Flag.Toggle.class, textOrLabel);
+    }
+
+
     /**
      * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
      * The built function takes an instance of {@link SearchContext} for the searching
@@ -442,6 +469,79 @@ public final class SearchSupplier<R extends SearchContext>
      */
     public static SearchSupplier<TableCell> tableCell(String textOrLabel) {
         return widget(TableCell.class, textOrLabel);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some text element.
+     *
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<TextElement> textElement() {
+        return widget(TextElement.class);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some text element.
+     *
+     * @param text text which is used to find a text element by full element text matching.
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<TextElement> textElement(String text) {
+        return widget(TextElement.class, text);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some form.
+     *
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Form> form() {
+        return widget(Form.class);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some form.
+     *
+     * @param textOrLabel text which is used to find a form by full element text matching. Also texts of labels
+     *                    are used to find a form.
+     * @return an instance of {@link SearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
+     */
+    public static SearchSupplier<Form> form(String textOrLabel) {
+        return widget(Form.class, textOrLabel);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some grouping element.
+     *
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<ElementGroup> group() {
+        return widget(ElementGroup.class);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some grouping element.
+     *
+     * @param textOrLabel text which is used to find a form by full element text matching. Also texts of labels
+     *                    are used to find a grouping element.
+     * @return an instance of {@link SearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
+     */
+    public static SearchSupplier<ElementGroup> group(String textOrLabel) {
+        return widget(ElementGroup.class, textOrLabel);
     }
 
     /**

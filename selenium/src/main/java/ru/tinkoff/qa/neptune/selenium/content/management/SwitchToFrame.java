@@ -1,9 +1,11 @@
 package ru.tinkoff.qa.neptune.selenium.content.management;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.GetFrameSupplier;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -16,9 +18,11 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static java.time.temporal.ChronoUnit.SECONDS;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.*;
 import static org.openqa.selenium.support.How.UNSET;
+import static ru.tinkoff.qa.neptune.selenium.content.management.SwitchToFrame.FrameLocatorReader.readBy;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.GetFrameSupplier.frame;
 
 /**
@@ -41,14 +45,44 @@ public @interface SwitchToFrame {
     String nameOrId() default EMPTY;
 
     /**
-     * @return a locator strategy to find a frame-element to switch to
+     * @return an id-attribute of a frame-element to switch to
      */
-    How howToFindFrameElement() default UNSET;
+    String id() default EMPTY;
 
     /**
-     * @return a value for locator strategy defined by {@link #howToFindFrameElement()}
+     * @return a name-attribute of a frame-element to switch to
      */
-    String locatorValue() default EMPTY;
+    String name() default EMPTY;
+
+    /**
+     * @return a class-attribute of a frame-element to switch to
+     */
+    String className() default EMPTY;
+
+    /**
+     * @return a css-property of a frame-element to switch to
+     */
+    String css() default EMPTY;
+
+    /**
+     * @return a tag name of a frame-element to switch to
+     */
+    String tagName() default EMPTY;
+
+    /**
+     * @return a link text of a frame-element to switch to
+     */
+    String linkText() default EMPTY;
+
+    /**
+     * @return a partial link text of a frame-element to switch to
+     */
+    String partialLinkText() default EMPTY;
+
+    /**
+     * @return xpath to a frame-element to switch to
+     */
+    String xpath() default EMPTY;
 
     /**
      * @return a unit of a time to wait for a frame to switch to. Default is {@link ChronoUnit#SECONDS}
@@ -66,13 +100,17 @@ public @interface SwitchToFrame {
     class SwitchToFrameReader {
 
         static GetFrameSupplier getFrame(SwitchToFrame switchToFrame, AnnotatedElement annotatedElement) {
+
+            var by = readBy(switchToFrame);
+
             if (switchToFrame.index() < 0
                     && isBlank(switchToFrame.nameOrId())
-                    && switchToFrame.howToFindFrameElement().equals(UNSET)) {
+                    && isNull(by)) {
                 throw new IllegalArgumentException(format("Frame to switch to is not defined. " +
                                 "Annotation %s should have value of `index` that greater or equals to 0, " +
                                 "or not blank value of `nameOrId`, " +
-                                "or `howToFindFrameElement` that differs from UNSET and not blank value of `locatorValue`. " +
+                                "or not blank value of only one of following attributes: id, name, className, css, " +
+                                "tagName, linkText, partialLinkText, xpath" +
                                 "Please check and correct annotations of %s",
                         SwitchToFrame.class.getName(),
                         annotatedElement));
@@ -80,38 +118,13 @@ public @interface SwitchToFrame {
 
             var index = switchToFrame.index();
             var nameOrId = switchToFrame.nameOrId();
-            By by;
-            if (isNotBlank(switchToFrame.locatorValue())) {
-                if (switchToFrame.howToFindFrameElement().equals(UNSET)) {
-                    throw new UnsupportedOperationException(format("It is not possible to create an instance of %s because " +
-                                    "type of a locator is not defined. " +
-                                    "Please check and correct annotations of %s. " +
-                                    "It is necessary to define value of `howToFindFrameElement` when " +
-                                    "some WebElement is a frame to switch to",
-                            By.class.getName(),
-                            annotatedElement));
-                } else {
-                    by = switchToFrame.howToFindFrameElement().buildBy(switchToFrame.locatorValue());
-                }
-            } else {
-                if (!switchToFrame.howToFindFrameElement().equals(UNSET)) {
-                    throw new UnsupportedOperationException(format("It is not possible to create an instance of %s because " +
-                                    "value a locator is not defined. " +
-                                    "Please check and correct annotations of %s. " +
-                                    "It is necessary to define value of `locatorValue` when " +
-                                    "some WebElement is a frame to switch to",
-                            By.class.getName(),
-                            annotatedElement));
-                } else {
-                    by = null;
-                }
-            }
 
             if ((index >= 0 && (isNotBlank(nameOrId) || nonNull(by))) || (isNotBlank(nameOrId) && nonNull(by))) {
                 throw new IllegalArgumentException(format("Frame to switch to is not correctly defined. " +
                                 "Annotation %s should only have value of `index` that greater or equals to 0, " +
                                 "or not blank value of `nameOrId`, " +
-                                "or `howToFindFrameElement` that differs from UNSET and not blank value of `locatorValue`. " +
+                                "or not blank value of only one of following attributes: id, name, className, css, " +
+                                "tagName, linkText, partialLinkText, xpath" +
                                 "Please check and correct annotations of %s",
                         SwitchToFrame.class.getName(),
                         annotatedElement));
@@ -131,6 +144,69 @@ public @interface SwitchToFrame {
             }
 
             return result;
+        }
+    }
+
+    class FrameLocatorReader extends FindBy.FindByBuilder {
+
+        static By readBy(SwitchToFrame switchToFrame) {
+            return new FrameLocatorReader().buildByFromShortFindBy(new FindBy() {
+
+                @Override
+                public Class<? extends Annotation> annotationType() {
+                    return FindBy.class;
+                }
+
+                @Override
+                public How how() {
+                    return UNSET;
+                }
+
+                @Override
+                public String using() {
+                    return EMPTY;
+                }
+
+                @Override
+                public String id() {
+                    return switchToFrame.id();
+                }
+
+                @Override
+                public String name() {
+                    return switchToFrame.name();
+                }
+
+                @Override
+                public String className() {
+                    return switchToFrame.className();
+                }
+
+                @Override
+                public String css() {
+                    return switchToFrame.css();
+                }
+
+                @Override
+                public String tagName() {
+                    return switchToFrame.tagName();
+                }
+
+                @Override
+                public String linkText() {
+                    return switchToFrame.linkText();
+                }
+
+                @Override
+                public String partialLinkText() {
+                    return switchToFrame.partialLinkText();
+                }
+
+                @Override
+                public String xpath() {
+                    return switchToFrame.xpath();
+                }
+            });
         }
     }
 }
