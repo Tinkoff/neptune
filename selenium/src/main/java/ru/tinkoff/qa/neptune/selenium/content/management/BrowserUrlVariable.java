@@ -26,7 +26,8 @@ public @interface BrowserUrlVariable {
 
     /**
      * @return name of a method whose non-null returned value be should used as a value of the URL-variable
-     * to navigate in browser. It has sense when type of a marked field differs from primitive/wrappers/string
+     * to navigate in browser. It has sense when type of a marked field differs from primitive/wrappers/string.
+     * This method should not have any parameter and it should not be static
      */
     String method() default EMPTY;
 }
