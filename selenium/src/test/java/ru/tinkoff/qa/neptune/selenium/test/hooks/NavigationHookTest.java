@@ -25,6 +25,12 @@ public class NavigationHookTest extends BaseWebDriverTest {
     private static final ClassWithNavigationOnTest6 O6 = new ClassWithNavigationOnTest6();
     private static final ClassWithNavigationOnTest7 O7 = new ClassWithNavigationOnTest7();
     private static final ClassWithNavigationOnTest8 O8 = new ClassWithNavigationOnTest8();
+    private static final ClassWithNavigationOnTest9 O9 = new ClassWithNavigationOnTest9();
+    private static final ClassWithNavigationOnTest10 O10 = new ClassWithNavigationOnTest10();
+    private static final ClassWithNavigationOnTest11 O11 = new ClassWithNavigationOnTest11();
+    private static final ClassWithNavigationOnTest12 O12 = new ClassWithNavigationOnTest12();
+    private static final ClassWithNavigationOnTest13 O13 = new ClassWithNavigationOnTest13();
+    private static final ClassWithNavigationOnTest14 O14 = new ClassWithNavigationOnTest14();
 
     private static final ContentManagementHook hook = new ContentManagementHook();
 
@@ -68,10 +74,22 @@ public class NavigationHookTest extends BaseWebDriverTest {
     @DataProvider
     public static Object[][] data4() {
         return new Object[][]{
-                {O5, "test1", equalTo("https://www.google.com/1/ABC%20/ABC%20?&p4=1&p5=ABC &p6=ABCD+&p7=ABCDE+")},
-                {O5, "test2", equalTo("https://www.google.com/1/ABC%20/ABC%20?&p4=1&p5=ABC &p6=ABCD+&p7=ABCDE+")},
-                {O6, "test1", equalTo("https://www.google.com/#?p4=1&p5=ABC &p6=ABCD &p7=ABCDE")},
-                {O6, "test2", equalTo("https://www.google.com/1/ABC%20/ABC%20#?p4=1&p5=ABC &p6=ABCD &p7=ABCDE")},
+                {O5, "test1", equalTo("https://www.google.com/1/ABC%20/ABC%20?&p4=1&p5=ABC &p6=ABCD+&p7=1")},
+                {O5, "test2", equalTo("https://www.google.com/1/ABC%20/ABC%20?&p4=1&p5=ABC &p6=ABCD+&p7=1")},
+                {O6, "test1", equalTo("https://www.google.com/#?p4=1&p5=ABC &p6=ABCD &p7=1")},
+                {O6, "test2", equalTo("https://www.google.com/1/ABC%20/ABC%20#?p4=1&p5=ABC &p6=ABCD &p7=1")},
+                {O9, "test1", equalTo("https://www.google.com/1/ABC%20/ABC%20?&p4=1&p5=ABC &p6=ABCD+&p7=ABCDE+")},
+                {O9, "test2", equalTo("https://www.google.com/1/ABC%20/ABC%20?&p4=1&p5=ABC &p6=ABCD+&p7=ABCDE+")},
+                {O10, "test1", equalTo("https://www.google.com/1/ABC%20/ABC%20?&p4=1&p5=ABC &p6=ABCD+&p7=ABCDE+")},
+                {O10, "test2", equalTo("https://www.google.com/1/ABC%20/ABC%20?&p4=1&p5=ABC &p6=ABCD+&p7=ABCDE+")},
+                {O11, "test1", equalTo("https://www.google.com/1/ABC%20/ABC%20?&p4=1&p5=ABC &p6=ABCD+&p7=ABCDE")},
+                {O11, "test2", equalTo("https://www.google.com/1/ABC%20/ABC%20?&p4=1&p5=ABC &p6=ABCD+&p7=ABCDE")},
+                {O12, "test1", equalTo("https://www.google.com/1/ABC%20/ABC%20?&p4=1&p5=ABC &p6=ABCD+&p7=ABCDE+")},
+                {O12, "test2", equalTo("https://www.google.com/1/ABC%20/ABC%20?&p4=1&p5=ABC &p6=ABCD+&p7=ABCDE+")},
+                {O13, "test1", equalTo("https://www.google.com/1/ABC%20/ABC%20?&p4=1&p5=ABC &p6=ABCD+&p7=ABCDE+")},
+                {O13, "test2", equalTo("https://www.google.com/1/ABC%20/ABC%20?&p4=1&p5=ABC &p6=ABCD+&p7=ABCDE+")},
+                {O14, "test1", equalTo("https://www.google.com/1/ABC%20/ABC%20?&p4=1&p5=ABC &p6=ABCD+&p7=ABCDE")},
+                {O14, "test2", equalTo("https://www.google.com/1/ABC%20/ABC%20?&p4=1&p5=ABC &p6=ABCD+&p7=ABCDE")},
         };
     }
 
@@ -128,7 +146,7 @@ public class NavigationHookTest extends BaseWebDriverTest {
         var command = getCurrentCommand();
         command.get().accept(wrappedWebDriver.getWrappedDriver());
         assertThat(((MockWebDriver) seleniumSteps.getWrappedDriver()).lastNavigationURLAsIs,
-                equalTo("https://www.google.com/1/ABC%20/ABC%20?&p4=1&p5=ABC &p6=ABCD+&p7=ABCDE+"));
+                equalTo("https://www.google.com/1/ABC%20/ABC%20?&p4=1&p5=ABC &p6=ABCD+&p7=1"));
 
         hook.executeMethodHook(m2, O4, new Random().nextBoolean());
         command = getCurrentCommand();
@@ -138,7 +156,7 @@ public class NavigationHookTest extends BaseWebDriverTest {
 
         command.get().accept(wrappedWebDriver.getWrappedDriver());
         assertThat(((MockWebDriver) seleniumSteps.getWrappedDriver()).lastNavigationURLAsIs,
-                equalTo("https://github.com.рф:100/1/ABC%20/ABC%20?&p4=1&p5=ABC &p6=ABCD+&p7=ABCDE+"));
+                equalTo("https://github.com.рф:100/1/ABC%20/ABC%20?&p4=1&p5=ABC &p6=ABCD+&p7=1"));
     }
 
     @Test(dataProvider = "data4")

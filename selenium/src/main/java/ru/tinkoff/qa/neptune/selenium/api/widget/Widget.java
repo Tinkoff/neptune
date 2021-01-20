@@ -7,6 +7,7 @@ import java.util.List;
 
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.selenium.api.widget.Priority.LOWEST;
@@ -51,6 +52,35 @@ public abstract class Widget implements WrapsElement, SearchContext, HasAttribut
     @Override
     public WebElement getWrappedElement() {
         return (WebElement) wrappedElement;
+    }
+
+    /**
+     * Returns wrapped WebDriver
+     *
+     * @return wrapped WebDriver
+     */
+    protected WebDriver getDriver() {
+        var e = getWrappedElement();
+        if (e instanceof WrapsDriver) {
+            return ((WrapsDriver) e).getWrappedDriver();
+        }
+        return null;
+    }
+
+    /**
+     * Returns wrapped js executor
+     *
+     * @return wrapped js executor
+     */
+    protected JavascriptExecutor js() {
+        return ofNullable(getDriver())
+                .map(webDriver -> {
+                    if (webDriver instanceof JavascriptExecutor) {
+                        return (JavascriptExecutor) webDriver;
+                    }
+                    return null;
+                })
+                .orElse(null);
     }
 
     @Override

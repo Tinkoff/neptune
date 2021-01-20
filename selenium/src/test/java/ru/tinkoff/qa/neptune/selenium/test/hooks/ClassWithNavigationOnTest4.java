@@ -19,9 +19,9 @@ public class ClassWithNavigationOnTest4 {
 
     @BrowserUrlVariable(name = "parameter2")
     private final String p2 = "ABC ";
-    @BrowserUrlVariable(name = "parameter5", field = "p5", toEncodeForQueries = false)
-    @BrowserUrlVariable(name = "parameter6", field = "p6")
-    @BrowserUrlVariable(field = "p7")
+    @BrowserUrlVariable(name = "parameter5", method = "getP5", toEncodeForQueries = false)
+    @BrowserUrlVariable(name = "parameter6", method = "getP6")
+    @BrowserUrlVariable(method = "getP7")
     private final UrlVarPojo parameter7 = new UrlVarPojo();
 
     @BrowserUrlVariable
@@ -54,6 +54,18 @@ public class ClassWithNavigationOnTest4 {
         @Override
         public String toString() {
             return "ABCDE ";
+        }
+
+        public String getP5() {
+            return p5;
+        }
+
+        public String getP6() {
+            return p6;
+        }
+
+        public int getP7() {
+            return p7;
         }
     }
 }

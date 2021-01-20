@@ -206,6 +206,7 @@ import ru.tinkoff.qa.neptune.selenium.content.management.SwitchToWindow;
 import ru.tinkoff.qa.neptune.selenium.content.management.UseDefaultBrowserContent;
 
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.*;
 import static ru.tinkoff.qa.neptune.selenium.content.management.BrowserContentUsage.FOR_EVERY_TEST_METHOD;
 
 //Над классом определяется дефолтный контент, который следует загружать в каждом тесте
@@ -323,7 +324,8 @@ public class Tezt {
 import ru.tinkoff.qa.neptune.selenium.content.management.SwitchToWindow;
 
 //Обозначает, что переключение в это окно/вкладку произойдет один раз,
-//или будет происходить в каждом тестовом методе или любом методе (тестовом и подготовительном)
+//или будет происходить в каждом тестовом методе, или любом методе - 
+//тестовом и подготовительном (с аннотациями @Before* и @After*),
 //при первом вызове внутри этого метода браузерного шага. 
 //Частота зависит от настройки @UseDefaultBrowserContent
 @SwitchToWindow(url = "https://github.com", title = "Github inc")
@@ -342,6 +344,9 @@ public class Tezt {
 
 В присутствии данной аннотации первое, что будет происходить — переключение в указанное браузерное окно/вкладку.
 
+Параметры окна/вкладки, указанные в виде аннотации `@SwitchToWindow` над классом, наследуются. Могут быть перекрыты
+использованием аннотации `@SwitchToWindow` в классе-наследнике.
+
 </details>
 
 ### Аннотация @Navigate
@@ -349,7 +354,186 @@ public class Tezt {
 <details>
     <summary>Нажми, чтобы прочесть</summary>
 
+Данная аннотация описывает, какую страницу браузера следует загрузить.
 
+```java
+//@Navigate(to = "https://www.google.com/search?q=test+automation&oq=test+automation")
+//Можно указать полный URL для навигации
+```
+
+```java
+//@Navigate(to = "/search?q=test+automation&oq=test+automation")
+//Можно указать фрагмент относительно того значения, 
+//которое указано в свойстве/переменной окружения BASE_WEB_DRIVER_URL
+```
+
+Для данной аннотации есть интересная опция. Предположим, что описанный выше тест стал параметризованным по следующему
+виду ([TestNg](https://testng.org/doc/documentation-main.html#factories)), и ссылка для навигации теперь не постоянная,
+а зависит от переданных параметров. Тогда
+
+```java
+import ru.tinkoff.qa.neptune.selenium.content.management.BrowserUrlVariable;
+import ru.tinkoff.qa.neptune.selenium.content.management.BrowserUrlVariable;
+import ru.tinkoff.qa.neptune.selenium.content.management.Navigate;
+
+@Navigate(to = "/{parameter1}/{parameter2}?&p3={parameter3}")
+//переменные указываются в {}
+//Класс должен иметь поля, над которыми проставлены аннотации @BrowserUrlVariable.
+//В этих аннотациях должны встречаться все перечисленные переменные, и не более 1 раза
+//на все поля в рамках класса.
+public class Tezt {
+
+    //Название переменной должно встречаться в шаблоне, указанном аннотацией @Navigate,
+    //чтобы значение поля попало в ссылку для навигации или ее фрагмент
+    @BrowserUrlVariable(name = "parameter1")
+    private final int p1;
+
+    @BrowserUrlVariable(name = "parameter2")
+    private final String p2;
+
+    @BrowserUrlVariable(name = "parameter3")
+    private final String p3;
+
+    @Factory(dataProvider = "dp")
+    public Tezz(int p1, String p2, String p3) {
+        this.p1 = p1;
+        this.p2 = p2;
+        this.p3 = p3;
+    }
+
+    @DataProvider
+    static public Object[][] dp() {
+        return new Object[][]{
+                //случайные данные или данные полученные, например,
+                //из БД или из ответа от API сервиса
+        };
+    }
+
+
+}
+```
+
+На самом деле, модификатор поля `final` не обязателен. Примеры ниже.
+
+```java
+import ru.tinkoff.qa.neptune.selenium.content.management.BrowserUrlVariable;
+import ru.tinkoff.qa.neptune.selenium.content.management.BrowserUrlVariable;
+import ru.tinkoff.qa.neptune.selenium.content.management.Navigate;
+
+@Navigate(to = "/{parameter1}/{parameter2}?&p3={parameter3}")
+public class Tezt {
+
+    //Название переменной должно встречаться в шаблоне, указанном аннотацией @Navigate,
+    //чтобы значение поля попало в ссылку для навигации или ее фрагмент
+    @BrowserUrlVariable(name = "parameter1")
+    private int p1;
+
+    @BrowserUrlVariable(name = "parameter2")
+    private String p2;
+
+    @BrowserUrlVariable(name = "parameter3")
+    private String p3;
+
+    @BeforeClass
+    public void prepare() {
+        p1;//= инициализируем, указываем число, откуда-то взятое
+        p2;//= инициализируем, указываем строку, откуда-то взятую
+        p3;//= инициализируем, указываем строку, откуда-то взятую
+    }
+
+    @Test
+    public void test1() {
+        inBrowser()//страница будет загружена перед выполнением метода `edit`
+                //поля p1, p2, p3 к этому моменту должны быть заполнены        
+                .edit(textField("Some field"), "Some value")
+                .edit(checkBox("Some flag"), true)
+                .click(button("Submit"));
+
+        //далее проверка или дальнейшие действия
+    }
+}
+```
+
+или
+
+```java
+import ru.tinkoff.qa.neptune.selenium.content.management.BrowserUrlVariable;
+import ru.tinkoff.qa.neptune.selenium.content.management.BrowserUrlVariable;
+import ru.tinkoff.qa.neptune.selenium.content.management.Navigate;
+
+public class Tezt {
+
+    //Название переменной должно встречаться в шаблоне, указанном аннотацией @Navigate,
+    //чтобы значение поля попало в ссылку для навигации или ее фрагмент
+    @BrowserUrlVariable(name = "parameter1")
+    private int p1;
+
+    @BrowserUrlVariable(name = "parameter2")
+    private String p2;
+
+    @BrowserUrlVariable(name = "parameter3")
+    private String p3;
+
+    @BeforeClass
+    public void prepare() {
+        p1;//= инициализируем, указываем число, откуда-то взятое
+        p2;//= инициализируем, указываем строку, откуда-то взятую
+        p3;//= инициализируем, указываем строку, откуда-то взятую
+    }
+
+    @Test
+    @Navigate(to = "/{parameter1}/{parameter2}?&p3={parameter3}")
+    public void test1() {
+        inBrowser()//страница будет загружена перед выполнением метода `edit`
+                //поля p1, p2, p3 к этому моменту должны быть заполнены        
+                .edit(textField("Some field"), "Some value")
+                .edit(checkBox("Some flag"), true)
+                .click(button("Submit"));
+
+        //далее проверка или дальнейшие действия
+    }
+}
+```
+
+Не всегда поля класса могут подойти для решения этой задачи. Тогда
+
+```java
+import ru.tinkoff.qa.neptune.selenium.content.management.BrowserUrlVariable;
+import ru.tinkoff.qa.neptune.selenium.content.management.BrowserUrlVariable;
+import ru.tinkoff.qa.neptune.selenium.content.management.Navigate;
+
+public class Tezt {
+
+    @Test
+    @Navigate(to = "/{parameter1}/{parameter2}?&p3={parameter3}")
+    public void test1() {
+        inBrowser()//страница будет загружена перед выполнением метода `edit`
+                //методы getP1, getP2, getP3 к этому моменту должны возвращать валидные значения   
+                .edit(textField("Some field"), "Some value")
+                .edit(checkBox("Some flag"), true)
+                .click(button("Submit"));
+
+        //далее проверка или дальнейшие действия
+    }
+
+    //Название переменной должно встречаться в шаблоне, указанном аннотацией @Navigate,
+    //чтобы возвращаемое методом значение попало в ссылку для навигации или ее фрагмент
+    @BrowserUrlVariable(name = "parameter1")
+    public int getP1() {
+        //расчет и возврат числа
+    }
+
+    @BrowserUrlVariable(name = "parameter2")
+    public String getP2() {
+        //формирование и возврат строки
+    }
+
+    @BrowserUrlVariable(name = "parameter3")
+    public String getP3() {
+        //формирование и возврат строки
+    }
+}
+```
 
 </details>
 
@@ -399,7 +583,8 @@ public class Tezt {
 import ru.tinkoff.qa.neptune.selenium.content.management.SwitchToFrame;
 
 //Обозначает, что переключение в этот фрейм произойдет один раз,
-//или будет происходить в каждом тестовом методе или любом методе (тестовом и подготовительном)
+//или будет происходить в каждом тестовом методе, или любом методе - 
+//тестовом и подготовительном (с аннотациями @Before* и @After*),
 //при первом вызове внутри этого метода браузерного шага. 
 //Частота зависит от настройки @UseDefaultBrowserContent
 @SwitchToFrame(index = 1)
@@ -419,6 +604,9 @@ public class Tezt {
 Если указаны аннотации `@SwitchToFrame` и/или `SwitchToWindow`/`@Navigate`, то переключение фо фрейм произойдет после
 переключения в окно/вкладку и навигации на нужную страницу.
 
+Параметры фрейма(ов), указанные в виде аннотаций `@SwitchToFrame` над классом, наследуются. Могут быть перекрыты
+использованием аннотаций `@SwitchToFrame` в классе-наследнике.
+
 </details>
 
 ### Аннотация @UseDefaultBrowserContent
@@ -434,6 +622,7 @@ public class Tezt {
 import ru.tinkoff.qa.neptune.selenium.content.management.Navigate;
 
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.*;
 
 @Navigate(to = "/some/path") //переход по ссылке произойдет один раз
 //Эквивалентный вариант - UseDefaultBrowserContent(howOften = ONCE)
@@ -442,13 +631,13 @@ public class Tezzt {
     //некая подготовка данных в браузере
     @BeforeClass
     public void beforeClass() {
-        inBrowser() //навигация на нужную страницу произойдет здесь
+        inBrowser() //навигация на нужную страницу /some/path произойдет здесь
                 .edit(textField("Some field"), "Some value")
                 .edit(checkBox("Some flag"), true);
         //далеедальнейшие действия
     }
 
-    @Test 
+    @Test
     public void test1() {
         inBrowser() //остаемся на загруженной/измененной ранее странице
                 .edit(textField("Some field2"), "Some value2")
@@ -468,5 +657,172 @@ public class Tezzt {
 }
 
 ```
+
+```java
+import ru.tinkoff.qa.neptune.selenium.content.management.Navigate;
+import ru.tinkoff.qa.neptune.selenium.content.management.UseDefaultBrowserContent;
+
+import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.*;
+import static ru.tinkoff.qa.neptune.selenium.content.management.BrowserContentUsage.FOR_EVERY_TEST_METHOD;
+
+@Navigate(to = "/some/path")
+@UseDefaultBrowserContent(howOften = FOR_EVERY_TEST_METHOD) //означает, что указанные в шапке параметры
+//применимы для всех тестовых методов.
+public class Tezzt {
+
+    //некая подготовка данных в браузере
+    @BeforeClass
+    //@Navigate(to = "/some/other/path")
+    public void beforeClass() {
+        inBrowser() //навигация на нужную страницу /some/path здесь не произойдет
+                .edit(textField("Some field"), "Some value")
+                .edit(checkBox("Some flag"), true);
+        //далеедальнейшие действия
+    }
+
+    @Test
+    public void test1() {
+        inBrowser() //навигация на нужную страницу /some/path произойдет здесь
+                .edit(textField("Some field2"), "Some value2")
+                .edit(checkBox("Some flag2"), true)
+                .click(button("Submit2"));
+
+        //далее проверка или дальнейшие действия
+    }
+
+    @Test
+    public void test2() {
+        inBrowser() //навигация на нужную страницу /some/path произойдет здесь
+                .edit(textField("Some field3"), "Some value3")
+                .edit(radioButton("Some flag3"), true)
+                .click(button("Submit3"));
+    }
+}
+
+```
+
+```java
+import ru.tinkoff.qa.neptune.selenium.content.management.Navigate;
+import ru.tinkoff.qa.neptune.selenium.content.management.UseDefaultBrowserContent;
+
+import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.*;
+import static ru.tinkoff.qa.neptune.selenium.content.management.BrowserContentUsage.FOR_EVERY_METHOD;
+
+@Navigate(to = "/some/path")
+@UseDefaultBrowserContent(howOften = FOR_EVERY_METHOD) //означает, что указанные в шапке параметры
+//применимы для всех методов, как тестовых, так и конфигурационных (с аннотациями @Before* и @After*).
+public class Tezzt {
+
+    //некая подготовка данных в браузере
+    @BeforeClass
+    public void beforeClass() {
+        inBrowser() //навигация на нужную страницу /some/path произойдет здесь
+                .edit(textField("Some field"), "Some value")
+                .edit(checkBox("Some flag"), true);
+
+        //далеедальнейшие действия
+    }
+
+    @Test
+    public void test1() {
+        inBrowser() //навигация на нужную страницу /some/path произойдет здесь
+                .edit(textField("Some field2"), "Some value2")
+                .edit(checkBox("Some flag2"), true)
+                .click(button("Submit2"));
+
+        //далее проверка или дальнейшие действия
+    }
+
+    @Test
+    public void test2() {
+        inBrowser() //навигация на нужную страницу /some/path произойдет здесь
+                .edit(textField("Some field3"), "Some value3")
+                .edit(radioButton("Some flag3"), true)
+                .click(button("Submit3"));
+    }
+}
+
+```
+
+Частота использования дефолтного контента (параметр `howOften`) может зависеть от:
+
+- что этот тест из себя представляет — набор атомарных тестов, сгруппированных в классе, или это пользовательская
+  история, и тесты в этом классе зависят один от другого
+
+- всем ли методам (тестовым, конфигурационным), для которых необходим браузер, нужно работать с исходным контентом, или
+  они последовательно выполняются на одной и той же странице, меняя ее содержимое.
+
+- как вариант: тесты могут открывать браузер удаленно с использованием `selenoid` и `selenium grid`. Тогда нужно
+  учитывать, как много промежуточных действий в рамках одного класса с тестами, для которых браузер не нужен. И как
+  долго эти действия выполняются.
+
+Так же параметра контента по умолчанию могут как использоваться самостоятельно и игнорироваться, если над методом
+указаны параметры специфического для него контента, так и дополнять специфические для метода параметры.
+
+```java
+import ru.tinkoff.qa.neptune.selenium.content.management.Navigate;
+import ru.tinkoff.qa.neptune.selenium.content.management.SwitchToFrame;
+import ru.tinkoff.qa.neptune.selenium.content.management.UseDefaultBrowserContent;
+
+import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.*;
+import static ru.tinkoff.qa.neptune.selenium.content.management.BrowserContentUsage.FOR_EVERY_TEST_METHOD;
+
+@Navigate(to = "/some/path")
+@UseDefaultBrowserContent(howOften = FOR_EVERY_TEST_METHOD, //означает, что указанные в шапке параметры
+        //применимы для всех тестовых методов.
+        addNavigationParams = true)
+//для методов, над которыми присутствуют аннотации @SwitchToFrame и/или @SwitchToWindow
+//но не указаны параметры навигации в виде @Navigate, будет применен параметр навигации, указанный над классом.
+public class Tezzt {
+
+    @Test
+    @Navigate(to = "/some/other/path")
+    public void test1() {
+        inBrowser() //навигация на /some/other/path произойдет здесь
+                .edit(textField("Some field"), "Some value")
+                .edit(checkBox("Some flag"), true)
+                .click(button("Submit"));
+
+        //далее проверка или дальнейшие действия
+    }
+
+    @Test
+    @SwitchToFrame(index = 1)
+    public void test2() {
+        inBrowser()//навигация на нужную страницу /some/path произойдет здесь,
+                //затем произойдет переключение во фрейм, указанный над методом
+                .edit(textField("Some field2"), "Some value2")
+                .edit(checkBox("Some flag2"), true)
+                .click(button("Submit2"));
+
+        //далее проверка или дальнейшие действия
+    }
+
+    @Test
+    @SwitchToFrame(index = 2)
+    public void test3() {
+        inBrowser() //навигация на нужную страницу /some/path произойдет здесь
+                //затем произойдет переключение во фрейм, указанный над методом
+                .edit(textField("Some field3"), "Some value3")
+                .edit(radioButton("Some flag3"), true)
+                .click(button("Submit3"));
+    }
+}
+
+```
+
+Кроме `addNavigationParams` так же существуют:
+
+- `addWindowParams` - дополнение специфических параметров контента, указанных над методами, параметрами окна/вкладки,
+  которые указаны над классом
+
+- `addFrameParams`  - дополнение специфических параметров контента, указанных над методами, параметрами фрейма, которые
+  указаны над классом
+
+Параметры, указанные в виде аннотации `@UseDefaultBrowserContent` над классом, наследуются. Могут быть перекрыты
+использованием аннотации `@UseDefaultBrowserContent` в классе-наследнике.
 
 </details>
