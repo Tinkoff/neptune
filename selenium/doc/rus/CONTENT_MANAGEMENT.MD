@@ -1,14 +1,18 @@
 # Переключение контента/управление контентом
 
-Важная информация: [Хуки](./../../../core.api/doc/rus/HOOKS.MD)
+Важная информация: 
+
+- [Хуки](./../../../core.api/doc/rus/HOOKS.MD)
+- [Настройки. BASE_WEB_DRIVER_URL](./SETTINGS.MD#base_web_driver_url)  
+- [Работа с окнами/вкладками браузера](./WINDOWS.MD)  
+- [Навигация по страницам](./NAVIGATION.MD)
+- [Переключение во фреймы](./FRAMES.MD)
 
 Интеграции в фреймворками для запуска тестов, которые поддерживаю хуки:
 
 - [Testng](./../../../testng.integration/doc/rus/README.MD)
--
-JUnit5. [Интеграция с JUnit 5 не реализована, задача на реализацию](https://github.com/TinkoffCreditSystems/neptune/issues/31)
-- Cucumber
-  JVM. [Интеграция с Cucumber JVM не реализована, задача на реализацию](https://github.com/TinkoffCreditSystems/neptune/issues/32)
+- JUnit5. [Интеграция с JUnit 5 не реализована, задача на реализацию](https://github.com/TinkoffCreditSystems/neptune/issues/31)
+- Cucumber JVM. [Интеграция с Cucumber JVM не реализована, задача на реализацию](https://github.com/TinkoffCreditSystems/neptune/issues/32)
 
 Как правило, приложения имеют множество форм. Чтобы на них попасть, надо выполнять навигацию по страницам, менять
 активное окно/вкладку браузера, переключаться в различные фреймы. Ниже, на примерах, разобраны задачи управления
@@ -189,7 +193,7 @@ public class Tezt {
   закрывается спустя какое-то время из-за отсутствия активности. Такая ситуация возможна когда удаленное окружение
   настроено соответствующим образом (так было надо) и между `prepare()` и тестовым методом, требующим открытый браузер,
   выполнялись подготовительные методы или тесты, которым браузер был не нужен, и их выполнение заняло продолжительное
-  время. Если такое случилось, возможно переоткрыть браузер, но и авторизоваться тоже придется заново.
+  время.
 
 - недостатки, которые вы сами могли бы добавить...
 
@@ -257,7 +261,7 @@ public class Tezt {
     @SwitchToWindow(index = 0) //указываем в какое браузерное окно следует переключаться
     @Navigate(to = "/some/path") //т.к. в шапке класса мы не указывали, нужно ли применять параметры навигации 
     //для специфического для теста контента в тех случаях, когда навигация не указана,
-    //то нужно нужно повторить @SwitchToWindow(index = 0)
+    //то нужно нужно повторить @Navigate(to = "/some/path")
     //В данном случае, `test3` нам мешает использовать дефолтный URL для навигации
     //А переключение во фрейм `@SwitchToFrame(index = 0)` произойдет. Для данного контента фрейм не указан
     public void test4() {
@@ -299,7 +303,7 @@ public class Tezt {
 
 ```java
 //@SwitchToWindow(index = 1, url = "https://github.com", title = "Github inc") 
-//Комбинация всех вариантов выше. Т.е. переключиться во переключиться во второе окно, когда/если в нем 
+//Комбинация всех вариантов выше. Т.е. переключиться во второе окно, когда/если в нем 
 //загружена страница https://github.com с заголовком Github inc
 ```
 
@@ -355,17 +359,39 @@ public class Tezt {
 Данная аннотация описывает, какую страницу браузера следует загрузить.
 
 ```java
-//@Navigate(to = "https://www.google.com/search?q=test+automation&oq=test+automation")
+//@Navigate(to = "https://www.google.com/search?q=test+automation")
 //Можно указать полный URL для навигации
 ```
 
 ```java
-//@Navigate(to = "/search?q=test+automation&oq=test+automation")
+//@Navigate(to = "/search?q=test+automation")
 //Можно указать фрагмент относительно того значения, 
 //которое указано в свойстве/переменной окружения BASE_WEB_DRIVER_URL
 ```
 
-Для данной аннотации есть интересная опция. Предположим, что описанный выше тест стал параметризованным по следующему
+```java
+import ru.tinkoff.qa.neptune.selenium.content.management.Navigate;
+
+//Обозначает, что навигация по указанной в классе ссылке произойдет один раз,
+//или будет происходить в каждом тестовом методе, или любом методе - 
+//тестовом и подготовительном (с аннотациями @Before* и @After*),
+//при первом вызове внутри этого метода браузерного шага. 
+//Частота зависит от настройки @UseDefaultBrowserContent
+@Navigate(to = "/search?q=test+automation")
+public class Tezt {
+
+    //Специфическая ссылка для данного теста
+    //данную аннотацию можно применять и к подготовительному методу, если для него нужен браузер
+    @Test
+    @Navigate(to = "/search?q=quality+assurance")
+    public void test1() {
+
+    }
+
+}
+```
+
+Для данной аннотации есть интересная опция. Предположим, что описанный в главах выше тест стал параметризованным по следующему
 виду ([TestNg](https://testng.org/doc/documentation-main.html#factories)), и ссылка для навигации теперь не постоянная,
 а зависит от переданных параметров. Тогда
 
@@ -374,7 +400,7 @@ import ru.tinkoff.qa.neptune.selenium.content.management.BrowserUrlVariable;
 import ru.tinkoff.qa.neptune.selenium.content.management.BrowserUrlVariable;
 import ru.tinkoff.qa.neptune.selenium.content.management.Navigate;
 
-@Navigate(to = "/{parameter1}/{parameter2}?&p3={parameter3}")
+@Navigate(to = "/{parameter1}/{parameter2}?p3={parameter3}")
 //переменные указываются в {}
 //Класс должен иметь поля, над которыми проставлены аннотации @BrowserUrlVariable.
 //В этих аннотациях должны встречаться все перечисленные переменные, и не более 1 раза
@@ -418,7 +444,7 @@ import ru.tinkoff.qa.neptune.selenium.content.management.BrowserUrlVariable;
 import ru.tinkoff.qa.neptune.selenium.content.management.BrowserUrlVariable;
 import ru.tinkoff.qa.neptune.selenium.content.management.Navigate;
 
-@Navigate(to = "/{parameter1}/{parameter2}?&p3={parameter3}")
+@Navigate(to = "/{parameter1}/{parameter2}?p3={parameter3}")
 public class Tezt {
 
     //Название переменной должно встречаться в шаблоне, указанном аннотацией @Navigate,
@@ -480,7 +506,7 @@ public class Tezt {
     }
 
     @Test
-    @Navigate(to = "/{parameter1}/{parameter2}?&p3={parameter3}")
+    @Navigate(to = "/{parameter1}/{parameter2}?p3={parameter3}")
     public void test1() {
         inBrowser()//страница будет загружена перед выполнением метода `edit`
                 //поля p1, p2, p3 к этому моменту должны быть заполнены        
@@ -503,7 +529,7 @@ import ru.tinkoff.qa.neptune.selenium.content.management.Navigate;
 public class Tezt {
 
     @Test
-    @Navigate(to = "/{parameter1}/{parameter2}?&p3={parameter3}")
+    @Navigate(to = "/{parameter1}/{parameter2}?p3={parameter3}")
     public void test1() {
         inBrowser()//страница будет загружена перед выполнением метода `edit`
                 //методы getP1, getP2, getP3 к этому моменту должны возвращать валидные значения   
@@ -589,7 +615,7 @@ import ru.tinkoff.qa.neptune.selenium.content.management.BrowserUrlVariable;
 import ru.tinkoff.qa.neptune.selenium.content.management.BrowserUrlVariable;
 import ru.tinkoff.qa.neptune.selenium.content.management.Navigate;
 
-@Navigate(to = "/{parameter1}/{parameter2}?&p3={parameter3}")
+@Navigate(to = "/{parameter1}/{parameter2}?p3={parameter3}")
 public class Tezt {
 
     //Название переменной должно встречаться в шаблоне, указанном аннотацией @Navigate,
@@ -621,20 +647,18 @@ import ru.tinkoff.qa.neptune.selenium.content.management.BrowserUrlVariable;
 import ru.tinkoff.qa.neptune.selenium.content.management.Navigate;
 
 public class Tezt {
-
-    //Название переменной должно встречаться в шаблоне, указанном аннотацией @Navigate,
-    //чтобы значение поля попало в ссылку для навигации или ее фрагмент
+    
     @BrowserUrlVariable
-    private int parameter1; //Название поля должно совпадать с названием одной из переменной в шаблоне, 
+    private int parameter1; //Название поля должно совпадать с названием одной из переменных в шаблоне, 
     // указанном аннотацией @Navigate,
     //чтобы значение поля попало в ссылку для навигации или ее фрагмент
 
     @BrowserUrlVariable
-    private String parameter2;  //Название поля должно совпадать с названием одной из переменной в шаблоне, 
+    private String parameter2;  //Название поля должно совпадать с названием одной из переменных в шаблоне, 
     // указанном аннотацией @Navigate,
     //чтобы значение поля попало в ссылку для навигации или ее фрагмент
 
-    //Название метода должно совпадать с названием одной из переменной в шаблоне, 
+    //Название метода должно совпадать с названием одной из переменных в шаблоне, 
     // указанном аннотацией @Navigate,
     //чтобы значение, которое он возвращает, попало в ссылку для навигации или ее фрагмент
     @BrowserUrlVariable
@@ -643,10 +667,10 @@ public class Tezt {
     }
 
     @Test
-    @Navigate(to = "/{parameter1}/{parameter2}?&p3={parameter3}")
+    @Navigate(to = "/{parameter1}/{parameter2}?p3={parameter3}")
     public void test1() {
         inBrowser()//страница будет загружена перед выполнением метода `edit`
-                //поля parameter1, parameter2, к этому моменту должны быть заполнены 
+                //поля parameter1, parameter2 к этому моменту должны быть заполнены 
                 //метод parameter3 к этому моменту должен возвращать значение, отличное от null
                 .edit(textField("Some field"), "Some value")
                 .edit(checkBox("Some flag"), true)
@@ -672,7 +696,7 @@ public class Tezt {
     private String p3;
 
     @Test
-    @Navigate(to = "/{parameter1}/{parameter2}?&p3={parameter3}")
+    @Navigate(to = "/{parameter1}/{parameter2}?p3={parameter3}")
     public void test1() {
     }
 }
@@ -688,19 +712,19 @@ import ru.tinkoff.qa.neptune.selenium.content.management.Navigate;
 @Navigate(to = "/{p2}/{p1}?&p3={p3}")
 public class Tezt {
 
-    @BrowserUrlVariable(name = "p1") //значение подставится в тот шаблон, где есть {p1}, 
+    @BrowserUrlVariable(name = "p1") //значение подставится в шаблон, где есть {p1}, 
     // в тот момент, когда будет происходить навигация по ссылке, указанной над классом
-    @BrowserUrlVariable(name = "parameter1") //значение подставится в тот шаблон, где есть {parameter1}, 
+    @BrowserUrlVariable(name = "parameter1") //значение подставится в шаблон, где есть {parameter1}, 
     // в тот момент, когда будет происходить навигация по ссылке, указанной над методом test1
     private int value1;
 
-    @BrowserUrlVariable(name = "p2") //значение подставится в тот шаблон, где есть {p2}
+    @BrowserUrlVariable(name = "p2") //значение подставится в шаблон, где есть {p2}
     // в тот момент, когда будет происходить навигация по ссылке, указанной над классом
-    @BrowserUrlVariable(name = "parameter2") //значение подставится в тот шаблон, где есть {parameter2}, 
+    @BrowserUrlVariable(name = "parameter2") //значение подставится в шаблон, где есть {parameter2}, 
     // в тот момент, когда будет происходить навигация по ссылке, указанной над методом test1
     private String value2;
 
-    @BrowserUrlVariable(name = "p3") //значение подставится в тот шаблон, где есть {p3}
+    @BrowserUrlVariable(name = "p3") //значение подставится в шаблон, где есть {p3}
     // в тот момент, когда будет происходить навигация по ссылке, указанной над классом
     @BrowserUrlVariable(name = "parameter3", toEncodeForQueries = false) //значение подставится в тот шаблон,
     // где есть {parameter3}, 
@@ -710,7 +734,7 @@ public class Tezt {
     }
 
     @Test
-    @Navigate(to = "/{parameter1}/{parameter2}?&p3={parameter3}")
+    @Navigate(to = "/{parameter1}/{parameter2}?p3={parameter3}")
     public void test1() {
 
     }
@@ -727,21 +751,21 @@ import ru.tinkoff.qa.neptune.selenium.content.management.Navigate;
 @Navigate(to = "/{p2}/{p1}?&p3={p3}")
 public class Tezt {
 
-    @BrowserUrlVariable //(!!!) //значение подставится в тот шаблон, где есть {p1}, 
+    @BrowserUrlVariable //(!!!) //значение подставится в шаблон, где есть {p1}, 
     // в тот момент, когда будет происходить навигация по ссылке, указанной над классом
-    @BrowserUrlVariable(name = "parameter1")  //значение подставится в тот шаблон, где есть {parameter1}, 
+    @BrowserUrlVariable(name = "parameter1")  //значение подставится в шаблон, где есть {parameter1}, 
     // в тот момент, когда будет происходить навигация по ссылке, указанной над методом test1
     private int p1;
 
-    @BrowserUrlVariable //(!!!) //значение подставится в тот шаблон, где есть {p2}
+    @BrowserUrlVariable //(!!!) //значение подставится в шаблон, где есть {p2}
     // в тот момент, когда будет происходить навигация по ссылке, указанной над классом
-    @BrowserUrlVariable(name = "parameter2") //значение подставится в тот шаблон, где есть {parameter2}, 
+    @BrowserUrlVariable(name = "parameter2") //значение подставится в шаблон, где есть {parameter2}, 
     // в тот момент, когда будет происходить навигация по ссылке, указанной над методом test1
     private String p2;
 
-    @BrowserUrlVariable //(!!!) //значение подставится в тот шаблон, где есть {p3}
+    @BrowserUrlVariable //(!!!) //значение подставится в шаблон, где есть {p3}
     // в тот момент, когда будет происходить навигация по ссылке, указанной над классом
-    @BrowserUrlVariable(name = "parameter3", toEncodeForQueries = false) //значение подставится в тот шаблон, 
+    @BrowserUrlVariable(name = "parameter3", toEncodeForQueries = false) //значение подставится в шаблон, 
     // где есть {parameter3}, 
     // в тот момент, когда будет происходить навигация по ссылке, указанной над методом test1
     private String p3() {
@@ -749,7 +773,7 @@ public class Tezt {
     }
 
     @Test
-    @Navigate(to = "/{parameter1}/{parameter2}?&p3={parameter3}")
+    @Navigate(to = "/{parameter1}/{parameter2}?p3={parameter3}")
     public void test1() {
     }
 }
@@ -790,8 +814,8 @@ public class Tezt {
     private int p1;
 
     @BrowserUrlVariable(method = "getParameter2") //(!!!) //значение, возвращенное методом getParameter2, 
-    // подставится в тот шаблон, где есть {p2} в тот момент, когда будет происходить навигация по ссылке, указанной над классом
-    @BrowserUrlVariable(name = "parameter2") //значение подставится в тот шаблон, где есть {parameter2}, 
+    // подставится в шаблон, где есть {p2} в тот момент, когда будет происходить навигация по ссылке, указанной над классом
+    @BrowserUrlVariable(name = "parameter2") //значение подставится в шаблон, где есть {parameter2}, 
     // в тот момент, когда будет происходить навигация по ссылке, указанной над методом test1
     private MyPojo p2;
 
@@ -802,7 +826,7 @@ public class Tezt {
     }
 
     @Test
-    @Navigate(to = "/{parameter1}/{parameter2}?&p3={parameter3}")
+    @Navigate(to = "/{parameter1}/{parameter2}?p3={parameter3}")
     public void test1() {
     }
 }
@@ -879,7 +903,7 @@ public class Tezt {
 }
 ```
 
-Если указаны аннотации `@SwitchToFrame` и/или `SwitchToWindow`/`@Navigate`, то переключение фо фрейм произойдет после
+Если указаны аннотации `@SwitchToFrame` и/или `SwitchToWindow`/`@Navigate`, то переключение во фрейм произойдет после
 переключения в окно/вкладку и навигации на нужную страницу.
 
 Параметры фрейма(ов), указанные в виде аннотаций `@SwitchToFrame` над классом, наследуются. Могут быть перекрыты
@@ -1036,7 +1060,7 @@ public class Tezzt {
   учитывать, как много промежуточных действий в рамках одного класса с тестами, для которых браузер не нужен. И как
   долго эти действия выполняются.
 
-Так же параметра контента по умолчанию могут как использоваться самостоятельно и игнорироваться, если над методом
+Так же параметры контента по умолчанию могут как использоваться самостоятельно и игнорироваться, если над методом
 указаны параметры специфического для него контента, так и дополнять специфические для метода параметры.
 
 ```java
@@ -1082,7 +1106,7 @@ public class Tezzt {
     @Test
     @SwitchToFrame(index = 2)
     public void test3() {
-        inBrowser() //навигация на нужную страницу /some/path произойдет здесь
+        inBrowser() //навигация на нужную страницу /some/path произойдет здесь,
                 //затем произойдет переключение во фрейм, указанный над методом
                 .edit(textField("Some field3"), "Some value3")
                 .edit(radioButton("Some flag3"), true)
@@ -1108,5 +1132,5 @@ public class Tezzt {
 ## Логин/аутентификация и управление контента
 
 Описанный механизм [логина/аутентификации](./LOGIN_IN_BROWSER.MD) не конфликтует с описанным выше механизмом управления
-тестируемым контентом. Первым будет выполнена попытка логина, следом произойдет попытка загрузки и переключения нужного
+тестируемым контентом. Сначала будет выполнена попытка логина, затем произойдет попытка загрузки и переключения нужного
 контента.
