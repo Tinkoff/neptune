@@ -6,9 +6,7 @@
 
 - [Testng](./../../../testng.integration/doc/rus/README.MD)
 -
-
 JUnit5. [Интеграция с JUnit 5 не реализована, задача на реализацию](https://github.com/TinkoffCreditSystems/neptune/issues/31)
-
 - Cucumber
   JVM. [Интеграция с Cucumber JVM не реализована, задача на реализацию](https://github.com/TinkoffCreditSystems/neptune/issues/32)
 
@@ -535,6 +533,286 @@ public class Tezt {
 }
 ```
 
+Аннотацией `@BrowserUrlVariable` можно отмечать поля и методы класса-теста:
+
+- поля примитивных/primitive wrapper типов
+- методы объектные и статические, которые возвращают значения примитивных/primitive wrapper типов
+- поля типов, отличающихся от примитивных/primitive wrapper. Объекты этих типов должны иметь строковое представление,
+  которое можно использовать в качестве значения параметра URL
+- методы объектные и статические, которые возвращают значения типов, отличающихся от примитивных/primitive wrapper.
+  Объекты этих типов должны иметь строковое представление, которое можно использовать в качестве значения параметра URL
+
+Можно ли использовать _get*_ методы объектов POJO? Можно!
+
+```java
+public static class MyPojo {
+
+    private String parameter1;
+
+    private String parameter2;
+
+    private String parameter3;
+
+    public MyPojo setParameter1(String parameter1) {
+        this.parameter1 = parameter1;
+        return this;
+    }
+
+    public String getParameter1() {
+        return parameter1;
+    }
+
+    public MyPojo setParameter2(String parameter2) {
+        this.parameter2 = parameter2;
+        return this;
+    }
+
+    public String getParameter2() {
+        return parameter2;
+    }
+
+    public MyPojo setParameter3(String parameter3) {
+        this.parameter3 = parameter3;
+        return this;
+    }
+
+    public String getParameter3() {
+        return parameter2;
+    }
+}
+```
+
+И тогда
+
+```java
+import ru.tinkoff.qa.neptune.selenium.content.management.BrowserUrlVariable;
+import ru.tinkoff.qa.neptune.selenium.content.management.BrowserUrlVariable;
+import ru.tinkoff.qa.neptune.selenium.content.management.Navigate;
+
+@Navigate(to = "/{parameter1}/{parameter2}?&p3={parameter3}")
+public class Tezt {
+
+    //Название переменной должно встречаться в шаблоне, указанном аннотацией @Navigate,
+    //чтобы значение, возвращенное методом объекта MyPojo, попало в ссылку для навигации или ее фрагмент
+    @BrowserUrlVariable(name = "parameter1", method = "getParameter1")
+    @BrowserUrlVariable(name = "parameter2", method = "getParameter2")
+    @BrowserUrlVariable(name = "parameter3", method = "getParameter3")
+    private MyPojo pojo;
+
+    @Test
+    public void test1() {
+        inBrowser()//страница будет загружена перед выполнением метода `edit`
+                //поле pojo к этому моменту должно быть проинициализировано, 
+                //а методы должны возвращать значения, отличные от null
+                .edit(textField("Some field"), "Some value")
+                .edit(checkBox("Some flag"), true)
+                .click(button("Submit"));
+
+        //далее проверка или дальнейшие действия
+    }
+}
+```
+
+Всегда ли нужно указывать `@BrowserUrlVariable(name = *)`? Можно не указывать.
+
+```java
+import ru.tinkoff.qa.neptune.selenium.content.management.BrowserUrlVariable;
+import ru.tinkoff.qa.neptune.selenium.content.management.BrowserUrlVariable;
+import ru.tinkoff.qa.neptune.selenium.content.management.Navigate;
+
+public class Tezt {
+
+    //Название переменной должно встречаться в шаблоне, указанном аннотацией @Navigate,
+    //чтобы значение поля попало в ссылку для навигации или ее фрагмент
+    @BrowserUrlVariable
+    private int parameter1; //Название поля должно совпадать с названием одной из переменной в шаблоне, 
+    // указанном аннотацией @Navigate,
+    //чтобы значение поля попало в ссылку для навигации или ее фрагмент
+
+    @BrowserUrlVariable
+    private String parameter2;  //Название поля должно совпадать с названием одной из переменной в шаблоне, 
+    // указанном аннотацией @Navigate,
+    //чтобы значение поля попало в ссылку для навигации или ее фрагмент
+
+    //Название метода должно совпадать с названием одной из переменной в шаблоне, 
+    // указанном аннотацией @Navigate,
+    //чтобы значение, которое он возвращает, попало в ссылку для навигации или ее фрагмент
+    @BrowserUrlVariable
+    private String parameter3() {
+        //формирование и возврат строки
+    }
+
+    @Test
+    @Navigate(to = "/{parameter1}/{parameter2}?&p3={parameter3}")
+    public void test1() {
+        inBrowser()//страница будет загружена перед выполнением метода `edit`
+                //поля parameter1, parameter2, к этому моменту должны быть заполнены 
+                //метод parameter3 к этому моменту должен возвращать значение, отличное от null
+                .edit(textField("Some field"), "Some value")
+                .edit(checkBox("Some flag"), true)
+                .click(button("Submit"));
+
+        //далее проверка или дальнейшие действия
+    }
+}
+```
+
+Что если в query-части ссылки для навигации параметр не должен быть перекодирован?
+
+```java
+import ru.tinkoff.qa.neptune.selenium.content.management.BrowserUrlVariable;
+import ru.tinkoff.qa.neptune.selenium.content.management.BrowserUrlVariable;
+import ru.tinkoff.qa.neptune.selenium.content.management.Navigate;
+
+public class Tezt {
+
+    @BrowserUrlVariable(name = "parameter3",
+            toEncodeForQueries = false) //Означает, что в query-часть ссылки для навигации 
+    //значение этого поля попадет без изменений
+    private String p3;
+
+    @Test
+    @Navigate(to = "/{parameter1}/{parameter2}?&p3={parameter3}")
+    public void test1() {
+    }
+}
+```
+
+Что если одно и то же поле или один и тот же метод должны использоваться для разных шаблонов ссылки.
+
+```java
+import ru.tinkoff.qa.neptune.selenium.content.management.BrowserUrlVariable;
+import ru.tinkoff.qa.neptune.selenium.content.management.BrowserUrlVariable;
+import ru.tinkoff.qa.neptune.selenium.content.management.Navigate;
+
+@Navigate(to = "/{p2}/{p1}?&p3={p3}")
+public class Tezt {
+
+    @BrowserUrlVariable(name = "p1") //значение подставится в тот шаблон, где есть {p1}, 
+    // в тот момент, когда будет происходить навигация по ссылке, указанной над классом
+    @BrowserUrlVariable(name = "parameter1") //значение подставится в тот шаблон, где есть {parameter1}, 
+    // в тот момент, когда будет происходить навигация по ссылке, указанной над методом test1
+    private int value1;
+
+    @BrowserUrlVariable(name = "p2") //значение подставится в тот шаблон, где есть {p2}
+    // в тот момент, когда будет происходить навигация по ссылке, указанной над классом
+    @BrowserUrlVariable(name = "parameter2") //значение подставится в тот шаблон, где есть {parameter2}, 
+    // в тот момент, когда будет происходить навигация по ссылке, указанной над методом test1
+    private String value2;
+
+    @BrowserUrlVariable(name = "p3") //значение подставится в тот шаблон, где есть {p3}
+    // в тот момент, когда будет происходить навигация по ссылке, указанной над классом
+    @BrowserUrlVariable(name = "parameter3", toEncodeForQueries = false) //значение подставится в тот шаблон,
+    // где есть {parameter3}, 
+    // в тот момент, когда будет происходить навигация по ссылке, указанной над методом test1
+    private String value3() {
+        //формирование и возврат строки
+    }
+
+    @Test
+    @Navigate(to = "/{parameter1}/{parameter2}?&p3={parameter3}")
+    public void test1() {
+
+    }
+}
+```
+
+Так тоже можно
+
+```java
+import ru.tinkoff.qa.neptune.selenium.content.management.BrowserUrlVariable;
+import ru.tinkoff.qa.neptune.selenium.content.management.BrowserUrlVariable;
+import ru.tinkoff.qa.neptune.selenium.content.management.Navigate;
+
+@Navigate(to = "/{p2}/{p1}?&p3={p3}")
+public class Tezt {
+
+    @BrowserUrlVariable //(!!!) //значение подставится в тот шаблон, где есть {p1}, 
+    // в тот момент, когда будет происходить навигация по ссылке, указанной над классом
+    @BrowserUrlVariable(name = "parameter1")  //значение подставится в тот шаблон, где есть {parameter1}, 
+    // в тот момент, когда будет происходить навигация по ссылке, указанной над методом test1
+    private int p1;
+
+    @BrowserUrlVariable //(!!!) //значение подставится в тот шаблон, где есть {p2}
+    // в тот момент, когда будет происходить навигация по ссылке, указанной над классом
+    @BrowserUrlVariable(name = "parameter2") //значение подставится в тот шаблон, где есть {parameter2}, 
+    // в тот момент, когда будет происходить навигация по ссылке, указанной над методом test1
+    private String p2;
+
+    @BrowserUrlVariable //(!!!) //значение подставится в тот шаблон, где есть {p3}
+    // в тот момент, когда будет происходить навигация по ссылке, указанной над классом
+    @BrowserUrlVariable(name = "parameter3", toEncodeForQueries = false) //значение подставится в тот шаблон, 
+    // где есть {parameter3}, 
+    // в тот момент, когда будет происходить навигация по ссылке, указанной над методом test1
+    private String p3() {
+        //формирование и возврат строки
+    }
+
+    @Test
+    @Navigate(to = "/{parameter1}/{parameter2}?&p3={parameter3}")
+    public void test1() {
+    }
+}
+```
+
+Можно усложнить кейс выше использованием POJO с вызовом его _get*_ метода
+
+```java
+public static class MyPojo {
+
+    private String parameter2;
+
+    //прочие поля
+
+    public MyPojo setParameter2(String parameter2) {
+        this.parameter2 = parameter2;
+        return this;
+    }
+
+    public String getParameter2() {
+        return parameter2;
+    }
+
+    //прочие методы
+}
+```
+
+```java
+import ru.tinkoff.qa.neptune.selenium.content.management.BrowserUrlVariable;
+import ru.tinkoff.qa.neptune.selenium.content.management.BrowserUrlVariable;
+import ru.tinkoff.qa.neptune.selenium.content.management.Navigate;
+
+@Navigate(to = "/{p2}/{p1}?&p3={p3}")
+public class Tezt {
+
+    @BrowserUrlVariable
+    @BrowserUrlVariable(name = "parameter1")
+    private int p1;
+
+    @BrowserUrlVariable(method = "getParameter2") //(!!!) //значение, возвращенное методом getParameter2, 
+    // подставится в тот шаблон, где есть {p2} в тот момент, когда будет происходить навигация по ссылке, указанной над классом
+    @BrowserUrlVariable(name = "parameter2") //значение подставится в тот шаблон, где есть {parameter2}, 
+    // в тот момент, когда будет происходить навигация по ссылке, указанной над методом test1
+    private MyPojo p2;
+
+    @BrowserUrlVariable
+    @BrowserUrlVariable(name = "parameter3", toEncodeForQueries = false)
+    private String p3() {
+        //формирование и возврат строки
+    }
+
+    @Test
+    @Navigate(to = "/{parameter1}/{parameter2}?&p3={parameter3}")
+    public void test1() {
+    }
+}
+```
+
+Если указаны аннотации `@Navigate` и `SwitchToWindow`, то навигация произойдет после переключения в окно/вкладку.
+
+Параметры навигации, указанные в виде аннотации `@Navigate` над классом, наследуются. Могут быть перекрыты
+использованием аннотации `@Navigate` в классе-наследнике.
+
 </details>
 
 ### Аннотация @SwitchToFrame
@@ -826,3 +1104,9 @@ public class Tezzt {
 использованием аннотации `@UseDefaultBrowserContent` в классе-наследнике.
 
 </details>
+
+## Логин/аутентификация и управление контента
+
+Описанный механизм [логина/аутентификации](./LOGIN_IN_BROWSER.MD) не конфликтует с описанным выше механизмом управления
+тестируемым контентом. Первым будет выполнена попытка логина, следом произойдет попытка загрузки и переключения нужного
+контента.
