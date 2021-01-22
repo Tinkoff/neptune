@@ -1,16 +1,14 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator.active.element;
 
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
-
-import java.time.Duration;
 
 import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
 
@@ -51,10 +49,5 @@ public final class GetActiveElementSupplier extends SequentialGetStepSupplier
      */
     public static GetActiveElementSupplier activeElement() {
         return new GetActiveElementSupplier().from(currentContent());
-    }
-
-    @Override
-    public GetActiveElementSupplier timeOut(Duration timeOut) {
-        return super.timeOut(timeOut);
     }
 }

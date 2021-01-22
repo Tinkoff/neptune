@@ -29,10 +29,7 @@ import ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.GetFrameSup
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.parent.ParentFrameSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
-import ru.tinkoff.qa.neptune.selenium.functions.windows.CloseWindowActionSupplier;
-import ru.tinkoff.qa.neptune.selenium.functions.windows.GetWindowPositionSupplier;
-import ru.tinkoff.qa.neptune.selenium.functions.windows.GetWindowSizeSupplier;
-import ru.tinkoff.qa.neptune.selenium.functions.windows.GetWindowTitleSupplier;
+import ru.tinkoff.qa.neptune.selenium.functions.windows.*;
 import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
 
 import java.net.URL;
@@ -1194,6 +1191,40 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
         setSizeOf(window, new Dimension(width, height)).get().accept(this);
         return this;
     }
+
+
+    /**
+     * Performs the setting active browser window/tab full screen
+     *
+     * @return self-reference
+     */
+    public SeleniumStepContext fullScreen() {
+        FullScreenWindowSupplier.fullScreen().get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs the setting the browser window/tab full screen
+     *
+     * @param supplier is how to find the browser window/tab
+     * @return self-reference
+     */
+    public SeleniumStepContext fullScreen(GetWindowSupplier supplier) {
+        FullScreenWindowSupplier.fullScreen(supplier).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs the setting the browser window/tab full screen
+     *
+     * @param window the browser window/tab
+     * @return self-reference
+     */
+    public SeleniumStepContext fullScreen(Window window) {
+        FullScreenWindowSupplier.fullScreen(window).get().accept(this);
+        return this;
+    }
+
 
     /**
      * Performs an accept-action. This action is performed on a browser alert.

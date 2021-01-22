@@ -11,10 +11,10 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
 
 import java.time.Duration;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.ImmutableList.of;
@@ -32,19 +32,31 @@ public final class GetWindowSupplier extends SequentialGetStepSupplier
         .GetObjectFromIterableChainedStepSupplier<SeleniumStepContext, Window, WebDriver, GetWindowSupplier>
         implements TargetLocatorSupplier<Window> {
 
-    @StepParameter("Window number/index")
-    private Integer index;
+    @StepParameter(value = "Window number/index", doNotReportNullValues = true)
+    private final Integer index;
 
     private GetWindowSupplier(String description, Function<WebDriver, List<Window>> function, Integer index) {
-        super(description, function);
+        super(description, (Function<WebDriver, Iterable<Window>>) webDriver -> {
+            var currentHandle = webDriver.getWindowHandle();
+            try {
+                return function.apply(webDriver);
+            } finally {
+                if (!currentHandle.equals(webDriver.getWindowHandle())) {
+                    webDriver.switchTo().window(currentHandle);
+                }
+            }
+        });
         timeOut(WAITING_WINDOW_TIME_DURATION.get());
         throwOnEmptyResult(() -> new NoSuchWindowException("Window/tab was not found"));
         this.index = index;
     }
 
     private static List<Window> getListOfWindows(WebDriver driver) {
-        return driver.getWindowHandles()
-                .stream().map(s -> new DefaultWindow(s, driver)).collect(Collectors.toList());
+        var windows = new LinkedList<Window>();
+        for (var s : driver.getWindowHandles()) {
+            windows.add(new DefaultWindow(s, driver));
+        }
+        return windows;
     }
 
     private static Window getWindowByIndex(WebDriver driver, int index) {

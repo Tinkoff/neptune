@@ -193,8 +193,8 @@ public class MockWebDriver implements WebDriver, JavascriptExecutor, TakesScreen
         return isSwitchedToParentFrame;
     }
 
-    WebDriver setSwitchedToParentFrame() {
-        isSwitchedToParentFrame = true;
+    public WebDriver setSwitchedToParentFrame(boolean switched) {
+        isSwitchedToParentFrame = switched;
         return this;
     }
 

@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.test.steps.tests.target.locator;
 
 import org.openqa.selenium.NoSuchFrameException;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.Frame;
 import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
@@ -27,7 +28,12 @@ public class FrameTest extends BaseWebDriverTest {
         return elements[new Random().nextInt(elements.length)];
     }
 
-    @Test
+    @BeforeMethod(groups = "basicPositive")
+    public void clearSwitchToParentFrame() {
+        ((MockWebDriver) wrappedWebDriver.getWrappedDriver()).setSwitchedToParentFrame(false);
+    }
+
+    @Test(groups = "basicPositive")
     public void frameIndexPositiveTest() {
         FrameIndexes index1 = getRandomEnumItem(FrameIndexes.values());
         FrameIndexes index2 = getRandomEnumItem(removeElements(FrameIndexes.values(), index1));
@@ -36,19 +42,24 @@ public class FrameTest extends BaseWebDriverTest {
         Frame frame1 = seleniumSteps.get(frame(index1.getIndex()));
         setEndBenchMark();
 
-        assertThat(((MockWebDriver) seleniumSteps.switchTo(frame1).getWrappedDriver()).getCurrentFrame(), is(index1.getIndex()));
         assertThat(getTimeDifference(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
         assertThat(frame1.toString(), is(format("frame %s", index1.getIndex())));
+        assertThat(((MockWebDriver) wrappedWebDriver.getWrappedDriver()).isSwitchedToParentFrame(), is(true));
+
+        ((MockWebDriver) wrappedWebDriver.getWrappedDriver()).setSwitchedToParentFrame(false);
 
         Frame frame2 = seleniumSteps.get(frame(index2.getIndex()));
-        assertThat(((MockWebDriver) seleniumSteps.switchTo(frame2).getWrappedDriver()).getCurrentFrame(), is(index2.getIndex()));
         assertThat(frame2.toString(), is(format("frame %s", index2.getIndex())));
+        assertThat(((MockWebDriver) wrappedWebDriver.getWrappedDriver()).isSwitchedToParentFrame(), is(true));
 
         frame1.switchToMe();
         assertThat(((MockWebDriver) seleniumSteps.getWrappedDriver()).getCurrentFrame(), is(index1.getIndex()));
+        assertThat(((MockWebDriver) wrappedWebDriver.getWrappedDriver()).isSwitchedToParentFrame(), is(false));
 
+        ((MockWebDriver) wrappedWebDriver.getWrappedDriver()).setSwitchedToParentFrame(true);
         frame2.switchToMe();
         assertThat(((MockWebDriver) seleniumSteps.getWrappedDriver()).getCurrentFrame(), is(index2.getIndex()));
+        assertThat(((MockWebDriver) wrappedWebDriver.getWrappedDriver()).isSwitchedToParentFrame(), is(false));
     }
 
     @Test
@@ -117,7 +128,7 @@ public class FrameTest extends BaseWebDriverTest {
         }
     }
 
-    @Test
+    @Test(groups = "basicPositive")
     public void frameNameOrIdPositiveTest() {
         FrameNames name1 = getRandomEnumItem(FrameNames.values());
         FrameNames name2 = getRandomEnumItem(removeElements(FrameNames.values(), name1));
@@ -126,19 +137,26 @@ public class FrameTest extends BaseWebDriverTest {
         Frame frame1 = seleniumSteps.get(frame(name1.getNameOrId()));
         setEndBenchMark();
 
-        assertThat(((MockWebDriver) seleniumSteps.switchTo(frame1).getWrappedDriver()).getCurrentFrame(), is(name1.getNameOrId()));
         assertThat(getTimeDifference(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
         assertThat(frame1.toString(), is(format("frame %s", name1.getNameOrId())));
+        assertThat(((MockWebDriver) wrappedWebDriver.getWrappedDriver()).isSwitchedToParentFrame(), is(true));
+
+        ((MockWebDriver) wrappedWebDriver.getWrappedDriver()).setSwitchedToParentFrame(false);
 
         Frame frame2 = seleniumSteps.get(frame(name2.getNameOrId()));
-        assertThat(((MockWebDriver) seleniumSteps.switchTo(frame2).getWrappedDriver()).getCurrentFrame(), is(name2.getNameOrId()));
         assertThat(frame2.toString(), is(format("frame %s", name2.getNameOrId())));
+        assertThat(((MockWebDriver) wrappedWebDriver.getWrappedDriver()).isSwitchedToParentFrame(), is(true));
+
 
         frame1.switchToMe();
         assertThat(((MockWebDriver) seleniumSteps.getWrappedDriver()).getCurrentFrame(), is(name1.getNameOrId()));
+        assertThat(((MockWebDriver) wrappedWebDriver.getWrappedDriver()).isSwitchedToParentFrame(), is(false));
+
+        ((MockWebDriver) wrappedWebDriver.getWrappedDriver()).setSwitchedToParentFrame(true);
 
         frame2.switchToMe();
         assertThat(((MockWebDriver) seleniumSteps.getWrappedDriver()).getCurrentFrame(), is(name2.getNameOrId()));
+        assertThat(((MockWebDriver) wrappedWebDriver.getWrappedDriver()).isSwitchedToParentFrame(), is(false));
     }
 
     @Test
@@ -206,23 +224,29 @@ public class FrameTest extends BaseWebDriverTest {
         }
     }
 
-    @Test
+    @Test(groups = "basicPositive")
     public void frameWebElementPositiveTest() {
         setStartBenchMark();
         Frame frame1 = seleniumSteps.get(frame(tagName("valid_frame1")));
         setEndBenchMark();
 
-        assertThat(((MockWebDriver) seleniumSteps.switchTo(frame1).getWrappedDriver()).getCurrentFrame(), is(FRAME_ELEMENT_VALID1));
         assertThat(getTimeDifference(), lessThanOrEqualTo(HALF_SECOND.toMillis()));
+        assertThat(((MockWebDriver) wrappedWebDriver.getWrappedDriver()).isSwitchedToParentFrame(), is(true));
+
+        ((MockWebDriver) wrappedWebDriver.getWrappedDriver()).setSwitchedToParentFrame(false);
 
         Frame frame2 = seleniumSteps.get(frame(tagName("valid_frame2")));
-        assertThat(((MockWebDriver) seleniumSteps.switchTo(frame2).getWrappedDriver()).getCurrentFrame(), is(FRAME_ELEMENT_VALID2));
+        assertThat(((MockWebDriver) wrappedWebDriver.getWrappedDriver()).isSwitchedToParentFrame(), is(true));
 
         frame1.switchToMe();
         assertThat(((MockWebDriver) seleniumSteps.getWrappedDriver()).getCurrentFrame(), is(FRAME_ELEMENT_VALID1));
+        assertThat(((MockWebDriver) wrappedWebDriver.getWrappedDriver()).isSwitchedToParentFrame(), is(false));
+
+        ((MockWebDriver) wrappedWebDriver.getWrappedDriver()).setSwitchedToParentFrame(true);
 
         frame2.switchToMe();
         assertThat(((MockWebDriver) seleniumSteps.getWrappedDriver()).getCurrentFrame(), is(FRAME_ELEMENT_VALID2));
+        assertThat(((MockWebDriver) wrappedWebDriver.getWrappedDriver()).isSwitchedToParentFrame(), is(false));
     }
 
     @Test

@@ -36,7 +36,6 @@ public final class ContentManagementCommand extends SequentialActionSupplier<Web
 
     private static <T extends SequentialGetStepSupplier<?, ?, WebDriver, ?, ?>> T
     setDriver(T setTo, WebDriver driver) {
-        var tClass = setTo.getClass();
         try {
             var m = SequentialGetStepSupplier.class.getDeclaredMethod("from", Object.class);
             m.setAccessible(true);
@@ -63,12 +62,8 @@ public final class ContentManagementCommand extends SequentialActionSupplier<Web
                 .map(w -> inBrowser().get(setDriver(w, value)))
                 .orElse(null);
 
-        ofNullable(navigateTo).ifPresent(s -> {
-            var w = ofNullable(window)
-                    .orElseGet(() -> inBrowser().get(setDriver(currentWindow(), value)));
-            inBrowser().navigateTo(s.get(), w);
-        });
-
+        ofNullable(window).ifPresent(w -> inBrowser().switchTo(w));
+        ofNullable(navigateTo).ifPresent(s -> inBrowser().navigateTo(s.get(), setDriver(currentWindow(), value)));
 
         ofNullable(getFrameSuppliers).ifPresent(ss -> {
             value.switchTo().defaultContent();

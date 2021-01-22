@@ -240,6 +240,7 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
             authenticationPerformer.performAuthentication(driver, false);
         }
 
+        driver.getWindowHandles();
         ofNullable(getCurrentCommand()).ifPresent(
                 contentManagementCommand -> contentManagementCommand
                         .get()

@@ -35,6 +35,7 @@ public class SwitchTest extends BaseWebDriverTest {
 
     @Test
     public void switchToParentFrameTest() {
+        ((MockWebDriver) wrappedWebDriver.getWrappedDriver()).setSwitchedToParentFrame(false);
         seleniumSteps.switchTo(parentFrame());
         assertThat(((MockWebDriver) seleniumSteps.getWrappedDriver()).isSwitchedToParentFrame(), is(true));
     }

@@ -43,6 +43,7 @@ public class MockTargetLocator implements WebDriver.TargetLocator {
         if (!ArrayUtils.contains(Arrays.stream(FrameIndexes.values()).map(FrameIndexes::getIndex).toArray(), index)) {
             throw new NoSuchFrameException(format("There is no frame found by index %s", index));
         }
+        driver.setSwitchedToParentFrame(false);
         return driver.setFrame(index);
     }
 
@@ -51,12 +52,14 @@ public class MockTargetLocator implements WebDriver.TargetLocator {
         if (!ArrayUtils.contains(Arrays.stream(FrameNames.values()).map(FrameNames::getNameOrId).toArray(), nameOrId)) {
             throw new NoSuchFrameException(format("There is no frame found by name/id %s", nameOrId));
         }
+        driver.setSwitchedToParentFrame(false);
         return driver.setFrame(nameOrId);
     }
 
     @Override
     public WebDriver frame(WebElement frameElement) {
         if (FRAME_ELEMENT_VALID1.equals(frameElement) || FRAME_ELEMENT_VALID2.equals(frameElement)) {
+            driver.setSwitchedToParentFrame(false);
             return driver.setFrame(frameElement);
         }
         throw new NoSuchFrameException(format("There is no frame found inside %s", frameElement.toString()));
@@ -64,7 +67,7 @@ public class MockTargetLocator implements WebDriver.TargetLocator {
 
     @Override
     public WebDriver parentFrame() {
-        return driver.setSwitchedToParentFrame();
+        return driver.setSwitchedToParentFrame(true);
     }
 
     @Override
