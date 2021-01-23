@@ -9,6 +9,7 @@ import static java.lang.System.getProperties;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
+import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.url.AtThePageMatcher.pageURL;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.test.enums.URLs.*;
 import static ru.tinkoff.qa.neptune.selenium.test.enums.WindowHandles.*;
@@ -18,7 +19,8 @@ public class NavigationTest extends BaseWebDriverTest {
     @Test
     public void test1() {
         seleniumSteps.navigateTo(PAY_PAL.getUrl(), window(2));
-        assertThat(seleniumSteps.getCurrentUrl(), is(PAY_PAL.getUrl()));
+        assertThat(seleniumSteps.get(window(2)), pageURL(is(PAY_PAL.getUrl())));
+        assertThat(seleniumSteps.getWrappedDriver().getCurrentUrl(), not(is(PAY_PAL.getUrl())));
     }
 
     @Test
@@ -54,7 +56,7 @@ public class NavigationTest extends BaseWebDriverTest {
         System.setProperty(BASE_WEB_DRIVER_URL_PROPERTY.getName(), GITHUB.getUrl());
         try {
             seleniumSteps.navigateTo("/index.html", window(2));
-            assertThat(seleniumSteps.getCurrentUrl(), containsString(GITHUB.getUrl()));
+            assertThat(seleniumSteps.get(window(2)), pageURL(containsString(GITHUB.getUrl())));
         } finally {
             getProperties().remove(BASE_WEB_DRIVER_URL_PROPERTY.getName());
         }
@@ -280,7 +282,10 @@ public class NavigationTest extends BaseWebDriverTest {
     @Test
     public void test11() {
         seleniumSteps.refresh(window(1));
-        assertThat(((MockWindow) seleniumSteps.getWrappedDriver().manage().window()).isRefreshed(),
+        assertThat(((MockWindow) seleniumSteps.getWrappedDriver()
+                        .switchTo()
+                        .window(HANDLE2.getHandle())
+                        .manage().window()).isRefreshed(),
                 is(true));
     }
 
