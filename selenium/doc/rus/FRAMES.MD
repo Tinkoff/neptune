@@ -20,15 +20,15 @@ public class Tezzt {
     
     @Test
     public void test() {
-        inBrowser().get(frame(1) //поиск фрейма по индексу
+        var frame1 = inBrowser().get(frame(1) //поиск фрейма по индексу
                 .timeOut(ofSeconds(5))); //время ожидания, пока фрейм появится 
         // и станет доступным для переключения
 
-        inBrowser().get(frame("someNameOrId") //поиск фрейма по имени или id
+        var frame2 = inBrowser().get(frame("someNameOrId") //поиск фрейма по имени или id
                 .timeOut(ofSeconds(5))); //время ожидания, пока фрейм появится 
         // и станет доступным для переключения
 
-        inBrowser().get(frame(tagName("someFrameTag")) //поиск фрейма по локатору элемента, внутри которого 
+        var frame3 = inBrowser().get(frame(tagName("someFrameTag")) //поиск фрейма по локатору элемента, внутри которого 
                 //фрейм должен находиться
                 .timeOut(ofSeconds(5))); //время ожидания, пока фрейм появится 
         // и станет доступным для переключения
