@@ -2,9 +2,10 @@
 
 Полезные страницы:
 
-- [Поиск элементов и работа с ними](./ELEMENTS_AND_SEARCHING.MD)
+- [Поиск элементов](ELEMENTS_SEARCHING.MD)
 - [Редактирование элементов страницы](./EDIT.MD)
 - [Клик по элементам страницы](./CLICK.MD)
+- [Значение элементов страницы](./ELEMENT_VALUE.MD)
 
 Сначала полезно прочитать про
 дизайн-паттерн [Page Object](https://www.selenium.dev/documentation/en/guidelines_and_recommendations/page_object_models/)
@@ -290,7 +291,6 @@ public class Tezzt {
   ```java
   import org.openqa.selenium.support.FindBy;
 
-  import ru.tinkoff.qa.neptune.selenium.api.widget.HasValue;
   import ru.tinkoff.qa.neptune.selenium.api.widget.Name;
   import ru.tinkoff.qa.neptune.selenium.api.widget.Priority;
   import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.TextElement;
@@ -346,8 +346,7 @@ public class Tezzt {
 
     ```java
     import org.openqa.selenium.support.FindBy;
-    
-    import ru.tinkoff.qa.neptune.selenium.api.widget.Clickable;
+
     import ru.tinkoff.qa.neptune.selenium.api.widget.Label;
     import ru.tinkoff.qa.neptune.selenium.api.widget.Name;
     import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Button;

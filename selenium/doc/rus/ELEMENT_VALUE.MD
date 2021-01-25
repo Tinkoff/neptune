@@ -1,10 +1,7 @@
-# Редактирование элементов страницы
+# Значение элементов страницы
 
 О принципах работы шагов, которые возвращают результат, можно
 прочитать [здесь](./../../../core.api/doc/rus/IDEA.MD#Шаги,-которые-возвращают-результат).
-
-О принципах работы шагов, которые выполняют действие, можно
-прочитать [здесь](./../../../core.api/doc/rus/IDEA.MD#Шаги,-которые-выполняют-действие).
 
 Полезные страницы:
 
@@ -12,10 +9,10 @@
 - [Виджеты](./WIDGET.MD)
 
 ```java
-import ru.tinkoff.qa.neptune.selenium.api.widget.Editable;
+import ru.tinkoff.qa.neptune.selenium.api.widget.HasValue;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 
-public class EditableWidget extends Widget implements Editable<String> {
+public class ValuableWidget extends Widget implements HasValue<String> {
     //Реализация логики
 }
 ```
@@ -30,16 +27,16 @@ public class Tezzt {
 
     @Test
     public void tezzt() {
-        //Редактирование объекта, чей класс наследует ru.tinkoff.qa.neptune.selenium.api.widget.Widget и 
-        //реализует интерфейс ru.tinkoff.qa.neptune.selenium.api.widget.Editable,
-        inBrowser().edit(widget(EditableWidget.class), "Some text");
+        //Получение значения объекта, чей класс наследует ru.tinkoff.qa.neptune.selenium.api.widget.Widget и 
+        //реализует интерфейс ru.tinkoff.qa.neptune.selenium.api.widget.HasValue,
+        String value = inBrowser().valueOf(widget(ValuableWidget.class));
         //который будет найден во время выполнения действия
 
         //Либо объект, чей класс наследует ru.tinkoff.qa.neptune.selenium.api.widget.Widget и 
-        //реализует интерфейс ru.tinkoff.qa.neptune.selenium.api.widget.Editable,
+        //реализует интерфейс ru.tinkoff.qa.neptune.selenium.api.widget.HasValue,
         //можно найти заранее
-        var element = inBrowser().find(widget(EditableWidget.class));
-        inBrowser().edit(element, "Some text"); //и выполнить редактирование в нужный момент
+        var element = inBrowser().find(widget(ValuableWidget.class));
+        String value2 = inBrowser().valueOf(element); //и получить его значение
     }
 }
 ```
