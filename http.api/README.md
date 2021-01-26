@@ -1,4 +1,4 @@
-Integration of Neptune native http client of Java (since v11)
+Integration of Neptune with native http client of Java (since v11)
 
 [Краткая документация на русском](./doc/rus/README.MD)
 
