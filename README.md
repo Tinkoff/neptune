@@ -59,6 +59,6 @@ Module documentatation:
 
 [Change list](https://github.com/TinkoffCreditSystems/neptune/releases)
 
-Owners: [@TikhomirovSergey](https://github.com/ArisAgnew), [@ArisAgnew](https://github.com/ArisAgnew), [@AndrewCharykov](https://github.com/AndrewCharykov), [@Burnouttt](Burnouttt Denis Prikhodko)
+Owners: [@TikhomirovSergey](https://github.com/ArisAgnew), [@ArisAgnew](https://github.com/ArisAgnew), [@AndrewCharykov](https://github.com/AndrewCharykov), [@Burnouttt](https://github.com/Burnouttt)
 
 First public BETA-versions are coming soon
