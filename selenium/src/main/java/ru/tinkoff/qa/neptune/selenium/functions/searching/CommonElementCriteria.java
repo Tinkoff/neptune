@@ -9,19 +9,23 @@ import ru.tinkoff.qa.neptune.core.api.steps.StepFunction;
 import ru.tinkoff.qa.neptune.selenium.api.widget.*;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
+import static java.lang.reflect.Modifier.isStatic;
 import static java.time.Duration.ofMillis;
-import static java.util.Arrays.asList;
+import static java.util.Arrays.stream;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.regex.Pattern.compile;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.NOT;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 
 public final class CommonElementCriteria {
@@ -91,7 +95,7 @@ public final class CommonElementCriteria {
      * @param <T>  is a type of element/widget
      * @return criteria that checks/filters an element/widget
      */
-    public static <T extends SearchContext> Criteria<T> text(String text) {
+    static <T extends SearchContext> Criteria<T> text(String text) {
         checkArgument(isNotBlank(text), "Text should be defined");
 
         return condition(format("has text '%s'", text), t -> {
@@ -109,6 +113,51 @@ public final class CommonElementCriteria {
             }
 
             return Objects.equals(elementText, text);
+        });
+    }
+
+    static <T extends Widget> Criteria<T> labeled(String label) {
+        checkNotNull(label);
+        return condition(format("has label '%s'", label), t -> {
+            Class<?> cls = t.getClass();
+            var labels = new ArrayList<String>();
+
+            while (cls != null) {
+                labels.addAll(stream(cls.getDeclaredMethods())
+                        .filter(method -> !isStatic(method.getModifiers())
+                                && method.getParameterTypes().length == 0
+                                && method.getReturnType().equals(String.class)
+                                && method.getAnnotation(Label.class) != null)
+                        .map(method -> {
+                            try {
+                                method.setAccessible(true);
+                                return (String) method.invoke(t);
+                            } catch (Exception e) {
+                                return null;
+                            }
+                        })
+                        .filter(Objects::nonNull)
+                        .collect(toList()));
+
+                labels.addAll(stream(cls.getDeclaredFields())
+                        .filter(field -> !isStatic(field.getModifiers())
+                                && WebElement.class.isAssignableFrom(field.getType())
+                                && field.getAnnotation(Label.class) != null)
+                        .map(field -> {
+                            try {
+                                field.setAccessible(true);
+                                return ((WebElement) field.get(t.selfReference())).getText();
+                            } catch (Exception e) {
+                                return null;
+                            }
+                        })
+                        .filter(Objects::nonNull)
+                        .collect(toList()));
+
+                cls = cls.getSuperclass();
+            }
+
+            return labels.contains(label);
         });
     }
 
@@ -385,10 +434,14 @@ public final class CommonElementCriteria {
         });
     }
 
-    static <T extends SearchContext> Criteria<T> labeled(String... labels) {
-        checkNotNull(labels);
-        checkArgument(labels.length > 0, "At least one label should be defined");
-        return condition(format("has label(s) %s", String.join("and ", labels)),
-                t -> Labeled.class.isAssignableFrom(t.getClass()) && ((Labeled) t).labels().containsAll(asList(labels)));
+    /**
+     * The checking of an element/widget text.
+     *
+     * @param text is a text (full) that an element should not have
+     * @param <T>  is a type of element/widget
+     * @return criteria that checks/filters an element/widget
+     */
+    public <T extends SearchContext> Criteria<T> noText(String text) {
+        return NOT(text(text));
     }
 }

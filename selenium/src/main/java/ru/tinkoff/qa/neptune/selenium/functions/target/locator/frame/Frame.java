@@ -1,8 +1,8 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.SwitchesToItself;
-import org.openqa.selenium.*;
-import org.openqa.selenium.internal.WrapsElement;
 
 import static java.lang.String.format;
 
@@ -34,14 +34,11 @@ public class Frame implements SwitchesToItself {
             return;
         }
 
-        if (WebElement.class.isAssignableFrom(clazz)) {
-            webDriver.switchTo().frame((WebElement) frame);
-            return;
+        if (By.class.isAssignableFrom(clazz)) {
+            var e = webDriver.findElement((By) frame);
+            webDriver.switchTo().frame(e);
         }
 
-        if (WrapsElement.class.isAssignableFrom(clazz)) {
-            webDriver.switchTo().frame(((WrapsElement) frame).getWrappedElement());
-        }
     }
 
     public String toString() {

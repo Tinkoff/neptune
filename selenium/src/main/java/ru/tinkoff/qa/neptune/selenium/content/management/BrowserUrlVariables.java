@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.selenium.hooks;
+package ru.tinkoff.qa.neptune.selenium.content.management;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

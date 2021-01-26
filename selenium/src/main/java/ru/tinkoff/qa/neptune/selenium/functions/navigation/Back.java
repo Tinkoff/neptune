@@ -7,7 +7,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
+import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.currentWindow;
 
 @MakeImageCapturesOnFinishing
 @MakeFileCapturesOnFinishing
@@ -26,7 +26,7 @@ public final class Back extends SequentialActionSupplier<SeleniumStepContext, Wi
      * @return built navigation action
      */
     public static Back back() {
-        return back(window());
+        return back(currentWindow());
     }
 
     /**

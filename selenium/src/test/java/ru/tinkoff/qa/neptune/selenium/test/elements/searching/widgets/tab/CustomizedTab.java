@@ -1,25 +1,18 @@
 package ru.tinkoff.qa.neptune.selenium.test.elements.searching.widgets.tab;
 
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
-import ru.tinkoff.qa.neptune.selenium.api.widget.Labeled;
+import ru.tinkoff.qa.neptune.selenium.api.widget.Label;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Name;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Tab;
 
-import java.util.List;
-
-import static java.util.stream.Collectors.toList;
+import static org.openqa.selenium.By.xpath;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
 import static ru.tinkoff.qa.neptune.selenium.test.elements.searching.widgets.WidgetNames.CUSTOMIZED_TAB;
 
 @Name(CUSTOMIZED_TAB)
 @FindBy(className = TAB_CLASS)
-public class CustomizedTab extends Tab implements Labeled {
-
-    @FindAll({@FindBy(xpath = LABEL_XPATH),
-            @FindBy(xpath = LABEL_XPATH2)})
-    private List<WebElement> labels;
+public class CustomizedTab extends Tab {
 
     public CustomizedTab(WebElement wrappedElement) {
         super(wrappedElement);
@@ -30,9 +23,14 @@ public class CustomizedTab extends Tab implements Labeled {
         return false;
     }
 
-    @Override
-    public List<String> labels() {
-        return labels.stream().map(WebElement::getText).collect(toList());
+    @Label
+    public String label1() {
+        return findElement(xpath(LABEL_XPATH)).getText();
+    }
+
+    @Label
+    public String label12() {
+        return findElement(xpath(LABEL_XPATH2)).getText();
     }
 
     @Override

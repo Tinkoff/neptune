@@ -361,10 +361,6 @@ public class SearchForWebElementsNegativeTest extends BaseWebDriverTest {
 
                 {xpath(RADIO_BUTTON_XPATH), NOT(cssMatches(CSS18, "value"))},
 
-                {INVISIBLE_SPAN_BY, text(VISIBLE_DIV)},
-
-                {VISIBLE_DIV_BY, NOT(text(VISIBLE_DIV))},
-
                 {INVISIBLE_SPAN_BY, textMatches("div")},
 
                 {VISIBLE_DIV_BY, NOT(textMatches("div"))}

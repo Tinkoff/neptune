@@ -1,19 +1,22 @@
-package ru.tinkoff.qa.neptune.selenium.hooks;
+package ru.tinkoff.qa.neptune.selenium.content.management;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
 import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Arrays.stream;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.*;
 import static ru.tinkoff.qa.neptune.core.api.utils.URLEncodeUtil.encodePathSubstring;
 import static ru.tinkoff.qa.neptune.core.api.utils.URLEncodeUtil.encodeQuerySubstring;
-import static ru.tinkoff.qa.neptune.selenium.hooks.BrowserUrlCreator.Styles.*;
+import static ru.tinkoff.qa.neptune.selenium.content.management.BrowserUrlCreator.Styles.*;
 
 /**
  * Util class that reads metadata of some class and field values of an objects and returns URL to navigate to
@@ -33,6 +36,23 @@ final class BrowserUrlCreator {
         return rawUrl.substring(index + 1);
     }
 
+    private static <T extends AnnotatedElement & Member> BrowserUrlVariable findVariable(String name, T t) {
+        var variables = t.getAnnotationsByType(BrowserUrlVariable.class);
+        return stream(variables)
+                .filter(browserUrlVariable -> browserUrlVariable.name().equals(name)
+                        || (isBlank(browserUrlVariable.name()) && t.getName().equals(name)))
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+    }
+
+    private static <T extends AnnotatedElement & Member> T filter(String name, Collection<T> collection) {
+        return collection.stream().filter(t -> {
+            var variables = t.getAnnotationsByType(BrowserUrlVariable.class);
+            return stream(variables).anyMatch(browserUrlVariable -> browserUrlVariable.name().equals(name)
+                    || (isBlank(browserUrlVariable.name()) && t.getName().equals(name)));
+        }).findFirst().orElse(null);
+    }
+
     static String createBrowserUrl(Object o, String rawURL) {
         var urlParts = new UrlParts(rawURL);
         var patternParams = urlParts.getVariables();
@@ -40,63 +60,79 @@ final class BrowserUrlCreator {
         var cls = o.getClass();
         var clz = cls;
         var fields = new ArrayList<Field>();
+        var methods = new ArrayList<Method>();
 
         while (!clz.equals(Object.class)) {
             fields.addAll(stream(clz.getDeclaredFields())
                     .filter(field -> field.getAnnotationsByType(BrowserUrlVariable.class).length > 0)
                     .collect(toList()));
+
+            methods.addAll(stream(clz.getDeclaredMethods())
+                    .filter(method -> method.getAnnotationsByType(BrowserUrlVariable.class).length > 0
+                            && method.getParameterTypes().length == 0
+                            && !method.getReturnType().equals(void.class))
+                    .collect(toList()));
+
             clz = clz.getSuperclass();
         }
 
         var browserUrlVars = new ArrayList<BrowserUrlVar>();
 
         for (var p : patternParams) {
-            fields.stream()
-                    .filter(field -> {
-                        var variables = field.getAnnotationsByType(BrowserUrlVariable.class);
-                        return stream(variables).anyMatch(browserUrlVariable -> browserUrlVariable.name().equals(p)
-                                || (isBlank(browserUrlVariable.name()) && field.getName().equals(p)));
-                    })
-                    .findFirst()
-                    .ifPresentOrElse(field -> {
-                                field.setAccessible(true);
-                                try {
-                                    var variables = field.getAnnotationsByType(BrowserUrlVariable.class);
-                                    var variable = stream(variables)
-                                            .filter(browserUrlVariable -> browserUrlVariable.name().equals(p)
-                                                    || (isBlank(browserUrlVariable.name()) && field.getName().equals(p)))
-                                            .findFirst()
-                                            .orElseThrow(RuntimeException::new);
 
-                                    if (isBlank(variable.name())) {
-                                        browserUrlVars.add(new BrowserUrlVar(p,
-                                                field,
-                                                isStatic(field.getModifiers()) ? field.getDeclaringClass() : o,
-                                                variable.toEncodeForQueries()));
-                                    } else {
-                                        if (isBlank(variable.field())) {
-                                            browserUrlVars.add(new BrowserUrlVar(p,
-                                                    field,
-                                                    isStatic(field.getModifiers()) ? field.getDeclaringClass() : o,
-                                                    variable.toEncodeForQueries()));
-                                        } else {
-                                            browserUrlVars.add(new BrowserUrlVar(p,
-                                                    field.getType().getDeclaredField(variable.field()),
-                                                    isStatic(field.getModifiers()) ? field.get(field.getDeclaringClass()) : field.get(o),
-                                                    variable.toEncodeForQueries()));
-                                        }
-                                    }
-                                } catch (Exception e) {
-                                    throw new RuntimeException(e);
-                                }
-                            },
-                            () -> {
-                                throw new UnsupportedOperationException(format("URL-variable '%s' is not mapped by any " +
-                                                "field (fields of superclasses are included) of '%s'. Given raw URL with variables: [%s]",
-                                        p,
-                                        cls.getName(),
-                                        rawURL));
-                            });
+            var f = filter(p, fields);
+            if (nonNull(f)) {
+                var variable = findVariable(p, f);
+
+                var methodStr = variable.method();
+                if (isNotBlank(methodStr)) {
+                    var type = f.getType();
+                    Method m = null;
+
+                    while (nonNull(type) && isNull(m)) {
+                        m = stream(type.getDeclaredMethods()).filter(method ->
+                                method.getName().equals(methodStr)
+                                        && method.getParameterTypes().length == 0
+                                        && !method.getReturnType().equals(void.class)
+                                        && !isStatic(method.getModifiers()))
+                                .findFirst()
+                                .orElse(null);
+                        type = type.getSuperclass();
+                    }
+
+                    if (isNull(m)) {
+                        throw new IllegalArgumentException(format("Method '%s' is not declared by %s and superclasses." +
+                                        "Please improve parameters of @BrowserUrlVariable. Class: %s, Field: %s",
+                                methodStr,
+                                f.getType(),
+                                f.getDeclaringClass(),
+                                f.getName()));
+                    }
+
+                    browserUrlVars.add(new BrowserUrlVar(p, f, m,
+                            isStatic(f.getModifiers()) ? f.getDeclaringClass() : o, variable.toEncodeForQueries()));
+                } else {
+                    browserUrlVars.add(new BrowserUrlVar(p, f, null,
+                            isStatic(f.getModifiers()) ? f.getDeclaringClass() : o,
+                            variable.toEncodeForQueries()));
+                }
+                continue;
+            }
+
+            var m = filter(p, methods);
+            if (nonNull(m)) {
+                var variable = findVariable(p, m);
+                browserUrlVars.add(new BrowserUrlVar(p, null, m,
+                        isStatic(m.getModifiers()) ? m.getDeclaringClass() : o, variable.toEncodeForQueries()));
+
+                continue;
+            }
+
+            throw new UnsupportedOperationException(format("URL-variable '%s' is not mapped by any " +
+                            "field (fields of superclasses are included) of '%s'. Given raw URL with variables: [%s]",
+                    p,
+                    cls.getName(),
+                    rawURL));
         }
 
         for (var v : browserUrlVars) {
@@ -165,13 +201,15 @@ final class BrowserUrlCreator {
 
     private static class BrowserUrlVar {
         private final String name;
-        private final Field get;
+        private final Field fieldFrom;
+        private final Method byInvocationOf;
         private final Object from;
         private final boolean toEncode;
 
-        private BrowserUrlVar(String name, Field get, Object from, boolean toEncode) {
+        private BrowserUrlVar(String name, Field fieldFrom, Method byInvocationOf, Object from, boolean toEncode) {
             this.name = name;
-            this.get = get;
+            this.fieldFrom = fieldFrom;
+            this.byInvocationOf = byInvocationOf;
             this.from = from;
             this.toEncode = toEncode;
         }
@@ -183,34 +221,54 @@ final class BrowserUrlCreator {
             }
 
             if (from == null) {
-                throw new UnsupportedOperationException(format("Null values can't be used " +
-                                "for the getting of values of URL-variables. " +
-                                "Variable: %s. Field: %s. Raw fragment of an URL with not replaced variable: %s",
-                        name,
-                        get,
-                        fragment));
+                throw new UnsupportedOperationException("Null values can't be used " +
+                        "for the getting of values of URL-variables.");
             }
 
-            get.setAccessible(true);
-            try {
-                var value = get.get(from);
-                if (value == null) {
-                    throw new UnsupportedOperationException(format("Null values can't be used " +
-                                    "for the getting of values of URL-variables. " +
-                                    "Variable: %s. Field: %s. Raw fragment of an URL with not replaced variable: %s",
-                            name,
-                            get,
-                            fragment));
+            Object varValue = from;
+            if (nonNull(fieldFrom)) {
+                fieldFrom.setAccessible(true);
+                try {
+                    varValue = fieldFrom.get(from);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
                 }
 
-                var toEncode = ofNullable(style.getToEncode())
-                        .orElse(this.toEncode);
-
-                var variableValue = toEncode ? style.encode(valueOf(value)) : valueOf(value);
-                return fragment.replace("{" + name + "}", variableValue);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
+                if (isNull(varValue)) {
+                    throw new UnsupportedOperationException(format("Null can't be used " +
+                                    "for the getting of/as value of an URL-variable. " +
+                                    "Variable: %s. Field: %s. Raw fragment of an URL with not replaced variable: %s",
+                            name,
+                            fieldFrom,
+                            fragment));
+                }
             }
+
+            if (nonNull(byInvocationOf)) {
+                byInvocationOf.setAccessible(true);
+                try {
+                    varValue = byInvocationOf.invoke(varValue);
+                    if (isNull(varValue)) {
+                        throw new UnsupportedOperationException(format("Null can't be used " +
+                                        "as value of an URL-variable. " +
+                                        "Method that returned null value: %s." +
+                                        "%s" +
+                                        "Variable: %s. Raw fragment of an URL with not replaced variable: %s",
+                                byInvocationOf,
+                                isNull(fieldFrom) ? EMPTY : "Field: " + fieldFrom + ".",
+                                name,
+                                fragment));
+                    }
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            var toEncode = ofNullable(style.getToEncode())
+                    .orElse(this.toEncode);
+
+            var variableValue = toEncode ? style.encode(valueOf(varValue)) : valueOf(varValue);
+            return fragment.replace("{" + name + "}", variableValue);
         }
     }
 

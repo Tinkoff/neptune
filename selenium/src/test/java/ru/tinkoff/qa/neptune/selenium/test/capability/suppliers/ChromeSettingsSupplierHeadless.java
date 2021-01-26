@@ -9,6 +9,8 @@ import java.util.function.Consumer;
 public class ChromeSettingsSupplierHeadless implements CapabilitySettingSupplier<ChromeOptions> {
     @Override
     public Consumer<ChromeOptions> get() {
-        return chromeOptions -> chromeOptions.addArguments("--headless");
+        return chromeOptions -> chromeOptions.addArguments("--headless")
+                .addArguments("--no-sandbox")
+                .addArguments("--disable-dev-shm-usage");
     }
 }

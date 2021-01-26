@@ -6,7 +6,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
+import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.currentWindow;
 
 @MakeFileCapturesOnFinishing
 @SequentialActionSupplier.DefaultParameterNames(
@@ -19,12 +19,12 @@ public final class CloseWindowActionSupplier extends SequentialActionSupplier<Se
     }
 
     /**
-     * Builds an action which closes the first window.
+     * Builds an action which closes the active window.
      *
-     * @return Supplier of an action which closes the first window.
+     * @return Supplier of an action which closes the active window.
      */
     public static CloseWindowActionSupplier closeWindow() {
-        return closeWindow(window());
+        return closeWindow(currentWindow());
     }
 
     /**

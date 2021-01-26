@@ -2,9 +2,8 @@ package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.url;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WrapsDriver;
 import ru.tinkoff.qa.neptune.core.api.hamcrest.resorce.locator.ResourceLocatorMatcher;
+import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
 
 import java.net.MalformedURLException;
@@ -15,7 +14,7 @@ import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static org.hamcrest.Matchers.equalTo;
 
-public final class AtThePageMatcher extends TypeSafeDiagnosingMatcher<WrapsDriver> {
+public final class AtThePageMatcher extends TypeSafeDiagnosingMatcher<Window> {
 
     private final Matcher<?> urlMatcher;
 
@@ -55,15 +54,9 @@ public final class AtThePageMatcher extends TypeSafeDiagnosingMatcher<WrapsDrive
     }
 
     @Override
-    protected boolean matchesSafely(WrapsDriver item, Description mismatchDescription) {
+    protected boolean matchesSafely(Window item, Description mismatchDescription) {
         boolean result;
-        WebDriver driver;
-        if ((driver = item.getWrappedDriver()) == null) {
-            mismatchDescription.appendText("Wrapped webDriver is null. It is not possible to check current url");
-            return false;
-        }
-
-        var currentUrlString = driver.getCurrentUrl();
+        var currentUrlString = item.getCurrentUrl();
         URL url;
         try {
             url = new URL(currentUrlString);

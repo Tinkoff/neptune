@@ -10,7 +10,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.openqa.selenium.By.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.attr;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.nested;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.webElements;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.*;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
@@ -52,7 +53,7 @@ public class AttributeAndCSSValue extends BaseWebDriverTest {
     @Test
     public void getAttributeNullValueByWebElementSearchCriteria() {
         assertThat(seleniumSteps.attrValueOf(webElement(tagName(LINK_TAG))
-                        .criteria(nested(webElements(tagName(LABEL_TAG)).criteria(text(LINK_LABEL_TEXT1)))),
+                        .criteria(nested(webElements(tagName(LABEL_TAG), LINK_LABEL_TEXT1))),
                 ATTR16),
                 nullValue());
     }
@@ -60,8 +61,8 @@ public class AttributeAndCSSValue extends BaseWebDriverTest {
     @Test
     public void getAttributeNullValueFromWidget() {
         Select select = seleniumSteps
-                .find(select(SELECT_LABEL_TEXT8, SELECT_LABEL_TEXT12)
-                        .criteria(nested(webElements(className(ITEM_OPTION_CLASS)).criteria(text(OPTION_TEXT34)))));
+                .find(select(SELECT_LABEL_TEXT8)
+                        .criteria(nested(webElements(className(ITEM_OPTION_CLASS), OPTION_TEXT34))));
         assertThat(seleniumSteps.attrValueOf(select, ATTR4),
                 nullValue());
     }
@@ -107,16 +108,15 @@ public class AttributeAndCSSValue extends BaseWebDriverTest {
     @Test
     public void getCSSNullValueByWebElementSearchCriteria() {
         assertThat(seleniumSteps.cssValueOf(webElement(xpath(TEXT_FIELD_XPATH))
-                        .criteria(nested(webElements(tagName(LABEL_TAG)).criteria(text(INPUT_LABEL_TEXT4)))),
+                        .criteria(nested(webElements(tagName(LABEL_TAG), INPUT_LABEL_TEXT4))),
                 CSS11),
                 nullValue());
     }
 
     @Test
     public void getCSSNullValueFromWidget() {
-        TextField textField = seleniumSteps
-                .find(textField(INPUT_LABEL_TEXT7, INPUT_LABEL_TEXT11)
-                        .timeOut(FIVE_SECONDS));
+        TextField textField = seleniumSteps.find(textField(INPUT_LABEL_TEXT11)
+                .timeOut(FIVE_SECONDS));
         assertThat(seleniumSteps.cssValueOf(textField, CSS12),
                 nullValue());
     }

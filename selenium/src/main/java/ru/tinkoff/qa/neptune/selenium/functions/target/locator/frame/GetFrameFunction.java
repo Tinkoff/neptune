@@ -1,9 +1,9 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.WrapsElement;
 
 import java.util.function.Function;
 
@@ -33,7 +33,7 @@ final class GetFrameFunction implements Function<WebDriver, Frame> {
      * Builds a function which performs switching to the frame and returns an instance of {@link Frame}.
      *
      * @param nameOrId name or id of the frame to switch to.
-     * @return instance of {@link GetFrameSupplier}
+     * @return instance of {@link Function}
      */
     static GetFrameFunction nameOrId(String nameOrId) {
         return new GetFrameFunction(format("by name or id %s", nameOrId), nameOrId);
@@ -42,21 +42,11 @@ final class GetFrameFunction implements Function<WebDriver, Frame> {
     /**
      * Builds a function which performs switching to the frame and returns an instance of {@link Frame}.
      *
-     * @param webElement is the frame element to switch to.
-     * @return instance of {@link GetFrameSupplier}
+     * @param by is a {@link By}-strategy which describes how to find a frame-element to switch to
+     * @return instance of {@link Function}
      */
-    static GetFrameFunction insideElement(WebElement webElement) {
-        return new GetFrameFunction(format("inside %s", webElement), webElement);
-    }
-
-    /**
-     * Builds a function which performs switching to the frame and returns an instance of {@link Frame}.
-     *
-     * @param wrapsElement is the wrapper of a frame element to switch to.
-     * @return instance of {@link GetFrameSupplier}
-     */
-    static GetFrameFunction wrappedBy(WrapsElement wrapsElement) {
-        return new GetFrameFunction(format("inside %s", wrapsElement), wrapsElement);
+    static GetFrameFunction by(By by) {
+        return new GetFrameFunction(by.toString(), by);
     }
 
     String getDescription() {
@@ -67,8 +57,7 @@ final class GetFrameFunction implements Function<WebDriver, Frame> {
     public Frame apply(WebDriver webDriver) {
         try {
             return new Frame(webDriver, frame);
-        }
-        catch (NoSuchFrameException e) {
+        } catch (NoSuchFrameException | NoSuchElementException e) {
             return null;
         }
     }
