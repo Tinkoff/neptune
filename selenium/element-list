@@ -3,6 +3,7 @@ ru.tinkoff.qa.neptune.selenium.api.widget
 ru.tinkoff.qa.neptune.selenium.api.widget.drafts
 ru.tinkoff.qa.neptune.selenium.authentication
 ru.tinkoff.qa.neptune.selenium.captors
+ru.tinkoff.qa.neptune.selenium.content.management
 ru.tinkoff.qa.neptune.selenium.functions.browser.proxy
 ru.tinkoff.qa.neptune.selenium.functions.click
 ru.tinkoff.qa.neptune.selenium.functions.cookies
@@ -27,5 +28,4 @@ ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.browser.proxy
 ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.elements
 ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.url
 ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.window
-ru.tinkoff.qa.neptune.selenium.hooks
 ru.tinkoff.qa.neptune.selenium.properties
