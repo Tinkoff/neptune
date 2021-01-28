@@ -149,12 +149,12 @@ public class GetValueTest extends BaseWebDriverTest {
     @Test
     public void valueOfSelectTest() {
         assertThat(seleniumSteps.valueOf(select(SELECT_LABEL_TEXT2)),
-                emptyIterable());
+                emptyOrNullString());
 
         assertThat(seleniumSteps.edit(select(SELECT_LABEL_TEXT2), OPTION_TEXT18)
                         .edit(select(SELECT_LABEL_TEXT2), OPTION_TEXT16)
                         .valueOf(select(SELECT_LABEL_TEXT2)),
-                contains(OPTION_TEXT16));
+                is(OPTION_TEXT16));
 
         seleniumSteps.edit(select(SELECT_LABEL_TEXT9), OPTION_TEXT27)
                 .edit(select(SELECT_LABEL_TEXT1), OPTION_TEXT25)
@@ -162,21 +162,6 @@ public class GetValueTest extends BaseWebDriverTest {
                 .edit(select().criteria(attr(ATTR1, VALUE4)), OPTION_TEXT5)
                 .edit(select().criteria(nested(webElements(tagName(OPTION), OPTION_TEXT14))), OPTION_TEXT15)
                 .edit(select().criteria(nested(webElements(tagName(OPTION), OPTION_TEXT14))), OPTION_TEXT13);
-
-        assertThat(seleniumSteps.valueOf(select(SELECT_LABEL_TEXT1)),
-                contains(OPTION_TEXT25, OPTION_TEXT26, OPTION_TEXT27));
-
-        assertThat(seleniumSteps.valueOf(select().criteria(attr(ATTR1, VALUE4))),
-                contains(OPTION_TEXT5));
-
-        assertThat(seleniumSteps.valueOf(select().criteria(nested(webElements(tagName(OPTION), OPTION_TEXT14)))),
-                contains(OPTION_TEXT13));
-
-        Select select = seleniumSteps.find(select(SELECT_LABEL_TEXT10));
-        assertThat(seleniumSteps.edit(select, OPTION_TEXT29)
-                        .edit(select, OPTION_TEXT28)
-                        .valueOf(select),
-                contains(OPTION_TEXT28, OPTION_TEXT29));
     }
 
     @Test

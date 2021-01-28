@@ -51,7 +51,7 @@ public class MultiSelect extends Select {
     }
 
     @Override
-    public List<String> getValue() {
-        return options.stream().filter(WebElement::isSelected).map(WebElement::getText).collect(toList());
+    public String getValue() {
+        return options.stream().filter(WebElement::isSelected).map(WebElement::getText).findFirst().orElse(null);
     }
 }

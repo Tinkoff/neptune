@@ -41,9 +41,9 @@ public class SimpleSelect extends Select {
     }
 
     @Override
-    public List<String> getValue() {
+    public String getValue() {
         return options.stream().filter(WebElement::isSelected)
-                .findFirst().map(webElement -> List.of(webElement.getText())).
-                orElse(List.of());
+                .findFirst().map(WebElement::getText).
+                        orElse(null);
     }
 }

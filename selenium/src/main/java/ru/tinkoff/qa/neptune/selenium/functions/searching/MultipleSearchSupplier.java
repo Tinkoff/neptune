@@ -283,6 +283,33 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
         return widgets(Select.class, textOrLabel);
     }
 
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found multi-selects.
+     *
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<MultiSelect> multiSelects() {
+        return widgets(MultiSelect.class);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found multi-selects.
+     *
+     * @param textOrLabel text which is used to find multi-selects by full element text matching. Also texts of labels
+     *                    are used to find elements.
+     * @return an instance of {@link MultipleSearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
+     */
+    public static MultipleSearchSupplier<MultiSelect> multiSelects(String textOrLabel) {
+        return widgets(MultiSelect.class, textOrLabel);
+    }
+
+
     /**
      * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
      * The built function takes an instance of {@link SearchContext} for the searching
