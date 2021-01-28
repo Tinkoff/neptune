@@ -268,6 +268,7 @@ public class Tezzt {
     - `ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Image` - для описания элементов-картинок
     - `ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Link`  - для описания ссылок
     - `ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Select` - для описания элементов выбора
+    - `ru.tinkoff.qa.neptune.selenium.api.widget.drafts.MultiSelect` - для описания элементов выбора множественного значения
     - `ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Tab` - для описания элементов-вкладок
     - `ru.tinkoff.qa.neptune.selenium.api.widget.drafts.TextField` - для описания полей ввода текста
     - `ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Table` - для описания таблиц
