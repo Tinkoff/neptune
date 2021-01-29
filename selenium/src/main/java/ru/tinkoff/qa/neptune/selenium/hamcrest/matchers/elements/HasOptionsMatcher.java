@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.elements;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import ru.tinkoff.qa.neptune.selenium.api.widget.HasOptions;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Select;
 import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
 
@@ -13,11 +14,11 @@ import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static org.hamcrest.Matchers.*;
 
-public final class HasOptionsMatcher<T extends Iterable<?>> extends TypeSafeDiagnosingMatcher<Select> {
+public final class HasOptionsMatcher extends TypeSafeDiagnosingMatcher<HasOptions> {
 
-    private final Matcher<T> matcher;
+    private final Matcher<Iterable<? extends String>> matcher;
 
-    private HasOptionsMatcher(Matcher<T> matcher) {
+    private HasOptionsMatcher(Matcher<Iterable<? extends String>> matcher) {
         checkArgument(nonNull(matcher), "Criteria to match options of the select should be defined");
         this.matcher = matcher;
     }
@@ -29,10 +30,10 @@ public final class HasOptionsMatcher<T extends Iterable<?>> extends TypeSafeDiag
      * @param options are expected
      * @return created object of {@link HasOptionsMatcher}
      */
-    public static HasOptionsMatcher<Iterable<? extends String>> hasOptions(String... options) {
+    public static HasOptionsMatcher hasOptions(String... options) {
         checkNotNull(options);
         checkArgument(options.length > 0, "There should be defined at least one expected option");
-        return new HasOptionsMatcher<>(contains(options));
+        return new HasOptionsMatcher(contains(options));
     }
 
     /**
@@ -42,9 +43,9 @@ public final class HasOptionsMatcher<T extends Iterable<?>> extends TypeSafeDiag
      * @param options are expected
      * @return created object of {@link HasOptionsMatcher}
      */
-    public static HasOptionsMatcher<Iterable<? extends String>> hasOptions(Collection<String> options) {
+    public static HasOptionsMatcher hasOptions(Collection<String> options) {
         checkNotNull(options);
-        return hasOptions(options.toArray(new String[] {}));
+        return hasOptions(options.toArray(new String[]{}));
     }
 
     /**
@@ -53,8 +54,8 @@ public final class HasOptionsMatcher<T extends Iterable<?>> extends TypeSafeDiag
      * @param matcher to check options of the {@link Select}
      * @return created object of {@link HasOptionsMatcher}
      */
-    public static HasOptionsMatcher<? extends Iterable<?>> hasOptions(Matcher<? extends Iterable<?>> matcher) {
-        return new HasOptionsMatcher<>(matcher);
+    public static HasOptionsMatcher hasOptions(Matcher<Iterable<? extends String>> matcher) {
+        return new HasOptionsMatcher(matcher);
     }
 
     /**
@@ -63,12 +64,12 @@ public final class HasOptionsMatcher<T extends Iterable<?>> extends TypeSafeDiag
      *
      * @return created object of {@link HasOptionsMatcher}
      */
-    public static HasOptionsMatcher<Iterable<?>> hasOptions() {
-        return new HasOptionsMatcher<>(not(emptyIterable()));
+    public static HasOptionsMatcher hasOptions() {
+        return new HasOptionsMatcher(not(emptyIterable()));
     }
 
     @Override
-    protected boolean matchesSafely(Select item, Description mismatchDescription) {
+    protected boolean matchesSafely(HasOptions item, Description mismatchDescription) {
         var options = item.getOptions();
         boolean result = matcher.matches(options);
 

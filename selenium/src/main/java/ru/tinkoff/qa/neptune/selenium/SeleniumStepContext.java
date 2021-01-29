@@ -13,7 +13,6 @@ import ru.tinkoff.qa.neptune.selenium.api.widget.Clickable;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Editable;
 import ru.tinkoff.qa.neptune.selenium.api.widget.HasValue;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
-import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.TextField;
 import ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.BrowserProxyGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.cookies.AddCookiesActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.cookies.GetSeleniumCookieSupplier;
@@ -160,14 +159,14 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     }
 
     /**
-     * Performs the editing of a text field.
+     * Performs the editing of an element by the using of a multiple value.
      *
-     * @param toFind is description of a text field
-     * @param value  is a sequence of strings/chars used to change value of text field
-     * @param <T>    is a type of text field
+     * @param toFind is description of a widget to be edited
+     * @param value  is a sequence of objects which are used to change value of a widget
+     * @param <T>    is a type of editable {@link Widget}
      * @return self-reference
      */
-    public <T extends TextField> SeleniumStepContext edit(SearchSupplier<T> toFind, CharSequence... value) {
+    public <R, T extends Editable<List<R>>> SeleniumStepContext edit(SearchSupplier<T> toFind, R... value) {
         checkNotNull(value);
         checkArgument(value.length > 0, "");
         valueOfThe(toFind, asList(value)).get().accept(this);
@@ -189,16 +188,16 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     }
 
     /**
-     * Performs the editing of a text field.
+     * Performs the editing of an element by the using of a multiple value.
      *
-     * @param textField is a text field
-     * @param value     is a sequence of strings/chars used to change value of text field
+     * @param t     is a widget to be edited
+     * @param value is a sequence of objects which are used to change value of a widget
      * @return self-reference
      */
-    public SeleniumStepContext edit(TextField textField, CharSequence... value) {
+    public <R, T extends Editable<List<R>>> SeleniumStepContext edit(T t, R... value) {
         checkNotNull(value);
         checkArgument(value.length > 0, "");
-        valueOfThe(textField, asList(value)).get().accept(this);
+        valueOfThe(t, asList(value)).get().accept(this);
         return this;
     }
 
