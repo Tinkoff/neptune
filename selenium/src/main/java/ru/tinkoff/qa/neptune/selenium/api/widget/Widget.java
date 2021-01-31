@@ -19,7 +19,7 @@ import static ru.tinkoff.qa.neptune.selenium.api.widget.Priority.LOWEST;
  */
 @Priority(LOWEST)
 public abstract class Widget implements WrapsElement, SearchContext, HasAttribute,
-        IsEnabled, IsVisible, HasSize, HasRectangle, HasLocation, HasCssValue {
+        IsEnabled, IsVisible, HasSize, HasRectangle, HasLocation, HasCssValue, HasTextContent {
 
     private final SearchContext wrappedElement;
 
@@ -145,5 +145,9 @@ public abstract class Widget implements WrapsElement, SearchContext, HasAttribut
 
     public Widget selfReference() {
         return this;
+    }
+
+    public String getText() {
+        return getWrappedElement().getText();
     }
 }

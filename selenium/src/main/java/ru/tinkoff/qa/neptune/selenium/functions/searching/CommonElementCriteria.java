@@ -100,19 +100,18 @@ public final class CommonElementCriteria {
 
         return condition(format("has text '%s'", text), t -> {
             var clazz = t.getClass();
-            String elementText = null;
 
             if (WebElement.class.isAssignableFrom(clazz)) {
-                elementText = ((WebElement) t).getText();
-            }
-
-            if (WrapsElement.class.isAssignableFrom(clazz)) {
-                elementText = ofNullable(((WrapsElement) t).getWrappedElement())
+                return Objects.equals(((WebElement) t).getText(), text);
+            } else if (HasTextContent.class.isAssignableFrom(clazz)) {
+                return Objects.equals(((HasTextContent) t).getText(), text);
+            } else if (WrapsElement.class.isAssignableFrom(clazz)) {
+                return Objects.equals(ofNullable(((WrapsElement) t).getWrappedElement())
                         .map(WebElement::getText)
-                        .orElse(null);
+                        .orElse(null), text);
+            } else {
+                return false;
             }
-
-            return Objects.equals(elementText, text);
         });
     }
 
@@ -178,6 +177,8 @@ public final class CommonElementCriteria {
 
             if (WebElement.class.isAssignableFrom(clazz)) {
                 elementText = valueOf(((WebElement) t).getText());
+            } else if (HasTextContent.class.isAssignableFrom(clazz)) {
+                elementText = valueOf(((HasTextContent) t).getText());
             } else if (WrapsElement.class.isAssignableFrom(clazz)) {
                 elementText = ofNullable(((WrapsElement) t).getWrappedElement())
                         .map(webElement -> valueOf(webElement.getText()))
