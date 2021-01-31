@@ -17,6 +17,6 @@ public abstract class TextElement extends Widget implements HasValue<String> {
 
     @Override
     public String getValue() {
-        return getWrappedElement().getText();
+        return getText();
     }
 }

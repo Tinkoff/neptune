@@ -1,11 +1,12 @@
 package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.elements;
 
-import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsElement;
+import ru.tinkoff.qa.neptune.selenium.api.widget.HasTextContent;
+import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
@@ -70,8 +71,9 @@ public final class HasTextMatcher<T extends SearchContext> extends TypeSafeDiagn
 
         if (WebElement.class.isAssignableFrom(clazz)) {
             result = matcher.matches(text = ((WebElement) item).getText());
-        }
-        else if (WrapsElement.class.isAssignableFrom(clazz)) {
+        } else if (HasTextContent.class.isAssignableFrom(clazz)) {
+            result = matcher.matches(text = ((HasTextContent) item).getText());
+        } else if (WrapsElement.class.isAssignableFrom(clazz)) {
             var e = ((WrapsElement) item).getWrappedElement();
             if (e == null) {
                 mismatchDescription.appendText(format("Wrapped element is null. It is not possible to get text from the instance of %s.",
@@ -79,10 +81,12 @@ public final class HasTextMatcher<T extends SearchContext> extends TypeSafeDiagn
                 return false;
             }
             result = matcher.matches(text = e.getText());
-        }
-        else {
+        } else {
             mismatchDescription.appendText(format("It is not possible to get text from the instance of %s because " +
-                            "it does not implement %s or %s", clazz.getName(), WebElement.class,
+                            "it does not implement %s, %s or %s",
+                    clazz.getName(),
+                    WebElement.class.getName(),
+                    HasTextContent.class.getName(),
                     WrapsElement.class.getName()));
             return false;
         }
