@@ -7,9 +7,12 @@ import org.openqa.selenium.internal.WrapsElement;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.StepFunction;
 import ru.tinkoff.qa.neptune.selenium.api.widget.*;
+import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Tab;
 
+import java.lang.reflect.Method;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -115,6 +118,24 @@ public final class CommonElementCriteria {
         });
     }
 
+    private static List<String> labelsFromMethods(Method[] methods, Object from) {
+        return stream(methods)
+                .filter(method -> !isStatic(method.getModifiers())
+                        && method.getParameterTypes().length == 0
+                        && method.getReturnType().equals(String.class)
+                        && method.getAnnotation(Label.class) != null)
+                .map(method -> {
+                    try {
+                        method.setAccessible(true);
+                        return (String) method.invoke(from);
+                    } catch (Exception e) {
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .collect(toList());
+    }
+
     static <T extends Widget> Criteria<T> labeled(String label) {
         checkNotNull(label);
         return condition(format("has label '%s'", label), t -> {
@@ -122,21 +143,8 @@ public final class CommonElementCriteria {
             var labels = new ArrayList<String>();
 
             while (cls != null) {
-                labels.addAll(stream(cls.getDeclaredMethods())
-                        .filter(method -> !isStatic(method.getModifiers())
-                                && method.getParameterTypes().length == 0
-                                && method.getReturnType().equals(String.class)
-                                && method.getAnnotation(Label.class) != null)
-                        .map(method -> {
-                            try {
-                                method.setAccessible(true);
-                                return (String) method.invoke(t);
-                            } catch (Exception e) {
-                                return null;
-                            }
-                        })
-                        .filter(Objects::nonNull)
-                        .collect(toList()));
+                labels.addAll(labelsFromMethods(cls.getDeclaredMethods(), t));
+                stream(cls.getInterfaces()).forEach(aClass -> labels.addAll(labelsFromMethods(aClass.getDeclaredMethods(), t)));
 
                 labels.addAll(stream(cls.getDeclaredFields())
                         .filter(field -> !isStatic(field.getModifiers())
@@ -442,7 +450,29 @@ public final class CommonElementCriteria {
      * @param <T>  is a type of element/widget
      * @return criteria that checks/filters an element/widget
      */
-    public <T extends SearchContext> Criteria<T> noText(String text) {
+    public static <T extends SearchContext> Criteria<T> noText(String text) {
         return NOT(text(text));
+    }
+
+    /**
+     * The checking of an element/widget by its value
+     *
+     * @param value is an expected value
+     * @param <R>   is a type of the value
+     * @param <T>   is a type of element/widget
+     * @return criteria that checks/filters an element/widget
+     */
+    public static <R, T extends SearchContext & HasValue<R>> Criteria<T> valueIs(R value) {
+        return condition(format("has value '%s'", value), t -> Objects.equals(value, t.getValue()));
+    }
+
+    /**
+     * Checks {@link Tab} by its activeness.
+     *
+     * @param <T> is a type of a {@link Tab}
+     * @return criteria that checks/filters an element/widget
+     */
+    public static <T extends Tab> Criteria<T> isActive() {
+        return condition("is active tab", Tab::isActive);
     }
 }
