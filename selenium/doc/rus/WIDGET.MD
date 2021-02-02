@@ -221,6 +221,63 @@ public class Tezzt {
 }
 ```
 
+Вернемся к описанию текстового поля. Что если не только текстовые поля имеют метку с локатором `xpath = "./preceding::label[1]"`?
+Как вариант, мы можем создать интерфейс
+
+```java
+import org.openqa.selenium.SearchContext;
+import ru.tinkoff.qa.neptune.selenium.api.widget.Label;
+
+import static org.openqa.selenium.By.*;
+
+public interface HasOuterLabel extends SearchContext {
+
+    @Label //Логика метки вынесена во внешний интерфейс
+    default String outerLabel() {
+        try {
+          return findElement(xpath("./preceding::label[1]")).getText();
+        }
+        catch (NoSuchElementException e) {
+            return "";//Если у виджета нет этой метки
+        }
+    }
+}
+
+```
+
+и исправить ранее реализованный класс `TextInput`
+
+```java
+import ru.tinkoff.qa.neptune.selenium.api.widget.Editable;
+import ru.tinkoff.qa.neptune.selenium.api.widget.HasValue;
+import ru.tinkoff.qa.neptune.selenium.api.widget.Name;
+import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
+
+@Name("Текстовое поле ввода")
+@FindBy(xpath = ".//input[@type='text']")
+public class TextInput
+        extends Widget
+        implements HasValue<String>,
+        Editable<String>, HasOuterLabel {
+    protected TextInput(WebElement wrappedElement) {
+        super(wrappedElement);
+    }
+
+    @Override 
+    public void edit(String valueToSet) {
+        var e = getWrappedElement();
+        e.clear();
+        e.sendKeys(charSequence);
+    }
+
+    @Override
+    public String getValue() {
+        return getWrappedElement().getAttribute("value");
+    }
+}
+```
+
+
 ## Правила описания виджета
 
 - у каждого виджета должен быть свой уникальный локатор, по которому он может быть однозначно найден на странице. Если
@@ -311,19 +368,12 @@ public class Tezzt {
 
   Текстовые поля
   ```java
-    import org.openqa.selenium.support.FindBy;
-
-    import ru.tinkoff.qa.neptune.selenium.api.widget.Label;
     import ru.tinkoff.qa.neptune.selenium.api.widget.Name;
     import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.TextField;
     
     @Name("Текстовое поле ввода")
     @FindBy(xpath = ".//input[@type='text']")
-    public class TextInput extends TextField {
-    
-        @Label 
-        @FindBy(xpath = "./preceding::label[1]")
-        private WebElement label;
+    public class TextInput extends TextField implements HasOuterLabel {
     
         protected TextInput(WebElement wrappedElement) {
             super(wrappedElement);
