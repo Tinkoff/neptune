@@ -13,7 +13,7 @@ import static java.util.Arrays.stream;
 @PropertyDescription(description = {"Defines a class that extends ru.tinkoff.qa.neptune.selenium.auto.scrolling.AutoScroller.",
         "Instances of this class are used to perform the scrolling into view implicitly",
         "on interaction with elements of a page"},
-        section = "Selenium. Web driver credentials")
+        section = "Selenium. Web driver scrolling/focusing")
 @PropertyName("WEB_DRIVER_DEFAULT_AUTO_SCROLLER")
 public final class DefaultScrollerProperty implements PropertySupplier<Class<? extends AutoScroller>> {
 
