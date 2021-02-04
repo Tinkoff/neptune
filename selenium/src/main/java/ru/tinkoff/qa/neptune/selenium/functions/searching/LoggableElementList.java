@@ -5,7 +5,8 @@ import org.openqa.selenium.SearchContext;
 import java.util.ArrayList;
 import java.util.Collection;
 
-class LoggableElementList<T extends SearchContext> extends ArrayList<T> {
+abstract class LoggableElementList<T extends SearchContext> extends ArrayList<T> {
+
     LoggableElementList() {
         super();
     }
@@ -13,4 +14,6 @@ class LoggableElementList<T extends SearchContext> extends ArrayList<T> {
     LoggableElementList(Collection<T> toAdd) {
         super(toAdd);
     }
+
+    public abstract String toString();
 }

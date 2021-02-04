@@ -1,11 +1,13 @@
 package ru.tinkoff.qa.neptune.selenium.captors;
 
+import com.google.common.annotations.Beta;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrapsElement;
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.ImageCaptor;
 
 import static java.util.Optional.ofNullable;
 
+@Beta
 public abstract class WebElementImageCaptor extends ImageCaptor<WebElement> {
 
     public WebElementImageCaptor() {

@@ -1,23 +1,17 @@
 package ru.tinkoff.qa.neptune.selenium.test;
 
-import ru.tinkoff.qa.neptune.selenium.functions.searching.ScrollWebElementIntoView;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import ru.tinkoff.qa.neptune.selenium.auto.scrolling.AutoScroller;
 
-import java.lang.reflect.Method;
+public class MockScrollWebElementIntoView extends AutoScroller {
 
-public class MockScrollWebElementIntoView extends ScrollWebElementIntoView {
-
-    public MockScrollWebElementIntoView(MockWebElement elementToBeScrolledIntoView) {
-        super(elementToBeScrolledIntoView);
+    public MockScrollWebElementIntoView(WebDriver driver) {
+        super(driver);
     }
 
     @Override
-    protected boolean needsForTheScrolling(Method method) {
-        return method
-                .getName()
-                .equals("click");
-    }
-
-    public void scrollIntoView() {
-        ((MockWebElement) getWrappedElement()).scroll();
+    protected void scrollIntoView(WebElement e) {
+        ((MockWebElement) e).scroll();
     }
 }

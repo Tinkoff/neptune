@@ -2,34 +2,45 @@ package ru.tinkoff.qa.neptune.selenium.functions.searching;
 
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import ru.tinkoff.qa.neptune.selenium.api.widget.ScrollsIntoView;
+import org.openqa.selenium.WrapsDriver;
+import ru.tinkoff.qa.neptune.selenium.auto.scrolling.AutoScroller;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.selenium.properties.DefaultScrollerProperty.DEFAULT_SCROLLER_PROPERTY;
 
 abstract class AbstractElementInterceptor implements MethodInterceptor {
 
     final WebElement element;
-    private boolean isScrollerSetUp;
 
     Object realObject;
-    ScrollsIntoView scrollsIntoView;
+    private final AutoScroller defaultScroller;
 
     AbstractElementInterceptor(WebElement element) {
         this.element = element;
+        defaultScroller = getAutoScroller(element);
+    }
+
+    private static AutoScroller getAutoScroller(WebElement element) {
+        return ofNullable(DEFAULT_SCROLLER_PROPERTY.get())
+                .map(aClass -> {
+                    try {
+                        var c = aClass.getDeclaredConstructor(WebDriver.class);
+                        c.setAccessible(true);
+                        return c.newInstance(((WrapsDriver) element).getWrappedDriver());
+                    } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .orElse(null);
     }
 
     public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
-        realObject = ofNullable(realObject)
-                .orElseGet(this::createRealObject);
-
-        if (!isScrollerSetUp) {
-            setScroller();
-            isScrollerSetUp = true;
-        }
+        realObject = ofNullable(realObject).orElseGet(this::createRealObject);
 
         Class<?>[] parameters;
         if ("equals".equals(method.getName()) && (parameters = method.getParameterTypes()).length == 1
@@ -50,8 +61,8 @@ abstract class AbstractElementInterceptor implements MethodInterceptor {
         }
 
         if (toPerformTheScrolling(method)) {
-            ofNullable(scrollsIntoView)
-                    .ifPresent(ScrollsIntoView::scrollIntoView);
+            ofNullable(defaultScroller)
+                    .ifPresent(autoScroller -> autoScroller.scrollIntoView(realObject));
         }
 
         try {
@@ -65,8 +76,6 @@ abstract class AbstractElementInterceptor implements MethodInterceptor {
             throw e;
         }
     }
-
-    abstract void setScroller();
 
     abstract Object createRealObject();
 
