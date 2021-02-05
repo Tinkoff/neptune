@@ -2,6 +2,7 @@ ru.tinkoff.qa.neptune.selenium
 ru.tinkoff.qa.neptune.selenium.api.widget
 ru.tinkoff.qa.neptune.selenium.api.widget.drafts
 ru.tinkoff.qa.neptune.selenium.authentication
+ru.tinkoff.qa.neptune.selenium.auto.scrolling
 ru.tinkoff.qa.neptune.selenium.captors
 ru.tinkoff.qa.neptune.selenium.content.management
 ru.tinkoff.qa.neptune.selenium.functions.browser.proxy
