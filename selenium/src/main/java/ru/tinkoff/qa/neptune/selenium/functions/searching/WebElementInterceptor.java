@@ -7,9 +7,7 @@ import org.openqa.selenium.WebElement;
 import java.lang.reflect.Method;
 
 import static java.lang.String.format;
-import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.ScrollWebElementIntoView.getDefaultScrollerIntoView;
 
 class WebElementInterceptor extends AbstractElementInterceptor {
 
@@ -45,23 +43,20 @@ class WebElementInterceptor extends AbstractElementInterceptor {
     }
 
     @Override
-    void setScroller() {
-        try {
-            scrollsIntoView = getDefaultScrollerIntoView(element);
-        } catch (Throwable throwable) {
-            throw new RuntimeException(throwable);
-        }
-    }
-
-    @Override
     Object createRealObject() {
         return element;
     }
 
     @Override
     boolean toPerformTheScrolling(Method method) {
-        return ofNullable(scrollsIntoView)
-                .map(scrolls -> ((ScrollWebElementIntoView) scrolls).needsForTheScrolling(method))
-                .orElse(false);
+        var name = method.getName();
+        return name.equals("click")
+                || name.equals("submit")
+                || name.equals("sendKeys")
+                || name.equals("clear")
+                || name.equals("getLocation")
+                || name.equals("getSize")
+                || name.equals("getRect")
+                || name.equals("getCoordinates");
     }
 }

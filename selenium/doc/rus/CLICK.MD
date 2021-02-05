@@ -23,7 +23,6 @@ public class ClickableWidget extends Widget implements Clickable {
 ```java
 import static org.openqa.selenium.By.*;
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.*;
 
 public class Tezzt {

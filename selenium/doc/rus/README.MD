@@ -39,7 +39,7 @@
 - [Значение элементов](./ELEMENT_VALUE.MD)
 - [Атрибуты элементов](./ELEMENT_ATTR.MD)
 - [CSS элементов](./ELEMENT_CSS.MD)
-- [Автоскроллирование](./AUTO_SCROLLING.MD)
+- [Авто-скроллирование](./AUTO_SCROLLING.MD)
 
 [Выполнение javascript](./JAVA_SCRIPT.MD)
 
