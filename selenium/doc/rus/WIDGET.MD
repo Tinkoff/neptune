@@ -315,6 +315,12 @@ public class TextInput
 
 ---
 
+- Виджеты, которые могут развертывать и свертывать вложенный контент, должны реализовывать
+  интерфейс `ru.tinkoff.qa.neptune.selenium.api.widget.Expandable`. И тогда для них станут доступны действия
+  вида `inBrowser.expand(..)` и `inBrowser.collapse(..)`
+
+--- 
+
 - Есть заранее заготовленные абстракции, позволяющие сгруппировать виджеты, от которых можно наследовать свои классы:
 
     - `ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Button` - для описания кнопок
