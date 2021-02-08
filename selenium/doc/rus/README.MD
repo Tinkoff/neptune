@@ -36,6 +36,7 @@
 - [Поиск элементов](./ELEMENTS_SEARCHING.MD)
 - [Клик по элементам](./CLICK.MD)
 - [Редактирование элементов](./EDIT.MD)
+- [Свертывание и развертывание](./EXPAND_COLLAPSE.MD)  
 - [Значение элементов](./ELEMENT_VALUE.MD)
 - [Атрибуты элементов](./ELEMENT_ATTR.MD)
 - [CSS элементов](./ELEMENT_CSS.MD)

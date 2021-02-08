@@ -9,13 +9,12 @@ import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
-import ru.tinkoff.qa.neptune.selenium.api.widget.Clickable;
-import ru.tinkoff.qa.neptune.selenium.api.widget.Editable;
-import ru.tinkoff.qa.neptune.selenium.api.widget.HasValue;
-import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
+import ru.tinkoff.qa.neptune.selenium.api.widget.*;
 import ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.BrowserProxyGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.cookies.AddCookiesActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.cookies.GetSeleniumCookieSupplier;
+import ru.tinkoff.qa.neptune.selenium.functions.expand.CollapseActionSupplier;
+import ru.tinkoff.qa.neptune.selenium.functions.expand.ExpandActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction;
 import ru.tinkoff.qa.neptune.selenium.functions.java.script.GetJavaScriptResultSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier;
@@ -143,6 +142,56 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
         on(element).get().accept(this);
         return this;
     }
+
+
+    /**
+     * Performs the expanding on an expandable widget
+     *
+     * @param toFind is description of a widget to be expanded
+     * @param <T>    is a type of a expandable {@link Widget}
+     * @return self-reference
+     */
+    public <T extends Widget & Expandable> SeleniumStepContext expand(SearchSupplier<T> toFind) {
+        ExpandActionSupplier.expand(toFind).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs the expanding on an expandable widget
+     *
+     * @param widget to be expanded
+     * @param <T>    is a type of a expandable {@link Widget}
+     * @return self-reference
+     */
+    public <T extends Widget & Expandable> SeleniumStepContext expand(T widget) {
+        ExpandActionSupplier.expand(widget).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs the collapsing on an expandable/collapsable widget
+     *
+     * @param toFind is description of a widget to be collapsed
+     * @param <T>    is a type of an expandable/collapsable {@link Widget}
+     * @return self-reference
+     */
+    public <T extends Widget & Expandable> SeleniumStepContext collapse(SearchSupplier<T> toFind) {
+        CollapseActionSupplier.collapse(toFind).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs the collapsing on an expandable/collapsable widget
+     *
+     * @param widget to be collapsed
+     * @param <T>    is a type of an expandable/collapsable {@link Widget}
+     * @return self-reference
+     */
+    public <T extends Widget & Expandable> SeleniumStepContext collapse(T widget) {
+        CollapseActionSupplier.collapse(widget).get().accept(this);
+        return this;
+    }
+
 
     /**
      * Performs the editing of an editable widget.
