@@ -146,8 +146,4 @@ public abstract class Widget implements WrapsElement, SearchContext, HasAttribut
     public Widget selfReference() {
         return this;
     }
-
-    public String getText() {
-        return getWrappedElement().getText();
-    }
 }
