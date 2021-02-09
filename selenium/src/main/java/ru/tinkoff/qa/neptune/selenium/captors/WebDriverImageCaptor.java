@@ -1,12 +1,12 @@
 package ru.tinkoff.qa.neptune.selenium.captors;
 
+import com.google.common.annotations.Beta;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrapsDriver;
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.ImageCaptor;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
-import ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.Frame;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -16,6 +16,7 @@ import java.io.IOException;
 import static java.util.Optional.ofNullable;
 import static org.openqa.selenium.OutputType.BYTES;
 
+@Beta
 public class WebDriverImageCaptor extends ImageCaptor<WebDriver> {
 
     public WebDriverImageCaptor() {

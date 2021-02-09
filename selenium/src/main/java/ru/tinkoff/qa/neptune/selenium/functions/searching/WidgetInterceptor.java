@@ -4,7 +4,6 @@ import net.sf.cglib.proxy.MethodProxy;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.pagefactory.DefaultElementLocatorFactory;
 import ru.tinkoff.qa.neptune.selenium.api.widget.NeedToScrollIntoView;
-import ru.tinkoff.qa.neptune.selenium.api.widget.ScrollsIntoView;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 
 import java.lang.reflect.Method;
@@ -47,13 +46,6 @@ class WidgetInterceptor extends AbstractElementInterceptor {
         }
 
         return super.intercept(obj, method, args, proxy);
-    }
-
-    @Override
-    void setScroller() {
-        if (ScrollsIntoView.class.isAssignableFrom(widgetClass)) {
-            scrollsIntoView = (ScrollsIntoView) realObject;
-        }
     }
 
     @Override

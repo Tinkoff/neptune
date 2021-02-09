@@ -19,15 +19,13 @@ import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
 import static java.util.Optional.ofNullable;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CHROME;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.KEEP_WEB_DRIVER_SESSION_OPENED;
 import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDriverProperty.SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers.CHROME_DRIVER;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
-import static ru.tinkoff.qa.neptune.selenium.properties.WebDriverTunersProperty.WEB_DRIVER_TUNERS_PROPERTY;
-import static ru.tinkoff.qa.neptune.selenium.test.webdriver.starting.TestWebDriverTunerSupplier.TEST_WEB_DRIVER_TUNER;
+import static ru.tinkoff.qa.neptune.selenium.properties.WebDriverCredentialsProperty.WEB_DRIVER_CREDENTIALS_PROPERTY;
 
 /**
  * This is the integration test which is supposed to be run on some local environment.
@@ -52,7 +50,7 @@ public class DefaultRefreshingTest {
                     entry(BASE_WEB_DRIVER_URL_PROPERTY.getName(), "https://github.com"),
                     entry(CHROME.getName(), ChromeSettingsSupplierHeadless.class.getName()));
 
-    private final List<PropertySupplier<?>> PROPS = of(KEEP_WEB_DRIVER_SESSION_OPENED, WEB_DRIVER_TUNERS_PROPERTY);
+    private final List<PropertySupplier<?>> PROPS = of(KEEP_WEB_DRIVER_SESSION_OPENED, WEB_DRIVER_CREDENTIALS_PROPERTY);
 
     private WrappedWebDriver wrappedWebDriver;
 
@@ -90,7 +88,6 @@ public class DefaultRefreshingTest {
 
     @BeforeMethod
     public void beforeTest() {
-        TEST_WEB_DRIVER_TUNER.actions.clear();
         PROPS.forEach(s -> System.getProperties().remove(s.getName()));
     }
 
@@ -121,73 +118,6 @@ public class DefaultRefreshingTest {
         assertThat("Current url",
                 webDriver.getCurrentUrl(),
                 is(SELENIUM));
-    }
-
-    @Test
-    public void test4() {
-        setProperty(WEB_DRIVER_TUNERS_PROPERTY.getName(), TestWebDriverTunerSupplier.class.getName());
-        wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
-                new SeleniumParameterProvider().provide().getParameterValues()[0]);
-        wrappedWebDriver.getWrappedDriver();
-        wrappedWebDriver.refreshContext();
-        wrappedWebDriver.getWrappedDriver();
-
-
-        assertThat("Registered tune actions",
-                TEST_WEB_DRIVER_TUNER.actions,
-                contains("created",
-                        "created"));
-    }
-
-    @Test
-    public void test5() {
-        setProperty(WEB_DRIVER_TUNERS_PROPERTY.getName(), TestWebDriverTunerSupplier.class.getName());
-        setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getName(), "true");
-
-        wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
-                new SeleniumParameterProvider().provide().getParameterValues()[0]);
-        wrappedWebDriver.getWrappedDriver();
-        wrappedWebDriver.refreshContext();
-        wrappedWebDriver.getWrappedDriver();
-
-        assertThat("Registered tune actions",
-                TEST_WEB_DRIVER_TUNER.actions,
-                contains("created",
-                        "refreshed"));
-    }
-
-    @Test
-    public void test6() {
-        setProperty(WEB_DRIVER_TUNERS_PROPERTY.getName(), TestWebDriverTunerSupplier.class.getName());
-        wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
-                new SeleniumParameterProvider().provide().getParameterValues()[0]);
-
-        wrappedWebDriver.getWrappedDriver();
-        wrappedWebDriver.shutDown();
-        wrappedWebDriver.getWrappedDriver();
-
-        assertThat("Registered tune actions",
-                TEST_WEB_DRIVER_TUNER.actions,
-                contains("created",
-                        "created"));
-    }
-
-    @Test
-    public void test7() {
-        setProperty(WEB_DRIVER_TUNERS_PROPERTY.getName(), TestWebDriverTunerSupplier.class.getName());
-        setProperty(KEEP_WEB_DRIVER_SESSION_OPENED.getName(), "true");
-
-        wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
-                new SeleniumParameterProvider().provide().getParameterValues()[0]);
-        wrappedWebDriver.getWrappedDriver();
-        wrappedWebDriver.shutDown();
-        wrappedWebDriver.refreshContext();
-        wrappedWebDriver.getWrappedDriver();
-
-        assertThat("Registered tune actions",
-                TEST_WEB_DRIVER_TUNER.actions,
-                contains("created",
-                        "created"));
     }
 
 

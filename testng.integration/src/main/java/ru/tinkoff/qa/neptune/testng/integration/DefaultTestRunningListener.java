@@ -102,8 +102,10 @@ public final class DefaultTestRunningListener implements IInvokedMethodListener 
             System.out.println();
         });
 
-        hooks.forEach(executionHook -> executionHook
-                .executeMethodHook(reflectionMethod, testResult.getInstance(), method.isTestMethod()));
+        if (method.getTestResult().getStatus() != SKIP) {
+            hooks.forEach(executionHook -> executionHook
+                    .executeMethodHook(reflectionMethod, testResult.getInstance(), method.isTestMethod()));
+        }
     }
 
     @Override
@@ -116,7 +118,7 @@ public final class DefaultTestRunningListener implements IInvokedMethodListener 
             var params = testResult.getParameters();
             var stringParams = stream(params).map(o -> {
                 if (o == null) {
-                    return valueOf(o);
+                    return valueOf((Object) null);
                 }
 
                 var clazz = o.getClass();

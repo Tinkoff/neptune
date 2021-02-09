@@ -2179,6 +2179,21 @@ public class FakeDOMModel {
                     ))
     ));
 
+    public static final MockWebElement FRAME_ELEMENT_VALID1 = new MockWebElement(tagName("valid_frame1"),
+            ofEntries(),
+            ofEntries(), new Point(58, 50), new Dimension(48, 72), true,
+            true, false, "valid_frame1", EMPTY, of());
+
+    public static final MockWebElement FRAME_ELEMENT_VALID2 = new MockWebElement(tagName("valid_frame2"),
+            ofEntries(),
+            ofEntries(), new Point(58, 50), new Dimension(48, 72), true,
+            true, false, "valid_frame2", EMPTY, of());
+
+    public static final MockWebElement FRAME_ELEMENT_INVALID = new MockWebElement(tagName("invalid_frame"),
+            ofEntries(),
+            ofEntries(), new Point(58, 50), new Dimension(48, 72), true,
+            true, false, "invalid_frame", EMPTY, of());
+
     private final static List<MockWebElement> fakeMock = of(
             VISIBLE_DIV_ELEMENT,
             INVISIBLE_SPAN_ELEMENT,
@@ -2203,7 +2218,8 @@ public class FakeDOMModel {
             COMMON_LABELED_SELECT1, COMMON_LABELED_SELECT2, COMMON_LABELED_SELECT3, COMMON_LABELED_SELECT4, COMMON_SELECT1,
             COMMON_SELECT2, COMMON_SELECT3, COMMON_SELECT4, MULTI_SELECT1, MULTI_SELECT2, MULTI_SELECT3, MULTI_SELECT4,
             COMMON_LABELED_TABLE1, COMMON_LABELED_TABLE2, COMMON_LABELED_TABLE3, COMMON_LABELED_TABLE4,
-            COMMON_TABLE1, COMMON_TABLE2, COMMON_TABLE3, COMMON_TABLE4, SPREAD_SHEET_TABLE1, SPREAD_SHEET_TABLE2
+            COMMON_TABLE1, COMMON_TABLE2, COMMON_TABLE3, COMMON_TABLE4, SPREAD_SHEET_TABLE1, SPREAD_SHEET_TABLE2,
+            FRAME_ELEMENT_VALID1, FRAME_ELEMENT_VALID2, FRAME_ELEMENT_INVALID
     );
 
     static List<MockWebElement> getFakeDOM() {

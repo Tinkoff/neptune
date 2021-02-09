@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.http.api.service.mapping;
 
 import ru.tinkoff.qa.neptune.core.api.properties.url.URLValuePropertySupplier;
-import ru.tinkoff.qa.neptune.http.api.properties.DefaultEndPointOfTargetAPIProperty;
+import ru.tinkoff.qa.neptune.http.api.properties.end.point.DefaultEndPointOfTargetAPIProperty;
 import ru.tinkoff.qa.neptune.http.api.request.RequestTuner;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.Header;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMethod;
@@ -91,7 +91,8 @@ public interface HttpAPI<T extends HttpAPI<T>> {
      * Creates an instance of an interface that extends {@link HttpAPI}.
      *
      * @param toCreate is an interface to instantiate
-     * @param url      is a root URL. It should consist of protocol/scheme, host/ip and port only
+     * @param url      is a root URL. It should consist of protocol/scheme, host/ip and port only.
+     *                 Part of a path without ending '/' is possible to be included
      * @param <T>      is a type of resulted instance
      * @return is an instance of an interface that extends {@link HttpAPI}
      */
@@ -107,7 +108,8 @@ public interface HttpAPI<T extends HttpAPI<T>> {
      * Creates an instance of an interface that extends {@link HttpAPI}.
      *
      * @param toCreate is an interface to instantiate
-     * @param uriStr   is a string value of root URI. It should consist of protocol/scheme, host/ip and port only
+     * @param uriStr   is a string value of root URI. It should consist of protocol/scheme, host/ip and port only.
+     *                 Part of a path without ending '/' is possible to be included
      * @param <T>      is a type of resulted instance
      * @return is an instance of an interface that extends {@link HttpAPI}
      */
@@ -119,7 +121,7 @@ public interface HttpAPI<T extends HttpAPI<T>> {
     /**
      * Creates an instance of an interface that extends {@link HttpAPI}. It uses a value
      * that is defined by some property as root URI. This value should consist of protocol/scheme,
-     * host/ip and port only.
+     * host/ip and port only. Part of a path without ending '/' is possible to be included
      *
      * @param toCreate    is an interface to instantiate
      * @param urlProperty is an instance that reads a property and get an {@link URL}

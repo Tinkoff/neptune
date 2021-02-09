@@ -7,7 +7,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
+import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.currentWindow;
 
 @SequentialGetStepSupplier.DefaultParameterNames(
         from = "Window/tab to get position of"
@@ -20,12 +20,12 @@ public final class GetWindowPositionSupplier extends SequentialGetStepSupplier
     }
 
     /**
-     * Builds a function which gets position of the first window.
+     * Builds a function which gets position of the active window.
      *
      * @return Supplier of a function which gets position.
      */
     public static GetWindowPositionSupplier windowPosition() {
-        return positionOf(window());
+        return positionOf(currentWindow());
     }
 
     /**

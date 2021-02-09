@@ -335,20 +335,6 @@ public class SearchForWebElementsPositiveTest extends BaseWebDriverTest {
                                 equalTo(CUSTOM_LABELED_TAB4))},
 
                 {xpath(TEXT_FIELD_XPATH),
-                        text(INPUT_TEXT2),
-                        contains(equalTo(COMMON_TEXT_INPUT2))},
-
-                {xpath(TEXT_FIELD_XPATH),
-                        NOT(text(INPUT_TEXT2)),
-                        contains(equalTo(COMMON_LABELED_INPUT1),
-                                equalTo(COMMON_LABELED_INPUT2),
-                                equalTo(COMMON_LABELED_INPUT3),
-                                equalTo(COMMON_LABELED_INPUT4),
-                                equalTo(COMMON_TEXT_INPUT1),
-                                equalTo(COMMON_TEXT_INPUT3),
-                                equalTo(COMMON_TEXT_INPUT4))},
-
-                {xpath(TEXT_FIELD_XPATH),
                         textMatches("Text"),
                         contains(equalTo(COMMON_TEXT_INPUT1),
                                 equalTo(COMMON_TEXT_INPUT2),

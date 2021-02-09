@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.testng.integration.properties;
 
-import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 import org.testng.annotations.*;
+import ru.tinkoff.qa.neptune.core.api.cleaning.ContextRefreshable;
 
 import java.lang.annotation.Annotation;
 import java.util.function.Supplier;
@@ -35,10 +35,10 @@ public enum RefreshEachTimeBefore implements Supplier<Class<? extends Annotation
      * <p></p>
      * {@link ContextRefreshable#refreshContext()} is invoked when:
      * <p></p>
-     * 1. {@link ContextRefreshable#refreshContext()} has not been invoked before any not static
+     * 1. {@link ContextRefreshable#refreshContext()} has not been invoked before any
      * {@link BeforeSuite}/{@link BeforeTest}-method.
      */
-    ALL_TEST_STARTING {
+    TEST_STARTING {
         @Override
         public Class<? extends Annotation> get() {
             return BeforeTest.class;
@@ -55,12 +55,12 @@ public enum RefreshEachTimeBefore implements Supplier<Class<? extends Annotation
      * <p></p>
      * {@link ContextRefreshable#refreshContext()} is invoked when:
      * <p></p>
-     * 1. {@link ContextRefreshable#refreshContext()} has not been invoked before some not static
+     * 1. {@link ContextRefreshable#refreshContext()} has not been invoked before some
      * {@link BeforeSuite}/{@link BeforeTest}/{@link BeforeClass}-method
-     * and any {@link Test}-method has not been started still.
+     * and any {@link Test}-method has not been invoked yet.
      * <p></p>
-     * 2. {@link ContextRefreshable#refreshContext()} has not been invoked before some not static
-     * {@link BeforeClass}-method and any {@link Test}-method has not been started still.
+     * 2. {@link ContextRefreshable#refreshContext()} has not been invoked before some
+     * {@link BeforeClass}-method and any {@link Test}-method has not been invoked yet.
      */
     CLASS_STARTING {
         @Override
@@ -91,12 +91,12 @@ public enum RefreshEachTimeBefore implements Supplier<Class<? extends Annotation
      * <p></p>
      * {@link ContextRefreshable#refreshContext()} is invoked when:
      * <p></p>
-     * 1. {@link ContextRefreshable#refreshContext()} has not been invoked before some not static
+     * 1. {@link ContextRefreshable#refreshContext()} has not been invoked before some 
      * {@link BeforeSuite}/{@link BeforeTest}/{@link BeforeClass}/{@link BeforeGroups}/
-     * {@link BeforeMethod}-method and any {@link Test}-method has not been started still.
+     * {@link BeforeMethod}-method and any {@link Test}-method has not been invoked yet.
      * <p></p>
-     * 2. {@link ContextRefreshable#refreshContext()} has not been invoked before some not static
-     * {@link BeforeMethod}-method and any {@link Test}-method has not been started still.
+     * 2. {@link ContextRefreshable#refreshContext()} has not been invoked before some 
+     * {@link BeforeMethod}-method and any {@link Test}-method has not been invoked yet.
      */
     BEFORE_METHOD_STARTING {
         @Override
@@ -115,12 +115,12 @@ public enum RefreshEachTimeBefore implements Supplier<Class<? extends Annotation
      * <p></p>
      * {@link ContextRefreshable#refreshContext()} is invoked when:
      * <p></p>
-     * 1. {@link ContextRefreshable#refreshContext()} has not been invoked before some not static
+     * 1. {@link ContextRefreshable#refreshContext()} has not been invoked before some 
      * {@link BeforeSuite}/{@link BeforeTest}/{@link BeforeClass}/{@link BeforeGroups}/
-     * {@link BeforeMethod}-method and any {@link Test}-method has not been started still.
+     * {@link BeforeMethod}-method and any {@link Test}-method has not been invoked yet.
      * <p></p>
-     * 2. {@link ContextRefreshable#refreshContext()} has not been invoked before some not static
-     * {@link BeforeMethod}-method and any {@link Test}-method has not been started still.
+     * 2. {@link ContextRefreshable#refreshContext()} has not been invoked before some 
+     * {@link BeforeMethod}-method and any {@link Test}-method has not been invoked yet.
      */
     METHOD_STARTING {
         @Override

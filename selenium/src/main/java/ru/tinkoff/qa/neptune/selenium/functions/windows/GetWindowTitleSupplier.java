@@ -5,7 +5,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
+import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.currentWindow;
 
 @SequentialGetStepSupplier.DefaultParameterNames(
         from = "Window/tab to get title of"
@@ -18,12 +18,12 @@ public final class GetWindowTitleSupplier extends SequentialGetStepSupplier
     }
 
     /**
-     * Builds a function which gets title from the first window.
+     * Builds a function which gets title from the active window.
      *
      * @return Supplier of a function which gets title.
      */
     public static GetWindowTitleSupplier windowTitle() {
-        return titleOf(window());
+        return titleOf(currentWindow());
     }
 
     /**

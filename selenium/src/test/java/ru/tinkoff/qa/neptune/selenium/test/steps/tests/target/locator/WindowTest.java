@@ -13,6 +13,7 @@ import static java.time.Duration.ofSeconds;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.fail;
+import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.currentWindow;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.WindowCriteria.titleMatches;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.WindowCriteria.urlMatches;
@@ -31,6 +32,7 @@ public class WindowTest extends BaseWebDriverTest {
         driver.switchTo().window(HANDLE1.getHandle()).get(GOOGLE.getUrl());
         driver.switchTo().window(HANDLE2.getHandle()).get(FACEBOOK.getUrl());
         driver.switchTo().window(HANDLE3.getHandle()).get(GITHUB.getUrl());
+        driver.switchTo().window(HANDLE1.getHandle());
     }
 
     @Test
@@ -42,6 +44,7 @@ public class WindowTest extends BaseWebDriverTest {
         assertThat(firstWindow.getSize(), is(SIZE1.getSize()));
         assertThat(firstWindow.isPresent(), is(true));
         assertThat(firstWindow.toString(), is("Window[url https://www.google.com title Google]"));
+        assertThat(wrappedWebDriver.getWrappedDriver().getWindowHandle(), is(HANDLE1.getHandle()));
     }
 
     @Test
@@ -53,6 +56,7 @@ public class WindowTest extends BaseWebDriverTest {
         assertThat(foundWindow.getSize(), is(SIZE2.getSize()));
         assertThat(foundWindow.isPresent(), is(true));
         assertThat(foundWindow.toString(), is("Window[url https://www.facebook.com title Facebook]"));
+        assertThat(wrappedWebDriver.getWrappedDriver().getWindowHandle(), is(HANDLE1.getHandle()));
     }
 
     @Test
@@ -66,6 +70,7 @@ public class WindowTest extends BaseWebDriverTest {
         assertThat(foundWindow.getSize(), is(SIZE3.getSize()));
         assertThat(foundWindow.isPresent(), is(true));
         assertThat(foundWindow.toString(), is("Window[url https://github.com title Github Inc]"));
+        assertThat(wrappedWebDriver.getWrappedDriver().getWindowHandle(), is(HANDLE1.getHandle()));
     }
 
     @Test
@@ -79,6 +84,7 @@ public class WindowTest extends BaseWebDriverTest {
         assertThat(foundWindow.getSize(), is(SIZE3.getSize()));
         assertThat(foundWindow.isPresent(), is(true));
         assertThat(foundWindow.toString(), is("Window[url https://github.com title Github Inc]"));
+        assertThat(wrappedWebDriver.getWrappedDriver().getWindowHandle(), is(HANDLE1.getHandle()));
     }
 
     @Test(expectedExceptions = NoSuchWindowException.class)
@@ -93,6 +99,7 @@ public class WindowTest extends BaseWebDriverTest {
             setEndBenchMark();
             assertThat(getTimeDifference(), greaterThanOrEqualTo(FIVE_SECONDS.toMillis()));
             assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThan(HALF_SECOND.toMillis()));
+            assertThat(wrappedWebDriver.getWrappedDriver().getWindowHandle(), is(HANDLE1.getHandle()));
         }
         fail("Exception was expected");
     }
@@ -112,6 +119,7 @@ public class WindowTest extends BaseWebDriverTest {
             removeProperty(WAITING_WINDOW_TIME_VALUE.getName());
             assertThat(getTimeDifference(), greaterThanOrEqualTo(FIVE_SECONDS.toMillis()));
             assertThat(getTimeDifference() - FIVE_SECONDS.toMillis(), lessThan(HALF_SECOND.toMillis()));
+            assertThat(wrappedWebDriver.getWrappedDriver().getWindowHandle(), is(HANDLE1.getHandle()));
         }
         fail("Exception was expected");
     }
@@ -216,6 +224,9 @@ public class WindowTest extends BaseWebDriverTest {
         assertThat(seleniumSteps.getWrappedDriver().getWindowHandle(), is(HANDLE1.getHandle()));
         assertThat(seleniumSteps.getWrappedDriver().getCurrentUrl(), is(GOOGLE.getUrl()));
         assertThat(seleniumSteps.getWrappedDriver().getTitle(), is(GOOGLE.getTitle()));
+
+        assertThat(seleniumSteps.get(currentWindow()).getCurrentUrl(), is(GOOGLE.getUrl()));
+        assertThat(seleniumSteps.get(currentWindow()).getTitle(), is(GOOGLE.getTitle()));
     }
 
     @Test

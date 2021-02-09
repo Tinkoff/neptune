@@ -43,7 +43,6 @@ public class HttpResponseInfoTest extends BaseHttpTest {
         assertThat(http().responseOf(POST(REQUEST_URI + "/header2.html", "Request body")),
                 allOf(
                         hasHeader("matched-stub-id", not(emptyIterable())),
-                        hasHeader("server", not(emptyIterable())),
                         hasHeader("transfer-encoding", contains("chunked")),
                         hasHeader("vary", contains("Accept-Encoding, User-Agent"))
                 ));

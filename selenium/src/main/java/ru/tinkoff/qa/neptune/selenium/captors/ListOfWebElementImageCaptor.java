@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.captors;
 
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrapsElement;
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.ImageCaptor;
@@ -10,6 +11,7 @@ import java.util.Objects;
 import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
 
+@Beta
 public abstract class ListOfWebElementImageCaptor extends ImageCaptor<List<WebElement>> {
 
     public ListOfWebElementImageCaptor() {

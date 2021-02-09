@@ -1,6 +1,8 @@
 package ru.tinkoff.qa.neptune.selenium.test;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.openqa.selenium.*;
+import org.openqa.selenium.support.pagefactory.ByAll;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -108,9 +110,24 @@ public class MockWebElement implements WebElement, WrapsDriver {
     @Override
     public List<WebElement> findElements(By by) {
         List<WebElement> elements = new LinkedList<>();
+
         children.forEach(mockWebElement -> {
-            if (mockWebElement.foundBy.equals(by)) {
-                elements.add(mockWebElement);
+            if (!mockWebElement.foundBy.getClass().equals(ByAll.class)) {
+                if (mockWebElement.foundBy.equals(by)) {
+                    elements.add(mockWebElement);
+                }
+            } else {
+                try {
+                    var bys = ByAll.class.getDeclaredField("bys");
+                    bys.setAccessible(true);
+                    var foundBy = (By[]) bys.get(mockWebElement.foundBy);
+
+                    if (ArrayUtils.contains(foundBy, by)) {
+                        elements.add(mockWebElement);
+                    }
+                } catch (NoSuchFieldException | IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
             }
             elements.addAll(mockWebElement.findElements(by).stream().map(webElement -> ((MockWebElement) webElement)
                     .setDriver(driver)).collect(toList()));

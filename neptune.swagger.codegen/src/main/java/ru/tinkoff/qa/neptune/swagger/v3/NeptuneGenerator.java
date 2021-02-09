@@ -14,10 +14,12 @@ import java.util.*;
 import static io.swagger.codegen.v3.CodegenConstants.*;
 import static io.swagger.codegen.v3.generators.handlebars.ExtensionHelper.getBooleanValue;
 import static java.lang.String.valueOf;
+import static java.lang.System.setProperty;
 import static java.util.Arrays.asList;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static org.slf4j.LoggerFactory.getLogger;
 
 public class NeptuneGenerator extends AbstractJavaCodegen {
 
@@ -39,7 +41,6 @@ public class NeptuneGenerator extends AbstractJavaCodegen {
     private static final String X_XML_PROPERTY_NAMESPACE = "x-xml-property-namespace";
     private static final String X_XML_WRAPPER_NAME = "x-xml-wrapper-name";
     private static final String X_XML_WRAPPER_NAMESPACE = "x-xml-wrapper-namespace";
-    private static final String X_IS_XML_ATTRIBUTE = "x-is-xml-attribute";
     private static final String X_IS_FIRST_REQUIRED_PROPERTY = "x-is-first-required-property";
     private final Map<String, CodegenModel> handledModels = new HashMap<>();
     // source folder where to write the files
@@ -55,30 +56,31 @@ public class NeptuneGenerator extends AbstractJavaCodegen {
         // set the output folder here
         outputFolder = "generated-code/neptune";
 
-        /**
+        /*
          * Template Location.  This is the location which templates will be read from.  The generator
          * will use the resource stream to attempt to read the templates.
          */
         templateDir = "neptune";
 
-        /**
+        /*
          * Api Package.  Optional, if needed, this can be used in templates
          */
         apiPackage = "io.swagger.client.api";
 
-        /**
+        /*
          * Model Package.  Optional, if needed, this can be used in templates
          */
         modelPackage = "io.swagger.client.model";
 
 
-        /**
+        /*
          * Additional Properties.  These values can be passed to the templates and
          * are available in models, apis, and supporting files
          */
         additionalProperties.put("apiVersion", apiVersion);
         init();
         setWithXml(true);
+        setProperty("io.swagger.v3.parser.util.RemoteUrl.trustAll", "true");
     }
 
     private static String getStyle(Enum<?> style) {
@@ -577,7 +579,6 @@ public class NeptuneGenerator extends AbstractJavaCodegen {
         importMapping.put("LocalTime", "java.time.*");
 
         prepareNeptuneAnnotations();
-        prepareJacksonAnnotations();
 
         typeMapping.clear();
         typeMapping.put("array", "List");
@@ -603,6 +604,14 @@ public class NeptuneGenerator extends AbstractJavaCodegen {
         typeMapping.put("BigDecimal", "BigDecimal");
 
         setWithXml(true);
+
+        var logger = getLogger(NeptuneGenerator.class);
+
+        logger.info("Starting the swagger code generating");
+        logger.info("Input url: " + getInputURL());
+
+        logger.info("Additional properties:");
+        additionalProperties.forEach((s, o) -> logger.info(s + " = " + o));
     }
 
     private void prepareNeptuneAnnotations() {
@@ -620,44 +629,6 @@ public class NeptuneGenerator extends AbstractJavaCodegen {
         importMapping.put("ContentTransferEncoding", "ru.tinkoff.qa.neptune.http.api.request.body.multipart.ContentTransferEncoding");
         importMapping.put("DefineContentType", "ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.DefineContentType");
         importMapping.put("Body", "ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.Body");
-    }
-
-    private void prepareJacksonAnnotations() {
-        importMapping.put("JacksonAnnotationsInside", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonAlias", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JacksonInject", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonAnyGetter", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JacksonAnnotation", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonAnySetter", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonBackReference", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonAutoDetect", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonClassDescription", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonCreator", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonEnumDefaultValue", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonFilter", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonFormat", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonGetter", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonIdentityInfo", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonIdentityReference", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonIgnore", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonIgnoreProperties", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonIgnoreType", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonInclude", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonManagedReference", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonMerge", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonProperty", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonPropertyDescription", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonPropertyOrder", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonRawValue", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonRootName", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonSetter", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonSubTypes", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonTypeId", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonTypeInfo", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonTypeName", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonUnwrapped", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonValue", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonView", "com.fasterxml.jackson.annotation.*");
     }
 
     @Override
