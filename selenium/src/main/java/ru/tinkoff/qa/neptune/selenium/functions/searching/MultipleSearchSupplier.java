@@ -360,6 +360,59 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
         return widgets(TextField.class, textOrLabel);
     }
 
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found calendars.
+     *
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<CalendarWidget> calendars() {
+        return widgets(CalendarWidget.class);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found calendars.
+     *
+     * @param textOrLabel text which is used to find calendars by full element text matching. Also texts of labels
+     *                    are used to find elements.
+     * @return an instance of {@link MultipleSearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
+     */
+    public static MultipleSearchSupplier<CalendarWidget> calendars(String textOrLabel) {
+        return widgets(CalendarWidget.class, textOrLabel);
+    }
+
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found calendar ranges.
+     *
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<CalendarRangeWidget> calendarRanges() {
+        return widgets(CalendarRangeWidget.class);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found calendar ranges.
+     *
+     * @param textOrLabel text which is used to find calendar ranges by full element text matching. Also texts of labels
+     *                    are used to find elements.
+     * @return an instance of {@link MultipleSearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
+     */
+    public static MultipleSearchSupplier<CalendarRangeWidget> calendarRanges(String textOrLabel) {
+        return widgets(CalendarRangeWidget.class, textOrLabel);
+    }
+
+
     /**
      * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
      * The built function takes an instance of {@link SearchContext} for the searching

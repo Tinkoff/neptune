@@ -344,6 +344,8 @@ public class TextInput
       элементы
     - `ru.tinkoff.qa.neptune.selenium.api.widget.drafts.TextElement` - для элементов, чьим назначением является вывод
       текста на экран
+    - `ru.tinkoff.qa.neptune.selenium.api.widget.drafts.CalendarWidget` - для календарей
+    - `ru.tinkoff.qa.neptune.selenium.api.widget.drafts.CalendarRangeWidget` - для диапазонов календарных дат 
 
   Попробуем доработать наши виджеты, используя какие-либо из перечисленных классов, и исправить тест еще раз
 
