@@ -4,7 +4,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
- * Defines calendar day
+ * Defines calendar day in user format
  */
 public final class CalendarDay {
 
@@ -19,6 +19,18 @@ public final class CalendarDay {
     private String month;
 
     private String year;
+
+    @Override
+    public String toString() {
+        return "Calendar day{" +
+                "seconds='" + seconds + '\'' +
+                ", minutes='" + minutes + '\'' +
+                ", hours='" + hours + '\'' +
+                ", day='" + day + '\'' +
+                ", month='" + month + '\'' +
+                ", year='" + year + '\'' +
+                '}';
+    }
 
     private CalendarDay() {
         super();
