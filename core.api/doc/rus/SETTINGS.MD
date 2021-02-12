@@ -1,3 +1,8 @@
+# Механизм настроек
+
+## neptune.global.properties и neptune.properties
+
+## Автоматическая генерация neptune.global.properties и neptune.properties
 
 ## Свойства для возврата чисел
 <details>
