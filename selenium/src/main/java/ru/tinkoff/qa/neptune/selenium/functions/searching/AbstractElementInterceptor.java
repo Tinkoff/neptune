@@ -31,12 +31,17 @@ abstract class AbstractElementInterceptor implements MethodInterceptor {
                     try {
                         var c = aClass.getDeclaredConstructor(WebDriver.class);
                         c.setAccessible(true);
-                        return c.newInstance(((WrapsDriver) element).getWrappedDriver());
+                        return (AutoScroller) c.newInstance(((WrapsDriver) element).getWrappedDriver());
                     } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
                         throw new RuntimeException(e);
                     }
                 })
-                .orElse(null);
+                .orElseGet(() -> new AutoScroller(((WrapsDriver) element).getWrappedDriver()) {
+                    @Override
+                    protected void scrollIntoView(WebElement e) {
+                        //The default scrolling won't be performed
+                    }
+                });
     }
 
     public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {

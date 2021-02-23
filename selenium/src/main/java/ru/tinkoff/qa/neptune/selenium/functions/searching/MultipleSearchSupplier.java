@@ -614,6 +614,31 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
     }
 
     /**
+     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found image elements.
+     *
+     * @return an instance of {@link MultipleSearchSupplier}
+     */
+    public static MultipleSearchSupplier<Image> images() {
+        return widgets(Image.class);
+    }
+
+    /**
+     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some list of found image elements.
+     *
+     * @param textOrLabel text which is used to find image elements by full element text matching. Also texts of labels
+     *                    are used to find elements.
+     * @return an instance of {@link MultipleSearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
+     */
+    public static MultipleSearchSupplier<Image> images(String textOrLabel) {
+        return widgets(Image.class, textOrLabel);
+    }
+
+    /**
      * Constructs the chained searching from some instance of {@link SearchContext}.
      *
      * @param from is how to find some elements from a parent element.
