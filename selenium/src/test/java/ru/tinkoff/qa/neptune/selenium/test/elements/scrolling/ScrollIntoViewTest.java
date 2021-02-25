@@ -24,7 +24,7 @@ public class ScrollIntoViewTest extends BaseWebDriverTest {
 
     @BeforeClass
     public static void prepare() {
-        DEFAULT_SCROLLER_PROPERTY.accept(MockScrollWebElementIntoView.class.getName());
+        DEFAULT_SCROLLER_PROPERTY.accept(MockScrollWebElementIntoView.class);
     }
 
     @Test

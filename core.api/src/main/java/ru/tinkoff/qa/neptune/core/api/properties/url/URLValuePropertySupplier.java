@@ -8,7 +8,7 @@ import java.net.URL;
 /**
  * This interface is designed to read properties and return an URL.
  */
-public interface URLValuePropertySupplier extends PropertySupplier<URL> {
+public interface URLValuePropertySupplier extends PropertySupplier<URL, URL> {
 
     @Override
     default URL parse(String s) {

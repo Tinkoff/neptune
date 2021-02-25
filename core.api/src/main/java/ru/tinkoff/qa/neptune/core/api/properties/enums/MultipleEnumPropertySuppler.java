@@ -10,8 +10,7 @@ import static com.google.common.reflect.TypeToken.of;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.*;
 
 /**
  * This interface is designed to read properties and return lists of constants declared by enums.
@@ -19,7 +18,7 @@ import static java.util.stream.Collectors.toMap;
  *
  * @param <T> is a type of enum.
  */
-public interface MultipleEnumPropertySuppler<T extends Enum<?>> extends PropertySupplier<List<T>> {
+public interface MultipleEnumPropertySuppler<T extends Enum<?>> extends PropertySupplier<List<T>, List<T>> {
 
     @SuppressWarnings("unchecked")
     @Override
@@ -52,5 +51,10 @@ public interface MultipleEnumPropertySuppler<T extends Enum<?>> extends Property
             return null;
         }
         return result;
+    }
+
+    @Override
+    default String readValuesToSet(List<T> value) {
+        return value.stream().map(Enum::name).collect(joining(","));
     }
 }

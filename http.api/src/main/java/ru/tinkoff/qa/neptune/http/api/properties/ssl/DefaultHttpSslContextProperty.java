@@ -13,11 +13,9 @@ import java.util.function.Supplier;
         section = "Http client. General")
 @PropertyName("DEFAULT_HTTP_SSL_CONTEXT")
 @PropertyDefaultValue("ru.tinkoff.qa.neptune.http.api.properties.ssl.AllTrustedSslContextSupplier")
-public final class DefaultHttpSslContextProperty implements ObjectPropertySupplier<DefaultHttpSslContextProperty.SslContextSupplier> {
+public final class DefaultHttpSslContextProperty implements ObjectPropertySupplier<SSLContext, DefaultHttpSslContextProperty.SslContextSupplier> {
     /**
-     * This instance reads value of the property {@code 'DEFAULT_HTTP_SSL_CONTEXT'} and returns a {@link Supplier}
-     * of {@link SSLContext}. Invocation of the {@link Supplier#get()} returns actual value of the property. The value
-     * provided must be fully qualified name of a {@link SslContextSupplier} subclass.
+     * This instance reads value of the property {@code 'DEFAULT_HTTP_SSL_CONTEXT'} and returns a {@link SSLContext}.
      */
     public static final DefaultHttpSslContextProperty DEFAULT_HTTP_SSL_CONTEXT_PROPERTY =
             new DefaultHttpSslContextProperty();

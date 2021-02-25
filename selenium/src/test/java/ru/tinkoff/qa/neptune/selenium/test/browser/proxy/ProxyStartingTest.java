@@ -84,8 +84,8 @@ public class ProxyStartingTest {
         wrappedWebDriver.refreshContext();
 
         assertThat("Browser proxy",
-                wrappedWebDriver.getProxy(),
-                nullValue());
+                wrappedWebDriver.getProxy().isStarted(),
+                is(false));
     }
 
     @AfterMethod(alwaysRun = true)

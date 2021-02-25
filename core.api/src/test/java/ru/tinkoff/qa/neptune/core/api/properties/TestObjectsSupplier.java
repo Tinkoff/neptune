@@ -4,7 +4,7 @@ import ru.tinkoff.qa.neptune.core.api.properties.object.MultipleObjectPropertySu
 
 import java.util.function.Supplier;
 
-public class TestObjectsSupplier implements MultipleObjectPropertySupplier<Supplier<Object>> {
+public class TestObjectsSupplier implements MultipleObjectPropertySupplier<Object, Supplier<Object>> {
 
     static final String TEST_OBJECTS_PROPERTY = "test.objects.property";
 

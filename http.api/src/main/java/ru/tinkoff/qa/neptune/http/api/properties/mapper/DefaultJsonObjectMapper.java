@@ -12,7 +12,7 @@ import java.util.function.Supplier;
         "for default serialization/deserialization rules"},
         section = "Http client. Mappers")
 @PropertyName("DEFAULT_JSON_MAPPER")
-public final class DefaultJsonObjectMapper implements ObjectPropertySupplier<Supplier<ObjectMapper>> {
+public final class DefaultJsonObjectMapper implements ObjectPropertySupplier<ObjectMapper, Supplier<ObjectMapper>> {
 
     public static final DefaultJsonObjectMapper DEFAULT_JSON_OBJECT_MAPPER = new DefaultJsonObjectMapper();
 

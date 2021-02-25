@@ -4,12 +4,10 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static java.lang.System.setProperty;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.*;
 import static ru.tinkoff.qa.neptune.core.api.properties.GeneralPropertyInitializer.arePropertiesRead;
 import static ru.tinkoff.qa.neptune.core.api.properties.GeneralPropertyInitializer.refreshProperties;
 
@@ -17,10 +15,11 @@ import static ru.tinkoff.qa.neptune.core.api.properties.GeneralPropertyInitializ
  * Interface to construct classes which read property values
  *
  * @param <T> type of read values
+ * @param <R> type of values to set explicitly
  */
-public interface PropertySupplier<T> extends Supplier<T>, Consumer<String> {
+public interface PropertySupplier<T, R> extends Supplier<T>, Consumer<R> {
 
-    private static PropertyDefaultValue getPropertyDefaultValue(PropertySupplier<?> supplier) {
+    private static PropertyDefaultValue getPropertyDefaultValue(PropertySupplier<?, ?> supplier) {
         var clz = supplier.getClass().isAnonymousClass() ? supplier.getClass().getSuperclass() : supplier.getClass();
 
         if (clz.isEnum()) {
@@ -60,14 +59,24 @@ public interface PropertySupplier<T> extends Supplier<T>, Consumer<String> {
     }
 
     /**
+     * Converts object to string value of the property
+     *
+     * @param value to set as a value of the property
+     * @return value converted to String
+     */
+    default String readValuesToSet(R value) {
+        return value.toString();
+    }
+
+    /**
      * Sets a new value of some system property
      *
      * @param value is the new value
      */
-    default void accept(String value) {
+    default void accept(R value) {
         var name = getName();
-        checkArgument(!isBlank(value), format("New value of the '%s' should not be blank", name));
-        setProperty(name, value);
+        var propertyValue = ofNullable(value).map(this::readValuesToSet).orElse(EMPTY);
+        setProperty(name, propertyValue);
     }
 
     default String getName() {

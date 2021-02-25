@@ -15,13 +15,19 @@ import static java.util.Arrays.stream;
         "on interaction with elements of a page"},
         section = "Selenium. Web driver scrolling/focusing")
 @PropertyName("WEB_DRIVER_DEFAULT_AUTO_SCROLLER")
-public final class DefaultScrollerProperty implements PropertySupplier<Class<? extends AutoScroller>> {
+public final class DefaultScrollerProperty
+        implements PropertySupplier<Class<? extends AutoScroller>, Class<? extends AutoScroller>> {
 
 
     public static final DefaultScrollerProperty DEFAULT_SCROLLER_PROPERTY = new DefaultScrollerProperty();
 
     private DefaultScrollerProperty() {
         super();
+    }
+
+    @Override
+    public String readValuesToSet(Class<? extends AutoScroller> value) {
+        return value.getName();
     }
 
     @Override

@@ -50,7 +50,7 @@ public class DefaultRefreshingTest {
                     entry(BASE_WEB_DRIVER_URL_PROPERTY.getName(), "https://github.com"),
                     entry(CHROME.getName(), ChromeSettingsSupplierHeadless.class.getName()));
 
-    private final List<PropertySupplier<?>> PROPS = of(KEEP_WEB_DRIVER_SESSION_OPENED, WEB_DRIVER_CREDENTIALS_PROPERTY);
+    private final List<PropertySupplier<?, ?>> PROPS = of(KEEP_WEB_DRIVER_SESSION_OPENED, WEB_DRIVER_CREDENTIALS_PROPERTY);
 
     private WrappedWebDriver wrappedWebDriver;
 

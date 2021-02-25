@@ -36,12 +36,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.time.Duration.ofMillis;
 import static java.util.Arrays.asList;
-import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
+import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 import static ru.tinkoff.qa.neptune.selenium.functions.click.ClickActionSupplier.on;
 import static ru.tinkoff.qa.neptune.selenium.functions.cookies.RemoveCookiesActionSupplier.deleteCookies;
 import static ru.tinkoff.qa.neptune.selenium.functions.edit.EditActionSupplier.valueOfThe;
@@ -83,10 +84,6 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     @Override
     public WebDriver getWrappedDriver() {
         return wrappedWebDriver.getWrappedDriver();
-    }
-
-    public BrowserUpProxy getProxy() {
-        return wrappedWebDriver.getProxy();
     }
 
     public <R extends SearchContext> R find(SearchSupplier<R> what) {
@@ -277,9 +274,6 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext startOverProxyRecording() {
-        checkNotNull(wrappedWebDriver.getProxy(), "Browser proxy is not instantiated");
-        checkArgument(wrappedWebDriver.getProxy().isStarted(), "Browser proxy is not started");
-
         wrappedWebDriver.getProxy().newHar();
         return this;
     }
@@ -1516,5 +1510,33 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public Window get(GetWindowSupplier getWindow) {
         return getWindow.get().apply(this);
+    }
+
+    public static final class CurrentContentFunction implements Function<SeleniumStepContext, WebDriver> {
+
+        private CurrentContentFunction() {
+            super();
+        }
+
+        public static Function<SeleniumStepContext, WebDriver> currentContent() {
+            return new CurrentContentFunction();
+        }
+
+        @Override
+        public WebDriver apply(SeleniumStepContext seleniumSteps) {
+            return seleniumSteps.getWrappedDriver();
+        }
+    }
+
+    public static final class GetProxy implements Function<SeleniumStepContext, BrowserUpProxy> {
+
+        public static Function<SeleniumStepContext, BrowserUpProxy> getBrowserProxy() {
+            return new GetProxy();
+        }
+
+        @Override
+        public BrowserUpProxy apply(SeleniumStepContext seleniumSteps) {
+            return seleniumSteps.wrappedWebDriver.getProxy();
+        }
     }
 }

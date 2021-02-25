@@ -67,13 +67,13 @@ public class AuthenticationTest {
             expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Object of type class ru.tinkoff.qa.neptune.selenium.test.webdriver.starting.TestBrowserCredentials doesn't support credentials of type java.lang.Boolean")
     public void test3() {
-        WEB_DRIVER_CREDENTIALS_PROPERTY.accept("ru.tinkoff.qa.neptune.selenium.test.webdriver.starting.CredSupplier");
+        WEB_DRIVER_CREDENTIALS_PROPERTY.accept(TestBrowserCredentials.class);
         changeBrowserLogin(true);
     }
 
     @Test(dependsOnGroups = "NO CREDENTIALS")
     public void test4() {
-        WEB_DRIVER_CREDENTIALS_PROPERTY.accept("ru.tinkoff.qa.neptune.selenium.test.webdriver.starting.CredSupplier");
+        WEB_DRIVER_CREDENTIALS_PROPERTY.accept(TestBrowserCredentials.class);
         changeBrowserLogin("ABC");
         getDriver();
         wrappedWebDriver.getWrappedDriver();
@@ -83,7 +83,7 @@ public class AuthenticationTest {
 
     @Test(dependsOnGroups = "NO CREDENTIALS", dependsOnMethods = "test4")
     public void test5() {
-        WEB_DRIVER_CREDENTIALS_PROPERTY.accept("ru.tinkoff.qa.neptune.selenium.test.webdriver.starting.CredSupplier");
+        WEB_DRIVER_CREDENTIALS_PROPERTY.accept(TestBrowserCredentials.class);
         changeBrowserLogin("ABC");
         getDriver();
         wrappedWebDriver.getWrappedDriver();
@@ -97,7 +97,7 @@ public class AuthenticationTest {
 
     @Test(dependsOnGroups = "NO CREDENTIALS", dependsOnMethods = "test5")
     public void test6() {
-        WEB_DRIVER_CREDENTIALS_PROPERTY.accept("ru.tinkoff.qa.neptune.selenium.test.webdriver.starting.CredSupplier");
+        WEB_DRIVER_CREDENTIALS_PROPERTY.accept(TestBrowserCredentials.class);
         changeBrowserLogin("ABC");
         getDriver();
         wrappedWebDriver.getWrappedDriver();
@@ -112,7 +112,7 @@ public class AuthenticationTest {
 
     @Test(dependsOnGroups = "NO CREDENTIALS", dependsOnMethods = "test5")
     public void test7() {
-        WEB_DRIVER_CREDENTIALS_PROPERTY.accept("ru.tinkoff.qa.neptune.selenium.test.webdriver.starting.CredSupplier");
+        WEB_DRIVER_CREDENTIALS_PROPERTY.accept(TestBrowserCredentials.class);
         changeBrowserLogin("ABC");
         getDriver();
         wrappedWebDriver.getWrappedDriver();

@@ -1,12 +1,12 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents;
 import ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf;
 
 import static java.lang.System.getProperties;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents.*;
 import static ru.tinkoff.qa.neptune.core.api.steps.Arithmetical.divide;
 import static ru.tinkoff.qa.neptune.core.api.steps.Arithmetical.number;
 import static ru.tinkoff.qa.neptune.core.api.steps.ArithmeticalSequence.*;
@@ -82,7 +82,7 @@ public class EventFiringTest {
 
     @Test
     public void captorTestWhenTypeOfEventIsSuccess() {
-        DoCapturesOf.DO_CAPTURES_OF_INSTANCE.accept(CapturedEvents.SUCCESS.name());
+        DoCapturesOf.DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
         prepare();
         try {
             assertThat("Check messages logged by SPI logger",
@@ -121,7 +121,7 @@ public class EventFiringTest {
 
     @Test
     public void captorTestWhenTypeOfEventIsFailure() {
-        DoCapturesOf.DO_CAPTURES_OF_INSTANCE.accept(CapturedEvents.FAILURE.name());
+        DoCapturesOf.DO_CAPTURES_OF_INSTANCE.accept(FAILURE);
         prepare();
         try {
             assertThat("Check messages logged by SPI logger",
@@ -146,7 +146,7 @@ public class EventFiringTest {
 
     @Test
     public void captorTestWhenTypeOfEventIsAll() {
-        DoCapturesOf.DO_CAPTURES_OF_INSTANCE.accept(CapturedEvents.SUCCESS_AND_FAILURE.name());
+        DoCapturesOf.DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
         prepare();
         try {
             assertThat("Check messages logged by SPI logger",

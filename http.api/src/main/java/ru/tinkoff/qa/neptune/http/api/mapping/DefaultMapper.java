@@ -13,7 +13,6 @@ import ru.tinkoff.qa.neptune.http.api.properties.mapper.DefaultXmlObjectMapper;
 
 import java.util.Objects;
 
-import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.http.api.properties.mapper.DefaultJsonObjectMapper.DEFAULT_JSON_OBJECT_MAPPER;
 import static ru.tinkoff.qa.neptune.http.api.properties.mapper.DefaultXmlObjectMapper.DEFAULT_XML_OBJECT_MAPPER;
@@ -31,12 +30,7 @@ public enum DefaultMapper {
     JSON {
         @Override
         public ObjectMapper getMapper() {
-            var m = ofNullable(DEFAULT_JSON_OBJECT_MAPPER.get())
-                    .map(s -> ofNullable(s.get())
-                            .map(ObjectMapper::copy)
-                            .orElseThrow(() -> new IllegalStateException(format("An instance of %s supplied null-value",
-                                    s.getClass().getName())))
-                    ).orElseGet(ObjectMapper::new);
+            var m = ofNullable(DEFAULT_JSON_OBJECT_MAPPER.get()).orElseGet(ObjectMapper::new);
             addModuleIfNecessary(m, ParameterNamesModule.class, new ParameterNamesModule());
             addModuleIfNecessary(m, Jdk8Module.class, new Jdk8Module());
             addModuleIfNecessary(m, JavaTimeModule.class, new JavaTimeModule());
@@ -50,13 +44,7 @@ public enum DefaultMapper {
     XML {
         @Override
         public ObjectMapper getMapper() {
-            var m = ofNullable(DEFAULT_XML_OBJECT_MAPPER.get())
-                    .map(s -> ofNullable(s.get())
-                            .map(XmlMapper::copy)
-                            .orElseThrow(() -> new IllegalStateException(format("An instance of %s supplied null-value",
-                                    s.getClass().getName())))
-                    ).orElseGet(XmlMapper::new);
-
+            var m = ofNullable(DEFAULT_XML_OBJECT_MAPPER.get()).orElseGet(XmlMapper::new);
             addModuleIfNecessary(m, JaxbAnnotationModule.class, new JaxbAnnotationModule());
             addModuleIfNecessary(m, JacksonXmlModule.class, new JacksonXmlModule());
             addModuleIfNecessary(m, ParameterNamesModule.class, new ParameterNamesModule());

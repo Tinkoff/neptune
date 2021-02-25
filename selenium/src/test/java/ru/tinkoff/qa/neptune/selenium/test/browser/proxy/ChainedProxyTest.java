@@ -14,7 +14,6 @@ import ru.tinkoff.qa.neptune.selenium.test.capability.suppliers.ChromeSettingsSu
 import java.util.Map;
 
 import static com.browserup.bup.proxy.CaptureType.*;
-import static java.lang.Thread.sleep;
 import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -70,15 +69,12 @@ public class ChainedProxyTest {
     }
 
     @Test(dataProvider = "testData")
-    public void trafficCaptureWithPredefinedUpstreamProxyTest(String propertyName, String propertyValue)
-            throws InterruptedException {
+    public void trafficCaptureWithPredefinedUpstreamProxyTest(String propertyName, String propertyValue) {
         System.setProperty(propertyName, propertyValue);
 
         WrappedWebDriver wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
                 new SeleniumParameterProvider().provide().getParameterValues()[0]);
         WebDriver driver = wrappedWebDriver.getWrappedDriver();
-
-        sleep(5000);
 
         try {
             assertThat("WebDriver is alive", isDriverAlive(driver), is(true));

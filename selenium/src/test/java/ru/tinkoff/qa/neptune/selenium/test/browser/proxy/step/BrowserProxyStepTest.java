@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.browserup.harreader.model.HttpMethod.GET;
-import static java.lang.Thread.sleep;
+import static java.time.Duration.ofSeconds;
 import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -58,19 +58,15 @@ public class BrowserProxyStepTest {
     }
 
     @Test
-    public void proxyGetStepSupplierCriteriaTest() throws InterruptedException {
-        seleniumSteps.getWrappedDriver();
+    public void proxyGetStepSupplierCriteriaTest() {
+        seleniumSteps.startOverProxyRecording();
 
-        seleniumSteps.startOverProxyRecording()
-                .refresh();
-
-        sleep(5000);
-
-        List<HarEntry> requests = seleniumSteps
+        List<HarEntry> requests = seleniumSteps.refresh()
                 .get(proxiedRequests()
                         .criteria(recordedRequestMethod(GET))
                         .criteria(recordedResponseStatusCode(200))
-                        .criteria(recordedRequestUrlMatches("https://www.google.com")));
+                        .criteria(recordedRequestUrlMatches("https://www.google.com"))
+                        .timeOut(ofSeconds(10)));
 
         assertThat("Proxy with filter captured only one request", requests, hasSize(greaterThanOrEqualTo(1)));
         assertThat("Captured entries have GET HTTP, status code 200 and same url", requests,

@@ -1,12 +1,12 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.parent;
 
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 
-import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
+import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 
 public final class ParentFrameSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, WebDriver, WebDriver, ParentFrameSupplier>

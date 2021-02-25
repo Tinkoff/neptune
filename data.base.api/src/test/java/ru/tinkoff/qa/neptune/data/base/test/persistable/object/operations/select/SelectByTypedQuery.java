@@ -15,6 +15,7 @@ import java.time.Duration;
 
 import static java.lang.System.currentTimeMillis;
 import static java.time.Duration.ofSeconds;
+import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -307,8 +308,8 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
 
     @Test(dependsOnGroups = "positive tests")
     public void selectEmptyListByQueryWithTimeDefinedByProperty() {
-        WAITING_FOR_SELECTION_RESULT_TIME_UNIT.accept("SECONDS");
-        WAITING_FOR_SELECTION_RESULT_TIME_VALUE.accept("2");
+        WAITING_FOR_SELECTION_RESULT_TIME_UNIT.accept(SECONDS);
+        WAITING_FOR_SELECTION_RESULT_TIME_VALUE.accept(2L);
 
         Duration twoSeconds = ofSeconds(2);
         long start = currentTimeMillis();
@@ -329,8 +330,8 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
 
     @Test(dependsOnGroups = "positive tests")
     public void selectNullByQueryWithTimeDefinedByProperty() {
-        WAITING_FOR_SELECTION_RESULT_TIME_UNIT.accept("SECONDS");
-        WAITING_FOR_SELECTION_RESULT_TIME_VALUE.accept("2");
+        WAITING_FOR_SELECTION_RESULT_TIME_UNIT.accept(SECONDS);
+        WAITING_FOR_SELECTION_RESULT_TIME_VALUE.accept(2L);
 
         Duration twoSeconds = ofSeconds(2);
         long start = currentTimeMillis();
@@ -410,8 +411,8 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
 
     @Test(dependsOnGroups = "positive tests")
     public void selectEmptyListByQueryAndConditionWithTimeDefinedByProperty() {
-        WAITING_FOR_SELECTION_RESULT_TIME_UNIT.accept("SECONDS");
-        WAITING_FOR_SELECTION_RESULT_TIME_VALUE.accept("2");
+        WAITING_FOR_SELECTION_RESULT_TIME_UNIT.accept(SECONDS);
+        WAITING_FOR_SELECTION_RESULT_TIME_VALUE.accept(2L);
 
         Duration twoSeconds = ofSeconds(2);
         long start = currentTimeMillis();
@@ -432,8 +433,8 @@ public class SelectByTypedQuery extends BaseDbOperationTest {
 
     @Test(dependsOnGroups = "positive tests")
     public void selectNullByQueryAndConditionWithTimeDefinedByProperty() {
-        WAITING_FOR_SELECTION_RESULT_TIME_UNIT.accept("SECONDS");
-        WAITING_FOR_SELECTION_RESULT_TIME_VALUE.accept("2");
+        WAITING_FOR_SELECTION_RESULT_TIME_UNIT.accept(SECONDS);
+        WAITING_FOR_SELECTION_RESULT_TIME_VALUE.accept(2L);
 
         Duration twoSeconds = ofSeconds(2);
         long start = currentTimeMillis();

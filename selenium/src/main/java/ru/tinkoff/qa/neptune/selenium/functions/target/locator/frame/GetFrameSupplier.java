@@ -12,7 +12,7 @@ import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupp
 import java.time.Duration;
 
 import static java.lang.String.format;
-import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
+import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.GetFrameFunction.*;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITING_FRAME_SWITCHING_DURATION;
 
