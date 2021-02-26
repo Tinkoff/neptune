@@ -5,10 +5,7 @@ import org.testng.annotations.Test;
 
 import java.net.URL;
 import java.time.Duration;
-import java.util.function.Supplier;
 
-import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public abstract class BasePropertyReadingTest {
@@ -104,14 +101,12 @@ public abstract class BasePropertyReadingTest {
 
     @Test
     public void objectsTest() {
-        assertThat(ofNullable(new TestObjectsSupplier().get())
-                .map(suppliers -> suppliers.stream().map(Supplier::get).collect(toList())).orElse(null), testObjectsMatchers);
+        assertThat(new TestObjectsSupplier().get(), testObjectsMatchers);
     }
 
     @Test
     public void objectTest() {
-        assertThat(ofNullable(new TestObjectSupplier().get())
-                .map(Supplier::get).orElse(null), testObjectMatchers);
+        assertThat(new TestObjectSupplier().get(), testObjectMatchers);
     }
 
     @Test

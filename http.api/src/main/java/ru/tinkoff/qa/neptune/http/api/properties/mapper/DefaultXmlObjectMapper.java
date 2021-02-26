@@ -12,7 +12,7 @@ import java.util.function.Supplier;
         "for default serialization/deserialization rules"},
         section = "Http client. Mappers")
 @PropertyName("DEFAULT_XML_MAPPER")
-public final class DefaultXmlObjectMapper implements ObjectPropertySupplier<Supplier<XmlMapper>> {
+public final class DefaultXmlObjectMapper implements ObjectPropertySupplier<XmlMapper, Supplier<XmlMapper>> {
 
     public static final DefaultXmlObjectMapper DEFAULT_XML_OBJECT_MAPPER = new DefaultXmlObjectMapper();
 

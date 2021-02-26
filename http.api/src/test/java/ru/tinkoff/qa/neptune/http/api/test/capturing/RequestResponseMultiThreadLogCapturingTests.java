@@ -42,7 +42,7 @@ public class RequestResponseMultiThreadLogCapturingTests extends BaseHttpTest {
 
     @Test(threadPoolSize = 6, invocationCount = 6)
     public void test() {
-        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS.name());
+        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
         http().responseOf(GET(CORRECT_URI), ofString());
         assertThat(getLog(), hasItems(
                 containsString("Logs that have been captured during the sending of a request"),

@@ -198,6 +198,7 @@ public class MockWebElement implements WebElement, WrapsDriver {
 
     MockWebElement setDriver(WebDriver driver) {
         this.driver = driver;
+        children.forEach(mockWebElement -> mockWebElement.setDriver(driver));
         return this;
     }
 

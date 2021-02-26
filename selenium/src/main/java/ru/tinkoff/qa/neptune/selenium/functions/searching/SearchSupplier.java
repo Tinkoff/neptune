@@ -625,6 +625,31 @@ public final class SearchSupplier<R extends SearchContext>
     }
 
     /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some image element.
+     *
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Image> image() {
+        return widget(Image.class);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some image element.
+     *
+     * @param textOrLabel text which is used to find a form by full element text matching. Also texts of labels
+     *                    are used to find an image element.
+     * @return an instance of {@link SearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
+     */
+    public static SearchSupplier<Image> image(String textOrLabel) {
+        return widget(Image.class, textOrLabel);
+    }
+
+    /**
      * Constructs the chained searching from some instance of {@link SearchContext}.
      *
      * @param from is a parent element.

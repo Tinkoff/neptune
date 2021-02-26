@@ -12,11 +12,10 @@ import java.util.function.Supplier;
         "and whose objects supply instances of java.net.CookieManager"},
         section = "Http client. General")
 @PropertyName("DEFAULT_HTTP_COOKIE_HANDLER")
-public final class DefaultHttpCookieManagerProperty implements ObjectPropertySupplier<DefaultHttpCookieManagerProperty.CookieManagerSupplier> {
+public final class DefaultHttpCookieManagerProperty implements ObjectPropertySupplier<CookieManager, DefaultHttpCookieManagerProperty.CookieManagerSupplier> {
     /**
-     * This instance reads value of the property {@code 'DEFAULT_HTTP_COOKIE_HANDLER'} and returns a {@link Supplier}
-     * of {@link CookieHandler}. Invocation of the {@link Supplier#get()} returns actual value of the property. The value
-     * provided must be fully qualified name of a {@link CookieManagerSupplier} subclass.
+     * This instance reads value of the property {@code 'DEFAULT_HTTP_COOKIE_HANDLER'}
+     * and returns a {@link CookieHandler}.
      */
     public static final DefaultHttpCookieManagerProperty DEFAULT_HTTP_COOKIE_MANAGER_PROPERTY =
             new DefaultHttpCookieManagerProperty();

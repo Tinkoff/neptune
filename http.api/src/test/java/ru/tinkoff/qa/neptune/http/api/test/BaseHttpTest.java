@@ -23,7 +23,7 @@ public class BaseHttpTest {
 
     @BeforeSuite
     public static void preparation() {
-        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE.name());
+        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
 
         wireMockServer = new WireMockServer(options().port(8089));
         wireMockServer.start();

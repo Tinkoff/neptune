@@ -8,6 +8,7 @@ import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 import ru.tinkoff.qa.neptune.selenium.test.MockWebDriver;
 
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.Random;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -164,7 +165,7 @@ public class NavigationHookTest extends BaseWebDriverTest {
 
     @Test(dataProvider = "data4")
     public void test5(Object o, String method, Matcher<? super String> matcher) throws Exception {
-        BASE_WEB_DRIVER_URL_PROPERTY.accept("https://www.google.com");
+        BASE_WEB_DRIVER_URL_PROPERTY.accept(new URL("https://www.google.com"));
         var m = getMethod(o, method);
 
         hook.executeMethodHook(m, o, new Random().nextBoolean());

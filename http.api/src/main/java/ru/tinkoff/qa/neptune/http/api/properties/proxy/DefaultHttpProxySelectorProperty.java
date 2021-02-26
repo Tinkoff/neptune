@@ -11,11 +11,10 @@ import java.util.function.Supplier;
         "and whose objects supply instances of java.net.ProxySelector"},
         section = "Http client. General")
 @PropertyName("DEFAULT_HTTP_PROXY_SELECTOR")
-public final class DefaultHttpProxySelectorProperty implements ObjectPropertySupplier<DefaultHttpProxySelectorProperty.ProxySelectorSupplier> {
+public final class DefaultHttpProxySelectorProperty implements ObjectPropertySupplier<ProxySelector, DefaultHttpProxySelectorProperty.ProxySelectorSupplier> {
     /**
-     * This instance reads value of the property {@code 'DEFAULT_HTTP_PROXY_SELECTOR'} and returns a {@link Supplier}
-     * of {@link ProxySelector}. Invocation of the {@link Supplier#get()} returns actual value of the property. The value
-     * provided must be fully qualified name of a {@link ProxySelectorSupplier} subclass.
+     * This instance reads value of the property {@code 'DEFAULT_HTTP_PROXY_SELECTOR'} and returns a
+     * {@link ProxySelector}.
      */
     public static final DefaultHttpProxySelectorProperty DEFAULT_HTTP_PROXY_SELECTOR_PROPERTY =
             new DefaultHttpProxySelectorProperty();

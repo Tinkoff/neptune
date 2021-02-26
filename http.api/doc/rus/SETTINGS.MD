@@ -45,7 +45,7 @@ public class SomeClass {
     
     public void someVoid() {
         //пример доступа до значения свойства
-        Authenticator authenticator = DEFAULT_HTTP_AUTHENTICATOR_PROPERTY.get().get();
+        Authenticator authenticator = DEFAULT_HTTP_AUTHENTICATOR_PROPERTY.get();
     }
 }
 ```
@@ -94,7 +94,7 @@ public class SomeClass {
     
     public void someVoid() {
         //пример доступа до значения свойства
-        CookieManager cookieManager = DEFAULT_HTTP_COOKIE_MANAGER_PROPERTY.get().get();
+        CookieManager cookieManager = DEFAULT_HTTP_COOKIE_MANAGER_PROPERTY.get();
     }
 }
 ```
@@ -146,7 +146,7 @@ public class SomeClass {
     
     public void someVoid() {
         //пример доступа до значения свойства
-        Executor executor = DEFAULT_HTTP_EXECUTOR_PROPERTY.get().get();
+        Executor executor = DEFAULT_HTTP_EXECUTOR_PROPERTY.get();
     }
 }
 ```
@@ -257,7 +257,7 @@ public class SomeClass {
     
     public void someVoid() {
         //пример доступа до значения свойства
-        ProxySelector selector = DEFAULT_HTTP_PROXY_SELECTOR_PROPERTY.get().get();
+        ProxySelector selector = DEFAULT_HTTP_PROXY_SELECTOR_PROPERTY.get();
     }
 }
 ```
@@ -337,7 +337,7 @@ public class SomeClass {
     
     public void someVoid() {
         //пример доступа до значения свойства
-        SSLContext sslContext = DEFAULT_HTTP_SSL_CONTEXT_PROPERTY.get().get();
+        SSLContext sslContext = DEFAULT_HTTP_SSL_CONTEXT_PROPERTY.get();
     }
 }
 ```
@@ -388,7 +388,7 @@ public class SomeClass {
     
     public void someVoid() {
         //пример доступа до значения свойства
-        SSLParameters sslParameters = DEFAULT_HTTP_SSL_PARAMETERS_PROPERTY.get().get();
+        SSLParameters sslParameters = DEFAULT_HTTP_SSL_PARAMETERS_PROPERTY.get();
     }
 }
 ```

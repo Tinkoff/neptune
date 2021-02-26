@@ -12,7 +12,7 @@ import java.time.Duration;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
+import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 
 /**
  * This class is designed to build chain of functions that get cookies of a browser.
