@@ -59,9 +59,11 @@ public class BrowserProxyStepTest {
 
     @Test
     public void proxyGetStepSupplierCriteriaTest() {
-        seleniumSteps.startOverProxyRecording();
+        seleniumSteps
+                .navigateTo("https://github.com")
+                .resetProxyRecording();
 
-        List<HarEntry> requests = seleniumSteps.refresh()
+        List<HarEntry> requests = seleniumSteps.navigateTo("/")
                 .get(proxiedRequests()
                         .criteria(recordedRequestMethod(GET))
                         .criteria(recordedResponseStatusCode(200))

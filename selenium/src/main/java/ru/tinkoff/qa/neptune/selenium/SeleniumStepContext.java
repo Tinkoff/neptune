@@ -273,7 +273,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      *
      * @return self-reference
      */
-    public SeleniumStepContext startOverProxyRecording() {
+    public SeleniumStepContext resetProxyRecording() {
         wrappedWebDriver.getProxy().newHar();
         return this;
     }
