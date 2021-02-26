@@ -1,3 +1,12 @@
+## Параметры сессии
+
+### Поиск видимых элементов
+
+### Проксирование трафика браузера
+
+#### USE_BROWSER_PROXY
+
+#### PROXY_URL_PROPERTY
 
 ## BASE_WEB_DRIVER_URL
 
@@ -13,6 +22,6 @@
 
 ### Ожидание алерта
 
-## WEB_DRIVER_DEFAULT_AUTO_SCROLLER
+### Ожидание загрузки страницы
 
-## Поиск видимых элементов
+## WEB_DRIVER_DEFAULT_AUTO_SCROLLER

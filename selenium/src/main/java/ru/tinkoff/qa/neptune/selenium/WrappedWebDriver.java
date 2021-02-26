@@ -121,17 +121,9 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
             seleniumProxy.setHttpProxy(hostIp + ":" + browserUpProxy.getPort());
             seleniumProxy.setSslProxy(hostIp + ":" + browserUpProxy.getPort());
 
-            if (seleniumProxy.getHttpProxy() != null) {
-                capabilities.setCapability(CapabilityType.PROXY, seleniumProxy);
-                capabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
-                capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
-
-                for (var i = 0; i < arguments.length; i++) {
-                    if (MutableCapabilities.class.isAssignableFrom(arguments[i].getClass())) {
-                        arguments[i] = capabilities;
-                    }
-                }
-            }
+            capabilities.setCapability(CapabilityType.PROXY, seleniumProxy);
+            capabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
+            capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
         }
 
         if (supportedWebDriver.requiresRemoteUrl() && supportedWebDriver.getRemoteURL() == null) {

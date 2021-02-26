@@ -44,7 +44,8 @@ public class MyAutoScroller extends AutoScroller {
 }
 ```
 
-Заполняем настройку `WEB_DRIVER_DEFAULT_AUTO_SCROLLER`
+Заполняем настройку [WEB_DRIVER_DEFAULT_AUTO_SCROLLER](./SETTINGS.MD#web_driver_default_auto_scroller). Подробнее о свойствах, 
+которые возвращают объекты см. [статью](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
 
 ```properties
 WEB_DRIVER_DEFAULT_AUTO_SCROLLER=org.my.pack.MyAutoScroller
