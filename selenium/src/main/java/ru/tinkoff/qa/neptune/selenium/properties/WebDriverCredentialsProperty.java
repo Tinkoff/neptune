@@ -5,7 +5,7 @@ import ru.tinkoff.qa.neptune.core.api.properties.PropertyName;
 import ru.tinkoff.qa.neptune.core.api.properties.object.ObjectByClassPropertySupplier;
 import ru.tinkoff.qa.neptune.selenium.authentication.BrowserCredentials;
 
-@PropertyDescription(description = {"Defines a subclass of ru.tinkoff.qa.neptune.selenium.authentication.CredentialContainer",
+@PropertyDescription(description = {"Defines a subclass of ru.tinkoff.qa.neptune.selenium.authentication.BrowserCredentials",
         "whose instance performs login/authentication in a browser"},
         section = "Selenium. Web driver credentials")
 @PropertyName("WEB_DRIVER_CREDENTIALS")
