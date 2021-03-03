@@ -205,7 +205,7 @@ public class LoginAndPasswordCredentials extends BrowserCredentials<Credentials>
 см. [статью](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
 
 ```properties
-WEB_DRIVER_CREDENTIALS=org.my.pack.LoginAndPasswordCredentials;
+WEB_DRIVER_CREDENTIALS=org.my.pack.LoginAndPasswordCredentials
 ```
 
 И теперь достаточно
