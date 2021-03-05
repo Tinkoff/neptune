@@ -402,23 +402,23 @@ public class Tezzt {
 
 - Виджеты, которые могут быть использованы для клика, должны реализовывать
   интерфейс `ru.tinkoff.qa.neptune.selenium.api.widget.Clickable`. И тогда для них станут доступны действия
-  вида `inBrowser.click(..)`
+  вида `inBrowser().click(..)`
 
 --- 
 
 - Виджеты которые могут быть использованы для редактирования, должны реализовывать
   интерфейс `ru.tinkoff.qa.neptune.selenium.api.widget.Editable`. И тогда для них станут доступны действия
-  вида `inBrowser.edit(..)`
+  вида `inBrowser().edit(..)`
 
 ---
 
 - Виджеты которые могут быть использованы для получения каких-либо значений (введенного текста, каких-либо состояний,
   выводимого на экран текста и т.п.), должны реализовывать
   интерфейс `ru.tinkoff.qa.neptune.selenium.api.widget.HasValue`. И тогда для них станут доступны действия
-  вида `inBrowser.valueOf(..)`
+  вида `inBrowser().valueOf(..)`
 
 ---
 
 - Виджеты, которые могут развертывать и свертывать вложенный контент, должны реализовывать
   интерфейс `ru.tinkoff.qa.neptune.selenium.api.widget.Expandable`. И тогда для них станут доступны действия
-  вида `inBrowser.expand(..)` и `inBrowser.collapse(..)`
+  вида `inBrowser().expand(..)` и `inBrowser().collapse(..)`
