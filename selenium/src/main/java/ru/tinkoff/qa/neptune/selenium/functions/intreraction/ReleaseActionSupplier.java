@@ -17,8 +17,8 @@ abstract class ReleaseActionSupplier extends InteractiveAction {
     static final class ReleaseSimpleActionSupplier extends ReleaseActionSupplier {
 
         @Override
-        protected void performActionOn(Actions value) {
-            value.release().perform();
+        void addAction(Actions value) {
+            value.release();
         }
     }
 
@@ -34,8 +34,8 @@ abstract class ReleaseActionSupplier extends InteractiveAction {
         }
 
         @Override
-        protected void performActionOn(Actions value) {
-            value.release(getElement(e)).perform();
+        void addAction(Actions value) {
+            value.release(getElement(e));
         }
     }
 }
