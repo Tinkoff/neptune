@@ -768,11 +768,27 @@ public class InteractionTest extends BaseWebDriverTest {
         assertThat(actions, contains(
                 hasAllEntries(ofEntries(
                         entry(equalTo("duration"), instanceOf(Long.class)),
+                        entry("x", 0),
+                        entry("y", 0),
+                        entry("type", "pointerMove"),
+                        entry(equalTo("origin"), equalTo(COMMON_BUTTON1))
+                )),
+                hasAllEntries(ofEntries(
+                        entry(equalTo("button"), is(0)),
+                        entry(equalTo("type"), equalTo("pointerDown"))
+                )),
+                hasAllEntries(ofEntries(
+                        entry(equalTo("duration"), instanceOf(Long.class)),
                         entry("x", 2),
                         entry("y", 3),
                         entry("type", "pointerMove"),
-                        entry(equalTo("origin"), equalTo(COMMON_BUTTON1))
+                        entry(equalTo("origin"), equalTo("pointer"))
+                )),
+                hasAllEntries(ofEntries(
+                        entry(equalTo("button"), is(0)),
+                        entry(equalTo("type"), equalTo("pointerUp"))
                 ))
+
         ));
     }
 
