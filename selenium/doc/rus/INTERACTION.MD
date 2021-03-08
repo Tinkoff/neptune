@@ -293,3 +293,134 @@ public class Tezzt {
     }
 }
 ```
+
+### Перемещение мыши
+
+```java
+import static java.time.Duration.ofSeconds;
+
+import static org.openqa.selenium.By.*;
+import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.*;
+
+public class Tezzt {
+    
+    @Test
+    public void test() {
+        //перемещение мыши относительно текущего положения ее курсора
+        //или точки 0,0, если inBrowser().interactive(move* ранее не вызывался
+        inBrowser().interactive(moveByOffset(10, //смещение по оси x
+                20) //смещение по оси y
+                .pauseBefore(ofSeconds(2)) //можно указать паузу до выполнения действия
+                .pauseAfter(ofSeconds(2))); //можно указать паузу после выполнения действия
+
+        //перемещение мыши относительно текущего положения ее курсора или точки 0,0, 
+        //если inBrowser().interactive(move* ранее не вызывался, до элемента,
+        //который будет найден входе выполнения действия
+        inBrowser().interactive(moveToElement(webElement(xpath("./some/path")), //цель
+                10, //смещение по оси x относительно верхнего левого угла элемента-цели
+                20)); //смещение по оси y относительно верхнего левого угла элемента-цели
+
+        //перемещение мыши относительно текущего положения ее курсора или точки 0,0, 
+        //если inBrowser().interactive(move* ранее не вызывался, до элемента,
+        //который будет найден входе выполнения действия
+        inBrowser().interactive(moveToElement(webElement(xpath("./some/path")))); //цель
+
+        //перемещение мыши относительно текущего положения ее курсора или точки 0,0, 
+        //если inBrowser().interactive(move* ранее не вызывался, до кнопки,
+        //которая будет найдена входе выполнения действия
+        inBrowser().interactive(moveToElement(button("Move to Me"), //цель
+                10, //смещение по оси x относительно верхнего левого угла кнопки-цели
+                20)); //смещение по оси y относительно верхнего левого угла кнопки-цели
+
+        //перемещение мыши относительно текущего положения ее курсора или точки 0,0, 
+        //если inBrowser().interactive(move* ранее не вызывался, до кнопки,
+        //которая будет найдена входе выполнения действия
+        inBrowser().interactive(moveToElement(button("Move to Me"))); //цель
+        
+        var element = inBrowser().find(webElement(xpath("./some/path")));
+        var button = inBrowser().find(button("Move to Me"));
+
+        //перемещение мыши относительно текущего положения ее курсора или точки 0,0, 
+        //если inBrowser().interactive(move* ранее не вызывался, до элемента,
+        //который уже найден
+        inBrowser().interactive(moveToElement(element, //цель
+                10, //смещение по оси x относительно верхнего левого угла элемента-цели
+                20)); //смещение по оси y относительно верхнего левого угла элемента-цели
+
+        //перемещение мыши относительно текущего положения ее курсора или точки 0,0, 
+        //если inBrowser().interactive(move* ранее не вызывался, до элемента,
+        //который уже найден
+        inBrowser().interactive(moveToElement(webElement(element))); //цель
+
+        //перемещение мыши относительно текущего положения ее курсора или точки 0,0, 
+        //если inBrowser().interactive(move* ранее не вызывался, до кнопки,
+        //которая уже найдена
+        inBrowser().interactive(moveToElement(button, //цель
+                10, //смещение по оси x относительно верхнего левого угла кнопки-цели
+                20)); //смещение по оси y относительно верхнего левого угла кнопки-цели
+
+        //перемещение мыши относительно текущего положения ее курсора или точки 0,0, 
+        //если inBrowser().interactive(move* ранее не вызывался, до кнопки,
+        //которая уже найдена
+        inBrowser().interactive(moveToElement(button)); //цель
+    }
+}
+```
+
+### Drag & Drop
+
+```java
+import static java.time.Duration.ofSeconds;
+
+import static org.openqa.selenium.By.*;
+import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
+import static ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.*;
+
+public class Tezzt {
+    
+    @Test
+    public void test() {
+        //Drag & Drop элемента,
+        //который будет найден входе выполнения действия
+        inBrowser().interactive(dragAndDropBy(webElement(xpath("./some/path")), //бросаемый элемент
+                10, //смещение по оси x, куда бросить элемент
+                20) //смещение по оси y, куда бросить элемент
+                .pauseBefore(ofSeconds(2)) //можно указать паузу до выполнения действия
+                .pauseAfter(ofSeconds(2))); //можно указать паузу после выполнения действия
+
+        //Drag & Drop кнопки,
+        //которая будет найдена входе выполнения действия
+        inBrowser().interactive(dragAndDropBy(button("Drag and Drop Me"), //бросаемый элемент
+                10, //смещение по оси x, куда бросить элемент
+                20)); //смещение по оси y, куда бросить элемент
+        
+        var element = inBrowser().find(webElement(xpath("./some/path")));
+        var button = inBrowser().find(button("Move to Me"));
+
+        //Drag & Drop элемента,
+        //который уже найден
+        inBrowser().interactive(dragAndDropBy(element, //бросаемый элемент
+                10, //смещение по оси x, куда бросить элемент
+                20)); //смещение по оси y, куда бросить элемент
+
+        //Drag & Drop кнопки,
+        //которая уже найдена
+        inBrowser().interactive(dragAndDropBy(button, //бросаемый элемент
+                10, //смещение по оси x, куда бросить элемент
+                20)); //смещение по оси y, куда бросить элемент
+
+        //Drag & Drop элемента,
+        //который будет найден входе выполнения действия
+        inBrowser().interactive(dragAndDrop(
+                webElement(xpath("./some/path")), //бросаемый элемент
+                button)); //Элемент, до которого надо добросить
+        //Действие dragAndDrop в качестве параметров может принимать как уже найденные объекты,
+        //описанные как WebElement или классами, унаследованными от Widget,
+        //так и функции-шаги по их поиску.
+        //Все эти варианты между собой комбинируются
+    }
+}
+```
