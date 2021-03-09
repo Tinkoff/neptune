@@ -21,7 +21,7 @@ final class MouseMoveActionSupplier extends InteractiveAction {
     }
 
     @Override
-    protected void performActionOn(Actions value) {
-        value.moveByOffset(x, y).perform();
+    void addAction(Actions value) {
+        value.moveByOffset(x, y);
     }
 }

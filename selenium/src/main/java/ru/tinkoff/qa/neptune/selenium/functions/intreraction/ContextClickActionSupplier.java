@@ -15,10 +15,9 @@ abstract class ContextClickActionSupplier extends InteractiveAction {
     }
 
     static final class ContextClickSimpleActionSupplier extends ContextClickActionSupplier {
-
         @Override
-        protected void performActionOn(Actions value) {
-            value.contextClick().perform();
+        void addAction(Actions value) {
+            value.contextClick();
         }
     }
 
@@ -34,8 +33,8 @@ abstract class ContextClickActionSupplier extends InteractiveAction {
         }
 
         @Override
-        protected void performActionOn(Actions value) {
-            value.contextClick(getElement(e)).perform();
+        void addAction(Actions value) {
+            value.contextClick(getElement(e));
         }
     }
 }

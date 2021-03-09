@@ -17,8 +17,8 @@ abstract class ClickAndHoldActionSupplier extends InteractiveAction {
     static final class ClickAndHoldSimpleActionSupplier extends ClickAndHoldActionSupplier {
 
         @Override
-        protected void performActionOn(Actions value) {
-            value.clickAndHold().perform();
+        void addAction(Actions value) {
+            value.clickAndHold();
         }
     }
 
@@ -34,8 +34,8 @@ abstract class ClickAndHoldActionSupplier extends InteractiveAction {
         }
 
         @Override
-        protected void performActionOn(Actions value) {
-            value.clickAndHold(getElement(e)).perform();
+        void addAction(Actions value) {
+            value.clickAndHold(getElement(e));
         }
     }
 }
