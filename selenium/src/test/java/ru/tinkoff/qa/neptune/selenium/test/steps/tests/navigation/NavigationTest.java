@@ -9,6 +9,7 @@ import static java.lang.System.getProperties;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
+import static ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.url.AtThePageMatcher.pageURL;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.test.enums.URLs.*;
 import static ru.tinkoff.qa.neptune.selenium.test.enums.WindowHandles.*;
@@ -17,8 +18,9 @@ public class NavigationTest extends BaseWebDriverTest {
 
     @Test
     public void test1() {
-        seleniumSteps.navigateTo(PAY_PAL.getUrl());
-        assertThat(seleniumSteps.getCurrentUrl(), is(PAY_PAL.getUrl()));
+        seleniumSteps.navigateTo(PAY_PAL.getUrl(), window(2));
+        assertThat(seleniumSteps.get(window(2)), pageURL(is(PAY_PAL.getUrl())));
+        assertThat(seleniumSteps.getWrappedDriver().getCurrentUrl(), not(is(PAY_PAL.getUrl())));
     }
 
     @Test
@@ -53,8 +55,8 @@ public class NavigationTest extends BaseWebDriverTest {
     public void test5() {
         System.setProperty(BASE_WEB_DRIVER_URL_PROPERTY.getName(), GITHUB.getUrl());
         try {
-            seleniumSteps.navigateTo("/index.html");
-            assertThat(seleniumSteps.getCurrentUrl(), containsString(GITHUB.getUrl()));
+            seleniumSteps.navigateTo("/index.html", window(2));
+            assertThat(seleniumSteps.get(window(2)), pageURL(containsString(GITHUB.getUrl())));
         } finally {
             getProperties().remove(BASE_WEB_DRIVER_URL_PROPERTY.getName());
         }
@@ -64,11 +66,11 @@ public class NavigationTest extends BaseWebDriverTest {
     public void test6() {
         Window window = seleniumSteps.get(window(2));
 
-        seleniumSteps.navigateTo(PAY_PAL.getUrl())
+        seleniumSteps.navigateTo(PAY_PAL.getUrl(), window(0))
                 .navigateTo(DEEZER.getUrl(), window(1))
                 .navigateTo(YOUTUBE.getUrl(), window);
 
-        assertThat(seleniumSteps.getCurrentUrl(), is(PAY_PAL.getUrl()));
+        assertThat(seleniumSteps.getCurrentUrl(window(0)), is(PAY_PAL.getUrl()));
         Window window2 = seleniumSteps.get(window(1));
         assertThat(window2.getCurrentUrl(), is(DEEZER.getUrl()));
 
@@ -255,32 +257,35 @@ public class NavigationTest extends BaseWebDriverTest {
     @Test
     public void test10() {
         Window thirdWindow = seleniumSteps.get(window(2));
-        seleniumSteps.navigateTo(GOOGLE.getUrl())
-                .navigateTo(GITHUB.getUrl())
+        seleniumSteps.navigateTo(GOOGLE.getUrl(), window(0))
+                .navigateTo(GITHUB.getUrl(), window(0))
                 .navigateTo(FACEBOOK.getUrl(), window(1))
                 .navigateTo(DEEZER.getUrl(), window(1))
                 .navigateTo(PAY_PAL.getUrl(), window(2))
                 .navigateTo(YOUTUBE.getUrl(), window(2));
 
-        seleniumSteps.navigateBack()
+        seleniumSteps.navigateBack(window(0))
                 .navigateBack(window(1))
                 .navigateBack(thirdWindow);
-        assertThat(seleniumSteps.getCurrentUrl(), is(GOOGLE.getUrl()));
+        assertThat(seleniumSteps.getCurrentUrl(window(0)), is(GOOGLE.getUrl()));
         assertThat(seleniumSteps.getCurrentUrl(window(1)), is(FACEBOOK.getUrl()));
         assertThat(seleniumSteps.getCurrentUrl(window(2)), is(PAY_PAL.getUrl()));
 
-        seleniumSteps.navigateForward()
+        seleniumSteps.navigateForward(window(0))
                 .navigateForward(window(1))
                 .navigateForward(thirdWindow);
-        assertThat(seleniumSteps.getCurrentUrl(), is(GITHUB.getUrl()));
+        assertThat(seleniumSteps.getCurrentUrl(window(0)), is(GITHUB.getUrl()));
         assertThat(seleniumSteps.getCurrentUrl(window(1)), is(DEEZER.getUrl()));
         assertThat(seleniumSteps.getCurrentUrl(window(2)), is(YOUTUBE.getUrl()));
     }
 
     @Test
     public void test11() {
-        seleniumSteps.refresh();
-        assertThat(((MockWindow) seleniumSteps.getWrappedDriver().manage().window()).isRefreshed(),
+        seleniumSteps.refresh(window(1));
+        assertThat(((MockWindow) seleniumSteps.getWrappedDriver()
+                        .switchTo()
+                        .window(HANDLE2.getHandle())
+                        .manage().window()).isRefreshed(),
                 is(true));
     }
 

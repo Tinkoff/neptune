@@ -2,31 +2,6 @@
 
 Данный модуль используется для связывания функциональности **Neptune** и **[Hamcrest matchers](http://hamcrest.org/JavaHamcrest/tutorial)**.
 
-## Maven
-
-В pom.xml
-
-```xml
-    <dependencies>
-        <dependency>
-            <groupId>ru.tinkoff.qa.neptune</groupId>
-            <artifactId>check</artifactId>
-            <version>${LATEST_RELEASE_OR_BETA_VERSION}</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-```
-
-## Gradle
-
-В build.gradle
-
-```groovy
-    dependencies {
-        testCompile group: 'ru.tinkoff.qa.neptune', name: 'check', version: LATEST_RELEASE_OR_BETA_VERSION    
-    }
-```
-
 ## Примеры
 
 ### Простой пример. Единичная проверка значения

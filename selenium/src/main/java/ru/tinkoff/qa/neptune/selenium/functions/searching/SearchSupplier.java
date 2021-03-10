@@ -5,7 +5,6 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOn
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
-import ru.tinkoff.qa.neptune.selenium.api.widget.Labeled;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.*;
 
@@ -15,16 +14,16 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static java.lang.String.format;
-import static java.lang.String.join;
 import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.OR;
 import static ru.tinkoff.qa.neptune.selenium.api.widget.Widget.getWidgetName;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindLabeledWidgets.labeledWidgets;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindWebElements.webElements;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindWidgets.widgets;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FIND_ONLY_VISIBLE_ELEMENTS;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMENT_WAITING_DURATION;
 
+@SuppressWarnings({"unused"})
 @MakeImageCapturesOnFinishing
 @MakeFileCapturesOnFinishing
 @SequentialGetStepSupplier.DefaultParameterNames(
@@ -91,18 +90,19 @@ public final class SearchSupplier<R extends SearchContext>
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some {@link Widget} found from the input value.
      *
-     * @param tClass is a class of an object to be returned. tClass should have at
-     *               least one not abstract subclass that implements {@link Labeled} or be that class.
-     * @param labels (texts of some elements or attributes inside or beside the widget) are used to
-     *               find the widget.
-     * @param <T>    the type of widget that should be found
+     * @param tClass      is a class of an object to be returned
+     * @param textOrLabel text which is used to find a widget by full element text matching. Also texts of labels
+     *                    are used to find a widget.
+     * @param <T>         the type of widget that should be found
      * @return an instance of {@link SearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
      */
-    public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, String... labels) {
-        var labeledBy = labeled(labels);
-        var labeledWidgets = labeledWidgets(tClass);
-        var search = new SearchSupplier<>(format("%s '%s'", getWidgetName(tClass), join(", ", labels)), labeledWidgets);
-        return search.criteria(labeledBy);
+    public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, String textOrLabel) {
+        return new SearchSupplier<>(format("%s '%s'", getWidgetName(tClass), textOrLabel), widgets(tClass))
+                .criteria(OR(
+                        text(textOrLabel),
+                        labeled(textOrLabel)
+                ));
     }
 
     /**
@@ -135,12 +135,13 @@ public final class SearchSupplier<R extends SearchContext>
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some button.
      *
-     * @param labels (texts of some elements or attributes inside or beside the button) are used to
-     *               find a button.
+     * @param textOrLabel text which is used to find a button by full element text matching. Also texts of labels
+     *                    are used to find a button.
      * @return an instance of {@link SearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
      */
-    public static SearchSupplier<Button> button(String... labels) {
-        return widget(Button.class, labels);
+    public static SearchSupplier<Button> button(String textOrLabel) {
+        return widget(Button.class, textOrLabel);
     }
 
     /**
@@ -159,12 +160,13 @@ public final class SearchSupplier<R extends SearchContext>
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some flag.
      *
-     * @param labels (texts of some elements or attributes inside or beside the flag) are used to
-     *               find a flag.
+     * @param textOrLabel text which is used to find a flag by full element text matching. Also texts of labels
+     *                    are used to find a flag.
      * @return an instance of {@link SearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
      */
-    public static SearchSupplier<Flag> flag(String... labels) {
-        return widget(Flag.class, labels);
+    public static SearchSupplier<Flag> flag(String textOrLabel) {
+        return widget(Flag.class, textOrLabel);
     }
 
     /**
@@ -183,12 +185,13 @@ public final class SearchSupplier<R extends SearchContext>
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some check box.
      *
-     * @param labels (texts of some elements or attributes inside or beside the check box) are used to
-     *               find a check box.
+     * @param textOrLabel text which is used to find a checkbox by full element text matching. Also texts of labels
+     *                    are used to find a checkbox.
      * @return an instance of {@link SearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
      */
-    public static SearchSupplier<Flag.CheckBox> checkbox(String... labels) {
-        return widget(Flag.CheckBox.class, labels);
+    public static SearchSupplier<Flag.CheckBox> checkbox(String textOrLabel) {
+        return widget(Flag.CheckBox.class, textOrLabel);
     }
 
     /**
@@ -207,13 +210,41 @@ public final class SearchSupplier<R extends SearchContext>
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some radio button.
      *
-     * @param labels (texts of some elements or attributes inside or beside the radio button) are used to
-     *               find a radio button.
+     * @param textOrLabel text which is used to find a radio-button by full element text matching. Also texts of labels
+     *                    are used to find a radio-button.
+     * @return an instance of {@link SearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
+     */
+    public static SearchSupplier<Flag.RadioButton> radioButton(String textOrLabel) {
+        return widget(Flag.RadioButton.class, textOrLabel);
+    }
+
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some toggle.
+     *
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Flag.RadioButton> radioButton(String... labels) {
-        return widget(Flag.RadioButton.class, labels);
+    public static SearchSupplier<Flag.Toggle> toggle() {
+        return widget(Flag.Toggle.class);
     }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some toggle.
+     *
+     * @param textOrLabel text which is used to find a toggle by full element text matching. Also texts of labels
+     *                    are used to find a toggle.
+     * @return an instance of {@link SearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
+     */
+    public static SearchSupplier<Flag.Toggle> toggle(String textOrLabel) {
+        return widget(Flag.Toggle.class, textOrLabel);
+    }
+
 
     /**
      * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
@@ -231,12 +262,13 @@ public final class SearchSupplier<R extends SearchContext>
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some link.
      *
-     * @param labels (texts of some elements or attributes inside or beside the link) are used to
-     *               find a link.
+     * @param textOrLabel text which is used to find a link by full element text matching. Also texts of labels
+     *                    are used to find a link.
      * @return an instance of {@link SearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
      */
-    public static SearchSupplier<Link> link(String... labels) {
-        return widget(Link.class, labels);
+    public static SearchSupplier<Link> link(String textOrLabel) {
+        return widget(Link.class, textOrLabel);
     }
 
     /**
@@ -255,13 +287,41 @@ public final class SearchSupplier<R extends SearchContext>
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some select.
      *
-     * @param labels (texts of some elements or attributes inside or beside the select) are used to
-     *               find a select.
+     * @param textOrLabel text which is used to find a select by full element text matching. Also texts of labels
+     *                    are used to find a select.
+     * @return an instance of {@link SearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
+     */
+    public static SearchSupplier<Select> select(String textOrLabel) {
+        return widget(Select.class, textOrLabel);
+    }
+
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some multi-select.
+     *
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<Select> select(String... labels) {
-        return widget(Select.class, labels);
+    public static SearchSupplier<MultiSelect> multiSelect() {
+        return widget(MultiSelect.class);
     }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some multi-select.
+     *
+     * @param textOrLabel text which is used to find a multi-select by full element text matching. Also texts of labels
+     *                    are used to find a multi-select.
+     * @return an instance of {@link SearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
+     */
+    public static SearchSupplier<MultiSelect> multiSelect(String textOrLabel) {
+        return widget(MultiSelect.class, textOrLabel);
+    }
+
 
     /**
      * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
@@ -279,12 +339,13 @@ public final class SearchSupplier<R extends SearchContext>
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some tab.
      *
-     * @param labels (texts of some elements or attributes inside or beside the tab) are used to
-     *               find a tab.
+     * @param textOrLabel text which is used to find a tab by full element text matching. Also texts of labels
+     *                    are used to find a tab.
      * @return an instance of {@link SearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
      */
-    public static SearchSupplier<Tab> tab(String... labels) {
-        return widget(Tab.class, labels);
+    public static SearchSupplier<Tab> tab(String textOrLabel) {
+        return widget(Tab.class, textOrLabel);
     }
 
     /**
@@ -303,25 +364,80 @@ public final class SearchSupplier<R extends SearchContext>
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some text field.
      *
-     * @param labels (texts of some elements or attributes inside or beside the text field) are used to
-     *               find a text field.
+     * @param textOrLabel text which is used to find a text field by full element text matching. Also texts of labels
+     *                    are used to find a text field.
+     * @return an instance of {@link SearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
+     */
+    public static SearchSupplier<TextField> textField(String textOrLabel) {
+        return widget(TextField.class, textOrLabel);
+    }
+
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some calendar.
+     *
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<TextField> textField(String... labels) {
-        return widget(TextField.class, labels);
+    public static SearchSupplier<CalendarWidget> calendar() {
+        return widget(CalendarWidget.class);
     }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some calendar.
+     *
+     * @param textOrLabel text which is used to find a calendar by full element text matching. Also texts of labels
+     *                    are used to find a calendar.
+     * @return an instance of {@link SearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
+     */
+    public static SearchSupplier<CalendarWidget> calendar(String textOrLabel) {
+        return widget(CalendarWidget.class, textOrLabel);
+    }
+
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some calendar range.
+     *
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<CalendarRangeWidget> calendarRange() {
+        return widget(CalendarRangeWidget.class);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some calendar range.
+     *
+     * @param textOrLabel text which is used to find a calendar range by full element text matching. Also texts of labels
+     *                    are used to find a calendar range.
+     * @return an instance of {@link SearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
+     */
+    public static SearchSupplier<CalendarRangeWidget> calendarRange(String textOrLabel) {
+        return widget(CalendarRangeWidget.class, textOrLabel);
+    }
+
 
     /**
      * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some table.
      *
-     * @param labels (texts of some elements or attributes inside or beside the table) are used to
-     *               find a table.
+     * @param textOrLabel text which is used to find a table by full element text matching. Also texts of labels
+     *                    are used to find a table.
      * @return an instance of {@link SearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
      */
-    public static SearchSupplier<Table> table(String... labels) {
-        return widget(Table.class, labels);
+    public static SearchSupplier<Table> table(String textOrLabel) {
+        return widget(Table.class, textOrLabel);
     }
 
     /**
@@ -349,12 +465,40 @@ public final class SearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
      * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some table row.
+     *
+     * @param textOrLabel text which is used to find a table row by full element text matching. Also texts of labels
+     *                    are used to find a table row.
+     * @return an instance of {@link SearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
+     */
+    public static SearchSupplier<TableRow> tableRow(String textOrLabel) {
+        return widget(TableRow.class, textOrLabel);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some table header.
      *
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<TableHeader> tableHeader() {
         return widget(TableHeader.class);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some table header.
+     *
+     * @param textOrLabel text which is used to find a table header by full element text matching. Also texts of labels
+     *                    are used to find a table header.
+     * @return an instance of {@link SearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
+     */
+    public static SearchSupplier<TableHeader> tableHeader(String textOrLabel) {
+        return widget(TableHeader.class, textOrLabel);
     }
 
     /**
@@ -371,12 +515,138 @@ public final class SearchSupplier<R extends SearchContext>
     /**
      * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
      * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some table footer.
+     *
+     * @param textOrLabel text which is used to find a table footer by full element text matching. Also texts of labels
+     *                    are used to find a table footer.
+     * @return an instance of {@link SearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
+     */
+    public static SearchSupplier<TableFooter> tableFooter(String textOrLabel) {
+        return widget(TableFooter.class, textOrLabel);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some table cell.
      *
      * @return an instance of {@link SearchSupplier}
      */
     public static SearchSupplier<TableCell> tableCell() {
         return widget(TableCell.class);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some table cell.
+     *
+     * @param textOrLabel text which is used to find a table cell by full element text matching. Also texts of labels
+     *                    are used to find a table cell.
+     * @return an instance of {@link SearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
+     */
+    public static SearchSupplier<TableCell> tableCell(String textOrLabel) {
+        return widget(TableCell.class, textOrLabel);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some text element.
+     *
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<TextElement> textElement() {
+        return widget(TextElement.class);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some text element.
+     *
+     * @param text text which is used to find a text element by full element text matching.
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<TextElement> textElement(String text) {
+        return widget(TextElement.class, text);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some form.
+     *
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Form> form() {
+        return widget(Form.class);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some form.
+     *
+     * @param textOrLabel text which is used to find a form by full element text matching. Also texts of labels
+     *                    are used to find a form.
+     * @return an instance of {@link SearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
+     */
+    public static SearchSupplier<Form> form(String textOrLabel) {
+        return widget(Form.class, textOrLabel);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some grouping element.
+     *
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<ElementGroup> group() {
+        return widget(ElementGroup.class);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some grouping element.
+     *
+     * @param textOrLabel text which is used to find a form by full element text matching. Also texts of labels
+     *                    are used to find a grouping element.
+     * @return an instance of {@link SearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
+     */
+    public static SearchSupplier<ElementGroup> group(String textOrLabel) {
+        return widget(ElementGroup.class, textOrLabel);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some image element.
+     *
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Image> image() {
+        return widget(Image.class);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some image element.
+     *
+     * @param textOrLabel text which is used to find a form by full element text matching. Also texts of labels
+     *                    are used to find an image element.
+     * @return an instance of {@link SearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
+     */
+    public static SearchSupplier<Image> image(String textOrLabel) {
+        return widget(Image.class, textOrLabel);
     }
 
     /**

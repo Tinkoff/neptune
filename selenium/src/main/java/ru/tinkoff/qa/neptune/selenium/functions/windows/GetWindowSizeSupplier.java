@@ -7,7 +7,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
+import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.currentWindow;
 
 @SequentialGetStepSupplier.DefaultParameterNames(
         from = "Window/tab to get size of"
@@ -20,12 +20,12 @@ public final class GetWindowSizeSupplier extends SequentialGetStepSupplier
     }
 
     /**
-     * Builds a function which gets size of the first window.
+     * Builds a function which gets size of the active window.
      *
      * @return Supplier of a function which gets size.
      */
     public static GetWindowSizeSupplier windowSize() {
-        return windowSize(window());
+        return windowSize(currentWindow());
     }
 
     /**

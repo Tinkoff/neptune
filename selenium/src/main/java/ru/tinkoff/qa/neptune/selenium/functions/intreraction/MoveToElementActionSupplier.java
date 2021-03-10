@@ -28,11 +28,11 @@ final class MoveToElementActionSupplier extends InteractiveAction {
     }
 
     @Override
-    protected void performActionOn(Actions value) {
+    void addAction(Actions value) {
         if (x == null || y == null) {
-            value.moveToElement(getElement(e)).perform();
+            value.moveToElement(getElement(e));
         } else {
-            value.moveToElement(getElement(e), x, y).perform();
+            value.moveToElement(getElement(e), x, y);
         }
     }
 }

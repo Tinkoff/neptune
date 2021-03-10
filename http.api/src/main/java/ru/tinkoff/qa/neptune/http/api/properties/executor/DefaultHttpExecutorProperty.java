@@ -12,12 +12,10 @@ import java.util.function.Supplier;
         "and whose objects supply instances of java.util.concurrent.Executor"},
         section = "Http client. General")
 @PropertyName("DEFAULT_HTTP_EXECUTOR")
-public final class DefaultHttpExecutorProperty implements ObjectPropertySupplier<DefaultHttpExecutorProperty.ExecutorSupplier> {
+public final class DefaultHttpExecutorProperty implements ObjectPropertySupplier<Executor, DefaultHttpExecutorProperty.ExecutorSupplier> {
 
     /**
-     * This instance reads value of the property {@code 'DEFAULT_HTTP_EXECUTOR'} and returns a {@link Supplier}
-     * of {@link Executor}. Invocation of the {@link Supplier#get()} returns actual value of the property. The value
-     * provided must be fully qualified name of a {@link ExecutorSupplier} subclass.
+     * This instance reads value of the property {@code 'DEFAULT_HTTP_EXECUTOR'} and returns an {@link Executor}.
      */
     public static final DefaultHttpExecutorProperty DEFAULT_HTTP_EXECUTOR_PROPERTY =
             new DefaultHttpExecutorProperty();

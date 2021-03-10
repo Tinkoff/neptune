@@ -7,21 +7,28 @@ import org.openqa.selenium.internal.WrapsElement;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.StepFunction;
 import ru.tinkoff.qa.neptune.selenium.api.widget.*;
+import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Tab;
 
+import java.lang.reflect.Method;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
+import static java.lang.reflect.Modifier.isStatic;
 import static java.time.Duration.ofMillis;
-import static java.util.Arrays.asList;
+import static java.util.Arrays.stream;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.regex.Pattern.compile;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.NOT;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 
 public final class CommonElementCriteria {
@@ -91,24 +98,73 @@ public final class CommonElementCriteria {
      * @param <T>  is a type of element/widget
      * @return criteria that checks/filters an element/widget
      */
-    public static <T extends SearchContext> Criteria<T> text(String text) {
+    static <T extends SearchContext> Criteria<T> text(String text) {
         checkArgument(isNotBlank(text), "Text should be defined");
 
         return condition(format("has text '%s'", text), t -> {
             var clazz = t.getClass();
-            String elementText = null;
 
             if (WebElement.class.isAssignableFrom(clazz)) {
-                elementText = ((WebElement) t).getText();
-            }
-
-            if (WrapsElement.class.isAssignableFrom(clazz)) {
-                elementText = ofNullable(((WrapsElement) t).getWrappedElement())
+                return Objects.equals(((WebElement) t).getText(), text);
+            } else if (HasTextContent.class.isAssignableFrom(clazz)) {
+                return Objects.equals(((HasTextContent) t).getText(), text);
+            } else if (WrapsElement.class.isAssignableFrom(clazz)) {
+                return Objects.equals(ofNullable(((WrapsElement) t).getWrappedElement())
                         .map(WebElement::getText)
-                        .orElse(null);
+                        .orElse(null), text);
+            } else {
+                return false;
+            }
+        });
+    }
+
+    private static List<String> labelsFromMethods(Method[] methods, Object from) {
+        return stream(methods)
+                .filter(method -> !isStatic(method.getModifiers())
+                        && method.getParameterTypes().length == 0
+                        && method.getReturnType().equals(String.class)
+                        && method.getAnnotation(Label.class) != null)
+                .map(method -> {
+                    try {
+                        method.setAccessible(true);
+                        return (String) method.invoke(from);
+                    } catch (Exception e) {
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .collect(toList());
+    }
+
+    static <T extends Widget> Criteria<T> labeled(String label) {
+        checkNotNull(label);
+        return condition(format("has label '%s'", label), t -> {
+            Class<?> cls = t.getClass();
+            var labels = new ArrayList<String>();
+
+            while (cls != null) {
+                labels.addAll(labelsFromMethods(cls.getDeclaredMethods(), t));
+                stream(cls.getInterfaces()).forEach(aClass -> labels.addAll(labelsFromMethods(aClass.getDeclaredMethods(), t)));
+
+                labels.addAll(stream(cls.getDeclaredFields())
+                        .filter(field -> !isStatic(field.getModifiers())
+                                && WebElement.class.isAssignableFrom(field.getType())
+                                && field.getAnnotation(Label.class) != null)
+                        .map(field -> {
+                            try {
+                                field.setAccessible(true);
+                                return ((WebElement) field.get(t.selfReference())).getText();
+                            } catch (Exception e) {
+                                return null;
+                            }
+                        })
+                        .filter(Objects::nonNull)
+                        .collect(toList()));
+
+                cls = cls.getSuperclass();
             }
 
-            return Objects.equals(elementText, text);
+            return labels.contains(label);
         });
     }
 
@@ -129,6 +185,8 @@ public final class CommonElementCriteria {
 
             if (WebElement.class.isAssignableFrom(clazz)) {
                 elementText = valueOf(((WebElement) t).getText());
+            } else if (HasTextContent.class.isAssignableFrom(clazz)) {
+                elementText = valueOf(((HasTextContent) t).getText());
             } else if (WrapsElement.class.isAssignableFrom(clazz)) {
                 elementText = ofNullable(((WrapsElement) t).getWrappedElement())
                         .map(webElement -> valueOf(webElement.getText()))
@@ -144,7 +202,7 @@ public final class CommonElementCriteria {
                         try {
                             var p = compile(expression);
                             var mather = p.matcher(s);
-                            return mather.matches() || mather.find();
+                            return mather.matches();
                         } catch (Throwable thrown) {
                             thrown.printStackTrace();
                             return false;
@@ -229,7 +287,7 @@ public final class CommonElementCriteria {
                         try {
                             var p = compile(expression);
                             var mather = p.matcher(s);
-                            return mather.matches() || mather.find();
+                            return mather.matches();
                         } catch (Throwable thrown) {
                             thrown.printStackTrace();
                             return false;
@@ -314,7 +372,7 @@ public final class CommonElementCriteria {
                         try {
                             var p = compile(expression);
                             var mather = p.matcher(s);
-                            return mather.matches() || mather.find();
+                            return mather.matches();
                         } catch (Throwable thrown) {
                             thrown.printStackTrace();
                             return false;
@@ -385,10 +443,36 @@ public final class CommonElementCriteria {
         });
     }
 
-    static <T extends SearchContext> Criteria<T> labeled(String... labels) {
-        checkNotNull(labels);
-        checkArgument(labels.length > 0, "At least one label should be defined");
-        return condition(format("has label(s) %s", String.join("and ", labels)),
-                t -> Labeled.class.isAssignableFrom(t.getClass()) && ((Labeled) t).labels().containsAll(asList(labels)));
+    /**
+     * The checking of an element/widget text.
+     *
+     * @param text is a text (full) that an element should not have
+     * @param <T>  is a type of element/widget
+     * @return criteria that checks/filters an element/widget
+     */
+    public static <T extends SearchContext> Criteria<T> noText(String text) {
+        return NOT(text(text));
+    }
+
+    /**
+     * The checking of an element/widget by its value
+     *
+     * @param value is an expected value
+     * @param <R>   is a type of the value
+     * @param <T>   is a type of element/widget
+     * @return criteria that checks/filters an element/widget
+     */
+    public static <R, T extends SearchContext & HasValue<R>> Criteria<T> valueIs(R value) {
+        return condition(format("has value '%s'", value), t -> Objects.equals(value, t.getValue()));
+    }
+
+    /**
+     * Checks {@link Tab} by its activeness.
+     *
+     * @param <T> is a type of a {@link Tab}
+     * @return criteria that checks/filters an element/widget
+     */
+    public static <T extends Tab> Criteria<T> isActive() {
+        return condition("is active tab", Tab::isActive);
     }
 }

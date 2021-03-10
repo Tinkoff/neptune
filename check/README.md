@@ -1,5 +1,26 @@
 Integration of Neptune with [Hamcrest matchers](http://hamcrest.org/JavaHamcrest/tutorial)
 
+## Maven
+
+```xml
+    <dependencies>
+        <dependency>
+            <groupId>ru.tinkoff.qa.neptune</groupId>
+            <artifactId>check</artifactId>
+            <version>${LATEST_RELEASE_OR_BETA_VERSION}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+```
+
+## Gradle
+
+```groovy
+    dependencies {
+        testCompile group: 'ru.tinkoff.qa.neptune', name: 'check', version: LATEST_RELEASE_OR_BETA_VERSION    
+    }
+```
+
 [Краткая документация на русском](./doc/rus/README.MD)
 
 [Brief documentation in English](./doc/eng/README.MD)

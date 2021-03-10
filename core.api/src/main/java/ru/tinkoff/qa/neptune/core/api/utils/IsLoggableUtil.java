@@ -19,17 +19,9 @@ public final class IsLoggableUtil {
             return true;
         }
 
-        var cls = clazz;
-        while (!cls.equals(Object.class)) {
-            try {
-                cls.getDeclaredMethod("toString");
-                return true;
-            } catch (NoSuchMethodException e) {
-                cls = cls.getSuperclass();
-            }
-        }
-
-        return false;
+        return !toBeDescribed.toString().equals(clazz.getName()
+                + '@'
+                + Integer.toHexString(toBeDescribed.hashCode()));
     }
 
 }

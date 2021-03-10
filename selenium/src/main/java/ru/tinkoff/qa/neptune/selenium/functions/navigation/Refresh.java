@@ -7,7 +7,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 
-import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
+import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.currentWindow;
 
 @MakeImageCapturesOnFinishing
 @MakeFileCapturesOnFinishing
@@ -27,7 +27,7 @@ public final class Refresh extends SequentialActionSupplier<SeleniumStepContext,
      * @return built the refreshing action
      */
     public static Refresh refreshWindow() {
-        return refreshWindow(window());
+        return refreshWindow(currentWindow());
     }
 
     /**

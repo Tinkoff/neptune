@@ -7,7 +7,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 /**
  * This interface is designed to read properties and return string values.
  */
-public interface StringValuePropertySupplier extends PropertySupplier<String> {
+public interface StringValuePropertySupplier extends PropertySupplier<String, String> {
     @Override
     default String parse(String value) {
         var trimmed = value.trim();

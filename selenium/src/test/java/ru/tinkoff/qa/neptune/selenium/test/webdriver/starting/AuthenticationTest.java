@@ -5,7 +5,6 @@ import org.testng.annotations.*;
 import ru.tinkoff.qa.neptune.selenium.SeleniumParameterProvider;
 import ru.tinkoff.qa.neptune.selenium.WrappedWebDriver;
 import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
-import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 import ru.tinkoff.qa.neptune.selenium.test.capability.suppliers.ChromeSettingsSupplierHeadless;
 
 import java.util.Map;
@@ -20,7 +19,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDriverProper
 import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers.CHROME_DRIVER;
 import static ru.tinkoff.qa.neptune.selenium.properties.WebDriverCredentialsProperty.WEB_DRIVER_CREDENTIALS_PROPERTY;
 
-public class AuthenticationTest extends BaseWebDriverTest {
+public class AuthenticationTest {
 
     private final Map<String, String> PROPERTIES_TO_SET_BEFORE =
             ofEntries(entry(SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY.getName(), CHROME_DRIVER.name()),
@@ -68,13 +67,13 @@ public class AuthenticationTest extends BaseWebDriverTest {
             expectedExceptions = IllegalArgumentException.class,
             expectedExceptionsMessageRegExp = "Object of type class ru.tinkoff.qa.neptune.selenium.test.webdriver.starting.TestBrowserCredentials doesn't support credentials of type java.lang.Boolean")
     public void test3() {
-        WEB_DRIVER_CREDENTIALS_PROPERTY.accept("ru.tinkoff.qa.neptune.selenium.test.webdriver.starting.CredSupplier");
+        WEB_DRIVER_CREDENTIALS_PROPERTY.accept(TestBrowserCredentials.class);
         changeBrowserLogin(true);
     }
 
     @Test(dependsOnGroups = "NO CREDENTIALS")
     public void test4() {
-        WEB_DRIVER_CREDENTIALS_PROPERTY.accept("ru.tinkoff.qa.neptune.selenium.test.webdriver.starting.CredSupplier");
+        WEB_DRIVER_CREDENTIALS_PROPERTY.accept(TestBrowserCredentials.class);
         changeBrowserLogin("ABC");
         getDriver();
         wrappedWebDriver.getWrappedDriver();
@@ -84,7 +83,7 @@ public class AuthenticationTest extends BaseWebDriverTest {
 
     @Test(dependsOnGroups = "NO CREDENTIALS", dependsOnMethods = "test4")
     public void test5() {
-        WEB_DRIVER_CREDENTIALS_PROPERTY.accept("ru.tinkoff.qa.neptune.selenium.test.webdriver.starting.CredSupplier");
+        WEB_DRIVER_CREDENTIALS_PROPERTY.accept(TestBrowserCredentials.class);
         changeBrowserLogin("ABC");
         getDriver();
         wrappedWebDriver.getWrappedDriver();
@@ -98,7 +97,7 @@ public class AuthenticationTest extends BaseWebDriverTest {
 
     @Test(dependsOnGroups = "NO CREDENTIALS", dependsOnMethods = "test5")
     public void test6() {
-        WEB_DRIVER_CREDENTIALS_PROPERTY.accept("ru.tinkoff.qa.neptune.selenium.test.webdriver.starting.CredSupplier");
+        WEB_DRIVER_CREDENTIALS_PROPERTY.accept(TestBrowserCredentials.class);
         changeBrowserLogin("ABC");
         getDriver();
         wrappedWebDriver.getWrappedDriver();
@@ -113,7 +112,7 @@ public class AuthenticationTest extends BaseWebDriverTest {
 
     @Test(dependsOnGroups = "NO CREDENTIALS", dependsOnMethods = "test5")
     public void test7() {
-        WEB_DRIVER_CREDENTIALS_PROPERTY.accept("ru.tinkoff.qa.neptune.selenium.test.webdriver.starting.CredSupplier");
+        WEB_DRIVER_CREDENTIALS_PROPERTY.accept(TestBrowserCredentials.class);
         changeBrowserLogin("ABC");
         getDriver();
         wrappedWebDriver.getWrappedDriver();

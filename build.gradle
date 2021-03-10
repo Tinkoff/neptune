@@ -1,5 +1,5 @@
 ext {
-    globalVersion = '0.13.17-ALPHA'
+    globalVersion = '0.15.2-ALPHA'
 }
 
 subprojects {
@@ -28,8 +28,8 @@ subprojects {
         testNGVersion = '7.3.0'
         hamcrestVersion = '2.2'
         seleniumVersion = '3.141.59'
-        allureVersion = '2.13.7'
-        jacksonVersion = '2.12.0'
+        allureVersion = '2.13.8'
+        jacksonVersion = '2.12.1'
         mavenDeployLogin = hasProperty('REPO_USER_NAME') ? REPO_USER_NAME : System.getenv('REPO_USER_NAME')
         mavenDeployPassword = hasProperty('REPO_USER_PASSWORD') ? REPO_USER_PASSWORD : System.getenv('REPO_USER_PASSWORD')
         globalVersion = version
@@ -37,7 +37,7 @@ subprojects {
 
     dependencies {
         compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
-        compile group: 'com.google.guava', name: 'guava', version: '30.0-jre'
+        compile group: 'com.google.guava', name: 'guava', version: '30.1-jre'
         testCompile group: 'org.testng', name: 'testng', version: testNGVersion
         compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
         compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
@@ -46,7 +46,7 @@ subprojects {
         compile group: 'commons-validator', name: 'commons-validator', version: '1.7'
         compile group: 'commons-io', name: 'commons-io', version: '2.8.0'
         compile group: 'com.google.code.gson', name: 'gson', version: '2.8.6'
-        compile group: 'io.github.classgraph', name: 'classgraph', version: '4.8.92'
+        compile group: 'io.github.classgraph', name: 'classgraph', version: '4.8.98'
         compile group: 'org.hamcrest', name: 'hamcrest', version: hamcrestVersion
     }
 
@@ -68,7 +68,7 @@ task aggregatedJavadocs(type: Javadoc, description: 'Generate javadocs from all 
     options.addStringOption 'Xdoclint:none', '-quiet'
     destinationDir  = file("${buildDir}/../../neptune.documentation/javadocs/")
     options.memberLevel = JavadocMemberLevel.PROTECTED
-    options.bottom = "Copyright &copy; 2020 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
+    options.bottom = "Copyright &copy; 2021 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
 
     subprojects.each { proj ->
         proj.tasks.withType(Javadoc).each { javadocTask ->

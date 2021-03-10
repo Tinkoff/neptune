@@ -2,8 +2,9 @@
 
 [Подробнее о механизме настроек](./../../../core.api/doc/rus/SETTINGS.MD).
 
-Следующие настройки могут быть включены в `neptune.global.properties` или в `neptune.properties`, или использованы в качестве свойств\переменных окружения в той среде,
-в которой запускаются тесты:
+Описанный ниже набор настроек/свойств дополняет [базовый набор настроек/свойств](./../../../core.api/doc/rus/SETTINGS.MD#Основной-набор-настроек/свойств),
+которые могут быть включены в `neptune.global.properties` или в `neptune.properties`, или использованы в качестве
+свойств/переменных окружения в той среде, в которой запускаются тесты:
 
 ## DEFAULT_HTTP_AUTHENTICATOR
 <details>
@@ -45,7 +46,7 @@ public class SomeClass {
     
     public void someVoid() {
         //пример доступа до значения свойства
-        Authenticator authenticator = DEFAULT_HTTP_AUTHENTICATOR_PROPERTY.get().get();
+        Authenticator authenticator = DEFAULT_HTTP_AUTHENTICATOR_PROPERTY.get();
     }
 }
 ```
@@ -94,7 +95,7 @@ public class SomeClass {
     
     public void someVoid() {
         //пример доступа до значения свойства
-        CookieManager cookieManager = DEFAULT_HTTP_COOKIE_MANAGER_PROPERTY.get().get();
+        CookieManager cookieManager = DEFAULT_HTTP_COOKIE_MANAGER_PROPERTY.get();
     }
 }
 ```
@@ -146,7 +147,7 @@ public class SomeClass {
     
     public void someVoid() {
         //пример доступа до значения свойства
-        Executor executor = DEFAULT_HTTP_EXECUTOR_PROPERTY.get().get();
+        Executor executor = DEFAULT_HTTP_EXECUTOR_PROPERTY.get();
     }
 }
 ```
@@ -257,7 +258,7 @@ public class SomeClass {
     
     public void someVoid() {
         //пример доступа до значения свойства
-        ProxySelector selector = DEFAULT_HTTP_PROXY_SELECTOR_PROPERTY.get().get();
+        ProxySelector selector = DEFAULT_HTTP_PROXY_SELECTOR_PROPERTY.get();
     }
 }
 ```
@@ -269,7 +270,7 @@ public class SomeClass {
 <details>
   <summary>Нажми, чтобы прочесть</summary>
 
-Настройка политику перенаправления http-запросов по умолчанию. Доступные значения - `NEVER`, `ALWAYS` и `NORMAL` - объекты перечисления `java.net.http.HttpClient.Redirect`.
+Настройка политики перенаправления http-запросов по умолчанию. Доступные значения - `NEVER`, `ALWAYS` и `NORMAL` - объекты перечисления `java.net.http.HttpClient.Redirect`.
 
 
 Пример настройки:
@@ -337,7 +338,7 @@ public class SomeClass {
     
     public void someVoid() {
         //пример доступа до значения свойства
-        SSLContext sslContext = DEFAULT_HTTP_SSL_CONTEXT_PROPERTY.get().get();
+        SSLContext sslContext = DEFAULT_HTTP_SSL_CONTEXT_PROPERTY.get();
     }
 }
 ```
@@ -388,7 +389,7 @@ public class SomeClass {
     
     public void someVoid() {
         //пример доступа до значения свойства
-        SSLParameters sslParameters = DEFAULT_HTTP_SSL_PARAMETERS_PROPERTY.get().get();
+        SSLParameters sslParameters = DEFAULT_HTTP_SSL_PARAMETERS_PROPERTY.get();
     }
 }
 ```
@@ -396,7 +397,7 @@ public class SomeClass {
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
 </details>
 
-## Время подключения http-клиента к сервису по умолчанию
+## Время подключения http клиента к сервису по умолчанию
 <details>
   <summary>Нажми, чтобы прочесть</summary>
 
@@ -429,14 +430,14 @@ public class SomeClass {
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-возврата-величины-продолжительности)
 </details>
 
-## Сериализация и де-сериализация тел http запросов и ответов
+## Сериализация и десериализация тел http запросов и ответов
 
-### JSON. DEFAULT_JSON_MAPPER
+### JSON DEFAULT_JSON_MAPPER
 <details>
   <summary>Нажми, чтобы прочесть</summary>
 
 Настройка предоставляет объект `com.fasterxml.jackson.databind.ObjectMapper`, подготовленный нужным образом. Этот объект будет 
-использован по умолчанию для де-сериализации JSON-тел ответов сервисов на http-запросы и сериализации тел http-запросов в JSON.
+использован по умолчанию для десериализации JSON-тел ответов сервисов на http-запросы и сериализации тел http-запросов в JSON.
 
 Пример настройки:
 
@@ -483,12 +484,12 @@ public class SomeClass {
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
 </details>
 
-### XML. DEFAULT_XML_MAPPER
+### XML DEFAULT_XML_MAPPER
 <details>
   <summary>Нажми, чтобы прочесть</summary>
 
 Настройка предоставляет объект `com.fasterxml.jackson.dataformat.xml.XmlMapper`, подготовленный нужным образом. Этот объект будет
-использован по умолчанию для де-сериализации XML-тел ответов сервисов на http-запросы и сериализации тел http-запросов в XML.
+использован по умолчанию для десериализации XML-тел ответов сервисов на http-запросы и сериализации тел http-запросов в XML.
 
 Пример настройки:
 
@@ -539,7 +540,7 @@ public class SomeClass {
 <details>
     <summary>Нажми, чтобы прочесть</summary>
 
-Настройка указывает URL сервисов по умолчанию. Это корневой адрес приложения/приложений, обычно в формате `<схема\протокол>`://`<хост>`:<`порт если есть`>.
+Настройка указывает URL сервисов по умолчанию. Это корневой адрес приложения/приложений, обычно в формате `схема или протокол`://`хост:порт если есть/фрагмент/пути/если/надо`.
 
 Пример настройки:
 

@@ -1,25 +1,25 @@
 package ru.tinkoff.qa.neptune.selenium.test.hooks;
 
-import ru.tinkoff.qa.neptune.selenium.hooks.DefaultBrowserPage;
-import ru.tinkoff.qa.neptune.selenium.hooks.ForceNavigation;
-import ru.tinkoff.qa.neptune.selenium.hooks.PreventNavigationToDefaultURL;
+import ru.tinkoff.qa.neptune.selenium.content.management.Navigate;
+import ru.tinkoff.qa.neptune.selenium.content.management.SwitchToFrame;
+import ru.tinkoff.qa.neptune.selenium.content.management.SwitchToWindow;
+import ru.tinkoff.qa.neptune.selenium.content.management.UseDefaultBrowserContent;
 
-import static ru.tinkoff.qa.neptune.selenium.hooks.DefaultNavigationStrategies.ON_EVERY_METHOD;
+import static ru.tinkoff.qa.neptune.selenium.content.management.BrowserContentUsage.FOR_EVERY_METHOD;
 
-@DefaultBrowserPage(at = "https://www.google.com", when = ON_EVERY_METHOD)
+@Navigate(to = "https://www.google.com")
+@UseDefaultBrowserContent(howOften = FOR_EVERY_METHOD,
+        addWindowParams = true,
+        addNavigationParams = true,
+        addFrameParams = true)
+@SwitchToFrame(index = 1)
+@SwitchToWindow(index = 1)
 public class ClassWithNavigationOnTest2 {
 
     public void test1() {
-
     }
 
-    @PreventNavigationToDefaultURL
-    public void test2() {
-
-    }
-
-    @ForceNavigation(to = "https://github.com")
+    @Navigate(to = "https://github.com")
     public void test3() {
-
     }
 }

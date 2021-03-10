@@ -11,11 +11,10 @@ import java.util.function.Supplier;
         "supply instances of javax.net.ssl.SSLParameters"},
         section = "Http client. General")
 @PropertyName("DEFAULT_HTTP_SSL_PARAMETERS")
-public final class DefaultHttpSslParametersProperty implements ObjectPropertySupplier<DefaultHttpSslParametersProperty.SslParametersSupplier> {
+public final class DefaultHttpSslParametersProperty implements ObjectPropertySupplier<SSLParameters, DefaultHttpSslParametersProperty.SslParametersSupplier> {
     /**
-     * This instance reads value of the property {@code 'DEFAULT_HTTP_SSL_PARAMETERS'} and returns a {@link Supplier}
-     * of {@link SSLParameters}. Invocation of the {@link Supplier#get()} returns actual value of the property.
-     * The value provided must be fully qualified name of a {@link SslParametersSupplier} subclass.
+     * This instance reads value of the property {@code 'DEFAULT_HTTP_SSL_PARAMETERS'}
+     * and returns a {@link SSLParameters}.
      */
     public static final DefaultHttpSslParametersProperty DEFAULT_HTTP_SSL_PARAMETERS_PROPERTY =
             new DefaultHttpSslParametersProperty();

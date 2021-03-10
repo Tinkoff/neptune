@@ -31,15 +31,15 @@ public class GetValueTest extends BaseWebDriverTest {
 
         assertThat(seleniumSteps
                         .edit(textField().criteria(attr(ATTR8, VALUE4)), INPUT_TEXT1)
-                        .edit(textField(INPUT_LABEL_TEXT8, INPUT_LABEL_TEXT12), INPUT_TEXT2)
+                        .edit(textField(INPUT_LABEL_TEXT8), INPUT_TEXT2)
                         .valueOf(textField().criteria(attr(ATTR8, VALUE4))),
                 is(INPUT_TEXT1));
 
-        assertThat(seleniumSteps.valueOf(textField(INPUT_LABEL_TEXT8, INPUT_LABEL_TEXT12)),
+        assertThat(seleniumSteps.valueOf(textField(INPUT_LABEL_TEXT12)),
                 is(INPUT_TEXT2));
 
         TextField nestedTextField = seleniumSteps.find(textField(INPUT_LABEL_TEXT5)
-                .foundFrom(table(TABLE_LABEL_TEXT5, TABLE_LABEL_TEXT9)));
+                .foundFrom(table(TABLE_LABEL_TEXT5)));
 
         assertThat(seleniumSteps.edit(nestedTextField, INPUT_TEXT7)
                         .valueOf(nestedTextField),
@@ -59,11 +59,11 @@ public class GetValueTest extends BaseWebDriverTest {
                         .valueOf(flag(RADIOBUTTON_LABEL_TEXT4)),
                 is(true));
 
-        seleniumSteps.edit(flag(CHECKBOX_LABEL_TEXT8, CHECKBOX_LABEL_TEXT12), true)
+        seleniumSteps.edit(flag(CHECKBOX_LABEL_TEXT12), true)
                 .edit(flag(RADIOBUTTON_LABEL_TEXT2), true)
                 .edit(flag().criteria(enabled()), true);
 
-        assertThat(seleniumSteps.valueOf(flag(CHECKBOX_LABEL_TEXT8, CHECKBOX_LABEL_TEXT12)),
+        assertThat(seleniumSteps.valueOf(flag(CHECKBOX_LABEL_TEXT8)),
                 is(true));
 
         assertThat(seleniumSteps.valueOf(flag(RADIOBUTTON_LABEL_TEXT2)),
@@ -73,8 +73,8 @@ public class GetValueTest extends BaseWebDriverTest {
                         .criteria(enabled())),
                 is(true));
 
-        Flag nestedFlag = seleniumSteps.find(flag(CHECKBOX_LABEL_TEXT5, CHECKBOX_LABEL_TEXT9)
-                .foundFrom(table(TABLE_LABEL_TEXT5, TABLE_LABEL_TEXT9)));
+        Flag nestedFlag = seleniumSteps.find(flag(CHECKBOX_LABEL_TEXT5)
+                .foundFrom(table(TABLE_LABEL_TEXT9)));
 
         assertThat(seleniumSteps.edit(nestedFlag, true)
                         .valueOf(nestedFlag),
@@ -94,11 +94,11 @@ public class GetValueTest extends BaseWebDriverTest {
                         .valueOf(checkbox(CHECKBOX_LABEL_TEXT4)),
                 is(true));
 
-        seleniumSteps.edit(checkbox(CHECKBOX_LABEL_TEXT7, CHECKBOX_LABEL_TEXT11), true)
+        seleniumSteps.edit(checkbox(CHECKBOX_LABEL_TEXT7), true)
                 .edit(checkbox(CHECKBOX_LABEL_TEXT3), true)
                 .edit(checkbox().criteria(NOT(enabled())), true);
 
-        assertThat(seleniumSteps.valueOf(checkbox(CHECKBOX_LABEL_TEXT7, CHECKBOX_LABEL_TEXT11)),
+        assertThat(seleniumSteps.valueOf(checkbox(CHECKBOX_LABEL_TEXT11)),
                 is(true));
 
         assertThat(seleniumSteps.valueOf(checkbox(CHECKBOX_LABEL_TEXT3)),
@@ -107,7 +107,7 @@ public class GetValueTest extends BaseWebDriverTest {
         assertThat(seleniumSteps.valueOf(flag().criteria(NOT(enabled()))),
                 is(true));
 
-        Flag.CheckBox checkbox = seleniumSteps.find(checkbox(CHECKBOX_LABEL_TEXT6, CHECKBOX_LABEL_TEXT10));
+        Flag.CheckBox checkbox = seleniumSteps.find(checkbox(CHECKBOX_LABEL_TEXT10));
 
         assertThat(seleniumSteps.edit(checkbox, true)
                         .valueOf(checkbox),
@@ -127,11 +127,11 @@ public class GetValueTest extends BaseWebDriverTest {
                         .valueOf(radioButton(RADIOBUTTON_LABEL_TEXT1)),
                 is(true));
 
-        seleniumSteps.edit(radioButton(RADIOBUTTON_LABEL_TEXT7, RADIOBUTTON_LABEL_TEXT11), true)
+        seleniumSteps.edit(radioButton(RADIOBUTTON_LABEL_TEXT7), true)
                 .edit(radioButton(RADIOBUTTON_LABEL_TEXT3), true)
                 .edit(radioButton().criteria(visible()), true);
 
-        assertThat(seleniumSteps.valueOf(radioButton(RADIOBUTTON_LABEL_TEXT7, RADIOBUTTON_LABEL_TEXT11)),
+        assertThat(seleniumSteps.valueOf(radioButton(RADIOBUTTON_LABEL_TEXT11)),
                 is(true));
 
         assertThat(seleniumSteps.valueOf(radioButton(RADIOBUTTON_LABEL_TEXT3)),
@@ -140,7 +140,7 @@ public class GetValueTest extends BaseWebDriverTest {
         assertThat(seleniumSteps.valueOf(radioButton().criteria(visible())),
                 is(true));
 
-        Flag.RadioButton radioButton = seleniumSteps.find(radioButton(RADIOBUTTON_LABEL_TEXT6, RADIOBUTTON_LABEL_TEXT10));
+        Flag.RadioButton radioButton = seleniumSteps.find(radioButton(RADIOBUTTON_LABEL_TEXT6));
 
         assertThat(seleniumSteps.edit(radioButton, true).valueOf(radioButton),
                 is(true));
@@ -149,35 +149,19 @@ public class GetValueTest extends BaseWebDriverTest {
     @Test
     public void valueOfSelectTest() {
         assertThat(seleniumSteps.valueOf(select(SELECT_LABEL_TEXT2)),
-                emptyIterable());
+                emptyOrNullString());
 
         assertThat(seleniumSteps.edit(select(SELECT_LABEL_TEXT2), OPTION_TEXT18)
                         .edit(select(SELECT_LABEL_TEXT2), OPTION_TEXT16)
                         .valueOf(select(SELECT_LABEL_TEXT2)),
-                contains(OPTION_TEXT16));
+                is(OPTION_TEXT16));
 
-        seleniumSteps.edit(select(SELECT_LABEL_TEXT1, SELECT_LABEL_TEXT9), OPTION_TEXT27)
-                .edit(select(SELECT_LABEL_TEXT1, SELECT_LABEL_TEXT9), OPTION_TEXT25)
-                .edit(select(SELECT_LABEL_TEXT1, SELECT_LABEL_TEXT9), OPTION_TEXT26)
+        seleniumSteps.edit(select(SELECT_LABEL_TEXT9), OPTION_TEXT27)
+                .edit(select(SELECT_LABEL_TEXT1), OPTION_TEXT25)
+                .edit(select(SELECT_LABEL_TEXT9), OPTION_TEXT26)
                 .edit(select().criteria(attr(ATTR1, VALUE4)), OPTION_TEXT5)
-                .edit(select().criteria(nested(webElements(tagName(OPTION)).criteria(text(OPTION_TEXT14)))), OPTION_TEXT15)
-                .edit(select().criteria(nested(webElements(tagName(OPTION)).criteria(text(OPTION_TEXT14)))), OPTION_TEXT13);
-
-        assertThat(seleniumSteps.valueOf(select(SELECT_LABEL_TEXT1, SELECT_LABEL_TEXT9)),
-                contains(OPTION_TEXT25, OPTION_TEXT26, OPTION_TEXT27));
-
-        assertThat(seleniumSteps.valueOf(select().criteria(attr(ATTR1, VALUE4))),
-                contains(OPTION_TEXT5));
-
-        assertThat(seleniumSteps.valueOf(select().criteria(nested(webElements(tagName(OPTION))
-                        .criteria(text(OPTION_TEXT14))))),
-                contains(OPTION_TEXT13));
-
-        Select select = seleniumSteps.find(select(SELECT_LABEL_TEXT10));
-        assertThat(seleniumSteps.edit(select, OPTION_TEXT29)
-                        .edit(select, OPTION_TEXT28)
-                        .valueOf(select),
-                contains(OPTION_TEXT28, OPTION_TEXT29));
+                .edit(select().criteria(nested(webElements(tagName(OPTION), OPTION_TEXT14))), OPTION_TEXT15)
+                .edit(select().criteria(nested(webElements(tagName(OPTION), OPTION_TEXT14))), OPTION_TEXT13);
     }
 
     @Test
@@ -208,12 +192,12 @@ public class GetValueTest extends BaseWebDriverTest {
 
         assertThat(seleniumSteps.valueOf(tableRow()
                         .criteria(nested(buttons()))
-                        .foundFrom(table(TABLE_LABEL_TEXT5, TABLE_LABEL_TEXT9))),
+                        .foundFrom(table(TABLE_LABEL_TEXT9))),
                 contains(CELL_TEXT73, CELL_TEXT74, CELL_TEXT75));
 
         TableRow row = seleniumSteps.find(tableRow()
                 .criteria(nested(textFields()))
-                .foundFrom(table(TABLE_LABEL_TEXT5, TABLE_LABEL_TEXT9)));
+                .foundFrom(table(TABLE_LABEL_TEXT5)));
 
         assertThat(seleniumSteps.valueOf(row),
                 contains(CELL_TEXT76, CELL_TEXT77, CELL_TEXT78));
@@ -255,7 +239,7 @@ public class GetValueTest extends BaseWebDriverTest {
 
         assertThat(seleniumSteps.valueOf(tableFooter()
                         .timeOut(FIVE_SECONDS)
-                        .foundFrom(table().criteria(nested(textFields(INPUT_LABEL_TEXT6, INPUT_LABEL_TEXT10))))),
+                        .foundFrom(table().criteria(nested(textFields(INPUT_LABEL_TEXT10))))),
                 contains(FOOTER_TEXT28, FOOTER_TEXT29, FOOTER_TEXT30));
 
         TableFooter footer = seleniumSteps.find(tableFooter()
@@ -274,13 +258,13 @@ public class GetValueTest extends BaseWebDriverTest {
                 is(CELL_TEXT37));
 
         assertThat(seleniumSteps.valueOf(tableCell()
-                        .criteria(nested(textFields(INPUT_LABEL_TEXT6, INPUT_LABEL_TEXT10)))
+                        .criteria(nested(textFields(INPUT_LABEL_TEXT6)))
                         .foundFrom(table(TABLE_LABEL_TEXT6))),
                 is(CELL_TEXT84));
 
         TableCell cell = seleniumSteps
                 .find(tableCell()
-                        .criteria(nested(checkBoxes(CHECKBOX_LABEL_TEXT6, CHECKBOX_LABEL_TEXT10)))
+                        .criteria(nested(checkBoxes(CHECKBOX_LABEL_TEXT10)))
                         .foundFrom(table(TABLE_LABEL_TEXT6)));
         assertThat(seleniumSteps.valueOf(cell),
                 is(CELL_TEXT87));

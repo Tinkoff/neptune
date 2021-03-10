@@ -4,6 +4,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.net.URI;
+import java.net.URL;
 
 import static java.lang.System.getProperties;
 import static java.net.http.HttpClient.Version.HTTP_2;
@@ -54,9 +55,9 @@ public class PropertyBindingTest {
     }
 
     @Test
-    public void test3() {
+    public void test3() throws Exception {
         try {
-            DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.accept("http://127.0.0.1:10");
+            DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.accept(new URL("http://127.0.0.1:10"));
 
             var request = createAPI(ServiceAPI5.class).post().build();
 

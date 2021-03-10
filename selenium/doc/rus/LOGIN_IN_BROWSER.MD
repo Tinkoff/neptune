@@ -1,22 +1,23 @@
 # Логин / Аутентификация в браузере 
 
-Значительная часть вэб-приложений так или иначе работает с базой пользователей. И очень часто есть необходимость выполнять вход в 
-приложение используя логин и пароль, код если аутентификация двух-факторная, или какую-либо другую информацию, по которой пользователь
-может быть проверен и допущен/не допущен к работе с системой. 
+Значительная часть вэб-приложений так или иначе работает с базой пользователей. И очень часто есть необходимость
+выполнять вход в приложение используя логин и пароль, код если аутентификация двух-факторная, или какую-либо другую
+информацию, по которой пользователь может быть проверен и допущен/не допущен к работе с приложением.
 
-Как правило, аутентификация реализована на сервере, а интерфейс лишь использует результаты его работы. 
+Как правило, аутентификация реализована на сервере, а интерфейс лишь использует результаты его работы.
 
-Работу сервера можно заменить заглушками. Но что если нам необходимо написать интеграционные/e2e/smoke тесты для приложения, требующего 
-аутентификацию? Пусть даже этих тестов немного.
+Что если нам необходимо написать интеграционные/e2e/smoke тесты для приложения, требующего аутентификацию? Пусть даже
+этих тестов немного.
 
 ## Задача
 
-Написать набор интеграционных тестов для связки сервера и веб-интерфейса приложения. Приложение требует аутентификации. Каждый тестовый
-класс использует своего заранее сгенерированного или имеющегося в базе пользователя. В некоторых методах-фикстурах или тестовых методах 
-есть необходимость заходить под какими-то другим пользователем.
+Написать набор интеграционных тестов для связки сервера и веб-интерфейса приложения. Приложение требует аутентификации.
+Каждый тестовый класс использует своего заранее сгенерированного или имеющегося в базе пользователя, тестируемое
+приложение может быть подключено к сервису аутентификации/вместо сервиса аутентификации могут использоваться моки. В
+некоторых методах-фикстурах или тестовых методах есть необходимость заходить под какими-то другим пользователем.
 
-Предположим, что выбран вариант решения в лоб - переходить на форму ввода логина и пароля, вводить туда данные и отправлять их нажатием 
-на кнопку.
+Предположим, что выбран вариант решения в лоб - переходить на форму ввода логина и пароля, вводить туда данные и
+отправлять их нажатием на кнопку.
 
 ## Один из вариантов решения
 
@@ -51,7 +52,7 @@ import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.
 
 public abstract class BaseIntegrationFrontEndTest {
     
-    private Credentials credentials; //логин и пароль для тестов некоего класса
+    private final Credentials credentials; //логин и пароль для тестов некоего класса
     
     public BaseIntegrationFrontEndTest(Credentials credentials) {
         this.credentials = credentials;
@@ -77,18 +78,18 @@ import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.
 
 
 public abstract class BaseIntegrationFrontEndTest {
-    
-    private Credentials credentials; //логин и пароль для тестов некоего класса
-        
+
+    private final Credentials credentials; //логин и пароль для тестов некоего класса
+
     public BaseIntegrationFrontEndTest(Credentials credentials) {
         this.credentials = credentials;
     }
-    
+
     @BeforeClass //в самом начале теста выполняем вход через браузер
     public void loginInBrowser() {
         loginInBrowser(this.credentials);
     }
-    
+
     //предположим, что хотим повторно использовать метод
     //если нужен другой логин в тесте или подготовительном методе 
     protected void loginInBrowser(Credentials credentials) {
@@ -145,6 +146,8 @@ public class SomeTest extends BaseIntegrationFrontEndTest {
 Напишем класс
 
 ```java
+package org.my.pack;
+
 import java.util.Objects;
 
 import static org.openqa.selenium.By.name;
@@ -197,31 +200,12 @@ public class LoginAndPasswordCredentials extends BrowserCredentials<Credentials>
     }
 }
 ```
-Затем добавим еще класс
-
-```java
-package org.my.project;
-
-import java.util.function.Supplier;
-
-public class LoginAndPasswordCredentialsSupplier implements Supplier<LoginAndPasswordCredentials> {
-
-    @Override
-    public LoginAndPasswordCredentials get() {
-        var creds = new LoginAndPasswordCredentials();
-        //наш класс LoginAndPasswordCredentials может содержать дополнительную логику
-        //в зависимости от окружения, она может быть применена
-        return creds;
-    }
-}
-
-```
 
 Заполняем свойство [WEB_DRIVER_CREDENTIALS](./SETTINGS.MD#WEB_DRIVER_CREDENTIALS). Подробнее о свойствах, которые возвращают объекты 
 см. [статью](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
 
 ```properties
-WEB_DRIVER_CREDENTIALS=org.my.project.LoginAndPasswordCredentialsSupplier
+WEB_DRIVER_CREDENTIALS=org.my.pack.LoginAndPasswordCredentials
 ```
 
 И теперь достаточно
@@ -243,7 +227,7 @@ public class SomeTest {
         //по относительному пути /my/desired/path вход в приложение
         //под пользователем JOHN_DOE будет выполнен.
         //После логина, произойдет переход по ссылке 
-        inBrowser().navigateTo("/my/desired/path")
+        inBrowser().navigateTo("/my/desired/path");
         //дальнейшая тестовая логика
     } 
    
@@ -275,7 +259,7 @@ public class SomeTest {
         //по относительному пути /my/desired/path вход в приложение
         //под пользователем JOHN_DOE будет выполнен.
         //После логина, произойдет переход по ссылке 
-        inBrowser().navigateTo("/my/desired/path")
+        inBrowser().navigateTo("/my/desired/path");
         //дальнейшая тестовая логика
     } 
    
@@ -284,5 +268,4 @@ public class SomeTest {
 
 ## Можно избавиться от явного вызова `changeBrowserLogin`
 
-Для этого надо реализовать [хук](./../../../core.api/doc/rus/HOOKS.MD). И не забыть выставить его приоритет
-от 1 до 9, т.к. [уже реализованный хук с навигацией по страницам](./NAVIGATION.MD#Хук) имеет приоритет `10`. 
+Для этого надо реализовать [хук](./../../../core.api/doc/rus/HOOKS.MD).

@@ -1,9 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.api.widget;
 
-import com.google.common.annotations.Beta;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 
-@Beta
 public interface ScrollsIntoView {
 
     /**

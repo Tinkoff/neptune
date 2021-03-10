@@ -1,23 +1,14 @@
 package ru.tinkoff.qa.neptune.selenium.test.hooks;
 
-import ru.tinkoff.qa.neptune.selenium.hooks.DefaultBrowserPage;
-import ru.tinkoff.qa.neptune.selenium.hooks.ForceNavigation;
-import ru.tinkoff.qa.neptune.selenium.hooks.PreventNavigationToDefaultURL;
+import ru.tinkoff.qa.neptune.selenium.content.management.Navigate;
 
-@DefaultBrowserPage(at = "https://www.google.com")
+@Navigate(to = "https://www.google.com")
 public class ClassWithNavigationOnTest1 {
 
     public void test1() {
-
     }
 
-    @PreventNavigationToDefaultURL
+    @Navigate(to = "https://github.com")
     public void test2() {
-
-    }
-
-    @ForceNavigation(to = "https://github.com")
-    public void test3() {
-
     }
 }

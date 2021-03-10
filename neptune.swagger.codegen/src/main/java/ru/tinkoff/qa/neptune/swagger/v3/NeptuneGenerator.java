@@ -579,7 +579,6 @@ public class NeptuneGenerator extends AbstractJavaCodegen {
         importMapping.put("LocalTime", "java.time.*");
 
         prepareNeptuneAnnotations();
-        prepareJacksonAnnotations();
 
         typeMapping.clear();
         typeMapping.put("array", "List");
@@ -630,44 +629,6 @@ public class NeptuneGenerator extends AbstractJavaCodegen {
         importMapping.put("ContentTransferEncoding", "ru.tinkoff.qa.neptune.http.api.request.body.multipart.ContentTransferEncoding");
         importMapping.put("DefineContentType", "ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.multipart.DefineContentType");
         importMapping.put("Body", "ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.body.Body");
-    }
-
-    private void prepareJacksonAnnotations() {
-        importMapping.put("JacksonAnnotationsInside", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonAlias", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JacksonInject", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonAnyGetter", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JacksonAnnotation", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonAnySetter", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonBackReference", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonAutoDetect", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonClassDescription", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonCreator", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonEnumDefaultValue", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonFilter", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonFormat", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonGetter", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonIdentityInfo", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonIdentityReference", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonIgnore", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonIgnoreProperties", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonIgnoreType", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonInclude", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonManagedReference", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonMerge", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonProperty", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonPropertyDescription", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonPropertyOrder", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonRawValue", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonRootName", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonSetter", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonSubTypes", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonTypeId", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonTypeInfo", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonTypeName", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonUnwrapped", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonValue", "com.fasterxml.jackson.annotation.*");
-        importMapping.put("JsonView", "com.fasterxml.jackson.annotation.*");
     }
 
     @Override

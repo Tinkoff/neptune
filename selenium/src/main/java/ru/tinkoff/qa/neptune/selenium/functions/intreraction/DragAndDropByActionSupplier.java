@@ -27,7 +27,7 @@ final class DragAndDropByActionSupplier extends InteractiveAction {
     }
 
     @Override
-    protected void performActionOn(Actions value) {
-        value.moveToElement(getElement(e), x, y).perform();
+    void addAction(Actions value) {
+        value.dragAndDropBy(getElement(e), x, y);
     }
 }

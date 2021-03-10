@@ -7,11 +7,15 @@ import org.openqa.selenium.interactions.Actions;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 
-import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
+import java.time.Duration;
+
+import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 
 /**
  * This class is designed to build an interactive action performed on a page.
@@ -21,6 +25,16 @@ import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentConte
 public abstract class InteractiveAction extends SequentialActionSupplier<SeleniumStepContext, Actions, InteractiveAction> {
 
     private WebDriver driver;
+
+    @StepParameter(doNotReportNullValues = true,
+            value = "Pause before",
+            makeReadableBy = PauseDurationParameterValueGetter.class)
+    private Duration pauseBefore;
+
+    @StepParameter(doNotReportNullValues = true,
+            value = "Pause after",
+            makeReadableBy = PauseDurationParameterValueGetter.class)
+    private Duration pauseAfter;
 
     InteractiveAction(String description) {
         super(description);
@@ -613,4 +627,36 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
             return ((Widget) sc).getWrappedElement();
         }
     }
+
+    /**
+     * Sets duration of a pause before the performing of an action
+     *
+     * @param pauseBefore duration of a pause before the performing of an action
+     * @return self-reference
+     */
+    public InteractiveAction pauseBefore(Duration pauseBefore) {
+        this.pauseBefore = pauseBefore;
+        return this;
+    }
+
+    /**
+     * Sets duration of a pause after the performing of an action
+     *
+     * @param pauseAfter duration of a pause after the performing of an action
+     * @return self-reference
+     */
+    public InteractiveAction pauseAfter(Duration pauseAfter) {
+        this.pauseAfter = pauseAfter;
+        return this;
+    }
+
+    @Override
+    protected void performActionOn(Actions value) {
+        ofNullable(pauseBefore).ifPresent(value::pause);
+        addAction(value);
+        ofNullable(pauseAfter).ifPresent(value::pause);
+        value.perform();
+    }
+
+    abstract void addAction(Actions value);
 }

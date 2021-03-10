@@ -36,15 +36,24 @@ public class BrowserProxyStepNegativeTest {
     @BeforeMethod
     public void setUp() {
         PROPERTIES_TO_SET_BEFORE.forEach(System::setProperty);
-
         seleniumSteps = new SeleniumStepContext((SupportedWebDrivers)
                 new SeleniumParameterProvider().provide().getParameterValues()[0]);
     }
 
-    @Test
-    public void harCaptureWhenProxyIsDisabledTest() {
+    @Test(description = "When WebDriver is opened")
+    public void test1() {
         seleniumSteps.getWrappedDriver();
+        assertThat("List of captured requests is empty", seleniumSteps.get(proxiedRequests()), hasSize(0));
+    }
 
+    @Test(description = "When WebDriver is not opened")
+    public void test2() {
+        assertThat("List of captured requests is empty", seleniumSteps.get(proxiedRequests()), hasSize(0));
+    }
+
+    @Test(description = "When it is needed to use proxy, but WebDriver is not opened")
+    public void test3() {
+        USE_BROWSER_PROXY.accept(true);
         assertThat("List of captured requests is empty", seleniumSteps.get(proxiedRequests()), hasSize(0));
     }
 

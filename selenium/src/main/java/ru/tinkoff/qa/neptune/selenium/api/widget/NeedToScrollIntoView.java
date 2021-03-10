@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.selenium.api.widget;
 
-import com.google.common.annotations.Beta;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 
 import java.lang.annotation.Retention;
@@ -17,7 +16,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * <p>- the subclass of the {@link Widget} implements {@link ScrollsIntoView}</p>
  * <p>- an instance of the {@link Widget} is received with {@link SearchSupplier}</p>
  */
-@Beta
 @Retention(RUNTIME) @Target({METHOD})
 public @interface NeedToScrollIntoView {
 }

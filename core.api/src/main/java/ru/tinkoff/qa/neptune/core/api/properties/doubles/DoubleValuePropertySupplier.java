@@ -5,7 +5,7 @@ import ru.tinkoff.qa.neptune.core.api.properties.PropertySupplier;
 /**
  * This interface is designed to read properties and return double values.
  */
-public interface DoubleValuePropertySupplier extends PropertySupplier<Double> {
+public interface DoubleValuePropertySupplier extends PropertySupplier<Double, Double> {
 
     @Override
     default Double parse(String value) {

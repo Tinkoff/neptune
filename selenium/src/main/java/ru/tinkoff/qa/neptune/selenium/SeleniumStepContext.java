@@ -9,14 +9,12 @@ import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
-import ru.tinkoff.qa.neptune.selenium.api.widget.Clickable;
-import ru.tinkoff.qa.neptune.selenium.api.widget.Editable;
-import ru.tinkoff.qa.neptune.selenium.api.widget.HasValue;
-import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
-import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.TextField;
+import ru.tinkoff.qa.neptune.selenium.api.widget.*;
 import ru.tinkoff.qa.neptune.selenium.functions.browser.proxy.BrowserProxyGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.cookies.AddCookiesActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.cookies.GetSeleniumCookieSupplier;
+import ru.tinkoff.qa.neptune.selenium.functions.expand.CollapseActionSupplier;
+import ru.tinkoff.qa.neptune.selenium.functions.expand.ExpandActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.intreraction.InteractiveAction;
 import ru.tinkoff.qa.neptune.selenium.functions.java.script.GetJavaScriptResultSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier;
@@ -29,10 +27,7 @@ import ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.GetFrameSup
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.parent.ParentFrameSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
-import ru.tinkoff.qa.neptune.selenium.functions.windows.CloseWindowActionSupplier;
-import ru.tinkoff.qa.neptune.selenium.functions.windows.GetWindowPositionSupplier;
-import ru.tinkoff.qa.neptune.selenium.functions.windows.GetWindowSizeSupplier;
-import ru.tinkoff.qa.neptune.selenium.functions.windows.GetWindowTitleSupplier;
+import ru.tinkoff.qa.neptune.selenium.functions.windows.*;
 import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
 
 import java.net.URL;
@@ -41,12 +36,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.time.Duration.ofMillis;
 import static java.util.Arrays.asList;
-import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
+import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 import static ru.tinkoff.qa.neptune.selenium.functions.click.ClickActionSupplier.on;
 import static ru.tinkoff.qa.neptune.selenium.functions.cookies.RemoveCookiesActionSupplier.deleteCookies;
 import static ru.tinkoff.qa.neptune.selenium.functions.edit.EditActionSupplier.valueOfThe;
@@ -88,10 +84,6 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     @Override
     public WebDriver getWrappedDriver() {
         return wrappedWebDriver.getWrappedDriver();
-    }
-
-    public BrowserUpProxy getProxy() {
-        return wrappedWebDriver.getProxy();
     }
 
     public <R extends SearchContext> R find(SearchSupplier<R> what) {
@@ -148,6 +140,56 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
         return this;
     }
 
+
+    /**
+     * Performs the expanding on an expandable widget
+     *
+     * @param toFind is description of a widget to be expanded
+     * @param <T>    is a type of a expandable {@link Widget}
+     * @return self-reference
+     */
+    public <T extends Widget & Expandable> SeleniumStepContext expand(SearchSupplier<T> toFind) {
+        ExpandActionSupplier.expand(toFind).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs the expanding on an expandable widget
+     *
+     * @param widget to be expanded
+     * @param <T>    is a type of a expandable {@link Widget}
+     * @return self-reference
+     */
+    public <T extends Widget & Expandable> SeleniumStepContext expand(T widget) {
+        ExpandActionSupplier.expand(widget).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs the collapsing on an expandable/collapsable widget
+     *
+     * @param toFind is description of a widget to be collapsed
+     * @param <T>    is a type of an expandable/collapsable {@link Widget}
+     * @return self-reference
+     */
+    public <T extends Widget & Expandable> SeleniumStepContext collapse(SearchSupplier<T> toFind) {
+        CollapseActionSupplier.collapse(toFind).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs the collapsing on an expandable/collapsable widget
+     *
+     * @param widget to be collapsed
+     * @param <T>    is a type of an expandable/collapsable {@link Widget}
+     * @return self-reference
+     */
+    public <T extends Widget & Expandable> SeleniumStepContext collapse(T widget) {
+        CollapseActionSupplier.collapse(widget).get().accept(this);
+        return this;
+    }
+
+
     /**
      * Performs the editing of an editable widget.
      *
@@ -163,14 +205,14 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     }
 
     /**
-     * Performs the editing of a text field.
+     * Performs the editing of an element by the using of a multiple value.
      *
-     * @param toFind is description of a text field
-     * @param value  is a sequence of strings/chars used to change value of text field
-     * @param <T>    is a type of text field
+     * @param toFind is description of a widget to be edited
+     * @param value  is a sequence of objects which are used to change value of a widget
+     * @param <T>    is a type of editable {@link Widget}
      * @return self-reference
      */
-    public <T extends TextField> SeleniumStepContext edit(SearchSupplier<T> toFind, CharSequence... value) {
+    public <R, T extends Editable<List<R>>> SeleniumStepContext edit(SearchSupplier<T> toFind, R... value) {
         checkNotNull(value);
         checkArgument(value.length > 0, "");
         valueOfThe(toFind, asList(value)).get().accept(this);
@@ -192,16 +234,16 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     }
 
     /**
-     * Performs the editing of a text field.
+     * Performs the editing of an element by the using of a multiple value.
      *
-     * @param textField is a text field
-     * @param value     is a sequence of strings/chars used to change value of text field
+     * @param t     is a widget to be edited
+     * @param value is a sequence of objects which are used to change value of a widget
      * @return self-reference
      */
-    public SeleniumStepContext edit(TextField textField, CharSequence... value) {
+    public <R, T extends Editable<List<R>>> SeleniumStepContext edit(T t, R... value) {
         checkNotNull(value);
         checkArgument(value.length > 0, "");
-        valueOfThe(textField, asList(value)).get().accept(this);
+        valueOfThe(t, asList(value)).get().accept(this);
         return this;
     }
 
@@ -231,10 +273,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      *
      * @return self-reference
      */
-    public SeleniumStepContext startOverProxyRecording() {
-        checkNotNull(wrappedWebDriver.getProxy(), "Browser proxy is not instantiated");
-        checkArgument(wrappedWebDriver.getProxy().isStarted(), "Browser proxy is not started");
-
+    public SeleniumStepContext resetProxyRecording() {
         wrappedWebDriver.getProxy().newHar();
         return this;
     }
@@ -1195,6 +1234,40 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
         return this;
     }
 
+
+    /**
+     * Performs the setting active browser window/tab full screen
+     *
+     * @return self-reference
+     */
+    public SeleniumStepContext fullScreen() {
+        FullScreenWindowSupplier.fullScreen().get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs the setting the browser window/tab full screen
+     *
+     * @param supplier is how to find the browser window/tab
+     * @return self-reference
+     */
+    public SeleniumStepContext fullScreen(GetWindowSupplier supplier) {
+        FullScreenWindowSupplier.fullScreen(supplier).get().accept(this);
+        return this;
+    }
+
+    /**
+     * Performs the setting the browser window/tab full screen
+     *
+     * @param window the browser window/tab
+     * @return self-reference
+     */
+    public SeleniumStepContext fullScreen(Window window) {
+        FullScreenWindowSupplier.fullScreen(window).get().accept(this);
+        return this;
+    }
+
+
     /**
      * Performs an accept-action. This action is performed on a browser alert.
      *
@@ -1437,5 +1510,33 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public Window get(GetWindowSupplier getWindow) {
         return getWindow.get().apply(this);
+    }
+
+    public static final class CurrentContentFunction implements Function<SeleniumStepContext, WebDriver> {
+
+        private CurrentContentFunction() {
+            super();
+        }
+
+        public static Function<SeleniumStepContext, WebDriver> currentContent() {
+            return new CurrentContentFunction();
+        }
+
+        @Override
+        public WebDriver apply(SeleniumStepContext seleniumSteps) {
+            return seleniumSteps.getWrappedDriver();
+        }
+    }
+
+    public static final class GetProxy implements Function<SeleniumStepContext, BrowserUpProxy> {
+
+        public static Function<SeleniumStepContext, BrowserUpProxy> getBrowserProxy() {
+            return new GetProxy();
+        }
+
+        @Override
+        public BrowserUpProxy apply(SeleniumStepContext seleniumSteps) {
+            return seleniumSteps.wrappedWebDriver.getProxy();
+        }
     }
 }

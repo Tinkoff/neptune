@@ -1,6 +1,6 @@
 dependencies {
-    compile group: 'io.swagger.codegen.v3', name: 'swagger-codegen', version: '3.0.23'
-    compile group: 'io.swagger.codegen.v3', name: 'swagger-codegen-generators', version: '1.0.23'
+    compile group: 'io.swagger.codegen.v3', name: 'swagger-codegen', version: '3.0.24'
+    compile group: 'io.swagger.codegen.v3', name: 'swagger-codegen-generators', version: '1.0.24'
 }
 
 task javadocJar(type: Jar) {
@@ -64,7 +64,7 @@ javadoc {
     options.links 'http://download.oracle.com/javase/9/docs/api/'
     options.addStringOption 'Xdoclint:none', '-quiet'
     options.memberLevel = JavadocMemberLevel.PROTECTED
-    options.bottom = "Copyright &copy; 2020 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
+    options.bottom = "Copyright &copy; 2021 <a href=\"https://www.tinkoff.ru/software/\">Tinkoff.ru Development</a>."
 }
 
 

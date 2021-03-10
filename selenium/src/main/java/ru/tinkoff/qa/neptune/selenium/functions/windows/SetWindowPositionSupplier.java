@@ -11,7 +11,7 @@ import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.nonNull;
-import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.window;
+import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.currentWindow;
 
 @MakeImageCapturesOnFinishing
 @MakeFileCapturesOnFinishing
@@ -30,13 +30,13 @@ public final class SetWindowPositionSupplier extends SequentialActionSupplier<Se
     }
 
     /**
-     * Builds an action which changes position of the first window.
+     * Builds an action which changes position of the active window.
      *
      * @param position is the new position of the window
-     * @return Supplier of an action which changes position of the first window.
+     * @return Supplier of an action which changes position of the active window.
      */
     public static SetWindowPositionSupplier setWindowPosition(Point position) {
-        return setPositionOf(window(), position);
+        return setPositionOf(currentWindow(), position);
     }
 
     /**

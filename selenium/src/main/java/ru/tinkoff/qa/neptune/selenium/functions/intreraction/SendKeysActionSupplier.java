@@ -28,8 +28,8 @@ abstract class SendKeysActionSupplier extends InteractiveAction {
         }
 
         @Override
-        protected void performActionOn(Actions value) {
-            value.sendKeys(keys).perform();
+        void addAction(Actions value) {
+            value.sendKeys(keys);
         }
     }
 
@@ -45,8 +45,8 @@ abstract class SendKeysActionSupplier extends InteractiveAction {
         }
 
         @Override
-        protected void performActionOn(Actions value) {
-            value.sendKeys(getElement(e), keys).perform();
+        void addAction(Actions value) {
+            value.sendKeys(getElement(e), keys);
         }
     }
 }
