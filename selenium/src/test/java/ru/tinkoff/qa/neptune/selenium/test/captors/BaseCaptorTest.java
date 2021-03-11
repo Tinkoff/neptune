@@ -14,7 +14,7 @@ import static ru.tinkoff.qa.neptune.selenium.test.captors.TestImageInjector.INJE
 public class BaseCaptorTest extends BaseWebDriverTest {
     @BeforeClass
     public static void beforeClass() {
-        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE.name());
+        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
     }
 
     @BeforeMethod

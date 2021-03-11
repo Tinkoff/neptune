@@ -2,32 +2,6 @@
 
 Данный модуль предназначен для интеграции Neptune и TestNG
 
-## Maven
-
-В pom.xml
-
-```xml
-    <dependencies>
-        <dependency>
-            <groupId>ru.tinkoff.qa.neptune</groupId>
-            <artifactId>testng.integration</artifactId>
-            <version>${LATEST_RELEASE_OR_BETA_VERSION}</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-```
-
-## Gradle
-
-В build.gradle
-
-```groovy
-    dependencies {
-        testCompile group: 'ru.tinkoff.qa.neptune', name: 'testng.integration', version: LATEST_RELEASE_OR_BETA_VERSION    
-    }
-```
-
-
 ## Пишем первый тест
 
 Класс, описывающий тест, должен наследоваться от `BaseTestNgTest`
@@ -49,9 +23,11 @@ public class MyTest extends BaseTestNgTest {
 <details>
   <summary>Нажми, чтобы прочесть</summary>
 
-[Подробнее о механизме настроек](./../../../core.api/doc/rus/SETTINGS.MD)
-
-Подробнее [о контекстах](./../../../core.api/doc/rus/IDEA.MD#Контекст) и об их [обновлении](./../../../core.api/doc/rus/REFRESHING_STOPPING.MD#Обновление)
+[Подробнее о механизме настроек](./../../../core.api/doc/rus/SETTINGS.MD).
+Подробнее [о контекстах](./../../../core.api/doc/rus/IDEA.MD#Контекст) и об их [обновлении](./../../../core.api/doc/rus/REFRESHING_STOPPING.MD#Обновление).
+Описанный ниже набор настроек/свойств дополняет [базовый набор настроек/свойств](./../../../core.api/doc/rus/SETTINGS.MD#Основной-набор-настроек/свойств),
+которые могут быть включены в `neptune.global.properties` или в `neptune.properties`, или использованы в качестве
+свойств/переменных окружения в той среде, в которой запускаются тесты.
 
 Необходимо определиться, перед каким методами следует обновить контекст (перегрузить/перезапустить браузер, проверить соединение с базами данных, и если
 что-то отвалилось - создать новое, и т.п). Типы этих методов описываются перечислением `ru.tinkoff.qa.neptune.testng.integration.properties.RefreshEachTimeBefore`:

@@ -5,7 +5,7 @@ import ru.tinkoff.qa.neptune.core.api.properties.PropertySupplier;
 /**
  * This interface is designed to read properties and return boolean values.
  */
-public interface BooleanValuePropertySupplier extends PropertySupplier<Boolean> {
+public interface BooleanValuePropertySupplier extends PropertySupplier<Boolean, Boolean> {
 
     @Override
     default Boolean parse(String value) {

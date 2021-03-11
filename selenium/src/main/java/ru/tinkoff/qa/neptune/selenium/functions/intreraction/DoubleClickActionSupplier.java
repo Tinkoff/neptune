@@ -15,10 +15,9 @@ abstract class DoubleClickActionSupplier extends InteractiveAction {
     }
 
     static final class DoubleClickSimpleActionSupplier extends DoubleClickActionSupplier {
-
         @Override
-        protected void performActionOn(Actions value) {
-            value.doubleClick().perform();
+        void addAction(Actions value) {
+            value.doubleClick();
         }
     }
 
@@ -34,8 +33,8 @@ abstract class DoubleClickActionSupplier extends InteractiveAction {
         }
 
         @Override
-        protected void performActionOn(Actions value) {
-            value.doubleClick(getElement(e)).perform();
+        void addAction(Actions value) {
+            value.doubleClick(getElement(e));
         }
     }
 }

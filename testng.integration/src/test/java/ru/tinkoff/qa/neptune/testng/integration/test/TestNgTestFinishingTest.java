@@ -13,8 +13,8 @@ import ru.tinkoff.qa.neptune.testng.integration.test.ignored.entries.IgnoredStub
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.joining;
+import static java.util.Arrays.asList;
+import static java.util.List.of;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.core.api.concurrency.ObjectContainer.getAllObjects;
@@ -58,7 +58,7 @@ public class TestNgTestFinishingTest {
 
     @Test
     public void whenRefreshingStrategyIsBeforeSuite() {
-        REFRESH_STRATEGY_PROPERTY.accept(SUITE_STARTING.name());
+        REFRESH_STRATEGY_PROPERTY.accept(of(SUITE_STARTING));
         try {
             runBeforeTheChecking();
             assertThat(ContextClass2.getRefreshCount(), is(1));
@@ -70,7 +70,7 @@ public class TestNgTestFinishingTest {
 
     @Test
     public void whenRefreshingStrategyIsBeforeTest() {
-        REFRESH_STRATEGY_PROPERTY.accept(TEST_STARTING.name());
+        REFRESH_STRATEGY_PROPERTY.accept(of(TEST_STARTING));
         try {
             runBeforeTheChecking();
             assertThat(ContextClass2.getRefreshCount(), is(1));
@@ -82,7 +82,7 @@ public class TestNgTestFinishingTest {
 
     @Test
     public void whenRefreshingStrategyIsBeforeClass() {
-        REFRESH_STRATEGY_PROPERTY.accept(CLASS_STARTING.name());
+        REFRESH_STRATEGY_PROPERTY.accept(of(CLASS_STARTING));
         try {
             runBeforeTheChecking();
             assertThat(ContextClass2.getRefreshCount(), is(2));
@@ -94,7 +94,7 @@ public class TestNgTestFinishingTest {
 
     @Test
     public void whenRefreshingStrategyIsBeforeMethod() {
-        REFRESH_STRATEGY_PROPERTY.accept(BEFORE_METHOD_STARTING.name());
+        REFRESH_STRATEGY_PROPERTY.accept(of(BEFORE_METHOD_STARTING));
         try {
             runBeforeTheChecking();
             assertThat(ContextClass2.getRefreshCount(), is(9));
@@ -106,8 +106,7 @@ public class TestNgTestFinishingTest {
 
     @Test
     public void whenRefreshingStrategyIsCombined() {
-        REFRESH_STRATEGY_PROPERTY.accept(stream(RefreshEachTimeBefore.values())
-                .map(Enum::name).collect(joining(",")));
+        REFRESH_STRATEGY_PROPERTY.accept(asList(RefreshEachTimeBefore.values()));
         try {
             runBeforeTheChecking();
             assertThat(ContextClass2.getRefreshCount(), is(9));

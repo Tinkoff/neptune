@@ -9,6 +9,7 @@ import ru.tinkoff.qa.neptune.http.api.service.mapping.HttpAPI;
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.methods.HttpMethod;
 
 import java.net.URI;
+import java.net.URL;
 
 import static java.lang.System.getProperties;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -43,9 +44,9 @@ public class MethodMappingTest {
     }
 
     @DataProvider
-    public static Object[][] data2() {
+    public static Object[][] data2() throws Exception {
         try {
-            DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.accept("http://127.0.0.1:8089");
+            DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.accept(new URL("http://127.0.0.1:8089"));
             return prepareDataForMethodMapping(createAPI(MethodMapping.class));
         } finally {
             getProperties().remove(DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.getName());

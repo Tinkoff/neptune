@@ -146,6 +146,8 @@ public class SomeTest extends BaseIntegrationFrontEndTest {
 Напишем класс
 
 ```java
+package org.my.pack;
+
 import java.util.Objects;
 
 import static org.openqa.selenium.By.name;
@@ -198,31 +200,12 @@ public class LoginAndPasswordCredentials extends BrowserCredentials<Credentials>
     }
 }
 ```
-Затем добавим еще класс
-
-```java
-package org.my.project;
-
-import java.util.function.Supplier;
-
-public class LoginAndPasswordCredentialsSupplier implements Supplier<LoginAndPasswordCredentials> {
-
-    @Override
-    public LoginAndPasswordCredentials get() {
-        var creds = new LoginAndPasswordCredentials();
-        //наш класс LoginAndPasswordCredentials может содержать дополнительную логику
-        //в зависимости от окружения, она может быть применена
-        return creds;
-    }
-}
-
-```
 
 Заполняем свойство [WEB_DRIVER_CREDENTIALS](./SETTINGS.MD#WEB_DRIVER_CREDENTIALS). Подробнее о свойствах, которые возвращают объекты 
 см. [статью](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
 
 ```properties
-WEB_DRIVER_CREDENTIALS=org.my.project.LoginAndPasswordCredentialsSupplier
+WEB_DRIVER_CREDENTIALS=org.my.pack.LoginAndPasswordCredentials
 ```
 
 И теперь достаточно

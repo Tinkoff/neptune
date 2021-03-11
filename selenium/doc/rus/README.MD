@@ -2,32 +2,7 @@
 
 Данный модуль предоставляет интеграцию с Selenium WebDriver.
 
-## Maven
-
-В pom.xml
-
-```xml
-    <dependencies>
-        <dependency>
-            <groupId>ru.tinkoff.qa.neptune</groupId>
-            <artifactId>selenium</artifactId>
-            <version>${LATEST_RELEASE_OR_BETA_VERSION}</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-```
-
-## Gradle
-
-В build.gradle
-
-```groovy
-    dependencies {
-        testCompile group: 'ru.tinkoff.qa.neptune', name: 'selenium', version: LATEST_RELEASE_OR_BETA_VERSION    
-    }
-```
-
-## Оглавление. Описание дальнейшей работы
+## Оглавление. Описание работы
 
 [Настройки](./SETTINGS.MD)
 

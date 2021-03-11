@@ -17,8 +17,8 @@ abstract class ClickActionSupplier extends InteractiveAction {
     static final class ClickSimpleActionSupplier extends ClickActionSupplier {
 
         @Override
-        protected void performActionOn(Actions value) {
-            value.click().perform();
+        void addAction(Actions value) {
+            value.click();
         }
     }
 
@@ -34,8 +34,8 @@ abstract class ClickActionSupplier extends InteractiveAction {
         }
 
         @Override
-        protected void performActionOn(Actions value) {
-            value.click(getElement(e)).perform();
+        void addAction(Actions value) {
+            value.click(getElement(e));
         }
     }
 }

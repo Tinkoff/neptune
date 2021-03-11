@@ -14,6 +14,7 @@ import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.for
 import ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.query.QueryParameter;
 
 import java.net.URI;
+import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -228,9 +229,9 @@ public class QueryMappingTest {
     }
 
     @DataProvider
-    public Object[][] data2() {
+    public Object[][] data2() throws Exception {
         try {
-            DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.accept("http://127.0.0.1:8089");
+            DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.accept(new URL("http://127.0.0.1:8089"));
             return prepareDataForQueryMapping(createAPI(QueryMapping.class));
         } finally {
             getProperties().remove(DEFAULT_END_POINT_OF_TARGET_API_PROPERTY.getName());

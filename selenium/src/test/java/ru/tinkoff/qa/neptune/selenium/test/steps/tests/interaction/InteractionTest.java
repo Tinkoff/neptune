@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static java.time.Duration.ofSeconds;
 import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
 import static java.util.Optional.ofNullable;
@@ -767,11 +768,27 @@ public class InteractionTest extends BaseWebDriverTest {
         assertThat(actions, contains(
                 hasAllEntries(ofEntries(
                         entry(equalTo("duration"), instanceOf(Long.class)),
+                        entry("x", 0),
+                        entry("y", 0),
+                        entry("type", "pointerMove"),
+                        entry(equalTo("origin"), equalTo(COMMON_BUTTON1))
+                )),
+                hasAllEntries(ofEntries(
+                        entry(equalTo("button"), is(0)),
+                        entry(equalTo("type"), equalTo("pointerDown"))
+                )),
+                hasAllEntries(ofEntries(
+                        entry(equalTo("duration"), instanceOf(Long.class)),
                         entry("x", 2),
                         entry("y", 3),
                         entry("type", "pointerMove"),
-                        entry(equalTo("origin"), equalTo(COMMON_BUTTON1))
+                        entry(equalTo("origin"), equalTo("pointer"))
+                )),
+                hasAllEntries(ofEntries(
+                        entry(equalTo("button"), is(0)),
+                        entry(equalTo("type"), equalTo("pointerUp"))
                 ))
+
         ));
     }
 
@@ -845,6 +862,31 @@ public class InteractionTest extends BaseWebDriverTest {
                         entry("button", 0),
                         entry("type", "pointerUp"))
                 )
+        ));
+    }
+
+    @Test(description = "pause test")
+    public void test21() {
+        seleniumSteps.interactive(click()
+                .pauseBefore(ofSeconds(10))
+                .pauseAfter(ofSeconds(15)));
+        var sequences = getActions();
+        assertThat(sequences, hasSize(1));
+
+        var map = new ArrayList<>(sequences).get(0).toJson();
+        assertThat(map, hasKey("actions"));
+
+        var actions = (List<Map<String, Object>>) map.get("actions");
+        assertThat(actions, hasItems(
+                hasAllEntries(ofEntries(
+                        entry(equalTo("duration"), is(10000L)),
+                        entry(equalTo("type"), is("pause"))
+                )),
+
+                hasAllEntries(ofEntries(
+                        entry(equalTo("duration"), is(15000L)),
+                        entry(equalTo("type"), is("pause"))
+                ))
         ));
     }
 }

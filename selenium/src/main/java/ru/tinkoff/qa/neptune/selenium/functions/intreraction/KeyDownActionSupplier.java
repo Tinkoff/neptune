@@ -26,8 +26,8 @@ abstract class KeyDownActionSupplier extends InteractiveAction {
         }
 
         @Override
-        protected void performActionOn(Actions value) {
-            value.keyDown(modifierKey).perform();
+        void addAction(Actions value) {
+            value.keyDown(modifierKey);
         }
     }
 
@@ -43,8 +43,8 @@ abstract class KeyDownActionSupplier extends InteractiveAction {
         }
 
         @Override
-        protected void performActionOn(Actions value) {
-            value.keyDown(getElement(e), modifierKey).perform();
+        void addAction(Actions value) {
+            value.keyDown(getElement(e), modifierKey);
         }
     }
 }

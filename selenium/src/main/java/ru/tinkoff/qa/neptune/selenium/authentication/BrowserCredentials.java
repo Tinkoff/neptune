@@ -2,8 +2,6 @@ package ru.tinkoff.qa.neptune.selenium.authentication;
 
 import org.openqa.selenium.WebDriver;
 
-import java.util.function.Supplier;
-
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.selenium.properties.WebDriverCredentialsProperty.WEB_DRIVER_CREDENTIALS_PROPERTY;
@@ -28,9 +26,7 @@ public abstract class BrowserCredentials<T> {
             return cred;
         }
 
-        return ofNullable(WEB_DRIVER_CREDENTIALS_PROPERTY.get())
-                .map(Supplier::get)
-                .orElse(null);
+        return ofNullable(WEB_DRIVER_CREDENTIALS_PROPERTY.get()).orElse(null);
     }
 
     /**

@@ -83,7 +83,7 @@ public class CheckTest {
 
     @Test
     public void testOfLinearPositiveCaseWhenEventIsSuccess() {
-        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS.name());
+        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
         try {
             check(4,
                     match("Is integer", number ->
@@ -114,7 +114,7 @@ public class CheckTest {
 
     @Test
     public void testOfLinearPositiveCaseWhenEventIsFailure() {
-        DO_CAPTURES_OF_INSTANCE.accept(FAILURE.name());
+        DO_CAPTURES_OF_INSTANCE.accept(FAILURE);
         try {
             check(4,
                     match("Is integer",
@@ -141,7 +141,7 @@ public class CheckTest {
 
     @Test
     public void testOfLinearPositiveCaseWhenEventIsAll() {
-        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE.name());
+        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
         try {
             check(4,
                     match("Is integer",
@@ -199,7 +199,7 @@ public class CheckTest {
             "*['but: Sqrt value:']" +
             "*['was <3.0>']")
     public void testOfLinearNegativeCaseWhenEventIsSuccess() {
-        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS.name());
+        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
         try {
             check(9,
                     match("Is integer",
@@ -226,7 +226,7 @@ public class CheckTest {
                     "*['but: Sqrt value:']" +
                     "*['was <3.0>']")
     public void testOfLinearNegativeCaseWhenEventIsFailure() {
-        DO_CAPTURES_OF_INSTANCE.accept(FAILURE.name());
+        DO_CAPTURES_OF_INSTANCE.accept(FAILURE);
         try {
             check(9,
                     match("Is integer",
@@ -251,7 +251,7 @@ public class CheckTest {
                     "*['but: Sqrt value:']" +
                     "*['was <3.0>']")
     public void testOfLinearNegativeCaseWhenEventIsAll() {
-        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE.name());
+        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
         try {
             check(9, match("Is integer",
                             number -> Integer.class.isAssignableFrom(number.getClass()),
@@ -274,7 +274,7 @@ public class CheckTest {
 
     @Test
     public void testOfNullValue() {
-        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE.name());
+        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
         Object obj = null;
         check("Given value", obj, match(nullValue()));
 

@@ -11,7 +11,7 @@ import java.util.function.Supplier;
         "and whose objects supply instances of java.net.Authenticator"},
         section = "Http client. General")
 @PropertyName("DEFAULT_HTTP_AUTHENTICATOR")
-public final class DefaultHttpAuthenticatorProperty implements ObjectPropertySupplier<DefaultHttpAuthenticatorProperty.AuthenticatorSupplier> {
+public final class DefaultHttpAuthenticatorProperty implements ObjectPropertySupplier<Authenticator, DefaultHttpAuthenticatorProperty.AuthenticatorSupplier> {
     /**
      * This instance reads value of the property {@code 'DEFAULT_HTTP_AUTHENTICATOR'} and returns a {@link Supplier}
      * of {@link Authenticator}. Invocation of the {@link Supplier#get()} returns actual value of the property. The value

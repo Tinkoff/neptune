@@ -16,13 +16,16 @@ import ru.tinkoff.qa.neptune.core.api.properties.PropertySupplier;
 import ru.tinkoff.qa.neptune.core.api.properties.object.MultipleObjectPropertySupplier;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static java.lang.String.format;
+import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.joining;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-public enum CapabilityTypes implements PropertySupplier<MutableCapabilities> {
+public enum CapabilityTypes implements PropertySupplier<MutableCapabilities, Class<? extends CapabilitySettingSupplier<?>>[]> {
 
     @PropertyDescription(description = {"Defines full names of classes that implement CapabilitySettingSupplier<MutableCapabilities>",
             "whose instances create and supplement capabilities",
@@ -137,9 +140,15 @@ public enum CapabilityTypes implements PropertySupplier<MutableCapabilities> {
 
         ofNullable(capabilityReader.get())
                 .orElse(List.of())
-                .forEach(capabilitySupplier -> capabilitySupplier.get().accept(desiredCapabilities));
+                .forEach(capabilityConsumer -> capabilityConsumer.accept(desiredCapabilities));
 
         return desiredCapabilities;
+    }
+
+    @SafeVarargs
+    @Override
+    public final String readValuesToSet(Class<? extends CapabilitySettingSupplier<?>>... value) {
+        return stream(value).map(Class::getName).collect(joining(","));
     }
 
     /**
@@ -151,7 +160,7 @@ public enum CapabilityTypes implements PropertySupplier<MutableCapabilities> {
         return null;
     }
 
-    public enum CommonCapabilityProperties implements PropertySupplier<Object> {
+    public enum CommonCapabilityProperties implements PropertySupplier<Object, Object> {
         @PropertyDescription(description = {"Defines the capability 'browserName'",
                 "It has sense when value of the property 'WEB_DRIVER_TO_LAUNCH' is 'REMOTE_DRIVER'"},
                 section = "Selenium. Capabilities")
@@ -190,7 +199,8 @@ public enum CapabilityTypes implements PropertySupplier<MutableCapabilities> {
         }
     }
 
-    private static class CapabilityReader implements MultipleObjectPropertySupplier<CapabilitySettingSupplier<MutableCapabilities>> {
+    private static class CapabilityReader
+            implements MultipleObjectPropertySupplier<Consumer<MutableCapabilities>, CapabilitySettingSupplier<MutableCapabilities>> {
 
         private final CapabilityTypes type;
 

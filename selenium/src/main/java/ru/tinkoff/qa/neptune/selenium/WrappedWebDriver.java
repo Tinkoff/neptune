@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.selenium;
 
 import com.browserup.bup.BrowserUpProxy;
 import com.browserup.bup.BrowserUpProxyServer;
+import com.browserup.bup.proxy.CaptureType;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import net.sf.cglib.proxy.Enhancer;
 import org.apache.commons.lang3.ArrayUtils;
@@ -18,7 +19,6 @@ import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
 import java.net.InetSocketAddress;
 import java.net.URL;
 
-import static com.browserup.bup.proxy.CaptureType.*;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.Objects.nonNull;
@@ -91,9 +91,7 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
         Object[] arguments = supportedWebDriver.get();
 
         if (USE_BROWSER_PROXY.get()) {
-            browserUpProxy = new BrowserUpProxyServer();
-            browserUpProxy.setTrustAllServers(true);
-
+            browserUpProxy = getProxy();
             MutableCapabilities capabilities = (MutableCapabilities) stream(arguments)
                     .filter(arg -> MutableCapabilities.class.isAssignableFrom(arg.getClass()))
                     .findFirst()
@@ -123,17 +121,9 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
             seleniumProxy.setHttpProxy(hostIp + ":" + browserUpProxy.getPort());
             seleniumProxy.setSslProxy(hostIp + ":" + browserUpProxy.getPort());
 
-            if (seleniumProxy.getHttpProxy() != null) {
-                capabilities.setCapability(CapabilityType.PROXY, seleniumProxy);
-                capabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
-                capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
-
-                for (var i = 0; i < arguments.length; i++) {
-                    if (MutableCapabilities.class.isAssignableFrom(arguments[i].getClass())) {
-                        arguments[i] = capabilities;
-                    }
-                }
-            }
+            capabilities.setCapability(CapabilityType.PROXY, seleniumProxy);
+            capabilities.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
+            capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
         }
 
         if (supportedWebDriver.requiresRemoteUrl() && supportedWebDriver.getRemoteURL() == null) {
@@ -158,15 +148,6 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
             enhancer.setCallback(new WebDriverMethodInterceptor());
 
             var driver = (WebDriver) enhancer.create(c.getParameterTypes(), parameters);
-
-            ofNullable(browserUpProxy).ifPresent(browserUpProxy -> {
-                if (browserUpProxy.isStarted()) {
-                    browserUpProxy.enableHarCaptureTypes(REQUEST_HEADERS, REQUEST_CONTENT, REQUEST_COOKIES,
-                            RESPONSE_HEADERS, RESPONSE_CONTENT, RESPONSE_COOKIES);
-
-                    browserUpProxy.newHar();
-                }
-            });
 
             ofNullable(BASE_WEB_DRIVER_URL_PROPERTY.get())
                     .ifPresent(url -> driver.get(url.toString()));
@@ -218,16 +199,19 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
     public synchronized void refreshContext() {
         boolean isAlive = isAlive();
 
-        if (!isAlive) {
+        if (!isAlive || !KEEP_WEB_DRIVER_SESSION_OPENED.get()) {
+            if (isAlive) {
+                driver.quit();
+            }
             driver = null;
-            browserUpProxy = null;
-            return;
-        }
 
-        if (!KEEP_WEB_DRIVER_SESSION_OPENED.get()) {
-            driver.quit();
-            driver = null;
+            ofNullable(browserUpProxy).ifPresent(proxy -> {
+                if (proxy.isStarted()) {
+                    proxy.stop();
+                }
+            });
             browserUpProxy = null;
+
             return;
         }
 
@@ -251,7 +235,18 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
     }
 
     public BrowserUpProxy getProxy() {
-        return browserUpProxy;
+        if (USE_BROWSER_PROXY.get()) {
+            return ofNullable(browserUpProxy).orElseGet(() -> {
+                var proxy = new BrowserUpProxyServer();
+                proxy.setTrustAllServers(true);
+                proxy.enableHarCaptureTypes(CaptureType.values());
+                proxy.newHar();
+
+                browserUpProxy = proxy;
+                return browserUpProxy;
+            });
+        }
+        return null;
     }
 
     public void shutDown() {

@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.functions.browser.proxy;
 
-import com.browserup.harreader.model.Har;
+import com.browserup.bup.BrowserUpProxy;
 import com.browserup.harreader.model.HarEntry;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
@@ -12,22 +12,27 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.GetProxy.getBrowserProxy;
 
-public class BrowserProxyGetStepSupplier extends SequentialGetStepSupplier.GetIterableStepSupplier<SeleniumStepContext, List<HarEntry>, HarEntry, BrowserProxyGetStepSupplier> {
+public class BrowserProxyGetStepSupplier extends SequentialGetStepSupplier.GetIterableChainedStepSupplier<SeleniumStepContext, List<HarEntry>, BrowserUpProxy, HarEntry, BrowserProxyGetStepSupplier> {
 
     private BrowserProxyGetStepSupplier() {
-        super("Proxied requests", seleniumStepContext ->
-                ofNullable(seleniumStepContext.getProxy())
-                        .map(proxy -> {
-                            Har har = proxy.getHar();
+        super("Proxied requests", proxy -> ofNullable(proxy)
+                .map(p -> {
+                    if (!p.isStarted()) {
+                        return new ArrayList<HarEntry>();
+                    }
 
-                            if (har == null) {
-                                throw new IllegalStateException("HAR recording is not started");
-                            }
+                    var har = p.getHar();
+                    if (har == null) {
+                        System.err.println("HAR recording is not started");
+                        return new ArrayList<HarEntry>();
+                    }
 
-                            return har.getLog().getEntries();
-                        })
-                        .orElseGet(ArrayList::new));
+                    return har.getLog().getEntries();
+                })
+                .orElseGet(ArrayList::new));
+        from(getBrowserProxy());
     }
 
     public static BrowserProxyGetStepSupplier proxiedRequests() {

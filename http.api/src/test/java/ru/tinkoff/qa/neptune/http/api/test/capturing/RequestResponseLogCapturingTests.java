@@ -128,14 +128,14 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
 
     @Test(dataProvider = "data1")
     public void test1(CapturedEvents toCatch, Matcher<List<String>> matcher) {
-        DO_CAPTURES_OF_INSTANCE.accept(toCatch.name());
+        DO_CAPTURES_OF_INSTANCE.accept(toCatch);
         http().responseOf(GET(CORRECT_URI), ofString());
         assertThat(getLog(), matcher);
     }
 
     @Test(dataProvider = "data2", expectedExceptions = Exception.class)
     public void test2(CapturedEvents toCatch, Matcher<List<String>> matcher) {
-        DO_CAPTURES_OF_INSTANCE.accept(toCatch.name());
+        DO_CAPTURES_OF_INSTANCE.accept(toCatch);
         try {
             http().responseOf(GET(INCORRECT_URI).timeout(ofSeconds(1)),
                     ofString());
@@ -149,14 +149,14 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
 
     @Test(dataProvider = "data1")
     public void test3(CapturedEvents toCatch, Matcher<List<String>> matcher) {
-        DO_CAPTURES_OF_INSTANCE.accept(toCatch.name());
+        DO_CAPTURES_OF_INSTANCE.accept(toCatch);
         http().bodyData(asIs(GET(CORRECT_URI), ofString()));
         assertThat(getLog(), matcher);
     }
 
     @Test(dataProvider = "data1")
     public void test4(CapturedEvents toCatch, Matcher<List<String>> matcher) {
-        DO_CAPTURES_OF_INSTANCE.accept(toCatch.name());
+        DO_CAPTURES_OF_INSTANCE.accept(toCatch);
 
         http().bodyData(asIs(GET(CORRECT_URI), ofString())
                 .responseCriteria(bodyMatches("equals FAILURE", "FAILURE"::equals))
@@ -167,7 +167,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
 
     @Test(dataProvider = "data3", expectedExceptions = DesiredDataHasNotBeenReceivedException.class)
     public void test5(CapturedEvents toCatch, Matcher<List<String>> matcher) {
-        DO_CAPTURES_OF_INSTANCE.accept(toCatch.name());
+        DO_CAPTURES_OF_INSTANCE.accept(toCatch);
 
         try {
             http().bodyData(asIs(GET(CORRECT_URI), ofString())
@@ -183,7 +183,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
 
     @Test(dataProvider = "data3", expectedExceptions = DesiredDataHasNotBeenReceivedException.class)
     public void test6(CapturedEvents toCatch, Matcher<List<String>> matcher) {
-        DO_CAPTURES_OF_INSTANCE.accept(toCatch.name());
+        DO_CAPTURES_OF_INSTANCE.accept(toCatch);
 
         try {
             http().bodyData(asIs(GET(CORRECT_URI), ofString())
@@ -199,7 +199,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
 
     @Test(dataProvider = "data4")
     public void test7(CapturedEvents toCatch, Matcher<List<String>> matcher) {
-        DO_CAPTURES_OF_INSTANCE.accept(toCatch.name());
+        DO_CAPTURES_OF_INSTANCE.accept(toCatch);
 
         http().bodyData(asIs(GET(INCORRECT_URI).timeout(ofSeconds(1)),
                 ofString())
@@ -210,7 +210,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
 
     @Test(dataProvider = "data1")
     public void test8(CapturedEvents toCatch, Matcher<List<String>> matcher) {
-        DO_CAPTURES_OF_INSTANCE.accept(toCatch.name());
+        DO_CAPTURES_OF_INSTANCE.accept(toCatch);
 
         http().bodyData(asObject("Number value",
                 GET(CORRECT_URI),
@@ -224,7 +224,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
 
     @Test(dataProvider = "data3", expectedExceptions = DesiredDataHasNotBeenReceivedException.class)
     public void test9(CapturedEvents toCatch, Matcher<List<String>> matcher) {
-        DO_CAPTURES_OF_INSTANCE.accept(toCatch.name());
+        DO_CAPTURES_OF_INSTANCE.accept(toCatch);
 
         try {
             http().bodyData(asObject("Number value", GET(CORRECT_URI), ofString(), Integer::parseInt)
@@ -241,7 +241,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
 
     @Test(dataProvider = "data2", expectedExceptions = DesiredDataHasNotBeenReceivedException.class)
     public void test10(CapturedEvents toCatch, Matcher<List<String>> matcher) {
-        DO_CAPTURES_OF_INSTANCE.accept(toCatch.name());
+        DO_CAPTURES_OF_INSTANCE.accept(toCatch);
         try {
             http().bodyData(asIs(GET(INCORRECT_URI).timeout(ofSeconds(1)), ofString())
                     .addIgnored(Throwable.class)

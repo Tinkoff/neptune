@@ -373,6 +373,59 @@ public final class SearchSupplier<R extends SearchContext>
         return widget(TextField.class, textOrLabel);
     }
 
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some calendar.
+     *
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<CalendarWidget> calendar() {
+        return widget(CalendarWidget.class);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some calendar.
+     *
+     * @param textOrLabel text which is used to find a calendar by full element text matching. Also texts of labels
+     *                    are used to find a calendar.
+     * @return an instance of {@link SearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
+     */
+    public static SearchSupplier<CalendarWidget> calendar(String textOrLabel) {
+        return widget(CalendarWidget.class, textOrLabel);
+    }
+
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some calendar range.
+     *
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<CalendarRangeWidget> calendarRange() {
+        return widget(CalendarRangeWidget.class);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some calendar range.
+     *
+     * @param textOrLabel text which is used to find a calendar range by full element text matching. Also texts of labels
+     *                    are used to find a calendar range.
+     * @return an instance of {@link SearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
+     */
+    public static SearchSupplier<CalendarRangeWidget> calendarRange(String textOrLabel) {
+        return widget(CalendarRangeWidget.class, textOrLabel);
+    }
+
+
     /**
      * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
      * The built function takes an instance of {@link SearchContext} for the searching
@@ -569,6 +622,31 @@ public final class SearchSupplier<R extends SearchContext>
      */
     public static SearchSupplier<ElementGroup> group(String textOrLabel) {
         return widget(ElementGroup.class, textOrLabel);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some image element.
+     *
+     * @return an instance of {@link SearchSupplier}
+     */
+    public static SearchSupplier<Image> image() {
+        return widget(Image.class);
+    }
+
+    /**
+     * Returns an instance of {@link SearchSupplier} that builds and supplies a function.
+     * The built function takes an instance of {@link SearchContext} for the searching
+     * and returns some image element.
+     *
+     * @param textOrLabel text which is used to find a form by full element text matching. Also texts of labels
+     *                    are used to find an image element.
+     * @return an instance of {@link SearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
+     */
+    public static SearchSupplier<Image> image(String textOrLabel) {
+        return widget(Image.class, textOrLabel);
     }
 
     /**

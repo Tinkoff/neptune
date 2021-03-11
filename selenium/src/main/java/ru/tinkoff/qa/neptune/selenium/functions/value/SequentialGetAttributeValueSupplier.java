@@ -13,7 +13,7 @@ import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
-import static ru.tinkoff.qa.neptune.selenium.CurrentContentFunction.currentContent;
+import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 
 @SequentialGetStepSupplier.DefaultParameterNames(
         from = "Element to get value of the attribute"
