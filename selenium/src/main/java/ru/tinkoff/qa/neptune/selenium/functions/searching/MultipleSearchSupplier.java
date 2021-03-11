@@ -35,7 +35,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
         SequentialGetStepSupplier.GetIterableChainedStepSupplier<SearchContext, List<R>, SearchContext, R, MultipleSearchSupplier<R>> {
 
     private MultipleSearchSupplier(String description, Function<SearchContext, List<R>> originalFunction) {
-        super(description, originalFunction);
+        super(originalFunction);
         from(searchContext -> searchContext);
         timeOut(ELEMENT_WAITING_DURATION.get());
         addIgnored(StaleElementReferenceException.class);

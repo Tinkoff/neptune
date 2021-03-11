@@ -36,7 +36,7 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
         extends SequentialGetStepSupplier.GetObjectStepSupplier<HttpStepContext, R, S> {
 
     private GetObjectFromBodyStepSupplier(String description, Function<HttpStepContext, R> f) {
-        super(description, f);
+        super(/*description,*/ f);
     }
 
     /**

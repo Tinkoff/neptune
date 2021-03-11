@@ -15,6 +15,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
 import static org.testng.Assert.fail;
+import static ru.tinkoff.qa.neptune.core.api.steps.AbsenceTest.TestGetSupplier.getTestSupplier;
 
 public class AbsenceTest {
 
@@ -54,7 +55,7 @@ public class AbsenceTest {
     @Test
     public void absenceOfAnObjectTest3() {
         var start = currentTimeMillis();
-        assertThat(testContext.absence(new TestGetSupplier<>(new FunctionThatReturnsObject(ofSeconds(5)).run()), ofSeconds(10)),
+        assertThat(testContext.absence(getTestSupplier(new FunctionThatReturnsObject(ofSeconds(5)).run()), ofSeconds(10)),
                 is(true));
         var end = currentTimeMillis();
         assertThat(new BigDecimal(end - start),
@@ -64,7 +65,7 @@ public class AbsenceTest {
     @Test
     public void absenceOfAnObjectTest4() {
         var start = currentTimeMillis();
-        assertThat(testContext.absence(new TestGetSupplier<>(new FunctionThatReturnsObject(ofMillis(0)).run())
+        assertThat(testContext.absence(getTestSupplier(new FunctionThatReturnsObject(ofMillis(0)).run())
                         .timeOut(ofSeconds(5)),
                 ofSeconds(10)),
                 is(true));
@@ -92,7 +93,7 @@ public class AbsenceTest {
     public void absenceOfAnObjectTest6() {
         var start = currentTimeMillis();
         try {
-            assertThat(testContext.absence(new TestGetSupplier<>(new FunctionThatReturnsObject(ofSeconds(10)).run()), ofSeconds(5), "Test exception"),
+            assertThat(testContext.absence(getTestSupplier(new FunctionThatReturnsObject(ofSeconds(10)).run()), ofSeconds(5), "Test exception"),
                     is(false));
         } catch (Throwable t) {
             var end = currentTimeMillis();
@@ -126,7 +127,7 @@ public class AbsenceTest {
     @Test
     public void absenceOfAnArrayTest3() {
         var start = currentTimeMillis();
-        assertThat(testContext.absence(new TestGetSupplier<>(new FunctionThatReturnsArray(ofSeconds(5)).run()), ofSeconds(10)),
+        assertThat(testContext.absence(getTestSupplier(new FunctionThatReturnsArray(ofSeconds(5)).run()), ofSeconds(10)),
                 is(true));
         var end = currentTimeMillis();
         assertThat(new BigDecimal(end - start),
@@ -136,7 +137,7 @@ public class AbsenceTest {
     @Test
     public void absenceOfAnArrayTest4() {
         var start = currentTimeMillis();
-        assertThat(testContext.absence(new TestGetSupplier<>(new FunctionThatReturnsArray(ofMillis(0)).run())
+        assertThat(testContext.absence(getTestSupplier(new FunctionThatReturnsArray(ofMillis(0)).run())
                         .timeOut(ofSeconds(5)),
                 ofSeconds(10)), is(true));
         var end = currentTimeMillis();
@@ -163,7 +164,7 @@ public class AbsenceTest {
     public void absenceOfAnArrayTest6() {
         var start = currentTimeMillis();
         try {
-            assertThat(testContext.absence(new TestGetSupplier<>(new FunctionThatReturnsObject(ofSeconds(10)).run()), ofSeconds(5), "Test exception"),
+            assertThat(testContext.absence(getTestSupplier(new FunctionThatReturnsObject(ofSeconds(10)).run()), ofSeconds(5), "Test exception"),
                     is(false));
         } catch (Throwable t) {
             var end = currentTimeMillis();
@@ -197,7 +198,7 @@ public class AbsenceTest {
     @Test
     public void absenceOfAnIterableTest3() {
         var start = currentTimeMillis();
-        assertThat(testContext.absence(new TestGetSupplier<>(new FunctionThatReturnsIterable(ofSeconds(5)).run()),
+        assertThat(testContext.absence(getTestSupplier(new FunctionThatReturnsIterable(ofSeconds(5)).run()),
                 ofSeconds(10)),
                 is(true));
         var end = currentTimeMillis();
@@ -208,7 +209,7 @@ public class AbsenceTest {
     @Test
     public void absenceOfAnIterableTest4() {
         var start = currentTimeMillis();
-        assertThat(testContext.absence(new TestGetSupplier<>(new FunctionThatReturnsIterable(ofMillis(0)).run())
+        assertThat(testContext.absence(getTestSupplier(new FunctionThatReturnsIterable(ofMillis(0)).run())
                         .timeOut(ofSeconds(5)),
                 ofSeconds(10)), is(true));
         var end = currentTimeMillis();
@@ -235,7 +236,7 @@ public class AbsenceTest {
     public void absenceOfAnIterableTest6() {
         var start = currentTimeMillis();
         try {
-            assertThat(testContext.absence(new TestGetSupplier<>(new FunctionThatReturnsIterable(ofSeconds(10)).run()), ofSeconds(5), "Test exception"),
+            assertThat(testContext.absence(getTestSupplier(new FunctionThatReturnsIterable(ofSeconds(10)).run()), ofSeconds(5), "Test exception"),
                     is(false));
         } catch (Throwable t) {
             var end = currentTimeMillis();
@@ -249,7 +250,7 @@ public class AbsenceTest {
     @Test
     public void whenFunctionThrowsExceptionTest() {
         var start = currentTimeMillis();
-        assertThat(testContext.absence(new TestGetSupplier<>(FAILED_EXCEPTION)
+        assertThat(testContext.absence(getTestSupplier(FAILED_EXCEPTION)
                         .timeOut(ofSeconds(100)),
                 ofSeconds(5)), is(true));
         var end = currentTimeMillis();
@@ -380,9 +381,15 @@ public class AbsenceTest {
         }
     }
 
-    private static class TestGetSupplier<T> extends SequentialGetStepSupplier.GetObjectStepSupplier<AbsenceTestContext, T, TestGetSupplier<T>> {
+
+    static class TestGetSupplier<T> extends SequentialGetStepSupplier.GetObjectStepSupplier<AbsenceTestContext, T, TestGetSupplier<T>> {
         TestGetSupplier(Function<AbsenceTestContext, T> originalFunction) {
-            super(originalFunction.toString(), originalFunction);
+            super(originalFunction);
+        }
+
+        @Description("TestGetSupplierDescription")
+        public static <T> TestGetSupplier<?> getTestSupplier(Function<AbsenceTestContext, T> originalFunction) {
+            return new TestGetSupplier<>(originalFunction);
         }
     }
 

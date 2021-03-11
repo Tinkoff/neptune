@@ -2,6 +2,8 @@ package ru.tinkoff.qa.neptune.selenium.functions.value;
 
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.api.widget.HasAttribute;
@@ -22,7 +24,7 @@ public final class SequentialGetAttributeValueSupplier extends SequentialGetStep
     private boolean isElementDefined;
 
     private SequentialGetAttributeValueSupplier(String attr) {
-        super("Value of the attribute '" + attr + "'", searchContext -> {
+        super(searchContext -> {
             var searchContextClass = searchContext.getClass();
             if (WebElement.class.isAssignableFrom(searchContextClass)) {
                 return ((WebElement) searchContext).getAttribute(attr);
@@ -46,7 +48,8 @@ public final class SequentialGetAttributeValueSupplier extends SequentialGetStep
      * @param attr is the name of the target attribute
      * @return an instance of {@link SequentialGetAttributeValueSupplier}
      */
-    public static SequentialGetAttributeValueSupplier attributeValue(String attr) {
+    @Description("Value of the attribute {attr}")
+    public static SequentialGetAttributeValueSupplier attributeValue(@DescriptionFragment("attr") String attr) {
         return new SequentialGetAttributeValueSupplier(attr);
     }
 

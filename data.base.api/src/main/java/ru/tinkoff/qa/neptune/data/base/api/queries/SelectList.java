@@ -53,8 +53,8 @@ public class SelectList<T, R extends List<T>> extends SequentialGetStepSupplier
     @StepParameter("By query")
     Query<T, R> query;
 
-    private SelectList(String description, KeepResultPersistent resultPersistent, Query<T, R> selectBy) {
-        super(description, selectBy::execute);
+    private SelectList(KeepResultPersistent resultPersistent, Query<T, R> selectBy) {
+        super(selectBy::execute);
         this.resultPersistent = resultPersistent;
         this.query = selectBy;
         timeOut(WAITING_FOR_SELECTION_RESULT_TIME.get());

@@ -26,7 +26,7 @@ public final class GetFrameSupplier extends SequentialGetStepSupplier.GetObjectC
 
 
     private GetFrameSupplier(GetFrameFunction getFrame) {
-        super(format("Frame %s", getFrame.getDescription()), getFrame);
+        super(/*format("Frame %s", getFrame.getDescription()),*/ getFrame);
         timeOut(WAITING_FRAME_SWITCHING_DURATION.get());
         throwOnEmptyResult(() -> new NoSuchFrameException(format("Can't find/switch to the frame %s",
                 getFrame.getDescription())));

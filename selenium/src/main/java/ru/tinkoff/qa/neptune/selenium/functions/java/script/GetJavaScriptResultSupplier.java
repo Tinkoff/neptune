@@ -41,7 +41,7 @@ public final class GetJavaScriptResultSupplier extends SequentialGetStepSupplier
                                         Function<WebDriver, Object> originalFunction,
                                         String script,
                                         Collection<?> args) {
-        super(description, originalFunction);
+        super(originalFunction);
         checkArgument(isNotBlank(script), "Script should be defined as not null/empty string");
         this.script = script;
         checkNotNull(args, "Parameters value should not be null");

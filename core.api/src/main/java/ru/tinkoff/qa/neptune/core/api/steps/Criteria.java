@@ -22,13 +22,11 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @SuppressWarnings("unchecked")
 public final class Criteria<T> implements Supplier<Predicate<T>> {
 
-    private final String description;
+    private String description;
     private final Predicate<? super T> howToCheck;
 
-    private Criteria(String description, Predicate<? super T> howToCheck) {
-        checkArgument(isNotBlank(description), "Description of the criteria should not be blank or null string");
+    private Criteria(Predicate<? super T> howToCheck) {
         checkArgument(nonNull(howToCheck), "An algorithm how to check an object by criteria should be defined");
-        this.description = description;
         this.howToCheck = howToCheck;
     }
 
@@ -56,19 +54,7 @@ public final class Criteria<T> implements Supplier<Predicate<T>> {
                     .orElseGet(tCriteria);
         }
 
-        return new Criteria<>(description, newPredicate);
-    }
-
-    static <T> Criteria<T> AND(List<Criteria<T>> criteria) {
-        if (criteria == null) {
-            return null;
-        }
-
-        if (criteria.size() == 1) {
-            return criteria.get(0);
-        }
-
-        return AND(Iterables.toArray(criteria, Criteria.class));
+        return new Criteria<>(newPredicate).setDescription(description);
     }
 
     /**
@@ -88,22 +74,35 @@ public final class Criteria<T> implements Supplier<Predicate<T>> {
                 .map(c -> "(" + c.toString() + ")")
                 .collect(joining(" or "));
 
+
         Predicate<T> newPredicate = null;
-        for (var tCriteria: criteria) {
+        for (var tCriteria : criteria) {
             newPredicate = ofNullable(newPredicate)
                     .map(predicate -> predicate.or(tCriteria.get()))
                     .orElseGet(tCriteria);
         }
 
-        return new Criteria<>(description, newPredicate);
+        return new Criteria<>(newPredicate).setDescription(description);
+    }
+
+    static <T> Criteria<T> AND(List<Criteria<T>> criteria) {
+        if (criteria == null) {
+            return null;
+        }
+
+        if (criteria.size() == 1) {
+            return criteria.get(0);
+        }
+
+        return AND(Iterables.toArray(criteria, Criteria.class));
     }
 
     /**
      * The joining of defined criteria with XOR-condition.
      *
      * @param criteria to be joined
-     * @param <T> is a type of a value to be checked/filtered by each criteria
-     *           and resulted criteria as well
+     * @param <T>      is a type of a value to be checked/filtered by each criteria
+     *                 and resulted criteria as well
      * @return a new joined criteria
      */
     @SafeVarargs
@@ -122,7 +121,7 @@ public final class Criteria<T> implements Supplier<Predicate<T>> {
                     .orElseGet(tCriteria);
         }
 
-        return new Criteria<>(description, newPredicate);
+        return new Criteria<>(newPredicate).setDescription(description);
     }
 
     /**
@@ -148,23 +147,33 @@ public final class Criteria<T> implements Supplier<Predicate<T>> {
                     .orElseGet(() -> not(tCriteria.get()));
         }
 
-        return new Criteria<>(description, newPredicate);
+        return new Criteria<>(newPredicate).setDescription(description);
     }
 
     /**
      * Creates and instance of {@link Criteria}
      *
      * @param description is a string description of the condition
-     * @param predicate is the condition described by {@link Predicate}
-     * @param <T> is a type of a value to be checked/filtered
+     * @param predicate   is the condition described by {@link Predicate}
+     * @param <T>         is a type of a value to be checked/filtered
      * @return a new instance of {@link Criteria}
      */
     public static <T> Criteria<T> condition(String description, Predicate<T> predicate) {
-        return new Criteria<>(description, predicate);
+        return condition(predicate).setDescription(description);
+    }
+
+    public static <T> Criteria<T> condition(Predicate<T> predicate) {
+        return new Criteria<>(predicate);
+    }
+
+    public Criteria<T> setDescription(String description) {
+        checkArgument(isNotBlank(description), "Description of the criteria should not be blank or null string");
+        this.description = description;
+        return this;
     }
 
     public String toString() {
-        return description;
+        return ofNullable(description).orElse("not described criteria");
     }
 
     public Predicate<T> get() {

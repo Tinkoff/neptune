@@ -22,8 +22,9 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier.DefaultParameterNames.DefaultActionParameterReader.getPerformOnPseudoField;
 import static ru.tinkoff.qa.neptune.core.api.steps.StepAction.action;
+import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 /**
@@ -39,39 +40,27 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActionSupplier<T, R, THIS>> implements Supplier<StepAction<T>>,
         MakesCapturesOnFinishing<THIS>, StepParameterPojo {
 
-    private final String actionDescription;
+    private String actionDescription;
     private final List<CaptorFilterByProducedType> captorFilters = new ArrayList<>();
 
     Object toBePerformedOn;
 
-    protected SequentialActionSupplier(String description) {
-        checkArgument(!isBlank(description), "Description of the action should not be blank or null string value");
-        this.actionDescription = description;
+    protected SequentialActionSupplier() {
         MakesCapturesOnFinishing.makeCaptureSettings(this);
+    }
+
+    protected SequentialActionSupplier<T, R, THIS> setDescription(String actionDescription) {
+        this.actionDescription = actionDescription;
+        return this;
     }
 
     @Override
     public Map<String, String> getParameters() {
         var cls = (Class<?>) this.getClass();
-        var defaultParameters = ofNullable(cls.getAnnotation(SequentialActionSupplier.DefaultParameterNames.class))
-                .orElseGet(() -> {
-                    SequentialActionSupplier.DefaultParameterNames result = null;
-                    var clazz = cls;
-                    while (result == null) {
-                        clazz = clazz.getSuperclass();
-                        result = clazz.getAnnotation(SequentialActionSupplier.DefaultParameterNames.class);
-                    }
-                    return result;
-                });
 
         var result = new LinkedHashMap<String, String>();
         if (isLoggable(toBePerformedOn) && nonNull(toBePerformedOn)) {
-            var fromCls = toBePerformedOn.getClass();
-            if (Function.class.isAssignableFrom(fromCls) || SequentialGetStepSupplier.class.isAssignableFrom(fromCls)) {
-                result.put(defaultParameters.performOn(), toBePerformedOn + " (is calculated while the step is executed)");
-            } else {
-                result.put(defaultParameters.performOn(), valueOf(toBePerformedOn));
-            }
+            result.put(translate(getPerformOnPseudoField(cls)), valueOf(toBePerformedOn));
         }
 
         result.putAll(StepParameterPojo.super.getParameters());
@@ -270,5 +259,31 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
          * @see SequentialActionSupplier#performOn(SequentialGetStepSupplier)
          */
         String performOn() default "Perform action on";
+
+        final class DefaultActionParameterReader {
+
+            private DefaultActionParameterReader() {
+                super();
+            }
+
+            public static PseudoField getPerformOnPseudoField(Class<?> toRead) {
+                if (!SequentialActionSupplier.class.isAssignableFrom(toRead)) {
+                    return null;
+                }
+
+                var defaultParameters = ofNullable(toRead.getAnnotation(SequentialActionSupplier.DefaultParameterNames.class))
+                        .orElseGet(() -> {
+                            SequentialActionSupplier.DefaultParameterNames result = null;
+                            var clazz = toRead;
+                            while (result == null) {
+                                clazz = clazz.getSuperclass();
+                                result = clazz.getAnnotation(SequentialActionSupplier.DefaultParameterNames.class);
+                            }
+                            return result;
+                        });
+
+                return new PseudoField(toRead, "performOn", defaultParameters.performOn());
+            }
+        }
     }
 }

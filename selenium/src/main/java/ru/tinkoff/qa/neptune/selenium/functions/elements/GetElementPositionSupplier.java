@@ -17,7 +17,7 @@ public final class GetElementPositionSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, Point, SearchContext, GetElementPositionSupplier> {
 
     private GetElementPositionSupplier() {
-        super("Position of the element", s -> {
+        super(s -> {
             var cls = s.getClass();
 
             if (WebElement.class.isAssignableFrom(cls)) {

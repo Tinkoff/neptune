@@ -34,8 +34,8 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMEN
 public final class SearchSupplier<R extends SearchContext>
         extends SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier<SearchContext, R, SearchContext, SearchSupplier<R>> {
 
-    private <S extends Iterable<R>> SearchSupplier(String description, Function<SearchContext, S> originalFunction) {
-        super(description, originalFunction);
+    private <S extends Iterable<R>> SearchSupplier(Function<SearchContext, S> originalFunction) {
+        super(originalFunction);
         from(searchContext -> searchContext);
         timeOut(ELEMENT_WAITING_DURATION.get());
         addIgnored(StaleElementReferenceException.class);

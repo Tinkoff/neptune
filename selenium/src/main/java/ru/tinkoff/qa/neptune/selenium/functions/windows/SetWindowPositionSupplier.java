@@ -24,7 +24,7 @@ public final class SetWindowPositionSupplier extends SequentialActionSupplier<Se
     private final Point position;
 
     private SetWindowPositionSupplier(Point position) {
-        super("Change position of the browser window/tab");
+        super(/*"Change position of the browser window/tab"*/);
         checkArgument(nonNull(position), "A new position should not be a null value");
         this.position = position;
     }

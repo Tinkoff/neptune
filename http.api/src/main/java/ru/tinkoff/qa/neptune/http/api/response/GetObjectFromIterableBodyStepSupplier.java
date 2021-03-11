@@ -38,7 +38,7 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetO
         extends SequentialGetStepSupplier.GetObjectFromIterableStepSupplier<HttpStepContext, R, S> {
 
     private <Q extends Iterable<R>> GetObjectFromIterableBodyStepSupplier(String description, Function<HttpStepContext, Q> f) {
-        super(description, f);
+        super(/*description,*/ f);
     }
 
     /**

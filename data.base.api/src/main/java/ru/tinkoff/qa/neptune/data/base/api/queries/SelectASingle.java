@@ -52,8 +52,8 @@ public class SelectASingle<T> extends SequentialGetStepSupplier
     @StepParameter("By query")
     Query<T, ? extends List<T>> query;
 
-    private SelectASingle(String description, KeepResultPersistent resultPersistent, Query<T, ? extends List<T>> selectBy) {
-        super(description, selectBy::execute);
+    private SelectASingle(KeepResultPersistent resultPersistent, Query<T, ? extends List<T>> selectBy) {
+        super(selectBy::execute);
         this.resultPersistent = resultPersistent;
         this.query = selectBy;
         timeOut(WAITING_FOR_SELECTION_RESULT_TIME.get());

@@ -15,7 +15,7 @@ import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Get
 public final class CloseWindowActionSupplier extends SequentialActionSupplier<SeleniumStepContext, Window, CloseWindowActionSupplier> {
 
     private CloseWindowActionSupplier() {
-        super("Close the browser window/tab");
+        super(/*"Close the browser window/tab"*/);
     }
 
     /**

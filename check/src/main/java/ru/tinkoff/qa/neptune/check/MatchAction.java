@@ -28,7 +28,7 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
     private final String description;
 
     MatchAction(String description, Matcher<? super R> criteria) {
-        super("Check " + description + ". Assert: " + criteria);
+        super(/*"Check " + description + ". Assert: " + criteria*/);
         checkArgument(nonNull(criteria), "Criteria matcher should not be null");
         this.criteria = criteria;
         this.description = description;
