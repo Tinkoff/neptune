@@ -116,104 +116,6 @@ public class Tezzt {
 }
 ```
 
-Можно минимизировать использование метода `timeOut`.
-Статья [Настройка ожидания элемента(ов)](./SETTINGS.MD#Ожидание-элемента(ов)). Предположим, мы указали 40 секунд как
-время ожидания элемента(ов) по умолчания. Тогда
-
-- поиск одиночного элемента/виджета:
-
-```java
-import org.openqa.selenium.WebElement;
-
-import static org.openqa.selenium.By.*;
-import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.*;
-
-public class Tezzt {
-
-    @Test
-    public void tezzt() {
-        WebElement e = inBrowser().find(webElement(xpath("./some/path")) //обязательно указать локатор
-                        .criteria(isEnabled()) //можно указать один критерий, 
-                // или несколько критериев посредством вызова .criteria 
-                // или с использованием конкатенации AND, OR, NOT, XOR
-        );
-    }
-}
-```
-
-```java
-import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Button;
-
-import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.*;
-
-public class Tezzt {
-
-    @Test
-    public void tezzt() {
-        Button button = inBrowser().find(button()
-                        .criteria(isEnabled()) //можно указать один критерий, 
-                // или несколько критериев посредством вызова .criteria 
-                // или с использованием конкатенации AND, OR, NOT, XOR
-        );
-    }
-}
-```
-
-- поиск множества элементов/виджетов:
-
-```java
-import java.util.List;
-
-import org.openqa.selenium.WebElement;
-
-import static org.openqa.selenium.By.*;
-import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.*;
-
-public class Tezzt {
-
-    @Test
-    public void tezzt() {
-        List<WebElement> elements = inBrowser().find(webElements(xpath("./some/path")) //обязательно указать локатор
-                        .criteria(isEnabled()) //можно указать один критерий, 
-                // или несколько критериев посредством вызова .criteria 
-                // или с использованием конкатенации AND, OR, NOT, XOR
-                //Перечисленным критериям должен соответствовать каждый элемент
-                //из результирующего списка
-        );
-    }
-}
-```
-
-```java
-import java.util.List;
-
-import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Button;
-
-import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
-import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.*;
-
-public class Tezzt {
-
-    @Test
-    public void tezzt() {
-        List<Button> buttons = inBrowser().find(buttons()
-                        .criteria(isEnabled()) //можно указать один критерий, 
-                // или несколько критериев посредством вызова .criteria 
-                // или с использованием конкатенации AND, OR, NOT, XOR
-                //Перечисленным критериям должна соответствовать каждая кнопка
-                //из результирующего списка
-        );
-    }
-}
-```
-
 - проверка факта наличия/появления элемента/виджета:
 
 Полезная информация: [Про наличие или отсутствие чего либо](./../../../core.api/doc/rus/IDEA.MD#Присутствие-и-отсутствие)
@@ -406,6 +308,104 @@ public class Tezzt {
                 "Кнопки все еще тут"); //Текст ошибки, которая должна быть выброшена
         // вернется true если кнопок нет или за указанное время они исчезли, иначе - 
         // будет выброшено исключение с текстом 'Кнопки все еще тут'
+    }
+}
+```
+
+Можно минимизировать использование метода `timeOut`.
+Статья [Настройка ожидания элемента(ов)](./SETTINGS.MD#Ожидание-элемента(ов)). Предположим, мы указали 40 секунд как
+время ожидания элемента(ов) по умолчания. Тогда
+
+- поиск одиночного элемента/виджета:
+
+```java
+import org.openqa.selenium.WebElement;
+
+import static org.openqa.selenium.By.*;
+import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.*;
+
+public class Tezzt {
+
+    @Test
+    public void tezzt() {
+        WebElement e = inBrowser().find(webElement(xpath("./some/path")) //обязательно указать локатор
+                        .criteria(isEnabled()) //можно указать один критерий, 
+                // или несколько критериев посредством вызова .criteria 
+                // или с использованием конкатенации AND, OR, NOT, XOR
+        );
+    }
+}
+```
+
+```java
+import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Button;
+
+import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.*;
+
+public class Tezzt {
+
+    @Test
+    public void tezzt() {
+        Button button = inBrowser().find(button()
+                        .criteria(isEnabled()) //можно указать один критерий, 
+                // или несколько критериев посредством вызова .criteria 
+                // или с использованием конкатенации AND, OR, NOT, XOR
+        );
+    }
+}
+```
+
+- поиск множества элементов/виджетов:
+
+```java
+import java.util.List;
+
+import org.openqa.selenium.WebElement;
+
+import static org.openqa.selenium.By.*;
+import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.*;
+
+public class Tezzt {
+
+    @Test
+    public void tezzt() {
+        List<WebElement> elements = inBrowser().find(webElements(xpath("./some/path")) //обязательно указать локатор
+                        .criteria(isEnabled()) //можно указать один критерий, 
+                // или несколько критериев посредством вызова .criteria 
+                // или с использованием конкатенации AND, OR, NOT, XOR
+                //Перечисленным критериям должен соответствовать каждый элемент
+                //из результирующего списка
+        );
+    }
+}
+```
+
+```java
+import java.util.List;
+
+import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Button;
+
+import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier.*;
+
+public class Tezzt {
+
+    @Test
+    public void tezzt() {
+        List<Button> buttons = inBrowser().find(buttons()
+                        .criteria(isEnabled()) //можно указать один критерий, 
+                // или несколько критериев посредством вызова .criteria 
+                // или с использованием конкатенации AND, OR, NOT, XOR
+                //Перечисленным критериям должна соответствовать каждая кнопка
+                //из результирующего списка
+        );
     }
 }
 ```
