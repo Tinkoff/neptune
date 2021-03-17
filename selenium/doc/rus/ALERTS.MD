@@ -50,9 +50,14 @@ public class Tezzt {
     
     @Test
     public void test() {
-        inBrowser().presenceOf(alert()); //Ожидание наличия алерта. 
+        boolean isAlertPresent = inBrowser().presenceOf(alert()); //Ожидание наличия алерта. 
         // Как и в примере выше, здесь можно указать критерии и время ожидания
         // вернется true если алерт есть, и false - если нет
+
+        boolean isAlertPresent = inBrowser().presenceOf(alert(), //Ожидание наличия алерта.
+                "Алерт не появился"); //Текст ошибки, если алерт не появился
+        // вернется true если алерт есть, если нет - 
+        // будет выброшено исключение с текстом 'Алерт не появился'
 
 
         inBrowser().absenceOf(alert(), ofSeconds(5)); //Ожидание отсутствия алерта. 
