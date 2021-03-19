@@ -1,6 +1,6 @@
 dependencies {
-    compile group: 'io.swagger.codegen.v3', name: 'swagger-codegen', version: '3.0.24'
-    compile group: 'io.swagger.codegen.v3', name: 'swagger-codegen-generators', version: '1.0.24'
+    compile group: 'io.swagger.codegen.v3', name: 'swagger-codegen', version: '3.0.25'
+    compile group: 'io.swagger.codegen.v3', name: 'swagger-codegen-generators', version: '1.0.25'
 }
 
 task javadocJar(type: Jar) {

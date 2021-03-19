@@ -35,6 +35,22 @@ public class Tezzt {
                         .criteria(recordedRequestUrlMatches("https://www.google.com")) //запросы
                         .timeOut(ofSeconds(10))); //можно указать время, за которое желаемые запросы 
         // должны быть получены
+        
+        //а так проверяется простой факт того, что ожидаемые запросы были отправлены/ответы получены
+        boolean areRequestsPresent = inBrowser().presenceOf(proxiedRequests()
+                .criteria(recordedRequestMethod(GET)) //можно перечислить критерии,
+                .criteria(recordedResponseStatusCode(200)) //которым должны соответствовать извлекаемые 
+                .criteria(recordedRequestUrlMatches("https://www.google.com")) //запросы
+                .timeOut(ofSeconds(10))); //можно указать время, за которое желаемые запросы
+        // должны быть получены
+        // вернется true если хотя бы один запрос, подходящий под описание выше, 
+        // был пойман, если нет - false
+
+        boolean areRequestsPresent = inBrowser().presenceOf(proxiedRequests(), 
+                "Запрос не был отправлен/ответ не был получен"); //Текст выбрасываемой ошибки
+        // вернется true если хотя бы один запрос, подходящий под описание выше, 
+        // был пойман, если нет - будет выброшено исключение с текстом 
+        // 'Запрос не был отправлен/ответ не был получен'
     }
 }
 ```
