@@ -448,6 +448,30 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
 
 
     /**
+     * Checks whenever desired requests/responses which are sent from browser are present or not
+     *
+     * @param getTraffic is a description of requests/responses to be caught
+     * @return are requests/responses present or not
+     */
+    public boolean presenceOf(BrowserProxyGetStepSupplier getTraffic) {
+        return super.presenceOf(getTraffic);
+    }
+
+    /**
+     * Checks whenever desired requests/responses which are sent from browser are present or not
+     *
+     * @param getTraffic   is a description of requests/responses to be caught
+     * @param errorMessage is a message of {@link WebDriverException} to be thrown when expected
+     *                     requests/responses are not caught
+     * @return are requests/responses present or not
+     */
+    public boolean presenceOf(BrowserProxyGetStepSupplier getTraffic, String errorMessage) {
+        return super.presenceOf(getTraffic,
+                () -> new WebDriverException(errorMessage));
+    }
+
+
+    /**
      * Checks whenever an element is absent or not
      *
      * @param toBeAbsent is how to find the element

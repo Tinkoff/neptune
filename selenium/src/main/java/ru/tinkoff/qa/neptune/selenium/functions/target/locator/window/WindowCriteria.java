@@ -52,7 +52,7 @@ public final class WindowCriteria {
                     try {
                         var pattern = compile(expression);
                         var m = pattern.matcher(title);
-                        return m.matches() || m.find();
+                        return m.matches();
                     } catch (Throwable t) {
                         t.printStackTrace();
                         return false;
@@ -101,7 +101,7 @@ public final class WindowCriteria {
             try {
                 var pattern = compile(expression);
                 var m = pattern.matcher(url);
-                return m.matches() || m.find();
+                return m.matches();
             } catch (Throwable t) {
                 t.printStackTrace();
                 return false;
@@ -133,7 +133,7 @@ public final class WindowCriteria {
                 try {
                     var pattern = compile(expression);
                     var m = pattern.matcher(part);
-                    return m.matches() || m.find();
+                    return m.matches();
                 } catch (Throwable t) {
                     t.printStackTrace();
                     return false;

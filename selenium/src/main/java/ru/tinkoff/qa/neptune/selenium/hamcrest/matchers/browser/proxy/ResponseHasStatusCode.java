@@ -34,7 +34,7 @@ public final class ResponseHasStatusCode extends TypeSafeDiagnosingMatcher<HarEn
      * @param statusCode is the expected status of the response
      * @return a new instance of {@link ResponseHasStatusCode}
      */
-    public static ResponseHasStatusCode responseHasStatusCode(Integer statusCode) {
+    public static ResponseHasStatusCode responseHasStatusCode(int statusCode) {
         return new ResponseHasStatusCode(is(statusCode));
     }
 
