@@ -15,74 +15,131 @@ import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization
 
 @Aspect
 public class LocalizationAspect {
+    private static final String POINTCUT_CRITERIA_METHOD =
+            "execution(static ru.tinkoff.qa.neptune.core.api.steps.Criteria *(..))";
+
+    private static final String POINTCUT_CONDITION =
+            "execution(static ru.tinkoff.qa.neptune.core.api.steps.Criteria condition(..))";
+
+    private static final String POINTCUT_AND =
+            "execution(static ru.tinkoff.qa.neptune.core.api.steps.Criteria AND(..))";
+
+    private static final String POINTCUT_OR =
+            "execution(static ru.tinkoff.qa.neptune.core.api.steps.Criteria OR(..))";
+
+    private static final String POINTCUT_XOR =
+            "execution(static ru.tinkoff.qa.neptune.core.api.steps.Criteria XOR(..))";
+
+    private static final String POINTCUT_NOT =
+            "execution(static ru.tinkoff.qa.neptune.core.api.steps.Criteria NOT(..))";
+
+    private static final String POINTCUT_PUBLIC_STATIC_METHOD_ACTION_SUPPLIER =
+            "execution(static ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier+ *(..))";
+
+    private static final String POINTCUT_PUBLIC_STATIC_METHOD_GET_SUPPLIER =
+            "execution(static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier+ *(..))";
+
+    private static final String POINTCUT_ACTION_SUPPLIER =
+            "execution(* ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier+.*(..))";
+
+    private static final String POINTCUT_GET_SUPPLIER =
+            "execution(* ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier+.*(..))";
+
     public LocalizationAspect() {
         super();
     }
 
-    /**
-     * Pointcut for public static methods returns Criteria>
-     */
-    @Pointcut("execution(static ru.tinkoff.qa.neptune.core.api.steps.Criteria *(java.util.function.Predicate))")
+    @Pointcut(POINTCUT_CRITERIA_METHOD)
     public void criteriaMethod() {
     }
 
-    /**
-     * Pointcut for public static methods
-     */
-    @Pointcut("execution(public static * *(..))")
-    public void allPublicStaticMethod() {
+    @Pointcut(POINTCUT_CONDITION)
+    public void conditions() {
     }
 
-    /**
-     * Pointcut for subclasses {@link SequentialActionSupplier}
-     */
-    @Pointcut("execution(* ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier+.*(..))")
+    @Pointcut(POINTCUT_AND)
+    public void AND() {
+    }
+
+    @Pointcut(POINTCUT_OR)
+    public void OR() {
+    }
+
+    @Pointcut(POINTCUT_XOR)
+    public void XOR() {
+    }
+
+    @Pointcut(POINTCUT_NOT)
+    public void NOT() {
+    }
+
+    @Pointcut(POINTCUT_PUBLIC_STATIC_METHOD_ACTION_SUPPLIER)
+    public void returnActionSupplier() {
+    }
+
+    @Pointcut(POINTCUT_PUBLIC_STATIC_METHOD_GET_SUPPLIER)
+    public void returnGetSupplier() {
+    }
+
+    @Pointcut(POINTCUT_ACTION_SUPPLIER)
     public void allSequentialActionSupplierSubclass() {
     }
 
-    /**
-     * Pointcut for subclasses {@link SequentialGetStepSupplier}
-     */
-    @Pointcut("execution(* ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier+.*(..))")
+    @Pointcut(POINTCUT_GET_SUPPLIER)
     public void allSequentialGetStepSupplierSubclass() {
     }
 
-    @Around("allPublicStaticMethod() && allSequentialActionSupplierSubclass()")
+    @Around("returnActionSupplier() && allSequentialActionSupplierSubclass()")
     public Object translateActionSupplier(ProceedingJoinPoint joinPoint) throws Throwable {
         Object result = joinPoint.proceed();
 
-        var description = translate(((MethodSignature) joinPoint.getSignature()).getMethod(), joinPoint.getArgs());
+        if (result != null) {
+            var description = translate(((MethodSignature) joinPoint.getSignature()).getMethod(), joinPoint.getArgs());
 
-        Method method = SequentialActionSupplier.class.getDeclaredMethod("setDescription", String.class);
-        method.setAccessible(true);
-        method.invoke(result, description);
-
-        return result;
+            if (description != null) {
+                Method method = SequentialActionSupplier.class.getDeclaredMethod("setDescription", String.class);
+                method.setAccessible(true);
+                method.invoke(result, description);
+            }
+            return result;
+        }
+        return null;
     }
 
-    @Around("allPublicStaticMethod() && allSequentialGetStepSupplierSubclass()")
+    @Around("returnGetSupplier() && allSequentialGetStepSupplierSubclass()")
     public Object translateGetSupplier(ProceedingJoinPoint joinPoint) throws Throwable {
         Object result = joinPoint.proceed();
 
-        var description = translate(((MethodSignature) joinPoint.getSignature()).getMethod(), joinPoint.getArgs());
+        if (result != null) {
+            var description = translate(((MethodSignature) joinPoint.getSignature()).getMethod(), joinPoint.getArgs());
 
-        Method method = SequentialGetStepSupplier.class.getDeclaredMethod("setDescription", String.class);
-        method.setAccessible(true);
-        method.invoke(result, description);
+            if (description != null) {
+                Method method = SequentialGetStepSupplier.class.getDeclaredMethod("setDescription", String.class);
+                method.setAccessible(true);
+                method.invoke(result, description);
+            }
 
-        return result;
+            return result;
+        }
+        return null;
     }
 
-    @Around("criteriaMethod()")
+    @Around("criteriaMethod() && !conditions() && !AND() && !OR() && !XOR() && !NOT()")
     public Object translateCriteria(ProceedingJoinPoint joinPoint) throws Throwable {
         Object result = joinPoint.proceed();
 
-        var description = translate(((MethodSignature) joinPoint.getSignature()).getMethod(), joinPoint.getArgs());
+        if (result != null) {
 
-        Method method = Criteria.class.getDeclaredMethod("setDescription", String.class);
-        method.setAccessible(true);
-        method.invoke(result, description);
+            var description = translate(((MethodSignature) joinPoint.getSignature()).getMethod(), joinPoint.getArgs());
 
-        return result;
+            if (description != null) {
+                Method method = Criteria.class.getDeclaredMethod("setDescription", String.class);
+                method.setAccessible(true);
+                method.invoke(result, description);
+            }
+
+            return result;
+        }
+        return null;
     }
 }

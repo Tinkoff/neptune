@@ -15,7 +15,7 @@ final class MouseMoveActionSupplier extends InteractiveAction {
     final int y;
 
     MouseMoveActionSupplier(int x, int y) {
-        super("Mouse move");
+        super();
         this.x = x;
         this.y = y;
     }

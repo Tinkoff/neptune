@@ -4,6 +4,7 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.CaptorFilterByProd
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
 import ru.tinkoff.qa.neptune.http.api.request.NeptuneHttpRequestImpl;
@@ -36,6 +37,7 @@ import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapture
 @SequentialGetStepSupplier.DefaultParameterNames(
         criteria = "Response criteria"
 )
+@Description("Http Response")
 public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSupplier.GetObjectStepSupplier<HttpStepContext, HttpResponse<T>,
         ResponseSequentialGetSupplier<T>> {
 
@@ -46,7 +48,7 @@ public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSup
     private ResponseSequentialGetSupplier(RequestBuilder requestBuilder,
                                           HttpResponse.BodyHandler<T> bodyHandler,
                                           ResponseExecutionInfo info) {
-        super("Http Response", httpStepContext -> {
+        super(httpStepContext -> {
             try {
                 info.setLastReceived(null);
                 info.startExecutionLogging();

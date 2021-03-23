@@ -13,7 +13,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 abstract class ClickAndHoldActionSupplier extends InteractiveAction {
 
     ClickAndHoldActionSupplier() {
-        super("Click left mouse button and hold");
+        super();
     }
 
     static final class ClickAndHoldSimpleActionSupplier extends ClickAndHoldActionSupplier {

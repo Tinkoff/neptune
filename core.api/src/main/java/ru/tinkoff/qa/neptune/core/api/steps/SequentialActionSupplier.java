@@ -22,6 +22,7 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier.DefaultParameterNames.DefaultActionParameterReader.getImperative;
 import static ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier.DefaultParameterNames.DefaultActionParameterReader.getPerformOnPseudoField;
 import static ru.tinkoff.qa.neptune.core.api.steps.StepAction.action;
 import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
@@ -75,12 +76,13 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
             function = null;
         }
 
+        var description = translate(getImperative(this.getClass())) + actionDescription;
         var action = ofNullable(function).map(function1 ->
-                action(actionDescription, (Consumer<T>) t -> {
+                action(description, (Consumer<T>) t -> {
                     R r = function1.apply(t);
                     performActionOn(r);
                 }))
-                .orElseGet(() -> action(actionDescription, t ->
+                .orElseGet(() -> action(description, t ->
                         performActionOn((R) functionOrObject)));
 
         action.addCaptorFilters(captorFilters);
@@ -251,6 +253,13 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
     public @interface DefaultParameterNames {
 
         /**
+         * Defines name of imperative of a step
+         *
+         * @return imperative of a step
+         */
+        String imperative() default "Perform: ";
+
+        /**
          * Defines name of the perform on-parameter
          *
          * @return Defined name of the perform on-parameter
@@ -270,19 +279,27 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
                 if (!SequentialActionSupplier.class.isAssignableFrom(toRead)) {
                     return null;
                 }
+                return new PseudoField(toRead, "performOn", getDefaultParameters(toRead).performOn());
+            }
 
-                var defaultParameters = ofNullable(toRead.getAnnotation(SequentialActionSupplier.DefaultParameterNames.class))
+            public static PseudoField getImperative(Class<?> toRead) {
+                if (!SequentialActionSupplier.class.isAssignableFrom(toRead)) {
+                    return null;
+                }
+                return new PseudoField(toRead, "imperative", getDefaultParameters(toRead).imperative());
+            }
+
+            private static DefaultParameterNames getDefaultParameters(Class<?> toRead) {
+                return ofNullable(toRead.getAnnotation(DefaultParameterNames.class))
                         .orElseGet(() -> {
-                            SequentialActionSupplier.DefaultParameterNames result = null;
+                            DefaultParameterNames parameterNames = null;
                             var clazz = toRead;
-                            while (result == null) {
+                            while (parameterNames == null) {
                                 clazz = clazz.getSuperclass();
-                                result = clazz.getAnnotation(SequentialActionSupplier.DefaultParameterNames.class);
+                                parameterNames = clazz.getAnnotation(DefaultParameterNames.class);
                             }
-                            return result;
+                            return parameterNames;
                         });
-
-                return new PseudoField(toRead, "performOn", defaultParameters.performOn());
             }
         }
     }

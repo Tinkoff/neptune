@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.data.base.api.data.operations;
 import org.datanucleus.ExecutionContextImpl;
 import org.datanucleus.api.jdo.JDOPersistenceManager;
 import org.datanucleus.enhancement.Persistable;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
@@ -26,8 +27,8 @@ import static ru.tinkoff.qa.neptune.data.base.api.ConnectionDataReader.getConnec
 public abstract class DataOperation<T extends PersistableObject, R extends DataOperation<T, R>>
         extends SequentialGetStepSupplier.GetIterableChainedStepSupplier<DataBaseStepContext, List<T>, Map<JDOPersistenceManager, List<T>>, T, R> {
 
-    DataOperation(String description, Function<Map<JDOPersistenceManager, List<T>>, List<T>> originalFunction) {
-        super(description, originalFunction);
+    DataOperation(Function<Map<JDOPersistenceManager, List<T>>, List<T>> originalFunction) {
+        super(originalFunction);
     }
 
     static <T extends PersistableObject> Map<JDOPersistenceManager, List<T>> getMap(DataBaseStepContext context,
@@ -89,6 +90,7 @@ public abstract class DataOperation<T extends PersistableObject, R extends DataO
      * @return an instance of {@link UpdateOperation}
      */
     @SafeVarargs
+    @Description("List of updated objects")
     public static <T extends PersistableObject> UpdateOperation<T, ?> updated(SelectASingle<T> howToSelect, UpdateExpression<T>... set) {
         return new UpdateOperation.UpdateBySelection<>(howToSelect, set);
     }
@@ -102,6 +104,7 @@ public abstract class DataOperation<T extends PersistableObject, R extends DataO
      * @return an instance of {@link UpdateOperation}
      */
     @SafeVarargs
+    @Description("List of updated objects")
     public static <T extends PersistableObject> UpdateOperation<T, ?> updated(SelectList<?, List<T>> howToSelect, UpdateExpression<T>... set) {
         return new UpdateOperation.UpdateBySelection<>(howToSelect, set);
     }
@@ -115,6 +118,7 @@ public abstract class DataOperation<T extends PersistableObject, R extends DataO
      * @return an instance of {@link UpdateOperation}
      */
     @SafeVarargs
+    @Description("List of updated objects")
     public static <T extends PersistableObject> UpdateOperation<T, ?> updated(Collection<T> toBeUpdated, UpdateExpression<T>... set) {
         return new UpdateOperation.UpdateSelected<>(toBeUpdated, set);
     }
@@ -126,6 +130,7 @@ public abstract class DataOperation<T extends PersistableObject, R extends DataO
      * @param <T>         is a type of {@link PersistableObject} to be deleted
      * @return an instance of {@link DeleteOperation}
      */
+    @Description("List of deleted objects")
     public static <T extends PersistableObject> DeleteOperation<T, ?> deleted(SelectASingle<T> howToSelect) {
         return new DeleteOperation.DeleteBySelection<>(howToSelect);
     }
@@ -137,6 +142,7 @@ public abstract class DataOperation<T extends PersistableObject, R extends DataO
      * @param <T>         is a type of {@link PersistableObject} to be deleted
      * @return an instance of {@link DeleteOperation}
      */
+    @Description("List of deleted objects")
     public static <T extends PersistableObject> DeleteOperation<T, ?> deleted(SelectList<?, List<T>> howToSelect) {
         return new DeleteOperation.DeleteBySelection<>(howToSelect);
     }
@@ -148,6 +154,7 @@ public abstract class DataOperation<T extends PersistableObject, R extends DataO
      * @param <T>         is a type of {@link PersistableObject} to be deleted
      * @return an instance of {@link DeleteOperation}
      */
+    @Description("List of deleted objects")
     public static <T extends PersistableObject> DeleteOperation<T, ?> deleted(Collection<T> toBeDeleted) {
         return new DeleteOperation.DeleteSelected<>(toBeDeleted);
     }
@@ -159,6 +166,7 @@ public abstract class DataOperation<T extends PersistableObject, R extends DataO
      * @param <T>          is a type of {@link PersistableObject} to be inserted
      * @return an instance of {@link InsertOperation}
      */
+    @Description("List of inserted objects")
     public static <T extends PersistableObject> InsertOperation<T> inserted(Collection<T> toBeInserted) {
         return new InsertOperation<>(toBeInserted);
     }

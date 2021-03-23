@@ -75,9 +75,9 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
     Supplier<? extends RuntimeException> exceptionSupplier;
 
-    protected SequentialGetStepSupplier<T, R, M, P, THIS> setDescription(String description) {
+    protected THIS setDescription(String description) {
         this.description = description;
-        return this;
+        return (THIS) this;
     }
 
     @Override
@@ -320,6 +320,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         checkNotNull(endFunction);
 
         StepFunction<T, R> toBeReturned;
+
+        var description = translate(getImperative(this.getClass())) + this.description;
         if (StepFunction.class.isAssignableFrom(composeWith.getClass())) {
             var endFunctionStep = toGet(description, endFunction);
             endFunctionStep.addCaptorFilters(captorFilters);
@@ -382,6 +384,13 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     @Retention(RUNTIME)
     @Target({TYPE})
     public @interface DefaultParameterNames {
+
+        /**
+         * Defines name of imperative of a step
+         *
+         * @return imperative of a step
+         */
+        String imperative() default "Get: ";
 
         /**
          * Defines name of the timeout-parameter
@@ -449,6 +458,13 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
                     return null;
                 }
                 return new PseudoField(toRead, "criteria", getDefaultParameters(toRead).criteria());
+            }
+
+            public static PseudoField getImperative(Class<?> toRead) {
+                if (!SequentialGetStepSupplier.class.isAssignableFrom(toRead)) {
+                    return null;
+                }
+                return new PseudoField(toRead, "imperative", getDefaultParameters(toRead).imperative());
             }
 
             private static DefaultParameterNames getDefaultParameters(Class<?> toRead) {

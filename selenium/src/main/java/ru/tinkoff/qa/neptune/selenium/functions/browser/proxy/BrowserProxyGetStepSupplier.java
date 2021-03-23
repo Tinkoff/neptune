@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.selenium.functions.browser.proxy;
 import com.browserup.bup.BrowserUpProxy;
 import com.browserup.harreader.model.HarEntry;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
@@ -14,10 +15,11 @@ import java.util.function.Predicate;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.GetProxy.getBrowserProxy;
 
+@Description("Proxied requests")
 public class BrowserProxyGetStepSupplier extends SequentialGetStepSupplier.GetIterableChainedStepSupplier<SeleniumStepContext, List<HarEntry>, BrowserUpProxy, HarEntry, BrowserProxyGetStepSupplier> {
 
     private BrowserProxyGetStepSupplier() {
-        super("Proxied requests", proxy -> ofNullable(proxy)
+        super(proxy -> ofNullable(proxy)
                 .map(p -> {
                     if (!p.isStarted()) {
                         return new ArrayList<HarEntry>();

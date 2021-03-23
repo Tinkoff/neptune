@@ -36,8 +36,8 @@ import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSuppl
 public abstract class GetObjectFromArrayBodyStepSupplier<T, R, S extends GetObjectFromArrayBodyStepSupplier<T, R, S>>
         extends SequentialGetStepSupplier.GetObjectFromArrayStepSupplier<HttpStepContext, R, S> {
 
-    private GetObjectFromArrayBodyStepSupplier(String description, Function<HttpStepContext, R[]> f) {
-        super(description, f);
+    private GetObjectFromArrayBodyStepSupplier(Function<HttpStepContext, R[]> f) {
+        super(f);
     }
 
     /**
@@ -54,7 +54,7 @@ public abstract class GetObjectFromArrayBodyStepSupplier<T, R, S extends GetObje
     public static <T, R> GetObjectFromArrayWhenResponseReceived<T, R> asOneOfArray(String description,
                                                                                    HttpResponse<T> received,
                                                                                    Function<T, R[]> f) {
-        return new GetObjectFromArrayWhenResponseReceived<>(description, received, f);
+        return new GetObjectFromArrayWhenResponseReceived<>(received, f).setDescription(description);
     }
 
     /**
@@ -73,7 +73,7 @@ public abstract class GetObjectFromArrayBodyStepSupplier<T, R, S extends GetObje
                                                                                     RequestBuilder requestBuilder,
                                                                                     HttpResponse.BodyHandler<T> handler,
                                                                                     Function<T, R[]> f) {
-        return new GetObjectFromArrayWhenResponseReceiving<>(description, response(requestBuilder, handler), f);
+        return new GetObjectFromArrayWhenResponseReceiving<>(response(requestBuilder, handler), f).setDescription(description);
     }
 
 
@@ -88,7 +88,7 @@ public abstract class GetObjectFromArrayBodyStepSupplier<T, R, S extends GetObje
      */
     public static <R> GetObjectFromArrayWhenResponseReceived<R[], R> asOneOfArray(String description,
                                                                                   HttpResponse<R[]> received) {
-        return new GetObjectFromArrayWhenResponseReceived<>(description, received, rs -> rs);
+        return new GetObjectFromArrayWhenResponseReceived<>(received, rs -> rs).setDescription(description);
     }
 
     /**
@@ -104,7 +104,7 @@ public abstract class GetObjectFromArrayBodyStepSupplier<T, R, S extends GetObje
     public static <R> GetObjectFromArrayWhenResponseReceiving<R[], R> asOneOfArray(String description,
                                                                                    RequestBuilder requestBuilder,
                                                                                    HttpResponse.BodyHandler<R[]> handler) {
-        return new GetObjectFromArrayWhenResponseReceiving<>(description, response(requestBuilder, handler), rs -> rs);
+        return new GetObjectFromArrayWhenResponseReceiving<>(response(requestBuilder, handler), rs -> rs).setDescription(description);
     }
 
 
@@ -142,10 +142,15 @@ public abstract class GetObjectFromArrayBodyStepSupplier<T, R, S extends GetObje
         @StepParameter("From body of received http response")
         final HttpResponse<T> response;
 
-        private GetObjectFromArrayWhenResponseReceived(String description, HttpResponse<T> response, Function<T, R[]> f) {
-            super(description, f.compose(ignored -> response.body()));
+        private GetObjectFromArrayWhenResponseReceived(HttpResponse<T> response, Function<T, R[]> f) {
+            super(f.compose(ignored -> response.body()));
             checkNotNull(response);
             this.response = response;
+        }
+
+        @Override
+        protected GetObjectFromArrayWhenResponseReceived<T, R> setDescription(String description) {
+            return super.setDescription(description);
         }
     }
 
@@ -162,17 +167,21 @@ public abstract class GetObjectFromArrayBodyStepSupplier<T, R, S extends GetObje
         private final ResponseExecutionInfo info;
         private final ResponseSequentialGetSupplier<T> getResponse;
 
-        private GetObjectFromArrayWhenResponseReceiving(String description, ReceiveResponseAndGetResultFunction<T, R[]> f) {
-            super(description, f);
+        private GetObjectFromArrayWhenResponseReceiving(ReceiveResponseAndGetResultFunction<T, R[]> f) {
+            super(f);
             var s = f.getGetResponseSupplier();
             info = s.getInfo();
             getResponse = s;
         }
 
-        private GetObjectFromArrayWhenResponseReceiving(String description,
-                                                        ResponseSequentialGetSupplier<T> getResponse,
+        private GetObjectFromArrayWhenResponseReceiving(ResponseSequentialGetSupplier<T> getResponse,
                                                         Function<T, R[]> f) {
-            this(description, new ReceiveResponseAndGetResultFunction<>(f, getResponse));
+            this(new ReceiveResponseAndGetResultFunction<>(f, getResponse));
+        }
+
+        @Override
+        protected GetObjectFromArrayWhenResponseReceiving<T, R> setDescription(String description) {
+            return super.setDescription(description);
         }
 
         /**

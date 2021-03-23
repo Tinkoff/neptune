@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.http.api.cookies;
 
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 
@@ -21,8 +22,8 @@ import static java.util.Optional.ofNullable;
 public abstract class DeleteHttpCookiesActionSupplier<R, S extends DeleteHttpCookiesActionSupplier<R, S>>
         extends SequentialActionSupplier<CookieManager, R, S> {
 
-    private DeleteHttpCookiesActionSupplier(String description) {
-        super(description);
+    private DeleteHttpCookiesActionSupplier() {
+        super();
     }
 
     /**
@@ -30,6 +31,7 @@ public abstract class DeleteHttpCookiesActionSupplier<R, S extends DeleteHttpCoo
      *
      * @return instance of {@link DeleteHttpCookiesActionSupplier}
      */
+    @Description("Delete all http cookies")
     public static DeleteHttpCookiesActionSupplier<?, ?> deleteCookies() {
         return new DeleteAllHttpCookies();
     }
@@ -43,6 +45,7 @@ public abstract class DeleteHttpCookiesActionSupplier<R, S extends DeleteHttpCoo
      * @return instance of {@link DeleteHttpCookiesActionSupplier}
      */
     @SafeVarargs
+    @Description("Delete http cookies")
     public static DeleteHttpCookiesActionSupplier<?, ?> deleteCookies(URI uri,
                                                                       Criteria<HttpCookie>... toBeRemoved) {
         return new DeleteFoundHttpCookies(uri, toBeRemoved);
@@ -54,6 +57,7 @@ public abstract class DeleteHttpCookiesActionSupplier<R, S extends DeleteHttpCoo
      * @param toBeRemoved cookies that should be deleted
      * @return instance of {@link DeleteHttpCookiesActionSupplier}
      */
+    @Description("Delete http cookies")
     public static DeleteHttpCookiesActionSupplier<?, ?> deleteCookies(Collection<HttpCookie> toBeRemoved) {
         return new DeleteDefinedHttpCookies(toBeRemoved);
     }
@@ -61,7 +65,7 @@ public abstract class DeleteHttpCookiesActionSupplier<R, S extends DeleteHttpCoo
     private static final class DeleteAllHttpCookies extends DeleteHttpCookiesActionSupplier<CookieStore, DeleteAllHttpCookies> {
 
         private DeleteAllHttpCookies() {
-            super("Delete all http cookies");
+            super();
             performOn(CookieManager::getCookieStore);
         }
 
@@ -78,7 +82,7 @@ public abstract class DeleteHttpCookiesActionSupplier<R, S extends DeleteHttpCoo
         private final Collection<HttpCookie> toDelete;
 
         private DeleteDefinedHttpCookies(Collection<HttpCookie> toDelete) {
-            super("Delete http cookies");
+            super();
             checkArgument(nonNull(toDelete) && toDelete.size() > 0,
                     "Should be defined at least one cookie");
             this.toDelete = toDelete;
@@ -97,7 +101,7 @@ public abstract class DeleteHttpCookiesActionSupplier<R, S extends DeleteHttpCoo
 
         @SafeVarargs
         private DeleteFoundHttpCookies(URI uri, Criteria<HttpCookie>... toBeRemoved) {
-            super("Delete http cookies");
+            super();
             checkArgument(nonNull(toBeRemoved) && toBeRemoved.length > 0,
                     "It is necessary to define at least one criteria to find http cookies for removal");
 

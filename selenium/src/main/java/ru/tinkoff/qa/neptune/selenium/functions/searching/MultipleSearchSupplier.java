@@ -7,6 +7,8 @@ import org.openqa.selenium.WebElement;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.*;
@@ -16,9 +18,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static java.lang.String.format;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.OR;
-import static ru.tinkoff.qa.neptune.selenium.api.widget.Widget.getWidgetName;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FIND_ONLY_VISIBLE_ELEMENTS;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMENT_WAITING_DURATION;
@@ -29,12 +29,13 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMEN
 @SequentialGetStepSupplier.DefaultParameterNames(
         timeOut = "Time of the waiting for elements",
         from = "Parent element",
-        criteria = "Element criteria"
+        criteria = "Element criteria",
+        imperative = "Find"
 )
 public final class MultipleSearchSupplier<R extends SearchContext> extends
         SequentialGetStepSupplier.GetIterableChainedStepSupplier<SearchContext, List<R>, SearchContext, R, MultipleSearchSupplier<R>> {
 
-    private MultipleSearchSupplier(String description, Function<SearchContext, List<R>> originalFunction) {
+    private MultipleSearchSupplier(Function<SearchContext, List<R>> originalFunction) {
         super(originalFunction);
         from(searchContext -> searchContext);
         timeOut(ELEMENT_WAITING_DURATION.get());
@@ -52,9 +53,10 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param by locator strategy to find an element
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<WebElement> webElements(By by) {
+    @Description("List of web elements located {by}")
+    public static MultipleSearchSupplier<WebElement> webElements(@DescriptionFragment("by") By by) {
         var webElements = FindWebElements.webElements(by);
-        return new MultipleSearchSupplier<>(format("List of web elements located %s", by), webElements);
+        return new MultipleSearchSupplier<>(webElements);
     }
 
     /**
@@ -66,10 +68,11 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param text that desired elements should have
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static MultipleSearchSupplier<WebElement> webElements(By by, String text) {
+    @Description("Web element located {by} with the text '{text}'")
+    public static MultipleSearchSupplier<WebElement> webElements(@DescriptionFragment("by") By by, @DescriptionFragment("text") String text) {
         var shouldHaveText = text(text);
         var webElements = FindWebElements.webElements(by);
-        var search = new MultipleSearchSupplier<>(format("Web element located %s with the text '%s'", by, text), webElements);
+        var search = new MultipleSearchSupplier<>(webElements);
         return search.criteria(shouldHaveText);
     }
 
@@ -85,8 +88,10 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
      */
-    public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass, String textOrLabel) {
-        return new MultipleSearchSupplier<T>(format("List of %s '%s'", getWidgetName(tClass), textOrLabel),
+    @Description("List of {tClass} '{textOrLabel}'")
+    public static <T extends Widget> MultipleSearchSupplier<T> widgets(@DescriptionFragment(value = "tClass", makeReadableBy = WidgetNameGetter.class) Class<T> tClass,
+                                                                       @DescriptionFragment("textOrLabel") String textOrLabel) {
+        return new MultipleSearchSupplier<T>(
                 FindWidgets.widgets(tClass))
                 .criteria(OR(
                         text(textOrLabel),
@@ -103,9 +108,11 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param <T>    the type of widgets which should be found
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    public static <T extends Widget> MultipleSearchSupplier<T> widgets(Class<T> tClass) {
+    @Description("List of {tClass}")
+    public static <T extends Widget> MultipleSearchSupplier<T> widgets(@DescriptionFragment(value = "tClass",
+            makeReadableBy = WidgetNameGetter.class) Class<T> tClass) {
         var widgets = FindWidgets.widgets(tClass);
-        return new MultipleSearchSupplier<>(format("List of %s", getWidgetName(tClass)), widgets);
+        return new MultipleSearchSupplier<>(widgets);
     }
 
     /**

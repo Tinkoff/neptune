@@ -19,7 +19,7 @@ final class DragAndDropByActionSupplier extends InteractiveAction {
     private final Object e;
 
     DragAndDropByActionSupplier(Object e, int x, int y) {
-        super("Drag and drop");
+        super();
         checkNotNull(e);
         this.e = e;
         this.x = x;

@@ -37,8 +37,8 @@ import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSuppl
 public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetObjectFromIterableBodyStepSupplier<T, R, S>>
         extends SequentialGetStepSupplier.GetObjectFromIterableStepSupplier<HttpStepContext, R, S> {
 
-    private <Q extends Iterable<R>> GetObjectFromIterableBodyStepSupplier(String description, Function<HttpStepContext, Q> f) {
-        super(/*description,*/ f);
+    private <Q extends Iterable<R>> GetObjectFromIterableBodyStepSupplier(Function<HttpStepContext, Q> f) {
+        super(f);
     }
 
     /**
@@ -56,7 +56,7 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetO
     public static <T, R, S extends Iterable<R>> GetObjectFromIterableWhenResponseReceived<T, R> asOneOfIterable(String description,
                                                                                                                 HttpResponse<T> received,
                                                                                                                 Function<T, S> f) {
-        return new GetObjectFromIterableWhenResponseReceived<>(description, received, f);
+        return new GetObjectFromIterableWhenResponseReceived<>(received, f).setDescription(description);
     }
 
     /**
@@ -76,7 +76,7 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetO
                                                                                                                  RequestBuilder requestBuilder,
                                                                                                                  HttpResponse.BodyHandler<T> handler,
                                                                                                                  Function<T, S> f) {
-        return new GetObjectFromIterableWhenResponseReceiving<>(description, response(requestBuilder, handler), f);
+        return new GetObjectFromIterableWhenResponseReceiving<>(response(requestBuilder, handler), f).setDescription(description);
     }
 
 
@@ -92,7 +92,7 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetO
      */
     public static <R, S extends Iterable<R>> GetObjectFromIterableWhenResponseReceived<S, R> asOneOfIterable(String description,
                                                                                                              HttpResponse<S> received) {
-        return new GetObjectFromIterableWhenResponseReceived<>(description, received, rs -> rs);
+        return new GetObjectFromIterableWhenResponseReceived<>(received, rs -> rs).setDescription(description);
     }
 
     /**
@@ -109,7 +109,7 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetO
     public static <R, S extends Iterable<R>> GetObjectFromIterableWhenResponseReceiving<S, R> asOneOfIterable(String description,
                                                                                                               RequestBuilder requestBuilder,
                                                                                                               HttpResponse.BodyHandler<S> handler) {
-        return new GetObjectFromIterableWhenResponseReceiving<>(description, response(requestBuilder, handler), rs -> rs);
+        return new GetObjectFromIterableWhenResponseReceiving<>(response(requestBuilder, handler), rs -> rs).setDescription(description);
     }
 
 
@@ -147,12 +147,16 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetO
         @StepParameter("From body of received http response")
         final HttpResponse<T> response;
 
-        private <S extends Iterable<R>> GetObjectFromIterableWhenResponseReceived(String description,
-                                                                                  HttpResponse<T> response,
+        private <S extends Iterable<R>> GetObjectFromIterableWhenResponseReceived(HttpResponse<T> response,
                                                                                   Function<T, S> f) {
-            super(description, f.compose(ignored -> response.body()));
+            super(f.compose(ignored -> response.body()));
             checkNotNull(response);
             this.response = response;
+        }
+
+        @Override
+        protected GetObjectFromIterableWhenResponseReceived<T, R> setDescription(String description) {
+            return super.setDescription(description);
         }
     }
 
@@ -168,17 +172,21 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetO
         private final ResponseExecutionInfo info;
         private final ResponseSequentialGetSupplier<T> getResponse;
 
-        private <S extends Iterable<R>> GetObjectFromIterableWhenResponseReceiving(String description, ReceiveResponseAndGetResultFunction<T, S> f) {
-            super(description, f);
+        private <S extends Iterable<R>> GetObjectFromIterableWhenResponseReceiving(ReceiveResponseAndGetResultFunction<T, S> f) {
+            super(f);
             var s = f.getGetResponseSupplier();
             info = s.getInfo();
             getResponse = s;
         }
 
-        private <S extends Iterable<R>> GetObjectFromIterableWhenResponseReceiving(String description,
-                                                                                   ResponseSequentialGetSupplier<T> getResponse,
+        private <S extends Iterable<R>> GetObjectFromIterableWhenResponseReceiving(ResponseSequentialGetSupplier<T> getResponse,
                                                                                    Function<T, S> f) {
-            this(description, new ReceiveResponseAndGetResultFunction<>(f, getResponse));
+            this(new ReceiveResponseAndGetResultFunction<>(f, getResponse));
+        }
+
+        @Override
+        protected GetObjectFromIterableWhenResponseReceiving<T, R> setDescription(String description) {
+            return super.setDescription(description);
         }
 
         /**

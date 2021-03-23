@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 
 import java.lang.annotation.Annotation;

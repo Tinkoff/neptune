@@ -53,7 +53,7 @@ public class StepFunction<T, R> implements Function<T, R>,
      * @return a new function with the given string description. Description is returned
      * by the {@link #toString()} method.
      */
-    public static <T, R> StepFunction<T, R> toGet(String description, Function<T, R> function) {
+    static <T, R> StepFunction<T, R> toGet(String description, Function<T, R> function) {
         return new StepFunction<>(description, function);
     }
 
@@ -80,7 +80,7 @@ public class StepFunction<T, R> implements Function<T, R>,
                 && ((SequentialStepFunction<?, ?>) this).sequence.size() > 1);
         try {
             if (toReport) {
-                fireEventStarting("Get: " + description, parameters);
+                fireEventStarting(description, parameters);
             }
             R result = (R) function.apply(t);
             if (toReport) {

@@ -20,6 +20,7 @@ import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 import static ru.tinkoff.qa.neptune.core.api.steps.StepParametersTest.TestActionStepSupplier.getTestActionStepSupplier;
 import static ru.tinkoff.qa.neptune.core.api.steps.StepParametersTest.TestActionStepSupplier2.getTestActionStepSupplier2;
 import static ru.tinkoff.qa.neptune.core.api.steps.StepParametersTest.TestGetStepSupplier.getTestGetStepSupplier;
+import static ru.tinkoff.qa.neptune.core.api.steps.StepParametersTest.TestGetStepSupplier2.getTestGetStepSupplier2;
 
 public class StepParametersTest {
 
@@ -34,42 +35,42 @@ public class StepParametersTest {
     @DataProvider
     public static Object[][] data2() {
         return new Object[][]{
-                {new TestGetStepSupplier().from(new TestGetStepSupplier()),
+                {getTestGetStepSupplier().from(getTestGetStepSupplier()),
                         6,
                         "Criteria",
                         "Timeout/time for retrying",
                         "Polling time",
                         hasEntry(equalTo("Get from"), anything())},
 
-                {new TestGetStepSupplier2().from(new TestGetStepSupplier()),
+                {getTestGetStepSupplier2().from(getTestGetStepSupplier2()),
                         6,
                         "Custom criteria",
                         "Custom Time out",
                         "Custom sleeping",
                         hasEntry(equalTo("Custom from"), anything())},
 
-                {new TestGetStepSupplier().from(o -> null),
+                {getTestGetStepSupplier().from(o -> null),
                         5,
                         "Criteria",
                         "Timeout/time for retrying",
                         "Polling time",
                         not(hasEntry(equalTo("Get from"), anything()))},
 
-                {new TestGetStepSupplier2().from(o -> null),
+                {getTestGetStepSupplier2().from(o -> null),
                         5,
                         "Custom criteria",
                         "Custom Time out",
                         "Custom sleeping",
                         not(hasEntry(equalTo("Custom from"), anything()))},
 
-                {new TestGetStepSupplier().from(5),
+                {getTestGetStepSupplier().from(5),
                         6,
                         "Criteria",
                         "Timeout/time for retrying",
                         "Polling time",
                         hasEntry(equalTo("Get from"), equalTo("5"))},
 
-                {new TestGetStepSupplier2().from(5),
+                {getTestGetStepSupplier2().from(5),
                         6,
                         "Custom criteria",
                         "Custom Time out",

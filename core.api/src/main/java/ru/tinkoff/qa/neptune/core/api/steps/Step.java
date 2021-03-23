@@ -11,6 +11,7 @@ import static java.util.Collections.emptyMap;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.*;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchSuccessEvent;
+import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 /**
@@ -97,7 +98,7 @@ public abstract class Step<T> {
         @Override
         public Void perform() {
             try {
-                fireEventStarting("Perform: " + toString(), emptyMap());
+                fireEventStarting(translate(toString()), emptyMap());
                 stepRunnable.run();
                 return null;
             } catch (Throwable thrown) {
@@ -122,7 +123,7 @@ public abstract class Step<T> {
         @Override
         public T perform() {
             try {
-                fireEventStarting("Get: " + toString(), emptyMap());
+                fireEventStarting(translate(toString()), emptyMap());
 
                 T result = stepSupplier.get();
                 if (isLoggable(result)) {

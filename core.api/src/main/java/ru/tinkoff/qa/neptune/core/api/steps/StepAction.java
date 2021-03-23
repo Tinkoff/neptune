@@ -44,14 +44,14 @@ public class StepAction<T> implements MakesCapturesOnFinishing<StepAction<T>> {
      * @return a new consumer with the given string description. Description is returned
      * by the {@link #toString()} method.
      */
-    public static <T> StepAction<T> action(String description, Consumer<T> consumer) {
+    static <T> StepAction<T> action(String description, Consumer<T> consumer) {
         return new StepAction<>(description, consumer);
     }
 
 
     public void accept(T t) {
         try {
-            fireEventStarting("Perform: " + description, parameters);
+            fireEventStarting(description, parameters);
             consumer.accept(t);
             if (catchSuccessEvent() && !Context.class.isAssignableFrom(consumer.getClass())) {
                 catchValue(t, captorFilters);

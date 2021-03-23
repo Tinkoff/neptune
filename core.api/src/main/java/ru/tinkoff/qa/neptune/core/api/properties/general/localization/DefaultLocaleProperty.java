@@ -12,7 +12,7 @@ import static org.apache.commons.lang3.LocaleUtils.toLocale;
 @PropertyDescription(description = "Defines default locale",
         section = "Report localization")
 @PropertyName("DEFAULT_LOCALE")
-public class DefaultLocaleProperty implements PropertySupplier<Locale> {
+public class DefaultLocaleProperty implements PropertySupplier<Locale, Locale> {
     public static final DefaultLocaleProperty DEFAULT_LOCALE_PROPERTY = new DefaultLocaleProperty();
 
     private DefaultLocaleProperty() {

@@ -11,7 +11,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 abstract class DoubleClickActionSupplier extends InteractiveAction {
 
     DoubleClickActionSupplier() {
-        super("Double click");
+        super();
     }
 
     static final class DoubleClickSimpleActionSupplier extends DoubleClickActionSupplier {

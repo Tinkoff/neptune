@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.content.management;
 
 import org.openqa.selenium.WebDriver;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.GetFrameSupplier;
@@ -16,6 +17,7 @@ import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.currentWindow;
 
+@Description("Change active browser content")
 public final class ContentManagementCommand extends SequentialActionSupplier<WebDriver, WebDriver, ContentManagementCommand> {
 
     private static final ThreadLocal<ContentManagementCommand> CURRENT_COMMAND = new ThreadLocal<>();
@@ -30,7 +32,7 @@ public final class ContentManagementCommand extends SequentialActionSupplier<Web
     private boolean addFrameParams;
 
     ContentManagementCommand() {
-        super("Change active browser content");
+        super();
         performOn(driver -> driver);
     }
 
@@ -46,6 +48,7 @@ public final class ContentManagementCommand extends SequentialActionSupplier<Web
         }
     }
 
+    @Description("Change active browser content")
     public static ContentManagementCommand getCurrentCommand() {
         var result = CURRENT_COMMAND.get();
         CURRENT_COMMAND.set(null);

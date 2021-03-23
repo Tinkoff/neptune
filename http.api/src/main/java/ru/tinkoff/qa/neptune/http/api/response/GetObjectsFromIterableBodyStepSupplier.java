@@ -36,8 +36,8 @@ import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSuppl
 public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Iterable<R>, Q extends GetObjectsFromIterableBodyStepSupplier<T, R, S, Q>>
         extends SequentialGetStepSupplier.GetIterableStepSupplier<HttpStepContext, S, R, Q> {
 
-    private GetObjectsFromIterableBodyStepSupplier(String description, Function<HttpStepContext, S> f) {
-        super(description, f);
+    private GetObjectsFromIterableBodyStepSupplier(Function<HttpStepContext, S> f) {
+        super(f);
     }
 
     /**
@@ -55,7 +55,7 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
     public static <T, R, S extends Iterable<R>> GetObjectsFromIterableWhenResponseReceived<T, R, S> asIterable(String description,
                                                                                                                HttpResponse<T> received,
                                                                                                                Function<T, S> f) {
-        return new GetObjectsFromIterableWhenResponseReceived<>(description, received, f);
+        return new GetObjectsFromIterableWhenResponseReceived<>(received, f).setDescription(description);
     }
 
     /**
@@ -75,7 +75,7 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
                                                                                                                 RequestBuilder requestBuilder,
                                                                                                                 HttpResponse.BodyHandler<T> handler,
                                                                                                                 Function<T, S> f) {
-        return new GetObjectsFromIterableWhenResponseReceiving<>(description, response(requestBuilder, handler), f);
+        return new GetObjectsFromIterableWhenResponseReceiving<>(response(requestBuilder, handler), f).setDescription(description);
     }
 
 
@@ -91,7 +91,7 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
      */
     public static <R, S extends Iterable<R>> GetObjectsFromIterableWhenResponseReceived<S, R, S> asIterable(String description,
                                                                                                             HttpResponse<S> received) {
-        return new GetObjectsFromIterableWhenResponseReceived<>(description, received, rs -> rs);
+        return new GetObjectsFromIterableWhenResponseReceived<>(received, rs -> rs).setDescription(description);
     }
 
     /**
@@ -108,7 +108,7 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
     public static <R, S extends Iterable<R>> GetObjectsFromIterableWhenResponseReceiving<S, R, S> asIterable(String description,
                                                                                                              RequestBuilder requestBuilder,
                                                                                                              HttpResponse.BodyHandler<S> handler) {
-        return new GetObjectsFromIterableWhenResponseReceiving<>(description, response(requestBuilder, handler), rs -> rs);
+        return new GetObjectsFromIterableWhenResponseReceiving<>(response(requestBuilder, handler), rs -> rs).setDescription(description);
     }
 
 
@@ -147,12 +147,16 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
         @StepParameter("From body of received http response")
         final HttpResponse<T> response;
 
-        private GetObjectsFromIterableWhenResponseReceived(String description,
-                                                           HttpResponse<T> response,
+        private GetObjectsFromIterableWhenResponseReceived(HttpResponse<T> response,
                                                            Function<T, S> f) {
-            super(description, f.compose(ignored -> response.body()));
+            super(f.compose(ignored -> response.body()));
             checkNotNull(response);
             this.response = response;
+        }
+
+        @Override
+        protected GetObjectsFromIterableWhenResponseReceived<T, R, S> setDescription(String description) {
+            return super.setDescription(description);
         }
     }
 
@@ -169,17 +173,21 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
         private final ResponseExecutionInfo info;
         private final ResponseSequentialGetSupplier<T> getResponse;
 
-        private GetObjectsFromIterableWhenResponseReceiving(String description, ReceiveResponseAndGetResultFunction<T, S> f) {
-            super(description, f);
+        private GetObjectsFromIterableWhenResponseReceiving(ReceiveResponseAndGetResultFunction<T, S> f) {
+            super(f);
             var s = f.getGetResponseSupplier();
             info = s.getInfo();
             getResponse = s;
         }
 
-        private GetObjectsFromIterableWhenResponseReceiving(String description,
-                                                            ResponseSequentialGetSupplier<T> getResponse,
+        private GetObjectsFromIterableWhenResponseReceiving(ResponseSequentialGetSupplier<T> getResponse,
                                                             Function<T, S> f) {
-            this(description, new ReceiveResponseAndGetResultFunction<>(f, getResponse));
+            this(new ReceiveResponseAndGetResultFunction<>(f, getResponse));
+        }
+
+        @Override
+        protected GetObjectsFromIterableWhenResponseReceiving<T, R, S> setDescription(String description) {
+            return super.setDescription(description);
         }
 
         /**

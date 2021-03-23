@@ -2,6 +2,8 @@ package ru.tinkoff.qa.neptune.selenium.functions.value;
 
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.api.widget.HasCssValue;
@@ -22,7 +24,7 @@ public final class SequentialGetCSSValueSupplier extends
     private boolean isElementDefined;
 
     private SequentialGetCSSValueSupplier(String property) {
-        super("Value of the css property '" + property + "'", searchContext -> {
+        super(searchContext -> {
             Class<? extends SearchContext> searchContextClass = searchContext.getClass();
             if (WebElement.class.isAssignableFrom(searchContextClass)) {
                 return ((WebElement) searchContext).getCssValue(property);
@@ -46,7 +48,8 @@ public final class SequentialGetCSSValueSupplier extends
      * @param property is the name of the target css property
      * @return an instance of {@link SequentialGetCSSValueSupplier}
      */
-    public static SequentialGetCSSValueSupplier cssValue(String property) {
+    @Description("Value of the css property '{property}'")
+    public static SequentialGetCSSValueSupplier cssValue(@DescriptionFragment("property") String property) {
         return new SequentialGetCSSValueSupplier(property);
     }
 
