@@ -66,8 +66,7 @@ public final class BrowserProxyCriteria {
                         try {
                             var pattern = compile(urlExpression);
                             var matcher = pattern.matcher(s);
-
-                            return matcher.matches() || matcher.find();
+                            return matcher.matches();
                         } catch (Throwable thrown) {
                             thrown.printStackTrace();
                             return false;
@@ -300,7 +299,7 @@ public final class BrowserProxyCriteria {
                                     var pattern = compile(valueExpression);
                                     var matcher = pattern.matcher(header.getValue());
 
-                                    return matcher.matches() || matcher.find();
+                                    return matcher.matches();
                                 } catch (Throwable thrown) {
                                     thrown.printStackTrace();
                                     return false;
@@ -361,7 +360,7 @@ public final class BrowserProxyCriteria {
                                     var pattern = compile(valueExpression);
                                     var matcher = pattern.matcher(header.getValue());
 
-                                    return matcher.matches() || matcher.find();
+                                    return matcher.matches();
                                 } catch (Throwable thrown) {
                                     thrown.printStackTrace();
                                     return false;
@@ -433,7 +432,7 @@ public final class BrowserProxyCriteria {
                             var pattern = compile(bodyExpression);
                             var matcher = pattern.matcher(data.getText());
 
-                            return matcher.matches() || matcher.find();
+                            return matcher.matches();
                         } catch (Throwable thrown) {
                             thrown.printStackTrace();
                             return false;
@@ -467,7 +466,7 @@ public final class BrowserProxyCriteria {
                             var pattern = compile(bodyExpression);
                             var matcher = pattern.matcher(content.getText());
 
-                            return matcher.matches() || matcher.find();
+                            return matcher.matches();
                         } catch (Throwable thrown) {
                             thrown.printStackTrace();
                             return false;
@@ -483,13 +482,10 @@ public final class BrowserProxyCriteria {
      * @param status is the status code response is supposed to have
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> recordedResponseStatusCode(Integer status) {
-        checkArgument(nonNull(status), "Status code should be defined");
-
+    public static Criteria<HarEntry> recordedResponseStatusCode(int status) {
         return condition(format("response status code is '%s'", status), entry -> {
-            Integer statusCode = entry.getResponse().getStatus();
-
-            return Objects.equals(statusCode, status);
+            var statusCode = entry.getResponse().getStatus();
+            return statusCode == status;
         });
     }
 

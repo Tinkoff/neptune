@@ -82,7 +82,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * and returns some list of {@link Widget} found from the input value.
      *
      * @param tClass      is a class of objects to be returned.
-     * @param textOrLabel text which is used to find widgets by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find widgets by full text matching. Also texts of labels
      *                    are used to find widgets.
      * @param <T>         the type of widgets which should be found
      * @return an instance of {@link MultipleSearchSupplier}
@@ -131,7 +131,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found buttons.
      *
-     * @param textOrLabel text which is used to find buttons by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find buttons by full text matching. Also texts of labels
      *                    are used to find elements.
      * @return an instance of {@link MultipleSearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -156,7 +156,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found flags.
      *
-     * @param textOrLabel text which is used to find flags by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find flags by full text matching. Also texts of labels
      *                    are used to find elements.
      * @return an instance of {@link MultipleSearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -181,7 +181,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found check boxes.
      *
-     * @param textOrLabel text which is used to find checkboxes by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find checkboxes by full text matching. Also texts of labels
      *                    are used to find elements.
      * @return an instance of {@link MultipleSearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -206,7 +206,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found radio buttons.
      *
-     * @param textOrLabel text which is used to find radio-buttons by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find radio-buttons by full text matching. Also texts of labels
      *                    are used to find elements.
      * @return an instance of {@link MultipleSearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -231,7 +231,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found toggles.
      *
-     * @param textOrLabel text which is used to find toggles by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find toggles by full text matching. Also texts of labels
      *                    are used to find elements.
      * @return an instance of {@link MultipleSearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -256,7 +256,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found links.
      *
-     * @param textOrLabel text which is used to find links by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find links by full text matching. Also texts of labels
      *                    are used to find elements.
      * @return an instance of {@link MultipleSearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -281,7 +281,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found selects.
      *
-     * @param textOrLabel text which is used to find selects by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find selects by full text matching. Also texts of labels
      *                    are used to find elements.
      * @return an instance of {@link MultipleSearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -307,7 +307,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found multi-selects.
      *
-     * @param textOrLabel text which is used to find multi-selects by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find multi-selects by full text matching. Also texts of labels
      *                    are used to find elements.
      * @return an instance of {@link MultipleSearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -333,7 +333,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found tabs.
      *
-     * @param textOrLabel text which is used to find tabs by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find tabs by full text matching. Also texts of labels
      *                    are used to find elements.
      * @return an instance of {@link MultipleSearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -358,7 +358,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found text fields.
      *
-     * @param textOrLabel text which is used to find text fields by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find text fields by full text matching. Also texts of labels
      *                    are used to find elements.
      * @return an instance of {@link MultipleSearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -384,7 +384,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found calendars.
      *
-     * @param textOrLabel text which is used to find calendars by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find calendars by full text matching. Also texts of labels
      *                    are used to find elements.
      * @return an instance of {@link MultipleSearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -410,7 +410,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found calendar ranges.
      *
-     * @param textOrLabel text which is used to find calendar ranges by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find calendar ranges by full text matching. Also texts of labels
      *                    are used to find elements.
      * @return an instance of {@link MultipleSearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -436,7 +436,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found tables.
      *
-     * @param textOrLabel text which is used to find tables by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find tables by full text matching. Also texts of labels
      *                    are used to find elements.
      * @return an instance of {@link MultipleSearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -461,7 +461,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found table rows.
      *
-     * @param textOrLabel text which is used to find table rows by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find table rows by full text matching. Also texts of labels
      *                    are used to find elements.
      * @return an instance of {@link MultipleSearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -486,7 +486,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found table headers.
      *
-     * @param textOrLabel text which is used to find table headers by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find table headers by full text matching. Also texts of labels
      *                    are used to find elements.
      * @return an instance of {@link MultipleSearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -511,7 +511,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found table footers.
      *
-     * @param textOrLabel text which is used to find table footers by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find table footers by full text matching. Also texts of labels
      *                    are used to find elements.
      * @return an instance of {@link MultipleSearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -536,7 +536,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found table cells.
      *
-     * @param textOrLabel text which is used to find table cells by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find table cells by full text matching. Also texts of labels
      *                    are used to find elements.
      * @return an instance of {@link MultipleSearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -561,11 +561,13 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found text elements.
      *
-     * @param text text which is used to find text elements by full element text matching
+     * @param textOrLabel text which is used to find text elements by full text matching. Also texts of labels
+     *                    are used to find elements.
      * @return an instance of {@link MultipleSearchSupplier}
+     * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
      */
-    public static MultipleSearchSupplier<TextElement> textElements(String text) {
-        return widgets(TextElement.class, text);
+    public static MultipleSearchSupplier<TextElement> textElements(String textOrLabel) {
+        return widgets(TextElement.class, textOrLabel);
     }
 
 
@@ -585,7 +587,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found forms.
      *
-     * @param textOrLabel text which is used to find forms by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find forms by full text matching. Also texts of labels
      *                    are used to find elements.
      * @return an instance of {@link MultipleSearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -611,7 +613,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found grouping elements.
      *
-     * @param textOrLabel text which is used to find grouping elements by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find grouping elements by full text matching. Also texts of labels
      *                    are used to find elements.
      * @return an instance of {@link MultipleSearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
@@ -636,7 +638,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some list of found image elements.
      *
-     * @param textOrLabel text which is used to find image elements by full element text matching. Also texts of labels
+     * @param textOrLabel text which is used to find image elements by full text matching. Also texts of labels
      *                    are used to find elements.
      * @return an instance of {@link MultipleSearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label

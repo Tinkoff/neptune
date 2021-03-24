@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.GetProxy.getBrowserProxy;
 
 @Description("Proxied requests")
@@ -31,7 +32,20 @@ public class BrowserProxyGetStepSupplier extends SequentialGetStepSupplier.GetIt
                         return new ArrayList<HarEntry>();
                     }
 
-                    return har.getLog().getEntries();
+                    return har.getLog().getEntries().stream().map(harEntry -> {
+                        var entry = new HarEntry();
+                        entry.setCache(harEntry.getCache());
+                        entry.setComment(harEntry.getComment());
+                        entry.setPageref(harEntry.getPageref());
+                        entry.setRequest(harEntry.getRequest());
+                        entry.setConnection(harEntry.getConnection());
+                        entry.setResponse(harEntry.getResponse());
+                        entry.setServerIPAddress(harEntry.getServerIPAddress());
+                        entry.setStartedDateTime(harEntry.getStartedDateTime());
+                        entry.setTime(harEntry.getTime());
+                        entry.setTimings(harEntry.getTimings());
+                        return entry;
+                    }).collect(toList());
                 })
                 .orElseGet(ArrayList::new));
         from(getBrowserProxy());

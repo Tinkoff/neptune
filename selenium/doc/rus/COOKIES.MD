@@ -49,6 +49,11 @@ public class Tezzt {
         // Как и в примере выше, здесь можно указать критерии и время ожидания
         // вернется true если cookie есть, и false - если нет
 
+        boolean isAlertPresent = inBrowser().presenceOf(cookies(), //Ожидание наличия cookie. 
+                "Cookie не появились"); //Текст ошибки, если cookie не появились
+        // вернется true если cookie есть, если нет - 
+        // будет выброшено исключение с текстом 'Cookie не появились'
+
 
         inBrowser().absenceOf(cookies(), ofSeconds(5)); //Ожидание отсутствия cookies. 
         //Можно указать критерии. Значение времени ожидания, переданное через .timeOut, игнорируется.

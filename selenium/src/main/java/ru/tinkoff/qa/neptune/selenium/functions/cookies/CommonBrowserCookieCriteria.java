@@ -60,8 +60,8 @@ public final class CommonBrowserCookieCriteria {
 
                             try {
                                 var p = compile(expression);
-                                var mather = p.matcher(s);
-                                return mather.matches();
+                                var matcher = p.matcher(s);
+                                return matcher.matches();
                             } catch (Throwable thrown) {
                                 thrown.printStackTrace();
                                 return false;
@@ -105,8 +105,8 @@ public final class CommonBrowserCookieCriteria {
 
                             try {
                                 var p = compile(expression);
-                                var mather = p.matcher(s);
-                                return mather.matches();
+                                var matcher = p.matcher(s);
+                                return matcher.matches();
                             } catch (Throwable thrown) {
                                 thrown.printStackTrace();
                                 return false;
@@ -150,8 +150,8 @@ public final class CommonBrowserCookieCriteria {
 
                             try {
                                 var p = compile(expression);
-                                var mather = p.matcher(s);
-                                return mather.matches();
+                                var matcher = p.matcher(s);
+                                return matcher.matches();
                             } catch (Throwable thrown) {
                                 thrown.printStackTrace();
                                 return false;
@@ -195,8 +195,8 @@ public final class CommonBrowserCookieCriteria {
 
                             try {
                                 var p = compile(expression);
-                                var mather = p.matcher(s);
-                                return mather.matches();
+                                var matcher = p.matcher(s);
+                                return matcher.matches();
                             } catch (Throwable thrown) {
                                 thrown.printStackTrace();
                                 return false;
