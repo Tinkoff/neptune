@@ -20,6 +20,7 @@ import static java.util.Set.of;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchFailureEvent;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchSuccessEvent;
+import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSupplier.response;
 
 /**
@@ -56,7 +57,7 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetO
     public static <T, R, S extends Iterable<R>> GetObjectFromIterableWhenResponseReceived<T, R> asOneOfIterable(String description,
                                                                                                                 HttpResponse<T> received,
                                                                                                                 Function<T, S> f) {
-        return new GetObjectFromIterableWhenResponseReceived<>(received, f).setDescription(description);
+        return new GetObjectFromIterableWhenResponseReceived<>(received, f).setDescription(translate(description));
     }
 
     /**
@@ -76,7 +77,7 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetO
                                                                                                                  RequestBuilder requestBuilder,
                                                                                                                  HttpResponse.BodyHandler<T> handler,
                                                                                                                  Function<T, S> f) {
-        return new GetObjectFromIterableWhenResponseReceiving<>(response(requestBuilder, handler), f).setDescription(description);
+        return new GetObjectFromIterableWhenResponseReceiving<>(response(requestBuilder, handler), f).setDescription(translate(description));
     }
 
 
@@ -92,7 +93,7 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetO
      */
     public static <R, S extends Iterable<R>> GetObjectFromIterableWhenResponseReceived<S, R> asOneOfIterable(String description,
                                                                                                              HttpResponse<S> received) {
-        return new GetObjectFromIterableWhenResponseReceived<>(received, rs -> rs).setDescription(description);
+        return new GetObjectFromIterableWhenResponseReceived<>(received, rs -> rs).setDescription(translate(description));
     }
 
     /**
@@ -109,7 +110,7 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetO
     public static <R, S extends Iterable<R>> GetObjectFromIterableWhenResponseReceiving<S, R> asOneOfIterable(String description,
                                                                                                               RequestBuilder requestBuilder,
                                                                                                               HttpResponse.BodyHandler<S> handler) {
-        return new GetObjectFromIterableWhenResponseReceiving<>(response(requestBuilder, handler), rs -> rs).setDescription(description);
+        return new GetObjectFromIterableWhenResponseReceiving<>(response(requestBuilder, handler), rs -> rs).setDescription(translate(description));
     }
 
 

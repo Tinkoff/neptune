@@ -76,7 +76,7 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
             function = null;
         }
 
-        var description = translate(getImperative(this.getClass())) + actionDescription;
+        var description = translate(getImperative(this.getClass())) + " " + actionDescription;
         var action = ofNullable(function).map(function1 ->
                 action(description, (Consumer<T>) t -> {
                     R r = function1.apply(t);
@@ -257,7 +257,7 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
          *
          * @return imperative of a step
          */
-        String imperative() default "Perform: ";
+        String imperative() default "Perform:";
 
         /**
          * Defines name of the perform on-parameter

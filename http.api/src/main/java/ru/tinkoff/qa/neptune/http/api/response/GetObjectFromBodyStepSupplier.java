@@ -20,6 +20,7 @@ import static java.util.Set.of;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchFailureEvent;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchSuccessEvent;
+import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSupplier.response;
 
 /**
@@ -54,7 +55,7 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
     public static <T, R> GetObjectWhenResponseReceived<T, R> asObject(String description,
                                                                       HttpResponse<T> received,
                                                                       Function<T, R> f) {
-        return new GetObjectWhenResponseReceived<>(received, f).setDescription(description);
+        return new GetObjectWhenResponseReceived<>(received, f).setDescription(translate(description));
     }
 
     /**
@@ -86,7 +87,7 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
                                                                        RequestBuilder requestBuilder,
                                                                        HttpResponse.BodyHandler<T> handler,
                                                                        Function<T, R> f) {
-        return new GetObjectWhenResponseReceiving<>(response(requestBuilder, handler), f).setDescription(description);
+        return new GetObjectWhenResponseReceiving<>(response(requestBuilder, handler), f).setDescription(translate(description));
     }
 
     /**
