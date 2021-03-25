@@ -6,39 +6,37 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCaptures
 
 import java.util.function.Function;
 
-import static java.lang.String.format;
-
 @MakeStringCapturesOnFinishing
 @MakeCaptureOnFinishing(typeOfCapture = String.class)
 @MakeCaptureOnFinishing(typeOfCapture = Number.class)
 @MakeFileCapturesOnFinishing
 class ArithmeticalSequence extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<CalculatorSteps, Number, Number, ArithmeticalSequence> {
 
-    private ArithmeticalSequence(String description, Function<Number, Number> originalFunction) {
-        super(description, originalFunction);
+    private ArithmeticalSequence(Function<Number, Number> originalFunction) {
+        super(originalFunction);
     }
 
-    static ArithmeticalSequence appendToResultOf(Number toAppend, SequentialGetStepSupplier<CalculatorSteps, Number, ?, ?, ?> from) {
-        return new ArithmeticalSequence(format("Appending number %s", toAppend),
-                number -> number.doubleValue() + toAppend.doubleValue())
+    @Description("Appending number {element}")
+    public static ArithmeticalSequence appendToResultOf(@DescriptionFragment("element") Number toAppend, SequentialGetStepSupplier<CalculatorSteps, Number, ?, ?, ?> from) {
+        return new ArithmeticalSequence(number -> number.doubleValue() + toAppend.doubleValue())
                 .from(from);
     }
 
-    static ArithmeticalSequence subtractFromResultOf(Number toSubtract, SequentialGetStepSupplier<CalculatorSteps, Number, ?, ?, ?> from) {
-        return new ArithmeticalSequence(format("Subtraction of number %s", toSubtract),
-                number -> number.doubleValue() - toSubtract.doubleValue())
+    @Description("Subtraction of number {element}")
+    public static ArithmeticalSequence subtractFromResultOf(@DescriptionFragment("element") Number toSubtract, SequentialGetStepSupplier<CalculatorSteps, Number, ?, ?, ?> from) {
+        return new ArithmeticalSequence(number -> number.doubleValue() - toSubtract.doubleValue())
                 .from(from);
     }
 
-    static ArithmeticalSequence multiplyByResultOf(Number toMultiply, SequentialGetStepSupplier<CalculatorSteps, Number, ?, ?, ?> from) {
-        return new ArithmeticalSequence(format("Multiplying by number %s", toMultiply),
-                number -> number.doubleValue() * toMultiply.doubleValue())
+    @Description("Multiplying by number {element}")
+    public static ArithmeticalSequence multiplyByResultOf(@DescriptionFragment("element") Number toMultiply, SequentialGetStepSupplier<CalculatorSteps, Number, ?, ?, ?> from) {
+        return new ArithmeticalSequence(number -> number.doubleValue() * toMultiply.doubleValue())
                 .from(from);
     }
 
-    static ArithmeticalSequence divideByResultOf(Number toDivide, SequentialGetStepSupplier<CalculatorSteps, Number, ?, ?, ?> from) {
-        return new ArithmeticalSequence(format("Divide by number %s", toDivide),
-                number -> number.doubleValue() / toDivide.doubleValue())
+    @Description("Divide by number {element}")
+    public static ArithmeticalSequence divideByResultOf(@DescriptionFragment("element") Number toDivide, SequentialGetStepSupplier<CalculatorSteps, Number, ?, ?, ?> from) {
+        return new ArithmeticalSequence(number -> number.doubleValue() / toDivide.doubleValue())
                 .from(from);
     }
 }

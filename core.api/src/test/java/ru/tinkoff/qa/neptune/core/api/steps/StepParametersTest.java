@@ -17,6 +17,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.XOR;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
+import static ru.tinkoff.qa.neptune.core.api.steps.StepParametersTest.TestActionStepSupplier.getTestActionStepSupplier;
+import static ru.tinkoff.qa.neptune.core.api.steps.StepParametersTest.TestActionStepSupplier2.getTestActionStepSupplier2;
+import static ru.tinkoff.qa.neptune.core.api.steps.StepParametersTest.TestGetStepSupplier.getTestGetStepSupplier;
+import static ru.tinkoff.qa.neptune.core.api.steps.StepParametersTest.TestGetStepSupplier2.getTestGetStepSupplier2;
 
 public class StepParametersTest {
 
@@ -31,42 +35,42 @@ public class StepParametersTest {
     @DataProvider
     public static Object[][] data2() {
         return new Object[][]{
-                {new TestGetStepSupplier().from(new TestGetStepSupplier()),
+                {getTestGetStepSupplier().from(getTestGetStepSupplier()),
                         6,
                         "Criteria",
                         "Timeout/time for retrying",
                         "Polling time",
-                        hasEntry(equalTo("Get from"), equalTo("Test Step (is calculated while the step is executed)"))},
+                        hasEntry(equalTo("Get from"), anything())},
 
-                {new TestGetStepSupplier2().from(new TestGetStepSupplier()),
+                {getTestGetStepSupplier2().from(getTestGetStepSupplier2()),
                         6,
                         "Custom criteria",
                         "Custom Time out",
                         "Custom sleeping",
-                        hasEntry(equalTo("Custom from"), equalTo("Test Step (is calculated while the step is executed)"))},
+                        hasEntry(equalTo("Custom from"), anything())},
 
-                {new TestGetStepSupplier().from(o -> null),
+                {getTestGetStepSupplier().from(o -> null),
                         5,
                         "Criteria",
                         "Timeout/time for retrying",
                         "Polling time",
                         not(hasEntry(equalTo("Get from"), anything()))},
 
-                {new TestGetStepSupplier2().from(o -> null),
+                {getTestGetStepSupplier2().from(o -> null),
                         5,
                         "Custom criteria",
                         "Custom Time out",
                         "Custom sleeping",
                         not(hasEntry(equalTo("Custom from"), anything()))},
 
-                {new TestGetStepSupplier().from(5),
+                {getTestGetStepSupplier().from(5),
                         6,
                         "Criteria",
                         "Timeout/time for retrying",
                         "Polling time",
                         hasEntry(equalTo("Get from"), equalTo("5"))},
 
-                {new TestGetStepSupplier2().from(5),
+                {getTestGetStepSupplier2().from(5),
                         6,
                         "Custom criteria",
                         "Custom Time out",
@@ -86,25 +90,25 @@ public class StepParametersTest {
     @DataProvider
     public static Object[][] data4() {
         return new Object[][]{
-                {new TestActionStepSupplier().performOn(new TestGetStepSupplier().from(new Object())),
+                {getTestActionStepSupplier().performOn(getTestGetStepSupplier().from(new Object())),
                         2,
-                        hasEntry(equalTo("Perform action on"), equalTo("Test Step (is calculated while the step is executed)"))},
-                {new TestActionStepSupplier2().performOn(new TestGetStepSupplier().from(new Object())),
+                        hasEntry(equalTo("Perform action on"), anything())},
+                {getTestActionStepSupplier2().performOn(getTestGetStepSupplier().from(new Object())),
                         2,
-                        hasEntry(equalTo("Perform on custom"), equalTo("Test Step (is calculated while the step is executed)"))},
-                {new TestActionStepSupplier().performOn(o -> null),
+                        hasEntry(equalTo("Perform on custom"), anything())},
+                {getTestActionStepSupplier().performOn(o -> null),
                         1,
                         not(hasEntry(equalTo("Perform action on"), anything()))},
 
-                {new TestActionStepSupplier2().performOn(o -> null),
+                {getTestActionStepSupplier2().performOn(o -> null),
                         1,
                         not(hasEntry(equalTo("Perform on custom"), anything()))},
 
-                {new TestActionStepSupplier().performOn(5),
+                {getTestActionStepSupplier().performOn(5),
                         2,
                         hasEntry(equalTo("Perform action on"), equalTo("5"))},
 
-                {new TestActionStepSupplier2().performOn(5),
+                {getTestActionStepSupplier2().performOn(5),
                         2,
                         hasEntry(equalTo("Perform on custom"), equalTo("5"))},
         };
@@ -302,7 +306,7 @@ public class StepParametersTest {
                 "Parameter 2"));
     }
 
-    private static class TestGetStepSupplier extends SequentialGetStepSupplier.GetObjectFromArrayChainedStepSupplier<Object, Object, Object, TestGetStepSupplier> {
+    static class TestGetStepSupplier extends SequentialGetStepSupplier.GetObjectFromArrayChainedStepSupplier<Object, Object, Object, TestGetStepSupplier> {
 
         @StepParameter("Parameter 1")
         private Boolean param1;
@@ -312,7 +316,12 @@ public class StepParametersTest {
         private Integer param3;
 
         protected TestGetStepSupplier() {
-            super("Test Step", o -> new Object[]{});
+            super(o -> new Object[]{});
+        }
+
+        @Description("getTestGetStepSupplier")
+        public static TestGetStepSupplier getTestGetStepSupplier() {
+            return new TestGetStepSupplier();
         }
 
         @Override
@@ -392,7 +401,9 @@ public class StepParametersTest {
             pollingTime = "Custom sleeping",
             from = "Custom from"
     )
-    private static class TestGetStepSupplier2 extends SequentialGetStepSupplier.GetObjectFromArrayChainedStepSupplier<Object, Object, Object, TestGetStepSupplier2> {
+
+    @Description("getTestGetStepSupplier2")
+    static class TestGetStepSupplier2 extends SequentialGetStepSupplier.GetObjectFromArrayChainedStepSupplier<Object, Object, Object, TestGetStepSupplier2> {
 
         @StepParameter("Parameter 1")
         private Boolean param1;
@@ -403,7 +414,11 @@ public class StepParametersTest {
 
 
         protected TestGetStepSupplier2() {
-            super("Test Step", o -> new Object[]{});
+            super(o -> new Object[]{});
+        }
+
+        public static TestGetStepSupplier2 getTestGetStepSupplier2() {
+            return new TestGetStepSupplier2();
         }
 
         @Override
@@ -478,7 +493,8 @@ public class StepParametersTest {
         }
     }
 
-    private static class TestActionStepSupplier extends SequentialActionSupplier<Object, Object, TestActionStepSupplier> {
+    @Description("Test action")
+    static class TestActionStepSupplier extends SequentialActionSupplier<Object, Object, TestActionStepSupplier> {
 
         @StepParameter("Parameter 1")
         private Boolean param1;
@@ -488,7 +504,11 @@ public class StepParametersTest {
         private Integer param3;
 
         protected TestActionStepSupplier() {
-            super("Test action");
+            super();
+        }
+
+        public static TestActionStepSupplier getTestActionStepSupplier() {
+            return new TestActionStepSupplier();
         }
 
         @Override
@@ -544,7 +564,8 @@ public class StepParametersTest {
     }
 
     @SequentialActionSupplier.DefaultParameterNames(performOn = "Perform on custom")
-    private static class TestActionStepSupplier2 extends SequentialActionSupplier<Object, Object, TestActionStepSupplier2> {
+    @Description("TestActionStepSupplier2")
+    static class TestActionStepSupplier2 extends SequentialActionSupplier<Object, Object, TestActionStepSupplier2> {
 
         @StepParameter("Parameter 1")
         private Boolean param1;
@@ -554,7 +575,11 @@ public class StepParametersTest {
         private Integer param3;
 
         protected TestActionStepSupplier2() {
-            super("Test action");
+            super();
+        }
+
+        public static TestActionStepSupplier2 getTestActionStepSupplier2() {
+            return new TestActionStepSupplier2();
         }
 
         @Override

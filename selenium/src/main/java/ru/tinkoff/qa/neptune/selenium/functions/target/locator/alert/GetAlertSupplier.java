@@ -4,6 +4,7 @@ import org.openqa.selenium.Alert;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
@@ -23,11 +24,12 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITIN
         timeOut = "Time of the waiting for the alert",
         criteria = "Alert criteria"
 )
+@Description("Alert")
 public final class GetAlertSupplier extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<SeleniumStepContext, Alert, WebDriver, GetAlertSupplier>
         implements TargetLocatorSupplier<Alert> {
 
     private GetAlertSupplier() {
-        super("Alert", webDriver -> new AlertImpl(webDriver.switchTo().alert()));
+        super(webDriver -> new AlertImpl(webDriver.switchTo().alert()));
         throwOnEmptyResult(noSuchAlert());
         timeOut(WAITING_ALERT_TIME_DURATION.get());
     }

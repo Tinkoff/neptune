@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.functions.windows;
 
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
@@ -7,10 +8,11 @@ import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.currentWindow;
 
+@Description("Set window full screen")
 public final class FullScreenWindowSupplier extends SequentialActionSupplier<SeleniumStepContext, Window, FullScreenWindowSupplier> {
 
     private FullScreenWindowSupplier() {
-        super("Set window full screen");
+        super();
     }
 
     /**

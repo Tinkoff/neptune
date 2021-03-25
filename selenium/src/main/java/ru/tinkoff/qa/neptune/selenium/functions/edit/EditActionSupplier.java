@@ -3,6 +3,8 @@ package ru.tinkoff.qa.neptune.selenium.functions.edit;
 import org.openqa.selenium.SearchContext;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
@@ -22,8 +24,8 @@ public final class EditActionSupplier<T> extends
     @StepParameter(value = "Change value with", makeReadableBy = EditParameterValueGetter.class)
     private final T toSet;
 
-    private EditActionSupplier(String description, T value) {
-        super(description);
+    private EditActionSupplier(T value) {
+        super();
         toSet = value;
     }
 
@@ -36,9 +38,10 @@ public final class EditActionSupplier<T> extends
      * @param <S>   if the type of editable element
      * @return built edit action
      */
+    @Description("Edit element {of}")
     public static <R, S extends SearchContext & Editable<R>> EditActionSupplier<R> valueOfThe(
-            SearchSupplier<S> of, R value) {
-        return new EditActionSupplier<>("Edit element " + of, value)
+            @DescriptionFragment("of") SearchSupplier<S> of, R value) {
+        return new EditActionSupplier<>(value)
                 .performOn(of.get().compose(currentContent()));
     }
 
@@ -51,8 +54,9 @@ public final class EditActionSupplier<T> extends
      * @param <S>   if the type of editable element
      * @return built edit action
      */
-    public static <R, S extends SearchContext & Editable<R>> EditActionSupplier<R> valueOfThe(S of, R value) {
-        return new EditActionSupplier<>("Edit element " + of, value)
+    @Description("Edit element {of}")
+    public static <R, S extends SearchContext & Editable<R>> EditActionSupplier<R> valueOfThe(@DescriptionFragment("of") S of, R value) {
+        return new EditActionSupplier<>(value)
                 .performOn(of);
     }
 

@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.selenium.functions.cookies;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
@@ -24,8 +25,8 @@ import static ru.tinkoff.qa.neptune.selenium.functions.cookies.GetSeleniumCookie
 public abstract class RemoveCookiesActionSupplier<T>
         extends SequentialActionSupplier<SeleniumStepContext, T, RemoveCookiesActionSupplier<T>> {
 
-    private RemoveCookiesActionSupplier(String description) {
-        super(description);
+    private RemoveCookiesActionSupplier() {
+        super();
     }
 
     /**
@@ -33,6 +34,7 @@ public abstract class RemoveCookiesActionSupplier<T>
      *
      * @return instance of {@link RemoveCookiesActionSupplier}
      */
+    @Description("Delete Cookies")
     public static RemoveCookiesActionSupplier<WebDriver> deleteCookies() {
         return new RemoveAllCookiesActionSupplier();
     }
@@ -47,6 +49,7 @@ public abstract class RemoveCookiesActionSupplier<T>
      * @return instance of {@link RemoveCookiesActionSupplier}
      */
     @SafeVarargs
+    @Description("Delete Cookies")
     public static RemoveCookiesActionSupplier<Set<Cookie>> deleteCookies(Duration timeToFindCookies,
                                                                          Criteria<Cookie>... toBeRemoved) {
         return new RemoveFoundCookies(timeToFindCookies, toBeRemoved);
@@ -58,6 +61,7 @@ public abstract class RemoveCookiesActionSupplier<T>
      * @param toBeRemoved cookies that should be deleted
      * @return instance of {@link RemoveCookiesActionSupplier}
      */
+    @Description("Delete Cookies")
     public static RemoveCookiesActionSupplier<WebDriver> deleteCookies(Collection<Cookie> toBeRemoved) {
         return new RemoveDefinedCookies(toBeRemoved);
     }
@@ -65,11 +69,12 @@ public abstract class RemoveCookiesActionSupplier<T>
     /**
      * This class is designed to build an action that cleans browser's "cookie jar".
      */
+    @Description("Delete all the cookies from browser's cookie jar")
     private static final class RemoveAllCookiesActionSupplier
             extends RemoveCookiesActionSupplier<WebDriver> {
 
         private RemoveAllCookiesActionSupplier() {
-            super("Delete all the cookies from browser's cookie jar");
+            super();
             performOn(currentContent());
         }
 
@@ -84,6 +89,7 @@ public abstract class RemoveCookiesActionSupplier<T>
      * These cookies are expected to be found by criteria. It is possible to define time of the waiting
      * for expected cookies are present.
      */
+    @Description("Remove cookies")
     private static final class RemoveFoundCookies extends RemoveCookiesActionSupplier<Set<Cookie>> {
 
         private final GetSeleniumCookieSupplier getCookies;
@@ -91,7 +97,7 @@ public abstract class RemoveCookiesActionSupplier<T>
 
         @SafeVarargs
         private RemoveFoundCookies(Duration timeToFindCookies, Criteria<Cookie>... toBeRemoved) {
-            super("Remove cookies");
+            super();
             checkArgument(nonNull(toBeRemoved) && toBeRemoved.length > 0,
                     "It is necessary to define at least one criteria to find cookies for removal");
             var getCookies = cookies();
@@ -119,13 +125,14 @@ public abstract class RemoveCookiesActionSupplier<T>
     /**
      * This class is designed to build an action that cleans browser's "cookie jar" of defined cookies.
      */
+    @Description("Remove cookies")
     private static final class RemoveDefinedCookies extends RemoveCookiesActionSupplier<WebDriver> {
 
         @StepParameter("Cookies for removal")
         private final Collection<Cookie> cookies;
 
         private RemoveDefinedCookies(Collection<Cookie> toBeRemoved) {
-            super("Remove cookies");
+            super();
             checkArgument(nonNull(toBeRemoved) && toBeRemoved.size() > 0,
                     "It is necessary to define at least one cookie for removal");
             cookies = toBeRemoved;

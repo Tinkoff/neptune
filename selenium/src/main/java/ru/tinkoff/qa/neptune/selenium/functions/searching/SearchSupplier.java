@@ -4,6 +4,8 @@ import org.openqa.selenium.*;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.*;
@@ -16,7 +18,6 @@ import java.util.function.Supplier;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.OR;
-import static ru.tinkoff.qa.neptune.selenium.api.widget.Widget.getWidgetName;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindWebElements.webElements;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindWidgets.widgets;
@@ -29,13 +30,14 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMEN
 @SequentialGetStepSupplier.DefaultParameterNames(
         timeOut = "Time of the waiting for the element",
         from = "Parent element",
-        criteria = "Element criteria"
+        criteria = "Element criteria",
+        imperative = "Find"
 )
 public final class SearchSupplier<R extends SearchContext>
         extends SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier<SearchContext, R, SearchContext, SearchSupplier<R>> {
 
-    private <S extends Iterable<R>> SearchSupplier(String description, Function<SearchContext, S> originalFunction) {
-        super(description, originalFunction);
+    private <S extends Iterable<R>> SearchSupplier(Function<SearchContext, S> originalFunction) {
+        super(originalFunction);
         from(searchContext -> searchContext);
         timeOut(ELEMENT_WAITING_DURATION.get());
         addIgnored(StaleElementReferenceException.class);
@@ -64,9 +66,10 @@ public final class SearchSupplier<R extends SearchContext>
      * @param by locator strategy to find an element
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<WebElement> webElement(By by) {
+    @Description("Web element located {by}")
+    public static SearchSupplier<WebElement> webElement(@DescriptionFragment("by") By by) {
         var webElements = webElements(by);
-        return new SearchSupplier<>(format("Web element located %s", by), webElements);
+        return new SearchSupplier<>(webElements);
     }
 
     /**
@@ -78,10 +81,11 @@ public final class SearchSupplier<R extends SearchContext>
      * @param text that the desired element should have
      * @return an instance of {@link SearchSupplier}
      */
-    public static SearchSupplier<WebElement> webElement(By by, String text) {
+    @Description("Web element located {by}")
+    public static SearchSupplier<WebElement> webElement(@DescriptionFragment("by") By by, String text) {
         var shouldHaveText = text(text);
         var webElements = webElements(by);
-        var search = new SearchSupplier<>(format("Web element located %s", by), webElements);
+        var search = new SearchSupplier<>(webElements);
         return search.criteria(shouldHaveText);
     }
 
@@ -97,8 +101,11 @@ public final class SearchSupplier<R extends SearchContext>
      * @return an instance of {@link SearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
      */
-    public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass, String textOrLabel) {
-        return new SearchSupplier<>(format("%s '%s'", getWidgetName(tClass), textOrLabel), widgets(tClass))
+    @Description("{widgetClass} {textOrLabel}")
+    public static <T extends Widget> SearchSupplier<T> widget(@DescriptionFragment(value = "widgetClass",
+            makeReadableBy = WidgetNameGetter.class) Class<T> tClass,
+                                                              @DescriptionFragment("textOrLabel") String textOrLabel) {
+        return new SearchSupplier<>(widgets(tClass))
                 .criteria(OR(
                         text(textOrLabel),
                         labeled(textOrLabel)
@@ -114,9 +121,11 @@ public final class SearchSupplier<R extends SearchContext>
      * @param <T>    the type of widget to find
      * @return an instance of {@link SearchSupplier}
      */
-    public static <T extends Widget> SearchSupplier<T> widget(Class<T> tClass) {
+    @Description("{tClass}")
+    public static <T extends Widget> SearchSupplier<T> widget(
+            @DescriptionFragment(value = "tClass", makeReadableBy = WidgetNameGetter.class) Class<T> tClass) {
         var widgets = widgets(tClass);
-        return new SearchSupplier<>(getWidgetName(tClass), widgets);
+        return new SearchSupplier<>(widgets);
     }
 
     /**

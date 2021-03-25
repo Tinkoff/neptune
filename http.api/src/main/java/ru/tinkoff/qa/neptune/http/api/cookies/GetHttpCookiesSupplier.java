@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.http.api.cookies;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 
@@ -19,12 +20,12 @@ public final class GetHttpCookiesSupplier extends SequentialGetStepSupplier
     private final URI uri;
 
     private GetHttpCookiesSupplier() {
-        super("Http cookies", cookieManager -> new ArrayList<>(cookieManager.getCookieStore().getCookies()));
+        super(cookieManager -> new ArrayList<>(cookieManager.getCookieStore().getCookies()));
         uri = null;
     }
 
     private GetHttpCookiesSupplier(URI uri) {
-        super("Http cookies", cookieManager -> new ArrayList<>(cookieManager.getCookieStore().get(uri)));
+        super(cookieManager -> new ArrayList<>(cookieManager.getCookieStore().get(uri)));
         this.uri = uri;
     }
 
@@ -33,6 +34,7 @@ public final class GetHttpCookiesSupplier extends SequentialGetStepSupplier
      *
      * @return an instance of {@link GetHttpCookiesSupplier}
      */
+    @Description("Http cookies")
     public static GetHttpCookiesSupplier httpCookies() {
         return new GetHttpCookiesSupplier();
     }
@@ -43,6 +45,7 @@ public final class GetHttpCookiesSupplier extends SequentialGetStepSupplier
      * @param uri is an {@link URI} that associated with resulted cookies
      * @return an instance of {@link GetHttpCookiesSupplier}
      */
+    @Description("Http cookies")
     public static GetHttpCookiesSupplier httpCookies(URI uri) {
         return new GetHttpCookiesSupplier(uri);
     }

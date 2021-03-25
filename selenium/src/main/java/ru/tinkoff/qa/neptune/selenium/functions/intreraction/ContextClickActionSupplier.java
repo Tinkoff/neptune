@@ -11,7 +11,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 abstract class ContextClickActionSupplier extends InteractiveAction {
 
     ContextClickActionSupplier() {
-        super("Context click");
+        super();
     }
 
     static final class ContextClickSimpleActionSupplier extends ContextClickActionSupplier {

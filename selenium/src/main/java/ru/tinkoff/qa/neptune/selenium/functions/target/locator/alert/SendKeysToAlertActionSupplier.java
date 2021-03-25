@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert;
 
 import org.openqa.selenium.Alert;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
@@ -11,13 +12,14 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 @SequentialActionSupplier.DefaultParameterNames(
         performOn = "Alert to send keys"
 )
+@Description("Send keys to the alert")
 public final class SendKeysToAlertActionSupplier extends SequentialActionSupplier<SeleniumStepContext, Alert, SendKeysToAlertActionSupplier> {
 
     @StepParameter("Keys to send")
     private final String keysToSend;
 
     private SendKeysToAlertActionSupplier(String keysToSend) {
-        super("Send keys to the alert");
+        super();
         this.keysToSend = keysToSend;
     }
 

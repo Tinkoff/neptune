@@ -22,18 +22,17 @@ public final class Presence<T extends Context<?>> extends SequentialGetStepSuppl
     private final Set<Class<? extends Throwable>> ignored2 = new HashSet<>();
 
     private Presence(Function<T, ?> toBePresent) {
-        super("Presence of " + (isLoggable(toBePresent) ? toBePresent.toString() : "<not described value>"),
-                o -> ofNullable(o)
-                        .map(o1 -> {
-                            Class<?> clazz = o1.getClass();
+        super(o -> ofNullable(o)
+                .map(o1 -> {
+                    Class<?> clazz = o1.getClass();
 
-                            if (Boolean.class.isAssignableFrom(clazz)) {
-                                return (Boolean) o1;
-                            }
+                    if (Boolean.class.isAssignableFrom(clazz)) {
+                        return (Boolean) o1;
+                    }
 
-                            if (Iterable.class.isAssignableFrom(clazz)) {
-                                return Iterables.size((Iterable<?>) o1) > 0;
-                            }
+                    if (Iterable.class.isAssignableFrom(clazz)) {
+                        return Iterables.size((Iterable<?>) o1) > 0;
+                    }
 
                             if (clazz.isArray()) {
                                 return Array.getLength(o1) > 0;
@@ -66,7 +65,8 @@ public final class Presence<T extends Context<?>> extends SequentialGetStepSuppl
      * @param <T>      is a type of {@link Context}
      * @return an instance of {@link Presence}.
      */
-    public static <T extends Context<?>> Presence<T> presence(Function<T, ?> function) {
+    @Description("Presence of {toBePresent}")
+    public static <T extends Context<?>> Presence<T> presence(@DescriptionFragment("toBePresent") Function<T, ?> function) {
         checkArgument(nonNull(function), "Function should not be a null-value");
         return new Presence<>(function);
     }
@@ -79,7 +79,8 @@ public final class Presence<T extends Context<?>> extends SequentialGetStepSuppl
      * @param <T>         is a type of {@link Context}
      * @return an instance of {@link Presence}.
      */
-    public static <T extends Context<?>> Presence<T> presence(SequentialGetStepSupplier<T, ?, ?, ?, ?> toBePresent) {
+    @Description("Presence of {toBePresent}")
+    public static <T extends Context<?>> Presence<T> presence(@DescriptionFragment("toBePresent") SequentialGetStepSupplier<T, ?, ?, ?, ?> toBePresent) {
         checkArgument(nonNull(toBePresent), "Supplier of a function should not be a null-value");
         return new Presence<>(toBePresent);
     }

@@ -22,16 +22,15 @@ public final class Absence<T extends Context<?>> extends SequentialGetStepSuppli
     private Object received;
 
     private Absence(Function<T, ?> toBeAbsent) {
-        super("Absence of " + (isLoggable(toBeAbsent) ? toBeAbsent.toString() : "<not described value>"),
-                o -> ofNullable(o)
-                        .map(o1 -> {
-                            Class<?> clazz = o1.getClass();
-                            if (Boolean.class.isAssignableFrom(clazz)) {
-                                return (Boolean) o;
-                            }
-                            return false;
-                        })
-                        .orElse(false));
+        super(o -> ofNullable(o)
+                .map(o1 -> {
+                    Class<?> clazz = o1.getClass();
+                    if (Boolean.class.isAssignableFrom(clazz)) {
+                        return (Boolean) o;
+                    }
+                    return false;
+                })
+                .orElse(false));
 
         StepFunction<T, ?> expectedToBeAbsent;
         if (StepFunction.class.isAssignableFrom(toBeAbsent.getClass())) {
@@ -60,7 +59,8 @@ public final class Absence<T extends Context<?>> extends SequentialGetStepSuppli
      * @param <T>      is a type of {@link Context}
      * @return an instance of {@link Absence}.
      */
-    public static <T extends Context<?>> Absence<T> absence(Function<T, ?> function) {
+    @Description("Absence of {toBeAbsent}")
+    public static <T extends Context<?>> Absence<T> absence(@DescriptionFragment("toBeAbsent") Function<T, ?> function) {
         checkArgument(nonNull(function), "Function should not be a null-value");
         return new Absence<>(function);
     }
@@ -73,7 +73,8 @@ public final class Absence<T extends Context<?>> extends SequentialGetStepSuppli
      * @param <T>        is a type of {@link Context}
      * @return an instance of {@link Absence}.
      */
-    public static <T extends Context<?>> Absence<T> absence(SequentialGetStepSupplier<T, ?, ?, ?, ?> toBeAbsent) {
+    @Description("Absence of {toBeAbsent}")
+    public static <T extends Context<?>> Absence<T> absence(@DescriptionFragment("toBeAbsent") SequentialGetStepSupplier<T, ?, ?, ?, ?> toBeAbsent) {
         checkArgument(nonNull(toBeAbsent), "Supplier of a function should not be a null-value");
         return new Absence<>(toBeAbsent);
     }

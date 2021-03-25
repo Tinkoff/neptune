@@ -1,6 +1,8 @@
 package ru.tinkoff.qa.neptune.http.api.response;
 
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -33,8 +35,9 @@ public final class ResponseCriteria {
      * @param <T>  is a type of response body
      * @return criteria.
      */
-    public static <T> Criteria<HttpResponse<T>> statusCode(int code) {
-        return condition(format("status code is %s", code), r -> r.statusCode() == code);
+    @Description("status code is {code}")
+    public static <T> Criteria<HttpResponse<T>> statusCode(@DescriptionFragment("code") int code) {
+        return condition(r -> r.statusCode() == code);
     }
 
     /**
@@ -83,9 +86,10 @@ public final class ResponseCriteria {
      * @param <T> is a type of response body
      * @return criteria.
      */
-    public static <T> Criteria<HttpResponse<T>> responseURI(URI uri) {
+    @Description("response URI is {uri}")
+    public static <T> Criteria<HttpResponse<T>> responseURI(@DescriptionFragment("uri") URI uri) {
         checkNotNull(uri, "Expected URI should not be defined as a null value");
-        return condition(format("response URI is %s", uri), r -> uri.equals(r.uri()));
+        return condition(r -> uri.equals(r.uri()));
     }
 
     /**
@@ -96,10 +100,11 @@ public final class ResponseCriteria {
      * @param <T>        is a type of response body
      * @return criteria.
      */
-    public static <T> Criteria<HttpResponse<T>> uriMatches(String expression) {
+    @Description("response URI contains '{expression}' or meets regExp pattern '{expression}'")
+    public static <T> Criteria<HttpResponse<T>> uriMatches(@DescriptionFragment("expression") String expression) {
         checkArgument(isNotBlank(expression), "Http response URI expression should be defined");
 
-        return condition(format("response URI contains '%s' or meets regExp pattern '%s'", expression, expression), r -> {
+        return condition(r -> {
             var uri = valueOf(r.uri());
             if (uri.contains(expression)) {
                 return true;
@@ -116,9 +121,12 @@ public final class ResponseCriteria {
         });
     }
 
-    private static <T> Criteria<HttpResponse<T>> uriPartStringCriteria(String description, String expected, Function<URI, String> getPart) {
+    @Description("Response URI {description} is '{expected}'")
+    private static <T> Criteria<HttpResponse<T>> uriPartStringCriteria(@DescriptionFragment("description") String description,
+                                                                       @DescriptionFragment("expected") String expected,
+                                                                       Function<URI, String> getPart) {
         checkArgument(isNotBlank(expected), format("Expected URI %s should not be defined as a blank/null string", description));
-        return condition(format("Response URI %s is '%s'", description, expected), r -> {
+        return condition(r -> {
             try {
                 return Objects.equals(getPart.apply(r.uri()), expected);
             } catch (Throwable t) {
@@ -127,9 +135,12 @@ public final class ResponseCriteria {
         });
     }
 
-    private static <T> Criteria<HttpResponse<T>> uriPartRegExpCriteria(String description, String expression, Function<URI, String> getPart) {
+    @Description("Response URI {description} contains '{expression}' or meets regExp pattern '{expression}'")
+    private static <T> Criteria<HttpResponse<T>> uriPartRegExpCriteria(@DescriptionFragment("description") String description,
+                                                                       @DescriptionFragment("expression") String expression,
+                                                                       Function<URI, String> getPart) {
         checkArgument(isNotBlank(expression), format("expression of URI %s should not be defined as a blank/null string", description));
-        return condition(format("Response URI %s contains '%s' or meets regExp pattern '%s'", description, expression, expression), r -> {
+        return condition(r -> {
             try {
                 var part = getPart.apply(r.uri());
 
@@ -274,9 +285,10 @@ public final class ResponseCriteria {
      * @param <T>  is a type of response body
      * @return criteria.
      */
-    public static <T> Criteria<HttpResponse<T>> responseURIPort(int port) {
+    @Description("Response URI port is '{port}'")
+    public static <T> Criteria<HttpResponse<T>> responseURIPort(@DescriptionFragment("port") int port) {
         checkArgument(port > 0, "Port value should be greater than 0");
-        return condition(format("Response URI port is '%s'", port), r -> {
+        return condition(r -> {
             try {
                 return r.uri().getPort() == port;
             } catch (Throwable t) {

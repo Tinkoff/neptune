@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.selenium.functions.navigation;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
@@ -14,10 +15,11 @@ import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Get
 @SequentialActionSupplier.DefaultParameterNames(
         performOn = "Window/tab to perform navigation forward"
 )
+@Description("Navigate forward")
 public final class Forward extends SequentialActionSupplier<SeleniumStepContext, Window, Forward> {
 
     private Forward() {
-        super("Navigate forward");
+        super();
     }
 
     /**

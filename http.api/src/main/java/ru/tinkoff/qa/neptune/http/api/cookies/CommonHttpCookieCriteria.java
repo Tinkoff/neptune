@@ -2,12 +2,13 @@ package ru.tinkoff.qa.neptune.http.api.cookies;
 
 
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 
 import java.net.HttpCookie;
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 import static java.util.regex.Pattern.compile;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -31,9 +32,10 @@ public final class CommonHttpCookieCriteria {
      * @return criteria that checks/filters a cookie
      * @see HttpCookie#getName()
      */
-    public static Criteria<HttpCookie> httpCookieName(String name) {
+    @Description("has name '{name}'")
+    public static Criteria<HttpCookie> httpCookieName(@DescriptionFragment("name") String name) {
         checkArgument(isNotBlank(name), "Name should be defined");
-        return condition(format("has name '%s'", name), c -> Objects.equals(name, c.getName()));
+        return condition(c -> Objects.equals(name, c.getName()));
     }
 
     /**
@@ -44,10 +46,11 @@ public final class CommonHttpCookieCriteria {
      * @return criteria that checks/filters a cookie
      * @see HttpCookie#getName()
      */
-    public static Criteria<HttpCookie> httpCookieNameMatches(String expression) {
+    @Description("has name that contains '{expression}' or fits regExp pattern '{expression}'")
+    public static Criteria<HttpCookie> httpCookieNameMatches(@DescriptionFragment("expression") String expression) {
         checkArgument(isNotBlank(expression), "Substring/RegEx pattern should be defined");
 
-        return condition(format("has name that contains '%s' or fits regExp pattern '%s'", expression, expression), c ->
+        return condition(c ->
                 ofNullable(c.getName())
                         .map(s -> {
                             if (s.contains(expression)) {
@@ -74,9 +77,10 @@ public final class CommonHttpCookieCriteria {
      * @return criteria that checks/filters a cookie
      * @see HttpCookie#getValue()
      */
-    public static Criteria<HttpCookie> httpCookieValue(String value) {
+    @Description("has value '{value}'")
+    public static Criteria<HttpCookie> httpCookieValue(@DescriptionFragment("value") String value) {
         checkArgument(isNotBlank(value), "Value should be defined");
-        return condition(format("has value '%s'", value), c -> Objects.equals(value, c.getValue()));
+        return condition(c -> Objects.equals(value, c.getValue()));
     }
 
     /**
@@ -87,10 +91,11 @@ public final class CommonHttpCookieCriteria {
      * @return criteria that checks/filters a cookie
      * @see HttpCookie#getValue()
      */
-    public static Criteria<HttpCookie> httpCookieValueMatches(String expression) {
+    @Description("has value that contains '{expression}' or fits regExp pattern '{expression}'")
+    public static Criteria<HttpCookie> httpCookieValueMatches(@DescriptionFragment("expression") String expression) {
         checkArgument(isNotBlank(expression), "Substring/RegEx pattern should be defined");
 
-        return condition(format("has value that contains '%s' or fits regExp pattern '%s'", expression, expression), c ->
+        return condition(c ->
                 ofNullable(c.getValue())
                         .map(s -> {
                             if (s.contains(expression)) {
@@ -117,9 +122,10 @@ public final class CommonHttpCookieCriteria {
      * @return criteria that checks/filters a cookie
      * @see HttpCookie#getComment()
      */
-    public static Criteria<HttpCookie> httpCookieComment(String comment) {
+    @Description("has comment '{comment}'")
+    public static Criteria<HttpCookie> httpCookieComment(@DescriptionFragment("comment") String comment) {
         checkArgument(isNotBlank(comment), "Comment should be defined");
-        return condition(format("has comment '%s'", comment), c -> Objects.equals(comment, c.getComment()));
+        return condition(c -> Objects.equals(comment, c.getComment()));
     }
 
     /**
@@ -130,10 +136,11 @@ public final class CommonHttpCookieCriteria {
      * @return criteria that checks/filters a cookie
      * @see HttpCookie#getComment()
      */
-    public static Criteria<HttpCookie> httpCookieCommentMatches(String expression) {
+    @Description("has comment that contains '{expression}' or fits regExp pattern '{expression}'")
+    public static Criteria<HttpCookie> httpCookieCommentMatches(@DescriptionFragment("expression") String expression) {
         checkArgument(isNotBlank(expression), "Substring/RegEx pattern should be defined");
 
-        return condition(format("has comment that contains '%s' or fits regExp pattern '%s'", expression, expression), c ->
+        return condition(c ->
                 ofNullable(c.getComment())
                         .map(s -> {
                             if (s.contains(expression)) {
@@ -160,9 +167,10 @@ public final class CommonHttpCookieCriteria {
      * @return criteria that checks/filters a cookie
      * @see HttpCookie#getCommentURL()
      */
-    public static Criteria<HttpCookie> httpCookieURLComment(String urlComment) {
+    @Description("has URL comment '{urlComment}'")
+    public static Criteria<HttpCookie> httpCookieURLComment(@DescriptionFragment("urlComment") String urlComment) {
         checkArgument(isNotBlank(urlComment), "URL comment should be defined");
-        return condition(format("has URL comment '%s'", urlComment), c -> Objects.equals(urlComment, c.getCommentURL()));
+        return condition(c -> Objects.equals(urlComment, c.getCommentURL()));
     }
 
     /**
@@ -173,10 +181,11 @@ public final class CommonHttpCookieCriteria {
      * @return criteria that checks/filters a cookie
      * @see HttpCookie#getCommentURL()
      */
-    public static Criteria<HttpCookie> httpCookieURLCommentMatches(String expression) {
+    @Description("has URL comment that contains '{expression}' or fits regExp pattern '{expression}'")
+    public static Criteria<HttpCookie> httpCookieURLCommentMatches(@DescriptionFragment("expression") String expression) {
         checkArgument(isNotBlank(expression), "Substring/RegEx pattern should be defined");
 
-        return condition(format("has URL comment that contains '%s' or fits regExp pattern '%s'", expression, expression), c ->
+        return condition(c ->
                 ofNullable(c.getCommentURL())
                         .map(s -> {
                             if (s.contains(expression)) {
@@ -203,9 +212,10 @@ public final class CommonHttpCookieCriteria {
      * @return criteria that checks/filters a cookie
      * @see HttpCookie#getPortlist()
      */
-    public static Criteria<HttpCookie> httpCookiePortList(String portList) {
+    @Description("has port list '{portList}'")
+    public static Criteria<HttpCookie> httpCookiePortList(@DescriptionFragment("portList") String portList) {
         checkArgument(isNotBlank(portList), "port list should be defined");
-        return condition(format("has port list '%s'", portList), c -> Objects.equals(portList, c.getPortlist()));
+        return condition(c -> Objects.equals(portList, c.getPortlist()));
     }
 
     /**
@@ -216,10 +226,11 @@ public final class CommonHttpCookieCriteria {
      * @return criteria that checks/filters a cookie
      * @see HttpCookie#getPortlist()
      */
-    public static Criteria<HttpCookie> httpCookiePortListMatches(String expression) {
+    @Description("has port list that contains '{expression}' or fits regExp pattern '{expression}'")
+    public static Criteria<HttpCookie> httpCookiePortListMatches(@DescriptionFragment("expression") String expression) {
         checkArgument(isNotBlank(expression), "Substring/RegEx pattern should be defined");
 
-        return condition(format("has port list that contains '%s' or fits regExp pattern '%s'", expression, expression), c ->
+        return condition(c ->
                 ofNullable(c.getPortlist())
                         .map(s -> {
                             if (s.contains(expression)) {
@@ -246,9 +257,10 @@ public final class CommonHttpCookieCriteria {
      * @return criteria that checks/filters a cookie
      * @see HttpCookie#getDomain()
      */
-    public static Criteria<HttpCookie> httpCookieDomain(String domain) {
+    @Description("has domain '{domain}'")
+    public static Criteria<HttpCookie> httpCookieDomain(@DescriptionFragment("domain") String domain) {
         checkArgument(isNotBlank(domain), "Domain should be defined");
-        return condition(format("has domain '%s'", domain), c -> Objects.equals(domain, c.getDomain()));
+        return condition(c -> Objects.equals(domain, c.getDomain()));
     }
 
     /**
@@ -259,10 +271,11 @@ public final class CommonHttpCookieCriteria {
      * @return criteria that checks/filters a cookie
      * @see HttpCookie#getDomain()
      */
-    public static Criteria<HttpCookie> httpCookieDomainMatches(String expression) {
+    @Description("has domain that contains '{expression}' or fits regExp pattern '{expression}'")
+    public static Criteria<HttpCookie> httpCookieDomainMatches(@DescriptionFragment("expression") String expression) {
         checkArgument(isNotBlank(expression), "Substring/RegEx pattern should be defined");
 
-        return condition(format("has domain that contains '%s' or fits regExp pattern '%s'", expression, expression), c ->
+        return condition(c ->
                 ofNullable(c.getDomain())
                         .map(s -> {
                             if (s.contains(expression)) {
@@ -289,9 +302,10 @@ public final class CommonHttpCookieCriteria {
      * @return criteria that checks/filters a cookie
      * @see HttpCookie#getPath()
      */
-    public static Criteria<HttpCookie> httpCookiePath(String path) {
+    @Description("has path '{path}'")
+    public static Criteria<HttpCookie> httpCookiePath(@DescriptionFragment("path") String path) {
         checkArgument(isNotBlank(path), "Path should be defined");
-        return condition(format("has path '%s'", path), c -> Objects.equals(path, c.getPath()));
+        return condition(c -> Objects.equals(path, c.getPath()));
     }
 
     /**
@@ -302,10 +316,11 @@ public final class CommonHttpCookieCriteria {
      * @return criteria that checks/filters a cookie
      * @see HttpCookie#getPath()
      */
-    public static Criteria<HttpCookie> httpCookiePathMatches(String expression) {
+    @Description("has path that contains '{expression}' or fits regExp pattern '{expression}'")
+    public static Criteria<HttpCookie> httpCookiePathMatches(@DescriptionFragment("expression") String expression) {
         checkArgument(isNotBlank(expression), "Substring/RegEx pattern should be defined");
 
-        return condition(format("has path that contains '%s' or fits regExp pattern '%s'", expression, expression), c ->
+        return condition(c ->
                 ofNullable(c.getPath())
                         .map(s -> {
                             if (s.contains(expression)) {
@@ -336,8 +351,9 @@ public final class CommonHttpCookieCriteria {
      * @see HttpCookie#getSecure()
      * @see Criteria#NOT(Criteria[])
      */
+    @Description("is secure")
     public static Criteria<HttpCookie> httpCookieIsSecure() {
-        return condition("is secure", HttpCookie::getSecure);
+        return condition(HttpCookie::getSecure);
     }
 
     /**
@@ -351,8 +367,9 @@ public final class CommonHttpCookieCriteria {
      * @see HttpCookie#isHttpOnly()
      * @see Criteria#NOT(Criteria[])
      */
+    @Description("is http only")
     public static Criteria<HttpCookie> httpCookieIsHttpOnly() {
-        return condition("is http only", HttpCookie::isHttpOnly);
+        return condition(HttpCookie::isHttpOnly);
     }
 
     /**
@@ -366,7 +383,8 @@ public final class CommonHttpCookieCriteria {
      * @see HttpCookie#getDiscard()
      * @see Criteria#NOT(Criteria[])
      */
+    @Description("to discard")
     public static Criteria<HttpCookie> httpCookieToDiscard() {
-        return condition("to discard", HttpCookie::getDiscard);
+        return condition(HttpCookie::getDiscard);
     }
 }

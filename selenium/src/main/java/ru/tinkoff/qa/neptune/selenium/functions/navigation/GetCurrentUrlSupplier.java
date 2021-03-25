@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.functions.navigation;
 
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
@@ -10,11 +11,12 @@ import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Get
 @SequentialGetStepSupplier.DefaultParameterNames(
         from = "Window/tab to get URL string value from"
 )
+@Description("URL of the loaded page")
 public final class GetCurrentUrlSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, String, Window, GetCurrentUrlSupplier> {
 
     private GetCurrentUrlSupplier() {
-        super("URL of the loaded page", Window::getCurrentUrl);
+        super(Window::getCurrentUrl);
     }
 
     /**

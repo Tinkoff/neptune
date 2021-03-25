@@ -32,7 +32,7 @@ public final class InsertOperation<T extends PersistableObject> extends DataOper
     private final List<T> toInsert;
 
     InsertOperation(Collection<T> toBeInserted) {
-        super("List of inserted objects", jdoPersistenceManagerListMap -> {
+        super(jdoPersistenceManagerListMap -> {
             var managerSet = jdoPersistenceManagerListMap.keySet();
             openTransaction(managerSet);
 

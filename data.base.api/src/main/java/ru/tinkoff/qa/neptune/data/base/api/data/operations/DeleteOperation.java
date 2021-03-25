@@ -34,7 +34,7 @@ import static java.util.stream.Collectors.toList;
 public abstract class DeleteOperation<T extends PersistableObject, R extends DeleteOperation<T, R>> extends DataOperation<T, R> {
 
     DeleteOperation() {
-        super("List of deleted objects", jdoPersistenceManagerListMap -> {
+        super(jdoPersistenceManagerListMap -> {
             var managerSet = jdoPersistenceManagerListMap.keySet();
             openTransaction(managerSet);
 

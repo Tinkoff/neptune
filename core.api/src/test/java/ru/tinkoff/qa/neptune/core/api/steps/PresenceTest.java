@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 import static java.util.List.of;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static ru.tinkoff.qa.neptune.core.api.steps.PresenceTest.TestGetSupplier.getTestSupplier;
 import static ru.tinkoff.qa.neptune.core.api.steps.StepFunction.toGet;
 
 @SuppressWarnings("unchecked")
@@ -76,13 +77,13 @@ public class PresenceTest {
 
     @Test
     public void testOfGetSupplierWhichReturnsValue() {
-        assertThat(presenceTestContext.presenceOf(new TestGetSupplier(RETURNS_OBJECT)),
+        assertThat(presenceTestContext.presenceOf(getTestSupplier(RETURNS_OBJECT)),
                 is(true));
     }
 
     @Test
     public void testOfGetSupplierWhichReturnsNull() {
-        assertThat(presenceTestContext.presenceOf(new TestGetSupplier(RETURNS_NULL)),
+        assertThat(presenceTestContext.presenceOf(getTestSupplier(RETURNS_NULL)),
                 is(false));
     }
 
@@ -100,13 +101,13 @@ public class PresenceTest {
 
     @Test
     public void testOfGetSupplierWhichReturnsArray() {
-        assertThat(presenceTestContext.presenceOf(new TestGetSupplier(RETURNS_OBJECT_ARRAY)),
+        assertThat(presenceTestContext.presenceOf(getTestSupplier(RETURNS_OBJECT_ARRAY)),
                 is(true));
     }
 
     @Test
     public void testOfGetSupplierWhichReturnsEmptyArray() {
-        assertThat(presenceTestContext.presenceOf(new TestGetSupplier(RETURNS_EMPTY_ARRAY)),
+        assertThat(presenceTestContext.presenceOf(getTestSupplier(RETURNS_EMPTY_ARRAY)),
                 is(false));
     }
 
@@ -124,13 +125,13 @@ public class PresenceTest {
 
     @Test
     public void testOfGetSupplierWhichReturnsIterable() {
-        assertThat(presenceTestContext.presenceOf(new TestGetSupplier(RETURNS_OBJECT_ITERABLE)),
+        assertThat(presenceTestContext.presenceOf(getTestSupplier(RETURNS_OBJECT_ITERABLE)),
                 is(true));
     }
 
     @Test
     public void testOfGetSupplierWhichReturnsEmptyIterable() {
-        assertThat(presenceTestContext.presenceOf(new TestGetSupplier(RETURNS_EMPTY_ITERABLE)),
+        assertThat(presenceTestContext.presenceOf(getTestSupplier(RETURNS_EMPTY_ITERABLE)),
                 is(false));
     }
 
@@ -146,12 +147,12 @@ public class PresenceTest {
 
     @Test
     public void testOfGetSupplierWhichReturnsTrue() {
-        assertThat(presenceTestContext.presenceOf(new TestGetSupplier(RETURNS_TRUE)), is(true));
+        assertThat(presenceTestContext.presenceOf(getTestSupplier(RETURNS_TRUE)), is(true));
     }
 
     @Test
     public void testOfGetSupplierWhichReturnsFalse() {
-        assertThat(presenceTestContext.presenceOf(new TestGetSupplier(RETURNS_FALSE)), is(false));
+        assertThat(presenceTestContext.presenceOf(getTestSupplier(RETURNS_FALSE)), is(false));
     }
 
     @Test
@@ -169,7 +170,7 @@ public class PresenceTest {
 
     @Test
     public void testOfGetSupplierWhichThrowsIgnoredException() {
-        assertThat(presenceTestContext.presenceOf(new TestGetSupplier(PRODUCES_IGNORED_EXCEPTIONS),
+        assertThat(presenceTestContext.presenceOf(getTestSupplier(PRODUCES_IGNORED_EXCEPTIONS),
                 IGNORED_EXCEPTIONS),
                 is(false));
     }
@@ -177,7 +178,7 @@ public class PresenceTest {
     @Test(expectedExceptions = RuntimeException.class,
             expectedExceptionsMessageRegExp = "Expected exception to be thrown")
     public void testOfGetSupplierWhichThrowsExpectedException() {
-        assertThat(presenceTestContext.presenceOf(new TestGetSupplier(PRODUCES_EXPECTED_EXCEPTIONS),
+        assertThat(presenceTestContext.presenceOf(getTestSupplier(PRODUCES_EXPECTED_EXCEPTIONS),
                 IGNORED_EXCEPTIONS),
                 is(false));
     }
@@ -195,14 +196,19 @@ public class PresenceTest {
             expectedExceptionsMessageRegExp = "Test exception")
     public void testOfThrowingExceptionIfNotPresentSupplier() {
         var errorToThrow = new IllegalStateException("Test exception");
-        assertThat(presenceTestContext.presenceOf(new TestGetSupplier(RETURNS_NULL),
+        assertThat(presenceTestContext.presenceOf(getTestSupplier(RETURNS_NULL),
                 () -> errorToThrow),
                 is(false));
     }
 
-    private static class TestGetSupplier extends SequentialGetStepSupplier.GetObjectStepSupplier<PresenceTestContext, Object, TestGetSupplier> {
+    static class TestGetSupplier extends SequentialGetStepSupplier.GetObjectStepSupplier<PresenceTestContext, Object, TestGetSupplier> {
         TestGetSupplier(Function<PresenceTestContext, Object> originalFunction) {
-            super(originalFunction.toString(), originalFunction);
+            super(originalFunction);
+        }
+
+        @Description("TestGetSupplierDescription")
+        public static TestGetSupplier getTestSupplier(Function<PresenceTestContext, Object> originalFunction) {
+            return new TestGetSupplier(originalFunction);
         }
     }
 

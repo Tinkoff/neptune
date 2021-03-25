@@ -22,8 +22,10 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier.DefaultParameterNames.DefaultActionParameterReader.getImperative;
+import static ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier.DefaultParameterNames.DefaultActionParameterReader.getPerformOnPseudoField;
 import static ru.tinkoff.qa.neptune.core.api.steps.StepAction.action;
+import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 /**
@@ -39,39 +41,27 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActionSupplier<T, R, THIS>> implements Supplier<StepAction<T>>,
         MakesCapturesOnFinishing<THIS>, StepParameterPojo {
 
-    private final String actionDescription;
+    private String actionDescription;
     private final List<CaptorFilterByProducedType> captorFilters = new ArrayList<>();
 
     Object toBePerformedOn;
 
-    protected SequentialActionSupplier(String description) {
-        checkArgument(!isBlank(description), "Description of the action should not be blank or null string value");
-        this.actionDescription = description;
+    protected SequentialActionSupplier() {
         MakesCapturesOnFinishing.makeCaptureSettings(this);
+    }
+
+    protected SequentialActionSupplier<T, R, THIS> setDescription(String actionDescription) {
+        this.actionDescription = actionDescription;
+        return this;
     }
 
     @Override
     public Map<String, String> getParameters() {
         var cls = (Class<?>) this.getClass();
-        var defaultParameters = ofNullable(cls.getAnnotation(SequentialActionSupplier.DefaultParameterNames.class))
-                .orElseGet(() -> {
-                    SequentialActionSupplier.DefaultParameterNames result = null;
-                    var clazz = cls;
-                    while (result == null) {
-                        clazz = clazz.getSuperclass();
-                        result = clazz.getAnnotation(SequentialActionSupplier.DefaultParameterNames.class);
-                    }
-                    return result;
-                });
 
         var result = new LinkedHashMap<String, String>();
         if (isLoggable(toBePerformedOn) && nonNull(toBePerformedOn)) {
-            var fromCls = toBePerformedOn.getClass();
-            if (Function.class.isAssignableFrom(fromCls) || SequentialGetStepSupplier.class.isAssignableFrom(fromCls)) {
-                result.put(defaultParameters.performOn(), toBePerformedOn + " (is calculated while the step is executed)");
-            } else {
-                result.put(defaultParameters.performOn(), valueOf(toBePerformedOn));
-            }
+            result.put(translate(getPerformOnPseudoField(cls)), valueOf(toBePerformedOn));
         }
 
         result.putAll(StepParameterPojo.super.getParameters());
@@ -86,12 +76,13 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
             function = null;
         }
 
+        var description = translate(getImperative(this.getClass())) + " " + actionDescription;
         var action = ofNullable(function).map(function1 ->
-                action(actionDescription, (Consumer<T>) t -> {
+                action(description, (Consumer<T>) t -> {
                     R r = function1.apply(t);
                     performActionOn(r);
                 }))
-                .orElseGet(() -> action(actionDescription, t ->
+                .orElseGet(() -> action(description, t ->
                         performActionOn((R) functionOrObject)));
 
         action.addCaptorFilters(captorFilters);
@@ -262,6 +253,13 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
     public @interface DefaultParameterNames {
 
         /**
+         * Defines name of imperative of a step
+         *
+         * @return imperative of a step
+         */
+        String imperative() default "Perform:";
+
+        /**
          * Defines name of the perform on-parameter
          *
          * @return Defined name of the perform on-parameter
@@ -270,5 +268,39 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
          * @see SequentialActionSupplier#performOn(SequentialGetStepSupplier)
          */
         String performOn() default "Perform action on";
+
+        final class DefaultActionParameterReader {
+
+            private DefaultActionParameterReader() {
+                super();
+            }
+
+            public static PseudoField getPerformOnPseudoField(Class<?> toRead) {
+                if (!SequentialActionSupplier.class.isAssignableFrom(toRead)) {
+                    return null;
+                }
+                return new PseudoField(toRead, "performOn", getDefaultParameters(toRead).performOn());
+            }
+
+            public static PseudoField getImperative(Class<?> toRead) {
+                if (!SequentialActionSupplier.class.isAssignableFrom(toRead)) {
+                    return null;
+                }
+                return new PseudoField(toRead, "imperative", getDefaultParameters(toRead).imperative());
+            }
+
+            private static DefaultParameterNames getDefaultParameters(Class<?> toRead) {
+                return ofNullable(toRead.getAnnotation(DefaultParameterNames.class))
+                        .orElseGet(() -> {
+                            DefaultParameterNames parameterNames = null;
+                            var clazz = toRead;
+                            while (parameterNames == null) {
+                                clazz = clazz.getSuperclass();
+                                parameterNames = clazz.getAnnotation(DefaultParameterNames.class);
+                            }
+                            return parameterNames;
+                        });
+            }
+        }
     }
 }

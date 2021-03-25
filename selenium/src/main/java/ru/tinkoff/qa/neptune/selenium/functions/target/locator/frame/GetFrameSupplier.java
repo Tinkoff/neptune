@@ -5,6 +5,8 @@ import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.WebDriver;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
@@ -26,10 +28,10 @@ public final class GetFrameSupplier extends SequentialGetStepSupplier.GetObjectC
 
 
     private GetFrameSupplier(GetFrameFunction getFrame) {
-        super(format("Frame %s", getFrame.getDescription()), getFrame);
+        super(getFrame);
         timeOut(WAITING_FRAME_SWITCHING_DURATION.get());
         throwOnEmptyResult(() -> new NoSuchFrameException(format("Can't find/switch to the frame %s",
-                getFrame.getDescription())));
+                getFrame.toString())));
     }
 
     /**
@@ -39,7 +41,8 @@ public final class GetFrameSupplier extends SequentialGetStepSupplier.GetObjectC
      * @param nameOrId name or id of the frame to switch to.
      * @return instance of {@link GetFrameSupplier}
      */
-    public static GetFrameSupplier frame(String nameOrId) {
+    @Description("Frame by name or id {nameOrId}")
+    public static GetFrameSupplier frame(@DescriptionFragment("nameOrId") String nameOrId) {
         return new GetFrameSupplier(nameOrId(nameOrId)).from(currentContent());
     }
 
@@ -50,7 +53,8 @@ public final class GetFrameSupplier extends SequentialGetStepSupplier.GetObjectC
      * @param index index of the frame
      * @return instance of {@link GetFrameSupplier}
      */
-    public static GetFrameSupplier frame(int index) {
+    @Description("Frame by index {index}")
+    public static GetFrameSupplier frame(@DescriptionFragment("index") int index) {
         return new GetFrameSupplier(index(index)).from(currentContent());
     }
 
@@ -61,7 +65,8 @@ public final class GetFrameSupplier extends SequentialGetStepSupplier.GetObjectC
      * @param by is a {@link By}-strategy which describes how to find a frame-element to switch to
      * @return instance of {@link GetFrameSupplier}
      */
-    public static GetFrameSupplier frame(By by) {
+    @Description("Frame {by}")
+    public static GetFrameSupplier frame(@DescriptionFragment("by") By by) {
         return new GetFrameSupplier(by(by)).from(currentContent());
     }
 
