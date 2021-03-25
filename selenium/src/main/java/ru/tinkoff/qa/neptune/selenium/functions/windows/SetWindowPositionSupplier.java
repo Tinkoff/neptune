@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.selenium.functions.windows;
 import org.openqa.selenium.Point;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
@@ -18,13 +19,14 @@ import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Get
 @SequentialActionSupplier.DefaultParameterNames(
         performOn = "Window/tab to change position of"
 )
+@Description("Change position of the browser window/tab")
 public final class SetWindowPositionSupplier extends SequentialActionSupplier<SeleniumStepContext, Window, SetWindowPositionSupplier> {
 
     @StepParameter("New position")
     private final Point position;
 
     private SetWindowPositionSupplier(Point position) {
-        super("Change position of the browser window/tab");
+        super();
         checkArgument(nonNull(position), "A new position should not be a null value");
         this.position = position;
     }

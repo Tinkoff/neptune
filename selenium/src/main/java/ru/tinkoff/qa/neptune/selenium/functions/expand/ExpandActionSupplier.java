@@ -3,6 +3,8 @@ package ru.tinkoff.qa.neptune.selenium.functions.expand;
 import org.openqa.selenium.SearchContext;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Expandable;
@@ -18,8 +20,8 @@ import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentF
 public final class ExpandActionSupplier extends
         SequentialActionSupplier<SeleniumStepContext, Expandable, ExpandActionSupplier> {
 
-    private ExpandActionSupplier(String description) {
-        super(description);
+    private ExpandActionSupplier() {
+        super();
     }
 
     /**
@@ -29,9 +31,10 @@ public final class ExpandActionSupplier extends
      * @param <R> is the type of the expandable element
      * @return built expand action
      */
+    @Description("Expand element {of}")
     public static <R extends SearchContext & Expandable> ExpandActionSupplier expand(
-            SearchSupplier<R> of) {
-        return new ExpandActionSupplier("Expand element " + of)
+            @DescriptionFragment("of") SearchSupplier<R> of) {
+        return new ExpandActionSupplier()
                 .performOn(of.get().compose(currentContent()));
     }
 
@@ -42,8 +45,9 @@ public final class ExpandActionSupplier extends
      * @param <R> is the type of the expandable element
      * @return built expand action
      */
-    public static <R extends SearchContext & Expandable> ExpandActionSupplier expand(R of) {
-        return new ExpandActionSupplier("Expand element " + of)
+    @Description("Expand element {of}")
+    public static <R extends SearchContext & Expandable> ExpandActionSupplier expand(@DescriptionFragment("of") R of) {
+        return new ExpandActionSupplier()
                 .performOn(of);
     }
 

@@ -53,8 +53,8 @@ public class SelectList<T, R extends List<T>> extends SequentialGetStepSupplier
     @StepParameter("By query")
     Query<T, R> query;
 
-    private SelectList(String description, KeepResultPersistent resultPersistent, Query<T, R> selectBy) {
-        super(description, selectBy::execute);
+    private SelectList(KeepResultPersistent resultPersistent, Query<T, R> selectBy) {
+        super(selectBy::execute);
         this.resultPersistent = resultPersistent;
         this.query = selectBy;
         timeOut(WAITING_FOR_SELECTION_RESULT_TIME.get());
@@ -73,10 +73,10 @@ public class SelectList<T, R extends List<T>> extends SequentialGetStepSupplier
     public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectList<R, List<R>> listOf(Class<R> toSelect,
                                                                                                                   JDOQLQueryParameters<R, Q> params) {
         var resultPersistent = new KeepResultPersistent();
-        return new SelectList<>(format("List of '%s' from data store", getTable(toSelect)),
-                resultPersistent,
-                byJDOQLQuery(toSelect, params, resultPersistent)).
-                from(getConnectionByClass(toSelect));
+        return new SelectList<>(resultPersistent,
+                byJDOQLQuery(toSelect, params, resultPersistent))
+                .setDescription(format("List of '%s' from data store", getTable(toSelect)))
+                .from(getConnectionByClass(toSelect));
     }
 
     /**
@@ -90,21 +90,10 @@ public class SelectList<T, R extends List<T>> extends SequentialGetStepSupplier
      */
     public static <R extends PersistableObject, Q extends PersistableExpression<R>> SelectList<List<Object>, TableResultList> rows(Class<R> toSelectFrom,
                                                                                                                                    JDOQLResultQueryParams<R, Q> params) {
-        return new SelectList<>(format("Rows of data from data store. Rows are formed by records of '%s'", getTable(toSelectFrom)),
-                null,
+        return new SelectList<>(null,
                 byJDOQLResultQuery(toSelectFrom, params))
+                .setDescription(format("Rows of data from data store. Rows are formed by records of '%s'", getTable(toSelectFrom)))
                 .from(getConnectionByClass(toSelectFrom));
-    }
-
-    /**
-     * Retrieves the full list {@link PersistableObject}
-     *
-     * @param toSelect is a class of each {@link PersistableObject} from returned list
-     * @param <R>      is a type of each {@link PersistableObject} from returned list
-     * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.SelectList}
-     */
-    public static <R extends PersistableObject> SelectList<R, List<R>> listOf(Class<R> toSelect) {
-        return listOf(toSelect, (JDOQLQueryParameters<R, PersistableExpression<R>>) null);
     }
 
     /**
@@ -118,10 +107,21 @@ public class SelectList<T, R extends List<T>> extends SequentialGetStepSupplier
     public static <R extends PersistableObject> SelectList<R, List<R>> listOf(Class<R> toSelect,
                                                                               Ids ids) {
         var resultPersistent = new KeepResultPersistent();
-        return new SelectList<>(format("List of '%s' from data store", getTable(toSelect)),
-                resultPersistent,
+        return new SelectList<>(resultPersistent,
                 ids.build(toSelect, resultPersistent))
+                .setDescription(format("List of '%s' from data store", getTable(toSelect)))
                 .from(getConnectionByClass(toSelect));
+    }
+
+    /**
+     * Retrieves the full list {@link PersistableObject}
+     *
+     * @param toSelect is a class of each {@link PersistableObject} from returned list
+     * @param <R>      is a type of each {@link PersistableObject} from returned list
+     * @return new {@link ru.tinkoff.qa.neptune.data.base.api.queries.SelectList}
+     */
+    public static <R extends PersistableObject> SelectList<R, List<R>> listOf(Class<R> toSelect) {
+        return listOf(toSelect, (JDOQLQueryParameters<R, PersistableExpression<R>>) null);
     }
 
     /**
@@ -142,9 +142,9 @@ public class SelectList<T, R extends List<T>> extends SequentialGetStepSupplier
                                                                               String sql,
                                                                               Object... parameters) {
         var resultPersistent = new KeepResultPersistent();
-        return new SelectList<>(format("List of '%s' from data store", getTable(toSelect)),
-                resultPersistent,
+        return new SelectList<>(resultPersistent,
                 bySql(toSelect, sql, resultPersistent, parameters))
+                .setDescription(format("List of '%s' from data store", getTable(toSelect)))
                 .from(getConnectionByClass(toSelect));
     }
 
@@ -166,9 +166,9 @@ public class SelectList<T, R extends List<T>> extends SequentialGetStepSupplier
                                                                               String sql,
                                                                               Map<String, ?> parameters) {
         var resultPersistent = new KeepResultPersistent();
-        return new SelectList<>(format("List of '%s' from data store", getTable(toSelect)),
-                resultPersistent,
+        return new SelectList<>(resultPersistent,
                 bySql(toSelect, sql, resultPersistent, parameters))
+                .setDescription(format("List of '%s' from data store", getTable(toSelect)))
                 .from(getConnectionByClass(toSelect));
     }
 
@@ -188,9 +188,9 @@ public class SelectList<T, R extends List<T>> extends SequentialGetStepSupplier
     public static <R extends DBConnectionSupplier> SelectList<List<Object>, TableResultList> rows(String sql,
                                                                                                   Class<R> connection,
                                                                                                   Object... parameters) {
-        return new SelectList<>("Rows of raw data from data store",
-                null,
+        return new SelectList<>(null,
                 bySql(sql, parameters))
+                .setDescription("Rows of raw data from data store")
                 .from(getConnectionBySupplierClass(connection));
     }
 
@@ -210,10 +210,15 @@ public class SelectList<T, R extends List<T>> extends SequentialGetStepSupplier
     public static <R extends DBConnectionSupplier> SelectList<List<Object>, TableResultList> rows(String sql,
                                                                                                   Class<R> connection,
                                                                                                   Map<String, ?> parameters) {
-        return new SelectList<>("Rows of raw data from data store",
-                null,
+        return new SelectList<>(null,
                 bySql(sql, parameters))
+                .setDescription("Rows of raw data from data store")
                 .from(getConnectionBySupplierClass(connection));
+    }
+
+    @Override
+    protected SelectList<T, R> setDescription(String description) {
+        return super.setDescription(description);
     }
 
     @Override

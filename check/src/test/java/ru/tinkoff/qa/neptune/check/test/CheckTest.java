@@ -27,7 +27,7 @@ public class CheckTest {
     }
 
     private static final List<String> EXPECTED_LOGGER_MESSAGES1 =
-            of("Perform: Verify Inspected value 4 has started",
+            of("Perform: Verify inspected value 4 has started",
                     "Perform: Check Is integer. Assert: is <true> has started",
                     "Get: Is integer has started",
                     "true has been returned",
@@ -39,7 +39,7 @@ public class CheckTest {
                     "Event finished",
                     "Event finished",
                     "Event finished",
-                    "Perform: Verify Inspected value 5 has started",
+                    "Perform: Verify inspected value 5 has started",
                     "Perform: Check Sqr value. Assert: is <25.0> has started",
                     "Get: Sqr value has started",
                     "25.0 has been returned",
@@ -48,7 +48,7 @@ public class CheckTest {
                     "Event finished");
 
     private static final List<String> EXPECTED_LOGGER_MESSAGES2 =
-            of("Perform: Verify Inspected value 9 has started",
+            of("Perform: Verify inspected value 9 has started",
                     "Perform: Check Is integer. Assert: is <true> has started",
                     "Get: Is integer has started",
                     "true has been returned",
@@ -254,8 +254,8 @@ public class CheckTest {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
         try {
             check(9, match("Is integer",
-                            number -> Integer.class.isAssignableFrom(number.getClass()),
-                            is(true)),
+                    number -> Integer.class.isAssignableFrom(number.getClass()),
+                    is(true)),
                     match("Sqrt value",
                             number -> sqrt(number.doubleValue()),
                             is(2D)));
@@ -293,7 +293,7 @@ public class CheckTest {
 
         assertThat(MESSAGES,
                 contains("Perform: Verify Sqrt value of 9 has started",
-                        "Get: Sqrt value of 9 has started",
+                        "Sqrt value of 9 has started",
                         "3.0 has been returned",
                         "Event finished",
                         "Perform: Check object. Assert: is <3.0> has started",

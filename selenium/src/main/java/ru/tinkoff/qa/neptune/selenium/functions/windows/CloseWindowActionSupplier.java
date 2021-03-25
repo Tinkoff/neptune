@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.functions.windows;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
@@ -12,10 +13,11 @@ import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Get
 @SequentialActionSupplier.DefaultParameterNames(
         performOn = "Window/tab to close"
 )
+@Description("Close the browser window/tab")
 public final class CloseWindowActionSupplier extends SequentialActionSupplier<SeleniumStepContext, Window, CloseWindowActionSupplier> {
 
     private CloseWindowActionSupplier() {
-        super("Close the browser window/tab");
+        super();
     }
 
     /**

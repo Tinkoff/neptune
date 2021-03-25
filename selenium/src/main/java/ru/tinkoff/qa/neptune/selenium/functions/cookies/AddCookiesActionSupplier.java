@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.selenium.functions.cookies;
 
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
@@ -15,13 +16,14 @@ import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentF
 /**
  * This class is designed to build an action that adds cookies to browser's "cookie jar".
  */
+@Description("Add cookies to browsers cookie jar")
 public final class AddCookiesActionSupplier extends SequentialActionSupplier<SeleniumStepContext, WebDriver, AddCookiesActionSupplier> {
 
     @StepParameter("Cookies to add")
     private final Collection<Cookie> cookies;
 
     private AddCookiesActionSupplier(Collection<Cookie> cookies) {
-        super("Add cookies to browsers cookie jar");
+        super();
         checkArgument(nonNull(cookies), "Cookies to be added should not be a null value");
         checkArgument(cookies.size() > 0, "At least one cookie should be defined for the adding");
         this.cookies = cookies;

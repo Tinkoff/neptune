@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.functions.edit;
 
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
@@ -11,7 +11,7 @@ import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.StreamSupport.stream;
 
-public final class EditParameterValueGetter implements StepParameter.ParameterValueGetter<Object> {
+public final class EditParameterValueGetter implements ParameterValueGetter<Object> {
 
     @Override
     public String getParameterValue(Object fieldValue) {

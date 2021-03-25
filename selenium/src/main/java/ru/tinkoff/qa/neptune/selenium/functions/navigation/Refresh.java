@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.selenium.functions.navigation;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
@@ -14,11 +15,12 @@ import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Get
 @SequentialActionSupplier.DefaultParameterNames(
         performOn = "Window/tab to perform the refreshing"
 )
+@Description("Refresh window/tab")
 public final class Refresh extends SequentialActionSupplier<SeleniumStepContext, Window, Refresh> {
 
 
     private Refresh() {
-        super("Refresh window/tab");
+        super();
     }
 
     /**

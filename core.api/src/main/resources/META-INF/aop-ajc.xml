@@ -1,0 +1,6 @@
+<aspectj>
+    <weaver options="-warn:none -Xlint:ignore"/>
+    <aspects>
+        <aspect name="ru.tinkoff.qa.neptune.core.api.steps.localization.aspect.LocalizationAspect"/>
+    </aspects>
+</aspectj>

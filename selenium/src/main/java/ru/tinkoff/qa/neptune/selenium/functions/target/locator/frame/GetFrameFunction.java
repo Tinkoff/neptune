@@ -49,7 +49,8 @@ final class GetFrameFunction implements Function<WebDriver, Frame> {
         return new GetFrameFunction(by.toString(), by);
     }
 
-    String getDescription() {
+    @Override
+    public String toString() {
         return description;
     }
 

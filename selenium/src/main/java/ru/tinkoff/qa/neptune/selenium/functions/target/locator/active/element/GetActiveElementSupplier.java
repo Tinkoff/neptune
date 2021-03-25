@@ -6,6 +6,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
@@ -14,16 +15,16 @@ import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentF
 
 @MakeImageCapturesOnFinishing
 @MakeFileCapturesOnFinishing
+@Description("Active element")
 public final class GetActiveElementSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, WebElement, WebDriver, GetActiveElementSupplier>
         implements TargetLocatorSupplier<WebElement> {
 
     private GetActiveElementSupplier() {
-        super("Active element", webDriver -> {
+        super(webDriver -> {
             try {
                 return webDriver.switchTo().activeElement();
-            }
-            catch (WebDriverException e) {
+            } catch (WebDriverException e) {
                 return null;
             }
         });

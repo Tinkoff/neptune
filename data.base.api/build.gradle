@@ -1,7 +1,13 @@
+plugins {
+    id "io.freefair.aspectj.post-compile-weaving" version "5.3.0"
+}
 
 dependencies {
     compile project(':core.api')
-    compile group: 'org.datanucleus', name: 'datanucleus-rdbms', version: '5.2.6'
+    inpath(project(":core.api")) {
+        transitive = false
+    }
+    compile group: 'org.datanucleus', name: 'datanucleus-rdbms', version: '5.2.5'
     compile group: 'org.datanucleus', name: 'datanucleus-jdo-query', version: '5.0.9'
     compile group: 'org.datanucleus', name: 'datanucleus-api-jdo', version: '5.2.5'
     compile group: 'org.datanucleus', name: 'datanucleus-core', version: '5.2.6'

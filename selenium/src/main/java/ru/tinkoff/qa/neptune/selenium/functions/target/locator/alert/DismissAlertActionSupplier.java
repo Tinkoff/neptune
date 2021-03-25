@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert;
 
 import org.openqa.selenium.Alert;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
@@ -10,10 +11,11 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 @SequentialActionSupplier.DefaultParameterNames(
         performOn = "To dismiss"
 )
+@Description("Dismiss alert")
 public final class DismissAlertActionSupplier extends SequentialActionSupplier<SeleniumStepContext, Alert, DismissAlertActionSupplier> {
 
     private DismissAlertActionSupplier() {
-        super("Dismiss alert");
+        super();
     }
 
     /**

@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.selenium.functions.navigation;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
@@ -24,13 +25,14 @@ import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_D
 @SequentialActionSupplier.DefaultParameterNames(
         performOn = "Window/tab to perform navigation"
 )
+@Description("Navigate to URL")
 public final class ToUrl extends SequentialActionSupplier<SeleniumStepContext, Window, ToUrl> {
 
     @StepParameter("Navigate to")
     private final URL url;
 
     private ToUrl(URL url) {
-        super("Navigate to URL");
+        super();
         checkArgument(nonNull(url), "URL value should differ from null");
         this.url = url;
     }

@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.selenium.functions.windows;
 import org.openqa.selenium.Dimension;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
@@ -16,13 +17,14 @@ import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Get
 @SequentialActionSupplier.DefaultParameterNames(
         performOn = "Window/tab to change size of"
 )
+@Description("Change size of the browser window/tab")
 public final class SetWindowSizeSupplier extends SequentialActionSupplier<SeleniumStepContext, Window, SetWindowSizeSupplier> {
 
     @StepParameter("New Size")
     private final Dimension size;
 
     private SetWindowSizeSupplier(Dimension size) {
-        super("Change size of the browser window/tab");
+        super();
         this.size = size;
     }
 

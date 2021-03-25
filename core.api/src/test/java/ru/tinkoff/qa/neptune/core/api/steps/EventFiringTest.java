@@ -187,9 +187,9 @@ public class EventFiringTest {
     @Test
     public void eventFiringTest() {
         prepare();
-        assertThat(TestEventLogger.MESSAGES, contains("Perform: Reset calculated value to 0 has started",
+        assertThat(TestEventLogger.MESSAGES, contains("Reset calculated value to 0 has started",
                 "Event finished",
-                "Get: Result of numeric operations has started",
+                "Result of numeric operations has started",
                 "Get: Subtraction of number 100 has started",
                 "Get: Entering number 9 has started",
                 "9.0 has been returned",
@@ -210,7 +210,7 @@ public class EventFiringTest {
                 "Event finished",
                 "-128.0 has been returned",
                 "Event finished",
-                "Get: Result of the dividing by zero has started",
+                "Result of the dividing by zero has started",
                 "Get: Divide by number 0.0 has started",
                 "java.lang.ArithmeticException has been thrown",
                 "Event finished",
@@ -223,12 +223,12 @@ public class EventFiringTest {
         toReport = false;
         try {
             prepare();
-            assertThat(TestEventLogger.MESSAGES, contains("Perform: Reset calculated value to 0 has started",
+            assertThat(TestEventLogger.MESSAGES, contains("Reset calculated value to 0 has started",
                     "Event finished",
-                    "Get: Result of numeric operations has started",
+                    "Result of numeric operations has started",
                     "-128.0 has been returned",
                     "Event finished",
-                    "Get: Result of the dividing by zero has started",
+                    "Result of the dividing by zero has started",
                     "java.lang.ArithmeticException has been thrown",
                     "Event finished"));
         }

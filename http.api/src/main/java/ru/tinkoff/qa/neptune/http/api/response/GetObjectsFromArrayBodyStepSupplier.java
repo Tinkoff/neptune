@@ -19,6 +19,7 @@ import static java.util.Set.of;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchFailureEvent;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchSuccessEvent;
+import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSupplier.response;
 
 /**
@@ -35,8 +36,8 @@ import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSuppl
 public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObjectsFromArrayBodyStepSupplier<T, R, S>>
         extends SequentialGetStepSupplier.GetArrayStepSupplier<HttpStepContext, R, S> {
 
-    private GetObjectsFromArrayBodyStepSupplier(String description, Function<HttpStepContext, R[]> f) {
-        super(description, f);
+    private GetObjectsFromArrayBodyStepSupplier(Function<HttpStepContext, R[]> f) {
+        super(f);
     }
 
     /**
@@ -53,7 +54,7 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
     public static <T, R> GetObjectsFromArrayWhenResponseReceived<T, R> asArray(String description,
                                                                                HttpResponse<T> received,
                                                                                Function<T, R[]> f) {
-        return new GetObjectsFromArrayWhenResponseReceived<>(description, received, f);
+        return new GetObjectsFromArrayWhenResponseReceived<>(received, f).setDescription(translate(description));
     }
 
     /**
@@ -72,7 +73,7 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
                                                                                 RequestBuilder requestBuilder,
                                                                                 HttpResponse.BodyHandler<T> handler,
                                                                                 Function<T, R[]> f) {
-        return new GetObjectsFromArrayWhenResponseReceiving<>(description, response(requestBuilder, handler), f);
+        return new GetObjectsFromArrayWhenResponseReceiving<>(response(requestBuilder, handler), f).setDescription(translate(description));
     }
 
 
@@ -87,7 +88,7 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
      */
     public static <R> GetObjectsFromArrayWhenResponseReceived<R[], R> asArray(String description,
                                                                               HttpResponse<R[]> received) {
-        return new GetObjectsFromArrayWhenResponseReceived<>(description, received, rs -> rs);
+        return new GetObjectsFromArrayWhenResponseReceived<>(received, rs -> rs).setDescription(translate(description));
     }
 
     /**
@@ -103,7 +104,7 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
     public static <R> GetObjectsFromArrayWhenResponseReceiving<R[], R> asArray(String description,
                                                                                RequestBuilder requestBuilder,
                                                                                HttpResponse.BodyHandler<R[]> handler) {
-        return new GetObjectsFromArrayWhenResponseReceiving<>(description, response(requestBuilder, handler), rs -> rs);
+        return new GetObjectsFromArrayWhenResponseReceiving<>(response(requestBuilder, handler), rs -> rs).setDescription(translate(description));
     }
 
 
@@ -141,12 +142,16 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
         @StepParameter("From body of received http response")
         final HttpResponse<T> response;
 
-        private GetObjectsFromArrayWhenResponseReceived(String description,
-                                                        HttpResponse<T> response,
+        private GetObjectsFromArrayWhenResponseReceived(HttpResponse<T> response,
                                                         Function<T, R[]> f) {
-            super(description, f.compose(ignored -> response.body()));
+            super(f.compose(ignored -> response.body()));
             checkNotNull(response);
             this.response = response;
+        }
+
+        @Override
+        protected GetObjectsFromArrayWhenResponseReceived<T, R> setDescription(String description) {
+            return super.setDescription(description);
         }
     }
 
@@ -162,17 +167,21 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
         private final ResponseExecutionInfo info;
         private final ResponseSequentialGetSupplier<T> getResponse;
 
-        private GetObjectsFromArrayWhenResponseReceiving(String description, ReceiveResponseAndGetResultFunction<T, R[]> f) {
-            super(description, f);
+        private GetObjectsFromArrayWhenResponseReceiving(ReceiveResponseAndGetResultFunction<T, R[]> f) {
+            super(f);
             var s = f.getGetResponseSupplier();
             info = s.getInfo();
             getResponse = s;
         }
 
-        private GetObjectsFromArrayWhenResponseReceiving(String description,
-                                                         ResponseSequentialGetSupplier<T> getResponse,
+        private GetObjectsFromArrayWhenResponseReceiving(ResponseSequentialGetSupplier<T> getResponse,
                                                          Function<T, R[]> f) {
-            this(description, new ReceiveResponseAndGetResultFunction<>(f, getResponse));
+            this(new ReceiveResponseAndGetResultFunction<>(f, getResponse));
+        }
+
+        @Override
+        protected GetObjectsFromArrayWhenResponseReceiving<T, R> setDescription(String description) {
+            return super.setDescription(description);
         }
 
         /**

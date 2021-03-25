@@ -5,6 +5,7 @@ import org.openqa.selenium.WebDriver;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
@@ -37,11 +38,10 @@ public final class GetJavaScriptResultSupplier extends SequentialGetStepSupplier
     @StepParameter("Script arguments")
     private final Collection<?> args;
 
-    private GetJavaScriptResultSupplier(String description,
-                                        Function<WebDriver, Object> originalFunction,
+    private GetJavaScriptResultSupplier(Function<WebDriver, Object> originalFunction,
                                         String script,
                                         Collection<?> args) {
-        super(description, originalFunction);
+        super(originalFunction);
         checkArgument(isNotBlank(script), "Script should be defined as not null/empty string");
         this.script = script;
         checkNotNull(args, "Parameters value should not be null");
@@ -89,9 +89,9 @@ public final class GetJavaScriptResultSupplier extends SequentialGetStepSupplier
      * @param arguments to be used by script evaluation
      * @return the function which evaluates java script and returns the result as it is.
      */
+    @Description("Evaluation of java script")
     public static GetJavaScriptResultSupplier javaScript(String script, Object... arguments) {
-        return new GetJavaScriptResultSupplier("Evaluation of java script",
-                webDriver -> ((JavascriptExecutor) webDriver).executeScript(script, arguments),
+        return new GetJavaScriptResultSupplier(webDriver -> ((JavascriptExecutor) webDriver).executeScript(script, arguments),
                 script,
                 ofNullable(arguments).map(Arrays::asList).orElse(null))
                 .from(currentContent());
@@ -181,10 +181,10 @@ public final class GetJavaScriptResultSupplier extends SequentialGetStepSupplier
      * @param arguments to be used by script evaluation
      * @return the function which evaluates java script and returns the result as it is.
      */
+    @Description("Evaluation of asynchronous java script")
     public static GetJavaScriptResultSupplier asynchronousJavaScript(String script,
                                                                      Object... arguments) {
-        return new GetJavaScriptResultSupplier("Evaluation of asynchronous java script",
-                webDriver -> ((JavascriptExecutor) webDriver).executeAsyncScript(script, arguments),
+        return new GetJavaScriptResultSupplier(webDriver -> ((JavascriptExecutor) webDriver).executeAsyncScript(script, arguments),
                 script,
                 ofNullable(arguments).map(Arrays::asList).orElse(null))
                 .from(currentContent());

@@ -44,3 +44,18 @@
 
 ### Освобождение ресурсов
 
+## Локализация
+[Основная статья](./LOCALIZATION.MD)
+#####DEFAULT_LOCALE
+Определяет языковай стандарт по умолчанию
+```properties
+#Значение свойства указывается так
+DEFAULT_LOCALE=ru_RU
+```
+#####DEFAULT_LOCALIZATION_ENGINE
+Определяет какой механизм перевода будет использоваться
+```properties
+#В значение свойства указывается полное пакетное имя класса реализующее интерфейс
+# ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization
+DEFAULT_LOCALIZATION_ENGINE=org.my.project.MyLocalizationEngine
+```

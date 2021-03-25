@@ -5,6 +5,7 @@ import org.openqa.selenium.WebDriver;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
@@ -23,11 +24,12 @@ import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentF
         criteria = "Cookie criteria",
         timeOut = "Time to find cookies"
 )
+@Description("Cookies")
 public final class GetSeleniumCookieSupplier extends SequentialGetStepSupplier
         .GetIterableChainedStepSupplier<SeleniumStepContext, Set<Cookie>, WebDriver, Cookie, GetSeleniumCookieSupplier> {
 
     private GetSeleniumCookieSupplier() {
-        super("Cookies", driver -> driver.manage().getCookies());
+        super(driver -> driver.manage().getCookies());
         from(currentContent());
     }
 

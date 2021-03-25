@@ -1,18 +1,16 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator;
 
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
-import static java.lang.String.format;
-
 @SuppressWarnings("unchecked")
 public final class SwitchActionSupplier extends SequentialActionSupplier<SeleniumStepContext, Object, SwitchActionSupplier> {
 
-    private static final String DESCRIPTION = "Switch to %s";
-
-    private SwitchActionSupplier(String description) {
-        super(format(DESCRIPTION, description));
+    private SwitchActionSupplier() {
+        super();
     }
 
     /**
@@ -21,8 +19,9 @@ public final class SwitchActionSupplier extends SequentialActionSupplier<Seleniu
      * @param to is how to get some target locator
      * @return built `switch to` action
      */
-    public static SwitchActionSupplier to(TargetLocatorSupplier to) {
-        return new SwitchActionSupplier(to.toString()).performOn((SequentialGetStepSupplier<SeleniumStepContext, Object, ?, ?, ?>) to);
+    @Description("Switch to {to}")
+    public static SwitchActionSupplier to(@DescriptionFragment("to") TargetLocatorSupplier to) {
+        return new SwitchActionSupplier().performOn((SequentialGetStepSupplier<SeleniumStepContext, Object, ?, ?, ?>) to);
     }
 
     /**
@@ -31,8 +30,9 @@ public final class SwitchActionSupplier extends SequentialActionSupplier<Seleniu
      * @param to is the target locator to be switched
      * @return built `switch to` action
      */
-    public static SwitchActionSupplier to(SwitchesToItself to) {
-        return new SwitchActionSupplier(to.toString()).performOn(to);
+    @Description("Switch to {to}")
+    public static SwitchActionSupplier to(@DescriptionFragment("to") SwitchesToItself to) {
+        return new SwitchActionSupplier().performOn(to);
     }
 
     @Override

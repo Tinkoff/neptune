@@ -11,7 +11,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 abstract class ReleaseActionSupplier extends InteractiveAction {
 
     ReleaseActionSupplier() {
-        super("Release left mouse button");
+        super();
     }
 
     static final class ReleaseSimpleActionSupplier extends ReleaseActionSupplier {

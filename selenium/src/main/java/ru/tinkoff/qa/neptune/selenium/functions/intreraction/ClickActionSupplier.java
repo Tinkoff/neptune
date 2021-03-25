@@ -11,7 +11,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 abstract class ClickActionSupplier extends InteractiveAction {
 
     ClickActionSupplier() {
-        super("Click by left mouse button");
+        super();
     }
 
     static final class ClickSimpleActionSupplier extends ClickActionSupplier {

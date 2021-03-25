@@ -2,22 +2,23 @@ package ru.tinkoff.qa.neptune.selenium.functions.target.locator.content;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
 
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 
+@Description("Default content")
 public final class DefaultContentSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, WebDriver, WebDriver, DefaultContentSupplier>
         implements TargetLocatorSupplier<WebDriver> {
 
     private DefaultContentSupplier() {
-        super("Default content", driver -> {
+        super(driver -> {
             try {
                 return driver.switchTo().defaultContent();
-            }
-            catch (WebDriverException e) {
+            } catch (WebDriverException e) {
                 return null;
             }
         });

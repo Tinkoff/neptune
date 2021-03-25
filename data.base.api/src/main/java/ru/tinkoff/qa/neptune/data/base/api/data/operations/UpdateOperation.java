@@ -43,7 +43,7 @@ public abstract class UpdateOperation<T extends PersistableObject, R extends Upd
 
     @SafeVarargs
     UpdateOperation(UpdateExpression<T>... set) {
-        super("List of updated objects", jdoPersistenceManagerListMap -> {
+        super(jdoPersistenceManagerListMap -> {
             var managerSet = jdoPersistenceManagerListMap.keySet();
             openTransaction(managerSet);
 

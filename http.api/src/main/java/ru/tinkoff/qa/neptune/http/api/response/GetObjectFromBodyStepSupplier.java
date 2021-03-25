@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.http.api.response;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.CaptorFilterByProducedType;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeCaptureOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
@@ -19,6 +20,7 @@ import static java.util.Set.of;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchFailureEvent;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchSuccessEvent;
+import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSupplier.response;
 
 /**
@@ -35,8 +37,8 @@ import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSuppl
 public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFromBodyStepSupplier<T, R, S>>
         extends SequentialGetStepSupplier.GetObjectStepSupplier<HttpStepContext, R, S> {
 
-    private GetObjectFromBodyStepSupplier(String description, Function<HttpStepContext, R> f) {
-        super(description, f);
+    private GetObjectFromBodyStepSupplier(Function<HttpStepContext, R> f) {
+        super(f);
     }
 
     /**
@@ -53,7 +55,7 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
     public static <T, R> GetObjectWhenResponseReceived<T, R> asObject(String description,
                                                                       HttpResponse<T> received,
                                                                       Function<T, R> f) {
-        return new GetObjectWhenResponseReceived<>(description, received, f);
+        return new GetObjectWhenResponseReceived<>(received, f).setDescription(translate(description));
     }
 
     /**
@@ -64,8 +66,9 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
      * @param <T>      is a type of a response body
      * @return an instance of {@link GetObjectWhenResponseReceived}
      */
+    @Description("Body of http response")
     public static <T> GetObjectWhenResponseReceived<T, T> asIs(HttpResponse<T> received) {
-        return asObject("Body of http response", received, t -> t);
+        return new GetObjectWhenResponseReceived<>(received, t -> t);
     }
 
     /**
@@ -84,7 +87,7 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
                                                                        RequestBuilder requestBuilder,
                                                                        HttpResponse.BodyHandler<T> handler,
                                                                        Function<T, R> f) {
-        return new GetObjectWhenResponseReceiving<>(description, response(requestBuilder, handler), f);
+        return new GetObjectWhenResponseReceiving<>(response(requestBuilder, handler), f).setDescription(translate(description));
     }
 
     /**
@@ -96,9 +99,10 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
      * @param <T>            is a type of a response body
      * @return an instance of {@link GetObjectWhenResponseReceiving}
      */
+    @Description("Body of http response")
     public static <T> GetObjectWhenResponseReceiving<T, T> asIs(RequestBuilder requestBuilder,
                                                                 HttpResponse.BodyHandler<T> handler) {
-        return asObject("Body of http response", requestBuilder, handler, t -> t);
+        return new GetObjectWhenResponseReceiving<>(response(requestBuilder, handler), t -> t);
     }
 
     @Override
@@ -135,10 +139,15 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
         @StepParameter("From body of received http response")
         final HttpResponse<T> response;
 
-        private GetObjectWhenResponseReceived(String description, HttpResponse<T> response, Function<T, R> f) {
-            super(description, f.compose(ignored -> response.body()));
+        private GetObjectWhenResponseReceived(HttpResponse<T> response, Function<T, R> f) {
+            super(f.compose(ignored -> response.body()));
             checkNotNull(response);
             this.response = response;
+        }
+
+        @Override
+        protected GetObjectWhenResponseReceived<T, R> setDescription(String description) {
+            return super.setDescription(description);
         }
     }
 
@@ -154,17 +163,21 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
         private final ResponseExecutionInfo info;
         private final ResponseSequentialGetSupplier<T> getResponse;
 
-        private GetObjectWhenResponseReceiving(String description, ReceiveResponseAndGetResultFunction<T, R> f) {
-            super(description, f);
+        private GetObjectWhenResponseReceiving(ReceiveResponseAndGetResultFunction<T, R> f) {
+            super(f);
             var s = f.getGetResponseSupplier();
             info = s.getInfo();
             getResponse = s;
         }
 
-        private GetObjectWhenResponseReceiving(String description,
-                                               ResponseSequentialGetSupplier<T> getResponse,
+        private GetObjectWhenResponseReceiving(ResponseSequentialGetSupplier<T> getResponse,
                                                Function<T, R> f) {
-            this(description, new ReceiveResponseAndGetResultFunction<>(f, getResponse));
+            this(new ReceiveResponseAndGetResultFunction<>(f, getResponse));
+        }
+
+        @Override
+        protected GetObjectWhenResponseReceiving<T, R> setDescription(String description) {
+            return super.setDescription(description);
         }
 
         /**

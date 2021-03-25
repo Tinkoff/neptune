@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.functions.intreraction;
 
 import org.openqa.selenium.interactions.Actions;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -14,11 +15,12 @@ abstract class KeyDownActionSupplier extends InteractiveAction {
     final CharSequence modifierKey;
 
     KeyDownActionSupplier(CharSequence modifierKey) {
-        super("Press modifier key down");
+        super();
         checkNotNull(modifierKey);
         this.modifierKey = modifierKey;
     }
 
+    @Description("Press modifier key down")
     static final class KeyDownSimpleActionSupplier extends KeyDownActionSupplier {
 
         KeyDownSimpleActionSupplier(CharSequence modifierKey) {

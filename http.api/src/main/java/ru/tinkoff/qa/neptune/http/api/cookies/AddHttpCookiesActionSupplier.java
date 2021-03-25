@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.http.api.cookies;
 
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 
@@ -15,6 +16,7 @@ import static java.util.Objects.nonNull;
 /**
  * This class is designed to build an action that adds cookies to a "cookie jar".
  */
+@Description("Add http cookies")
 public final class AddHttpCookiesActionSupplier extends SequentialActionSupplier<CookieManager, CookieStore, AddHttpCookiesActionSupplier> {
 
     @StepParameter(value = "Associate with URI", doNotReportNullValues = true)
@@ -25,7 +27,7 @@ public final class AddHttpCookiesActionSupplier extends SequentialActionSupplier
 
 
     private AddHttpCookiesActionSupplier(URI uri, List<HttpCookie> cookies) {
-        super("Add http cookies");
+        super();
         this.uri = uri;
         checkArgument(nonNull(cookies) && cookies.size() > 0,
                 "Should be defined at least one cookie");

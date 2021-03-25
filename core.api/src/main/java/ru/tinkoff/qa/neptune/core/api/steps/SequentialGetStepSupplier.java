@@ -28,12 +28,14 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationHMS;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.AND;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
+import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefaultParameterNames.DefaultGetParameterReader.*;
 import static ru.tinkoff.qa.neptune.core.api.steps.StepFunction.toGet;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromArray.getFromArray;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromIterable.getFromIterable;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSubArray.getArray;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSubIterable.getIterable;
+import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 /**
@@ -51,7 +53,11 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends SequentialGetStepSupplier<T, R, M, P, THIS>> implements Cloneable,
         Supplier<Function<T, R>>, MakesCapturesOnFinishing<THIS>, StepParameterPojo {
 
-    private final String description;
+    private String description;
+
+    protected SequentialGetStepSupplier() {
+        MakesCapturesOnFinishing.makeCaptureSettings(this);
+    }
 
     final Set<Class<? extends Throwable>> ignored = new HashSet<>();
 
@@ -69,9 +75,9 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
     Supplier<? extends RuntimeException> exceptionSupplier;
 
-    protected SequentialGetStepSupplier(String description) {
+    protected THIS setDescription(String description) {
         this.description = description;
-        MakesCapturesOnFinishing.makeCaptureSettings(this);
+        return (THIS) this;
     }
 
     @Override
@@ -79,42 +85,26 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         var result = new LinkedHashMap<>(StepParameterPojo.super.getParameters());
         var cls = (Class<?>) this.getClass();
 
-        var defaultParameters = ofNullable(cls.getAnnotation(SequentialGetStepSupplier.DefaultParameterNames.class))
-                .orElseGet(() -> {
-                    SequentialGetStepSupplier.DefaultParameterNames parameterNames = null;
-                    var clazz = cls;
-                    while (parameterNames == null) {
-                        clazz = clazz.getSuperclass();
-                        parameterNames = clazz.getAnnotation(SequentialGetStepSupplier.DefaultParameterNames.class);
-                    }
-                    return parameterNames;
-                });
-
         int i = 0;
         for (var c : conditions) {
-            var name = i == 0 ? defaultParameters.criteria() : defaultParameters.criteria() + " " + (i + 1);
-            result.put(name, c.toString());
+            var criteria = i == 0 ? translate(getCriteriaPseudoField(cls)) : translate(getCriteriaPseudoField(cls)) + " " + (i + 1);
+            result.put(criteria, c.toString());
             i++;
         }
 
         ofNullable(timeToGet).ifPresent(duration -> {
             if (duration.toMillis() > 0) {
-                result.put(defaultParameters.timeOut(), formatDurationHMS(duration.toMillis()));
+                result.put(translate(getTimeOutPseudoField(cls)), formatDurationHMS(duration.toMillis()));
             }
         });
         ofNullable(sleepingTime).ifPresent(duration -> {
             if (duration.toMillis() > 0) {
-                result.put(defaultParameters.pollingTime(), formatDurationHMS(duration.toMillis()));
+                result.put(translate(getPollingTimePseudoField(cls)), formatDurationHMS(duration.toMillis()));
             }
         });
 
         if (isLoggable(from) && nonNull(from)) {
-            var fromCls = from.getClass();
-            if (Function.class.isAssignableFrom(fromCls) || SequentialGetStepSupplier.class.isAssignableFrom(fromCls)) {
-                result.put(defaultParameters.from(), from + " (is calculated while the step is executed)");
-            } else {
-                result.put(defaultParameters.from(), valueOf(from));
-            }
+            result.put(translate(getFromPseudoField(cls)), valueOf(from));
         }
 
         return result;
@@ -330,6 +320,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         checkNotNull(endFunction);
 
         StepFunction<T, R> toBeReturned;
+
+        var description = translate(getImperative(this.getClass())) + " " + this.description;
         if (StepFunction.class.isAssignableFrom(composeWith.getClass())) {
             var endFunctionStep = toGet(description, endFunction);
             endFunctionStep.addCaptorFilters(captorFilters);
@@ -376,13 +368,127 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         return condition;
     }
 
+    /**
+     * This annotation is designed to mark subclasses of {@link SequentialGetStepSupplier}. It is
+     * used for the reading of timeouts, polling intervals, {@code from}-values, criteria and for the
+     * forming of parameters of a resulted step-function.
+     *
+     * @see SequentialGetStepSupplier#timeOut(Duration)
+     * @see SequentialGetStepSupplier#pollingInterval(Duration)
+     * @see SequentialGetStepSupplier#criteria(Criteria)
+     * @see SequentialGetStepSupplier#criteria(String, Predicate)
+     * @see SequentialGetStepSupplier#from(Object)
+     * @see SequentialGetStepSupplier#from(SequentialGetStepSupplier)
+     * @see SequentialGetStepSupplier#from(Function)
+     */
+    @Retention(RUNTIME)
+    @Target({TYPE})
+    public @interface DefaultParameterNames {
+
+        /**
+         * Defines name of imperative of a step
+         *
+         * @return imperative of a step
+         */
+        String imperative() default "Get:";
+
+        /**
+         * Defines name of the timeout-parameter
+         *
+         * @return Defined name of the timeout-parameter
+         * @see SequentialGetStepSupplier#timeOut(Duration)
+         */
+        String timeOut() default "Timeout/time for retrying";
+
+        /**
+         * Defines name of the polling/sleeping time-parameter
+         *
+         * @return Defined name of the polling/sleeping time-parameter
+         * @see SequentialGetStepSupplier#pollingInterval(Duration)
+         */
+        String pollingTime() default "Polling time";
+
+        /**
+         * Defines name of the criteria-parameter
+         *
+         * @return Defined name of the criteria-parameter
+         * @see SequentialGetStepSupplier#criteria(Criteria)
+         * @see SequentialGetStepSupplier#criteria(String, Predicate)
+         */
+        String criteria() default "Criteria";
+
+        /**
+         * Defines name of the from-parameter
+         *
+         * @return Defined name of the from-parameter
+         * @see SequentialGetStepSupplier#from(Object)
+         * @see SequentialGetStepSupplier#from(SequentialGetStepSupplier)
+         * @see SequentialGetStepSupplier#from(Function)
+         */
+        String from() default "Get from";
+
+        final class DefaultGetParameterReader {
+            public DefaultGetParameterReader() {
+                super();
+            }
+
+            public static PseudoField getFromPseudoField(Class<?> toRead) {
+                if (!SequentialGetStepSupplier.class.isAssignableFrom(toRead)) {
+                    return null;
+                }
+                return new PseudoField(toRead, "from", getDefaultParameters(toRead).from());
+            }
+
+            public static PseudoField getPollingTimePseudoField(Class<?> toRead) {
+                if (!SequentialGetStepSupplier.class.isAssignableFrom(toRead)) {
+                    return null;
+                }
+                return new PseudoField(toRead, "pollingTime", getDefaultParameters(toRead).pollingTime());
+            }
+
+            public static PseudoField getTimeOutPseudoField(Class<?> toRead) {
+                if (!SequentialGetStepSupplier.class.isAssignableFrom(toRead)) {
+                    return null;
+                }
+                return new PseudoField(toRead, "timeOut", getDefaultParameters(toRead).timeOut());
+            }
+
+            public static PseudoField getCriteriaPseudoField(Class<?> toRead) {
+                if (!SequentialGetStepSupplier.class.isAssignableFrom(toRead)) {
+                    return null;
+                }
+                return new PseudoField(toRead, "criteria", getDefaultParameters(toRead).criteria());
+            }
+
+            public static PseudoField getImperative(Class<?> toRead) {
+                if (!SequentialGetStepSupplier.class.isAssignableFrom(toRead)) {
+                    return null;
+                }
+                return new PseudoField(toRead, "imperative", getDefaultParameters(toRead).imperative());
+            }
+
+            private static DefaultParameterNames getDefaultParameters(Class<?> toRead) {
+                return ofNullable(toRead.getAnnotation(DefaultParameterNames.class))
+                        .orElseGet(() -> {
+                            DefaultParameterNames parameterNames = null;
+                            var clazz = toRead;
+                            while (parameterNames == null) {
+                                clazz = clazz.getSuperclass();
+                                parameterNames = clazz.getAnnotation(DefaultParameterNames.class);
+                            }
+                            return parameterNames;
+                        });
+            }
+        }
+    }
+
     private static abstract class PrivateGetObjectStepSupplier<T, R, M, THIS extends PrivateGetObjectStepSupplier<T, R, M, THIS>>
             extends SequentialGetStepSupplier<T, R, M, R, THIS> {
 
         private final Function<M, R> originalFunction;
 
-        PrivateGetObjectStepSupplier(String description, Function<M, R> originalFunction) {
-            super(description);
+        PrivateGetObjectStepSupplier(Function<M, R> originalFunction) {
+            super();
             this.originalFunction = originalFunction;
         }
 
@@ -429,8 +535,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     public static abstract class GetObjectStepSupplier<T, R, THIS extends GetObjectStepSupplier<T, R, THIS>>
             extends PrivateGetObjectStepSupplier<T, R, T, THIS> {
 
-        protected GetObjectStepSupplier(String description, Function<T, R> originalFunction) {
-            super(description, originalFunction);
+        protected GetObjectStepSupplier(Function<T, R> originalFunction) {
+            super(originalFunction);
             from(t -> t);
         }
     }
@@ -446,8 +552,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     public static abstract class GetObjectChainedStepSupplier<T, R, M, THIS extends GetObjectChainedStepSupplier<T, R, M, THIS>>
             extends PrivateGetObjectStepSupplier<T, R, M, THIS> {
 
-        protected GetObjectChainedStepSupplier(String description, Function<M, R> originalFunction) {
-            super(description, originalFunction);
+        protected GetObjectChainedStepSupplier(Function<M, R> originalFunction) {
+            super(originalFunction);
         }
 
         @Override
@@ -471,8 +577,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
         private final Function<M, ? extends Iterable<R>> originalFunction;
 
-        protected <S extends Iterable<R>> PrivateGetObjectFromIterableStepSupplier(String description, Function<M, S> originalFunction) {
-            super(description);
+        protected <S extends Iterable<R>> PrivateGetObjectFromIterableStepSupplier(Function<M, S> originalFunction) {
+            super();
             this.originalFunction = originalFunction;
         }
 
@@ -519,8 +625,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     public static abstract class GetObjectFromIterableStepSupplier<T, R, THIS extends GetObjectFromIterableStepSupplier<T, R, THIS>>
             extends PrivateGetObjectFromIterableStepSupplier<T, R, T, THIS> {
 
-        protected <S extends Iterable<R>> GetObjectFromIterableStepSupplier(String description, Function<T, S> originalFunction) {
-            super(description, originalFunction);
+        protected <S extends Iterable<R>> GetObjectFromIterableStepSupplier(Function<T, S> originalFunction) {
+            super(originalFunction);
             from(t -> t);
         }
     }
@@ -536,8 +642,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     public static abstract class GetObjectFromIterableChainedStepSupplier<T, R, M, THIS extends GetObjectFromIterableChainedStepSupplier<T, R, M, THIS>>
             extends PrivateGetObjectFromIterableStepSupplier<T, R, M, THIS> {
 
-        protected <S extends Iterable<R>> GetObjectFromIterableChainedStepSupplier(String description, Function<M, S> originalFunction) {
-            super(description, originalFunction);
+        protected <S extends Iterable<R>> GetObjectFromIterableChainedStepSupplier(Function<M, S> originalFunction) {
+            super(originalFunction);
         }
 
         @Override
@@ -561,8 +667,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
         private final Function<M, R[]> originalFunction;
 
-        PrivateGetObjectFromArrayStepSupplier(String description, Function<M, R[]> originalFunction) {
-            super(description);
+        PrivateGetObjectFromArrayStepSupplier(Function<M, R[]> originalFunction) {
+            super();
             this.originalFunction = originalFunction;
         }
 
@@ -609,8 +715,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     public static abstract class GetObjectFromArrayStepSupplier<T, R, THIS extends GetObjectFromArrayStepSupplier<T, R, THIS>>
             extends PrivateGetObjectFromArrayStepSupplier<T, R, T, THIS> {
 
-        protected GetObjectFromArrayStepSupplier(String description, Function<T, R[]> originalFunction) {
-            super(description, originalFunction);
+        protected GetObjectFromArrayStepSupplier(Function<T, R[]> originalFunction) {
+            super(originalFunction);
             from(t -> t);
         }
     }
@@ -626,8 +732,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     public static abstract class GetObjectFromArrayChainedStepSupplier<T, R, M, THIS extends GetObjectFromArrayChainedStepSupplier<T, R, M, THIS>>
             extends PrivateGetObjectFromArrayStepSupplier<T, R, M, THIS> {
 
-        protected GetObjectFromArrayChainedStepSupplier(String description, Function<M, R[]> originalFunction) {
-            super(description, originalFunction);
+        protected GetObjectFromArrayChainedStepSupplier(Function<M, R[]> originalFunction) {
+            super(originalFunction);
         }
 
         @Override
@@ -651,8 +757,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
         private final Function<M, S> originalFunction;
 
-        PrivateGetIterableStepSupplier(String description, Function<M, S> originalFunction) {
-            super(description);
+        PrivateGetIterableStepSupplier(Function<M, S> originalFunction) {
+            super();
             this.originalFunction = originalFunction;
         }
 
@@ -700,8 +806,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     public static abstract class GetIterableStepSupplier<T, S extends Iterable<R>, R, THIS extends GetIterableStepSupplier<T, S, R, THIS>>
             extends PrivateGetIterableStepSupplier<T, S, T, R, THIS> {
 
-        protected GetIterableStepSupplier(String description, Function<T, S> originalFunction) {
-            super(description, originalFunction);
+        protected GetIterableStepSupplier(Function<T, S> originalFunction) {
+            super(originalFunction);
             from(t -> t);
         }
     }
@@ -718,8 +824,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     public static abstract class GetIterableChainedStepSupplier<T, S extends Iterable<R>, M, R, THIS extends GetIterableChainedStepSupplier<T, S, M, R, THIS>>
             extends PrivateGetIterableStepSupplier<T, S, M, R, THIS> {
 
-        protected GetIterableChainedStepSupplier(String description, Function<M, S> originalFunction) {
-            super(description, originalFunction);
+        protected GetIterableChainedStepSupplier(Function<M, S> originalFunction) {
+            super(originalFunction);
         }
 
         @Override
@@ -743,8 +849,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
         private final Function<M, R[]> originalFunction;
 
-        PrivateGetArrayStepSupplier(String description, Function<M, R[]> originalFunction) {
-            super(description);
+        PrivateGetArrayStepSupplier(Function<M, R[]> originalFunction) {
+            super();
             this.originalFunction = originalFunction;
         }
 
@@ -791,9 +897,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     public static abstract class GetArrayStepSupplier<T, R, THIS extends GetArrayStepSupplier<T, R, THIS>>
             extends PrivateGetArrayStepSupplier<T, T, R, THIS> {
 
-
-        protected GetArrayStepSupplier(String description, Function<T, R[]> originalFunction) {
-            super(description, originalFunction);
+        protected GetArrayStepSupplier(Function<T, R[]> originalFunction) {
+            super(originalFunction);
             from(t -> t);
         }
     }
@@ -809,8 +914,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     public static abstract class GetArrayChainedStepSupplier<T, M, R, THIS extends GetArrayChainedStepSupplier<T, M, R, THIS>>
             extends PrivateGetArrayStepSupplier<T, M, R, THIS> {
 
-        protected GetArrayChainedStepSupplier(String description, Function<M, R[]> originalFunction) {
-            super(description, originalFunction);
+        protected GetArrayChainedStepSupplier(Function<M, R[]> originalFunction) {
+            super(originalFunction);
         }
 
         @Override
@@ -827,58 +932,5 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         protected THIS from(SequentialGetStepSupplier<T, ? extends M, ?, ?, ?> from) {
             return super.from(from);
         }
-    }
-
-    /**
-     * This annotation is designed to mark subclasses of {@link SequentialGetStepSupplier}. It is
-     * used for the reading of timeouts, polling intervals, {@code from}-values, criteria and for the
-     * forming of parameters of a resulted step-function.
-     *
-     * @see SequentialGetStepSupplier#timeOut(Duration)
-     * @see SequentialGetStepSupplier#pollingInterval(Duration)
-     * @see SequentialGetStepSupplier#criteria(Criteria)
-     * @see SequentialGetStepSupplier#criteria(String, Predicate)
-     * @see SequentialGetStepSupplier#from(Object)
-     * @see SequentialGetStepSupplier#from(SequentialGetStepSupplier)
-     * @see SequentialGetStepSupplier#from(Function)
-     */
-    @Retention(RUNTIME)
-    @Target({TYPE})
-    public @interface DefaultParameterNames {
-
-        /**
-         * Defines name of the timeout-parameter
-         *
-         * @return Defined name of the timeout-parameter
-         * @see SequentialGetStepSupplier#timeOut(Duration)
-         */
-        String timeOut() default "Timeout/time for retrying";
-
-        /**
-         * Defines name of the polling/sleeping time-parameter
-         *
-         * @return Defined name of the polling/sleeping time-parameter
-         * @see SequentialGetStepSupplier#pollingInterval(Duration)
-         */
-        String pollingTime() default "Polling time";
-
-        /**
-         * Defines name of the criteria-parameter
-         *
-         * @return Defined name of the criteria-parameter
-         * @see SequentialGetStepSupplier#criteria(Criteria)
-         * @see SequentialGetStepSupplier#criteria(String, Predicate)
-         */
-        String criteria() default "Criteria";
-
-        /**
-         * Defines name of the from-parameter
-         *
-         * @return Defined name of the from-parameter
-         * @see SequentialGetStepSupplier#from(Object)
-         * @see SequentialGetStepSupplier#from(SequentialGetStepSupplier)
-         * @see SequentialGetStepSupplier#from(Function)
-         */
-        String from() default "Get from";
     }
 }

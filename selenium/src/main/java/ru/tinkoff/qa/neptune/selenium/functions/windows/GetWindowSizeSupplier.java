@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.selenium.functions.windows;
 
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
@@ -12,11 +13,12 @@ import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Get
 @SequentialGetStepSupplier.DefaultParameterNames(
         from = "Window/tab to get size of"
 )
+@Description("Size of the browser window/tab")
 public final class GetWindowSizeSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, Dimension, Window, GetWindowSizeSupplier> {
 
     private GetWindowSizeSupplier() {
-        super("Size of the browser window/tab", WebDriver.Window::getSize);
+        super(WebDriver.Window::getSize);
     }
 
     /**

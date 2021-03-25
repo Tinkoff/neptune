@@ -14,7 +14,7 @@ abstract class KeyUpActionSupplier extends InteractiveAction {
     final CharSequence modifierKey;
 
     KeyUpActionSupplier(CharSequence modifierKey) {
-        super("Release modifier key");
+        super();
         checkNotNull(modifierKey);
         this.modifierKey = modifierKey;
     }
