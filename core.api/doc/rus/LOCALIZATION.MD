@@ -75,17 +75,27 @@ core.api.steps.Absence.absence(java.util.function.Function<T,?>) = Absence of {t
 core.api.steps.Absence.absence(core.api.steps.SequentialGetStepSupplier<T,?,?,?,?>) = Absence of {toBeAbsent}
   ```
 
-###Использовать aspectj для собственных расширений
+### Использовать aspectj для собственных расширений механизма шагов
 
-- настроить pom.xml
+Про механизм шагов (полезные статьи):
+
+- [Шаги, которые возвращают результат](./IDEA.MD#Шаги,-которые-возвращают-результат)
+
+- [Шаги, которые выполняют действие](./IDEA.MD#Шаги,-которые-выполняют-действие)
+
+1. настроить `pom.xml`
+
  ```xml
 <!-- Добавить зависимость -->
 <dependency>
    <groupId>org.aspectj</groupId>
    <artifactId>aspectjweaver</artifactId>
-   <version>1.9.6</version>
+   <version>${aspectj.version}</version>
+    <!-- Если новые шаги лежат в main, то scope необязателен  --> 
+   <scope>test</scope> 
 </dependency> 
  ```
+
  ```xml
 <!-- Добавить плагин -->
 <plugin>
@@ -99,14 +109,33 @@ core.api.steps.Absence.absence(core.api.steps.SequentialGetStepSupplier<T,?,?,?,
     </configuration>
 </plugin>
  ```
-- добавить для своих расширений @Description, @DescriptionFragment, @StepParameter, @DefaultParameterNames
+
+или `build.gradle`
+
+```groovy
+plugins {
+    id "io.freefair.aspectj.post-compile-weaving" version 'ACTUAL_PLUGIN_VERSION'
+}
+
+dependencies {
+    inpath(group: 'ru.tinkoff.qa.neptune', name: 'core.api', version: 'NEPTUNE_BETA_OR_RELEASE') {
+        transitive = false
+    }
+}
+
+```
+
+2. Использовать для своих шагов @Description, @DescriptionFragment, @StepParameter, @DefaultParameterNames
 
 ## Собственный механизм локализации
+
 Так же существует возможность реализовать собственный механизм локализации.
- 
+
 Для этого необходимо:
- * заимплементить интерфейс
- `ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization`
+
+* заимплементить интерфейс
+  `ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization`
+
  ```java
   public interface StepLocalization {
 
@@ -129,6 +158,8 @@ core.api.steps.Absence.absence(core.api.steps.SequentialGetStepSupplier<T,?,?,?,
 ```properties
 DEFAULT_LOCALIZATION_ENGINE=org.my.project.MyLocalizationEngine
 ```
-При реализации интерфейса можно использовать метаинформацию, полученную из аннотаций @Description, @DescriptionFragment, @StepParameter, @DefaultParameterNames
+
+При реализации интерфейса можно использовать метаинформацию, полученную из аннотаций @Description, @DescriptionFragment,
+@StepParameter
  
  

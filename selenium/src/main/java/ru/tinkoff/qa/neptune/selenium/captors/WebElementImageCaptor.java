@@ -4,15 +4,13 @@ import com.google.common.annotations.Beta;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrapsElement;
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.ImageCaptor;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 
 import static java.util.Optional.ofNullable;
 
 @Beta
+@Description("Screenshot taken from the element")
 public abstract class WebElementImageCaptor extends ImageCaptor<WebElement> {
-
-    public WebElementImageCaptor() {
-        super("Screenshot taken from the element");
-    }
 
     @Override
     public WebElement getCaptured(Object toBeCaptured) {

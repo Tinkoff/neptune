@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.http.api.captors.request;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.StringCaptor;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.http.api.request.body.JSoupDocumentBody;
 import ru.tinkoff.qa.neptune.http.api.request.body.RequestBody;
 import ru.tinkoff.qa.neptune.http.api.request.body.SerializedBody;
@@ -9,11 +10,8 @@ import ru.tinkoff.qa.neptune.http.api.request.body.url.encoded.URLEncodedForm;
 
 import static java.util.List.of;
 
+@Description("Request body.")
 public class CommonRequestBodyCaptor extends StringCaptor<RequestBody<?>> implements BaseRequestBodyCaptor {
-
-    public CommonRequestBodyCaptor() {
-        super("Request body.");
-    }
 
     @Override
     public StringBuilder getData(RequestBody<?> caught) {

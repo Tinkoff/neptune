@@ -7,12 +7,12 @@ import java.util.List;
 
 public abstract class StringCaptor<T> extends Captor<T, StringBuilder> {
 
-    public StringCaptor(String message, List<CapturedStringInjector> injectors) {
-        super(message, injectors);
+    public StringCaptor(List<CapturedStringInjector> injectors) {
+        super(injectors);
     }
 
-    public StringCaptor(String message) {
-        this(message, SPIUtil.loadSPI(CapturedStringInjector.class));
+    public StringCaptor() {
+        this(SPIUtil.loadSPI(CapturedStringInjector.class));
     }
 
     @Override

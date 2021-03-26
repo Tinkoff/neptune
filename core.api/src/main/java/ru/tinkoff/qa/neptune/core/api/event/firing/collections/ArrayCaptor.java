@@ -1,5 +1,7 @@
 package ru.tinkoff.qa.neptune.core.api.event.firing.collections;
 
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
+
 import java.util.List;
 import java.util.Map;
 
@@ -9,20 +11,8 @@ import static java.util.stream.Collectors.toList;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 import static ru.tinkoff.qa.neptune.core.api.utils.ToArrayUtil.toArray;
 
+@Description("Resulted array")
 public class ArrayCaptor extends IterableCaptor<List<?>> {
-
-    public ArrayCaptor() {
-        this("Resulted array");
-    }
-
-    /**
-     * Constructor for situations when it is necessary to override the class
-     *
-     * @param message is a name of attachment
-     */
-    protected ArrayCaptor(String message) {
-        super(message);
-    }
 
     @Override
     public List<?> getCaptured(Object toBeCaptured) {

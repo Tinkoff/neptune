@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.http.api.captors.response;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.StringCaptor;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 
 import javax.net.ssl.SSLPeerUnverifiedException;
 import java.io.IOException;
@@ -9,17 +10,13 @@ import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.Date;
 
-import static java.lang.System.lineSeparator;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 
+@Description("Response")
 public final class ResponseCaptor extends StringCaptor<HttpResponse<?>> {
 
-    private static final String LINE_SEPARATOR = lineSeparator();
-
-    public ResponseCaptor() {
-        super("Response");
-    }
+    private static final String LINE_SEPARATOR = "\r\n";
 
     private static void logSSL(Object toLog, String name, StringBuilder builder) {
         ofNullable(toLog).ifPresent(o ->

@@ -22,6 +22,12 @@ import static ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGett
  */
 public interface StepLocalization {
 
+    /**
+     * Translation of a text.
+     *
+     * @param textToTranslate string to be translated.
+     * @return translated text
+     */
     static String translate(String textToTranslate) {
         var engine = DEFAULT_LOCALIZATION_ENGINE.get();
         var locale = DEFAULT_LOCALE_PROPERTY.get();
@@ -32,6 +38,17 @@ public interface StepLocalization {
         return engine.translation(textToTranslate, locale);
     }
 
+    /**
+     * Crates translated text by annotations which may annotate passed {@link AnnotatedElement}.
+     * <p></p>
+     * Following annotations are used:
+     * <p></p>
+     * {@link Description}, {@link StepParameter}, {@link DescriptionFragment}
+     *
+     * @param annotatedElement used to get some translated text
+     * @param args             additional arguments which are used to build a text. These arguments replace values in {@code `{}`}
+     * @return translated text
+     */
     static String translate(AnnotatedElement annotatedElement, Object... args) {
         var engine = DEFAULT_LOCALIZATION_ENGINE.get();
         var locale = DEFAULT_LOCALE_PROPERTY.get();
@@ -40,14 +57,12 @@ public interface StepLocalization {
             if (annotatedElement instanceof Method) {
                 if (annotatedElement.getAnnotation(Description.class) != null) {
                     String description = annotatedElement.getAnnotation(Description.class).value();
-                    return translationByTemplate((Method) annotatedElement, description, args);
+                    return buildTextByTemplate((Method) annotatedElement, description, args);
                 } else {
-                    Class<?> clazz = ((Method) annotatedElement).getDeclaringClass();
-                    while (clazz.getAnnotation(Description.class) == null && !clazz.equals(Object.class)) {
-                        clazz = clazz.getSuperclass();
-                    }
-                    return ofNullable(clazz.getAnnotation(Description.class)).map(Description::value).orElse(null);
+                    return translateClass(((Method) annotatedElement).getDeclaringClass(), null, null);
                 }
+            } else if (annotatedElement instanceof Class) {
+                return translateClass((Class<?>) annotatedElement, null, null);
             } else {
                 if (annotatedElement.getAnnotation(StepParameter.class) != null) {
                     return annotatedElement.getAnnotation(StepParameter.class).value();
@@ -61,12 +76,10 @@ public interface StepLocalization {
             if (annotatedElement.getAnnotation(Description.class) != null) {
                 return engine.methodTranslation((Method) annotatedElement, locale, args);
             } else {
-                Class<?> clazz = ((Method) annotatedElement).getDeclaringClass();
-                while (clazz.getAnnotation(Description.class) == null && !clazz.equals(Object.class)) {
-                    clazz = clazz.getSuperclass();
-                }
-                return engine.classTranslation(clazz, locale);
+                return translateClass(((Method) annotatedElement).getDeclaringClass(), engine, locale);
             }
+        } else if (annotatedElement instanceof Class) {
+            return translateClass((Class<?>) annotatedElement, engine, locale);
         } else {
             if (annotatedElement.getAnnotation(StepParameter.class) != null) {
                 if (annotatedElement instanceof Field) {
@@ -79,7 +92,36 @@ public interface StepLocalization {
         }
     }
 
-    static String translationByTemplate(Method method, String template, Object... args) {
+    private static String translateClass(Class<?> cls, StepLocalization localization, Locale locale) {
+        var clazz = cls;
+        while (clazz.getAnnotation(Description.class) == null && !clazz.equals(Object.class)) {
+            clazz = clazz.getSuperclass();
+        }
+
+        var cls2 = clazz;
+        return ofNullable(cls2.getAnnotation(Description.class))
+                .map(description -> {
+                    if (localization == null || locale == null) {
+                        return description.value();
+                    }
+
+                    return localization.classTranslation(cls2, locale);
+                })
+                .orElse(null);
+    }
+
+    /**
+     * Builds some text from templated string where variables are placed in {@code `{}`}. Variables are supposed
+     * to be defined by {@link DescriptionFragment} that marks parameters of signature of the passed method.
+     * <p></p>
+     * This method is allowed to be reused by any implementation of {@link StepLocalization}
+     *
+     * @param method   method whose parameters are supposed be annotated by {@link DescriptionFragment}
+     * @param template is a templated string
+     * @param args     values of parameters of current invocation of the method
+     * @return built text
+     */
+    static String buildTextByTemplate(Method method, String template, Object... args) {
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
 
         for (int argIndex = 0; argIndex < args.length; argIndex++) {

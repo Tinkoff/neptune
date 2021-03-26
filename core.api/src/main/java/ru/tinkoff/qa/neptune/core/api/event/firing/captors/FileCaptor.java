@@ -8,12 +8,12 @@ import java.util.List;
 
 public abstract class FileCaptor<T> extends Captor<T, File> {
 
-    public FileCaptor(String message, List<CapturedFileInjector> injectors) {
-        super(message, injectors);
+    public FileCaptor(List<CapturedFileInjector> injectors) {
+        super(injectors);
     }
 
     public FileCaptor(String message) {
-        this(message, SPIUtil.loadSPI(CapturedFileInjector.class));
+        this(SPIUtil.loadSPI(CapturedFileInjector.class));
     }
 
     @Override

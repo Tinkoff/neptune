@@ -5,11 +5,13 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.util.Locale;
 import java.util.function.Function;
 
 import static java.lang.System.getProperties;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.localization.DefaultLocaleProperty.DEFAULT_LOCALE_PROPERTY;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.localization.DefaultLocalizationEngine.DEFAULT_LOCALIZATION_ENGINE;
 import static ru.tinkoff.qa.neptune.core.api.steps.OtherLocalisationEngineTest.GetStepSupplier.*;
 
@@ -35,6 +37,7 @@ public class OtherLocalisationEngineTest {
     @BeforeClass
     public void beforeClass() {
         DEFAULT_LOCALIZATION_ENGINE.accept(NewEngine.class);
+        DEFAULT_LOCALE_PROPERTY.accept(new Locale("RU"));
     }
 
     @Test(dataProvider = "data1")
@@ -54,6 +57,7 @@ public class OtherLocalisationEngineTest {
     @AfterClass
     public void afterClass() {
         getProperties().remove(DEFAULT_LOCALIZATION_ENGINE.getName());
+        getProperties().remove(DEFAULT_LOCALE_PROPERTY.getName());
     }
 
     @Description("Class Description GetSupplier")

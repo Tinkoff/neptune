@@ -1,16 +1,14 @@
 package ru.tinkoff.qa.neptune.http.api.captors.request;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.StringCaptor;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.http.api.request.body.StringBody;
 
 import static java.util.List.of;
 import static java.util.Optional.ofNullable;
 
+@Description("Request string body")
 public final class StringRequestBodyCaptor extends StringCaptor<StringBody> implements BaseRequestBodyCaptor {
-
-    public StringRequestBodyCaptor() {
-        super("Request string body");
-    }
 
     @Override
     public StringBuilder getData(StringBody caught) {

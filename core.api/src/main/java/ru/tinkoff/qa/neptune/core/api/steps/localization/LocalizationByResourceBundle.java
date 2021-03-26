@@ -37,9 +37,9 @@ public class LocalizationByResourceBundle implements StepLocalization {
         var bundle = getResourceBundle(locale);
 
         if (bundle.containsKey(getKey(method))) {
-            return StepLocalization.translationByTemplate(method, bundle.getString(getKey(method)), args);
+            return StepLocalization.buildTextByTemplate(method, bundle.getString(getKey(method)), args);
         }
-        return StepLocalization.translationByTemplate(method,
+        return StepLocalization.buildTextByTemplate(method,
                 method.getAnnotation(Description.class).value(),
                 args);
     }

@@ -7,12 +7,13 @@ import java.util.List;
 
 import static java.lang.String.format;
 
+@Description("Value ")
 public class TestCaptor extends Captor<Number, String> {
 
     static final List<String> messages = new ArrayList<>();
 
     public TestCaptor() {
-        super("Value ", List.of((toBeInjected, message) -> {
+        super(List.of((toBeInjected, message) -> {
             String msg = format("%s %s", message, toBeInjected);
             messages.add(msg);
         }));

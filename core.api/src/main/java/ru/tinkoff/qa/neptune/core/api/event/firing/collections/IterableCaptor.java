@@ -6,16 +6,11 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.captors.StringCaptor;
 import java.util.Arrays;
 
 import static java.lang.String.format;
-import static java.lang.System.lineSeparator;
 import static java.util.Optional.ofNullable;
 
 abstract class IterableCaptor<T extends Iterable<?>> extends StringCaptor<T> {
 
-    private static final String LINE_SEPARATOR = lineSeparator();
-
-    IterableCaptor(String message) {
-        super(message);
-    }
+    private static final String LINE_SEPARATOR = "\r\n";
 
     @Override
     public StringBuilder getData(T caught) {
