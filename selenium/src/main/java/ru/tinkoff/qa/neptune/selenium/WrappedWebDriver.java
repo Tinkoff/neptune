@@ -88,7 +88,8 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
 
         if (USE_BROWSER_PROXY.get()) {
             var currentProxy = getCurrentProxy();
-            var browserUpProxy = currentProxy.createProxy();
+            currentProxy.createProxy();
+            var browserUpProxy = currentProxy.getProxy();
             MutableCapabilities capabilities = (MutableCapabilities) stream(arguments)
                     .filter(arg -> MutableCapabilities.class.isAssignableFrom(arg.getClass()))
                     .findFirst()

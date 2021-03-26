@@ -1563,7 +1563,10 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
         @Override
         public BrowserUpProxy apply(SeleniumStepContext seleniumSteps) {
             return ofNullable(getCurrentProxy())
-                    .map(BrowserProxy::createProxy)
+                    .map(browserProxy -> {
+                        browserProxy.createProxy();
+                        return browserProxy.getProxy();
+                    })
                     .orElse(null);
         }
     }

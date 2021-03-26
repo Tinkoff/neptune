@@ -72,10 +72,8 @@ public final class BrowserProxy {
 
     /**
      * Creates a new proxy server if it is not created or returns one that is existing already
-     *
-     * @return an instance of {@link BrowserUpProxyServer}
      */
-    public synchronized BrowserUpProxyServer createProxy() {
+    public void createProxy() {
         proxy = ofNullable(proxy).orElseGet(() -> {
             var proxy = new BrowserUpProxyServer();
             proxy.setTrustAllServers(true);
@@ -84,7 +82,6 @@ public final class BrowserProxy {
             localPort = findFreePort();
             return proxy;
         });
-        return proxy;
     }
 
     /**
@@ -123,5 +120,9 @@ public final class BrowserProxy {
      */
     public Har getHar() {
         return proxy.getHar();
+    }
+
+    BrowserUpProxyServer getProxy() {
+        return proxy;
     }
 }
