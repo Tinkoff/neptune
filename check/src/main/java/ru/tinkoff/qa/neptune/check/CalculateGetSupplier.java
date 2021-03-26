@@ -6,6 +6,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import java.util.function.Function;
 
 @MakeCaptureOnFinishing(typeOfCapture = Object.class)
+@SequentialGetStepSupplier.DefaultParameterNames(imperative = "")
 class CalculateGetSupplier<T, R> extends SequentialGetStepSupplier.GetObjectStepSupplier<T, R, CalculateGetSupplier<T, R>> {
     protected CalculateGetSupplier(Function<T, R> originalFunction) {
         super(originalFunction);

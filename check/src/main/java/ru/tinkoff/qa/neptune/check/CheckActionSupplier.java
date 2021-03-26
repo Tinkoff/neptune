@@ -8,7 +8,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.System.lineSeparator;
 import static java.util.Arrays.stream;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
@@ -17,9 +16,12 @@ import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.core.api.steps.Step.createStep;
 
+@SequentialActionSupplier.DefaultParameterNames(
+        imperative = "Check"
+)
 public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R, T, CheckActionSupplier<R, T>> {
 
-    private static final String LINE_SEPARATOR = lineSeparator();
+    private static final String LINE_SEPARATOR = "\r\n";
 
     private final List<AssertionError> caughtMismatches = new ArrayList<>();
     private final List<StepAction<T>> checkList = new ArrayList<>();
@@ -40,17 +42,22 @@ public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R,
      */
     @SafeVarargs
     public static <T> void check(String description, T t, MatchAction<T, ?>... matchActions) {
-        checkArgument(!isBlank(description), "Value description to be inspected should not be blank");
-        ((CheckActionSupplier<T, T>) checkActionSupplier(description))
-                .matches(matchActions)
-                .performOn(t1 -> t1)
+        checkActionSupplier(description, (Function<T, T>) t1 -> t1, matchActions)
                 .get()
                 .accept(t);
     }
 
-    @Description("Verify {description}")
-    static CheckActionSupplier<?, ?> checkActionSupplier(@DescriptionFragment("description") String description) {
-        return new CheckActionSupplier<>();
+    @SafeVarargs
+    @Description("{description}")
+    static <T, R> CheckActionSupplier<R, T> checkActionSupplier(
+            @DescriptionFragment(value = "description",
+                    makeReadableBy = DescriptionTranslator.class) String description,
+            Function<R, T> f,
+            MatchAction<T, ?>... matchActions) {
+        checkArgument(!isBlank(description), "Value description to be inspected should not be blank");
+        return new CheckActionSupplier<R, T>()
+                .performOn(f)
+                .matches(matchActions);
     }
 
     /**
@@ -64,23 +71,19 @@ public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R,
      * @param <T>          is a type of a value to be verified.
      */
     @SafeVarargs
-    @Description("Verify {description}")
-    public static <T> void evaluateAndCheck(@DescriptionFragment("description") String description, Supplier<T> toGet, MatchAction<T, ?>... matchActions) {
-        checkArgument(!isBlank(description), "Value description to be inspected should not be blank");
-        ((CheckActionSupplier<Step<T>, T>) checkActionSupplier(description))
-                .matches(matchActions)
-                .performOn(new Function<>() {
-                    @Override
-                    public T apply(Step<T> tStep) {
-                        return tStep.perform();
-                    }
+    public static <T> void evaluateAndCheck(String description,
+                                            Supplier<T> toGet,
+                                            MatchAction<T, ?>... matchActions) {
+        checkActionSupplier(description, new Function<Step<T>, T>() {
+            @Override
+            public T apply(Step<T> tStep) {
+                return tStep.perform();
+            }
 
-                    public String toString() {
-                        return description;
-                    }
-                })
-                .get()
-                .accept(createStep(description, toGet));
+            public String toString() {
+                return description;
+            }
+        }, matchActions).get().accept(createStep(description, toGet));
     }
 
     /**
@@ -94,15 +97,18 @@ public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R,
      */
     @SafeVarargs
     public static <T> void check(T t, MatchAction<T, ?>... matchActions) {
-        checkActionSupplier(t)
-                .matches(matchActions)
-                .performOn(o -> o)
+        checkActionSupplier(t, matchActions)
                 .get().accept(t);
     }
 
-    @Description("Verify inspected value {t}")
-    static <T> CheckActionSupplier<T, T> checkActionSupplier(@DescriptionFragment("t") T t) {
-        return new CheckActionSupplier<T, T>();
+    @SafeVarargs
+    @Description("inspected value {t}")
+    @SuppressWarnings("unused")
+    static <T> CheckActionSupplier<T, ?> checkActionSupplier(@DescriptionFragment("t") T t,
+                                                             MatchAction<T, ?>... matchActions) {
+        return new CheckActionSupplier<T, T>()
+                .performOn(o -> o)
+                .matches(matchActions);
     }
 
     @SafeVarargs
