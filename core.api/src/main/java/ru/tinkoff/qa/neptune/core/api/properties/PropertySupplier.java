@@ -5,9 +5,11 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static java.lang.String.format;
+import static java.lang.System.clearProperty;
 import static java.lang.System.setProperty;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.properties.GeneralPropertyInitializer.arePropertiesRead;
 import static ru.tinkoff.qa.neptune.core.api.properties.GeneralPropertyInitializer.refreshProperties;
 
@@ -75,8 +77,9 @@ public interface PropertySupplier<T, R> extends Supplier<T>, Consumer<R> {
      */
     default void accept(R value) {
         var name = getName();
-        var propertyValue = ofNullable(value).map(this::readValuesToSet).orElse(EMPTY);
-        setProperty(name, propertyValue);
+        ofNullable(value)
+                .ifPresentOrElse(r -> setProperty(name, readValuesToSet(r)),
+                        () -> clearProperty(name));
     }
 
     default String getName() {

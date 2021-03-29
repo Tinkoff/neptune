@@ -19,6 +19,11 @@ public abstract class Captor<T, S> {
     private final String message;
     protected final List<? extends CapturedDataInjector<S>> injectors;
 
+    protected Captor(String message, List<? extends CapturedDataInjector<S>> injectors) {
+        this.message = message;
+        this.injectors = injectors;
+    }
+
     public Captor(List<? extends CapturedDataInjector<S>> injectors) {
         this.message = translate(this.getClass());
         this.injectors = injectors;

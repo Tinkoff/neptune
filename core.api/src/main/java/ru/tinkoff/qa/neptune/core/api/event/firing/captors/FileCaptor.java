@@ -12,7 +12,7 @@ public abstract class FileCaptor<T> extends Captor<T, File> {
         super(injectors);
     }
 
-    public FileCaptor(String message) {
+    public FileCaptor() {
         this(SPIUtil.loadSPI(CapturedFileInjector.class));
     }
 

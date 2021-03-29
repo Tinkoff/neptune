@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.http.api.captors.response;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.FileCaptor;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.http.api.response.RequestResponseLogCollector;
 import ru.tinkoff.qa.neptune.http.api.response.ResponseExecutionInfo;
 
@@ -14,13 +15,10 @@ import static java.io.File.createTempFile;
 import static java.lang.System.lineSeparator;
 import static java.util.UUID.randomUUID;
 
+@Description("Logs that have been captured during the sending of a request")
 public final class RequestResponseLogCaptor extends FileCaptor<List<RequestResponseLogCollector>> {
 
     private static final String LINE_SEPARATOR = lineSeparator();
-
-    public RequestResponseLogCaptor() {
-        super("Logs that have been captured during the sending of a request");
-    }
 
     @Override
     public File getData(List<RequestResponseLogCollector> caught) {
