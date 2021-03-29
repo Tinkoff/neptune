@@ -8,6 +8,14 @@ import java.util.List;
 
 public abstract class ImageCaptor<T> extends Captor<T, BufferedImage> {
 
+    protected ImageCaptor(String message, List<CapturedImageInjector> injectors) {
+        super(message, injectors);
+    }
+
+    protected ImageCaptor(String message) {
+        this(message, SPIUtil.loadSPI(CapturedImageInjector.class));
+    }
+
     public ImageCaptor(List<CapturedImageInjector> injectors) {
         super(injectors);
     }

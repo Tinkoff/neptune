@@ -8,6 +8,14 @@ import java.util.List;
 
 public abstract class FileCaptor<T> extends Captor<T, File> {
 
+    protected FileCaptor(String message, List<CapturedFileInjector> injectors) {
+        super(message, injectors);
+    }
+
+    protected FileCaptor(String message) {
+        this(message, SPIUtil.loadSPI(CapturedFileInjector.class));
+    }
+
     public FileCaptor(List<CapturedFileInjector> injectors) {
         super(injectors);
     }
