@@ -1,10 +1,8 @@
 package ru.tinkoff.qa.neptune.core.api.steps.localization;
 
 import io.github.classgraph.ClassGraph;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.PseudoField;
-import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
-import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
+import ru.tinkoff.qa.neptune.core.api.steps.*;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 
 import java.io.*;
@@ -64,12 +62,12 @@ public class ResourceBundleGenerator {
         var writer = new FileWriter(file, true);
 
         try (var output = new BufferedWriter(writer)) {
-            output.write("#Values for translation of steps and parameters are defined here. Format key = value");
+            output.write("#Values for translation of steps, their parameters and attachments are defined here. Format key = value");
 
-            var children = new ArrayList<Class<?>>();
+            var steps = new ArrayList<Class<?>>();
             of(SequentialActionSupplier.class, SequentialGetStepSupplier.class).forEach(cls -> {
                 var nestMembers = asList(cls.getNestMembers());
-                children.addAll(new ClassGraph()
+                steps.addAll(new ClassGraph()
                         .enableAllInfo()
                         .scan()
                         .getSubclasses(cls.getName())
@@ -79,76 +77,118 @@ public class ResourceBundleGenerator {
                         .collect(toList()));
             });
 
-            children.sort(comparing(Class::getName));
+            steps.sort(comparing(Class::getName));
 
-            children.forEach(child -> {
-                try {
-                    output.newLine();
-                    output.write("#=============================================================================================");
-                    output.newLine();
-                    output.write("#====================== " + cutPartOfPath(child.getName()));
-                    output.newLine();
-                    output.write("#=============================================================================================");
+            if (!steps.isEmpty()) {
+                output.newLine();
+                output.newLine();
+                output.write("#============================================ Steps " +
+                        "============================================ ");
 
-                    var description = child.getAnnotation(Description.class);
+                for (var step : steps) {
+                    addClass(output, step, properties);
 
-                    if (description != null) {
-                        var key = getKey(child);
-                        var value = ofNullable(properties)
-                                .map(p -> p.get(key))
-                                .orElse(description.value());
+                    var fields = new ArrayList<AnnotatedElement>();
+                    var isNotAbsenceAndPresence = !step.equals(Absence.class) && !step.equals(Presence.class);
 
-                        output.newLine();
-                        output.write("#_________________________________ Class Description _________________________________________");
-                        output.newLine();
-                        output.write("#Original text = " + description.value());
-                        output.newLine();
-                        output.write(key + " = " + value);
+                    if (isNotAbsenceAndPresence) {
+                        ofNullable(getFromPseudoField(step)).ifPresent(fields::add);
+                        ofNullable(getPollingTimePseudoField(step)).ifPresent(fields::add);
                     }
 
-                    output.newLine();
-                    output.write("#_________________________________ DefaultParameterNames _____________________________________");
+                    if (!step.equals(Presence.class)) {
+                        ofNullable(getTimeOutPseudoField(step)).ifPresent(fields::add);
+                    }
 
-                    pseudoFieldWriter(output, getFromPseudoField(child), properties);
-                    pseudoFieldWriter(output, getPollingTimePseudoField(child), properties);
-                    pseudoFieldWriter(output, getTimeOutPseudoField(child), properties);
-                    pseudoFieldWriter(output, getCriteriaPseudoField(child), properties);
-                    pseudoFieldWriter(output, getPerformOnPseudoField(child), properties);
+                    if (isNotAbsenceAndPresence) {
+                        ofNullable(getCriteriaPseudoField(step)).ifPresent(fields::add);
+                    }
 
-                    var fields = stream(child.getDeclaredFields())
+                    ofNullable(getPerformOnPseudoField(step)).ifPresent(fields::add);
+
+                    fields.addAll(stream(step.getDeclaredFields())
                             .filter(field -> field.getAnnotation(StepParameter.class) != null)
-                            .collect(toList());
+                            .collect(toList()));
 
                     if (!fields.isEmpty()) {
                         output.newLine();
-                        output.write("#__________________________________ StepParameter ____________________________________________");
-                        fields.forEach(field -> {
-                            field.setAccessible(true);
-                            fill(output, field, properties);
-                        });
+                        output.write("#_________________________________Parameters_____________________________________");
                     }
 
-                    var methods = stream(child.getDeclaredMethods())
+                    for (var field : fields) {
+                        if (field instanceof Field) {
+                            ((Field) field).setAccessible(true);
+                        }
+                        fill(output, field, properties);
+                    }
+
+                    var methods = stream(step.getDeclaredMethods())
                             .filter(method -> method.getAnnotation(Description.class) != null)
                             .collect(toList());
 
                     if (!methods.isEmpty()) {
                         output.newLine();
-                        output.write("#__________________________________ Method Description _______________________________________");
-                        methods.forEach(method -> {
-                            method.setAccessible(true);
-                            fill(output, method, properties);
-                        });
+                        output.write("#__________________________________ Methods _______________________________________");
                     }
 
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    for (var method : methods) {
+                        method.setAccessible(true);
+                        fill(output, method, properties);
+                    }
                 }
-            });
+
+                output.newLine();
+                output.newLine();
+                output.write("#============================================ Steps " +
+                        "============================================ ");
+            }
+
+            var attachments = new ArrayList<Class<?>>(new ClassGraph()
+                    .enableAllInfo()
+                    .scan()
+                    .getSubclasses(Captor.class.getName())
+                    .loadClasses(Captor.class));
+
+            if (!attachments.isEmpty()) {
+                output.newLine();
+                output.newLine();
+                output.write("#======================================= Attachments " +
+                        "============================================");
+
+                for (var attachment : attachments) {
+                    if (attachment.getAnnotation(Description.class) != null) {
+                        addClass(output, attachment, properties);
+                    }
+                }
+                output.newLine();
+                output.newLine();
+                output.write("#======================================= Attachments " +
+                        "============================================");
+            }
         }
     }
 
-    static void fill(BufferedWriter writer, AnnotatedElement annotatedElement, Properties properties) {
+    private static void addClass(BufferedWriter output, Class<?> clazz, Properties properties) throws IOException {
+        output.newLine();
+        output.newLine();
+        output.write("#====================== " + cutPartOfPath(clazz.getName()));
+
+        var description = clazz.getAnnotation(Description.class);
+
+        if (description != null) {
+            var key = getKey(clazz);
+            var value = ofNullable(properties)
+                    .map(p -> p.get(key))
+                    .orElse(description.value());
+
+            output.newLine();
+            output.write("#Original text = " + description.value());
+            output.newLine();
+            output.write(key + " = " + value);
+        }
+    }
+
+    private static void fill(BufferedWriter writer, AnnotatedElement annotatedElement, Properties properties) throws IOException {
         if (annotatedElement instanceof Method) {
             Description annotation = annotatedElement.getAnnotation(Description.class);
             var key = getKey(annotatedElement);
@@ -156,26 +196,22 @@ public class ResourceBundleGenerator {
                     .map(p -> p.get(key))
                     .orElse(annotation.value());
             newLine(writer, annotation.value(), key, value);
+            return;
         }
-        if (annotatedElement instanceof Field) {
-            StepParameter annotation = annotatedElement.getAnnotation(StepParameter.class);
-            var key = getKey(annotatedElement);
-            var value = ofNullable(properties)
-                    .map(p -> p.get(key))
-                    .orElse(annotation.value());
-            newLine(writer, annotation.value(), key, value);
-        }
+
+        StepParameter annotation = annotatedElement.getAnnotation(StepParameter.class);
+        var key = getKey(annotatedElement);
+        var value = ofNullable(properties)
+                .map(p -> p.get(key))
+                .orElse(annotation.value());
+        newLine(writer, annotation.value(), key, value);
     }
 
-    static void newLine(BufferedWriter writer, String originalText, String key, Object value) {
-        try {
-            writer.newLine();
-            writer.write("#Original text = " + originalText);
-            writer.newLine();
-            writer.write(key + " = " + value);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    static void newLine(BufferedWriter writer, String originalText, String key, Object value) throws IOException {
+        writer.newLine();
+        writer.write("#Original text = " + originalText);
+        writer.newLine();
+        writer.write(key + " = " + value);
     }
 
     static String getKey(AnnotatedElement annotatedElement) {
@@ -205,26 +241,8 @@ public class ResourceBundleGenerator {
         return key.replace(" ", "");
     }
 
-    static String cutPartOfPath(String s) {
+    private static String cutPartOfPath(String s) {
         return s.replace("ru.tinkoff.qa.neptune.", "");
-    }
-
-    static void pseudoFieldWriter(BufferedWriter writer, PseudoField field, Properties properties) {
-        ofNullable(field).ifPresent(pseudoField -> {
-            try {
-                var key = getKey(pseudoField);
-                var value = ofNullable(properties)
-                        .map(p -> p.get(key))
-                        .orElse(pseudoField.getAnnotation(StepParameter.class).value());
-
-                writer.newLine();
-                writer.write("#Original text = " + pseudoField.getAnnotation(StepParameter.class).value());
-                writer.newLine();
-                writer.write(key + " = " + value);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
     }
 
     private static InputStream getResourceInputStream(String name) {
