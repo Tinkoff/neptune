@@ -695,8 +695,9 @@ public class SomeClass {
 <details>
     <summary>Нажми, чтобы прочесть</summary>
 
-Neptune не имеет на поддержке такого свойства. `jdk.httpclient.HttpClient.log` - это стандартное свойство/настройка Java
-начиная с 11 версии. Но его точно так же можно указать в `neptune.global.properties` или в `neptune.properties`.
+Neptune не имеет на поддержке таких свойств/переменных окружения. `jdk.httpclient.HttpClient.log` - это стандартное
+свойство/настройка Java начиная с 11 версии. Но его точно так же можно указать в `neptune.global.properties` или
+в `neptune.properties`.
 
 ```properties
 #Логирование всех событий
