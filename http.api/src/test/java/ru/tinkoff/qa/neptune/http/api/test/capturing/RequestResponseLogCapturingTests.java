@@ -15,7 +15,6 @@ import java.util.Random;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.http.Fault.MALFORMED_RESPONSE_CHUNK;
 import static java.lang.System.getProperties;
-import static java.lang.System.lineSeparator;
 import static java.net.URI.create;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
 import static java.time.Duration.ofSeconds;
@@ -37,7 +36,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
 
     private static final URI CORRECT_URI = create(REQUEST_URI + "/success.html");
     private static final URI INCORRECT_URI = create(REQUEST_URI + "/failure.html");
-    private static final String LINE_SEPARATOR = lineSeparator();
+    private static final String LINE_SEPARATOR = "\r\n";
 
     @BeforeClass
     public void beforeClass() {
