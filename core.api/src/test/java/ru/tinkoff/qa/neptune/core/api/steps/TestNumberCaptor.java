@@ -11,7 +11,7 @@ import static java.lang.String.format;
 public class TestNumberCaptor extends Captor<Number, Number> {
 
     static final List<Number> numbers = new ArrayList<>();
-    static final List<String> messages = new ArrayList<>();
+    public static final List<String> messages = new ArrayList<>();
 
     public TestNumberCaptor() {
         super(List.of((toBeInjected, message) -> {

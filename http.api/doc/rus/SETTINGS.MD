@@ -566,17 +566,137 @@ public class SomeClass {
 
 [Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов-URL)
 
-Пользователь может самостоятельно создавать аналогичные типизированные свойства и привязывать их к сервисам, чей корневой URL
-отличается от дефолтного. Об этих нюансах подробно в [Дефолтный корневой URL](./MAPPING.MD#Дефолтный-корневой-URL) и в [Недефолтные корневые URL](./MAPPING.MD#Недефолтные-корневые-URL)
+Пользователь может самостоятельно создавать аналогичные типизированные свойства и привязывать их к сервисам, чей
+корневой URL отличается от дефолтного. Об этих нюансах подробно
+в [Дефолтный корневой URL](./MAPPING.MD#Дефолтный-корневой-URL) и
+в [Недефолтные корневые URL](./MAPPING.MD#Недефолтные-корневые-URL)
+
+</details>
+
+## Формат даты по умолчанию
+
+Для того чтобы настроить формат сериализации и десериализации дат, которые используются в качестве значений
+query-параметров, фрагментов путей, значений заголовков и тел http-запросов, можно использовать перечисленные ниже
+свойства/переменные окружения. В основном, это актуально при [мэппинге http-сервисов](./MAPPING.MD)
+
+### API_DATE_FORMAT
+
+<details>
+    <summary>Нажми, чтобы прочесть</summary>
+
+Указывает сам формат дат.
+
+Пример настройки:
+
+```properties
+#Значение свойства указывается так
+API_DATE_FORMAT=yyyy-MM-dd'T'HH:mm:ss
+```
+
+```java
+import java.text.SimpleDateFormat;
+
+import static ru.tinkoff.qa.neptune.http.api.properties.date.format
+        .ApiDateFormatProperty.API_DATE_FORMAT_PROPERTY;
+
+public class SomeClass {
+    
+    public void someVoid() {
+        //пример доступа до значения свойства
+        SimpleDateFormat format = API_DATE_FORMAT_PROPERTY.get();
+    }
+}
+```
+
+</details>
+
+### API_DATE_FORMAT_SYMBOLS
+
+<details>
+    <summary>Нажми, чтобы прочесть</summary>
+
+Можно дополнить формат, указанный в переменной окружения/свойстве `API_DATE_FORMAT`, использованием объекта класса
+`java.text.DateFormatSymbols`.
+
+Пример настройки:
+
+```java
+package org.my.pack;
+
+import java.text.DateFormatSymbols;
+import java.util.function.Supplier;
+
+//Создаем поставщика, который будет поставлять объекты класса java.text.DateFormatSymbols
+public class MySslContextSupplier implements Supplier<DateFormatSymbols> {
+
+    @Override
+    public DateFormatSymbols get() {
+        //Тут создается объект
+    }
+}
+```
+
+```properties
+#Значение свойства указывается так
+API_DATE_FORMAT_SYMBOLS=org.my.pack.MySslContextSupplier
+```
+
+```java
+import java.text.DateFormatSymbols;
+
+import static ru.tinkoff.qa.neptune.http.api.properties.date.format
+        .ApiDateFormatSymbolsProperty.API_DATE_FORMAT_SYMBOLS_PROPERTY;
+
+public class SomeClass {
+
+    public void someVoid() {
+        //пример доступа до значения свойства
+        DateFormatSymbols symbols = API_DATE_FORMAT_SYMBOLS_PROPERTY.get();
+    }
+}
+```
+
+[Подробнее о механизме работы подобных свойств](./../../../core.api/doc/rus/SETTINGS.MD#Свойства-для-создания-и-возврата-объектов)
+</details>
+
+### API_DATE_FORMAT_TIME_ZONE
+
+<details>
+    <summary>Нажми, чтобы прочесть</summary>
+
+Можно дополнить формат, указанный в переменной окружения/свойстве `API_DATE_FORMAT`, значением тайм-зоны.
+
+Пример настройки:
+
+```properties
+#Значение свойства указывается так
+API_DATE_FORMAT_TIME_ZONE=Europe/Moscow
+```
+
+```java
+import java.util.TimeZone;
+
+import static ru.tinkoff.qa.neptune.http.api.properties.date.format
+        .ApiTimeZoneProperty.API_TIME_ZONE_PROPERTY;
+
+public class SomeClass {
+    
+    public void someVoid() {
+        //пример доступа до значения свойства
+        TimeZone timeZone = API_TIME_ZONE_PROPERTY.get();
+    }
+}
+```
 
 </details>
 
 ## Http лог
+
 <details>
     <summary>Нажми, чтобы прочесть</summary>
 
-Neptune не имеет на поддержке такого свойства. `jdk.httpclient.HttpClient.log` - это стандартное свойство/настройка Java начиная с 11 версии.
-Но его точно так же можно указать в `neptune.global.properties` или в `neptune.properties`.
+Neptune не имеет на поддержке такого свойства. `jdk.httpclient.HttpClient.log` - это стандартное свойство/настройка Java
+начиная с 11 версии. Но его точно так же можно указать в `neptune.global.properties` или в `neptune.properties`.
 
 ```properties
 #Логирование всех событий
