@@ -17,6 +17,7 @@ import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.ArrayUtils.toObject;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.utils.URLEncodeUtil.encodeQuerySubstring;
+import static ru.tinkoff.qa.neptune.http.api.properties.date.format.ApiDateFormatProperty.API_DATE_FORMAT_PROPERTY;
 
 /**
  * This is the abstract class that is designed to support the building
@@ -160,16 +161,25 @@ public abstract class FormBuilder {
             return encodeQuerySubstring(toBeEncoded, allowReserved);
         }
 
+        private static String format(Object o) {
+            if (o instanceof Date) {
+                return ofNullable(API_DATE_FORMAT_PROPERTY.get())
+                        .map(simpleDateFormat -> simpleDateFormat.format((Date) o))
+                        .orElseGet(() -> valueOf(o));
+            }
+            return valueOf(o);
+        }
+
         private static Stream<String> toStream(Object value, boolean toNotEncodeValue, boolean allowReserved) {
             return ofNullable(prepareStreamOfObjects(value))
                     .map(stream -> stream.map(o -> {
                         var streamToTransform = prepareStreamOfObjects(o);
                         if (streamToTransform == null) {
-                            return encode(valueOf(o), toNotEncodeValue, allowReserved);
+                            return encode(format(o), toNotEncodeValue, allowReserved);
                         }
 
                         return streamToTransform
-                                .map(o1 -> encode(valueOf(o1), toNotEncodeValue, allowReserved))
+                                .map(o1 -> encode(format(o1), toNotEncodeValue, allowReserved))
                                 .collect(joining(","));
                     }))
                     .orElseGet(() -> toStream(new Object[]{value}, toNotEncodeValue, allowReserved));
@@ -183,7 +193,7 @@ public abstract class FormBuilder {
         public void addValues(Object... values) {
             checkNotNull(values);
             checkArgument(values.length > 0,
-                    format("It is necessary to define at least one value of the parameter '%s'", name));
+                    String.format("It is necessary to define at least one value of the parameter '%s'", name));
             this.values.addAll(stream(values)
                     .filter(Objects::nonNull)
                     .collect(toList()));

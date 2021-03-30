@@ -77,7 +77,10 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetO
                                                                                                                  RequestBuilder requestBuilder,
                                                                                                                  HttpResponse.BodyHandler<T> handler,
                                                                                                                  Function<T, S> f) {
-        return new GetObjectFromIterableWhenResponseReceiving<>(response(requestBuilder, handler), f).setDescription(translate(description));
+        return new GetObjectFromIterableWhenResponseReceiving<>(response(requestBuilder, handler)
+                .addIgnored(Exception.class),
+                f)
+                .setDescription(translate(description));
     }
 
 
@@ -110,7 +113,10 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetO
     public static <R, S extends Iterable<R>> GetObjectFromIterableWhenResponseReceiving<S, R> asOneOfIterable(String description,
                                                                                                               RequestBuilder requestBuilder,
                                                                                                               HttpResponse.BodyHandler<S> handler) {
-        return new GetObjectFromIterableWhenResponseReceiving<>(response(requestBuilder, handler), rs -> rs).setDescription(translate(description));
+        return new GetObjectFromIterableWhenResponseReceiving<>(response(requestBuilder, handler)
+                .addIgnored(Exception.class),
+                rs -> rs)
+                .setDescription(translate(description));
     }
 
 

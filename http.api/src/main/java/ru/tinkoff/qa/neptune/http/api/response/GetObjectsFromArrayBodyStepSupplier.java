@@ -73,7 +73,10 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
                                                                                 RequestBuilder requestBuilder,
                                                                                 HttpResponse.BodyHandler<T> handler,
                                                                                 Function<T, R[]> f) {
-        return new GetObjectsFromArrayWhenResponseReceiving<>(response(requestBuilder, handler), f).setDescription(translate(description));
+        return new GetObjectsFromArrayWhenResponseReceiving<>(response(requestBuilder, handler)
+                .addIgnored(Exception.class),
+                f)
+                .setDescription(translate(description));
     }
 
 
@@ -104,7 +107,10 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
     public static <R> GetObjectsFromArrayWhenResponseReceiving<R[], R> asArray(String description,
                                                                                RequestBuilder requestBuilder,
                                                                                HttpResponse.BodyHandler<R[]> handler) {
-        return new GetObjectsFromArrayWhenResponseReceiving<>(response(requestBuilder, handler), rs -> rs).setDescription(translate(description));
+        return new GetObjectsFromArrayWhenResponseReceiving<>(response(requestBuilder, handler)
+                .addIgnored(Exception.class),
+                rs -> rs)
+                .setDescription(translate(description));
     }
 
 

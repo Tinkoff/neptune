@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.path;
 
-import ru.tinkoff.qa.neptune.core.api.utils.URLEncodeUtil;
-
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -11,6 +10,7 @@ import static java.util.List.of;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
 import static ru.tinkoff.qa.neptune.core.api.utils.URLEncodeUtil.encodePathSubstring;
+import static ru.tinkoff.qa.neptune.http.api.properties.date.format.ApiDateFormatProperty.API_DATE_FORMAT_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil.objectToMap;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil.toStream;
 
@@ -112,12 +112,21 @@ public enum PathStyles {
         }
     };
 
-    static String getEncoded(Object o) {
+    private static String getEncoded(Object o) {
         return ofNullable(toStream(o))
                 .map(stream -> stream
-                        .map(URLEncodeUtil::encodePathSubstring)
+                        .map(PathStyles::encodeValue)
                         .collect(joining(",")))
-                .orElseGet(() -> encodePathSubstring(o));
+                .orElseGet(() -> encodeValue(o));
+    }
+
+    private static String encodeValue(Object o) {
+        if (o instanceof Date) {
+            return ofNullable(API_DATE_FORMAT_PROPERTY.get())
+                    .map(simpleDateFormat -> encodePathSubstring(simpleDateFormat.format((Date) o)))
+                    .orElseGet(() -> encodePathSubstring(o.toString()));
+        }
+        return encodePathSubstring(o.toString());
     }
 
     String getPathValue(Object pathVarValue, String varName, boolean explode) {
