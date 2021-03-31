@@ -28,20 +28,32 @@ DEFAULT_LOCALE=ru_RU
 ###### Пример для pom.xml
 
 ```xml
-<execution>
-   <id>generate properties</id>
-   <phase>compile</phase>
-   <goals>
-      <goal>java</goal>
-   </goals>
-   <configuration>
-       <mainClass>ru.tinkoff.qa.neptune.core.api.steps.localization.ResourceBundleGenerator</mainClass>
-       <arguments>
-          <argument>ru_RU</argument>
-          <argument>${basedir}/src/main/resources</argument>
-       </arguments>
-   </configuration>
-</execution>               
+
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.0.0</version>
+            <executions>
+                <execution>
+                    <id>generate properties</id>
+                    <phase>compile</phase>
+                    <goals>
+                        <goal>java</goal>
+                    </goals>
+                    <configuration>
+                        <mainClass>ru.tinkoff.qa.neptune.core.api.steps.localization.ResourceBundleGenerator</mainClass>
+                        <arguments>
+                            <argument>ru_RU</argument>
+                            <argument>${basedir}/src/main/resources</argument>
+                        </arguments>
+                    </configuration>
+                </execution>
+            </executions>        
+        </plugin>
+    </plugins>
+</build>
 ```
 ###### Пример для build.gradle 
 ```groovy
