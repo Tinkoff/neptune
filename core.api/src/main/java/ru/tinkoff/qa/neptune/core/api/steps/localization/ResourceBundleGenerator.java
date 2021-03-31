@@ -82,7 +82,7 @@ public class ResourceBundleGenerator {
             if (!steps.isEmpty()) {
                 output.newLine();
                 output.newLine();
-                output.write("#============================================ Steps " +
+                output.write("#============================================ STEPS " +
                         "============================================ ");
 
                 for (var step : steps) {
@@ -136,11 +136,6 @@ public class ResourceBundleGenerator {
                         fill(output, method, properties);
                     }
                 }
-
-                output.newLine();
-                output.newLine();
-                output.write("#============================================ Steps " +
-                        "============================================ ");
             }
 
             var attachments = new ArrayList<Class<?>>(new ClassGraph()
@@ -152,7 +147,7 @@ public class ResourceBundleGenerator {
             if (!attachments.isEmpty()) {
                 output.newLine();
                 output.newLine();
-                output.write("#======================================= Attachments " +
+                output.write("#======================================= ATTACHMENTS " +
                         "============================================");
 
                 for (var attachment : attachments) {
@@ -160,10 +155,6 @@ public class ResourceBundleGenerator {
                         addClass(output, attachment, properties);
                     }
                 }
-                output.newLine();
-                output.newLine();
-                output.write("#======================================= Attachments " +
-                        "============================================");
             }
         }
     }
@@ -172,6 +163,7 @@ public class ResourceBundleGenerator {
         output.newLine();
         output.newLine();
         output.write("#====================== " + cutPartOfPath(clazz.getName()));
+        output.newLine();
 
         var description = clazz.getAnnotation(Description.class);
 

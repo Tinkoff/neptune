@@ -57,9 +57,10 @@ task generateBundle(type: JavaExec) {
 ```properties
 #Values for translation of steps, their parameters and attachments are defined here. Format key = value
 
-#============================================ Steps ============================================ 
+#============================================ STEPS ============================================ 
 
 #====================== core.api.steps.Absence
+
 #_________________________________Parameters_____________________________________
 #Original text = Time of the waiting for absence
 core.api.steps.Absence.timeOut = Time of the waiting for absence
@@ -70,29 +71,29 @@ core.api.steps.Absence.absence(java.util.function.Function<T,?>) = Absence of {t
 core.api.steps.Absence.absence(core.api.steps.SequentialGetStepSupplier<T,?,?,?,?>) = Absence of {toBeAbsent}
 
 #====================== core.api.steps.Presence
+
 #__________________________________ Methods _______________________________________
 #Original text = Presence of {toBePresent}
 core.api.steps.Presence.presence(java.util.function.Function<T,?>) = Presence of {toBePresent}
 #Original text = Presence of {toBePresent}
 core.api.steps.Presence.presence(core.api.steps.SequentialGetStepSupplier<T,?,?,?,?>) = Presence of {toBePresent}
 
-#============================================ Steps ============================================ 
-
-#======================================= Attachments ============================================
+#======================================= ATTACHMENTS ============================================
 
 #====================== core.api.event.firing.collections.ArrayCaptor
+
 #Original text = Resulted array
 core.api.event.firing.collections.ArrayCaptor = Resulted array
 
 #====================== core.api.event.firing.collections.CollectionCaptor
+
 #Original text = Resulted collection
 core.api.event.firing.collections.CollectionCaptor = Resulted collection
 
 #====================== core.api.event.firing.collections.MapCaptor
+
 #Original text = Resulted map
 core.api.event.firing.collections.MapCaptor = Resulted map
-
-#======================================= Attachments ============================================
   ```
 
 ### Использовать aspectj для собственных расширений механизма шагов
