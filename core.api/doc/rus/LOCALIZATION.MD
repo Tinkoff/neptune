@@ -25,7 +25,7 @@ DEFAULT_LOCALE=ru_RU
  - arg0 - строка в формате language_country
  - arg1 - путь к каталогу, в котором должен быть сохранен файл 
  
-######Пример для pom.xml
+###### Пример для pom.xml
 
 ```xml
 <execution>
@@ -43,7 +43,7 @@ DEFAULT_LOCALE=ru_RU
    </configuration>
 </execution>               
 ```
-######Пример для build.gradle 
+###### Пример для build.gradle 
 ```groovy
 task generateBundle(type: JavaExec) {
     classpath sourceSets.main.runtimeClasspath
