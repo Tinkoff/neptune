@@ -42,6 +42,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.time.Duration.ofMillis;
 import static java.util.Arrays.asList;
+import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.selenium.BrowserProxy.getCurrentProxy;
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 import static ru.tinkoff.qa.neptune.selenium.functions.click.ClickActionSupplier.on;
 import static ru.tinkoff.qa.neptune.selenium.functions.cookies.RemoveCookiesActionSupplier.deleteCookies;
@@ -274,7 +276,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext resetProxyRecording() {
-        wrappedWebDriver.getProxy().newHar();
+        ofNullable(getCurrentProxy()).ifPresent(BrowserProxy::newHar);
         return this;
     }
 
@@ -1560,7 +1562,12 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
 
         @Override
         public BrowserUpProxy apply(SeleniumStepContext seleniumSteps) {
-            return seleniumSteps.wrappedWebDriver.getProxy();
+            return ofNullable(getCurrentProxy())
+                    .map(browserProxy -> {
+                        browserProxy.createProxy();
+                        return browserProxy.getProxy();
+                    })
+                    .orElse(null);
         }
     }
 }

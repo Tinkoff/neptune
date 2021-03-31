@@ -1,13 +1,10 @@
 package ru.tinkoff.qa.neptune.data.base.api.captors;
 
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
+@Description("Persistable DB object")
 public class DBObjectCaptor extends DBCaptor<PersistableObject> {
-
-
-    public DBObjectCaptor() {
-        super("Persistable DB object");
-    }
 
     @Override
     public PersistableObject getCaptured(Object toBeCaptured) {

@@ -18,6 +18,7 @@ import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static ru.tinkoff.qa.neptune.selenium.BrowserProxy.getCurrentProxy;
 import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CHROME;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.USE_BROWSER_PROXY;
 import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDriverProperty.SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY;
@@ -78,11 +79,11 @@ public class ChainedProxyTest {
 
         try {
             assertThat("WebDriver is alive", isDriverAlive(driver), is(true));
-            assertThat("BrowserUp proxy is instantiated", wrappedWebDriver.getProxy(), notNullValue());
-            assertThat("BrowserUp proxy server is started", wrappedWebDriver.getProxy().isStarted(), is(true));
+            assertThat("BrowserUp proxy is instantiated", getCurrentProxy(), notNullValue());
+            assertThat("BrowserUp proxy server is started", getCurrentProxy().isStarted(), is(true));
 
             assertThat("Internal proxy captured browser traffic",
-                    wrappedWebDriver.getProxy().getHar().getLog().getEntries(),
+                    getCurrentProxy().getHar().getLog().getEntries(),
                     hasSize(greaterThan(0)));
 
             assertThat("External proxy captured browser traffic",

@@ -3,18 +3,17 @@ package ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.he
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static java.lang.String.*;
+import static java.lang.String.format;
+import static java.lang.String.join;
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static java.util.List.of;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
+import static ru.tinkoff.qa.neptune.http.api.properties.date.format.ApiDateFormatProperty.API_DATE_FORMAT_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.service.mapping.annotations.parameters.ParameterUtil.*;
 
 /**
@@ -137,6 +136,16 @@ public @interface HeaderParameter {
                             .map(String::valueOf)
                             .collect(joining(",")))
                     .orElseGet(() -> valueOf(o));
+        }
+
+        private static String valueOf(Object o) {
+            if (o instanceof Date) {
+                return ofNullable(API_DATE_FORMAT_PROPERTY.get())
+                        .map(simpleDateFormat -> simpleDateFormat.format((Date) o))
+                        .orElseGet(o::toString);
+            }
+
+            return o.toString();
         }
     }
 }

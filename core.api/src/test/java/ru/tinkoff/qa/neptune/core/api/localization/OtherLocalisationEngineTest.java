@@ -1,17 +1,23 @@
-package ru.tinkoff.qa.neptune.core.api.steps;
+package ru.tinkoff.qa.neptune.core.api.localization;
 
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.NewEngine;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 
+import java.util.Locale;
 import java.util.function.Function;
 
 import static java.lang.System.getProperties;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static ru.tinkoff.qa.neptune.core.api.localization.OtherLocalisationEngineTest.GetStepSupplier.*;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.localization.DefaultLocaleProperty.DEFAULT_LOCALE_PROPERTY;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.localization.DefaultLocalizationEngine.DEFAULT_LOCALIZATION_ENGINE;
-import static ru.tinkoff.qa.neptune.core.api.steps.OtherLocalisationEngineTest.GetStepSupplier.*;
 
 public class OtherLocalisationEngineTest {
     @DataProvider()
@@ -35,6 +41,7 @@ public class OtherLocalisationEngineTest {
     @BeforeClass
     public void beforeClass() {
         DEFAULT_LOCALIZATION_ENGINE.accept(NewEngine.class);
+        DEFAULT_LOCALE_PROPERTY.accept(new Locale("RU"));
     }
 
     @Test(dataProvider = "data1")
@@ -54,13 +61,14 @@ public class OtherLocalisationEngineTest {
     @AfterClass
     public void afterClass() {
         getProperties().remove(DEFAULT_LOCALIZATION_ENGINE.getName());
+        getProperties().remove(DEFAULT_LOCALE_PROPERTY.getName());
     }
 
     @Description("Class Description GetSupplier")
-    static class GetStepSupplier extends SequentialGetStepSupplier<Object, Object, Object, Object, GetStepSupplier> {
+    static class GetStepSupplier extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<Object, Object, Object, GetStepSupplier> {
 
         protected GetStepSupplier() {
-            super();
+            super(o -> o);
         }
 
         public static GetStepSupplier methodWithoutAnnotation() {
@@ -80,6 +88,10 @@ public class OtherLocalisationEngineTest {
         @Override
         protected Function<Object, Object> getEndFunction() {
             return null;
+        }
+
+        protected GetStepSupplier from(Object o) {
+            return super.from(o);
         }
     }
 

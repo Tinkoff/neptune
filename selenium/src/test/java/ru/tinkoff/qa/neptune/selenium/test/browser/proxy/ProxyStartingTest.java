@@ -3,7 +3,10 @@ package ru.tinkoff.qa.neptune.selenium.test.browser.proxy;
 import org.hamcrest.Matcher;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
-import org.testng.annotations.*;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.selenium.SeleniumParameterProvider;
 import ru.tinkoff.qa.neptune.selenium.WrappedWebDriver;
 import ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDrivers;
@@ -15,6 +18,7 @@ import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static ru.tinkoff.qa.neptune.selenium.BrowserProxy.getCurrentProxy;
 import static ru.tinkoff.qa.neptune.selenium.properties.CapabilityTypes.CHROME;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.USE_BROWSER_PROXY;
 import static ru.tinkoff.qa.neptune.selenium.properties.SupportedWebDriverProperty.SUPPORTED_WEB_DRIVER_PROPERTY_PROPERTY;
@@ -38,8 +42,8 @@ public class ProxyStartingTest {
     @DataProvider
     public static Object[][] testData() {
         return new Object[][]{
-                {"true", notNullValue()},
-                {"false", nullValue()},
+                {true, notNullValue()},
+                {false, nullValue()},
                 {null, nullValue()}
         };
     }
@@ -49,10 +53,10 @@ public class ProxyStartingTest {
         PROPERTIES_TO_SET_BEFORE.forEach(System::setProperty);
     }
 
-    @Test(dataProvider = "testData")
-    public void useBrowserProxyPropertyTest(String propertyValue, Matcher<Object> proxyMatcher) {
+    @Test(dataProvider = "testData", description = "Test of proxy properties")
+    public void test1(Boolean propertyValue, Matcher<Object> proxyMatcher) {
         if (propertyValue != null) {
-            System.setProperty(USE_BROWSER_PROXY.getName(), propertyValue);
+            USE_BROWSER_PROXY.accept(propertyValue);
         }
 
         WrappedWebDriver wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
@@ -61,20 +65,19 @@ public class ProxyStartingTest {
 
         try {
             assertThat("WebDriver is alive", isDriverAlive(driver), is(true));
-            assertThat("BrowserUp proxy is instantiated", wrappedWebDriver.getProxy(), proxyMatcher);
+            assertThat("BrowserUp proxy is instantiated", getCurrentProxy(), proxyMatcher);
 
-            if (wrappedWebDriver.getProxy() != null) {
-                assertThat("BrowserUp proxy server is started", wrappedWebDriver.getProxy().isStarted(), is(true));
+            if (getCurrentProxy() != null) {
+                assertThat("BrowserUp proxy server is started", getCurrentProxy().isStarted(), is(true));
             }
         } finally {
             wrappedWebDriver.shutDown();
         }
     }
 
-    @Test
-    public void refreshContextTest() {
-        System.setProperty(USE_BROWSER_PROXY.getName(), "true");
-
+    @Test(description = "when browser context is refreshed")
+    public void test2() {
+        USE_BROWSER_PROXY.accept(true);
         WrappedWebDriver wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
                 new SeleniumParameterProvider().provide().getParameterValues()[0]);
         WebDriver driver = wrappedWebDriver.getWrappedDriver();
@@ -84,17 +87,27 @@ public class ProxyStartingTest {
         wrappedWebDriver.refreshContext();
 
         assertThat("Browser proxy",
-                wrappedWebDriver.getProxy().isStarted(),
+                getCurrentProxy().isStarted(),
                 is(false));
     }
 
-    @AfterMethod(alwaysRun = true)
-    public void tearDownProxyProperty() {
-        System.getProperties().remove(USE_BROWSER_PROXY.getName());
+    @Test(threadPoolSize = 5, invocationCount = 5, description = "multiple thread test")
+    public void test3() {
+        USE_BROWSER_PROXY.accept(true);
+        WrappedWebDriver wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
+                new SeleniumParameterProvider().provide().getParameterValues()[0]);
+        WebDriver driver = wrappedWebDriver.getWrappedDriver();
+
+        driver.get("https://google.com");
+
+        assertThat("Browser proxy",
+                getCurrentProxy().isStarted(),
+                is(true));
     }
 
     @AfterClass(alwaysRun = true)
     public void tearDownProperties() {
         PROPERTIES_TO_SET_BEFORE.keySet().forEach(s -> System.getProperties().remove(s));
+        USE_BROWSER_PROXY.accept(null);
     }
 }

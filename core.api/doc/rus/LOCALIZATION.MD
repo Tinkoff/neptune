@@ -25,7 +25,7 @@ DEFAULT_LOCALE=ru_RU
  - arg0 - строка в формате language_country
  - arg1 - путь к каталогу, в котором должен быть сохранен файл 
  
-######Пример для pom.xml
+###### Пример для pom.xml
 
 ```xml
 <execution>
@@ -43,7 +43,7 @@ DEFAULT_LOCALE=ru_RU
    </configuration>
 </execution>               
 ```
-######Пример для build.gradle 
+###### Пример для build.gradle 
 ```groovy
 task generateBundle(type: JavaExec) {
     classpath sourceSets.main.runtimeClasspath
@@ -55,37 +55,68 @@ task generateBundle(type: JavaExec) {
 #### В результате сгенерируется похожий файл, где необходимо изменить значение свойств
 
 ```properties
-#Values for translation of steps and parameters are defined here. Format key = value
-#=============================================================================================
+#Values for translation of steps, their parameters and attachments are defined here. Format key = value
+
+#============================================ STEPS ============================================ 
+
 #====================== core.api.steps.Absence
-#=============================================================================================
-#_________________________________ DefaultParameterNames _____________________________________
-#Original text = Get from
-core.api.steps.Absence.from = Get from
-#Original text = Polling time
-core.api.steps.Absence.pollingTime = Polling time
+
+#_________________________________Parameters_____________________________________
 #Original text = Time of the waiting for absence
 core.api.steps.Absence.timeOut = Time of the waiting for absence
-#Original text = Criteria
-core.api.steps.Absence.criteria = Criteria
-#__________________________________ Method Description _______________________________________
+#__________________________________ Methods _______________________________________
 #Original text = Absence of {toBeAbsent}
 core.api.steps.Absence.absence(java.util.function.Function<T,?>) = Absence of {toBeAbsent}
 #Original text = Absence of {toBeAbsent}
 core.api.steps.Absence.absence(core.api.steps.SequentialGetStepSupplier<T,?,?,?,?>) = Absence of {toBeAbsent}
+
+#====================== core.api.steps.Presence
+
+#__________________________________ Methods _______________________________________
+#Original text = Presence of {toBePresent}
+core.api.steps.Presence.presence(java.util.function.Function<T,?>) = Presence of {toBePresent}
+#Original text = Presence of {toBePresent}
+core.api.steps.Presence.presence(core.api.steps.SequentialGetStepSupplier<T,?,?,?,?>) = Presence of {toBePresent}
+
+#======================================= ATTACHMENTS ============================================
+
+#====================== core.api.event.firing.collections.ArrayCaptor
+
+#Original text = Resulted array
+core.api.event.firing.collections.ArrayCaptor = Resulted array
+
+#====================== core.api.event.firing.collections.CollectionCaptor
+
+#Original text = Resulted collection
+core.api.event.firing.collections.CollectionCaptor = Resulted collection
+
+#====================== core.api.event.firing.collections.MapCaptor
+
+#Original text = Resulted map
+core.api.event.firing.collections.MapCaptor = Resulted map
   ```
 
-###Использовать aspectj для собственных расширений
+### Использовать aspectj для собственных расширений механизма шагов
 
-- настроить pom.xml
+Про механизм шагов (полезные статьи):
+
+- [Шаги, которые возвращают результат](./IDEA.MD#Шаги,-которые-возвращают-результат)
+
+- [Шаги, которые выполняют действие](./IDEA.MD#Шаги,-которые-выполняют-действие)
+
+1. настроить `pom.xml`
+
  ```xml
 <!-- Добавить зависимость -->
 <dependency>
    <groupId>org.aspectj</groupId>
    <artifactId>aspectjweaver</artifactId>
-   <version>1.9.6</version>
+   <version>${aspectj.version}</version>
+    <!-- Если новые шаги лежат в main, то scope необязателен  --> 
+   <scope>test</scope> 
 </dependency> 
  ```
+
  ```xml
 <!-- Добавить плагин -->
 <plugin>
@@ -99,14 +130,33 @@ core.api.steps.Absence.absence(core.api.steps.SequentialGetStepSupplier<T,?,?,?,
     </configuration>
 </plugin>
  ```
-- добавить для своих расширений @Description, @DescriptionFragment, @StepParameter, @DefaultParameterNames
+
+или `build.gradle`
+
+```groovy
+plugins {
+    id "io.freefair.aspectj.post-compile-weaving" version 'ACTUAL_PLUGIN_VERSION'
+}
+
+dependencies {
+    inpath(group: 'ru.tinkoff.qa.neptune', name: 'core.api', version: 'NEPTUNE_BETA_OR_RELEASE') {
+        transitive = false
+    }
+}
+
+```
+
+2. Использовать для своих шагов @Description, @DescriptionFragment, @StepParameter, @DefaultParameterNames
 
 ## Собственный механизм локализации
+
 Так же существует возможность реализовать собственный механизм локализации.
- 
+
 Для этого необходимо:
- * заимплементить интерфейс
- `ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization`
+
+* заимплементить интерфейс
+  `ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization`
+
  ```java
   public interface StepLocalization {
 
@@ -129,6 +179,8 @@ core.api.steps.Absence.absence(core.api.steps.SequentialGetStepSupplier<T,?,?,?,
 ```properties
 DEFAULT_LOCALIZATION_ENGINE=org.my.project.MyLocalizationEngine
 ```
-При реализации интерфейса можно использовать метаинформацию, полученную из аннотаций @Description, @DescriptionFragment, @StepParameter, @DefaultParameterNames
+
+При реализации интерфейса можно использовать метаинформацию, полученную из аннотаций @Description, @DescriptionFragment,
+@StepParameter
  
  

@@ -9,7 +9,6 @@ import java.net.URI;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.lang.System.getProperties;
-import static java.lang.System.lineSeparator;
 import static java.net.URI.create;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -25,7 +24,7 @@ import static ru.tinkoff.qa.neptune.http.api.test.capturing.LogInjector.getLog;
 public class RequestResponseMultiThreadLogCapturingTests extends BaseHttpTest {
 
     private static final URI CORRECT_URI = create(REQUEST_URI + "/success2.html");
-    private static final String LINE_SEPARATOR = lineSeparator();
+    private static final String LINE_SEPARATOR = "\r\n";
 
     @BeforeClass
     public void beforeClass() {

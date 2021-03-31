@@ -27,35 +27,35 @@ public class CheckTest {
     }
 
     private static final List<String> EXPECTED_LOGGER_MESSAGES1 =
-            of("Perform: Verify inspected value 4 has started",
-                    "Perform: Check Is integer. Assert: is <true> has started",
-                    "Get: Is integer has started",
+            of("Check inspected value 4 has started",
+                    "Assert: Is integer is <true> has started",
+                    "Is integer has started",
                     "true has been returned",
                     "Event finished",
                     "Event finished",
-                    "Perform: Check Sqrt value. Assert: is <2.0> has started",
-                    "Get: Sqrt value has started",
+                    "Assert: Sqrt value is <2.0> has started",
+                    "Sqrt value has started",
                     "2.0 has been returned",
                     "Event finished",
                     "Event finished",
                     "Event finished",
-                    "Perform: Verify inspected value 5 has started",
-                    "Perform: Check Sqr value. Assert: is <25.0> has started",
-                    "Get: Sqr value has started",
+                    "Check inspected value 5 has started",
+                    "Assert: Sqr value is <25.0> has started",
+                    "Sqr value has started",
                     "25.0 has been returned",
                     "Event finished",
                     "Event finished",
                     "Event finished");
 
     private static final List<String> EXPECTED_LOGGER_MESSAGES2 =
-            of("Perform: Verify inspected value 9 has started",
-                    "Perform: Check Is integer. Assert: is <true> has started",
-                    "Get: Is integer has started",
+            of("Check inspected value 9 has started",
+                    "Assert: Is integer is <true> has started",
+                    "Is integer has started",
                     "true has been returned",
                     "Event finished",
                     "Event finished",
-                    "Perform: Check Sqrt value. Assert: is <2.0> has started",
-                    "Get: Sqrt value has started",
+                    "Assert: Sqrt value is <2.0> has started",
+                    "Sqrt value has started",
                     "3.0 has been returned",
                     "Event finished",
                     "java.lang.AssertionError has been thrown",
@@ -173,9 +173,9 @@ public class CheckTest {
 
 
     @Test(expectedExceptions = AssertionError.class, expectedExceptionsMessageRegExp = ".*['List of mismatches:']" +
+            "*['Sqrt value']" +
             "*['Expected: is <2.0>']" +
-            "*['but: Sqrt value:']" +
-            "*['was <3.0>']")
+            "*['but: was <3.0>']")
     public void testOfLinearNegativeCaseWhenEventIsNotDefined() {
         try {
             check(9,
@@ -195,9 +195,9 @@ public class CheckTest {
     }
 
     @Test(expectedExceptions = AssertionError.class, expectedExceptionsMessageRegExp = ".*['List of mismatches:']" +
+            "*['Sqrt value']" +
             "*['Expected: is <2.0>']" +
-            "*['but: Sqrt value:']" +
-            "*['was <3.0>']")
+            "*['but: was <3.0>']")
     public void testOfLinearNegativeCaseWhenEventIsSuccess() {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
         try {
@@ -221,10 +221,10 @@ public class CheckTest {
     }
 
     @Test(expectedExceptions = AssertionError.class,
-            expectedExceptionsMessageRegExp = ".*[List of mismatches:]" +
+            expectedExceptionsMessageRegExp = ".*['List of mismatches:']" +
+                    "*['Sqrt value']" +
                     "*['Expected: is <2.0>']" +
-                    "*['but: Sqrt value:']" +
-                    "*['was <3.0>']")
+                    "*['but: was <3.0>']")
     public void testOfLinearNegativeCaseWhenEventIsFailure() {
         DO_CAPTURES_OF_INSTANCE.accept(FAILURE);
         try {
@@ -247,9 +247,9 @@ public class CheckTest {
 
     @Test(expectedExceptions = AssertionError.class,
             expectedExceptionsMessageRegExp = ".*['List of mismatches:']" +
+                    "*['Sqrt value']" +
                     "*['Expected: is <2.0>']" +
-                    "*['but: Sqrt value:']" +
-                    "*['was <3.0>']")
+                    "*['but: was <3.0>']")
     public void testOfLinearNegativeCaseWhenEventIsAll() {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
         try {
@@ -275,12 +275,11 @@ public class CheckTest {
     @Test
     public void testOfNullValue() {
         DO_CAPTURES_OF_INSTANCE.accept(SUCCESS_AND_FAILURE);
-        Object obj = null;
-        check("Given value", obj, match(nullValue()));
+        check("Given value", (Object) null, match(nullValue()));
 
         assertThat(MESSAGES,
-                contains("Perform: Verify Given value has started",
-                        "Perform: Check object. Assert: null has started",
+                contains("Check Given value has started",
+                        "Assert: null has started",
                         "Event finished",
                         "Event finished"));
     }
@@ -292,11 +291,11 @@ public class CheckTest {
                 match(is(3D)));
 
         assertThat(MESSAGES,
-                contains("Perform: Verify Sqrt value of 9 has started",
+                contains("Check Sqrt value of 9 has started",
                         "Sqrt value of 9 has started",
                         "3.0 has been returned",
                         "Event finished",
-                        "Perform: Check object. Assert: is <3.0> has started",
+                        "Assert: is <3.0> has started",
                         "Event finished",
                         "Event finished"));
     }

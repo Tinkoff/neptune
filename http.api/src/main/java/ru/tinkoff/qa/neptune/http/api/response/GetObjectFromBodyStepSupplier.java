@@ -87,7 +87,10 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
                                                                        RequestBuilder requestBuilder,
                                                                        HttpResponse.BodyHandler<T> handler,
                                                                        Function<T, R> f) {
-        return new GetObjectWhenResponseReceiving<>(response(requestBuilder, handler), f).setDescription(translate(description));
+        return new GetObjectWhenResponseReceiving<>(response(requestBuilder, handler)
+                .addIgnored(Exception.class),
+                f)
+                .setDescription(translate(description));
     }
 
     /**
@@ -102,7 +105,9 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
     @Description("Body of http response")
     public static <T> GetObjectWhenResponseReceiving<T, T> asIs(RequestBuilder requestBuilder,
                                                                 HttpResponse.BodyHandler<T> handler) {
-        return new GetObjectWhenResponseReceiving<>(response(requestBuilder, handler), t -> t);
+        return new GetObjectWhenResponseReceiving<>(response(requestBuilder, handler)
+                .addIgnored(Exception.class),
+                t -> t);
     }
 
     @Override

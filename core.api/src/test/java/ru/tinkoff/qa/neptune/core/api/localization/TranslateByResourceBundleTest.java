@@ -1,9 +1,12 @@
-package ru.tinkoff.qa.neptune.core.api.steps;
+package ru.tinkoff.qa.neptune.core.api.localization;
 
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeCaptureOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.steps.*;
 import ru.tinkoff.qa.neptune.core.api.steps.localization.LocalizationByResourceBundle;
 
 import java.util.function.Function;
@@ -13,10 +16,12 @@ import static java.lang.System.getProperties;
 import static org.apache.commons.lang3.LocaleUtils.toLocale;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static ru.tinkoff.qa.neptune.core.api.localization.TranslateByResourceBundleTest.SomeCriteria.*;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents.SUCCESS;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.DO_CAPTURES_OF_INSTANCE;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.localization.DefaultLocaleProperty.DEFAULT_LOCALE_PROPERTY;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.localization.DefaultLocalizationEngine.DEFAULT_LOCALIZATION_ENGINE;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
-import static ru.tinkoff.qa.neptune.core.api.steps.TranslateByResourceBundleTest.SomeCriteria.*;
 
 public class TranslateByResourceBundleTest {
 
@@ -49,6 +54,8 @@ public class TranslateByResourceBundleTest {
     public void beforeClass() {
         DEFAULT_LOCALE_PROPERTY.accept(toLocale("ru_RU"));
         DEFAULT_LOCALIZATION_ENGINE.accept(LocalizationByResourceBundle.class);
+        DO_CAPTURES_OF_INSTANCE.accept(SUCCESS);
+        TestNumberCaptor.messages.clear();
     }
 
     @Test(dataProvider = "data1")
@@ -63,16 +70,27 @@ public class TranslateByResourceBundleTest {
         assertThat(p, hasEntry(equalTo("Criteria"), equalTo(value)));
     }
 
+    @Test
+    public void test3() {
+        GetStepSupplier.methodWithoutAnnotation().from(new Object()).get().apply(new Object());
+        assertThat(TestNumberCaptor.messages, contains("TEST NUMBER 1"));
+    }
+
     @AfterClass
     public void afterClass() {
         getProperties().remove(DEFAULT_LOCALIZATION_ENGINE.getName());
+        getProperties().remove(DEFAULT_LOCALE_PROPERTY.getName());
+        getProperties().remove(DO_CAPTURES_OF_INSTANCE.getName());
+        TestNumberCaptor.messages.clear();
     }
 
     @Description("Class Description from Annotation")
-    static class GetStepSupplier extends SequentialGetStepSupplier<Object, Object, Object, Object, GetStepSupplier> {
+    @MakeStringCapturesOnFinishing
+    @MakeCaptureOnFinishing(typeOfCapture = Number.class)
+    static class GetStepSupplier extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<Object, Object, Object, GetStepSupplier> {
 
         protected GetStepSupplier() {
-            super();
+            super(o -> o);
         }
 
         public static GetStepSupplier methodWithoutAnnotation() {
@@ -96,7 +114,15 @@ public class TranslateByResourceBundleTest {
 
         @Override
         protected Function<Object, Object> getEndFunction() {
-            return null;
+            return o -> 1;
+        }
+
+        protected GetStepSupplier criteria(Criteria<? super Object> criteria) {
+            return super.criteria(criteria);
+        }
+
+        protected GetStepSupplier from(Object o) {
+            return super.from(o);
         }
     }
 

@@ -4,6 +4,7 @@ import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrapsElement;
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.ImageCaptor;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 
 import java.util.List;
 import java.util.Objects;
@@ -12,11 +13,8 @@ import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
 
 @Beta
+@Description("Screenshot taken from the list of elements")
 public abstract class ListOfWebElementImageCaptor extends ImageCaptor<List<WebElement>> {
-
-    public ListOfWebElementImageCaptor() {
-        super("Screenshot taken from the list of elements");
-    }
 
     @Override
     public List<WebElement> getCaptured(Object toBeCaptured) {

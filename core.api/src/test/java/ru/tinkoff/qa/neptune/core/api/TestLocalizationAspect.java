@@ -45,10 +45,6 @@ public class TestLocalizationAspect {
     private static final String POINTCUT_GET_SUPPLIER =
             "execution(* ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier+.*(..))";
 
-    public TestLocalizationAspect() {
-        super();
-    }
-
     @Pointcut(POINTCUT_CRITERIA_METHOD)
     public void criteriaMethod() {
     }
@@ -93,8 +89,6 @@ public class TestLocalizationAspect {
     public Object translateActionSupplier(ProceedingJoinPoint joinPoint) throws Throwable {
         Object result = joinPoint.proceed();
 
-        System.out.println("[ACTION]Аспект сработал на методе " + ((MethodSignature) joinPoint.getSignature()).getMethod());
-
         if (result != null) {
             var description = translate(((MethodSignature) joinPoint.getSignature()).getMethod(), joinPoint.getArgs());
 
@@ -111,8 +105,6 @@ public class TestLocalizationAspect {
     @Around("returnGetSupplier() && allSequentialGetStepSupplierSubclass()")
     public Object translateGetSupplier(ProceedingJoinPoint joinPoint) throws Throwable {
         Object result = joinPoint.proceed();
-
-        System.out.println("[GET]Аспект сработал на методе " + ((MethodSignature) joinPoint.getSignature()).getMethod());
 
         if (result != null) {
             var description = translate(((MethodSignature) joinPoint.getSignature()).getMethod(), joinPoint.getArgs());
@@ -131,8 +123,6 @@ public class TestLocalizationAspect {
     @Around("criteriaMethod() && !conditions() && !AND() && !OR() && !XOR() && !NOT()")
     public Object translateCriteria(ProceedingJoinPoint joinPoint) throws Throwable {
         Object result = joinPoint.proceed();
-
-        System.out.println("[CRITERIA]Аспект сработал на методе " + ((MethodSignature) joinPoint.getSignature()).getMethod());
 
         if (result != null) {
 

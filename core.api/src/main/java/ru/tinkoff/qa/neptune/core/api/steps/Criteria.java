@@ -13,6 +13,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.joining;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
 
 /**
  * This class is designed to create a {@link Predicate} used by {@link SequentialGetStepSupplier}
@@ -159,7 +160,7 @@ public final class Criteria<T> implements Supplier<Predicate<T>> {
      * @return a new instance of {@link Criteria}
      */
     public static <T> Criteria<T> condition(String description, Predicate<T> predicate) {
-        return condition(predicate).setDescription(description);
+        return condition(predicate).setDescription(translate(description));
     }
 
     public static <T> Criteria<T> condition(Predicate<T> predicate) {

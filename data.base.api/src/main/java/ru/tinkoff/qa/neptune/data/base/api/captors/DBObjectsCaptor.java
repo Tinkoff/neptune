@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.data.base.api.captors;
 
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
 import java.util.List;
@@ -7,11 +8,8 @@ import java.util.List;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
+@Description("Persistable DB objects")
 public class DBObjectsCaptor extends DBCaptor<List<PersistableObject>> {
-
-    public DBObjectsCaptor() {
-        super("Persistable DB objects");
-    }
 
     @Override
     @SuppressWarnings("unchecked")

@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.http.api.captors.response;
 
 import org.w3c.dom.Document;
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.FileCaptor;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -15,11 +16,8 @@ import static java.nio.charset.Charset.defaultCharset;
 import static java.util.UUID.randomUUID;
 import static org.apache.commons.io.FileUtils.writeStringToFile;
 
+@Description("Response Body. W3C document")
 public final class ResponseW3CDocumentCaptor extends FileCaptor<HttpResponse<Document>> implements BaseResponseObjectBodyCaptor<Document> {
-
-    public ResponseW3CDocumentCaptor() {
-        super("Response Body. W3C document");
-    }
 
     @Override
     public File getData(HttpResponse<Document> caught) {

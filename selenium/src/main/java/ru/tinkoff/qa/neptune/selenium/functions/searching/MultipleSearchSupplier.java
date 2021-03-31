@@ -53,7 +53,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param by locator strategy to find an element
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    @Description("List of web elements located {by}")
+    @Description("Web elements located {by}")
     public static MultipleSearchSupplier<WebElement> webElements(@DescriptionFragment("by") By by) {
         var webElements = FindWebElements.webElements(by);
         return new MultipleSearchSupplier<>(webElements);
@@ -68,7 +68,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param text that desired elements should have
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    @Description("Web element located {by} with the text '{text}'")
+    @Description("Web elements located {by} with the text '{text}'")
     public static MultipleSearchSupplier<WebElement> webElements(@DescriptionFragment("by") By by, @DescriptionFragment("text") String text) {
         var shouldHaveText = text(text);
         var webElements = FindWebElements.webElements(by);

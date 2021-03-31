@@ -321,7 +321,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
         StepFunction<T, R> toBeReturned;
 
-        var description = translate(getImperative(this.getClass())) + " " + this.description;
+        var description = (translate(getImperative(this.getClass())) + " " + this.description).trim();
         if (StepFunction.class.isAssignableFrom(composeWith.getClass())) {
             var endFunctionStep = toGet(description, endFunction);
             endFunctionStep.addCaptorFilters(captorFilters);

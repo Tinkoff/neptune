@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.http.api.captors.response;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.FileCaptor;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,11 +19,9 @@ import static org.apache.commons.io.FileUtils.copyFile;
  * This class is designed to convert some {@link String} and {@link Path} bodies of received responses
  * to files.
  */
+@Description("Response. File")
 public final class ResponseFileCaptor extends FileCaptor<HttpResponse<Path>> implements BaseResponseObjectBodyCaptor<Path> {
 
-    public ResponseFileCaptor() {
-        super("Response. File");
-    }
 
     @Override
     public File getData(HttpResponse<Path> caught) {
