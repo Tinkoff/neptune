@@ -6,6 +6,7 @@ ru.tinkoff.qa.neptune.http.api.hamcrest.response
 ru.tinkoff.qa.neptune.http.api.mapping
 ru.tinkoff.qa.neptune.http.api.properties.authentification
 ru.tinkoff.qa.neptune.http.api.properties.cookies
+ru.tinkoff.qa.neptune.http.api.properties.date.format
 ru.tinkoff.qa.neptune.http.api.properties.end.point
 ru.tinkoff.qa.neptune.http.api.properties.executor
 ru.tinkoff.qa.neptune.http.api.properties.mapper

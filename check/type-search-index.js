@@ -1,1 +1,1 @@
-typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"ru.tinkoff.qa.neptune.check","l":"CheckActionSupplier"},{"p":"ru.tinkoff.qa.neptune.check","l":"MatchAction"}]
+typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"ru.tinkoff.qa.neptune.check","l":"CheckActionSupplier"},{"p":"ru.tinkoff.qa.neptune.check","l":"DescriptionTranslator"},{"p":"ru.tinkoff.qa.neptune.check","l":"MatchAction"}]
