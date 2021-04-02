@@ -306,6 +306,10 @@ public class StepParametersTest {
                 "Parameter 2"));
     }
 
+    @SequentialGetStepSupplier.DefineCriteriaParameterName
+    @SequentialGetStepSupplier.DefinePollingTimeParameterName
+    @SequentialGetStepSupplier.DefineTimeOutParameterName
+    @SequentialGetStepSupplier.DefineFromParameterName
     static class TestGetStepSupplier extends SequentialGetStepSupplier.GetObjectFromArrayChainedStepSupplier<Object, Object, Object, TestGetStepSupplier> {
 
         @StepParameter("Parameter 1")
@@ -396,12 +400,10 @@ public class StepParametersTest {
         }
     }
 
-    @SequentialGetStepSupplier.DefaultParameterNames(timeOut = "Custom Time out",
-            criteria = "Custom criteria",
-            pollingTime = "Custom sleeping",
-            from = "Custom from"
-    )
-
+    @SequentialGetStepSupplier.DefineTimeOutParameterName("Custom Time out")
+    @SequentialGetStepSupplier.DefineCriteriaParameterName("Custom criteria")
+    @SequentialGetStepSupplier.DefinePollingTimeParameterName("Custom sleeping")
+    @SequentialGetStepSupplier.DefineFromParameterName("Custom from")
     @Description("getTestGetStepSupplier2")
     static class TestGetStepSupplier2 extends SequentialGetStepSupplier.GetObjectFromArrayChainedStepSupplier<Object, Object, Object, TestGetStepSupplier2> {
 
@@ -494,6 +496,7 @@ public class StepParametersTest {
     }
 
     @Description("Test action")
+    @SequentialActionSupplier.DefinePerformOnParameterName
     static class TestActionStepSupplier extends SequentialActionSupplier<Object, Object, TestActionStepSupplier> {
 
         @StepParameter("Parameter 1")
@@ -563,7 +566,7 @@ public class StepParametersTest {
         }
     }
 
-    @SequentialActionSupplier.DefaultParameterNames(performOn = "Perform on custom")
+    @SequentialActionSupplier.DefinePerformOnParameterName("Perform on custom")
     @Description("TestActionStepSupplier2")
     static class TestActionStepSupplier2 extends SequentialActionSupplier<Object, Object, TestActionStepSupplier2> {
 

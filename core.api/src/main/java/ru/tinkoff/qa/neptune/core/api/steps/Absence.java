@@ -5,23 +5,18 @@ import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 
 import java.lang.reflect.Array;
 import java.time.Duration;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.time.Duration.ofMillis;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationHMS;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.fireReturnedValue;
-import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefaultParameterNames.DefaultGetParameterReader.getTimeOutPseudoField;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
-import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
-@SequentialGetStepSupplier.DefaultParameterNames(timeOut = "Time of the waiting for absence")
 @SuppressWarnings("unchecked")
+@SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting for absence")
 public final class Absence<T extends Context<?>> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<T, Boolean, Object, Absence<T>> {
 
     private Object received;
@@ -54,21 +49,6 @@ public final class Absence<T extends Context<?>> extends SequentialGetStepSuppli
         this(toBeAbsent.clone().timeOut(ofMillis(0))
                 .pollingInterval(ofMillis(0))
                 .get());
-    }
-
-    @Override
-    public Map<String, String> getParameters() {
-        var result = new LinkedHashMap<String, String>();
-        var cls = (Class<?>) this.getClass();
-
-        ofNullable(timeToGet).ifPresent(duration -> {
-            if (duration.toMillis() > 0) {
-                result.put(translate(getTimeOutPseudoField(cls)), formatDurationHMS(duration.toMillis()));
-            }
-        });
-
-        result.putAll(((StepFunction<?, ?>) from).getParameters());
-        return result;
     }
 
     /**

@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.functions.value;
 
 import org.openqa.selenium.SearchContext;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeCaptureOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MakeCaptureOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;

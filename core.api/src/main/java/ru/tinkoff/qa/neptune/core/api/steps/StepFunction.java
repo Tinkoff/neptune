@@ -1,10 +1,7 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.CaptorFilterByProducedType;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakesCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -21,14 +18,14 @@ import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapture
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 @SuppressWarnings("unchecked")
-public class StepFunction<T, R> implements Function<T, R>,
-        MakesCapturesOnFinishing<StepFunction<T, R>> {
+public class StepFunction<T, R> implements Function<T, R> {
 
     String description;
     Function<Object, Object> function;
     private boolean toReport = true;
     private final Set<Class<? extends Throwable>> ignored = new HashSet<>();
-    private final Set<CaptorFilterByProducedType> captorFilters = new HashSet<>();
+    private final Set<Captor<Object, Object>> successCaptors = new HashSet<>();
+    private final Set<Captor<Object, Object>> failureCaptors = new HashSet<>();
     private Map<String, String> parameters = emptyMap();
 
     StepFunction(String description, Function<T, R> function) {
@@ -59,7 +56,7 @@ public class StepFunction<T, R> implements Function<T, R>,
 
 
     private boolean shouldBeThrowableIgnored(Throwable toBeIgnored) {
-        for (var throwableClass: ignored) {
+        for (var throwableClass : ignored) {
             if (throwableClass.isAssignableFrom(toBeIgnored.getClass())) {
                 return true;
             }
@@ -88,29 +85,26 @@ public class StepFunction<T, R> implements Function<T, R>,
             }
             if (catchSuccessEvent() && toReport && !isComplex &&
                     !StepFunction.class.isAssignableFrom(function.getClass())) {
-                catchValue(result, captorFilters);
+                catchValue(result, successCaptors);
             }
             return result;
-        }
-        catch (Throwable thrown) {
+        } catch (Throwable thrown) {
             if (!shouldBeThrowableIgnored(thrown)) {
                 if (toReport) {
                     fireThrownException(thrown);
                 }
                 if (catchFailureEvent() && toReport && !isComplex &&
                         !StepFunction.class.isAssignableFrom(function.getClass())) {
-                    catchValue(t, captorFilters);
+                    catchValue(t, failureCaptors);
                 }
                 throw thrown;
-            }
-            else {
+            } else {
                 if (toReport) {
                     fireReturnedValueIfNecessary(null);
                 }
                 return null;
             }
-        }
-        finally {
+        } finally {
             if (toReport) {
                 fireEventFinishing();
             }
@@ -156,96 +150,13 @@ public class StepFunction<T, R> implements Function<T, R>,
         return new HashSet<>(ignored);
     }
 
-    void addCaptorFilters(Collection<CaptorFilterByProducedType> captorFilters) {
-        this.captorFilters.addAll(captorFilters);
-    }
-
-    /**
-     * Marks that it is needed to produce a {@link java.awt.image.BufferedImage} after invocation of
-     * {@link java.util.function.Function#apply(Object)} on this object. This image is produced by
-     * {@link ru.tinkoff.qa.neptune.core.api.event.firing.Captor#getData(java.lang.Object)}
-     *
-     * <p>NOTE 1</p>
-     * This image is produced if there is any subclass of {@link ru.tinkoff.qa.neptune.core.api.event.firing.captors.ImageCaptor}
-     * or {@link ru.tinkoff.qa.neptune.core.api.event.firing.Captor} that may produce a {@link java.awt.image.BufferedImage}.
-     *
-     * <p>NOTE 2</p>
-     * A subclass of {@link ru.tinkoff.qa.neptune.core.api.event.firing.captors.ImageCaptor} or
-     * {@link ru.tinkoff.qa.neptune.core.api.event.firing.Captor} should be able to handle resulted values {@code R}
-     * on success or input values {@code T} on failure.
-     *
-     * @return self-reference
-     */
-    @Override
-    public StepFunction<T, R> makeImageCaptureOnFinish() {
-        captorFilters.add(new CaptorFilterByProducedType(BufferedImage.class));
+    StepFunction<T, R> addSuccessCaptors(List<Captor<Object, Object>> successCaptors) {
+        this.successCaptors.addAll(successCaptors);
         return this;
     }
 
-    /**
-     * Marks that it is needed to produce a {@link java.io.File} after invocation of
-     * {@link java.util.function.Function#apply(Object)} on this object. This image is produced by
-     * {@link ru.tinkoff.qa.neptune.core.api.event.firing.Captor#getData(java.lang.Object)}
-     *
-     * <p>NOTE 1</p>
-     * This file is produced if there is any subclass of {@link ru.tinkoff.qa.neptune.core.api.event.firing.captors.FileCaptor}
-     * or {@link ru.tinkoff.qa.neptune.core.api.event.firing.Captor} that may produce a {@link java.io.File}.
-     *
-     * <p>NOTE 2</p>
-     * A subclass of {@link ru.tinkoff.qa.neptune.core.api.event.firing.captors.FileCaptor} or
-     * {@link ru.tinkoff.qa.neptune.core.api.event.firing.Captor} should be able to handle resulted values {@code R}
-     * on success or input values {@code T} on failure.
-     *
-     * @return self-reference
-     */
-    @Override
-    public StepFunction<T, R> makeFileCaptureOnFinish() {
-        captorFilters.add(new CaptorFilterByProducedType(File.class));
-        return this;
-    }
-
-    /**
-     * Marks that it is needed to produce a {@link java.lang.StringBuilder} after invocation of
-     * {@link java.util.function.Function#apply(Object)} on this object. This string builder is produced by
-     * {@link ru.tinkoff.qa.neptune.core.api.event.firing.Captor#getData(java.lang.Object)}
-     *
-     * <p>NOTE 1</p>
-     * This string builder is produced if there is any subclass of {@link ru.tinkoff.qa.neptune.core.api.event.firing.captors.StringCaptor}
-     * or {@link ru.tinkoff.qa.neptune.core.api.event.firing.Captor} that may produce a {@link java.lang.StringBuilder}.
-     *
-     * <p>NOTE 2</p>
-     * A subclass of {@link ru.tinkoff.qa.neptune.core.api.event.firing.captors.StringCaptor} or
-     * {@link ru.tinkoff.qa.neptune.core.api.event.firing.Captor} should be able to handle resulted values {@code R}
-     * on success or input values {@code T} on failure.
-     *
-     * @return self-reference
-     */
-    @Override
-    public StepFunction<T, R> makeStringCaptureOnFinish() {
-        captorFilters.add(new CaptorFilterByProducedType(StringBuilder.class));
-        return this;
-    }
-
-    /**
-     * Marks that it is needed to produce some value after invocation of
-     * {@link java.util.function.Function#apply(Object)} on this object. This value is produced by
-     * {@link ru.tinkoff.qa.neptune.core.api.event.firing.Captor#getData(java.lang.Object)}
-     *
-     * <p>NOTE 1</p>
-     * This value is produced if there is any subclass of {@link ru.tinkoff.qa.neptune.core.api.event.firing.Captor} that
-     * may produce a value of type defined by {@param typeOfCapture}.
-     *
-     * <p>NOTE 2</p>
-     * A subclass of {@link ru.tinkoff.qa.neptune.core.api.event.firing.Captor} should be able to handle resulted values {@code R}
-     * on success or input values {@code T} on failure.
-     *
-     * @param typeOfCapture is a type of a value to produce after the invocation of {@link java.util.function.Function#apply(Object)}
-     *                      on this object.
-     * @return self-reference
-     */
-    @Override
-    public StepFunction<T, R> onFinishMakeCaptureOfType(Class<?> typeOfCapture) {
-        captorFilters.add(new CaptorFilterByProducedType(typeOfCapture));
+    StepFunction<T, R> addFailureCaptors(List<Captor<Object, Object>> failureCaptors) {
+        this.failureCaptors.addAll(failureCaptors);
         return this;
     }
 

@@ -6,7 +6,6 @@ import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -128,10 +127,5 @@ public final class Presence<T extends Context<?>> extends SequentialGetStepSuppl
      */
     public Presence<T> throwIfNotPresent(Supplier<? extends RuntimeException> exceptionSupplier) {
         return throwOnEmptyResult(exceptionSupplier);
-    }
-
-    @Override
-    public Map<String, String> getParameters() {
-        return ((StepFunction<?, ?>) from).getParameters();
     }
 }

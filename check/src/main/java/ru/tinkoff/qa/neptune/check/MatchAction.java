@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.check;
 
 import org.hamcrest.Matcher;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeCaptureOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
@@ -24,9 +23,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
  *            value to be checked
  * @param <R> is a generic type of {@link Matcher}
  */
-@MakeCaptureOnFinishing(typeOfCapture = Object.class)
-@SequentialActionSupplier.DefaultParameterNames(performOn = "Checked value",
-        imperative = "Assert:")
+@SequentialActionSupplier.DefinePerformImperativeParameterName("Assert:")
+@SequentialActionSupplier.DefinePerformOnParameterName("Checked value")
 public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchAction<T, R>> {
 
     private final String assertDescription;

@@ -87,20 +87,18 @@ public class EventFiringTest {
         try {
             assertThat("Check messages logged by SPI logger",
                     TestCaptor.messages,
-                    contains("Value  9.0",
-                            "Value  -1.5",
+                    contains("Value  -1.5",
                             "Value  -16.5",
                             "Value  -33.0",
-                            "Value  -133.0",
-                            "Value  -128.0"));
+                            "Value  -133.0"));
 
             assertThat("Check messages logged by SPI Number logger",
                     TestNumberCaptor.numbers,
-                    contains(-1.5,
+                    contains(9.0,
+                            -1.5,
                             -16.5,
                             -33.0,
-                            -133.0,
-                            -128F));
+                            -133.0));
 
             assertThat("Check messages logged by SPI String logger",
                     TestCapturedStringInjector.messages,
@@ -108,8 +106,7 @@ public class EventFiringTest {
                             "Saved to string -1.5",
                             "Saved to string -16.5",
                             "Saved to string -33.0",
-                            "Saved to string -133.0",
-                            "Saved to string -128.0"));
+                            "Saved to string -133.0"));
 
             assertThat("Check messages logged by SPI File logger",
                     TestCapturedFileInjector.messages,
@@ -151,20 +148,18 @@ public class EventFiringTest {
         try {
             assertThat("Check messages logged by SPI logger",
                     TestCaptor.messages,
-                    contains("Value  9.0",
-                            "Value  -1.5",
+                    contains("Value  -1.5",
                             "Value  -16.5",
                             "Value  -33.0",
-                            "Value  -133.0",
-                            "Value  -128.0"));
+                            "Value  -133.0"));
 
             assertThat("Check messages logged by SPI Number logger",
                     TestNumberCaptor.numbers,
-                    contains(-1.5,
+                    contains(9.0,
+                            -1.5,
                             -16.5,
                             -33.0,
-                            -133.0,
-                            -128F));
+                            -133.0));
 
             assertThat("Check messages logged by SPI String logger",
                     TestCapturedStringInjector.messages,
@@ -173,7 +168,6 @@ public class EventFiringTest {
                             equalTo("Saved to string -16.5"),
                             equalTo("Saved to string -33.0"),
                             equalTo("Saved to string -133.0"),
-                            equalTo("Saved to string -128.0"),
                             containsString("Saved to string ru.tinkoff.qa.neptune.core.api.steps.CalculatorSteps")));
 
             assertThat("Check messages logged by SPI File logger",

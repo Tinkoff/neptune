@@ -8,9 +8,7 @@ import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.currentWindow;
 
-@SequentialGetStepSupplier.DefaultParameterNames(
-        from = "Window/tab to get title of"
-)
+@SequentialGetStepSupplier.DefineFromParameterName("Window/tab to get title of")
 @Description("Title of the browser window/tab")
 public final class GetWindowTitleSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, String, Window, GetWindowTitleSupplier> {

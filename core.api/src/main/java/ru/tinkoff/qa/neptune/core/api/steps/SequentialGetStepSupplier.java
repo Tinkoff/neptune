@@ -1,17 +1,12 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.CaptorFilterByProducedType;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakesCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.event.firing.captors.FileCaptor;
-import ru.tinkoff.qa.neptune.core.api.event.firing.captors.ImageCaptor;
-import ru.tinkoff.qa.neptune.core.api.event.firing.captors.StringCaptor;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 import java.util.*;
 import java.util.function.Function;
@@ -26,9 +21,11 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationHMS;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure.CaptureOnFailureReader.readCaptorsOnFailure;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess.CaptureOnSuccessReader.readCaptorsOnSuccess;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.AND;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
-import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefaultParameterNames.DefaultGetParameterReader.*;
+import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefaultGetParameterReader.*;
 import static ru.tinkoff.qa.neptune.core.api.steps.StepFunction.toGet;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromArray.getFromArray;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromIterable.getFromIterable;
@@ -49,19 +46,20 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
  * @param <THIS> this is the self-type. It is used for the method chaining.
  */
 @SuppressWarnings("unchecked")
-@SequentialGetStepSupplier.DefaultParameterNames
+@SequentialGetStepSupplier.DefineGetImperativeParameterName
 public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends SequentialGetStepSupplier<T, R, M, P, THIS>> implements Cloneable,
-        Supplier<Function<T, R>>, MakesCapturesOnFinishing<THIS>, StepParameterPojo {
+        Supplier<Function<T, R>>, StepParameterPojo {
 
     private String description;
+    private final List<Captor<Object, Object>> successCaptors = new ArrayList<>();
+    private final List<Captor<Object, Object>> failureCaptors = new ArrayList<>();
 
     protected SequentialGetStepSupplier() {
-        MakesCapturesOnFinishing.makeCaptureSettings(this);
+        readCaptorsOnFailure(this.getClass(), failureCaptors);
+        readCaptorsOnSuccess(this.getClass(), successCaptors);
     }
 
     final Set<Class<? extends Throwable>> ignored = new HashSet<>();
-
-    private final List<CaptorFilterByProducedType> captorFilters = new ArrayList<>();
 
     final List<Criteria<P>> conditions = new ArrayList<>();
 
@@ -85,27 +83,34 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         var result = new LinkedHashMap<>(StepParameterPojo.super.getParameters());
         var cls = (Class<?>) this.getClass();
 
-        int i = 0;
-        for (var c : conditions) {
-            var criteria = i == 0 ? translate(getCriteriaPseudoField(cls)) : translate(getCriteriaPseudoField(cls)) + " " + (i + 1);
-            result.put(criteria, c.toString());
-            i++;
-        }
-
-        ofNullable(timeToGet).ifPresent(duration -> {
-            if (duration.toMillis() > 0) {
-                result.put(translate(getTimeOutPseudoField(cls)), formatDurationHMS(duration.toMillis()));
-            }
-        });
-        ofNullable(sleepingTime).ifPresent(duration -> {
-            if (duration.toMillis() > 0) {
-                result.put(translate(getPollingTimePseudoField(cls)), formatDurationHMS(duration.toMillis()));
+        ofNullable(getCriteriaPseudoField(cls, true)).ifPresent(pseudoField -> {
+            int i = 0;
+            for (var c : conditions) {
+                var criteria = i == 0 ? translate(pseudoField) : translate(pseudoField) + " " + (i + 1);
+                result.put(criteria, c.toString());
+                i++;
             }
         });
 
-        if (isLoggable(from) && nonNull(from)) {
-            result.put(translate(getFromPseudoField(cls)), valueOf(from));
-        }
+        ofNullable(getTimeOutPseudoField(cls, true)).ifPresent(pseudoField ->
+                ofNullable(timeToGet).ifPresent(duration -> {
+                    if (duration.toMillis() > 0) {
+                        result.put(translate(pseudoField), formatDurationHMS(duration.toMillis()));
+                    }
+                }));
+
+        ofNullable(getPollingTimePseudoField(cls, true)).ifPresent(pseudoField ->
+                ofNullable(sleepingTime).ifPresent(duration -> {
+                    if (duration.toMillis() > 0) {
+                        result.put(translate(pseudoField), formatDurationHMS(duration.toMillis()));
+                    }
+                }));
+
+        ofNullable(getFromPseudoField(cls, true)).ifPresent(pseudoField -> {
+            if (isLoggable(from) && nonNull(from)) {
+                result.put(translate(pseudoField), valueOf(from));
+            }
+        });
 
         return result;
     }
@@ -223,95 +228,6 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         return (THIS) this;
     }
 
-    /**
-     * Marks that it is needed to produce a {@link java.awt.image.BufferedImage} after invocation of
-     * {@link java.util.function.Function#apply(Object)} on built resulted {@link java.util.function.Function}.
-     * This image is produced by {@link Captor#getData(java.lang.Object)}
-     *
-     * <p>NOTE 1</p>
-     * This image is produced if there is any subclass of {@link ImageCaptor}
-     * or {@link Captor} that may produce a {@link java.awt.image.BufferedImage}.
-     *
-     * <p>NOTE 2</p>
-     * A subclass of {@link ImageCaptor} or
-     * {@link Captor} should be able to handle resulted values {@code R}
-     * on success or input values {@code T} on failure.
-     *
-     * @return self-reference
-     */
-    @Override
-    public THIS makeImageCaptureOnFinish() {
-        captorFilters.add(new CaptorFilterByProducedType(BufferedImage.class));
-        return (THIS) this;
-    }
-
-    /**
-     * Marks that it is needed to produce a {@link java.io.File} after invocation of
-     * {@link java.util.function.Function#apply(Object)} on built resulted {@link java.util.function.Function}.
-     * This image is produced by {@link Captor#getData(java.lang.Object)}
-     *
-     * <p>NOTE 1</p>
-     * This file is produced if there is any subclass of {@link FileCaptor}
-     * or {@link Captor} that may produce a {@link java.io.File}.
-     *
-     * <p>NOTE 2</p>
-     * A subclass of {@link FileCaptor} or
-     * {@link Captor} should be able to handle resulted values {@code R}
-     * on success or input values {@code T} on failure.
-     *
-     * @return self-reference
-     */
-    @Override
-    public THIS makeFileCaptureOnFinish() {
-        captorFilters.add(new CaptorFilterByProducedType(File.class));
-        return (THIS) this;
-    }
-
-    /**
-     * Marks that it is needed to produce a {@link java.lang.StringBuilder} after invocation of
-     * {@link java.util.function.Function#apply(Object)} on built resulted {@link java.util.function.Function}.
-     * This image is produced by {@link Captor#getData(java.lang.Object)}
-     *
-     * <p>NOTE 1</p>
-     * This string builder is produced if there is any subclass of {@link StringCaptor}
-     * or {@link Captor} that may produce a {@link java.lang.StringBuilder}.
-     *
-     * <p>NOTE 2</p>
-     * A subclass of {@link StringCaptor} or
-     * {@link Captor} should be able to handle resulted values {@code R}
-     * on success or input values {@code T} on failure.
-     *
-     * @return self-reference
-     */
-    @Override
-    public THIS makeStringCaptureOnFinish() {
-        captorFilters.add(new CaptorFilterByProducedType(StringBuilder.class));
-        return (THIS) this;
-    }
-
-    /**
-     * Marks that it is needed to produce some value after invocation of
-     * {@link java.util.function.Function#apply(Object)} on built resulted {@link java.util.function.Function}.
-     * This image is produced by {@link Captor#getData(java.lang.Object)}
-     *
-     * <p>NOTE 1</p>
-     * This value is produced if there is any subclass of {@link Captor} that
-     * may produce  a value of type defined by {@param typeOfCapture}.
-     *
-     * <p>NOTE 2</p>
-     * A subclass of {@link Captor} should be able to handle resulted values {@code R}
-     * on success or input values {@code T} on failure.
-     *
-     * @param typeOfCapture is a type of a value to produce after the invocation of {@link java.util.function.Function#apply(Object)}
-     *                      on the built function is finished.
-     * @return self-reference
-     */
-    @Override
-    public THIS onFinishMakeCaptureOfType(Class<?> typeOfCapture) {
-        captorFilters.add(new CaptorFilterByProducedType(typeOfCapture));
-        return (THIS) this;
-    }
-
     @Override
     public Function<T, R> get() {
         checkArgument(nonNull(from), "FROM-object is not defined");
@@ -321,17 +237,17 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
         StepFunction<T, R> toBeReturned;
 
-        var description = (translate(getImperative(this.getClass())) + " " + this.description).trim();
+        var description = (translate(getImperativePseudoField(this.getClass(), true)) + " " + this.description).trim();
         if (StepFunction.class.isAssignableFrom(composeWith.getClass())) {
             var endFunctionStep = toGet(description, endFunction);
-            endFunctionStep.addCaptorFilters(captorFilters);
+            endFunctionStep.addSuccessCaptors(successCaptors).addFailureCaptors(failureCaptors);
             toBeReturned = endFunctionStep.compose(composeWith);
             endFunctionStep.setParameters(getParameters());
         } else {
             toBeReturned = toGet(description, endFunction.compose(composeWith));
         }
 
-        toBeReturned.addCaptorFilters(captorFilters);
+        toBeReturned.addSuccessCaptors(successCaptors).addFailureCaptors(failureCaptors);
         return toBeReturned.setParameters(getParameters());
     }
 
@@ -366,120 +282,6 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
     protected Criteria<P> getCriteria() {
         return condition;
-    }
-
-    /**
-     * This annotation is designed to mark subclasses of {@link SequentialGetStepSupplier}. It is
-     * used for the reading of timeouts, polling intervals, {@code from}-values, criteria and for the
-     * forming of parameters of a resulted step-function.
-     *
-     * @see SequentialGetStepSupplier#timeOut(Duration)
-     * @see SequentialGetStepSupplier#pollingInterval(Duration)
-     * @see SequentialGetStepSupplier#criteria(Criteria)
-     * @see SequentialGetStepSupplier#criteria(String, Predicate)
-     * @see SequentialGetStepSupplier#from(Object)
-     * @see SequentialGetStepSupplier#from(SequentialGetStepSupplier)
-     * @see SequentialGetStepSupplier#from(Function)
-     */
-    @Retention(RUNTIME)
-    @Target({TYPE})
-    public @interface DefaultParameterNames {
-
-        /**
-         * Defines name of imperative of a step
-         *
-         * @return imperative of a step
-         */
-        String imperative() default "Get:";
-
-        /**
-         * Defines name of the timeout-parameter
-         *
-         * @return Defined name of the timeout-parameter
-         * @see SequentialGetStepSupplier#timeOut(Duration)
-         */
-        String timeOut() default "Timeout/time for retrying";
-
-        /**
-         * Defines name of the polling/sleeping time-parameter
-         *
-         * @return Defined name of the polling/sleeping time-parameter
-         * @see SequentialGetStepSupplier#pollingInterval(Duration)
-         */
-        String pollingTime() default "Polling time";
-
-        /**
-         * Defines name of the criteria-parameter
-         *
-         * @return Defined name of the criteria-parameter
-         * @see SequentialGetStepSupplier#criteria(Criteria)
-         * @see SequentialGetStepSupplier#criteria(String, Predicate)
-         */
-        String criteria() default "Criteria";
-
-        /**
-         * Defines name of the from-parameter
-         *
-         * @return Defined name of the from-parameter
-         * @see SequentialGetStepSupplier#from(Object)
-         * @see SequentialGetStepSupplier#from(SequentialGetStepSupplier)
-         * @see SequentialGetStepSupplier#from(Function)
-         */
-        String from() default "Get from";
-
-        final class DefaultGetParameterReader {
-            public DefaultGetParameterReader() {
-                super();
-            }
-
-            public static PseudoField getFromPseudoField(Class<?> toRead) {
-                if (!SequentialGetStepSupplier.class.isAssignableFrom(toRead)) {
-                    return null;
-                }
-                return new PseudoField(toRead, "from", getDefaultParameters(toRead).from());
-            }
-
-            public static PseudoField getPollingTimePseudoField(Class<?> toRead) {
-                if (!SequentialGetStepSupplier.class.isAssignableFrom(toRead)) {
-                    return null;
-                }
-                return new PseudoField(toRead, "pollingTime", getDefaultParameters(toRead).pollingTime());
-            }
-
-            public static PseudoField getTimeOutPseudoField(Class<?> toRead) {
-                if (!SequentialGetStepSupplier.class.isAssignableFrom(toRead)) {
-                    return null;
-                }
-                return new PseudoField(toRead, "timeOut", getDefaultParameters(toRead).timeOut());
-            }
-
-            public static PseudoField getCriteriaPseudoField(Class<?> toRead) {
-                if (!SequentialGetStepSupplier.class.isAssignableFrom(toRead)) {
-                    return null;
-                }
-                return new PseudoField(toRead, "criteria", getDefaultParameters(toRead).criteria());
-            }
-
-            public static PseudoField getImperative(Class<?> toRead) {
-                if (!SequentialGetStepSupplier.class.isAssignableFrom(toRead)) {
-                    return null;
-                }
-                return new PseudoField(toRead, "imperative", getDefaultParameters(toRead).imperative());
-            }
-
-            private static DefaultParameterNames getDefaultParameters(Class<?> toRead) {
-                return ofNullable(toRead.getAnnotation(DefaultParameterNames.class))
-                        .orElseGet(() -> {
-                            DefaultParameterNames parameterNames = null;
-                            var clazz = toRead;
-                            while (parameterNames == null) {
-                                clazz = clazz.getSuperclass();
-                                parameterNames = clazz.getAnnotation(DefaultParameterNames.class);
-                            }
-                            return parameterNames;
-                        });
-            }
-        }
     }
 
     private static abstract class PrivateGetObjectStepSupplier<T, R, M, THIS extends PrivateGetObjectStepSupplier<T, R, M, THIS>>
@@ -932,5 +734,124 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         protected THIS from(SequentialGetStepSupplier<T, ? extends M, ?, ?, ?> from) {
             return super.from(from);
         }
+    }
+
+    @Retention(RUNTIME)
+    @Target({TYPE})
+    public @interface DefineGetImperativeParameterName {
+        /**
+         * Defines name of imperative of a step
+         *
+         * @return imperative of a step
+         */
+        String value() default "Get:";
+    }
+
+    @Retention(RUNTIME)
+    @Target({TYPE})
+    public @interface DefineTimeOutParameterName {
+        /**
+         * Defines name of the timeout-parameter
+         *
+         * @return Defined name of the timeout-parameter
+         * @see SequentialGetStepSupplier#timeOut(Duration)
+         */
+        String value() default "Timeout/time for retrying";
+    }
+
+    @Retention(RUNTIME)
+    @Target({TYPE})
+    public @interface DefinePollingTimeParameterName {
+        /**
+         * Defines name of the polling/sleeping time-parameter
+         *
+         * @return Defined name of the polling/sleeping time-parameter
+         * @see SequentialGetStepSupplier#pollingInterval(Duration)
+         */
+        String value() default "Polling time";
+    }
+
+    @Retention(RUNTIME)
+    @Target({TYPE})
+    public @interface DefineCriteriaParameterName {
+        /**
+         * Defines name of the criteria-parameter
+         *
+         * @return Defined name of the criteria-parameter
+         * @see SequentialGetStepSupplier#criteria(Criteria)
+         * @see SequentialGetStepSupplier#criteria(String, Predicate)
+         */
+        String value() default "Criteria";
+    }
+
+    @Retention(RUNTIME)
+    @Target({TYPE})
+    public @interface DefineFromParameterName {
+        /**
+         * Defines name of the from-parameter
+         *
+         * @return Defined name of the from-parameter
+         * @see SequentialGetStepSupplier#from(Object)
+         * @see SequentialGetStepSupplier#from(SequentialGetStepSupplier)
+         * @see SequentialGetStepSupplier#from(Function)
+         */
+        String value() default "Get from";
+    }
+
+    public static final class DefaultGetParameterReader {
+
+        private DefaultGetParameterReader() {
+            super();
+        }
+
+        public static PseudoField getFromPseudoField(Class<?> toRead, boolean useInheritance) {
+            return readAnnotation(toRead, DefineFromParameterName.class, "from", useInheritance);
+        }
+
+        public static PseudoField getPollingTimePseudoField(Class<?> toRead, boolean useInheritance) {
+            return readAnnotation(toRead, DefinePollingTimeParameterName.class, "pollingTime", useInheritance);
+        }
+
+        public static PseudoField getTimeOutPseudoField(Class<?> toRead, boolean useInheritance) {
+            return readAnnotation(toRead, DefineTimeOutParameterName.class, "timeOut", useInheritance);
+        }
+
+        public static PseudoField getCriteriaPseudoField(Class<?> toRead, boolean useInheritance) {
+            return readAnnotation(toRead, DefineCriteriaParameterName.class, "criteria", useInheritance);
+        }
+
+        public static PseudoField getImperativePseudoField(Class<?> toRead, boolean useInheritance) {
+            return readAnnotation(toRead, DefineGetImperativeParameterName.class, "imperative", useInheritance);
+        }
+
+        private static PseudoField readAnnotation(Class<?> toRead, Class<? extends Annotation> annotationClass,
+                                                  String name, boolean useInheritance) {
+            if (!SequentialGetStepSupplier.class.isAssignableFrom(toRead)) {
+                return null;
+            }
+
+            var cls = toRead;
+            while (!cls.equals(Object.class)) {
+                var annotation = cls.getAnnotation(annotationClass);
+                if (annotation != null) {
+                    try {
+                        var valueMethod = annotation.annotationType().getMethod("value");
+                        valueMethod.setAccessible(true);
+                        return new PseudoField(toRead, name, (String) valueMethod.invoke(annotation));
+                    } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                if (useInheritance) {
+                    cls = cls.getSuperclass();
+                } else {
+                    return null;
+                }
+            }
+
+            return null;
+        }
+
     }
 }

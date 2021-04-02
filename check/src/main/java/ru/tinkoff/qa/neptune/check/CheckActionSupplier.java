@@ -16,9 +16,7 @@ import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.core.api.steps.Step.createStep;
 
-@SequentialActionSupplier.DefaultParameterNames(
-        imperative = "Check"
-)
+@SequentialActionSupplier.DefinePerformImperativeParameterName("Check")
 public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R, T, CheckActionSupplier<R, T>> {
 
     private static final String LINE_SEPARATOR = "\r\n";

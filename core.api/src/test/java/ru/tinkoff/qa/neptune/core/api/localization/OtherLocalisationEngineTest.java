@@ -65,6 +65,7 @@ public class OtherLocalisationEngineTest {
     }
 
     @Description("Class Description GetSupplier")
+    @DefineFromParameterName
     static class GetStepSupplier extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<Object, Object, Object, GetStepSupplier> {
 
         protected GetStepSupplier() {
