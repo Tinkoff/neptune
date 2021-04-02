@@ -156,7 +156,7 @@ plugins {
 
 dependencies {
     inpath(group: 'ru.tinkoff.qa.neptune', name: 'core.api', version: 'NEPTUNE_BETA_OR_RELEASE') {
-        transitive = true
+        transitive = false
     }
 }
 
