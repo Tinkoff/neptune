@@ -20,10 +20,8 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITING_ALERT_TIME_DURATION;
 
-@SequentialGetStepSupplier.DefaultParameterNames(
-        timeOut = "Time of the waiting for the alert",
-        criteria = "Alert criteria"
-)
+@SequentialGetStepSupplier.DefineCriteriaParameterName("Alert criteria")
+@SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting for the alert")
 @Description("Alert")
 public final class GetAlertSupplier extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<SeleniumStepContext, Alert, WebDriver, GetAlertSupplier>
         implements TargetLocatorSupplier<Alert> {

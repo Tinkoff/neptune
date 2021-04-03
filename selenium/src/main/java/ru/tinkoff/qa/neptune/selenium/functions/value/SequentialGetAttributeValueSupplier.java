@@ -15,9 +15,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 
-@SequentialGetStepSupplier.DefaultParameterNames(
-        from = "Element to get value of the attribute"
-)
+@SequentialGetStepSupplier.DefineFromParameterName("Element to get value of html attribute")
+@SequentialGetStepSupplier.DefineResultDescriptionParameterName("Html attribute value is")
 public final class SequentialGetAttributeValueSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, String, SearchContext, SequentialGetAttributeValueSupplier> {
 
@@ -48,7 +47,7 @@ public final class SequentialGetAttributeValueSupplier extends SequentialGetStep
      * @param attr is the name of the target attribute
      * @return an instance of {@link SequentialGetAttributeValueSupplier}
      */
-    @Description("Value of the attribute {attr}")
+    @Description("Value of html attribute '{attr}'")
     public static SequentialGetAttributeValueSupplier attributeValue(@DescriptionFragment("attr") String attr) {
         return new SequentialGetAttributeValueSupplier(attr);
     }

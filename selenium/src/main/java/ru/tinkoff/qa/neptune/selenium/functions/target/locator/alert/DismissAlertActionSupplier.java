@@ -8,9 +8,6 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 /**
  * This class is designed to build a dismiss-action. This action is performed on a browser alert.
  */
-@SequentialActionSupplier.DefaultParameterNames(
-        performOn = "To dismiss"
-)
 @Description("Dismiss alert")
 public final class DismissAlertActionSupplier extends SequentialActionSupplier<SeleniumStepContext, Alert, DismissAlertActionSupplier> {
 

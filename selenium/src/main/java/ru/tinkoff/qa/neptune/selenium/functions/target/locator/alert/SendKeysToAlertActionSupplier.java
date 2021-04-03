@@ -9,9 +9,6 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 /**
  * This class is designed to build an send keys-action. This action is performed on a browser alert.
  */
-@SequentialActionSupplier.DefaultParameterNames(
-        performOn = "Alert to send keys"
-)
 @Description("Send keys to the alert")
 public final class SendKeysToAlertActionSupplier extends SequentialActionSupplier<SeleniumStepContext, Alert, SendKeysToAlertActionSupplier> {
 

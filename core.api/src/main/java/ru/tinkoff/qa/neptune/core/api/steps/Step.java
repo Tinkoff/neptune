@@ -7,6 +7,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Collections.emptyMap;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.*;
+import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefaultGetParameterReader.getResultPseudoField;
 import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
@@ -123,7 +124,7 @@ public abstract class Step<T> {
 
                 T result = stepSupplier.get();
                 if (isLoggable(result)) {
-                    fireReturnedValue(result);
+                    fireReturnedValue(translate(getResultPseudoField(SequentialGetStepSupplier.class, false)), result);
                 }
 
                 return result;

@@ -45,9 +45,9 @@ public class StaticEventFiring {
                 eventLogger.fireThrownException(throwable));
     }
 
-    public static void fireReturnedValue(Object returned) {
+    public static void fireReturnedValue(String resultDescription, Object returned) {
         initEventLoggersIfNecessary().forEach(eventLogger ->
-                eventLogger.fireReturnedValue(returned));
+                eventLogger.fireReturnedValue(resultDescription, returned));
     }
 
     public static void fireEventFinishing() {

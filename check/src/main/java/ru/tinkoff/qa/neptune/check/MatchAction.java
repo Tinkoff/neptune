@@ -5,7 +5,6 @@ import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -24,12 +23,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * @param <R> is a generic type of {@link Matcher}
  */
 @SequentialActionSupplier.DefinePerformImperativeParameterName("Assert:")
-@SequentialActionSupplier.DefinePerformOnParameterName("Checked value")
 public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchAction<T, R>> {
 
     private final String assertDescription;
-
-    @StepParameter("Match criteria")
     private final Matcher<? super R> criteria;
 
     MatchAction(String assertDescription, Matcher<? super R> criteria) {

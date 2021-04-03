@@ -11,15 +11,12 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.time.Duration.ofMillis;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.fireReturnedValue;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 @SuppressWarnings("unchecked")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting for absence")
 public final class Absence<T extends Context<?>> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<T, Boolean, Object, Absence<T>> {
-
-    private Object received;
 
     private Absence(Function<T, ?> toBeAbsent) {
         super(o -> ofNullable(o)
@@ -85,9 +82,7 @@ public final class Absence<T extends Context<?>> extends SequentialGetStepSuppli
         var getAbsence = new Function<T, Object>() {
             @Override
             public Object apply(T t) {
-                received = null;
                 var result = preFunction.apply(t);
-                received = result;
 
                 if (result == null) {
                     return true;
@@ -118,10 +113,7 @@ public final class Absence<T extends Context<?>> extends SequentialGetStepSuppli
         };
 
         var resulted = getSingle(getAbsence, timeToGet);
-        return ((Function<Object, Object>) o -> ofNullable(o).orElseGet(() -> {
-            fireReturnedValue(received);
-            return false;
-        })).compose(resulted);
+        return ((Function<Object, Object>) o -> ofNullable(o).orElse(false)).compose(resulted);
     }
 
     protected Function<Object, Boolean> getEndFunction() {

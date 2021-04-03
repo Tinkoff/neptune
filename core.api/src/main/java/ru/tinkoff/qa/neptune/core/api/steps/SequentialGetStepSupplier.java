@@ -47,6 +47,7 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
  */
 @SuppressWarnings("unchecked")
 @SequentialGetStepSupplier.DefineGetImperativeParameterName
+@SequentialGetStepSupplier.DefineResultDescriptionParameterName
 public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends SequentialGetStepSupplier<T, R, M, P, THIS>> implements Cloneable,
         Supplier<Function<T, R>>, StepParameterPojo {
 
@@ -236,19 +237,25 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         checkNotNull(endFunction);
 
         StepFunction<T, R> toBeReturned;
-
+        var params = getParameters();
+        var resultDescription = translate(getResultPseudoField(this.getClass(), true));
         var description = (translate(getImperativePseudoField(this.getClass(), true)) + " " + this.description).trim();
+
         if (StepFunction.class.isAssignableFrom(composeWith.getClass())) {
-            var endFunctionStep = toGet(description, endFunction);
-            endFunctionStep.addSuccessCaptors(successCaptors).addFailureCaptors(failureCaptors);
-            toBeReturned = endFunctionStep.compose(composeWith);
-            endFunctionStep.setParameters(getParameters());
+            toBeReturned = toGet(description, endFunction)
+                    .setParameters(params)
+                    .addSuccessCaptors(successCaptors)
+                    .addFailureCaptors(failureCaptors)
+                    .setResultDescription(resultDescription)
+                    .compose(composeWith);
         } else {
             toBeReturned = toGet(description, endFunction.compose(composeWith));
         }
 
-        toBeReturned.addSuccessCaptors(successCaptors).addFailureCaptors(failureCaptors);
-        return toBeReturned.setParameters(getParameters());
+        return toBeReturned.addSuccessCaptors(successCaptors)
+                .addFailureCaptors(failureCaptors)
+                .setResultDescription(resultDescription)
+                .setParameters(params);
     }
 
     protected Function<T, M> preparePreFunction() {
@@ -798,6 +805,15 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         String value() default "Get from";
     }
 
+    @Retention(RUNTIME)
+    @Target({TYPE})
+    public @interface DefineResultDescriptionParameterName {
+        /**
+         * Defines name of the parameter that describes a returned value
+         */
+        String value() default "Result";
+    }
+
     public static final class DefaultGetParameterReader {
 
         private DefaultGetParameterReader() {
@@ -822,6 +838,10 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
         public static PseudoField getImperativePseudoField(Class<?> toRead, boolean useInheritance) {
             return readAnnotation(toRead, DefineGetImperativeParameterName.class, "imperative", useInheritance);
+        }
+
+        public static PseudoField getResultPseudoField(Class<?> toRead, boolean useInheritance) {
+            return readAnnotation(toRead, DefineResultDescriptionParameterName.class, "resultDescription", useInheritance);
         }
 
         private static PseudoField readAnnotation(Class<?> toRead, Class<? extends Annotation> annotationClass,

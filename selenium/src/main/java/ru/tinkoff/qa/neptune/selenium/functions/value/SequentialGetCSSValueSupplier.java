@@ -15,9 +15,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 
-@SequentialGetStepSupplier.DefaultParameterNames(
-        from = "Element to get value of the css"
-)
+@SequentialGetStepSupplier.DefineFromParameterName("Element to get value of css property")
 public final class SequentialGetCSSValueSupplier extends
         SequentialGetStepSupplier.GetObjectChainedStepSupplier<SeleniumStepContext, String, SearchContext, SequentialGetCSSValueSupplier> {
 
@@ -48,7 +46,7 @@ public final class SequentialGetCSSValueSupplier extends
      * @param property is the name of the target css property
      * @return an instance of {@link SequentialGetCSSValueSupplier}
      */
-    @Description("Value of the css property '{property}'")
+    @Description("Value of css property '{property}'")
     public static SequentialGetCSSValueSupplier cssValue(@DescriptionFragment("property") String property) {
         return new SequentialGetCSSValueSupplier(property);
     }

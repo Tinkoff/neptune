@@ -161,6 +161,7 @@ public class ResourceBundleGenerator {
         ofNullable(SequentialActionSupplier.DefaultActionParameterReader
                 .getImperativePseudoField(clazz, false)).ifPresent(fields::add);
         ofNullable(getPerformOnPseudoField(clazz, false)).ifPresent(fields::add);
+        ofNullable(getResultPseudoField(clazz, false)).ifPresent(fields::add);
 
         fields.addAll(stream(clazz.getDeclaredFields())
                 .filter(field -> field.getAnnotation(StepParameter.class) != null)

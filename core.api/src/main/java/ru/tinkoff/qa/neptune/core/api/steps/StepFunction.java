@@ -27,6 +27,7 @@ public class StepFunction<T, R> implements Function<T, R> {
     private final Set<Captor<Object, Object>> successCaptors = new HashSet<>();
     private final Set<Captor<Object, Object>> failureCaptors = new HashSet<>();
     private Map<String, String> parameters = emptyMap();
+    private String resultDescription;
 
     StepFunction(String description, Function<T, R> function) {
         checkArgument(nonNull(function), "Function should be defined");
@@ -64,9 +65,9 @@ public class StepFunction<T, R> implements Function<T, R> {
         return false;
     }
 
-    private static <R> void fireReturnedValueIfNecessary(R r) {
+    private static <R> void fireReturnedValueIfNecessary(String resultDescription, R r) {
         if (isLoggable(r)) {
-            fireReturnedValue(r);
+            fireReturnedValue(resultDescription, r);
         }
     }
 
@@ -81,7 +82,7 @@ public class StepFunction<T, R> implements Function<T, R> {
             }
             R result = (R) function.apply(t);
             if (toReport) {
-                fireReturnedValueIfNecessary(result);
+                fireReturnedValueIfNecessary(resultDescription, result);
             }
             if (catchSuccessEvent() && toReport && !isComplex &&
                     !StepFunction.class.isAssignableFrom(function.getClass())) {
@@ -100,7 +101,7 @@ public class StepFunction<T, R> implements Function<T, R> {
                 throw thrown;
             } else {
                 if (toReport) {
-                    fireReturnedValueIfNecessary(null);
+                    fireReturnedValueIfNecessary(resultDescription, null);
                 }
                 return null;
             }
@@ -186,6 +187,11 @@ public class StepFunction<T, R> implements Function<T, R> {
 
     StepFunction<T, R> setParameters(Map<String, String> parameters) {
         this.parameters = parameters;
+        return this;
+    }
+
+    StepFunction<T, R> setResultDescription(String resultDescription) {
+        this.resultDescription = resultDescription;
         return this;
     }
 

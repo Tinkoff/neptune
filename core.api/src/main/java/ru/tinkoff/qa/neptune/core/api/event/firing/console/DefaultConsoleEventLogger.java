@@ -34,8 +34,8 @@ public class DefaultConsoleEventLogger implements EventLogger {
     }
 
     @Override
-    public void fireReturnedValue(Object returned) {
-        System.out.printf("Returned: %s%n", stringValueOfObjectOrArray(returned));
+    public void fireReturnedValue(String resultDescription, Object returned) {
+        System.out.printf("%s: %s%n", resultDescription, stringValueOfObjectOrArray(returned));
     }
 
     @Override
