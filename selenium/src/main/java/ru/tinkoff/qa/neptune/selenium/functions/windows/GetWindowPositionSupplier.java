@@ -12,7 +12,6 @@ import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Get
 
 @SequentialGetStepSupplier.DefineFromParameterName("Window/tab to get position of")
 @Description("Position of the browser window/tab")
-@SequentialGetStepSupplier.DefineResultDescriptionParameterName("Position of the window/tab")
 public final class GetWindowPositionSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, Point, Window, GetWindowPositionSupplier> {
 

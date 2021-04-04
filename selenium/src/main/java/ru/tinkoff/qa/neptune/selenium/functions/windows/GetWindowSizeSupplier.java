@@ -12,7 +12,6 @@ import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Get
 
 @SequentialGetStepSupplier.DefineFromParameterName("Window/tab to get size of")
 @Description("Size of the browser window/tab")
-@SequentialGetStepSupplier.DefineResultDescriptionParameterName("Size of the window/tab")
 public final class GetWindowSizeSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, Dimension, Window, GetWindowSizeSupplier> {
 

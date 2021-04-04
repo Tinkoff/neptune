@@ -9,7 +9,7 @@ import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier.currentWindow;
 
 @Description("Set window full screen")
-@SequentialActionSupplier.DefinePerformOnParameterName("Window/tab to set fullscreen")
+@SequentialActionSupplier.DefinePerformOnParameterName("Window/tab to set full screen")
 public final class FullScreenWindowSupplier extends SequentialActionSupplier<SeleniumStepContext, Window, FullScreenWindowSupplier> {
 
     private FullScreenWindowSupplier() {

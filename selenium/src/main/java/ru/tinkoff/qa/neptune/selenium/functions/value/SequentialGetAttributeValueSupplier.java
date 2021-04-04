@@ -16,7 +16,6 @@ import static java.lang.String.format;
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 
 @SequentialGetStepSupplier.DefineFromParameterName("Element to get value of html attribute")
-@SequentialGetStepSupplier.DefineResultDescriptionParameterName("Html attribute value is")
 public final class SequentialGetAttributeValueSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, String, SearchContext, SequentialGetAttributeValueSupplier> {
 
