@@ -4,14 +4,16 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MakeFileCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.*;
+import ru.tinkoff.qa.neptune.selenium.captors.ListOfWebElementImageCaptor;
+import ru.tinkoff.qa.neptune.selenium.captors.WebDriverImageCaptor;
 
 import java.time.Duration;
 import java.util.List;
@@ -24,14 +26,13 @@ import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FI
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMENT_WAITING_DURATION;
 
 @SuppressWarnings({"unused"})
-@MakeImageCapturesOnFinishing
-@MakeFileCapturesOnFinishing
-@SequentialGetStepSupplier.DefaultParameterNames(
-        timeOut = "Time of the waiting for elements",
-        from = "Parent element",
-        criteria = "Element criteria",
-        imperative = "Find"
-)
+@SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting for elements")
+@SequentialGetStepSupplier.DefineFromParameterName("Parent element")
+@SequentialGetStepSupplier.DefineCriteriaParameterName("Element criteria")
+@SequentialGetStepSupplier.DefineGetImperativeParameterName("Find")
+@SequentialGetStepSupplier.DefineResultDescriptionParameterName("Found elements")
+@CaptureOnSuccess(by = ListOfWebElementImageCaptor.class)
+@CaptureOnFailure(by = WebDriverImageCaptor.class)
 public final class MultipleSearchSupplier<R extends SearchContext> extends
         SequentialGetStepSupplier.GetIterableChainedStepSupplier<SearchContext, List<R>, SearchContext, R, MultipleSearchSupplier<R>> {
 
@@ -88,7 +89,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
      */
-    @Description("List of {tClass} '{textOrLabel}'")
+    @Description("List of {tClass} with text/label [{textOrLabel}]")
     public static <T extends Widget> MultipleSearchSupplier<T> widgets(@DescriptionFragment(value = "tClass", makeReadableBy = WidgetNameGetter.class) Class<T> tClass,
                                                                        @DescriptionFragment("textOrLabel") String textOrLabel) {
         return new MultipleSearchSupplier<T>(

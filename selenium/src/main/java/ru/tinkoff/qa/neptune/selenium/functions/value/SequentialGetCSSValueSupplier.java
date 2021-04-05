@@ -7,19 +7,14 @@ import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.api.widget.HasCssValue;
+import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 
-import java.util.function.Function;
-
-import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 
-@SequentialGetStepSupplier.DefineFromParameterName("Element to get value of css property")
 public final class SequentialGetCSSValueSupplier extends
         SequentialGetStepSupplier.GetObjectChainedStepSupplier<SeleniumStepContext, String, SearchContext, SequentialGetCSSValueSupplier> {
-
-    private boolean isElementDefined;
 
     private SequentialGetCSSValueSupplier(String property) {
         super(searchContext -> {
@@ -44,39 +39,38 @@ public final class SequentialGetCSSValueSupplier extends
      * Creates an instance of {@link SequentialGetCSSValueSupplier} for the taking of value of the css property.
      *
      * @param property is the name of the target css property
+     * @param e        is the element to get css property value from
      * @return an instance of {@link SequentialGetCSSValueSupplier}
      */
-    @Description("Value of css property '{property}'")
-    public static SequentialGetCSSValueSupplier cssValue(@DescriptionFragment("property") String property) {
-        return new SequentialGetCSSValueSupplier(property);
+    @Description("Value of css property '{property}' of the {element}")
+    public static SequentialGetCSSValueSupplier cssValue(@DescriptionFragment("property") String property,
+                                                         @DescriptionFragment("element") WebElement e) {
+        return new SequentialGetCSSValueSupplier(property).from(e);
     }
 
     /**
-     * Adds an element to get value of the css property
+     * Creates an instance of {@link SequentialGetCSSValueSupplier} for the taking of value of the css property.
      *
-     * @param e is the element to get value of the css property
-     * @return self-reference
+     * @param property is the name of the target css property
+     * @param e        is the element to get css property value from
+     * @return an instance of {@link SequentialGetCSSValueSupplier}
      */
-    public SequentialGetCSSValueSupplier of(SearchContext e) {
-        isElementDefined = true;
-        return super.from(e);
+    @Description("Value of css property '{property}' of the {element}")
+    public static SequentialGetCSSValueSupplier cssValue(@DescriptionFragment("property") String property,
+                                                         @DescriptionFragment("element") Widget e) {
+        return new SequentialGetCSSValueSupplier(property).from(e);
     }
 
     /**
-     * Adds an element to get value of the css property
+     * Creates an instance of {@link SequentialGetCSSValueSupplier} for the taking of value of the css property.
      *
+     * @param property       is the name of the target css property
      * @param searchSupplier is how to find the element to get value of the css property.
-     * @param <T>            subtype of {@link SearchContext} which provides ability to get value of the css property.
-     * @return self-reference
+     * @return an instance of {@link SequentialGetCSSValueSupplier}
      */
-    public <T extends SearchContext> SequentialGetCSSValueSupplier of(SearchSupplier<T> searchSupplier) {
-        isElementDefined = true;
-        return super.from(searchSupplier.get().compose(currentContent()));
-    }
-
-    @Override
-    public Function<SeleniumStepContext, String> get() {
-        checkArgument(isElementDefined, "It is necessary to define element to get css property");
-        return super.get();
+    @Description("Value of css property '{property}' of the {element}")
+    public static SequentialGetCSSValueSupplier cssValue(@DescriptionFragment("property") String property,
+                                                         @DescriptionFragment("element") SearchSupplier<?> searchSupplier) {
+        return new SequentialGetCSSValueSupplier(property).from(searchSupplier.get().compose(currentContent()));
     }
 }

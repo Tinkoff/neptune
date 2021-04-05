@@ -1,14 +1,16 @@
 package ru.tinkoff.qa.neptune.selenium.functions.searching;
 
 import org.openqa.selenium.*;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MakeFileCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.*;
+import ru.tinkoff.qa.neptune.selenium.captors.WebDriverImageCaptor;
+import ru.tinkoff.qa.neptune.selenium.captors.WebElementImageCaptor;
 
 import java.time.Duration;
 import java.util.function.Function;
@@ -25,14 +27,13 @@ import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FI
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMENT_WAITING_DURATION;
 
 @SuppressWarnings({"unused"})
-@MakeImageCapturesOnFinishing
-@MakeFileCapturesOnFinishing
-@SequentialGetStepSupplier.DefaultParameterNames(
-        timeOut = "Time of the waiting for the element",
-        from = "Parent element",
-        criteria = "Element criteria",
-        imperative = "Find"
-)
+@SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting for the element")
+@SequentialGetStepSupplier.DefineFromParameterName("Parent element")
+@SequentialGetStepSupplier.DefineCriteriaParameterName("Element criteria")
+@SequentialGetStepSupplier.DefineGetImperativeParameterName("Find")
+@SequentialGetStepSupplier.DefineResultDescriptionParameterName("Found element")
+@CaptureOnSuccess(by = WebElementImageCaptor.class)
+@CaptureOnFailure(by = WebDriverImageCaptor.class)
 public final class SearchSupplier<R extends SearchContext>
         extends SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier<SearchContext, R, SearchContext, SearchSupplier<R>> {
 
@@ -81,8 +82,9 @@ public final class SearchSupplier<R extends SearchContext>
      * @param text that the desired element should have
      * @return an instance of {@link SearchSupplier}
      */
-    @Description("Web element located {by}")
-    public static SearchSupplier<WebElement> webElement(@DescriptionFragment("by") By by, String text) {
+    @Description("Web element located {by} with text [{text}]")
+    public static SearchSupplier<WebElement> webElement(@DescriptionFragment("by") By by,
+                                                        @DescriptionFragment("text") String text) {
         var shouldHaveText = text(text);
         var webElements = webElements(by);
         var search = new SearchSupplier<>(webElements);
@@ -101,7 +103,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @return an instance of {@link SearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
      */
-    @Description("{widgetClass} {textOrLabel}")
+    @Description("{widgetClass} with text/label [{textOrLabel}]")
     public static <T extends Widget> SearchSupplier<T> widget(@DescriptionFragment(value = "widgetClass",
             makeReadableBy = WidgetNameGetter.class) Class<T> tClass,
                                                               @DescriptionFragment("textOrLabel") String textOrLabel) {

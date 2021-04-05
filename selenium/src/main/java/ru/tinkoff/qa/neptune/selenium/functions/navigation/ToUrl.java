@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.selenium.functions.navigation;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
@@ -23,10 +24,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_D
 
 @CaptureOnFailure(by = WebDriverImageCaptor.class)
 @CaptureOnSuccess(by = WebDriverImageCaptor.class)
-@SequentialActionSupplier.DefaultParameterNames(
-        performOn = "Window/tab to perform navigation"
-)
-@Description("Navigate to URL")
+@SequentialActionSupplier.DefinePerformOnParameterName("Window/tab to perform navigation")
 public final class ToUrl extends SequentialActionSupplier<SeleniumStepContext, Window, ToUrl> {
 
     @StepParameter("Navigate to")
@@ -65,7 +63,8 @@ public final class ToUrl extends SequentialActionSupplier<SeleniumStepContext, W
      * @param url            is a page url
      * @return built navigation action
      */
-    public static ToUrl toUrl(GetWindowSupplier windowSupplier, URL url) {
+    @Description("Navigate to URL {URL}")
+    public static ToUrl toUrl(GetWindowSupplier windowSupplier, @DescriptionFragment("URL") URL url) {
         return new ToUrl(url).performOn(windowSupplier);
     }
 
@@ -76,7 +75,8 @@ public final class ToUrl extends SequentialActionSupplier<SeleniumStepContext, W
      * @param url    is a page url
      * @return built navigation action
      */
-    public static ToUrl toUrl(Window window, URL url) {
+    @Description("Navigate to URL {URL}")
+    public static ToUrl toUrl(Window window, @DescriptionFragment("URL") URL url) {
         return new ToUrl(url).performOn(window);
     }
 

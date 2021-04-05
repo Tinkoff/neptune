@@ -7,19 +7,15 @@ import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.api.widget.HasAttribute;
+import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 
-import java.util.function.Function;
-
-import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 
 @SequentialGetStepSupplier.DefineFromParameterName("Element to get value of html attribute")
 public final class SequentialGetAttributeValueSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, String, SearchContext, SequentialGetAttributeValueSupplier> {
-
-    private boolean isElementDefined;
 
     private SequentialGetAttributeValueSupplier(String attr) {
         super(searchContext -> {
@@ -44,38 +40,39 @@ public final class SequentialGetAttributeValueSupplier extends SequentialGetStep
      * Creates an instance of {@link SequentialGetAttributeValueSupplier} for the getting of value of the attribute.
      *
      * @param attr is the name of the target attribute
+     * @param e    is the element to get attr value from
      * @return an instance of {@link SequentialGetAttributeValueSupplier}
      */
-    @Description("Value of html attribute '{attr}'")
-    public static SequentialGetAttributeValueSupplier attributeValue(@DescriptionFragment("attr") String attr) {
-        return new SequentialGetAttributeValueSupplier(attr);
+    @Description("Value of html attribute '{attr}' of the {element}")
+    public static SequentialGetAttributeValueSupplier attributeValue(@DescriptionFragment("attr") String attr,
+                                                                     @DescriptionFragment("element") WebElement e) {
+        return new SequentialGetAttributeValueSupplier(attr).from(e);
     }
 
     /**
-     * Adds an element to get value of the attribute
+     * Creates an instance of {@link SequentialGetAttributeValueSupplier} for the getting of value of the attribute.
      *
-     * @param e is the element to get value of the attribute
-     * @return self-reference
+     * @param attr is the name of the target attribute
+     * @param e    is the element to get attr value from
+     * @return an instance of {@link SequentialGetAttributeValueSupplier}
      */
-    public SequentialGetAttributeValueSupplier of(SearchContext e) {
-        isElementDefined = true;
-        return super.from(e);
+    @Description("Value of html attribute '{attr}' of the {element}")
+    public static SequentialGetAttributeValueSupplier attributeValue(@DescriptionFragment("attr") String attr,
+                                                                     @DescriptionFragment("element") Widget e) {
+        return new SequentialGetAttributeValueSupplier(attr).from(e);
     }
+
 
     /**
-     * Adds an element to get value of the attribute
+     * Creates an instance of {@link SequentialGetAttributeValueSupplier} for the getting of value of the attribute.
+     *
+     * @param attr           is the name of the target attribute
      * @param searchSupplier is how to find the element to get value of the attribute.
-     * @param <T> subtype of {@link SearchContext} which provides ability to get value of the attribute.
      * @return self-reference
      */
-    public <T extends SearchContext> SequentialGetAttributeValueSupplier of(SearchSupplier<T> searchSupplier) {
-        isElementDefined = true;
-        return super.from(searchSupplier.get().compose(currentContent()));
-    }
-
-    @Override
-    public Function<SeleniumStepContext, String> get() {
-        checkArgument(isElementDefined, "It is necessary to define element to get attribute");
-        return super.get();
+    @Description("Value of html attribute '{attr}' of the {element}")
+    public static SequentialGetAttributeValueSupplier attributeValue(@DescriptionFragment("attr") String attr,
+                                                                     @DescriptionFragment("element") SearchSupplier<?> searchSupplier) {
+        return new SequentialGetAttributeValueSupplier(attr).from(searchSupplier.get().compose(currentContent()));
     }
 }

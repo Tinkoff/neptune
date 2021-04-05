@@ -27,7 +27,7 @@ public final class SequentialGetValueSupplier<T> extends
      * @param <R>  is the type of an element which has value
      * @return the function which takes a value from some element and returns the value.
      */
-    @Description("Value of the element '{element}'")
+    @Description("Value of the {element}")
     public static <T, R extends SearchContext & HasValue<T>> SequentialGetValueSupplier<T> ofThe(
             @DescriptionFragment("element") SearchSupplier<R> from) {
         checkArgument(nonNull(from), "The searching for the element which has value should be defined");
@@ -42,7 +42,7 @@ public final class SequentialGetValueSupplier<T> extends
      * @param <R>  is the type of an element which has value
      * @return the function which takes a value from some element and returns the value.
      */
-    @Description("Value of the element '{element}")
+    @Description("Value of the {element}")
     public static <T, R extends SearchContext & HasValue<T>> SequentialGetValueSupplier<T> ofThe(
             @DescriptionFragment("element") R from) {
         checkArgument(nonNull(from), "The element which has value should be defined");

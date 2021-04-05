@@ -1412,7 +1412,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return attr value
      */
     public String attrValueOf(SearchSupplier<?> of, String attr) {
-        return attributeValue(attr).of(of).get().apply(this);
+        return attributeValue(attr, of).get().apply(this);
     }
 
     /**
@@ -1423,7 +1423,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return attr value
      */
     public String attrValueOf(Widget of, String attr) {
-        return attributeValue(attr).of(of).get().apply(this);
+        return attributeValue(attr, of).get().apply(this);
     }
 
     /**
@@ -1434,7 +1434,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return attr value
      */
     public String attrValueOf(WebElement of, String attr) {
-        return attributeValue(attr).of(of).get().apply(this);
+        return attributeValue(attr, of).get().apply(this);
     }
 
 
@@ -1446,7 +1446,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return css value
      */
     public String cssValueOf(SearchSupplier<?> of, String cssProperty) {
-        return cssValue(cssProperty).of(of).get().apply(this);
+        return cssValue(cssProperty, of).get().apply(this);
     }
 
     /**
@@ -1457,7 +1457,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return css value
      */
     public String cssValueOf(Widget of, String cssProperty) {
-        return cssValue(cssProperty).of(of).get().apply(this);
+        return cssValue(cssProperty, of).get().apply(this);
     }
 
     /**
@@ -1468,7 +1468,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return css value
      */
     public String cssValueOf(WebElement of, String cssProperty) {
-        return cssValue(cssProperty).of(of).get().apply(this);
+        return cssValue(cssProperty, of).get().apply(this);
     }
 
     /**

@@ -1,22 +1,21 @@
 package ru.tinkoff.qa.neptune.selenium.functions.expand;
 
 import org.openqa.selenium.SearchContext;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MakeFileCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Expandable;
+import ru.tinkoff.qa.neptune.selenium.captors.WebDriverImageCaptor;
+import ru.tinkoff.qa.neptune.selenium.captors.WebElementImageCaptor;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 
-@MakeImageCapturesOnFinishing
-@MakeFileCapturesOnFinishing
-@SequentialActionSupplier.DefaultParameterNames(
-        performOn = "Element to collapse"
-)
+@CaptureOnSuccess(by = WebElementImageCaptor.class)
+@CaptureOnFailure(by = WebDriverImageCaptor.class)
 public final class CollapseActionSupplier extends
         SequentialActionSupplier<SeleniumStepContext, Expandable, CollapseActionSupplier> {
 
@@ -31,7 +30,7 @@ public final class CollapseActionSupplier extends
      * @param <R> is the type of the expandable/collapsable element
      * @return built collapse action
      */
-    @Description("Collapse element {of}")
+    @Description("Collapse the {of}")
     public static <R extends SearchContext & Expandable> CollapseActionSupplier collapse(
             @DescriptionFragment("of") SearchSupplier<R> of) {
         return new CollapseActionSupplier()
@@ -45,7 +44,7 @@ public final class CollapseActionSupplier extends
      * @param <R> is the type of the expandable/collapsable element
      * @return built collapse action
      */
-    @Description("Collapse element {of}")
+    @Description("Collapse the {of}")
     public static <R extends SearchContext & Expandable> CollapseActionSupplier collapse(@DescriptionFragment("of") R of) {
         return new CollapseActionSupplier()
                 .performOn(of);
