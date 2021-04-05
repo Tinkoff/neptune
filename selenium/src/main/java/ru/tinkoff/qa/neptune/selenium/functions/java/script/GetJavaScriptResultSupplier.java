@@ -2,13 +2,17 @@ package ru.tinkoff.qa.neptune.selenium.functions.java.script;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MakeImageCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MakeStringCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
+import ru.tinkoff.qa.neptune.core.api.event.firing.collections.ArrayCaptor;
+import ru.tinkoff.qa.neptune.core.api.event.firing.collections.CollectionCaptor;
+import ru.tinkoff.qa.neptune.core.api.event.firing.collections.MapCaptor;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+import ru.tinkoff.qa.neptune.selenium.captors.ListOfWebElementImageCaptor;
+import ru.tinkoff.qa.neptune.selenium.captors.WebElementImageCaptor;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -23,12 +27,10 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 
-@MakeImageCapturesOnFinishing
-@MakeStringCapturesOnFinishing
-@SequentialGetStepSupplier.DefaultParameterNames(
-        timeOut = "Time to get the expected result",
-        criteria = "Criteria for evaluated result"
-)
+@CaptureOnSuccess(by = {WebElementImageCaptor.class, ListOfWebElementImageCaptor.class,
+        CollectionCaptor.class, MapCaptor.class, ArrayCaptor.class})
+@SequentialGetStepSupplier.DefineTimeOutParameterName("Time to get the expected result")
+@SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria for evaluated result")
 public final class GetJavaScriptResultSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, Object, WebDriver, GetJavaScriptResultSupplier> {
 

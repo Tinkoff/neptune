@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.functions.intreraction;
 
 import org.openqa.selenium.interactions.Actions;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -23,7 +22,6 @@ abstract class DoubleClickActionSupplier extends InteractiveAction {
 
     static final class DoubleClickOnElementActionSupplier extends DoubleClickActionSupplier {
 
-        @StepParameter("Element to perform the double clicking on")
         private final Object e;
 
         DoubleClickOnElementActionSupplier(Object e) {

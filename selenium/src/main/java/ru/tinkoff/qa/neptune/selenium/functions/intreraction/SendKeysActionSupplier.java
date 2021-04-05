@@ -1,19 +1,13 @@
 package ru.tinkoff.qa.neptune.selenium.functions.intreraction;
 
 import org.openqa.selenium.interactions.Actions;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-/**
- * Builds an action that performs the sending keys.
- */
-@Description("Send keys")
 abstract class SendKeysActionSupplier extends InteractiveAction {
 
-    @StepParameter(value = "Keys to send", makeReadableBy = CharSequencesParameterValueGetter.class)
     final CharSequence[] keys;
 
     SendKeysActionSupplier(CharSequence... keys) {

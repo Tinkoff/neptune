@@ -2,6 +2,8 @@ package ru.tinkoff.qa.neptune.selenium.functions.browser.proxy;
 
 import com.browserup.bup.BrowserUpProxy;
 import com.browserup.harreader.model.HarEntry;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
+import ru.tinkoff.qa.neptune.core.api.event.firing.collections.CollectionCaptor;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
@@ -16,8 +18,11 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.GetProxy.getBrowserProxy;
 
-@Description("Proxied requests")
+@Description("Http traffic")
+@CaptureOnSuccess(by = CollectionCaptor.class)
 public class BrowserProxyGetStepSupplier extends SequentialGetStepSupplier.GetIterableChainedStepSupplier<SeleniumStepContext, List<HarEntry>, BrowserUpProxy, HarEntry, BrowserProxyGetStepSupplier> {
+
+    private final static String LINE_SEPARATOR = "\r\n";
 
     private BrowserProxyGetStepSupplier() {
         super(proxy -> ofNullable(proxy)
@@ -33,7 +38,20 @@ public class BrowserProxyGetStepSupplier extends SequentialGetStepSupplier.GetIt
                     }
 
                     return har.getLog().getEntries().stream().map(harEntry -> {
-                        var entry = new HarEntry();
+                        HarEntry entry = new HarEntry() {
+                            @Override
+                            public String toString() {
+                                var request = getRequest();
+                                var response = getResponse();
+
+                                return request.getMethod()
+                                        + LINE_SEPARATOR
+                                        + request.getUrl()
+                                        + LINE_SEPARATOR
+                                        + "Response status code" +
+                                        response.getStatus();
+                            }
+                        };
                         entry.setCache(harEntry.getCache());
                         entry.setComment(harEntry.getComment());
                         entry.setPageref(harEntry.getPageref());

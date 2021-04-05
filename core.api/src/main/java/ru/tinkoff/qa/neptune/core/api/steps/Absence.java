@@ -16,6 +16,7 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 @SuppressWarnings("unchecked")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting for absence")
+@SequentialGetStepSupplier.DefineResultDescriptionParameterName("Is absent")
 public final class Absence<T extends Context<?>> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<T, Boolean, Object, Absence<T>> {
 
     private Absence(Function<T, ?> toBeAbsent) {

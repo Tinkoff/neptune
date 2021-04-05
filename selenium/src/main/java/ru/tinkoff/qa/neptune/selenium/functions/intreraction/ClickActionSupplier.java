@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.functions.intreraction;
 
 import org.openqa.selenium.interactions.Actions;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -24,7 +23,6 @@ abstract class ClickActionSupplier extends InteractiveAction {
 
     static final class ClickOnElementActionSupplier extends ClickActionSupplier {
 
-        @StepParameter("Element to click on")
         private final Object e;
 
         ClickOnElementActionSupplier(Object e) {

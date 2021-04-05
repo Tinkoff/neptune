@@ -3,6 +3,8 @@ package ru.tinkoff.qa.neptune.selenium.functions.elements;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.api.widget.HasLocation;
@@ -10,9 +12,6 @@ import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 
-@SequentialGetStepSupplier.DefaultParameterNames(
-        from = "Element to get position of"
-)
 public final class GetElementPositionSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, Point, SearchContext, GetElementPositionSupplier> {
 
@@ -38,7 +37,8 @@ public final class GetElementPositionSupplier extends SequentialGetStepSupplier
      * @param supplier is how to get the web element/widget to get position from
      * @return Supplier of a function that gets position.
      */
-    public static <T extends SearchContext> GetElementPositionSupplier positionOfElement(SearchSupplier<T> supplier) {
+    @Description("Get position of the element '{element} on a page'")
+    public static <T extends SearchContext> GetElementPositionSupplier positionOfElement(@DescriptionFragment("element") SearchSupplier<T> supplier) {
         return new GetElementPositionSupplier().from(supplier.get().compose(currentContent()));
     }
 
@@ -48,7 +48,8 @@ public final class GetElementPositionSupplier extends SequentialGetStepSupplier
      * @param context is the web element/widget to get position from
      * @return Supplier of a function that gets position.
      */
-    public static GetElementPositionSupplier positionOfElement(SearchContext context) {
+    @Description("Get position of the element '{element} on a page'")
+    public static GetElementPositionSupplier positionOfElement(@DescriptionFragment("element") SearchContext context) {
         return new GetElementPositionSupplier().from(context);
     }
 }

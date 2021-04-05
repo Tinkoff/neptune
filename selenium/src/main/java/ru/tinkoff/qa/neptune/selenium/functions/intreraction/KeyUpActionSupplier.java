@@ -1,7 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.functions.intreraction;
 
 import org.openqa.selenium.interactions.Actions;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -10,7 +9,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 abstract class KeyUpActionSupplier extends InteractiveAction {
 
-    @StepParameter(value = "Modifier key", makeReadableBy = CharSequenceParameterValueGetter.class)
     final CharSequence modifierKey;
 
     KeyUpActionSupplier(CharSequence modifierKey) {
@@ -33,7 +31,6 @@ abstract class KeyUpActionSupplier extends InteractiveAction {
 
     static final class KeyUpOnElementActionSupplier extends KeyUpActionSupplier {
 
-        @StepParameter("Element")
         private final Object e;
 
         KeyUpOnElementActionSupplier(CharSequence modifierKey, Object e) {

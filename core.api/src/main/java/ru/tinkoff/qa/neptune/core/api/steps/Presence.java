@@ -16,6 +16,7 @@ import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 @SuppressWarnings("unchecked")
+@SequentialGetStepSupplier.DefineResultDescriptionParameterName("Is present")
 public final class Presence<T extends Context<?>> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<T, Boolean, Object, Presence<T>> {
 
     private final Set<Class<? extends Throwable>> ignored2 = new HashSet<>();
