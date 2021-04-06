@@ -18,11 +18,25 @@ import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentF
 
 @CaptureOnFailure(by = WebDriverImageCaptor.class)
 @CaptureOnSuccess(by = WebDriverImageCaptor.class)
+@Description("Click on {on}")
 public final class ClickActionSupplier extends SequentialActionSupplier<SeleniumStepContext, SearchContext, ClickActionSupplier> {
 
+    @DescriptionFragment("on")
+    final Object on;
 
-    private ClickActionSupplier() {
+    private ClickActionSupplier(Object on) {
         super();
+        this.on = on;
+    }
+
+    private ClickActionSupplier(SearchContext on) {
+        this((Object) on);
+        performOn(on);
+    }
+
+    private ClickActionSupplier(SequentialGetStepSupplier<SearchContext, ? extends SearchContext, ?, ?, ?> on) {
+        this((Object) on);
+        performOn(on.get().compose(currentContent()));
     }
 
     /**
@@ -32,11 +46,9 @@ public final class ClickActionSupplier extends SequentialActionSupplier<Selenium
      * @param <R> is the type of the clickable element
      * @return built click action
      */
-    @Description("Click on {on}")
-    public static <R extends SearchContext & Clickable> ClickActionSupplier on(@DescriptionFragment("on") SearchSupplier<R> on) {
+    public static <R extends SearchContext & Clickable> ClickActionSupplier on(SearchSupplier<R> on) {
         checkNotNull(on);
-        return new ClickActionSupplier()
-                .performOn(on.get().compose(currentContent()));
+        return new ClickActionSupplier(on);
     }
 
     /**
@@ -45,11 +57,9 @@ public final class ClickActionSupplier extends SequentialActionSupplier<Selenium
      * @param on is how to find the web element
      * @return built click action
      */
-    @Description("Click on {on}")
-    public static ClickActionSupplier on(@DescriptionFragment("on") SequentialGetStepSupplier<SearchContext, WebElement, ?, ?, ?> on) {
+    public static ClickActionSupplier on(SequentialGetStepSupplier<SearchContext, WebElement, ?, ?, ?> on) {
         checkNotNull(on);
-        return new ClickActionSupplier()
-                .performOn(on.get().compose(currentContent()));
+        return new ClickActionSupplier(on);
     }
 
     /**
@@ -59,10 +69,9 @@ public final class ClickActionSupplier extends SequentialActionSupplier<Selenium
      * @param <R> is the type of the clickable element
      * @return built click action
      */
-    @Description("Click on {on}")
-    public static <R extends SearchContext & Clickable> ClickActionSupplier on(@DescriptionFragment("on") R on) {
+    public static <R extends SearchContext & Clickable> ClickActionSupplier on(R on) {
         checkNotNull(on);
-        return new ClickActionSupplier().performOn(on);
+        return new ClickActionSupplier(on);
     }
 
     /**
@@ -71,11 +80,9 @@ public final class ClickActionSupplier extends SequentialActionSupplier<Selenium
      * @param on is the target web element
      * @return built click action
      */
-    @Description("Click on {on}")
-    public static ClickActionSupplier on(@DescriptionFragment("on") WebElement on) {
+    public static ClickActionSupplier on(WebElement on) {
         checkNotNull(on);
-        return new ClickActionSupplier()
-                .performOn(on);
+        return new ClickActionSupplier(on);
     }
 
     @Override

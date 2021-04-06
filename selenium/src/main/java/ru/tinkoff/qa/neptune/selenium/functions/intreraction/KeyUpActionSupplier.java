@@ -1,6 +1,8 @@
 package ru.tinkoff.qa.neptune.selenium.functions.intreraction;
 
 import org.openqa.selenium.interactions.Actions;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -9,6 +11,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 abstract class KeyUpActionSupplier extends InteractiveAction {
 
+    @DescriptionFragment(value = "key", makeReadableBy = CharSequenceParameterValueGetter.class)
     final CharSequence modifierKey;
 
     KeyUpActionSupplier(CharSequence modifierKey) {
@@ -17,6 +20,7 @@ abstract class KeyUpActionSupplier extends InteractiveAction {
         this.modifierKey = modifierKey;
     }
 
+    @Description("Release modifier key '{key}'")
     static final class KeyUpSimpleActionSupplier extends KeyUpActionSupplier {
 
         KeyUpSimpleActionSupplier(CharSequence modifierKey) {
@@ -29,8 +33,10 @@ abstract class KeyUpActionSupplier extends InteractiveAction {
         }
     }
 
+    @Description("Release modifier key '{key}' with focus on {target}")
     static final class KeyUpOnElementActionSupplier extends KeyUpActionSupplier {
 
+        @DescriptionFragment("target")
         private final Object e;
 
         KeyUpOnElementActionSupplier(CharSequence modifierKey, Object e) {

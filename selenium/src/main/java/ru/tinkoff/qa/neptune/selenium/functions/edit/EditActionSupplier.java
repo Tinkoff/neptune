@@ -16,16 +16,30 @@ import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentF
 
 @CaptureOnFailure(by = WebElementImageCaptor.class)
 @CaptureOnSuccess(by = WebElementImageCaptor.class)
-@SequentialActionSupplier.DefinePerformOnParameterName("Element to edit")
+@Description("Edit element {toEdit}")
 public final class EditActionSupplier<T> extends
         SequentialActionSupplier<SeleniumStepContext, Editable<T>, EditActionSupplier<T>> {
 
-    @StepParameter(value = "Change value with", makeReadableBy = EditParameterValueGetter.class)
+    @DescriptionFragment("toEdit")
+    final Object toEdit;
+
+    @StepParameter(value = "New value / Change value with", makeReadableBy = EditParameterValueGetter.class)
     private final T toSet;
 
-    private EditActionSupplier(T value) {
+    private EditActionSupplier(Object toEdit, T value) {
         super();
+        this.toEdit = toEdit;
         toSet = value;
+    }
+
+    private <S extends SearchContext & Editable<T>> EditActionSupplier(S toEdit, T value) {
+        this((Object) toEdit, value);
+        performOn(toEdit);
+    }
+
+    private <S extends SearchContext & Editable<T>> EditActionSupplier(SearchSupplier<S> toEdit, T value) {
+        this((Object) toEdit, value);
+        performOn(toEdit.get().compose(currentContent()));
     }
 
     /**
@@ -37,11 +51,8 @@ public final class EditActionSupplier<T> extends
      * @param <S>   if the type of editable element
      * @return built edit action
      */
-    @Description("Edit element {of}")
-    public static <R, S extends SearchContext & Editable<R>> EditActionSupplier<R> valueOfThe(
-            @DescriptionFragment("of") SearchSupplier<S> of, R value) {
-        return new EditActionSupplier<>(value)
-                .performOn(of.get().compose(currentContent()));
+    public static <R, S extends SearchContext & Editable<R>> EditActionSupplier<R> valueOfThe(SearchSupplier<S> of, R value) {
+        return new EditActionSupplier<>(of, value);
     }
 
     /**
@@ -53,10 +64,8 @@ public final class EditActionSupplier<T> extends
      * @param <S>   if the type of editable element
      * @return built edit action
      */
-    @Description("Edit element {of}")
-    public static <R, S extends SearchContext & Editable<R>> EditActionSupplier<R> valueOfThe(@DescriptionFragment("of") S of, R value) {
-        return new EditActionSupplier<>(value)
-                .performOn(of);
+    public static <R, S extends SearchContext & Editable<R>> EditActionSupplier<R> valueOfThe(S of, R value) {
+        return new EditActionSupplier<>(of, value);
     }
 
     @Override

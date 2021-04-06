@@ -16,11 +16,26 @@ import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentF
 
 @CaptureOnSuccess(by = WebElementImageCaptor.class)
 @CaptureOnFailure(by = WebDriverImageCaptor.class)
+@Description("Expand the {toExpand}")
 public final class ExpandActionSupplier extends
         SequentialActionSupplier<SeleniumStepContext, Expandable, ExpandActionSupplier> {
 
-    private ExpandActionSupplier() {
+    @DescriptionFragment("toExpand")
+    final Object toExpand;
+
+    private ExpandActionSupplier(Object toExpand) {
         super();
+        this.toExpand = toExpand;
+    }
+
+    private <R extends SearchContext & Expandable> ExpandActionSupplier(R toExpand) {
+        this((Object) toExpand);
+        performOn(toExpand);
+    }
+
+    private <R extends SearchContext & Expandable> ExpandActionSupplier(SearchSupplier<R> toExpand) {
+        this((Object) toExpand);
+        performOn(toExpand.get().compose(currentContent()));
     }
 
     /**
@@ -30,11 +45,8 @@ public final class ExpandActionSupplier extends
      * @param <R> is the type of the expandable element
      * @return built expand action
      */
-    @Description("Expand the {of}")
-    public static <R extends SearchContext & Expandable> ExpandActionSupplier expand(
-            @DescriptionFragment("of") SearchSupplier<R> of) {
-        return new ExpandActionSupplier()
-                .performOn(of.get().compose(currentContent()));
+    public static <R extends SearchContext & Expandable> ExpandActionSupplier expand(SearchSupplier<R> of) {
+        return new ExpandActionSupplier(of);
     }
 
     /**
@@ -44,10 +56,8 @@ public final class ExpandActionSupplier extends
      * @param <R> is the type of the expandable element
      * @return built expand action
      */
-    @Description("Expand the {of}")
-    public static <R extends SearchContext & Expandable> ExpandActionSupplier expand(@DescriptionFragment("of") R of) {
-        return new ExpandActionSupplier()
-                .performOn(of);
+    public static <R extends SearchContext & Expandable> ExpandActionSupplier expand(R of) {
+        return new ExpandActionSupplier(of);
     }
 
     @Override

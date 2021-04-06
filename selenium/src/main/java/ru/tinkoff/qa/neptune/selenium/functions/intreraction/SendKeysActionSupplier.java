@@ -1,6 +1,8 @@
 package ru.tinkoff.qa.neptune.selenium.functions.intreraction;
 
 import org.openqa.selenium.interactions.Actions;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -8,6 +10,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 abstract class SendKeysActionSupplier extends InteractiveAction {
 
+    @DescriptionFragment(
+            value = "keysToSend",
+            makeReadableBy = CharSequencesParameterValueGetter.class)
     final CharSequence[] keys;
 
     SendKeysActionSupplier(CharSequence... keys) {
@@ -17,6 +22,7 @@ abstract class SendKeysActionSupplier extends InteractiveAction {
         this.keys = keys;
     }
 
+    @Description("Send keys '{keysToSend}'")
     static final class SendKeysSimpleActionSupplier extends SendKeysActionSupplier {
 
         SendKeysSimpleActionSupplier(CharSequence... keys) {
@@ -29,6 +35,7 @@ abstract class SendKeysActionSupplier extends InteractiveAction {
         }
     }
 
+    @Description("Send keys '{keysToSend}' to {target}")
     static final class SendKeysToElementActionSupplier extends SendKeysActionSupplier {
 
         @StepParameter("Element")

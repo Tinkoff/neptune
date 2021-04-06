@@ -57,10 +57,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      *            provided key is none of those, {@link IllegalArgumentException} is thrown.
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Press modifier key '{key}' down")
-    public static InteractiveAction keyDown(@DescriptionFragment(
-            value = "key",
-            makeReadableBy = CharSequenceParameterValueGetter.class) CharSequence key) {
+    public static InteractiveAction keyDown(CharSequence key) {
         return new KeyDownActionSupplier.KeyDownSimpleActionSupplier(key);
     }
 
@@ -72,12 +69,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param target WebElement to perform the action
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Press modifier key '{key}' down with focus on {target}")
-    public static InteractiveAction keyDown(@DescriptionFragment("target") WebElement target,
-                                            @DescriptionFragment(
-                                                    value = "key",
-                                                    makeReadableBy = CharSequenceParameterValueGetter.class)
-                                                    CharSequence key) {
+    public static InteractiveAction keyDown(WebElement target, CharSequence key) {
         return new KeyDownActionSupplier.KeyDownOnElementActionSupplier(key, target);
     }
 
@@ -89,12 +81,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param target widget to perform the action
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Press modifier key '{key}' down with focus on {target}")
-    public static InteractiveAction keyDown(@DescriptionFragment("target") Widget target,
-                                            @DescriptionFragment(
-                                                    value = "key",
-                                                    makeReadableBy = CharSequenceParameterValueGetter.class)
-                                                    CharSequence key) {
+    public static InteractiveAction keyDown(Widget target, CharSequence key) {
         return new KeyDownActionSupplier.KeyDownOnElementActionSupplier(key, target);
     }
 
@@ -106,12 +93,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      *                  provided key is none of those, {@link IllegalArgumentException} is thrown.
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Press modifier key '{key}' down with focus on {target}")
-    public static InteractiveAction keyDown(@DescriptionFragment("target") SearchSupplier<?> howToFind,
-                                            @DescriptionFragment(
-                                                    value = "key",
-                                                    makeReadableBy = CharSequenceParameterValueGetter.class)
-                                                    CharSequence key) {
+    public static InteractiveAction keyDown(SearchSupplier<?> howToFind, CharSequence key) {
         return new KeyDownActionSupplier.KeyDownOnElementActionSupplier(key, howToFind);
     }
 
@@ -122,10 +104,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      *            provided key is none of those, {@link IllegalArgumentException} is thrown.
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Release modifier key '{key}'")
-    public static InteractiveAction keyUp(@DescriptionFragment(
-            value = "key",
-            makeReadableBy = CharSequenceParameterValueGetter.class) CharSequence key) {
+    public static InteractiveAction keyUp(CharSequence key) {
         return new KeyUpActionSupplier.KeyUpSimpleActionSupplier(key);
     }
 
@@ -137,12 +116,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param target WebElement to perform the action on
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Release modifier key '{key}' with focus on {target}")
-    public static InteractiveAction keyUp(@DescriptionFragment("target") WebElement target,
-                                          @DescriptionFragment(
-                                                  value = "key",
-                                                  makeReadableBy = CharSequenceParameterValueGetter.class)
-                                                  CharSequence key) {
+    public static InteractiveAction keyUp(WebElement target, CharSequence key) {
         return new KeyUpActionSupplier.KeyUpOnElementActionSupplier(key, target);
     }
 
@@ -154,12 +128,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param target widget to perform the action
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Release modifier key '{key}' with focus on {target}")
-    public static InteractiveAction keyUp(@DescriptionFragment("target") Widget target,
-                                          @DescriptionFragment(
-                                                  value = "key",
-                                                  makeReadableBy = CharSequenceParameterValueGetter.class)
-                                                  CharSequence key) {
+    public static InteractiveAction keyUp(Widget target, CharSequence key) {
         return new KeyUpActionSupplier.KeyUpOnElementActionSupplier(key, target);
     }
 
@@ -171,12 +140,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      *                  provided key is none of those, {@link IllegalArgumentException} is thrown.
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Release modifier key '{key}' with focus on {target}")
-    public static InteractiveAction keyUp(@DescriptionFragment("target") SearchSupplier<?> howToFind,
-                                          @DescriptionFragment(
-                                                  value = "key",
-                                                  makeReadableBy = CharSequenceParameterValueGetter.class)
-                                                  CharSequence key) {
+    public static InteractiveAction keyUp(SearchSupplier<?> howToFind, CharSequence key) {
         return new KeyUpActionSupplier.KeyUpOnElementActionSupplier(key, howToFind);
     }
 
@@ -186,10 +150,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param keys to be sent.
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Send keys '{keysToSend}'")
-    public static InteractiveAction sendKeys(@DescriptionFragment(
-            value = "keysToSend",
-            makeReadableBy = CharSequencesParameterValueGetter.class) CharSequence... keys) {
+    public static InteractiveAction sendKeys(CharSequence... keys) {
         return new SendKeysActionSupplier.SendKeysSimpleActionSupplier(keys);
     }
 
@@ -200,12 +161,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param keys   to be sent.
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Send keys '{keysToSend}' to {target}")
-    public static InteractiveAction sendKeys(@DescriptionFragment("target") WebElement target,
-                                             @DescriptionFragment(
-                                                     value = "keysToSend",
-                                                     makeReadableBy = CharSequencesParameterValueGetter.class)
-                                                     CharSequence... keys) {
+    public static InteractiveAction sendKeys(WebElement target, CharSequence... keys) {
         return new SendKeysActionSupplier.SendKeysToElementActionSupplier(target, keys);
     }
 
@@ -216,12 +172,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param target widget to perform the action
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Send keys '{keysToSend}' to {target}")
-    public static InteractiveAction sendKeys(@DescriptionFragment("target") Widget target,
-                                             @DescriptionFragment(
-                                                     value = "keysToSend",
-                                                     makeReadableBy = CharSequencesParameterValueGetter.class)
-                                                     CharSequence... keys) {
+    public static InteractiveAction sendKeys(Widget target, CharSequence... keys) {
         return new SendKeysActionSupplier.SendKeysToElementActionSupplier(target, keys);
     }
 
@@ -232,12 +183,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param keys      to be sent.
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Send keys '{keysToSend}' to {target}")
-    public static InteractiveAction sendKeys(@DescriptionFragment("target") SearchSupplier<?> howToFind,
-                                             @DescriptionFragment(
-                                                     value = "keysToSend",
-                                                     makeReadableBy = CharSequencesParameterValueGetter.class)
-                                                     CharSequence... keys) {
+    public static InteractiveAction sendKeys(SearchSupplier<?> howToFind, CharSequence... keys) {
         return new SendKeysActionSupplier.SendKeysToElementActionSupplier(howToFind, keys);
     }
 
@@ -246,7 +192,6 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      *
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Click left mouse button and hold")
     public static InteractiveAction clickAndHold() {
         return new ClickAndHoldActionSupplier.ClickAndHoldSimpleActionSupplier();
     }
@@ -257,8 +202,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param target element to be clicked and held.
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Click left mouse button and hold on {target}")
-    public static InteractiveAction clickAndHold(@DescriptionFragment("target") WebElement target) {
+    public static InteractiveAction clickAndHold(WebElement target) {
         return new ClickAndHoldActionSupplier.ClickAndHoldOnElementActionSupplier(target);
     }
 
@@ -268,8 +212,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param target widget to be clicked and held.
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Click left mouse button and hold on {target}")
-    public static InteractiveAction clickAndHold(@DescriptionFragment("target") Widget target) {
+    public static InteractiveAction clickAndHold(Widget target) {
         return new ClickAndHoldActionSupplier.ClickAndHoldOnElementActionSupplier(target);
     }
 
@@ -279,8 +222,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param howToFind is description of the element to be found
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Click left mouse button and hold on {target}")
-    public static InteractiveAction clickAndHold(@DescriptionFragment("target") SearchSupplier<?> howToFind) {
+    public static InteractiveAction clickAndHold(SearchSupplier<?> howToFind) {
         return new ClickAndHoldActionSupplier.ClickAndHoldOnElementActionSupplier(howToFind);
     }
 
@@ -289,7 +231,6 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      *
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Release left mouse button")
     public static InteractiveAction release() {
         return new ReleaseActionSupplier.ReleaseSimpleActionSupplier();
     }
@@ -300,8 +241,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param target to release the mouse button above.
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Release left mouse button at {target}")
-    public static InteractiveAction release(@DescriptionFragment("target") WebElement target) {
+    public static InteractiveAction release(WebElement target) {
         return new ReleaseActionSupplier.ReleaseElementActionSupplier(target);
     }
 
@@ -311,8 +251,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param target to release the mouse button above.
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Release left mouse button at {target}")
-    public static InteractiveAction release(@DescriptionFragment("target") Widget target) {
+    public static InteractiveAction release(Widget target) {
         return new ReleaseActionSupplier.ReleaseElementActionSupplier(target);
     }
 
@@ -322,8 +261,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param howToFind is description of the element to be found
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Release left mouse button at {target}")
-    public static InteractiveAction release(@DescriptionFragment("target") SearchSupplier<?> howToFind) {
+    public static InteractiveAction release(SearchSupplier<?> howToFind) {
         return new ReleaseActionSupplier.ReleaseElementActionSupplier(howToFind);
     }
 
@@ -332,7 +270,6 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      *
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Click by left mouse button")
     public static InteractiveAction click() {
         return new ClickActionSupplier.ClickSimpleActionSupplier();
     }
@@ -343,8 +280,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param target is the element to be clicked.
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Click by left mouse button {target}")
-    public static InteractiveAction click(@DescriptionFragment("target") WebElement target) {
+    public static InteractiveAction click(WebElement target) {
         return new ClickActionSupplier.ClickOnElementActionSupplier(target);
     }
 
@@ -354,8 +290,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param target is the element to be clicked.
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Click by left mouse button {target}")
-    public static InteractiveAction click(@DescriptionFragment("target") Widget target) {
+    public static InteractiveAction click(Widget target) {
         return new ClickActionSupplier.ClickOnElementActionSupplier(target);
     }
 
@@ -365,8 +300,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param howToFind is description of the element to be found
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Click by left mouse button {target}")
-    public static InteractiveAction click(@DescriptionFragment("target") SearchSupplier<?> howToFind) {
+    public static InteractiveAction click(SearchSupplier<?> howToFind) {
         return new ClickActionSupplier.ClickOnElementActionSupplier(howToFind);
     }
 
@@ -463,9 +397,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param yOffset vertical offset. A negative value means moving the mouse up.
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Move mouse to [x={x}, y={y}] from current position")
-    public static InteractiveAction moveByOffset(@DescriptionFragment("x") int xOffset,
-                                                 @DescriptionFragment("y") int yOffset) {
+    public static InteractiveAction moveByOffset(int xOffset, int yOffset) {
         return new MouseMoveActionSupplier(xOffset, yOffset);
     }
 
@@ -474,7 +406,6 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      *
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Context click")
     public static InteractiveAction contextClick() {
         return new ContextClickActionSupplier.ContextClickSimpleActionSupplier();
     }
@@ -485,8 +416,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param target element to perform the context clicking.
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Context click on {target}")
-    public static InteractiveAction contextClick(@DescriptionFragment("target") WebElement target) {
+    public static InteractiveAction contextClick(WebElement target) {
         return new ContextClickActionSupplier.ContextClickOnElementActionSupplier(target);
     }
 
@@ -496,8 +426,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param target element to perform the context clicking.
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Context click on {target}")
-    public static InteractiveAction contextClick(@DescriptionFragment("target") Widget target) {
+    public static InteractiveAction contextClick(Widget target) {
         return new ContextClickActionSupplier.ContextClickOnElementActionSupplier(target);
     }
 
@@ -507,8 +436,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param howToFind is description of the element to be found
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Context click on {target}")
-    public static InteractiveAction contextClick(@DescriptionFragment("target") SearchSupplier<?> howToFind) {
+    public static InteractiveAction contextClick(SearchSupplier<?> howToFind) {
         return new ContextClickActionSupplier.ContextClickOnElementActionSupplier(howToFind);
     }
 
@@ -518,7 +446,6 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      *
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Double click")
     public static InteractiveAction doubleClick() {
         return new DoubleClickActionSupplier.DoubleClickSimpleActionSupplier();
     }
@@ -529,8 +456,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param target element to perform the double clicking.
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Double click {target}")
-    public static InteractiveAction doubleClick(@DescriptionFragment("target") WebElement target) {
+    public static InteractiveAction doubleClick(WebElement target) {
         return new DoubleClickActionSupplier.DoubleClickOnElementActionSupplier(target);
     }
 
@@ -540,8 +466,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param target element to perform the double clicking.
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Double click {target}")
-    public static InteractiveAction doubleClick(@DescriptionFragment("target") Widget target) {
+    public static InteractiveAction doubleClick(Widget target) {
         return new DoubleClickActionSupplier.DoubleClickOnElementActionSupplier(target);
     }
 
@@ -551,8 +476,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param howToFind is description of the element to be found
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Double click {target}")
-    public static InteractiveAction doubleClick(@DescriptionFragment("target") SearchSupplier<?> howToFind) {
+    public static InteractiveAction doubleClick(SearchSupplier<?> howToFind) {
         return new DoubleClickActionSupplier.DoubleClickOnElementActionSupplier(howToFind);
     }
 
@@ -565,10 +489,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param yOffset vertical move offset.
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Drag {source} and drop at [x={x}, y={y}] from current position")
-    public static InteractiveAction dragAndDropBy(@DescriptionFragment("target") WebElement source,
-                                                  @DescriptionFragment("x") int xOffset,
-                                                  @DescriptionFragment("y") int yOffset) {
+    public static InteractiveAction dragAndDropBy(WebElement source, int xOffset, int yOffset) {
         return new DragAndDropByActionSupplier(source, xOffset, yOffset);
     }
 
@@ -581,10 +502,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param yOffset vertical move offset.
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Drag {source} and drop at [x={x}, y={y}] from current position")
-    public static InteractiveAction dragAndDropBy(@DescriptionFragment("target") Widget source,
-                                                  @DescriptionFragment("x") int xOffset,
-                                                  @DescriptionFragment("y") int yOffset) {
+    public static InteractiveAction dragAndDropBy(Widget source, int xOffset, int yOffset) {
         return new DragAndDropByActionSupplier(source, xOffset, yOffset);
     }
 
@@ -597,10 +515,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param yOffset                vertical move offset.
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Drag {source} and drop at [x={x}, y={y}] from current position")
-    public static InteractiveAction dragAndDropBy(@DescriptionFragment("target") SearchSupplier<?> howToFindSourceElement,
-                                                  @DescriptionFragment("x") int xOffset,
-                                                  @DescriptionFragment("y") int yOffset) {
+    public static InteractiveAction dragAndDropBy(SearchSupplier<?> howToFindSourceElement, int xOffset, int yOffset) {
         return new DragAndDropByActionSupplier(howToFindSourceElement, xOffset, yOffset);
     }
 
@@ -612,9 +527,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param target element to move to and release the mouse at.
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Drag {source} and drop at {destination}")
-    public static InteractiveAction dragAndDrop(@DescriptionFragment("target") WebElement source,
-                                                @DescriptionFragment("destination") WebElement target) {
+    public static InteractiveAction dragAndDrop(WebElement source, WebElement target) {
         return new DragAndDropActionSupplier(source, target);
     }
 
@@ -626,9 +539,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param target element to move to and release the mouse at.
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Drag {source} and drop at {destination}")
-    public static InteractiveAction dragAndDrop(@DescriptionFragment("target") Widget source,
-                                                @DescriptionFragment("destination") WebElement target) {
+    public static InteractiveAction dragAndDrop(Widget source, WebElement target) {
         return new DragAndDropActionSupplier(source, target);
     }
 
@@ -640,9 +551,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param target element to move to and release the mouse at.
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Drag {source} and drop at {destination}")
-    public static InteractiveAction dragAndDrop(@DescriptionFragment("target") WebElement source,
-                                                @DescriptionFragment("destination") Widget target) {
+    public static InteractiveAction dragAndDrop(WebElement source, Widget target) {
         return new DragAndDropActionSupplier(source, target);
     }
 
@@ -654,9 +563,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param target element to move to and release the mouse at.
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Drag {source} and drop at {destination}")
-    public static InteractiveAction dragAndDrop(@DescriptionFragment("target") Widget source,
-                                                @DescriptionFragment("destination") Widget target) {
+    public static InteractiveAction dragAndDrop(Widget source, Widget target) {
         return new DragAndDropActionSupplier(source, target);
     }
 
@@ -668,9 +575,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param target element to move to and release the mouse at.
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Drag {source} and drop at {destination}")
-    public static InteractiveAction dragAndDrop(@DescriptionFragment("target") SearchSupplier<?> source,
-                                                @DescriptionFragment("destination") WebElement target) {
+    public static InteractiveAction dragAndDrop(SearchSupplier<?> source, WebElement target) {
         return new DragAndDropActionSupplier(source, target);
     }
 
@@ -682,9 +587,8 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param target element to move to and release the mouse at.
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Drag {source} and drop at {destination}")
-    public static InteractiveAction dragAndDrop(@DescriptionFragment("target") SearchSupplier<?> source,
-                                                @DescriptionFragment("destination") Widget target) {
+    public static InteractiveAction dragAndDrop(SearchSupplier<?> source,
+                                                Widget target) {
         return new DragAndDropActionSupplier(source, target);
     }
 
@@ -696,9 +600,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param target is description of the element to move to and release the mouse at.
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Drag {source} and drop at {destination}")
-    public static InteractiveAction dragAndDrop(@DescriptionFragment("target") WebElement source,
-                                                @DescriptionFragment("destination") SearchSupplier<?> target) {
+    public static InteractiveAction dragAndDrop(WebElement source, SearchSupplier<?> target) {
         return new DragAndDropActionSupplier(source, target);
     }
 
@@ -710,9 +612,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param target is description of the element to move to and release the mouse at.
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Drag {source} and drop at {destination}")
-    public static InteractiveAction dragAndDrop(@DescriptionFragment("target") Widget source,
-                                                @DescriptionFragment("destination") SearchSupplier<?> target) {
+    public static InteractiveAction dragAndDrop(Widget source, SearchSupplier<?> target) {
         return new DragAndDropActionSupplier(source, target);
     }
 
@@ -724,9 +624,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
      * @param target is description of the element to move to and release the mouse at.
      * @return an instance of {@link InteractiveAction}
      */
-    @Description("Drag {source} and drop at {destination}")
-    public static InteractiveAction dragAndDrop(@DescriptionFragment("target") SearchSupplier<?> source,
-                                                @DescriptionFragment("destination") SearchSupplier<?> target) {
+    public static InteractiveAction dragAndDrop(SearchSupplier<?> source, SearchSupplier<?> target) {
         return new DragAndDropActionSupplier(source, target);
     }
 

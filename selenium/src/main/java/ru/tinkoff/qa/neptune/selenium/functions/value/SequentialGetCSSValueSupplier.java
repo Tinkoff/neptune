@@ -13,10 +13,17 @@ import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 import static java.lang.String.format;
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 
+@Description("Value of css property '{property}' of the {element}")
 public final class SequentialGetCSSValueSupplier extends
         SequentialGetStepSupplier.GetObjectChainedStepSupplier<SeleniumStepContext, String, SearchContext, SequentialGetCSSValueSupplier> {
 
-    private SequentialGetCSSValueSupplier(String property) {
+    @DescriptionFragment("property")
+    final String property;
+
+    @DescriptionFragment("element")
+    final Object element;
+
+    private SequentialGetCSSValueSupplier(String property, Object element) {
         super(searchContext -> {
             Class<? extends SearchContext> searchContextClass = searchContext.getClass();
             if (WebElement.class.isAssignableFrom(searchContextClass)) {
@@ -32,6 +39,18 @@ public final class SequentialGetCSSValueSupplier extends
                             "%s or %s or %s is expected.", property, searchContextClass.getName(), WebElement.class.getName(),
                     SearchContext.class.getName(), HasCssValue.class.getName()));
         });
+        this.property = property;
+        this.element = element;
+    }
+
+    private SequentialGetCSSValueSupplier(String property, SearchContext element) {
+        this(property, (Object) element);
+        from(element);
+    }
+
+    private SequentialGetCSSValueSupplier(String property, SearchSupplier<?> searchSupplier) {
+        this(property, (Object) searchSupplier);
+        from(searchSupplier.get().compose(currentContent()));
     }
 
 
@@ -42,10 +61,8 @@ public final class SequentialGetCSSValueSupplier extends
      * @param e        is the element to get css property value from
      * @return an instance of {@link SequentialGetCSSValueSupplier}
      */
-    @Description("Value of css property '{property}' of the {element}")
-    public static SequentialGetCSSValueSupplier cssValue(@DescriptionFragment("property") String property,
-                                                         @DescriptionFragment("element") WebElement e) {
-        return new SequentialGetCSSValueSupplier(property).from(e);
+    public static SequentialGetCSSValueSupplier cssValue(String property, WebElement e) {
+        return new SequentialGetCSSValueSupplier(property, e);
     }
 
     /**
@@ -55,10 +72,8 @@ public final class SequentialGetCSSValueSupplier extends
      * @param e        is the element to get css property value from
      * @return an instance of {@link SequentialGetCSSValueSupplier}
      */
-    @Description("Value of css property '{property}' of the {element}")
-    public static SequentialGetCSSValueSupplier cssValue(@DescriptionFragment("property") String property,
-                                                         @DescriptionFragment("element") Widget e) {
-        return new SequentialGetCSSValueSupplier(property).from(e);
+    public static SequentialGetCSSValueSupplier cssValue(String property, Widget e) {
+        return new SequentialGetCSSValueSupplier(property, e);
     }
 
     /**
@@ -68,9 +83,7 @@ public final class SequentialGetCSSValueSupplier extends
      * @param searchSupplier is how to find the element to get value of the css property.
      * @return an instance of {@link SequentialGetCSSValueSupplier}
      */
-    @Description("Value of css property '{property}' of the {element}")
-    public static SequentialGetCSSValueSupplier cssValue(@DescriptionFragment("property") String property,
-                                                         @DescriptionFragment("element") SearchSupplier<?> searchSupplier) {
-        return new SequentialGetCSSValueSupplier(property).from(searchSupplier.get().compose(currentContent()));
+    public static SequentialGetCSSValueSupplier cssValue(String property, SearchSupplier<?> searchSupplier) {
+        return new SequentialGetCSSValueSupplier(property, searchSupplier);
     }
 }

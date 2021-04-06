@@ -17,7 +17,7 @@ import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentF
 
 @CaptureOnFailure(by = WebDriverImageCaptor.class)
 @CaptureOnSuccess(by = WebElementImageCaptor.class)
-@Description("Active/Focused page element")
+@Description("Active/Focused web element")
 public final class GetActiveElementSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, WebElement, WebDriver, GetActiveElementSupplier>
         implements TargetLocatorSupplier<WebElement> {

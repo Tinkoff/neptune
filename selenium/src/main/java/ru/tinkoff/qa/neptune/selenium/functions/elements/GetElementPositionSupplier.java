@@ -12,10 +12,14 @@ import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 
+@Description("Position of the {element} on a page")
 public final class GetElementPositionSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, Point, SearchContext, GetElementPositionSupplier> {
 
-    private GetElementPositionSupplier() {
+    @DescriptionFragment("element")
+    final Object element;
+
+    private GetElementPositionSupplier(Object element) {
         super(s -> {
             var cls = s.getClass();
 
@@ -29,6 +33,17 @@ public final class GetElementPositionSupplier extends SequentialGetStepSupplier
 
             throw new UnsupportedOperationException("It is not possible to get position of " + s.toString());
         });
+        this.element = element;
+    }
+
+    private <T extends SearchContext> GetElementPositionSupplier(SearchSupplier<T> supplier) {
+        this((Object) supplier);
+        from(supplier.get().compose(currentContent()));
+    }
+
+    private GetElementPositionSupplier(SearchContext context) {
+        this((Object) context);
+        from(context);
     }
 
     /**
@@ -37,9 +52,8 @@ public final class GetElementPositionSupplier extends SequentialGetStepSupplier
      * @param supplier is how to get the web element/widget to get position from
      * @return Supplier of a function that gets position.
      */
-    @Description("Position of the {element} on a page")
-    public static <T extends SearchContext> GetElementPositionSupplier positionOfElement(@DescriptionFragment("element") SearchSupplier<T> supplier) {
-        return new GetElementPositionSupplier().from(supplier.get().compose(currentContent()));
+    public static <T extends SearchContext> GetElementPositionSupplier positionOfElement(SearchSupplier<T> supplier) {
+        return new GetElementPositionSupplier(supplier);
     }
 
     /**
@@ -48,8 +62,7 @@ public final class GetElementPositionSupplier extends SequentialGetStepSupplier
      * @param context is the web element/widget to get position from
      * @return Supplier of a function that gets position.
      */
-    @Description("Get position of the element {element} on a page")
-    public static GetElementPositionSupplier positionOfElement(@DescriptionFragment("element") SearchContext context) {
-        return new GetElementPositionSupplier().from(context);
+    public static GetElementPositionSupplier positionOfElement(SearchContext context) {
+        return new GetElementPositionSupplier(context);
     }
 }

@@ -42,7 +42,7 @@ public class TranslateByResourceBundleTest {
     @DataProvider()
     public static Object[][] data2() {
         return new Object[][]{
-                {someCriteriaWithoutAnnotation(), "Class Description from ResourceBundle"},
+                {someCriteriaWithoutAnnotation(), "not described criteria"},
                 {someCriteriaWithAnnotation(), "Method Description from ResourceBundle"},
                 {someCriteriaWithAnnotationWithoutResourceBundleKey(), "Method Description from Annotation"},
                 {someCriteriaWithCompositeAnnotation("sss"), "Composite Method Description from ResourceBundle + sss"}

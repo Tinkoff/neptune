@@ -12,10 +12,14 @@ import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 
+@Description("Size of the {element}")
 public final class GetElementSizeSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, Dimension, SearchContext, GetElementSizeSupplier> {
 
-    private GetElementSizeSupplier() {
+    @DescriptionFragment("element")
+    final Object element;
+
+    private GetElementSizeSupplier(Object element) {
         super(s -> {
             var cls = s.getClass();
 
@@ -29,6 +33,17 @@ public final class GetElementSizeSupplier extends SequentialGetStepSupplier
 
             throw new UnsupportedOperationException("It is not possible to get size of " + s.toString());
         });
+        this.element = element;
+    }
+
+    private GetElementSizeSupplier(SearchContext context) {
+        this((Object) context);
+        from(context);
+    }
+
+    private <T extends SearchContext> GetElementSizeSupplier(SearchSupplier<T> supplier) {
+        this((Object) supplier);
+        from(supplier.get().compose(currentContent()));
     }
 
     /**
@@ -37,9 +52,8 @@ public final class GetElementSizeSupplier extends SequentialGetStepSupplier
      * @param supplier is how to get the web element/widget to get size from
      * @return Supplier of a function which gets size.
      */
-    @Description("Size of the {element}")
-    public static <T extends SearchContext> GetElementSizeSupplier elementSize(@DescriptionFragment("element") SearchSupplier<T> supplier) {
-        return new GetElementSizeSupplier().from(supplier.get().compose(currentContent()));
+    public static <T extends SearchContext> GetElementSizeSupplier elementSize(SearchSupplier<T> supplier) {
+        return new GetElementSizeSupplier(supplier);
     }
 
     /**
@@ -48,8 +62,7 @@ public final class GetElementSizeSupplier extends SequentialGetStepSupplier
      * @param context is the web element/widget to get size from
      * @return Supplier of a function which gets size.
      */
-    @Description("Size of the {element}")
-    public static GetElementSizeSupplier elementSize(@DescriptionFragment("element") SearchContext context) {
-        return new GetElementSizeSupplier().from(context);
+    public static GetElementSizeSupplier elementSize(SearchContext context) {
+        return new GetElementSizeSupplier(context);
     }
 }

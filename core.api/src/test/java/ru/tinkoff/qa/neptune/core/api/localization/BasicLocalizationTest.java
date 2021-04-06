@@ -54,7 +54,7 @@ public class BasicLocalizationTest {
     @DataProvider(parallel = true)
     public static Object[][] data2() {
         return new Object[][]{
-                {someCriteriaWithoutAnnotation(), "This is some criteria Class"},
+                {someCriteriaWithoutAnnotation(), "not described criteria"},
                 {someCriteriaWithAnnotation(), "This is some criteria Method"},
                 {someCriteriaWithCompositeAnnotation("sss"), "This is some criteria Method with DescriptionFragment sss"}
         };

@@ -12,11 +12,26 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.nonNull;
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 
+@Description("Value of the {element}")
 public final class SequentialGetValueSupplier<T> extends
         SequentialGetStepSupplier.GetObjectChainedStepSupplier<SeleniumStepContext, T, HasValue<T>, SequentialGetValueSupplier<T>> {
 
-    private SequentialGetValueSupplier() {
+    @DescriptionFragment("element")
+    final Object element;
+
+    private SequentialGetValueSupplier(Object element) {
         super(HasValue::getValue);
+        this.element = element;
+    }
+
+    private <R extends SearchContext & HasValue<T>> SequentialGetValueSupplier(SearchSupplier<R> from) {
+        this((Object) from);
+        from(from.get().compose(currentContent()));
+    }
+
+    private <R extends SearchContext & HasValue<T>> SequentialGetValueSupplier(R from) {
+        this((Object) from);
+        from(from);
     }
 
     /**
@@ -27,11 +42,9 @@ public final class SequentialGetValueSupplier<T> extends
      * @param <R>  is the type of an element which has value
      * @return the function which takes a value from some element and returns the value.
      */
-    @Description("Value of the {element}")
-    public static <T, R extends SearchContext & HasValue<T>> SequentialGetValueSupplier<T> ofThe(
-            @DescriptionFragment("element") SearchSupplier<R> from) {
+    public static <T, R extends SearchContext & HasValue<T>> SequentialGetValueSupplier<T> ofThe(SearchSupplier<R> from) {
         checkArgument(nonNull(from), "The searching for the element which has value should be defined");
-        return new SequentialGetValueSupplier<T>().from(from.get().compose(currentContent()));
+        return new SequentialGetValueSupplier<T>(from);
     }
 
     /**
@@ -42,10 +55,7 @@ public final class SequentialGetValueSupplier<T> extends
      * @param <R>  is the type of an element which has value
      * @return the function which takes a value from some element and returns the value.
      */
-    @Description("Value of the {element}")
-    public static <T, R extends SearchContext & HasValue<T>> SequentialGetValueSupplier<T> ofThe(
-            @DescriptionFragment("element") R from) {
-        checkArgument(nonNull(from), "The element which has value should be defined");
-        return new SequentialGetValueSupplier<T>().from(from);
+    public static <T, R extends SearchContext & HasValue<T>> SequentialGetValueSupplier<T> ofThe(R from) {
+        return new SequentialGetValueSupplier<T>(from);
     }
 }

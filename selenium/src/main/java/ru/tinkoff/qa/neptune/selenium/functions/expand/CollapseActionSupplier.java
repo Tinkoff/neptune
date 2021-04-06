@@ -16,11 +16,26 @@ import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentF
 
 @CaptureOnSuccess(by = WebElementImageCaptor.class)
 @CaptureOnFailure(by = WebDriverImageCaptor.class)
+@Description("Collapse the {toCollapse}")
 public final class CollapseActionSupplier extends
         SequentialActionSupplier<SeleniumStepContext, Expandable, CollapseActionSupplier> {
 
-    private CollapseActionSupplier() {
+    @DescriptionFragment("toCollapse")
+    final Object toCollapse;
+
+    private CollapseActionSupplier(Object toCollapse) {
         super();
+        this.toCollapse = toCollapse;
+    }
+
+    private <R extends SearchContext & Expandable> CollapseActionSupplier(R toCollapse) {
+        this((Object) toCollapse);
+        performOn(toCollapse);
+    }
+
+    private <R extends SearchContext & Expandable> CollapseActionSupplier(SearchSupplier<R> toCollapse) {
+        this((Object) toCollapse);
+        performOn(toCollapse.get().compose(currentContent()));
     }
 
     /**
@@ -30,11 +45,8 @@ public final class CollapseActionSupplier extends
      * @param <R> is the type of the expandable/collapsable element
      * @return built collapse action
      */
-    @Description("Collapse the {of}")
-    public static <R extends SearchContext & Expandable> CollapseActionSupplier collapse(
-            @DescriptionFragment("of") SearchSupplier<R> of) {
-        return new CollapseActionSupplier()
-                .performOn(of.get().compose(currentContent()));
+    public static <R extends SearchContext & Expandable> CollapseActionSupplier collapse(SearchSupplier<R> of) {
+        return new CollapseActionSupplier(of);
     }
 
     /**
@@ -44,10 +56,8 @@ public final class CollapseActionSupplier extends
      * @param <R> is the type of the expandable/collapsable element
      * @return built collapse action
      */
-    @Description("Collapse the {of}")
-    public static <R extends SearchContext & Expandable> CollapseActionSupplier collapse(@DescriptionFragment("of") R of) {
-        return new CollapseActionSupplier()
-                .performOn(of);
+    public static <R extends SearchContext & Expandable> CollapseActionSupplier collapse(R of) {
+        return new CollapseActionSupplier(of);
     }
 
     @Override

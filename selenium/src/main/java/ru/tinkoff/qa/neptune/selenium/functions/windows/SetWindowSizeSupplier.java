@@ -4,8 +4,8 @@ import org.openqa.selenium.Dimension;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.captors.WebDriverImageCaptor;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
@@ -16,10 +16,10 @@ import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Get
 @CaptureOnFailure(by = WebDriverImageCaptor.class)
 @CaptureOnSuccess(by = WebDriverImageCaptor.class)
 @SequentialActionSupplier.DefinePerformOnParameterName("Window/tab to change size of")
-@Description("Change size of the browser window/tab")
+@Description("Set new size {newSize} of the browser window/tab")
 public final class SetWindowSizeSupplier extends SequentialActionSupplier<SeleniumStepContext, Window, SetWindowSizeSupplier> {
 
-    @StepParameter("New Size")
+    @DescriptionFragment("newSize")
     private final Dimension size;
 
     private SetWindowSizeSupplier(Dimension size) {
