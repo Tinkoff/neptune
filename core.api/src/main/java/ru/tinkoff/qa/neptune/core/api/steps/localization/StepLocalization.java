@@ -149,7 +149,7 @@ public interface StepLocalization {
         }
 
         var clz = (Class<?>) annotatedElement;
-        while (clz.equals(Object.class)) {
+        while (!clz.equals(Object.class)) {
             stream(clz.getDeclaredFields())
                     .filter(field -> !isStatic(field.getModifiers()) && field.getAnnotation(DescriptionFragment.class) != null)
                     .forEach(field -> {

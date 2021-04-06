@@ -17,7 +17,6 @@ import static java.util.Arrays.stream;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
-import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.inBrowser;
 import static ru.tinkoff.qa.neptune.selenium.functions.cookies.GetSeleniumCookieSupplier.cookies;
 
 /**
@@ -90,6 +89,8 @@ public abstract class RemoveCookiesActionSupplier<T>
      */
     private static final class RemoveFoundCookies extends RemoveCookiesActionSupplier<Set<Cookie>> {
 
+        private WebDriver driver;
+
         @SafeVarargs
         private RemoveFoundCookies(Duration timeToFindCookies, Criteria<Cookie>... toBeRemoved) {
             super();
@@ -98,12 +99,15 @@ public abstract class RemoveCookiesActionSupplier<T>
             var getCookies = cookies();
             stream(toBeRemoved).forEach(getCookies::criteria);
             ofNullable(timeToFindCookies).ifPresent(getCookies::timeOut);
-            performOn(getCookies);
+            performOn(getCookies.from(currentContent().andThen(wd -> {
+                driver = wd;
+                return driver;
+            })));
         }
 
         @Override
         protected void performActionOn(Set<Cookie> value) {
-            var options = inBrowser().getWrappedDriver().manage();
+            var options = driver.manage();
             value.forEach(options::deleteCookie);
         }
     }

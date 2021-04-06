@@ -11,6 +11,7 @@ import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import java.time.Duration;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
@@ -53,5 +54,10 @@ public final class GetSeleniumCookieSupplier extends SequentialGetStepSupplier
     @Override
     public GetSeleniumCookieSupplier timeOut(Duration duration) {
         return super.timeOut(duration);
+    }
+
+    @Override
+    protected GetSeleniumCookieSupplier from(Function<SeleniumStepContext, ? extends WebDriver> from) {
+        return super.from(from);
     }
 }

@@ -67,7 +67,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @param by locator strategy to find an element
      * @return an instance of {@link SearchSupplier}
      */
-    @Description("Web element located {by}")
+    @Description("Web element located '{by}'")
     public static SearchSupplier<WebElement> webElement(@DescriptionFragment("by") By by) {
         var webElements = webElements(by);
         return new SearchSupplier<>(webElements);
@@ -82,7 +82,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @param text that the desired element should have
      * @return an instance of {@link SearchSupplier}
      */
-    @Description("Web element located {by} with text [{text}]")
+    @Description("Web element located '{by}' with text '{text}'")
     public static SearchSupplier<WebElement> webElement(@DescriptionFragment("by") By by,
                                                         @DescriptionFragment("text") String text) {
         var shouldHaveText = text(text);
@@ -103,7 +103,7 @@ public final class SearchSupplier<R extends SearchContext>
      * @return an instance of {@link SearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
      */
-    @Description("{widgetClass} with text/label [{textOrLabel}]")
+    @Description("{widgetClass} with text/label '{textOrLabel}'")
     public static <T extends Widget> SearchSupplier<T> widget(@DescriptionFragment(value = "widgetClass",
             makeReadableBy = WidgetNameGetter.class) Class<T> tClass,
                                                               @DescriptionFragment("textOrLabel") String textOrLabel) {

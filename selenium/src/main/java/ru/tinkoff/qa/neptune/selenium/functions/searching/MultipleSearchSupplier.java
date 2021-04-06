@@ -54,14 +54,14 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param by locator strategy to find an element
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    @Description("Web elements located {by}")
+    @Description("Web elements located '{by}'")
     public static MultipleSearchSupplier<WebElement> webElements(@DescriptionFragment("by") By by) {
         var webElements = FindWebElements.webElements(by);
         return new MultipleSearchSupplier<>(webElements);
     }
 
     /**
-     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
+     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.r
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some list of {@link WebElement} found from the input value.
      *
@@ -69,7 +69,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param text that desired elements should have
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    @Description("Web elements located {by} with the text '{text}'")
+    @Description("Web elements located '{by}' with the text '{text}'")
     public static MultipleSearchSupplier<WebElement> webElements(@DescriptionFragment("by") By by, @DescriptionFragment("text") String text) {
         var shouldHaveText = text(text);
         var webElements = FindWebElements.webElements(by);
@@ -89,7 +89,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
      */
-    @Description("List of {tClass} with text/label [{textOrLabel}]")
+    @Description("List of {tClass} with text/label '{textOrLabel}'")
     public static <T extends Widget> MultipleSearchSupplier<T> widgets(@DescriptionFragment(value = "tClass", makeReadableBy = WidgetNameGetter.class) Class<T> tClass,
                                                                        @DescriptionFragment("textOrLabel") String textOrLabel) {
         return new MultipleSearchSupplier<T>(
