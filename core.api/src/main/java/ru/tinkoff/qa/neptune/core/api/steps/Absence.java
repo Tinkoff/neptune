@@ -1,7 +1,9 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
 import com.google.common.collect.Iterables;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.IncludeParamsOfInnerGetterStep;
 
 import java.lang.reflect.Array;
 import java.time.Duration;
@@ -17,9 +19,11 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 @SuppressWarnings("unchecked")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting for absence")
 @SequentialGetStepSupplier.DefineResultDescriptionParameterName("Is absent")
+@IncludeParamsOfInnerGetterStep
+@MaxDepthOfReporting(0)
 public final class Absence<T extends Context<?>> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<T, Boolean, Object, Absence<T>> {
 
-    private Absence(Function<T, ?> toBeAbsent) {
+    private Absence() {
         super(o -> ofNullable(o)
                 .map(o1 -> {
                     Class<?> clazz = o1.getClass();
@@ -29,7 +33,17 @@ public final class Absence<T extends Context<?>> extends SequentialGetStepSuppli
                     return false;
                 })
                 .orElse(false));
+    }
 
+    private Absence(SequentialGetStepSupplier<?, ?, ?, ?, ?> toBeAbsent) {
+        this();
+        from(turnReportingOff(toBeAbsent.clone().timeOut(ofMillis(0))
+                .pollingInterval(ofMillis(0))
+                .addIgnored(Throwable.class)));
+    }
+
+    private Absence(Function<T, ?> toBeAbsent) {
+        this();
         StepFunction<T, ?> expectedToBeAbsent;
         if (StepFunction.class.isAssignableFrom(toBeAbsent.getClass())) {
             expectedToBeAbsent = ((StepFunction<T, ?>) toBeAbsent);
@@ -43,11 +57,6 @@ public final class Absence<T extends Context<?>> extends SequentialGetStepSuppli
                 .addIgnored(Throwable.class));
     }
 
-    private Absence(SequentialGetStepSupplier<T, ?, ?, ?, ?> toBeAbsent) {
-        this(toBeAbsent.clone().timeOut(ofMillis(0))
-                .pollingInterval(ofMillis(0))
-                .get());
-    }
 
     /**
      * Creates an instance of {@link Absence}.

@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 
 import java.lang.annotation.Annotation;
@@ -62,7 +63,7 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
     public Map<String, String> getParameters() {
         var cls = (Class<?>) this.getClass();
 
-        var result = new LinkedHashMap<String, String>();
+        var result = new LinkedHashMap<>(StepParameterPojo.super.getParameters());
         ofNullable(getPerformOnPseudoField(cls, true))
                 .ifPresent(pseudoField -> {
                     if (isLoggable(toBePerformedOn) && nonNull(toBePerformedOn)) {
@@ -70,7 +71,14 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
                     }
                 });
 
-        result.putAll(StepParameterPojo.super.getParameters());
+        if (toBePerformedOn instanceof SequentialGetStepSupplier
+                && this.getClass().getAnnotation(IncludeParamsOfInnerGetterStep.class) != null) {
+            var get = (SequentialGetStepSupplier<?, ?, ?, ?, ?>) toBePerformedOn;
+            get.fillCustomParameters(result);
+            get.fillCriteriaParameters(result);
+            get.fillTimeParameters(result);
+        }
+
         return result;
     }
 
@@ -78,6 +86,8 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
         Function<T, ? extends R> function;
         if (nonNull(functionOrObject) && Function.class.isAssignableFrom(functionOrObject.getClass())) {
             function = (Function<T, ? extends R>) functionOrObject;
+        } else if (nonNull(functionOrObject) && (functionOrObject instanceof SequentialGetStepSupplier)) {
+            function = ((SequentialGetStepSupplier<T, ? extends R, ?, ?, ?>) functionOrObject).get();
         } else {
             function = null;
         }
@@ -123,7 +133,8 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
     protected THIS performOn(SequentialGetStepSupplier<T, ? extends R, ?, ?, ?> supplier) {
         checkArgument(nonNull(supplier), "Supplier of a function that gets value " +
                 "to perform action is not defined");
-        return performOn(supplier.get());
+        toBePerformedOn = supplier;
+        return (THIS) this;
     }
 
     /**
@@ -174,9 +185,12 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
     @Target({TYPE})
     public @interface DefinePerformOnParameterName {
         /**
-         * Defines name of imperative of a step
+         * Defines name of performOn-parameter
          *
-         * @return imperative of a step
+         * @return name of performOn-parameter
+         * @see SequentialActionSupplier#performOn(SequentialGetStepSupplier)
+         * @see SequentialActionSupplier#performOn(Function)
+         * @see SequentialActionSupplier#performOn(Object)
          */
         String value() default "Perform action on";
     }

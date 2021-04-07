@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 
 import java.lang.annotation.Annotation;
@@ -60,6 +61,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         readCaptorsOnSuccess(this.getClass(), successCaptors);
     }
 
+    private boolean toReport = true;
+
     final Set<Class<? extends Throwable>> ignored = new HashSet<>();
 
     final List<Criteria<P>> conditions = new ArrayList<>();
@@ -74,6 +77,10 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
     Supplier<? extends RuntimeException> exceptionSupplier;
 
+    public static <T extends SequentialGetStepSupplier<?, ?, ?, ?, ?>> T turnReportingOff(T t) {
+        return (T) t.turnReportingOff();
+    }
+
     protected THIS setDescription(String description) {
         this.description = description;
         return (THIS) this;
@@ -81,31 +88,12 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
     @Override
     public Map<String, String> getParameters() {
-        var result = new LinkedHashMap<>(StepParameterPojo.super.getParameters());
+        var result = new LinkedHashMap<String, String>();
+        fillCustomParameters(result);
+
         var cls = (Class<?>) this.getClass();
-
-        ofNullable(getCriteriaPseudoField(cls, true)).ifPresent(pseudoField -> {
-            int i = 0;
-            for (var c : conditions) {
-                var criteria = i == 0 ? translate(pseudoField) : translate(pseudoField) + " " + (i + 1);
-                result.put(criteria, c.toString());
-                i++;
-            }
-        });
-
-        ofNullable(getTimeOutPseudoField(cls, true)).ifPresent(pseudoField ->
-                ofNullable(timeToGet).ifPresent(duration -> {
-                    if (duration.toMillis() > 0) {
-                        result.put(translate(pseudoField), formatDurationHMS(duration.toMillis()));
-                    }
-                }));
-
-        ofNullable(getPollingTimePseudoField(cls, true)).ifPresent(pseudoField ->
-                ofNullable(sleepingTime).ifPresent(duration -> {
-                    if (duration.toMillis() > 0) {
-                        result.put(translate(pseudoField), formatDurationHMS(duration.toMillis()));
-                    }
-                }));
+        fillCriteriaParameters(result);
+        fillTimeParameters(result);
 
         ofNullable(getFromPseudoField(cls, true)).ifPresent(pseudoField -> {
             if (isLoggable(from) && nonNull(from)) {
@@ -113,7 +101,60 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
             }
         });
 
+        if ((from instanceof SequentialGetStepSupplier<?, ?, ?, ?, ?>)
+                && this.getClass().getAnnotation(IncludeParamsOfInnerGetterStep.class) != null) {
+            var get = (SequentialGetStepSupplier<?, ?, ?, ?, ?>) from;
+            get.fillCustomParameters(result);
+            get.fillCriteriaParameters(result);
+            get.fillTimeParameters(result);
+        }
+
         return result;
+    }
+
+    /**
+     * Means that the starting/ending/result of the build-step won't be reported
+     *
+     * @return self-reference
+     */
+    THIS turnReportingOff() {
+        toReport = false;
+        return (THIS) this;
+    }
+
+    void fillCustomParameters(Map<String, String> parameters) {
+        parameters.putAll(StepParameterPojo.super.getParameters());
+    }
+
+    void fillCriteriaParameters(Map<String, String> parameters) {
+        var cls = (Class<?>) this.getClass();
+
+        ofNullable(getCriteriaPseudoField(cls, true)).ifPresent(pseudoField -> {
+            int i = 0;
+            for (var c : conditions) {
+                var criteria = i == 0 ? translate(pseudoField) : translate(pseudoField) + " " + (i + 1);
+                parameters.put(criteria, c.toString());
+                i++;
+            }
+        });
+    }
+
+    void fillTimeParameters(Map<String, String> parameters) {
+        var cls = (Class<?>) this.getClass();
+
+        ofNullable(getTimeOutPseudoField(cls, true)).ifPresent(pseudoField ->
+                ofNullable(timeToGet).ifPresent(duration -> {
+                    if (duration.toMillis() > 0) {
+                        parameters.put(translate(pseudoField), formatDurationHMS(duration.toMillis()));
+                    }
+                }));
+
+        ofNullable(getPollingTimePseudoField(cls, true)).ifPresent(pseudoField ->
+                ofNullable(sleepingTime).ifPresent(duration -> {
+                    if (duration.toMillis() > 0) {
+                        parameters.put(translate(pseudoField), formatDurationHMS(duration.toMillis()));
+                    }
+                }));
     }
 
     /**
@@ -252,9 +293,14 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
             toBeReturned = toGet(description, endFunction.compose(composeWith));
         }
 
+        if (!toReport) {
+            toBeReturned.turnReportingOff();
+        }
+
         return toBeReturned.addSuccessCaptors(successCaptors)
                 .addFailureCaptors(failureCaptors)
                 .setResultDescription(resultDescription)
+                .addIgnored(ignored)
                 .setParameters(params);
     }
 

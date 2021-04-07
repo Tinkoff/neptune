@@ -1,7 +1,9 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
 import com.google.common.collect.Iterables;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.IncludeParamsOfInnerGetterStep;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
@@ -17,11 +19,13 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 @SuppressWarnings("unchecked")
 @SequentialGetStepSupplier.DefineResultDescriptionParameterName("Is present")
+@IncludeParamsOfInnerGetterStep
+@MaxDepthOfReporting(0)
 public final class Presence<T extends Context<?>> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<T, Boolean, Object, Presence<T>> {
 
     private final Set<Class<? extends Throwable>> ignored2 = new HashSet<>();
 
-    private Presence(Function<T, ?> toBePresent) {
+    private Presence() {
         super(o -> ofNullable(o)
                 .map(o1 -> {
                     Class<?> clazz = o1.getClass();
@@ -37,10 +41,18 @@ public final class Presence<T extends Context<?>> extends SequentialGetStepSuppl
                             if (clazz.isArray()) {
                                 return Array.getLength(o1) > 0;
                             }
-                            return true;
-                        })
-                        .orElse(false));
+                    return true;
+                })
+                .orElse(false));
+    }
 
+    private Presence(SequentialGetStepSupplier<T, ?, ?, ?, ?> toBePresent) {
+        this();
+        from(turnReportingOff(toBePresent.clone()));
+    }
+
+    private Presence(Function<T, ?> toBePresent) {
+        this();
         StepFunction<T, ?> expectedToBePresent;
         if (StepFunction.class.isAssignableFrom(toBePresent.getClass())) {
             expectedToBePresent = ((StepFunction<T, ?>) toBePresent);
@@ -51,10 +63,6 @@ public final class Presence<T extends Context<?>> extends SequentialGetStepSuppl
                     toBePresent);
         }
         from(expectedToBePresent.turnReportingOff());
-    }
-
-    private Presence(SequentialGetStepSupplier<T, ?, ?, ?, ?> toBePresent) {
-        this(toBePresent.get());
     }
 
     /**

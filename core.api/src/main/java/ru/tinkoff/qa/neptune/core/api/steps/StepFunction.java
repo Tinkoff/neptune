@@ -166,7 +166,7 @@ public class StepFunction<T, R> implements Function<T, R> {
      *
      * @return self-reference
      */
-    public StepFunction<T, R> turnReportingOff() {
+    StepFunction<T, R> turnReportingOff() {
         toReport = false;
         return this;
     }
