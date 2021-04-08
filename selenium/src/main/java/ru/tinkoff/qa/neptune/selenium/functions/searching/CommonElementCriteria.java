@@ -7,7 +7,6 @@ import org.openqa.selenium.internal.WrapsElement;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.StepFunction;
 import ru.tinkoff.qa.neptune.selenium.api.widget.*;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.Tab;
 
@@ -32,6 +31,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.NOT;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
+import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.turnReportingOff;
 
 public final class CommonElementCriteria {
 
@@ -408,8 +408,7 @@ public final class CommonElementCriteria {
     @Description("has nested {howToFind}")
     public static <T extends SearchContext> Criteria<T> nested(@DescriptionFragment("howToFind") MultipleSearchSupplier<?> howToFind) {
         checkArgument(nonNull(howToFind), "The way how to find nested elements should be defined");
-        var func = howToFind.clone().timeOut(ofMillis(0)).get();
-        ((StepFunction<?, ?>) func).turnReportingOff();
+        var func = turnReportingOff(howToFind.clone().timeOut(ofMillis(0))).get();
         return condition(t -> func.apply(t).size() > 0);
     }
 
@@ -429,8 +428,7 @@ public final class CommonElementCriteria {
                                                                @DescriptionFragment("expected") int expected) {
         checkArgument(nonNull(howToFind), "The way how to find nested elements should be defined");
         checkArgument(expected >= 0, "Count of expected nested elements can't be a negative or zero value.");
-        var func = howToFind.clone().timeOut(ofMillis(0)).get();
-        ((StepFunction<?, ?>) func).turnReportingOff();
+        var func = turnReportingOff(howToFind.clone().timeOut(ofMillis(0))).get();
         return condition(t -> func.apply(t).size() == expected);
     }
 
@@ -448,8 +446,7 @@ public final class CommonElementCriteria {
     @Description("has nested {howToFind}")
     public static <T extends SearchContext> Criteria<T> nested(@DescriptionFragment("howToFind") SearchSupplier<?> howToFind) {
         checkArgument(nonNull(howToFind), "The way how to find nested elements should be defined");
-        var func = (StepFunction<SearchContext, ? extends SearchContext>) howToFind.clone().timeOut(ofMillis(0)).get();
-        func.turnReportingOff();
+        var func = turnReportingOff(howToFind.clone().timeOut(ofMillis(0))).get();
         return condition(t -> {
             try {
                 return func.apply(t) != null;

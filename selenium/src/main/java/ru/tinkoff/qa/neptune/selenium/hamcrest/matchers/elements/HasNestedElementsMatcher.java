@@ -3,11 +3,8 @@ package ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.elements;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.openqa.selenium.SearchContext;
-import ru.tinkoff.qa.neptune.core.api.steps.StepFunction;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.MultipleSearchSupplier;
 import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
-
-import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
@@ -16,6 +13,7 @@ import static java.util.Arrays.stream;
 import static java.util.Objects.nonNull;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
+import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.turnReportingOff;
 
 public final class HasNestedElementsMatcher<T extends SearchContext> extends TypeSafeDiagnosingMatcher<T> {
 
@@ -66,8 +64,7 @@ public final class HasNestedElementsMatcher<T extends SearchContext> extends Typ
     @Override
     protected boolean matchesSafely(T item, Description mismatchDescription) {
         try {
-            var f = (StepFunction<SearchContext, ? extends List<?>>) search.get();
-            f.turnReportingOff();
+            var f = turnReportingOff(search).get();
             var foundSize = f.apply(item).size();
 
             if (!expectedCount.matches(foundSize)) {
