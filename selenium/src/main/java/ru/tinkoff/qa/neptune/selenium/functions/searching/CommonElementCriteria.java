@@ -442,7 +442,6 @@ public final class CommonElementCriteria {
      *                  {@code howToFind} then it is ignored here.
      * @return criteria that checks/filters an element/widget
      */
-    @SuppressWarnings("unchecked")
     @Description("has nested {howToFind}")
     public static <T extends SearchContext> Criteria<T> nested(@DescriptionFragment("howToFind") SearchSupplier<?> howToFind) {
         checkArgument(nonNull(howToFind), "The way how to find nested elements should be defined");

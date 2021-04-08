@@ -57,7 +57,6 @@ public final class HasNestedElementMatcher<T extends SearchContext> extends Type
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected boolean matchesSafely(T item, Description mismatchDescription) {
         try {
             var f = turnReportingOff(search.clone()).get();
