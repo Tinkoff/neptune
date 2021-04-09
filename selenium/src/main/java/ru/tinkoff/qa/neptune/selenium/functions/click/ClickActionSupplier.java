@@ -11,13 +11,14 @@ import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Clickable;
+import ru.tinkoff.qa.neptune.selenium.captors.ImageCaptorAfterActionOnElement;
 import ru.tinkoff.qa.neptune.selenium.captors.WebElementImageCaptor;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 @CaptureOnFailure(by = WebElementImageCaptor.class)
-@CaptureOnSuccess(by = WebElementImageCaptor.class)
+@CaptureOnSuccess(by = ImageCaptorAfterActionOnElement.class)
 @Description("Click on {on}")
 @MaxDepthOfReporting(0)
 @IncludeParamsOfInnerGetterStep

@@ -22,7 +22,7 @@ public class WebDriverCaptorTest extends BaseCaptorTest {
         assertThat(INJECTED, hasEntry(isA(BufferedImage.class),
                 equalTo("Screenshot taken from the element")));
         assertThat(INJECTED, hasEntry(isA(BufferedImage.class),
-                equalTo("Screenshot taken from the element")));
+                equalTo("Screenshot taken after action on web element/widget")));
     }
 
     @Test
@@ -45,7 +45,7 @@ public class WebDriverCaptorTest extends BaseCaptorTest {
         assertThat(INJECTED, hasEntry(isA(BufferedImage.class),
                 equalTo("Screenshot taken from the element")));
         assertThat(INJECTED, hasEntry(isA(BufferedImage.class),
-                equalTo("Screenshot taken from the element")));
+                equalTo("Screenshot taken after action on web element/widget")));
     }
 
     @Test
@@ -68,7 +68,7 @@ public class WebDriverCaptorTest extends BaseCaptorTest {
         assertThat(INJECTED, hasEntry(isA(BufferedImage.class),
                 equalTo("Screenshot taken from the element")));
         assertThat(INJECTED, hasEntry(isA(BufferedImage.class),
-                equalTo("Screenshot taken from the element")));
+                equalTo("Screenshot taken after action on web element/widget")));
     }
 
     @Test

@@ -9,10 +9,11 @@ import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Expandable;
+import ru.tinkoff.qa.neptune.selenium.captors.ImageCaptorAfterActionOnElement;
 import ru.tinkoff.qa.neptune.selenium.captors.WebElementImageCaptor;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 
-@CaptureOnSuccess(by = WebElementImageCaptor.class)
+@CaptureOnSuccess(by = ImageCaptorAfterActionOnElement.class)
 @CaptureOnFailure(by = WebElementImageCaptor.class)
 @Description("Collapse the {toCollapse}")
 @MaxDepthOfReporting(0)

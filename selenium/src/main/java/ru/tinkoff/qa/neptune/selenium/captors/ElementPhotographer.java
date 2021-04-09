@@ -1,9 +1,9 @@
 package ru.tinkoff.qa.neptune.selenium.captors;
 
-import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WrapsDriver;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -16,7 +16,7 @@ import java.util.List;
 
 import static org.openqa.selenium.OutputType.BYTES;
 
-public class ElementPhotographer {
+public class ElementPhotographer implements WrapsDriver {
 
     private final WebDriver driver;
     private final WebElement element;
@@ -26,9 +26,8 @@ public class ElementPhotographer {
         this.element = element;
     }
 
-    static <X> BufferedImage merge(OutputType<X> target,
-                                   Collection<ElementPhotographer> elementPhotographers,
-                                   WebDriver driver) {
+    static BufferedImage merge(Collection<ElementPhotographer> elementPhotographers,
+                               WebDriver driver) {
 
         List<BufferedImage> images = new ArrayList<>();
         for (var e : elementPhotographers) {
@@ -77,7 +76,7 @@ public class ElementPhotographer {
         return readBytes(element.getScreenshotAs(BYTES));
     }
 
-    public BufferedImage getScreenshotAs() {
+    public BufferedImage getScreenshot() {
         try {
             return getScreenshotFromElement();
         } catch (Exception e) {
@@ -92,5 +91,10 @@ public class ElementPhotographer {
             }
             return null;
         }
+    }
+
+    @Override
+    public WebDriver getWrappedDriver() {
+        return driver;
     }
 }

@@ -10,11 +10,12 @@ import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Editable;
+import ru.tinkoff.qa.neptune.selenium.captors.ImageCaptorAfterActionOnElement;
 import ru.tinkoff.qa.neptune.selenium.captors.WebElementImageCaptor;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 
 @CaptureOnFailure(by = WebElementImageCaptor.class)
-@CaptureOnSuccess(by = WebElementImageCaptor.class)
+@CaptureOnSuccess(by = ImageCaptorAfterActionOnElement.class)
 @Description("Edit element {toEdit}")
 @MaxDepthOfReporting(0)
 @IncludeParamsOfInnerGetterStep
