@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.functions.intreraction;
 
 import org.openqa.selenium.interactions.Actions;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 
@@ -16,6 +17,7 @@ abstract class ClickActionSupplier extends InteractiveAction {
         super();
     }
 
+    @MaxDepthOfReporting(0)
     static final class ClickSimpleActionSupplier extends ClickActionSupplier {
 
         @Override
@@ -25,6 +27,7 @@ abstract class ClickActionSupplier extends InteractiveAction {
     }
 
     @Description("Click by left mouse button {target}")
+    @MaxDepthOfReporting(0)
     static final class ClickOnElementActionSupplier extends ClickActionSupplier {
 
         @DescriptionFragment("target")

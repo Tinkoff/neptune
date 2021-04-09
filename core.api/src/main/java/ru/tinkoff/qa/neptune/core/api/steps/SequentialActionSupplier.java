@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -26,13 +25,11 @@ import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnF
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess.CaptureOnSuccessReader.readCaptorsOnSuccess;
 import static ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier.DefaultActionParameterReader.getImperativePseudoField;
 import static ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier.DefaultActionParameterReader.getPerformOnPseudoField;
-import static ru.tinkoff.qa.neptune.core.api.steps.StepAction.action;
 import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 /**
- * This class is designed to build actions to be performed on different objects.
- * Also it may be used to build chains of same actions on different objects.
+ * This class is designed to build and to supply actions to be performed on different objects.
  *
  * @param <T>    is the type of an input value.
  * @param <R>    is the type of an object to perform action on.
@@ -40,7 +37,7 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
  */
 @SuppressWarnings("unchecked")
 @SequentialActionSupplier.DefinePerformImperativeParameterName
-public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActionSupplier<T, R, THIS>> implements Supplier<StepAction<T>>,
+public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActionSupplier<T, R, THIS>> implements Supplier<StepAction<T, R>>,
         StepParameterPojo {
 
     private String actionDescription;
@@ -80,31 +77,6 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
         }
 
         return result;
-    }
-
-    private StepAction<T> performOnPrivate(Object functionOrObject) {
-        Function<T, ? extends R> function;
-        if (nonNull(functionOrObject) && Function.class.isAssignableFrom(functionOrObject.getClass())) {
-            function = (Function<T, ? extends R>) functionOrObject;
-        } else if (nonNull(functionOrObject) && (functionOrObject instanceof SequentialGetStepSupplier)) {
-            function = ((SequentialGetStepSupplier<T, ? extends R, ?, ?, ?>) functionOrObject).get();
-        } else {
-            function = null;
-        }
-
-        var description = (translate(getImperativePseudoField(this.getClass(), true)) + " " + actionDescription).trim();
-        var action = ofNullable(function).map(function1 ->
-                action(description, (Consumer<T>) t -> {
-                    R r = function1.apply(t);
-                    performActionOn(r);
-                }))
-                .orElseGet(() -> action(description, t ->
-                        performActionOn((R) functionOrObject)));
-
-        return action
-                .addSuccessCaptors(successCaptors)
-                .addFailureCaptors(failureCaptors)
-                .setParameters(getParameters());
     }
 
     /**
@@ -158,11 +130,24 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
      */
     protected abstract void performActionOn(R value);
 
-
     @Override
-    public StepAction<T> get() {
+    public StepAction<T, R> get() {
         checkArgument(nonNull(toBePerformedOn), "An object should be defined to perform the action on");
-        return performOnPrivate(toBePerformedOn);
+
+        Function<T, R> function;
+        if (Function.class.isAssignableFrom(toBePerformedOn.getClass())) {
+            function = (Function<T, R>) toBePerformedOn;
+        } else if (toBePerformedOn instanceof SequentialGetStepSupplier) {
+            function = ((SequentialGetStepSupplier<T, R, ?, ?, ?>) toBePerformedOn).get();
+        } else {
+            function = t -> (R) toBePerformedOn;
+        }
+
+        var description = (translate(getImperativePseudoField(this.getClass(), true)) + " " + actionDescription).trim();
+        return new StepAction<>(description, this, function)
+                .addSuccessCaptors(successCaptors)
+                .addFailureCaptors(failureCaptors)
+                .setParameters(getParameters());
     }
 
     @Override

@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.selenium.functions.target.locator.window;
 
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.WebDriver;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
@@ -23,6 +24,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITIN
 
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting for the browser window/tab")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Window criteria")
+@MaxDepthOfReporting(1)
 public final class GetWindowSupplier extends SequentialGetStepSupplier
         .GetObjectFromIterableChainedStepSupplier<SeleniumStepContext, Window, WebDriver, GetWindowSupplier>
         implements TargetLocatorSupplier<Window> {

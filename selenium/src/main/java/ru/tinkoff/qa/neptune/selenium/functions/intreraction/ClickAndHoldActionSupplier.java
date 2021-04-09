@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.functions.intreraction;
 
 import org.openqa.selenium.interactions.Actions;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 
@@ -16,6 +17,7 @@ abstract class ClickAndHoldActionSupplier extends InteractiveAction {
         super();
     }
 
+    @MaxDepthOfReporting(0)
     static final class ClickAndHoldSimpleActionSupplier extends ClickAndHoldActionSupplier {
 
         @Override
@@ -25,6 +27,7 @@ abstract class ClickAndHoldActionSupplier extends InteractiveAction {
     }
 
     @Description("Click left mouse button and hold on {target}")
+    @MaxDepthOfReporting(0)
     static final class ClickAndHoldOnElementActionSupplier extends ClickAndHoldActionSupplier {
 
         @DescriptionFragment("target")

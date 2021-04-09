@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.functions.intreraction;
 
 import org.openqa.selenium.interactions.Actions;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
@@ -23,6 +24,7 @@ abstract class SendKeysActionSupplier extends InteractiveAction {
     }
 
     @Description("Send keys '{keysToSend}'")
+    @MaxDepthOfReporting(0)
     static final class SendKeysSimpleActionSupplier extends SendKeysActionSupplier {
 
         SendKeysSimpleActionSupplier(CharSequence... keys) {
@@ -36,6 +38,7 @@ abstract class SendKeysActionSupplier extends InteractiveAction {
     }
 
     @Description("Send keys '{keysToSend}' to {target}")
+    @MaxDepthOfReporting(0)
     static final class SendKeysToElementActionSupplier extends SendKeysActionSupplier {
 
         @StepParameter("Element")

@@ -1,14 +1,18 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert;
 
 import org.openqa.selenium.Alert;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 /**
  * This class is designed to build a dismiss-action. This action is performed on a browser alert.
  */
 @Description("Dismiss alert")
+@MaxDepthOfReporting(0)
+@IncludeParamsOfInnerGetterStep
 public final class DismissAlertActionSupplier extends SequentialActionSupplier<SeleniumStepContext, Alert, DismissAlertActionSupplier> {
 
     private DismissAlertActionSupplier() {

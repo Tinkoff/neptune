@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.functions.intreraction;
 
 import org.openqa.selenium.interactions.Actions;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 
@@ -21,6 +22,7 @@ abstract class KeyDownActionSupplier extends InteractiveAction {
     }
 
     @Description("Press modifier key '{key}' down")
+    @MaxDepthOfReporting(0)
     static final class KeyDownSimpleActionSupplier extends KeyDownActionSupplier {
 
         KeyDownSimpleActionSupplier(CharSequence modifierKey) {
@@ -34,6 +36,7 @@ abstract class KeyDownActionSupplier extends InteractiveAction {
     }
 
     @Description("Press modifier key '{key}' down with focus on {target}")
+    @MaxDepthOfReporting(0)
     static final class KeyDownOnElementActionSupplier extends KeyDownActionSupplier {
 
         @DescriptionFragment("target")

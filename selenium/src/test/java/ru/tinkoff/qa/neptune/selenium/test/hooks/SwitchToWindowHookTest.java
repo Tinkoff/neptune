@@ -61,7 +61,7 @@ public class SwitchToWindowHookTest extends BaseWebDriverTest {
 
         hook.executeMethodHook(m, o, new Random().nextBoolean());
         var command = getCurrentCommand();
-        command.get().accept(wrappedWebDriver.getWrappedDriver());
+        command.get().performAction(wrappedWebDriver.getWrappedDriver());
         assertThat(((MockWebDriver) seleniumSteps.getWrappedDriver()).getMockHandle(), equalTo(expected));
     }
 
@@ -73,7 +73,7 @@ public class SwitchToWindowHookTest extends BaseWebDriverTest {
         var command = getCurrentCommand();
         try {
             setStartBenchMark();
-            command.get().accept(wrappedWebDriver.getWrappedDriver());
+            command.get().performAction(wrappedWebDriver.getWrappedDriver());
         } catch (Exception e) {
             setEndBenchMark();
             assertThat(getTimeDifference(), greaterThanOrEqualTo(FIVE_SECONDS.toMillis()));

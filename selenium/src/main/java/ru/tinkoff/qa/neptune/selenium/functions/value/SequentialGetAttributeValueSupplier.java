@@ -2,20 +2,22 @@ package ru.tinkoff.qa.neptune.selenium.functions.value;
 
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
-import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.selenium.api.widget.HasAttribute;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 
 import static java.lang.String.format;
-import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 
 @Description("Value of html attribute '{attr}' of the {element}")
+@MaxDepthOfReporting(0)
+@IncludeParamsOfInnerGetterStep
 public final class SequentialGetAttributeValueSupplier extends SequentialGetStepSupplier
-        .GetObjectChainedStepSupplier<SeleniumStepContext, String, SearchContext, SequentialGetAttributeValueSupplier> {
+        .GetObjectChainedStepSupplier<Object, String, SearchContext, SequentialGetAttributeValueSupplier> {
 
     @DescriptionFragment("attr")
     final String attr;
@@ -51,7 +53,7 @@ public final class SequentialGetAttributeValueSupplier extends SequentialGetStep
 
     private SequentialGetAttributeValueSupplier(String attr, SearchSupplier<?> searchSupplier) {
         this(attr, (Object) searchSupplier);
-        from(searchSupplier.get().compose(currentContent()));
+        from(searchSupplier);
     }
 
 

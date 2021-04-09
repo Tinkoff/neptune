@@ -1,7 +1,9 @@
 package ru.tinkoff.qa.neptune.selenium.functions.windows;
 
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
@@ -10,6 +12,8 @@ import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Get
 
 @Description("Set window full screen")
 @SequentialActionSupplier.DefinePerformOnParameterName("Window/tab to set full screen")
+@MaxDepthOfReporting(0)
+@IncludeParamsOfInnerGetterStep
 public final class FullScreenWindowSupplier extends SequentialActionSupplier<SeleniumStepContext, Window, FullScreenWindowSupplier> {
 
     private FullScreenWindowSupplier() {

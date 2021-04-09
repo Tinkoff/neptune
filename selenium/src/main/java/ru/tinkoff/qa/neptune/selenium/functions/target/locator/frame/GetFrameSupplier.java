@@ -5,6 +5,7 @@ import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.WebDriver;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
@@ -22,6 +23,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITIN
 @CaptureOnFailure(by = WebDriverImageCaptor.class)
 @CaptureOnSuccess(by = WebDriverImageCaptor.class)
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting for the frame")
+@MaxDepthOfReporting(0)
 public final class GetFrameSupplier extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<SeleniumStepContext, Frame, WebDriver, GetFrameSupplier>
         implements TargetLocatorSupplier<Frame> {
 

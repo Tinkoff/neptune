@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.selenium.functions.target.locator.content;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
@@ -10,6 +11,7 @@ import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupp
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 
 @Description("Default content")
+@MaxDepthOfReporting(0)
 public final class DefaultContentSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, WebDriver, WebDriver, DefaultContentSupplier>
         implements TargetLocatorSupplier<WebDriver> {

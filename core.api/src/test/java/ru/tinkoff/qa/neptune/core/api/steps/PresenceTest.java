@@ -13,7 +13,6 @@ import static java.util.List.of;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static ru.tinkoff.qa.neptune.core.api.steps.PresenceTest.TestGetSupplier.getTestSupplier;
-import static ru.tinkoff.qa.neptune.core.api.steps.StepFunction.toGet;
 
 @SuppressWarnings("unchecked")
 public class PresenceTest {
@@ -26,28 +25,28 @@ public class PresenceTest {
     private static final IndexOutOfBoundsException EXPECTED_EXCEPTION_TO_BE_THROWN =
             new IndexOutOfBoundsException("Expected exception to be thrown");
 
-    private static final Function<PresenceTestContext, Object> RETURNS_OBJECT = toGet("Object",
+    private static final Function<PresenceTestContext, Object> RETURNS_OBJECT = new StepFunction<>("Object",
             presenceTestContext -> new Object());
 
-    private static final Function<PresenceTestContext, Object> RETURNS_NULL = toGet("Null value",
+    private static final Function<PresenceTestContext, Object> RETURNS_NULL = new StepFunction<>("Null value",
             presenceTestContext -> null);
 
-    private static final Function<PresenceTestContext, Object> RETURNS_OBJECT_ARRAY = toGet("Object array",
+    private static final Function<PresenceTestContext, Object> RETURNS_OBJECT_ARRAY = new StepFunction<>("Object array",
             presenceTestContext -> new Object[]{1, "String"});
 
-    private static final Function<PresenceTestContext, Object> RETURNS_EMPTY_ARRAY = toGet("Empty array",
+    private static final Function<PresenceTestContext, Object> RETURNS_EMPTY_ARRAY = new StepFunction<>("Empty array",
             presenceTestContext -> new String[]{});
 
-    private static final Function<PresenceTestContext, Object> RETURNS_OBJECT_ITERABLE = toGet("Object iterable",
+    private static final Function<PresenceTestContext, Object> RETURNS_OBJECT_ITERABLE = new StepFunction<>("Object iterable",
             presenceTestContext -> of(1, "String"));
 
-    private static final Function<PresenceTestContext, Object> RETURNS_EMPTY_ITERABLE = toGet("Object iterable",
+    private static final Function<PresenceTestContext, Object> RETURNS_EMPTY_ITERABLE = new StepFunction<>("Object iterable",
             presenceTestContext -> of());
 
-    private static final Function<PresenceTestContext, Object> RETURNS_TRUE = toGet("True value",
+    private static final Function<PresenceTestContext, Object> RETURNS_TRUE = new StepFunction<>("True value",
             presenceTestContext -> true);
 
-    private static final Function<PresenceTestContext, Object> RETURNS_FALSE = toGet("False value",
+    private static final Function<PresenceTestContext, Object> RETURNS_FALSE = new StepFunction<>("False value",
             presenceTestContext -> false);
 
     private static final Function<PresenceTestContext, Object> PRODUCES_IGNORED_EXCEPTIONS =
@@ -58,7 +57,7 @@ public class PresenceTest {
 
     private static final PresenceTestContext presenceTestContext = new PresenceTestContext();
 
-    private static final Function<PresenceTestContext, Object> PRODUCES_EXPECTED_EXCEPTIONS = toGet("Expected exception",
+    private static final Function<PresenceTestContext, Object> PRODUCES_EXPECTED_EXCEPTIONS = new StepFunction<>("Expected exception",
             presenceTestContext -> {
                 throw EXPECTED_EXCEPTION_TO_BE_THROWN;
             });

@@ -4,22 +4,24 @@ import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
-import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Clickable;
-import ru.tinkoff.qa.neptune.selenium.captors.WebDriverImageCaptor;
+import ru.tinkoff.qa.neptune.selenium.captors.WebElementImageCaptor;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 
-@CaptureOnFailure(by = WebDriverImageCaptor.class)
-@CaptureOnSuccess(by = WebDriverImageCaptor.class)
+@CaptureOnFailure(by = WebElementImageCaptor.class)
+@CaptureOnSuccess(by = WebElementImageCaptor.class)
 @Description("Click on {on}")
-public final class ClickActionSupplier extends SequentialActionSupplier<SeleniumStepContext, SearchContext, ClickActionSupplier> {
+@MaxDepthOfReporting(0)
+@IncludeParamsOfInnerGetterStep
+public final class ClickActionSupplier extends SequentialActionSupplier<Object, SearchContext, ClickActionSupplier> {
 
     @DescriptionFragment("on")
     final Object on;
@@ -34,9 +36,9 @@ public final class ClickActionSupplier extends SequentialActionSupplier<Selenium
         performOn(on);
     }
 
-    private ClickActionSupplier(SequentialGetStepSupplier<SearchContext, ? extends SearchContext, ?, ?, ?> on) {
+    private ClickActionSupplier(SequentialGetStepSupplier<Object, ? extends SearchContext, ?, ?, ?> on) {
         this((Object) on);
-        performOn(on.get().compose(currentContent()));
+        performOn(on);
     }
 
     /**
@@ -57,7 +59,7 @@ public final class ClickActionSupplier extends SequentialActionSupplier<Selenium
      * @param on is how to find the web element
      * @return built click action
      */
-    public static ClickActionSupplier on(SequentialGetStepSupplier<SearchContext, WebElement, ?, ?, ?> on) {
+    public static ClickActionSupplier on(SequentialGetStepSupplier<Object, WebElement, ?, ?, ?> on) {
         checkNotNull(on);
         return new ClickActionSupplier(on);
     }

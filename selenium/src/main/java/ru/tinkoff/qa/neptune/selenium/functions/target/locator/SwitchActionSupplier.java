@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.selenium.functions.target.locator;
 
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
@@ -7,6 +8,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 @SuppressWarnings("unchecked")
+@MaxDepthOfReporting(1)
 public final class SwitchActionSupplier extends SequentialActionSupplier<SeleniumStepContext, Object, SwitchActionSupplier> {
 
     private SwitchActionSupplier() {

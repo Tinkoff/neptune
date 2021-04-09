@@ -18,7 +18,9 @@ import static java.util.Optional.ofNullable;
  * depth of reporting available.
  * <p></p>
  * In runtime depth is calculated by depth of invocations of {@link StepFunction#apply(Object)} or
- * {@link StepAction#accept(Object)} one from another.
+ * {@link StepAction#performAction(Object)} one from another.
+ * <p></p>
+ * Minimal value is 0.
  */
 @Retention(RUNTIME)
 @Target({TYPE})

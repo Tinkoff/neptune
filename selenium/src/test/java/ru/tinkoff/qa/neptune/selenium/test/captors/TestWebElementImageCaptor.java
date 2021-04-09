@@ -12,6 +12,10 @@ import static org.openqa.selenium.OutputType.BYTES;
 
 public class TestWebElementImageCaptor extends WebElementImageCaptor {
 
+    public TestWebElementImageCaptor() {
+        super();
+    }
+
     @Override
     public BufferedImage getData(WebElement caught) {
         var in = new ByteArrayInputStream(caught.getScreenshotAs(BYTES));

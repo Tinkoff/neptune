@@ -3,18 +3,19 @@ package ru.tinkoff.qa.neptune.selenium.functions.elements;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
-import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.selenium.api.widget.HasSize;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 
-import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
-
 @Description("Size of the {element}")
+@MaxDepthOfReporting(0)
+@IncludeParamsOfInnerGetterStep
 public final class GetElementSizeSupplier extends SequentialGetStepSupplier
-        .GetObjectChainedStepSupplier<SeleniumStepContext, Dimension, SearchContext, GetElementSizeSupplier> {
+        .GetObjectChainedStepSupplier<Object, Dimension, SearchContext, GetElementSizeSupplier> {
 
     @DescriptionFragment("element")
     final Object element;
@@ -43,7 +44,7 @@ public final class GetElementSizeSupplier extends SequentialGetStepSupplier
 
     private <T extends SearchContext> GetElementSizeSupplier(SearchSupplier<T> supplier) {
         this((Object) supplier);
-        from(supplier.get().compose(currentContent()));
+        from(supplier);
     }
 
     /**

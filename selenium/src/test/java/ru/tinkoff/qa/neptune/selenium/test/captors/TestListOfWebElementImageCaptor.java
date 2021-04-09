@@ -13,11 +13,16 @@ import java.util.List;
 import static org.openqa.selenium.OutputType.BYTES;
 
 public class TestListOfWebElementImageCaptor extends ListOfWebElementImageCaptor {
+
+    public TestListOfWebElementImageCaptor() {
+        super();
+    }
+
     @Override
     public BufferedImage getData(List<WebElement> caught) {
         byte[] bytes = new byte[]{};
 
-        for (WebElement e: caught) {
+        for (WebElement e : caught) {
             bytes = ArrayUtils.addAll(bytes, e.getScreenshotAs(BYTES));
         }
 

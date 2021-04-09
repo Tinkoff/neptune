@@ -21,7 +21,7 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 @SequentialGetStepSupplier.DefineResultDescriptionParameterName("Is present")
 @IncludeParamsOfInnerGetterStep
 @MaxDepthOfReporting(0)
-public final class Presence<T extends Context<?>> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<T, Boolean, Object, Presence<T>> {
+public final class Presence<T> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<T, Boolean, Object, Presence<T>> {
 
     private final Set<Class<? extends Throwable>> ignored2 = new HashSet<>();
 
@@ -74,7 +74,7 @@ public final class Presence<T extends Context<?>> extends SequentialGetStepSuppl
      * @return an instance of {@link Presence}.
      */
     @Description("Presence of {toBePresent}")
-    public static <T extends Context<?>> Presence<T> presence(@DescriptionFragment("toBePresent") Function<T, ?> function) {
+    public static <T> Presence<T> presence(@DescriptionFragment("toBePresent") Function<T, ?> function) {
         checkArgument(nonNull(function), "Function should not be a null-value");
         return new Presence<>(function);
     }
@@ -88,7 +88,7 @@ public final class Presence<T extends Context<?>> extends SequentialGetStepSuppl
      * @return an instance of {@link Presence}.
      */
     @Description("Presence of {toBePresent}")
-    public static <T extends Context<?>> Presence<T> presence(@DescriptionFragment("toBePresent") SequentialGetStepSupplier<T, ?, ?, ?, ?> toBePresent) {
+    public static <T> Presence<T> presence(@DescriptionFragment("toBePresent") SequentialGetStepSupplier<T, ?, ?, ?, ?> toBePresent) {
         checkArgument(nonNull(toBePresent), "Supplier of a function should not be a null-value");
         return new Presence<>(toBePresent);
     }

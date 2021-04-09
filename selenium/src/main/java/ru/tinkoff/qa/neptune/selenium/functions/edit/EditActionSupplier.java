@@ -3,22 +3,23 @@ package ru.tinkoff.qa.neptune.selenium.functions.edit;
 import org.openqa.selenium.SearchContext;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
-import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Editable;
 import ru.tinkoff.qa.neptune.selenium.captors.WebElementImageCaptor;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 
-import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
-
 @CaptureOnFailure(by = WebElementImageCaptor.class)
 @CaptureOnSuccess(by = WebElementImageCaptor.class)
 @Description("Edit element {toEdit}")
+@MaxDepthOfReporting(0)
+@IncludeParamsOfInnerGetterStep
 public final class EditActionSupplier<T> extends
-        SequentialActionSupplier<SeleniumStepContext, Editable<T>, EditActionSupplier<T>> {
+        SequentialActionSupplier<Object, Editable<T>, EditActionSupplier<T>> {
 
     @DescriptionFragment("toEdit")
     final Object toEdit;
@@ -39,7 +40,7 @@ public final class EditActionSupplier<T> extends
 
     private <S extends SearchContext & Editable<T>> EditActionSupplier(SearchSupplier<S> toEdit, T value) {
         this((Object) toEdit, value);
-        performOn(toEdit.get().compose(currentContent()));
+        performOn(toEdit);
     }
 
     /**

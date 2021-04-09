@@ -1,63 +1,53 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
-import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Collections.emptyMap;
-import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.*;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchFailureEvent;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchSuccessEvent;
 
-public class StepAction<T> {
+/**
+ * Performs a simple action (a function with no resulted value) which is built and supplied by
+ * {@link SequentialGetStepSupplier}.
+ *
+ * @param <T> is a type of input value
+ * @param <R>
+ */
+public final class StepAction<T, R> {
 
     private final String description;
-    private final Consumer<T> consumer;
     private final Set<Captor<Object, Object>> successCaptors = new HashSet<>();
     private final Set<Captor<Object, Object>> failureCaptors = new HashSet<>();
     private Map<String, String> parameters = emptyMap();
+    private final SequentialActionSupplier<T, R, ?> supplier;
+    private final Function<T, R> getFrom;
 
-    StepAction(String description, Consumer<T> consumer) {
-        checkArgument(nonNull(consumer), "Consumer should be defined");
-        checkArgument(!isBlank(description), "Description should not be empty");
+    StepAction(String description, SequentialActionSupplier<T, R, ?> supplier, Function<T, R> getFrom) {
+        this.supplier = supplier;
         this.description = description;
-        this.consumer = consumer;
+        this.getFrom = getFrom;
     }
 
-    /**
-     * This method creates a consumer with some string description. This consumer is
-     * supposed to perform some action.
-     *
-     * @param description string narration of the action
-     * @param consumer    which performs the action
-     * @param <T>         type of accepted value
-     * @return a new consumer with the given string description. Description is returned
-     * by the {@link #toString()} method.
-     */
-    static <T> StepAction<T> action(String description, Consumer<T> consumer) {
-        return new StepAction<>(description, consumer);
-    }
-
-
-    public void accept(T t) {
+    public void performAction(T t) {
+        R performOn = null;
         try {
             fireEventStarting(description, parameters);
-            consumer.accept(t);
-            if (catchSuccessEvent() && !Context.class.isAssignableFrom(consumer.getClass())) {
-                catchValue(t, successCaptors);
+            performOn = getFrom.apply(t);
+            supplier.performActionOn(performOn);
+            if (catchSuccessEvent()) {
+                catchValue(performOn, successCaptors);
             }
         } catch (Throwable thrown) {
             fireThrownException(thrown);
-            if (catchFailureEvent() && !StepAction.class.isAssignableFrom(consumer.getClass())) {
-                catchValue(t, failureCaptors);
+            if (catchFailureEvent()) {
+                catchValue(performOn, failureCaptors);
             }
             throw thrown;
         } finally {
@@ -70,17 +60,17 @@ public class StepAction<T> {
         return description;
     }
 
-    StepAction<T> addSuccessCaptors(List<Captor<Object, Object>> successCaptors) {
+    StepAction<T, R> addSuccessCaptors(List<Captor<Object, Object>> successCaptors) {
         this.successCaptors.addAll(successCaptors);
         return this;
     }
 
-    StepAction<T> addFailureCaptors(List<Captor<Object, Object>> failureCaptors) {
+    StepAction<T, R> addFailureCaptors(List<Captor<Object, Object>> failureCaptors) {
         this.failureCaptors.addAll(failureCaptors);
         return this;
     }
 
-    StepAction<T> setParameters(Map<String, String> parameters) {
+    StepAction<T, R> setParameters(Map<String, String> parameters) {
         this.parameters = parameters;
         return this;
     }

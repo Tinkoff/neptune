@@ -27,7 +27,6 @@ import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnS
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.AND;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefaultGetParameterReader.*;
-import static ru.tinkoff.qa.neptune.core.api.steps.StepFunction.toGet;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromArray.getFromArray;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromIterable.getFromIterable;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
@@ -37,7 +36,7 @@ import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 /**
- * This class is designed to build and supply chained functions to get desired value.
+ * This class is designed to build and to supply sequential functions to get desired value.
  * There are protected methods to be overridden/re-used as public when it is necessary.
  *
  * @param <T>    is a type of an input value
@@ -283,14 +282,14 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         var description = (translate(getImperativePseudoField(this.getClass(), true)) + " " + this.description).trim();
 
         if (StepFunction.class.isAssignableFrom(composeWith.getClass())) {
-            toBeReturned = toGet(description, endFunction)
+            toBeReturned = new StepFunction<>(description, endFunction)
                     .setParameters(params)
                     .addSuccessCaptors(successCaptors)
                     .addFailureCaptors(failureCaptors)
                     .setResultDescription(resultDescription)
                     .compose(composeWith);
         } else {
-            toBeReturned = toGet(description, endFunction.compose(composeWith));
+            toBeReturned = new StepFunction<>(description, endFunction.compose(composeWith));
         }
 
         if (!toReport) {

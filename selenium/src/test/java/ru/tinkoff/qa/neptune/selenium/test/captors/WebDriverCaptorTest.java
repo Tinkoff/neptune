@@ -22,7 +22,7 @@ public class WebDriverCaptorTest extends BaseCaptorTest {
         assertThat(INJECTED, hasEntry(isA(BufferedImage.class),
                 equalTo("Screenshot taken from the element")));
         assertThat(INJECTED, hasEntry(isA(BufferedImage.class),
-                equalTo("Browser screenshot")));
+                equalTo("Screenshot taken from the element")));
     }
 
     @Test
@@ -33,9 +33,9 @@ public class WebDriverCaptorTest extends BaseCaptorTest {
         } catch (NoSuchElementException ignored) {
 
         }
-        assertThat(INJECTED.size(), is(2));
-        assertThat(INJECTED.keySet(), contains(isA(BufferedImage.class), isA(BufferedImage.class)));
-        assertThat(INJECTED.values(), contains("Browser screenshot", "Browser screenshot"));
+        assertThat(INJECTED.size(), is(1));
+        assertThat(INJECTED.keySet(), contains(isA(BufferedImage.class)));
+        assertThat(INJECTED.values(), contains("Browser screenshot"));
     }
 
     @Test
@@ -45,7 +45,7 @@ public class WebDriverCaptorTest extends BaseCaptorTest {
         assertThat(INJECTED, hasEntry(isA(BufferedImage.class),
                 equalTo("Screenshot taken from the element")));
         assertThat(INJECTED, hasEntry(isA(BufferedImage.class),
-                equalTo("Browser screenshot")));
+                equalTo("Screenshot taken from the element")));
     }
 
     @Test
@@ -56,9 +56,9 @@ public class WebDriverCaptorTest extends BaseCaptorTest {
         } catch (NoSuchElementException ignored) {
 
         }
-        assertThat(INJECTED.size(), is(2));
-        assertThat(INJECTED.keySet(), contains(isA(BufferedImage.class), isA(BufferedImage.class)));
-        assertThat(INJECTED.values(), contains("Browser screenshot", "Browser screenshot"));
+        assertThat(INJECTED.size(), is(1));
+        assertThat(INJECTED.keySet(), contains(isA(BufferedImage.class)));
+        assertThat(INJECTED.values(), contains("Browser screenshot"));
     }
 
     @Test
@@ -68,7 +68,7 @@ public class WebDriverCaptorTest extends BaseCaptorTest {
         assertThat(INJECTED, hasEntry(isA(BufferedImage.class),
                 equalTo("Screenshot taken from the element")));
         assertThat(INJECTED, hasEntry(isA(BufferedImage.class),
-                equalTo("Browser screenshot")));
+                equalTo("Screenshot taken from the element")));
     }
 
     @Test
@@ -78,8 +78,8 @@ public class WebDriverCaptorTest extends BaseCaptorTest {
         } catch (NoSuchElementException ignored) {
 
         }
-        assertThat(INJECTED.size(), is(2));
-        assertThat(INJECTED.keySet(), contains(isA(BufferedImage.class), isA(BufferedImage.class)));
-        assertThat(INJECTED.values(), contains("Browser screenshot", "Browser screenshot"));
+        assertThat(INJECTED.size(), is(1));
+        assertThat(INJECTED.keySet(), contains(isA(BufferedImage.class)));
+        assertThat(INJECTED.values(), contains("Browser screenshot"));
     }
 }

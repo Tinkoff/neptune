@@ -2,9 +2,11 @@ package ru.tinkoff.qa.neptune.selenium.functions.cookies;
 
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
@@ -68,6 +70,7 @@ public abstract class RemoveCookiesActionSupplier<T>
     /**
      * This class is designed to build an action that cleans browser's "cookie jar".
      */
+    @MaxDepthOfReporting(0)
     private static final class RemoveAllCookiesActionSupplier
             extends RemoveCookiesActionSupplier<WebDriver> {
 
@@ -87,6 +90,8 @@ public abstract class RemoveCookiesActionSupplier<T>
      * These cookies are expected to be found by criteria. It is possible to define time of the waiting
      * for expected cookies are present.
      */
+    @MaxDepthOfReporting(0)
+    @IncludeParamsOfInnerGetterStep
     private static final class RemoveFoundCookies extends RemoveCookiesActionSupplier<Set<Cookie>> {
 
         private WebDriver driver;
@@ -115,6 +120,7 @@ public abstract class RemoveCookiesActionSupplier<T>
     /**
      * This class is designed to build an action that cleans browser's "cookie jar" of defined cookies.
      */
+    @MaxDepthOfReporting(0)
     private static final class RemoveDefinedCookies extends RemoveCookiesActionSupplier<WebDriver> {
 
         @StepParameter("Cookies for removal")

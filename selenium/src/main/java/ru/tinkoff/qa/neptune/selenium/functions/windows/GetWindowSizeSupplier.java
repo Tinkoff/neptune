@@ -2,8 +2,10 @@ package ru.tinkoff.qa.neptune.selenium.functions.windows;
 
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Window;
@@ -12,6 +14,8 @@ import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Get
 
 @SequentialGetStepSupplier.DefineFromParameterName("Window/tab to get size of")
 @Description("Size of the browser window/tab")
+@MaxDepthOfReporting(0)
+@IncludeParamsOfInnerGetterStep
 public final class GetWindowSizeSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, Dimension, Window, GetWindowSizeSupplier> {
 

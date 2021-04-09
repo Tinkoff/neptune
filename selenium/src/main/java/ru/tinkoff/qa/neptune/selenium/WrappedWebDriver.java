@@ -218,7 +218,7 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
         ofNullable(getCurrentCommand()).ifPresent(
                 contentManagementCommand -> contentManagementCommand
                         .get()
-                        .accept(driver)
+                        .performAction(driver)
         );
 
         return driver;

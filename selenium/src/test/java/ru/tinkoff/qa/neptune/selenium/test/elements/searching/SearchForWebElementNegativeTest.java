@@ -27,7 +27,7 @@ import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.*;
 
 public class SearchForWebElementNegativeTest extends BaseWebDriverTest {
 
-    private static final String FOUND_BY_PATTERN_ERROR = "Nothing was found. Attempt to get Web element located %s";
+    private static final String FOUND_BY_PATTERN_ERROR = "Nothing was found. Attempt to get Web element located '%s'";
     private static final String FOUND_ON_CONDITION_ERROR = FOUND_BY_PATTERN_ERROR + ". Criteria: %s";
     private static final By CLASS_THAT_DOES_NOT_EXIST = className("fakeClass");
 

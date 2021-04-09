@@ -2,9 +2,11 @@ package ru.tinkoff.qa.neptune.selenium.functions.navigation;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.captors.WebDriverImageCaptor;
@@ -25,6 +27,8 @@ import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_D
 @CaptureOnFailure(by = WebDriverImageCaptor.class)
 @CaptureOnSuccess(by = WebDriverImageCaptor.class)
 @SequentialActionSupplier.DefinePerformOnParameterName("Window/tab to perform navigation")
+@MaxDepthOfReporting(1)
+@IncludeParamsOfInnerGetterStep
 public final class ToUrl extends SequentialActionSupplier<SeleniumStepContext, Window, ToUrl> {
 
     @StepParameter("Navigate to")

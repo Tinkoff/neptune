@@ -2,8 +2,10 @@ package ru.tinkoff.qa.neptune.selenium.functions.windows;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.captors.WebDriverImageCaptor;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.GetWindowSupplier;
@@ -15,6 +17,8 @@ import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.window.Get
 @CaptureOnSuccess(by = WebDriverImageCaptor.class)
 @SequentialActionSupplier.DefinePerformOnParameterName("Window/tab to close")
 @Description("Close the browser window/tab")
+@MaxDepthOfReporting(0)
+@IncludeParamsOfInnerGetterStep
 public final class CloseWindowActionSupplier extends SequentialActionSupplier<SeleniumStepContext, Window, CloseWindowActionSupplier> {
 
     private CloseWindowActionSupplier() {

@@ -12,6 +12,9 @@ import java.util.Objects;
 import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
 
+/**
+ * Takes screenshot from a list of web elements/widgets
+ */
 @Beta
 @Description("Screenshot taken from the list of elements")
 public abstract class ListOfWebElementImageCaptor extends ImageCaptor<List<WebElement>> {

@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.functions.intreraction;
 
 import org.openqa.selenium.interactions.Actions;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 
@@ -16,6 +17,7 @@ abstract class ReleaseActionSupplier extends InteractiveAction {
         super();
     }
 
+    @MaxDepthOfReporting(0)
     static final class ReleaseSimpleActionSupplier extends ReleaseActionSupplier {
 
         @Override
@@ -25,6 +27,7 @@ abstract class ReleaseActionSupplier extends InteractiveAction {
     }
 
     @Description("Release left mouse button at {target}")
+    @MaxDepthOfReporting(0)
     static final class ReleaseElementActionSupplier extends ReleaseActionSupplier {
 
         @DescriptionFragment("target")

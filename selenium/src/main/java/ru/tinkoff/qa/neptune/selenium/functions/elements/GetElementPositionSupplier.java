@@ -3,18 +3,19 @@ package ru.tinkoff.qa.neptune.selenium.functions.elements;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
-import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.selenium.api.widget.HasLocation;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 
-import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
-
 @Description("Position of the {element} on a page")
+@MaxDepthOfReporting(0)
+@IncludeParamsOfInnerGetterStep
 public final class GetElementPositionSupplier extends SequentialGetStepSupplier
-        .GetObjectChainedStepSupplier<SeleniumStepContext, Point, SearchContext, GetElementPositionSupplier> {
+        .GetObjectChainedStepSupplier<Object, Point, SearchContext, GetElementPositionSupplier> {
 
     @DescriptionFragment("element")
     final Object element;
@@ -38,7 +39,7 @@ public final class GetElementPositionSupplier extends SequentialGetStepSupplier
 
     private <T extends SearchContext> GetElementPositionSupplier(SearchSupplier<T> supplier) {
         this((Object) supplier);
-        from(supplier.get().compose(currentContent()));
+        from(supplier);
     }
 
     private GetElementPositionSupplier(SearchContext context) {

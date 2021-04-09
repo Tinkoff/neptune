@@ -21,7 +21,7 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 @SequentialGetStepSupplier.DefineResultDescriptionParameterName("Is absent")
 @IncludeParamsOfInnerGetterStep
 @MaxDepthOfReporting(0)
-public final class Absence<T extends Context<?>> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<T, Boolean, Object, Absence<T>> {
+public final class Absence<T> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<T, Boolean, Object, Absence<T>> {
 
     private Absence() {
         super(o -> ofNullable(o)
@@ -67,7 +67,7 @@ public final class Absence<T extends Context<?>> extends SequentialGetStepSuppli
      * @return an instance of {@link Absence}.
      */
     @Description("Absence of {toBeAbsent}")
-    public static <T extends Context<?>> Absence<T> absence(@DescriptionFragment("toBeAbsent") Function<T, ?> function) {
+    public static <T> Absence<T> absence(@DescriptionFragment("toBeAbsent") Function<T, ?> function) {
         checkArgument(nonNull(function), "Function should not be a null-value");
         return new Absence<>(function);
     }
@@ -81,7 +81,7 @@ public final class Absence<T extends Context<?>> extends SequentialGetStepSuppli
      * @return an instance of {@link Absence}.
      */
     @Description("Absence of {toBeAbsent}")
-    public static <T extends Context<?>> Absence<T> absence(@DescriptionFragment("toBeAbsent") SequentialGetStepSupplier<T, ?, ?, ?, ?> toBeAbsent) {
+    public static <T> Absence<T> absence(@DescriptionFragment("toBeAbsent") SequentialGetStepSupplier<T, ?, ?, ?, ?> toBeAbsent) {
         checkArgument(nonNull(toBeAbsent), "Supplier of a function should not be a null-value");
         return new Absence<>(toBeAbsent);
     }

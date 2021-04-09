@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.functions.intreraction;
 
 import org.openqa.selenium.interactions.Actions;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 
@@ -11,6 +12,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * moves by a given offset, then releases the mouse.
  */
 @Description("Drag {source} and drop at [x={x}, y={y}] from current position")
+@MaxDepthOfReporting(0)
 final class DragAndDropByActionSupplier extends InteractiveAction {
 
     @DescriptionFragment("x")

@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.selenium.functions.searching;
 import org.openqa.selenium.*;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
@@ -32,14 +33,15 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMEN
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Element criteria")
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Find")
 @SequentialGetStepSupplier.DefineResultDescriptionParameterName("Found element")
+@MaxDepthOfReporting(1)
 @CaptureOnSuccess(by = WebElementImageCaptor.class)
-@CaptureOnFailure(by = WebDriverImageCaptor.class)
+@CaptureOnFailure(by = {WebDriverImageCaptor.class, WebElementImageCaptor.class})
 public final class SearchSupplier<R extends SearchContext>
-        extends SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier<SearchContext, R, SearchContext, SearchSupplier<R>> {
+        extends SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier<Object, R, SearchContext, SearchSupplier<R>> {
 
     private <S extends Iterable<R>> SearchSupplier(Function<SearchContext, S> originalFunction) {
         super(originalFunction);
-        from(searchContext -> searchContext);
+        from(new SearchingInitialFunction());
         timeOut(ELEMENT_WAITING_DURATION.get());
         addIgnored(StaleElementReferenceException.class);
         if (FIND_ONLY_VISIBLE_ELEMENTS.get()) {
@@ -680,19 +682,6 @@ public final class SearchSupplier<R extends SearchContext>
      * @return self-reference
      */
     public <Q extends SearchContext> SearchSupplier<R> foundFrom(Q from) {
-        return super.from(from);
-    }
-
-    /**
-     * Constructs the chained searching from result of some function applying. This function should take some
-     * {@link SearchContext} as the input parameter and return some found instance of {@link SearchContext}.
-     *
-     * @param from is a function that takes some {@link SearchContext} as the input parameter and returns some
-     *             found instance of {@link SearchContext}.
-     * @param <Q>  is a type of the parent element.
-     * @return self-reference
-     */
-    public <Q extends SearchContext> SearchSupplier<R> foundFrom(Function<SearchContext, Q> from) {
         return super.from(from);
     }
 
