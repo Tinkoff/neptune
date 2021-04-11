@@ -7,10 +7,10 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.captors.ImageCaptor;
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.StringCaptor;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import static java.lang.reflect.Modifier.isAbstract;
 import static java.util.Arrays.stream;
@@ -19,9 +19,9 @@ import static java.util.stream.Collectors.toList;
 @SuppressWarnings("rawtypes")
 final class CaptorUtil {
 
-    private static final Map<Class<?>, Class<? extends Captor>> ABSTRACT_CAPTORS = mapOfAbstractCaptors();
+    private static final Map<Class<?>, List<Class<Captor>>> ABSTRACT_CAPTORS = mapOfAbstractCaptors();
 
-    private static Map<Class<?>, Class<? extends Captor>> mapOfAbstractCaptors() {
+    private static Map<Class<?>, List<Class<Captor>>> mapOfAbstractCaptors() {
         var children = new ClassGraph()
                 .enableAllInfo()
                 .scan()
@@ -35,18 +35,21 @@ final class CaptorUtil {
                         && !captorClass.equals(FileCaptor.class)
                         && !captorClass.equals(StringCaptor.class));
 
-        var result = new HashMap<Class<?>, Class<? extends Captor>>();
-        abstractChildren.forEach(captorClass -> children
-                .stream()
-                .filter(captorClass1 -> !isAbstract(captorClass1.getModifiers())
-                        && captorClass.isAssignableFrom(captorClass1))
-                .findFirst()
-                .ifPresent(captorClass1 -> result.put(captorClass, captorClass1)));
+        var result = new HashMap<Class<?>, List<Class<Captor>>>();
+        abstractChildren.forEach(captorClass -> {
+            var found = children.stream()
+                    .filter(captorClass1 -> !isAbstract(captorClass1.getModifiers())
+                            && captorClass.isAssignableFrom(captorClass1))
+                    .collect(toList());
+            if (found.size() > 0) {
+                result.put(captorClass, found);
+            }
+        });
 
         return result;
     }
 
-    private static Captor<Object, Object> createCaptor(Class<Captor<Object, Object>> captorClass) {
+    private static Captor createCaptor(Class<? extends Captor> captorClass) {
         try {
             var c = captorClass.getConstructor();
             c.setAccessible(true);
@@ -57,17 +60,21 @@ final class CaptorUtil {
     }
 
     @SuppressWarnings("unchecked")
-    static List<Captor<Object, Object>> createCaptors(Class<? extends Captor<?, ?>>[] classes) {
-        return stream(classes)
-                .map(cls -> {
+    public static List<Captor<Object, Object>> createCaptors(Class<? extends Captor>[] classes) {
+        var result = new ArrayList<Captor<Object, Object>>();
+        stream(classes)
+                .forEach(cls -> {
                     var m = cls.getModifiers();
                     if (!isAbstract(m)) {
-                        return cls;
+                        result.add(createCaptor(cls));
+                        return;
                     }
-                    return ABSTRACT_CAPTORS.get(cls);
-                })
-                .filter(Objects::nonNull)
-                .map(aClass -> createCaptor((Class<Captor<Object, Object>>) aClass))
-                .collect(toList());
+
+                    var children = ABSTRACT_CAPTORS.get(cls);
+                    if (children != null) {
+                        children.forEach(captorClass -> result.add(createCaptor(captorClass)));
+                    }
+                });
+        return result;
     }
 }

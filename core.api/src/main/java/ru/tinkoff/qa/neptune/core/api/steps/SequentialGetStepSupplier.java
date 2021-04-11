@@ -60,7 +60,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         readCaptorsOnSuccess(this.getClass(), successCaptors);
     }
 
-    private boolean toReport = true;
+    protected boolean toReport = true;
 
     final Set<Class<? extends Throwable>> ignored = new HashSet<>();
 
@@ -219,6 +219,14 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     protected THIS throwOnEmptyResult(Supplier<? extends RuntimeException> exceptionSupplier) {
         this.exceptionSupplier = exceptionSupplier;
         return (THIS) this;
+    }
+
+    protected List<Captor<Object, Object>> getSuccessCaptors() {
+        return successCaptors;
+    }
+
+    protected List<Captor<Object, Object>> getFailureCaptors() {
+        return failureCaptors;
     }
 
     /**

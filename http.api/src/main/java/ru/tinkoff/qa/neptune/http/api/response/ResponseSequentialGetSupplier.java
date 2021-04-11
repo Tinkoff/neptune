@@ -5,6 +5,7 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MakeFileCapturesO
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MakeStringCapturesOnFinishing;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
 import ru.tinkoff.qa.neptune.http.api.request.NeptuneHttpRequestImpl;
@@ -37,13 +38,11 @@ import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapture
 @SequentialGetStepSupplier.DefaultParameterNames(
         criteria = "Response criteria"
 )
-@Description("Http Response")
 public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSupplier.GetObjectStepSupplier<HttpStepContext, HttpResponse<T>,
         ResponseSequentialGetSupplier<T>> {
 
     private final ResponseExecutionInfo info;
     private final HttpRequest request;
-    private boolean toReport = true;
 
     private ResponseSequentialGetSupplier(RequestBuilder requestBuilder,
                                           HttpResponse.BodyHandler<T> bodyHandler,
@@ -75,7 +74,9 @@ public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSup
      * @param <T>            is a type of response body
      * @return an instance of {@link ResponseSequentialGetSupplier}
      */
-    public static <T> ResponseSequentialGetSupplier<T> response(RequestBuilder requestBuilder, HttpResponse.BodyHandler<T> bodyHandler) {
+    @Description("Http Response of {request}")
+    public static <T> ResponseSequentialGetSupplier<T> response(@DescriptionFragment("request") RequestBuilder requestBuilder,
+                                                                HttpResponse.BodyHandler<T> bodyHandler) {
         return new ResponseSequentialGetSupplier<>(requestBuilder, bodyHandler, new ResponseExecutionInfo());
     }
 

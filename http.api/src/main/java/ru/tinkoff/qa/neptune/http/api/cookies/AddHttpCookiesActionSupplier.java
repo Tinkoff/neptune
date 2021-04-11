@@ -49,8 +49,6 @@ public final class AddHttpCookiesActionSupplier extends SequentialActionSupplier
 
     @Override
     protected void performActionOn(CookieStore value) {
-        cookies.forEach(httpCookie -> {
-            value.add(uri, httpCookie);
-        });
+        cookies.forEach(httpCookie -> value.add(uri, httpCookie));
     }
 }
