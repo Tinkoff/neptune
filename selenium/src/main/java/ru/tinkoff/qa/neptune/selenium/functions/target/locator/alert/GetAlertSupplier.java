@@ -3,6 +3,7 @@ package ru.tinkoff.qa.neptune.selenium.functions.target.locator.alert;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
@@ -22,6 +23,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITIN
 
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Alert criteria")
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting for the alert")
+@MaxDepthOfReporting(0)
 @Description("Alert")
 public final class GetAlertSupplier extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<SeleniumStepContext, Alert, WebDriver, GetAlertSupplier>
         implements TargetLocatorSupplier<Alert> {

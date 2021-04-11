@@ -109,7 +109,7 @@ public class NavigationHookTest extends BaseWebDriverTest {
             return;
         }
 
-        command.get().performAction(wrappedWebDriver.getWrappedDriver());
+        command.get().performAction(seleniumSteps);
         assertThat(((MockWebDriver) seleniumSteps.getWrappedDriver()).lastNavigationURLAsIs, matcher);
     }
 
@@ -120,7 +120,7 @@ public class NavigationHookTest extends BaseWebDriverTest {
         hook.executeMethodHook(m, O2, isTest);
         var command = getCurrentCommand();
         assertThat("Expected presence of a command", command != null, is(true));
-        command.get().performAction(wrappedWebDriver.getWrappedDriver());
+        command.get().performAction(seleniumSteps);
         assertThat(((MockWebDriver) seleniumSteps.getWrappedDriver()).lastNavigationURLAsIs, matcher);
     }
 
@@ -136,7 +136,7 @@ public class NavigationHookTest extends BaseWebDriverTest {
             return;
         }
 
-        command.get().performAction(wrappedWebDriver.getWrappedDriver());
+        command.get().performAction(seleniumSteps);
         assertThat(((MockWebDriver) seleniumSteps.getWrappedDriver()).lastNavigationURLAsIs, matcher);
     }
 
@@ -148,7 +148,7 @@ public class NavigationHookTest extends BaseWebDriverTest {
         hook.executeMethodHook(m1, O4, new Random().nextBoolean());
 
         var command = getCurrentCommand();
-        command.get().performAction(wrappedWebDriver.getWrappedDriver());
+        command.get().performAction(seleniumSteps);
         assertThat(((MockWebDriver) seleniumSteps.getWrappedDriver()).lastNavigationURLAsIs,
                 equalTo("https://www.google.com/1/ABC%20/ABC%20?&p4=1&p5=ABC &p6=ABCD+&p7=1"));
 
@@ -158,7 +158,7 @@ public class NavigationHookTest extends BaseWebDriverTest {
         O4.host2 = "github.com.рф";
         O4.port = 100;
 
-        command.get().performAction(wrappedWebDriver.getWrappedDriver());
+        command.get().performAction(seleniumSteps);
         assertThat(((MockWebDriver) seleniumSteps.getWrappedDriver()).lastNavigationURLAsIs,
                 equalTo("https://github.com.рф:100/1/ABC%20/ABC%20?&p4=1&p5=ABC &p6=ABCD+&p7=1"));
     }
@@ -170,7 +170,7 @@ public class NavigationHookTest extends BaseWebDriverTest {
 
         hook.executeMethodHook(m, o, new Random().nextBoolean());
         var command = getCurrentCommand();
-        command.get().performAction(wrappedWebDriver.getWrappedDriver());
+        command.get().performAction(seleniumSteps);
         assertThat(((MockWebDriver) seleniumSteps.getWrappedDriver()).lastNavigationURLAsIs, matcher);
     }
 }

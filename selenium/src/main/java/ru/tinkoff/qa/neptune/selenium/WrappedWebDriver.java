@@ -24,7 +24,6 @@ import static org.openqa.selenium.Proxy.ProxyType.MANUAL;
 import static org.openqa.selenium.net.PortProber.findFreePort;
 import static ru.tinkoff.qa.neptune.core.api.utils.ConstructorUtil.findSuitableConstructor;
 import static ru.tinkoff.qa.neptune.selenium.BrowserProxy.getCurrentProxy;
-import static ru.tinkoff.qa.neptune.selenium.content.management.ContentManagementCommand.getCurrentCommand;
 import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.*;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.BASE_WEB_DRIVER_URL_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.properties.URLProperties.PROXY_URL_PROPERTY;
@@ -213,14 +212,6 @@ public class WrappedWebDriver implements WrapsDriver, ContextRefreshable {
         if (!isNewSession()) {
             authenticationPerformer.performAuthentication(driver, false);
         }
-
-        driver.getWindowHandles();
-        ofNullable(getCurrentCommand()).ifPresent(
-                contentManagementCommand -> contentManagementCommand
-                        .get()
-                        .performAction(driver)
-        );
-
         return driver;
     }
 

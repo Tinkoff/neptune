@@ -24,7 +24,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITIN
 
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting for the browser window/tab")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Window criteria")
-@MaxDepthOfReporting(1)
+@MaxDepthOfReporting(0)
 public final class GetWindowSupplier extends SequentialGetStepSupplier
         .GetObjectFromIterableChainedStepSupplier<SeleniumStepContext, Window, WebDriver, GetWindowSupplier>
         implements TargetLocatorSupplier<Window> {
