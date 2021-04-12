@@ -100,7 +100,7 @@ public class BasicLocalizationTest {
         }
 
         @Override
-        protected void performActionOn(Object value) {
+        protected void howToPerform(Object value) {
 
         }
     }

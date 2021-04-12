@@ -80,7 +80,7 @@ public abstract class RemoveCookiesActionSupplier<T>
         }
 
         @Override
-        protected void performActionOn(WebDriver value) {
+        protected void howToPerform(WebDriver value) {
             value.manage().deleteAllCookies();
         }
     }
@@ -104,14 +104,16 @@ public abstract class RemoveCookiesActionSupplier<T>
             var getCookies = cookies();
             stream(toBeRemoved).forEach(getCookies::criteria);
             ofNullable(timeToFindCookies).ifPresent(getCookies::timeOut);
-            performOn(getCookies.from(currentContent().andThen(wd -> {
-                driver = wd;
-                return driver;
-            })));
+            performOn(getCookies.from(currentContent()));
         }
 
         @Override
-        protected void performActionOn(Set<Cookie> value) {
+        protected void onStart(SeleniumStepContext seleniumStepContext) {
+            driver = seleniumStepContext.getWrappedDriver();
+        }
+
+        @Override
+        protected void howToPerform(Set<Cookie> value) {
             var options = driver.manage();
             value.forEach(options::deleteCookie);
         }
@@ -135,7 +137,7 @@ public abstract class RemoveCookiesActionSupplier<T>
         }
 
         @Override
-        protected void performActionOn(WebDriver value) {
+        protected void howToPerform(WebDriver value) {
             var options = value.manage();
             cookies.forEach(options::deleteCookie);
         }

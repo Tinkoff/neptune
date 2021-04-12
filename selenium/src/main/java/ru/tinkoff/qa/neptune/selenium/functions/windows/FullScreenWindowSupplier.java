@@ -50,7 +50,7 @@ public final class FullScreenWindowSupplier extends SequentialActionSupplier<Sel
     }
 
     @Override
-    protected void performActionOn(Window value) {
+    protected void howToPerform(Window value) {
         value.fullscreen();
     }
 }

@@ -47,7 +47,7 @@ public final class SendKeysToAlertActionSupplier extends SequentialActionSupplie
     }
 
     @Override
-    protected void performActionOn(Alert value) {
+    protected void howToPerform(Alert value) {
         value.sendKeys(keysToSend);
     }
 }

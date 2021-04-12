@@ -67,7 +67,7 @@ public final class SetWindowPositionSupplier extends SequentialActionSupplier<Se
     }
 
     @Override
-    protected void performActionOn(Window value) {
+    protected void howToPerform(Window value) {
         value.setPosition(position);
     }
 }

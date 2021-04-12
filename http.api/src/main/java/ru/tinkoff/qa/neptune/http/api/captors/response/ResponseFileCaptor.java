@@ -1,11 +1,10 @@
 package ru.tinkoff.qa.neptune.http.api.captors.response;
 
-import ru.tinkoff.qa.neptune.core.api.event.firing.captors.FileCaptor;
+import ru.tinkoff.qa.neptune.core.api.event.firing.captors.CapturedFileInjector;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.http.HttpResponse;
 import java.nio.file.Path;
 
 import static com.google.common.io.Files.getFileExtension;
@@ -14,20 +13,25 @@ import static java.io.File.createTempFile;
 import static java.lang.String.format;
 import static java.util.UUID.randomUUID;
 import static org.apache.commons.io.FileUtils.copyFile;
+import static ru.tinkoff.qa.neptune.core.api.utils.SPIUtil.loadSPI;
 
 /**
  * This class is designed to convert some {@link String} and {@link Path} bodies of received responses
  * to files.
  */
 @Description("Response. File")
-public final class ResponseFileCaptor extends FileCaptor<HttpResponse<Path>> implements BaseResponseObjectBodyCaptor<Path> {
+public final class ResponseFileCaptor extends AbstractResponseBodyObjectCaptor<Path, File> {
 
+
+    public ResponseFileCaptor() {
+        super(loadSPI(CapturedFileInjector.class), Path.class);
+    }
 
     @Override
-    public File getData(HttpResponse<Path> caught) {
+    public File getData(Path caught) {
         var uuid = randomUUID().toString();
 
-        File file = caught.body().toFile();
+        File file = caught.toFile();
 
         var absolutePath = file.getAbsolutePath();
         try {
@@ -39,10 +43,5 @@ public final class ResponseFileCaptor extends FileCaptor<HttpResponse<Path>> imp
         } catch (IOException e) {
             return null;
         }
-    }
-
-    @Override
-    public HttpResponse<Path> getCaptured(Object toBeCaptured) {
-        return getCaptured(toBeCaptured, Path.class);
     }
 }

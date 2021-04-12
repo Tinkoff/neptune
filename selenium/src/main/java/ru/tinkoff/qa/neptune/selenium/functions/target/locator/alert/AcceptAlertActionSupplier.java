@@ -40,7 +40,7 @@ public final class AcceptAlertActionSupplier extends SequentialActionSupplier<Se
     }
 
     @Override
-    protected void performActionOn(Alert value) {
+    protected void howToPerform(Alert value) {
         value.accept();
     }
 }

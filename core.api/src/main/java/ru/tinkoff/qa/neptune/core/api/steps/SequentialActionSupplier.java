@@ -123,12 +123,29 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
     }
 
     /**
+     * Some additional action on start of the performing step-function
+     *
+     * @param t is an input value is used to perform the step
+     */
+    protected void onStart(T t) {
+    }
+
+    /**
+     * Some additional action if the step is failed
+     *
+     * @param t         is an input value is used to perform the step
+     * @param throwable is a thrown exception/error
+     */
+    protected void onFailure(T t, Throwable throwable) {
+    }
+
+    /**
      * This abstract method describes actions that should be performed on some
      * value.
      *
      * @param value is an object to perform the action on.
      */
-    protected abstract void performActionOn(R value);
+    protected abstract void howToPerform(R value);
 
     @Override
     public StepAction<T, R> get() {

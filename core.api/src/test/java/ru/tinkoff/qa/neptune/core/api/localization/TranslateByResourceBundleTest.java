@@ -152,7 +152,7 @@ public class TranslateByResourceBundleTest {
         }
 
         @Override
-        protected void performActionOn(Object value) {
+        protected void howToPerform(Object value) {
         }
     }
 

@@ -55,7 +55,7 @@ public final class CloseWindowActionSupplier extends SequentialActionSupplier<Se
     }
 
     @Override
-    protected void performActionOn(Window value) {
+    protected void howToPerform(Window value) {
         value.close();
     }
 }

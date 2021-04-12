@@ -55,7 +55,7 @@ public final class Back extends SequentialActionSupplier<SeleniumStepContext, Wi
     }
 
     @Override
-    protected void performActionOn(Window value) {
+    protected void howToPerform(Window value) {
         value.back();
     }
 }

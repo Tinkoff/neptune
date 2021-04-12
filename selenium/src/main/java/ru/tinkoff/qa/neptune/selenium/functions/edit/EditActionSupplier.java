@@ -71,7 +71,7 @@ public final class EditActionSupplier<T> extends
     }
 
     @Override
-    protected void performActionOn(Editable<T> value) {
+    protected void howToPerform(Editable<T> value) {
         value.edit(toSet);
     }
 }

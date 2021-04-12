@@ -54,7 +54,7 @@ public final class ContentManagementCommand extends SequentialActionSupplier<Sel
     }
 
     @Override
-    protected void performActionOn(SeleniumStepContext value) {
+    protected void howToPerform(SeleniumStepContext value) {
         ofNullable(getWindowSupplier).ifPresent(w -> to(w).get().performAction(value));
         ofNullable(navigateTo).ifPresent(s -> toUrl(s.get()).get().performAction(value));
 

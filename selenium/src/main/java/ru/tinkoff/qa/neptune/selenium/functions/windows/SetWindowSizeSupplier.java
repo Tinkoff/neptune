@@ -64,7 +64,7 @@ public final class SetWindowSizeSupplier extends SequentialActionSupplier<Seleni
     }
 
     @Override
-    protected void performActionOn(Window value) {
+    protected void howToPerform(Window value) {
         value.setSize(size);
     }
 }

@@ -20,12 +20,12 @@ public abstract class AbstractRequestBodyCaptor<T extends RequestBody<?>, R> ext
 
     @Override
     public T getCaptured(Object toBeCaptured) {
-        return ofNullable(getCaptured(toBeCaptured, needed))
+        return ofNullable(isPossibleToBeCaptured(toBeCaptured))
                 .map(this::convertTo)
                 .orElse(null);
     }
 
-    private RequestBody<?> getCaptured(Object toBeCaptured, List<Class<? extends RequestBody<?>>> needed) {
+    private RequestBody<?> isPossibleToBeCaptured(Object toBeCaptured) {
         return ofNullable(toBeCaptured)
                 .map(o -> {
                     var cls = toBeCaptured.getClass();

@@ -666,7 +666,7 @@ public abstract class InteractiveAction extends SequentialActionSupplier<Seleniu
     }
 
     @Override
-    protected void performActionOn(Actions value) {
+    protected void howToPerform(Actions value) {
         ofNullable(pauseBefore).ifPresent(value::pause);
         addAction(value);
         ofNullable(pauseAfter).ifPresent(value::pause);

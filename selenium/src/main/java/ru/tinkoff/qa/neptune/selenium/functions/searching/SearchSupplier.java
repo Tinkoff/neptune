@@ -31,7 +31,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMEN
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting for the element")
 @SequentialGetStepSupplier.DefineFromParameterName("Parent element")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Element criteria")
-@SequentialGetStepSupplier.DefineGetImperativeParameterName("Find")
+@SequentialGetStepSupplier.DefineGetImperativeParameterName(value = "Find:")
 @SequentialGetStepSupplier.DefineResultDescriptionParameterName("Found element")
 @MaxDepthOfReporting(1)
 @CaptureOnSuccess(by = WebElementImageCaptor.class)

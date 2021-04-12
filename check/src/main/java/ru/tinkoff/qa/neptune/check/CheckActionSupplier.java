@@ -17,7 +17,7 @@ import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.core.api.steps.Step.createStep;
 
-@SequentialActionSupplier.DefinePerformImperativeParameterName("Check")
+@SequentialActionSupplier.DefinePerformImperativeParameterName("Check:")
 @MaxDepthOfReporting(0)
 public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R, T, CheckActionSupplier<R, T>> {
 
@@ -120,7 +120,7 @@ public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R,
     }
 
     @Override
-    protected void performActionOn(T value) {
+    protected void howToPerform(T value) {
         checkList.forEach(tConsumer -> {
             try {
                 tConsumer.performAction(value);

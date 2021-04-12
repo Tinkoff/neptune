@@ -89,7 +89,7 @@ public final class ClickActionSupplier extends SequentialActionSupplier<Object, 
     }
 
     @Override
-    protected void performActionOn(SearchContext value) {
+    protected void howToPerform(SearchContext value) {
         var cls = value.getClass();
         if (WebElement.class.isAssignableFrom(cls)) {
             ((WebElement) value).click();

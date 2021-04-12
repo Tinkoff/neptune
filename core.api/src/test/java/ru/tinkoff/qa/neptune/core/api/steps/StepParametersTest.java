@@ -597,7 +597,7 @@ public class StepParametersTest {
         }
 
         @Override
-        protected void performActionOn(Object value) {
+        protected void howToPerform(Object value) {
         }
 
         public TestActionStepSupplier setParam1(Boolean param1) {
@@ -668,7 +668,7 @@ public class StepParametersTest {
         }
 
         @Override
-        protected void performActionOn(Object value) {
+        protected void howToPerform(Object value) {
         }
 
         public TestActionStepSupplier2 setParam1(Boolean param1) {

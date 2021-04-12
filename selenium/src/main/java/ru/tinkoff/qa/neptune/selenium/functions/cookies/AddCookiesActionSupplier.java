@@ -43,7 +43,7 @@ public final class AddCookiesActionSupplier extends SequentialActionSupplier<Sel
     }
 
     @Override
-    protected void performActionOn(WebDriver value) {
+    protected void howToPerform(WebDriver value) {
         cookies.forEach(cookie -> value.manage().addCookie(cookie));
     }
 }

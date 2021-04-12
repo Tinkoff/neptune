@@ -39,12 +39,14 @@ public final class StepAction<T, R> {
         R performOn = null;
         try {
             fireEventStarting(description, parameters);
+            supplier.onStart(t);
             performOn = getFrom.apply(t);
-            supplier.performActionOn(performOn);
+            supplier.howToPerform(performOn);
             if (catchSuccessEvent()) {
                 catchValue(performOn, successCaptors);
             }
         } catch (Throwable thrown) {
+            supplier.onFailure(t, thrown);
             fireThrownException(thrown);
             if (catchFailureEvent()) {
                 catchValue(performOn, failureCaptors);

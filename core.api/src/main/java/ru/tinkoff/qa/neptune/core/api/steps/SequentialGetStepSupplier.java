@@ -277,11 +277,49 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         return (THIS) this;
     }
 
+    /**
+     * Some additional action on start of the getting step-function
+     *
+     * @param m is a mediator value is used to get the required result
+     */
+    protected void onStart(M m) {
+    }
+
+    /**
+     * Some additional action if the step is successful
+     *
+     * @param r is a result value
+     */
+    protected void onSuccess(R r) {
+    }
+
+    /**
+     * Some additional action if the step is failed
+     *
+     * @param m         is a mediator value is used to get the required result
+     * @param throwable is a thrown exception/error
+     */
+    protected void onFailure(M m, Throwable throwable) {
+    }
+
     @Override
     public Function<T, R> get() {
         checkArgument(nonNull(from), "FROM-object is not defined");
         var composeWith = preparePreFunction();
-        var endFunction = getEndFunction();
+        var endFunction = new Function<M, R>() {
+            @Override
+            public R apply(M m) {
+                try {
+                    onStart(m);
+                    var result = getEndFunction().apply(m);
+                    onSuccess(result);
+                    return result;
+                } catch (Throwable t) {
+                    onFailure(m, t);
+                    throw t;
+                }
+            }
+        };
         checkNotNull(endFunction);
 
         StepFunction<T, R> toBeReturned;
@@ -290,6 +328,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         var description = (translate(getImperativePseudoField(this.getClass(), true)) + " " + this.description).trim();
 
         if (StepFunction.class.isAssignableFrom(composeWith.getClass())) {
+            ((StepFunction<?, ?>) composeWith).addIgnored(ignored);
             toBeReturned = new StepFunction<>(description, endFunction)
                     .setParameters(params)
                     .addSuccessCaptors(successCaptors)
@@ -307,7 +346,6 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         return toBeReturned.addSuccessCaptors(successCaptors)
                 .addFailureCaptors(failureCaptors)
                 .setResultDescription(resultDescription)
-                .addIgnored(ignored)
                 .setParameters(params);
     }
 

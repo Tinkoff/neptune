@@ -24,7 +24,8 @@ public @interface CaptureOnSuccess {
      * have no declared constructors or they should have declared constructors without parameters. Also, it is possible
      * to define abstract classes there, but if they have no non-abstract subclasses in classpath then they are ignored
      */
-    Class<? extends Captor<?, ?>>[] by();
+    @SuppressWarnings("rawtypes")
+    Class<? extends Captor>[] by();
 
     class CaptureOnSuccessReader {
 

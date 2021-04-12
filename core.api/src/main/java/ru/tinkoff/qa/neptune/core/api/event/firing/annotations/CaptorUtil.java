@@ -17,7 +17,7 @@ import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
 @SuppressWarnings("rawtypes")
-final class CaptorUtil {
+public final class CaptorUtil {
 
     private static final Map<Class<?>, List<Class<Captor>>> ABSTRACT_CAPTORS = mapOfAbstractCaptors();
 

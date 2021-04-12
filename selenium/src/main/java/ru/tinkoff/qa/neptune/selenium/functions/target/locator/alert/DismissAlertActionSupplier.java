@@ -40,7 +40,7 @@ public final class DismissAlertActionSupplier extends SequentialActionSupplier<S
     }
 
     @Override
-    protected void performActionOn(Alert value) {
+    protected void howToPerform(Alert value) {
         value.dismiss();
     }
 }

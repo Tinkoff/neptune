@@ -69,13 +69,6 @@ final class ToGetConditionalHelper {
 
     private static boolean toBeIgnored(Throwable throwable, Collection<Class<? extends Throwable>> toIgnore) {
         var cls = throwable.getClass();
-        if (RuntimeException.class.equals(cls)) {
-            var cause = throwable.getCause();
-            return ofNullable(cause)
-                    .map(throwable1 -> toBeIgnored(throwable1, toIgnore))
-                    .orElse(false);
-        }
-
         return toIgnore
                 .stream()
                 .anyMatch(aClass -> aClass.isAssignableFrom(cls));

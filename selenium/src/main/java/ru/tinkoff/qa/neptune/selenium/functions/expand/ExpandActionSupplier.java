@@ -62,7 +62,7 @@ public final class ExpandActionSupplier extends
     }
 
     @Override
-    protected void performActionOn(Expandable value) {
+    protected void howToPerform(Expandable value) {
         if (!value.isExpanded()) {
             value.expand();
         }

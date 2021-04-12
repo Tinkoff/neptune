@@ -6,7 +6,6 @@ import ru.tinkoff.qa.neptune.http.api.request.body.FileBody;
 import ru.tinkoff.qa.neptune.http.api.request.body.RequestBody;
 
 import java.io.File;
-import java.util.List;
 
 import static java.util.List.of;
 import static ru.tinkoff.qa.neptune.core.api.utils.SPIUtil.loadSPI;
@@ -14,7 +13,7 @@ import static ru.tinkoff.qa.neptune.core.api.utils.SPIUtil.loadSPI;
 @Description("Request body. File")
 public final class FileRequestBodyCaptor extends AbstractRequestBodyCaptor<FileBody, File> {
 
-    public FileRequestBodyCaptor(List<Class<? extends RequestBody<?>>> needed) {
+    public FileRequestBodyCaptor() {
         super(loadSPI(CapturedFileInjector.class), of(FileBody.class));
     }
 

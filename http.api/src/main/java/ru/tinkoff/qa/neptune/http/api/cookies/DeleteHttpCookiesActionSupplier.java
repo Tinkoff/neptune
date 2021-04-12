@@ -73,7 +73,7 @@ public abstract class DeleteHttpCookiesActionSupplier<R, S extends DeleteHttpCoo
         }
 
         @Override
-        protected void performActionOn(CookieStore value) {
+        protected void howToPerform(CookieStore value) {
             value.removeAll();
         }
     }
@@ -94,7 +94,7 @@ public abstract class DeleteHttpCookiesActionSupplier<R, S extends DeleteHttpCoo
         }
 
         @Override
-        protected void performActionOn(CookieStore value) {
+        protected void howToPerform(CookieStore value) {
             toDelete.forEach(httpCookie -> value.remove(null, httpCookie));
         }
     }
@@ -115,14 +115,16 @@ public abstract class DeleteHttpCookiesActionSupplier<R, S extends DeleteHttpCoo
                     .map(GetHttpCookiesSupplier::httpCookies)
                     .orElseGet(GetHttpCookiesSupplier::httpCookies);
             stream(toBeRemoved).forEach(getCookies::criteria);
-            performOn(getCookies.from(cookieManager -> {
-                cookieStore = cookieManager.getCookieStore();
-                return cookieManager;
-            }));
+            performOn(getCookies);
         }
 
         @Override
-        protected void performActionOn(List<HttpCookie> value) {
+        protected void onStart(CookieManager cookieManager) {
+            cookieStore = cookieManager.getCookieStore();
+        }
+
+        @Override
+        protected void howToPerform(List<HttpCookie> value) {
             value.forEach(httpCookie -> cookieStore.remove(null, httpCookie));
         }
     }

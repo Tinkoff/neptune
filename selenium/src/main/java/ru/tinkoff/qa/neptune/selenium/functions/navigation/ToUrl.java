@@ -131,7 +131,7 @@ public final class ToUrl extends SequentialActionSupplier<SeleniumStepContext, W
 
 
     @Override
-    protected void performActionOn(Window value) {
+    protected void howToPerform(Window value) {
         value.to(url);
     }
 }

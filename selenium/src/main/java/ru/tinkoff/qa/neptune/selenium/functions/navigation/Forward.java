@@ -55,7 +55,7 @@ public final class Forward extends SequentialActionSupplier<SeleniumStepContext,
     }
 
     @Override
-    protected void performActionOn(Window value) {
+    protected void howToPerform(Window value) {
         value.forward();
     }
 }

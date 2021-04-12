@@ -73,7 +73,7 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
     }
 
     @Override
-    protected void performActionOn(R value) {
+    protected void howToPerform(R value) {
         ofNullable(assertDescription).ifPresentOrElse(
                 s -> assertThat(s, value, criteria),
                 () -> assertThat(value, criteria));
