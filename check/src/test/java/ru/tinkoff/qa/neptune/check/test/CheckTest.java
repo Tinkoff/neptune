@@ -25,7 +25,7 @@ public class CheckTest {
     }
 
     private static final List<String> EXPECTED_LOGGER_MESSAGES1 =
-            of("Check inspected value 4 has started",
+            of("Check: inspected value 4 has started",
                     "Assert: Is integer is <true> has started",
                     "Get: Is integer has started",
                     "Result: true has been returned",
@@ -37,7 +37,7 @@ public class CheckTest {
                     "Event finished",
                     "Event finished",
                     "Event finished",
-                    "Check inspected value 5 has started",
+                    "Check: inspected value 5 has started",
                     "Assert: Sqr value is <25.0> has started",
                     "Get: Sqr value has started",
                     "Result: 25.0 has been returned",
@@ -46,7 +46,7 @@ public class CheckTest {
                     "Event finished");
 
     private static final List<String> EXPECTED_LOGGER_MESSAGES2 =
-            of("Check inspected value 9 has started",
+            of("Check: inspected value 9 has started",
                     "Assert: Is integer is <true> has started",
                     "Get: Is integer has started",
                     "Result: true has been returned",
@@ -101,7 +101,7 @@ public class CheckTest {
         check("Given value", (Object) null, match(nullValue()));
 
         assertThat(MESSAGES,
-                contains("Check Given value has started",
+                contains("Check: Given value has started",
                         "Assert: null has started",
                         "Event finished",
                         "Event finished"));
@@ -114,7 +114,7 @@ public class CheckTest {
                 match(is(3D)));
 
         assertThat(MESSAGES,
-                contains("Check Sqrt value of 9 has started",
+                contains("Check: Sqrt value of 9 has started",
                         "Sqrt value of 9 has started",
                         "Result: 3.0 has been returned",
                         "Event finished",
