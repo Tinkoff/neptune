@@ -74,7 +74,9 @@ public final class Presence<T> extends SequentialGetStepSupplier.GetObjectChaine
      * @return an instance of {@link Presence}.
      */
     @Description("Presence of {toBePresent}")
-    public static <T> Presence<T> presence(@DescriptionFragment("toBePresent") Function<T, ?> function) {
+    public static <T> Presence<T> presence(@DescriptionFragment(
+            value = "toBePresent",
+            makeReadableBy = PresenceParameterValueGetter.class) Function<T, ?> function) {
         checkArgument(nonNull(function), "Function should not be a null-value");
         return new Presence<>(function);
     }

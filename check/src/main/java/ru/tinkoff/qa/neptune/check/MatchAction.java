@@ -5,7 +5,6 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporti
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
-import ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -15,6 +14,7 @@ import static java.lang.String.valueOf;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
 
 /**
  * This class is designed to perform the matching of values.
@@ -34,9 +34,7 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
         super();
         checkArgument(!Objects.equals(EMPTY, valueOf(assertDescription).trim()),
                 "Description shouldn't be an empty string");
-        this.assertDescription = ofNullable(assertDescription)
-                .map(StepLocalization::translate)
-                .orElse(null);
+        this.assertDescription = assertDescription;
         this.criteria = criteria;
     }
 
@@ -68,8 +66,9 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
             @DescriptionFragment(value = "description", makeReadableBy = DescriptionTranslator.class) String description,
             Function<T, R> eval,
             @DescriptionFragment("matcher") Matcher<? super R> matcher) {
-        return new MatchAction<T, R>(description, matcher)
-                .performOn(new CalculateGetSupplier<>(eval).setDescription(description));
+        var translated = translate(description);
+        return new MatchAction<T, R>(translated, matcher)
+                .performOn(new CalculateGetSupplier<>(eval).setDescription(translated));
     }
 
     @Override

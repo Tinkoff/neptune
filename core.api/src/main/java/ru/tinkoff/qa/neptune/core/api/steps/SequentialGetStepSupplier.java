@@ -24,6 +24,7 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationHMS;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure.CaptureOnFailureReader.readCaptorsOnFailure;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess.CaptureOnSuccessReader.readCaptorsOnSuccess;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting.MaxDepthOfReportingReader.getMaxDepth;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.AND;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefaultGetParameterReader.*;
@@ -81,7 +82,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     }
 
     @SuppressWarnings("unused")
-    THIS setDescription(String description) {
+    protected THIS setDescription(String description) {
         this.description = description;
         return (THIS) this;
     }
@@ -347,7 +348,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         return toBeReturned.addSuccessCaptors(successCaptors)
                 .addFailureCaptors(failureCaptors)
                 .setResultDescription(resultDescription)
-                .setParameters(params);
+                .setParameters(params)
+                .setMaxDepth(getMaxDepth(this.getClass()));
     }
 
     protected Function<T, M> preparePreFunction() {

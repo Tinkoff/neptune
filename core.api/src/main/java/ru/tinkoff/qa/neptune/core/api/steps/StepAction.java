@@ -28,6 +28,7 @@ public final class StepAction<T, R> {
     private Map<String, String> parameters = emptyMap();
     private final SequentialActionSupplier<T, R, ?> supplier;
     private final Function<T, R> getFrom;
+    private int maxDepth;
 
     StepAction(String description, SequentialActionSupplier<T, R, ?> supplier, Function<T, R> getFrom) {
         this.supplier = supplier;
@@ -74,6 +75,11 @@ public final class StepAction<T, R> {
 
     StepAction<T, R> setParameters(Map<String, String> parameters) {
         this.parameters = parameters;
+        return this;
+    }
+
+    StepAction<T, R> setMaxDepth(int maxDepth) {
+        this.maxDepth = maxDepth;
         return this;
     }
 }

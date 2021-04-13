@@ -23,6 +23,7 @@ import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure.CaptureOnFailureReader.readCaptorsOnFailure;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess.CaptureOnSuccessReader.readCaptorsOnSuccess;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting.MaxDepthOfReportingReader.getMaxDepth;
 import static ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier.DefaultActionParameterReader.getImperativePseudoField;
 import static ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier.DefaultActionParameterReader.getPerformOnPseudoField;
 import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
@@ -165,7 +166,8 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
         return new StepAction<>(description, this, function)
                 .addSuccessCaptors(successCaptors)
                 .addFailureCaptors(failureCaptors)
-                .setParameters(getParameters());
+                .setParameters(getParameters())
+                .setMaxDepth(getMaxDepth(this.getClass()));
     }
 
     @Override

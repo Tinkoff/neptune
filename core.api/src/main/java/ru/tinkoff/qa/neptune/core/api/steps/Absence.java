@@ -67,7 +67,10 @@ public final class Absence<T> extends SequentialGetStepSupplier.GetObjectChained
      * @return an instance of {@link Absence}.
      */
     @Description("Absence of {toBeAbsent}")
-    public static <T> Absence<T> absence(@DescriptionFragment("toBeAbsent") Function<T, ?> function) {
+    public static <T> Absence<T> absence(
+            @DescriptionFragment(
+                    value = "toBeAbsent",
+                    makeReadableBy = PresenceParameterValueGetter.class) Function<T, ?> function) {
         checkArgument(nonNull(function), "Function should not be a null-value");
         return new Absence<>(function);
     }

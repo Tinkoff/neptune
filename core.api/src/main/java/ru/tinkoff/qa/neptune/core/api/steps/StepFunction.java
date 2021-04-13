@@ -28,6 +28,7 @@ public class StepFunction<T, R> implements Function<T, R> {
     private final Set<Captor<Object, Object>> failureCaptors = new HashSet<>();
     private Map<String, String> parameters = emptyMap();
     private String resultDescription;
+    private int maxDepth;
 
     StepFunction(String description, Function<T, R> function) {
         checkArgument(nonNull(function), "Function should be defined");
@@ -176,6 +177,11 @@ public class StepFunction<T, R> implements Function<T, R> {
 
     StepFunction<T, R> setResultDescription(String resultDescription) {
         this.resultDescription = resultDescription;
+        return this;
+    }
+
+    StepFunction<T, R> setMaxDepth(int maxDepth) {
+        this.maxDepth = maxDepth;
         return this;
     }
 
