@@ -80,7 +80,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         return (T) t.turnReportingOff();
     }
 
-    protected THIS setDescription(String description) {
+    @SuppressWarnings("unused")
+    THIS setDescription(String description) {
         this.description = description;
         return (THIS) this;
     }

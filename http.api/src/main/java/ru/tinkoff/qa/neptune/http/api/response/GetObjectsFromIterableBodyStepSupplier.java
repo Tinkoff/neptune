@@ -182,11 +182,6 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
             checkNotNull(response);
             this.response = response;
         }
-
-        @Override
-        protected GetObjectsFromIterableWhenResponseReceived<T, R, S> setDescription(String description) {
-            return super.setDescription(description);
-        }
     }
 
     /**
@@ -214,11 +209,6 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
         private GetObjectsFromIterableWhenResponseReceiving(ResponseSequentialGetSupplier<T> getResponse,
                                                             Function<T, S> f) {
             this(new ReceiveResponseAndGetResultFunction<>(f, getResponse));
-        }
-
-        @Override
-        protected GetObjectsFromIterableWhenResponseReceiving<T, R, S> setDescription(String description) {
-            return super.setDescription(description);
         }
 
         /**

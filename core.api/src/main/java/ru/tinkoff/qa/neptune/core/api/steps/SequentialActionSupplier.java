@@ -51,7 +51,8 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
         readCaptorsOnSuccess(this.getClass(), successCaptors);
     }
 
-    protected SequentialActionSupplier<T, R, THIS> setDescription(String actionDescription) {
+    @SuppressWarnings("unused")
+    SequentialActionSupplier<T, R, THIS> setDescription(String actionDescription) {
         this.actionDescription = actionDescription;
         return this;
     }

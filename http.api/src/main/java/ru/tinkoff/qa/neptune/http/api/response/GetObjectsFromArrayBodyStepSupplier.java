@@ -176,11 +176,6 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
             checkNotNull(response);
             this.response = response;
         }
-
-        @Override
-        protected GetObjectsFromArrayWhenResponseReceived<T, R> setDescription(String description) {
-            return super.setDescription(description);
-        }
     }
 
     /**
@@ -207,11 +202,6 @@ public abstract class GetObjectsFromArrayBodyStepSupplier<T, R, S extends GetObj
         private GetObjectsFromArrayWhenResponseReceiving(ResponseSequentialGetSupplier<T> getResponse,
                                                          Function<T, R[]> f) {
             this(new ReceiveResponseAndGetResultFunction<>(f, getResponse));
-        }
-
-        @Override
-        protected GetObjectsFromArrayWhenResponseReceiving<T, R> setDescription(String description) {
-            return super.setDescription(description);
         }
 
         /**

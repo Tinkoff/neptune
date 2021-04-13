@@ -181,11 +181,6 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetO
             checkNotNull(response);
             this.response = response;
         }
-
-        @Override
-        protected GetObjectFromIterableWhenResponseReceived<T, R> setDescription(String description) {
-            return super.setDescription(description);
-        }
     }
 
     /**
@@ -212,11 +207,6 @@ public abstract class GetObjectFromIterableBodyStepSupplier<T, R, S extends GetO
         private <S extends Iterable<R>> GetObjectFromIterableWhenResponseReceiving(ResponseSequentialGetSupplier<T> getResponse,
                                                                                    Function<T, S> f) {
             this(new ReceiveResponseAndGetResultFunction<>(f, getResponse));
-        }
-
-        @Override
-        protected GetObjectFromIterableWhenResponseReceiving<T, R> setDescription(String description) {
-            return super.setDescription(description);
         }
 
         /**

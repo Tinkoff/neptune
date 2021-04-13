@@ -11,7 +11,7 @@ import static java.io.File.createTempFile;
 import static java.nio.charset.Charset.defaultCharset;
 import static org.apache.commons.io.FileUtils.writeStringToFile;
 
-abstract class DBCaptor<T> extends FileCaptor<T> {
+public abstract class DBCaptor<T> extends FileCaptor<T> {
 
     @Override
     public File getData(T caught) {
