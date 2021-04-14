@@ -53,11 +53,11 @@ public final class Presence<T> extends SequentialGetStepSupplier.GetObjectChaine
 
     private Presence(Function<T, ?> toBePresent) {
         this();
-        StepFunction<T, ?> expectedToBePresent;
-        if (StepFunction.class.isAssignableFrom(toBePresent.getClass())) {
-            expectedToBePresent = ((StepFunction<T, ?>) toBePresent);
+        Get<T, ?> expectedToBePresent;
+        if (Get.class.isAssignableFrom(toBePresent.getClass())) {
+            expectedToBePresent = ((Get<T, ?>) toBePresent);
         } else {
-            expectedToBePresent = new StepFunction<>(isLoggable(toBePresent) ?
+            expectedToBePresent = new Get<>(isLoggable(toBePresent) ?
                     toBePresent.toString() :
                     "<not described value>",
                     toBePresent);
@@ -97,8 +97,8 @@ public final class Presence<T> extends SequentialGetStepSupplier.GetObjectChaine
 
     protected Function<T, Object> preparePreFunction() {
         var preFunction = super.preparePreFunction();
-        if (StepFunction.class.isAssignableFrom(preFunction.getClass())) {
-            ((StepFunction<?, ?>) preFunction).addIgnored(ignored2);
+        if (Get.class.isAssignableFrom(preFunction.getClass())) {
+            ((Get<?, ?>) preFunction).addIgnored(ignored2);
         }
         return ((Function<Object, Object>) o -> ofNullable(o).orElse(false))
                 .compose(preFunction);

@@ -1,10 +1,12 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 
 import java.util.function.Function;
 
 @CaptureOnSuccess(by = {TestNumberCaptor.class, TestStringCaptor.class, TestCaptor.class})
+@MaxDepthOfReporting(1)
 class ArithmeticalSequence extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<CalculatorSteps, Number, Number, ArithmeticalSequence> {
 
     private ArithmeticalSequence(Function<Number, Number> originalFunction) {

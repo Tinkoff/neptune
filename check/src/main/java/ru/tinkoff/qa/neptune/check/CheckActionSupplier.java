@@ -24,7 +24,7 @@ public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R,
     private static final String LINE_SEPARATOR = "\r\n";
 
     private final List<AssertionError> caughtMismatches = new ArrayList<>();
-    private final List<StepAction<T, ?>> checkList = new ArrayList<>();
+    private final List<Action<T>> checkList = new ArrayList<>();
 
     private CheckActionSupplier() {
         super();

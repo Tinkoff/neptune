@@ -38,7 +38,7 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
  */
 @SuppressWarnings("unchecked")
 @SequentialActionSupplier.DefinePerformImperativeParameterName
-public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActionSupplier<T, R, THIS>> implements Supplier<StepAction<T, R>>,
+public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActionSupplier<T, R, THIS>> implements Supplier<Action<T>>,
         StepParameterPojo {
 
     private String actionDescription;
@@ -150,7 +150,7 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
     protected abstract void howToPerform(R value);
 
     @Override
-    public StepAction<T, R> get() {
+    public Action<T> get() {
         checkArgument(nonNull(toBePerformedOn), "An object should be defined to perform the action on");
 
         Function<T, R> function;
@@ -163,7 +163,7 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
         }
 
         var description = (translate(getImperativePseudoField(this.getClass(), true)) + " " + actionDescription).trim();
-        return new StepAction<>(description, this, function)
+        return new ActionImpl<>(description, this, function)
                 .addSuccessCaptors(successCaptors)
                 .addFailureCaptors(failureCaptors)
                 .setParameters(getParameters())

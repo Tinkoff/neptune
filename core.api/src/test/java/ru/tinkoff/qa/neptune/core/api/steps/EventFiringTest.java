@@ -1,5 +1,7 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf;
 
@@ -7,6 +9,7 @@ import static java.lang.System.getProperties;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.CapturedEvents.*;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.events.ToLimitReportDepth.TO_LIMIT_REPORT_DEPTH_PROPERTY;
 import static ru.tinkoff.qa.neptune.core.api.steps.Arithmetical.divide;
 import static ru.tinkoff.qa.neptune.core.api.steps.Arithmetical.number;
 import static ru.tinkoff.qa.neptune.core.api.steps.ArithmeticalSequence.*;
@@ -40,7 +43,7 @@ public class EventFiringTest {
             });
         }
         else {
-            var f = ((StepFunction<CalculatorSteps, Number>) CALCULATION.get());
+            var f = ((Get<CalculatorSteps, Number>) CALCULATION.get());
             var func = f.turnReportingOff();
             $("Result of numeric operations", () -> {
                 var result = calculator().evaluate(func);
@@ -49,19 +52,19 @@ public class EventFiringTest {
         }
 
         try {
-            var divideByZero = (StepFunction<CalculatorSteps, Number>) divide(0F).get();
-            StepFunction<CalculatorSteps, Number> divByZero;
-            if (toReport) {
-                divByZero = divideByZero.turnReportingOn();
-            } else {
-                divByZero = divideByZero.turnReportingOff();
-            }
-
+            var divideByZero = (Get<CalculatorSteps, Number>) divide(0F).get();
             $("Result of the dividing by zero", () ->
-                    calculator().evaluate(divByZero));
+                    calculator().evaluate(divideByZero));
         } catch (Throwable t) {
             t.printStackTrace();
         }
+    }
+
+    @AfterMethod
+    @BeforeMethod
+    public void prepareAndRevert() {
+        toReport = true;
+        TO_LIMIT_REPORT_DEPTH_PROPERTY.accept(false);
     }
 
     @Test
@@ -185,20 +188,17 @@ public class EventFiringTest {
                 "Event finished",
                 "Result of numeric operations has started",
                 "Get: Subtraction of number 100 has started",
+                "Get: Divide by number 0.5 has started",
+                "Get: Multiplying by number 11 has started",
+                "Get: Divide by number -6 has started",
                 "Get: Entering number 9 has started",
                 "Result: 9.0 has been returned",
                 "Event finished",
-                "Get: Divide by number -6 has started",
                 "Result: -1.5 has been returned",
                 "Event finished",
-                "Get: Multiplying by number 11 has started",
                 "Result: -16.5 has been returned",
                 "Event finished",
-                "Get: Divide by number 0.5 has started",
                 "Result: -33.0 has been returned",
-                "Event finished",
-                "Get: Subtraction of number 100 has started",
-                "Result: -133.0 has been returned",
                 "Event finished",
                 "Result: -133.0 has been returned",
                 "Event finished",
@@ -215,19 +215,40 @@ public class EventFiringTest {
     @Test()
     public void turnOffReportingTest() {
         toReport = false;
-        try {
-            prepare();
-            assertThat(TestEventLogger.MESSAGES, contains("Reset calculated value to 0 has started",
-                    "Event finished",
-                    "Result of numeric operations has started",
-                    "Result: -128.0 has been returned",
-                    "Event finished",
-                    "Result of the dividing by zero has started",
-                    "java.lang.ArithmeticException has been thrown",
-                    "Event finished"));
-        }
-        finally {
-            toReport = true;
-        }
+        prepare();
+        assertThat(TestEventLogger.MESSAGES, contains("Reset calculated value to 0 has started",
+                "Event finished",
+                "Result of numeric operations has started",
+                "Result: -128.0 has been returned",
+                "Event finished",
+                "Result of the dividing by zero has started",
+                "Get: Divide by number 0.0 has started",
+                "java.lang.ArithmeticException has been thrown",
+                "Event finished",
+                "java.lang.ArithmeticException has been thrown",
+                "Event finished"));
+    }
+
+    @Test
+    public void eventFiringWithLimits() {
+        TO_LIMIT_REPORT_DEPTH_PROPERTY.accept(true);
+        prepare();
+        assertThat(TestEventLogger.MESSAGES, contains("Reset calculated value to 0 has started",
+                "Event finished",
+                "Result of numeric operations has started",
+                "Get: Subtraction of number 100 has started",
+                "Get: Divide by number 0.5 has started",
+                "Result: -33.0 has been returned",
+                "Event finished",
+                "Result: -133.0 has been returned",
+                "Event finished",
+                "Result: -128.0 has been returned",
+                "Event finished",
+                "Result of the dividing by zero has started",
+                "Get: Divide by number 0.0 has started",
+                "java.lang.ArithmeticException has been thrown",
+                "Event finished",
+                "java.lang.ArithmeticException has been thrown",
+                "Event finished"));
     }
 }

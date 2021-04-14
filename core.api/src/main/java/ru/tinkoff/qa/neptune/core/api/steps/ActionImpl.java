@@ -10,8 +10,10 @@ import java.util.function.Function;
 
 import static java.util.Collections.emptyMap;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.*;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting.MaxDepthOfReportingReader.getCurrentDepth;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchFailureEvent;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchSuccessEvent;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.events.ToLimitReportDepth.TO_LIMIT_REPORT_DEPTH_PROPERTY;
 
 /**
  * Performs a simple action (a function with no resulted value) which is built and supplied by
@@ -20,7 +22,7 @@ import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapture
  * @param <T> is a type of input value
  * @param <R>
  */
-public final class StepAction<T, R> {
+final class ActionImpl<T, R> implements Action<T> {
 
     private final String description;
     private final Set<Captor<Object, Object>> successCaptors = new HashSet<>();
@@ -30,31 +32,40 @@ public final class StepAction<T, R> {
     private final Function<T, R> getFrom;
     private int maxDepth;
 
-    StepAction(String description, SequentialActionSupplier<T, R, ?> supplier, Function<T, R> getFrom) {
+    ActionImpl(String description, SequentialActionSupplier<T, R, ?> supplier, Function<T, R> getFrom) {
         this.supplier = supplier;
         this.description = description;
         this.getFrom = getFrom;
     }
 
+    private boolean toReport() {
+        return getCurrentDepth() <= maxDepth || !TO_LIMIT_REPORT_DEPTH_PROPERTY.get();
+    }
+
     public void performAction(T t) {
         R performOn = null;
+        var toReport = toReport();
         try {
-            fireEventStarting(description, parameters);
+            if (toReport) {
+                fireEventStarting(description, parameters);
+            }
             supplier.onStart(t);
             performOn = getFrom.apply(t);
             supplier.howToPerform(performOn);
-            if (catchSuccessEvent()) {
+            if (catchSuccessEvent() && toReport) {
                 catchValue(performOn, successCaptors);
             }
         } catch (Throwable thrown) {
             supplier.onFailure(t, thrown);
             fireThrownException(thrown);
-            if (catchFailureEvent()) {
+            if (catchFailureEvent() && toReport) {
                 catchValue(performOn, failureCaptors);
             }
             throw thrown;
         } finally {
-            fireEventFinishing();
+            if (toReport) {
+                fireEventFinishing();
+            }
         }
     }
 
@@ -63,22 +74,22 @@ public final class StepAction<T, R> {
         return description;
     }
 
-    StepAction<T, R> addSuccessCaptors(List<Captor<Object, Object>> successCaptors) {
+    ActionImpl<T, R> addSuccessCaptors(List<Captor<Object, Object>> successCaptors) {
         this.successCaptors.addAll(successCaptors);
         return this;
     }
 
-    StepAction<T, R> addFailureCaptors(List<Captor<Object, Object>> failureCaptors) {
+    ActionImpl<T, R> addFailureCaptors(List<Captor<Object, Object>> failureCaptors) {
         this.failureCaptors.addAll(failureCaptors);
         return this;
     }
 
-    StepAction<T, R> setParameters(Map<String, String> parameters) {
+    ActionImpl<T, R> setParameters(Map<String, String> parameters) {
         this.parameters = parameters;
         return this;
     }
 
-    StepAction<T, R> setMaxDepth(int maxDepth) {
+    ActionImpl<T, R> setMaxDepth(int maxDepth) {
         this.maxDepth = maxDepth;
         return this;
     }

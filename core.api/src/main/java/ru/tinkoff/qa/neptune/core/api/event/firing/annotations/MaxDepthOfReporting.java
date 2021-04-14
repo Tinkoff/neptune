@@ -2,8 +2,6 @@ package ru.tinkoff.qa.neptune.core.api.event.firing.annotations;
 
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
-import ru.tinkoff.qa.neptune.core.api.steps.StepAction;
-import ru.tinkoff.qa.neptune.core.api.steps.StepFunction;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -17,8 +15,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * {@link SequentialActionSupplier} and defines max
  * depth of reporting available.
  * <p></p>
- * In runtime depth is calculated by depth of invocations of {@link StepFunction#apply(Object)} or
- * {@link StepAction#performAction(Object)} one from another.
+ * In runtime depth is calculated by depth of invocations of steps created by {@link SequentialGetStepSupplier} or
+ * {@link SequentialActionSupplier} one inside another.
  * <p></p>
  * Minimal value is 0.
  */
@@ -51,10 +49,11 @@ public @interface MaxDepthOfReporting {
         public static int getCurrentDepth() {
             var trace = currentThread().getStackTrace();
             var depth = -1;
-            for (int i = trace.length - 1; i >= 0; i--) {
-                var className = trace[i].getClassName();
-                var methodName = trace[i].getMethodName();
-                if ((className.equals(StepFunction.class.getName()) || className.equals(StepAction.class.getName()))
+            for (StackTraceElement stackTraceElement : trace) {
+                var className = stackTraceElement.getClassName();
+                var methodName = stackTraceElement.getMethodName();
+                if ((className.equals("ru.tinkoff.qa.neptune.core.api.steps.Get")
+                        || className.equals("ru.tinkoff.qa.neptune.core.api.steps.ActionImpl"))
                         &&
                         (methodName.equals("apply") || methodName.equals("performAction"))) {
                     depth++;

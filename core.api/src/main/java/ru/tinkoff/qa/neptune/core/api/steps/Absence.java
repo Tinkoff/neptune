@@ -11,6 +11,7 @@ import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.time.Duration.ofMillis;
+import static java.util.List.of;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
@@ -44,17 +45,17 @@ public final class Absence<T> extends SequentialGetStepSupplier.GetObjectChained
 
     private Absence(Function<T, ?> toBeAbsent) {
         this();
-        StepFunction<T, ?> expectedToBeAbsent;
-        if (StepFunction.class.isAssignableFrom(toBeAbsent.getClass())) {
-            expectedToBeAbsent = ((StepFunction<T, ?>) toBeAbsent);
+        Get<T, ?> expectedToBeAbsent;
+        if (Get.class.isAssignableFrom(toBeAbsent.getClass())) {
+            expectedToBeAbsent = ((Get<T, ?>) toBeAbsent);
         } else {
-            expectedToBeAbsent = new StepFunction<>(isLoggable(toBeAbsent) ?
+            expectedToBeAbsent = new Get<>(isLoggable(toBeAbsent) ?
                     toBeAbsent.toString() :
                     "<not described value>",
                     toBeAbsent);
         }
         from(expectedToBeAbsent.turnReportingOff()
-                .addIgnored(Throwable.class));
+                .addIgnored(of(Throwable.class)));
     }
 
 

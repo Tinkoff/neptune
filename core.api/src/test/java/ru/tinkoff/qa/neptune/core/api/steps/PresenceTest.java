@@ -25,28 +25,28 @@ public class PresenceTest {
     private static final IndexOutOfBoundsException EXPECTED_EXCEPTION_TO_BE_THROWN =
             new IndexOutOfBoundsException("Expected exception to be thrown");
 
-    private static final Function<PresenceTestContext, Object> RETURNS_OBJECT = new StepFunction<>("Object",
+    private static final Function<PresenceTestContext, Object> RETURNS_OBJECT = new Get<>("Object",
             presenceTestContext -> new Object());
 
-    private static final Function<PresenceTestContext, Object> RETURNS_NULL = new StepFunction<>("Null value",
+    private static final Function<PresenceTestContext, Object> RETURNS_NULL = new Get<>("Null value",
             presenceTestContext -> null);
 
-    private static final Function<PresenceTestContext, Object> RETURNS_OBJECT_ARRAY = new StepFunction<>("Object array",
+    private static final Function<PresenceTestContext, Object> RETURNS_OBJECT_ARRAY = new Get<>("Object array",
             presenceTestContext -> new Object[]{1, "String"});
 
-    private static final Function<PresenceTestContext, Object> RETURNS_EMPTY_ARRAY = new StepFunction<>("Empty array",
+    private static final Function<PresenceTestContext, Object> RETURNS_EMPTY_ARRAY = new Get<>("Empty array",
             presenceTestContext -> new String[]{});
 
-    private static final Function<PresenceTestContext, Object> RETURNS_OBJECT_ITERABLE = new StepFunction<>("Object iterable",
+    private static final Function<PresenceTestContext, Object> RETURNS_OBJECT_ITERABLE = new Get<>("Object iterable",
             presenceTestContext -> of(1, "String"));
 
-    private static final Function<PresenceTestContext, Object> RETURNS_EMPTY_ITERABLE = new StepFunction<>("Object iterable",
+    private static final Function<PresenceTestContext, Object> RETURNS_EMPTY_ITERABLE = new Get<>("Object iterable",
             presenceTestContext -> of());
 
-    private static final Function<PresenceTestContext, Object> RETURNS_TRUE = new StepFunction<>("True value",
+    private static final Function<PresenceTestContext, Object> RETURNS_TRUE = new Get<>("True value",
             presenceTestContext -> true);
 
-    private static final Function<PresenceTestContext, Object> RETURNS_FALSE = new StepFunction<>("False value",
+    private static final Function<PresenceTestContext, Object> RETURNS_FALSE = new Get<>("False value",
             presenceTestContext -> false);
 
     private static final Function<PresenceTestContext, Object> PRODUCES_IGNORED_EXCEPTIONS =
@@ -57,7 +57,7 @@ public class PresenceTest {
 
     private static final PresenceTestContext presenceTestContext = new PresenceTestContext();
 
-    private static final Function<PresenceTestContext, Object> PRODUCES_EXPECTED_EXCEPTIONS = new StepFunction<>("Expected exception",
+    private static final Function<PresenceTestContext, Object> PRODUCES_EXPECTED_EXCEPTIONS = new Get<>("Expected exception",
             presenceTestContext -> {
                 throw EXPECTED_EXCEPTION_TO_BE_THROWN;
             });

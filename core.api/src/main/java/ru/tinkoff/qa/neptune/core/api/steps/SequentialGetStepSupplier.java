@@ -324,32 +324,23 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         };
         checkNotNull(endFunction);
 
-        StepFunction<T, R> toBeReturned;
         var params = getParameters();
         var resultDescription = translate(getResultPseudoField(this.getClass(), true));
         var description = (translate(getImperativePseudoField(this.getClass(), true)) + " " + this.description).trim();
 
-        if (StepFunction.class.isAssignableFrom(composeWith.getClass())) {
-            ((StepFunction<?, ?>) composeWith).addIgnored(ignored);
-            toBeReturned = new StepFunction<>(description, endFunction)
-                    .setParameters(params)
-                    .addSuccessCaptors(successCaptors)
-                    .addFailureCaptors(failureCaptors)
-                    .setResultDescription(resultDescription)
-                    .compose(composeWith);
-        } else {
-            toBeReturned = new StepFunction<>(description, endFunction.compose(composeWith));
-        }
+        var toBeReturned = new Get<>(description, endFunction)
+                .addSuccessCaptors(successCaptors)
+                .addFailureCaptors(failureCaptors)
+                .setResultDescription(resultDescription)
+                .setParameters(params)
+                .setMaxDepth(getMaxDepth(this.getClass()))
+                .compose(composeWith);
 
         if (!toReport) {
             toBeReturned.turnReportingOff();
         }
 
-        return toBeReturned.addSuccessCaptors(successCaptors)
-                .addFailureCaptors(failureCaptors)
-                .setResultDescription(resultDescription)
-                .setParameters(params)
-                .setMaxDepth(getMaxDepth(this.getClass()));
+        return toBeReturned;
     }
 
     protected Function<T, M> preparePreFunction() {

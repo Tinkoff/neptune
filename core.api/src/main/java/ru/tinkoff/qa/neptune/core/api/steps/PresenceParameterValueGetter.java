@@ -10,7 +10,7 @@ public class PresenceParameterValueGetter implements ParameterValueGetter<Functi
 
     @Override
     public String getParameterValue(Function<?, ?> fieldValue) {
-        if (StepFunction.class.isAssignableFrom(fieldValue.getClass())) {
+        if (Get.class.isAssignableFrom(fieldValue.getClass())) {
             return fieldValue.toString();
         } else {
             return isLoggable(fieldValue) ?

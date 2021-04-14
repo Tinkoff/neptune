@@ -19,7 +19,7 @@ import static ru.tinkoff.qa.neptune.core.api.properties.general.resorces.FreeRes
  * <p>
  * It have sense when value of th property {@code 'TO_FREE_RESOURCES_ON_INACTIVITY'} is {@code true}.
  */
-public class FreeResourcesOnInactivityAfter extends DurationSupplier {
+public final class FreeResourcesOnInactivityAfter extends DurationSupplier {
 
     /**
      * Reads properties {@code 'TO_FREE_RESOURCES_ON_INACTIVITY_AFTER_TIME_UNIT'} and
