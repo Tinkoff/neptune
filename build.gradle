@@ -1,5 +1,5 @@
 ext {
-    globalVersion = '0.16.0-ALPHA'
+    globalVersion = '0.17.0-ALPHA'
 }
 
 subprojects {
@@ -28,16 +28,16 @@ subprojects {
         testNGVersion = '7.4.0'
         hamcrestVersion = '2.2'
         seleniumVersion = '3.141.59'
-        allureVersion = '2.13.8'
-        jacksonVersion = '2.12.2'
+        allureVersion = '2.13.9'
+        jacksonVersion = '2.12.3'
         mavenDeployLogin = hasProperty('REPO_USER_NAME') ? REPO_USER_NAME : System.getenv('REPO_USER_NAME')
         mavenDeployPassword = hasProperty('REPO_USER_PASSWORD') ? REPO_USER_PASSWORD : System.getenv('REPO_USER_PASSWORD')
         globalVersion = version
     }
 
     dependencies {
-        compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
-        compile group: 'com.google.guava', name: 'guava', version: '30.1-jre'
+        compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+        compile group: 'com.google.guava', name: 'guava', version: '30.1.1-jre'
         testCompile group: 'org.testng', name: 'testng', version: testNGVersion
         compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
         compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
@@ -46,7 +46,7 @@ subprojects {
         compile group: 'commons-validator', name: 'commons-validator', version: '1.7'
         compile group: 'commons-io', name: 'commons-io', version: '2.8.0'
         compile group: 'com.google.code.gson', name: 'gson', version: '2.8.6'
-        compile group: 'io.github.classgraph', name: 'classgraph', version: '4.8.102'
+        compile group: 'io.github.classgraph', name: 'classgraph', version: '4.8.104'
         compile group: 'org.hamcrest', name: 'hamcrest', version: hamcrestVersion
     }
 

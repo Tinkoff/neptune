@@ -7,7 +7,7 @@ dependencies {
     inpath(project(":core.api")) {
         transitive = false
     }
-    compile group: 'org.datanucleus', name: 'datanucleus-rdbms', version: '5.2.5'
+    compile group: 'org.datanucleus', name: 'datanucleus-rdbms', version: '5.2.6'
     compile group: 'org.datanucleus', name: 'datanucleus-jdo-query', version: '5.0.9'
     compile group: 'org.datanucleus', name: 'datanucleus-api-jdo', version: '5.2.5'
     compile group: 'org.datanucleus', name: 'datanucleus-core', version: '5.2.6'

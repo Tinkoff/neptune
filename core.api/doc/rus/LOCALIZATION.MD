@@ -74,6 +74,8 @@ task generateBundle(type: JavaExec) {
 #_________________________________Parameters_____________________________________
 #Original text = Get:
 core.api.steps.SequentialGetStepSupplier.imperative = Get:
+#Original text = Result
+core.api.steps.SequentialGetStepSupplier.resultDescription = Result
 
 ######################## core.api.steps.SequentialActionSupplier #
 #_________________________________Parameters_____________________________________
@@ -84,18 +86,23 @@ core.api.steps.SequentialActionSupplier.imperative = Perform:
 #_________________________________Parameters_____________________________________
 #Original text = Time of the waiting for absence
 core.api.steps.Absence.timeOut = Time of the waiting for absence
+#Original text = Is absent
+core.api.steps.Absence.resultDescription = Is absent
 #__________________________________ Methods _______________________________________
-#Original text = Absence of {toBeAbsent}
-core.api.steps.Absence.absence(java.util.function.Function<T,?>) = Absence of {toBeAbsent}
 #Original text = Absence of {toBeAbsent}
 core.api.steps.Absence.absence(core.api.steps.SequentialGetStepSupplier<T,?,?,?,?>) = Absence of {toBeAbsent}
+#Original text = Absence of {toBeAbsent}
+core.api.steps.Absence.absence(java.util.function.Function<T,?>) = Absence of {toBeAbsent}
 
 ######################## core.api.steps.Presence #
+#_________________________________Parameters_____________________________________
+#Original text = Is present
+core.api.steps.Presence.resultDescription = Is present
 #__________________________________ Methods _______________________________________
 #Original text = Presence of {toBePresent}
-core.api.steps.Presence.presence(core.api.steps.SequentialGetStepSupplier<T,?,?,?,?>) = Presence of {toBePresent}
-#Original text = Presence of {toBePresent}
 core.api.steps.Presence.presence(java.util.function.Function<T,?>) = Presence of {toBePresent}
+#Original text = Presence of {toBePresent}
+core.api.steps.Presence.presence(core.api.steps.SequentialGetStepSupplier<T,?,?,?,?>) = Presence of {toBePresent}
 
 #======================================= ATTACHMENTS ============================================
 
