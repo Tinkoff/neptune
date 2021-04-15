@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.selenium.functions.browser.proxy;
 
-import com.browserup.bup.BrowserUpProxy;
 import com.browserup.harreader.model.HarEntry;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.event.firing.collections.CollectionCaptor;
@@ -20,12 +19,12 @@ import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.GetProxy.getBro
 
 @Description("Http traffic")
 @CaptureOnSuccess(by = CollectionCaptor.class)
-public class BrowserProxyGetStepSupplier extends SequentialGetStepSupplier.GetIterableChainedStepSupplier<SeleniumStepContext, List<HarEntry>, BrowserUpProxy, HarEntry, BrowserProxyGetStepSupplier> {
+public class BrowserProxyGetStepSupplier extends SequentialGetStepSupplier.GetIterableStepSupplier<SeleniumStepContext, List<HarEntry>, HarEntry, BrowserProxyGetStepSupplier> {
 
     private final static String LINE_SEPARATOR = "\r\n";
 
     private BrowserProxyGetStepSupplier() {
-        super(proxy -> ofNullable(proxy)
+        super(getBrowserProxy().andThen(proxy -> ofNullable(proxy)
                 .map(p -> {
                     if (!p.isStarted()) {
                         return new ArrayList<HarEntry>();
@@ -65,8 +64,7 @@ public class BrowserProxyGetStepSupplier extends SequentialGetStepSupplier.GetIt
                         return entry;
                     }).collect(toList());
                 })
-                .orElseGet(ArrayList::new));
-        from(getBrowserProxy());
+                .orElseGet(ArrayList::new)));
     }
 
     public static BrowserProxyGetStepSupplier proxiedRequests() {
