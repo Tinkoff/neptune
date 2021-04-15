@@ -30,4 +30,4 @@ jobs:
       uses: eskatos/gradle-command-action@v1
       with:
         gradle-version: 6.8.3
-        arguments: clean build --parallel
+        run: export DISPLAY=:99 chromedriver --url-base=/wd/hub & sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 & gradle clean build --parallel
