@@ -17,16 +17,17 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: nanasess/setup-chromedriver@master  
-    - uses: eskatos/gradle-command-action@v1
-      with:
-        gradle-version: 6.8.3
     - name: Set up JDK 11
       uses: actions/setup-java@v1
       with:
         java-version: 11
-    - name: Build with Gradle
+    - name: Prepare ENV
       run: |
         export DISPLAY=:99
         chromedriver --url-base=/wd/hub &
         sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 & # optional
-        gradle clean build --parallel
+    - name: Run Tests    
+    - uses: eskatos/gradle-command-action@v1
+      with:
+        gradle-version: 6.8.3
+        arguments: clean build --parallel
