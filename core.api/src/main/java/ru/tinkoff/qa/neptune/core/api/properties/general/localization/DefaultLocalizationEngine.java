@@ -8,7 +8,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization;
 @PropertyDescription(description = "Define localisation mechanism",
         section = "Report localization")
 @PropertyName("DEFAULT_LOCALIZATION_ENGINE")
-public class DefaultLocalizationEngine implements ObjectByClassPropertySupplier<StepLocalization> {
+public final class DefaultLocalizationEngine implements ObjectByClassPropertySupplier<StepLocalization> {
     public static final DefaultLocalizationEngine DEFAULT_LOCALIZATION_ENGINE = new DefaultLocalizationEngine();
 
     private DefaultLocalizationEngine() {

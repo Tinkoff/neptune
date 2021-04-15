@@ -3,6 +3,7 @@
 
     <test name="Localization test">
         <classes>
+            <class name="ru.tinkoff.qa.neptune.core.api.localization.BasicLocalizationTest"/>
             <class name="ru.tinkoff.qa.neptune.core.api.localization.TranslateByResourceBundleTest"/>
             <class name="ru.tinkoff.qa.neptune.core.api.localization.OtherLocalisationEngineTest"/>
         </classes>

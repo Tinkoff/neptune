@@ -260,7 +260,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
             assertThat("Spent time in millis", end - start,
                     greaterThan(FIVE_SECONDS.toMillis()));
             assertThat("Difference between expected and actual duration", end - start - FIVE_SECONDS.toMillis(),
-                    lessThanOrEqualTo(600L));
+                    lessThanOrEqualTo(650L));
             throw e;
         }
         fail("The exception throwing was expected");
@@ -276,7 +276,7 @@ public class GetSubIterableTest extends BaseConditionalTest {
             assertThat("Spent time in millis", end - start,
                     greaterThan(FIVE_SECONDS.toMillis()));
             assertThat("Difference between expected and actual duration", end - start - FIVE_SECONDS.toMillis(),
-                    lessThanOrEqualTo(600L));
+                    lessThanOrEqualTo(650L));
             throw e;
         }
         fail("The exception throwing was expected");

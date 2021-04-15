@@ -1,5 +1,6 @@
 package ru.tinkoff.qa.neptune.check;
 
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.*;
 
 import java.util.ArrayList;
@@ -16,15 +17,14 @@ import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.core.api.steps.Step.createStep;
 
-@SequentialActionSupplier.DefaultParameterNames(
-        imperative = "Check"
-)
+@SequentialActionSupplier.DefinePerformImperativeParameterName("Check:")
+@MaxDepthOfReporting(0)
 public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R, T, CheckActionSupplier<R, T>> {
 
     private static final String LINE_SEPARATOR = "\r\n";
 
     private final List<AssertionError> caughtMismatches = new ArrayList<>();
-    private final List<StepAction<T>> checkList = new ArrayList<>();
+    private final List<Action<T>> checkList = new ArrayList<>();
 
     private CheckActionSupplier() {
         super();
@@ -44,7 +44,7 @@ public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R,
     public static <T> void check(String description, T t, MatchAction<T, ?>... matchActions) {
         checkActionSupplier(description, (Function<T, T>) t1 -> t1, matchActions)
                 .get()
-                .accept(t);
+                .performAction(t);
     }
 
     @SafeVarargs
@@ -83,7 +83,7 @@ public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R,
             public String toString() {
                 return description;
             }
-        }, matchActions).get().accept(createStep(description, toGet));
+        }, matchActions).get().performAction(createStep(description, toGet));
     }
 
     /**
@@ -98,7 +98,7 @@ public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R,
     @SafeVarargs
     public static <T> void check(T t, MatchAction<T, ?>... matchActions) {
         checkActionSupplier(t, matchActions)
-                .get().accept(t);
+                .get().performAction(t);
     }
 
     @SafeVarargs
@@ -120,10 +120,10 @@ public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R,
     }
 
     @Override
-    protected void performActionOn(T value) {
+    protected void howToPerform(T value) {
         checkList.forEach(tConsumer -> {
             try {
-                tConsumer.accept(value);
+                tConsumer.performAction(value);
             } catch (AssertionError e) {
                 caughtMismatches.add(e);
             }

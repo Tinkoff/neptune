@@ -4,14 +4,18 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeImageCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.*;
+import ru.tinkoff.qa.neptune.selenium.captors.ListOfWebElementImageCaptor;
+import ru.tinkoff.qa.neptune.selenium.captors.WebDriverImageCaptor;
+import ru.tinkoff.qa.neptune.selenium.captors.WebElementImageCaptor;
 
 import java.time.Duration;
 import java.util.List;
@@ -24,20 +28,20 @@ import static ru.tinkoff.qa.neptune.selenium.properties.SessionFlagProperties.FI
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMENT_WAITING_DURATION;
 
 @SuppressWarnings({"unused"})
-@MakeImageCapturesOnFinishing
-@MakeFileCapturesOnFinishing
-@SequentialGetStepSupplier.DefaultParameterNames(
-        timeOut = "Time of the waiting for elements",
-        from = "Parent element",
-        criteria = "Element criteria",
-        imperative = "Find"
-)
+@SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting for elements")
+@SequentialGetStepSupplier.DefineFromParameterName("Parent element")
+@SequentialGetStepSupplier.DefineCriteriaParameterName("Element criteria")
+@SequentialGetStepSupplier.DefineGetImperativeParameterName(value = "Find:")
+@SequentialGetStepSupplier.DefineResultDescriptionParameterName("Found elements")
+@MaxDepthOfReporting(1)
+@CaptureOnSuccess(by = ListOfWebElementImageCaptor.class)
+@CaptureOnFailure(by = {WebDriverImageCaptor.class, WebElementImageCaptor.class})
 public final class MultipleSearchSupplier<R extends SearchContext> extends
-        SequentialGetStepSupplier.GetIterableChainedStepSupplier<SearchContext, List<R>, SearchContext, R, MultipleSearchSupplier<R>> {
+        SequentialGetStepSupplier.GetIterableChainedStepSupplier<Object, List<R>, SearchContext, R, MultipleSearchSupplier<R>> {
 
     private MultipleSearchSupplier(Function<SearchContext, List<R>> originalFunction) {
         super(originalFunction);
-        from(searchContext -> searchContext);
+        from(new SearchingInitialFunction());
         timeOut(ELEMENT_WAITING_DURATION.get());
         addIgnored(StaleElementReferenceException.class);
         if (FIND_ONLY_VISIBLE_ELEMENTS.get()) {
@@ -53,14 +57,14 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param by locator strategy to find an element
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    @Description("Web elements located {by}")
+    @Description("Web elements located '{by}'")
     public static MultipleSearchSupplier<WebElement> webElements(@DescriptionFragment("by") By by) {
         var webElements = FindWebElements.webElements(by);
         return new MultipleSearchSupplier<>(webElements);
     }
 
     /**
-     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.
+     * Returns an instance of {@link MultipleSearchSupplier} that builds and supplies a function.r
      * The built function takes an instance of {@link SearchContext} for the searching
      * and returns some list of {@link WebElement} found from the input value.
      *
@@ -68,7 +72,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param text that desired elements should have
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    @Description("Web elements located {by} with the text '{text}'")
+    @Description("Web elements located '{by}' with the text '{text}'")
     public static MultipleSearchSupplier<WebElement> webElements(@DescriptionFragment("by") By by, @DescriptionFragment("text") String text) {
         var shouldHaveText = text(text);
         var webElements = FindWebElements.webElements(by);
@@ -88,7 +92,7 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
      */
-    @Description("List of {tClass} '{textOrLabel}'")
+    @Description("List of {tClass} with text/label '{textOrLabel}'")
     public static <T extends Widget> MultipleSearchSupplier<T> widgets(@DescriptionFragment(value = "tClass", makeReadableBy = WidgetNameGetter.class) Class<T> tClass,
                                                                        @DescriptionFragment("textOrLabel") String textOrLabel) {
         return new MultipleSearchSupplier<T>(
@@ -666,19 +670,6 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return self-reference
      */
     public <Q extends SearchContext> MultipleSearchSupplier<R> foundFrom(Q from) {
-        return super.from(from);
-    }
-
-    /**
-     * Constructs the chained searching from result of some function applying. This function should take some
-     * {@link SearchContext} as the input parameter and return some list of found instances of {@link SearchContext}.
-     *
-     * @param from is a function which takes some {@link SearchContext} as the input parameter and returns some
-     *             list of found instances of {@link SearchContext}.
-     * @param <Q>  is a type of the parent element.
-     * @return self-reference
-     */
-    public <Q extends SearchContext> MultipleSearchSupplier<R> foundFrom(Function<SearchContext, Q> from) {
         return super.from(from);
     }
 

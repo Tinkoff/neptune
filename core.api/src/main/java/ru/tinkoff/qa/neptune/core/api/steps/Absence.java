@@ -1,32 +1,30 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
 import com.google.common.collect.Iterables;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.IncludeParamsOfInnerGetterStep;
 
 import java.lang.reflect.Array;
 import java.time.Duration;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.time.Duration.ofMillis;
+import static java.util.List.of;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationHMS;
-import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.fireReturnedValue;
-import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefaultParameterNames.DefaultGetParameterReader.getTimeOutPseudoField;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
-import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
-@SequentialGetStepSupplier.DefaultParameterNames(timeOut = "Time of the waiting for absence")
 @SuppressWarnings("unchecked")
-public final class Absence<T extends Context<?>> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<T, Boolean, Object, Absence<T>> {
+@SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting for absence")
+@SequentialGetStepSupplier.DefineResultDescriptionParameterName("Is absent")
+@IncludeParamsOfInnerGetterStep
+@MaxDepthOfReporting(0)
+public final class Absence<T> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<T, Boolean, Object, Absence<T>> {
 
-    private Object received;
-
-    private Absence(Function<T, ?> toBeAbsent) {
+    private Absence() {
         super(o -> ofNullable(o)
                 .map(o1 -> {
                     Class<?> clazz = o1.getClass();
@@ -36,40 +34,30 @@ public final class Absence<T extends Context<?>> extends SequentialGetStepSuppli
                     return false;
                 })
                 .orElse(false));
+    }
 
-        StepFunction<T, ?> expectedToBeAbsent;
-        if (StepFunction.class.isAssignableFrom(toBeAbsent.getClass())) {
-            expectedToBeAbsent = ((StepFunction<T, ?>) toBeAbsent);
+    private Absence(SequentialGetStepSupplier<?, ?, ?, ?, ?> toBeAbsent) {
+        this();
+        from(turnReportingOff(toBeAbsent.clone().timeOut(ofMillis(0))
+                .pollingInterval(ofMillis(0))
+                .addIgnored(Throwable.class)));
+    }
+
+    private Absence(Function<T, ?> toBeAbsent) {
+        this();
+        Get<T, ?> expectedToBeAbsent;
+        if (Get.class.isAssignableFrom(toBeAbsent.getClass())) {
+            expectedToBeAbsent = ((Get<T, ?>) toBeAbsent);
         } else {
-            expectedToBeAbsent = new StepFunction<>(isLoggable(toBeAbsent) ?
+            expectedToBeAbsent = new Get<>(isLoggable(toBeAbsent) ?
                     toBeAbsent.toString() :
                     "<not described value>",
                     toBeAbsent);
         }
         from(expectedToBeAbsent.turnReportingOff()
-                .addIgnored(Throwable.class));
+                .addIgnored(of(Throwable.class)));
     }
 
-    private Absence(SequentialGetStepSupplier<T, ?, ?, ?, ?> toBeAbsent) {
-        this(toBeAbsent.clone().timeOut(ofMillis(0))
-                .pollingInterval(ofMillis(0))
-                .get());
-    }
-
-    @Override
-    public Map<String, String> getParameters() {
-        var result = new LinkedHashMap<String, String>();
-        var cls = (Class<?>) this.getClass();
-
-        ofNullable(timeToGet).ifPresent(duration -> {
-            if (duration.toMillis() > 0) {
-                result.put(translate(getTimeOutPseudoField(cls)), formatDurationHMS(duration.toMillis()));
-            }
-        });
-
-        result.putAll(((StepFunction<?, ?>) from).getParameters());
-        return result;
-    }
 
     /**
      * Creates an instance of {@link Absence}.
@@ -80,7 +68,10 @@ public final class Absence<T extends Context<?>> extends SequentialGetStepSuppli
      * @return an instance of {@link Absence}.
      */
     @Description("Absence of {toBeAbsent}")
-    public static <T extends Context<?>> Absence<T> absence(@DescriptionFragment("toBeAbsent") Function<T, ?> function) {
+    public static <T> Absence<T> absence(
+            @DescriptionFragment(
+                    value = "toBeAbsent",
+                    makeReadableBy = PresenceParameterValueGetter.class) Function<T, ?> function) {
         checkArgument(nonNull(function), "Function should not be a null-value");
         return new Absence<>(function);
     }
@@ -94,7 +85,7 @@ public final class Absence<T extends Context<?>> extends SequentialGetStepSuppli
      * @return an instance of {@link Absence}.
      */
     @Description("Absence of {toBeAbsent}")
-    public static <T extends Context<?>> Absence<T> absence(@DescriptionFragment("toBeAbsent") SequentialGetStepSupplier<T, ?, ?, ?, ?> toBeAbsent) {
+    public static <T> Absence<T> absence(@DescriptionFragment("toBeAbsent") SequentialGetStepSupplier<T, ?, ?, ?, ?> toBeAbsent) {
         checkArgument(nonNull(toBeAbsent), "Supplier of a function should not be a null-value");
         return new Absence<>(toBeAbsent);
     }
@@ -105,9 +96,7 @@ public final class Absence<T extends Context<?>> extends SequentialGetStepSuppli
         var getAbsence = new Function<T, Object>() {
             @Override
             public Object apply(T t) {
-                received = null;
                 var result = preFunction.apply(t);
-                received = result;
 
                 if (result == null) {
                     return true;
@@ -138,10 +127,7 @@ public final class Absence<T extends Context<?>> extends SequentialGetStepSuppli
         };
 
         var resulted = getSingle(getAbsence, timeToGet);
-        return ((Function<Object, Object>) o -> ofNullable(o).orElseGet(() -> {
-            fireReturnedValue(received);
-            return false;
-        })).compose(resulted);
+        return ((Function<Object, Object>) o -> ofNullable(o).orElse(false)).compose(resulted);
     }
 
     protected Function<Object, Boolean> getEndFunction() {

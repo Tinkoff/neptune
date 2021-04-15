@@ -4,8 +4,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeCaptureOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.steps.*;
 import ru.tinkoff.qa.neptune.core.api.steps.localization.LocalizationByResourceBundle;
 
@@ -43,7 +42,7 @@ public class TranslateByResourceBundleTest {
     @DataProvider()
     public static Object[][] data2() {
         return new Object[][]{
-                {someCriteriaWithoutAnnotation(), "Class Description from ResourceBundle"},
+                {someCriteriaWithoutAnnotation(), "not described criteria"},
                 {someCriteriaWithAnnotation(), "Method Description from ResourceBundle"},
                 {someCriteriaWithAnnotationWithoutResourceBundleKey(), "Method Description from Annotation"},
                 {someCriteriaWithCompositeAnnotation("sss"), "Composite Method Description from ResourceBundle + sss"}
@@ -85,8 +84,8 @@ public class TranslateByResourceBundleTest {
     }
 
     @Description("Class Description from Annotation")
-    @MakeStringCapturesOnFinishing
-    @MakeCaptureOnFinishing(typeOfCapture = Number.class)
+    @CaptureOnSuccess(by = {TestNumberCaptor.class, TestStringCaptor.class})
+    @SequentialGetStepSupplier.DefineCriteriaParameterName
     static class GetStepSupplier extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<Object, Object, Object, GetStepSupplier> {
 
         protected GetStepSupplier() {
@@ -153,7 +152,7 @@ public class TranslateByResourceBundleTest {
         }
 
         @Override
-        protected void performActionOn(Object value) {
+        protected void howToPerform(Object value) {
         }
     }
 

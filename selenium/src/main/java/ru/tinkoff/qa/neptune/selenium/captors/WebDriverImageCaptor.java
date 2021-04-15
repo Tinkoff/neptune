@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.selenium.captors;
 
-import com.google.common.annotations.Beta;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -17,7 +16,9 @@ import java.io.IOException;
 import static java.util.Optional.ofNullable;
 import static org.openqa.selenium.OutputType.BYTES;
 
-@Beta
+/**
+ * Takes screenshot from a whole page
+ */
 @Description("Browser screenshot")
 public class WebDriverImageCaptor extends ImageCaptor<WebDriver> {
 

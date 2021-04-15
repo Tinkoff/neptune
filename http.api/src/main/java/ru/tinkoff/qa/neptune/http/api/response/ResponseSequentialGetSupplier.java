@@ -1,12 +1,17 @@
 package ru.tinkoff.qa.neptune.http.api.response;
 
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.CaptorFilterByProducedType;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
+import ru.tinkoff.qa.neptune.http.api.captors.request.AbstractRequestBodyCaptor;
+import ru.tinkoff.qa.neptune.http.api.captors.response.AbstractResponseBodyObjectCaptor;
+import ru.tinkoff.qa.neptune.http.api.captors.response.AbstractResponseBodyObjectsCaptor;
+import ru.tinkoff.qa.neptune.http.api.captors.response.RequestResponseLogCaptor;
+import ru.tinkoff.qa.neptune.http.api.captors.response.ResponseCaptor;
 import ru.tinkoff.qa.neptune.http.api.request.NeptuneHttpRequestImpl;
 import ru.tinkoff.qa.neptune.http.api.request.RequestBuilder;
 import ru.tinkoff.qa.neptune.http.api.request.body.*;
@@ -21,9 +26,9 @@ import java.util.function.Predicate;
 
 import static java.lang.String.valueOf;
 import static java.util.Optional.ofNullable;
-import static java.util.Set.of;
 import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationHMS;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil.createCaptors;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchFailureEvent;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchSuccessEvent;
 
@@ -32,18 +37,14 @@ import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapture
  *
  * @param <T> is a type of response body
  */
-@MakeStringCapturesOnFinishing
-@MakeFileCapturesOnFinishing
-@SequentialGetStepSupplier.DefaultParameterNames(
-        criteria = "Response criteria"
-)
-@Description("Http Response")
+@CaptureOnSuccess(by = {ResponseCaptor.class, AbstractResponseBodyObjectCaptor.class, AbstractResponseBodyObjectsCaptor.class})
+@SequentialGetStepSupplier.DefineCriteriaParameterName("Response criteria")
+@MaxDepthOfReporting(0)
 public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSupplier.GetObjectStepSupplier<HttpStepContext, HttpResponse<T>,
         ResponseSequentialGetSupplier<T>> {
 
     private final ResponseExecutionInfo info;
     private final HttpRequest request;
-    private boolean toReport = true;
 
     private ResponseSequentialGetSupplier(RequestBuilder requestBuilder,
                                           HttpResponse.BodyHandler<T> bodyHandler,
@@ -75,7 +76,9 @@ public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSup
      * @param <T>            is a type of response body
      * @return an instance of {@link ResponseSequentialGetSupplier}
      */
-    public static <T> ResponseSequentialGetSupplier<T> response(RequestBuilder requestBuilder, HttpResponse.BodyHandler<T> bodyHandler) {
+    @Description("Http Response of {request}")
+    public static <T> ResponseSequentialGetSupplier<T> response(@DescriptionFragment("request") RequestBuilder requestBuilder,
+                                                                HttpResponse.BodyHandler<T> bodyHandler) {
         return new ResponseSequentialGetSupplier<>(requestBuilder, bodyHandler, new ResponseExecutionInfo());
     }
 
@@ -90,31 +93,31 @@ public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSup
     }
 
     @Override
-    protected Function<HttpStepContext, HttpResponse<T>> getEndFunction() {
-        return httpStepContext -> {
-            if (toReport) {
-                catchValue(getRequest().body(), of(new CaptorFilterByProducedType(Object.class)));
-            }
-            boolean success = false;
-            try {
-                var result = super.getEndFunction().apply(httpStepContext);
-                success = true;
-                return result;
-            } finally {
-                if ((toReport && success && catchSuccessEvent()) || (toReport && !success && catchFailureEvent())) {
-                    catchValue(info, of(new CaptorFilterByProducedType(Object.class)));
-                }
-            }
-        };
+    @SuppressWarnings("unchecked")
+    protected void onStart(HttpStepContext httpStepContext) {
+        if (toReport) {
+            catchValue(getRequest().body(), createCaptors(new Class[]{AbstractRequestBodyCaptor.class}));
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected void onSuccess(HttpResponse<T> tHttpResponse) {
+        if (toReport && catchSuccessEvent()) {
+            catchValue(info, createCaptors(new Class[]{RequestResponseLogCaptor.class}));
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected void onFailure(HttpStepContext httpStepContext, Throwable throwable) {
+        if (toReport && catchFailureEvent()) {
+            catchValue(info, createCaptors(new Class[]{RequestResponseLogCaptor.class}));
+        }
     }
 
     ResponseExecutionInfo getInfo() {
         return info;
-    }
-
-    ResponseSequentialGetSupplier<T> toNotReport() {
-        toReport = false;
-        return this;
     }
 
     @Override
@@ -130,21 +133,21 @@ public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSup
         var p = super.getParameters();
 
         var params = new LinkedHashMap<String, String>();
-        params.put("Endpoint URI", request.uri().toString());
-        params.put("Method", request.method());
+        params.put("Http endpoint URI", request.uri().toString());
+        params.put("Http Method", request.method());
 
         var headerMap = request.headers().map();
         if (headerMap.size() > 0) {
-            params.put("Headers", headerMap.toString());
+            params.put("Http request Headers", headerMap.toString());
         }
 
         request.timeout().ifPresent(d ->
-                params.put("Timeout", formatDurationHMS(d.toMillis())));
+                params.put("Http Timeout", formatDurationHMS(d.toMillis())));
 
-        params.put("Expect Continue", valueOf(request.expectContinue()));
+        params.put("Http Expect Continue", valueOf(request.expectContinue()));
 
         request.version().ifPresent(v ->
-                params.put("Version", v.toString()));
+                params.put("Http Version", v.toString()));
 
         ofNullable(getRequest().body())
                 .ifPresent(b -> {
@@ -155,14 +158,14 @@ public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSup
                             && !cls.equals(URLEncodedForm.class)
                             && !cls.equals(W3CDocumentBody.class)
                             && !cls.equals(MultiPartBody.class)) {
-                        params.put("Request body", b.toString());
+                        params.put("Http Request body", b.toString());
                         return;
                     }
 
                     if (cls.equals(StringBody.class)) {
                         var stringBody = ((StringBody) b).body();
                         if (stringBody.length() <= 50) {
-                            params.put("Request body", stringBody);
+                            params.put("Http Request body", stringBody);
                         }
                     }
                 });

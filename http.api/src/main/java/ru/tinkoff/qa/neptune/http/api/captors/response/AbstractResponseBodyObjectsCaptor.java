@@ -1,5 +1,8 @@
 package ru.tinkoff.qa.neptune.http.api.captors.response;
 
+import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
+import ru.tinkoff.qa.neptune.core.api.event.firing.CapturedDataInjector;
+
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,10 +13,20 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.StreamSupport.stream;
 
-interface BaseResponseObjectsBodyCaptor<T> {
+public abstract class AbstractResponseBodyObjectsCaptor<T, R> extends Captor<List<T>, R> {
 
+    private final Class<T> needed;
+    private final Predicate<T> filterPredicate;
+
+    public AbstractResponseBodyObjectsCaptor(List<? extends CapturedDataInjector<R>> capturedDataInjectors, Class<T> needed, Predicate<T> filterPredicate) {
+        super(capturedDataInjectors);
+        this.needed = needed;
+        this.filterPredicate = filterPredicate;
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
-    default List<T> getCaptured(Object toBeCaptured, Class<T> elementClass, Predicate<T> filterPredicate) {
+    public List<T> getCaptured(Object toBeCaptured) {
         return ofNullable(toBeCaptured)
                 .map(o -> {
                     var clazz = o.getClass();
@@ -29,12 +42,12 @@ interface BaseResponseObjectsBodyCaptor<T> {
                                 if (Iterable.class.isAssignableFrom(cls)) {
                                     result.addAll(stream(((Iterable<?>) o1).spliterator(), false)
                                             .filter(o2 -> o2 != null
-                                                    && elementClass.isAssignableFrom(o2.getClass())
+                                                    && needed.isAssignableFrom(o2.getClass())
                                                     && filterPredicate.test((T) o2))
                                             .map(o2 -> (T) o2)
                                             .collect(toList()));
                                 } else if (cls.isArray()) {
-                                    if (elementClass.isAssignableFrom(cls.getComponentType())) {
+                                    if (needed.isAssignableFrom(cls.getComponentType())) {
                                         result.addAll(Arrays.stream((T[]) o1)
                                                 .filter(t -> t != null && filterPredicate.test(t))
                                                 .collect(toList()));
@@ -50,9 +63,5 @@ interface BaseResponseObjectsBodyCaptor<T> {
                             .orElse(null);
                 })
                 .orElse(null);
-    }
-
-    default List<T> getCaptured(Object toBeCaptured, Class<T> elementClass) {
-        return getCaptured(toBeCaptured, elementClass, t -> true);
     }
 }

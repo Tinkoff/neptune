@@ -40,11 +40,10 @@ import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.time.Duration.ofMillis;
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.selenium.BrowserProxy.getCurrentProxy;
-import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
+import static ru.tinkoff.qa.neptune.selenium.content.management.ContentManagementCommand.getCurrentCommand;
 import static ru.tinkoff.qa.neptune.selenium.functions.click.ClickActionSupplier.on;
 import static ru.tinkoff.qa.neptune.selenium.functions.cookies.RemoveCookiesActionSupplier.deleteCookies;
 import static ru.tinkoff.qa.neptune.selenium.functions.edit.EditActionSupplier.valueOfThe;
@@ -83,17 +82,30 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
         return context;
     }
 
+    private void changeContentIfNecessary() {
+        ofNullable(getCurrentCommand()).ifPresent(
+                contentManagementCommand -> {
+                    getWrappedDriver().getWindowHandles();
+                    contentManagementCommand
+                            .get()
+                            .performAction(this);
+                }
+        );
+    }
+
     @Override
     public WebDriver getWrappedDriver() {
         return wrappedWebDriver.getWrappedDriver();
     }
 
     public <R extends SearchContext> R find(SearchSupplier<R> what) {
-        return what.get().compose(currentContent()).apply(this);
+        changeContentIfNecessary();
+        return what.get().apply(this);
     }
 
     public <R extends SearchContext> List<R> find(MultipleSearchSupplier<R> what) {
-        return what.get().compose(currentContent()).apply(this);
+        changeContentIfNecessary();
+        return what.get().apply(this);
     }
 
     /**
@@ -104,7 +116,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public <T extends Widget & Clickable> SeleniumStepContext click(SearchSupplier<T> toFind) {
-        on(toFind).get().accept(this);
+        changeContentIfNecessary();
+        on(toFind).get().performAction(this);
         return this;
     }
 
@@ -114,8 +127,9 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @param toFind is description of a web element to be clicked
      * @return self-reference
      */
-    public SeleniumStepContext click(SequentialGetStepSupplier<SearchContext, WebElement, ?, ?, ?> toFind) {
-        on(toFind).get().accept(this);
+    public SeleniumStepContext click(SequentialGetStepSupplier<Object, WebElement, ?, ?, ?> toFind) {
+        changeContentIfNecessary();
+        on(toFind).get().performAction(this);
         return this;
     }
 
@@ -127,7 +141,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public <T extends Widget & Clickable> SeleniumStepContext click(T widget) {
-        on(widget).get().accept(this);
+        changeContentIfNecessary();
+        on(widget).get().performAction(this);
         return this;
     }
 
@@ -138,7 +153,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext click(WebElement element) {
-        on(element).get().accept(this);
+        changeContentIfNecessary();
+        on(element).get().performAction(this);
         return this;
     }
 
@@ -151,7 +167,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public <T extends Widget & Expandable> SeleniumStepContext expand(SearchSupplier<T> toFind) {
-        ExpandActionSupplier.expand(toFind).get().accept(this);
+        changeContentIfNecessary();
+        ExpandActionSupplier.expand(toFind).get().performAction(this);
         return this;
     }
 
@@ -163,7 +180,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public <T extends Widget & Expandable> SeleniumStepContext expand(T widget) {
-        ExpandActionSupplier.expand(widget).get().accept(this);
+        changeContentIfNecessary();
+        ExpandActionSupplier.expand(widget).get().performAction(this);
         return this;
     }
 
@@ -175,7 +193,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public <T extends Widget & Expandable> SeleniumStepContext collapse(SearchSupplier<T> toFind) {
-        CollapseActionSupplier.collapse(toFind).get().accept(this);
+        changeContentIfNecessary();
+        CollapseActionSupplier.collapse(toFind).get().performAction(this);
         return this;
     }
 
@@ -187,7 +206,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public <T extends Widget & Expandable> SeleniumStepContext collapse(T widget) {
-        CollapseActionSupplier.collapse(widget).get().accept(this);
+        changeContentIfNecessary();
+        CollapseActionSupplier.collapse(widget).get().performAction(this);
         return this;
     }
 
@@ -202,7 +222,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public <R, T extends Widget & Editable<R>> SeleniumStepContext edit(SearchSupplier<T> toFind, R value) {
-        valueOfThe(toFind, value).get().accept(this);
+        changeContentIfNecessary();
+        valueOfThe(toFind, value).get().performAction(this);
         return this;
     }
 
@@ -216,8 +237,9 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public <R, T extends Editable<List<R>>> SeleniumStepContext edit(SearchSupplier<T> toFind, R... value) {
         checkNotNull(value);
+        changeContentIfNecessary();
         checkArgument(value.length > 0, "");
-        valueOfThe(toFind, asList(value)).get().accept(this);
+        valueOfThe(toFind, asList(value)).get().performAction(this);
         return this;
     }
 
@@ -231,7 +253,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public <R, T extends Widget & Editable<R>> SeleniumStepContext edit(T editable, R value) {
-        valueOfThe(editable, value).get().accept(this);
+        changeContentIfNecessary();
+        valueOfThe(editable, value).get().performAction(this);
         return this;
     }
 
@@ -244,8 +267,9 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public <R, T extends Editable<List<R>>> SeleniumStepContext edit(T t, R... value) {
         checkNotNull(value);
+        changeContentIfNecessary();
         checkArgument(value.length > 0, "");
-        valueOfThe(t, asList(value)).get().accept(this);
+        valueOfThe(t, asList(value)).get().performAction(this);
         return this;
     }
 
@@ -256,6 +280,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return a result of js evaluation
      */
     public Object evaluate(GetJavaScriptResultSupplier javaScriptResultSupplier) {
+        changeContentIfNecessary();
         return javaScriptResultSupplier.get().apply(this);
     }
 
@@ -267,6 +292,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public List<HarEntry> get(BrowserProxyGetStepSupplier browserProxyGetStepSupplier) {
         checkArgument(Objects.nonNull(browserProxyGetStepSupplier), "Browser proxy supplier is not defined");
+        changeContentIfNecessary();
         return browserProxyGetStepSupplier.get().apply(this);
     }
 
@@ -303,7 +329,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public boolean presenceOf(SearchSupplier<?> toFind) {
         checkNotNull(toFind, "It is necessary to define how to find an element to be present");
-        return super.presenceOf(toFind.get().compose(currentContent()),
+        changeContentIfNecessary();
+        return super.presenceOf(toFind,
                 NoSuchElementException.class,
                 StaleElementReferenceException.class);
     }
@@ -317,7 +344,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public boolean presenceOf(SearchSupplier<?> toFind, String errorMessage) {
         checkNotNull(toFind, "It is necessary to define how to find an element to be present");
-        return super.presenceOf(toFind.get().compose(currentContent()),
+        changeContentIfNecessary();
+        return super.presenceOf(toFind,
                 () -> new NoSuchElementException(errorMessage),
                 NoSuchElementException.class,
                 StaleElementReferenceException.class);
@@ -331,7 +359,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public boolean presenceOf(MultipleSearchSupplier<?> toFind) {
         checkNotNull(toFind, "It is necessary to define how to find elements to be present");
-        return super.presenceOf(toFind.get().compose(currentContent()),
+        changeContentIfNecessary();
+        return super.presenceOf(toFind,
                 NoSuchElementException.class,
                 StaleElementReferenceException.class);
     }
@@ -345,7 +374,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     public boolean presenceOf(MultipleSearchSupplier<?> toFind, String errorMessage) {
         checkNotNull(toFind, "It is necessary to define how to find elements to be present");
-        return super.presenceOf(toFind.get().compose(currentContent()),
+        changeContentIfNecessary();
+        return super.presenceOf(toFind,
                 () -> new NoSuchElementException(errorMessage),
                 NoSuchElementException.class,
                 StaleElementReferenceException.class);
@@ -358,6 +388,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return is window present or not
      */
     public boolean presenceOf(GetWindowSupplier getWindow) {
+        changeContentIfNecessary();
         return super.presenceOf(getWindow, NoSuchWindowException.class);
     }
 
@@ -370,6 +401,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return is window present or not
      */
     public boolean presenceOf(GetWindowSupplier getWindow, String errorMessage) {
+        changeContentIfNecessary();
         return super.presenceOf(getWindow,
                 () -> new NoSuchWindowException(errorMessage),
                 NoSuchWindowException.class);
@@ -383,6 +415,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return is frame present or not
      */
     public boolean presenceOf(GetFrameSupplier getFrame) {
+        changeContentIfNecessary();
         return super.presenceOf(getFrame, NoSuchFrameException.class);
     }
 
@@ -395,6 +428,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return is frame present or not
      */
     public boolean presenceOf(GetFrameSupplier getFrame, String errorMessage) {
+        changeContentIfNecessary();
         return super.presenceOf(getFrame,
                 () -> new NoSuchFrameException(errorMessage),
                 NoSuchFrameException.class);
@@ -408,6 +442,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return are cookies present or not
      */
     public boolean presenceOf(GetSeleniumCookieSupplier getCookies) {
+        changeContentIfNecessary();
         return super.presenceOf(getCookies);
     }
 
@@ -420,6 +455,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return are cookies present or not
      */
     public boolean presenceOf(GetSeleniumCookieSupplier getCookies, String errorMessage) {
+        changeContentIfNecessary();
         return super.presenceOf(getCookies,
                 () -> new NoSuchCookieException(errorMessage));
     }
@@ -431,6 +467,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return is alert present or not
      */
     public boolean presenceOf(GetAlertSupplier getAlert) {
+        changeContentIfNecessary();
         return super.presenceOf(getAlert, NoAlertPresentException.class);
     }
 
@@ -443,6 +480,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return is alert present or not
      */
     public boolean presenceOf(GetAlertSupplier getAlert, String errorMessage) {
+        changeContentIfNecessary();
         return super.presenceOf(getAlert,
                 () -> new NoAlertPresentException(errorMessage),
                 NoAlertPresentException.class);
@@ -456,6 +494,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return are requests/responses present or not
      */
     public boolean presenceOf(BrowserProxyGetStepSupplier getTraffic) {
+        changeContentIfNecessary();
         return super.presenceOf(getTraffic);
     }
 
@@ -468,6 +507,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return are requests/responses present or not
      */
     public boolean presenceOf(BrowserProxyGetStepSupplier getTraffic, String errorMessage) {
+        changeContentIfNecessary();
         return super.presenceOf(getTraffic,
                 () -> new WebDriverException(errorMessage));
     }
@@ -483,12 +523,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     public boolean absenceOf(SearchSupplier<?> toBeAbsent,
                              Duration timeOut) {
         checkNotNull(toBeAbsent, "It is necessary to define how to find an element to be absent");
-        return super.absenceOf(toBeAbsent
-                        .clone()
-                        .timeOut(ofMillis(0))
-                        .get()
-                        .compose(currentContent()),
-                timeOut);
+        changeContentIfNecessary();
+        return super.absenceOf(toBeAbsent, timeOut);
     }
 
     /**
@@ -503,13 +539,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
                              Duration timeOut,
                              String exceptionMessage) {
         checkNotNull(toBeAbsent, "It is necessary to define how to find an element to be absent");
-        return super.absenceOf(toBeAbsent
-                        .clone()
-                        .timeOut(ofMillis(0))
-                        .get()
-                        .compose(currentContent()),
-                timeOut,
-                exceptionMessage);
+        changeContentIfNecessary();
+        return super.absenceOf(toBeAbsent, timeOut, exceptionMessage);
     }
 
     /**
@@ -522,12 +553,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     public boolean absenceOf(MultipleSearchSupplier<?> toBeAbsent,
                              Duration timeOut) {
         checkNotNull(toBeAbsent, "It is necessary to define how to find elements to be absent");
-        return super.absenceOf(toBeAbsent
-                        .clone()
-                        .timeOut(ofMillis(0))
-                        .get()
-                        .compose(currentContent()),
-                timeOut);
+        changeContentIfNecessary();
+        return super.absenceOf(toBeAbsent, timeOut);
     }
 
     /**
@@ -542,13 +569,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
                              Duration timeOut,
                              String exceptionMessage) {
         checkNotNull(toBeAbsent, "It is necessary to define how to find elements to be absent");
-        return super.absenceOf(toBeAbsent
-                        .clone()
-                        .timeOut(ofMillis(0))
-                        .get()
-                        .compose(currentContent()),
-                timeOut,
-                exceptionMessage);
+        changeContentIfNecessary();
+        return super.absenceOf(toBeAbsent, timeOut, exceptionMessage);
     }
 
     /**
@@ -559,6 +581,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return is window absent or not
      */
     public boolean absenceOf(GetWindowSupplier toBeAbsent, Duration timeOut) {
+        changeContentIfNecessary();
         return super.absenceOf(toBeAbsent, timeOut);
     }
 
@@ -571,6 +594,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return is window absent or not
      */
     public boolean absenceOf(GetWindowSupplier toBeAbsent, Duration timeOut, String errorMessage) {
+        changeContentIfNecessary();
         return super.absenceOf(toBeAbsent, timeOut, errorMessage);
     }
 
@@ -583,6 +607,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return is frame absent or not
      */
     public boolean absenceOf(GetFrameSupplier toBeAbsent, Duration timeOut) {
+        changeContentIfNecessary();
         return super.absenceOf(toBeAbsent, timeOut);
     }
 
@@ -595,6 +620,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return is frame absent or not
      */
     public boolean absenceOf(GetFrameSupplier toBeAbsent, Duration timeOut, String errorMessage) {
+        changeContentIfNecessary();
         return super.absenceOf(toBeAbsent, timeOut, errorMessage);
     }
 
@@ -607,6 +633,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return are cookies absent or not
      */
     public boolean absenceOf(GetSeleniumCookieSupplier toBeAbsent, Duration timeOut) {
+        changeContentIfNecessary();
         return super.absenceOf(toBeAbsent, timeOut);
     }
 
@@ -619,6 +646,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return are cookies absent or not
      */
     public boolean absenceOf(GetSeleniumCookieSupplier toBeAbsent, Duration timeOut, String errorMessage) {
+        changeContentIfNecessary();
         return super.absenceOf(toBeAbsent, timeOut, errorMessage);
     }
 
@@ -630,6 +658,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return is alert absent or not
      */
     public boolean absenceOf(GetAlertSupplier toBeAbsent, Duration timeOut) {
+        changeContentIfNecessary();
         return super.absenceOf(toBeAbsent, timeOut);
     }
 
@@ -642,6 +671,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return is alert absent or not
      */
     public boolean absenceOf(GetAlertSupplier toBeAbsent, Duration timeOut, String errorMessage) {
+        changeContentIfNecessary();
         return super.absenceOf(toBeAbsent, timeOut, errorMessage);
     }
 
@@ -651,7 +681,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext removeCookies() {
-        deleteCookies().get().accept(this);
+        changeContentIfNecessary();
+        deleteCookies().get().performAction(this);
         return this;
     }
 
@@ -665,7 +696,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     @SafeVarargs
     public final SeleniumStepContext removeCookies(Duration timeToFindCookies,
                                                    Criteria<Cookie>... toBeRemoved) {
-        deleteCookies(timeToFindCookies, toBeRemoved).get().accept(this);
+        changeContentIfNecessary();
+        deleteCookies(timeToFindCookies, toBeRemoved).get().performAction(this);
         return this;
     }
 
@@ -677,6 +709,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      */
     @SafeVarargs
     public final SeleniumStepContext removeCookies(Criteria<Cookie>... toBeRemoved) {
+        changeContentIfNecessary();
         return removeCookies(null, toBeRemoved);
     }
 
@@ -687,7 +720,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext removeCookies(Collection<Cookie> cookies) {
-        deleteCookies(cookies).get().accept(this);
+        changeContentIfNecessary();
+        deleteCookies(cookies).get().performAction(this);
         return this;
     }
 
@@ -698,6 +732,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext removeCookies(Cookie... cookies) {
+        changeContentIfNecessary();
         return removeCookies(asList(cookies));
     }
 
@@ -708,7 +743,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext addCookies(Collection<Cookie> cookies) {
-        AddCookiesActionSupplier.addCookies(cookies).get().accept(this);
+        changeContentIfNecessary();
+        AddCookiesActionSupplier.addCookies(cookies).get().performAction(this);
         return this;
     }
 
@@ -719,6 +755,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext addCookies(Cookie... cookies) {
+        changeContentIfNecessary();
         return addCookies(asList(cookies));
     }
 
@@ -728,6 +765,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return string URL of a loaded page
      */
     public String getCurrentUrl() {
+        changeContentIfNecessary();
         return currentUrl().get().apply(this);
     }
 
@@ -738,6 +776,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return string URL of a loaded page
      */
     public String getCurrentUrl(GetWindowSupplier getWindow) {
+        changeContentIfNecessary();
         return currentUrl(getWindow).get().apply(this);
     }
 
@@ -748,6 +787,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return {@link URL} of a loaded page
      */
     public String getCurrentUrl(Window window) {
+        changeContentIfNecessary();
         return currentUrl(window).get().apply(this);
     }
 
@@ -757,7 +797,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext navigateBack() {
-        back().get().accept(this);
+        changeContentIfNecessary();
+        back().get().performAction(this);
         return this;
     }
 
@@ -768,7 +809,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext navigateBack(GetWindowSupplier windowSupplier) {
-        back(windowSupplier).get().accept(this);
+        changeContentIfNecessary();
+        back(windowSupplier).get().performAction(this);
         return this;
     }
 
@@ -779,7 +821,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext navigateBack(Window window) {
-        back(window).get().accept(this);
+        changeContentIfNecessary();
+        back(window).get().performAction(this);
         return this;
     }
 
@@ -789,7 +832,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext navigateForward() {
-        forward().get().accept(this);
+        changeContentIfNecessary();
+        forward().get().performAction(this);
         return this;
     }
 
@@ -800,7 +844,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext navigateForward(GetWindowSupplier windowSupplier) {
-        forward(windowSupplier).get().accept(this);
+        changeContentIfNecessary();
+        forward(windowSupplier).get().performAction(this);
         return this;
     }
 
@@ -811,7 +856,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext navigateForward(Window window) {
-        forward(window).get().accept(this);
+        changeContentIfNecessary();
+        forward(window).get().performAction(this);
         return this;
     }
 
@@ -822,7 +868,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext refresh() {
-        refreshWindow().get().accept(this);
+        changeContentIfNecessary();
+        refreshWindow().get().performAction(this);
         return this;
     }
 
@@ -833,7 +880,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext refresh(GetWindowSupplier windowSupplier) {
-        refreshWindow(windowSupplier).get().accept(this);
+        changeContentIfNecessary();
+        refreshWindow(windowSupplier).get().performAction(this);
         return this;
     }
 
@@ -844,7 +892,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext refresh(Window window) {
-        refreshWindow(window).get().accept(this);
+        changeContentIfNecessary();
+        refreshWindow(window).get().performAction(this);
         return this;
     }
 
@@ -856,7 +905,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext navigateTo(URL url) {
-        toUrl(url).get().accept(this);
+        changeContentIfNecessary();
+        toUrl(url).get().performAction(this);
         return this;
     }
 
@@ -868,7 +918,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext navigateTo(URL url, GetWindowSupplier in) {
-        toUrl(in, url).get().accept(this);
+        changeContentIfNecessary();
+        toUrl(in, url).get().performAction(this);
         return this;
     }
 
@@ -880,7 +931,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext navigateTo(URL url, Window in) {
-        toUrl(in, url).get().accept(this);
+        changeContentIfNecessary();
+        toUrl(in, url).get().performAction(this);
         return this;
     }
 
@@ -892,7 +944,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @see ru.tinkoff.qa.neptune.selenium.properties.URLProperties#BASE_WEB_DRIVER_URL_PROPERTY
      */
     public SeleniumStepContext navigateTo(String url) {
-        toUrl(url).get().accept(this);
+        changeContentIfNecessary();
+        toUrl(url).get().performAction(this);
         return this;
     }
 
@@ -905,7 +958,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @see ru.tinkoff.qa.neptune.selenium.properties.URLProperties#BASE_WEB_DRIVER_URL_PROPERTY
      */
     public SeleniumStepContext navigateTo(String url, GetWindowSupplier in) {
-        toUrl(in, url).get().accept(this);
+        changeContentIfNecessary();
+        toUrl(in, url).get().performAction(this);
         return this;
     }
 
@@ -918,7 +972,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @see ru.tinkoff.qa.neptune.selenium.properties.URLProperties#BASE_WEB_DRIVER_URL_PROPERTY
      */
     public SeleniumStepContext navigateTo(String url, Window in) {
-        toUrl(in, url).get().accept(this);
+        changeContentIfNecessary();
+        toUrl(in, url).get().performAction(this);
         return this;
     }
 
@@ -938,7 +993,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext switchTo(GetActiveElementSupplier getActiveElement) {
-        to(getActiveElement).get().accept(this);
+        changeContentIfNecessary();
+        to(getActiveElement).get().performAction(this);
         return this;
     }
 
@@ -949,7 +1005,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext switchTo(GetAlertSupplier getAlert) {
-        to(getAlert).get().accept(this);
+        changeContentIfNecessary();
+        to(getAlert).get().performAction(this);
         return this;
     }
 
@@ -967,7 +1024,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext switchTo(DefaultContentSupplier getDefaultContent) {
-        to(getDefaultContent).get().accept(this);
+        changeContentIfNecessary();
+        to(getDefaultContent).get().performAction(this);
         return this;
     }
 
@@ -983,7 +1041,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext switchTo(ParentFrameSupplier getParentFrame) {
-        to(getParentFrame).get().accept(this);
+        changeContentIfNecessary();
+        to(getParentFrame).get().performAction(this);
         return this;
     }
 
@@ -994,7 +1053,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext switchTo(GetFrameSupplier getFrame) {
-        to(getFrame).get().accept(this);
+        changeContentIfNecessary();
+        to(getFrame).get().performAction(this);
         return this;
     }
 
@@ -1005,7 +1065,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext switchTo(Frame frame) {
-        to(frame).get().accept(this);
+        changeContentIfNecessary();
+        to(frame).get().performAction(this);
         return this;
     }
 
@@ -1016,7 +1077,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext switchTo(GetWindowSupplier getWindow) {
-        to(getWindow).get().accept(this);
+        changeContentIfNecessary();
+        to(getWindow).get().performAction(this);
         return this;
     }
 
@@ -1027,7 +1089,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext switchTo(Window window) {
-        to(window).get().accept(this);
+        changeContentIfNecessary();
+        to(window).get().performAction(this);
         return this;
     }
 
@@ -1037,6 +1100,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return an instance of {@link Dimension}
      */
     public Dimension windowSize() {
+        changeContentIfNecessary();
         return GetWindowSizeSupplier.windowSize().get().apply(this);
     }
 
@@ -1047,6 +1111,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return an instance of {@link Dimension}
      */
     public Dimension sizeOf(SearchSupplier<?> getElement) {
+        changeContentIfNecessary();
         return elementSize(getElement).get().apply(this);
     }
 
@@ -1057,6 +1122,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return an instance of {@link Dimension}
      */
     public Dimension sizeOf(GetWindowSupplier getWindow) {
+        changeContentIfNecessary();
         return GetWindowSizeSupplier.windowSize(getWindow).get().apply(this);
     }
 
@@ -1067,6 +1133,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return an instance of {@link Dimension}
      */
     public Dimension sizeOf(Widget widget) {
+        changeContentIfNecessary();
         return elementSize(widget).get().apply(this);
     }
 
@@ -1077,6 +1144,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return an instance of {@link Dimension}
      */
     public Dimension sizeOf(WebElement element) {
+        changeContentIfNecessary();
         return elementSize(element).get().apply(this);
     }
 
@@ -1087,6 +1155,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return an instance of {@link Dimension}
      */
     public Dimension sizeOf(Window window) {
+        changeContentIfNecessary();
         return GetWindowSizeSupplier.windowSize(window).get().apply(this);
     }
 
@@ -1097,6 +1166,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return an instance of {@link Point}
      */
     public Point windowPosition() {
+        changeContentIfNecessary();
         return GetWindowPositionSupplier.windowPosition().get().apply(this);
     }
 
@@ -1107,6 +1177,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return an instance of {@link Point}
      */
     public Point positionOf(SearchSupplier<?> getElement) {
+        changeContentIfNecessary();
         return positionOfElement(getElement).get().apply(this);
     }
 
@@ -1117,6 +1188,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return an instance of {@link Point}
      */
     public Point positionOf(GetWindowSupplier getWindow) {
+        changeContentIfNecessary();
         return GetWindowPositionSupplier.positionOf(getWindow).get().apply(this);
     }
 
@@ -1127,6 +1199,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return an instance of {@link Point}
      */
     public Point positionOf(Widget widget) {
+        changeContentIfNecessary();
         return positionOfElement(widget).get().apply(this);
     }
 
@@ -1137,6 +1210,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return an instance of {@link Point}
      */
     public Point positionOf(WebElement element) {
+        changeContentIfNecessary();
         return positionOfElement(element).get().apply(this);
     }
 
@@ -1147,6 +1221,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return an instance of {@link Point}
      */
     public Point positionOf(Window window) {
+        changeContentIfNecessary();
         return GetWindowPositionSupplier.positionOf(window).get().apply(this);
     }
 
@@ -1156,7 +1231,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext closeWindow() {
-        CloseWindowActionSupplier.closeWindow().get().accept(this);
+        changeContentIfNecessary();
+        CloseWindowActionSupplier.closeWindow().get().performAction(this);
         return this;
     }
 
@@ -1167,7 +1243,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext closeWindow(GetWindowSupplier supplier) {
-        CloseWindowActionSupplier.closeWindow(supplier).get().accept(this);
+        changeContentIfNecessary();
+        CloseWindowActionSupplier.closeWindow(supplier).get().performAction(this);
         return this;
     }
 
@@ -1178,7 +1255,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext closeWindow(Window window) {
-        CloseWindowActionSupplier.closeWindow(window).get().accept(this);
+        changeContentIfNecessary();
+        CloseWindowActionSupplier.closeWindow(window).get().performAction(this);
         return this;
     }
 
@@ -1191,7 +1269,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext changeWindowPosition(int x, int y) {
-        setWindowPosition(new Point(x, y)).get().accept(this);
+        changeContentIfNecessary();
+        setWindowPosition(new Point(x, y)).get().performAction(this);
         return this;
     }
 
@@ -1204,7 +1283,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext changeWindowPosition(GetWindowSupplier supplier, int x, int y) {
-        setPositionOf(supplier, new Point(x, y)).get().accept(this);
+        changeContentIfNecessary();
+        setPositionOf(supplier, new Point(x, y)).get().performAction(this);
         return this;
     }
 
@@ -1217,7 +1297,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext changeWindowPosition(Window window, int x, int y) {
-        setPositionOf(window, new Point(x, y)).get().accept(this);
+        changeContentIfNecessary();
+        setPositionOf(window, new Point(x, y)).get().performAction(this);
         return this;
     }
 
@@ -1230,7 +1311,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext changeWindowSize(int width, int height) {
-        setWindowSize(new Dimension(width, height)).get().accept(this);
+        changeContentIfNecessary();
+        setWindowSize(new Dimension(width, height)).get().performAction(this);
         return this;
     }
 
@@ -1243,7 +1325,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext changeWindowSize(GetWindowSupplier supplier, int width, int height) {
-        setSizeOf(supplier, new Dimension(width, height)).get().accept(this);
+        changeContentIfNecessary();
+        setSizeOf(supplier, new Dimension(width, height)).get().performAction(this);
         return this;
     }
 
@@ -1256,7 +1339,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext changeWindowSize(Window window, int width, int height) {
-        setSizeOf(window, new Dimension(width, height)).get().accept(this);
+        changeContentIfNecessary();
+        setSizeOf(window, new Dimension(width, height)).get().performAction(this);
         return this;
     }
 
@@ -1267,7 +1351,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext fullScreen() {
-        FullScreenWindowSupplier.fullScreen().get().accept(this);
+        changeContentIfNecessary();
+        FullScreenWindowSupplier.fullScreen().get().performAction(this);
         return this;
     }
 
@@ -1278,7 +1363,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext fullScreen(GetWindowSupplier supplier) {
-        FullScreenWindowSupplier.fullScreen(supplier).get().accept(this);
+        changeContentIfNecessary();
+        FullScreenWindowSupplier.fullScreen(supplier).get().performAction(this);
         return this;
     }
 
@@ -1289,7 +1375,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext fullScreen(Window window) {
-        FullScreenWindowSupplier.fullScreen(window).get().accept(this);
+        changeContentIfNecessary();
+        FullScreenWindowSupplier.fullScreen(window).get().performAction(this);
         return this;
     }
 
@@ -1301,7 +1388,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext accept(GetAlertSupplier getAlert) {
-        acceptAlert(getAlert).get().accept(this);
+        changeContentIfNecessary();
+        acceptAlert(getAlert).get().performAction(this);
         return this;
     }
 
@@ -1312,7 +1400,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext accept(Alert alert) {
-        acceptAlert(alert).get().accept(this);
+        changeContentIfNecessary();
+        acceptAlert(alert).get().performAction(this);
         return this;
     }
 
@@ -1324,7 +1413,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext dismiss(GetAlertSupplier getAlert) {
-        dismissAlert(getAlert).get().accept(this);
+        changeContentIfNecessary();
+        dismissAlert(getAlert).get().performAction(this);
         return this;
     }
 
@@ -1335,7 +1425,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext dismiss(Alert alert) {
-        dismissAlert(alert).get().accept(this);
+        changeContentIfNecessary();
+        dismissAlert(alert).get().performAction(this);
         return this;
     }
 
@@ -1348,7 +1439,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext alertSendKeys(GetAlertSupplier getAlert, String keys) {
-        sendKeysToAlert(getAlert, keys).get().accept(this);
+        changeContentIfNecessary();
+        sendKeysToAlert(getAlert, keys).get().performAction(this);
         return this;
     }
 
@@ -1360,7 +1452,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext alertSendKeys(Alert alert, String keys) {
-        sendKeysToAlert(alert, keys).get().accept(this);
+        changeContentIfNecessary();
+        sendKeysToAlert(alert, keys).get().performAction(this);
         return this;
     }
 
@@ -1371,7 +1464,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return self-reference
      */
     public SeleniumStepContext interactive(InteractiveAction action) {
-        action.get().accept(this);
+        changeContentIfNecessary();
+        action.get().performAction(this);
         return this;
     }
 
@@ -1381,6 +1475,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return window title
      */
     public String windowTitle() {
+        changeContentIfNecessary();
         return GetWindowTitleSupplier.windowTitle().get().apply(this);
     }
 
@@ -1391,6 +1486,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return window title
      */
     public String windowTitle(GetWindowSupplier supplier) {
+        changeContentIfNecessary();
         return titleOf(supplier).get().apply(this);
     }
 
@@ -1401,6 +1497,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return window title
      */
     public String windowTitle(Window window) {
+        changeContentIfNecessary();
         return titleOf(window).get().apply(this);
     }
 
@@ -1412,7 +1509,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return attr value
      */
     public String attrValueOf(SearchSupplier<?> of, String attr) {
-        return attributeValue(attr).of(of).get().apply(this);
+        changeContentIfNecessary();
+        return attributeValue(attr, of).get().apply(this);
     }
 
     /**
@@ -1423,7 +1521,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return attr value
      */
     public String attrValueOf(Widget of, String attr) {
-        return attributeValue(attr).of(of).get().apply(this);
+        changeContentIfNecessary();
+        return attributeValue(attr, of).get().apply(this);
     }
 
     /**
@@ -1434,7 +1533,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return attr value
      */
     public String attrValueOf(WebElement of, String attr) {
-        return attributeValue(attr).of(of).get().apply(this);
+        changeContentIfNecessary();
+        return attributeValue(attr, of).get().apply(this);
     }
 
 
@@ -1446,7 +1546,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return css value
      */
     public String cssValueOf(SearchSupplier<?> of, String cssProperty) {
-        return cssValue(cssProperty).of(of).get().apply(this);
+        changeContentIfNecessary();
+        return cssValue(cssProperty, of).get().apply(this);
     }
 
     /**
@@ -1457,7 +1558,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return css value
      */
     public String cssValueOf(Widget of, String cssProperty) {
-        return cssValue(cssProperty).of(of).get().apply(this);
+        changeContentIfNecessary();
+        return cssValue(cssProperty, of).get().apply(this);
     }
 
     /**
@@ -1468,7 +1570,8 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return css value
      */
     public String cssValueOf(WebElement of, String cssProperty) {
-        return cssValue(cssProperty).of(of).get().apply(this);
+        changeContentIfNecessary();
+        return cssValue(cssProperty, of).get().apply(this);
     }
 
     /**
@@ -1480,6 +1583,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return value
      */
     public <T, R extends SearchContext & HasValue<T>> T valueOf(SearchSupplier<R> of) {
+        changeContentIfNecessary();
         return ofThe(of).get().apply(this);
     }
 
@@ -1492,6 +1596,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return value
      */
     public <T, R extends SearchContext & HasValue<T>> T valueOf(R of) {
+        changeContentIfNecessary();
         return ofThe(of).get().apply(this);
     }
 
@@ -1503,6 +1608,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return a set of {@link Cookie}
      */
     public Set<Cookie> get(GetSeleniumCookieSupplier getCookies) {
+        changeContentIfNecessary();
         return getCookies.get().apply(this);
     }
 
@@ -1514,6 +1620,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return an instance of {@link Alert}
      */
     public Alert get(GetAlertSupplier getAlert) {
+        changeContentIfNecessary();
         return getAlert.get().apply(this);
     }
 
@@ -1524,6 +1631,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return an instance of {@link Frame}
      */
     public Frame get(GetFrameSupplier getFrame) {
+        changeContentIfNecessary();
         return getFrame.get().apply(this);
     }
 
@@ -1535,6 +1643,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
      * @return an instance of {@link Window}
      */
     public Window get(GetWindowSupplier getWindow) {
+        changeContentIfNecessary();
         return getWindow.get().apply(this);
     }
 

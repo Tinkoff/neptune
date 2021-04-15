@@ -28,11 +28,11 @@ class WebElementInterceptor extends AbstractElementInterceptor {
                     return description;
                 }
 
-                if (text.length() < 30) {
-                    return format("%s text: %s", description, text);
+                if (text.length() < 15) {
+                    return format("%s[text: %s]", description, text);
                 }
 
-                return format("%s text: %s...", description, text.substring(0, 30));
+                return format("%s[text: %s...]", description, text.substring(0, 15));
             }
             catch (WebDriverException e) {
                 return description;

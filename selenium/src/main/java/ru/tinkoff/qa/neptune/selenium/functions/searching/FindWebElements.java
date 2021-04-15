@@ -30,7 +30,7 @@ final class FindWebElements implements Function<SearchContext, List<WebElement>>
     public List<WebElement> apply(SearchContext searchContext) {
         return new LoggableElementList<>(searchContext.findElements(by)
                 .stream().map(webElement -> {
-                    var stringDescription = format("Web element found [%s]", by);
+                    var stringDescription = format("web element [%s]", by);
                     return createProxy(webElement.getClass(), new WebElementInterceptor(webElement, stringDescription));
                 })
                 .collect(toList())) {

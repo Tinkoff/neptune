@@ -7,6 +7,7 @@ import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.turnReportingOff;
 
 final class ReceiveResponseAndGetResultFunction<T, R> implements Function<HttpStepContext, R> {
 
@@ -16,7 +17,7 @@ final class ReceiveResponseAndGetResultFunction<T, R> implements Function<HttpSt
     ReceiveResponseAndGetResultFunction(Function<T, R> endFunction, ResponseSequentialGetSupplier<T> getResponse) {
         checkNotNull(getResponse);
         checkNotNull(endFunction);
-        this.getResponse = getResponse.clone().toNotReport();
+        this.getResponse = turnReportingOff(getResponse.clone());
         this.endFunction = endFunction;
     }
 

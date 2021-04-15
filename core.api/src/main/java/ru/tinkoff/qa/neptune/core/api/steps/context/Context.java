@@ -111,7 +111,7 @@ public abstract class Context<THIS extends Context<THIS>> {
      * @return is desired object present or not
      */
     @SafeVarargs
-    protected final boolean presenceOf(SequentialGetStepSupplier<THIS, ?, ?, ?, ?> toBePresent,
+    protected final boolean presenceOf(SequentialGetStepSupplier<? super THIS, ?, ?, ?, ?> toBePresent,
                                        Supplier<? extends RuntimeException> exceptionSupplier,
                                        Class<? extends Throwable>... toIgnore) {
 
@@ -130,7 +130,7 @@ public abstract class Context<THIS extends Context<THIS>> {
      * @return is desired object present or not
      */
     @SafeVarargs
-    protected final boolean presenceOf(SequentialGetStepSupplier<THIS, ?, ?, ?, ?> toBePresent,
+    protected final boolean presenceOf(SequentialGetStepSupplier<? super THIS, ?, ?, ?, ?> toBePresent,
                                        Class<? extends Throwable>... toIgnore) {
         return presence(toBePresent)
                 .addIgnored(ignoredExceptions(toIgnore))
@@ -147,7 +147,7 @@ public abstract class Context<THIS extends Context<THIS>> {
      * @return is desired object present or not
      */
     @SafeVarargs
-    protected final boolean presenceOf(Function<THIS, ?> toBePresent,
+    protected final boolean presenceOf(Function<? super THIS, ?> toBePresent,
                                        Supplier<? extends RuntimeException> exceptionSupplier,
                                        Class<? extends Throwable>... toIgnore) {
         return presence(toBePresent)
@@ -165,7 +165,7 @@ public abstract class Context<THIS extends Context<THIS>> {
      * @return is desired object present or not
      */
     @SafeVarargs
-    protected final boolean presenceOf(Function<THIS, ?> toBePresent,
+    protected final boolean presenceOf(Function<? super THIS, ?> toBePresent,
                                        Class<? extends Throwable>... toIgnore) {
         return presence(toBePresent)
                 .addIgnored(ignoredExceptions(toIgnore))
@@ -181,7 +181,7 @@ public abstract class Context<THIS extends Context<THIS>> {
      *                   then it is ignored in favour of a time defined by the method.
      * @return is an object absent or not
      */
-    protected final boolean absenceOf(SequentialGetStepSupplier<THIS, ?, ?, ?, ?> toBeAbsent,
+    protected final boolean absenceOf(SequentialGetStepSupplier<? super THIS, ?, ?, ?, ?> toBeAbsent,
                                       Duration timeOut) {
         return absence(toBeAbsent).timeOut(timeOut).get().apply((THIS) this);
     }
@@ -195,7 +195,7 @@ public abstract class Context<THIS extends Context<THIS>> {
      * @param exceptionMessage is a message of {@link IllegalStateException} to be thrown when value is present
      * @return is an object absent or not
      */
-    protected final boolean absenceOf(SequentialGetStepSupplier<THIS, ?, ?, ?, ?> toBeAbsent,
+    protected final boolean absenceOf(SequentialGetStepSupplier<? super THIS, ?, ?, ?, ?> toBeAbsent,
                                       Duration timeOut,
                                       String exceptionMessage) {
         return absence(toBeAbsent).throwIfPresent(exceptionMessage).timeOut(timeOut).get().apply((THIS) this);
@@ -208,7 +208,7 @@ public abstract class Context<THIS extends Context<THIS>> {
      * @param timeOut    is a time to wait for value is absent.
      * @return is an object absent or not
      */
-    protected final boolean absenceOf(Function<THIS, ?> toBeAbsent,
+    protected final boolean absenceOf(Function<? super THIS, ?> toBeAbsent,
                                       Duration timeOut) {
         return absence(toBeAbsent).timeOut(timeOut).get().apply((THIS) this);
     }
@@ -221,7 +221,7 @@ public abstract class Context<THIS extends Context<THIS>> {
      * @param exceptionMessage is a message of {@link IllegalStateException} to be thrown when value is present
      * @return is an object absent or not
      */
-    protected final boolean absenceOf(Function<THIS, ?> toBeAbsent,
+    protected final boolean absenceOf(Function<? super THIS, ?> toBeAbsent,
                                       Duration timeOut,
                                       String exceptionMessage) {
         return absence(toBeAbsent).throwIfPresent(exceptionMessage).timeOut(timeOut).get().apply((THIS) this);

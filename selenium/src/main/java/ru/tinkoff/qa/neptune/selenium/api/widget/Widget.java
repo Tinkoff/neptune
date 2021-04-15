@@ -128,16 +128,16 @@ public abstract class Widget implements WrapsElement, SearchContext, HasAttribut
 
             if (isBlank(elementText)) {
                 text = EMPTY;
-            } else if (elementText.length() < 30) {
+            } else if (elementText.length() < 15) {
                 text = elementText;
             } else {
-                text = format("%s...", elementText.substring(0, 30));
+                text = format("%s...", elementText.substring(0, 15));
             }
 
             if (isBlank(text)) {
                 return widgetName;
             }
-            return format("%s [%s]", widgetName, text);
+            return format("%s[%s]", widgetName, text);
         } catch (Throwable t) {
             return widgetName;
         }

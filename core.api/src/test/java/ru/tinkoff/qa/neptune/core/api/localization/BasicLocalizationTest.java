@@ -1,14 +1,15 @@
-package ru.tinkoff.qa.neptune.core.api.steps;
+package ru.tinkoff.qa.neptune.core.api.localization;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.core.api.steps.*;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static ru.tinkoff.qa.neptune.core.api.steps.BasicLocalizationTest.SomeCriteria.*;
+import static ru.tinkoff.qa.neptune.core.api.localization.BasicLocalizationTest.SomeCriteria.*;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 
 public class BasicLocalizationTest {
@@ -53,7 +54,7 @@ public class BasicLocalizationTest {
     @DataProvider(parallel = true)
     public static Object[][] data2() {
         return new Object[][]{
-                {someCriteriaWithoutAnnotation(), "This is some criteria Class"},
+                {someCriteriaWithoutAnnotation(), "not described criteria"},
                 {someCriteriaWithAnnotation(), "This is some criteria Method"},
                 {someCriteriaWithCompositeAnnotation("sss"), "This is some criteria Method with DescriptionFragment sss"}
         };
@@ -99,12 +100,13 @@ public class BasicLocalizationTest {
         }
 
         @Override
-        protected void performActionOn(Object value) {
+        protected void howToPerform(Object value) {
 
         }
     }
 
     @Description("Class Description GetSupplier")
+    @SequentialGetStepSupplier.DefineCriteriaParameterName
     static class TestGetStepSupplier extends SequentialGetStepSupplier<Object, Object, Object, Object, TestGetStepSupplier> {
 
         protected TestGetStepSupplier() {
@@ -134,6 +136,11 @@ public class BasicLocalizationTest {
         @Override
         protected Function<Object, Object> getEndFunction() {
             return null;
+        }
+
+        @Override
+        protected TestGetStepSupplier criteria(Criteria<? super Object> criteria) {
+            return super.criteria(criteria);
         }
     }
 

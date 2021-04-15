@@ -10,8 +10,13 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
+import static java.lang.String.valueOf;
+import static java.lang.reflect.Modifier.isStatic;
+import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.localization.DefaultLocaleProperty.DEFAULT_LOCALE_PROPERTY;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.localization.DefaultLocalizationEngine.DEFAULT_LOCALIZATION_ENGINE;
@@ -39,61 +44,54 @@ public interface StepLocalization {
     }
 
     /**
-     * Crates translated text by annotations which may annotate passed {@link AnnotatedElement}.
-     * <p></p>
-     * Following annotations are used:
-     * <p></p>
-     * {@link Description}, {@link StepParameter}, {@link DescriptionFragment}
+     * Makes a translation
      *
-     * @param annotatedElement used to get some translated text
-     * @param args             additional arguments which are used to build a text. These arguments replace values in {@code `{}`}
+     * @param object is an object which may be used for auxiliary purposes
+     * @param method is a method which may be used for auxiliary purposes
+     * @param args   objects which may be used for auxiliary purposes
+     * @param <T>    is a type of a given objec
      * @return translated text
      */
-    static String translate(AnnotatedElement annotatedElement, Object... args) {
+    static <T> String translate(T object, Method method, Object... args) {
         var engine = DEFAULT_LOCALIZATION_ENGINE.get();
         var locale = DEFAULT_LOCALE_PROPERTY.get();
 
-        if (engine == null) {
-            if (annotatedElement instanceof Method) {
-                if (annotatedElement.getAnnotation(Description.class) != null) {
-                    String description = annotatedElement.getAnnotation(Description.class).value();
-                    return buildTextByTemplate((Method) annotatedElement, description, args);
-                } else {
-                    return translateClass(((Method) annotatedElement).getDeclaringClass(), null, null);
-                }
-            } else if (annotatedElement instanceof Class) {
-                return translateClass((Class<?>) annotatedElement, null, null);
-            } else {
-                if (annotatedElement.getAnnotation(StepParameter.class) != null) {
-                    return annotatedElement.getAnnotation(StepParameter.class).value();
-                } else {
-                    return null;
-                }
+        var description = method.getAnnotation(Description.class);
+        if (description != null) {
+            var templateParameters = templateParameters(object, method, args);
+            if (engine == null || locale == null) {
+                return buildTextByTemplate(description.value(), templateParameters);
             }
-        }
 
-        if (annotatedElement instanceof Method) {
-            if (annotatedElement.getAnnotation(Description.class) != null) {
-                return engine.methodTranslation((Method) annotatedElement, locale, args);
-            } else {
-                return translateClass(((Method) annotatedElement).getDeclaringClass(), engine, locale);
-            }
-        } else if (annotatedElement instanceof Class) {
-            return translateClass((Class<?>) annotatedElement, engine, locale);
+            return engine.methodTranslation(method, description.value(), templateParameters, locale);
         } else {
-            if (annotatedElement.getAnnotation(StepParameter.class) != null) {
-                if (annotatedElement instanceof Field) {
-                    return engine.memberTranslation((Field) annotatedElement, locale);
-                }
-                return engine.memberTranslation((PseudoField) annotatedElement, locale);
-            } else {
-                return null;
-            }
+            return translateByClass(object, engine, locale);
         }
     }
 
-    private static String translateClass(Class<?> cls, StepLocalization localization, Locale locale) {
-        var clazz = cls;
+    static <T> String translate(T object) {
+        var engine = DEFAULT_LOCALIZATION_ENGINE.get();
+        var locale = DEFAULT_LOCALE_PROPERTY.get();
+        return translateByClass(object, engine, locale);
+    }
+
+    static String translate(Field f) {
+        var engine = DEFAULT_LOCALIZATION_ENGINE.get();
+        var locale = DEFAULT_LOCALE_PROPERTY.get();
+        return translateMember(f, engine, locale);
+    }
+
+    static String translate(PseudoField f) {
+        var engine = DEFAULT_LOCALIZATION_ENGINE.get();
+        var locale = DEFAULT_LOCALE_PROPERTY.get();
+        return translateMember(f, engine, locale);
+    }
+
+    private static <T> String translateByClass(T toBeTranslated,
+                                               StepLocalization localization,
+                                               Locale locale) {
+        var clazz = toBeTranslated.getClass();
+        var cls = clazz;
         while (clazz.getAnnotation(Description.class) == null && !clazz.equals(Object.class)) {
             clazz = clazz.getSuperclass();
         }
@@ -101,49 +99,153 @@ public interface StepLocalization {
         var cls2 = clazz;
         return ofNullable(cls2.getAnnotation(Description.class))
                 .map(description -> {
+                    var templateParameters = templateParameters(toBeTranslated, cls);
                     if (localization == null || locale == null) {
-                        return description.value();
+                        return buildTextByTemplate(description.value(), templateParameters);
                     }
 
-                    return localization.classTranslation(cls2, locale);
+                    return localization.classTranslation(cls2, description.value(), templateParameters, locale);
                 })
                 .orElse(null);
     }
 
-    /**
-     * Builds some text from templated string where variables are placed in {@code `{}`}. Variables are supposed
-     * to be defined by {@link DescriptionFragment} that marks parameters of signature of the passed method.
-     * <p></p>
-     * This method is allowed to be reused by any implementation of {@link StepLocalization}
-     *
-     * @param method   method whose parameters are supposed be annotated by {@link DescriptionFragment}
-     * @param template is a templated string
-     * @param args     values of parameters of current invocation of the method
-     * @return built text
-     */
-    static String buildTextByTemplate(Method method, String template, Object... args) {
-        Annotation[][] parameterAnnotations = method.getParameterAnnotations();
-
-        for (int argIndex = 0; argIndex < args.length; argIndex++) {
-            Annotation[] annotations = parameterAnnotations[argIndex];
-            for (Annotation annotation : annotations) {
-                if (!(annotation instanceof DescriptionFragment)) {
-                    continue;
-                }
-                DescriptionFragment stepDescriptionFragment = (DescriptionFragment) annotation;
-                template = template.replace("{" + stepDescriptionFragment.value() + "}",
-                        getParameterForStep(args[argIndex], stepDescriptionFragment.makeReadableBy()));
-            }
+    private static <T extends AnnotatedElement & Member> String translateMember(T translateFrom,
+                                                                                StepLocalization localization,
+                                                                                Locale locale) {
+        var stepParam = translateFrom.getAnnotation(StepParameter.class);
+        if (stepParam == null) {
+            return null;
         }
 
-        return template;
+        if (localization == null || locale == null) {
+            return stepParam.value();
+        }
+
+        return localization.memberTranslation(translateFrom, stepParam.value(), locale);
     }
 
-    String classTranslation(Class<?> clz, Locale locale);
+    private static <T> Map<String, String> templateParameters(T object, AnnotatedElement annotatedElement, Object... args) {
+        var result = new HashMap<String, String>();
 
-    String methodTranslation(Method method, Locale locale, Object... parameters);
+        if (annotatedElement instanceof Method) {
+            var method = (Method) annotatedElement;
+            Annotation[][] parameterAnnotations = method.getParameterAnnotations();
+            for (int argIndex = 0; argIndex < args.length; argIndex++) {
+                Annotation[] annotations = parameterAnnotations[argIndex];
 
-    <T extends AnnotatedElement & Member> String memberTranslation(T member, Locale locale);
+                for (Annotation annotation : annotations) {
+                    if (!(annotation instanceof DescriptionFragment)) {
+                        continue;
+                    }
+                    var stepDescriptionFragment = (DescriptionFragment) annotation;
+                    var paramValue = ofNullable(args[argIndex])
+                            .map(o -> getParameterForStep(o, stepDescriptionFragment.makeReadableBy()))
+                            .orElseGet(() -> valueOf((Object) null));
 
+                    result.put(stepDescriptionFragment.value(), paramValue);
+                }
+            }
+            return result;
+        }
+
+        var clz = (Class<?>) annotatedElement;
+        while (!clz.equals(Object.class)) {
+            stream(clz.getDeclaredFields())
+                    .filter(field -> !isStatic(field.getModifiers()) && field.getAnnotation(DescriptionFragment.class) != null)
+                    .forEach(field -> {
+                        field.setAccessible(true);
+                        var stepDescriptionFragment = field.getAnnotation(DescriptionFragment.class);
+                        try {
+                            var paramValue = ofNullable(field.get(object))
+                                    .map(o -> getParameterForStep(o, stepDescriptionFragment.makeReadableBy()))
+                                    .orElseGet(() -> valueOf((Object) null));
+
+                            result.put(stepDescriptionFragment.value(), paramValue);
+                        } catch (IllegalAccessException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+
+            clz = clz.getSuperclass();
+        }
+        return result;
+    }
+
+    static String buildTextByTemplate(String template, Map<String, String> templateParameters) {
+        var strContainer = new Object() {
+            String contained;
+
+            public String getContained() {
+                return contained;
+            }
+
+            public void setContained(String s) {
+                this.contained = s;
+            }
+        };
+
+        strContainer.setContained(template);
+        templateParameters.forEach((key, value) -> {
+            var s = strContainer.getContained();
+            s = s.replace("{" + key + "}", value);
+            strContainer.setContained(s);
+        });
+
+        return strContainer.getContained();
+    }
+
+    /**
+     * Makes translation using class.
+     *
+     * @param clz                       is a class whose metadata may be used for auxiliary purposes
+     * @param description               is a description of a step taken from {@link Description} of a class
+     * @param descriptionTemplateParams is a map of parameters and their values. These parameters are taken from
+     *                                  fields annotated by {@link DescriptionFragment}. These parameters should
+     *                                  replace strings between {@code '{}'} in the given {@code description}
+     * @param locale                    is a used locale
+     * @param <T>                       is a type of a class
+     * @return translated text
+     */
+    <T> String classTranslation(Class<T> clz,
+                                String description,
+                                Map<String, String> descriptionTemplateParams,
+                                Locale locale);
+
+    /**
+     * Makes translation using method.
+     *
+     * @param method                    is a method whose metadata may be used for auxiliary purposes
+     * @param description               is a description of a step taken from {@link Description} of a method
+     * @param descriptionTemplateParams is a map of parameters and their values. These parameters are taken from
+     *                                  method parameters annotated by {@link DescriptionFragment}.These parameters should
+     *                                  replace strings between {@code '{}'} in the given {@code description}
+     * @param locale                    is a used locale
+     * @return translated text
+     */
+    String methodTranslation(Method method,
+                             String description,
+                             Map<String, String> descriptionTemplateParams,
+                             Locale locale);
+
+    /**
+     * Makes translation using other annotated element that differs from {@link Class} and {@link Method}
+     *
+     * @param member      is an annotated element whose metadata may be used for auxiliary purposes
+     * @param description is a description of a step taken from {@link StepParameter} of a member
+     * @param locale      is a used locale
+     * @param <T>         is a type of a member
+     * @return translated text
+     */
+    <T extends AnnotatedElement & Member> String memberTranslation(T member,
+                                                                   String description,
+                                                                   Locale locale);
+
+    /**
+     * Makes translation of a text.
+     *
+     * @param text   to be translated
+     * @param locale is a used locale
+     * @return translated text
+     */
     String translation(String text, Locale locale);
 }

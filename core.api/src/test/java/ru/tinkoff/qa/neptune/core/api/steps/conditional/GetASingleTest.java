@@ -3,10 +3,10 @@ package ru.tinkoff.qa.neptune.core.api.steps.conditional;
 import org.hamcrest.Matchers;
 import org.testng.annotations.Test;
 
-import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.fail;
+import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
 
 public class GetASingleTest extends BaseConditionalTest {
 
@@ -217,7 +217,7 @@ public class GetASingleTest extends BaseConditionalTest {
             assertThat("Spent time in millis", end - start,
                     greaterThan(FIVE_SECONDS.toMillis()));
             assertThat("Difference between expected and actual duration", end - start - FIVE_SECONDS.toMillis(),
-                    lessThanOrEqualTo(600L));
+                    lessThanOrEqualTo(650L));
             throw e;
         }
         fail("The exception throwing was expected");
@@ -233,7 +233,7 @@ public class GetASingleTest extends BaseConditionalTest {
             assertThat("Spent time in millis", end - start,
                     greaterThan(FIVE_SECONDS.toMillis()));
             assertThat("Difference between expected and actual duration", end - start - FIVE_SECONDS.toMillis(),
-                    lessThanOrEqualTo(600L));
+                    lessThanOrEqualTo(650L));
             throw e;
         }
         fail("The exception throwing was expected");

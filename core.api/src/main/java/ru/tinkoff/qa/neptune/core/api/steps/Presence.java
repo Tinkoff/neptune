@@ -1,12 +1,13 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
 import com.google.common.collect.Iterables;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.IncludeParamsOfInnerGetterStep;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -17,11 +18,14 @@ import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 @SuppressWarnings("unchecked")
-public final class Presence<T extends Context<?>> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<T, Boolean, Object, Presence<T>> {
+@SequentialGetStepSupplier.DefineResultDescriptionParameterName("Is present")
+@IncludeParamsOfInnerGetterStep
+@MaxDepthOfReporting(0)
+public final class Presence<T> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<T, Boolean, Object, Presence<T>> {
 
     private final Set<Class<? extends Throwable>> ignored2 = new HashSet<>();
 
-    private Presence(Function<T, ?> toBePresent) {
+    private Presence() {
         super(o -> ofNullable(o)
                 .map(o1 -> {
                     Class<?> clazz = o1.getClass();
@@ -37,24 +41,28 @@ public final class Presence<T extends Context<?>> extends SequentialGetStepSuppl
                             if (clazz.isArray()) {
                                 return Array.getLength(o1) > 0;
                             }
-                            return true;
-                        })
-                        .orElse(false));
+                    return true;
+                })
+                .orElse(false));
+    }
 
-        StepFunction<T, ?> expectedToBePresent;
-        if (StepFunction.class.isAssignableFrom(toBePresent.getClass())) {
-            expectedToBePresent = ((StepFunction<T, ?>) toBePresent);
+    private Presence(SequentialGetStepSupplier<T, ?, ?, ?, ?> toBePresent) {
+        this();
+        from(turnReportingOff(toBePresent.clone()));
+    }
+
+    private Presence(Function<T, ?> toBePresent) {
+        this();
+        Get<T, ?> expectedToBePresent;
+        if (Get.class.isAssignableFrom(toBePresent.getClass())) {
+            expectedToBePresent = ((Get<T, ?>) toBePresent);
         } else {
-            expectedToBePresent = new StepFunction<>(isLoggable(toBePresent) ?
+            expectedToBePresent = new Get<>(isLoggable(toBePresent) ?
                     toBePresent.toString() :
                     "<not described value>",
                     toBePresent);
         }
         from(expectedToBePresent.turnReportingOff());
-    }
-
-    private Presence(SequentialGetStepSupplier<T, ?, ?, ?, ?> toBePresent) {
-        this(toBePresent.get());
     }
 
     /**
@@ -66,7 +74,9 @@ public final class Presence<T extends Context<?>> extends SequentialGetStepSuppl
      * @return an instance of {@link Presence}.
      */
     @Description("Presence of {toBePresent}")
-    public static <T extends Context<?>> Presence<T> presence(@DescriptionFragment("toBePresent") Function<T, ?> function) {
+    public static <T> Presence<T> presence(@DescriptionFragment(
+            value = "toBePresent",
+            makeReadableBy = PresenceParameterValueGetter.class) Function<T, ?> function) {
         checkArgument(nonNull(function), "Function should not be a null-value");
         return new Presence<>(function);
     }
@@ -80,15 +90,15 @@ public final class Presence<T extends Context<?>> extends SequentialGetStepSuppl
      * @return an instance of {@link Presence}.
      */
     @Description("Presence of {toBePresent}")
-    public static <T extends Context<?>> Presence<T> presence(@DescriptionFragment("toBePresent") SequentialGetStepSupplier<T, ?, ?, ?, ?> toBePresent) {
+    public static <T> Presence<T> presence(@DescriptionFragment("toBePresent") SequentialGetStepSupplier<T, ?, ?, ?, ?> toBePresent) {
         checkArgument(nonNull(toBePresent), "Supplier of a function should not be a null-value");
         return new Presence<>(toBePresent);
     }
 
     protected Function<T, Object> preparePreFunction() {
         var preFunction = super.preparePreFunction();
-        if (StepFunction.class.isAssignableFrom(preFunction.getClass())) {
-            ((StepFunction<?, ?>) preFunction).addIgnored(ignored2);
+        if (Get.class.isAssignableFrom(preFunction.getClass())) {
+            ((Get<?, ?>) preFunction).addIgnored(ignored2);
         }
         return ((Function<Object, Object>) o -> ofNullable(o).orElse(false))
                 .compose(preFunction);
@@ -128,10 +138,5 @@ public final class Presence<T extends Context<?>> extends SequentialGetStepSuppl
      */
     public Presence<T> throwIfNotPresent(Supplier<? extends RuntimeException> exceptionSupplier) {
         return throwOnEmptyResult(exceptionSupplier);
-    }
-
-    @Override
-    public Map<String, String> getParameters() {
-        return ((StepFunction<?, ?>) from).getParameters();
     }
 }

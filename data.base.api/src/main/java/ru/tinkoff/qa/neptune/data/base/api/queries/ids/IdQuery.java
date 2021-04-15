@@ -5,7 +5,6 @@ import ru.tinkoff.qa.neptune.data.base.api.IdSetter;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 import ru.tinkoff.qa.neptune.data.base.api.queries.KeepResultPersistent;
 import ru.tinkoff.qa.neptune.data.base.api.queries.Query;
-import ru.tinkoff.qa.neptune.data.base.api.result.ListOfPersistentObjects;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,14 +46,14 @@ public final class IdQuery<T extends PersistableObject> implements Query<T, List
             }
         });
 
-        ListOfPersistentObjects<T> found;
+        List<T> found;
 
         if (!keepResultPersistent.toKeepOnPersistent()) {
-            found = new ListOfPersistentObjects<>((jdoPersistenceManager.detachCopyAll(list))) {
+            found = new ArrayList<>(jdoPersistenceManager.detachCopyAll(list)) {
             };
             setRealIds(list, found);
         } else {
-            found = new ListOfPersistentObjects<>(list) {
+            found = new ArrayList<>(list) {
             };
         }
 

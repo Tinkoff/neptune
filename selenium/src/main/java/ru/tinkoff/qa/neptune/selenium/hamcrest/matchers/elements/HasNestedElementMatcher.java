@@ -4,7 +4,6 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
-import ru.tinkoff.qa.neptune.core.api.steps.StepFunction;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 import ru.tinkoff.qa.neptune.selenium.hamcrest.matchers.TypeSafeDiagnosingMatcher;
 
@@ -19,6 +18,7 @@ import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.joining;
+import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.turnReportingOff;
 
 public final class HasNestedElementMatcher<T extends SearchContext> extends TypeSafeDiagnosingMatcher<T> {
 
@@ -57,11 +57,9 @@ public final class HasNestedElementMatcher<T extends SearchContext> extends Type
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected boolean matchesSafely(T item, Description mismatchDescription) {
         try {
-            var f = (StepFunction<SearchContext, ?>) search.get();
-            f.turnReportingOff();
+            var f = turnReportingOff(search.clone()).get();
             try {
                 f.apply(item);
 

@@ -1,12 +1,10 @@
 package ru.tinkoff.qa.neptune.check;
 
 import org.hamcrest.Matcher;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeCaptureOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
-import ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -16,6 +14,7 @@ import static java.lang.String.valueOf;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
 
 /**
  * This class is designed to perform the matching of values.
@@ -24,23 +23,18 @@ import static org.hamcrest.MatcherAssert.assertThat;
  *            value to be checked
  * @param <R> is a generic type of {@link Matcher}
  */
-@MakeCaptureOnFinishing(typeOfCapture = Object.class)
-@SequentialActionSupplier.DefaultParameterNames(performOn = "Checked value",
-        imperative = "Assert:")
+@SequentialActionSupplier.DefinePerformImperativeParameterName("Assert:")
+@MaxDepthOfReporting(1)
 public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchAction<T, R>> {
 
     private final String assertDescription;
-
-    @StepParameter("Match criteria")
     private final Matcher<? super R> criteria;
 
     MatchAction(String assertDescription, Matcher<? super R> criteria) {
         super();
         checkArgument(!Objects.equals(EMPTY, valueOf(assertDescription).trim()),
                 "Description shouldn't be an empty string");
-        this.assertDescription = ofNullable(assertDescription)
-                .map(StepLocalization::translate)
-                .orElse(null);
+        this.assertDescription = assertDescription;
         this.criteria = criteria;
     }
 
@@ -72,12 +66,13 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
             @DescriptionFragment(value = "description", makeReadableBy = DescriptionTranslator.class) String description,
             Function<T, R> eval,
             @DescriptionFragment("matcher") Matcher<? super R> matcher) {
-        return new MatchAction<T, R>(description, matcher)
-                .performOn(new CalculateGetSupplier<>(eval).setDescription(description));
+        var translated = translate(description);
+        return new MatchAction<T, R>(translated, matcher)
+                .performOn(new CalculateGetSupplier<>(eval).setDescription(translated));
     }
 
     @Override
-    protected void performActionOn(R value) {
+    protected void howToPerform(R value) {
         ofNullable(assertDescription).ifPresentOrElse(
                 s -> assertThat(s, value, criteria),
                 () -> assertThat(value, criteria));

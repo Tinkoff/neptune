@@ -1,15 +1,12 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeCaptureOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeFileCapturesOnFinishing;
-import ru.tinkoff.qa.neptune.core.api.event.firing.annotation.MakeStringCapturesOnFinishing;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 
 import java.util.function.Function;
 
-@MakeStringCapturesOnFinishing
-@MakeCaptureOnFinishing(typeOfCapture = String.class)
-@MakeCaptureOnFinishing(typeOfCapture = Number.class)
-@MakeFileCapturesOnFinishing
+@CaptureOnSuccess(by = {TestNumberCaptor.class, TestStringCaptor.class, TestCaptor.class})
+@MaxDepthOfReporting(1)
 class ArithmeticalSequence extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<CalculatorSteps, Number, Number, ArithmeticalSequence> {
 
     private ArithmeticalSequence(Function<Number, Number> originalFunction) {

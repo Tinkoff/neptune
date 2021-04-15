@@ -201,7 +201,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
     public HttpStepContext addCookies(URI uri, List<HttpCookie> cookies) {
         addHttpCookies(uri, cookies)
                 .get()
-                .accept((CookieManager) getCurrentClient()
+                .performAction((CookieManager) getCurrentClient()
                         .cookieHandler()
                         .orElseThrow(() -> new IllegalStateException("There is no cookie manager")));
         return this;
@@ -360,7 +360,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      */
     public HttpStepContext removeCookies() {
         deleteCookies().get()
-                .accept((CookieManager) getCurrentClient()
+                .performAction((CookieManager) getCurrentClient()
                         .cookieHandler()
                         .orElseThrow(() -> new IllegalStateException("There is no cookie manager")));
         return this;
@@ -377,7 +377,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
     public final HttpStepContext removeCookies(URI uri,
                                                Criteria<HttpCookie>... toBeRemoved) {
         deleteCookies(uri, toBeRemoved).get()
-                .accept((CookieManager) getCurrentClient()
+                .performAction((CookieManager) getCurrentClient()
                         .cookieHandler()
                         .orElseThrow(() -> new IllegalStateException("There is no cookie manager")));
         return this;
@@ -402,7 +402,7 @@ public class HttpStepContext extends Context<HttpStepContext> {
      */
     public HttpStepContext removeCookies(Collection<HttpCookie> cookies) {
         deleteCookies(cookies).get()
-                .accept((CookieManager) getCurrentClient()
+                .performAction((CookieManager) getCurrentClient()
                         .cookieHandler()
                         .orElseThrow(() -> new IllegalStateException("There is no cookie manager")));
         return this;

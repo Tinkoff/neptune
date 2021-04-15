@@ -25,7 +25,7 @@ public abstract class Captor<T, S> {
     }
 
     public Captor(List<? extends CapturedDataInjector<S>> injectors) {
-        this.message = translate(this.getClass());
+        this.message = translate(this);
         this.injectors = injectors;
     }
 
