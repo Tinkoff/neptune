@@ -62,10 +62,7 @@ subprojects {
 }
 
 task runBashCI(type: Exec) {
-    commandLine '|\n' +
-            '        export DISPLAY=:99\n' +
-            '        chromedriver --url-base=/wd/hub &\n' +
-            '        sudo Xvfb -ac :99 -screen 0 1280x1024x24'
+    commandLine 'export DISPLAY=:99 chromedriver --url-base=/wd/hub & sudo Xvfb -ac :99 -screen 0 1280x1024x24'
 }
 
 task aggregatedJavadocs(type: Javadoc, description: 'Generate javadocs from all child projects as if it was a single project', group: 'Documentation') {
