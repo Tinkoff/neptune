@@ -239,12 +239,7 @@ public interface StepLocalization {
     String translation(String text, Locale locale);
 }
 ```
- * реализовать следующие методы:
-     * `String classTranslation(Class<?> clz, Locale locale)` - для перевода классов
-     * `String methodTranslation(Method method, Locale locale, Object... parameters)` - для перевода методов
-     * `<T extends AnnotatedElement & Member> String memberTranslation(T member, Locale locale)` - для перевода полей
-     * `String translation(String text, Locale locale)` - например, для перевода строки, используя переводчик или ИИ
-  
+
  * указать в propeties новый механизм
 ```properties
 DEFAULT_LOCALIZATION_ENGINE=org.my.project.MyLocalizationEngine
