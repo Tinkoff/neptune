@@ -61,10 +61,6 @@ subprojects {
     }
 }
 
-task runBashCI(type: Exec) {
-    commandLine 'sudo chromedriver --url-base=/wd/hub & sudo Xvfb -ac :99 -screen 0 1280x1024x24'
-}
-
 task aggregatedJavadocs(type: Javadoc, description: 'Generate javadocs from all child projects as if it was a single project', group: 'Documentation') {
     title = "Neptune API Documentation. v$globalVersion"
     options.author true
