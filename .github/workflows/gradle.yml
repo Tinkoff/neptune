@@ -21,13 +21,20 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
-    - name: Build with Gradle
+    
+    - name: Set up gradle
       run: |
         wget https://services.gradle.org/distributions/gradle-6.8.3-bin.zip
         unzip -qq gradle-6.8.3-bin.zip
         export GRADLE_HOME=$PWD/gradle-6.8.3-bin.zip
         export PATH=$GRADLE_HOME/bin:$PATH
+        
+        gradle -v    
+        
+    - name: Build with Gradle
+      run: |        
         export DISPLAY=:99
         chromedriver --url-base=/wd/hub &
         sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 & # optional
+        
         gradle clean build --parallel
