@@ -24,8 +24,8 @@ jobs:
     - name: Build with Gradle
       run: |
         wget https://services.gradle.org/distributions/gradle-6.8.3-bin.zip
-        unzip -qq gradle-5.6.2-bin.zip
-        export GRADLE_HOME=$PWD/gradle-5.6.2
+        unzip -qq gradle-6.8.3-bin.zip
+        export GRADLE_HOME=$PWD/gradle-6.8.3-bin.zip
         export PATH=$GRADLE_HOME/bin:$PATH
         export DISPLAY=:99
         chromedriver --url-base=/wd/hub &
