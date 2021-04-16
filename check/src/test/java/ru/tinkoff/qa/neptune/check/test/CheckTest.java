@@ -100,10 +100,9 @@ public class CheckTest {
 
         assertThat(MESSAGES,
                 contains("Check: Sqrt value of 9 has started",
-                        "Sqrt value of 9 has started",
-                        "Result: 3.0 has been returned",
-                        "Event finished",
+                        "Check: Sqrt value of 9 has started",
                         "Assert: is <3.0> has started",
+                        "Event finished",
                         "Event finished",
                         "Event finished"));
     }

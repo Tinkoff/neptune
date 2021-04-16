@@ -47,28 +47,11 @@ public abstract class Step<T> {
         return createStep(description, supplier).perform();
     }
 
-    /**
-     * Creates a step and returns the instance for further operation.
-     * The step does't return anything on the performing.
-     *
-     * @param description Is description of the step.
-     * @param runnable    is algorithm of the step.
-     * @return new {@link Step}
-     */
-    public static Step<Void> createStep(String description, Runnable runnable) {
+    private static Step<Void> createStep(String description, Runnable runnable) {
         return new ActionStep(description, runnable);
     }
 
-    /**
-     * Creates a step and returns the instance for further operation.
-     * The step returns some value on the performing.
-     *
-     * @param description Is description of the step.
-     * @param supplier    is algorithm of the step.
-     * @param <T>         is a type of resulted value
-     * @return new {@link Step}
-     */
-    public static <T> Step<T> createStep(String description, Supplier<T> supplier) {
+    private static <T> Step<T> createStep(String description, Supplier<T> supplier) {
         return new GetStep<>(description, supplier);
     }
 
