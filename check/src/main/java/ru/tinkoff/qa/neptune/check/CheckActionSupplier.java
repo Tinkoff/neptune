@@ -1,7 +1,10 @@
 package ru.tinkoff.qa.neptune.check;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
-import ru.tinkoff.qa.neptune.core.api.steps.*;
+import ru.tinkoff.qa.neptune.core.api.steps.Action;
+import ru.tinkoff.qa.neptune.core.api.steps.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +18,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static ru.tinkoff.qa.neptune.core.api.steps.Step.createStep;
+import static ru.tinkoff.qa.neptune.core.api.steps.Step.$;
 
 @SequentialActionSupplier.DefinePerformImperativeParameterName("Check:")
 @MaxDepthOfReporting(0)
@@ -61,9 +64,8 @@ public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R,
     }
 
     /**
-     * Creates an instance of {@link CheckActionSupplier};
-     * Evaluates value to be checked;
-     * Value check is performed.
+     * Creates and performs a step. A checked value is calculated and asserted inside this
+     * step.
      *
      * @param description  description of a value to get and then check it
      * @param toGet        is how to get a value
@@ -74,16 +76,17 @@ public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R,
     public static <T> void evaluateAndCheck(String description,
                                             Supplier<T> toGet,
                                             MatchAction<T, ?>... matchActions) {
-        checkActionSupplier(description, new Function<Step<T>, T>() {
-            @Override
-            public T apply(Step<T> tStep) {
-                return tStep.perform();
-            }
 
-            public String toString() {
-                return description;
-            }
-        }, matchActions).get().performAction(createStep(description, toGet));
+        var check = checkActionSupplier(description,
+                (Function<T, T>) t -> t,
+                matchActions)
+                .get();
+
+        $(check.toString(),
+                () -> {
+                    var t = toGet.get();
+                    check.performAction(t);
+                });
     }
 
     /**
