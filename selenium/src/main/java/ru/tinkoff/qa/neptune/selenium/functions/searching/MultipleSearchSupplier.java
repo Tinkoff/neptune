@@ -33,7 +33,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMEN
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Element criteria")
 @SequentialGetStepSupplier.DefineGetImperativeParameterName(value = "Find:")
 @SequentialGetStepSupplier.DefineResultDescriptionParameterName("Found elements")
-@MaxDepthOfReporting(1)
+@MaxDepthOfReporting(0)
 @CaptureOnSuccess(by = ListOfWebElementImageCaptor.class)
 @CaptureOnFailure(by = {WebDriverImageCaptor.class, WebElementImageCaptor.class})
 public final class MultipleSearchSupplier<R extends SearchContext> extends

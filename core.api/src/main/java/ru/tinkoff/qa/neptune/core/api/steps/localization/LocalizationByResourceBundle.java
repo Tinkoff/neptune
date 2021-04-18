@@ -16,16 +16,20 @@ import static ru.tinkoff.qa.neptune.core.api.steps.localization.ResourceBundleGe
 public class LocalizationByResourceBundle implements StepLocalization {
 
     private static ResourceBundle resourceBundle;
+    private static boolean isRead;
 
     private static ResourceBundle getResourceBundle(Locale locale) {
-        resourceBundle = ofNullable(resourceBundle)
-                .orElseGet(() -> {
-                    try {
-                        return getBundle(RESOURCE_BUNDLE, locale);
-                    } catch (MissingResourceException e) {
-                        return null;
-                    }
-                });
+        if (!isRead) {
+            resourceBundle = ofNullable(resourceBundle)
+                    .orElseGet(() -> {
+                        try {
+                            return getBundle(RESOURCE_BUNDLE, locale);
+                        } catch (MissingResourceException e) {
+                            return null;
+                        }
+                    });
+            isRead = true;
+        }
         return resourceBundle;
     }
 
