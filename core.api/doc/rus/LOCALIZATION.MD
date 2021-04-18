@@ -176,29 +176,68 @@ dependencies {
   `ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization`
 
  ```java
-  public interface StepLocalization {
+public interface StepLocalization {
 
-      String classTranslation(Class<?> clz, Locale locale);
-  
-      String methodTranslation(Method method,Locale locale, Object... parameters);
-  
-      <T extends AnnotatedElement & Member> String memberTranslation(T member, Locale locale);
-  
-      String translation(String text,Locale locale);
-  }
+    /**
+     * Makes translation using class.
+     *
+     * @param clz                       is a class whose metadata may be used for auxiliary purposes
+     * @param description               is a description of a step taken from {@link Description} of a class
+     * @param descriptionTemplateParams is a map of parameters and their values. These parameters are taken from
+     *                                  fields annotated by {@link DescriptionFragment}. These parameters should
+     *                                  replace strings between {@code '{}'} in the given {@code description}
+     * @param locale                    is a used locale
+     * @param <T>                       is a type of a class
+     * @return translated text
+     */
+    <T> String classTranslation(Class<T> clz,
+                                String description,
+                                Map<String, String> descriptionTemplateParams,
+                                Locale locale);
+
+    /**
+     * Makes translation using method.
+     *
+     * @param method                    is a method whose metadata may be used for auxiliary purposes
+     * @param description               is a description of a step taken from {@link Description} of a method
+     * @param descriptionTemplateParams is a map of parameters and their values. These parameters are taken from
+     *                                  method parameters annotated by {@link DescriptionFragment}.These parameters should
+     *                                  replace strings between {@code '{}'} in the given {@code description}
+     * @param locale                    is a used locale
+     * @return translated text
+     */
+    String methodTranslation(Method method,
+                             String description,
+                             Map<String, String> descriptionTemplateParams,
+                             Locale locale);
+
+    /**
+     * Makes translation using other annotated element that differs from {@link Class} and {@link Method}
+     *
+     * @param member      is an annotated element whose metadata may be used for auxiliary purposes
+     * @param description is a description of a step taken from {@link StepParameter} of a member
+     * @param locale      is a used locale
+     * @param <T>         is a type of a member
+     * @return translated text
+     */
+    <T extends AnnotatedElement & Member> String memberTranslation(T member,
+                                                                   String description,
+                                                                   Locale locale);
+
+    /**
+     * Makes translation of a text.
+     *
+     * @param text   to be translated
+     * @param locale is a used locale
+     * @return translated text
+     */
+    String translation(String text, Locale locale);
+}
 ```
- * реализовать следующие методы:
-     * `String classTranslation(Class<?> clz, Locale locale)` - для перевода классов
-     * `String methodTranslation(Method method, Locale locale, Object... parameters)` - для перевода методов
-     * `<T extends AnnotatedElement & Member> String memberTranslation(T member, Locale locale)` - для перевода полей
-     * `String translation(String text, Locale locale)` - например, для перевода строки, используя переводчик или ИИ
-  
+
  * указать в propeties новый механизм
 ```properties
 DEFAULT_LOCALIZATION_ENGINE=org.my.project.MyLocalizationEngine
 ```
-
-При реализации интерфейса можно использовать метаинформацию, полученную из аннотаций @Description, @DescriptionFragment,
-@StepParameter
  
  
