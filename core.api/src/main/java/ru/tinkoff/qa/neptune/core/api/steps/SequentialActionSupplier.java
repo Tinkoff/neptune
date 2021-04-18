@@ -2,12 +2,13 @@ package ru.tinkoff.qa.neptune.core.api.steps;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.PseudoField;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -26,6 +27,7 @@ import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnS
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting.MaxDepthOfReportingReader.getMaxDepth;
 import static ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier.DefaultActionParameterReader.getImperativePseudoField;
 import static ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier.DefaultActionParameterReader.getPerformOnPseudoField;
+import static ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter.StepParameterCreator.createStepParameter;
 import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
@@ -206,16 +208,16 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
             super();
         }
 
-        public static PseudoField getPerformOnPseudoField(Class<?> toRead, boolean useInheritance) {
+        public static PseudoField<StepParameter> getPerformOnPseudoField(Class<?> toRead, boolean useInheritance) {
             return readAnnotation(toRead, DefinePerformOnParameterName.class, "performOn", useInheritance);
         }
 
-        public static PseudoField getImperativePseudoField(Class<?> toRead, boolean useInheritance) {
+        public static PseudoField<StepParameter> getImperativePseudoField(Class<?> toRead, boolean useInheritance) {
             return readAnnotation(toRead, DefinePerformImperativeParameterName.class, "imperative", useInheritance);
         }
 
-        private static PseudoField readAnnotation(Class<?> toRead, Class<? extends Annotation> annotationClass,
-                                                  String name, boolean useInheritance) {
+        private static PseudoField<StepParameter> readAnnotation(Class<?> toRead, Class<? extends Annotation> annotationClass,
+                                                                 String name, boolean useInheritance) {
             if (!SequentialActionSupplier.class.isAssignableFrom(toRead)) {
                 return null;
             }
@@ -227,8 +229,14 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
                     try {
                         var valueMethod = annotation.annotationType().getMethod("value");
                         valueMethod.setAccessible(true);
-                        return new PseudoField(toRead, name, (String) valueMethod.invoke(annotation));
-                    } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                        return new PseudoField<>(toRead, name, StepParameter.class, () -> {
+                            try {
+                                return createStepParameter((String) valueMethod.invoke(annotation));
+                            } catch (Exception t) {
+                                throw new RuntimeException(t);
+                            }
+                        });
+                    } catch (NoSuchMethodException e) {
                         throw new RuntimeException(e);
                     }
                 }

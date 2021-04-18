@@ -1,6 +1,8 @@
 package ru.tinkoff.qa.neptune.selenium.test.captors;
 
 import org.openqa.selenium.NoSuchElementException;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.awt.image.BufferedImage;
@@ -9,11 +11,22 @@ import static java.time.Duration.ofSeconds;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.openqa.selenium.By.tagName;
+import static ru.tinkoff.qa.neptune.core.api.properties.general.events.ToLimitReportDepth.TO_LIMIT_REPORT_DEPTH_PROPERTY;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier.*;
 import static ru.tinkoff.qa.neptune.selenium.test.FakeDOMModel.BUTTON_TAG;
 import static ru.tinkoff.qa.neptune.selenium.test.captors.TestImageInjector.INJECTED;
 
 public class WebDriverCaptorTest extends BaseCaptorTest {
+
+    @BeforeClass
+    public void prepareClass() {
+        TO_LIMIT_REPORT_DEPTH_PROPERTY.accept(false);
+    }
+
+    @AfterClass
+    public void finishClass() {
+        TO_LIMIT_REPORT_DEPTH_PROPERTY.accept(true);
+    }
 
     @Test
     public void clickOnElementPositiveTest() {

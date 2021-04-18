@@ -2,12 +2,13 @@ package ru.tinkoff.qa.neptune.core.api.steps;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.PseudoField;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 import java.util.*;
 import java.util.function.Function;
@@ -28,6 +29,7 @@ import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOf
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.AND;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefaultGetParameterReader.*;
+import static ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter.StepParameterCreator.createStepParameter;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromArray.getFromArray;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromIterable.getFromIterable;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
@@ -905,32 +907,32 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
             super();
         }
 
-        public static PseudoField getFromPseudoField(Class<?> toRead, boolean useInheritance) {
+        public static PseudoField<StepParameter> getFromPseudoField(Class<?> toRead, boolean useInheritance) {
             return readAnnotation(toRead, DefineFromParameterName.class, "from", useInheritance);
         }
 
-        public static PseudoField getPollingTimePseudoField(Class<?> toRead, boolean useInheritance) {
+        public static PseudoField<StepParameter> getPollingTimePseudoField(Class<?> toRead, boolean useInheritance) {
             return readAnnotation(toRead, DefinePollingTimeParameterName.class, "pollingTime", useInheritance);
         }
 
-        public static PseudoField getTimeOutPseudoField(Class<?> toRead, boolean useInheritance) {
+        public static PseudoField<StepParameter> getTimeOutPseudoField(Class<?> toRead, boolean useInheritance) {
             return readAnnotation(toRead, DefineTimeOutParameterName.class, "timeOut", useInheritance);
         }
 
-        public static PseudoField getCriteriaPseudoField(Class<?> toRead, boolean useInheritance) {
+        public static PseudoField<StepParameter> getCriteriaPseudoField(Class<?> toRead, boolean useInheritance) {
             return readAnnotation(toRead, DefineCriteriaParameterName.class, "criteria", useInheritance);
         }
 
-        public static PseudoField getImperativePseudoField(Class<?> toRead, boolean useInheritance) {
+        public static PseudoField<StepParameter> getImperativePseudoField(Class<?> toRead, boolean useInheritance) {
             return readAnnotation(toRead, DefineGetImperativeParameterName.class, "imperative", useInheritance);
         }
 
-        public static PseudoField getResultPseudoField(Class<?> toRead, boolean useInheritance) {
+        public static PseudoField<StepParameter> getResultPseudoField(Class<?> toRead, boolean useInheritance) {
             return readAnnotation(toRead, DefineResultDescriptionParameterName.class, "resultDescription", useInheritance);
         }
 
-        private static PseudoField readAnnotation(Class<?> toRead, Class<? extends Annotation> annotationClass,
-                                                  String name, boolean useInheritance) {
+        private static PseudoField<StepParameter> readAnnotation(Class<?> toRead, Class<? extends Annotation> annotationClass,
+                                                                 String name, boolean useInheritance) {
             if (!SequentialGetStepSupplier.class.isAssignableFrom(toRead)) {
                 return null;
             }
@@ -942,8 +944,14 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
                     try {
                         var valueMethod = annotation.annotationType().getMethod("value");
                         valueMethod.setAccessible(true);
-                        return new PseudoField(toRead, name, (String) valueMethod.invoke(annotation));
-                    } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                        return new PseudoField<>(toRead, name, StepParameter.class, () -> {
+                            try {
+                                return createStepParameter((String) valueMethod.invoke(annotation));
+                            } catch (Exception t) {
+                                throw new RuntimeException(t);
+                            }
+                        });
+                    } catch (NoSuchMethodException e) {
                         throw new RuntimeException(e);
                     }
                 }

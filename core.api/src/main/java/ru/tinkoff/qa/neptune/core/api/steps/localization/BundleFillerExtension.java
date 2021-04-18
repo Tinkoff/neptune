@@ -1,6 +1,5 @@
 package ru.tinkoff.qa.neptune.core.api.steps.localization;
 
-import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 
@@ -14,11 +13,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 
-import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
-import static ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier.DefaultActionParameterReader.getPerformOnPseudoField;
-import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefaultGetParameterReader.*;
 import static ru.tinkoff.qa.neptune.core.api.steps.localization.ResourceBundleGenerator.cutPartOfPath;
 import static ru.tinkoff.qa.neptune.core.api.steps.localization.ResourceBundleGenerator.getKey;
 
@@ -32,10 +28,9 @@ public abstract class BundleFillerExtension {
         this.sectionName = sectionName;
     }
 
-    private static LocalizationItem getLocalizationItem(Class<?> clazz, BufferedWriter output, Properties properties) {
+    private static LocalizationItem getLocalizationItem(Class<?> clazz, BundleFillerExtension ext, BufferedWriter output, Properties properties) {
         var item = new LocalizationItem(clazz, output, properties);
-
-        var fields = new ArrayList<AnnotatedElement>();
+        /*var fields = new ArrayList<AnnotatedElement>();
 
         ofNullable(getImperativePseudoField(clazz, false)).ifPresent(fields::add);
         ofNullable(getFromPseudoField(clazz, false)).ifPresent(fields::add);
@@ -54,10 +49,14 @@ public abstract class BundleFillerExtension {
 
         var methods = stream(clazz.getDeclaredMethods())
                 .filter(method -> method.getAnnotation(Description.class) != null)
-                .collect(toList());
+                .collect(toList());*/
 
-        return item.addFields(fields).addMethods(methods);
+        return item.addFields(ext.addFields(clazz)).addMethods(ext.addMethods(clazz));
     }
+
+    protected abstract List<AnnotatedElement> addFields(Class<?> clazz);
+
+    protected abstract List<Method> addMethods(Class<?> clazz);
 
     final void fill(BufferedWriter output, Properties properties) throws IOException {
         if (toAdd.size() > 0) {
@@ -68,7 +67,7 @@ public abstract class BundleFillerExtension {
                     + " ============================================ ");
 
             var items = toAdd.stream()
-                    .map(cls -> getLocalizationItem(cls, output, properties))
+                    .map(cls -> getLocalizationItem(cls, this, output, properties))
                     .collect(toList());
 
             for (var item : items) {

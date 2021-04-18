@@ -2,10 +2,10 @@ package ru.tinkoff.qa.neptune.core.api.steps.localization;
 
 import io.github.classgraph.ClassGraph;
 import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
-import ru.tinkoff.qa.neptune.core.api.steps.PseudoField;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.PseudoField;
 
 import java.io.*;
 import java.lang.reflect.AnnotatedElement;
@@ -110,21 +110,16 @@ public class ResourceBundleGenerator {
                     .sorted(comparing(Class::getName))
                     .collect(toCollection(ArrayList::new));
 
-            new BundleFillerExtension(steps, "STEPS") {
-            }.fill(output, properties);
-
-            new BundleFillerExtension(criteriaList, "CRITERIA") {
-            }.fill(output, properties);
-
-            new BundleFillerExtension(attachments, "ATTACHMENTS") {
-            }.fill(output, properties);
+            new DefaultBundleFiller(steps, "STEPS").fill(output, properties);
+            new DefaultBundleFiller(criteriaList, "CRITERIA").fill(output, properties);
+            new DefaultBundleFiller(attachments, "ATTACHMENTS").fill(output, properties);
 
             new ClassGraph().enableAllInfo()
                     .scan()
                     .getSubclasses(BundleFillerExtension.class.getName())
                     .loadClasses(BundleFillerExtension.class)
                     .stream()
-                    .filter(cls -> !isAbstract(cls.getModifiers()) && !cls.isAnonymousClass())
+                    .filter(cls -> !isAbstract(cls.getModifiers()) && !cls.equals(DefaultBundleFiller.class))
                     .forEach(cls -> {
                         try {
                             var c = cls.getConstructor();
@@ -157,7 +152,7 @@ public class ResourceBundleGenerator {
                 Field field = ((Field) annotatedElement);
                 key = cutPartOfPath(field.getDeclaringClass().getName()) + "." + field.getName();
             } else {
-                PseudoField pseudoField = ((PseudoField) annotatedElement);
+                PseudoField<?> pseudoField = ((PseudoField<?>) annotatedElement);
                 key = cutPartOfPath(pseudoField.getDeclaringClass().getName()) + "." + pseudoField.getName();
             }
         }
