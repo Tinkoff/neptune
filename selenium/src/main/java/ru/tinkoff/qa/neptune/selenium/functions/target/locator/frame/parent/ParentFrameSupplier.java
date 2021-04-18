@@ -2,8 +2,8 @@ package ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.parent;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
 

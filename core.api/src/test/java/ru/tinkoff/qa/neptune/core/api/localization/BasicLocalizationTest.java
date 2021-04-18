@@ -2,7 +2,11 @@ package ru.tinkoff.qa.neptune.core.api.localization;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.core.api.steps.*;
+import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
 import java.util.function.Function;
 import java.util.function.Supplier;

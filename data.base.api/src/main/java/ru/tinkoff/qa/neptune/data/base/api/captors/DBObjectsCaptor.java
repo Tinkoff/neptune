@@ -1,6 +1,6 @@
 package ru.tinkoff.qa.neptune.data.base.api.captors;
 
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
 
 import java.util.List;

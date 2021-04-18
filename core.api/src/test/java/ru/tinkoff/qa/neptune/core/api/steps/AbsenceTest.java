@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 
 import java.math.BigDecimal;

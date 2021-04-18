@@ -1,8 +1,8 @@
 package ru.tinkoff.qa.neptune.core.api.steps.localization;
 
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

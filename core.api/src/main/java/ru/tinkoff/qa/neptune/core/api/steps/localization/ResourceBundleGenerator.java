@@ -2,10 +2,10 @@ package ru.tinkoff.qa.neptune.core.api.steps.localization;
 
 import io.github.classgraph.ClassGraph;
 import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.PseudoField;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
 import java.io.*;
 import java.lang.reflect.AnnotatedElement;

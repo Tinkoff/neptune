@@ -2,8 +2,8 @@ package ru.tinkoff.qa.neptune.selenium.functions.browser.proxy;
 
 import com.browserup.harreader.model.*;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
 import java.net.http.HttpClient;
 import java.util.Date;

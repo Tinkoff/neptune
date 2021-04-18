@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
 import java.util.ArrayList;
 import java.util.List;

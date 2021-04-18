@@ -1,7 +1,8 @@
-package ru.tinkoff.qa.neptune.core.api.steps.parameters;
+package ru.tinkoff.qa.neptune.core.api.steps.annotations;
 
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

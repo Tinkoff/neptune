@@ -3,8 +3,9 @@ package ru.tinkoff.qa.neptune.core.api.steps;
 import org.hamcrest.Matcher;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.IncludeParamsOfInnerGetterStep;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterWrapper;
 
 import java.time.Duration;

@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.core.api.steps.parameters;
+package ru.tinkoff.qa.neptune.core.api.steps.annotations;
 
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
@@ -21,7 +21,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * @see SequentialGetStepSupplier.DefineCriteriaParameterName
  * @see SequentialGetStepSupplier.DefineTimeOutParameterName
  * @see SequentialGetStepSupplier.DefinePollingTimeParameterName
- * @see ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter
+ * @see StepParameter
  */
 @Retention(RUNTIME)
 @Target({TYPE})

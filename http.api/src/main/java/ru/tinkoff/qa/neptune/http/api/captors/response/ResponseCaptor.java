@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.http.api.captors.response;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.StringCaptor;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
 import javax.net.ssl.SSLPeerUnverifiedException;
 import java.io.IOException;
