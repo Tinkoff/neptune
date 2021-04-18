@@ -34,12 +34,6 @@ test {
     }
 }
 
-task generateBundle(type: JavaExec) {
-    classpath sourceSets.main.runtimeClasspath
-    main = "ru.tinkoff.qa.neptune.core.api.steps.localization.ResourceBundleGenerator"
-    args "ru_RU", "$projectDir/src/main/resources"
-}
-
 uploadArchives {
     repositories {
         mavenDeployer {
