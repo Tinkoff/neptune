@@ -15,7 +15,7 @@ import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 
 @CaptureOnSuccess(by = ImageCaptorAfterActionOnElement.class)
 @CaptureOnFailure(by = WebElementImageCaptor.class)
-@Description("Expand the {toExpand}")
+@Description("Expand {toExpand}")
 @MaxDepthOfReporting(0)
 @IncludeParamsOfInnerGetterStep
 public final class ExpandActionSupplier extends

@@ -9,6 +9,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
+import ru.tinkoff.qa.neptune.selenium.api.widget.WidgetDescriptionValueGetter;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.*;
 import ru.tinkoff.qa.neptune.selenium.captors.WebDriverImageCaptor;
 import ru.tinkoff.qa.neptune.selenium.captors.WebElementImageCaptor;
@@ -19,7 +20,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static java.lang.String.format;
-import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.OR;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindWebElements.webElements;
@@ -52,11 +52,9 @@ public final class SearchSupplier<R extends SearchContext>
 
     private static Supplier<NoSuchElementException> noSuchElementException(SearchSupplier<?> supplier) {
         return () -> {
-            var description = format("Nothing was found. Attempt to get %s", supplier.toString());
-            var exceptionText = ofNullable(supplier.getCriteria())
-                    .map(c -> format("%s. Criteria: %s", description, c.toString()))
-                    .orElse(description);
-            return new NoSuchElementException(exceptionText);
+            var description = new StringBuilder(format("Not found %s", supplier.toString()));
+            supplier.getParameters().forEach((key, value) -> description.append("\r\n").append(key).append(":").append(value));
+            return new NoSuchElementException(description.toString());
         };
     }
 
@@ -105,10 +103,13 @@ public final class SearchSupplier<R extends SearchContext>
      * @return an instance of {@link SearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
      */
-    @Description("{widgetClass} with text/label '{textOrLabel}'")
-    public static <T extends Widget> SearchSupplier<T> widget(@DescriptionFragment(value = "widgetClass",
-            makeReadableBy = WidgetNameGetter.class) Class<T> tClass,
-                                                              @DescriptionFragment("textOrLabel") String textOrLabel) {
+    @Description("{widgetClass} '{textOrLabel}'")
+    public static <T extends Widget> SearchSupplier<T> widget(
+            @DescriptionFragment(
+                    value = "widgetClass",
+                    makeReadableBy = WidgetDescriptionValueGetter.class)
+                    Class<T> tClass,
+            @DescriptionFragment("textOrLabel") String textOrLabel) {
         return new SearchSupplier<>(widgets(tClass))
                 .criteria(OR(
                         text(textOrLabel),
@@ -127,7 +128,9 @@ public final class SearchSupplier<R extends SearchContext>
      */
     @Description("{tClass}")
     public static <T extends Widget> SearchSupplier<T> widget(
-            @DescriptionFragment(value = "tClass", makeReadableBy = WidgetNameGetter.class) Class<T> tClass) {
+            @DescriptionFragment(
+                    value = "tClass",
+                    makeReadableBy = WidgetDescriptionValueGetter.class) Class<T> tClass) {
         var widgets = widgets(tClass);
         return new SearchSupplier<>(widgets);
     }

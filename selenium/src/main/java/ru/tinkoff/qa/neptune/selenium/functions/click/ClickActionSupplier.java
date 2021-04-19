@@ -19,7 +19,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 @CaptureOnFailure(by = WebElementImageCaptor.class)
 @CaptureOnSuccess(by = ImageCaptorAfterActionOnElement.class)
-@Description("Click on {on}")
+@Description("Click {on}")
 @MaxDepthOfReporting(0)
 @IncludeParamsOfInnerGetterStep
 public final class ClickActionSupplier extends SequentialActionSupplier<Object, SearchContext, ClickActionSupplier> {

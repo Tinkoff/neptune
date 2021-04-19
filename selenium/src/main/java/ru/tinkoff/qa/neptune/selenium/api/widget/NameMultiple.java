@@ -9,12 +9,12 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * This annotation is used to define a name
- * of a customized extension of the {@link Widget}.
+ * This annotation is used to define a name of set/list
+ * of objects of customized extension of the {@link Widget}.
  */
 @Retention(RUNTIME)
 @Target({TYPE})
 @Metadata
-public @interface Name {
+public @interface NameMultiple {
     String value();
 }

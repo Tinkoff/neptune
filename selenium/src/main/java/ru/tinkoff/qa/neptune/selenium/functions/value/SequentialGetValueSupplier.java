@@ -12,7 +12,7 @@ import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.nonNull;
 
-@Description("Value of the {element}")
+@Description("Value of {element}")
 @MaxDepthOfReporting(0)
 @IncludeParamsOfInnerGetterStep
 public final class SequentialGetValueSupplier<T> extends

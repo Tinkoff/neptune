@@ -5,11 +5,7 @@ import org.openqa.selenium.internal.WrapsElement;
 
 import java.util.List;
 
-import static java.lang.String.format;
-import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static ru.tinkoff.qa.neptune.selenium.api.widget.Priority.LOWEST;
 
 /**
@@ -18,6 +14,8 @@ import static ru.tinkoff.qa.neptune.selenium.api.widget.Priority.LOWEST;
  * element from which other elements can be found.
  */
 @Priority(LOWEST)
+@Name("Page element")
+@NameMultiple("Page elements")
 public abstract class Widget implements WrapsElement, SearchContext, HasAttribute,
         IsEnabled, IsVisible, HasSize, HasRectangle, HasLocation, HasCssValue, HasTextContent {
 
@@ -25,18 +23,6 @@ public abstract class Widget implements WrapsElement, SearchContext, HasAttribut
 
     public Widget(WebElement wrappedElement) {
         this.wrappedElement = wrappedElement;
-    }
-
-    public static String getWidgetName(Class<? extends Widget> classOfAWidget) {
-        Class<?> clazz = classOfAWidget;
-        while (!clazz.equals(Widget.class)) {
-            var name = clazz.getAnnotation(Name.class);
-            if (nonNull(name)) {
-                return name.value();
-            }
-            clazz = clazz.getSuperclass();
-        }
-        return classOfAWidget.getSimpleName();
     }
 
     @Override
@@ -119,28 +105,7 @@ public abstract class Widget implements WrapsElement, SearchContext, HasAttribut
     }
 
     public String toString() {
-        var thisClazz = this.getClass();
-        var widgetName = getWidgetName(thisClazz);
-
-        try {
-            String text;
-            var elementText = getWrappedElement().getText().trim();
-
-            if (isBlank(elementText)) {
-                text = EMPTY;
-            } else if (elementText.length() < 15) {
-                text = elementText;
-            } else {
-                text = format("%s...", elementText.substring(0, 15));
-            }
-
-            if (isBlank(text)) {
-                return widgetName;
-            }
-            return format("%s[%s]", widgetName, text);
-        } catch (Throwable t) {
-            return widgetName;
-        }
+        return WidgetDescriptionFormer.getDescription(this);
     }
 
     public Widget selfReference() {

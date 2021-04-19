@@ -4,8 +4,8 @@ import io.github.classgraph.ClassGraph;
 import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.AdditionalMetadata;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.PseudoField;
 
 import java.io.*;
 import java.lang.reflect.AnnotatedElement;
@@ -152,8 +152,8 @@ public class ResourceBundleGenerator {
                 Field field = ((Field) annotatedElement);
                 key = cutPartOfPath(field.getDeclaringClass().getName()) + "." + field.getName();
             } else {
-                PseudoField<?> pseudoField = ((PseudoField<?>) annotatedElement);
-                key = cutPartOfPath(pseudoField.getDeclaringClass().getName()) + "." + pseudoField.getName();
+                AdditionalMetadata<?> additionalMetadata = ((AdditionalMetadata<?>) annotatedElement);
+                key = cutPartOfPath(additionalMetadata.getDeclaringClass().getName()) + "." + additionalMetadata.getName();
             }
         }
         return key.replace(" ", "");

@@ -12,7 +12,7 @@ import java.util.List;
 import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
-import static ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier.DefaultActionParameterReader.getPerformOnPseudoField;
+import static ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier.DefaultActionParameterReader.getPerformOnMetadata;
 import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefaultGetParameterReader.*;
 
 final class DefaultBundleFiller extends BundleFillerExtension {
@@ -25,16 +25,16 @@ final class DefaultBundleFiller extends BundleFillerExtension {
     protected List<AnnotatedElement> addFields(Class<?> clazz) {
         var fields = new ArrayList<AnnotatedElement>();
 
-        ofNullable(getImperativePseudoField(clazz, false)).ifPresent(fields::add);
-        ofNullable(getFromPseudoField(clazz, false)).ifPresent(fields::add);
-        ofNullable(getPollingTimePseudoField(clazz, false)).ifPresent(fields::add);
-        ofNullable(getTimeOutPseudoField(clazz, false)).ifPresent(fields::add);
-        ofNullable(getCriteriaPseudoField(clazz, false)).ifPresent(fields::add);
+        ofNullable(getImperativeMetadata(clazz, false)).ifPresent(fields::add);
+        ofNullable(getFromMetadata(clazz, false)).ifPresent(fields::add);
+        ofNullable(getPollingTimeMetadata(clazz, false)).ifPresent(fields::add);
+        ofNullable(getTimeOutMetadata(clazz, false)).ifPresent(fields::add);
+        ofNullable(getCriteriaMetadata(clazz, false)).ifPresent(fields::add);
 
         ofNullable(SequentialActionSupplier.DefaultActionParameterReader
-                .getImperativePseudoField(clazz, false)).ifPresent(fields::add);
-        ofNullable(getPerformOnPseudoField(clazz, false)).ifPresent(fields::add);
-        ofNullable(getResultPseudoField(clazz, false)).ifPresent(fields::add);
+                .getImperativeMetadata(clazz, false)).ifPresent(fields::add);
+        ofNullable(getPerformOnMetadata(clazz, false)).ifPresent(fields::add);
+        ofNullable(getResultMetadata(clazz, false)).ifPresent(fields::add);
 
         fields.addAll(stream(clazz.getDeclaredFields())
                 .filter(field -> field.getAnnotation(StepParameter.class) != null)

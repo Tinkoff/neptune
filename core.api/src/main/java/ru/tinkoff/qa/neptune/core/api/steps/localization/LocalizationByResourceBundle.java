@@ -38,11 +38,11 @@ public class LocalizationByResourceBundle implements StepLocalization {
         var bundle = getResourceBundle(locale);
 
         if (bundle == null) {
-            return StepLocalization.buildTextByTemplate(description, descriptionTemplateParams);
+            return description;
         }
 
         if (bundle.containsKey(getKey(clz))) {
-            return bundle.getString(getKey(clz));
+            return StepLocalization.buildTextByTemplate(bundle.getString(getKey(clz)), descriptionTemplateParams);
         }
 
         return StepLocalization.buildTextByTemplate(description, descriptionTemplateParams);
@@ -52,7 +52,7 @@ public class LocalizationByResourceBundle implements StepLocalization {
     public String methodTranslation(Method method, String description, Map<String, String> descriptionTemplateParams, Locale locale) {
         var bundle = getResourceBundle(locale);
         if (bundle == null) {
-            return StepLocalization.buildTextByTemplate(description, descriptionTemplateParams);
+            return description;
         }
 
         if (bundle.containsKey(getKey(method))) {

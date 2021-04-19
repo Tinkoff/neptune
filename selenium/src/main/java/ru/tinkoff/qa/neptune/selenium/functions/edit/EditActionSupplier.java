@@ -16,7 +16,7 @@ import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 
 @CaptureOnFailure(by = WebElementImageCaptor.class)
 @CaptureOnSuccess(by = ImageCaptorAfterActionOnElement.class)
-@Description("Edit element {toEdit}")
+@Description("Edit {toEdit}")
 @MaxDepthOfReporting(0)
 @IncludeParamsOfInnerGetterStep
 public final class EditActionSupplier<T> extends

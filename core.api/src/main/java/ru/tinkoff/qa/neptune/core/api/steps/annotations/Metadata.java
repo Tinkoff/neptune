@@ -7,11 +7,11 @@ import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Annotates annotations which may be used for creation {@link PseudoField}.
+ * Annotates annotations which may be used for creation {@link AdditionalMetadata}.
  * <P>ATTENTION!!!!!</P>
  * Annotated annotation should have declared method {@code String value()}
  */
 @Retention(RUNTIME)
 @Target({ANNOTATION_TYPE})
-public @interface AsFieldAnnotation {
+public @interface Metadata {
 }

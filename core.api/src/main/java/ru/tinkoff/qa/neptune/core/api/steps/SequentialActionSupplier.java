@@ -1,8 +1,8 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.AdditionalMetadata;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.PseudoField;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 
@@ -25,8 +25,8 @@ import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure.CaptureOnFailureReader.readCaptorsOnFailure;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess.CaptureOnSuccessReader.readCaptorsOnSuccess;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting.MaxDepthOfReportingReader.getMaxDepth;
-import static ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier.DefaultActionParameterReader.getImperativePseudoField;
-import static ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier.DefaultActionParameterReader.getPerformOnPseudoField;
+import static ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier.DefaultActionParameterReader.getImperativeMetadata;
+import static ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier.DefaultActionParameterReader.getPerformOnMetadata;
 import static ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter.StepParameterCreator.createStepParameter;
 import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
@@ -65,10 +65,10 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
         var cls = (Class<?>) this.getClass();
 
         var result = new LinkedHashMap<>(StepParameterPojo.super.getParameters());
-        ofNullable(getPerformOnPseudoField(cls, true))
-                .ifPresent(pseudoField -> {
+        ofNullable(getPerformOnMetadata(cls, true))
+                .ifPresent(metaData -> {
                     if (isLoggable(toBePerformedOn) && nonNull(toBePerformedOn)) {
-                        result.put(translate(pseudoField), valueOf(toBePerformedOn));
+                        result.put(translate(metaData), valueOf(toBePerformedOn));
                     }
                 });
 
@@ -164,7 +164,7 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
             function = t -> (R) toBePerformedOn;
         }
 
-        var description = (translate(getImperativePseudoField(this.getClass(), true)) + " " + actionDescription).trim();
+        var description = translate(translate(getImperativeMetadata(this.getClass(), true)) + " " + actionDescription).trim();
         return new ActionImpl<>(description, this, function)
                 .addSuccessCaptors(successCaptors)
                 .addFailureCaptors(failureCaptors)
@@ -208,16 +208,16 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
             super();
         }
 
-        public static PseudoField<StepParameter> getPerformOnPseudoField(Class<?> toRead, boolean useInheritance) {
+        public static AdditionalMetadata<StepParameter> getPerformOnMetadata(Class<?> toRead, boolean useInheritance) {
             return readAnnotation(toRead, DefinePerformOnParameterName.class, "performOn", useInheritance);
         }
 
-        public static PseudoField<StepParameter> getImperativePseudoField(Class<?> toRead, boolean useInheritance) {
+        public static AdditionalMetadata<StepParameter> getImperativeMetadata(Class<?> toRead, boolean useInheritance) {
             return readAnnotation(toRead, DefinePerformImperativeParameterName.class, "imperative", useInheritance);
         }
 
-        private static PseudoField<StepParameter> readAnnotation(Class<?> toRead, Class<? extends Annotation> annotationClass,
-                                                                 String name, boolean useInheritance) {
+        private static AdditionalMetadata<StepParameter> readAnnotation(Class<?> toRead, Class<? extends Annotation> annotationClass,
+                                                                        String name, boolean useInheritance) {
             if (!SequentialActionSupplier.class.isAssignableFrom(toRead)) {
                 return null;
             }
@@ -229,7 +229,7 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
                     try {
                         var valueMethod = annotation.annotationType().getMethod("value");
                         valueMethod.setAccessible(true);
-                        return new PseudoField<>(toRead, name, StepParameter.class, () -> {
+                        return new AdditionalMetadata<>(toRead, name, StepParameter.class, () -> {
                             try {
                                 return createStepParameter((String) valueMethod.invoke(annotation));
                             } catch (Exception t) {

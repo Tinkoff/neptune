@@ -35,11 +35,13 @@ public interface PropertySupplier<T, R> extends Supplier<T>, Consumer<R> {
         }
     }
 
-    private Optional<String> returnOptionalFromEnvironment(String property) {
-        return ofNullable(getPropertyValue(property));
+    static Optional<String> returnOptionalFromEnvironment(PropertySupplier<?, ?> property) {
+        return ofNullable(property.getPropertyValue());
     }
 
-    private String getPropertyValue(String property) {
+    private String getPropertyValue() {
+        var property = getName();
+
         if (!arePropertiesRead()) {
             refreshProperties();
         }
@@ -56,7 +58,8 @@ public interface PropertySupplier<T, R> extends Supplier<T>, Consumer<R> {
         return null;
     }
 
-    private boolean isPropertyDefined(String property) {
+    private boolean isPropertyDefined() {
+        var property = getName();
         return System.getenv().containsKey(property) || System.getProperties().containsKey(property);
     }
 
@@ -116,11 +119,10 @@ public interface PropertySupplier<T, R> extends Supplier<T>, Consumer<R> {
     @Override
     default T get() {
         var thisRef = this;
-        var property = getName();
-        return returnOptionalFromEnvironment(property)
+        return returnOptionalFromEnvironment(this)
                 .map(this::parse)
                 .orElseGet(() -> {
-                    if (isPropertyDefined(property)) {
+                    if (isPropertyDefined()) {
                         return returnIfNull();
                     }
 

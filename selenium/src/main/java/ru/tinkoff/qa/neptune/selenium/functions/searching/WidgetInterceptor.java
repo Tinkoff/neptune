@@ -42,7 +42,7 @@ class WidgetInterceptor extends AbstractElementInterceptor {
                 && WebElement.class.equals(method.getReturnType())) {
             realObject = ofNullable(realObject)
                     .orElseGet(this::createRealObject);
-            return createProxy(element.getClass(), new WebElementInterceptor(element, realObject.toString()));
+            return createProxy(element.getClass(), new WebElementInterceptor(element));
         }
 
         return super.intercept(obj, method, args, proxy);

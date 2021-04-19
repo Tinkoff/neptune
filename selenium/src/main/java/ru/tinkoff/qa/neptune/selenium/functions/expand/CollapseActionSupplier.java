@@ -15,7 +15,7 @@ import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 
 @CaptureOnSuccess(by = ImageCaptorAfterActionOnElement.class)
 @CaptureOnFailure(by = WebElementImageCaptor.class)
-@Description("Collapse the {toCollapse}")
+@Description("Collapse {toCollapse}")
 @MaxDepthOfReporting(0)
 @IncludeParamsOfInnerGetterStep
 public final class CollapseActionSupplier extends

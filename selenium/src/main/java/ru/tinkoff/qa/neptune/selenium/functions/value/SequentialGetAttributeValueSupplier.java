@@ -13,7 +13,7 @@ import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 
 import static java.lang.String.format;
 
-@Description("Value of html attribute '{attr}' of the {element}")
+@Description("Value of html attribute '{attr}' of {element}")
 @MaxDepthOfReporting(0)
 @IncludeParamsOfInnerGetterStep
 public final class SequentialGetAttributeValueSupplier extends SequentialGetStepSupplier

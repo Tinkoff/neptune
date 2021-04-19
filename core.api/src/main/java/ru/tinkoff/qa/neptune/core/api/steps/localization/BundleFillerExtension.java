@@ -30,27 +30,6 @@ public abstract class BundleFillerExtension {
 
     private static LocalizationItem getLocalizationItem(Class<?> clazz, BundleFillerExtension ext, BufferedWriter output, Properties properties) {
         var item = new LocalizationItem(clazz, output, properties);
-        /*var fields = new ArrayList<AnnotatedElement>();
-
-        ofNullable(getImperativePseudoField(clazz, false)).ifPresent(fields::add);
-        ofNullable(getFromPseudoField(clazz, false)).ifPresent(fields::add);
-        ofNullable(getPollingTimePseudoField(clazz, false)).ifPresent(fields::add);
-        ofNullable(getTimeOutPseudoField(clazz, false)).ifPresent(fields::add);
-        ofNullable(getCriteriaPseudoField(clazz, false)).ifPresent(fields::add);
-
-        ofNullable(SequentialActionSupplier.DefaultActionParameterReader
-                .getImperativePseudoField(clazz, false)).ifPresent(fields::add);
-        ofNullable(getPerformOnPseudoField(clazz, false)).ifPresent(fields::add);
-        ofNullable(getResultPseudoField(clazz, false)).ifPresent(fields::add);
-
-        fields.addAll(stream(clazz.getDeclaredFields())
-                .filter(field -> field.getAnnotation(StepParameter.class) != null)
-                .collect(toList()));
-
-        var methods = stream(clazz.getDeclaredMethods())
-                .filter(method -> method.getAnnotation(Description.class) != null)
-                .collect(toList());*/
-
         return item.addFields(ext.addFields(clazz)).addMethods(ext.addMethods(clazz));
     }
 

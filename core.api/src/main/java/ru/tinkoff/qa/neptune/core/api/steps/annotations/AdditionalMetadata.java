@@ -11,23 +11,22 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
 
 /**
- * Creates an object which plays role of a field that doesn't exists.
- * This is for meta-information, that helps to create parameters and description of steps
+ * Creates an object which plays role of additional data that helps to create parameters and description of steps
  */
-public class PseudoField<T extends Annotation> implements AnnotatedElement, Member {
+public class AdditionalMetadata<T extends Annotation> implements AnnotatedElement, Member {
     private final Class<?> clazz;
     private final String name;
     private final Class<T> annotationClass;
     private final Supplier<T> annotationSupplier;
 
-    public PseudoField(Class<?> clazz, String name, Class<T> annotationClass, Supplier<T> annotationSupplier) {
+    public AdditionalMetadata(Class<?> clazz, String name, Class<T> annotationClass, Supplier<T> annotationSupplier) {
         this.clazz = clazz;
         this.name = name;
         checkNotNull(annotationClass);
-        checkArgument(annotationClass.getAnnotation(AsFieldAnnotation.class) != null,
+        checkArgument(annotationClass.getAnnotation(Metadata.class) != null,
                 format("Class of annotation '%s' should be annotated by '%s'",
                         annotationClass.getName(),
-                        AsFieldAnnotation.class.getName()));
+                        Metadata.class.getName()));
         this.annotationClass = annotationClass;
         checkNotNull(annotationSupplier);
         this.annotationSupplier = annotationSupplier;

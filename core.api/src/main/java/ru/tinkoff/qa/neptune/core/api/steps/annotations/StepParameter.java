@@ -17,7 +17,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  */
 @Retention(RUNTIME)
 @Target({FIELD})
-@AsFieldAnnotation
+@Metadata
 public @interface StepParameter {
 
     /**

@@ -1,8 +1,8 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.AdditionalMetadata;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.PseudoField;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 
@@ -98,9 +98,9 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         fillCriteriaParameters(result);
         fillTimeParameters(result);
 
-        ofNullable(getFromPseudoField(cls, true)).ifPresent(pseudoField -> {
+        ofNullable(getFromMetadata(cls, true)).ifPresent(metaData -> {
             if (isLoggable(from) && nonNull(from)) {
-                result.put(translate(pseudoField), valueOf(from));
+                result.put(translate(metaData), valueOf(from));
             }
         });
 
@@ -132,10 +132,10 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     void fillCriteriaParameters(Map<String, String> parameters) {
         var cls = (Class<?>) this.getClass();
 
-        ofNullable(getCriteriaPseudoField(cls, true)).ifPresent(pseudoField -> {
+        ofNullable(getCriteriaMetadata(cls, true)).ifPresent(metaData -> {
             int i = 0;
             for (var c : conditions) {
-                var criteria = i == 0 ? translate(pseudoField) : translate(pseudoField) + " " + (i + 1);
+                var criteria = i == 0 ? translate(metaData) : translate(metaData) + " " + (i + 1);
                 parameters.put(criteria, c.toString());
                 i++;
             }
@@ -145,17 +145,17 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     void fillTimeParameters(Map<String, String> parameters) {
         var cls = (Class<?>) this.getClass();
 
-        ofNullable(getTimeOutPseudoField(cls, true)).ifPresent(pseudoField ->
+        ofNullable(getTimeOutMetadata(cls, true)).ifPresent(metaData ->
                 ofNullable(timeToGet).ifPresent(duration -> {
                     if (duration.toMillis() > 0) {
-                        parameters.put(translate(pseudoField), formatDurationHMS(duration.toMillis()));
+                        parameters.put(translate(metaData), formatDurationHMS(duration.toMillis()));
                     }
                 }));
 
-        ofNullable(getPollingTimePseudoField(cls, true)).ifPresent(pseudoField ->
+        ofNullable(getPollingTimeMetadata(cls, true)).ifPresent(metaData ->
                 ofNullable(sleepingTime).ifPresent(duration -> {
                     if (duration.toMillis() > 0) {
-                        parameters.put(translate(pseudoField), formatDurationHMS(duration.toMillis()));
+                        parameters.put(translate(metaData), formatDurationHMS(duration.toMillis()));
                     }
                 }));
     }
@@ -327,8 +327,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         checkNotNull(endFunction);
 
         var params = getParameters();
-        var resultDescription = translate(getResultPseudoField(this.getClass(), true));
-        var description = (translate(getImperativePseudoField(this.getClass(), true)) + " " + this.description).trim();
+        var resultDescription = translate(getResultMetadata(this.getClass(), true));
+        var description = translate(translate(getImperativeMetadata(this.getClass(), true)) + " " + this.description).trim();
 
         var toBeReturned = new Get<>(description, endFunction)
                 .addSuccessCaptors(successCaptors)
@@ -360,6 +360,16 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
     @Override
     public String toString() {
+        return getDescription();
+    }
+
+    /**
+     * The method {@link #toString()} is possible to be overridden. This method is for such cases when it is necessary to
+     * have access to step description.
+     *
+     * @return step description.
+     */
+    protected String getDescription() {
         return description;
     }
 
@@ -374,7 +384,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
     protected abstract Function<M, R> getEndFunction();
 
-    protected Criteria<P> getCriteria() {
+    Criteria<P> getCriteria() {
         return condition;
     }
 
@@ -907,32 +917,32 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
             super();
         }
 
-        public static PseudoField<StepParameter> getFromPseudoField(Class<?> toRead, boolean useInheritance) {
+        public static AdditionalMetadata<StepParameter> getFromMetadata(Class<?> toRead, boolean useInheritance) {
             return readAnnotation(toRead, DefineFromParameterName.class, "from", useInheritance);
         }
 
-        public static PseudoField<StepParameter> getPollingTimePseudoField(Class<?> toRead, boolean useInheritance) {
+        public static AdditionalMetadata<StepParameter> getPollingTimeMetadata(Class<?> toRead, boolean useInheritance) {
             return readAnnotation(toRead, DefinePollingTimeParameterName.class, "pollingTime", useInheritance);
         }
 
-        public static PseudoField<StepParameter> getTimeOutPseudoField(Class<?> toRead, boolean useInheritance) {
+        public static AdditionalMetadata<StepParameter> getTimeOutMetadata(Class<?> toRead, boolean useInheritance) {
             return readAnnotation(toRead, DefineTimeOutParameterName.class, "timeOut", useInheritance);
         }
 
-        public static PseudoField<StepParameter> getCriteriaPseudoField(Class<?> toRead, boolean useInheritance) {
+        public static AdditionalMetadata<StepParameter> getCriteriaMetadata(Class<?> toRead, boolean useInheritance) {
             return readAnnotation(toRead, DefineCriteriaParameterName.class, "criteria", useInheritance);
         }
 
-        public static PseudoField<StepParameter> getImperativePseudoField(Class<?> toRead, boolean useInheritance) {
+        public static AdditionalMetadata<StepParameter> getImperativeMetadata(Class<?> toRead, boolean useInheritance) {
             return readAnnotation(toRead, DefineGetImperativeParameterName.class, "imperative", useInheritance);
         }
 
-        public static PseudoField<StepParameter> getResultPseudoField(Class<?> toRead, boolean useInheritance) {
+        public static AdditionalMetadata<StepParameter> getResultMetadata(Class<?> toRead, boolean useInheritance) {
             return readAnnotation(toRead, DefineResultDescriptionParameterName.class, "resultDescription", useInheritance);
         }
 
-        private static PseudoField<StepParameter> readAnnotation(Class<?> toRead, Class<? extends Annotation> annotationClass,
-                                                                 String name, boolean useInheritance) {
+        private static AdditionalMetadata<StepParameter> readAnnotation(Class<?> toRead, Class<? extends Annotation> annotationClass,
+                                                                        String name, boolean useInheritance) {
             if (!SequentialGetStepSupplier.class.isAssignableFrom(toRead)) {
                 return null;
             }
@@ -944,7 +954,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
                     try {
                         var valueMethod = annotation.annotationType().getMethod("value");
                         valueMethod.setAccessible(true);
-                        return new PseudoField<>(toRead, name, StepParameter.class, () -> {
+                        return new AdditionalMetadata<>(toRead, name, StepParameter.class, () -> {
                             try {
                                 return createStepParameter((String) valueMethod.invoke(annotation));
                             } catch (Exception t) {

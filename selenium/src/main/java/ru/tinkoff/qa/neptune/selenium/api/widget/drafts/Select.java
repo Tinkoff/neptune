@@ -4,6 +4,7 @@ import org.openqa.selenium.WebElement;
 import ru.tinkoff.qa.neptune.selenium.api.widget.*;
 
 @Name("Selector")
+@NameMultiple("Selectors")
 public abstract class Select extends Widget implements Editable<String>, HasValue<String>, HasOptions {
 
     public Select(WebElement wrappedElement) {
