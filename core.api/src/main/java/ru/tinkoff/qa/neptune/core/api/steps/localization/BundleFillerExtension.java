@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.core.api.steps.localization;
 
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Metadata;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 
+import static java.util.Arrays.stream;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static ru.tinkoff.qa.neptune.core.api.steps.localization.ResourceBundleGenerator.cutPartOfPath;
@@ -128,12 +129,24 @@ public abstract class BundleFillerExtension {
                 return;
             }
 
-            StepParameter annotation = annotatedElement.getAnnotation(StepParameter.class);
-            var key = getKey(annotatedElement);
-            var value = ofNullable(properties)
-                    .map(p -> p.get(key))
-                    .orElse(annotation.value());
-            newLine(annotation.value(), key, value);
+            var memberAnnotation = stream(annotatedElement.getAnnotations())
+                    .filter(annotation -> annotation.annotationType().getAnnotation(Metadata.class) != null)
+                    .findFirst()
+                    .orElse(null);
+
+            try {
+                var m = memberAnnotation.annotationType().getDeclaredMethod("value");
+                m.setAccessible(true);
+                var annotationValue = (String) m.invoke(memberAnnotation);
+
+                var key = getKey(annotatedElement);
+                var value = ofNullable(properties)
+                        .map(p -> p.get(key))
+                        .orElse(annotationValue);
+                newLine(annotationValue, key, value);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
 
         private void newLine(String originalText, String key, Object value) throws IOException {
