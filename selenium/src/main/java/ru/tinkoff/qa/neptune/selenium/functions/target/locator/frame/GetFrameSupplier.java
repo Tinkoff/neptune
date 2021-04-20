@@ -9,13 +9,13 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporti
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.captors.WebDriverImageCaptor;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
 
 import java.time.Duration;
 
-import static java.lang.String.format;
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 import static ru.tinkoff.qa.neptune.selenium.functions.target.locator.frame.GetFrameFunction.*;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITING_FRAME_SWITCHING_DURATION;
@@ -24,6 +24,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITIN
 @CaptureOnSuccess(by = WebDriverImageCaptor.class)
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting for the frame")
 @MaxDepthOfReporting(0)
+@ThrowWhenNoData(toThrow = NoSuchFrameException.class)
 public final class GetFrameSupplier extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<SeleniumStepContext, Frame, WebDriver, GetFrameSupplier>
         implements TargetLocatorSupplier<Frame> {
 
@@ -31,8 +32,7 @@ public final class GetFrameSupplier extends SequentialGetStepSupplier.GetObjectC
     private GetFrameSupplier(GetFrameFunction getFrame) {
         super(getFrame);
         timeOut(WAITING_FRAME_SWITCHING_DURATION.get());
-        throwOnEmptyResult(() -> new NoSuchFrameException(format("Can't find/switch to the frame %s",
-                getFrame.toString())));
+        throwOnNoResult();
     }
 
     /**

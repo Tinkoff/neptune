@@ -8,6 +8,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 import ru.tinkoff.qa.neptune.selenium.api.widget.WidgetDescriptionValueGetter;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.*;
@@ -17,9 +18,7 @@ import ru.tinkoff.qa.neptune.selenium.captors.WebElementImageCaptor;
 import java.time.Duration;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
-import static java.lang.String.format;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.OR;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CommonElementCriteria.*;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindWebElements.webElements;
@@ -36,6 +35,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMEN
 @MaxDepthOfReporting(0)
 @CaptureOnSuccess(by = WebElementImageCaptor.class)
 @CaptureOnFailure(by = {WebDriverImageCaptor.class, WebElementImageCaptor.class})
+@ThrowWhenNoData(toThrow = NoSuchElementException.class, startDescription = "Not found:")
 public final class SearchSupplier<R extends SearchContext>
         extends SequentialGetStepSupplier.GetObjectFromIterableChainedStepSupplier<Object, R, SearchContext, SearchSupplier<R>> {
 
@@ -47,17 +47,8 @@ public final class SearchSupplier<R extends SearchContext>
         if (FIND_ONLY_VISIBLE_ELEMENTS.get()) {
             criteria(visible());
         }
-        throwOnEmptyResult(noSuchElementException(this));
+        throwOnNoResult();
     }
-
-    private static Supplier<NoSuchElementException> noSuchElementException(SearchSupplier<?> supplier) {
-        return () -> {
-            var description = new StringBuilder(format("Not found %s", supplier.toString()));
-            supplier.getParameters().forEach((key, value) -> description.append("\r\n").append(key).append(":").append(value));
-            return new NoSuchElementException(description.toString());
-        };
-    }
-
 
     /**
      * Returns an instance of {@link SearchSupplier} that builds and supplies a function.

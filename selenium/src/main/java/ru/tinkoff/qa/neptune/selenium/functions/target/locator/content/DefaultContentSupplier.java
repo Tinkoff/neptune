@@ -5,6 +5,7 @@ import org.openqa.selenium.WebDriverException;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
 
@@ -12,6 +13,7 @@ import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentF
 
 @Description("Default content")
 @MaxDepthOfReporting(0)
+@ThrowWhenNoData(toThrow = WebDriverException.class)
 public final class DefaultContentSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, WebDriver, WebDriver, DefaultContentSupplier>
         implements TargetLocatorSupplier<WebDriver> {
@@ -24,7 +26,7 @@ public final class DefaultContentSupplier extends SequentialGetStepSupplier
                 return null;
             }
         });
-        throwOnEmptyResult(() -> new WebDriverException("It was impossible to switch to default content for some reason"));
+        throwOnNoResult();
     }
 
     /**

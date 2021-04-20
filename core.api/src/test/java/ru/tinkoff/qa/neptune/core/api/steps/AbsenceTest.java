@@ -35,27 +35,7 @@ public class AbsenceTest {
     };
 
     @Test
-    public void absenceOfAnObjectTest1() {
-        var start = currentTimeMillis();
-        assertThat(testContext.absence(new FunctionThatReturnsObject(ofSeconds(5)).run(), ofSeconds(10)),
-                is(true));
-        var end = currentTimeMillis();
-        assertThat(new BigDecimal(end - start),
-                closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
-    }
-
-    @Test
-    public void absenceOfAnObjectTest2() {
-        var start = currentTimeMillis();
-        assertThat(testContext.absence(new FunctionThatReturnsObject(ofSeconds(10)).run(), ofSeconds(5)),
-                is(false));
-        var end = currentTimeMillis();
-        assertThat(new BigDecimal(end - start),
-                closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
-    }
-
-    @Test
-    public void absenceOfAnObjectTest3() {
+    public void test1() {
         var start = currentTimeMillis();
         assertThat(testContext.absence(getTestSupplier(new FunctionThatReturnsObject(ofSeconds(5)).run()), ofSeconds(10)),
                 is(true));
@@ -65,7 +45,7 @@ public class AbsenceTest {
     }
 
     @Test
-    public void absenceOfAnObjectTest4() {
+    public void test2() {
         var start = currentTimeMillis();
         assertThat(testContext.absence(getTestSupplier(new FunctionThatReturnsObject(ofMillis(0)).run())
                         .timeOut(ofSeconds(5)),
@@ -76,58 +56,24 @@ public class AbsenceTest {
                 closeTo(new BigDecimal(ofMillis(0).toMillis()), new BigDecimal(500)));
     }
 
-    @Test(expectedExceptions = IllegalStateException.class, expectedExceptionsMessageRegExp = "Test exception")
-    public void absenceOfAnObjectTest5() {
+    @Test(expectedExceptions = StillPresentException.class)
+    public void test3() {
         var start = currentTimeMillis();
         try {
-            assertThat(testContext.absence(new FunctionThatReturnsObject(ofSeconds(10)).run(), ofSeconds(5), "Test exception"),
+            assertThat(testContext.absenceOrThrow(getTestSupplier(new FunctionThatReturnsObject(ofSeconds(10)).run()), ofSeconds(5)),
                     is(false));
         } catch (Throwable t) {
             var end = currentTimeMillis();
             assertThat(new BigDecimal(end - start),
                     closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
-            throw t;
-        }
-        fail("Exception was expected");
-    }
-
-    @Test(expectedExceptions = IllegalStateException.class, expectedExceptionsMessageRegExp = "Test exception")
-    public void absenceOfAnObjectTest6() {
-        var start = currentTimeMillis();
-        try {
-            assertThat(testContext.absence(getTestSupplier(new FunctionThatReturnsObject(ofSeconds(10)).run()), ofSeconds(5), "Test exception"),
-                    is(false));
-        } catch (Throwable t) {
-            var end = currentTimeMillis();
-            assertThat(new BigDecimal(end - start),
-                    closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
+            assertThat(t.getMessage(), containsString("Still present: TestGetSupplierDescription"));
             throw t;
         }
         fail("Exception was expected");
     }
 
     @Test
-    public void absenceOfAnArrayTest1() {
-        var start = currentTimeMillis();
-        assertThat(testContext.absence(new FunctionThatReturnsArray(ofSeconds(5)).run(), ofSeconds(10)),
-                is(true));
-        var end = currentTimeMillis();
-        assertThat(new BigDecimal(end - start),
-                closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
-    }
-
-    @Test
-    public void absenceOfAnArrayTest2() {
-        var start = currentTimeMillis();
-        assertThat(testContext.absence(new FunctionThatReturnsArray(ofSeconds(10)).run(), ofSeconds(5)),
-                is(false));
-        var end = currentTimeMillis();
-        assertThat(new BigDecimal(end - start),
-                closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
-    }
-
-    @Test
-    public void absenceOfAnArrayTest3() {
+    public void test4() {
         var start = currentTimeMillis();
         assertThat(testContext.absence(getTestSupplier(new FunctionThatReturnsArray(ofSeconds(5)).run()), ofSeconds(10)),
                 is(true));
@@ -137,7 +83,7 @@ public class AbsenceTest {
     }
 
     @Test
-    public void absenceOfAnArrayTest4() {
+    public void test5() {
         var start = currentTimeMillis();
         assertThat(testContext.absence(getTestSupplier(new FunctionThatReturnsArray(ofMillis(0)).run())
                         .timeOut(ofSeconds(5)),
@@ -147,58 +93,24 @@ public class AbsenceTest {
                 closeTo(new BigDecimal(ofMillis(0).toMillis()), new BigDecimal(500)));
     }
 
-    @Test(expectedExceptions = IllegalStateException.class, expectedExceptionsMessageRegExp = "Test exception")
-    public void absenceOfAnArrayTest5() {
+    @Test(expectedExceptions = StillPresentException.class)
+    public void test6() {
         var start = currentTimeMillis();
         try {
-            assertThat(testContext.absence(new FunctionThatReturnsArray(ofSeconds(10)).run(), ofSeconds(5), "Test exception"),
+            assertThat(testContext.absenceOrThrow(getTestSupplier(new FunctionThatReturnsArray(ofSeconds(10)).run()), ofSeconds(5)),
                     is(false));
         } catch (Throwable t) {
             var end = currentTimeMillis();
             assertThat(new BigDecimal(end - start),
                     closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
-            throw t;
-        }
-        fail("Exception was expected");
-    }
-
-    @Test(expectedExceptions = IllegalStateException.class, expectedExceptionsMessageRegExp = "Test exception")
-    public void absenceOfAnArrayTest6() {
-        var start = currentTimeMillis();
-        try {
-            assertThat(testContext.absence(getTestSupplier(new FunctionThatReturnsObject(ofSeconds(10)).run()), ofSeconds(5), "Test exception"),
-                    is(false));
-        } catch (Throwable t) {
-            var end = currentTimeMillis();
-            assertThat(new BigDecimal(end - start),
-                    closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
+            assertThat(t.getMessage(), containsString("Still present: TestGetSupplierDescription"));
             throw t;
         }
         fail("Exception was expected");
     }
 
     @Test
-    public void absenceOfAnIterableTest1() {
-        var start = currentTimeMillis();
-        assertThat(testContext.absence(new FunctionThatReturnsIterable(ofSeconds(5)).run(), ofSeconds(10)),
-                is(true));
-        var end = currentTimeMillis();
-        assertThat(new BigDecimal(end - start),
-                closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
-    }
-
-    @Test
-    public void absenceOfAnIterableTest2() {
-        var start = currentTimeMillis();
-        assertThat(testContext.absence(new FunctionThatReturnsIterable(ofSeconds(10)).run(), ofSeconds(5)),
-                is(false));
-        var end = currentTimeMillis();
-        assertThat(new BigDecimal(end - start),
-                closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
-    }
-
-    @Test
-    public void absenceOfAnIterableTest3() {
+    public void test7() {
         var start = currentTimeMillis();
         assertThat(testContext.absence(getTestSupplier(new FunctionThatReturnsIterable(ofSeconds(5)).run()),
                 ofSeconds(10)),
@@ -209,7 +121,7 @@ public class AbsenceTest {
     }
 
     @Test
-    public void absenceOfAnIterableTest4() {
+    public void test8() {
         var start = currentTimeMillis();
         assertThat(testContext.absence(getTestSupplier(new FunctionThatReturnsIterable(ofMillis(0)).run())
                         .timeOut(ofSeconds(5)),
@@ -219,38 +131,24 @@ public class AbsenceTest {
                 closeTo(new BigDecimal(ofMillis(0).toMillis()), new BigDecimal(500)));
     }
 
-    @Test(expectedExceptions = IllegalStateException.class, expectedExceptionsMessageRegExp = "Test exception")
-    public void absenceOfAnIterableTest5() {
+    @Test(expectedExceptions = StillPresentException.class)
+    public void test9() {
         var start = currentTimeMillis();
         try {
-            assertThat(testContext.absence(new FunctionThatReturnsIterable(ofSeconds(10)).run(), ofSeconds(5), "Test exception"),
+            assertThat(testContext.absenceOrThrow(getTestSupplier(new FunctionThatReturnsIterable(ofSeconds(10)).run()), ofSeconds(5)),
                     is(false));
         } catch (Throwable t) {
             var end = currentTimeMillis();
             assertThat(new BigDecimal(end - start),
                     closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
-            throw t;
-        }
-        fail("Exception was expected");
-    }
-
-    @Test(expectedExceptions = IllegalStateException.class, expectedExceptionsMessageRegExp = "Test exception")
-    public void absenceOfAnIterableTest6() {
-        var start = currentTimeMillis();
-        try {
-            assertThat(testContext.absence(getTestSupplier(new FunctionThatReturnsIterable(ofSeconds(10)).run()), ofSeconds(5), "Test exception"),
-                    is(false));
-        } catch (Throwable t) {
-            var end = currentTimeMillis();
-            assertThat(new BigDecimal(end - start),
-                    closeTo(new BigDecimal(ofSeconds(5).toMillis()), new BigDecimal(500)));
+            assertThat(t.getMessage(), containsString("Still present: TestGetSupplierDescription"));
             throw t;
         }
         fail("Exception was expected");
     }
 
     @Test
-    public void whenFunctionThrowsExceptionTest() {
+    public void test10() {
         var start = currentTimeMillis();
         assertThat(testContext.absence(getTestSupplier(FAILED_EXCEPTION)
                         .timeOut(ofSeconds(100)),
@@ -261,16 +159,7 @@ public class AbsenceTest {
     }
 
     @Test
-    public void whenFunctionThrowsExceptionTest2() {
-        var start = currentTimeMillis();
-        assertThat(testContext.absence(FAILED_EXCEPTION, ofSeconds(5)), is(true));
-        var end = currentTimeMillis();
-        assertThat(new BigDecimal(end - start),
-                closeTo(new BigDecimal(ofMillis(0).toMillis()), new BigDecimal(500)));
-    }
-
-    @Test
-    public void absenceCaptureTest1() {
+    public void test11() {
         PresenceSuccessCaptor.CAUGHT.clear();
         AbcnceSuccessCaptor.CAUGHT.clear();
         assertThat(testContext.absence(getTestSupplier(new FunctionThatReturnsArray(ofSeconds(5)).run()), ofSeconds(10)),
@@ -281,7 +170,7 @@ public class AbsenceTest {
     }
 
     @Test
-    public void absenceCaptureTest2() {
+    public void test12() {
         PresenceSuccessCaptor.CAUGHT.clear();
         AbcnceSuccessCaptor.CAUGHT.clear();
         assertThat(testContext.absence(getTestSupplier(new FunctionThatReturnsObject(ofSeconds(10)).run()), ofSeconds(5)),
@@ -421,26 +310,14 @@ public class AbsenceTest {
 
     private static class AbsenceTestContext extends Context<AbsenceTestContext> {
 
-        public boolean absence(Function<AbsenceTestContext, ?> toBeAbsent,
-                               Duration timeOut) {
-            return super.absenceOf(toBeAbsent, timeOut);
-        }
-
-        public boolean absence(Function<AbsenceTestContext, ?> toBeAbsent,
-                               Duration timeOut,
-                               String errorMessage) {
-            return super.absenceOf(toBeAbsent, timeOut, errorMessage);
-        }
-
         protected boolean absence(SequentialGetStepSupplier<AbsenceTestContext, ?, ?, ?, ?> toBeAbsent,
                                   Duration timeOut) {
             return super.absenceOf(toBeAbsent, timeOut);
         }
 
-        protected boolean absence(SequentialGetStepSupplier<AbsenceTestContext, ?, ?, ?, ?> toBeAbsent,
-                                  Duration timeOut,
-                                  String exceptionMessage) {
-            return super.absenceOf(toBeAbsent, timeOut, exceptionMessage);
+        protected boolean absenceOrThrow(SequentialGetStepSupplier<AbsenceTestContext, ?, ?, ?, ?> toBeAbsent,
+                                         Duration timeOut) {
+            return super.absenceOfOrThrow(toBeAbsent, timeOut);
         }
 
         public String toString() {

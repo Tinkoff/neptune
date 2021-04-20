@@ -7,6 +7,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
 
@@ -25,6 +26,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITIN
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time of the waiting for the browser window/tab")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Window criteria")
 @MaxDepthOfReporting(0)
+@ThrowWhenNoData(toThrow = NoSuchWindowException.class)
 public final class GetWindowSupplier extends SequentialGetStepSupplier
         .GetObjectFromIterableChainedStepSupplier<SeleniumStepContext, Window, WebDriver, GetWindowSupplier>
         implements TargetLocatorSupplier<Window> {
@@ -41,7 +43,7 @@ public final class GetWindowSupplier extends SequentialGetStepSupplier
             }
         });
         timeOut(WAITING_WINDOW_TIME_DURATION.get());
-        throwOnEmptyResult(() -> new NoSuchWindowException("Window/tab was not found"));
+        throwOnNoResult();
     }
 
     private static List<Window> getListOfWindows(WebDriver driver) {

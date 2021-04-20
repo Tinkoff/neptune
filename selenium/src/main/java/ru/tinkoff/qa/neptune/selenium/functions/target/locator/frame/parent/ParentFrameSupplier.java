@@ -4,12 +4,14 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
 
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 
 @Description("Parent frame")
+@ThrowWhenNoData(toThrow = WebDriverException.class)
 public final class ParentFrameSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, WebDriver, WebDriver, ParentFrameSupplier>
         implements TargetLocatorSupplier<WebDriver> {
@@ -23,7 +25,7 @@ public final class ParentFrameSupplier extends SequentialGetStepSupplier
                 return null;
             }
         });
-        throwOnEmptyResult(() -> new WebDriverException("It was impossible to switch to the parent frame for some reason"));
+        throwOnNoResult();
     }
 
     /**

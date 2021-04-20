@@ -14,7 +14,7 @@ import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptorUtil
  * Annotates subclasses of {@link ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier} and
  * {@link ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier} to define which capture should be made
  * if a step is succeed. All that is defined by this annotation is inherited by subclasses. Also it may be
- * * overridden in subclasses by declaration of another CaptureOnSuccess.
+ * overridden in subclasses by declaration of another CaptureOnSuccess.
  */
 @Retention(RUNTIME)
 @Target(TYPE)

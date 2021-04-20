@@ -132,19 +132,27 @@ public class DataBaseStepContext extends Context<DataBaseStepContext> implements
         return super.presenceOf(selectOne);
     }
 
+    public final boolean presenceOfOrThrow(SelectList<?, ?> selectList) {
+        return super.presenceOfOrThrow(selectList);
+    }
+
+    public final boolean presenceOfOrThrow(SelectASingle<?> selectOne) {
+        return super.presenceOfOrThrow(selectOne);
+    }
+
     public final boolean absenceOf(SelectList<?, ?> selectList, Duration timeOut) {
         return super.absenceOf(selectList, timeOut);
     }
 
-    public final boolean absenceOf(SelectList<?, ?> selectList, Duration timeOut, String exceptionMessage) {
-        return super.absenceOf(selectList, timeOut, exceptionMessage);
+    public final boolean absenceOfOrThrow(SelectList<?, ?> selectList, Duration timeOut) {
+        return super.absenceOfOrThrow(selectList, timeOut);
     }
 
     public final boolean absenceOf(SelectASingle<?> selectOne, Duration timeOut) {
         return super.absenceOf(selectOne, timeOut);
     }
 
-    public final boolean absenceOf(SelectASingle<?> selectOne, Duration timeOut, String exceptionMessage) {
-        return super.absenceOf(selectOne, timeOut, exceptionMessage);
+    public final boolean absenceOfOrThrow(SelectASingle<?> selectOne, Duration timeOut) {
+        return super.absenceOfOrThrow(selectOne, timeOut);
     }
 }

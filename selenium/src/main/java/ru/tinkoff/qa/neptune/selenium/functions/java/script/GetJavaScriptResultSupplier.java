@@ -2,6 +2,7 @@ package ru.tinkoff.qa.neptune.selenium.functions.java.script;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.event.firing.collections.ArrayCaptor;
@@ -11,6 +12,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.captors.ListOfWebElementImageCaptor;
 import ru.tinkoff.qa.neptune.selenium.captors.WebElementImageCaptor;
@@ -20,7 +22,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -33,6 +34,7 @@ import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentF
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time to get the expected result")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria for evaluated result")
 @MaxDepthOfReporting(0)
+@ThrowWhenNoData(toThrow = WebDriverException.class, startDescription = "No result:")
 public final class GetJavaScriptResultSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, Object, WebDriver, GetJavaScriptResultSupplier> {
 
@@ -211,10 +213,5 @@ public final class GetJavaScriptResultSupplier extends SequentialGetStepSupplier
     @Override
     public GetJavaScriptResultSupplier pollingInterval(Duration pollingTime) {
         return super.pollingInterval(pollingTime);
-    }
-
-    @Override
-    public GetJavaScriptResultSupplier throwOnEmptyResult(Supplier<? extends RuntimeException> exceptionSupplier) {
-        return super.throwOnEmptyResult(exceptionSupplier);
     }
 }

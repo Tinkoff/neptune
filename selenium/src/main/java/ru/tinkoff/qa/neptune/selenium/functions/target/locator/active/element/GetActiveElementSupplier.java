@@ -9,6 +9,7 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.captors.WebDriverImageCaptor;
 import ru.tinkoff.qa.neptune.selenium.captors.WebElementImageCaptor;
@@ -20,6 +21,7 @@ import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentF
 @CaptureOnSuccess(by = WebElementImageCaptor.class)
 @Description("Active/Focused web element")
 @MaxDepthOfReporting(1)
+@ThrowWhenNoData(toThrow = NoSuchElementException.class)
 public final class GetActiveElementSupplier extends SequentialGetStepSupplier
         .GetObjectChainedStepSupplier<SeleniumStepContext, WebElement, WebDriver, GetActiveElementSupplier>
         implements TargetLocatorSupplier<WebElement> {
@@ -32,8 +34,7 @@ public final class GetActiveElementSupplier extends SequentialGetStepSupplier
                 return null;
             }
         });
-        throwOnEmptyResult(() ->
-                new NoSuchElementException("It was impossible to detect the active element for some reason"));
+        throwOnNoResult();
     }
 
 

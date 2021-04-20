@@ -90,8 +90,4 @@ public class BrowserProxyGetStepSupplier extends SequentialGetStepSupplier.GetIt
     public BrowserProxyGetStepSupplier pollingInterval(Duration pollingTime) {
         return super.pollingInterval(pollingTime);
     }
-
-    public BrowserProxyGetStepSupplier throwOnEmptyResult(String exceptionMessage) {
-        return super.throwOnEmptyResult(() -> new IllegalStateException(exceptionMessage));
-    }
 }

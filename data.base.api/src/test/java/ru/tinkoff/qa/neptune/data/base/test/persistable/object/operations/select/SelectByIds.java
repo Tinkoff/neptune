@@ -25,8 +25,6 @@ import static ru.tinkoff.qa.neptune.data.base.api.queries.ids.Ids.ids;
 
 public class SelectByIds extends BaseDbOperationTest {
 
-    private static final String TEST_EXCEPTION = "Test exception";
-
     @Test(groups = "positive tests")
     public void selectListTest() {
         var publisherItems = inDataBase().select(listOf(Publisher.class, ids(-3, 1, 2)));
@@ -249,34 +247,27 @@ public class SelectByIds extends BaseDbOperationTest {
         }
     }
 
-    @Test(dependsOnGroups = "positive tests",
-            expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = TEST_EXCEPTION)
+    @Test(dependsOnGroups = "positive tests", expectedExceptions = NothingIsSelectedException.class)
     public void selectEmptyListByIdWithExceptionThrowing() {
-        inDataBase().select(listOf(Catalog.class, ids(-1))
-                .throwWhenResultEmpty(TEST_EXCEPTION));
+        inDataBase().select(listOf(Catalog.class, ids(-1)).throwOnNoResult());
     }
 
-    @Test(dependsOnGroups = "positive tests",
-            expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = TEST_EXCEPTION)
+    @Test(dependsOnGroups = "positive tests", expectedExceptions = NothingIsSelectedException.class)
     public void selectNullByIdWithExceptionThrowing() {
-        inDataBase().select(oneOf(Catalog.class, id(-1))
-                .throwWhenResultEmpty(TEST_EXCEPTION));
+        inDataBase().select(oneOf(Catalog.class, id(-1)).throwOnNoResult());
     }
 
-    @Test(expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = TEST_EXCEPTION)
+    @Test(expectedExceptions = NothingIsSelectedException.class)
     public void selectEmptyListByIdAndConditionWithExceptionThrowing() {
         inDataBase().select(listOf(Publisher.class, ids(1))
-                .criteria("Has name Simon & Schuster", publisher -> publisher
-                        .getName().equals("Simon & Schuster"))
-                .throwWhenResultEmpty(TEST_EXCEPTION));
+                .criteria("Has name Simon & Schuster", p -> p.getName().equals("Simon & Schuster"))
+                .throwOnNoResult());
     }
 
-    @Test(dependsOnGroups = "positive tests",
-            expectedExceptions = NothingIsSelectedException.class, expectedExceptionsMessageRegExp = TEST_EXCEPTION)
+    @Test(dependsOnGroups = "positive tests", expectedExceptions = NothingIsSelectedException.class)
     public void selectNullByIdAndConditionWithExceptionThrowing() {
         inDataBase().select(oneOf(Publisher.class, id(1))
-                .criteria("Has name Simon & Schuster", publisherItem -> publisherItem
-                        .getName().equals("Simon & Schuster"))
-                .throwWhenResultEmpty(TEST_EXCEPTION));
+                .criteria("Has name Simon & Schuster", p -> p.getName().equals("Simon & Schuster"))
+                .throwOnNoResult());
     }
 }

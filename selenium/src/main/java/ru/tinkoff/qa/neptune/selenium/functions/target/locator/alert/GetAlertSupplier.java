@@ -7,12 +7,12 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporti
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 import ru.tinkoff.qa.neptune.selenium.functions.target.locator.TargetLocatorSupplier;
 
 import java.time.Duration;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.CurrentContentFunction.currentContent;
 import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITING_ALERT_TIME_DURATION;
@@ -22,21 +22,14 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.WAITIN
 @MaxDepthOfReporting(0)
 @Description("Alert")
 @SequentialGetStepSupplier.DefineGetImperativeParameterName("Wait for:")
+@ThrowWhenNoData(toThrow = NoAlertPresentException.class)
 public final class GetAlertSupplier extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<SeleniumStepContext, Alert, WebDriver, GetAlertSupplier>
         implements TargetLocatorSupplier<Alert> {
 
     private GetAlertSupplier() {
         super(webDriver -> new AlertImpl(webDriver.switchTo().alert()));
-        throwOnEmptyResult(noSuchAlert());
+        throwOnNoResult();
         timeOut(WAITING_ALERT_TIME_DURATION.get());
-    }
-
-    private Supplier<NoAlertPresentException> noSuchAlert() {
-        return () -> {
-            var description = new StringBuilder("No alert is present");
-            getParameters().forEach((key, value) -> description.append("\r\n").append(key).append(":").append(value));
-            return new NoAlertPresentException(description.toString());
-        };
     }
 
     @Override

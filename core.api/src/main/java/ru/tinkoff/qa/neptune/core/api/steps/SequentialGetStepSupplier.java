@@ -4,11 +4,13 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.AdditionalMetadata;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 import java.util.*;
 import java.util.function.Function;
@@ -22,6 +24,7 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.StringUtils.SPACE;
 import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationHMS;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure.CaptureOnFailureReader.readCaptorsOnFailure;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess.CaptureOnSuccessReader.readCaptorsOnSuccess;
@@ -30,6 +33,7 @@ import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.AND;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefaultGetParameterReader.*;
 import static ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter.StepParameterCreator.createStepParameter;
+import static ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData.ThrowWhenNoDataReader.getThrowableClass;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromArray.getFromArray;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromIterable.getFromIterable;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
@@ -51,18 +55,13 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 @SuppressWarnings("unchecked")
 @SequentialGetStepSupplier.DefineGetImperativeParameterName
 @SequentialGetStepSupplier.DefineResultDescriptionParameterName
+@ThrowWhenNoData
 public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends SequentialGetStepSupplier<T, R, M, P, THIS>> implements Cloneable,
         Supplier<Function<T, R>>, StepParameterPojo {
 
     private String description;
     final List<Captor<Object, Object>> successCaptors = new ArrayList<>();
     final List<Captor<Object, Object>> failureCaptors = new ArrayList<>();
-
-    protected SequentialGetStepSupplier() {
-        readCaptorsOnFailure(this.getClass(), failureCaptors);
-        readCaptorsOnSuccess(this.getClass(), successCaptors);
-    }
-
     protected boolean toReport = true;
 
     final Set<Class<? extends Throwable>> ignored = new HashSet<>();
@@ -78,6 +77,11 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     Duration sleepingTime;
 
     Supplier<? extends RuntimeException> exceptionSupplier;
+
+    protected SequentialGetStepSupplier() {
+        readCaptorsOnFailure(this.getClass(), failureCaptors);
+        readCaptorsOnSuccess(this.getClass(), successCaptors);
+    }
 
     public static <T extends SequentialGetStepSupplier<?, ?, ?, ?, ?>> T turnReportingOff(T t) {
         return (T) t.turnReportingOff();
@@ -214,15 +218,29 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     }
 
     /**
-     * This method defines an exception to be thrown when no valuable result is returned.
+     * This method says that it is necessary to throw an exception and to fail a test when
+     * no valuable data is returned.
      *
-     * @param exceptionSupplier is a supplier of exception to be thrown when invocation of {@link Function#apply(Object)}
-     *                          doesn't return any valuable result. {@link Function#apply(Object)} is invoked on the resulted function
      * @return self-reference
      */
-    protected THIS throwOnEmptyResult(Supplier<? extends RuntimeException> exceptionSupplier) {
-        this.exceptionSupplier = exceptionSupplier;
+    public THIS throwOnNoResult() {
+        var toThrow = getThrowableClass(this.getClass());
+        this.exceptionSupplier = () -> {
+            try {
+                var c = toThrow.toThrow().getConstructor(String.class);
+                c.setAccessible(true);
+                return c.newInstance(getExceptionMessage(toThrow));
+            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
+        };
         return (THIS) this;
+    }
+
+    String getExceptionMessage(ThrowWhenNoData toThrow) {
+        var stringBuilder = new StringBuilder(toThrow.startDescription()).append(SPACE).append(description);
+        getParameters().forEach((key, value) -> stringBuilder.append("\r\n").append(key).append(":").append(value));
+        return stringBuilder.toString();
     }
 
     /**

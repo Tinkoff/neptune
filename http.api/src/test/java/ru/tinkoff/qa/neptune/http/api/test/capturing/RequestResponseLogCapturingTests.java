@@ -172,7 +172,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
             http().bodyData(asIs(GET(CORRECT_URI), ofString())
                     .responseCriteria(bodyMatches("equals FAILURE", "FAILURE"::equals))
                     .retryTimeOut(ofSeconds(5))
-                    .throwIfNoDesiredDataReceived("Test exception"));
+                    .throwOnNoResult());
         } catch (Throwable t) {
             assertThat(getLog(), matcher);
             throw t;
@@ -188,7 +188,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
             http().bodyData(asIs(GET(CORRECT_URI), ofString())
                     .retryTimeOut(ofSeconds(5))
                     .responseCriteria(statusCode(404))
-                    .throwIfNoDesiredDataReceived("Test exception"));
+                    .throwOnNoResult());
         } catch (Throwable t) {
             assertThat(getLog(), matcher);
             throw t;
@@ -229,7 +229,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
             http().bodyData(asObject("Number value", GET(CORRECT_URI), ofString(), Integer::parseInt)
                     .retryTimeOut(ofSeconds(5))
                     .addIgnored(Throwable.class)
-                    .throwIfNoDesiredDataReceived("Test exception"));
+                    .throwOnNoResult());
         } catch (Throwable t) {
             assertThat(getLog(), matcher);
             throw t;
@@ -245,7 +245,7 @@ public class RequestResponseLogCapturingTests extends BaseHttpTest {
             http().bodyData(asIs(GET(INCORRECT_URI).timeout(ofSeconds(1)), ofString())
                     .addIgnored(Throwable.class)
                     .retryTimeOut(ofSeconds(5))
-                    .throwIfNoDesiredDataReceived("Test exception"));
+                    .throwOnNoResult());
         } catch (Throwable t) {
             assertThat(getLog(), matcher);
             throw t;

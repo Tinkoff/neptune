@@ -8,6 +8,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 import ru.tinkoff.qa.neptune.data.base.api.NothingIsSelectedException;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
@@ -23,8 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.SLEEPING_TIME;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.WAITING_FOR_SELECTION_RESULT_TIME;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.JDOPersistenceManagerByConnectionSupplierClass.getConnectionBySupplierClass;
@@ -44,6 +43,7 @@ import static ru.tinkoff.qa.neptune.data.base.api.queries.sql.SqlQuery.bySql;
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time to select object")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Record criteria")
 @MaxDepthOfReporting(0)
+@ThrowWhenNoData(toThrow = NothingIsSelectedException.class, startDescription = "Not selected:")
 public class SelectASingle<T> extends SequentialGetStepSupplier
         .GetObjectFromIterableChainedStepSupplier<DataBaseStepContext, T, JDOPersistenceManager, SelectASingle<T>> {
 
@@ -255,17 +255,6 @@ public class SelectASingle<T> extends SequentialGetStepSupplier
     @Override
     public SelectASingle<T> criteria(String conditionDescription, Predicate<? super T> condition) {
         return super.criteria(conditionDescription, condition);
-    }
-
-    /**
-     * To throw {@link NothingIsSelectedException} when the selecting retrieves no value.
-     *
-     * @param errorText as a text of the thrown exception
-     * @return self reference
-     */
-    public SelectASingle<T> throwWhenResultEmpty(String errorText) {
-        checkArgument(isNotBlank(errorText), "Please define not blank exception text");
-        return super.throwOnEmptyResult(() -> new NothingIsSelectedException(errorText));
     }
 
     KeepResultPersistent getResultPersistent() {
