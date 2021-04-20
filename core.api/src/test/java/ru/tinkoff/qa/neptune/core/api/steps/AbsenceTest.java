@@ -1,6 +1,8 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 
@@ -13,8 +15,7 @@ import static java.lang.System.currentTimeMillis;
 import static java.time.Duration.ofMillis;
 import static java.time.Duration.ofSeconds;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.closeTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.fail;
 import static ru.tinkoff.qa.neptune.core.api.steps.AbsenceTest.TestGetSupplier.getTestSupplier;
 
@@ -268,6 +269,28 @@ public class AbsenceTest {
                 closeTo(new BigDecimal(ofMillis(0).toMillis()), new BigDecimal(500)));
     }
 
+    @Test
+    public void absenceCaptureTest1() {
+        PresenceSuccessCaptor.CAUGHT.clear();
+        AbcnceSuccessCaptor.CAUGHT.clear();
+        assertThat(testContext.absence(getTestSupplier(new FunctionThatReturnsArray(ofSeconds(5)).run()), ofSeconds(10)),
+                is(true));
+
+        assertThat(PresenceSuccessCaptor.CAUGHT, empty());
+        assertThat(AbcnceSuccessCaptor.CAUGHT, empty());
+    }
+
+    @Test
+    public void absenceCaptureTest2() {
+        PresenceSuccessCaptor.CAUGHT.clear();
+        AbcnceSuccessCaptor.CAUGHT.clear();
+        assertThat(testContext.absence(getTestSupplier(new FunctionThatReturnsObject(ofSeconds(10)).run()), ofSeconds(5)),
+                is(false));
+
+        assertThat(PresenceSuccessCaptor.CAUGHT, contains(containsString("Present:")));
+        assertThat(AbcnceSuccessCaptor.CAUGHT, empty());
+    }
+
     private static class FunctionThatReturnsObject implements Function<AbsenceTestContext, Object> {
 
         private static final Object DEFAULT_OBJECT = new Object();
@@ -383,6 +406,8 @@ public class AbsenceTest {
     }
 
 
+    @CaptureOnSuccess(by = PresenceSuccessCaptor.class)
+    @CaptureOnFailure(by = AbcnceSuccessCaptor.class)
     static class TestGetSupplier<T> extends SequentialGetStepSupplier.GetObjectStepSupplier<AbsenceTestContext, T, TestGetSupplier<T>> {
         TestGetSupplier(Function<AbsenceTestContext, T> originalFunction) {
             super(originalFunction);
@@ -416,6 +441,10 @@ public class AbsenceTest {
                                   Duration timeOut,
                                   String exceptionMessage) {
             return super.absenceOf(toBeAbsent, timeOut, exceptionMessage);
+        }
+
+        public String toString() {
+            return "Absence context";
         }
     }
 }

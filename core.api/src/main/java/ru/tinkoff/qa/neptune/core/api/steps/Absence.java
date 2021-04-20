@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
 import com.google.common.collect.Iterables;
+import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
@@ -9,6 +10,8 @@ import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 
 import java.lang.reflect.Array;
 import java.time.Duration;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -16,6 +19,7 @@ import static java.time.Duration.ofMillis;
 import static java.util.List.of;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
@@ -25,6 +29,9 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 @IncludeParamsOfInnerGetterStep
 @MaxDepthOfReporting(0)
 public final class Absence<T> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<T, Boolean, Object, Absence<T>> {
+
+    private final Set<Captor<Object, Object>> successCaptors = new HashSet<>();
+    private Object lastCaught;
 
     private Absence() {
         super(o -> ofNullable(o)
@@ -43,6 +50,8 @@ public final class Absence<T> extends SequentialGetStepSupplier.GetObjectChained
         from(turnReportingOff(toBeAbsent.clone().timeOut(ofMillis(0))
                 .pollingInterval(ofMillis(0))
                 .addIgnored(Throwable.class)));
+
+        successCaptors.addAll(toBeAbsent.successCaptors);
     }
 
     private Absence(Function<T, ?> toBeAbsent) {
@@ -95,40 +104,43 @@ public final class Absence<T> extends SequentialGetStepSupplier.GetObjectChained
     protected Function<T, Object> preparePreFunction() {
         var preFunction = super.preparePreFunction();
 
-        var getAbsence = new Function<T, Object>() {
-            @Override
-            public Object apply(T t) {
-                var result = preFunction.apply(t);
+        var resulted = getSingle((Function<T, Object>) t -> {
+            lastCaught = null;
+            var result = preFunction.apply(t);
 
-                if (result == null) {
+            if (result == null) {
+                return true;
+            }
+
+            Class<?> clazz = result.getClass();
+
+            if (Boolean.class.isAssignableFrom(clazz)) {
+                if (result.equals(false)) {
                     return true;
                 }
-
-                Class<?> clazz = result.getClass();
-
-                if (Boolean.class.isAssignableFrom(clazz)) {
-                    if (result.equals(false)) {
-                        return true;
-                    }
-                }
-
-                if (Iterable.class.isAssignableFrom(clazz)) {
-                    if (Iterables.size((Iterable<?>) result) == 0) {
-                        return true;
-                    }
-                }
-
-                if (clazz.isArray()) {
-                    if (Array.getLength(result) == 0) {
-                        return true;
-                    }
-                }
-
-                return null;
             }
-        };
 
-        var resulted = getSingle(getAbsence, timeToGet);
+            if (Iterable.class.isAssignableFrom(clazz)) {
+                if (Iterables.size((Iterable<?>) result) == 0) {
+                    return true;
+                }
+            }
+
+            if (clazz.isArray()) {
+                if (Array.getLength(result) == 0) {
+                    return true;
+                }
+            }
+
+            lastCaught = result;
+            return null;
+        }, timeToGet).andThen(o -> {
+            if (lastCaught != null) {
+                catchValue(lastCaught, successCaptors);
+            }
+
+            return o;
+        });
         return ((Function<Object, Object>) o -> ofNullable(o).orElse(false)).compose(resulted);
     }
 

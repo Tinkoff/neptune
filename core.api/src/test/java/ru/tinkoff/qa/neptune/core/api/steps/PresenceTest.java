@@ -1,6 +1,8 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
+import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 
@@ -12,7 +14,7 @@ import java.util.function.Supplier;
 
 import static java.util.List.of;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static ru.tinkoff.qa.neptune.core.api.steps.PresenceTest.TestGetSupplier.getTestSupplier;
 
 @SuppressWarnings("unchecked")
@@ -201,6 +203,30 @@ public class PresenceTest {
                 is(false));
     }
 
+    @Test
+    public void presenceCaptureTest1() {
+        PresenceSuccessCaptor.CAUGHT.clear();
+        AbcnceSuccessCaptor.CAUGHT.clear();
+        assertThat(presenceTestContext.presenceOf(getTestSupplier(RETURNS_OBJECT)),
+                is(true));
+
+        assertThat(PresenceSuccessCaptor.CAUGHT, contains(containsString("Present: ")));
+        assertThat(AbcnceSuccessCaptor.CAUGHT, empty());
+    }
+
+    @Test
+    public void presenceCaptureTest2() {
+        PresenceSuccessCaptor.CAUGHT.clear();
+        AbcnceSuccessCaptor.CAUGHT.clear();
+        assertThat(presenceTestContext.presenceOf(getTestSupplier(RETURNS_EMPTY_ITERABLE)),
+                is(false));
+
+        assertThat(PresenceSuccessCaptor.CAUGHT, empty());
+        assertThat(AbcnceSuccessCaptor.CAUGHT, empty());
+    }
+
+    @CaptureOnSuccess(by = PresenceSuccessCaptor.class)
+    @CaptureOnFailure(by = AbcnceSuccessCaptor.class)
     static class TestGetSupplier extends SequentialGetStepSupplier.GetObjectStepSupplier<PresenceTestContext, Object, TestGetSupplier> {
         TestGetSupplier(Function<PresenceTestContext, Object> originalFunction) {
             super(originalFunction);

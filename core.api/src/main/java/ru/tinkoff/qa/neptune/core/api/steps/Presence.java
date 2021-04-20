@@ -1,6 +1,7 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
 import com.google.common.collect.Iterables;
+import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
@@ -17,6 +18,7 @@ import java.util.function.Supplier;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
 import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 
 @SuppressWarnings("unchecked")
@@ -26,31 +28,16 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 public final class Presence<T> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<T, Boolean, Object, Presence<T>> {
 
     private final Set<Class<? extends Throwable>> ignored2 = new HashSet<>();
+    private final Set<Captor<Object, Object>> successCaptors = new HashSet<>();
 
     private Presence() {
-        super(o -> ofNullable(o)
-                .map(o1 -> {
-                    Class<?> clazz = o1.getClass();
-
-                    if (Boolean.class.isAssignableFrom(clazz)) {
-                        return (Boolean) o1;
-                    }
-
-                    if (Iterable.class.isAssignableFrom(clazz)) {
-                        return Iterables.size((Iterable<?>) o1) > 0;
-                    }
-
-                            if (clazz.isArray()) {
-                                return Array.getLength(o1) > 0;
-                            }
-                    return true;
-                })
-                .orElse(false));
+        super(Presence::isValuable);
     }
 
     private Presence(SequentialGetStepSupplier<T, ?, ?, ?, ?> toBePresent) {
         this();
         from(turnReportingOff(toBePresent.clone()));
+        this.successCaptors.addAll(toBePresent.successCaptors);
     }
 
     private Presence(Function<T, ?> toBePresent) {
@@ -65,6 +52,27 @@ public final class Presence<T> extends SequentialGetStepSupplier.GetObjectChaine
                     toBePresent);
         }
         from(expectedToBePresent.turnReportingOff());
+    }
+
+    private static boolean isValuable(Object o) {
+        return ofNullable(o)
+                .map(o1 -> {
+                    Class<?> clazz = o1.getClass();
+
+                    if (Boolean.class.isAssignableFrom(clazz)) {
+                        return (Boolean) o1;
+                    }
+
+                    if (Iterable.class.isAssignableFrom(clazz)) {
+                        return Iterables.size((Iterable<?>) o1) > 0;
+                    }
+
+                    if (clazz.isArray()) {
+                        return Array.getLength(o1) > 0;
+                    }
+                    return true;
+                })
+                .orElse(false);
     }
 
     /**
@@ -102,8 +110,13 @@ public final class Presence<T> extends SequentialGetStepSupplier.GetObjectChaine
         if (Get.class.isAssignableFrom(preFunction.getClass())) {
             ((Get<?, ?>) preFunction).addIgnored(ignored2);
         }
-        return ((Function<Object, Object>) o -> ofNullable(o).orElse(false))
-                .compose(preFunction);
+
+        return ((Function<Object, Object>) o -> ofNullable(o).map(o1 -> {
+            if (toReport && isValuable(o1)) {
+                catchValue(o1, successCaptors);
+            }
+            return o1;
+        }).orElse(false)).compose(preFunction);
     }
 
     protected Function<Object, Boolean> getEndFunction() {

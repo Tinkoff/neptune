@@ -55,8 +55,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         Supplier<Function<T, R>>, StepParameterPojo {
 
     private String description;
-    private final List<Captor<Object, Object>> successCaptors = new ArrayList<>();
-    private final List<Captor<Object, Object>> failureCaptors = new ArrayList<>();
+    final List<Captor<Object, Object>> successCaptors = new ArrayList<>();
+    final List<Captor<Object, Object>> failureCaptors = new ArrayList<>();
 
     protected SequentialGetStepSupplier() {
         readCaptorsOnFailure(this.getClass(), failureCaptors);
@@ -223,14 +223,6 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     protected THIS throwOnEmptyResult(Supplier<? extends RuntimeException> exceptionSupplier) {
         this.exceptionSupplier = exceptionSupplier;
         return (THIS) this;
-    }
-
-    protected List<Captor<Object, Object>> getSuccessCaptors() {
-        return successCaptors;
-    }
-
-    protected List<Captor<Object, Object>> getFailureCaptors() {
-        return failureCaptors;
     }
 
     /**
