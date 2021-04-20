@@ -113,9 +113,11 @@ public class Tezzt {
 import org.openqa.selenium.support.FindBy;
 
 import ru.tinkoff.qa.neptune.selenium.api.widget.Name;
+import ru.tinkoff.qa.neptune.selenium.api.widget.NameMultiple;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 
 @Name("Какой-то чудо-виджет")
+@NameMultiple("Какие-то чудо-виджеты")
 @FindBy(xpath = ".//some/path")
 public class SomeWidget
         extends Widget {
@@ -141,11 +143,13 @@ public class SomeWidget
 import org.openqa.selenium.support.FindBy;
 
 import ru.tinkoff.qa.neptune.selenium.api.widget.Name;
+import ru.tinkoff.qa.neptune.selenium.api.widget.NameMultiple;
 import ru.tinkoff.qa.neptune.selenium.api.widget.NeedToScrollIntoView;
 import ru.tinkoff.qa.neptune.selenium.api.widget.ScrollsIntoView;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 
 @Name("Какой-то чудо-виджет")
+@NameMultiple("Какие-то чудо-виджеты")
 @FindBy(xpath = ".//some/path")
 public class SomeWidget
         extends Widget implements ScrollsIntoView { //Нужно использовать этот интерфейс
