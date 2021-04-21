@@ -28,6 +28,7 @@ import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleChecked
 @SequentialGetStepSupplier.DefineResultDescriptionParameterName("Is absent")
 @IncludeParamsOfInnerGetterStep
 @MaxDepthOfReporting(0)
+@SequentialGetStepSupplier.DefineGetImperativeParameterName("Wait for:")
 @ThrowWhenNoData(toThrow = StillPresentException.class, startDescription = "Still present:")
 public final class Absence<T> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<T, Boolean, Object, Absence<T>> {
 

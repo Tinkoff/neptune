@@ -22,6 +22,7 @@ import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catc
 
 @SequentialGetStepSupplier.DefineResultDescriptionParameterName("Is present")
 @IncludeParamsOfInnerGetterStep
+@SequentialGetStepSupplier.DefineGetImperativeParameterName("Wait for:")
 @MaxDepthOfReporting(0)
 public final class Presence<T> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<T, Boolean, Object, Presence<T>> {
 
