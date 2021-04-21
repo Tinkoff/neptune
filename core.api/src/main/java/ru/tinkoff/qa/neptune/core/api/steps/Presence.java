@@ -6,7 +6,6 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporti
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
-import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
 
 import java.lang.reflect.Array;
@@ -75,8 +74,8 @@ public final class Presence<T> extends SequentialGetStepSupplier.GetObjectChaine
     }
 
     @Override
-    String getExceptionMessage(ThrowWhenNoData toThrow) {
-        var stringBuilder = new StringBuilder(toThrow.startDescription())
+    String getExceptionMessage(String messageStarting) {
+        var stringBuilder = new StringBuilder(messageStarting)
                 .append(SPACE)
                 .append(((SequentialGetStepSupplier<?, ?, ?, ?, ?>) from).getDescription());
         getParameters().forEach((key, value) -> stringBuilder.append("\r\n").append(key).append(":").append(value));

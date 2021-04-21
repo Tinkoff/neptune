@@ -16,6 +16,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Target({TYPE})
 public @interface ThrowWhenNoData {
+
+    String DEFAULT_MESSAGE_STARTING = "Not present:";
+
     /**
      * @return defines class of a {@link Throwable} may be thrown when get-step returns no valuable data.
      * <P>ATTENTION!!!!!</P>
@@ -23,19 +26,28 @@ public @interface ThrowWhenNoData {
      */
     Class<? extends RuntimeException> toThrow() default NotPresentException.class;
 
-    String startDescription() default "Not present:";
+    String startDescription() default DEFAULT_MESSAGE_STARTING;
 
     class ThrowWhenNoDataReader {
 
-        public static ThrowWhenNoData getThrowableClass(Class<?> toRead) {
+        public static Class<?> getDeclaredBy(Class<?> toRead, boolean withInheritance) {
             var cls = toRead;
-            while (!cls.equals(Object.class)) {
-                var throwNoData = cls.getAnnotation(ThrowWhenNoData.class);
-                if (throwNoData != null) {
-                    return throwNoData;
+            var throwNoData = cls.getAnnotation(ThrowWhenNoData.class);
+
+            if (withInheritance) {
+                while (!cls.equals(Object.class) && throwNoData == null) {
+                    throwNoData = cls.getAnnotation(ThrowWhenNoData.class);
+                    if (throwNoData != null) {
+                        return cls;
+                    }
+                    cls = cls.getSuperclass();
                 }
-                cls = cls.getSuperclass();
             }
+
+            if (throwNoData != null) {
+                return cls;
+            }
+
             return null;
         }
     }

@@ -33,7 +33,7 @@ import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.AND;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefaultGetParameterReader.*;
 import static ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter.StepParameterCreator.createStepParameter;
-import static ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData.ThrowWhenNoDataReader.getThrowableClass;
+import static ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData.ThrowWhenNoDataReader.getDeclaredBy;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromArray.getFromArray;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromIterable.getFromIterable;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
@@ -224,12 +224,12 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
      * @return self-reference
      */
     public THIS throwOnNoResult() {
-        var toThrow = getThrowableClass(this.getClass());
+        var toThrow = getExceptionMessageStartMetadata(this.getClass(), true);
         this.exceptionSupplier = () -> {
             try {
-                var c = toThrow.toThrow().getConstructor(String.class);
+                var c = toThrow.getDeclaringClass().getAnnotation(ThrowWhenNoData.class).toThrow().getConstructor(String.class);
                 c.setAccessible(true);
-                return c.newInstance(getExceptionMessage(toThrow));
+                return c.newInstance(getExceptionMessage(translate(toThrow)));
             } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 throw new RuntimeException(e);
             }
@@ -237,8 +237,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         return (THIS) this;
     }
 
-    String getExceptionMessage(ThrowWhenNoData toThrow) {
-        var stringBuilder = new StringBuilder(toThrow.startDescription()).append(SPACE).append(description);
+    String getExceptionMessage(String messageStarting) {
+        var stringBuilder = new StringBuilder(messageStarting).append(SPACE).append(description);
         getParameters().forEach((key, value) -> stringBuilder.append("\r\n").append(key).append(":").append(value));
         return stringBuilder.toString();
     }
@@ -949,6 +949,21 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
         public static AdditionalMetadata<StepParameter> getResultMetadata(Class<?> toRead, boolean useInheritance) {
             return readAnnotation(toRead, DefineResultDescriptionParameterName.class, "resultDescription", useInheritance);
+        }
+
+        public static AdditionalMetadata<StepParameter> getExceptionMessageStartMetadata(Class<?> toRead, boolean useInheritance) {
+            var declaredBy = getDeclaredBy(toRead, useInheritance);
+            if (declaredBy == null) {
+                return null;
+            }
+
+            return new AdditionalMetadata<>(declaredBy, "errorMessageStartingOnEmptyResult", StepParameter.class, () -> {
+                try {
+                    return createStepParameter(declaredBy.getAnnotation(ThrowWhenNoData.class).startDescription());
+                } catch (Exception t) {
+                    throw new RuntimeException(t);
+                }
+            });
         }
 
         private static AdditionalMetadata<StepParameter> readAnnotation(Class<?> toRead, Class<? extends Annotation> annotationClass,

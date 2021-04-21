@@ -1,10 +1,9 @@
 package ru.tinkoff.qa.neptune.core.api.steps.annotations;
 
-import com.google.common.base.Supplier;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Member;
+import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -20,6 +19,7 @@ public class AdditionalMetadata<T extends Annotation> implements AnnotatedElemen
     private final Supplier<T> annotationSupplier;
 
     public AdditionalMetadata(Class<?> clazz, String name, Class<T> annotationClass, Supplier<T> annotationSupplier) {
+        checkNotNull(clazz);
         this.clazz = clazz;
         this.name = name;
         checkNotNull(annotationClass);

@@ -35,6 +35,7 @@ final class DefaultBundleFiller extends BundleFillerExtension {
                 .getImperativeMetadata(clazz, false)).ifPresent(fields::add);
         ofNullable(getPerformOnMetadata(clazz, false)).ifPresent(fields::add);
         ofNullable(getResultMetadata(clazz, false)).ifPresent(fields::add);
+        ofNullable(getExceptionMessageStartMetadata(clazz, false)).ifPresent(fields::add);
 
         fields.addAll(stream(clazz.getDeclaredFields())
                 .filter(field -> field.getAnnotation(StepParameter.class) != null)
