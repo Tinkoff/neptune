@@ -1,15 +1,12 @@
 package ru.tinkoff.qa.neptune.core.api.steps.localization;
 
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
-import ru.tinkoff.qa.neptune.core.api.steps.PseudoField;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.AdditionalMetadata;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Metadata;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -59,11 +56,12 @@ public interface StepLocalization {
         var description = method.getAnnotation(Description.class);
         if (description != null) {
             var templateParameters = templateParameters(object, method, args);
+            var fullDescription = buildTextByTemplate(description.value(), templateParameters);
             if (engine == null || locale == null) {
-                return buildTextByTemplate(description.value(), templateParameters);
+                return fullDescription;
             }
 
-            return engine.methodTranslation(method, description.value(), templateParameters, locale);
+            return engine.methodTranslation(method, fullDescription, templateParameters, locale);
         } else {
             return translateByClass(object, engine, locale);
         }
@@ -81,7 +79,7 @@ public interface StepLocalization {
         return translateMember(f, engine, locale);
     }
 
-    static String translate(PseudoField f) {
+    static String translate(AdditionalMetadata<?> f) {
         var engine = DEFAULT_LOCALIZATION_ENGINE.get();
         var locale = DEFAULT_LOCALE_PROPERTY.get();
         return translateMember(f, engine, locale);
@@ -100,11 +98,12 @@ public interface StepLocalization {
         return ofNullable(cls2.getAnnotation(Description.class))
                 .map(description -> {
                     var templateParameters = templateParameters(toBeTranslated, cls);
+                    var fullDescription = buildTextByTemplate(description.value(), templateParameters);
                     if (localization == null || locale == null) {
-                        return buildTextByTemplate(description.value(), templateParameters);
+                        return fullDescription;
                     }
 
-                    return localization.classTranslation(cls2, description.value(), templateParameters, locale);
+                    return localization.classTranslation(cls2, fullDescription, templateParameters, locale);
                 })
                 .orElse(null);
     }
@@ -112,16 +111,28 @@ public interface StepLocalization {
     private static <T extends AnnotatedElement & Member> String translateMember(T translateFrom,
                                                                                 StepLocalization localization,
                                                                                 Locale locale) {
-        var stepParam = translateFrom.getAnnotation(StepParameter.class);
-        if (stepParam == null) {
+        var memberAnnotation = stream(translateFrom.getAnnotations())
+                .filter(annotation -> annotation.annotationType().getAnnotation(Metadata.class) != null)
+                .findFirst()
+                .orElse(null);
+
+        if (memberAnnotation == null) {
             return null;
         }
 
-        if (localization == null || locale == null) {
-            return stepParam.value();
-        }
+        try {
+            var m = memberAnnotation.annotationType().getDeclaredMethod("value");
+            m.setAccessible(true);
+            var value = (String) m.invoke(memberAnnotation);
 
-        return localization.memberTranslation(translateFrom, stepParam.value(), locale);
+            if (localization == null || locale == null) {
+                return value;
+            }
+
+            return localization.memberTranslation(translateFrom, value, locale);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static <T> Map<String, String> templateParameters(T object, AnnotatedElement annotatedElement, Object... args) {
@@ -195,13 +206,15 @@ public interface StepLocalization {
     }
 
     /**
-     * Makes translation using class.
+     * Makes translation by usage of a class.
      *
      * @param clz                       is a class whose metadata may be used for auxiliary purposes
-     * @param description               is a description of a step taken from {@link Description} of a class
+     * @param description               is a description of a step. It is fully completed by value taken
+     *                                  from {@link Description} of a class and by values which are taken from
+     *                                  fields annotated by {@link DescriptionFragment}
      * @param descriptionTemplateParams is a map of parameters and their values. These parameters are taken from
-     *                                  fields annotated by {@link DescriptionFragment}. These parameters should
-     *                                  replace strings between {@code '{}'} in the given {@code description}
+     *                                  fields annotated by {@link DescriptionFragment}. This parameter is included
+     *                                  because the map is possible to be re-used for some reasons.
      * @param locale                    is a used locale
      * @param <T>                       is a type of a class
      * @return translated text
@@ -212,13 +225,15 @@ public interface StepLocalization {
                                 Locale locale);
 
     /**
-     * Makes translation using method.
+     * Makes translation by usage of a method.
      *
      * @param method                    is a method whose metadata may be used for auxiliary purposes
-     * @param description               is a description of a step taken from {@link Description} of a method
+     * @param description               is a description of a step. It is fully completed by value taken
+     *                                  from {@link Description} of a method and by values which are taken from
+     *                                  method parameters annotated by {@link DescriptionFragment}
      * @param descriptionTemplateParams is a map of parameters and their values. These parameters are taken from
-     *                                  method parameters annotated by {@link DescriptionFragment}.These parameters should
-     *                                  replace strings between {@code '{}'} in the given {@code description}
+     *                                  method parameters annotated by {@link DescriptionFragment}.This parameter is included
+     *                                  because the map is possible to be re-used for some reasons.
      * @param locale                    is a used locale
      * @return translated text
      */
@@ -228,10 +243,10 @@ public interface StepLocalization {
                              Locale locale);
 
     /**
-     * Makes translation using other annotated element that differs from {@link Class} and {@link Method}
+     * Makes translation by usage of other annotated element that differs from {@link Class} and {@link Method}
      *
      * @param member      is an annotated element whose metadata may be used for auxiliary purposes
-     * @param description is a description of a step taken from {@link StepParameter} of a member
+     * @param description is a description taken from the member
      * @param locale      is a used locale
      * @param <T>         is a type of a member
      * @return translated text

@@ -7,6 +7,7 @@ import org.openqa.selenium.WebElement;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
 
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -15,9 +16,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Arrays.stream;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
-import static ru.tinkoff.qa.neptune.selenium.api.widget.Widget.getWidgetName;
+import static ru.tinkoff.qa.neptune.selenium.api.widget.WidgetDescriptionFormer.getMultipleDescription;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CGLibProxyBuilder.createProxy;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindByBuilder.getAnnotations;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.WidgetPriorityComparator.widgetPriorityComparator;
@@ -83,7 +83,7 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
         throw new IllegalArgumentException(String.format("There is no any non-abstract subclass of %s that " +
                         "is annotated by any org.openqa.selenium.support.Find* annotation " +
                         "and has a constructor with only one parameter of a type extending %s",
-                Widget.getWidgetName(classOfAWidget), WebElement.class.getName()));
+                classOfAWidget.getName(), WebElement.class.getName()));
     }
 
     @Override
@@ -91,13 +91,14 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
         classesToInstantiate = ofNullable(classesToInstantiate)
                 .orElseGet(this::getSubclasses);
 
-        var result = new LoggableElementList<R>() {
+        var result = new ArrayList<R>() {
             @Override
             public String toString() {
-                return String.format("%s elements of type(s) %s", size(),
-                        stream().map(r -> getWidgetName(r.getClass()))
-                                .distinct()
-                                .collect(joining(", ")));
+                if (this.size() == 0) {
+                    return "<...>";
+                }
+
+                return getMultipleDescription(this);
             }
         };
 

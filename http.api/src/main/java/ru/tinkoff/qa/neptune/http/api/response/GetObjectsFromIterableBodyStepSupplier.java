@@ -1,10 +1,11 @@
 package ru.tinkoff.qa.neptune.http.api.response;
 
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.http.api.HttpStepContext;
 import ru.tinkoff.qa.neptune.http.api.captors.request.AbstractRequestBodyCaptor;
 import ru.tinkoff.qa.neptune.http.api.captors.response.AbstractResponseBodyObjectCaptor;
@@ -18,7 +19,6 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -36,7 +36,8 @@ import static ru.tinkoff.qa.neptune.http.api.response.ResponseSequentialGetSuppl
  * @param <R> is a type of an item of resulted iterable
  * @param <S> is a type of resulted iterable
  */
-@SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of a resulted value")
+@SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria of an item of resulted iterable")
+@ThrowWhenNoData(toThrow = DesiredDataHasNotBeenReceivedException.class, startDescription = "No data received:")
 public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Iterable<R>, Q extends GetObjectsFromIterableBodyStepSupplier<T, R, S, Q>>
         extends SequentialGetStepSupplier.GetIterableStepSupplier<HttpStepContext, S, R, Q> {
 
@@ -148,17 +149,6 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
     @Override
     public Q criteria(Criteria<? super R> criteria) {
         return super.criteria(criteria);
-    }
-
-    /**
-     * Make throw an exception if no data received
-     *
-     * @param exceptionMessage is a message of {@link DesiredDataHasNotBeenReceivedException} exception to be thrown
-     * @return self-reference
-     * @see SequentialGetStepSupplier#throwOnEmptyResult(Supplier)
-     */
-    public Q throwIfNoDesiredDataReceived(String exceptionMessage) {
-        return super.throwOnEmptyResult(() -> new DesiredDataHasNotBeenReceivedException(exceptionMessage));
     }
 
     /**

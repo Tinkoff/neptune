@@ -2,7 +2,7 @@ package ru.tinkoff.qa.neptune.http.api.captors.response;
 
 import org.w3c.dom.Document;
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.CapturedFileInjector;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;

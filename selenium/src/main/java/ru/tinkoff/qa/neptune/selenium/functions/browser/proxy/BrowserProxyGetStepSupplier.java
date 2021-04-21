@@ -4,8 +4,8 @@ import com.browserup.harreader.model.HarEntry;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.event.firing.collections.CollectionCaptor;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import java.time.Duration;
@@ -89,9 +89,5 @@ public class BrowserProxyGetStepSupplier extends SequentialGetStepSupplier.GetIt
     @Override
     public BrowserProxyGetStepSupplier pollingInterval(Duration pollingTime) {
         return super.pollingInterval(pollingTime);
-    }
-
-    public BrowserProxyGetStepSupplier throwOnEmptyResult(String exceptionMessage) {
-        return super.throwOnEmptyResult(() -> new IllegalStateException(exceptionMessage));
     }
 }

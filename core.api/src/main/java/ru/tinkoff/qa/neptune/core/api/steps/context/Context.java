@@ -13,8 +13,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 import java.util.List;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.String.format;
@@ -103,27 +101,25 @@ public abstract class Context<THIS extends Context<THIS>> {
     }
 
     /**
-     * Retrieves whenever some object is present or not.
+     * Checks is some object present. When it is not present then it throws an exception.
      *
-     * @param toBePresent       is a supplier of a function that retrieves a value
-     * @param exceptionSupplier is a supplier of an exception to be thrown when desired object is not present
-     * @param toIgnore          which exceptions should be ignored during evaluation of {@code toBePresent}
+     * @param toBePresent is a supplier of a function that retrieves a value
+     * @param toIgnore    which exceptions should be ignored during evaluation of {@code toBePresent}
      * @return is desired object present or not
      */
     @SafeVarargs
-    protected final boolean presenceOf(SequentialGetStepSupplier<? super THIS, ?, ?, ?, ?> toBePresent,
-                                       Supplier<? extends RuntimeException> exceptionSupplier,
-                                       Class<? extends Throwable>... toIgnore) {
+    protected final boolean presenceOfOrThrow(SequentialGetStepSupplier<? super THIS, ?, ?, ?, ?> toBePresent,
+                                              Class<? extends Throwable>... toIgnore) {
 
         return presence(toBePresent)
                 .addIgnored(ignoredExceptions(toIgnore))
-                .throwIfNotPresent(exceptionSupplier)
+                .throwOnNoResult()
                 .get()
                 .apply((THIS) this);
     }
 
     /**
-     * Retrieves whenever some object is present or not.
+     * Checks is some object present or not.
      *
      * @param toBePresent is a supplier of a function that retrieves a value
      * @param toIgnore    which exceptions should be ignored during evaluation of {@code toBePresent}
@@ -139,42 +135,7 @@ public abstract class Context<THIS extends Context<THIS>> {
     }
 
     /**
-     * Retrieves whenever some object is present or not.
-     *
-     * @param toBePresent       is a function that retrieves a value
-     * @param exceptionSupplier is a supplier of an exception to be thrown when desired object is not present
-     * @param toIgnore          which exceptions should be ignored during evaluation of {@code toBePresent}
-     * @return is desired object present or not
-     */
-    @SafeVarargs
-    protected final boolean presenceOf(Function<? super THIS, ?> toBePresent,
-                                       Supplier<? extends RuntimeException> exceptionSupplier,
-                                       Class<? extends Throwable>... toIgnore) {
-        return presence(toBePresent)
-                .addIgnored(ignoredExceptions(toIgnore))
-                .throwIfNotPresent(exceptionSupplier)
-                .get()
-                .apply((THIS) this);
-    }
-
-    /**
-     * Retrieves whenever some object is present or not.
-     *
-     * @param toBePresent is a function that retrieves a value
-     * @param toIgnore    which exceptions should be ignored during evaluation of {@code toBePresent}
-     * @return is desired object present or not
-     */
-    @SafeVarargs
-    protected final boolean presenceOf(Function<? super THIS, ?> toBePresent,
-                                       Class<? extends Throwable>... toIgnore) {
-        return presence(toBePresent)
-                .addIgnored(ignoredExceptions(toIgnore))
-                .get()
-                .apply((THIS) this);
-    }
-
-    /**
-     * Retrieves whenever some object is absent or not.
+     * Checks is some object absent. When it is present then it throws an exception.
      *
      * @param toBeAbsent is a supplier of a function that retrieves a value
      * @param timeOut    is a time to wait for value is absent. WARNING!!! When {@code toBePresent} has a defined time out
@@ -183,47 +144,26 @@ public abstract class Context<THIS extends Context<THIS>> {
      */
     protected final boolean absenceOf(SequentialGetStepSupplier<? super THIS, ?, ?, ?, ?> toBeAbsent,
                                       Duration timeOut) {
-        return absence(toBeAbsent).timeOut(timeOut).get().apply((THIS) this);
+        return absence(toBeAbsent)
+                .timeOut(timeOut)
+                .get()
+                .apply((THIS) this);
     }
 
     /**
-     * Retrieves whenever some object is absent or not.
+     * Checks is some object absent or not.
      *
-     * @param toBeAbsent       is a supplier of a function that retrieves a value
-     * @param timeOut          is a time to wait for value is absent. WARNING!!! When {@code toBePresent} has a defined time out
-     *                         then it is ignored in favour of a time defined by the method
-     * @param exceptionMessage is a message of {@link IllegalStateException} to be thrown when value is present
+     * @param toBeAbsent is a supplier of a function that retrieves a value
+     * @param timeOut    is a time to wait for value is absent. WARNING!!! When {@code toBePresent} has a defined time out
+     *                   then it is ignored in favour of a time defined by the method
      * @return is an object absent or not
      */
-    protected final boolean absenceOf(SequentialGetStepSupplier<? super THIS, ?, ?, ?, ?> toBeAbsent,
-                                      Duration timeOut,
-                                      String exceptionMessage) {
-        return absence(toBeAbsent).throwIfPresent(exceptionMessage).timeOut(timeOut).get().apply((THIS) this);
-    }
-
-    /**
-     * Retrieves whenever some object is absent or not.
-     *
-     * @param toBeAbsent is a function that retrieves a value
-     * @param timeOut    is a time to wait for value is absent.
-     * @return is an object absent or not
-     */
-    protected final boolean absenceOf(Function<? super THIS, ?> toBeAbsent,
-                                      Duration timeOut) {
-        return absence(toBeAbsent).timeOut(timeOut).get().apply((THIS) this);
-    }
-
-    /**
-     * Retrieves whenever some object is absent or not.
-     *
-     * @param toBeAbsent       is a function that retrieves a value
-     * @param timeOut          is a time to wait for value is absent.
-     * @param exceptionMessage is a message of {@link IllegalStateException} to be thrown when value is present
-     * @return is an object absent or not
-     */
-    protected final boolean absenceOf(Function<? super THIS, ?> toBeAbsent,
-                                      Duration timeOut,
-                                      String exceptionMessage) {
-        return absence(toBeAbsent).throwIfPresent(exceptionMessage).timeOut(timeOut).get().apply((THIS) this);
+    protected final boolean absenceOfOrThrow(SequentialGetStepSupplier<? super THIS, ?, ?, ?, ?> toBeAbsent,
+                                             Duration timeOut) {
+        return absence(toBeAbsent)
+                .timeOut(timeOut)
+                .throwOnNoResult()
+                .get()
+                .apply((THIS) this);
     }
 }

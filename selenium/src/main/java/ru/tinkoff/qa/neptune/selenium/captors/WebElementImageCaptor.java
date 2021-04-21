@@ -5,7 +5,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.WrapsElement;
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.ImageCaptor;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
 import java.awt.image.BufferedImage;
 

@@ -2,7 +2,7 @@ package ru.tinkoff.qa.neptune.core.api.event.firing.collections;
 
 import com.google.common.collect.Iterables;
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.StringCaptor;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
 import java.util.Arrays;
 import java.util.Map;

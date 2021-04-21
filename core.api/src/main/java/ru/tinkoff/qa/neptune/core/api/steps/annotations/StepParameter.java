@@ -1,8 +1,10 @@
-package ru.tinkoff.qa.neptune.core.api.steps.parameters;
+package ru.tinkoff.qa.neptune.core.api.steps.annotations;
 
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.parameters.ParameterValueGetter;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -15,6 +17,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  */
 @Retention(RUNTIME)
 @Target({FIELD})
+@Metadata
 public @interface StepParameter {
 
     /**
@@ -38,4 +41,31 @@ public @interface StepParameter {
      * @return subclass of {@link ParameterValueGetter}
      */
     Class<? extends ParameterValueGetter<?>> makeReadableBy() default ParameterValueGetter.DefaultParameterValueGetter.class;
+
+    final class StepParameterCreator {
+
+        public static StepParameter createStepParameter(String value) {
+            return new StepParameter() {
+                @Override
+                public Class<? extends Annotation> annotationType() {
+                    return StepParameter.class;
+                }
+
+                @Override
+                public String value() {
+                    return value;
+                }
+
+                @Override
+                public boolean doNotReportNullValues() {
+                    return false;
+                }
+
+                @Override
+                public Class<? extends ParameterValueGetter<?>> makeReadableBy() {
+                    return null;
+                }
+            };
+        }
+    }
 }

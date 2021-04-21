@@ -57,7 +57,6 @@ public class AlertTest extends BaseWebDriverTest {
                     .pollingInterval(HALF_SECOND));
         }
         catch (Exception e) {
-            assertThat(e.getMessage(), containsString("No alert that suits criteria 'Alert has text 'some not existing text'' has been found"));
             throw e;
         }
         finally {

@@ -1,7 +1,10 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.IncludeParamsOfInnerGetterStep;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.AdditionalMetadata;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameterPojo;
 
 import java.lang.annotation.Annotation;
@@ -21,6 +24,7 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.StringUtils.SPACE;
 import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationHMS;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure.CaptureOnFailureReader.readCaptorsOnFailure;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess.CaptureOnSuccessReader.readCaptorsOnSuccess;
@@ -28,6 +32,8 @@ import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOf
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.AND;
 import static ru.tinkoff.qa.neptune.core.api.steps.Criteria.condition;
 import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefaultGetParameterReader.*;
+import static ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter.StepParameterCreator.createStepParameter;
+import static ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData.ThrowWhenNoDataReader.getDeclaredBy;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromArray.getFromArray;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetObjectFromIterable.getFromIterable;
 import static ru.tinkoff.qa.neptune.core.api.steps.conditions.ToGetSingleCheckedObject.getSingle;
@@ -49,18 +55,13 @@ import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
 @SuppressWarnings("unchecked")
 @SequentialGetStepSupplier.DefineGetImperativeParameterName
 @SequentialGetStepSupplier.DefineResultDescriptionParameterName
+@ThrowWhenNoData
 public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends SequentialGetStepSupplier<T, R, M, P, THIS>> implements Cloneable,
         Supplier<Function<T, R>>, StepParameterPojo {
 
     private String description;
-    private final List<Captor<Object, Object>> successCaptors = new ArrayList<>();
-    private final List<Captor<Object, Object>> failureCaptors = new ArrayList<>();
-
-    protected SequentialGetStepSupplier() {
-        readCaptorsOnFailure(this.getClass(), failureCaptors);
-        readCaptorsOnSuccess(this.getClass(), successCaptors);
-    }
-
+    final List<Captor<Object, Object>> successCaptors = new ArrayList<>();
+    final List<Captor<Object, Object>> failureCaptors = new ArrayList<>();
     protected boolean toReport = true;
 
     final Set<Class<? extends Throwable>> ignored = new HashSet<>();
@@ -76,6 +77,11 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     Duration sleepingTime;
 
     Supplier<? extends RuntimeException> exceptionSupplier;
+
+    protected SequentialGetStepSupplier() {
+        readCaptorsOnFailure(this.getClass(), failureCaptors);
+        readCaptorsOnSuccess(this.getClass(), successCaptors);
+    }
 
     public static <T extends SequentialGetStepSupplier<?, ?, ?, ?, ?>> T turnReportingOff(T t) {
         return (T) t.turnReportingOff();
@@ -96,9 +102,9 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         fillCriteriaParameters(result);
         fillTimeParameters(result);
 
-        ofNullable(getFromPseudoField(cls, true)).ifPresent(pseudoField -> {
+        ofNullable(getFromMetadata(cls, true)).ifPresent(metaData -> {
             if (isLoggable(from) && nonNull(from)) {
-                result.put(translate(pseudoField), valueOf(from));
+                result.put(translate(metaData), valueOf(from));
             }
         });
 
@@ -130,10 +136,10 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     void fillCriteriaParameters(Map<String, String> parameters) {
         var cls = (Class<?>) this.getClass();
 
-        ofNullable(getCriteriaPseudoField(cls, true)).ifPresent(pseudoField -> {
+        ofNullable(getCriteriaMetadata(cls, true)).ifPresent(metaData -> {
             int i = 0;
             for (var c : conditions) {
-                var criteria = i == 0 ? translate(pseudoField) : translate(pseudoField) + " " + (i + 1);
+                var criteria = i == 0 ? translate(metaData) : translate(metaData) + " " + (i + 1);
                 parameters.put(criteria, c.toString());
                 i++;
             }
@@ -143,17 +149,17 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     void fillTimeParameters(Map<String, String> parameters) {
         var cls = (Class<?>) this.getClass();
 
-        ofNullable(getTimeOutPseudoField(cls, true)).ifPresent(pseudoField ->
+        ofNullable(getTimeOutMetadata(cls, true)).ifPresent(metaData ->
                 ofNullable(timeToGet).ifPresent(duration -> {
                     if (duration.toMillis() > 0) {
-                        parameters.put(translate(pseudoField), formatDurationHMS(duration.toMillis()));
+                        parameters.put(translate(metaData), formatDurationHMS(duration.toMillis()));
                     }
                 }));
 
-        ofNullable(getPollingTimePseudoField(cls, true)).ifPresent(pseudoField ->
+        ofNullable(getPollingTimeMetadata(cls, true)).ifPresent(metaData ->
                 ofNullable(sleepingTime).ifPresent(duration -> {
                     if (duration.toMillis() > 0) {
-                        parameters.put(translate(pseudoField), formatDurationHMS(duration.toMillis()));
+                        parameters.put(translate(metaData), formatDurationHMS(duration.toMillis()));
                     }
                 }));
     }
@@ -212,23 +218,29 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
     }
 
     /**
-     * This method defines an exception to be thrown when no valuable result is returned.
+     * This method says that it is necessary to throw an exception and to fail a test when
+     * no valuable data is returned.
      *
-     * @param exceptionSupplier is a supplier of exception to be thrown when invocation of {@link Function#apply(Object)}
-     *                          doesn't return any valuable result. {@link Function#apply(Object)} is invoked on the resulted function
      * @return self-reference
      */
-    protected THIS throwOnEmptyResult(Supplier<? extends RuntimeException> exceptionSupplier) {
-        this.exceptionSupplier = exceptionSupplier;
+    public THIS throwOnNoResult() {
+        var toThrow = getExceptionMessageStartMetadata(this.getClass(), true);
+        this.exceptionSupplier = () -> {
+            try {
+                var c = toThrow.getDeclaringClass().getAnnotation(ThrowWhenNoData.class).toThrow().getConstructor(String.class);
+                c.setAccessible(true);
+                return c.newInstance(getExceptionMessage(translate(toThrow)));
+            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
+        };
         return (THIS) this;
     }
 
-    protected List<Captor<Object, Object>> getSuccessCaptors() {
-        return successCaptors;
-    }
-
-    protected List<Captor<Object, Object>> getFailureCaptors() {
-        return failureCaptors;
+    String getExceptionMessage(String messageStarting) {
+        var stringBuilder = new StringBuilder(messageStarting).append(SPACE).append(description);
+        getParameters().forEach((key, value) -> stringBuilder.append("\r\n").append(key).append(":").append(value));
+        return stringBuilder.toString();
     }
 
     /**
@@ -325,8 +337,8 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
         checkNotNull(endFunction);
 
         var params = getParameters();
-        var resultDescription = translate(getResultPseudoField(this.getClass(), true));
-        var description = (translate(getImperativePseudoField(this.getClass(), true)) + " " + this.description).trim();
+        var resultDescription = translate(getResultMetadata(this.getClass(), true));
+        var description = translate(translate(getImperativeMetadata(this.getClass(), true)) + " " + this.description).trim();
 
         var toBeReturned = new Get<>(description, endFunction)
                 .addSuccessCaptors(successCaptors)
@@ -358,6 +370,16 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
     @Override
     public String toString() {
+        return getDescription();
+    }
+
+    /**
+     * The method {@link #toString()} is possible to be overridden. This method is for such cases when it is necessary to
+     * have access to step description.
+     *
+     * @return step description.
+     */
+    protected String getDescription() {
         return description;
     }
 
@@ -372,7 +394,7 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
 
     protected abstract Function<M, R> getEndFunction();
 
-    protected Criteria<P> getCriteria() {
+    Criteria<P> getCriteria() {
         return condition;
     }
 
@@ -905,32 +927,47 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
             super();
         }
 
-        public static PseudoField getFromPseudoField(Class<?> toRead, boolean useInheritance) {
+        public static AdditionalMetadata<StepParameter> getFromMetadata(Class<?> toRead, boolean useInheritance) {
             return readAnnotation(toRead, DefineFromParameterName.class, "from", useInheritance);
         }
 
-        public static PseudoField getPollingTimePseudoField(Class<?> toRead, boolean useInheritance) {
+        public static AdditionalMetadata<StepParameter> getPollingTimeMetadata(Class<?> toRead, boolean useInheritance) {
             return readAnnotation(toRead, DefinePollingTimeParameterName.class, "pollingTime", useInheritance);
         }
 
-        public static PseudoField getTimeOutPseudoField(Class<?> toRead, boolean useInheritance) {
+        public static AdditionalMetadata<StepParameter> getTimeOutMetadata(Class<?> toRead, boolean useInheritance) {
             return readAnnotation(toRead, DefineTimeOutParameterName.class, "timeOut", useInheritance);
         }
 
-        public static PseudoField getCriteriaPseudoField(Class<?> toRead, boolean useInheritance) {
+        public static AdditionalMetadata<StepParameter> getCriteriaMetadata(Class<?> toRead, boolean useInheritance) {
             return readAnnotation(toRead, DefineCriteriaParameterName.class, "criteria", useInheritance);
         }
 
-        public static PseudoField getImperativePseudoField(Class<?> toRead, boolean useInheritance) {
+        public static AdditionalMetadata<StepParameter> getImperativeMetadata(Class<?> toRead, boolean useInheritance) {
             return readAnnotation(toRead, DefineGetImperativeParameterName.class, "imperative", useInheritance);
         }
 
-        public static PseudoField getResultPseudoField(Class<?> toRead, boolean useInheritance) {
+        public static AdditionalMetadata<StepParameter> getResultMetadata(Class<?> toRead, boolean useInheritance) {
             return readAnnotation(toRead, DefineResultDescriptionParameterName.class, "resultDescription", useInheritance);
         }
 
-        private static PseudoField readAnnotation(Class<?> toRead, Class<? extends Annotation> annotationClass,
-                                                  String name, boolean useInheritance) {
+        public static AdditionalMetadata<StepParameter> getExceptionMessageStartMetadata(Class<?> toRead, boolean useInheritance) {
+            var declaredBy = getDeclaredBy(toRead, useInheritance);
+            if (declaredBy == null) {
+                return null;
+            }
+
+            return new AdditionalMetadata<>(declaredBy, "errorMessageStartingOnEmptyResult", StepParameter.class, () -> {
+                try {
+                    return createStepParameter(declaredBy.getAnnotation(ThrowWhenNoData.class).startDescription());
+                } catch (Exception t) {
+                    throw new RuntimeException(t);
+                }
+            });
+        }
+
+        private static AdditionalMetadata<StepParameter> readAnnotation(Class<?> toRead, Class<? extends Annotation> annotationClass,
+                                                                        String name, boolean useInheritance) {
             if (!SequentialGetStepSupplier.class.isAssignableFrom(toRead)) {
                 return null;
             }
@@ -942,8 +979,14 @@ public abstract class SequentialGetStepSupplier<T, R, M, P, THIS extends Sequent
                     try {
                         var valueMethod = annotation.annotationType().getMethod("value");
                         valueMethod.setAccessible(true);
-                        return new PseudoField(toRead, name, (String) valueMethod.invoke(annotation));
-                    } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                        return new AdditionalMetadata<>(toRead, name, StepParameter.class, () -> {
+                            try {
+                                return createStepParameter((String) valueMethod.invoke(annotation));
+                            } catch (Exception t) {
+                                throw new RuntimeException(t);
+                            }
+                        });
+                    } catch (NoSuchMethodException e) {
                         throw new RuntimeException(e);
                     }
                 }

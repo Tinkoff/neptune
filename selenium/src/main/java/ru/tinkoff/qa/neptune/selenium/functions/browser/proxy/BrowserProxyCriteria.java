@@ -2,8 +2,8 @@ package ru.tinkoff.qa.neptune.selenium.functions.browser.proxy;
 
 import com.browserup.harreader.model.*;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
 import java.net.http.HttpClient;
 import java.util.Date;
@@ -175,8 +175,7 @@ public final class BrowserProxyCriteria {
      */
     @Description("request with headers '{headers}'")
     public static Criteria<HarEntry> recordedRequestHeaders(@DescriptionFragment("headers") List<HarHeader> headers) {
-        checkArgument(nonNull(headers), "Request headers list should be defined");
-        checkArgument(headers.size() > 0, "Request headers list can'entry be empty");
+        checkArgument(nonNull(headers) && headers.size() > 0, "Request headers list should be defined");
 
         return condition(entry -> {
             List<HarHeader> requestHeaders = entry.getRequest().getHeaders();
@@ -194,9 +193,8 @@ public final class BrowserProxyCriteria {
      * @return criteria that checks HAR entry
      */
     @Description("request with headers '{headers}'")
-    public static Criteria<HarEntry> recordedRequestHeadersContains(@DescriptionFragment("headers") List<HarHeader> headers) {
-        checkArgument(nonNull(headers), "Request headers list should be defined");
-        checkArgument(headers.size() > 0, "Request headers list can'entry be empty");
+    public static Criteria<HarEntry> recordedRequestContainsHeaders(@DescriptionFragment("headers") List<HarHeader> headers) {
+        checkArgument(nonNull(headers) && headers.size() > 0, "Request headers list should be defined");
 
         return condition(entry -> {
             List<HarHeader> requestHeaders = entry.getRequest().getHeaders();
@@ -215,8 +213,7 @@ public final class BrowserProxyCriteria {
      */
     @Description("response with headers '{headers}'")
     public static Criteria<HarEntry> recordedResponseHeaders(@DescriptionFragment("headers") List<HarHeader> headers) {
-        checkArgument(nonNull(headers), "Response headers list should be defined");
-        checkArgument(headers.size() > 0, "Response headers list can'entry be empty");
+        checkArgument(nonNull(headers) && headers.size() > 0, "Response headers list should be defined");
 
         return condition(entry -> {
             List<HarHeader> responseHeaders = entry.getResponse().getHeaders();
@@ -234,9 +231,8 @@ public final class BrowserProxyCriteria {
      * @return criteria that checks HAR entry
      */
     @Description("response with headers '{headers}'")
-    public static Criteria<HarEntry> recordedResponseHeadersContains(@DescriptionFragment("headers") List<HarHeader> headers) {
-        checkArgument(nonNull(headers), "Response headers list should be defined");
-        checkArgument(headers.size() > 0, "Response headers list can'entry be empty");
+    public static Criteria<HarEntry> recordedResponseContainsHeaders(@DescriptionFragment("headers") List<HarHeader> headers) {
+        checkArgument(nonNull(headers) && headers.size() > 0, "Response headers list should be defined");
 
         return condition(entry -> {
             List<HarHeader> responseHeaders = entry.getResponse().getHeaders();
@@ -316,6 +312,7 @@ public final class BrowserProxyCriteria {
      * @param value is the value of header response is supposed to have
      * @return criteria that checks HAR entry
      */
+    @Description("response has header '{name}' with value '{value}'")
     public static Criteria<HarEntry> recordedResponseHeader(String name, String value) {
         checkArgument(isNotBlank(name), "Response header name should be defined");
         checkArgument(isNotBlank(value), "Response header value should be defined");
@@ -482,7 +479,8 @@ public final class BrowserProxyCriteria {
      * @param status is the status code response is supposed to have
      * @return criteria that checks HAR entry
      */
-    public static Criteria<HarEntry> recordedResponseStatusCode(int status) {
+    @Description("status code of response is {code}")
+    public static Criteria<HarEntry> recordedResponseStatusCode(@DescriptionFragment("code") int status) {
         return condition(format("response status code is '%s'", status), entry -> {
             var statusCode = entry.getResponse().getStatus();
             return statusCode == status;

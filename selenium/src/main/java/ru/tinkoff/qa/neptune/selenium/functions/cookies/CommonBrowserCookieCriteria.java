@@ -2,8 +2,8 @@ package ru.tinkoff.qa.neptune.selenium.functions.cookies;
 
 import org.openqa.selenium.Cookie;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 
 import java.util.Date;
 import java.util.Objects;

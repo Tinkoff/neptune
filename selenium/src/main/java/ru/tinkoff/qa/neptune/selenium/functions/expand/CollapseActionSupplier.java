@@ -4,10 +4,10 @@ import org.openqa.selenium.SearchContext;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.IncludeParamsOfInnerGetterStep;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Expandable;
 import ru.tinkoff.qa.neptune.selenium.captors.ImageCaptorAfterActionOnElement;
 import ru.tinkoff.qa.neptune.selenium.captors.WebElementImageCaptor;
@@ -15,7 +15,7 @@ import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 
 @CaptureOnSuccess(by = ImageCaptorAfterActionOnElement.class)
 @CaptureOnFailure(by = WebElementImageCaptor.class)
-@Description("Collapse the {toCollapse}")
+@Description("Collapse {toCollapse}")
 @MaxDepthOfReporting(0)
 @IncludeParamsOfInnerGetterStep
 public final class CollapseActionSupplier extends

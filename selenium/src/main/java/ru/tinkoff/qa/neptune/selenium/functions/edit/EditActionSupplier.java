@@ -4,11 +4,11 @@ import org.openqa.selenium.SearchContext;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.IncludeParamsOfInnerGetterStep;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Editable;
 import ru.tinkoff.qa.neptune.selenium.captors.ImageCaptorAfterActionOnElement;
 import ru.tinkoff.qa.neptune.selenium.captors.WebElementImageCaptor;
@@ -16,7 +16,7 @@ import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 
 @CaptureOnFailure(by = WebElementImageCaptor.class)
 @CaptureOnSuccess(by = ImageCaptorAfterActionOnElement.class)
-@Description("Edit element {toEdit}")
+@Description("Edit {toEdit}")
 @MaxDepthOfReporting(0)
 @IncludeParamsOfInnerGetterStep
 public final class EditActionSupplier<T> extends

@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.selenium.test.steps.tests.presence;
 
-import org.openqa.selenium.NoSuchElementException;
 import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.core.api.steps.NotPresentException;
 import ru.tinkoff.qa.neptune.selenium.test.BaseWebDriverTest;
 
 import static java.lang.String.format;
@@ -38,14 +38,14 @@ public class PresenceTest extends BaseWebDriverTest {
         assertThat(presence, is(false));
     }
 
-    @Test(expectedExceptions = NoSuchElementException.class, expectedExceptionsMessageRegExp = ".*['Test exception']*$")
+    @Test(expectedExceptions = NotPresentException.class)
     public void negativeTestOfPresenceWithExceptionThrowing() {
-        var presence = seleniumSteps.presenceOf(flag()
-                        .timeOut(FIVE_SECONDS)
-                        .foundFrom(tableRow().timeOut(FIVE_SECONDS)
-                                .criteria(condition(format("Contains %s, %s and %s", CELL_TEXT49, CELL_TEXT50, CELL_TEXT51),
-                                        tableRow -> tableRow.getValue().containsAll(of(CELL_TEXT49, CELL_TEXT50, CELL_TEXT51))))),
-                "Test exception");
+        var presence = seleniumSteps.presenceOfOrThrow(flag()
+                .timeOut(FIVE_SECONDS)
+                .foundFrom(tableRow().timeOut(FIVE_SECONDS)
+                        .criteria(condition(format("Contains %s, %s and %s", CELL_TEXT49, CELL_TEXT50, CELL_TEXT51),
+                                tableRow -> tableRow.getValue().containsAll(of(CELL_TEXT49, CELL_TEXT50, CELL_TEXT51))))));
+
         assertThat(presence, is(false));
     }
 
@@ -71,15 +71,14 @@ public class PresenceTest extends BaseWebDriverTest {
         assertThat(presence, is(false));
     }
 
-    @Test(expectedExceptions = NoSuchElementException.class, expectedExceptionsMessageRegExp = ".*['Test exception']*$")
+    @Test(expectedExceptions = NotPresentException.class)
     public void negativeTestOfPresenceWithExceptionThrowing2() {
-        var presence = seleniumSteps.presenceOf(textFields()
+        var presence = seleniumSteps.presenceOfOrThrow(textFields()
+                .timeOut(FIVE_SECONDS)
+                .foundFrom(tableRow()
                         .timeOut(FIVE_SECONDS)
-                        .foundFrom(tableRow()
-                                .timeOut(FIVE_SECONDS)
-                                .criteria(condition(format("Contains %s, %s and %s", CELL_TEXT22, CELL_TEXT23, CELL_TEXT24), tableRow ->
-                                        tableRow.getValue().containsAll(of(CELL_TEXT22, CELL_TEXT23, CELL_TEXT24))))),
-                "Test exception");
+                        .criteria(condition(format("Contains %s, %s and %s", CELL_TEXT22, CELL_TEXT23, CELL_TEXT24), tableRow ->
+                                tableRow.getValue().containsAll(of(CELL_TEXT22, CELL_TEXT23, CELL_TEXT24))))));
         assertThat(presence, is(false));
     }
 }

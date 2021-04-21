@@ -99,9 +99,6 @@ public class FrameTest extends BaseWebDriverTest {
             setStartBenchMark();
             seleniumSteps.get(frame(100)
                     .timeOut(FIVE_SECONDS));
-        } catch (Exception e) {
-            assertThat(e.getMessage(), containsString("Can't find/switch to the frame by index 100"));
-            throw e;
         } finally {
             setEndBenchMark();
             assertThat(getTimeDifference(), greaterThanOrEqualTo(FIVE_SECONDS.toMillis()));
@@ -116,9 +113,6 @@ public class FrameTest extends BaseWebDriverTest {
         try {
             setStartBenchMark();
             seleniumSteps.get(frame(100));
-        } catch (Exception e) {
-            assertThat(e.getMessage(), containsString("Can't find/switch to the frame by index 100"));
-            throw e;
         } finally {
             setEndBenchMark();
             removeProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getName());
@@ -195,9 +189,6 @@ public class FrameTest extends BaseWebDriverTest {
         try {
             setStartBenchMark();
             seleniumSteps.get(frame("some name").timeOut(FIVE_SECONDS));
-        } catch (Exception e) {
-            assertThat(e.getMessage(), containsString("Can't find/switch to the frame by name or id some name"));
-            throw e;
         } finally {
             setEndBenchMark();
             assertThat(getTimeDifference(), greaterThanOrEqualTo(FIVE_SECONDS.toMillis()));
@@ -212,9 +203,6 @@ public class FrameTest extends BaseWebDriverTest {
         try {
             setStartBenchMark();
             seleniumSteps.get(frame("some name"));
-        } catch (Exception e) {
-            assertThat(e.getMessage(), containsString("Can't find/switch to the frame by name or id some name"));
-            throw e;
         } finally {
             setEndBenchMark();
             removeProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getName());
@@ -283,9 +271,6 @@ public class FrameTest extends BaseWebDriverTest {
             setStartBenchMark();
             seleniumSteps.get(frame(tagName("invalid_frame"))
                     .timeOut(FIVE_SECONDS));
-        } catch (Exception e) {
-            assertThat(e.getMessage(), containsString("Can't find/switch to the frame By.tagName: invalid_frame"));
-            throw e;
         } finally {
             setEndBenchMark();
             assertThat(getTimeDifference(), greaterThanOrEqualTo(FIVE_SECONDS.toMillis()));
@@ -300,9 +285,6 @@ public class FrameTest extends BaseWebDriverTest {
         try {
             setStartBenchMark();
             seleniumSteps.get(frame(tagName("not_existing_frame")));
-        } catch (Exception e) {
-            assertThat(e.getMessage(), containsString("Can't find/switch to the frame By.tagName: not_existing_frame"));
-            throw e;
         } finally {
             setEndBenchMark();
             removeProperty(WAITING_FRAME_SWITCHING_TIME_UNIT.getName());

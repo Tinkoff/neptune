@@ -2,23 +2,25 @@ package ru.tinkoff.qa.neptune.core.api.steps.localization;
 
 import io.github.classgraph.ClassGraph;
 import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.PseudoField;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.AdditionalMetadata;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 
 import java.io.*;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.ClassLoader.getSystemClassLoader;
 import static java.lang.Thread.currentThread;
+import static java.lang.reflect.Modifier.isAbstract;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.Comparator.comparing;
@@ -28,8 +30,6 @@ import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier.DefaultActionParameterReader.getPerformOnPseudoField;
-import static ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier.DefaultGetParameterReader.*;
 
 public class ResourceBundleGenerator {
     public static final String RESOURCE_BUNDLE = "neptune_Localization";
@@ -70,7 +70,7 @@ public class ResourceBundleGenerator {
         try (var output = new BufferedWriter(writer)) {
             output.write("#Values for translation of steps, their parameters and attachments are defined here. Format key = value");
 
-            var steps = new LinkedList<LocalizationItem>();
+            var steps = new LinkedList<Class<?>>();
             of(SequentialActionSupplier.class, SequentialGetStepSupplier.class).forEach(cls -> {
                 var nestMembers = asList(cls.getNestMembers());
                 steps.addAll(new ClassGraph()
@@ -80,13 +80,12 @@ public class ResourceBundleGenerator {
                         .loadClasses(cls)
                         .stream()
                         .filter(c -> !nestMembers.contains(c))
-                        .map(aClass -> getLocalizationItem(aClass, output, properties))
                         .collect(toList()));
             });
 
-            steps.sort(comparing(localizationItem -> localizationItem.getClazz().getName()));
-            steps.addFirst(getLocalizationItem(SequentialActionSupplier.class, output, properties));
-            steps.addFirst(getLocalizationItem(SequentialGetStepSupplier.class, output, properties));
+            steps.sort(comparing(Class::getName));
+            steps.addFirst(SequentialActionSupplier.class);
+            steps.addFirst(SequentialGetStepSupplier.class);
 
             var attachments = new ClassGraph()
                     .enableAllInfo()
@@ -94,9 +93,9 @@ public class ResourceBundleGenerator {
                     .getSubclasses(Captor.class.getName())
                     .loadClasses(Captor.class)
                     .stream()
-                    .map(aClass -> getLocalizationItem(aClass, output, properties))
-                    .sorted(comparing(localizationItem -> localizationItem.getClazz().getName()))
-                    .collect(toCollection(ArrayList::new));
+                    .map(cls -> (Class<?>) cls)
+                    .sorted(comparing(Class::getName))
+                    .collect(toList());
 
             var criteriaList = new ClassGraph()
                     .enableAllInfo()
@@ -108,70 +107,29 @@ public class ResourceBundleGenerator {
                             !SequentialActionSupplier.class.isAssignableFrom(classClass)
                                     &&
                                     !SequentialGetStepSupplier.class.isAssignableFrom(classClass))
-                    .map(aClass -> getLocalizationItem(aClass, output, properties))
-                    .sorted(comparing(localizationItem -> localizationItem.getClazz().getName()))
+                    .sorted(comparing(Class::getName))
                     .collect(toCollection(ArrayList::new));
 
-            if (!steps.isEmpty()) {
-                output.newLine();
-                output.newLine();
-                output.write("#============================================ STEPS " +
-                        "============================================ ");
+            new DefaultBundleFiller(steps, "STEPS").fill(output, properties);
+            new DefaultBundleFiller(criteriaList, "CRITERIA").fill(output, properties);
+            new DefaultBundleFiller(attachments, "ATTACHMENTS").fill(output, properties);
 
-                for (var step : steps) {
-                    step.fill();
-                }
-            }
-
-            if (!criteriaList.isEmpty()) {
-                output.newLine();
-                output.newLine();
-                output.write("#============================================ CRITERIA " +
-                        "============================================ ");
-
-                for (var criteria : criteriaList) {
-                    criteria.fill();
-                }
-            }
-
-            if (!attachments.isEmpty()) {
-                output.newLine();
-                output.newLine();
-                output.write("#======================================= ATTACHMENTS " +
-                        "============================================");
-
-                for (var attachment : attachments) {
-                    attachment.fill();
-                }
-            }
+            new ClassGraph().enableAllInfo()
+                    .scan()
+                    .getSubclasses(BundleFillerExtension.class.getName())
+                    .loadClasses(BundleFillerExtension.class)
+                    .stream()
+                    .filter(cls -> !isAbstract(cls.getModifiers()) && !cls.equals(DefaultBundleFiller.class))
+                    .forEach(cls -> {
+                        try {
+                            var c = cls.getConstructor();
+                            c.setAccessible(true);
+                            c.newInstance().fill(output, properties);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
         }
-    }
-
-    private static LocalizationItem getLocalizationItem(Class<?> clazz, BufferedWriter output, Properties properties) {
-        var item = new LocalizationItem(clazz, output, properties);
-
-        var fields = new ArrayList<AnnotatedElement>();
-
-        ofNullable(getImperativePseudoField(clazz, false)).ifPresent(fields::add);
-        ofNullable(getFromPseudoField(clazz, false)).ifPresent(fields::add);
-        ofNullable(getPollingTimePseudoField(clazz, false)).ifPresent(fields::add);
-        ofNullable(getTimeOutPseudoField(clazz, false)).ifPresent(fields::add);
-        ofNullable(getCriteriaPseudoField(clazz, false)).ifPresent(fields::add);
-
-        ofNullable(SequentialActionSupplier.DefaultActionParameterReader
-                .getImperativePseudoField(clazz, false)).ifPresent(fields::add);
-        ofNullable(getPerformOnPseudoField(clazz, false)).ifPresent(fields::add);
-        ofNullable(getResultPseudoField(clazz, false)).ifPresent(fields::add);
-
-        fields.addAll(stream(clazz.getDeclaredFields())
-                .filter(field -> field.getAnnotation(StepParameter.class) != null)
-                .collect(toList()));
-
-        var methods = stream(clazz.getDeclaredMethods())
-                .filter(method -> method.getAnnotation(Description.class) != null)
-                .collect(toList());
-
-        return item.addFields(fields).addMethods(methods);
     }
 
     static String getKey(AnnotatedElement annotatedElement) {
@@ -194,14 +152,14 @@ public class ResourceBundleGenerator {
                 Field field = ((Field) annotatedElement);
                 key = cutPartOfPath(field.getDeclaringClass().getName()) + "." + field.getName();
             } else {
-                PseudoField pseudoField = ((PseudoField) annotatedElement);
-                key = cutPartOfPath(pseudoField.getDeclaringClass().getName()) + "." + pseudoField.getName();
+                AdditionalMetadata<?> additionalMetadata = ((AdditionalMetadata<?>) annotatedElement);
+                key = cutPartOfPath(additionalMetadata.getDeclaringClass().getName()) + "." + additionalMetadata.getName();
             }
         }
         return key.replace(" ", "");
     }
 
-    private static String cutPartOfPath(String s) {
+    static String cutPartOfPath(String s) {
         return s.replace("ru.tinkoff.qa.neptune.", "");
     }
 
@@ -225,108 +183,5 @@ public class ResourceBundleGenerator {
         var writer = new PrintWriter(file);
         writer.print(EMPTY);
         writer.close();
-    }
-
-    private final static class LocalizationItem {
-        private final Class<?> clazz;
-        private final BufferedWriter output;
-        private final Properties properties;
-        private final List<AnnotatedElement> fields = new ArrayList<>();
-        private final List<Method> methods = new ArrayList<>();
-
-        private LocalizationItem(Class<?> aClass, BufferedWriter output, Properties properties) {
-            this.clazz = aClass;
-            this.output = output;
-            this.properties = properties;
-        }
-
-        private void addClass() throws IOException {
-            output.newLine();
-            output.newLine();
-            output.write("######################## " + cutPartOfPath(clazz.getName()) + " #");
-
-            var description = clazz.getAnnotation(Description.class);
-
-            if (description != null) {
-                var key = getKey(clazz);
-                var value = ofNullable(properties)
-                        .map(p -> p.get(key))
-                        .orElse(description.value());
-
-                output.newLine();
-                output.write("#Original text = " + description.value());
-                output.newLine();
-                output.write(key + " = " + value);
-            }
-        }
-
-        private void fill() throws IOException {
-            if (clazz.getAnnotation(Description.class) == null && fields.isEmpty() && methods.isEmpty()) {
-                return;
-            }
-
-            addClass();
-            if (!fields.isEmpty()) {
-                output.newLine();
-                output.write("#_________________________________Parameters_____________________________________");
-            }
-
-            for (var field : fields) {
-                if (field instanceof Field) {
-                    ((Field) field).setAccessible(true);
-                }
-                fill(field);
-            }
-
-            if (!methods.isEmpty()) {
-                output.newLine();
-                output.write("#__________________________________ Methods _______________________________________");
-            }
-
-            for (var method : methods) {
-                method.setAccessible(true);
-                fill(method);
-            }
-        }
-
-        private void fill(AnnotatedElement annotatedElement) throws IOException {
-            if (annotatedElement instanceof Method) {
-                Description annotation = annotatedElement.getAnnotation(Description.class);
-                var key = getKey(annotatedElement);
-                var value = ofNullable(properties)
-                        .map(p -> p.get(key))
-                        .orElse(annotation.value());
-                newLine(annotation.value(), key, value);
-                return;
-            }
-
-            StepParameter annotation = annotatedElement.getAnnotation(StepParameter.class);
-            var key = getKey(annotatedElement);
-            var value = ofNullable(properties)
-                    .map(p -> p.get(key))
-                    .orElse(annotation.value());
-            newLine(annotation.value(), key, value);
-        }
-
-        private void newLine(String originalText, String key, Object value) throws IOException {
-            output.newLine();
-            output.write("#Original text = " + originalText);
-            output.newLine();
-            output.write(key + " = " + value);
-        }
-
-        private LocalizationItem addFields(Collection<AnnotatedElement> annotatedElements) {
-            fields.addAll(annotatedElements);
-            return this;
-        }
-
-        private LocalizationItem addMethods(Collection<Method> annotatedElements) {
-            methods.addAll(annotatedElements);
-            return this;
-        }
-
-        private Class<?> getClazz() {
-            return clazz;
-        }
     }
 }

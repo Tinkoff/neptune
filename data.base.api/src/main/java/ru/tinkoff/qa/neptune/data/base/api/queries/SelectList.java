@@ -3,10 +3,11 @@ package ru.tinkoff.qa.neptune.data.base.api.queries;
 import org.datanucleus.api.jdo.JDOPersistenceManager;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.data.base.api.DataBaseStepContext;
 import ru.tinkoff.qa.neptune.data.base.api.NothingIsSelectedException;
 import ru.tinkoff.qa.neptune.data.base.api.PersistableObject;
@@ -22,8 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.SLEEPING_TIME;
 import static ru.tinkoff.qa.neptune.data.base.api.properties.WaitingForQueryResultDuration.WAITING_FOR_SELECTION_RESULT_TIME;
 import static ru.tinkoff.qa.neptune.data.base.api.queries.JDOPersistenceManagerByConnectionSupplierClass.getConnectionBySupplierClass;
@@ -42,6 +41,7 @@ import static ru.tinkoff.qa.neptune.data.base.api.queries.sql.SqlQuery.bySql;
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Time to select objects")
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Record criteria")
 @MaxDepthOfReporting(0)
+@ThrowWhenNoData(toThrow = NothingIsSelectedException.class, startDescription = "Not selected:")
 public class SelectList<T, R extends List<T>> extends SequentialGetStepSupplier
         .GetIterableChainedStepSupplier<DataBaseStepContext, R, JDOPersistenceManager, T, SelectList<T, R>> {
 
@@ -253,17 +253,6 @@ public class SelectList<T, R extends List<T>> extends SequentialGetStepSupplier
     @Override
     public SelectList<T, R> criteria(String conditionDescription, Predicate<? super T> condition) {
         return super.criteria(conditionDescription, condition);
-    }
-
-    /**
-     * To throw {@link NothingIsSelectedException} when the selecting retrieves empty list.
-     *
-     * @param errorText as a text of the thrown exception
-     * @return self reference
-     */
-    public SelectList<T, R> throwWhenResultEmpty(String errorText) {
-        checkArgument(isNotBlank(errorText), "Please define not blank exception text");
-        return super.throwOnEmptyResult(() -> new NothingIsSelectedException(errorText));
     }
 
     KeepResultPersistent getResultPersistent() {

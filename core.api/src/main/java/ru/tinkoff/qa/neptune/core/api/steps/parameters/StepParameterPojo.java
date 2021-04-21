@@ -1,5 +1,7 @@
 package ru.tinkoff.qa.neptune.core.api.steps.parameters;
 
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 

@@ -16,16 +16,20 @@ import static ru.tinkoff.qa.neptune.core.api.steps.localization.ResourceBundleGe
 public class LocalizationByResourceBundle implements StepLocalization {
 
     private static ResourceBundle resourceBundle;
+    private static boolean isRead;
 
     private static ResourceBundle getResourceBundle(Locale locale) {
-        resourceBundle = ofNullable(resourceBundle)
-                .orElseGet(() -> {
-                    try {
-                        return getBundle(RESOURCE_BUNDLE, locale);
-                    } catch (MissingResourceException e) {
-                        return null;
-                    }
-                });
+        if (!isRead) {
+            resourceBundle = ofNullable(resourceBundle)
+                    .orElseGet(() -> {
+                        try {
+                            return getBundle(RESOURCE_BUNDLE, locale);
+                        } catch (MissingResourceException e) {
+                            return null;
+                        }
+                    });
+            isRead = true;
+        }
         return resourceBundle;
     }
 
@@ -34,11 +38,11 @@ public class LocalizationByResourceBundle implements StepLocalization {
         var bundle = getResourceBundle(locale);
 
         if (bundle == null) {
-            return StepLocalization.buildTextByTemplate(description, descriptionTemplateParams);
+            return description;
         }
 
         if (bundle.containsKey(getKey(clz))) {
-            return bundle.getString(getKey(clz));
+            return StepLocalization.buildTextByTemplate(bundle.getString(getKey(clz)), descriptionTemplateParams);
         }
 
         return StepLocalization.buildTextByTemplate(description, descriptionTemplateParams);
@@ -48,7 +52,7 @@ public class LocalizationByResourceBundle implements StepLocalization {
     public String methodTranslation(Method method, String description, Map<String, String> descriptionTemplateParams, Locale locale) {
         var bundle = getResourceBundle(locale);
         if (bundle == null) {
-            return StepLocalization.buildTextByTemplate(description, descriptionTemplateParams);
+            return description;
         }
 
         if (bundle.containsKey(getKey(method))) {

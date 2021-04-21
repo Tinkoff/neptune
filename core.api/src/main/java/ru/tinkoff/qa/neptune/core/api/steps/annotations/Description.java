@@ -1,4 +1,4 @@
-package ru.tinkoff.qa.neptune.core.api.steps;
+package ru.tinkoff.qa.neptune.core.api.steps.annotations;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

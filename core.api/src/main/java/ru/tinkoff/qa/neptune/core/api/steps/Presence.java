@@ -1,32 +1,45 @@
 package ru.tinkoff.qa.neptune.core.api.steps;
 
 import com.google.common.collect.Iterables;
+import ru.tinkoff.qa.neptune.core.api.event.firing.Captor;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
-import ru.tinkoff.qa.neptune.core.api.steps.parameters.IncludeParamsOfInnerGetterStep;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
-import static ru.tinkoff.qa.neptune.core.api.utils.IsLoggableUtil.isLoggable;
+import static org.apache.commons.lang3.StringUtils.SPACE;
+import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.catchValue;
 
-@SuppressWarnings("unchecked")
 @SequentialGetStepSupplier.DefineResultDescriptionParameterName("Is present")
 @IncludeParamsOfInnerGetterStep
 @MaxDepthOfReporting(0)
 public final class Presence<T> extends SequentialGetStepSupplier.GetObjectChainedStepSupplier<T, Boolean, Object, Presence<T>> {
 
     private final Set<Class<? extends Throwable>> ignored2 = new HashSet<>();
+    private final Set<Captor<Object, Object>> successCaptors = new HashSet<>();
 
     private Presence() {
-        super(o -> ofNullable(o)
+        super(Presence::isValuable);
+    }
+
+    private Presence(SequentialGetStepSupplier<T, ?, ?, ?, ?> toBePresent) {
+        this();
+        from(turnReportingOff(toBePresent.clone()));
+        this.successCaptors.addAll(toBePresent.successCaptors);
+    }
+
+    private static boolean isValuable(Object o) {
+        return ofNullable(o)
                 .map(o1 -> {
                     Class<?> clazz = o1.getClass();
 
@@ -38,47 +51,12 @@ public final class Presence<T> extends SequentialGetStepSupplier.GetObjectChaine
                         return Iterables.size((Iterable<?>) o1) > 0;
                     }
 
-                            if (clazz.isArray()) {
-                                return Array.getLength(o1) > 0;
-                            }
+                    if (clazz.isArray()) {
+                        return Array.getLength(o1) > 0;
+                    }
                     return true;
                 })
-                .orElse(false));
-    }
-
-    private Presence(SequentialGetStepSupplier<T, ?, ?, ?, ?> toBePresent) {
-        this();
-        from(turnReportingOff(toBePresent.clone()));
-    }
-
-    private Presence(Function<T, ?> toBePresent) {
-        this();
-        Get<T, ?> expectedToBePresent;
-        if (Get.class.isAssignableFrom(toBePresent.getClass())) {
-            expectedToBePresent = ((Get<T, ?>) toBePresent);
-        } else {
-            expectedToBePresent = new Get<>(isLoggable(toBePresent) ?
-                    toBePresent.toString() :
-                    "<not described value>",
-                    toBePresent);
-        }
-        from(expectedToBePresent.turnReportingOff());
-    }
-
-    /**
-     * Creates an instance of {@link Presence}.
-     *
-     * @param function that should return something. If the result of {@link Function#apply(Object)} is not {@code null},
-     *                 it is not an empty iterable/array or it is {@link Boolean} {@code true} then this is considered present.
-     * @param <T>      is a type of {@link Context}
-     * @return an instance of {@link Presence}.
-     */
-    @Description("Presence of {toBePresent}")
-    public static <T> Presence<T> presence(@DescriptionFragment(
-            value = "toBePresent",
-            makeReadableBy = PresenceParameterValueGetter.class) Function<T, ?> function) {
-        checkArgument(nonNull(function), "Function should not be a null-value");
-        return new Presence<>(function);
+                .orElse(false);
     }
 
     /**
@@ -95,27 +73,37 @@ public final class Presence<T> extends SequentialGetStepSupplier.GetObjectChaine
         return new Presence<>(toBePresent);
     }
 
+    @Override
+    String getExceptionMessage(String messageStarting) {
+        var stringBuilder = new StringBuilder(messageStarting)
+                .append(SPACE)
+                .append(((SequentialGetStepSupplier<?, ?, ?, ?, ?>) from).getDescription());
+        getParameters().forEach((key, value) -> stringBuilder.append("\r\n").append(key).append(":").append(value));
+        return stringBuilder.toString();
+    }
+
     protected Function<T, Object> preparePreFunction() {
         var preFunction = super.preparePreFunction();
         if (Get.class.isAssignableFrom(preFunction.getClass())) {
             ((Get<?, ?>) preFunction).addIgnored(ignored2);
         }
-        return ((Function<Object, Object>) o -> ofNullable(o).orElse(false))
-                .compose(preFunction);
+
+        return ((Function<Object, Object>) o -> ofNullable(o).map(o1 -> {
+            if (toReport && isValuable(o1)) {
+                catchValue(o1, successCaptors);
+            }
+            return o1;
+        }).orElse(false)).compose(preFunction);
     }
 
-    protected Function<Object, Boolean> getEndFunction() {
-        return o -> {
-            var result = super.getEndFunction().apply(o);
-            if (!result) {
-                ofNullable(exceptionSupplier)
-                        .ifPresent(supplier -> {
-                            throw supplier.get();
-                        });
-                return false;
-            }
-            return true;
-        };
+    @Override
+    protected void onSuccess(Boolean result) {
+        if (!result) {
+            ofNullable(exceptionSupplier)
+                    .ifPresent(supplier -> {
+                        throw supplier.get();
+                    });
+        }
     }
 
     @Override
@@ -128,15 +116,5 @@ public final class Presence<T> extends SequentialGetStepSupplier.GetObjectChaine
     public Presence<T> addIgnored(Class<? extends Throwable> toBeIgnored) {
         ignored2.add(toBeIgnored);
         return this;
-    }
-
-    /**
-     * This method defines an exception to be thrown when the expected value is not present.
-     *
-     * @param exceptionSupplier is a supplier of exception to be thrown when the expected value is not present.
-     * @return self-reference
-     */
-    public Presence<T> throwIfNotPresent(Supplier<? extends RuntimeException> exceptionSupplier) {
-        return throwOnEmptyResult(exceptionSupplier);
     }
 }

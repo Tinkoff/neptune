@@ -322,7 +322,7 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     }
 
     /**
-     * Checks whenever an element is present or not
+     * Checks is element present or not
      *
      * @param toFind is description of an element to be present
      * @return is element present|visible or not
@@ -336,23 +336,21 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     }
 
     /**
-     * Checks whenever an element is present or not
+     * Checks is element present. If it is not present then it throws an exception
      *
-     * @param toFind       is description of an element to be present
-     * @param errorMessage is a message of {@link NoSuchElementException} to be thrown when element is not present
+     * @param toFind is description of an element to be present
      * @return is element present|visible or not
      */
-    public boolean presenceOf(SearchSupplier<?> toFind, String errorMessage) {
+    public boolean presenceOfOrThrow(SearchSupplier<?> toFind) {
         checkNotNull(toFind, "It is necessary to define how to find an element to be present");
         changeContentIfNecessary();
-        return super.presenceOf(toFind,
-                () -> new NoSuchElementException(errorMessage),
+        return super.presenceOfOrThrow(toFind,
                 NoSuchElementException.class,
                 StaleElementReferenceException.class);
     }
 
     /**
-     * Checks whenever elements is present or not
+     * Checks are elements present or not
      *
      * @param toFind is description of elements to be present
      * @return are elements present|visible or not
@@ -366,23 +364,21 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     }
 
     /**
-     * Checks whenever elements is present or not
+     * Checks are elements present or not. If they are not present then it throws an exception
      *
-     * @param toFind       is description of elements to be present
-     * @param errorMessage is a message of {@link NoSuchElementException} to be thrown when elements are not present
+     * @param toFind is description of elements to be present
      * @return are elements present|visible or not
      */
-    public boolean presenceOf(MultipleSearchSupplier<?> toFind, String errorMessage) {
+    public boolean presenceOfOrThrow(MultipleSearchSupplier<?> toFind) {
         checkNotNull(toFind, "It is necessary to define how to find elements to be present");
         changeContentIfNecessary();
-        return super.presenceOf(toFind,
-                () -> new NoSuchElementException(errorMessage),
+        return super.presenceOfOrThrow(toFind,
                 NoSuchElementException.class,
                 StaleElementReferenceException.class);
     }
 
     /**
-     * Checks whenever window is present or not
+     * Checks is window present or not
      *
      * @param getWindow is a description of a window to be present
      * @return is window present or not
@@ -393,23 +389,20 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     }
 
     /**
-     * Checks whenever window is present or not
+     * Checks is window present. If it is not present then it throws an exception.
      *
      * @param getWindow    is a description of a window to be present
-     * @param errorMessage is a message of {@link NoSuchWindowException} to be thrown when expected window is
-     *                     not present
      * @return is window present or not
      */
-    public boolean presenceOf(GetWindowSupplier getWindow, String errorMessage) {
+    public boolean presenceOfOrThrow(GetWindowSupplier getWindow) {
         changeContentIfNecessary();
-        return super.presenceOf(getWindow,
-                () -> new NoSuchWindowException(errorMessage),
+        return super.presenceOfOrThrow(getWindow,
                 NoSuchWindowException.class);
     }
 
 
     /**
-     * Checks whenever frame is present or not
+     * Checks is frame present or not.
      *
      * @param getFrame is a description of a frame to be present
      * @return is frame present or not
@@ -420,23 +413,20 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     }
 
     /**
-     * Checks whenever frame is present or not
+     * Checks is frame present. If it is not present then it throws an exception.
      *
      * @param getFrame     is a description of a frame to be present
-     * @param errorMessage is a message of {@link NoSuchFrameException} to be thrown when expected frame is
-     *                     not present
      * @return is frame present or not
      */
-    public boolean presenceOf(GetFrameSupplier getFrame, String errorMessage) {
+    public boolean presenceOfOrThrow(GetFrameSupplier getFrame) {
         changeContentIfNecessary();
-        return super.presenceOf(getFrame,
-                () -> new NoSuchFrameException(errorMessage),
+        return super.presenceOfOrThrow(getFrame,
                 NoSuchFrameException.class);
     }
 
 
     /**
-     * Checks whenever cookies are present or not
+     * Checks are cookies present or not
      *
      * @param getCookies is a description of cookies to be present
      * @return are cookies present or not
@@ -447,21 +437,18 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     }
 
     /**
-     * Checks whenever cookies are present or not
+     * Checks are cookies present or not. If they are not present then it throws an exception.
      *
      * @param getCookies   is a description of cookies to be present
-     * @param errorMessage is a message of {@link NoSuchCookieException} to be thrown when expected cookies are
-     *                     not present
      * @return are cookies present or not
      */
-    public boolean presenceOf(GetSeleniumCookieSupplier getCookies, String errorMessage) {
+    public boolean presenceOfOrThrow(GetSeleniumCookieSupplier getCookies) {
         changeContentIfNecessary();
-        return super.presenceOf(getCookies,
-                () -> new NoSuchCookieException(errorMessage));
+        return super.presenceOfOrThrow(getCookies);
     }
 
     /**
-     * Checks whenever alert is present or not
+     * Checks is alert present or not
      *
      * @param getAlert is a description of an alert to be present
      * @return is alert present or not
@@ -472,23 +459,20 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     }
 
     /**
-     * Checks whenever alert is present or not
+     * Checks is alert present. If it is not present then it throws an exception.
      *
      * @param getAlert     is a description of an alert to be present
-     * @param errorMessage is a message of {@link NoAlertPresentException} to be thrown when expected alert is
-     *                     not present
      * @return is alert present or not
      */
-    public boolean presenceOf(GetAlertSupplier getAlert, String errorMessage) {
+    public boolean presenceOfOrThrow(GetAlertSupplier getAlert) {
         changeContentIfNecessary();
-        return super.presenceOf(getAlert,
-                () -> new NoAlertPresentException(errorMessage),
+        return super.presenceOfOrThrow(getAlert,
                 NoAlertPresentException.class);
     }
 
 
     /**
-     * Checks whenever desired requests/responses which are sent from browser are present or not
+     * Checks are required requests/responses present or not
      *
      * @param getTraffic is a description of requests/responses to be caught
      * @return are requests/responses present or not
@@ -499,22 +483,19 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     }
 
     /**
-     * Checks whenever desired requests/responses which are sent from browser are present or not
+     * Checks are required requests/responses present. If they are not present then it throws an exception.
      *
      * @param getTraffic   is a description of requests/responses to be caught
-     * @param errorMessage is a message of {@link WebDriverException} to be thrown when expected
-     *                     requests/responses are not caught
      * @return are requests/responses present or not
      */
-    public boolean presenceOf(BrowserProxyGetStepSupplier getTraffic, String errorMessage) {
+    public boolean presenceOfOrThrow(BrowserProxyGetStepSupplier getTraffic) {
         changeContentIfNecessary();
-        return super.presenceOf(getTraffic,
-                () -> new WebDriverException(errorMessage));
+        return super.presenceOfOrThrow(getTraffic);
     }
 
 
     /**
-     * Checks whenever an element is absent or not
+     * Checks is element absent or not
      *
      * @param toBeAbsent is how to find the element
      * @param timeOut    is a time to wait for the element is absent.
@@ -528,23 +509,21 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     }
 
     /**
-     * Checks whenever an element is absent or not
+     * Checks is element is absent. If it is present then it throws an exception.
      *
      * @param toBeAbsent       is how to find the element
      * @param timeOut          is a time to wait for the element is absent.
-     * @param exceptionMessage is a message of {@link IllegalStateException} to be thrown when the element is present
      * @return is element absent or not
      */
-    public boolean absenceOf(SearchSupplier<?> toBeAbsent,
-                             Duration timeOut,
-                             String exceptionMessage) {
+    public boolean absenceOfOrThrow(SearchSupplier<?> toBeAbsent,
+                                    Duration timeOut) {
         checkNotNull(toBeAbsent, "It is necessary to define how to find an element to be absent");
         changeContentIfNecessary();
-        return super.absenceOf(toBeAbsent, timeOut, exceptionMessage);
+        return super.absenceOfOrThrow(toBeAbsent, timeOut);
     }
 
     /**
-     * Checks whenever elements are absent or not
+     * Checks are elements absent or not
      *
      * @param toBeAbsent is how to find elements
      * @param timeOut    is a time to wait for elements are absent.
@@ -558,23 +537,21 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     }
 
     /**
-     * Checks whenever elements are absent or not
+     * Checks are elements absent. If they are present then it throws an exception.
      *
      * @param toBeAbsent       is how to find elements
      * @param timeOut          is a time to wait for elements are absent.
-     * @param exceptionMessage is a message of {@link IllegalStateException} to be thrown when elements are present
      * @return are elements absent or not
      */
-    public boolean absenceOf(MultipleSearchSupplier<?> toBeAbsent,
-                             Duration timeOut,
-                             String exceptionMessage) {
+    public boolean absenceOfOrThrow(MultipleSearchSupplier<?> toBeAbsent,
+                                    Duration timeOut) {
         checkNotNull(toBeAbsent, "It is necessary to define how to find elements to be absent");
         changeContentIfNecessary();
-        return super.absenceOf(toBeAbsent, timeOut, exceptionMessage);
+        return super.absenceOfOrThrow(toBeAbsent, timeOut);
     }
 
     /**
-     * Checks whenever window is absent or not
+     * Checks is window absent or not
      *
      * @param toBeAbsent is a description of a window to be absent
      * @param timeOut    is a time to wait for a window is absent.
@@ -586,21 +563,20 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     }
 
     /**
-     * Checks whenever window is absent or not
+     * Checks is window absent. If it is present then it throws an exception.
      *
      * @param toBeAbsent   is a description of a window to be absent
      * @param timeOut      is a time to wait for a window is absent.
-     * @param errorMessage is a message of {@link IllegalStateException} to be thrown when a window is present still
      * @return is window absent or not
      */
-    public boolean absenceOf(GetWindowSupplier toBeAbsent, Duration timeOut, String errorMessage) {
+    public boolean absenceOfOrThrow(GetWindowSupplier toBeAbsent, Duration timeOut) {
         changeContentIfNecessary();
-        return super.absenceOf(toBeAbsent, timeOut, errorMessage);
+        return super.absenceOfOrThrow(toBeAbsent, timeOut);
     }
 
 
     /**
-     * Checks whenever frame is absent or not
+     * Checks is frame absent or not
      *
      * @param toBeAbsent is a description of a frame to be absent
      * @param timeOut    is a time to wait for a frame is absent.
@@ -612,16 +588,15 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     }
 
     /**
-     * Checks whenever frame is absent or not
+     * Checks is frame absent. If it is present then it throws an exception.
      *
      * @param toBeAbsent   is a description of a frame to be absent
      * @param timeOut      is a time to wait for a frame is absent.
-     * @param errorMessage is a message of {@link IllegalStateException} to be thrown when a frame is present still
      * @return is frame absent or not
      */
-    public boolean absenceOf(GetFrameSupplier toBeAbsent, Duration timeOut, String errorMessage) {
+    public boolean absenceOfOrThrow(GetFrameSupplier toBeAbsent, Duration timeOut) {
         changeContentIfNecessary();
-        return super.absenceOf(toBeAbsent, timeOut, errorMessage);
+        return super.absenceOfOrThrow(toBeAbsent, timeOut);
     }
 
 
@@ -638,20 +613,19 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     }
 
     /**
-     * Checks whenever cookies are absent or not
+     * Checks whenever cookies are absent. If they are present then it throws an exception.
      *
      * @param toBeAbsent   is a description of cookies to be absent
      * @param timeOut      is a time to wait for cookies are absent.
-     * @param errorMessage is a message of {@link IllegalStateException} to be thrown when cookies are present still
      * @return are cookies absent or not
      */
-    public boolean absenceOf(GetSeleniumCookieSupplier toBeAbsent, Duration timeOut, String errorMessage) {
+    public boolean absenceOfOrThrow(GetSeleniumCookieSupplier toBeAbsent, Duration timeOut) {
         changeContentIfNecessary();
-        return super.absenceOf(toBeAbsent, timeOut, errorMessage);
+        return super.absenceOfOrThrow(toBeAbsent, timeOut);
     }
 
     /**
-     * Checks whenever alert is absent or not
+     * Checks is alert absent or not
      *
      * @param toBeAbsent is a description of an alert to be absent
      * @param timeOut    is a time to wait for an alert is absent.
@@ -663,16 +637,15 @@ public class SeleniumStepContext extends Context<SeleniumStepContext> implements
     }
 
     /**
-     * Checks whenever alert is absent or not
+     * Checks is alert absent. If it is present then it throws an exception.
      *
      * @param toBeAbsent   is a description of an alert to be absent
      * @param timeOut      is a time to wait for an alert is absent.
-     * @param errorMessage is a message of {@link IllegalStateException} to be thrown when an alert is present still
      * @return is alert absent or not
      */
-    public boolean absenceOf(GetAlertSupplier toBeAbsent, Duration timeOut, String errorMessage) {
+    public boolean absenceOfOrThrow(GetAlertSupplier toBeAbsent, Duration timeOut) {
         changeContentIfNecessary();
-        return super.absenceOf(toBeAbsent, timeOut, errorMessage);
+        return super.absenceOfOrThrow(toBeAbsent, timeOut);
     }
 
     /**

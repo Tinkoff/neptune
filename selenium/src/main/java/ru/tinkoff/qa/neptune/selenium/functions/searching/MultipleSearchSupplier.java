@@ -8,10 +8,11 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnFailure;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.CaptureOnSuccess;
 import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting;
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
-import ru.tinkoff.qa.neptune.core.api.steps.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
+import ru.tinkoff.qa.neptune.selenium.api.widget.WidgetDescriptionMultipleValueGetter;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.*;
 import ru.tinkoff.qa.neptune.selenium.captors.ListOfWebElementImageCaptor;
 import ru.tinkoff.qa.neptune.selenium.captors.WebDriverImageCaptor;
@@ -33,7 +34,7 @@ import static ru.tinkoff.qa.neptune.selenium.properties.WaitingProperties.ELEMEN
 @SequentialGetStepSupplier.DefineCriteriaParameterName("Element criteria")
 @SequentialGetStepSupplier.DefineGetImperativeParameterName(value = "Find:")
 @SequentialGetStepSupplier.DefineResultDescriptionParameterName("Found elements")
-@MaxDepthOfReporting(1)
+@MaxDepthOfReporting(0)
 @CaptureOnSuccess(by = ListOfWebElementImageCaptor.class)
 @CaptureOnFailure(by = {WebDriverImageCaptor.class, WebElementImageCaptor.class})
 public final class MultipleSearchSupplier<R extends SearchContext> extends
@@ -58,7 +59,8 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     @Description("Web elements located '{by}'")
-    public static MultipleSearchSupplier<WebElement> webElements(@DescriptionFragment("by") By by) {
+    public static MultipleSearchSupplier<WebElement> webElements(
+            @DescriptionFragment("by") By by) {
         var webElements = FindWebElements.webElements(by);
         return new MultipleSearchSupplier<>(webElements);
     }
@@ -73,7 +75,9 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      */
     @Description("Web elements located '{by}' with the text '{text}'")
-    public static MultipleSearchSupplier<WebElement> webElements(@DescriptionFragment("by") By by, @DescriptionFragment("text") String text) {
+    public static MultipleSearchSupplier<WebElement> webElements(
+            @DescriptionFragment("by") By by,
+            @DescriptionFragment("text") String text) {
         var shouldHaveText = text(text);
         var webElements = FindWebElements.webElements(by);
         var search = new MultipleSearchSupplier<>(webElements);
@@ -92,9 +96,13 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @return an instance of {@link MultipleSearchSupplier}
      * @see ru.tinkoff.qa.neptune.selenium.api.widget.Label
      */
-    @Description("List of {tClass} with text/label '{textOrLabel}'")
-    public static <T extends Widget> MultipleSearchSupplier<T> widgets(@DescriptionFragment(value = "tClass", makeReadableBy = WidgetNameGetter.class) Class<T> tClass,
-                                                                       @DescriptionFragment("textOrLabel") String textOrLabel) {
+    @Description("{tClass} '{textOrLabel}'")
+    public static <T extends Widget> MultipleSearchSupplier<T> widgets(
+            @DescriptionFragment(
+                    value = "tClass",
+                    makeReadableBy = WidgetDescriptionMultipleValueGetter.class)
+                    Class<T> tClass,
+            @DescriptionFragment("textOrLabel") String textOrLabel) {
         return new MultipleSearchSupplier<T>(
                 FindWidgets.widgets(tClass))
                 .criteria(OR(
@@ -112,9 +120,12 @@ public final class MultipleSearchSupplier<R extends SearchContext> extends
      * @param <T>    the type of widgets which should be found
      * @return an instance of {@link MultipleSearchSupplier}
      */
-    @Description("List of {tClass}")
-    public static <T extends Widget> MultipleSearchSupplier<T> widgets(@DescriptionFragment(value = "tClass",
-            makeReadableBy = WidgetNameGetter.class) Class<T> tClass) {
+    @Description("{tClass}")
+    public static <T extends Widget> MultipleSearchSupplier<T> widgets(
+            @DescriptionFragment(
+                    value = "tClass",
+                    makeReadableBy = WidgetDescriptionMultipleValueGetter.class)
+                    Class<T> tClass) {
         var widgets = FindWidgets.widgets(tClass);
         return new MultipleSearchSupplier<>(widgets);
     }

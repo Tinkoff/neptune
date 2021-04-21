@@ -1,7 +1,7 @@
 package ru.tinkoff.qa.neptune.http.api.captors.request;
 
 import ru.tinkoff.qa.neptune.core.api.event.firing.captors.CapturedStringInjector;
-import ru.tinkoff.qa.neptune.core.api.steps.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.http.api.request.body.RequestBody;
 import ru.tinkoff.qa.neptune.http.api.request.body.StringBody;
 
