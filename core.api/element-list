@@ -26,6 +26,7 @@ ru.tinkoff.qa.neptune.core.api.properties.shorts
 ru.tinkoff.qa.neptune.core.api.properties.string
 ru.tinkoff.qa.neptune.core.api.properties.url
 ru.tinkoff.qa.neptune.core.api.steps
+ru.tinkoff.qa.neptune.core.api.steps.annotations
 ru.tinkoff.qa.neptune.core.api.steps.conditions
 ru.tinkoff.qa.neptune.core.api.steps.context
 ru.tinkoff.qa.neptune.core.api.steps.localization
