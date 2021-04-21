@@ -87,6 +87,8 @@ task generateBundle(type: JavaExec) {
 core.api.steps.SequentialGetStepSupplier.imperative = Get:
 #Original text = Result
 core.api.steps.SequentialGetStepSupplier.resultDescription = Result
+#Original text = Not present:
+core.api.steps.SequentialGetStepSupplier.errorMessageStartingOnEmptyResult = Not present:
 
 ######################## core.api.steps.SequentialActionSupplier #
 #_________________________________Parameters_____________________________________
@@ -99,19 +101,17 @@ core.api.steps.SequentialActionSupplier.imperative = Perform:
 core.api.steps.Absence.timeOut = Time of the waiting for absence
 #Original text = Is absent
 core.api.steps.Absence.resultDescription = Is absent
+#Original text = Still present:
+core.api.steps.Absence.errorMessageStartingOnEmptyResult = Still present:
 #__________________________________ Methods _______________________________________
 #Original text = Absence of {toBeAbsent}
 core.api.steps.Absence.absence(core.api.steps.SequentialGetStepSupplier<T,?,?,?,?>) = Absence of {toBeAbsent}
-#Original text = Absence of {toBeAbsent}
-core.api.steps.Absence.absence(java.util.function.Function<T,?>) = Absence of {toBeAbsent}
 
 ######################## core.api.steps.Presence #
 #_________________________________Parameters_____________________________________
 #Original text = Is present
 core.api.steps.Presence.resultDescription = Is present
 #__________________________________ Methods _______________________________________
-#Original text = Presence of {toBePresent}
-core.api.steps.Presence.presence(java.util.function.Function<T,?>) = Presence of {toBePresent}
 #Original text = Presence of {toBePresent}
 core.api.steps.Presence.presence(core.api.steps.SequentialGetStepSupplier<T,?,?,?,?>) = Presence of {toBePresent}
 

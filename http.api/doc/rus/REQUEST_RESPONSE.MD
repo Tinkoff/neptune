@@ -2646,8 +2646,8 @@ public class MyTest {
                 .retryTimeOut(ofSeconds(10))
                 //интервал между попытками получить результат в пределах указанных 10 сек
                 .pollingInterval(ofMillis(500))
-                //текст ошибки, которая должна быть выброшена, если результат не был получен
-                .throwIfNoDesiredDataReceived("Data has not been received"));
+                //должно быть выброшено исключение, если результат не был получен
+                .throwOnNoResult());
     }
 }
 ```
@@ -2686,8 +2686,8 @@ public class MyTest {
                 .retryTimeOut(ofSeconds(10))
                 //интервал между попытками получить результат в пределах указанных 10 сек
                 .pollingInterval(ofMillis(500))
-                //текст ошибки, которая должна быть выброшена, если результат не был получен
-                .throwIfNoDesiredDataReceived("Data has not been received"));
+                //должно быть выброшено исключение, если результат не был получен
+                .throwOnNoResult());
     }
 }
 ```
@@ -2717,8 +2717,8 @@ public class MyTest {
         BodyObject o = http().bodyData(asIs(response) //полученный выше ответ
                 //указываем критерий, которому должно соответствовать тело 
                 .criteria("Поле A содержит ключ 'foo' со значением 'bar'", bodyObject -> bodyObject.getA.get("foo").equals("bar"))
-                //текст ошибки, которая должна быть выброшена, если результат не был получен
-                .throwIfNoDesiredDataReceived("Data has not been received"));
+                //должно быть выброшено исключение, если результат не был получен
+                .throwOnNoResult());
     }
 }
 ```
@@ -2749,8 +2749,8 @@ public class MyTest {
                 BodyObject::getA) //как извлечь из тела ответа нужные данные
                 //указываем критерий, которому должны результирующие данные
                 .criteria("Содержит ключ 'foo' со значением 'bar'", map -> map.get("foo").equals("bar"))
-                //текст ошибки, которая должна быть выброшена, если результат не был получен
-                .throwIfNoDesiredDataReceived("Data has not been received"));
+                //должно быть выброшено исключение, если результат не был получен
+                .throwOnNoResult());
     }
 }
 ```
@@ -2800,8 +2800,8 @@ public class MyTest {
                 .retryTimeOut(ofSeconds(10))
                 //интервал между попытками получить результат в пределах указанных 10 сек
                 .pollingInterval(ofMillis(500))
-                //текст ошибки, которая должна быть выброшена, если результат не был получен
-                .throwIfNoDesiredDataReceived("Data has not been received"));
+                //должно быть выброшено исключение, если результат не был получен
+                .throwOnNoResult());
     }
 }
 ```
@@ -2846,8 +2846,8 @@ public class MyTest {
                 .retryTimeOut(ofSeconds(10))
                 //интервал между попытками получить результат в пределах указанных 10 сек
                 .pollingInterval(ofMillis(500))
-                //текст ошибки, которая должна быть выброшена, если результат не был получен
-                .throwIfNoDesiredDataReceived("Data has not been received"));
+                //должно быть выброшено исключение, если результат не был получен
+                .throwOnNoResult());
     }
 }
 ```
@@ -2884,8 +2884,8 @@ public class MyTest {
                 response) //полученный выше ответ
                 //указываем критерий, которому должен соответствовать получаемый элемент 
                 .criteria("Положительное число", i -> i.intValue() > 0)
-                //текст ошибки, которая должна быть выброшена, если результат не был получен
-                .throwIfNoDesiredDataReceived("Data has not been received"));
+                //должно быть выброшено исключение, если результат не был получен
+                .throwOnNoResult());
     }
 }
 ```
@@ -2920,8 +2920,8 @@ public class MyTest {
                 BodyObject::getB) //как извлечь из тела ответа нужные данные
                 //указываем критерий, которому должен соответствовать получаемый элемент 
                 .criteria("Положительное число", i -> i.intValue() > 0)
-                //текст ошибки, которая должна быть выброшена, если результат не был получен
-                .throwIfNoDesiredDataReceived("Data has not been received"));
+                //должно быть выброшено исключение, если результат не был получен
+                .throwOnNoResult());
     }
 }
 ```
@@ -2971,8 +2971,8 @@ public class MyTest {
                 .retryTimeOut(ofSeconds(10))
                 //интервал между попытками получить результат в пределах указанных 10 сек
                 .pollingInterval(ofMillis(500))
-                //текст ошибки, которая должна быть выброшена, если результат не был получен
-                .throwIfNoDesiredDataReceived("Data has not been received"));
+                //должно быть выброшено исключение, если результат не был получен
+                .throwOnNoResult());
     }
 }
 ```
@@ -3017,8 +3017,8 @@ public class MyTest {
                 .retryTimeOut(ofSeconds(10))
                 //интервал между попытками получить результат в пределах указанных 10 сек
                 .pollingInterval(ofMillis(500))
-                //текст ошибки, которая должна быть выброшена, если результат не был получен
-                .throwIfNoDesiredDataReceived("Data has not been received"));
+                //должно быть выброшено исключение, если результат не был получен
+                .throwOnNoResult());
     }
 }
 ```
@@ -3054,8 +3054,8 @@ public class MyTest {
                 response) //полученный выше ответ
                 //указываем критерий, которому должен соответствовать получаемый элемент 
                 .criteria("Положительное число", i -> i.intValue() > 0)
-                //текст ошибки, которая должна быть выброшена, если результат не был получен
-                .throwIfNoDesiredDataReceived("Data has not been received"));
+                //должно быть выброшено исключение, если результат не был получен
+                .throwOnNoResult());
     }
 }
 ```
@@ -3090,8 +3090,8 @@ public class MyTest {
                 BodyObject::getС) //как извлечь из тела ответа нужные данные
                 //указываем критерий, которому должен соответствовать получаемый элемент 
                 .criteria("Положительное число", i -> i.intValue() > 0)
-                //текст ошибки, которая должна быть выброшена, если результат не был получен
-                .throwIfNoDesiredDataReceived("Data has not been received"));
+                //должно быть выброшено исключение, если результат не был получен
+                .throwOnNoResult());
     }
 }
 ```
@@ -3140,8 +3140,8 @@ public class MyTest {
                 .retryTimeOut(ofSeconds(10))
                 //интервал между попытками получить результат в пределах указанных 10 сек
                 .pollingInterval(ofMillis(500))
-                //текст ошибки, которая должна быть выброшена, если результат не был получен
-                .throwIfNoDesiredDataReceived("Data has not been received"));
+                //должно быть выброшено исключение, если результат не был получен
+                .throwOnNoResult());
     }
 }
 ```
@@ -3186,8 +3186,8 @@ public class MyTest {
                 .retryTimeOut(ofSeconds(10))
                 //интервал между попытками получить результат в пределах указанных 10 сек
                 .pollingInterval(ofMillis(500))
-                //текст ошибки, которая должна быть выброшена, если результат не был получен
-                .throwIfNoDesiredDataReceived("Data has not been received"));
+                //должно быть выброшено исключение, если результат не был получен
+                .throwOnNoResult());
     }
 }
 ```
@@ -3224,8 +3224,8 @@ public class MyTest {
                 response) //полученный выше ответ
                 //указываем критерий, которому должен соответствовать каждый элемент результирующей под-коллекции
                 .criteria("Положительное число", i -> i.intValue() > 0)
-                //текст ошибки, которая должна быть выброшена, если результат не был получен
-                .throwIfNoDesiredDataReceived("Data has not been received"));
+                //должно быть выброшено исключение, если результат не был получен
+                .throwOnNoResult());
     }
 }
 ```
@@ -3260,8 +3260,8 @@ public class MyTest {
                 BodyObject::getB) //как извлечь из тела ответа нужные данные
                 //указываем критерий, которому должен соответствовать каждый элемент результирующей под-коллекции
                 .criteria("Положительное число", i -> i.intValue() > 0)
-                //текст ошибки, которая должна быть выброшена, если результат не был получен
-                .throwIfNoDesiredDataReceived("Data has not been received"));
+                //должно быть выброшено исключение, если результат не был получен
+                .throwOnNoResult());
     }
 }
 ```
@@ -3310,8 +3310,8 @@ public class MyTest {
                 .retryTimeOut(ofSeconds(10))
                 //интервал между попытками получить результат в пределах указанных 10 сек
                 .pollingInterval(ofMillis(500))
-                //текст ошибки, которая должна быть выброшена, если результат не был получен
-                .throwIfNoDesiredDataReceived("Data has not been received"));
+                //должно быть выброшено исключение, если результат не был получен
+                .throwOnNoResult());
     }
 }
 ```
@@ -3356,8 +3356,8 @@ public class MyTest {
                 .retryTimeOut(ofSeconds(10))
                 //интервал между попытками получить результат в пределах указанных 10 сек
                 .pollingInterval(ofMillis(500))
-                //текст ошибки, которая должна быть выброшена, если результат не был получен
-                .throwIfNoDesiredDataReceived("Data has not been received"));
+                //должно быть выброшено исключение, если результат не был получен
+                .throwOnNoResult());
     }
 }
 ```
@@ -3393,8 +3393,8 @@ public class MyTest {
                 response) //полученный выше ответ
                 //указываем критерий, которому должен соответствовать каждый элемент результирующего под-массива 
                 .criteria("Положительное число", i -> i.intValue() > 0)
-                //текст ошибки, которая должна быть выброшена, если результат не был получен
-                .throwIfNoDesiredDataReceived("Data has not been received"));
+                //должно быть выброшено исключение, если результат не был получен
+                .throwOnNoResult());
     }
 }
 ```
@@ -3429,8 +3429,8 @@ public class MyTest {
                 BodyObject::getС) //как извлечь из тела ответа нужные данные
                 //указываем критерий, которому должен соответствовать каждый элемент результирующего под-массива
                 .criteria("Положительное число", i -> i.intValue() > 0)
-                //текст ошибки, которая должна быть выброшена, если результат не был получен
-                .throwIfNoDesiredDataReceived("Data has not been received"));
+                //должно быть выброшено исключение, если результат не был получен
+                .throwOnNoResult());
     }
 }
 ```
