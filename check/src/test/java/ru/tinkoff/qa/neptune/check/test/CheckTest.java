@@ -25,19 +25,19 @@ public class CheckTest {
     }
 
     private static final List<String> EXPECTED_LOGGER_MESSAGES1 =
-            of("Check: inspected value 4 has started",
+            of("Check: 4 has started",
                     "Assert: Is integer is <true> has started",
                     "Event finished",
                     "Assert: Sqrt value is <2.0> has started",
                     "Event finished",
                     "Event finished",
-                    "Check: inspected value 5 has started",
+                    "Check: 5 has started",
                     "Assert: Sqr value is <25.0> has started",
                     "Event finished",
                     "Event finished");
 
     private static final List<String> EXPECTED_LOGGER_MESSAGES2 =
-            of("Check: inspected value 9 has started",
+            of("Check: 9 has started",
                     "Assert: Is integer is <true> has started",
                     "Event finished",
                     "Assert: Sqrt value is <2.0> has started",

@@ -229,7 +229,7 @@ public abstract class SequentialActionSupplier<T, R, THIS extends SequentialActi
                     try {
                         var valueMethod = annotation.annotationType().getMethod("value");
                         valueMethod.setAccessible(true);
-                        return new AdditionalMetadata<>(toRead, name, StepParameter.class, () -> {
+                        return new AdditionalMetadata<>(cls, name, StepParameter.class, () -> {
                             try {
                                 return createStepParameter((String) valueMethod.invoke(annotation));
                             } catch (Exception t) {

@@ -21,7 +21,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static java.lang.String.valueOf;
@@ -55,7 +54,7 @@ public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSup
                 info.startExecutionLogging();
                 var received = httpStepContext.getCurrentClient().send(requestBuilder.build(), bodyHandler);
                 info.setLastReceived(received);
-                return received;
+                return new Response<>(received);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             } finally {
@@ -76,7 +75,7 @@ public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSup
      * @param <T>            is a type of response body
      * @return an instance of {@link ResponseSequentialGetSupplier}
      */
-    @Description("Http Response of {request}")
+    @Description("Http Response")
     public static <T> ResponseSequentialGetSupplier<T> response(@DescriptionFragment("request") RequestBuilder requestBuilder,
                                                                 HttpResponse.BodyHandler<T> bodyHandler) {
         return new ResponseSequentialGetSupplier<>(requestBuilder, bodyHandler, new ResponseExecutionInfo());
@@ -118,14 +117,6 @@ public final class ResponseSequentialGetSupplier<T> extends SequentialGetStepSup
 
     ResponseExecutionInfo getInfo() {
         return info;
-    }
-
-    @Override
-    public Function<HttpStepContext, HttpResponse<T>> get() {
-        if (!toReport) {
-            return getEndFunction();
-        }
-        return super.get();
     }
 
     @Override
