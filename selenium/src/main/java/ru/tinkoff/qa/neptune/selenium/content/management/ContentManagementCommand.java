@@ -42,7 +42,6 @@ public final class ContentManagementCommand extends SequentialActionSupplier<Sel
         performOn(context -> context);
     }
 
-    @Description("Change active browser content")
     public static ContentManagementCommand getCurrentCommand() {
         var result = CURRENT_COMMAND.get();
         CURRENT_COMMAND.set(null);
