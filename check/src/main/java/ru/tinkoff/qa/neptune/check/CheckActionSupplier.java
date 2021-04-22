@@ -105,7 +105,7 @@ public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R,
     }
 
     @SafeVarargs
-    @Description("inspected value {t}")
+    @Description("{t}")
     @SuppressWarnings("unused")
     static <T> CheckActionSupplier<T, ?> checkActionSupplier(@DescriptionFragment("t") T t,
                                                              MatchAction<T, ?>... matchActions) {

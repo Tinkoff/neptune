@@ -114,6 +114,15 @@ public class ResourceBundleGenerator {
             new DefaultBundleFiller(criteriaList, "CRITERIA").fill(output, properties);
             new DefaultBundleFiller(attachments, "ATTACHMENTS").fill(output, properties);
 
+            new DefaultBundleFiller(new ClassGraph().enableAllInfo()
+                    .scan()
+                    .getClassesWithAnnotation(Description.class.getName())
+                    .loadClasses(true)
+                    .stream()
+                    .filter(aClass -> !SequentialGetStepSupplier.class.isAssignableFrom(aClass) && !SequentialActionSupplier.class.isAssignableFrom(aClass))
+                    .sorted(comparing(Class::getName))
+                    .collect(toList()), "OTHER").fill(output, properties);
+
             new ClassGraph().enableAllInfo()
                     .scan()
                     .getSubclasses(BundleFillerExtension.class.getName())
