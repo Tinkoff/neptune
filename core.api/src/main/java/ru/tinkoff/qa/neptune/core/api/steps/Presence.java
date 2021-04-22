@@ -79,7 +79,11 @@ public final class Presence<T> extends SequentialGetStepSupplier.GetObjectChaine
         var stringBuilder = new StringBuilder(messageStarting)
                 .append(SPACE)
                 .append(((SequentialGetStepSupplier<?, ?, ?, ?, ?>) from).getDescription());
-        getParameters().forEach((key, value) -> stringBuilder.append("\r\n").append(key).append(":").append(value));
+        getParameters().forEach((key, value) -> stringBuilder.append("\r\n")
+                .append("- ")
+                .append(key)
+                .append(":")
+                .append(value));
         return stringBuilder.toString();
     }
 
