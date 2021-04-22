@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.stream;
+import static java.util.Comparator.comparing;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier.DefaultActionParameterReader.getPerformOnMetadata;
@@ -48,6 +49,7 @@ final class DefaultBundleFiller extends BundleFillerExtension {
     protected List<Method> addMethods(Class<?> clazz) {
         return stream(clazz.getDeclaredMethods())
                 .filter(method -> method.getAnnotation(Description.class) != null)
+                .sorted(comparing(Method::toString))
                 .collect(toList());
     }
 }
