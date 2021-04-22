@@ -119,7 +119,9 @@ public class ResourceBundleGenerator {
                     .getClassesWithAnnotation(Description.class.getName())
                     .loadClasses(true)
                     .stream()
-                    .filter(aClass -> !SequentialGetStepSupplier.class.isAssignableFrom(aClass) && !SequentialActionSupplier.class.isAssignableFrom(aClass))
+                    .filter(aClass -> !SequentialGetStepSupplier.class.isAssignableFrom(aClass)
+                            && !SequentialActionSupplier.class.isAssignableFrom(aClass)
+                            && !Captor.class.isAssignableFrom(aClass))
                     .sorted(comparing(Class::getName))
                     .collect(toList()), "OTHER").fill(output, properties);
 
