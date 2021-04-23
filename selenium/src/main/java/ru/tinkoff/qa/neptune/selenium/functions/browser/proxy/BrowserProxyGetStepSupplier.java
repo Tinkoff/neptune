@@ -19,6 +19,8 @@ import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.GetProxy.getBro
 
 @Description("Http traffic")
 @CaptureOnSuccess(by = CollectionCaptor.class)
+@SequentialGetStepSupplier.DefineCriteriaParameterName("Criteria for http request/response")
+@SequentialGetStepSupplier.DefineTimeOutParameterName("Waiting time")
 public class BrowserProxyGetStepSupplier extends SequentialGetStepSupplier.GetIterableStepSupplier<SeleniumStepContext, List<HarEntry>, HarEntry, BrowserProxyGetStepSupplier> {
 
     private final static String LINE_SEPARATOR = "\r\n";

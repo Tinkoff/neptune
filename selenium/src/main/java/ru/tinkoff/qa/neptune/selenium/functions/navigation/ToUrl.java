@@ -90,8 +90,9 @@ public final class ToUrl extends SequentialActionSupplier<SeleniumStepContext, W
      * @param url the url to navigate to.
      * @return built navigation action
      */
-    public static ToUrl toUrl(URL url) {
-        return toUrl(currentWindow(), url);
+    @Description("Navigate to URL {URL}")
+    public static ToUrl toUrl(@DescriptionFragment("URL") URL url) {
+        return new ToUrl(url).performOn(currentWindow());
     }
 
     /**
@@ -101,8 +102,9 @@ public final class ToUrl extends SequentialActionSupplier<SeleniumStepContext, W
      * @return built navigation action
      * @see ru.tinkoff.qa.neptune.selenium.properties.URLProperties#BASE_WEB_DRIVER_URL_PROPERTY
      */
-    public static ToUrl toUrl(String url) {
-        return toUrl(checkUrl(url));
+    @Description("Navigate to URL {URL}")
+    public static ToUrl toUrl(@DescriptionFragment("URL") String url) {
+        return new ToUrl(checkUrl(url)).performOn(currentWindow());
     }
 
     /**
@@ -113,8 +115,9 @@ public final class ToUrl extends SequentialActionSupplier<SeleniumStepContext, W
      * @return built navigation action
      * @see ru.tinkoff.qa.neptune.selenium.properties.URLProperties#BASE_WEB_DRIVER_URL_PROPERTY
      */
-    public static ToUrl toUrl(GetWindowSupplier windowSupplier, String url) {
-        return toUrl(windowSupplier, checkUrl(url));
+    @Description("Navigate to URL {URL}")
+    public static ToUrl toUrl(GetWindowSupplier windowSupplier, @DescriptionFragment("URL") String url) {
+        return new ToUrl(checkUrl(url)).performOn(windowSupplier);
     }
 
     /**
@@ -125,8 +128,9 @@ public final class ToUrl extends SequentialActionSupplier<SeleniumStepContext, W
      * @return built navigation action
      * @see ru.tinkoff.qa.neptune.selenium.properties.URLProperties#BASE_WEB_DRIVER_URL_PROPERTY
      */
-    public static ToUrl toUrl(Window window, String url) {
-        return toUrl(window, checkUrl(url));
+    @Description("Navigate to URL {URL}")
+    public static ToUrl toUrl(Window window, @DescriptionFragment("URL") String url) {
+        return new ToUrl(checkUrl(url)).performOn(window);
     }
 
 
