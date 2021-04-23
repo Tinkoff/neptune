@@ -9,12 +9,12 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.selenium.SeleniumStepContext;
 
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
 import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.GetProxy.getBrowserProxy;
 
 @Description("Http traffic")
@@ -23,34 +23,28 @@ import static ru.tinkoff.qa.neptune.selenium.SeleniumStepContext.GetProxy.getBro
 @SequentialGetStepSupplier.DefineTimeOutParameterName("Waiting time")
 public class BrowserProxyGetStepSupplier extends SequentialGetStepSupplier.GetIterableStepSupplier<SeleniumStepContext, List<HarEntry>, HarEntry, BrowserProxyGetStepSupplier> {
 
-    private final static String LINE_SEPARATOR = "\r\n";
-
     private BrowserProxyGetStepSupplier() {
         super(getBrowserProxy().andThen(proxy -> ofNullable(proxy)
                 .map(p -> {
+                    var harEntries = new NeptuneHarEntries();
+
                     if (!p.isStarted()) {
-                        return new ArrayList<HarEntry>();
+                        return harEntries;
                     }
 
                     var har = p.getHar();
                     if (har == null) {
                         System.err.println("HAR recording is not started");
-                        return new ArrayList<HarEntry>();
+                        return harEntries;
                     }
 
-                    return har.getLog().getEntries().stream().map(harEntry -> {
+                    harEntries.addAll(har.getLog().getEntries().stream().map(harEntry -> {
                         HarEntry entry = new HarEntry() {
                             @Override
                             public String toString() {
                                 var request = getRequest();
-                                var response = getResponse();
-
-                                return request.getMethod()
-                                        + LINE_SEPARATOR
-                                        + request.getUrl()
-                                        + LINE_SEPARATOR
-                                        + "Response status code" +
-                                        response.getStatus();
+                                return translate(new NeptuneHarEntryDescription()) + ": " + request.getMethod() + " "
+                                        + request.getUrl();
                             }
                         };
                         entry.setCache(harEntry.getCache());
@@ -64,9 +58,11 @@ public class BrowserProxyGetStepSupplier extends SequentialGetStepSupplier.GetIt
                         entry.setTime(harEntry.getTime());
                         entry.setTimings(harEntry.getTimings());
                         return entry;
-                    }).collect(toList());
+                    }).collect(toList()));
+
+                    return harEntries;
                 })
-                .orElseGet(ArrayList::new)));
+                .orElseGet(NeptuneHarEntries::new)));
     }
 
     public static BrowserProxyGetStepSupplier proxiedRequests() {

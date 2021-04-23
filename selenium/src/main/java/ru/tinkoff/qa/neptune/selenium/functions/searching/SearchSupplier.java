@@ -10,7 +10,6 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
-import ru.tinkoff.qa.neptune.selenium.api.widget.WidgetDescriptionValueGetter;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.*;
 import ru.tinkoff.qa.neptune.selenium.captors.WebDriverImageCaptor;
 import ru.tinkoff.qa.neptune.selenium.captors.WebElementImageCaptor;

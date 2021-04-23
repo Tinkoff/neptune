@@ -17,9 +17,9 @@ import static java.util.Arrays.stream;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
-import static ru.tinkoff.qa.neptune.selenium.api.widget.WidgetDescriptionFormer.getMultipleDescription;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.CGLibProxyBuilder.createProxy;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.FindByBuilder.getAnnotations;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.ToStringFormer.getMultipleToString;
 import static ru.tinkoff.qa.neptune.selenium.functions.searching.WidgetPriorityComparator.widgetPriorityComparator;
 
 class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> {
@@ -98,14 +98,14 @@ class FindWidgets<R extends Widget> implements Function<SearchContext, List<R>> 
                     return "<...>";
                 }
 
-                return getMultipleDescription(this);
+                return getMultipleToString(this);
             }
         };
 
         classesToInstantiate.forEach(clazz -> {
             var by = BUILDER.buildIt(clazz);
             result.addAll(searchContext.findElements(by).stream()
-                    .map(webElement -> createProxy(clazz, new WidgetInterceptor(webElement, clazz)))
+                    .map(webElement -> createProxy(clazz, new WidgetInterceptor(webElement, clazz, by)))
                     .collect(toList()));
         });
         return result;

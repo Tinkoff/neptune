@@ -4,17 +4,10 @@ import org.openqa.selenium.WebElement;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.AdditionalMetadata;
 
 import java.lang.annotation.Annotation;
-import java.util.List;
 
-import static java.lang.String.format;
-import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-import static ru.tinkoff.qa.neptune.core.api.steps.localization.StepLocalization.translate;
+public final class WidgetDescriptionMetadataFactory {
 
-public final class WidgetDescriptionFormer {
-
-    private WidgetDescriptionFormer() {
+    private WidgetDescriptionMetadataFactory() {
         super();
     }
 
@@ -82,7 +75,7 @@ public final class WidgetDescriptionFormer {
         return null;
     }
 
-    private static String getText(String elementText, String name) {
+    /*private static String getText(String elementText, String name) {
         String text;
         if (isBlank(elementText)) {
             text = EMPTY;
@@ -121,12 +114,5 @@ public final class WidgetDescriptionFormer {
     public static String getDescription(Object o) {
         var name = translate(getNameMetadata(o.getClass()));
         return getText(o, name);
-    }
-
-    public static String getMultipleDescription(List<?> object) {
-        return object.size() + ": " + object.stream()
-                .map(o -> translate(getMultipleNameMetadata(o.getClass())))
-                .distinct()
-                .collect(toList());
-    }
+    }*/
 }

@@ -18,8 +18,8 @@ import static java.util.Comparator.comparing;
 import static java.util.List.of;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toCollection;
-import static ru.tinkoff.qa.neptune.selenium.api.widget.WidgetDescriptionFormer.getMultipleNameMetadata;
-import static ru.tinkoff.qa.neptune.selenium.api.widget.WidgetDescriptionFormer.getNameMetadata;
+import static ru.tinkoff.qa.neptune.selenium.api.widget.WidgetDescriptionMetadataFactory.getMultipleNameMetadata;
+import static ru.tinkoff.qa.neptune.selenium.api.widget.WidgetDescriptionMetadataFactory.getNameMetadata;
 
 @SuppressWarnings("unused")
 public final class WebElementBundleFillerExtension extends BundleFillerExtension {
