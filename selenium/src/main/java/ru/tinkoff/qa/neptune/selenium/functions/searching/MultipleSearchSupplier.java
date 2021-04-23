@@ -12,7 +12,6 @@ import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Widget;
-import ru.tinkoff.qa.neptune.selenium.api.widget.WidgetDescriptionMultipleValueGetter;
 import ru.tinkoff.qa.neptune.selenium.api.widget.drafts.*;
 import ru.tinkoff.qa.neptune.selenium.captors.ListOfWebElementImageCaptor;
 import ru.tinkoff.qa.neptune.selenium.captors.WebDriverImageCaptor;

@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 import static java.util.Collections.emptyMap;
+import static java.util.Optional.ofNullable;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.StaticEventFiring.*;
 import static ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporting.MaxDepthOfReportingReader.getCurrentDepth;
 import static ru.tinkoff.qa.neptune.core.api.properties.general.events.DoCapturesOf.catchFailureEvent;
@@ -59,7 +60,8 @@ final class ActionImpl<T, R> implements Action<T> {
             supplier.onFailure(t, thrown);
             fireThrownException(thrown);
             if (catchFailureEvent() && toReport) {
-                catchValue(performOn, failureCaptors);
+                ofNullable(performOn).ifPresent(o -> catchValue(o, failureCaptors));
+                catchValue(t, failureCaptors);
             }
             throw thrown;
         } finally {

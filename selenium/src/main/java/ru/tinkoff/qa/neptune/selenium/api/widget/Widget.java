@@ -104,10 +104,6 @@ public abstract class Widget implements WrapsElement, SearchContext, HasAttribut
         return ((WebElement) wrappedElement).isEnabled();
     }
 
-    public String toString() {
-        return WidgetDescriptionFormer.getDescription(this);
-    }
-
     public Widget selfReference() {
         return this;
     }

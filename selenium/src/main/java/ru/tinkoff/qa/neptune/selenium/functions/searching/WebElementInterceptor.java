@@ -1,23 +1,27 @@
 package ru.tinkoff.qa.neptune.selenium.functions.searching;
 
 import net.sf.cglib.proxy.MethodProxy;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import java.lang.reflect.Method;
 
-import static ru.tinkoff.qa.neptune.selenium.api.widget.WidgetDescriptionFormer.getDescription;
+import static ru.tinkoff.qa.neptune.selenium.functions.searching.ToStringFormer.webElementToString;
 
 class WebElementInterceptor extends AbstractElementInterceptor {
 
-    WebElementInterceptor(WebElement element) {
+    private final By by;
+
+    WebElementInterceptor(WebElement element, By by) {
         super(element);
+        this.by = by;
     }
 
     public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
         if ("toString".equals(method.getName()) &&
                 method.getParameterTypes().length == 0
                 && String.class.equals(method.getReturnType())) {
-            return getDescription(createRealObject());
+            return webElementToString((WebElement) createRealObject(), by);
         } else {
             return super.intercept(obj, method, args, proxy);
         }
