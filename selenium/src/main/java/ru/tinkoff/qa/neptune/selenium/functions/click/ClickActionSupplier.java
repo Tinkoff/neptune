@@ -12,12 +12,13 @@ import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.IncludeParamsOfInnerGetterStep;
 import ru.tinkoff.qa.neptune.selenium.api.widget.Clickable;
 import ru.tinkoff.qa.neptune.selenium.captors.ImageCaptorAfterActionOnElement;
+import ru.tinkoff.qa.neptune.selenium.captors.WebDriverImageCaptor;
 import ru.tinkoff.qa.neptune.selenium.captors.WebElementImageCaptor;
 import ru.tinkoff.qa.neptune.selenium.functions.searching.SearchSupplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-@CaptureOnFailure(by = WebElementImageCaptor.class)
+@CaptureOnFailure(by = {WebElementImageCaptor.class, WebDriverImageCaptor.class})
 @CaptureOnSuccess(by = ImageCaptorAfterActionOnElement.class)
 @Description("Click {on}")
 @MaxDepthOfReporting(0)
