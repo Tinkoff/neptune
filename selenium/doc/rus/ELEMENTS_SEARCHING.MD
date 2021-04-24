@@ -3,8 +3,13 @@
 Полезные страницы:
 
 - [Виджеты](./WIDGET.MD)
-- [О принципах работы шагов, которые возвращают результат](./../../../core.api/doc/rus/IDEA.MD#Шаги,-которые-возвращают-результат)
-  .
+  
+- [О принципах работы шагов, которые возвращают результат](./../../../core.api/doc/rus/IDEA.MD#Шаги,-которые-возвращают-результат).
+
+- О критериях можно прочитать [здесь](./../../../core.api/doc/rus/IDEA.MD#Критерии).
+
+- [Критерии для элементов страницы](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/functions/searching/CommonElementCriteria.html)
+
 
 ## Пример поиска
 

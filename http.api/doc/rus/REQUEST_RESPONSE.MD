@@ -2614,6 +2614,10 @@ public class BodyObject {
 <details>
   <summary>Нажми, чтобы прочесть</summary>
 
+О критериях можно прочитать [здесь](./../../../core.api/doc/rus/IDEA.MD#Критерии).
+
+[Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
+
 ```java
 import java.net.URI;
 
@@ -2760,6 +2764,10 @@ public class MyTest {
 
 <details>
   <summary>Нажми, чтобы прочесть</summary>
+
+О критериях можно прочитать [здесь](./../../../core.api/doc/rus/IDEA.MD#Критерии).
+
+[Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
 
 ```java
 import java.net.URI;
@@ -2932,6 +2940,10 @@ public class MyTest {
 <details>
   <summary>Нажми, чтобы прочесть</summary>
 
+О критериях можно прочитать [здесь](./../../../core.api/doc/rus/IDEA.MD#Критерии).
+
+[Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
+
 ```java
 import java.net.URI;
 
@@ -3100,6 +3112,10 @@ public class MyTest {
 #### Получение данных тела ответа как Iterable
 <details>
   <summary>Нажми, чтобы прочесть</summary>
+
+О критериях можно прочитать [здесь](./../../../core.api/doc/rus/IDEA.MD#Критерии).
+
+[Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
 
 ```java
 import java.net.URI;
@@ -3270,6 +3286,10 @@ public class MyTest {
 #### Получение данных тела ответа как массив
 <details>
   <summary>Нажми, чтобы прочесть</summary>
+
+О критериях можно прочитать [здесь](./../../../core.api/doc/rus/IDEA.MD#Критерии).
+
+Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
 
 ```java
 import java.net.URI;

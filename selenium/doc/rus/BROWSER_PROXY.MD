@@ -3,6 +3,10 @@
 Полезные страницы:
 - [О принципах работы шагов, которые возвращают результат](./../../../core.api/doc/rus/IDEA.MD#Шаги,-которые-возвращают-результат).
 
+- О критериях можно прочитать [здесь](./../../../core.api/doc/rus/IDEA.MD#Критерии).  
+
+- [Критерии для поиска нужных записей траффика](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/functions/browser/proxy/BrowserProxyCriteria.html)
+
 Бывает, что необходимо в ходе тестирования front-end проверить трафик, возникающий входе того или иного действия на странице 
 приложения. 
 
