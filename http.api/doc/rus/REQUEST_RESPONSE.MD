@@ -2555,7 +2555,7 @@ public class MyTest {
 ### Варианты получения данных тела ответа на примере GET
 
 О принципах работы шагов, которые возвращают результат, можно
-прочитать [здесь](./../../../core.api/doc/rus/IDEA.MD#Шаги,-которые-возвращают-результат).
+прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Шаги,-которые-возвращают-результат).
 
 В примерах выше был показан один из вариантов решения. Для этого нато получить ответ на http-запрос и взять его тело - `response.body()`. Но этого не всегда достаточно, т.к. бывают ситуации, когда:
 
@@ -2614,7 +2614,7 @@ public class BodyObject {
 <details>
   <summary>Нажми, чтобы прочесть</summary>
 
-О критериях можно прочитать [здесь](./../../../core.api/doc/rus/IDEA.MD#Критерии).
+О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
 
 [Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
 
@@ -2765,7 +2765,7 @@ public class MyTest {
 <details>
   <summary>Нажми, чтобы прочесть</summary>
 
-О критериях можно прочитать [здесь](./../../../core.api/doc/rus/IDEA.MD#Критерии).
+О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
 
 [Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
 
@@ -2940,7 +2940,7 @@ public class MyTest {
 <details>
   <summary>Нажми, чтобы прочесть</summary>
 
-О критериях можно прочитать [здесь](./../../../core.api/doc/rus/IDEA.MD#Критерии).
+О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
 
 [Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
 
@@ -3113,7 +3113,7 @@ public class MyTest {
 <details>
   <summary>Нажми, чтобы прочесть</summary>
 
-О критериях можно прочитать [здесь](./../../../core.api/doc/rus/IDEA.MD#Критерии).
+О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
 
 [Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
 
@@ -3287,7 +3287,7 @@ public class MyTest {
 <details>
   <summary>Нажми, чтобы прочесть</summary>
 
-О критериях можно прочитать [здесь](./../../../core.api/doc/rus/IDEA.MD#Критерии).
+О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
 
 Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
 
