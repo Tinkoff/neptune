@@ -100,7 +100,7 @@ public class SanityTestOfTheStartingAndStoppingOfWebDriver {
 
         try {
             WrappedWebDriver wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
-                    new SeleniumParameterProvider().provide().getParameterValues()[0]);
+                    new SeleniumParameterProvider().provide()[0]);
             WebDriver driver = null;
             try {
                 driver = wrappedWebDriver.getWrappedDriver();
@@ -170,7 +170,7 @@ public class SanityTestOfTheStartingAndStoppingOfWebDriver {
         properties.forEach(System::setProperty);
 
         WrappedWebDriver wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
-                new SeleniumParameterProvider().provide().getParameterValues()[0]);
+                new SeleniumParameterProvider().provide()[0]);
         try {
             assertThat("Current url",
                     wrappedWebDriver.getWrappedDriver().getCurrentUrl(),

@@ -31,7 +31,7 @@ public class ProxyRefreshTest {
                     entry(USE_BROWSER_PROXY.getName(), "true"));
 
     private final WrappedWebDriver wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
-            new SeleniumParameterProvider().provide().getParameterValues()[0]);
+            new SeleniumParameterProvider().provide()[0]);
 
     @BeforeClass
     public void setUp() {

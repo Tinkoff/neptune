@@ -1,13 +1,11 @@
 package ru.tinkoff.qa.neptune.http.api;
 
-import ru.tinkoff.qa.neptune.core.api.steps.context.ConstructorParameters;
 import ru.tinkoff.qa.neptune.core.api.steps.context.ParameterProvider;
 
 import java.net.CookieManager;
 import java.net.http.HttpClient;
 
 import static java.util.Optional.ofNullable;
-import static ru.tinkoff.qa.neptune.core.api.steps.context.ConstructorParameters.params;
 import static ru.tinkoff.qa.neptune.http.api.properties.authentification.DefaultHttpAuthenticatorProperty.DEFAULT_HTTP_AUTHENTICATOR_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.cookies.DefaultHttpCookieManagerProperty.DEFAULT_HTTP_COOKIE_MANAGER_PROPERTY;
 import static ru.tinkoff.qa.neptune.http.api.properties.executor.DefaultHttpExecutorProperty.DEFAULT_HTTP_EXECUTOR_PROPERTY;
@@ -21,7 +19,7 @@ import static ru.tinkoff.qa.neptune.http.api.properties.time.DefaultConnectTimeO
 
 public class HttpStepsParameterProvider implements ParameterProvider {
     @Override
-    public ConstructorParameters provide() {
+    public Object[] provide() {
         final var builder = HttpClient.newBuilder();
         ofNullable(DEFAULT_CONNECT_TIME_OUT_PROPERTY.get())
                 .ifPresent(builder::connectTimeout);
@@ -42,6 +40,6 @@ public class HttpStepsParameterProvider implements ParameterProvider {
         ofNullable(DEFAULT_HTTP_SSL_CONTEXT_PROPERTY.get()).ifPresent(builder::sslContext);
         ofNullable(DEFAULT_HTTP_SSL_PARAMETERS_PROPERTY.get()).ifPresent(builder::sslParameters);
 
-        return params(builder);
+        return new Object[]{builder};
     }
 }

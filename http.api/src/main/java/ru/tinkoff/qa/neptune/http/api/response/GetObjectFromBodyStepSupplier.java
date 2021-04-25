@@ -59,7 +59,7 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
     public static <T, R> GetObjectWhenResponseReceived<T, R> asObject(
             @DescriptionFragment(
                     value = "description",
-                    makeReadableBy = DescriptionTranslationGetter.class) String description,
+                    makeReadableBy = StepParameter.TranslatedDescriptionParameterValueGetter.class) String description,
             HttpResponse<T> received,
             Function<T, R> f) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
@@ -95,7 +95,8 @@ public abstract class GetObjectFromBodyStepSupplier<T, R, S extends GetObjectFro
     public static <T, R> GetObjectWhenResponseReceiving<T, R> asObject(
             @DescriptionFragment(
                     value = "description",
-                    makeReadableBy = DescriptionTranslationGetter.class) String description,
+                    makeReadableBy = StepParameter.TranslatedDescriptionParameterValueGetter.class)
+                    String description,
             RequestBuilder requestBuilder,
             HttpResponse.BodyHandler<T> handler,
             Function<T, R> f) {

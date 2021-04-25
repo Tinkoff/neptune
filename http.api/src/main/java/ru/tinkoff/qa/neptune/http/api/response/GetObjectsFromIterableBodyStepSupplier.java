@@ -61,7 +61,8 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
     public static <T, R, S extends Iterable<R>> GetObjectsFromIterableWhenResponseReceived<T, R, S> asIterable(
             @DescriptionFragment(
                     value = "description",
-                    makeReadableBy = DescriptionTranslationGetter.class) String description,
+                    makeReadableBy = StepParameter.TranslatedDescriptionParameterValueGetter.class)
+                    String description,
             HttpResponse<T> received,
             Function<T, S> f) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
@@ -85,7 +86,8 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
     public static <T, R, S extends Iterable<R>> GetObjectsFromIterableWhenResponseReceiving<T, R, S> asIterable(
             @DescriptionFragment(
                     value = "description",
-                    makeReadableBy = DescriptionTranslationGetter.class) String description,
+                    makeReadableBy = StepParameter.TranslatedDescriptionParameterValueGetter.class)
+                    String description,
             RequestBuilder requestBuilder,
             HttpResponse.BodyHandler<T> handler,
             Function<T, S> f) {
@@ -110,7 +112,8 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
     public static <R, S extends Iterable<R>> GetObjectsFromIterableWhenResponseReceived<S, R, S> asIterable(
             @DescriptionFragment(
                     value = "description",
-                    makeReadableBy = DescriptionTranslationGetter.class) String description,
+                    makeReadableBy = StepParameter.TranslatedDescriptionParameterValueGetter.class)
+                    String description,
             HttpResponse<S> received) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
         return new GetObjectsFromIterableWhenResponseReceived<>(received, rs -> rs);
@@ -131,7 +134,8 @@ public abstract class GetObjectsFromIterableBodyStepSupplier<T, R, S extends Ite
     public static <R, S extends Iterable<R>> GetObjectsFromIterableWhenResponseReceiving<S, R, S> asIterable(
             @DescriptionFragment(
                     value = "description",
-                    makeReadableBy = DescriptionTranslationGetter.class) String description,
+                    makeReadableBy = StepParameter.TranslatedDescriptionParameterValueGetter.class)
+                    String description,
             RequestBuilder requestBuilder,
             HttpResponse.BodyHandler<S> handler) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");

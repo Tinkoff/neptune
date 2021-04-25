@@ -66,7 +66,7 @@ public class DefaultRefreshingTest {
 
     private WebDriver prepareWrappedWebDriver() {
         wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
-                new SeleniumParameterProvider().provide().getParameterValues()[0]);
+                new SeleniumParameterProvider().provide()[0]);
         WebDriver toReturn = wrappedWebDriver.getWrappedDriver();
         String GITHUB = "https://github.com/";
         assertThat("Current url",

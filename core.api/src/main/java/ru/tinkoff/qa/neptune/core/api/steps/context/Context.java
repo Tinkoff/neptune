@@ -64,7 +64,7 @@ public abstract class Context<THIS extends Context<THIS>> {
             throw new IllegalArgumentException(format("%s should have declared default constructor", provider.getName()));
         }
 
-        ConstructorParameters parameters;
+        Object[] parameters;
         try {
             parameters = defaultConstructor.newInstance().provide();
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {

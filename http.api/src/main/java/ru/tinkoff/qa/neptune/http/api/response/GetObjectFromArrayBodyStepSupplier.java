@@ -60,7 +60,8 @@ public abstract class GetObjectFromArrayBodyStepSupplier<T, R, S extends GetObje
     public static <T, R> GetObjectFromArrayWhenResponseReceived<T, R> asOneOfArray(
             @DescriptionFragment(
                     value = "description",
-                    makeReadableBy = DescriptionTranslationGetter.class) String description,
+                    makeReadableBy = StepParameter.TranslatedDescriptionParameterValueGetter.class)
+                    String description,
             HttpResponse<T> received,
             Function<T, R[]> f) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
@@ -83,7 +84,8 @@ public abstract class GetObjectFromArrayBodyStepSupplier<T, R, S extends GetObje
     public static <T, R> GetObjectFromArrayWhenResponseReceiving<T, R> asOneOfArray(
             @DescriptionFragment(
                     value = "description",
-                    makeReadableBy = DescriptionTranslationGetter.class) String description,
+                    makeReadableBy = StepParameter.TranslatedDescriptionParameterValueGetter.class)
+                    String description,
             RequestBuilder requestBuilder,
             HttpResponse.BodyHandler<T> handler,
             Function<T, R[]> f) {
@@ -107,7 +109,8 @@ public abstract class GetObjectFromArrayBodyStepSupplier<T, R, S extends GetObje
     public static <R> GetObjectFromArrayWhenResponseReceived<R[], R> asOneOfArray(
             @DescriptionFragment(
                     value = "description",
-                    makeReadableBy = DescriptionTranslationGetter.class) String description,
+                    makeReadableBy = StepParameter.TranslatedDescriptionParameterValueGetter.class)
+                    String description,
             HttpResponse<R[]> received) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
         return new GetObjectFromArrayWhenResponseReceived<>(received, rs -> rs);
@@ -127,7 +130,8 @@ public abstract class GetObjectFromArrayBodyStepSupplier<T, R, S extends GetObje
     public static <R> GetObjectFromArrayWhenResponseReceiving<R[], R> asOneOfArray(
             @DescriptionFragment(
                     value = "description",
-                    makeReadableBy = DescriptionTranslationGetter.class) String description,
+                    makeReadableBy = StepParameter.TranslatedDescriptionParameterValueGetter.class)
+                    String description,
             RequestBuilder requestBuilder,
             HttpResponse.BodyHandler<R[]> handler) {
         checkArgument(isNotBlank(description), "description of resulted value is not defined");
