@@ -2,6 +2,10 @@
 
 Полезные страницы:
 
+- О контекстах можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Контекст). 
+  Объект [контекста для браузера](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/SeleniumStepContext.html)
+  в примерах ниже вызывается статическим методом `ru.tinkoff.qa.neptune.selenium.SeleniumStepContext#inBrowser`
+
 - [Виджеты](./WIDGET.MD)
   
 - [О принципах работы шагов, которые возвращают результат](./../../../core.api/doc/rus/STEPS.MD#Шаги,-которые-возвращают-результат).

@@ -1,5 +1,9 @@
 # Работа с cookies
 
+- О контекстах можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Контекст). 
+  Объект [контекста для работы с http протоколом](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/HttpStepContext.html)
+  в примерах ниже вызывается статическим методом `ru.tinkoff.qa.neptune.http.api.HttpStepContext#http`
+
 - О принципах работы шагов, которые возвращают результат, можно
 прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Шаги,-которые-возвращают-результат).
 
