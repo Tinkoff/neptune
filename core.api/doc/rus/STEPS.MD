@@ -15,11 +15,99 @@
 
 Так же он отделяет логику шагов от логики инициализации ресурсов для их выполнения.
 
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
+import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
+
+//Формирует параметры вызова конструктора
+//Предполагается, что для этого используются значения различных переменных окружения
+//среды, в которой выполняются тесты
+@CreateWith(provider = MyParameterProvider.class)
+//Если конструктор аннотируемого класса не имеет параметров, аннотацию можно не 
+//указывать
+public class MyTestContext extends Context<MyTestContext> { //generic сигнатура для того,
+    //чтобы ограничить возможность шагам для других контекстов использовать 
+    //объекты данного класса
+    
+    //Рекомендуемый способ доступа до объектов контекста
+    public static MyTestContext myTestContext() {
+        return getInstance(MyTestContext.class);
+    }
+    
+    //Конструктор может содержать параметры
+    protected MyTestContext(/*Параметры*/) {
+        //Логика инициализации
+    }
+
+    //пример
+    public Object getSomeResource() {
+        return //Возврат какого-нибудь проинициализированного объекта
+        //для использования в шагах (рекомендуется)
+        //для использования напрямую (не рекомендуется)
+    }
+}
+```
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.steps.context.ParameterProvider;
+
+public class MyParameterProvider implements ParameterProvider {
+    
+    @Override
+    public Object[] provide() {
+        //Создает параметры вызова конструктора MyTestContext
+    }
+}
+```
+
 ## Шаги
 
 ### Произвольные шаги, которые могут быть описаны в тесте
 
+Данный механизм можно использовать, чтобы сгруппировать в коде/логе/репорте
+множество простых действий или шагов в один произвольный шаг верхнего уровня.
+
+```java
+package org.my.pack;
+
+import org.testng.annotations.Test;
+
+import static ru.tinkoff.qa.neptune.core.api.steps.Step.$;
+
+public class SomeTest {
+    
+    @Test
+    public void test() {
+        //Шаг просто выполняется и ничего не возвращает
+        $("Given: что-то в некотором состоянии", () -> {
+            //Некоторые действия
+        });
+        
+        //Шаг выполняется и возвращает какое-то значение
+        var result = $("When: что-то делаем и получаем", () -> {
+            //Некоторые действия
+            return //возврат некоторого значения
+        });
+        
+        $("Then: проверяем то, что получили", () -> {
+            assetThat(result, /*Параметры проверки*/);
+        });
+    }
+}
+```
+
+Ниже речь пойдет о механизме, при помощи которого можно описать базовый набор шагов для того
+или иного контекста.
+
 ### Шаги, которые возвращают результат
+
+Для описания набора действий с возвратом некоторого результата в рамках некоторого действия используется 
+наследники `ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier`. Ниже пример, демонстрирующий
+работу и принцип данного класса.
 
 #### Критерии
 
