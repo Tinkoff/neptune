@@ -5,6 +5,7 @@ import ru.tinkoff.qa.neptune.core.api.steps.Action;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,8 +54,10 @@ public final class CheckActionSupplier<R, T> extends SequentialActionSupplier<R,
     @SafeVarargs
     @Description("{description}")
     static <T, R> CheckActionSupplier<R, T> checkActionSupplier(
-            @DescriptionFragment(value = "description",
-                    makeReadableBy = DescriptionTranslator.class) String description,
+            @DescriptionFragment(
+                    value = "description",
+                    makeReadableBy = StepParameter.TranslatedDescriptionParameterValueGetter.class)
+                    String description,
             Function<R, T> f,
             MatchAction<T, ?>... matchActions) {
         checkArgument(!isBlank(description), "Value description to be inspected should not be blank");

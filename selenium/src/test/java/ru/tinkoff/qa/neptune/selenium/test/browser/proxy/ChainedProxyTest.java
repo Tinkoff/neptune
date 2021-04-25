@@ -74,7 +74,7 @@ public class ChainedProxyTest {
         System.setProperty(propertyName, propertyValue);
 
         WrappedWebDriver wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
-                new SeleniumParameterProvider().provide().getParameterValues()[0]);
+                new SeleniumParameterProvider().provide()[0]);
         WebDriver driver = wrappedWebDriver.getWrappedDriver();
 
         try {

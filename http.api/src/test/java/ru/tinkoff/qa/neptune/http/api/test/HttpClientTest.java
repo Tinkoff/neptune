@@ -123,7 +123,7 @@ public class HttpClientTest extends BaseHttpTest {
         setProperty(DEFAULT_HTTP_SSL_PARAMETERS_PROPERTY.getName(), TestSslParametersSupplier.class.getName());
 
         try {
-            var newContext = new HttpStepContext((HttpClient.Builder) new HttpStepsParameterProvider().provide().getParameterValues()[0]);
+            var newContext = new HttpStepContext((HttpClient.Builder) new HttpStepsParameterProvider().provide()[0]);
             var client = newContext.getCurrentClient();
 
             assertThat(client.authenticator().orElse(null), equalTo(DEFAULT_AUTHENTICATOR));

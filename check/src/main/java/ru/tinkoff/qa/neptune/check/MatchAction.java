@@ -5,6 +5,7 @@ import ru.tinkoff.qa.neptune.core.api.event.firing.annotations.MaxDepthOfReporti
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.StepParameter;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -63,7 +64,9 @@ public class MatchAction<T, R> extends SequentialActionSupplier<T, R, MatchActio
      */
     @Description("{description} {matcher}")
     public static <T, R> MatchAction<T, R> match(
-            @DescriptionFragment(value = "description", makeReadableBy = DescriptionTranslator.class) String description,
+            @DescriptionFragment(
+                    value = "description",
+                    makeReadableBy = StepParameter.TranslatedDescriptionParameterValueGetter.class) String description,
             Function<T, R> eval,
             @DescriptionFragment("matcher") Matcher<? super R> matcher) {
         var translated = translate(description);

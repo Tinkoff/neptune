@@ -37,7 +37,7 @@ public class BrowserProxyStepNegativeTest {
     public void setUp() {
         PROPERTIES_TO_SET_BEFORE.forEach(System::setProperty);
         seleniumSteps = new SeleniumStepContext((SupportedWebDrivers)
-                new SeleniumParameterProvider().provide().getParameterValues()[0]);
+                new SeleniumParameterProvider().provide()[0]);
     }
 
     @Test(description = "When WebDriver is opened")

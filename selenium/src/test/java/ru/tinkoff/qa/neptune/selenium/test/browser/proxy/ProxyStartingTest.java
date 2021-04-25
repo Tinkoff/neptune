@@ -60,7 +60,7 @@ public class ProxyStartingTest {
         }
 
         WrappedWebDriver wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
-                new SeleniumParameterProvider().provide().getParameterValues()[0]);
+                new SeleniumParameterProvider().provide()[0]);
         WebDriver driver = wrappedWebDriver.getWrappedDriver();
 
         try {
@@ -79,7 +79,7 @@ public class ProxyStartingTest {
     public void test2() {
         USE_BROWSER_PROXY.accept(true);
         WrappedWebDriver wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
-                new SeleniumParameterProvider().provide().getParameterValues()[0]);
+                new SeleniumParameterProvider().provide()[0]);
         WebDriver driver = wrappedWebDriver.getWrappedDriver();
 
         driver.get("https://google.com");
@@ -95,7 +95,7 @@ public class ProxyStartingTest {
     public void test3() {
         USE_BROWSER_PROXY.accept(true);
         WrappedWebDriver wrappedWebDriver = new WrappedWebDriver((SupportedWebDrivers)
-                new SeleniumParameterProvider().provide().getParameterValues()[0]);
+                new SeleniumParameterProvider().provide()[0]);
         WebDriver driver = wrappedWebDriver.getWrappedDriver();
 
         driver.get("https://google.com");
