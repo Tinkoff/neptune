@@ -74,30 +74,64 @@ public class MyParameterProvider implements ParameterProvider {
 ```java
 package org.my.pack;
 
-import org.testng.annotations.Test;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialActionSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.context.Context;
+import ru.tinkoff.qa.neptune.core.api.steps.context.CreateWith;
 
-import static ru.tinkoff.qa.neptune.core.api.steps.Step.$;
+//Формирует параметры вызова конструктора
+//Предполагается, что для этого используются значения различных переменных окружения
+//среды, в которой выполняются тесты
+@CreateWith(provider = MyParameterProvider.class)
+//Если конструктор аннотируемого класса не имеет параметров, аннотацию можно не
+//указывать
+public class MyTestContext extends Context<MyTestContext> { //generic сигнатура для того,
+    //чтобы ограничить возможность шагам для других контекстов использовать
+    //объекты данного класса
 
-public class SomeTest {
-    
-    @Test
-    public void test() {
-        //Шаг просто выполняется и ничего не возвращает
-        $("Given: что-то в некотором состоянии", () -> {
-            //Некоторые действия
-        });
-        
-        //Шаг выполняется и возвращает какое-то значение
-        var result = $("When: что-то делаем и получаем", () -> {
-            //Некоторые действия
-            return //возврат некоторого значения
-        });
-        
-        $("Then: проверяем то, что получили", () -> {
-            assetThat(result, /*Параметры проверки*/);
-        });
+    //Рекомендуемый способ доступа до объектов контекста.
+    //Тут все параметры передаются неявно.
+    //Если для данного потока выполнения (Thread) уже был создан 
+    //объект данного класса - вернется этот объект.
+    public static MyTestContext myTestContext() {
+        return getInstance(MyTestContext.class);
+    }
+
+    //Конструктор может содержать параметры
+    protected MyTestContext(/*Параметры*/) {
+        //Логика инициализации
+    }
+
+    // Простой пример того, как связать шаги, возвращающие результат, с данным контекстом,
+    // и ограничить множество таких шагов только теми, которые могут выть выполнены в рамках данного контекста.
+    public <T> T get(SequentialGetStepSupplier< //Об этом классе и его наследниках речь пойдет ниже
+            MyTestContext, //контекст как входной параметр
+            T, // тип возвращаемого результата
+            ?,
+            ?,
+            ?> getStepSupplier) {
+        //Шаг, возвращающий результат, выполняется так
+        return getStepSupplier.get().apply(this);
+    }
+
+    // Простой пример того, как связать шаги, выполняющие действие, с данным контекстом,
+    // и ограничить множество таких шагов только теми, которые могут выть выполнены в рамках данного контекста.
+    public MyTestContext perform(SequentialActionSupplier< //Об этом классе и его наследниках речь пойдет ниже
+            MyTestContext, //контекст как входной параметр
+            ?,
+            ?> sequentialActionSupplier) {
+        //Шаг-действие выполняется так
+        sequentialActionSupplier.get().performAction(this);
+        return this;
+    }
+
+    public Object getSomeResource() {
+        return //Возврат какого-нибудь проинициализированного объекта
+        //для использования в шагах (рекомендуется)
+        //для использования напрямую (не рекомендуется)
     }
 }
+
 ```
 
 Ниже речь пойдет о механизме, при помощи которого можно описать базовый набор шагов для того
@@ -114,6 +148,8 @@ package org.my.pack;
 
 import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
 import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
 import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
 
 import java.time.Duration;
@@ -159,6 +195,15 @@ public class MyGetStepSupplier<T, M, P>
     protected Function<M, T> getEndFunction() {
         return //подготовка функции, которая НЕПОСРЕДСТВЕННО возвращает
         //конечный результат
+    }
+
+
+    @Description("Something by parameters {a}, {b}, {c}") //Заголовок/название шага, об этом будет ниже
+    public static <T, M, P> MyGetStepSupplier<T, M, P> something(
+            @DescriptionFragment("a") Object a, //параметры, которые формируют 
+            @DescriptionFragment("b") Object b,  //название шага.
+            @DescriptionFragment("c") Object c) { //Об этом будет ниже
+        return //возвращает представление/построитель шага
     }
 
     //Если конечный результат, соответствующий критериям, может быть
@@ -234,9 +279,37 @@ public class MyGetStepSupplier<T, M, P>
         //Какая-то логика
     }
 
-    @Override //Результирующая функция-шаг возвращается данным методом
+    @Override //Результирующая функция-шаг возвращается данным методом.
+    //Добавлено для наглядности
     public Function<MyTestContext, T> get() {
         return super.get();
+    }
+}
+```
+
+Пример связи контекста и шага в тесте
+
+```java
+import static java.time.Duration.ofMillis;
+import static java.time.Duration.ofSeconds;
+import static org.my.pack.MyGetStepSupplier.something;
+import static org.my.pack.MyTestContext.myTestContext;
+
+public class SomeTest {
+
+    @Test
+    public void test() {
+        var result = myTestContext().get(something(1, 2, 3)
+                .criteria("Some criteria", o -> ) //Можно указать критерий результат, который надо получить
+                //если надо
+                .criteria("One more criteria", o -> ) //и еще один
+                .timeOut(ofSeconds(10)) //можно указать время, за которое нужно получить требуемый резултат
+                .pollingInterval(ofMillis(500)) //паузу между попытками получить требуемые данные, в рамках указанного 
+                //времени ожидания
+                .throwOnNoResult()); //Если ничего походящего/значимого шаг не вернул, и тут нужно выбросить
+        //исключение и уронить тест. Будет выброшено исключения, указанное аннотацией
+        //ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData над классом из 
+        //примера
     }
 }
 ```
@@ -244,6 +317,110 @@ public class MyGetStepSupplier<T, M, P>
 Данный пример демонстрирует принцип работы. В большинстве случаев рекомендуется воспользоваться одним из 
 классов — наследников `ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier` согласно одной из часто 
 встречающихся ситуаций.
+
+#### Шаг, который возвращает объект (`java.lang.Object` и наследники).
+
+Подходит для ситуаций, когда результат выполнения шага рассматривается как один объект, а не коллекция или массив 
+объектов. 
+
+- 1
+
+```java
+package org.my.pack;
+
+import ru.tinkoff.qa.neptune.core.api.steps.Criteria;
+import ru.tinkoff.qa.neptune.core.api.steps.SequentialGetStepSupplier;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.Description;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.DescriptionFragment;
+import ru.tinkoff.qa.neptune.core.api.steps.annotations.ThrowWhenNoData;
+
+import java.time.Duration;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
+/**
+ * Так описывается шаг, возвращающий некий объект-результат. В данном случае наличие 
+ * "посредника" не предусматривается. Критерии проверяют на соответствие сам объект,
+ * который может быть возвращен в результате вычисления.
+ */
+@ThrowWhenNoData(toThrow = IllegalStateException.class, startDescription = "Can't get:")
+public class MyGetStepSupplier<T> extends SequentialGetStepSupplier.GetObjectStepSupplier<
+        MyTestContext,
+        T,
+        MyGetStepSupplier<T>>
+{
+
+    protected MyGetStepSupplier() {
+        this(myTestContext -> {
+            /**логика выполнения шага сводится к строчкам внутри этого лямбда-выражения**/
+            var o = myTestContext.getSomeResource();
+            ///дальнейшие вычисления
+            return //возврат результата
+        });
+    }
+    
+    protected MyGetStepSupplier(Function<MyTestContext, T> originalFunction) {
+        /**или к функции, переданной через данный конструктор**/
+        super(originalFunction);
+    }
+
+
+    @Description("Something by parameters {a}, {b}, {c}")
+    public static <T> MyGetStepSupplier<T> something(
+            @DescriptionFragment("a") Object a, //параметры, которые формируют
+            @DescriptionFragment("b") Object b,  //название шага.
+            @DescriptionFragment("c") Object c) { //Об этом будет ниже
+        return //возвращает представление/построитель шага
+    }
+
+    //перекрывать нужно, если для этого шага может понадобиться возможность указывать время,
+    //в пределах которого конечный результат должен быть получен
+    @Override
+    public MyGetStepSupplier<T> timeOut(Duration timeOut) {
+        return super.timeOut(timeOut);
+    }
+
+    //перекрывать нужно, если для этого шага может понадобиться возможность указывать паузу между попытками
+    //получить нужный конечный результат.
+    //Попытки совершаются циклически в пределах времени, указанного в timeOut(Duration timeOut)
+    @Override
+    public MyGetStepSupplier<T> pollingInterval(Duration pollingTime) {
+        return super.pollingInterval(pollingTime);
+    }
+
+    //перекрывать нужно, если для этого шага может понадобиться возможность указывать критерии,
+    //которым должен соответствовать конечный результат
+    @Override
+    public MyGetStepSupplier<T> criteria(Criteria<? super T> criteria) {
+        return super.criteria(criteria);
+    }
+
+    // Аналогично примеру выше. В данном случае критерий задается в виде предиката с пояснительным
+    // описанием критерия
+    @Override
+    public MyGetStepSupplier<T> criteria(String description, Predicate<? super T> predicate) {
+        return super.criteria(description, predicate);
+    }
+
+    @Override //перекрывать необязательно, уже писали ранее. Для наглядности
+    protected void onStart(MyTestContext m) {
+        //Какая-то логика
+    }
+
+    @Override //перекрывать необязательно, уже писали ранее. Для наглядности
+    protected void onSuccess(T t) {
+        //Какая-то логика
+    }
+
+
+    @Override //перекрывать необязательно, уже писали ранее. Для наглядности
+    protected void onFailure(MyTestContext m, Throwable throwable) {
+        //Какая-то логика
+    }
+}
+```
+
+- 2
 
 #### Критерии
 
