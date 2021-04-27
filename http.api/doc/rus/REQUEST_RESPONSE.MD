@@ -1,7 +1,14 @@
 # Отправка http запросов/получение ответов
 
 В данном документе описано на примерах, как отправлять http-запросы и получать ответы от back-end'ов тестируемых приложений,
-форматы передачи информации в теле запроса и форматы получения информации в теле ответа
+форматы передачи информации в теле запроса и форматы получения информации в теле ответа.
+
+- О контекстах можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Контекст). 
+  Объект [контекста для работы с http протоколом](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/HttpStepContext.html)
+  в примерах ниже вызывается статическим методом `ru.tinkoff.qa.neptune.http.api.HttpStepContext#http`
+
+- О принципах работы шагов, которые возвращают результат, можно
+  прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Шаги,-которые-возвращают-результат).
 
 ## Простая отправка http запроса и получение ответа. На примерах, когда используется только URI
 
@@ -2554,9 +2561,6 @@ public class MyTest {
 
 ### Варианты получения данных тела ответа на примере GET
 
-О принципах работы шагов, которые возвращают результат, можно
-прочитать [здесь](./../../../core.api/doc/rus/IDEA.MD#Шаги,-которые-возвращают-результат).
-
 В примерах выше был показан один из вариантов решения. Для этого нато получить ответ на http-запрос и взять его тело - `response.body()`. Но этого не всегда достаточно, т.к. бывают ситуации, когда:
 
 - необходимо извлечь данные тела ответа, соответствующие определенным критериям
@@ -2613,6 +2617,10 @@ public class BodyObject {
 
 <details>
   <summary>Нажми, чтобы прочесть</summary>
+
+О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
+
+[Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
 
 ```java
 import java.net.URI;
@@ -2760,6 +2768,10 @@ public class MyTest {
 
 <details>
   <summary>Нажми, чтобы прочесть</summary>
+
+О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
+
+[Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
 
 ```java
 import java.net.URI;
@@ -2932,6 +2944,10 @@ public class MyTest {
 <details>
   <summary>Нажми, чтобы прочесть</summary>
 
+О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
+
+[Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
+
 ```java
 import java.net.URI;
 
@@ -3100,6 +3116,10 @@ public class MyTest {
 #### Получение данных тела ответа как Iterable
 <details>
   <summary>Нажми, чтобы прочесть</summary>
+
+О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
+
+[Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
 
 ```java
 import java.net.URI;
@@ -3270,6 +3290,10 @@ public class MyTest {
 #### Получение данных тела ответа как массив
 <details>
   <summary>Нажми, чтобы прочесть</summary>
+
+О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
+
+Критерии для получения подходящего http ответа](https://tinkoffcreditsystems.github.io/neptune/http.api/ru/tinkoff/qa/neptune/http/api/response/ResponseCriteria.html)
 
 ```java
 import java.net.URI;

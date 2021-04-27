@@ -1,7 +1,11 @@
 # Навигация по страницам
 
-О принципах работы шагов, которые выполняют действие, можно
-прочитать [здесь](./../../../core.api/doc/rus/IDEA.MD#Шаги,-которые-выполняют-действие).
+- О контекстах можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Контекст). 
+  Объект [контекста для браузера](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/SeleniumStepContext.html)
+  в примерах ниже вызывается статическим методом `ru.tinkoff.qa.neptune.selenium.SeleniumStepContext#inBrowser`
+
+- О принципах работы шагов, которые выполняют действие, можно
+прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Шаги,-которые-выполняют-действие).
 
 Важная информация:
 

@@ -2,9 +2,18 @@
 
 Полезные страницы:
 
+- О контекстах можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Контекст). 
+  Объект [контекста для браузера](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/SeleniumStepContext.html)
+  в примерах ниже вызывается статическим методом `ru.tinkoff.qa.neptune.selenium.SeleniumStepContext#inBrowser`
+
 - [Виджеты](./WIDGET.MD)
-- [О принципах работы шагов, которые возвращают результат](./../../../core.api/doc/rus/IDEA.MD#Шаги,-которые-возвращают-результат)
-  .
+  
+- [О принципах работы шагов, которые возвращают результат](./../../../core.api/doc/rus/STEPS.MD#Шаги,-которые-возвращают-результат).
+
+- О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии).
+
+- [Критерии для элементов страницы](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/functions/searching/CommonElementCriteria.html)
+
 
 ## Пример поиска
 
@@ -118,7 +127,7 @@ public class Tezzt {
 
 - проверка факта наличия/появления элемента/виджета:
 
-Полезная информация: [Про наличие или отсутствие чего либо](./../../../core.api/doc/rus/IDEA.MD#Присутствие-и-отсутствие)
+Полезная информация: [Про наличие или отсутствие чего либо](./../../../core.api/doc/rus/STEPS.MD#Присутствие-и-отсутствие)
 
 ```java
 import org.openqa.selenium.WebElement;
@@ -162,7 +171,7 @@ public class Tezzt {
 
 - проверка факта наличия/появления элементов/виджетов (хотя бы одного):
 
-Полезная информация: [Про наличие или отсутствие чего либо](./../../../core.api/doc/rus/IDEA.MD#Присутствие-и-отсутствие)
+Полезная информация: [Про наличие или отсутствие чего либо](./../../../core.api/doc/rus/STEPS.MD#Присутствие-и-отсутствие)
 
 ```java
 import java.util.List;
@@ -214,7 +223,7 @@ public class Tezzt {
 
 - проверка факта отсутствия/исчезновения элемента/виджета:
 
-Полезная информация: [Про наличие или отсутствие чего либо](./../../../core.api/doc/rus/IDEA.MD#Присутствие-и-отсутствие)
+Полезная информация: [Про наличие или отсутствие чего либо](./../../../core.api/doc/rus/STEPS.MD#Присутствие-и-отсутствие)
 
 ```java
 import org.openqa.selenium.WebElement;
@@ -258,7 +267,7 @@ public class Tezzt {
 
 - проверка факта отсутствия/исчезновения элементов/виджетов (всех):
 
-Полезная информация: [Про наличие или отсутствие чего либо](./../../../core.api/doc/rus/IDEA.MD#Присутствие-и-отсутствие)
+Полезная информация: [Про наличие или отсутствие чего либо](./../../../core.api/doc/rus/STEPS.MD#Присутствие-и-отсутствие)
 
 ```java
 import org.openqa.selenium.WebElement;

@@ -1,10 +1,18 @@
 # Работа с cookie браузера
 
-О принципах работы шагов, которые возвращают результат, можно
-прочитать [здесь](./../../../core.api/doc/rus/IDEA.MD#Шаги,-которые-возвращают-результат).
+- О контекстах можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Контекст). 
+  Объект [контекста для браузера](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/SeleniumStepContext.html)
+  в примерах ниже вызывается статическим методом `ru.tinkoff.qa.neptune.selenium.SeleniumStepContext#inBrowser`
 
-О принципах работы шагов, которые выполняют действие, можно
-прочитать [здесь](./../../../core.api/doc/rus/IDEA.MD#Шаги,-которые-выполняют-действие).
+- О принципах работы шагов, которые возвращают результат, можно
+прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Шаги,-которые-возвращают-результат).
+
+- О принципах работы шагов, которые выполняют действие, можно
+прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Шаги,-которые-выполняют-действие).
+
+- О критериях можно прочитать [здесь](./../../../core.api/doc/rus/STEPS.MD#Критерии). 
+
+- [Критерии для cookie браузера](https://tinkoffcreditsystems.github.io/neptune/selenium/ru/tinkoff/qa/neptune/selenium/functions/cookies/CommonBrowserCookieCriteria.html)
 
 ## Получение cookie браузера
 
@@ -33,7 +41,7 @@ public class Tezzt {
 ## Наличие или отсутствие cookie браузера
 
 Полезная
-информация: [Про наличие или отсутствие чего либо](./../../../core.api/doc/rus/IDEA.MD#Присутствие-и-отсутствие)
+информация: [Про наличие или отсутствие чего либо](./../../../core.api/doc/rus/STEPS.MD#Присутствие-и-отсутствие)
 
 ```java
 import static java.time.Duration.ofSeconds;
