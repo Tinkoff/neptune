@@ -28,7 +28,7 @@ public class DataBaseStepContext extends Context<DataBaseStepContext> implements
     private final Set<JDOPersistenceManager> jdoPersistenceManagerSet = synchronizedSet(new HashSet<>());
 
     private static  <T> T returnSingleWhenNecessary(List<T> ts) {
-        if (ts.size() == 0) {
+        if (ts == null || ts.size() == 0) {
             return null;
         }
         return ts.get(0);
