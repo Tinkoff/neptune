@@ -552,7 +552,6 @@ public class MyGetStepSupplier<T, M> extends SequentialGetStepSupplier.GetObject
     }
 }
 ```
-</details>
 
 Пример связи контекста и шага в тесте
 
@@ -583,6 +582,8 @@ public class SomeTest {
 
 Дальнейшие примеры работают по тем же принципам, что и примеры выше. Поэтому в примерах ниже больше 
 фокус на принципиальных отличиях.
+
+</details>
 
 #### Шаг, который возвращает один из объектов, входящих в состав Iterable<?>.
 
